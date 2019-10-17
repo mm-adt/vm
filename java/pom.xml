@@ -1,0 +1,189 @@
+<!--
+  ~ Copyright (c) 2019-2029 RReduX,Inc. [http://rredux.com]
+  ~
+  ~ This file is part of mm-ADT.
+  ~
+  ~ mm-ADT is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ mm-ADT is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
+  ~
+  ~ You can be released from the requirements of the license by purchasing
+  ~ a commercial license from RReduX,Inc. at [info@rredux.com].
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.mmadt</groupId>
+    <artifactId>mmadt</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>mm-ADT</name>
+    <description>A Multi-Model Abstract Data Type</description>
+    <inceptionYear>2019</inceptionYear>
+    <prerequisites>
+        <maven>3.3.9</maven>
+    </prerequisites>
+    <modules>
+        <module>language</module>
+        <module>process</module>
+        <!--<module>structure</module>-->
+        <module>machine</module>
+    </modules>
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License, Version 3 with the Commons Clause</name>
+            <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
+            <comments>The mm-ADT software is developed and owned by RReduX,Inc.
+                and is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE Version 3.
+                You can be released from the requirements of the license by purchasing
+                a commercial license from RReduX,Inc. at [info@rredux.com].
+            </comments>
+        </license>
+    </licenses>
+    <properties>
+        <junit.version>5.4.0</junit.version>
+    </properties>
+    <developers>
+        <developer>
+            <name>Marko A. Rodriguez</name>
+            <organization>RReduX,Inc.</organization>
+            <url>http://markorodriguez.com</url>
+        </developer>
+    </developers>
+    <dependencies>
+        <!-- TESTING -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/test/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+        <directory>${basedir}/target</directory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-all</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <DependencyConvergence/>
+                                <requireJavaVersion>
+                                    <version>[11.0,)</version>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[3.3.9,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.13</version>
+                <executions>
+                    <execution>
+                        <id>rat-checks</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludeSubProjects>false</excludeSubProjects>
+                    <excludes>
+                        <exclude>**/*.mm</exclude>
+                        <exclude>**/*.iml</exclude>
+                        <exclude>**/README.md</exclude>
+                        <exclude>**/target/**</exclude>
+                    </excludes>
+                    <licenses>
+                        <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+                            <licenseFamilyCategory>AGPLv3</licenseFamilyCategory>
+                            <licenseFamilyName>Affero General Public License 3.0</licenseFamilyName>
+                            <notes>Dual License Header Including AGPL3</notes>
+                            <patterns>
+                                <pattern>Copyright (c) 2019-2029 RReduX,Inc.</pattern>
+                                <pattern>GNU General Public License</pattern>
+                                <pattern>You can be released from the requirements of the license by purchasing
+                                </pattern>
+                            </patterns>
+                        </license>
+                    </licenses>
+                    <licenseFamilies>
+                        <licenseFamily implementation="org.apache.rat.license.SimpleLicenseFamily">
+                            <familyName>Affero General Public License 3.0</familyName>
+                        </licenseFamily>
+                    </licenseFamilies>
+                </configuration>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <configuration>
+                        <source>11</source>
+                        <target>11</target>
+                        <compilerArgs>
+                            <object>-parameters</object>
+                        </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.1</version>
+                    <configuration>
+                        <trimStackTrace>false</trimStackTrace>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

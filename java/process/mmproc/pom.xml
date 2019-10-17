@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2019-2029 RReduX,Inc. [http://rredux.com]
+  ~
+  ~ This file is part of mm-ADT.
+  ~
+  ~ mm-ADT is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ mm-ADT is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
+  ~
+  ~ You can be released from the requirements of the license by purchasing
+  ~ a commercial license from RReduX,Inc. at [info@rredux.com].
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>process</artifactId>
+        <groupId>org.mmadt</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+    <name>mm-ADT :: mm-proc Processor</name>
+    <groupId>org.mmadt.process</groupId>
+    <artifactId>mmproc</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.mmadt</groupId>
+            <artifactId>machine</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mmadt.language</groupId>
+            <artifactId>mmlang</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
