@@ -30,20 +30,20 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.mmadt.language.Traversal.__;
-import static org.mmadt.language.Traversal.db;
+import static org.mmadt.language.__.get;
+import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TraversalTest {
+class QueryTest {
 
     private final static TestArgs[] TEST_PARAMETERS = new TestArgs[]{
-            new TestArgs<>("[db][dedup]", db().dedup()),
-            new TestArgs<>("[db][dedup,[get,'name']]", db().dedup(__().get("name"))),
-            new TestArgs<>("[db][dedup,[get,'name'],[get,'age']]", db().dedup(__().get("name"), __().get("age"))),
-            new TestArgs<>("[db][get,'name'][is,true][count][sum]", db().get("name").is(true).count().sum()),
-            new TestArgs<>("[db][get,2][is,[get,3][gt,77.6]][count]", db().get(2).is(__().get(3).gt(77.6)).count()),
+            new TestArgs<>("[start][dedup]", start().dedup()),
+            new TestArgs<>("[start][dedup,[get,'name']]", start().dedup(get("name"))),
+            new TestArgs<>("[start][dedup,[get,'name'],[get,'age']]", start().dedup(get("name"), get("age"))),
+            new TestArgs<>("[start][get,'name'][is,true][count][sum]", start().get("name").is(true).count().sum()),
+            new TestArgs<>("[start][get,2][is,[get,3][gt,77.6]][count]", start().get(2).is(get(3).gt(77.6)).count()),
     };
 
     @TestFactory

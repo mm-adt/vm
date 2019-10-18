@@ -22,7 +22,7 @@
 
 package org.mmadt.process.compliance;
 
-import org.mmadt.language.Traversal;
+import org.mmadt.language.Query;
 import org.mmadt.object.impl.TObj;
 import org.mmadt.object.model.Obj;
 import org.mmadt.util.IteratorUtils;
@@ -35,7 +35,7 @@ import java.util.List;
  */
 abstract class AbstractTest implements TestMachine {
 
-    <E extends Obj> List<E> submit(final Traversal query) {
+    <E extends Obj> List<E> submit(final Query query) {
         return IteratorUtils.list(machine().submit(query.bytecode()));
     }
 

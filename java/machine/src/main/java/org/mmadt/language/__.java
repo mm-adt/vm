@@ -28,90 +28,90 @@ package org.mmadt.language;
 public class __ {
 
 
-    public static Traversal a(final Object type) {
+    public static Query a(final Object type) {
         return create().a(type);
     }
 
-    public static Traversal branch(final Object... branches) {
+    public static Query branch(final Object... branches) {
         return create().branch(branches);
     }
 
-    public static Traversal count() {
+    public static Query count() {
         return create().count();
     }
 
-    public static Traversal drop(final Object key) {
+    public static Query drop(final Object key) {
         return create().drop(key);
     }
 
-    public static Traversal start(final Object... starts) {
+    public static Query start(final Object... starts) {
         return create().start(starts);
     }
 
-    public static Traversal eq(final Object object) {
+    public static Query eq(final Object object) {
         return create().eq(object);
     }
 
-    public static Traversal get(final Object key) {
+    public static Query get(final Object key) {
         return create().get(key);
     }
 
-    public static Traversal groupCount(final Object key) {
+    public static Query groupCount(final Object key) {
         return create().groupCount(key);
     }
 
-    public static Traversal gt(final Object object) {
+    public static Query gt(final Object object) {
         return create().gt(object);
     }
 
-    public static Traversal id() {
+    public static Query id() {
         return create().id();
     }
 
-    public static Traversal is(final Object bool) {
+    public static Query is(final Object bool) {
         return create().is(bool);
     }
 
-    public static Traversal map(final Object object) {
+    public static Query map(final Object object) {
         return create().map(object);
     }
 
-    public static Traversal minus(final Object object) {
+    public static Query minus(final Object object) {
         return create().minus(object);
     }
 
-    public static Traversal mult(final Object object) {
+    public static Query mult(final Object object) {
         return create().mult(object);
     }
 
-    public static Traversal one() {
+    public static Query one() {
         return create().one();
     }
 
-    public static Traversal plus(final Object object) {
+    public static Query plus(final Object object) {
         return create().plus(object);
     }
 
-    public static Traversal put(final Object key, final Object value) {
+    public static Query put(final Object key, final Object value) {
         return create().put(key, value);
     }
 
-    public static Traversal sum() {
+    public static Query sum() {
         return create().sum();
     }
 
-    public static Traversal type() {
+    public static Query type() {
         return create().type();
     }
 
-    public static Traversal zero() {
+    public static Query zero() {
         return create().zero();
     }
 
     ///
 
-    private static Traversal create() {
-        return new Traversal();
+    private static Query create() {
+        return new Query();
     }
 
 }

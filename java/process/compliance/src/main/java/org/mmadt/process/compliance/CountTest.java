@@ -25,6 +25,7 @@ package org.mmadt.process.compliance;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.start;
 
 /**
@@ -45,6 +46,11 @@ public abstract class CountTest extends AbstractTest {
     @Test
     void startXa_b_cX_count_count() {
         assertEquals(objs(1), submit(start("a", "b", "c").count().count()));
+    }
+
+    @Test
+    void startXa_b_cX_isXgtXaXX_count() {
+        assertEquals(objs(2), submit(start("a", "b", "c").is(gt("a")).count()));
     }
 
 

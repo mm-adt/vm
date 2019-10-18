@@ -24,7 +24,7 @@ package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
-import org.mmadt.language.Traversal;
+import org.mmadt.language.Query;
 import org.mmadt.object.impl.TModel;
 import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.atomic.TBool;
@@ -38,10 +38,10 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.mmadt.language.Traversal.__;
 import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.id;
+import static org.mmadt.language.__.map;
 import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
 
@@ -52,7 +52,7 @@ class TypeTest {
 
     private static final Obj NONE = TObj.none();
 
-    private final static List<TestArgs<List<Object>, Traversal>> TEST_PARAMETERS = List.of(
+    private final static List<TestArgs<List<Object>, Query>> TEST_PARAMETERS = List.of(
             new TestArgs<>(List.of(
                     NONE, NONE),
                     start()),
@@ -93,11 +93,11 @@ class TypeTest {
                     start(1, 2, 3, 4).plus(7).dedup().is(gt(5))),
             new TestArgs<>(List.of(
                     NONE, TInt.some(4), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
-                    start(1, 2, 3, 4).map(plus(3).gt(2)).is(__())),
+                    start(1, 2, 3, 4).map(plus(3).gt(2)).is(id())),
             // TODO: if we know the EQ is a constant, then we know its constant{0,4}
             new TestArgs<>(List.of(
                     NONE, TInt.some(4), List.of(List.of(TInt.some(), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
-                    start(1, 2, 3, 4).map(__().map(plus(3).gt(2))).is(eq(true).id()))
+                    start(1, 2, 3, 4).map(map(plus(3).gt(2))).is(eq(true).id()))
 
     );
 

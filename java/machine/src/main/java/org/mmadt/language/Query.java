@@ -33,117 +33,109 @@ import java.util.Objects;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class Traversal {
+public final class Query {
 
     private Inst bytecode;
 
-    private Traversal(final Inst inst) {
+    private Query(final Inst inst) {
         this.bytecode = inst;
     }
 
-    Traversal() {
+    Query() {
         this(TInst.of(Tokens.ID));
     }
 
-    public Traversal branch(final Object... branches) {
+    public Query branch(final Object... branches) {
         return this.compose(TInst.of(Tokens.BRANCH, args(branches)));
     }
 
-    public static Traversal __() {
-        return new Traversal();
-    }
-
-    public Traversal id() {
+    public Query id() {
         return this.compose(TInst.of(Tokens.ID));
     }
 
-    public Traversal count() {
+    public Query count() {
         return this.compose(TInst.of(Tokens.COUNT));
     }
 
-    public static Traversal db() {
-        return new Traversal(TInst.of(Tokens.DB));
-    }
-
-    public Traversal drop(final Object key) {
+    public Query drop(final Object key) {
         return this.compose(TInst.of(Tokens.DROP, arg(key)));
     }
 
-    public Traversal and(final Object... objects) {
+    public Query and(final Object... objects) {
         return this.compose(TInst.of(Tokens.AND, args(objects)));
     }
 
-    public Traversal dedup(final Object... objects) {
+    public Query dedup(final Object... objects) {
         return this.compose(TInst.of(Tokens.DEDUP, args(objects)));
     }
 
-    public Traversal eq(final Object obj) {
+    public Query eq(final Object obj) {
         return this.compose(TInst.of(Tokens.EQ, arg(obj)));
     }
 
-    public Traversal get(final Object key) {
+    public Query get(final Object key) {
         return this.compose(TInst.of(Tokens.GET, arg(key)));
     }
 
-    public Traversal groupCount(final Object key) {
+    public Query groupCount(final Object key) {
         return this.compose(TInst.of(Tokens.GROUPCOUNT, arg(key)));
     }
 
-    public Traversal gt(final Object obj) {
+    public Query gt(final Object obj) {
         return this.compose(TInst.of(Tokens.GT, arg(obj)));
     }
 
-    public Traversal is(final Object bool) {
+    public Query is(final Object bool) {
         return this.compose(TInst.of(Tokens.IS, arg(bool)));
     }
 
-    public Traversal map(final Object obj) {
+    public Query map(final Object obj) {
         return this.compose(TInst.of(Tokens.MAP, arg(obj)));
     }
 
-    public Traversal minus(final Object obj) {
+    public Query minus(final Object obj) {
         return this.compose(TInst.of(Tokens.MINUS, arg(obj)));
     }
 
-    public Traversal mult(final Object obj) {
+    public Query mult(final Object obj) {
         return this.compose(TInst.of(Tokens.MULT, arg(obj)));
     }
 
-    public Traversal one() {
+    public Query one() {
         return this.compose(TInst.of(Tokens.ONE));
     }
 
-    public Traversal plus(final Object obj) {
+    public Query plus(final Object obj) {
         return this.compose(TInst.of(Tokens.PLUS, arg(obj)));
     }
 
-    public Traversal put(final Object key, final Object value) {
+    public Query put(final Object key, final Object value) {
         return this.compose(TInst.of(Tokens.PUT, arg(key), arg(value)));
     }
 
-    public Traversal a(final Object obj) {
-        return new Traversal(TInst.of(Tokens.A, arg(obj)));
+    public Query a(final Object obj) {
+        return new Query(TInst.of(Tokens.A, arg(obj)));
     }
 
-    public Traversal start(final Object... objects) {
-        return new Traversal(TInst.of(Tokens.START, args(objects)));
+    public Query start(final Object... objects) {
+        return new Query(TInst.of(Tokens.START, args(objects)));
     }
 
 
-    public Traversal sum() {
+    public Query sum() {
         return this.compose(TInst.of(Tokens.SUM));
     }
 
 
-    public Traversal type() {
+    public Query type() {
         return this.compose(TInst.of(Tokens.TYPE));
     }
 
-    public Traversal zero() {
+    public Query zero() {
         return this.compose(TInst.of(Tokens.ZERO));
     }
 
-    public Traversal as(final String key) {
+    public Query as(final String key) {
         this.bytecode = this.bytecode.as(key);
         return this;
     }
@@ -162,7 +154,7 @@ public final class Traversal {
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof Traversal && ((Traversal) other).bytecode.equals(this.bytecode);
+        return other instanceof Query && ((Query) other).bytecode.equals(this.bytecode);
     }
 
     @Override
@@ -172,7 +164,7 @@ public final class Traversal {
 
     //////////////////
 
-    private Traversal compose(final Inst inst) {
+    private Query compose(final Inst inst) {
         this.bytecode = this.bytecode.mult(inst);
         return this;
     }
@@ -180,12 +172,12 @@ public final class Traversal {
     private static Obj[] args(final Object[] objects) {
         final Obj[] objs = new Obj[objects.length];
         for (int i = 0; i < objects.length; i++) {
-            objs[i] = Traversal.arg(objects[i]);
+            objs[i] = Query.arg(objects[i]);
         }
         return objs;
     }
 
     private static Obj arg(final Object object) {
-        return object instanceof Traversal ? ((Traversal) object).bytecode : TObj.from(object);
+        return object instanceof Query ? ((Query) object).bytecode : TObj.from(object);
     }
 }

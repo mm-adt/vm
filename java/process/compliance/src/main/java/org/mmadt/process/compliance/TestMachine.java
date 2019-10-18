@@ -29,6 +29,6 @@ import org.mmadt.machine.Machine;
  */
 public interface TestMachine {
 
-    public abstract Machine machine();
+    public Machine machine();
 
 }

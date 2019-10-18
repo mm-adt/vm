@@ -22,7 +22,7 @@
 
 package org.mmadt.object.impl;
 
-import org.mmadt.language.Traversal;
+import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.object.impl.atomic.TBool;
 import org.mmadt.object.impl.atomic.TInt;
@@ -215,8 +215,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return TLst.of(new PList<>((List<Obj>) object));
         else if (object instanceof Map)
             return TRec.of(new PMap<>((Map<Obj, Obj>) object));
-        else if (object instanceof Traversal) // TODO: see about getting rid of this as its not a supported built-in type
-            return ((Traversal) object).bytecode();
+        else if (object instanceof Query) // TODO: see about getting rid of this as its not a supported built-in type
+            return ((Query) object).bytecode();
         else
             throw new IllegalStateException("Unknown type: " + object.getClass());
     }
