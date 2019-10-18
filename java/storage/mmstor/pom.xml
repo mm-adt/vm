@@ -30,9 +30,9 @@
         <groupId>org.mmadt</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <name>mm-ADT :: mm-proc Processor</name>
-    <groupId>org.mmadt.process</groupId>
-    <artifactId>mmproc</artifactId>
+    <name>mm-ADT :: mm-stor Storage</name>
+    <groupId>org.mmadt.storage</groupId>
+    <artifactId>mmstor</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.mmadt</groupId>

@@ -37,7 +37,7 @@
     <modules>
         <module>language</module>
         <module>process</module>
-        <!--<module>structure</module>-->
+        <module>storage</module>
         <module>machine</module>
     </modules>
     <licenses>

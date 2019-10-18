@@ -111,7 +111,20 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     @Override
+    public Lst<V> minus(final Lst<V> object) {
+        final PList<V> list = new PList<>(this.<PList<V>>get());
+        list.removeAll(object.<PList<V>>get());
+        return TLst.of(list);
+    }
+
+    @Override
+    public Lst<V> negate() {
+        return this; // TODO: need a good solution
+    }
+
+    @Override
     public Lst<V> zero() {
         return TLst.of();
     }
+
 }

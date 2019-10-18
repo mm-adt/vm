@@ -20,32 +20,24 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.composite;
+package org.mmadt.storage.mmstor;
 
 import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.atomic.Int;
-import org.mmadt.object.model.type.Bindings;
-import org.mmadt.object.model.type.feature.WithGroupPlus;
+import org.mmadt.storage.Storage;
 
 /**
- * A Java representation of the {@code lst} object in mm-ADT.
- * A {@code lst} is a semigroup over +.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Lst<V extends Obj> extends Struct<Int, V>, WithGroupPlus<Lst<V>> {
+public final class Stor<A extends Obj> implements Storage<A> {
 
-    public void add(final Int index, final V value);
+    private final A root;
 
-    public void add(final V value);
-
-    @Override
-    public default Lst<V> bind(final Bindings bindings) {
-        return (Lst<V>) Struct.super.bind(bindings);
+    public Stor(final A root) { // TODO: make a Model-based constructor
+        this.root = root;
     }
 
     @Override
-    public default Iterable<? extends Lst> iterable() {
-        return (Iterable<? extends Lst>) Struct.super.iterable();
+    public A root() {
+        return this.root;
     }
 }
