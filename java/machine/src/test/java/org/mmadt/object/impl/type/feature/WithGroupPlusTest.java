@@ -60,8 +60,12 @@ class WithGroupPlusTest {
             // (a+b)+c = a+(b+c)
             assertEquals(two.plus(three).plus(four), two.plus(three.plus(four)));
             // 0 = a - a
-            // assertEquals(group.zero(), group.minus(group));
-            // assertEquals(group.zero(), two.minus(two));
+            assertEquals(group.zero(), group.minus(group));
+            assertEquals(group.zero(), two.minus(two));
+            // a = -(-a)
+            assertEquals(group, group.negate().negate());
+            assertEquals(two, two.negate().negate());
+            assertEquals(three, three.negate().negate());
             // -a = 0 - a
             assertEquals(group.negate(), group.zero().minus(group));
             assertEquals(two.negate(), group.zero().minus(two));

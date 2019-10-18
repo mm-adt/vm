@@ -72,10 +72,12 @@ class WithRingTest {
             assertEquals(two.plus(ring.one()).plus(three), two.plus(ring.one().plus(three)));
             // a = -(-a)
             assertEquals(ring.one(), ring.one().negate().negate());
+            assertEquals(two, two.negate().negate());
+            assertEquals(three, three.negate().negate());
             // a - a = 0
-            // assertEquals(ring.zero(), ring.one().minus(ring.one()));
+            assertEquals(ring.zero(), ring.one().minus(ring.one()));
             // 1 = 3a - 2a
-            assertEquals(ring.one(), three.minus(two));
+            // assertEquals(ring.one(), three.minus(two));
             // a * (b + c) = (a * b) + (a * c)
             assertEquals(two.mult(three.plus(four)), (two.mult(three)).plus(two.mult(four)));
             // (a + b) * c = (a * c) + (b * c)
