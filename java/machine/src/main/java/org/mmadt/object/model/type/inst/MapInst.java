@@ -20,17 +20,10 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.atomic;
-
-import org.mmadt.object.model.type.feature.WithCommutativeMult;
-import org.mmadt.object.model.type.feature.WithRing;
+package org.mmadt.object.model.type.inst;
 
 /**
- * A Java representation of the {@code bool} object in mm-ADT.
- * A {@code bool} is a commutative ring with unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Bool extends WithRing<Bool>, WithCommutativeMult {
-
+public interface MapInst {
 }

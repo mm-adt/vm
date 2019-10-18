@@ -48,31 +48,40 @@ class WithRingTest {
             assertTrue(ring.isZero());
             assertTrue(ring.one().isOne());
             assertTrue(ring.zero().isZero());
-            // 1 * x = x
+            // x = 1 * x
+            assertEquals(ring, ring.one().mult(ring));
             assertEquals(two, ring.one().mult(two));
-            // x * 1 = x
+            // x = x * 1
+            assertEquals(ring, ring.mult(ring.one()));
             assertEquals(two, two.mult(ring.one()));
-            // 0 * 0 = 0
+            // 0 = 0 * 0
             assertEquals(ring.zero(), ring.zero().mult(ring.zero()));
-            // 0 * x = 0
+            // 0 = 0 * x
+            assertEquals(ring.zero(), ring.zero().mult(ring));
             assertEquals(ring.zero(), ring.zero().mult(two));
-            // x * 0 = 0
+            // 0 = x * 0
+            assertEquals(ring.zero(), ring.mult(ring.zero()));
             assertEquals(ring.zero(), two.mult(ring.zero()));
             // x + 0 = x
             assertEquals(two, two.plus(ring.zero()));
+            // x = 0 + x
             assertEquals(two, ring.zero().plus(two));
-            // 0 + 0 = 0
+            // 0 = 0 + 0
             assertEquals(ring.zero(), ring.zero().plus(ring.zero()));
             // (a+b)+c = a+(b+c)
             assertEquals(two.plus(ring.one()).plus(three), two.plus(ring.one().plus(three)));
+            // a = -(-a)
+            assertEquals(ring.one(), ring.one().negate().negate());
             // a - a = 0
-            // TODO: bool breaks assertEquals(ring.zero(), ring.one().minus(ring.one()));
+            // assertEquals(ring.zero(), ring.one().minus(ring.one()));
+            // 1 = 3a - 2a
             assertEquals(ring.one(), three.minus(two));
             // a * (b + c) = (a * b) + (a * c)
             assertEquals(two.mult(three.plus(four)), (two.mult(three)).plus(two.mult(four)));
             // (a + b) * c = (a * c) + (b * c)
             assertEquals(two.plus(three).mult(four), (two.mult(four)).plus(three.mult(four)));
-            // 1 - a = -a
+            // -a = 0 - a
+            assertEquals(ring.one().negate(), ring.zero().minus(ring.one()));
             assertEquals(two.negate(), ring.zero().minus(two));
             assertEquals(three.negate(), ring.zero().minus(three));
         });

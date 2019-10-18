@@ -40,11 +40,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.mmadt.storage</groupId>
-            <artifactId>mmstor</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.version}</version>

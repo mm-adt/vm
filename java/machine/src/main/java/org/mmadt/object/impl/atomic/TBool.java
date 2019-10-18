@@ -83,17 +83,25 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool negate() {
-        return TBool.of(!((Boolean) this.value));
+        return this.plus(one());
     }
 
     @Override
     public Bool mult(final Bool bool) {
-        return TBool.of((Boolean) this.value && bool.<Boolean>get());
+        return TBool.of(conjunction((Boolean) this.value, bool.<Boolean>get()));
     }
 
     @Override
     public Bool plus(final Bool bool) {
-        return TBool.of((Boolean) this.value || bool.<Boolean>get());
+        return TBool.of(exclusiveOr(exclusiveOr((Boolean) this.value, bool.get()), this.mult(bool).<Boolean>get()));
+    }
+
+    private boolean exclusiveOr(final boolean a, final boolean b) {
+        return (a && !b) || (!a && b);
+    }
+
+    private boolean conjunction(final boolean a, final boolean b) {
+        return (a && b);
     }
 
 }

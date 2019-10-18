@@ -107,4 +107,9 @@ public final class TReal extends TObj implements Real {
     public Real inverse() {
         return FunctionUtils.<Real, Float>monad(this, x -> 1.0f / x);
     }
+
+    @Override
+    public Real set(final Object value) {
+        return super.set(value.equals(-0.0f) ? 0.0f : value);
+    }
 }
