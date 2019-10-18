@@ -45,7 +45,7 @@ public interface Struct<K extends Obj, V extends Obj> extends Obj {
 
     public default V get(final K key) {
         V v = (V) TObj.none();
-        final Object object = this.head().get();
+        final Object object = this.peak().get();
         if (object instanceof PMap)
             v = ((PMap<K, V>) object).getOrDefault(key, (V) TObj.none());
         else if (object instanceof PList)

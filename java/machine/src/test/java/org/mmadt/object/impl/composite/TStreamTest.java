@@ -191,28 +191,4 @@ class TStreamTest {
         System.out.println(type.bind(bindings));
     }
 
-    @Test
-    void testHeadAndTail() {
-        final Int ints = TInt.of(1, TInt.of(2).q(3), 3, 4, 5);
-        assertEquals(Quantifier.one, ints.q());
-        assertEquals(TInt.of(1), ints.head());
-        assertEquals(TInt.of(1), ints.head());
-        final Int tail = ints.tail();
-        assertEquals(TInt.of(2).q(3), tail.<Int>head());
-        assertEquals(Integer.valueOf(2), tail.head().get());
-        assertEquals(Quantifier.of(3, 3), tail.head().q());
-        assertEquals(Quantifier.one, tail.q());
-        TInt t = tail.tail();
-        int counter = 0;
-        while (!TObj.none().equals(t.head())) {
-            assertEquals(Quantifier.one, t.head().q());
-            assertEquals(TInt.of(counter + 3), t.head());
-            t = t.tail();
-            counter++;
-        }
-        assertEquals(3, counter);
-        assertEquals(Quantifier.one, t.q());
-        assertEquals(Quantifier.one, ints.q());
-
-    }
 }

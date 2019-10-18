@@ -24,6 +24,7 @@ package org.mmadt.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.object.impl.TObj;
+import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,6 +37,25 @@ import static org.mmadt.object.model.type.Quantifier.zero;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 final class TIntTest {
+
+    @Test
+    void shouldSupportStreams() {
+        final Int a = TInt.of(1);
+        assertEquals(TInt.of(1,1), a.q().object());
+        a.push(TInt.of(2));
+        assertEquals(TInt.of(2,2), a.q().object());
+        a.push(TInt.of(3));
+        assertEquals(TInt.of(3,3), a.q().object());
+        ///
+        assertEquals(TInt.of(3), a.peak());
+        assertEquals(TInt.of(3), a.pop());
+        assertEquals(TInt.of(2), a.pop());
+        assertEquals(TInt.of(1), a.peak());
+        assertEquals(TInt.of(1), a.peak());
+        assertEquals(TInt.of(1), a.pop());
+        assertEquals(TInt.none(), a.pop());
+        assertEquals(TInt.none(), a.pop());
+    }
 
     @Test
     void shouldHaveBasicSemantics() {
@@ -58,7 +78,7 @@ final class TIntTest {
         assertEquals(TInt.of(9), TInt.some().and(TInt.of(9)));
     }
 
-   // TODO @Test
+    // TODO @Test
     void shouldSupportStreamTesting() {
         // TODO: nested quantifiers is not exactly correct
         assertTrue(TInt.of(1).q(3).test(TInt.of(1, 1, 1)));

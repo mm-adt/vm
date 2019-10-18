@@ -134,8 +134,7 @@ final class TInstTest {
         //
         final Inst c = a.mult(b);
 //        assertEquals(Quantifier.one, c.quantifier());
-        assertEquals(a, c.head());
-        assertEquals(b, c.tail().head());
+        assertEquals(a, c.peak());
         //
         final Inst d = TInst.of("get", "age");
         final Inst e = c.mult(d);
@@ -174,13 +173,13 @@ final class TInstTest {
         //
         final Inst c = a.plus(b);
         assertEquals(Quantifier.one, c.q());
-        assertEquals(c, c.head());
+        assertEquals(c, c.peak());
         assertEquals(a, c.get(TInt.oneInt()));
         assertEquals(b, c.get(TInt.twoInt()));
         final Inst d = TInst.of("count");
         final Inst e = a.plus(b).plus(d);
         //       assertEquals(Quantifier.qone, e.quantifier());
-        assertEquals(e, e.head());
+        assertEquals(e, e.peak());
 
 
         System.out.println(a);

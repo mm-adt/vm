@@ -34,11 +34,6 @@ import java.util.Iterator;
  */
 public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
 
-    public void put(final A object);
-
-    public void drop(final A object);
-
-
     @Override
     public default boolean test(final Obj object) {
         for (final A a : this) {
@@ -70,11 +65,15 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
         return true;
     }
 
-    public A head();
+    public void drop(final A object);
+
+    public void push(final A object);
+
+    public A pop();
+
+    public A peak();
 
     public A last();
-
-    public Stream<A> tail();
 
     public boolean empty();
 
@@ -109,8 +108,8 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
             lowB = lowB.plus(b.q().low());
             highB = highB.plus(b.q().high());
         }
-        return ((WithRing) tester.q().low()).mult(lowA).head().<Integer>get() <= ((WithRing) testee.q().low()).mult(lowB).head().<Integer>get() &&
-                ((WithRing) tester.q().high()).mult(highA).head().<Integer>get() >= ((WithRing) testee.q().high()).mult(highB).head().<Integer>get();
+        return ((WithRing) tester.q().low()).mult(lowA).peak().<Integer>get() <= ((WithRing) testee.q().low()).mult(lowB).peak().<Integer>get() &&
+                ((WithRing) tester.q().high()).mult(highA).peak().<Integer>get() >= ((WithRing) testee.q().high()).mult(highB).peak().<Integer>get();
 
     }
 }

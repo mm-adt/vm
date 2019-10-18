@@ -78,11 +78,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Bool eq(final Obj object);
 
-    public default <O extends Obj> O head() {
-        return null == this.get() ? (O) TObj.none() : this.get() instanceof Stream ? ((Stream<O>) this.get()).head() : (O) this;
+    public default <O extends Obj> O peak() {
+        return null == this.get() ? (O) TObj.none() : this.get() instanceof Stream ? ((Stream<O>) this.get()).peak() : (O) this;
     }
-
-    public <O extends Obj> O tail();
 
     public default <O extends Obj> O last() {
         return null == this.get() ? (O) TObj.none() : this.get() instanceof Stream ? ((Stream<O>) this.get()).last() : (O) this;
@@ -95,7 +93,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default Iterable<? extends Obj> iterable() {
         return this.q().isZero() ? List.of() : TStream.of(this);
     }
-    //////////////
+
+    public <O extends Obj> O push(final O obj);
+
+    public <O extends Obj> O pop();
 
     public <O extends Obj> O set(final Object object);
 
@@ -118,8 +119,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O symbol(final String symbol);
 
     public <O extends Obj> O insts(final PMap<Inst, Inst> insts);
-
-    //////////////
 
     @Override
     public default Obj bind(final Bindings bindings) {

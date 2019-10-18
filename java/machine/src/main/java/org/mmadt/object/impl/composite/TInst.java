@@ -79,7 +79,7 @@ public final class TInst extends TObj implements Inst {
 
     @Override
     public Obj domain() {
-        return this.<TInst>head().domain;
+        return this.<TInst>peak().domain;
     }
 
     @Override

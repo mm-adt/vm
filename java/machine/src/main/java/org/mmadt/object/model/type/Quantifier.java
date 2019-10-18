@@ -63,7 +63,7 @@ public final class Quantifier<A extends WithRing<A>> implements Pattern { // TOD
     }
 
     public A low() {
-        return this.obj.get().head();
+        return this.obj.get().peak();
     }
 
     public A high() {

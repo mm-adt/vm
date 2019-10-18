@@ -85,8 +85,13 @@ public final class TStream<A extends Obj> implements Stream<A> {
     }
 
     @Override
-    public void put(final A object) {
-        this.objects.add(object);
+    public void push(final A object) {
+        this.objects.add(0, object);
+    }
+
+    @Override
+    public A pop() {
+        return this.objects.isEmpty() ? (A) TObj.none() : this.objects.remove(0);
     }
 
     @Override
@@ -95,7 +100,7 @@ public final class TStream<A extends Obj> implements Stream<A> {
     }
 
     @Override
-    public A head() {
+    public A peak() {
         return this.objects.isEmpty() ? (A) TObj.none() : this.objects.get(0);
     }
 
@@ -104,10 +109,6 @@ public final class TStream<A extends Obj> implements Stream<A> {
         return this.objects.isEmpty() ? (A) TObj.none() : this.objects.get(this.objects.size() - 1);
     }
 
-    @Override
-    public Stream<A> tail() {
-        return this.objects.isEmpty() ? TStream.of() : new TStream<>(this.objects.subList(1, this.objects.size()));
-    }
 
     @Override
     public Pattern bind(final Bindings bindings) {

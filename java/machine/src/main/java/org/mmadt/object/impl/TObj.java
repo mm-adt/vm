@@ -145,11 +145,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O tail() {
-        return (O) this.set(this.get() instanceof Stream ? ((Stream<O>) this.get()).tail() : TStream.<O>of());
-    }
-
-    @Override
     public <O extends Obj> O type(final O type) { // TODO: this should cause a clone as branches will have different types
         if (this == type)
             throw new RuntimeException("An object is already its own type: " + this + "::" + type);
@@ -260,9 +255,21 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         }
     }
 
-    //////////////////////////////
+    public <O extends Obj> O pop() {
+        return this.get() instanceof Stream ? this.<Stream<O>>get().pop() : (O) this;
+    }
 
-    public <O extends TObj> O strip() {
+    public <O extends Obj> O push(final O obj) {
+        assert obj.getClass().equals(this.getClass());
+        if (this.value instanceof Stream)
+            ((Stream<O>) this.value).push(obj);
+        else
+            this.value = TStream.of(obj, this.clone());
+        this.quantifier = this.q().or(obj.q());
+        return (O) this;
+    }
+
+    public <O extends TObj> O strip() { // TODO: gut this at some point
         final O clone = (O) this.clone();
         clone.access = null;
         clone.variable = null;
