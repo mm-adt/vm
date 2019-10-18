@@ -29,5 +29,7 @@ import org.mmadt.object.model.Obj;
  */
 public interface Storage<A extends Obj> {
 
+    public boolean alive();
+
     public A root();
 }

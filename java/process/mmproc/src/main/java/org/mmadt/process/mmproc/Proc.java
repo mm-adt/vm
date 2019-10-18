@@ -97,13 +97,13 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
     }
 
     @Override
-    public boolean isRunning() {
+    public boolean alive() {
         return this.alive.get();
     }
 
     @Override
     public Iterator<E> iterator(final Iterator<S> starts) {
-        if (this.isRunning())
+        if (this.alive())
             throw Processor.Exceptions.processorIsCurrentlyRunning(this);
 
         this.alive.set(Boolean.TRUE);
@@ -115,7 +115,7 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
 
     @Override
     public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-        if (this.isRunning())
+        if (this.alive())
             throw Processor.Exceptions.processorIsCurrentlyRunning(this);
 
         new Thread(() -> {

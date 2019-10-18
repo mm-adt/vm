@@ -20,21 +20,30 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt;
+package org.mmadt.process.compliance;
 
+import org.mmadt.language.Traversal;
+import org.mmadt.object.impl.TObj;
 import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.util.IteratorUtils;
 
-import java.io.Closeable;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Machine extends Closeable {
+public abstract class AbstractTest implements TestModel {
 
-    public <E extends Obj> Iterator<E> submit(final Inst bytecode);
+    <E extends Obj> List<E> submit(final Traversal query) {
+        return IteratorUtils.list(provider().machine().submit(query.bytecode()));
+    }
 
-    public void close();
-
+    <E extends Obj> List<E> objs(final Object... objects) {
+        final List<E> objs = new ArrayList<>();
+        for (final Object object : objects) {
+            objs.add((E) TObj.from(object));
+        }
+        return objs;
+    }
 }

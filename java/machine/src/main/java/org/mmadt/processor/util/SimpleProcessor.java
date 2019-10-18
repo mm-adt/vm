@@ -44,7 +44,7 @@ public abstract class SimpleProcessor<S extends Obj, E extends Obj> implements P
     }
 
     @Override
-    public boolean isRunning() {
+    public boolean alive() {
         return null != this.traverser;
     }
 

@@ -20,48 +20,32 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.util;
+package org.mmadt.process.compliance;
 
-import org.mmadt.object.model.Obj;
-import org.mmadt.processor.Processor;
-import org.mmadt.processor.ProcessorFactory;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.function.Consumer;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class EmptyProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
+public abstract class CountTest extends AbstractTest {
 
-    private static final EmptyProcessor INSTANCE = new EmptyProcessor();
-
-    private EmptyProcessor() {
-        // static instance
+    //@Test
+    void start_count() {
+        assertEquals(objs(0), submit(start().count()));
     }
 
-    @Override
-    public void stop() {
-
+    @Test
+    void startXa_b_cX_count() {
+        assertEquals(objs(3), submit(start("a", "b", "c").count()));
     }
 
-    @Override
-    public boolean alive() {
-        return false;
+    @Test
+    void startXa_b_cX_count_count() {
+        assertEquals(objs(1), submit(start("a", "b", "c").count().count()));
     }
 
-    @Override
-    public Iterator<E> iterator(final Iterator<S> starts) {
-        return Collections.emptyIterator();
-    }
 
-    @Override
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-
-    }
-
-    public static <S extends Obj, E extends Obj> EmptyProcessor<S, E> instance() {
-        return INSTANCE;
-    }
 }

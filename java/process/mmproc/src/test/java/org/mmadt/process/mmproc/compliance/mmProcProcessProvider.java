@@ -20,48 +20,36 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.util;
+package org.mmadt.process.mmproc.compliance;
 
+import org.mmadt.machine.Machine;
 import org.mmadt.object.model.Obj;
-import org.mmadt.processor.Processor;
-import org.mmadt.processor.ProcessorFactory;
+import org.mmadt.object.model.composite.Inst;
+import org.mmadt.process.compliance.ProcessProvider;
+import org.mmadt.process.mmproc.ProcProcessor;
+import org.mmadt.processor.compiler.IR;
+import org.mmadt.util.EmptyIterator;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.function.Consumer;
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class EmptyProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
-
-    private static final EmptyProcessor INSTANCE = new EmptyProcessor();
-
-    private EmptyProcessor() {
-        // static instance
-    }
+public class mmProcProcessProvider extends ProcessProvider {
 
     @Override
-    public void stop() {
+    public Machine machine() {
+        return new Machine() {
+            @Override
+            public <E extends Obj> Iterator<E> submit(final Inst bytecode) {
+                return new ProcProcessor(Map.of()).<Obj, E>mint(new IR<>(bytecode)).iterator(EmptyIterator.instance());
+            }
 
-    }
+            @Override
+            public void close() {
 
-    @Override
-    public boolean alive() {
-        return false;
-    }
-
-    @Override
-    public Iterator<E> iterator(final Iterator<S> starts) {
-        return Collections.emptyIterator();
-    }
-
-    @Override
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-
-    }
-
-    public static <S extends Obj, E extends Obj> EmptyProcessor<S, E> instance() {
-        return INSTANCE;
+            }
+        };
     }
 }

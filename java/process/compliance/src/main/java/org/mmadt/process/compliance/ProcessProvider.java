@@ -20,26 +20,14 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.mmproc;
+package org.mmadt.process.compliance;
 
-import org.mmadt.object.model.Obj;
-import org.mmadt.processor.Processor;
-import org.mmadt.processor.ProcessorFactory;
-import org.mmadt.processor.compiler.IR;
-
-import java.util.Map;
+import org.mmadt.machine.Machine;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ProcProcessor implements ProcessorFactory {
+public abstract class ProcessProvider {
 
-    public ProcProcessor(final Map<String, Object> configuration) {
-
-    }
-
-    @Override
-    public <S extends Obj, E extends Obj> Processor<S, E> mint(final IR<S, E> compilation) {
-        return new Proc<>(compilation);
-    }
+    public abstract Machine machine();
 }

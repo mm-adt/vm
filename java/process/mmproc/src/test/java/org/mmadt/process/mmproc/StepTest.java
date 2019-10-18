@@ -23,7 +23,6 @@
 package org.mmadt.process.mmproc;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.object.impl.atomic.TBool;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.composite.TRec;
 import org.mmadt.object.model.Obj;
@@ -37,9 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.__.a;
 import static org.mmadt.language.__.eq;
-import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.id;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.minus;
@@ -52,15 +49,7 @@ import static org.mmadt.language.__.zero;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class StepTest {
-
-    @Test
-    void testBranch() {
-        final Inst bytecode = start(0, 1, 2).branch(is(gt(1)), plus(1), id(), plus(2).plus(-1).plus(1), id(), is(a(TBool.some()))).mult(2).plus(0).bytecode();
-        final IR<Int, Int> ir = print(new IR<>(bytecode));
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(ir);
-        assertEquals(List.of(TInt.of(4), TInt.of(6), TInt.of(6), TInt.of(8)), IteratorUtils.list(processor.iterator(TInt.none())));
-    }
-
+    
     @Test
     void testDrop() {
         final Inst bytecode = start(TRec.of("a", 1, "b", 2)).put("c", 3).drop("b").bytecode();

@@ -20,26 +20,26 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.mmproc;
+package org.mmadt.process.compliance;
 
-import org.mmadt.object.model.Obj;
-import org.mmadt.processor.Processor;
-import org.mmadt.processor.ProcessorFactory;
-import org.mmadt.processor.compiler.IR;
+import org.junit.jupiter.api.Test;
+import org.mmadt.object.impl.atomic.TBool;
 
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.language.__.a;
+import static org.mmadt.language.__.gt;
+import static org.mmadt.language.__.id;
+import static org.mmadt.language.__.is;
+import static org.mmadt.language.__.plus;
+import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ProcProcessor implements ProcessorFactory {
+public abstract class BranchTest extends AbstractTest {
 
-    public ProcProcessor(final Map<String, Object> configuration) {
-
-    }
-
-    @Override
-    public <S extends Obj, E extends Obj> Processor<S, E> mint(final IR<S, E> compilation) {
-        return new Proc<>(compilation);
+    @Test
+    void startX0_1_2X_branchXplusX1X__plusX2X_plusXn1X_plusX1X_isXaXboolXX_multX2X_plusX0X() {
+        assertEquals(objs(4, 6, 6, 8), submit(start(0, 1, 2).branch(is(gt(1)), plus(1), id(), plus(2).plus(-1).plus(1), id(), is(a(TBool.some()))).mult(2).plus(0)));
     }
 }

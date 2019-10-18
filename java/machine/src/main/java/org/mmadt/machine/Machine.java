@@ -20,48 +20,21 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.util;
+package org.mmadt.machine;
 
 import org.mmadt.object.model.Obj;
-import org.mmadt.processor.Processor;
-import org.mmadt.processor.ProcessorFactory;
+import org.mmadt.object.model.composite.Inst;
 
-import java.util.Collections;
+import java.io.Closeable;
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class EmptyProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
+public interface Machine extends Closeable {
 
-    private static final EmptyProcessor INSTANCE = new EmptyProcessor();
+    public <E extends Obj> Iterator<E> submit(final Inst bytecode);
 
-    private EmptyProcessor() {
-        // static instance
-    }
+    public void close();
 
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public boolean alive() {
-        return false;
-    }
-
-    @Override
-    public Iterator<E> iterator(final Iterator<S> starts) {
-        return Collections.emptyIterator();
-    }
-
-    @Override
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-
-    }
-
-    public static <S extends Obj, E extends Obj> EmptyProcessor<S, E> instance() {
-        return INSTANCE;
-    }
 }

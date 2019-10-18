@@ -22,7 +22,6 @@
 
 package org.mmadt.machine;
 
-import org.mmadt.Machine;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
 

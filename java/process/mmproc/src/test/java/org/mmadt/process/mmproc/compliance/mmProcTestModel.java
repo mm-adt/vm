@@ -20,48 +20,17 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.util;
+package org.mmadt.process.mmproc.compliance;
 
-import org.mmadt.object.model.Obj;
-import org.mmadt.processor.Processor;
-import org.mmadt.processor.ProcessorFactory;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.function.Consumer;
+import org.mmadt.process.compliance.ProcessProvider;
+import org.mmadt.process.compliance.TestModel;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class EmptyProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
-
-    private static final EmptyProcessor INSTANCE = new EmptyProcessor();
-
-    private EmptyProcessor() {
-        // static instance
-    }
-
+public interface mmProcTestModel extends TestModel {
     @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public boolean alive() {
-        return false;
-    }
-
-    @Override
-    public Iterator<E> iterator(final Iterator<S> starts) {
-        return Collections.emptyIterator();
-    }
-
-    @Override
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-
-    }
-
-    public static <S extends Obj, E extends Obj> EmptyProcessor<S, E> instance() {
-        return INSTANCE;
+    public default ProcessProvider provider() {
+        return new mmProcProcessProvider();
     }
 }

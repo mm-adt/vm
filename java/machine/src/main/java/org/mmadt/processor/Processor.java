@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 public interface Processor<S extends Obj, E extends Obj> {
 
 
-    public boolean isRunning();
+    public boolean alive();
 
     /**
      * When a processor is stopped, subscriptions and iteration are halted.
@@ -54,7 +54,7 @@ public interface Processor<S extends Obj, E extends Obj> {
     }
 
     /**
-     * Start the processor and process the resultant traversers using the push-based consumer.
+     * Start the processor and process the resultant objects using the push-based consumer.
      * If push-based subscription is used, then pull-based iteration can not be used while the processor is running.
      *
      * @param consumer a consumer of traversers results

@@ -46,23 +46,22 @@ public final class MinimalProcessor<S extends Obj, E extends Obj> extends Simple
 
     @Override
     protected void processTraverser(final Iterator<S> starts) {
-        final S start = starts.next();
-        Obj temp = start;
+        Obj obj = starts.next();
         for (final Inst inst : this.bytecode.iterable()) {
             final QFunction function = FunctionTable.function(TModel.of("ex"), inst);
             if (function instanceof FilterFunction) {
-                temp = FunctionUtils.test((FilterFunction<Obj>) function, temp).orElse(null);
-                if (null == temp) break;
+                obj = FunctionUtils.test((FilterFunction<Obj>) function, obj).orElse(null);
+                if (null == obj) break;
             } else if (function instanceof MapFunction) {
-                temp = FunctionUtils.map((MapFunction) function, temp);
+                obj = FunctionUtils.map((MapFunction) function, obj);
             } else {
                 throw new UnsupportedOperationException("This is not implemented yet: " + function);
             }
         }
-        if (null != temp) {
+        if (null != obj) {
             if (null != this.bytecode.variable())
-                temp = temp.as(this.bytecode.variable()); // TODO: bytecode as a whole shouldn't be able to be labeled (only individual instructions)
-            this.traverser = (E) temp;
+                obj = obj.as(this.bytecode.variable()); // TODO: bytecode as a whole shouldn't be able to be labeled (only individual instructions)
+            this.traverser = (E) obj;
         }
 
     }

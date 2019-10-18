@@ -20,26 +20,13 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.mmproc;
+package org.mmadt.process.mmproc.compliance;
 
-import org.mmadt.object.model.Obj;
-import org.mmadt.processor.Processor;
-import org.mmadt.processor.ProcessorFactory;
-import org.mmadt.processor.compiler.IR;
-
-import java.util.Map;
+import org.mmadt.process.compliance.BranchTest;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ProcProcessor implements ProcessorFactory {
+class mmProcBranchTest extends BranchTest implements mmProcTestModel {
 
-    public ProcProcessor(final Map<String, Object> configuration) {
-
-    }
-
-    @Override
-    public <S extends Obj, E extends Obj> Processor<S, E> mint(final IR<S, E> compilation) {
-        return new Proc<>(compilation);
-    }
 }

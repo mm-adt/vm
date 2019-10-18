@@ -37,6 +37,11 @@ public final class Stor<A extends Obj> implements Storage<A> {
     }
 
     @Override
+    public boolean alive() {
+        return true;
+    }
+
+    @Override
     public A root() {
         return this.root;
     }
