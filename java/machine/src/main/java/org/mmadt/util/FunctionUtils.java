@@ -31,6 +31,7 @@ import org.mmadt.processor.function.MapFunction;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -65,6 +66,14 @@ public final class FunctionUtils {
 
     public static <T extends Obj, U> T monad(final T objA, final T objB, final BinaryOperator<U> operator) {
         return objA.set(TStream.check(IteratorUtils.stream((Iterable<T>) objA.iterable()).
-                <T>map(x -> x.set(operator.apply(x.get(), objB.peak().get()))).collect(Collectors.toList())));
+                <T>map(x -> x.set(apply(() -> operator.apply(x.get(), objB.peak().get())))).collect(Collectors.toList())));
+    }
+
+    private static Object apply(final Supplier function) {
+        try {
+            return function.get();
+        } catch (final ArithmeticException e) {
+            return Integer.MAX_VALUE;
+        }
     }
 }

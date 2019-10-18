@@ -25,6 +25,7 @@ package org.mmadt.object.impl.type;
 import org.junit.jupiter.api.Test;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.atomic.TReal;
+import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.type.Quantifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -85,6 +86,12 @@ final class QuantifierTest {
         assertEquals(new Quantifier(50, 51), q2.or(q4));
         assertEquals(Quantifier.star, q3.or(q4));
         assertEquals(new Quantifier(0, 2), q4.or(q4));
+    }
+
+    @Test
+    void shouldSupportRealQuantifiers() {
+        final Int a = TInt.of(1).q(TReal.of(1.0,1.0));
+        assertEquals(a.q().object(), TReal.of(1.0, 1.0));
     }
 
 }

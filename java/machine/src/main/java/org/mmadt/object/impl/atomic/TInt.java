@@ -105,12 +105,12 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int plus(final Int object) {
-        return FunctionUtils.<Int, Integer>monad(this, object, (x, y) -> x + y);
+        return FunctionUtils.<Int, Integer>monad(this, object, Math::addExact);
     }
 
     @Override
     public Int mult(final Int object) {
-        return FunctionUtils.<Int, Integer>monad(this, object, (x, y) -> x * y);
+        return FunctionUtils.<Int, Integer>monad(this, object, Math::multiplyExact);
     }
 
     @Override

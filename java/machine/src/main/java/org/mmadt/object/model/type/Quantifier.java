@@ -22,9 +22,12 @@
 
 package org.mmadt.object.model.type;
 
+import org.mmadt.object.impl.TStream;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
+import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.atomic.Int;
+import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.type.feature.WithOrder;
 import org.mmadt.object.model.type.feature.WithRing;
 import org.mmadt.object.model.util.StringFactory;
@@ -35,7 +38,7 @@ import java.util.function.Supplier;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class Quantifier<A extends WithRing<A>> implements Pattern { // TODO: this needs to be a thin wrapper that directs WithRing methods to underlying 2 stream
+public final class Quantifier<A extends WithRing<A>> implements Pattern, WithRing<Quantifier<A>> {
 
     public static final Quantifier zero = new Quantifier(0, 0);
     public static final Quantifier one = new Quantifier(1, 1);
@@ -76,13 +79,113 @@ public final class Quantifier<A extends WithRing<A>> implements Pattern { // TOD
     }
 
     @Override
-    public Pattern bind(final Bindings bindings) {
+    public String symbol() {
+        return this.obj.get().symbol();
+    }
+
+    @Override
+    public <B> B get() {
+        return this.obj.get().get();
+    }
+
+    @Override
+    public <Q extends WithRing<Q>> Quantifier<Q> q() {
+        return this.obj.get().q();
+    }
+
+    @Override
+    public String variable() {
+        return this.obj.get().variable();
+    }
+
+    @Override
+    public Inst access() {
+        return this.obj.get().access();
+    }
+
+    @Override
+    public PMap<Inst, Inst> instructions() {
+        return this.obj.get().instructions();
+    }
+
+    @Override
+    public PMap<Obj, Obj> members() {
+        return this.obj.get().members();
+    }
+
+    @Override
+    public Bool eq(Obj object) {
+        return this.obj.get().eq(object);
+    }
+
+    @Override
+    public <O extends Obj> O type(O type) {
+        return this.obj.get().type(type);
+    }
+
+    @Override
+    public Obj type() {
+        return this.obj.get().type();
+    }
+
+    @Override
+    public <O extends Obj> O push(O obj) {
+        return this.obj.get().push(obj);
+    }
+
+    @Override
+    public <O extends Obj> O pop() {
+        return this.obj.get().pop();
+    }
+
+    @Override
+    public <O extends Obj> O set(Object object) {
+        return this.obj.get().set(object);
+    }
+
+    @Override
+    public <O extends Obj> O q(Quantifier quantifier) {
+        return this.obj.get().q(quantifier);
+    }
+
+    @Override
+    public <O extends Obj> O as(String variable) {
+        return this.obj.get().as(variable);
+    }
+
+    @Override
+    public <O extends Obj> O access(Inst access) {
+        return this.obj.get().access(access);
+    }
+
+    @Override
+    public <O extends Obj> O inst(Inst instA, Inst instB) {
+        return null;
+    }
+
+    @Override
+    public <O extends Obj> O symbol(String symbol) {
+        return null;
+    }
+
+    @Override
+    public <O extends Obj> O insts(PMap<Inst, Inst> insts) {
+        return null;
+    }
+
+    @Override
+    public Obj bind(final Bindings bindings) {
         return this;
     }
 
     @Override
     public boolean match(final Bindings bindings, final Obj object) {
         return this.test(object);
+    }
+
+    @Override
+    public Quantifier clone() {
+        return new Quantifier<>((WithRing) this.obj.get().clone());
     }
 
     @Override
@@ -93,7 +196,7 @@ public final class Quantifier<A extends WithRing<A>> implements Pattern { // TOD
     @Override
     public boolean equals(final Object object) {
         return object instanceof Quantifier &&
-                this.obj.get().equals(((Quantifier) object).obj.get());
+                this.obj.get().equals(((Quantifier) object).object());
     }
 
     @Override
@@ -101,30 +204,28 @@ public final class Quantifier<A extends WithRing<A>> implements Pattern { // TOD
         return StringFactory.quantifier(this);
     }
 
+    @Override
+    public Quantifier<A> one() {
+        return new Quantifier<>(this.obj.get().one());
+    }
+
+    @Override
+    public Quantifier<A> zero() {
+        return new Quantifier<>(this.obj.get().zero());
+    }
+
+    @Override
+    public Quantifier<A> mult(final Quantifier<A> object) {
+        return new Quantifier<>(this.obj.get().mult(object.object()));
+    }
+
+    @Override
+    public Quantifier<A> plus(Quantifier<A> object) {
+        return new Quantifier<>(this.obj.get().plus(object.object()));
+    }
+
     public Quantifier<A> negate() {
         return new Quantifier<>(this.obj.get().negate());
-    }
-
-    public Quantifier<A> and(final Quantifier<A> quantifier) {
-        // TODO: use [mult]
-        int newLow = Quantifier.apply(() -> Math.multiplyExact(this.low().get(), quantifier.low().get()));
-        int newHigh = Quantifier.apply(() -> Math.multiplyExact(this.high().get(), quantifier.high().get()));
-        return new Quantifier<>(newLow, newHigh);
-    }
-
-    public Quantifier<A> or(final Quantifier<A> quantifier) {
-        // TODO: use [plus]
-        int newLow = Quantifier.apply(() -> Math.addExact(this.low().get(), quantifier.low().get()));
-        int newHigh = Quantifier.apply(() -> Math.addExact(this.high().get(), quantifier.high().get()));
-        return new Quantifier<>(newLow, newHigh);
-    }
-
-    private static Integer apply(final Supplier<Integer> function) {
-        try {
-            return function.get();
-        } catch (ArithmeticException e) {
-            return Integer.MAX_VALUE;
-        }
     }
 
     @Override
@@ -138,4 +239,13 @@ public final class Quantifier<A extends WithRing<A>> implements Pattern { // TOD
         return this.low().isZero() && this.high().isZero();
     }
 
+    @Override
+    public Quantifier<A> and(final Obj obj) {
+        return new Quantifier<>(this.low().set(TStream.of(this.low().mult(obj.peak()), this.high().mult(obj.last()))));
+    }
+
+    @Override
+    public Quantifier<A> or(final Obj obj) {
+        return new Quantifier<>(this.low().set(TStream.of(this.low().plus(obj.peak()), this.high().plus(obj.last()))));
+    }
 }

@@ -110,6 +110,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.q(count, count);
     }
 
+    public default <O extends Obj> O q(final WithRing count) {
+        return this.q(new Quantifier<>(count));
+    }
+
     public <O extends Obj> O as(final String variable);
 
     public <O extends Obj> O access(final Inst access);
