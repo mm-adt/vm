@@ -49,7 +49,7 @@ import static org.mmadt.language.__.zero;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class StepTest {
-    
+
     @Test
     void testDrop() {
         final Inst bytecode = start(TRec.of("a", 1, "b", 2)).put("c", 3).drop("b").bytecode();

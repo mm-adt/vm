@@ -33,10 +33,10 @@ import java.util.List;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public abstract class AbstractTest implements TestModel {
+abstract class AbstractTest implements TestMachine {
 
     <E extends Obj> List<E> submit(final Traversal query) {
-        return IteratorUtils.list(provider().machine().submit(query.bytecode()));
+        return IteratorUtils.list(machine().submit(query.bytecode()));
     }
 
     <E extends Obj> List<E> objs(final Object... objects) {

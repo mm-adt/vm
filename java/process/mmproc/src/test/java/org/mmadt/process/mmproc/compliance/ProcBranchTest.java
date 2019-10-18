@@ -22,34 +22,11 @@
 
 package org.mmadt.process.mmproc.compliance;
 
-import org.mmadt.machine.Machine;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.process.compliance.ProcessProvider;
-import org.mmadt.process.mmproc.ProcProcessor;
-import org.mmadt.processor.compiler.IR;
-import org.mmadt.util.EmptyIterator;
-
-import java.util.Iterator;
-import java.util.Map;
+import org.mmadt.process.compliance.BranchTest;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class mmProcProcessProvider extends ProcessProvider {
+class ProcBranchTest extends BranchTest implements ProcTestMachine {
 
-    @Override
-    public Machine machine() {
-        return new Machine() {
-            @Override
-            public <E extends Obj> Iterator<E> submit(final Inst bytecode) {
-                return new ProcProcessor(Map.of()).<Obj, E>mint(new IR<>(bytecode)).iterator(EmptyIterator.instance());
-            }
-
-            @Override
-            public void close() {
-
-            }
-        };
-    }
 }

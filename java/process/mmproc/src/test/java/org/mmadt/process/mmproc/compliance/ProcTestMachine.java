@@ -20,14 +20,35 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.compliance;
+package org.mmadt.process.mmproc.compliance;
 
 import org.mmadt.machine.Machine;
+import org.mmadt.object.model.Obj;
+import org.mmadt.object.model.composite.Inst;
+import org.mmadt.process.compliance.TestMachine;
+import org.mmadt.process.mmproc.ProcProcessor;
+import org.mmadt.processor.compiler.IR;
+import org.mmadt.util.EmptyIterator;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public abstract class ProcessProvider {
+public interface ProcTestMachine extends TestMachine {
+    @Override
+    public default Machine machine() {
+        return new Machine() {
+            @Override
+            public <E extends Obj> Iterator<E> submit(final Inst bytecode) {
+                return new ProcProcessor(Map.of()).<Obj, E>mint(new IR<>(bytecode)).iterator(EmptyIterator.instance());
+            }
 
-    public abstract Machine machine();
+            @Override
+            public void close() {
+
+            }
+        };
+    }
 }

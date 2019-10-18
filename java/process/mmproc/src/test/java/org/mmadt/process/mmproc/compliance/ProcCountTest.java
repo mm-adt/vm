@@ -22,15 +22,11 @@
 
 package org.mmadt.process.mmproc.compliance;
 
-import org.mmadt.process.compliance.ProcessProvider;
-import org.mmadt.process.compliance.TestModel;
+import org.mmadt.process.compliance.CountTest;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface mmProcTestModel extends TestModel {
-    @Override
-    public default ProcessProvider provider() {
-        return new mmProcProcessProvider();
-    }
+class ProcCountTest extends CountTest implements ProcTestMachine {
+
 }

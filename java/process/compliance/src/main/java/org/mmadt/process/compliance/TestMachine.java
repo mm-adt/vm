@@ -22,11 +22,13 @@
 
 package org.mmadt.process.compliance;
 
+import org.mmadt.machine.Machine;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface TestModel {
+public interface TestMachine {
 
-    public ProcessProvider provider();
+    public abstract Machine machine();
 
 }
