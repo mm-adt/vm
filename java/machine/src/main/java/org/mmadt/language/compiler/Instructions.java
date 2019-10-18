@@ -29,6 +29,7 @@ import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.composite.TInst;
 import org.mmadt.object.model.Model;
 import org.mmadt.object.model.Obj;
+import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Struct;
 import org.mmadt.object.model.util.ObjectHelper;
@@ -45,6 +46,7 @@ import static org.mmadt.language.compiler.Tokens.ID;
 import static org.mmadt.language.compiler.Tokens.IS;
 import static org.mmadt.language.compiler.Tokens.LT;
 import static org.mmadt.language.compiler.Tokens.MAP;
+import static org.mmadt.language.compiler.Tokens.MINUS;
 import static org.mmadt.language.compiler.Tokens.MULT;
 import static org.mmadt.language.compiler.Tokens.ORDER;
 import static org.mmadt.language.compiler.Tokens.PLUS;
@@ -80,9 +82,9 @@ public final class Instructions {
             case GT:
                 return TBool.some().q(domain.q());
             case ID:
-                return domain;
+                return domain.q(domain.q().and(inst.q()));
             case IS:
-                return domain.q(0, domain.q().high().get());
+                return domain.q(0, domain.q().and(inst.q()).high().get());
             case LT:
                 TBool.some().q(domain.q());
             case ORDER:
@@ -93,12 +95,14 @@ public final class Instructions {
                 return inst.get(TInt.oneInt());
             case MAP:
                 return inst.get(TInt.oneInt()) instanceof Inst ? ((TInst) inst.get(TInt.oneInt())).range().q(domain.q()) : inst.get(TInt.oneInt());
+            case MINUS:
+                return domain.q(domain.q().and(inst.q()));
             case MULT:
                 return domain.q(domain.q().and(inst.q()));
             case PLUS:
                 return domain.q(domain.q().and(inst.q()));
-            case RANGE:
-                return domain.q(inst.get(TInt.oneInt()).get(), inst.get(TInt.twoInt()).get());
+            case RANGE: // TODO: none clip
+                return domain.q(min((Int) inst.get(TInt.twoInt()), TInt.of(max(domain.<Int>q().low(), (Int) inst.get(TInt.oneInt())))), min(domain.<Int>q().high(), (Int) inst.get(TInt.twoInt())));
             case START:
                 return inst.args().isEmpty() ? TObj.none() :
                         1 == inst.args().size() ? inst.args().get(0) :
@@ -109,5 +113,19 @@ public final class Instructions {
                 throw new RuntimeException("Unknown instruction: " + inst);
         }
 
+    }
+
+    private static int max(final Int a, Int b) {
+        if (a.gt(b).get())
+            return a.get();
+        else
+            return b.get();
+    }
+
+    private static int min(final Int a, Int b) {
+        if (a.lt(b).get())
+            return a.get();
+        else
+            return b.get();
     }
 }

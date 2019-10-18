@@ -23,18 +23,47 @@
 package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.object.impl.TModel;
+import org.mmadt.object.impl.atomic.TInt;
+import org.mmadt.object.impl.atomic.TStr;
 import org.mmadt.object.impl.composite.TInst;
+import org.mmadt.object.model.Model;
+import org.mmadt.object.model.type.Quantifier;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class InstructionsTest {
 
+    private final static Model MODEL = TModel.of("ex");
+
     @Test
-    void shouldMatchInstructions2() {
-        // TODO: assertTrue(TInst.of("is", TInst.of("gt", 10)).test(TLst.of("is", TLst.of("gt", 10))));
-        assertTrue(TInst.of("is", TInst.of("gt", 10)).test(TInst.of("is", TInst.of("gt", 10))));
+    void testRanges() {
+        assertEquals(TInt.some(), Instructions.getRange(TInst.of(Tokens.ID), TInt.some(), MODEL));
+        assertEquals(TInt.some(2), Instructions.getRange(TInst.of(Tokens.ID).q(2), TInt.some(), MODEL));
+        //
+        assertEquals(TInt.some().q(Quantifier.qmark), Instructions.getRange(TInst.of(Tokens.IS), TInt.some(), MODEL));
+        assertEquals(TInt.some().q(0, 10), Instructions.getRange(TInst.of(Tokens.IS), TInt.some(10), MODEL));
+        assertEquals(TInt.some().q(0, 30), Instructions.getRange(TInst.of(Tokens.IS).q(3), TInt.some(10), MODEL));
+        //
+        assertEquals(TInt.some(3), Instructions.getRange(TInst.of(Tokens.PLUS), TInt.some(3), MODEL));
+        assertEquals(TInt.some(12), Instructions.getRange(TInst.of(Tokens.PLUS).q(4), TInt.some(3), MODEL));
+        //
+        assertEquals(TInt.some(4), Instructions.getRange(TInst.of(Tokens.MULT), TInt.some(4), MODEL));
+        assertEquals(TInt.some(-8), Instructions.getRange(TInst.of(Tokens.MULT).q(-2), TInt.some(4), MODEL));
+        //
+        assertEquals(TStr.some().q(5), Instructions.getRange(TInst.of(Tokens.MINUS), TStr.some().q(5), MODEL));
+        assertEquals(TStr.some().q(50), Instructions.getRange(TInst.of(Tokens.MINUS).q(10), TStr.some().q(5), MODEL));
+        //
+        assertEquals(TStr.none(), Instructions.getRange(TInst.of(Tokens.RANGE, 0, 2), TStr.none(), MODEL));
+        assertEquals(TStr.some(), Instructions.getRange(TInst.of(Tokens.RANGE, 0, 2), TStr.some(), MODEL));
+        assertEquals(TInt.some(2), Instructions.getRange(TInst.of(Tokens.RANGE, 0, 2), TInt.some(2), MODEL));
+        assertEquals(TInt.some(2), Instructions.getRange(TInst.of(Tokens.RANGE, 0, 2), TInt.some(3), MODEL));
+        assertEquals(TInt.some(5), Instructions.getRange(TInst.of(Tokens.RANGE, 3, 5), TInt.some(6), MODEL));
+        assertEquals(TInt.some(4), Instructions.getRange(TInst.of(Tokens.RANGE, 3, 5), TInt.some(4), MODEL));
+        assertEquals(TInt.some(3), Instructions.getRange(TInst.of(Tokens.RANGE, 3, 5), TInt.some(3), MODEL));
+        // assertEquals(TInt.none(), Instructions.getRange(TInst.of(Tokens.RANGE, 3, 5), TInt.some(2), MODEL));
     }
 }
