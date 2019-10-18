@@ -1,6 +1,6 @@
-Welcome to the mm-ADT VM project.
+Welcome to the mm-ADT project.
 
-All contributors must sign the <a href="https://www.clahub.com/agreements/mm-adt/vm">Contributor License Agreement</a>. 
+All mm-ADT contributors must sign the <a href="https://www.clahub.com/agreements/mm-adt/vm">Contributor License Agreement</a>. A signed agreement applies to all mm-ADT repositories indexed at the <a href="https://github.com/mm-adt">mm-ADT GitHub Organization</a>.
 
 ---
 
