@@ -90,8 +90,14 @@ final class QuantifierTest {
 
     @Test
     void shouldSupportRealQuantifiers() {
-        final Int a = TInt.of(1).q(TReal.of(1.0,1.0));
+        final Int a = TInt.of(1).q(TReal.of(1.0, 1.0));
         assertEquals(a.q().object(), TReal.of(1.0, 1.0));
+        final Int b = TInt.of(3).q(TReal.of(2.0, 3.0));
+        assertEquals(b.q().object(), TReal.of(2.0, 3.0));
+        final Int c = a.mult(b);
+        assertEquals(3, c.<Integer>get());
+        // TODO: What is the logic?
+        //  assertEquals(c.q().object(), TReal.of(2.0, 3.0));
     }
 
 }

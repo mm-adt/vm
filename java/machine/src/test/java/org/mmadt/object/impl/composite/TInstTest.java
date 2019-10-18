@@ -138,7 +138,6 @@ final class TInstTest {
         //
         final Inst d = TInst.of("get", "age");
         final Inst e = c.mult(d);
-//        assertEquals(Quantifier.one, e.quantifier());
         assertTrue(e.get() instanceof TStream);
         for (final TInst inst : e.<TStream<TInst>>get()) {
             assertEquals(Quantifier.one, inst.q());

@@ -182,13 +182,13 @@ public final class Quantifier<A extends WithRing<A>> extends TObj implements Wit
     }
 
     @Override
-    public Quantifier clone() {
-        return new Quantifier<>((WithRing) this.object().clone());
+    public Quantifier<A> clone() {
+        return new Quantifier((WithRing<A>) this.object().clone());
     }
 
     @Override
     public int hashCode() {
-        return this.object().hashCode();
+        return this.object().toString().hashCode();
     }
 
     @Override
@@ -233,6 +233,7 @@ public final class Quantifier<A extends WithRing<A>> extends TObj implements Wit
                 (((WithOrder<A>) object.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) object.q().high()).lte(this.high()).<Boolean>get());
     }
 
+    @Override
     public boolean isZero() {
         return this.low().isZero() && this.high().isZero();
     }
