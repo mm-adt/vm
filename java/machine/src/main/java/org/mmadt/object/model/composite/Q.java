@@ -54,6 +54,9 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
         }
     }
 
+    // this is necessary as the quantifier is really wrapped in a supplier to avoid stackoverflow during construction
+    public A object();
+
     public default A low() {
         return this.object().peak();
     }
@@ -62,8 +65,20 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
         return this.object().last();
     }
 
-    // this is necessary as the quantifier is really wrapped in a supplier to avoid stackoverflow during construction
-    public A object();
+    @Override
+    public default Q<A> mult(final Q<A> object) {
+        return this.set(this.object().mult(object.object()));
+    }
+
+    @Override
+    public default Q<A> plus(final Q<A> object) {
+        return this.set(this.object().plus(object.object()));
+    }
+
+    @Override
+    public default Q<A> negate() {
+        return this.set(this.object().negate());
+    }
 
     public Q<A> and(final Q<A> obj);
 

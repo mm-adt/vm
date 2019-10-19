@@ -26,12 +26,8 @@ import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.TStream;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.atomic.Int;
-import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.type.Bindings;
-import org.mmadt.object.model.type.PMap;
 import org.mmadt.object.model.type.feature.WithOrder;
 import org.mmadt.object.model.type.feature.WithRing;
 import org.mmadt.object.model.util.StringFactory;
@@ -71,63 +67,8 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
     }
 
     @Override
-    public String symbol() {
-        return this.object().symbol();
-    }
-
-    @Override
     public <B> B get() {
         return this.object().get();
-    }
-
-    @Override
-    public <B extends WithRing<B>> Q<B> q() {
-        return this.object().q();
-    }
-
-    @Override
-    public String variable() {
-        return this.object().variable();
-    }
-
-    @Override
-    public Inst access() {
-        return this.object().access();
-    }
-
-    @Override
-    public PMap<Inst, Inst> instructions() {
-        return this.object().instructions();
-    }
-
-    @Override
-    public PMap<Obj, Obj> members() {
-        return this.object().members();
-    }
-
-    @Override
-    public Bool eq(Obj object) {
-        return this.object().eq(object);
-    }
-
-    @Override
-    public <O extends Obj> O type(O type) {
-        return this.object().type(type);
-    }
-
-    @Override
-    public Obj type() {
-        return this.object().type();
-    }
-
-    @Override
-    public <O extends Obj> O push(O obj) {
-        return this.object().push(obj);
-    }
-
-    @Override
-    public <O extends Obj> O pop() {
-        return this.object().pop();
     }
 
     @Override
@@ -136,48 +77,20 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
     }
 
     @Override
-    public <O extends Obj> O q(final Q quantifier) {
-        return this.object().q(quantifier);
+    public boolean test(final Obj object) {
+        return null == object ?
+                ((WithOrder<A>) this.low().get()).lte(this.low().zero()).get() : // TODO: need Order in the Interface
+                (((WithOrder<A>) object.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) object.q().high()).lte(this.high()).<Boolean>get());
     }
 
     @Override
-    public <O extends Obj> O as(String variable) {
-        return this.object().as(variable);
+    public Q<A> and(final Q<A> obj) {
+        return this.set(this.low().set(TStream.of(this.low().mult(obj.peak()), this.high().mult(obj.last()))));
     }
 
     @Override
-    public <O extends Obj> O access(Inst access) {
-        return this.object().access(access);
-    }
-
-    @Override
-    public <O extends Obj> O inst(Inst instA, Inst instB) {
-        return null;
-    }
-
-    @Override
-    public <O extends Obj> O symbol(String symbol) {
-        return null;
-    }
-
-    @Override
-    public <O extends Obj> O insts(PMap<Inst, Inst> insts) {
-        return null;
-    }
-
-    @Override
-    public Obj bind(final Bindings bindings) {
-        return this;
-    }
-
-    @Override
-    public boolean match(final Bindings bindings, final Obj object) {
-        return this.test(object);
-    }
-
-    @Override
-    public TQ<A> clone() {
-        return new TQ<>((A) this.object().clone());
+    public Q<A> or(final Q<A> obj) {
+        return this.set(this.low().set(TStream.of(this.low().plus(obj.peak()), this.high().plus(obj.last()))));
     }
 
     @Override
@@ -197,34 +110,4 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
         return StringFactory.quantifier(this);
     }
 
-    @Override
-    public Q<A> mult(final Q<A> object) {
-        return new TQ<>(this.object().mult(object.object()));
-    }
-
-    @Override
-    public Q<A> plus(final Q<A> object) {
-        return new TQ<>(this.object().plus(object.object()));
-    }
-
-    public Q<A> negate() {
-        return new TQ<>(this.object().negate());
-    }
-
-    @Override
-    public boolean test(final Obj object) {
-        return null == object ?
-                ((WithOrder<A>) this.low().get()).lte(this.low().zero()).get() : // TODO: need Order in the Interface
-                (((WithOrder<A>) object.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) object.q().high()).lte(this.high()).<Boolean>get());
-    }
-
-    @Override
-    public Q<A> and(final Q<A> obj) {
-        return new TQ<>(this.low().set(TStream.of(this.low().mult(obj.peak()), this.high().mult(obj.last()))));
-    }
-
-    @Override
-    public Q<A> or(final Q<A> obj) {
-        return new TQ<>(this.low().set(TStream.of(this.low().plus(obj.peak()), this.high().plus(obj.last()))));
-    }
 }
