@@ -31,6 +31,7 @@ import org.mmadt.object.model.Model;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.composite.Struct;
 import org.mmadt.object.model.util.ObjectHelper;
 
@@ -55,7 +56,6 @@ import static org.mmadt.language.compiler.Tokens.RANGE;
 import static org.mmadt.language.compiler.Tokens.REF;
 import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.SUM;
-import static org.mmadt.object.model.type.Quantifier.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -76,7 +76,7 @@ public final class Instructions {
             case EQ:
                 return TBool.some().q(domain.q());
             case FILTER:
-                return domain.q(0, domain.q().high().get());
+                return  domain.q(0, domain.q().and(inst.q()).high().get());
             case GET:
                 return ((Struct<Obj, Obj>) TSym.fetch(domain)).get(inst.get(TInt.oneInt()));
             case GT:
@@ -84,11 +84,11 @@ public final class Instructions {
             case ID:
                 return domain.q(domain.q().and(inst.q()));
             case IS:
-                return domain.q(0, domain.q().and(inst.q()).high().get());
+                return domain.q(domain.q().<Q>set(TInt.of(0,domain.q().mult(inst.q()).high().get())));
             case LT:
                 TBool.some().q(domain.q());
             case ORDER:
-                return domain.isInstance() ? domain.q(one) : domain;
+                return domain.isInstance() ? domain.q(domain.q().one()) : domain;
             case PUT:
                 return inst.get(TInt.twoInt());
             case REF:

@@ -23,21 +23,19 @@
 package org.mmadt.object.impl.composite;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.atomic.TStr;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.Bindings;
-import org.mmadt.object.model.type.Quantifier;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.model.type.Quantifier.plus;
-import static org.mmadt.object.model.type.Quantifier.star;
+import static org.mmadt.object.impl.composite.TQ.plus;
+import static org.mmadt.object.impl.composite.TQ.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -64,13 +62,13 @@ class TStreamTest {
             assertFalse(i.isType());
         });
         //
-        assertEquals(Quantifier.one, instance1.q());
-        assertEquals(Quantifier.one, instance2.q());
-        assertEquals(Quantifier.one, instance3.q());
-        assertEquals(Quantifier.one, instance4.q());
-        assertEquals(Quantifier.one, instance5.q());
-        assertEquals(Quantifier.one, instance6.q());
-        assertEquals(Quantifier.one, instance7.q());
+        assertEquals(TQ.one, instance1.q());
+        assertEquals(TQ.one, instance2.q());
+        assertEquals(TQ.one, instance3.q());
+        assertEquals(TQ.one, instance4.q());
+        assertEquals(TQ.one, instance5.q());
+        assertEquals(TQ.one, instance6.q());
+        assertEquals(TQ.one, instance7.q());
         //
        /* assertTrue(type.test(instance1));
         assertFalse(type.test(instance2));

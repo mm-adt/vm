@@ -34,8 +34,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mmadt.language.compiler.Tokens.REC;
-import static org.mmadt.object.model.type.Quantifier.star;
-import static org.mmadt.object.model.type.Quantifier.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,8 +41,8 @@ import static org.mmadt.object.model.type.Quantifier.zero;
 public final class TRec<K extends Obj, V extends Obj> extends TObj implements Rec<K, V> {
 
     private static final Rec<Obj, Obj> SOME = new TRec<>(null);
-    private static final Rec<Obj, Obj> ALL = new TRec<>(null).q(star);
-    private static final Rec<Obj, Obj> NONE = new TRec<>(null).q(zero);
+    private static final Rec<Obj, Obj> ALL = new TRec<>(null).q(0, Integer.MAX_VALUE);
+    private static final Rec<Obj, Obj> NONE = new TRec<>(null).q(0);
 
     private TRec(final Object value) {
         super(value);

@@ -29,14 +29,11 @@ import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PList;
-import org.mmadt.object.model.type.Quantifier;
 import org.mmadt.object.model.util.BytecodeHelper;
 import org.mmadt.object.model.util.ObjectHelper;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.mmadt.object.model.type.Quantifier.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -78,7 +75,7 @@ public final class Rewriting {
                                     BytecodeHelper.reference(refBc.peekLast()).access() : refBc.peekLast(), ObjectHelper.access(range))) {
                         domain = refBc.removeLast().domain();
                     }
-                    Rewriting.insertInstruction(model, refBc, ObjectHelper.access(range).q().equals(Quantifier.zero) ? oldInst : oldInst2, domain, range);
+                    Rewriting.insertInstruction(model, refBc, ObjectHelper.access(range).q().equals(domain.q().zero()) ? oldInst : oldInst2, domain, range);
                     domain = range;
                 } else { // if its not a ref, then drain the reference graph
                     if (inReferenceGraph) {
@@ -113,7 +110,7 @@ public final class Rewriting {
             final PList<Obj> args = new PList<>();
             for (final Obj arg : oldInst.args()) {
                 if (arg instanceof Inst)
-                    args.add(Rewriting.rewrite(model, domain.q(one), (Inst) arg)); // QONE assumes map nests
+                    args.add(Rewriting.rewrite(model, domain.q(domain.q().one()), (Inst) arg)); // QONE assumes map nests
                 else
                     args.add(arg);
             }

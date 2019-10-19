@@ -24,7 +24,7 @@ package org.mmadt.processor.function.map;
 
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.util.ObjectHelper;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.MapFunction;
@@ -34,7 +34,7 @@ import org.mmadt.processor.function.MapFunction;
  */
 public final class TypeMap<S extends Obj> extends AbstractFunction implements MapFunction<S, S> {
 
-    private TypeMap(final Quantifier quantifier, final String label) {
+    private TypeMap(final Q quantifier, final String label) {
         super(quantifier, label);
     }
 

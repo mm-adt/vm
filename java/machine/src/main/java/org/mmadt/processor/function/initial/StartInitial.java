@@ -26,7 +26,7 @@ import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.TStream;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.InitialFunction;
@@ -38,7 +38,7 @@ import java.util.Iterator;
  */
 public final class StartInitial<S extends Obj> extends AbstractFunction implements InitialFunction<S> {
 
-    private StartInitial(final Quantifier quantifier, final String label, final Argument<Obj, S> argument) {
+    private StartInitial(final Q quantifier, final String label, final Argument<Obj, S> argument) {
         super(quantifier, label, argument);
     }
 

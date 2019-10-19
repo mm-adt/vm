@@ -24,7 +24,7 @@ package org.mmadt.processor.function.reduce;
 
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.type.feature.WithRing;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.ReduceFunction;
@@ -34,7 +34,7 @@ import org.mmadt.processor.function.ReduceFunction;
  */
 public final class SumReduce<S extends WithRing<S>> extends AbstractFunction implements ReduceFunction<S, S> {
 
-    private SumReduce(final Quantifier quantifier, final String label) {
+    private SumReduce(final Q quantifier, final String label) {
         super(quantifier, label);
     }
 

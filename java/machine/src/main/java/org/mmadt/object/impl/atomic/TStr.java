@@ -31,8 +31,6 @@ import org.mmadt.object.model.util.ObjectHelper;
 import org.mmadt.object.model.util.StringFactory;
 
 import static org.mmadt.language.compiler.Tokens.STR;
-import static org.mmadt.object.model.type.Quantifier.star;
-import static org.mmadt.object.model.type.Quantifier.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,8 +38,8 @@ import static org.mmadt.object.model.type.Quantifier.zero;
 public final class TStr extends TObj implements Str {
 
     private static final Str SOME = new TStr(null);
-    private static final Str NONE = new TStr(null).q(zero);
-    private static final Str ALL = new TStr(null).q(star);
+    private static final Str NONE = new TStr(null).q(0);
+    private static final Str ALL = new TStr(null).q(0, Integer.MAX_VALUE);
 
     private TStr(final Object value) {
         super(value);

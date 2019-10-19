@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.mmadt.object.model.type.Quantifier.one;
+import static org.mmadt.object.impl.composite.TQ.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

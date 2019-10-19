@@ -29,9 +29,9 @@ import org.mmadt.object.impl.composite.TRec;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.PMap;
-import org.mmadt.object.model.type.Quantifier;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.ReduceFunction;
@@ -41,7 +41,7 @@ import org.mmadt.processor.function.ReduceFunction;
  */
 public final class GroupCountReduce<S extends Obj, E extends Obj> extends AbstractFunction implements ReduceFunction<S, Rec<E, Int>> {
 
-    private GroupCountReduce(final Quantifier quantifier, final String label, final Argument<S, E> argument) {
+    private GroupCountReduce(final Q quantifier, final String label, final Argument<S, E> argument) {
         super(quantifier, label, argument);
 
     }

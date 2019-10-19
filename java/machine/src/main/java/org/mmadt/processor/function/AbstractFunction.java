@@ -23,7 +23,7 @@
 package org.mmadt.processor.function;
 
 import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.util.StringFactory;
 import org.mmadt.processor.compiler.Argument;
 
@@ -35,17 +35,17 @@ import java.util.Objects;
 public abstract class AbstractFunction implements QFunction {
 
     private Argument<?, ?>[] arguments;
-    private Quantifier quantifier;
+    private Q quantifier;
     private String label;
 
-    public AbstractFunction(final Quantifier quantifier, final String label, final Argument<?, ?>... arguments) {
+    public AbstractFunction(final Q quantifier, final String label, final Argument<?, ?>... arguments) {
         this.quantifier = quantifier;
         this.label = label;
         this.arguments = arguments;
     }
 
     @Override
-    public Quantifier quantifier() {
+    public Q quantifier() {
         return this.quantifier;
     }
 

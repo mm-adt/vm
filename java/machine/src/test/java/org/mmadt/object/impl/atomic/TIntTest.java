@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.model.type.Quantifier.zero;
+import static org.mmadt.object.model.composite.Q.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,11 +41,11 @@ final class TIntTest {
     @Test
     void shouldSupportStreams() {
         final Int a = TInt.of(1);
-        assertEquals(TInt.of(1,1), a.q().object());
+        assertEquals(TInt.of(1, 1), a.q().object());
         a.push(TInt.of(2));
-        assertEquals(TInt.of(2,2), a.q().object());
+        assertEquals(TInt.of(2, 2), a.q().object());
         a.push(TInt.of(3));
-        assertEquals(TInt.of(3,3), a.q().object());
+        assertEquals(TInt.of(3, 3), a.q().object());
         ///
         assertEquals(TInt.of(3), a.peak());
         assertEquals(TInt.of(3), a.pop());

@@ -26,7 +26,7 @@ import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.ReduceFunction;
 
@@ -35,7 +35,7 @@ import org.mmadt.processor.function.ReduceFunction;
  */
 public final class CountReduce<S extends Obj> extends AbstractFunction implements ReduceFunction<S, Int> {
 
-    private CountReduce(final Quantifier quantifier, final String label) {
+    private CountReduce(final Q quantifier, final String label) {
         super(quantifier, label);
     }
 

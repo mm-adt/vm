@@ -30,8 +30,6 @@ import org.mmadt.object.model.util.ObjectHelper;
 import org.mmadt.util.FunctionUtils;
 
 import static org.mmadt.language.compiler.Tokens.REAL;
-import static org.mmadt.object.model.type.Quantifier.star;
-import static org.mmadt.object.model.type.Quantifier.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,8 +37,8 @@ import static org.mmadt.object.model.type.Quantifier.zero;
 public final class TReal extends TObj implements Real {
 
     private static final Real SOME = new TReal(null);
-    private static final Real NONE = new TReal(null).q(zero);
-    private static final Real ALL = new TReal(null).q(star);
+    private static final Real NONE = new TReal(null).q(0);
+    private static final Real ALL = new TReal(null).q(0, Integer.MAX_VALUE);
 
     private TReal(final Object value) {
         super(value);

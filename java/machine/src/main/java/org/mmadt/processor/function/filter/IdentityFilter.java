@@ -24,7 +24,7 @@ package org.mmadt.processor.function.filter;
 
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.FilterFunction;
 
@@ -33,7 +33,7 @@ import org.mmadt.processor.function.FilterFunction;
  */
 public final class IdentityFilter<S extends Obj> extends AbstractFunction implements FilterFunction<S> {
 
-    private IdentityFilter(final Quantifier quantifier, final String label) {
+    private IdentityFilter(final Q quantifier, final String label) {
         super(quantifier, label);
     }
 

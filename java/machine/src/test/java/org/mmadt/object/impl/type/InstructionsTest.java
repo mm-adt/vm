@@ -34,7 +34,7 @@ import org.mmadt.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mmadt.object.model.type.Quantifier.star;
+import static org.mmadt.object.impl.composite.TQ.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

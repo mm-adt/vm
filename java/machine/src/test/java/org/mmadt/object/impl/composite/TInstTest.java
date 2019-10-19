@@ -33,7 +33,6 @@ import org.mmadt.object.model.atomic.Str;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.Bindings;
-import org.mmadt.object.model.type.Quantifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -128,27 +127,26 @@ final class TInstTest {
     void testInstructionComposition() {
         final Inst a = TInst.of("db");
         final Inst b = is(get("name").eq("marko")).bytecode();
-        assertEquals(Quantifier.one, a.q());
-        assertEquals(Quantifier.one, b.q());
-//        assertEquals(Quantifier.one, b.get(TInt.oneInt()).quantifier());
+        assertEquals(TQ.one, a.q());
+        assertEquals(TQ.one, b.q());
+//        assertEquals(Q.one, b.get(TInt.oneInt()).quantifier());
         //
         final Inst c = a.mult(b);
-//        assertEquals(Quantifier.one, c.quantifier());
+//        assertEquals(Q.one, c.quantifier());
         assertEquals(a, c.peak());
         //
         final Inst d = TInst.of("get", "age");
         final Inst e = c.mult(d);
-//        assertEquals(Quantifier.one, e.quantifier());
         assertTrue(e.get() instanceof TStream);
         for (final TInst inst : e.<TStream<TInst>>get()) {
-            assertEquals(Quantifier.one, inst.q());
+            assertEquals(TQ.one, inst.q());
             if (inst.opcode().get().equals("is"))
-                assertEquals(Quantifier.of(2, 2), inst.get(TInt.oneInt()).q());
+                assertEquals(TQ.of(2, 2), inst.get(TInt.oneInt()).q());
             else if (inst.opcode().get().equals("db"))
-                assertEquals(Quantifier.zero, inst.get(TInt.oneInt()).q());
+                assertEquals(TQ.zero, inst.get(TInt.oneInt()).q());
             else {
                 assertEquals("get", inst.opcode().get());
-                assertEquals(Quantifier.one, inst.get(TInt.oneInt()).q());
+                assertEquals(TQ.one, inst.get(TInt.oneInt()).q());
             }
             assertEquals(Tokens.INST, inst.symbol());
         }
@@ -167,18 +165,18 @@ final class TInstTest {
     void testInstructionBranching() {
         final Inst a = TInst.of("get", "outE");
         final Inst b = TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko")));
-        assertEquals(Quantifier.one, a.q());
-        assertEquals(Quantifier.one, b.q());
-//        assertEquals(Quantifier.qone, b.get(TInt.oneInt()).quantifier());
+        assertEquals(TQ.one, a.q());
+        assertEquals(TQ.one, b.q());
+//        assertEquals(Q.qone, b.get(TInt.oneInt()).quantifier());
         //
         final Inst c = a.plus(b);
-        assertEquals(Quantifier.one, c.q());
+        assertEquals(TQ.one, c.q());
         assertEquals(c, c.peak());
         assertEquals(a, c.get(TInt.oneInt()));
         assertEquals(b, c.get(TInt.twoInt()));
         final Inst d = TInst.of("count");
         final Inst e = a.plus(b).plus(d);
-        //       assertEquals(Quantifier.qone, e.quantifier());
+        //       assertEquals(Q.qone, e.quantifier());
         assertEquals(e, e.peak());
 
 

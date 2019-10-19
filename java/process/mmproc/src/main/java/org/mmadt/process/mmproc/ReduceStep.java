@@ -23,7 +23,7 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.process.mmproc.util.Reducer;
 import org.mmadt.processor.function.ReduceFunction;
 import org.mmadt.util.FastNoSuchElementException;
@@ -53,7 +53,7 @@ final class ReduceStep<S extends Obj, E extends Obj> extends AbstractStep<S, E> 
             this.reducer.add(this.previousStep.next());
         }
         this.done = true;
-        return (E) this.reducer.get().q(Quantifier.one);
+        return (E) this.reducer.get().q(TQ.one);
     }
 
     @Override
