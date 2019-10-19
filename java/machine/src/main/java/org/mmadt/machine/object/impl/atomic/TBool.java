@@ -82,7 +82,7 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool negate() {
-        return TBool.of(!(Boolean) this.value);
+        return this;
     }
 
     @Override
@@ -92,12 +92,12 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool plus(final Bool bool) {
-        return TBool.of(exclusiveOr(exclusiveOr((Boolean) this.value, bool.get()), this.mult(bool).<Boolean>get()));
+        return TBool.of(exclusiveOr((Boolean) this.value, bool.get()));
     }
 
     @Override
     public Bool minus(final Bool bool) {
-        return this.plus(bool).negate();
+        return this.plus(bool);
     }
 
     private static final boolean exclusiveOr(final boolean a, final boolean b) {

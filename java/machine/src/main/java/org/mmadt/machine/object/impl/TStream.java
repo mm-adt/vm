@@ -27,6 +27,7 @@ import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.Pattern;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public final class TStream<A extends Obj> implements Stream<A> {
                     else
                         list.add((A) object);
                 } else {
-                    list.add((A) TObj.from(object));
+                    list.add((A) ObjectHelper.from(object));
                 }
             }
             return new TStream<>(list);

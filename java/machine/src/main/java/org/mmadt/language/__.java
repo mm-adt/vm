@@ -96,6 +96,10 @@ public class __ {
         return create().put(key, value);
     }
 
+    public static Query reduce(final Object seed, final Object reduce) {
+        return create().reduce(seed, reduce);
+    }
+
     public static Query sum() {
         return create().sum();
     }

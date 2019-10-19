@@ -22,29 +22,22 @@
 
 package org.mmadt.process.compliance;
 
-import org.mmadt.language.Query;
-import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.util.IteratorUtils;
+import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.language.__.id;
+import static org.mmadt.language.__.plus;
+import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTest implements TestMachine {
+public abstract class ReduceTest extends AbstractTest {
 
-    <E extends Obj> List<E> submit(final Query query) {
-        System.out.println(query.toString());
-        return IteratorUtils.list(machine().submit(query.bytecode()));
+    @Test
+    void startX1_2_3X_multX2X_reduceX0__plusX() {
+        assertEquals(objs(12), submit(start(1, 2, 3).mult(2).reduce(0, plus(id()))));
     }
 
-    <E extends Obj> List<E> objs(final Object... objects) {
-        final List<E> objs = new ArrayList<>();
-        for (final Object object : objects) {
-            objs.add((E) ObjectHelper.from(object));
-        }
-        return objs;
-    }
+
 }

@@ -27,6 +27,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import static org.mmadt.language.compiler.Tokens.LIST;
@@ -63,7 +64,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
         } else {
             final PList<V> value = new PList<>();
             for (final Object object : objects) {
-                final V obj = (V) TObj.from(object);
+                final V obj = (V) ObjectHelper.from(object);
 
                 value.add(obj);
             }

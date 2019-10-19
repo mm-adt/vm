@@ -175,7 +175,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return ObjectHelper.root(this, object).
                     set(ObjectHelper.andValues(this, (TObj) object)).
                     access(ObjectHelper.access(this, object)).
-                    q((Q) this.q().and(object.q())).
+                    q(this.q().and(object.q())).
                     as(ObjectHelper.mergeVariables(this, object));
     }
 
@@ -188,32 +188,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 null == this.access &&
                 null == this.instructions &&
                 null == this.variable)
-            return this.q((Q) this.q().or(object.q()));
+            return this.q(this.q().or(object.q()));
         else
             return ObjectHelper.root(this, object).set(POr.or(this.get() instanceof POr ? this.get() : this, object));
-    }
-
-    public static Obj from(final Object object) {
-        if (object instanceof Obj)
-            return (Obj) object;
-        else if (object instanceof Boolean)
-            return TBool.of(((Boolean) object));
-        else if (object instanceof Integer)
-            return TInt.of(((Integer) object));
-        else if (object instanceof Float)
-            return TReal.of(((Float) object));
-        else if (object instanceof Double)
-            return TReal.of(((Double) object).floatValue());
-        else if (object instanceof String)
-            return TStr.of((String) object);
-        else if (object instanceof List)
-            return TLst.of(new PList<>((List<Obj>) object));
-        else if (object instanceof Map)
-            return TRec.of(new PMap<>((Map<Obj, Obj>) object));
-        else if (object instanceof Query) // TODO: see about getting rid of this as its not a supported built-in type
-            return ((Query) object).bytecode();
-        else
-            throw new IllegalStateException("Unknown type: " + object.getClass());
     }
 
     @Override

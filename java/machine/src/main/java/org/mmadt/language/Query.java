@@ -23,7 +23,6 @@
 package org.mmadt.language;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
@@ -31,6 +30,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.Objects;
 
@@ -134,6 +134,10 @@ public final class Query {
         return this.compose(last.q(new TQ<>(TInt.of(arg(quantifier), arg(quantifier))))); // TODO: generalize to 2-stream
     }
 
+    public Query reduce(final Object seed, final Object reduce) {
+        return this.compose(TInst.of(Tokens.REDUCE, arg(seed), arg(reduce)));
+    }
+
     public Query start(final Object... objects) {
         return new Query(TInst.of(Tokens.START, args(objects)));
     }
@@ -193,6 +197,6 @@ public final class Query {
     }
 
     private static Obj arg(final Object object) {
-        return object instanceof Query ? ((Query) object).bytecode : TObj.from(object);
+        return object instanceof Query ? ((Query) object).bytecode : ObjectHelper.from(object);
     }
 }

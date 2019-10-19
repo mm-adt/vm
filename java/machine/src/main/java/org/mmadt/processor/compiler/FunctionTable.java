@@ -47,6 +47,7 @@ import org.mmadt.processor.function.map.TypeMap;
 import org.mmadt.processor.function.map.ZeroMap;
 import org.mmadt.processor.function.reduce.CountReduce;
 import org.mmadt.processor.function.reduce.GroupCountReduce;
+import org.mmadt.processor.function.reduce.ReduceReduce;
 import org.mmadt.processor.function.reduce.SumReduce;
 
 import static org.mmadt.language.compiler.Tokens.A;
@@ -68,6 +69,7 @@ import static org.mmadt.language.compiler.Tokens.ONE;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.PUT;
 import static org.mmadt.language.compiler.Tokens.Q;
+import static org.mmadt.language.compiler.Tokens.REDUCE;
 import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.SUM;
 import static org.mmadt.language.compiler.Tokens.TYPE;
@@ -126,6 +128,8 @@ public final class FunctionTable {
                 return PutMap.compile(inst);
             case Q:
                 return QMap.compile(inst);
+            case REDUCE:
+                return ReduceReduce.compile(inst);
             case START:
                 return StartInitial.compile(inst);
             case SUM:

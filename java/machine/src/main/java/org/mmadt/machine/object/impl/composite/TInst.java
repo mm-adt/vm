@@ -34,6 +34,7 @@ import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.List;
@@ -115,7 +116,7 @@ public final class TInst extends TObj implements Inst {
             final PList<Obj> value = new PList<>();
             value.add(opcode);
             for (final Object arg : args) {
-                value.add(TObj.from(arg));
+                value.add(ObjectHelper.from(arg));
             }
             return new TInst(value);
         }

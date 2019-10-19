@@ -27,6 +27,7 @@ import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.ArrayList;
@@ -69,8 +70,8 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
         final PMap<K, V> map = new PMap<>();
         boolean constant = true;
         for (int i = 0; i < objects.length; i = i + 2) {
-            final K key = (K) TObj.from(objects[i]);
-            final V value = (V) TObj.from(objects[i + 1]);
+            final K key = (K) ObjectHelper.from(objects[i]);
+            final V value = (V) ObjectHelper.from(objects[i + 1]);
             constant = constant && key.constant() && value.constant();
             map.put(key, value);
         }

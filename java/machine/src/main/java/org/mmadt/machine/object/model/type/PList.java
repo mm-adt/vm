@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.type;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public final class PList<V extends Obj> extends ArrayList<V> implements Pattern 
     public static <V extends Obj> PList<V> of(final Object... objects) {
         final List<V> list = new ArrayList<>();
         for (final Object object : objects) {
-            list.add((V) TObj.from(object));
+            list.add((V) ObjectHelper.from(object));
         }
         return new PList<>(list);
     }

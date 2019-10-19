@@ -21,6 +21,7 @@
  */
 package org.mmadt.machine.object.model.util;
 
+import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
@@ -210,5 +211,28 @@ public final class ObjectHelper {
             });
         }
         //System.out.println(bindings);
+    }
+
+    public static Obj from(final Object object) {
+        if (object instanceof Obj)
+            return (Obj) object;
+        else if (object instanceof Boolean)
+            return TBool.of(((Boolean) object));
+        else if (object instanceof Integer)
+            return TInt.of(((Integer) object));
+        else if (object instanceof Float)
+            return TReal.of(((Float) object));
+        else if (object instanceof Double)
+            return TReal.of(((Double) object).floatValue());
+        else if (object instanceof String)
+            return TStr.of((String) object);
+        else if (object instanceof List)
+            return TLst.of(new PList<>((List<Obj>) object));
+        else if (object instanceof Map)
+            return TRec.of(new PMap<>((Map<Obj, Obj>) object));
+        else if (object instanceof Query) // TODO: see about getting rid of this as its not a supported built-in type
+            return ((Query) object).bytecode();
+        else
+            throw new IllegalStateException("Unknown type: " + object.getClass());
     }
 }
