@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.util;
 
-import org.mmadt.object.impl.TModel;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.machine.object.impl.TModel;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.compiler.FunctionTable;
 import org.mmadt.processor.function.FilterFunction;
 import org.mmadt.processor.function.MapFunction;

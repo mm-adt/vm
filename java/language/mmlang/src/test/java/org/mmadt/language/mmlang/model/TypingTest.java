@@ -25,12 +25,12 @@ package org.mmadt.language.mmlang.model;
 import org.junit.jupiter.api.Test;
 import org.mmadt.language.compiler.Rewriting;
 import org.mmadt.language.mmlang.Compiler;
-import org.mmadt.object.impl.TModel;
-import org.mmadt.object.impl.TObj;
-import org.mmadt.object.impl.atomic.TInt;
-import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.model.Model;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.machine.object.impl.TModel;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Model;
+import org.mmadt.machine.object.model.composite.Inst;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -23,20 +23,20 @@
 package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.object.impl.TModel;
-import org.mmadt.object.impl.TObj;
-import org.mmadt.object.impl.atomic.TInt;
-import org.mmadt.object.impl.atomic.TStr;
-import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.impl.composite.TRec;
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Rec;
-import org.mmadt.object.model.type.Bindings;
+import org.mmadt.machine.object.impl.TModel;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mmadt.object.model.composite.Q.Tag.qmark;
-import static org.mmadt.object.model.composite.Q.Tag.star;
+import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 
 /**

@@ -22,15 +22,15 @@
 
 package org.mmadt.language.compiler;
 
-import org.mmadt.object.impl.TObj;
-import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.model.Model;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.type.Bindings;
-import org.mmadt.object.model.type.PList;
-import org.mmadt.object.model.util.BytecodeHelper;
-import org.mmadt.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Model;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.type.Bindings;
+import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.BytecodeHelper;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.LinkedList;
 import java.util.List;

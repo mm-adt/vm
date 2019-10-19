@@ -22,7 +22,7 @@
 
 package org.mmadt.process.mmproc;
 
-import org.mmadt.object.model.Obj;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.process.mmproc.util.Barrier;
 import org.mmadt.process.mmproc.util.InMemoryBarrier;
 import org.mmadt.processor.function.BarrierFunction;

@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.mmstor;
 
-import org.mmadt.object.model.Obj;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.storage.Storage;
 
 /**

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.Compiler;
 import org.mmadt.language.mmlang.util.TestArgs;
-import org.mmadt.object.impl.TModel;
+import org.mmadt.machine.object.impl.TModel;
 
 import java.util.stream.Stream;
 

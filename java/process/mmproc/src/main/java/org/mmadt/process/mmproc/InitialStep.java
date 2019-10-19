@@ -22,7 +22,7 @@
 
 package org.mmadt.process.mmproc;
 
-import org.mmadt.object.model.Obj;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.processor.function.InitialFunction;
 import org.mmadt.util.EmptyIterator;
 

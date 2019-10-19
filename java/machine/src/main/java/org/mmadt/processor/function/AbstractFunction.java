@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.function;
 
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.util.StringFactory;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.util.StringFactory;
 import org.mmadt.processor.compiler.Argument;
 
 import java.util.Objects;

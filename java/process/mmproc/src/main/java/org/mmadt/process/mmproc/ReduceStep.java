@@ -22,12 +22,12 @@
 
 package org.mmadt.process.mmproc;
 
-import org.mmadt.object.model.Obj;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.process.mmproc.util.Reducer;
 import org.mmadt.processor.function.ReduceFunction;
 import org.mmadt.util.FastNoSuchElementException;
 
-import static org.mmadt.object.model.composite.Q.Tag.one;
+import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

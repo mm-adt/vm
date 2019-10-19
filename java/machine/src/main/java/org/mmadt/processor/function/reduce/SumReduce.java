@@ -22,10 +22,10 @@
 
 package org.mmadt.processor.function.reduce;
 
-import org.mmadt.object.impl.atomic.TInt;
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.type.algebra.WithRing;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.ReduceFunction;
 

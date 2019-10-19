@@ -23,7 +23,7 @@
 package org.mmadt.process.compliance;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.atomic.TBool;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.__.a;

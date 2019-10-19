@@ -22,7 +22,7 @@
 
 package org.mmadt.processor;
 
-import org.mmadt.object.model.Obj;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;

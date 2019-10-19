@@ -22,8 +22,8 @@
 
 package org.mmadt.util;
 
-import org.mmadt.object.impl.TStream;
-import org.mmadt.object.model.Obj;
+import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.processor.function.FilterFunction;
 import org.mmadt.processor.function.FlatMapFunction;
 import org.mmadt.processor.function.MapFunction;

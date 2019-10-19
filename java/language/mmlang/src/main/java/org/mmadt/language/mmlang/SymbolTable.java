@@ -22,12 +22,12 @@
 
 package org.mmadt.language.mmlang;
 
-import org.mmadt.object.impl.TModel;
-import org.mmadt.object.impl.TSym;
-import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.util.OperatorHelper;
+import org.mmadt.machine.object.impl.TModel;
+import org.mmadt.machine.object.impl.TSym;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.util.OperatorHelper;
 
 import java.util.HashMap;
 import java.util.List;

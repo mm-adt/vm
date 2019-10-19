@@ -22,8 +22,8 @@
 
 package org.mmadt.processor.compiler;
 
-import org.mmadt.object.model.Model;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.machine.object.model.Model;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.function.QFunction;
 import org.mmadt.processor.function.branch.BranchBranch;
 import org.mmadt.processor.function.filter.FilterFilter;

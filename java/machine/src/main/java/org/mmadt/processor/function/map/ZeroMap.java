@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.function.map;
 
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.type.algebra.WithZero;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.MapFunction;
 

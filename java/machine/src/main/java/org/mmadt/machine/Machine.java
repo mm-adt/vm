@@ -22,8 +22,8 @@
 
 package org.mmadt.machine;
 
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 
 import java.io.Closeable;
 import java.util.Iterator;

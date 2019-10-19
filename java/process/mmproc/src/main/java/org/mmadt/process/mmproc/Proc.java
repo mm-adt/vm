@@ -22,7 +22,7 @@
 
 package org.mmadt.process.mmproc;
 
-import org.mmadt.object.model.Obj;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.process.mmproc.util.InMemoryReducer;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.compiler.IR;

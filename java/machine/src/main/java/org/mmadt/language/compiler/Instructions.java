@@ -22,18 +22,18 @@
 
 package org.mmadt.language.compiler;
 
-import org.mmadt.object.impl.TObj;
-import org.mmadt.object.impl.TSym;
-import org.mmadt.object.impl.atomic.TBool;
-import org.mmadt.object.impl.atomic.TInt;
-import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.model.Model;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.atomic.Int;
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.type.algebra.WithProduct;
-import org.mmadt.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TSym;
+import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Model;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DB;

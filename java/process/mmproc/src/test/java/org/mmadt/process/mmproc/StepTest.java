@@ -23,11 +23,11 @@
 package org.mmadt.process.mmproc;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.object.impl.atomic.TInt;
-import org.mmadt.object.impl.composite.TRec;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.atomic.Int;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.compiler.IR;
 import org.mmadt.util.IteratorUtils;

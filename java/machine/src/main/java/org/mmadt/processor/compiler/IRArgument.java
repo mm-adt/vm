@@ -22,8 +22,8 @@
 
 package org.mmadt.processor.compiler;
 
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.Iterator;

@@ -23,14 +23,14 @@
 package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.object.impl.TModel;
-import org.mmadt.object.impl.atomic.TInt;
-import org.mmadt.object.impl.atomic.TStr;
-import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.model.Model;
+import org.mmadt.machine.object.impl.TModel;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

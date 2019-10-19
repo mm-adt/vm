@@ -23,7 +23,7 @@
 package org.mmadt.process.compliance;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TInt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.__.start;

@@ -23,10 +23,10 @@
 package org.mmadt.storage.mmstor;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.object.impl.atomic.TStr;
-import org.mmadt.object.impl.composite.TLst;
-import org.mmadt.object.model.atomic.Str;
-import org.mmadt.object.model.composite.Lst;
+import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.util.MinimalProcessor;
 import org.mmadt.storage.Storage;

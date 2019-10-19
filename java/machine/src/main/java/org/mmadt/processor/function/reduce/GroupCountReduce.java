@@ -23,15 +23,15 @@
 package org.mmadt.processor.function.reduce;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.object.impl.atomic.TInt;
-import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.impl.composite.TRec;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.atomic.Int;
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.composite.Rec;
-import org.mmadt.object.model.type.PMap;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.ReduceFunction;

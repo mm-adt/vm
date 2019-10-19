@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.util;
 
-import org.mmadt.object.model.Obj;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.util.FastNoSuchElementException;
 import org.mmadt.util.IteratorUtils;
 

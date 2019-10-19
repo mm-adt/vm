@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang.model;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.Compiler;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Inst;
 
 import java.io.BufferedReader;
 import java.io.IOException;

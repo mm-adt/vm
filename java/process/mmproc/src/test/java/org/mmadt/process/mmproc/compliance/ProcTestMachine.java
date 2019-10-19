@@ -23,8 +23,8 @@
 package org.mmadt.process.mmproc.compliance;
 
 import org.mmadt.machine.Machine;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.process.compliance.TestMachine;
 import org.mmadt.process.mmproc.ProcProcessor;
 import org.mmadt.processor.compiler.IR;

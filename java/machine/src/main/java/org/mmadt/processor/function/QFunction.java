@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.function;
 
-import org.mmadt.object.model.composite.Q;
+import org.mmadt.machine.object.model.composite.Q;
 
 import java.io.Serializable;
 

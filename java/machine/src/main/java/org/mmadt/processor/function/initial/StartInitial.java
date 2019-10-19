@@ -22,11 +22,11 @@
 
 package org.mmadt.processor.function.initial;
 
-import org.mmadt.object.impl.TObj;
-import org.mmadt.object.impl.TStream;
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Q;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.InitialFunction;
