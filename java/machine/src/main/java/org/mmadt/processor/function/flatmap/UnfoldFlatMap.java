@@ -24,8 +24,7 @@ package org.mmadt.processor.function.flatmap;
 
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.impl.composite.TQuantifier;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.FlatMapFunction;
 import org.mmadt.util.IteratorUtils;
@@ -37,7 +36,7 @@ import java.util.Iterator;
  */
 public final class UnfoldFlatMap<S extends Obj, E extends Obj> extends AbstractFunction implements FlatMapFunction<S, E> {
 
-    private UnfoldFlatMap(final Quantifier quantifier, final String label) {
+    private UnfoldFlatMap(final Q quantifier, final String label) {
         super(quantifier, label);
     }
 

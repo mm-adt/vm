@@ -30,13 +30,13 @@ import org.mmadt.object.impl.atomic.TReal;
 import org.mmadt.object.impl.atomic.TStr;
 import org.mmadt.object.impl.composite.TInst;
 import org.mmadt.object.impl.composite.TLst;
-import org.mmadt.object.impl.composite.TQuantifier;
+import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.impl.composite.TRec;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.Stream;
 import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.type.PList;
 import org.mmadt.object.model.type.PMap;
 import org.mmadt.object.model.type.POr;
@@ -79,7 +79,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
     protected Obj type;                                 // an object that abstractly defines this object's forms
     protected String variable;                          // the ~bind string (if retrieved via a bind)
-    protected Quantifier<?> quantifier = TQuantifier.one;   // the 'amount' of this object bundle
+    protected Q<?> quantifier = TQ.one;   // the 'amount' of this object bundle
     protected Inst access;                              // access to its physical representation
     protected PMap<Inst, Inst> instructions;            // rewrite rules for the vm instruction set (typically types)
     protected PMap<Obj, Obj> members;                   // the static members of the form (typically types)
@@ -113,8 +113,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <Q extends WithRing<Q>> Quantifier<Q> q() {
-        return (Quantifier<Q>) this.quantifier;
+    public <B extends WithRing<B>> Q<B> q() {
+        return (Q<B>) this.quantifier;
     }
 
     @Override
@@ -173,7 +173,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return ObjectHelper.root(this, object).
                     set(ObjectHelper.andValues(this, (TObj) object)).
                     access(ObjectHelper.access(this, object)).
-                    q((Quantifier) this.q().and(object.q())).
+                    q((Q) this.q().and(object.q())).
                     as(ObjectHelper.mergeVariables(this, object));
     }
 
@@ -186,7 +186,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 null == this.access &&
                 null == this.instructions &&
                 null == this.variable)
-            return this.q((Quantifier)this.q().or(object.q()));
+            return this.q((Q)this.q().or(object.q()));
         else
             return ObjectHelper.root(this, object).set(POr.or(this.get() instanceof POr ? this.get() : this, object));
     }
@@ -263,7 +263,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             ((Stream<O>) this.get()).push(obj);
         else
             this.value = TStream.of(obj, this.clone());
-        this.quantifier = (Quantifier) this.q().or(obj.q());
+        this.quantifier = (Q) this.q().or(obj.q());
         return (O) this;
     }
 
@@ -271,7 +271,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         final O clone = (O) this.clone();
         clone.access = null;
         clone.variable = null;
-        clone.quantifier = TQuantifier.one;
+        clone.quantifier = TQ.one;
         return clone;
     }
 
@@ -299,7 +299,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O q(final Quantifier quantifier) {
+    public <O extends Obj> O q(final Q quantifier) {
         final TObj clone = this.clone();
         clone.quantifier = quantifier;
         return (O) clone;

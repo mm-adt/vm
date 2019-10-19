@@ -31,7 +31,7 @@ import org.mmadt.object.model.Model;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.composite.Struct;
 import org.mmadt.object.model.util.ObjectHelper;
 
@@ -84,7 +84,7 @@ public final class Instructions {
             case ID:
                 return domain.q(domain.q().and(inst.q()));
             case IS:
-                return domain.q(domain.q().<Quantifier>set(TInt.of(0,domain.q().mult(inst.q()).high().get())));
+                return domain.q(domain.q().<Q>set(TInt.of(0,domain.q().mult(inst.q()).high().get())));
             case LT:
                 TBool.some().q(domain.q());
             case ORDER:

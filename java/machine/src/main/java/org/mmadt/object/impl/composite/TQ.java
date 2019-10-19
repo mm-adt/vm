@@ -29,7 +29,7 @@ import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PMap;
 import org.mmadt.object.model.type.feature.WithOrder;
@@ -41,24 +41,24 @@ import java.util.function.Supplier;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TQuantifier<A extends WithRing<A>> extends TObj implements Quantifier<A> {
+public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
 
-    public static final Quantifier zero = new TQuantifier(0, 0);
-    public static final Quantifier one = new TQuantifier(1, 1);
-    public static final Quantifier star = new TQuantifier(0, Integer.MAX_VALUE);
-    public static final Quantifier qmark = new TQuantifier(0, 1);
-    public static final Quantifier plus = new TQuantifier(1, Integer.MAX_VALUE);
+    public static final Q zero = new TQ(0, 0);
+    public static final Q one = new TQ(1, 1);
+    public static final Q star = new TQ(0, Integer.MAX_VALUE);
+    public static final Q qmark = new TQ(0, 1);
+    public static final Q plus = new TQ(1, Integer.MAX_VALUE);
 
-    public static TQuantifier<Int> of(final int low, final int high) {
-        return new TQuantifier<>(low, high);
+    public static TQ<Int> of(final int low, final int high) {
+        return new TQ<>(low, high);
     }
 
-    public TQuantifier(final int low, final int high) {
+    public TQ(final int low, final int high) {
         super((Supplier) () -> TInt.of(low, high));
         assert low <= high;
     }
 
-    public TQuantifier(final A obj) {
+    public TQ(final A obj) {
         super((Supplier) () -> obj);
     }
 
@@ -93,7 +93,7 @@ public final class TQuantifier<A extends WithRing<A>> extends TObj implements Qu
     }
 
     @Override
-    public <Q extends WithRing<Q>> Quantifier<Q> q() {
+    public <B extends WithRing<B>> Q<B> q() {
         return this.object().q();
     }
 
@@ -148,7 +148,7 @@ public final class TQuantifier<A extends WithRing<A>> extends TObj implements Qu
     }
 
     @Override
-    public <O extends Obj> O q(final Quantifier quantifier) {
+    public <O extends Obj> O q(final Q quantifier) {
         return this.object().q(quantifier);
     }
 
@@ -188,8 +188,8 @@ public final class TQuantifier<A extends WithRing<A>> extends TObj implements Qu
     }
 
     @Override
-    public TQuantifier<A> clone() {
-        return new TQuantifier<>((A) this.object().clone());
+    public TQ<A> clone() {
+        return new TQ<>((A) this.object().clone());
     }
 
     @Override
@@ -199,9 +199,9 @@ public final class TQuantifier<A extends WithRing<A>> extends TObj implements Qu
 
     @Override
     public boolean equals(final Object object) {
-        return object instanceof Quantifier &&
-                this.high().equals(((Quantifier) object).high()) &&
-                this.low().equals(((Quantifier) object).low()); // TODO
+        return object instanceof Q &&
+                this.high().equals(((Q) object).high()) &&
+                this.low().equals(((Q) object).low()); // TODO
     }
 
     @Override
@@ -210,27 +210,27 @@ public final class TQuantifier<A extends WithRing<A>> extends TObj implements Qu
     }
 
     @Override
-    public Quantifier<A> one() {
-        return new TQuantifier<>(this.object().one());
+    public Q<A> one() {
+        return new TQ<>(this.object().one());
     }
 
     @Override
-    public Quantifier<A> zero() {
-        return new TQuantifier<>(this.object().zero());
+    public Q<A> zero() {
+        return new TQ<>(this.object().zero());
     }
 
     @Override
-    public Quantifier<A> mult(final Quantifier<A> object) {
-        return new TQuantifier<>(this.object().mult(object.object()));
+    public Q<A> mult(final Q<A> object) {
+        return new TQ<>(this.object().mult(object.object()));
     }
 
     @Override
-    public Quantifier<A> plus(final Quantifier<A> object) {
-        return new TQuantifier<>(this.object().plus(object.object()));
+    public Q<A> plus(final Q<A> object) {
+        return new TQ<>(this.object().plus(object.object()));
     }
 
-    public Quantifier<A> negate() {
-        return new TQuantifier<>(this.object().negate());
+    public Q<A> negate() {
+        return new TQ<>(this.object().negate());
     }
 
     @Override
@@ -252,12 +252,12 @@ public final class TQuantifier<A extends WithRing<A>> extends TObj implements Qu
     }
 
     @Override
-    public Quantifier<A> and(final Quantifier<A> obj) {
-        return new TQuantifier<>(this.low().set(TStream.of(this.low().mult(obj.peak()), this.high().mult(obj.last()))));
+    public Q<A> and(final Q<A> obj) {
+        return new TQ<>(this.low().set(TStream.of(this.low().mult(obj.peak()), this.high().mult(obj.last()))));
     }
 
     @Override
-    public Quantifier<A> or(final Quantifier<A> obj) {
-        return new TQuantifier<>(this.low().set(TStream.of(this.low().plus(obj.peak()), this.high().plus(obj.last()))));
+    public Q<A> or(final Q<A> obj) {
+        return new TQ<>(this.low().set(TStream.of(this.low().plus(obj.peak()), this.high().plus(obj.last()))));
     }
 }

@@ -22,8 +22,7 @@
 
 package org.mmadt.processor.function;
 
-import org.mmadt.object.impl.composite.TQuantifier;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 
 import java.io.Serializable;
 
@@ -32,7 +31,7 @@ import java.io.Serializable;
  */
 public interface QFunction extends Serializable, Cloneable {
 
-    public Quantifier quantifier();
+    public Q quantifier();
 
     public String label();
 

@@ -25,9 +25,8 @@ package org.mmadt.processor.function.map;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.composite.Struct;
-import org.mmadt.object.impl.composite.TQuantifier;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.MapFunction;
@@ -38,7 +37,7 @@ import org.mmadt.processor.function.MapFunction;
 public final class PutMap<K extends Obj, V extends Obj> extends AbstractFunction implements MapFunction<Struct<K, V>, Struct<K, V>> {
 
 
-    private PutMap(final Quantifier quantifier, final String label, final Argument<Struct<K, V>, K> key, final Argument<Struct<K, V>, V> value) {
+    private PutMap(final Q quantifier, final String label, final Argument<Struct<K, V>, K> key, final Argument<Struct<K, V>, V> value) {
         super(quantifier, label, key, value);
     }
 

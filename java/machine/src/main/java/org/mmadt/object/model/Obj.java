@@ -26,10 +26,10 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.TStream;
 import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.impl.composite.TQuantifier;
+import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.composite.Struct;
 import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PConjunction;
@@ -67,7 +67,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return null != this.symbol() && !BASE_SYMBOLS.contains(this.symbol());
     }
 
-    public <Q extends WithRing<Q>> Quantifier<Q> q();
+    public <B extends WithRing<B>> Q<B> q();
 
     public String variable();
 
@@ -101,15 +101,15 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O set(final Object object);
 
-    public <O extends Obj> O q(final Quantifier quantifier);
+    public <O extends Obj> O q(final Q quantifier);
 
-    public default <O extends Obj> O q(final Quantifier.Tag tag) {
+    public default <O extends Obj> O q(final Q.Tag tag) {
         return this.q(tag.apply(this.q()));
     }
 
 
     public default <O extends Obj> O q(final int low, final int high) {
-        return this.q(new TQuantifier<>(low, high));
+        return this.q(new TQ<>(low, high));
     }
 
     public default <O extends Obj> O q(final int count) {
@@ -117,7 +117,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O q(final WithRing count) {
-        return this.q(new TQuantifier<>(count));
+        return this.q(new TQ<>(count));
     }
 
     public <O extends Obj> O as(final String variable);

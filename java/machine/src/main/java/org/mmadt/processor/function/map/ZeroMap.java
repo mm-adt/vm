@@ -23,8 +23,7 @@
 package org.mmadt.processor.function.map;
 
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.impl.composite.TQuantifier;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.type.feature.WithZero;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.MapFunction;
@@ -34,7 +33,7 @@ import org.mmadt.processor.function.MapFunction;
  */
 public final class ZeroMap<S extends WithZero<S>> extends AbstractFunction implements MapFunction<S, S> {
 
-    private ZeroMap(final Quantifier quantifier, final String label) {
+    private ZeroMap(final Q quantifier, final String label) {
         super(quantifier, label);
     }
 

@@ -25,8 +25,7 @@ package org.mmadt.processor.function.branch;
 import org.mmadt.object.impl.composite.TInst;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.impl.composite.TQuantifier;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.util.StringFactory;
 import org.mmadt.processor.compiler.IR;
 import org.mmadt.processor.function.AbstractFunction;
@@ -45,7 +44,7 @@ public final class BranchBranch<S extends Obj, E extends Obj> extends AbstractFu
 
     private Map<IR<S, ?>, List<IR<S, E>>> branches; // TODO: why aren't these just arguments?
 
-    private BranchBranch(final Quantifier quantifier, final String label, final Map<IR<S, ?>, List<IR<S, E>>> branches) {
+    private BranchBranch(final Q quantifier, final String label, final Map<IR<S, ?>, List<IR<S, E>>> branches) {
         super(quantifier, label);
         this.branches = branches;
     }

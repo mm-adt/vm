@@ -25,8 +25,7 @@ package org.mmadt.processor.function.filter;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.impl.composite.TQuantifier;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.FilterFunction;
@@ -36,7 +35,7 @@ import org.mmadt.processor.function.FilterFunction;
  */
 public final class FilterFilter<S extends Obj> extends AbstractFunction implements FilterFunction<S> {
 
-    private FilterFilter(final Quantifier quantifier, final String label, final Argument<S,?> argument) {
+    private FilterFilter(final Q quantifier, final String label, final Argument<S,?> argument) {
         super(quantifier, label,argument);
     }
 

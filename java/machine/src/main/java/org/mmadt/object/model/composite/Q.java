@@ -30,24 +30,24 @@ import java.util.function.UnaryOperator;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Quantifier<A extends WithRing<A>> extends Obj, WithRing<Quantifier<A>> {
+public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
 
-    public enum Tag implements UnaryOperator<Quantifier> {
+    public enum Tag implements UnaryOperator<Q> {
         zero, one, star, qmark, plus;
 
         @Override
-        public Quantifier apply(final Quantifier quantifier) {
+        public Q apply(final Q quantifier) {
             switch (this) {
                 case zero:
-                    return (Quantifier) quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone()));
+                    return (Q) quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone()));
                 case one:
-                    return (Quantifier) quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().one().clone()));
+                    return (Q) quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().one().clone()));
                 //  case star:
-                //      return (Quantifier) quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().().clone());
+                //      return (Q) quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().().clone());
                 case qmark:
-                    return (Quantifier) quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().one().clone()));
+                    return (Q) quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().one().clone()));
                 //  case plus:
-                //      return (Quantifier) quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone());
+                //      return (Q) quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone());
                 default:
                     throw new RuntimeException("Undefined short: " + this);
             }
@@ -61,8 +61,8 @@ public interface Quantifier<A extends WithRing<A>> extends Obj, WithRing<Quantif
     // this is necessary as the quantifier is really wrapped in a supplier to avoid stackoverflow during construction
     public A object();
 
-    public Quantifier<A> and(final Quantifier<A> obj);
+    public Q<A> and(final Q<A> obj);
 
-    public Quantifier<A> or(final Quantifier<A> obj);
+    public Q<A> or(final Q<A> obj);
 
 }

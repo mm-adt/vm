@@ -34,8 +34,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.impl.composite.TQuantifier.plus;
-import static org.mmadt.object.impl.composite.TQuantifier.star;
+import static org.mmadt.object.impl.composite.TQ.plus;
+import static org.mmadt.object.impl.composite.TQ.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -62,13 +62,13 @@ class TStreamTest {
             assertFalse(i.isType());
         });
         //
-        assertEquals(TQuantifier.one, instance1.q());
-        assertEquals(TQuantifier.one, instance2.q());
-        assertEquals(TQuantifier.one, instance3.q());
-        assertEquals(TQuantifier.one, instance4.q());
-        assertEquals(TQuantifier.one, instance5.q());
-        assertEquals(TQuantifier.one, instance6.q());
-        assertEquals(TQuantifier.one, instance7.q());
+        assertEquals(TQ.one, instance1.q());
+        assertEquals(TQ.one, instance2.q());
+        assertEquals(TQ.one, instance3.q());
+        assertEquals(TQ.one, instance4.q());
+        assertEquals(TQ.one, instance5.q());
+        assertEquals(TQ.one, instance6.q());
+        assertEquals(TQ.one, instance7.q());
         //
        /* assertTrue(type.test(instance1));
         assertFalse(type.test(instance2));

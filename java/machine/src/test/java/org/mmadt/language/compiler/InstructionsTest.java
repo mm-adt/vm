@@ -27,8 +27,8 @@ import org.mmadt.object.impl.TModel;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.atomic.TStr;
 import org.mmadt.object.impl.composite.TInst;
+import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.model.Model;
-import org.mmadt.object.impl.composite.TQuantifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,7 +44,7 @@ class InstructionsTest {
         assertEquals(TInt.some(), Instructions.getRange(TInst.of(Tokens.ID), TInt.some(), MODEL));
         assertEquals(TInt.some(2), Instructions.getRange(TInst.of(Tokens.ID).q(2), TInt.some(), MODEL));
         //
-        assertEquals(TInt.some().q(TQuantifier.qmark), Instructions.getRange(TInst.of(Tokens.IS), TInt.some(), MODEL));
+        assertEquals(TInt.some().q(TQ.qmark), Instructions.getRange(TInst.of(Tokens.IS), TInt.some(), MODEL));
         assertEquals(TInt.some().q(0, 10), Instructions.getRange(TInst.of(Tokens.IS), TInt.some(10), MODEL));
         assertEquals(TInt.some().q(0, 30), Instructions.getRange(TInst.of(Tokens.IS).q(3), TInt.some(10), MODEL));
         //

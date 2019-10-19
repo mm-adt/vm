@@ -85,7 +85,7 @@ public final class TInst extends TObj implements Inst {
     }
 
     @Override
-    public <Q extends WithRing<Q>> TQuantifier<Q> q() {
+    public <Q extends WithRing<Q>> TQ<Q> q() {
         if (this.get() instanceof Stream) { // TODO: memoize this
             WithRing low = null;
             WithRing high = null;
@@ -93,9 +93,9 @@ public final class TInst extends TObj implements Inst {
                 low = null == low ? a.q().low() : (Q) low.plus(a.q().low());
                 high = null == high ? a.q().high() : (Q) high.plus(a.q().high());
             }
-            this.quantifier = new TQuantifier<>((Q) low.set(TStream.of(low, high)));
+            this.quantifier = new TQ<>((Q) low.set(TStream.of(low, high)));
         }
-        return (TQuantifier<Q>) this.quantifier;
+        return (TQ<Q>) this.quantifier;
     }
 
     @Override

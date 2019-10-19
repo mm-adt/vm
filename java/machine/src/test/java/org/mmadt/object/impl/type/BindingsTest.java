@@ -27,11 +27,11 @@ import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.atomic.TStr;
 import org.mmadt.object.impl.composite.TInst;
+import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.impl.composite.TRec;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.Bindings;
-import org.mmadt.object.impl.composite.TQuantifier;
 import org.mmadt.object.model.util.ObjectHelper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,8 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.impl.composite.TQuantifier.one;
-import static org.mmadt.object.impl.composite.TQuantifier.star;
+import static org.mmadt.object.impl.composite.TQ.one;
+import static org.mmadt.object.impl.composite.TQ.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -140,13 +140,13 @@ class BindingsTest {
         assertTrue(type1.instructions().entrySet().iterator().next().getKey().constant());
         assertFalse(type1.instructions().entrySet().iterator().next().getValue().constant());
         //
-        assertEquals(type1.q(), TQuantifier.star);
-        assertEquals(type2.q(), TQuantifier.star);
+        assertEquals(type1.q(), TQ.star);
+        assertEquals(type2.q(), TQ.star);
         final TObj type3 = type2.q(one);
         assertEquals(type2.instructions(), type3.instructions());
-        assertEquals(type1.q(), TQuantifier.star);
-        assertEquals(type2.q(), TQuantifier.star);
-        assertEquals(type3.q(), TQuantifier.one);
+        assertEquals(type1.q(), TQ.star);
+        assertEquals(type2.q(), TQ.star);
+        assertEquals(type3.q(), TQ.one);
         assertNotEquals(type1, type2);
         assertNotEquals(type2, type3);
         assertNotEquals(type3, type1);

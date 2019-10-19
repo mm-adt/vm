@@ -24,8 +24,7 @@ package org.mmadt.processor.function.branch;
 
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.impl.composite.TQuantifier;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.util.StringFactory;
 import org.mmadt.processor.compiler.IR;
 import org.mmadt.processor.function.AbstractFunction;
@@ -49,7 +48,7 @@ public final class RepeatBranch<S extends Obj> extends AbstractFunction {
     private boolean hasStartPredicates = false;
     private boolean hasEndPredicates = false;
 
-    public RepeatBranch(final Quantifier quantifier, final String label, final List<Object> arguments) {
+    public RepeatBranch(final Q quantifier, final String label, final List<Object> arguments) {
         super(quantifier, label);
         int location = 1;
         for (int i = 0; i < arguments.size(); i = i + 2) {

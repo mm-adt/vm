@@ -25,8 +25,7 @@ package org.mmadt.processor.function.map;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.impl.composite.TQuantifier;
-import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.type.feature.WithOrder;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
@@ -37,7 +36,7 @@ import org.mmadt.processor.function.MapFunction;
  */
 public final class GtMap<S extends WithOrder<S>> extends AbstractFunction implements MapFunction<S, Bool> {
 
-    private GtMap(final Quantifier quantifier, final String label, final Argument<S, S> argument) {
+    private GtMap(final Q quantifier, final String label, final Argument<S, S> argument) {
         super(quantifier, label, argument);
     }
 
