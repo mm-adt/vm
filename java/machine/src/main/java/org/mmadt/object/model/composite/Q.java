@@ -54,9 +54,13 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
         }
     }
 
-    public A low();
+    public default A low() {
+        return this.object().peak();
+    }
 
-    public A high();
+    public default A high() {
+        return this.object().last();
+    }
 
     // this is necessary as the quantifier is really wrapped in a supplier to avoid stackoverflow during construction
     public A object();
@@ -64,5 +68,35 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
     public Q<A> and(final Q<A> obj);
 
     public Q<A> or(final Q<A> obj);
+
+
+    @Override
+    public default Q<A> one() {
+        return Tag.one.apply(this);
+    }
+
+    @Override
+    public default Q<A> zero() {
+        return Tag.zero.apply(this);
+    }
+
+    public default Q<A> qmark() {
+        return Tag.qmark.apply(this);
+    }
+
+    public default boolean isQMark() {
+        return this.low().isZero() && this.high().isOne();
+    }
+
+    @Override
+    public default boolean isZero() {
+        return this.low().isZero() && this.high().isZero();
+    }
+
+    @Override
+    public default boolean isOne() {
+        return this.low().isOne() && this.high().isOne();
+    }
+
 
 }

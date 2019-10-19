@@ -250,7 +250,7 @@ public final class StringFactory {
             return EMPTY;
         else if (TQ.star.equals(quantifier))
             return LCURL + ASTERIX + RCURL;
-        else if (Q.Tag.qmark.apply(quantifier).equals(quantifier))
+        else if (quantifier.isQMark())
             return LCURL + QUESTION + RCURL;
         else if (TQ.plus.equals(quantifier))
             return LCURL + CROSS + RCURL;

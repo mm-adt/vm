@@ -174,7 +174,7 @@ class TStreamTest {
         System.out.println(bindings);
     }
 
-    // @Test
+    //@Test
     void shouldSupportBinding() {
         Rec type = TRec.of("name", TStr.some(), "age", TInt.some().as("x"), "hobbies", TStr.some().q(star).as("y"));
         Rec instance1 = TRec.of(

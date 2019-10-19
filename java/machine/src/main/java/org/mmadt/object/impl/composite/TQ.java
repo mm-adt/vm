@@ -66,16 +66,6 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
     }
 
     @Override
-    public A low() {
-        return this.object().peak();
-    }
-
-    @Override
-    public A high() {
-        return this.object().last();
-    }
-
-    @Override
     public boolean constant() {
         return this.low().equals(this.high());
     }
@@ -208,16 +198,6 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
     }
 
     @Override
-    public Q<A> one() {
-        return new TQ<>(this.object().one());
-    }
-
-    @Override
-    public Q<A> zero() {
-        return new TQ<>(this.object().zero());
-    }
-
-    @Override
     public Q<A> mult(final Q<A> object) {
         return new TQ<>(this.object().mult(object.object()));
     }
@@ -236,17 +216,6 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
         return null == object ?
                 ((WithOrder<A>) this.low().get()).lte(this.low().zero()).get() : // TODO: need Order in the Interface
                 (((WithOrder<A>) object.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) object.q().high()).lte(this.high()).<Boolean>get());
-    }
-
-    @Override
-    public boolean isZero() {
-        return this.low().isZero() && this.high().isZero();
-    }
-
-
-    @Override
-    public boolean isOne() {
-        return this.low().isOne() && this.high().isOne();
     }
 
     @Override
