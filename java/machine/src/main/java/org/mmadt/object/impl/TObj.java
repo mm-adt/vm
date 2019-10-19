@@ -79,7 +79,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
     protected Obj type;                                 // an object that abstractly defines this object's forms
     protected String variable;                          // the ~bind string (if retrieved via a bind)
-    protected Q<?> quantifier = TQ.one;   // the 'amount' of this object bundle
+    protected Q<?> quantifier = TQ.ONE;                 // the 'amount' of this object bundle
     protected Inst access;                              // access to its physical representation
     protected PMap<Inst, Inst> instructions;            // rewrite rules for the vm instruction set (typically types)
     protected PMap<Obj, Obj> members;                   // the static members of the form (typically types)

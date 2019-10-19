@@ -73,7 +73,7 @@ public final class TSym<A extends Obj> extends TObj {
 
     @Override
     public boolean match(final Bindings bindings, final Obj object) {
-        if (!this.quantifier.test(object))
+        if (!this.q().test(object))
             return false;
         else if (null != ObjectHelper.getName(this) &&
                 ObjectHelper.getName(this).equals(ObjectHelper.getName(object))) {

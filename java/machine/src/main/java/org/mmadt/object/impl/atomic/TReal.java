@@ -62,6 +62,16 @@ public final class TReal extends TObj implements Real {
     }
 
     @Override
+    public Real max() {
+        return TReal.of(Float.MAX_VALUE);
+    }
+
+    @Override
+    public Real min() {
+        return TReal.of(Float.MIN_VALUE);
+    }
+
+    @Override
     public Real one() {
         return TReal.of(1.0f);
     }

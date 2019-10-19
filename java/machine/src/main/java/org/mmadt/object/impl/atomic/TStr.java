@@ -96,4 +96,14 @@ public final class TStr extends TObj implements Str {
     public Str zero() {
         return TStr.of(Tokens.EMPTY);
     }
+
+    @Override
+    public Str max() {
+        return TStr.of(ALL);
+    }
+
+    @Override
+    public Str min() {
+        return TStr.of(Tokens.EMPTY);
+    }
 }

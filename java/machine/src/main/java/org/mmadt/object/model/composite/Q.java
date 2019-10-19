@@ -23,6 +23,7 @@
 package org.mmadt.object.model.composite;
 
 import org.mmadt.object.model.Obj;
+import org.mmadt.object.model.type.feature.WithOrder;
 import org.mmadt.object.model.type.feature.WithRing;
 
 import java.util.function.UnaryOperator;
@@ -30,7 +31,7 @@ import java.util.function.UnaryOperator;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
+public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO: WithOrderedRing?
 
     public enum Tag implements UnaryOperator<Q> {
         zero, one, star, qmark, plus;
@@ -42,12 +43,12 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
                     return (Q) quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone()));
                 case one:
                     return (Q) quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().one().clone()));
-                //  case star:
-                //      return (Q) quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().().clone());
+                case star:
+                    return (Q) quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.<WithRing>peak().zero().clone()));
                 case qmark:
                     return (Q) quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().zero().clone()));
-                //  case plus:
-                //      return (Q) quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone());
+                case plus:
+                    return (Q) quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.<WithRing>peak().one().clone()));
                 default:
                     throw new RuntimeException("Undefined short: " + this);
             }
@@ -97,6 +98,23 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
 
     public default Q<A> qmark() {
         return Tag.qmark.apply(this);
+    }
+
+    public default Q<A> plus() {
+        return Tag.plus.apply(this);
+    }
+
+    public default Q<A> star() {
+        return Tag.star.apply(this);
+    }
+
+
+    public default boolean isStar() {
+        return this.low().isZero() && ((WithOrder) this.high()).isMax();
+    }
+
+    public default boolean isPlus() {
+        return this.low().isOne() && ((WithOrder) this.high()).isMax();
     }
 
     public default boolean isQMark() {

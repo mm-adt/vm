@@ -28,8 +28,8 @@ import org.mmadt.object.model.type.POr;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.impl.composite.TQ.plus;
-import static org.mmadt.object.impl.composite.TQ.star;
+import static org.mmadt.object.model.composite.Q.Tag.plus;
+import static org.mmadt.object.model.composite.Q.Tag.star;
 import static org.mmadt.object.model.composite.Q.Tag.one;
 import static org.mmadt.object.model.composite.Q.Tag.qmark;
 

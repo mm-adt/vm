@@ -31,6 +31,7 @@ import org.mmadt.object.impl.composite.TQ;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,7 +44,7 @@ final class TStrTest {
         assertFalse(TInt.some().test(TStr.of("hello")));
         assertTrue(TObj.all().test(TStr.of("hello")));
         // System.out.println(TObj.all().eq("hello"));
-        assertTrue(TStr.of("hello").q(TQ.star).test(TStr.of("hello")));
+        assertTrue(TStr.of("hello").q(star).test(TStr.of("hello")));
         assertTrue(TStr.some().set(new PRel(PRel.Rel.EQ, TStr.of("id"))).test(TStr.of("id")));
         assertTrue(TStr.some().set(new PRel(PRel.Rel.EQ, TStr.of("id").or(TStr.of("label")))).test(TStr.of("id")));
         assertTrue(TStr.some().set(TStr.of("id").or(TStr.of("label"))).test(TStr.of("id")));

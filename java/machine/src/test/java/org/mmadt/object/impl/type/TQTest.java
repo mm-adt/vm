@@ -29,6 +29,7 @@ import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.model.atomic.Int;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -54,7 +55,7 @@ final class TQTest {
         TQ q4 = new TQ(0, 1);
 
         assertEquals(q1.one(), q1);
-        assertEquals(TQ.star, q3);
+        assertTrue(q3.isStar());
         assertEquals(q4.qmark(), q4);
         //
         assertEquals(q2, q1.and(q2));
@@ -78,13 +79,13 @@ final class TQTest {
 
         assertEquals(new TQ(51, 51), q1.or(q2));
         //
-        assertEquals(TQ.plus, q1.or(q3));
+        assertTrue(q1.or(q3).isPlus());
         assertEquals(new TQ(50, Integer.MAX_VALUE), q2.or(q3));
         assertEquals(q3, q3.or(q3));
         //
         assertEquals(new TQ(1, 2), q1.or(q4));
         assertEquals(new TQ(50, 51), q2.or(q4));
-        assertEquals(TQ.star, q3.or(q4));
+        assertTrue(q3.or(q4).isStar());
         assertEquals(new TQ(0, 2), q4.or(q4));
     }
 

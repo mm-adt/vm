@@ -35,8 +35,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.impl.composite.TQ.plus;
-import static org.mmadt.object.impl.composite.TQ.star;
+import static org.mmadt.object.model.composite.Q.Tag.star;
+import static org.mmadt.object.model.composite.Q.Tag.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

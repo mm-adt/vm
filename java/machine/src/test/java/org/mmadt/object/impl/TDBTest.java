@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.impl.composite.TQ.star;
+import static org.mmadt.object.model.composite.Q.Tag.star;
 import static org.mmadt.object.model.composite.Q.Tag.one;
 
 /**
@@ -63,7 +63,7 @@ class TDBTest {
         final TRec<Str, Obj> person = model.get("person");
         //
         assertEquals("people", model.sym("people").symbol());
-        assertEquals(TQ.star, people.q());
+        assertTrue(people.q().isStar());
         assertEquals("person", model.sym("person").symbol());
         assertEquals(person.q(one).q(), person.q());
         assertNotEquals(person, people);

@@ -25,7 +25,6 @@ package org.mmadt.object.model.util;
 import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.composite.TInst;
-import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.model.Model;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.Stream;
@@ -248,11 +247,11 @@ public final class StringFactory {
     public static String quantifier(final Q quantifier) {
         if (quantifier.isOne())
             return EMPTY;
-        else if (TQ.star.equals(quantifier))
+        else if (quantifier.isStar())
             return LCURL + ASTERIX + RCURL;
         else if (quantifier.isQMark())
             return LCURL + QUESTION + RCURL;
-        else if (TQ.plus.equals(quantifier))
+        else if (quantifier.isPlus())
             return LCURL + CROSS + RCURL;
         else if (quantifier.constant())
             return LCURL + quantifier.low() + RCURL;

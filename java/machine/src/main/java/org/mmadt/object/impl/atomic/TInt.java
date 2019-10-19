@@ -87,6 +87,16 @@ public final class TInt extends TObj implements Int {
     }
 
     @Override
+    public Int max() {
+        return TInt.of(Integer.MAX_VALUE);
+    }
+
+    @Override
+    public Int min() {
+        return TInt.of(Integer.MIN_VALUE);
+    }
+
+    @Override
     public Int zero() {
         return ZERO;
     }

@@ -43,4 +43,16 @@ public interface WithOrder<A extends Obj> extends Obj {
     }
 
     public Bool lt(final A object);
+
+    public A max();
+
+    public A min();
+
+    public default boolean isMax() {
+        return this.eq(this.max()).get();
+    }
+
+    public default boolean isMin() {
+        return this.eq(this.min()).get();
+    }
 }

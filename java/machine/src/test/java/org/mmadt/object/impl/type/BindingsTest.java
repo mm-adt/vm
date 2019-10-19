@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.impl.composite.TQ.star;
+import static org.mmadt.object.model.composite.Q.Tag.star;
 import static org.mmadt.object.model.composite.Q.Tag.one;
 
 /**
@@ -140,12 +140,12 @@ class BindingsTest {
         assertTrue(type1.instructions().entrySet().iterator().next().getKey().constant());
         assertFalse(type1.instructions().entrySet().iterator().next().getValue().constant());
         //
-        assertEquals(type1.q(), TQ.star);
-        assertEquals(type2.q(), TQ.star);
+        assertTrue(type1.q().isStar());
+        assertTrue(type2.q().isStar());
         final TObj type3 = type2.q(one);
         assertEquals(type2.instructions(), type3.instructions());
-        assertEquals(type1.q(), TQ.star);
-        assertEquals(type2.q(), TQ.star);
+        assertTrue(type1.q().isStar());
+        assertTrue(type2.q().isStar());
         assertEquals(type3.q().one(), type3.q());
         assertNotEquals(type1, type2);
         assertNotEquals(type2, type3);
