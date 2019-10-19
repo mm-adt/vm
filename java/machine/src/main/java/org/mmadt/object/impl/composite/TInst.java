@@ -33,15 +33,12 @@ import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.atomic.Str;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.type.PList;
-import org.mmadt.object.model.type.Quantifier;
 import org.mmadt.object.model.type.feature.WithRing;
 import org.mmadt.object.model.util.StringFactory;
 
 import java.util.List;
 
 import static org.mmadt.language.compiler.Tokens.INST;
-import static org.mmadt.object.model.type.Quantifier.star;
-import static org.mmadt.object.model.type.Quantifier.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,8 +46,8 @@ import static org.mmadt.object.model.type.Quantifier.zero;
 public final class TInst extends TObj implements Inst {
 
     private static final Inst SOME = new TInst(PList.of(TStr.some(), TObj.all()));
-    private static final Inst ALL = new TInst(null).q(star);
-    private static final Inst NONE = new TInst(null).q(zero);
+    private static final Inst ALL = new TInst(null).q(0, Integer.MAX_VALUE);
+    private static final Inst NONE = new TInst(null).q(0);
 
     private Obj domain = TObj.none();
     private Obj range = TObj.none();
@@ -88,7 +85,7 @@ public final class TInst extends TObj implements Inst {
     }
 
     @Override
-    public <Q extends WithRing<Q>> Quantifier<Q> q() {
+    public <Q extends WithRing<Q>> TQuantifier<Q> q() {
         if (this.get() instanceof Stream) { // TODO: memoize this
             WithRing low = null;
             WithRing high = null;
@@ -96,9 +93,9 @@ public final class TInst extends TObj implements Inst {
                 low = null == low ? a.q().low() : (Q) low.plus(a.q().low());
                 high = null == high ? a.q().high() : (Q) high.plus(a.q().high());
             }
-            this.quantifier = new Quantifier<>((Q) low.set(TStream.of(low, high)));
+            this.quantifier = new TQuantifier<>((Q) low.set(TStream.of(low, high)));
         }
-        return (Quantifier<Q>) this.quantifier;
+        return (TQuantifier<Q>) this.quantifier;
     }
 
     @Override

@@ -22,7 +22,8 @@
 
 package org.mmadt.processor.function;
 
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.impl.composite.TQuantifier;
+import org.mmadt.object.model.composite.Quantifier;
 
 import java.io.Serializable;
 

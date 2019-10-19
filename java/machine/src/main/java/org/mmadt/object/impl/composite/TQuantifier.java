@@ -20,7 +20,7 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type;
+package org.mmadt.object.impl.composite;
 
 import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.TStream;
@@ -29,6 +29,9 @@ import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
+import org.mmadt.object.model.composite.Quantifier;
+import org.mmadt.object.model.type.Bindings;
+import org.mmadt.object.model.type.PMap;
 import org.mmadt.object.model.type.feature.WithOrder;
 import org.mmadt.object.model.type.feature.WithRing;
 import org.mmadt.object.model.util.StringFactory;
@@ -38,35 +41,38 @@ import java.util.function.Supplier;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class Quantifier<A extends WithRing<A>> extends TObj implements WithRing<Quantifier<A>> {
+public final class TQuantifier<A extends WithRing<A>> extends TObj implements Quantifier<A> {
 
-    public static final Quantifier zero = new Quantifier(0, 0);
-    public static final Quantifier one = new Quantifier(1, 1);
-    public static final Quantifier star = new Quantifier(0, Integer.MAX_VALUE);
-    public static final Quantifier qmark = new Quantifier(0, 1);
-    public static final Quantifier plus = new Quantifier(1, Integer.MAX_VALUE);
+    public static final Quantifier zero = new TQuantifier(0, 0);
+    public static final Quantifier one = new TQuantifier(1, 1);
+    public static final Quantifier star = new TQuantifier(0, Integer.MAX_VALUE);
+    public static final Quantifier qmark = new TQuantifier(0, 1);
+    public static final Quantifier plus = new TQuantifier(1, Integer.MAX_VALUE);
 
-    public static Quantifier<Int> of(final int low, final int high) {
-        return new Quantifier<>(low, high);
+    public static TQuantifier<Int> of(final int low, final int high) {
+        return new TQuantifier<>(low, high);
     }
 
-    public Quantifier(final int low, final int high) {
+    public TQuantifier(final int low, final int high) {
         super((Supplier) () -> TInt.of(low, high));
         assert low <= high;
     }
 
-    public Quantifier(final A obj) {
+    public TQuantifier(final A obj) {
         super((Supplier) () -> obj);
     }
 
-    public WithRing<A> object() {
-        return ((Supplier<WithRing<A>>) this.value).get();
+    @Override
+    public A object() {
+        return ((Supplier<A>) this.value).get();
     }
 
+    @Override
     public A low() {
         return this.object().peak();
     }
 
+    @Override
     public A high() {
         return this.object().last();
     }
@@ -137,12 +143,12 @@ public final class Quantifier<A extends WithRing<A>> extends TObj implements Wit
     }
 
     @Override
-    public <O extends Obj> O set(Object object) {
-        return this.object().set(object);
+    public <O extends Obj> O set(final Object object) {
+        return super.set((Supplier) () -> object);
     }
 
     @Override
-    public <O extends Obj> O q(Quantifier quantifier) {
+    public <O extends Obj> O q(final Quantifier quantifier) {
         return this.object().q(quantifier);
     }
 
@@ -182,8 +188,8 @@ public final class Quantifier<A extends WithRing<A>> extends TObj implements Wit
     }
 
     @Override
-    public Quantifier<A> clone() {
-        return new Quantifier((WithRing<A>) this.object().clone());
+    public TQuantifier<A> clone() {
+        return new TQuantifier<>((A) this.object().clone());
     }
 
     @Override
@@ -194,7 +200,8 @@ public final class Quantifier<A extends WithRing<A>> extends TObj implements Wit
     @Override
     public boolean equals(final Object object) {
         return object instanceof Quantifier &&
-                this.object().equals(((Quantifier) object).object());
+                this.high().equals(((Quantifier) object).high()) &&
+                this.low().equals(((Quantifier) object).low()); // TODO
     }
 
     @Override
@@ -204,26 +211,26 @@ public final class Quantifier<A extends WithRing<A>> extends TObj implements Wit
 
     @Override
     public Quantifier<A> one() {
-        return new Quantifier<>(this.object().one());
+        return new TQuantifier<>(this.object().one());
     }
 
     @Override
     public Quantifier<A> zero() {
-        return new Quantifier<>(this.object().zero());
+        return new TQuantifier<>(this.object().zero());
     }
 
     @Override
     public Quantifier<A> mult(final Quantifier<A> object) {
-        return new Quantifier<>(this.object().mult((A) object.object()));
+        return new TQuantifier<>(this.object().mult(object.object()));
     }
 
     @Override
-    public Quantifier<A> plus(Quantifier<A> object) {
-        return new Quantifier<>(this.object().plus((A) object.object()));
+    public Quantifier<A> plus(final Quantifier<A> object) {
+        return new TQuantifier<>(this.object().plus(object.object()));
     }
 
     public Quantifier<A> negate() {
-        return new Quantifier<>(this.object().negate());
+        return new TQuantifier<>(this.object().negate());
     }
 
     @Override
@@ -238,13 +245,19 @@ public final class Quantifier<A extends WithRing<A>> extends TObj implements Wit
         return this.low().isZero() && this.high().isZero();
     }
 
+
     @Override
-    public Quantifier<A> and(final Obj obj) {
-        return new Quantifier<>(this.low().set(TStream.of(this.low().mult(obj.peak()), this.high().mult(obj.last()))));
+    public boolean isOne() {
+        return this.low().isOne() && this.high().isOne();
     }
 
     @Override
-    public Quantifier<A> or(final Obj obj) {
-        return new Quantifier<>(this.low().set(TStream.of(this.low().plus(obj.peak()), this.high().plus(obj.last()))));
+    public Quantifier<A> and(final Quantifier<A> obj) {
+        return new TQuantifier<>(this.low().set(TStream.of(this.low().mult(obj.peak()), this.high().mult(obj.last()))));
+    }
+
+    @Override
+    public Quantifier<A> or(final Quantifier<A> obj) {
+        return new TQuantifier<>(this.low().set(TStream.of(this.low().plus(obj.peak()), this.high().plus(obj.last()))));
     }
 }

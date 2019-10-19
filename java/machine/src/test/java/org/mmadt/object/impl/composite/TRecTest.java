@@ -34,7 +34,6 @@ import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PAnd;
 import org.mmadt.object.model.type.PMap;
-import org.mmadt.object.model.type.Quantifier;
 
 import java.util.Random;
 
@@ -50,11 +49,11 @@ import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.type;
-import static org.mmadt.object.model.type.Quantifier.one;
-import static org.mmadt.object.model.type.Quantifier.plus;
-import static org.mmadt.object.model.type.Quantifier.qmark;
-import static org.mmadt.object.model.type.Quantifier.star;
-import static org.mmadt.object.model.type.Quantifier.zero;
+import static org.mmadt.object.impl.composite.TQuantifier.one;
+import static org.mmadt.object.impl.composite.TQuantifier.plus;
+import static org.mmadt.object.impl.composite.TQuantifier.qmark;
+import static org.mmadt.object.impl.composite.TQuantifier.star;
+import static org.mmadt.object.model.composite.Quantifier.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -279,12 +278,12 @@ final class TRecTest {
     @Test
     void shouldBindQuantifier() {
         final Rec person = TRec.of("name", TStr.some().as("x"), "age", TInt.some()).q(qmark).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().as("x"))))));
-        assertEquals(Quantifier.qmark, person.q());
+        assertEquals(TQuantifier.qmark, person.q());
         final Bindings bindings = new Bindings();
         bindings.put("x", TStr.of("marko"));
         final Obj marko = person.bind(bindings);
-        assertEquals(Quantifier.qmark, person.q());
-        assertEquals(Quantifier.qmark, marko.q());
+        assertEquals(TQuantifier.qmark, person.q());
+        assertEquals(TQuantifier.qmark, marko.q());
     }
 
     @Test

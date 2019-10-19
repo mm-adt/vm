@@ -27,8 +27,7 @@ import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.util.ObjectHelper;
 
 import static org.mmadt.language.compiler.Tokens.BOOL;
-import static org.mmadt.object.model.type.Quantifier.star;
-import static org.mmadt.object.model.type.Quantifier.zero;
+
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,8 +35,8 @@ import static org.mmadt.object.model.type.Quantifier.zero;
 public final class TBool extends TObj implements Bool {
 
     private static final Bool SOME = new TBool(null);
-    private static final Bool NONE = new TBool(null).q(zero);
-    private static final Bool ALL = new TBool(null).q(star);
+    private static final Bool NONE = new TBool(null).q(0);
+    private static final Bool ALL = new TBool(null).q(0, Integer.MAX_VALUE);
     private static final Bool TRUE = new TBool(Boolean.TRUE);
     private static final Bool FALSE = new TBool(Boolean.FALSE);
 

@@ -38,10 +38,10 @@ import org.mmadt.object.model.type.POr;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.model.type.Quantifier.plus;
-import static org.mmadt.object.model.type.Quantifier.qmark;
-import static org.mmadt.object.model.type.Quantifier.star;
-import static org.mmadt.object.model.type.Quantifier.zero;
+import static org.mmadt.object.impl.composite.TQuantifier.plus;
+import static org.mmadt.object.impl.composite.TQuantifier.star;
+import static org.mmadt.object.model.composite.Quantifier.Tag.qmark;
+import static org.mmadt.object.model.composite.Quantifier.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

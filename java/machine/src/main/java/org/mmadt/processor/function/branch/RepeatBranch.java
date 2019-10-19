@@ -24,7 +24,8 @@ package org.mmadt.processor.function.branch;
 
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.impl.composite.TQuantifier;
+import org.mmadt.object.model.composite.Quantifier;
 import org.mmadt.object.model.util.StringFactory;
 import org.mmadt.processor.compiler.IR;
 import org.mmadt.processor.function.AbstractFunction;

@@ -26,21 +26,21 @@ import org.junit.jupiter.api.Test;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.atomic.TReal;
 import org.mmadt.object.model.atomic.Int;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.impl.composite.TQuantifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class QuantifierTest {
+final class TQuantifierTest {
 
     @Test
     void shouldNegate() {
-        assertEquals(TInt.of(-4, -43), new Quantifier<>(4, 43).negate().object());
-        assertEquals(TInt.of(-4, -43), new Quantifier<>(TInt.of(4, 43)).negate().object());
-        assertEquals(TInt.of(-4, -43), new Quantifier<>(TInt.of(4, 43).negate()).object());
-        assertEquals(TReal.of(-43.2, -411.34), new Quantifier<>(TReal.of(43.2, 411.34)).negate().object());
+        assertEquals(TInt.of(-4, -43), new TQuantifier<>(4, 43).negate().object());
+        assertEquals(TInt.of(-4, -43), new TQuantifier<>(TInt.of(4, 43)).negate().object());
+        assertEquals(TInt.of(-4, -43), new TQuantifier<>(TInt.of(4, 43).negate()).object());
+        assertEquals(TReal.of(-43.2, -411.34), new TQuantifier<>(TReal.of(43.2, 411.34)).negate().object());
         // TODO: non-mumeric obj testing
         //  assertEquals(TStr.of("marko","rodriguez"), new Quantifier<>(TStr.of("marko","rodriguez")).negate().object());
 
@@ -48,14 +48,14 @@ final class QuantifierTest {
 
     @Test
     void shouldAndCorrectly() {
-        Quantifier q1 = new Quantifier(1, 1);
-        Quantifier q2 = new Quantifier(50, 50);
-        Quantifier q3 = new Quantifier(0, Integer.MAX_VALUE);
-        Quantifier q4 = new Quantifier(0, 1);
+        TQuantifier q1 = new TQuantifier(1, 1);
+        TQuantifier q2 = new TQuantifier(50, 50);
+        TQuantifier q3 = new TQuantifier(0, Integer.MAX_VALUE);
+        TQuantifier q4 = new TQuantifier(0, 1);
 
-        assertEquals(Quantifier.one, q1);
-        assertEquals(Quantifier.star, q3);
-        assertEquals(Quantifier.qmark, q4);
+        assertEquals(TQuantifier.one, q1);
+        assertEquals(TQuantifier.star, q3);
+        assertEquals(TQuantifier.qmark, q4);
         //
         assertEquals(q2, q1.and(q2));
         //
@@ -64,28 +64,28 @@ final class QuantifierTest {
         assertEquals(q3, q3.and(q3));
         //
         assertEquals(q4, q1.and(q4));
-        assertEquals(new Quantifier(0, 50), q2.and(q4));
+        assertEquals(new TQuantifier(0, 50), q2.and(q4));
         assertEquals(q3, q3.and(q4));
         assertEquals(q4, q4.and(q4));
     }
 
     @Test
     void shouldOrCorrectly() {
-        Quantifier q1 = new Quantifier(1, 1);
-        Quantifier q2 = new Quantifier(50, 50);
-        Quantifier q3 = new Quantifier(0, Integer.MAX_VALUE);
-        Quantifier q4 = new Quantifier(0, 1);
+        TQuantifier q1 = new TQuantifier(1, 1);
+        TQuantifier q2 = new TQuantifier(50, 50);
+        TQuantifier q3 = new TQuantifier(0, Integer.MAX_VALUE);
+        TQuantifier q4 = new TQuantifier(0, 1);
 
-        assertEquals(new Quantifier(51, 51), q1.or(q2));
+        assertEquals(new TQuantifier(51, 51), q1.or(q2));
         //
-        assertEquals(Quantifier.plus, q1.or(q3));
-        assertEquals(new Quantifier(50, Integer.MAX_VALUE), q2.or(q3));
+        assertEquals(TQuantifier.plus, q1.or(q3));
+        assertEquals(new TQuantifier(50, Integer.MAX_VALUE), q2.or(q3));
         assertEquals(q3, q3.or(q3));
         //
-        assertEquals(new Quantifier(1, 2), q1.or(q4));
-        assertEquals(new Quantifier(50, 51), q2.or(q4));
-        assertEquals(Quantifier.star, q3.or(q4));
-        assertEquals(new Quantifier(0, 2), q4.or(q4));
+        assertEquals(new TQuantifier(1, 2), q1.or(q4));
+        assertEquals(new TQuantifier(50, 51), q2.or(q4));
+        assertEquals(TQuantifier.star, q3.or(q4));
+        assertEquals(new TQuantifier(0, 2), q4.or(q4));
     }
 
     @Test

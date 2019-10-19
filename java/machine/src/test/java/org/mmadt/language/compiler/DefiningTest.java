@@ -33,7 +33,7 @@ import org.mmadt.object.model.composite.Inst;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.model.type.Quantifier.star;
+import static org.mmadt.object.impl.composite.TQuantifier.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

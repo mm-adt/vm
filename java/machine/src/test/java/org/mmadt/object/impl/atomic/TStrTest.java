@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.mmadt.object.impl.TObj;
 import org.mmadt.object.model.atomic.Str;
 import org.mmadt.object.model.type.PRel;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.impl.composite.TQuantifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -43,7 +43,7 @@ final class TStrTest {
         assertFalse(TInt.some().test(TStr.of("hello")));
         assertTrue(TObj.all().test(TStr.of("hello")));
         // System.out.println(TObj.all().eq("hello"));
-        assertTrue(TStr.of("hello").q(Quantifier.star).test(TStr.of("hello")));
+        assertTrue(TStr.of("hello").q(TQuantifier.star).test(TStr.of("hello")));
         assertTrue(TStr.some().set(new PRel(PRel.Rel.EQ, TStr.of("id"))).test(TStr.of("id")));
         assertTrue(TStr.some().set(new PRel(PRel.Rel.EQ, TStr.of("id").or(TStr.of("label")))).test(TStr.of("id")));
         assertTrue(TStr.some().set(TStr.of("id").or(TStr.of("label"))).test(TStr.of("id")));

@@ -25,12 +25,14 @@ package org.mmadt.object.model.util;
 import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.composite.TInst;
+import org.mmadt.object.impl.composite.TQuantifier;
 import org.mmadt.object.model.Model;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.Stream;
 import org.mmadt.object.model.atomic.Str;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Lst;
+import org.mmadt.object.model.composite.Quantifier;
 import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.PAnd;
 import org.mmadt.object.model.type.PConjunction;
@@ -38,7 +40,6 @@ import org.mmadt.object.model.type.PList;
 import org.mmadt.object.model.type.PMap;
 import org.mmadt.object.model.type.POr;
 import org.mmadt.object.model.type.Pattern;
-import org.mmadt.object.model.type.Quantifier;
 import org.mmadt.processor.function.QFunction;
 
 import java.util.ArrayList;
@@ -87,11 +88,11 @@ public final class StringFactory {
     }
 
     private static void objectMetadata(final Obj object, final StringBuilder builder) {
-        if (object.q() != Quantifier.one)
+        if (object.q() != TQuantifier.one)
             builder.append(object.q());
         if (null != object.variable())
             builder.append(TILDE).append(object.variable());
-        if (!ObjectHelper.access(object).q().equals(Quantifier.zero))
+        if (!ObjectHelper.access(object).q().equals(TQuantifier.zero))
             builder.append(SPACE).append(MAPSFROM).append(SPACE).append(object.access());
         if (null != object.members()) {
             builder.append(NEWLINE);
@@ -198,7 +199,7 @@ public final class StringFactory {
         else {
             final boolean parens =
                     (o instanceof Obj || o instanceof Stream || o instanceof PConjunction) &&
-                            (null != object.variable() || !Quantifier.one.equals(object.q()));
+                            (null != object.variable() || !TQuantifier.one.equals(object.q()));
             if (parens)
                 builder.append(LPAREN);
             builder.append(o);
@@ -245,13 +246,13 @@ public final class StringFactory {
     }
 
     public static String quantifier(final Quantifier quantifier) {
-        if (Quantifier.one.equals(quantifier))
+        if (quantifier.isOne())
             return EMPTY;
-        else if (Quantifier.star.equals(quantifier))
+        else if (TQuantifier.star.equals(quantifier))
             return LCURL + ASTERIX + RCURL;
-        else if (Quantifier.qmark.equals(quantifier))
+        else if (TQuantifier.qmark.equals(quantifier))
             return LCURL + QUESTION + RCURL;
-        else if (Quantifier.plus.equals(quantifier))
+        else if (TQuantifier.plus.equals(quantifier))
             return LCURL + CROSS + RCURL;
         else if (quantifier.constant())
             return LCURL + quantifier.low() + RCURL;
@@ -294,7 +295,7 @@ public final class StringFactory {
             name = name.substring(0, name.length() - 1);
             name = name + ")";
         }
-        if (!function.quantifier().equals(Quantifier.one))
+        if (!function.quantifier().equals(TQuantifier.one))
             name = name + function.quantifier();
         if (null != function.label())
             name = name + "~" + function.label();

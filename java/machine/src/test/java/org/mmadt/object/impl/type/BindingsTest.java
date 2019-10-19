@@ -31,7 +31,7 @@ import org.mmadt.object.impl.composite.TRec;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.Bindings;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.impl.composite.TQuantifier;
 import org.mmadt.object.model.util.ObjectHelper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,8 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.model.type.Quantifier.one;
-import static org.mmadt.object.model.type.Quantifier.star;
+import static org.mmadt.object.impl.composite.TQuantifier.one;
+import static org.mmadt.object.impl.composite.TQuantifier.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -140,13 +140,13 @@ class BindingsTest {
         assertTrue(type1.instructions().entrySet().iterator().next().getKey().constant());
         assertFalse(type1.instructions().entrySet().iterator().next().getValue().constant());
         //
-        assertEquals(type1.q(), Quantifier.star);
-        assertEquals(type2.q(), Quantifier.star);
+        assertEquals(type1.q(), TQuantifier.star);
+        assertEquals(type2.q(), TQuantifier.star);
         final TObj type3 = type2.q(one);
         assertEquals(type2.instructions(), type3.instructions());
-        assertEquals(type1.q(), Quantifier.star);
-        assertEquals(type2.q(), Quantifier.star);
-        assertEquals(type3.q(), Quantifier.one);
+        assertEquals(type1.q(), TQuantifier.star);
+        assertEquals(type2.q(), TQuantifier.star);
+        assertEquals(type3.q(), TQuantifier.one);
         assertNotEquals(type1, type2);
         assertNotEquals(type2, type3);
         assertNotEquals(type3, type1);

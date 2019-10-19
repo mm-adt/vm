@@ -34,7 +34,7 @@ import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PAnd;
-import org.mmadt.object.model.type.Quantifier;
+import org.mmadt.object.impl.composite.TQuantifier;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.model.type.Quantifier.star;
+import static org.mmadt.object.impl.composite.TQuantifier.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -62,9 +62,9 @@ class TDBTest {
         final TRec<Str, Obj> person = model.get("person");
         //
         assertEquals("people", model.sym("people").symbol());
-        assertEquals(Quantifier.star, people.q());
+        assertEquals(TQuantifier.star, people.q());
         assertEquals("person", model.sym("person").symbol());
-        assertEquals(Quantifier.one, person.q());
+        assertEquals(TQuantifier.one, person.q());
         assertNotEquals(person, people);
         assertNotEquals(person.toString(), people.toString());
         //

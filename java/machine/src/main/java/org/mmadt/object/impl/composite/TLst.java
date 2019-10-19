@@ -30,8 +30,6 @@ import org.mmadt.object.model.type.PList;
 import org.mmadt.object.model.util.StringFactory;
 
 import static org.mmadt.language.compiler.Tokens.LIST;
-import static org.mmadt.object.model.type.Quantifier.star;
-import static org.mmadt.object.model.type.Quantifier.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,8 +37,8 @@ import static org.mmadt.object.model.type.Quantifier.zero;
 public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     private static final Lst SOME = new TLst<>(null);
-    private static final Lst NONE = new TLst<>(null).q(zero);
-    private static final Lst ALL = new TLst<>(null).q(star);
+    private static final Lst NONE = new TLst<>(null).q(0);
+    private static final Lst ALL = new TLst<>(null).q(0, Integer.MAX_VALUE);
 
     protected TLst(final Object value) {
         super(value);
