@@ -127,8 +127,8 @@ final class TInstTest {
     void testInstructionComposition() {
         final Inst a = TInst.of("db");
         final Inst b = is(get("name").eq("marko")).bytecode();
-        assertEquals(TQ.one, a.q());
-        assertEquals(TQ.one, b.q());
+        assertEquals(a.q().one(), a.q());
+        assertEquals(b.q().one(), b.q());
 //        assertEquals(Q.one, b.get(TInt.oneInt()).quantifier());
         //
         final Inst c = a.mult(b);
@@ -139,14 +139,14 @@ final class TInstTest {
         final Inst e = c.mult(d);
         assertTrue(e.get() instanceof TStream);
         for (final TInst inst : e.<TStream<TInst>>get()) {
-            assertEquals(TQ.one, inst.q());
+            assertEquals(inst.q().one(), inst.q());
             if (inst.opcode().get().equals("is"))
                 assertEquals(TQ.of(2, 2), inst.get(TInt.oneInt()).q());
             else if (inst.opcode().get().equals("db"))
-                assertEquals(TQ.zero, inst.get(TInt.oneInt()).q());
+                assertEquals(inst.q().zero(), inst.get(TInt.oneInt()).q());
             else {
                 assertEquals("get", inst.opcode().get());
-                assertEquals(TQ.one, inst.get(TInt.oneInt()).q());
+                assertEquals(inst.q().one(), inst.get(TInt.oneInt()).q());
             }
             assertEquals(Tokens.INST, inst.symbol());
         }
@@ -165,12 +165,12 @@ final class TInstTest {
     void testInstructionBranching() {
         final Inst a = TInst.of("get", "outE");
         final Inst b = TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko")));
-        assertEquals(TQ.one, a.q());
-        assertEquals(TQ.one, b.q());
+        assertEquals(a.q().one(), a.q());
+        assertEquals(b.q().one(), b.q());
 //        assertEquals(Q.qone, b.get(TInt.oneInt()).quantifier());
         //
         final Inst c = a.plus(b);
-        assertEquals(TQ.one, c.q());
+        assertEquals(c.q().one(), c.q());
         assertEquals(c, c.peak());
         assertEquals(a, c.get(TInt.oneInt()));
         assertEquals(b, c.get(TInt.twoInt()));

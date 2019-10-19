@@ -45,7 +45,7 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> {
                 //  case star:
                 //      return (Q) quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().().clone());
                 case qmark:
-                    return (Q) quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().one().clone()));
+                    return (Q) quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().zero().clone()));
                 //  case plus:
                 //      return (Q) quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone());
                 default:

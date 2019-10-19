@@ -29,6 +29,8 @@ import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.model.atomic.Int;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.object.model.composite.Q.Tag.one;
+import static org.mmadt.object.model.composite.Q.Tag.qmark;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -53,9 +55,9 @@ final class TQTest {
         TQ q3 = new TQ(0, Integer.MAX_VALUE);
         TQ q4 = new TQ(0, 1);
 
-        assertEquals(TQ.one, q1);
+        assertEquals(one.apply(q1), q1);
         assertEquals(TQ.star, q3);
-        assertEquals(TQ.qmark, q4);
+        assertEquals(qmark.apply(q4), q4);
         //
         assertEquals(q2, q1.and(q2));
         //

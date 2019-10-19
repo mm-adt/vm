@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.atomic.TStr;
 import org.mmadt.object.model.atomic.Int;
+import org.mmadt.object.model.composite.Q;
 import org.mmadt.object.model.composite.Rec;
 import org.mmadt.object.model.type.Bindings;
 
@@ -62,13 +63,14 @@ class TStreamTest {
             assertFalse(i.isType());
         });
         //
-        assertEquals(TQ.one, instance1.q());
-        assertEquals(TQ.one, instance2.q());
-        assertEquals(TQ.one, instance3.q());
-        assertEquals(TQ.one, instance4.q());
-        assertEquals(TQ.one, instance5.q());
-        assertEquals(TQ.one, instance6.q());
-        assertEquals(TQ.one, instance7.q());
+        final Q q = instance1.q().one();
+        assertEquals(q, instance1.q());
+        assertEquals(q, instance2.q());
+        assertEquals(q, instance3.q());
+        assertEquals(q, instance4.q());
+        assertEquals(q, instance5.q());
+        assertEquals(q, instance6.q());
+        assertEquals(q, instance7.q());
         //
        /* assertTrue(type.test(instance1));
         assertFalse(type.test(instance2));

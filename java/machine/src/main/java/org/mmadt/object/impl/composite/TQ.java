@@ -43,10 +43,8 @@ import java.util.function.Supplier;
  */
 public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
 
-    public static final Q zero = new TQ(0, 0);
-    public static final Q one = new TQ(1, 1);
+    public static final Q one = new TQ(1, 1); // TODO: MAKE THESE Q INTERFACE METHODS
     public static final Q star = new TQ(0, Integer.MAX_VALUE);
-    public static final Q qmark = new TQ(0, 1);
     public static final Q plus = new TQ(1, Integer.MAX_VALUE);
 
     public static TQ<Int> of(final int low, final int high) {

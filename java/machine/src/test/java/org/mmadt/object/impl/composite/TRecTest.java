@@ -49,10 +49,10 @@ import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.type;
-import static org.mmadt.object.impl.composite.TQ.one;
 import static org.mmadt.object.impl.composite.TQ.plus;
-import static org.mmadt.object.impl.composite.TQ.qmark;
 import static org.mmadt.object.impl.composite.TQ.star;
+import static org.mmadt.object.model.composite.Q.Tag.one;
+import static org.mmadt.object.model.composite.Q.Tag.qmark;
 import static org.mmadt.object.model.composite.Q.Tag.zero;
 
 /**
@@ -278,12 +278,12 @@ final class TRecTest {
     @Test
     void shouldBindQuantifier() {
         final Rec person = TRec.of("name", TStr.some().as("x"), "age", TInt.some()).q(qmark).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().as("x"))))));
-        assertEquals(TQ.qmark, person.q());
+        assertEquals(qmark.apply(person.q()), person.q());
         final Bindings bindings = new Bindings();
         bindings.put("x", TStr.of("marko"));
         final Obj marko = person.bind(bindings);
-        assertEquals(TQ.qmark, person.q());
-        assertEquals(TQ.qmark, marko.q());
+        assertEquals(qmark.apply(person.q()), person.q());
+        assertEquals(qmark.apply(marko.q()), marko.q());
     }
 
     @Test

@@ -186,7 +186,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 null == this.access &&
                 null == this.instructions &&
                 null == this.variable)
-            return this.q((Q)this.q().or(object.q()));
+            return this.q((Q) this.q().or(object.q()));
         else
             return ObjectHelper.root(this, object).set(POr.or(this.get() instanceof POr ? this.get() : this, object));
     }
@@ -271,7 +271,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         final O clone = (O) this.clone();
         clone.access = null;
         clone.variable = null;
-        clone.quantifier = TQ.one;
+        clone.quantifier = this.quantifier.one();
         return clone;
     }
 

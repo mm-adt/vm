@@ -39,8 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.impl.composite.TQ.one;
 import static org.mmadt.object.impl.composite.TQ.star;
+import static org.mmadt.object.model.composite.Q.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -146,7 +146,7 @@ class BindingsTest {
         assertEquals(type2.instructions(), type3.instructions());
         assertEquals(type1.q(), TQ.star);
         assertEquals(type2.q(), TQ.star);
-        assertEquals(type3.q(), TQ.one);
+        assertEquals(type3.q().one(), type3.q());
         assertNotEquals(type1, type2);
         assertNotEquals(type2, type3);
         assertNotEquals(type3, type1);

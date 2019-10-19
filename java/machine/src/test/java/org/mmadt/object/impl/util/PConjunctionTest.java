@@ -36,9 +36,9 @@ import org.mmadt.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.object.impl.composite.TQ.qmark;
 import static org.mmadt.object.impl.composite.TQ.star;
-import static org.mmadt.object.impl.composite.TQ.zero;
+import static org.mmadt.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.object.model.composite.Q.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -57,9 +57,9 @@ final class PConjunctionTest {
         //
         assertEquals("'marko'|'stephen'", TStr.of("marko").or(TStr.of("stephen")).toString());
         assertEquals("'marko'{?}|'stephen'", TStr.of("marko").q(qmark).or(TStr.of("stephen")).toString());
-       // assertEquals("'marko'{?}|'stephen'&gt('abc'){2}", TStr.of("marko").q(qmark).or(TStr.of("stephen")).and(TStr.some().gt("abc").q(2)).toString());
+        // assertEquals("'marko'{?}|'stephen'&gt('abc'){2}", TStr.of("marko").q(qmark).or(TStr.of("stephen")).and(TStr.some().gt("abc").q(2)).toString());
         assertEquals("gt(32)", TInt.some().and(TInt.gt(32)).toString()); // TODO: is this what we want?
-       // assertEquals("'marko'{?}|'stephen'&(gt('abc'){2}|bool{?})", TStr.of("marko").q(qmark).or(TStr.of("stephen")).and(TStr.some().gt("abc").q(2).or(TBool.some().q(qmark))).toString());
+        // assertEquals("'marko'{?}|'stephen'&(gt('abc'){2}|bool{?})", TStr.of("marko").q(qmark).or(TStr.of("stephen")).and(TStr.some().gt("abc").q(2).or(TBool.some().q(qmark))).toString());
         //
         assertEquals("gt(32){*}", TInt.some().q(star).and(TInt.gt(32)).toString()); // TODO: is this what we want?
         assertEquals("gt(32){*}", TInt.some().and(TInt.gt(32).q(star)).toString()); // TODO: is this what we want?

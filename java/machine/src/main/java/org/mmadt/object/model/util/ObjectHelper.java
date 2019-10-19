@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.mmadt.object.impl.composite.TQ.one;
+import static org.mmadt.object.model.composite.Q.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

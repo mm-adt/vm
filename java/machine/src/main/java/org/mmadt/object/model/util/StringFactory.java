@@ -88,11 +88,11 @@ public final class StringFactory {
     }
 
     private static void objectMetadata(final Obj object, final StringBuilder builder) {
-        if (object.q() != TQ.one)
+        if (!object.q().isOne())
             builder.append(object.q());
         if (null != object.variable())
             builder.append(TILDE).append(object.variable());
-        if (!ObjectHelper.access(object).q().equals(TQ.zero))
+        if (!ObjectHelper.access(object).q().equals(object.q().zero()))
             builder.append(SPACE).append(MAPSFROM).append(SPACE).append(object.access());
         if (null != object.members()) {
             builder.append(NEWLINE);
@@ -199,7 +199,7 @@ public final class StringFactory {
         else {
             final boolean parens =
                     (o instanceof Obj || o instanceof Stream || o instanceof PConjunction) &&
-                            (null != object.variable() || !TQ.one.equals(object.q()));
+                            (null != object.variable() || !object.q().isOne());
             if (parens)
                 builder.append(LPAREN);
             builder.append(o);
@@ -250,7 +250,7 @@ public final class StringFactory {
             return EMPTY;
         else if (TQ.star.equals(quantifier))
             return LCURL + ASTERIX + RCURL;
-        else if (TQ.qmark.equals(quantifier))
+        else if (Q.Tag.qmark.apply(quantifier).equals(quantifier))
             return LCURL + QUESTION + RCURL;
         else if (TQ.plus.equals(quantifier))
             return LCURL + CROSS + RCURL;
@@ -295,7 +295,7 @@ public final class StringFactory {
             name = name.substring(0, name.length() - 1);
             name = name + ")";
         }
-        if (!function.quantifier().equals(TQ.one))
+        if (!function.quantifier().isOne())
             name = name + function.quantifier();
         if (null != function.label())
             name = name + "~" + function.label();

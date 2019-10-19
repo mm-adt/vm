@@ -35,7 +35,7 @@ import org.mmadt.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.mmadt.object.impl.composite.TQ.qmark;
+import static org.mmadt.object.model.composite.Q.Tag.qmark;
 import static org.mmadt.object.impl.composite.TQ.star;
 
 

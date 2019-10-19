@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.object.impl.composite.TQ.star;
+import static org.mmadt.object.model.composite.Q.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -64,7 +65,7 @@ class TDBTest {
         assertEquals("people", model.sym("people").symbol());
         assertEquals(TQ.star, people.q());
         assertEquals("person", model.sym("person").symbol());
-        assertEquals(TQ.one, person.q());
+        assertEquals(person.q(one).q(), person.q());
         assertNotEquals(person, people);
         assertNotEquals(person.toString(), people.toString());
         //
