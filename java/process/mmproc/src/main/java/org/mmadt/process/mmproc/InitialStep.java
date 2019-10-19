@@ -47,7 +47,7 @@ final class InitialStep<S extends Obj> extends AbstractStep<S, S> {
 
     @Override
     public S next() {
-        return this.objs.next(); // TODO: quantifier mult via this.function
+        return this.objs.next().q(this.function.quantifier()); // TODO: quantifier mult via this.function
     }
 
     @Override

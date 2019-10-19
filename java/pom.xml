@@ -132,7 +132,7 @@
                     <excludes>
                         <exclude>**/*.mm</exclude>
                         <exclude>**/*.iml</exclude>
-                        <exclude>**/README.md</exclude>
+                        <exclude>**/*.md</exclude>
                         <exclude>**/target/**</exclude>
                     </excludes>
                     <licenses>

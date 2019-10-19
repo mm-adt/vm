@@ -265,7 +265,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             ((Stream<O>) this.get()).push(obj);
         else
             this.value = TStream.of(obj, this.clone());
-        this.quantifier = (Q) this.q().or(obj.q());
+        this.quantifier = this.q().or(obj.q());
         return (O) this;
     }
 

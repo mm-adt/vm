@@ -20,31 +20,13 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.compliance;
+package org.mmadt.process.mmproc.compliance;
 
-import org.mmadt.language.Query;
-import org.mmadt.object.impl.TObj;
-import org.mmadt.object.model.Obj;
-import org.mmadt.util.IteratorUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.mmadt.process.compliance.QTest;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTest implements TestMachine {
+class ProcQTest extends QTest implements ProcTestMachine {
 
-    <E extends Obj> List<E> submit(final Query query) {
-        System.out.println(query.toString());
-        return IteratorUtils.list(machine().submit(query.bytecode()));
-    }
-
-    <E extends Obj> List<E> objs(final Object... objects) {
-        final List<E> objs = new ArrayList<>();
-        for (final Object object : objects) {
-            objs.add((E) TObj.from(object));
-        }
-        return objs;
-    }
 }

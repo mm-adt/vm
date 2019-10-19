@@ -24,9 +24,13 @@ package org.mmadt.language;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.object.impl.TObj;
+import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.impl.composite.TInst;
+import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.model.Obj;
+import org.mmadt.object.model.Stream;
 import org.mmadt.object.model.composite.Inst;
+import org.mmadt.object.model.type.PList;
 
 import java.util.Objects;
 
@@ -117,15 +121,26 @@ public final class Query {
         return new Query(TInst.of(Tokens.A, arg(obj)));
     }
 
+    public Query q() {
+        return this.compose(TInst.of(Tokens.Q));
+    }
+
+    public Query q(final Object quantifier) {
+        final Inst last = this.bytecode.last(); // TODO: total shit show with streams...need a better model.
+        if (this.bytecode.get() instanceof PList)
+            this.bytecode = TInst.of(Tokens.ID);
+        else
+            this.bytecode.<Stream<Inst>>get().drop(last);
+        return this.compose(last.q(new TQ<>(TInt.of(arg(quantifier), arg(quantifier))))); // TODO: generalize to 2-stream
+    }
+
     public Query start(final Object... objects) {
         return new Query(TInst.of(Tokens.START, args(objects)));
     }
 
-
     public Query sum() {
         return this.compose(TInst.of(Tokens.SUM));
     }
-
 
     public Query type() {
         return this.compose(TInst.of(Tokens.TYPE));

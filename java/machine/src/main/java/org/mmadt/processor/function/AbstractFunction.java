@@ -58,6 +58,10 @@ public abstract class AbstractFunction implements QFunction {
         return (Argument<S, E>) this.arguments[index];
     }
 
+    protected <E extends Obj> E stage(final E obj) {
+        return this.quantifier.isOne() ? obj : obj.q(this.quantifier);
+    }
+
     @Override
     public String toString() {
         return StringFactory.function(this, this.arguments);

@@ -41,10 +41,10 @@ public final class PlusMap<S extends WithPlus<S>> extends AbstractFunction imple
 
     @Override
     public S apply(final S obj) {
-        return obj.plus(this.<S, S>argument(0).mapArg(obj));
+        return stage(obj.plus(this.<S, S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithPlus<S>> PlusMap<S> compile(final Inst inst) {
-        return new PlusMap<>(inst.q(), inst.variable(), Argument.<S,S>create(inst.get(TInt.oneInt())));
+        return new PlusMap<>(inst.q(), inst.variable(), Argument.<S, S>create(inst.get(TInt.oneInt())));
     }
 }

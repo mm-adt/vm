@@ -20,31 +20,30 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.compliance;
+package org.mmadt.processor.function.map;
 
-import org.mmadt.language.Query;
-import org.mmadt.object.impl.TObj;
 import org.mmadt.object.model.Obj;
-import org.mmadt.util.IteratorUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.mmadt.object.model.composite.Inst;
+import org.mmadt.object.model.composite.Q;
+import org.mmadt.object.model.type.algebra.WithRing;
+import org.mmadt.processor.function.AbstractFunction;
+import org.mmadt.processor.function.MapFunction;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTest implements TestMachine {
+public final class QMap<S extends Obj, E extends WithRing<E>> extends AbstractFunction implements MapFunction<S, E> {
 
-    <E extends Obj> List<E> submit(final Query query) {
-        System.out.println(query.toString());
-        return IteratorUtils.list(machine().submit(query.bytecode()));
+    private QMap(final Q quantifier, final String label) {
+        super(quantifier, label);
     }
 
-    <E extends Obj> List<E> objs(final Object... objects) {
-        final List<E> objs = new ArrayList<>();
-        for (final Object object : objects) {
-            objs.add((E) TObj.from(object));
-        }
-        return objs;
+    @Override
+    public E apply(final S obj) {
+        return stage((E) obj.q().object()); // TODO: this will change when Q wrapper is abandoned
+    }
+
+    public static <S extends Obj, E extends WithRing<E>> QMap<S, E> compile(final Inst inst) {
+        return new QMap<>(inst.q(), inst.variable());
     }
 }

@@ -22,29 +22,24 @@
 
 package org.mmadt.process.compliance;
 
-import org.mmadt.language.Query;
-import org.mmadt.object.impl.TObj;
-import org.mmadt.object.model.Obj;
-import org.mmadt.util.IteratorUtils;
+import org.junit.jupiter.api.Test;
+import org.mmadt.object.impl.atomic.TInt;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTest implements TestMachine {
+public abstract class QTest extends AbstractTest {
 
-    <E extends Obj> List<E> submit(final Query query) {
-        System.out.println(query.toString());
-        return IteratorUtils.list(machine().submit(query.bytecode()));
+    @Test
+    void startX2X_qX4X_plusX3X_q() {
+        assertEquals(objs(TInt.of(4, 4).q(4)), submit(start(2).q(4).plus(3).q()));
     }
 
-    <E extends Obj> List<E> objs(final Object... objects) {
-        final List<E> objs = new ArrayList<>();
-        for (final Object object : objects) {
-            objs.add((E) TObj.from(object));
-        }
-        return objs;
+    @Test
+    void startX2X_qX4X_plusX3X_qX2X_q() {
+        assertEquals(objs(TInt.of(8, 8).q(8)), submit(start(2).q(4).plus(3).q(2).q()));
     }
 }
