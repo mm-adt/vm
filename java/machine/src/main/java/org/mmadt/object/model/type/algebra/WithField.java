@@ -20,39 +20,40 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
-
-import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.atomic.Bool;
+package org.mmadt.object.model.type.algebra;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports >, <, >=, and <=.
+ * An {@link org.mmadt.object.model.Obj} that supports a +, -, *, and /.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithOrder<A extends Obj> extends Obj {
+public interface WithField<A extends WithField<A>> extends WithRing<A>, WithDiv<A> {
 
-    public Bool gt(final A object);
+    @Override
+    public A one();
 
-    public default Bool gte(final A object) {
-        return this.eq(object).plus(this.gt(object));
+    @Override
+    public A zero();
+
+    @Override
+    public A mult(final A object);
+
+    @Override
+    public A plus(final A object);
+
+    @Override
+    public default A minus(final A object) {
+        return this.plus(object.negate());
     }
 
-    public default Bool lte(final A object) {
-        return this.eq(object).plus(this.lt(object));
+    @Override
+    public A negate();
+
+    @Override
+    public default A div(final A object) {
+        return this.mult(object.inverse());
     }
 
-    public Bool lt(final A object);
-
-    public A max();
-
-    public A min();
-
-    public default boolean isMax() {
-        return this.eq(this.max()).get();
-    }
-
-    public default boolean isMin() {
-        return this.eq(this.min()).get();
-    }
+    @Override
+    public A inverse();
 }

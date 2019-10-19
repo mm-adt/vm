@@ -20,30 +20,19 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
+package org.mmadt.object.model.type.algebra;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports a commutative + with unity, -, and *.
+ * An {@link org.mmadt.object.model.Obj} that supports + with unity.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithRng<A extends WithRng<A>> extends WithGroupPlus<A>, WithCommutativePlus, WithMinus<A>, WithMult<A> {
+public interface WithSemigroupPlus<A extends WithSemigroupPlus<A>> extends WithPlus<A>, WithZero<A> {
 
     @Override
     public A zero();
 
     @Override
-    public A mult(final A object);
-
-    @Override
     public A plus(final A object);
-
-    @Override
-    public default A minus(final A object) {
-        return this.plus(object.negate());
-    }
-
-    @Override
-    public A negate();
 
 }

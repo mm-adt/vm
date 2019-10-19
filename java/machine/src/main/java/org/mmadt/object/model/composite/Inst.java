@@ -28,8 +28,8 @@ import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.atomic.Str;
 import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PList;
-import org.mmadt.object.model.type.feature.WithProduct;
-import org.mmadt.object.model.type.feature.WithRing;
+import org.mmadt.object.model.type.algebra.WithProduct;
+import org.mmadt.object.model.type.algebra.WithRing;
 import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.ArrayList;

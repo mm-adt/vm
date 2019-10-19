@@ -23,8 +23,8 @@
 package org.mmadt.object.model.atomic;
 
 import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.type.feature.WithOrder;
-import org.mmadt.object.model.type.feature.WithSemigroupPlus;
+import org.mmadt.object.model.type.algebra.WithOrder;
+import org.mmadt.object.model.type.algebra.WithSemigroupPlus;
 
 /**
  * A Java representation of the {@code str} object in mm-ADT.

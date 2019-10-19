@@ -30,8 +30,8 @@ import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PAnd;
 import org.mmadt.object.model.type.PList;
 import org.mmadt.object.model.type.Pattern;
-import org.mmadt.object.model.type.feature.WithProduct;
-import org.mmadt.object.model.type.feature.WithGroupPlus;
+import org.mmadt.object.model.type.algebra.WithProduct;
+import org.mmadt.object.model.type.algebra.WithGroupPlus;
 
 import java.util.List;
 

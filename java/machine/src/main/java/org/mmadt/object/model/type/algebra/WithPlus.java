@@ -20,14 +20,16 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
+package org.mmadt.object.model.type.algebra;
+
+import org.mmadt.object.model.Obj;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports &.
+ * An {@link org.mmadt.object.model.Obj} that supports +.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithAnd<A> {
+public interface WithPlus<A extends WithPlus<A>> extends Obj {
 
-    public A and(final A obj);
+    public A plus(final A object);
 }

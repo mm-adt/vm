@@ -20,20 +20,12 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
-
-import org.mmadt.object.model.Obj;
+package org.mmadt.object.model.type.algebra;
 
 /**
- * An {@link org.mmadt.object.model.Obj} with a * unity.
+ * An {@link org.mmadt.object.model.Obj} that supports a commutative +.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithOne<A extends WithOne<A>> extends Obj {
-
-    public A one();
-
-    public default boolean isOne() {
-        return this.eq(this.one()).get();
-    }
+public interface WithCommutativePlus {
 }

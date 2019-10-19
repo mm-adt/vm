@@ -29,7 +29,7 @@ import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PAnd;
 import org.mmadt.object.model.type.PMap;
 import org.mmadt.object.model.type.Pattern;
-import org.mmadt.object.model.type.feature.WithProduct;
+import org.mmadt.object.model.type.algebra.WithProduct;
 
 import java.util.List;
 

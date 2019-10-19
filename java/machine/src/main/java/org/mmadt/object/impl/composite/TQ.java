@@ -28,8 +28,8 @@ import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.type.feature.WithOrder;
-import org.mmadt.object.model.type.feature.WithRing;
+import org.mmadt.object.model.type.algebra.WithOrder;
+import org.mmadt.object.model.type.algebra.WithRing;
 import org.mmadt.object.model.util.StringFactory;
 
 import java.util.function.Supplier;

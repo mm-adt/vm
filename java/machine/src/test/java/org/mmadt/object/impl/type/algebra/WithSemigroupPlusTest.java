@@ -20,9 +20,10 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.impl.type.feature;
+package org.mmadt.object.impl.type.algebra;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.object.impl.atomic.TBool;
 import org.mmadt.object.impl.atomic.TInt;
@@ -30,12 +31,14 @@ import org.mmadt.object.impl.atomic.TReal;
 import org.mmadt.object.impl.atomic.TStr;
 import org.mmadt.object.impl.composite.TInst;
 import org.mmadt.object.impl.composite.TLst;
-import org.mmadt.object.model.type.feature.WithSemigroupPlus;
+import org.mmadt.object.model.type.algebra.WithSemigroupPlus;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -43,24 +46,33 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class WithSemigroupPlusTest {
 
-    @Test
-    void shouldSupportSemigroupAxioms() {
-        List.<WithSemigroupPlus>of(TLst.of(1), TInst.of(Tokens.ID), TStr.of("a"), TInt.of(1), TReal.of(1.0f), TBool.of(true)).forEach(semigroup -> {
-            final WithSemigroupPlus two = semigroup.plus(semigroup);
-            final WithSemigroupPlus three = two.plus(semigroup);
-            final WithSemigroupPlus four = three.plus(semigroup);
-            assertFalse(semigroup.isZero());
-            assertTrue(semigroup.zero().isZero());
-            // 0 + 0 = 0
-            assertEquals(semigroup.zero(), semigroup.zero().plus(semigroup.zero()));
-            // x + 0 = x
-            assertEquals(two, two.plus(semigroup.zero()));
-            // 0 + x = x
-            assertEquals(two, semigroup.zero().plus(two));
-            // (a+b)+c = a+(b+c)
-            assertEquals(two.plus(three).plus(four), two.plus(three.plus(four)));
-        });
+    private static final List<WithSemigroupPlus> TEST_ARGS = List.of(
+            TLst.of(1),
+            TInst.of(Tokens.ID),
+            TStr.of("a"),
+            TInt.of(1),
+            TReal.of(1.0f),
+            TBool.of(true));
 
+    static void validate(final WithSemigroupPlus semigroup) {
+        final WithSemigroupPlus two = semigroup.plus(semigroup);
+        final WithSemigroupPlus three = two.plus(semigroup);
+        final WithSemigroupPlus four = three.plus(semigroup);
+        assertFalse(semigroup.isZero());
+        assertTrue(semigroup.zero().isZero());
+        assertNotEquals(semigroup, semigroup.zero());
+        // 0 + 0 = 0
+        assertEquals(semigroup.zero(), semigroup.zero().plus(semigroup.zero()));
+        // x + 0 = x
+        assertEquals(two, two.plus(semigroup.zero()));
+        // 0 + x = x
+        assertEquals(two, semigroup.zero().plus(two));
+        // (a+b)+c = a+(b+c)
+        assertEquals(two.plus(three).plus(four), two.plus(three.plus(four)));
+    }
 
+    @TestFactory
+    Stream<DynamicTest> testSemiGroupPlus() {
+        return TEST_ARGS.stream().map(algebra -> DynamicTest.dynamicTest(algebra.toString(), () -> validate(algebra)));
     }
 }

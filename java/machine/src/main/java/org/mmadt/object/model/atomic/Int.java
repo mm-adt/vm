@@ -22,10 +22,10 @@
 
 package org.mmadt.object.model.atomic;
 
-import org.mmadt.object.model.type.feature.WithCommutativeMult;
-import org.mmadt.object.model.type.feature.WithCommutativePlus;
-import org.mmadt.object.model.type.feature.WithOrder;
-import org.mmadt.object.model.type.feature.WithRing;
+import org.mmadt.object.model.type.algebra.WithCommutativeMult;
+import org.mmadt.object.model.type.algebra.WithCommutativePlus;
+import org.mmadt.object.model.type.algebra.WithOrder;
+import org.mmadt.object.model.type.algebra.WithRing;
 
 /**
  * A Java representation of the {@code int} object in mm-ADT.

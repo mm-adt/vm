@@ -23,7 +23,7 @@
 package org.mmadt.object.model.type;
 
 import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.type.feature.WithOrder;
+import org.mmadt.object.model.type.algebra.WithOrder;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

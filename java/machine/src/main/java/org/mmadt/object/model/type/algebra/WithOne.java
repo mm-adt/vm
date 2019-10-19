@@ -20,19 +20,20 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
+package org.mmadt.object.model.type.algebra;
+
+import org.mmadt.object.model.Obj;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports + with unity.
+ * An {@link org.mmadt.object.model.Obj} with a * unity.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithSemigroupPlus<A extends WithSemigroupPlus<A>> extends WithPlus<A>, WithZero<A> {
+public interface WithOne<A extends WithOne<A>> extends Obj {
 
-    @Override
-    public A zero();
+    public A one();
 
-    @Override
-    public A plus(final A object);
-
+    public default boolean isOne() {
+        return this.eq(this.one()).get();
+    }
 }

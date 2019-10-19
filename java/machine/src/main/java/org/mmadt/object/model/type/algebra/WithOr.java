@@ -20,32 +20,14 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
+package org.mmadt.object.model.type.algebra;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports a commutative + with unity, -, and * with unity.
+ * An {@link org.mmadt.object.model.Obj} that supports |.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithRing<A extends WithRing<A>> extends WithRng<A>, WithOne<A> {
+public interface WithOr<A> {
 
-    @Override
-    public A one();
-
-    @Override
-    public A zero();
-
-    @Override
-    public A mult(final A object);
-
-    @Override
-    public A plus(final A object);
-
-    @Override
-    public default A minus(final A object) {
-        return this.plus(object.negate());
-    }
-
-    @Override
-    public A negate();
+    public A or(final A obj);
 }

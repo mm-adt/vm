@@ -23,8 +23,8 @@
 package org.mmadt.object.model.composite;
 
 import org.mmadt.object.model.Obj;
-import org.mmadt.object.model.type.feature.WithOrder;
-import org.mmadt.object.model.type.feature.WithRing;
+import org.mmadt.object.model.type.algebra.WithOrder;
+import org.mmadt.object.model.type.algebra.WithRing;
 
 import java.util.function.UnaryOperator;
 

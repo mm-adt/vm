@@ -20,18 +20,27 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
-
-import org.mmadt.object.model.Obj;
+package org.mmadt.object.model.type.algebra;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports -.
+ * An {@link org.mmadt.object.model.Obj} that supports * and /.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithMinus<A extends WithMinus<A>> extends Obj {
+public interface WithGroupMult<A extends WithGroupMult<A>> extends WithDiv<A>, WithMult<A>, WithOne<A> {
 
-    public A minus(final A object);
+    @Override
+    public A one();
 
-    public A negate();
+    @Override
+    public A mult(final A object);
+
+    @Override
+    public A inverse();
+
+    @Override
+    public default A div(final A object) {
+        return this.mult(object.inverse());
+    }
+
 }

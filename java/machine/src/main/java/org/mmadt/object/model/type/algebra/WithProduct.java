@@ -19,20 +19,19 @@
  * You can be released from the requirements of the license by purchasing
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
-package org.mmadt.object.model.type.feature;
+
+package org.mmadt.object.model.type.algebra;
 
 import org.mmadt.object.model.Obj;
 
 /**
- * An {@link org.mmadt.object.model.Obj} with a + unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithZero<A extends WithZero<A>> extends Obj {
+public interface WithProduct<K extends Obj, V extends Obj> extends Obj {
 
-    public A zero();
+    public WithProduct<K, V> put(final K key, final V value);
 
-    public default boolean isZero() {
-        return this.eq(this.zero()).get();
-    }
+    public WithProduct<K, V> drop(final K key);
+
+    public V get(final K key);
 }

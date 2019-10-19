@@ -41,7 +41,7 @@ import org.mmadt.object.model.type.PAnd;
 import org.mmadt.object.model.type.PConjunction;
 import org.mmadt.object.model.type.PList;
 import org.mmadt.object.model.type.PMap;
-import org.mmadt.object.model.type.feature.WithAnd;
+import org.mmadt.object.model.type.algebra.WithAnd;
 
 import java.util.HashMap;
 import java.util.List;

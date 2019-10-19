@@ -26,7 +26,7 @@ import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.type.feature.WithProduct;
+import org.mmadt.object.model.type.algebra.WithProduct;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.MapFunction;

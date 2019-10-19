@@ -25,7 +25,7 @@ import org.mmadt.object.impl.TObj;
 import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.Pattern;
-import org.mmadt.object.model.type.feature.WithRing;
+import org.mmadt.object.model.type.algebra.WithRing;
 
 import java.util.Iterator;
 

@@ -32,7 +32,7 @@ import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.type.feature.WithProduct;
+import org.mmadt.object.model.type.algebra.WithProduct;
 import org.mmadt.object.model.util.ObjectHelper;
 
 import static org.mmadt.language.compiler.Tokens.COUNT;

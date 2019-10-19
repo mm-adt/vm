@@ -19,17 +19,20 @@
  * You can be released from the requirements of the license by purchasing
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
-
-package org.mmadt.object.model.type.feature;
+package org.mmadt.object.model.type.algebra;
 
 import org.mmadt.object.model.Obj;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports +.
+ * An {@link org.mmadt.object.model.Obj} with a + unity.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithPlus<A extends WithPlus<A>> extends Obj {
+public interface WithZero<A extends WithZero<A>> extends Obj {
 
-    public A plus(final A object);
+    public A zero();
+
+    public default boolean isZero() {
+        return this.eq(this.zero()).get();
+    }
 }

@@ -20,12 +20,18 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
+package org.mmadt.object.model.type.algebra;
+
+import org.mmadt.object.model.Obj;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports a commutative +.
+ * An {@link org.mmadt.object.model.Obj} that supports /.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithCommutativePlus {
+public interface WithDiv<A extends WithDiv<A>> extends Obj {
+
+    public A div(final A object);
+
+    public A inverse();
 }

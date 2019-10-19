@@ -41,9 +41,9 @@ import org.mmadt.object.model.type.PList;
 import org.mmadt.object.model.type.PMap;
 import org.mmadt.object.model.type.POr;
 import org.mmadt.object.model.type.Pattern;
-import org.mmadt.object.model.type.feature.WithAnd;
-import org.mmadt.object.model.type.feature.WithOr;
-import org.mmadt.object.model.type.feature.WithRing;
+import org.mmadt.object.model.type.algebra.WithAnd;
+import org.mmadt.object.model.type.algebra.WithOr;
+import org.mmadt.object.model.type.algebra.WithRing;
 import org.mmadt.object.model.util.ObjectHelper;
 import org.mmadt.object.model.util.StringFactory;
 
@@ -74,12 +74,14 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     ////////
 
-    protected String symbol = Tokens.OBJ;               // the name of the object's form
+
     protected Object value;                             // mutually exclusive with pattern (instance data)
-    protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
     protected Obj type;                                 // an object that abstractly defines this object's forms
     protected String variable;                          // the ~bind string (if retrieved via a bind)
     protected Q<?> quantifier = TQ.ONE;                 // the 'amount' of this object bundle
+    // TODO: all fields below are type structures and should be bundled into a single field
+    protected String symbol = Tokens.OBJ;               // the name of the object's form
+    protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
     protected Inst access;                              // access to its physical representation
     protected PMap<Inst, Inst> instructions;            // rewrite rules for the vm instruction set (typically types)
     protected PMap<Obj, Obj> members;                   // the static members of the form (typically types)

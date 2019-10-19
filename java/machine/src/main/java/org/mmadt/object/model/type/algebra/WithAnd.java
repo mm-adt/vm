@@ -20,26 +20,14 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
+package org.mmadt.object.model.type.algebra;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports + and -.
+ * An {@link org.mmadt.object.model.Obj} that supports &.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithGroupPlus<A extends WithGroupPlus<A>> extends WithSemigroupPlus<A>, WithMinus<A>, WithZero<A> {
+public interface WithAnd<A> {
 
-    @Override
-    public A zero();
-
-    @Override
-    public A plus(final A object);
-
-    @Override
-    public A negate();
-
-    @Override
-    public default A minus(final A object) {
-        return this.plus(object.negate());
-    }
+    public A and(final A obj);
 }

@@ -20,18 +20,26 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
-
-import org.mmadt.object.model.Obj;
+package org.mmadt.object.model.type.algebra;
 
 /**
+ * An {@link org.mmadt.object.model.Obj} that supports + and -.
+ *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithProduct<K extends Obj, V extends Obj> extends Obj {
+public interface WithGroupPlus<A extends WithGroupPlus<A>> extends WithSemigroupPlus<A>, WithMinus<A>, WithZero<A> {
 
-    public WithProduct<K, V> put(final K key, final V value);
+    @Override
+    public A zero();
 
-    public WithProduct<K, V> drop(final K key);
+    @Override
+    public A plus(final A object);
 
-    public V get(final K key);
+    @Override
+    public A negate();
+
+    @Override
+    public default A minus(final A object) {
+        return this.plus(object.negate());
+    }
 }

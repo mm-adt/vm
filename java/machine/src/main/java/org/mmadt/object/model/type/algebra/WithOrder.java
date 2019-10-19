@@ -20,16 +20,39 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.object.model.type.feature;
+package org.mmadt.object.model.type.algebra;
 
 import org.mmadt.object.model.Obj;
+import org.mmadt.object.model.atomic.Bool;
 
 /**
- * An {@link org.mmadt.object.model.Obj} that supports *.
+ * An {@link org.mmadt.object.model.Obj} that supports >, <, >=, and <=.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithMult<A extends WithMult<A>> extends Obj {
+public interface WithOrder<A extends Obj> extends Obj {
 
-    public A mult(final A object);
+    public Bool gt(final A object);
+
+    public default Bool gte(final A object) {
+        return this.eq(object).plus(this.gt(object));
+    }
+
+    public default Bool lte(final A object) {
+        return this.eq(object).plus(this.lt(object));
+    }
+
+    public Bool lt(final A object);
+
+    public A max();
+
+    public A min();
+
+    public default boolean isMax() {
+        return this.eq(this.max()).get();
+    }
+
+    public default boolean isMin() {
+        return this.eq(this.min()).get();
+    }
 }

@@ -33,7 +33,7 @@ import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.atomic.Str;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.type.PList;
-import org.mmadt.object.model.type.feature.WithRing;
+import org.mmadt.object.model.type.algebra.WithRing;
 import org.mmadt.object.model.util.StringFactory;
 
 import java.util.List;
