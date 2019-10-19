@@ -22,10 +22,18 @@
 
 package org.mmadt.object.model.composite;
 
+import org.mmadt.object.impl.TObj;
+import org.mmadt.object.impl.TSym;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.type.Bindings;
+import org.mmadt.object.model.type.PAnd;
+import org.mmadt.object.model.type.PList;
+import org.mmadt.object.model.type.Pattern;
+import org.mmadt.object.model.type.feature.WithProduct;
 import org.mmadt.object.model.type.feature.WithGroupPlus;
+
+import java.util.List;
 
 /**
  * A Java representation of the {@code lst} object in mm-ADT.
@@ -33,19 +41,50 @@ import org.mmadt.object.model.type.feature.WithGroupPlus;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Lst<V extends Obj> extends Struct<Int, V>, WithGroupPlus<Lst<V>> {
+public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<Int,V> {
 
     public void add(final Int index, final V value);
 
     public void add(final V value);
 
     @Override
+    public Lst<V> put(final Int index, final V value);
+
+    @Override
+    public Lst<V> drop(final Int index);
+
+    @Override
+    public default V get(final Int index) {
+        V v = (V) TObj.none();
+        final Object object = this.peak().get();
+        if (object instanceof PList)
+            v = (((PList<V>) object).size() <= index.<Integer>get()) ? (V) TObj.none() : ((PList<V>) object).get(index.get());
+        else if (object instanceof PAnd) {
+            final List<Pattern> ps = ((PAnd) object).predicates(); // go backwards as recent AND has higher precedence
+            for (int i = ps.size() - 1; i >= 0; i--) {
+                final Pattern p = ps.get(i);
+                if (p instanceof Lst) {
+                    v = ((Lst<V>) p).get(index);
+                    if (!TObj.none().equals(v)) break;
+                } else if (p instanceof TSym) {
+                    final Lst<V> temp = ((TSym<Lst<V>>) p).getObject();
+                    if (null != temp) {
+                        v = temp.get(index);
+                        if (!TObj.none().equals(v)) break;
+                    }
+                }
+            }
+        }
+        return v;
+    }
+
+    @Override
     public default Lst<V> bind(final Bindings bindings) {
-        return (Lst<V>) Struct.super.bind(bindings);
+        return (Lst<V>) WithProduct.super.bind(bindings);
     }
 
     @Override
     public default Iterable<? extends Lst> iterable() {
-        return (Iterable<? extends Lst>) Struct.super.iterable();
+        return (Iterable<? extends Lst>) WithProduct.super.iterable();
     }
 }

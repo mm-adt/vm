@@ -22,10 +22,13 @@
 
 package org.mmadt.object.model.composite;
 
+import org.mmadt.object.impl.TObj;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.atomic.Str;
 import org.mmadt.object.model.type.Bindings;
+import org.mmadt.object.model.type.PList;
+import org.mmadt.object.model.type.feature.WithProduct;
 import org.mmadt.object.model.type.feature.WithRing;
 import org.mmadt.processor.util.MinimalProcessor;
 
@@ -39,7 +42,7 @@ import java.util.List;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Inst extends Struct<Int, Obj>, WithRing<Inst> {
+public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     public Str opcode();
 
@@ -71,10 +74,22 @@ public interface Inst extends Struct<Int, Obj>, WithRing<Inst> {
     }
 
     @Override
+    public Inst put(final Int index, final Obj value);
+
+    @Override
+    public Inst drop(final Int index);
+
+    @Override
+    public default Obj get(final Int index) {
+        final Object object = this.peak().get();
+        return (object instanceof PList && (((PList<Obj>) object).size() > index.<Integer>get())) ? ((PList<Obj>) object).get(index.get()) : TObj.none();
+    }
+
+    @Override
     public default boolean test(final Obj object) {
         // when testing instruction against instruction, use list testing inst(x,y)
         if (object instanceof Inst)
-            return Struct.super.test(((Inst) object));
+            return WithProduct.super.test(((Inst) object));
         return new MinimalProcessor<>(this).iterator(object).hasNext();
     }
 
@@ -82,7 +97,7 @@ public interface Inst extends Struct<Int, Obj>, WithRing<Inst> {
     public default boolean match(final Bindings bindings, final Obj object) {
         // when matching instruction against instruction, use list matching inst(x,y)
         if (object instanceof Inst)
-            return Struct.super.match(bindings, (Inst) object);
+            return WithProduct.super.match(bindings, (Inst) object);
 
         if (bindings.has(this.variable()))
             return bindings.get(this.variable()).test(object);
@@ -101,12 +116,12 @@ public interface Inst extends Struct<Int, Obj>, WithRing<Inst> {
 
     @Override
     public default Inst bind(final Bindings bindings) {
-        return (Inst) Struct.super.bind(bindings);
+        return (Inst) WithProduct.super.bind(bindings);
     }
 
     @Override
     public default Iterable<? extends Inst> iterable() {
-        return (Iterable<? extends Inst>) Struct.super.iterable();
+        return (Iterable<? extends Inst>) WithProduct.super.iterable();
     }
 
 }

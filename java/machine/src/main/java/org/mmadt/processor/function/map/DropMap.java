@@ -26,7 +26,7 @@ import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.composite.Struct;
+import org.mmadt.object.model.type.feature.WithProduct;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.MapFunction;
@@ -34,15 +34,15 @@ import org.mmadt.processor.function.MapFunction;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class DropMap<K extends Obj, V extends Obj> extends AbstractFunction implements MapFunction<Struct<K, V>, Struct<K, V>> {
+public final class DropMap<K extends Obj, V extends Obj> extends AbstractFunction implements MapFunction<WithProduct<K, V>, WithProduct<K, V>> {
 
-    private DropMap(final Q quantifier, final String label, final Argument<Struct<K, V>, K> key) {
+    private DropMap(final Q quantifier, final String label, final Argument<WithProduct<K, V>, K> key) {
         super(quantifier, label, key);
     }
 
     @Override
-    public Struct<K, V> apply(final Struct<K, V> obj) {
-        return obj.drop(this.<Struct<K, V>, K>argument(0).mapArg(obj));
+    public WithProduct<K, V> apply(final WithProduct<K, V> obj) {
+        return obj.drop(this.<WithProduct<K, V>, K>argument(0).mapArg(obj));
     }
 
     public static <K extends Obj, V extends Obj> DropMap<K, V> compile(final Inst inst) {

@@ -32,7 +32,7 @@ import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.atomic.Int;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.composite.Struct;
+import org.mmadt.object.model.type.feature.WithProduct;
 import org.mmadt.object.model.util.ObjectHelper;
 
 import static org.mmadt.language.compiler.Tokens.COUNT;
@@ -78,7 +78,7 @@ public final class Instructions {
             case FILTER:
                 return  domain.q(0, domain.q().and(inst.q()).high().get());
             case GET:
-                return ((Struct<Obj, Obj>) TSym.fetch(domain)).get(inst.get(TInt.oneInt()));
+                return ((WithProduct<Obj, Obj>) TSym.fetch(domain)).get(inst.get(TInt.oneInt()));
             case GT:
                 return TBool.some().q(domain.q());
             case ID:
@@ -96,11 +96,11 @@ public final class Instructions {
             case MAP:
                 return inst.get(TInt.oneInt()) instanceof Inst ? ((TInst) inst.get(TInt.oneInt())).range().q(domain.q()) : inst.get(TInt.oneInt());
             case MINUS:
-                return domain.q(domain.q().and(inst.q()));
+                return domain.q(domain.q().mult(inst.q()));
             case MULT:
-                return domain.q(domain.q().and(inst.q()));
+                return domain.q(domain.q().mult(inst.q()));
             case PLUS:
-                return domain.q(domain.q().and(inst.q()));
+                return domain.q(domain.q().mult(inst.q()));
             case RANGE: // TODO: none clip
                 return domain.q(min((Int) inst.get(TInt.twoInt()), TInt.of(max(domain.<Int>q().low(), (Int) inst.get(TInt.oneInt())))), min(domain.<Int>q().high(), (Int) inst.get(TInt.twoInt())));
             case START:

@@ -22,8 +22,16 @@
 
 package org.mmadt.object.model.composite;
 
+import org.mmadt.object.impl.TObj;
+import org.mmadt.object.impl.TSym;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.type.Bindings;
+import org.mmadt.object.model.type.PAnd;
+import org.mmadt.object.model.type.PMap;
+import org.mmadt.object.model.type.Pattern;
+import org.mmadt.object.model.type.feature.WithProduct;
+
+import java.util.List;
 
 /**
  * A Java representation of the {@code rec} object in mm-ADT.
@@ -31,15 +39,46 @@ import org.mmadt.object.model.type.Bindings;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Rec<K extends Obj, V extends Obj> extends Struct<K, V> {
+public interface Rec<K extends Obj, V extends Obj> extends WithProduct<K, V> {
+
+    @Override
+    public Rec<K, V> put(final K key, final V value);
+
+    @Override
+    public Rec<K, V> drop(final K key);
+
+    @Override
+    public default V get(final K key) {
+        V v = (V) TObj.none();
+        final Object object = this.peak().get();
+        if (object instanceof PMap)
+            v = ((PMap<K, V>) object).getOrDefault(key, (V) TObj.none());
+        else if (object instanceof PAnd) {
+            final List<Pattern> ps = ((PAnd) object).predicates(); // go backwards as recent AND has higher precedence
+            for (int i = ps.size() - 1; i >= 0; i--) {
+                final Pattern p = ps.get(i);
+                if (p instanceof Rec) {
+                    v = ((Rec<K, V>) p).get(key);
+                    if (!TObj.none().equals(v)) break;
+                } else if (p instanceof TSym) {
+                    final Rec<K, V> temp = ((TSym<Rec<K, V>>) p).getObject();
+                    if (null != temp) {
+                        v = temp.get(key);
+                        if (!TObj.none().equals(v)) break;
+                    }
+                }
+            }
+        }
+        return v;
+    }
 
     @Override
     public default Rec<K, V> bind(final Bindings bindings) {
-        return (Rec<K, V>) Struct.super.bind(bindings);
+        return (Rec<K, V>) WithProduct.super.bind(bindings);
     }
 
     @Override
     public default Iterable<? extends Rec> iterable() {
-        return (Iterable<? extends Rec>) Struct.super.iterable();
+        return (Iterable<? extends Rec>) WithProduct.super.iterable();
     }
 }

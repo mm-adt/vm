@@ -26,7 +26,7 @@ import org.mmadt.object.impl.atomic.TInt;
 import org.mmadt.object.model.Obj;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.composite.Struct;
+import org.mmadt.object.model.type.feature.WithProduct;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.MapFunction;
@@ -34,16 +34,16 @@ import org.mmadt.processor.function.MapFunction;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class PutMap<K extends Obj, V extends Obj> extends AbstractFunction implements MapFunction<Struct<K, V>, Struct<K, V>> {
+public final class PutMap<K extends Obj, V extends Obj> extends AbstractFunction implements MapFunction<WithProduct<K, V>, WithProduct<K, V>> {
 
 
-    private PutMap(final Q quantifier, final String label, final Argument<Struct<K, V>, K> key, final Argument<Struct<K, V>, V> value) {
+    private PutMap(final Q quantifier, final String label, final Argument<WithProduct<K, V>, K> key, final Argument<WithProduct<K, V>, V> value) {
         super(quantifier, label, key, value);
     }
 
     @Override
-    public Struct<K, V> apply(final Struct<K, V> obj) {
-        return obj.put(this.<Struct<K, V>, K>argument(0).mapArg(obj), this.<Struct<K, V>, V>argument(1).mapArg(obj));
+    public WithProduct<K, V> apply(final WithProduct<K, V> obj) {
+        return obj.put(this.<WithProduct<K, V>, K>argument(0).mapArg(obj), this.<WithProduct<K, V>, V>argument(1).mapArg(obj));
     }
 
     public static <K extends Obj, V extends Obj> PutMap<K, V> compile(final Inst inst) {

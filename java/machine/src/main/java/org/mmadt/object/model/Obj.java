@@ -30,7 +30,7 @@ import org.mmadt.object.impl.composite.TQ;
 import org.mmadt.object.model.atomic.Bool;
 import org.mmadt.object.model.composite.Inst;
 import org.mmadt.object.model.composite.Q;
-import org.mmadt.object.model.composite.Struct;
+import org.mmadt.object.model.type.feature.WithProduct;
 import org.mmadt.object.model.type.Bindings;
 import org.mmadt.object.model.type.PConjunction;
 import org.mmadt.object.model.type.PList;
@@ -197,7 +197,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         }
         if (null != this.variable())
             bindings.put(this.variable(), object);
-        if (this instanceof Struct)
+        if (this instanceof WithProduct)
             bindings.commit();
         return true;
     }
