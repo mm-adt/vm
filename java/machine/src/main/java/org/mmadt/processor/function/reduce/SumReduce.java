@@ -49,7 +49,7 @@ public final class SumReduce<S extends WithRing<S>> extends AbstractFunction imp
 
     @Override
     public S getInitialValue() {
-        return (S) this.quantifier().zero();
+        return (S) this.quantifier().zero().low();
     }
 
 
