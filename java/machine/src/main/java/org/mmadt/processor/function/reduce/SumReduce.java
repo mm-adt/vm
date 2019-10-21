@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.function.reduce;
 
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
@@ -50,7 +49,7 @@ public final class SumReduce<S extends WithRing<S>> extends AbstractFunction imp
 
     @Override
     public S getInitialValue() {
-        return (S) TInt.of(0);
+        return (S) this.quantifier().zero();
     }
 
 

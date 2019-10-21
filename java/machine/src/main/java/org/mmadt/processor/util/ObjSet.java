@@ -86,7 +86,7 @@ public final class ObjSet<S extends Obj> extends AbstractSet<S> implements Set<S
                 this.map.put(obj, obj);
                 return true;
             } else {
-                existing.q(existing.q().and(obj.q())); // TODO: needs to be plus()
+                existing.q(existing.q().plus(obj.q()));
                 return false;
             }
         }
