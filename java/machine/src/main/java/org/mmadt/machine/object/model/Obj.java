@@ -30,7 +30,6 @@ import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
-import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PConjunction;
 import org.mmadt.machine.object.model.type.PList;
@@ -38,6 +37,7 @@ import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
+import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
@@ -102,23 +102,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O set(final Object object);
 
     public <O extends Obj> O q(final Q quantifier);
-
-    public default <O extends Obj> O q(final Q.Tag tag) {
-        return this.q(tag.apply(this.q()));
-    }
-
-
-    public default <O extends Obj> O q(final int low, final int high) {
-        return this.q(new TQ<>(low, high));
-    }
-
-    public default <O extends Obj> O q(final int count) {
-        return this.q(count, count);
-    }
-
-    public default <O extends Obj> O q(final WithRing count) {
-        return this.q(new TQ<>(count));
-    }
 
     public <O extends Obj> O as(final String variable);
 
@@ -218,6 +201,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return Optional.empty();
     }
 
+    public Obj clone();
+
     //////////////
 
     public default boolean isType() {
@@ -232,6 +217,20 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.constant() && (TObj.none().test(this.access()) || this.access().constant());
     }
 
-    public Obj clone();
+    public default <O extends Obj> O q(final Q.Tag tag) {
+        return this.q(tag.apply(this.q()));
+    }
+
+    public default <O extends Obj> O q(final int low, final int high) {
+        return this.q(new TQ<>(low, high));
+    }
+
+    public default <O extends Obj> O q(final int count) {
+        return this.q(count, count);
+    }
+
+    public default <O extends Obj> O q(final WithRing count) {
+        return this.q(new TQ<>(count));
+    }
 
 }
