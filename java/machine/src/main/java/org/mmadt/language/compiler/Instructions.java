@@ -31,7 +31,6 @@ import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
@@ -56,6 +55,7 @@ import static org.mmadt.language.compiler.Tokens.RANGE;
 import static org.mmadt.language.compiler.Tokens.REF;
 import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.SUM;
+import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -70,23 +70,23 @@ public final class Instructions {
             case DEDUP:
                 return domain.isInstance() ? domain : domain.q(1, domain.q().high().get());
             case COUNT:
-                return domain.q().constant() ? TInt.of(domain.q().low()) : TInt.some();
+                return reduce(domain.q(), domain.q().low());
             case ERROR:
                 throw new RuntimeException("Compilation error: " + domain + "::" + inst);
             case EQ:
-                return TBool.some().q(domain.q());
+                return map(domain, TBool.some(), inst);
             case FILTER:
-                return  domain.q(0, domain.q().and(inst.q()).high().get());
+                return filter(domain, inst);
             case GET:
-                return ((WithProduct<Obj, Obj>) TSym.fetch(domain)).get(inst.get(TInt.oneInt()));
+                return map(domain, ((WithProduct<Obj, Obj>) TSym.fetch(domain)).get(inst.get(TInt.oneInt())), inst);
             case GT:
-                return TBool.some().q(domain.q());
+                return map(domain, TBool.some(), inst);
             case ID:
-                return domain.q(domain.q().and(inst.q()));
+                return endoMap(domain, inst);
             case IS:
-                return domain.q(domain.q().<Q>set(TInt.of(0,domain.q().mult(inst.q()).high().get())));
+                return filter(domain, inst);//domain.q(domain.q().<Q>set(TInt.of(0, domain.q().mult(inst.q()).high().get())));
             case LT:
-                TBool.some().q(domain.q());
+                return map(domain, TBool.some(), inst);
             case ORDER:
                 return domain.isInstance() ? domain.q(domain.q().one()) : domain;
             case PUT:
@@ -96,11 +96,11 @@ public final class Instructions {
             case MAP:
                 return inst.get(TInt.oneInt()) instanceof Inst ? ((TInst) inst.get(TInt.oneInt())).range().q(domain.q()) : inst.get(TInt.oneInt());
             case MINUS:
-                return domain.q(domain.q().mult(inst.q()));
+                return endoMap(domain, inst);
             case MULT:
-                return domain.q(domain.q().mult(inst.q()));
+                return endoMap(domain, inst);
             case PLUS:
-                return domain.q(domain.q().mult(inst.q()));
+                return endoMap(domain, inst);
             case RANGE: // TODO: none clip
                 return domain.q(min((Int) inst.get(TInt.twoInt()), TInt.of(max(domain.<Int>q().low(), (Int) inst.get(TInt.oneInt())))), min(domain.<Int>q().high(), (Int) inst.get(TInt.twoInt())));
             case START:
@@ -108,7 +108,7 @@ public final class Instructions {
                         1 == inst.args().size() ? inst.args().get(0) :
                                 ObjectHelper.type(inst.args().get(0)).q(inst.args().size());
             case SUM:
-                return domain.isInstance() ? domain : TInt.some();
+                return endoReduce(domain); //domain.isInstance() ? domain : TInt.some();
             default:
                 throw new RuntimeException("Unknown instruction: " + inst);
         }
@@ -127,5 +127,27 @@ public final class Instructions {
             return a.get();
         else
             return b.get();
+    }
+
+    /////////////////
+
+    private static Obj map(final Obj domain, final Obj range, final Inst inst) {
+        return range.q(domain.q().mult(inst.q()));
+    }
+
+    private static Obj endoMap(final Obj domain, final Inst inst) {
+        return map(domain, domain, inst);
+    }
+
+    private static Obj filter(final Obj domain, final Inst inst) {
+        return domain.q(domain.q().mult(inst.q()).high().push(domain.q().zero().low()));
+    }
+
+    private static Obj reduce(final Obj domain, final Obj range) {
+        return domain.constant() ? range : range.set(null).q(one);
+    }
+
+    private static Obj endoReduce(final Obj domain) {
+        return reduce(domain, domain);
     }
 }
