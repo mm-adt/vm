@@ -40,15 +40,15 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
         public Q apply(final Q quantifier) {
             switch (this) {
                 case zero:
-                    return (Q) quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone()));
+                    return quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone()));
                 case one:
-                    return (Q) quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().one().clone()));
+                    return quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().one().clone()));
                 case star:
-                    return (Q) quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.<WithRing>peak().zero().clone()));
+                    return quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.<WithRing>peak().zero().clone()));
                 case qmark:
-                    return (Q) quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().zero().clone()));
+                    return quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().zero().clone()));
                 case plus:
-                    return (Q) quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.<WithRing>peak().one().clone()));
+                    return quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.<WithRing>peak().one().clone()));
                 default:
                     throw new RuntimeException("Undefined short: " + this);
             }
@@ -85,7 +85,6 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
 
     public Q<A> or(final Q<A> obj);
 
-
     @Override
     public default Q<A> one() {
         return Tag.one.apply(this);
@@ -107,7 +106,6 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
     public default Q<A> star() {
         return Tag.star.apply(this);
     }
-
 
     public default boolean isStar() {
         return this.low().isZero() && ((WithOrder) this.high()).isMax();
