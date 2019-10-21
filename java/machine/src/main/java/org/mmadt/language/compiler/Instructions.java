@@ -32,6 +32,7 @@ import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithOne;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
@@ -72,7 +73,7 @@ public final class Instructions {
             case DB:
                 return model.get(DB);
             case DEDUP:
-                return domain.isInstance() ? domain : domain.q(1, domain.q().high().get());
+                return filter(domain, domain.q().one().low(), inst);
             case COUNT:
                 return reduce(domain.q(), domain.q().low());
             case ERROR:
@@ -150,7 +151,12 @@ public final class Instructions {
     }
 
     private static Obj filter(final Obj domain, final Inst inst) {
-        return domain.q(domain.q().mult(inst.q()).high().push(domain.q().zero().low()));
+        return filter(domain, domain.q().zero().low(), inst);
+    }
+
+
+    private static Obj filter(final Obj domain, final WithRing low, final Inst inst) {
+        return domain.q(domain.q().mult(inst.q()).high().push(low));
     }
 
     private static Obj reduce(final Obj domain, final Obj range) {
