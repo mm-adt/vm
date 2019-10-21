@@ -52,7 +52,7 @@ class TypeTest {
 
     private static final Obj NONE = TObj.none();
 
-    private final static List<TestArgs<List<Object>, Query>> TEST_PARAMETERS = List.of(
+    private final static TestArgs[] TEST_PARAMETERS = new TestArgs[]{
             new TestArgs<>(List.of(
                     NONE, NONE),
                     start()),
@@ -65,6 +65,12 @@ class TypeTest {
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2)),
                     start(1, 2).plus(7)),
+            new TestArgs<>(List.of(
+                    NONE, /*TInt.some(2),*/ TInt.zeroInt().q(2)),
+                    start(1, 2).plus(3).zero()),
+            new TestArgs<>(List.of(
+                    NONE, /*TInt.some(2),*/ TInt.oneInt().q(2)),
+                    start(1, 2).one()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2)),
                     start(1, 2).plus(7).dedup()),
@@ -97,17 +103,15 @@ class TypeTest {
             // TODO: if we know the EQ is a constant, then we know its constant{0,4}
             new TestArgs<>(List.of(
                     NONE, TInt.some(4), List.of(List.of(TInt.some(), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
-                    start(1, 2, 3, 4).map(map(plus(3).gt(2))).is(eq(true).id()))
-
-    );
+                    start(1, 2, 3, 4).map(map(plus(3).gt(2))).is(eq(true).id()))};
 
     @TestFactory
     Stream<DynamicTest> testTypes() {
-        return TEST_PARAMETERS.stream()
+        return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> {
                     assumeFalse(tp.ignore);
                     // System.out.println(tp.input.bytecode() + "\n=>" + tp.expected);
-                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(Rewriting.rewrite(TModel.of("ex"), tp.input.bytecode())));
+                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(Rewriting.rewrite(TModel.of("ex"), ((Query) tp.input).bytecode())));
                 }));
     }
 }

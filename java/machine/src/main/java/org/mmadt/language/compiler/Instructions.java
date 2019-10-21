@@ -30,7 +30,9 @@ import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.type.algebra.WithOne;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import static org.mmadt.language.compiler.Tokens.COUNT;
@@ -47,6 +49,7 @@ import static org.mmadt.language.compiler.Tokens.LT;
 import static org.mmadt.language.compiler.Tokens.MAP;
 import static org.mmadt.language.compiler.Tokens.MINUS;
 import static org.mmadt.language.compiler.Tokens.MULT;
+import static org.mmadt.language.compiler.Tokens.ONE;
 import static org.mmadt.language.compiler.Tokens.ORDER;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.PUT;
@@ -54,6 +57,7 @@ import static org.mmadt.language.compiler.Tokens.RANGE;
 import static org.mmadt.language.compiler.Tokens.REF;
 import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.SUM;
+import static org.mmadt.language.compiler.Tokens.ZERO;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
 /**
@@ -77,7 +81,7 @@ public final class Instructions {
             case FILTER:
                 return filter(domain, inst);
             case GET:
-                return map(domain, ((WithProduct<Obj, Obj>) TSym.fetch(domain)).get(inst.get(TInt.oneInt())), inst);
+                return map(domain, ((WithProduct) TSym.fetch(domain)).get(inst.get(TInt.oneInt())), inst);
             case GT:
                 return map(domain, TBool.some(), inst);
             case ID:
@@ -86,6 +90,8 @@ public final class Instructions {
                 return filter(domain, inst);
             case LT:
                 return map(domain, TBool.some(), inst);
+            case ONE:
+                return map(domain, ((WithOne) domain).one(), inst);
             case ORDER:
                 return endoMap(domain, inst);
             case PUT:
@@ -108,6 +114,8 @@ public final class Instructions {
                                 ObjectHelper.type(inst.args().get(0)).q(inst.args().size());
             case SUM:
                 return endoReduce(domain);
+            case ZERO:
+                return map(domain, ((WithZero) domain).zero(), inst);
             default:
                 throw new RuntimeException("Unknown instruction: " + inst);
         }
