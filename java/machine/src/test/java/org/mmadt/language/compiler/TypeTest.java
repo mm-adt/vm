@@ -78,6 +78,9 @@ class TypeTest {
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some()),
                     start(1, 2).plus(7).dedup().count()),
             new TestArgs<>(List.of(
+                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(), TInt.some()),
+                    start(1, 2).plus(7).dedup().count().mult(5)),
+            new TestArgs<>(List.of(
                     NONE, /*TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(),*/ TInt.of(1)),
                     start(1, 2).plus(7).dedup().count().count()),
             new TestArgs<>(List.of(
