@@ -63,6 +63,9 @@ class TypeTest {
                     NONE, TInt.some(2)),
                     start(1, 2)),
             new TestArgs<>(List.of(
+                    NONE, TInt.of(6)),
+                    start(1, 2, 3).plus(1).q(2).q()),
+            new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2)),
                     start(1, 2).plus(7)),
             new TestArgs<>(List.of(
@@ -81,14 +84,20 @@ class TypeTest {
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(), TInt.some()),
                     start(1, 2).plus(7).dedup().count().mult(5)),
             new TestArgs<>(List.of(
+                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(), TInt.some(10)),
+                    start(1, 2).plus(7).dedup().count().mult(5).q(10)),
+            //new TestArgs<>(List.of( // TODO: 0 quantifier handling
+            //        NONE, TInt.zeroInt()),
+            //        start(1, 2).plus(7).dedup().count().mult(5).q(0)),
+            new TestArgs<>(List.of(
                     NONE, /*TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(),*/ TInt.of(1)),
                     start(1, 2).plus(7).dedup().count().count()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(4), TInt.some(4), TInt.some(1, 4), TInt.some(), TInt.some()),
                     start(1, 2, 3, 4).plus(7).dedup().count().sum()),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(4), TInt.some(4), TBool.some(4)),
-                    start(1, 2, 3, 4).plus(7).gt(5)),
+                    NONE, TInt.some(4), TInt.some(8), TBool.some(8)),
+                    start(1, 2, 3, 4).plus(7).q(2).gt(5)),
             new TestArgs<>(List.of(
                     NONE, TInt.some(3), TInt.some(3), TBool.some(3)),
                     start(1, 2, 3).plus(7).gt(5).id()),

@@ -53,6 +53,7 @@ import static org.mmadt.language.compiler.Tokens.ONE;
 import static org.mmadt.language.compiler.Tokens.ORDER;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.PUT;
+import static org.mmadt.language.compiler.Tokens.Q;
 import static org.mmadt.language.compiler.Tokens.RANGE;
 import static org.mmadt.language.compiler.Tokens.REF;
 import static org.mmadt.language.compiler.Tokens.START;
@@ -106,6 +107,8 @@ public final class Instructions {
                 return endoMap(domain, inst);
             case PLUS:
                 return endoMap(domain, inst);
+            case Q:
+                return map(domain, domain.q(), inst);
             case RANGE: // TODO: none clip
                 return domain.q(min((Int) inst.get(TInt.twoInt()), TInt.of(max(domain.<Int>q().low(), (Int) inst.get(TInt.oneInt())))), min(domain.<Int>q().high(), (Int) inst.get(TInt.twoInt())));
             case START:

@@ -114,7 +114,7 @@ public final class Rewriting {
                 else
                     args.add(arg);
             }
-            final Inst newInst = TInst.of(oldInst.opcode(), args);
+            final Inst newInst = TInst.of(oldInst.opcode(), args).q(oldInst.q());
             newBc.add(newInst.domainAndRange(domain, Instructions.getRange(newInst, domain, model))); // clone the old instruction with new domain/range modifiers
         }
     }
