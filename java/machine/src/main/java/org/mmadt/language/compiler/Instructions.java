@@ -26,7 +26,6 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -84,17 +83,17 @@ public final class Instructions {
             case ID:
                 return endoMap(domain, inst);
             case IS:
-                return filter(domain, inst);//domain.q(domain.q().<Q>set(TInt.of(0, domain.q().mult(inst.q()).high().get())));
+                return filter(domain, inst);
             case LT:
                 return map(domain, TBool.some(), inst);
             case ORDER:
-                return domain.isInstance() ? domain.q(domain.q().one()) : domain;
+                return endoMap(domain, inst);
             case PUT:
                 return inst.get(TInt.twoInt());
             case REF:
                 return inst.get(TInt.oneInt());
             case MAP:
-                return inst.get(TInt.oneInt()) instanceof Inst ? ((TInst) inst.get(TInt.oneInt())).range().q(domain.q()) : inst.get(TInt.oneInt());
+                return map(domain, arg(inst, 1), inst);
             case MINUS:
                 return endoMap(domain, inst);
             case MULT:
@@ -108,7 +107,7 @@ public final class Instructions {
                         1 == inst.args().size() ? inst.args().get(0) :
                                 ObjectHelper.type(inst.args().get(0)).q(inst.args().size());
             case SUM:
-                return endoReduce(domain); //domain.isInstance() ? domain : TInt.some();
+                return endoReduce(domain);
             default:
                 throw new RuntimeException("Unknown instruction: " + inst);
         }
@@ -149,5 +148,9 @@ public final class Instructions {
 
     private static Obj endoReduce(final Obj domain) {
         return reduce(domain, domain);
+    }
+
+    private static Obj arg(final Inst arg, final int index) {
+        return arg.get(TInt.of(index)) instanceof Inst ? ((Inst) arg.get(TInt.of(index))).range() : arg.get(TInt.of(index));
     }
 }
