@@ -99,6 +99,10 @@ public final class Query {
         return this.compose(TInst.of(Tokens.LT, arg(obj)));
     }
 
+    public Query lte(final Object obj) {
+        return this.compose(TInst.of(Tokens.LTE, arg(obj)));
+    }
+
     public Query map(final Object obj) {
         return this.compose(TInst.of(Tokens.MAP, arg(obj)));
     }

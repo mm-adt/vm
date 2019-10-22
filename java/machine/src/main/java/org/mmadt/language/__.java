@@ -84,6 +84,10 @@ public class __ {
         return create().lt(object);
     }
 
+    public static Query lte(final Object object) {
+        return create().lte(object);
+    }
+
     public static Query map(final Object object) {
         return create().map(object);
     }

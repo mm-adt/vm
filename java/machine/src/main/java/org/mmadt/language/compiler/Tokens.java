@@ -95,6 +95,7 @@ public final class Tokens {
     public static final String GTE = "gte";
     public static final String GROUPCOUNT = "groupCount";
     public static final String LT = "lt";
+    public static final String LTE = "lte";
     public static final String MAP = "map";
     public static final String MINUS = "minus";
     public static final String MODEL = "model";

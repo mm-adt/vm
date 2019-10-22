@@ -39,6 +39,7 @@ import org.mmadt.processor.function.map.GetMap;
 import org.mmadt.processor.function.map.GtMap;
 import org.mmadt.processor.function.map.GteMap;
 import org.mmadt.processor.function.map.LtMap;
+import org.mmadt.processor.function.map.LteMap;
 import org.mmadt.processor.function.map.MapMap;
 import org.mmadt.processor.function.map.MinusMap;
 import org.mmadt.processor.function.map.MultMap;
@@ -69,6 +70,7 @@ import static org.mmadt.language.compiler.Tokens.GTE;
 import static org.mmadt.language.compiler.Tokens.ID;
 import static org.mmadt.language.compiler.Tokens.IS;
 import static org.mmadt.language.compiler.Tokens.LT;
+import static org.mmadt.language.compiler.Tokens.LTE;
 import static org.mmadt.language.compiler.Tokens.MAP;
 import static org.mmadt.language.compiler.Tokens.MINUS;
 import static org.mmadt.language.compiler.Tokens.MULT;
@@ -128,6 +130,8 @@ public final class FunctionTable {
                 return IsFilter.compile(inst);
             case LT:
                 return LtMap.compile(inst);
+            case LTE:
+                return LteMap.compile(inst);
             case MAP:
                 return MapMap.compile(inst);
             case MINUS:

@@ -58,7 +58,7 @@ class StepTest {
         assertEquals(List.of(TRec.of("a", 1, "c", 3)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
-    //@Test
+    //TODO    @Test
     void testGroupCount() {
         final Inst bytecode = start(0, 0, 2).plus(1).mult(1).plus(0).groupCount(plus(2).plus(-3).plus(3)).bytecode();
         final IR<Int, Int> ir = print(new IR<>(bytecode));

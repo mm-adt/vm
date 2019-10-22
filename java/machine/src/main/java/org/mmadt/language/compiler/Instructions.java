@@ -51,6 +51,7 @@ import static org.mmadt.language.compiler.Tokens.GTE;
 import static org.mmadt.language.compiler.Tokens.ID;
 import static org.mmadt.language.compiler.Tokens.IS;
 import static org.mmadt.language.compiler.Tokens.LT;
+import static org.mmadt.language.compiler.Tokens.LTE;
 import static org.mmadt.language.compiler.Tokens.MAP;
 import static org.mmadt.language.compiler.Tokens.MINUS;
 import static org.mmadt.language.compiler.Tokens.MULT;
@@ -102,6 +103,8 @@ public final class Instructions {
             case IS:
                 return filter(domain, inst);
             case LT:
+                return map(domain, TBool.some(), inst);
+            case LTE:
                 return map(domain, TBool.some(), inst);
             case PUT:
                 return inst.get(TInt.twoInt());
