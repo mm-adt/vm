@@ -22,8 +22,6 @@
 
 package org.mmadt.machine.object.model.atomic;
 
-import org.mmadt.machine.object.model.type.algebra.WithCommutativeMult;
-import org.mmadt.machine.object.model.type.algebra.WithCommutativePlus;
 import org.mmadt.machine.object.model.type.algebra.WithField;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 
@@ -33,6 +31,6 @@ import org.mmadt.machine.object.model.type.algebra.WithOrder;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Real extends WithField<Real>, WithOrder<Real>, WithCommutativePlus, WithCommutativeMult {
+public interface Real extends WithField<Real>, WithOrder<Real> {
 
 }

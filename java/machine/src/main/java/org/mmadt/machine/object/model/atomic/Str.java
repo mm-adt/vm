@@ -24,7 +24,7 @@ package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.machine.object.model.type.algebra.WithSemigroupPlus;
+import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 
 /**
  * A Java representation of the {@code str} object in mm-ADT.
@@ -32,7 +32,7 @@ import org.mmadt.machine.object.model.type.algebra.WithSemigroupPlus;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Str extends Obj, WithOrder<Str>, WithSemigroupPlus<Str> {
+public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
 
     public Bool regex(final Str pattern);
 

@@ -51,7 +51,7 @@ class WithGroupPlusTest {
             TBool.of(true));
 
     static void validate(final WithGroupPlus group) {
-        WithSemigroupPlusTest.validate(group);
+        WithMonoidPlusTest.validate(group);
         //
         final WithGroupPlus two = group.plus(group);
         final WithGroupPlus three = group.plus(group).plus(group);

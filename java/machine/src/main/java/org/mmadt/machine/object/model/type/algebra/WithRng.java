@@ -27,7 +27,7 @@ package org.mmadt.machine.object.model.type.algebra;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithRng<A extends WithRng<A>> extends WithGroupPlus<A>, WithCommutativePlus, WithMinus<A>, WithMult<A> {
+public interface WithRng<A extends WithRng<A>> extends WithGroupPlus<A>, WithCommutativePlus<A>, WithMonoidMult<A> {
 
     @Override
     public A zero();

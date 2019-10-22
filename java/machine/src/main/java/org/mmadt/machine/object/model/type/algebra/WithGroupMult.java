@@ -27,7 +27,7 @@ package org.mmadt.machine.object.model.type.algebra;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithGroupMult<A extends WithGroupMult<A>> extends WithDiv<A>, WithMult<A>, WithOne<A> {
+public interface WithGroupMult<A extends WithGroupMult<A>> extends WithMonoidMult<A>, WithDiv<A> {
 
     @Override
     public A one();

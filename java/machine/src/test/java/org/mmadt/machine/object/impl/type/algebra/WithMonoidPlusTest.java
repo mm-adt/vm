@@ -31,7 +31,7 @@ import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
-import org.mmadt.machine.object.model.type.algebra.WithSemigroupPlus;
+import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -44,9 +44,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class WithSemigroupPlusTest {
+class WithMonoidPlusTest {
 
-    private static final List<WithSemigroupPlus> TEST_ARGS = List.of(
+    private static final List<WithMonoidPlus> TEST_ARGS = List.of(
             TLst.of(1),
             TInst.of(Tokens.ID),
             TStr.of("a"),
@@ -54,19 +54,19 @@ class WithSemigroupPlusTest {
             TReal.of(1.0f),
             TBool.of(true));
 
-    static void validate(final WithSemigroupPlus semigroup) {
-        final WithSemigroupPlus two = semigroup.plus(semigroup);
-        final WithSemigroupPlus three = two.plus(semigroup);
-        final WithSemigroupPlus four = three.plus(semigroup);
-        assertFalse(semigroup.isZero());
-        assertTrue(semigroup.zero().isZero());
-        assertNotEquals(semigroup, semigroup.zero());
+    static void validate(final WithMonoidPlus monoid) {
+        final WithMonoidPlus two = monoid.plus(monoid);
+        final WithMonoidPlus three = two.plus(monoid);
+        final WithMonoidPlus four = three.plus(monoid);
+        assertFalse(monoid.isZero());
+        assertTrue(monoid.zero().isZero());
+        assertNotEquals(monoid, monoid.zero());
         // 0 + 0 = 0
-        assertEquals(semigroup.zero(), semigroup.zero().plus(semigroup.zero()));
+        assertEquals(monoid.zero(), monoid.zero().plus(monoid.zero()));
         // x + 0 = x
-        assertEquals(two, two.plus(semigroup.zero()));
+        assertEquals(two, two.plus(monoid.zero()));
         // 0 + x = x
-        assertEquals(two, semigroup.zero().plus(two));
+        assertEquals(two, monoid.zero().plus(two));
         // (a+b)+c = a+(b+c)
         assertEquals(two.plus(three).plus(four), two.plus(three.plus(four)));
     }

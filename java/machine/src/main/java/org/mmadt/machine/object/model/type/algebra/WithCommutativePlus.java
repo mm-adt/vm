@@ -27,5 +27,8 @@ package org.mmadt.machine.object.model.type.algebra;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithCommutativePlus {
+public interface WithCommutativePlus<A extends WithCommutativePlus<A>> extends WithPlus<A> {
+
+    @Override
+    public A plus(final A a);
 }

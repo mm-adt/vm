@@ -27,5 +27,8 @@ package org.mmadt.machine.object.model.type.algebra;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithCommutativeMult {
+public interface WithCommutativeMult<A extends WithCommutativeMult<A>> extends WithMult<A> {
+
+    @Override
+    public A mult(final A a);
 }

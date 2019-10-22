@@ -22,39 +22,38 @@
 
 package org.mmadt.processor.function.reduce;
 
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.ReduceFunction;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class CountReduce<S extends Obj> extends AbstractFunction implements ReduceFunction<S, Int> {
+public final class CountReduce<S extends Obj, E extends WithMonoidPlus<E>> extends AbstractFunction implements ReduceFunction<S, E> {
 
     private CountReduce(final Q quantifier, final String label) {
         super(quantifier, label);
     }
 
     @Override
-    public Int apply(final S obj, final Int current) {
-        return current.plus((Int) obj.q().low()); // TODO: objects must not have range quantification?
+    public E apply(final S obj, final E current) {
+        return current.plus((E) obj.q().low()); // TODO: objects must not have range quantification?
     }
 
     @Override
-    public Int merge(final Int valueA, final Int valueB) {
+    public E merge(final E valueA, final E valueB) {
         return valueA.plus(valueB);
     }
 
     @Override
-    public Int getInitialValue() {
-        return TInt.zeroInt();
+    public E getInitialValue() {
+        return (E) this.quantifier().zero().low();
     }
 
-    public static <S extends Obj> CountReduce<S> compile(final Inst inst) {
+    public static <S extends Obj, E extends WithMonoidPlus<E>> CountReduce<S, E> compile(final Inst inst) {
         return new CountReduce<>(inst.q(), inst.variable());
     }
 }

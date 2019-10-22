@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeMult;
+import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 
 /**
@@ -31,6 +32,6 @@ import org.mmadt.machine.object.model.type.algebra.WithRing;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Bool extends WithRing<Bool>, WithCommutativeMult {
+public interface Bool extends WithCommutativeRing<Bool> {
 
 }

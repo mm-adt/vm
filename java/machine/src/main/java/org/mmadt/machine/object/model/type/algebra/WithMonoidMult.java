@@ -25,9 +25,12 @@ package org.mmadt.machine.object.model.type.algebra;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithSemigroupPlus<A extends WithSemigroupPlus<A>> extends WithPlus<A> {
+public interface WithMonoidMult<A extends WithMonoidMult<A>> extends WithSemigroupMult<A>, WithOne<A> {
 
     @Override
-    public A plus(final A object);
+    public A one();
+
+    @Override
+    public A mult(final A object);
 
 }

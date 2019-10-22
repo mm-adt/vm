@@ -23,9 +23,14 @@
 package org.mmadt.machine.object.model.type.algebra;
 
 /**
+ * An {@link org.mmadt.machine.object.model.Obj} that supports + with unity.
+ *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithSemigroupPlus<A extends WithSemigroupPlus<A>> extends WithPlus<A> {
+public interface WithMonoidPlus<A extends WithMonoidPlus<A>> extends WithSemigroupPlus<A>, WithZero<A> {
+
+    @Override
+    public A zero();
 
     @Override
     public A plus(final A object);
