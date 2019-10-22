@@ -29,6 +29,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
+import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -66,15 +67,13 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
 
     protected Object value;                             // mutually exclusive with pattern (instance data)
+    protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
     protected Obj type;                                 // an object that abstractly defines this object's forms
     protected String variable;                          // the ~bind string (if retrieved via a bind)
     protected Q<?> quantifier;                          // the 'amount' of this object bundle
     // TODO: all fields below are type structures and should be bundled into a single field
-    protected String symbol = Tokens.OBJ;               // the name of the object's form
-    protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
-    protected Inst access;                              // access to its physical representation
-    protected PMap<Inst, Inst> instructions;            // rewrite rules for the vm instruction set (typically types)
-    protected PMap<Obj, Obj> members;                   // the static members of the form (typically types)
+    protected Type types;
+    protected String symbol = Tokens.OBJ;
 
     public TObj(final Object value) {
         if (null != value) {
@@ -87,6 +86,12 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             this.pattern = null;
         }
         assert !(this.value instanceof Pattern) || ((Pattern) this.value).constant();
+    }
+
+    private Type getType() {
+        if (null == this.types)
+            this.types = TType.of();
+        return this.types;
     }
 
     @Override
@@ -116,17 +121,17 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Inst access() {
-        return null == this.access ? TInst.none() : this.access;
+        return this.getType().access();
     }
 
     @Override
     public PMap<Inst, Inst> instructions() {
-        return null == this.type ? this.instructions : this.type.instructions();
+        return this.getType().instructions();
     }
 
     @Override
     public PMap<Obj, Obj> members() {
-        return null == this.type ? this.members : this.type.members();
+        return this.getType().members();
     }
 
     @Override
@@ -175,8 +180,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return this;
         else if (null != this.get() &&
                 this.get().equals(object.get()) &&
-                null == this.access &&
-                null == this.instructions &&
+                TInst.none().equals(this.getType().access()) &&
+                null == this.getType().instructions() &&
                 null == this.variable)
             return this.q(this.q().or(object.q()));
         else
@@ -191,8 +196,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 this.pattern,
                 this.variable,
                 this.q(),
-                this.access,
-                this.instructions);
+                this.getType());
     }
 
     @Override
@@ -204,8 +208,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                                 Objects.equals(this.pattern, ((TObj) object).pattern) &&
                                 Objects.equals(this.variable, ((TObj) object).variable) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
-                                Objects.equals(this.access, ((TObj) object).access) &&
-                                Objects.equals(this.instructions, ((TObj) object).instructions)));
+                                Objects.equals(this.getType(), ((TObj) object).getType())));
     }
 
     @Override
@@ -238,7 +241,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends TObj> O strip() { // TODO: gut this at some point
         final O clone = (O) this.clone();
-        clone.access = null;
+        clone.types = this.getType().access(null);
         clone.variable = null;
         clone.quantifier = this.q().one();
         return clone;
@@ -284,32 +287,26 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O access(final Inst access) {
         final TObj clone = this.clone();
-        clone.access = TInst.none().equals(access) ? null : access;
+        clone.types = this.getType().access(access);
         return (O) clone;
     }
 
     @Override
     public <O extends Obj> O inst(final Inst instA, final Inst instB) {
         final TObj clone = this.clone();
-        clone.instructions = null == this.instructions ?
-                new PMap<>() :
-                new PMap<>(this.instructions);
-        clone.instructions.put(instA, instB);
+        clone.types = this.getType().inst(instA, instB);
         return (O) clone;
     }
 
     public <O extends TObj> O member(final Obj name, final Obj value) {
         final O clone = (O) this.clone();
-        clone.members = null == this.members ?
-                new PMap<>() :
-                new PMap<>(this.members);
-        clone.members.put(name, value);
+        clone.types = this.getType().member(name,value);
         return clone;
     }
 
     public <O extends Obj> O insts(final PMap<Inst, Inst> insts) {
         final TObj clone = this.clone();
-        clone.instructions = insts;
+        clone.types = this.getType().insts(insts);
         return (O) clone;
     }
 }
