@@ -41,7 +41,7 @@ public final class PlusMap<S extends WithPlus<S>> extends AbstractFunction imple
 
     @Override
     public S apply(final S obj) {
-        return stage(obj.plus(this.<S, S>argument(0).mapArg(obj)));
+        return obj.plus(this.<S, S>argument(0).mapArg(obj));
     }
 
     public static <S extends WithPlus<S>> PlusMap<S> compile(final Inst inst) {

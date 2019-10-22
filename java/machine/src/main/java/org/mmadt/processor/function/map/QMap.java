@@ -40,7 +40,7 @@ public final class QMap<S extends Obj, E extends WithRing<E>> extends AbstractFu
 
     @Override
     public E apply(final S obj) {
-        return stage((E) obj.q().object()); // TODO: this will change when Q wrapper is abandoned
+        return (E) obj.q().object(); // TODO: this will change when Q wrapper is abandoned
     }
 
     public static <S extends Obj, E extends WithRing<E>> QMap<S, E> compile(final Inst inst) {

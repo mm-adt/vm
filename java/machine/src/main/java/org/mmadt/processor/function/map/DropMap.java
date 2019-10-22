@@ -42,7 +42,7 @@ public final class DropMap<K extends Obj, V extends Obj> extends AbstractFunctio
 
     @Override
     public WithProduct<K, V> apply(final WithProduct<K, V> obj) {
-        return stage(obj.drop(this.<WithProduct<K, V>, K>argument(0).mapArg(obj)));
+        return obj.drop(this.<WithProduct<K, V>, K>argument(0).mapArg(obj));
     }
 
     public static <K extends Obj, V extends Obj> DropMap<K, V> compile(final Inst inst) {

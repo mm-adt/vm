@@ -43,7 +43,7 @@ public final class AMap<S extends Obj> extends AbstractFunction implements MapFu
 
     @Override
     public Bool apply(final S obj) {
-        return stage(TBool.of(this.argument(0).mapArg(obj).test(obj)));
+        return TBool.of(this.argument(0).mapArg(obj).test(obj));
     }
 
 
