@@ -128,13 +128,13 @@ public final class TInst extends TObj implements Inst {
 
 
     @Override
-    public Inst and(final Obj inst) {
-        return this.operator(Tokens.AND, (Inst) inst);
+    public Inst and(final Obj obj) {
+        return this.operator(Tokens.AND, obj);
     }
 
     @Override
-    public Inst or(final Obj inst) {
-        return this.operator(Tokens.OR, (Inst) inst);
+    public Inst or(final Obj obj) {
+        return this.operator(Tokens.OR, obj);
     }
 
     @Override
@@ -176,7 +176,8 @@ public final class TInst extends TObj implements Inst {
         return clone;
     }
 
-    private Inst operator(final String opcode, final Inst inst) {
+    private Inst operator(final String opcode, final Obj obj) {
+        final Inst inst = obj instanceof Inst ? (Inst) obj : TInst.of(Tokens.MAP, obj); // if the object isn't an instruction, make it one
         if (this.opcode().get().equals(opcode)) {
             final PList<Obj> list = new PList<>(this.<PList<Obj>>get());
             list.add(inst);

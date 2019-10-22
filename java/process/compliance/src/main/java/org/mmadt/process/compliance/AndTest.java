@@ -42,4 +42,10 @@ public abstract class AndTest extends AbstractTest {
         assertEquals(objs(2, 3), submit(start(0, 1, 2).plus(1).is(and(gt(1), a(TInt.some()), plus(2).gt(0)))));
         assertEquals(objs(2, 3), submit(start(0, 1, 2).plus(1).is(gt(1).and(a(TInt.some())).and(plus(2).gt(0)))));
     }
+
+    @Test
+    void startX0_1_2X_plusX1X_isXandXgtX0X__aXintX__trueXX() {
+        assertEquals(objs(2, 3), submit(start(0, 1, 2).plus(1).is(and(gt(1), a(TInt.some()), true))));
+        assertEquals(objs(2, 3), submit(start(0, 1, 2).plus(1).is(gt(1).and(a(TInt.some())).and(true))));
+    }
 }
