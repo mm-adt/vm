@@ -51,7 +51,7 @@ class QueryTest {
         return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> {
                     assumeFalse(tp.ignore);
-                    assertEquals(tp.expected.toString(), tp.input.toString());
+                    assertEquals(tp.expected, tp.input.toString());
                 }));
     }
 }

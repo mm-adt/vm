@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.type.Bindings;
 
@@ -39,13 +40,20 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 final class TIntTest {
 
     @Test
+    void shouldSupportPeekAndLast() {
+        final Int a = TInt.of(7);
+        assertEquals(TInt.of(7),a.peak());
+        assertEquals(TInt.of(7),a.last());
+    }
+
+    @Test
     void shouldSupportStreams() {
         final Int a = TInt.of(1);
         assertEquals(TInt.of(1, 1), a.q().object());
         a.push(TInt.of(2));
-        assertEquals(TInt.of(2, 2), a.q().object());
+        assertEquals(TInt.of(2), a.q().object());
         a.push(TInt.of(3));
-        assertEquals(TInt.of(3, 3), a.q().object());
+        assertEquals(TInt.of(3), a.q().object());
         ///
         assertEquals(TInt.of(3), a.peak());
         assertEquals(TInt.of(3), a.pop());

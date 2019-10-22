@@ -23,15 +23,14 @@
 package org.mmadt.processor.function.reduce;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
+import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.ReduceFunction;
@@ -39,7 +38,7 @@ import org.mmadt.processor.function.ReduceFunction;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class GroupCountReduce<S extends Obj, E extends Obj> extends AbstractFunction implements ReduceFunction<S, Rec<E, Int>> {
+public final class GroupCountReduce<S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> extends AbstractFunction implements ReduceFunction<S, Rec<E, A>> {
 
     private GroupCountReduce(final Q quantifier, final String label, final Argument<S, E> argument) {
         super(quantifier, label, argument);
@@ -47,26 +46,26 @@ public final class GroupCountReduce<S extends Obj, E extends Obj> extends Abstra
     }
 
     @Override
-    public Rec<E, Int> apply(final S obj, final Rec<E, Int> seed) {
+    public Rec<E, A> apply(final S obj, final Rec<E, A> current) {
         final E object = this.<S, E>argument(0).mapArg(obj);
-        seed.put(object, obj.<Int>q().low().plus(seed.<PMap<E, Int>>get().getOrDefault(object, TInt.zeroInt())));
-        return seed;
+        current.put(object, ((A) object.q().low()).plus(current.<PMap<E, A>>get().getOrDefault(object, (A) this.quantifier().zero().low())));
+        return current;
     }
 
     @Override
-    public Rec<E, Int> merge(final Rec<E, Int> valueA, final Rec<E, Int> valueB) {
-        final Rec<E, Int> tuple = TRec.of();
-        valueA.<PMap<E, Int>>get().forEach(tuple::put);
-        valueB.<PMap<E, Int>>get().forEach(tuple::put);
+    public Rec<E, A> merge(final Rec<E, A> valueA, final Rec<E, A> valueB) {
+        final Rec<E, A> tuple = TRec.of();
+        valueA.<PMap<E, A>>get().forEach(tuple::put);
+        valueB.<PMap<E, A>>get().forEach(tuple::put);
         return tuple;
     }
 
     @Override
-    public Rec<E, Int> getInitialValue() {
-        return TRec.of();
+    public Rec<E, A> getInitialValue() {
+        return TRec.of().q(quantifier().one());
     }
 
-    public static <S extends Obj, E extends Obj> GroupCountReduce<S, E> compile(final Inst inst) {
+    public static <S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> GroupCountReduce<S, E, A> compile(final Inst inst) {
         return new GroupCountReduce<>(inst.q(), inst.variable(), Argument.create(inst.args().isEmpty() ? TInst.of(Tokens.ID) : inst.args().get(0)));
     }
 

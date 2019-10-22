@@ -35,11 +35,11 @@ public abstract class QTest extends AbstractTest {
 
     @Test
     void startX2X_qX4X_plusX3X_q() {
-        assertEquals(objs(TInt.of(4, 4).q(4)), submit(start(2).q(4).plus(3).q()));
+        assertEquals(objs(TInt.of(4).q(4)), submit(start(2).q(4).plus(3).q()));
     }
 
     @Test
     void startX2X_qX4X_plusX3X_qX2X_q() {
-        assertEquals(objs(TInt.of(8, 8).q(8)), submit(start(2).q(4).plus(3).q(2).q()));
+        assertEquals(objs(TInt.of(8).q(8)), submit(start(2).q(4).plus(3).q(2).q()));
     }
 }

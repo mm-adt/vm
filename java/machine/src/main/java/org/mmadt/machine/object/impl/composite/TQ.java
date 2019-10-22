@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.impl.composite;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -39,7 +38,7 @@ import java.util.function.Supplier;
  */
 public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
 
-    public static final Q ONE = new TQ(1, 1); // TODO: necessary for default value
+    public static final Q ONE = new TQ<>(1, 1); // TODO: necessary for default value
 
     public static TQ<Int> of(final int low, final int high) {
         return new TQ<>(low, high);
@@ -79,16 +78,6 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
         return null == object ?
                 ((WithOrder<A>) this.low().get()).lte(this.low().zero()).get() : // TODO: need Order in the Interface
                 (((WithOrder<A>) object.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) object.q().high()).lte(this.high()).<Boolean>get());
-    }
-
-    @Override
-    public Q<A> and(final Q<A> obj) {
-        return this.set(this.low().set(TStream.of(this.low().mult(obj.peak()), this.high().mult(obj.last()))));
-    }
-
-    @Override
-    public Q<A> or(final Q<A> obj) {
-        return this.set(this.low().set(TStream.of(this.low().plus(obj.peak()), this.high().plus(obj.last()))));
     }
 
     @Override

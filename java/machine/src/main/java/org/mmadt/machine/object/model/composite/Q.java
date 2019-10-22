@@ -40,15 +40,15 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
         public Q apply(final Q quantifier) {
             switch (this) {
                 case zero:
-                    return quantifier.set(quantifier.<WithRing>peak().zero().clone().push(quantifier.<WithRing>last().zero().clone()));
+                    return quantifier.set(quantifier.low().zero());
                 case one:
-                    return quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().one().clone()));
+                    return quantifier.set(quantifier.low().one());
                 case star:
-                    return quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.<WithRing>peak().zero().clone()));
+                    return quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.low().zero()));
                 case qmark:
-                    return quantifier.set(quantifier.<WithRing>peak().one().clone().push(quantifier.<WithRing>last().zero().clone()));
+                    return quantifier.set(quantifier.low().one().clone().push(quantifier.low().zero()));
                 case plus:
-                    return quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.<WithRing>peak().one().clone()));
+                    return quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.low().one()));
                 default:
                     throw new RuntimeException("Undefined short: " + this);
             }
@@ -81,9 +81,17 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
         return this.set(this.object().negate());
     }
 
-    public Q<A> and(final Q<A> obj);
+    public default Q<A> and(final Q<A> obj) {
+        final A lower = this.low().mult(obj.low());
+        final A higher = this.high().mult(obj.high());
+        return this.set(lower.equals(higher) ? lower : higher.push(lower));
+    }
 
-    public Q<A> or(final Q<A> obj);
+    public default Q<A> or(final Q<A> obj) {
+        final A lower = this.low().plus(obj.low());
+        final A higher = this.high().plus(obj.high());
+        return this.set(lower.equals(higher) ? lower : higher.push(lower));
+    }
 
     @Override
     public default Q<A> one() {
