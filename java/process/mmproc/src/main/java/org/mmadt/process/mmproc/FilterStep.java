@@ -60,7 +60,7 @@ final class FilterStep<S extends Obj> extends AbstractStep<S, S> {
 
     private void stageNextObj() {
         while (null == this.nextObj && this.previousStep.hasNext()) {
-            FunctionUtils.test(this.filterFunction,this.previousStep.next()).ifPresent(traverser -> this.nextObj = traverser);
+            FunctionUtils.test(this.filterFunction, this.previousStep.next()).ifPresent(traverser -> this.nextObj = traverser);
         }
     }
 

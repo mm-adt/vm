@@ -93,7 +93,7 @@ class PropertyGraphTest {
                     assertTrue(model.has("edge") && model.has("vertex") && model.has("obj") &&
                             model.has("value") && model.has("key") && model.has("db") && model.has("element"));
                     if (null != tp.ex)
-                        assertThrows(tp.ex.getClass(), () -> verifyTyping(model.query(Compiler.asInst(model, tp.input))));
+                        assertThrows(tp.ex, () -> verifyTyping(model.query(Compiler.asInst(model, tp.input))));
                     else
                         assertEquals(Compiler.asInst(model, tp.expected), verifyTyping(model.query(Compiler.asInst(model, tp.input))));
                 }));

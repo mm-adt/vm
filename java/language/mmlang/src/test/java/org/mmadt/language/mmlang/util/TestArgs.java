@@ -29,7 +29,7 @@ public final class TestArgs {
     public final boolean ignore;
     public final String expected;
     public final String input;
-    public final Exception ex;
+    public final Class<? extends Exception> ex;
 
     public TestArgs(final String input) {
         this(input, input);
@@ -43,7 +43,7 @@ public final class TestArgs {
         this(false, expected, input, null);
     }
 
-    public TestArgs(final String expected, final String input, final Exception ex) {
+    public TestArgs(final String expected, final String input, final Class<? extends Exception> ex) {
         this(false, expected, input, ex);
     }
 
@@ -51,7 +51,7 @@ public final class TestArgs {
         this(ignore, expected, input, null);
     }
 
-    public TestArgs(final boolean ignore, final String expected, final String input, final Exception ex) {
+    public TestArgs(final boolean ignore, final String expected, final String input, final Class<? extends Exception> ex) {
         this.ignore = ignore;
         this.expected = expected;
         this.input = input;

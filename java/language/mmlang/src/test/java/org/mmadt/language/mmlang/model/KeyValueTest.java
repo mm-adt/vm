@@ -46,8 +46,8 @@ class KeyValueTest {
             " -> [sum] => ]";
     private final static TestArgs[] TEST_PARAMETERS = new TestArgs[]{
             new TestArgs("[db]"),
-            new TestArgs("[error]", "[db][put,0,'test']", new RuntimeException()),
-            new TestArgs("[error]", "[db][order,[gt,[get,0]]][put,0,'test']", new RuntimeException()),
+            new TestArgs("[error]", "[db][put,0,'test']", RuntimeException.class),
+            new TestArgs("[error]", "[db][order,[gt,[get,0]]][put,0,'test']", RuntimeException.class),
             new TestArgs("[db]", "[db][order,[gt,[get,0]]]"),
             new TestArgs("[db][db][get,1]"),
             new TestArgs("[ref,v{?} <= [db][is,[get,0][eq,'marko']]]", "[db][is,[get,0][eq,'marko']]"),
@@ -68,7 +68,7 @@ class KeyValueTest {
                 .map(tp -> DynamicTest.dynamicTest(tp.input, () -> {
                     assumeFalse(tp.ignore);
                     if (null != tp.ex)
-                        assertThrows(tp.ex.getClass(), () -> verifyTyping(model.query(Compiler.asInst(model, tp.input))));
+                        assertThrows(tp.ex, () -> verifyTyping(model.query(Compiler.asInst(model, tp.input))));
                     else
                         assertEquals(Compiler.asInst(model, tp.expected), verifyTyping(model.query(Compiler.asInst(model, tp.input))));
                 }));
