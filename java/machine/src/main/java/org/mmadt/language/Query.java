@@ -48,7 +48,12 @@ public final class Query {
     }
 
     public Query and(final Object... objects) {
-        return this.compose(TInst.of(Tokens.AND, args(objects)));
+        if (objects.length > 1)
+            return this.compose(TInst.of(Tokens.AND, args(objects)));
+        else {
+            this.bytecode = (Inst) this.bytecode.and(arg(objects[0]));
+            return this;
+        }
     }
 
     public Query branch(final Object... branches) {
