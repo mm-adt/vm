@@ -69,32 +69,32 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Bool gt(final Str object) {
-        return TBool.of(((String) this.value).compareTo(object.get()) > 0);
+        return TBool.of(this.java().compareTo(object.java()) > 0);
     }
 
     @Override
     public Bool eq(final Obj object) {
-        return TBool.of((this.value).equals(object.get()));
+        return TBool.of(object instanceof Str && this.java().equals(object.get()));
     }
 
     @Override
     public Bool lt(final Str object) {
-        return TBool.of(((String) this.value).compareTo(object.get()) < 0);
+        return TBool.of(this.java().compareTo(object.java()) < 0);
     }
 
     @Override
     public Bool regex(final Str pattern) {
-        return TBool.of(((String) this.value).matches(pattern.get()));
+        return TBool.of(this.java().matches(pattern.java()));
     }
 
     @Override
     public Str plus(final Str object) {
-        return TStr.of(this.<String>get() + object.<String>get());
+        return new TStr(this.java().concat(object.java()));
     }
 
     @Override
     public Str zero() {
-        return TStr.of(Tokens.EMPTY);
+        return new TStr(Tokens.EMPTY);
     }
 
     @Override

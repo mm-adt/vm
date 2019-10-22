@@ -20,38 +20,36 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.compiler;
+package org.mmadt.processor.function.map;
 
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.processor.compiler.Argument;
+import org.mmadt.processor.function.AbstractFunction;
+import org.mmadt.processor.function.MapFunction;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cloneable {
+public final class AndMap<S extends Obj> extends AbstractFunction implements MapFunction<S, Bool> {
 
-    public E mapArg(final S object);
-
-    public Iterator<E> flatMapArg(final S object);
-
-    public boolean filterArg(final S object);
-
-    public static <S extends Obj, E extends Obj> Argument<S, E> create(final Object arg) {
-        return arg instanceof Inst ? new IRArgument<>((Inst) arg) : new ConstantArgument<>((E) arg);
+    @SafeVarargs
+    private AndMap(final Q quantifier, final String label, final Argument<S, Bool>... arguments) {
+        super(quantifier, label, arguments);
     }
 
-    public static <S extends Obj, E extends Obj> Argument<S, E>[] args(final List args) {
-        final Argument<S, E>[] array = new Argument[args.size()];
-        for (int i = 0; i < args.size(); i++) {
-            array[i] = create(args.get(i));
-        }
-        return array;
+    @Override
+    public Bool apply(final S obj) {
+        return Stream.of(this.<S, Bool>arguments()).map(a -> a.mapArg(obj)).reduce((a, b) -> a.and(b)).orElse(TBool.of(true));
     }
 
-    public Argument<S, E> clone();
 
+    public static <S extends Obj> AndMap<S> compile(final Inst inst) {
+        return new AndMap<>(inst.q(), inst.variable(), Argument.<S, Bool>args(inst.args()));
+    }
 }

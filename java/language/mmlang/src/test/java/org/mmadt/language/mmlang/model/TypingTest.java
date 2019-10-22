@@ -97,7 +97,7 @@ class TypingTest {
         System.out.println(oldBc);
         System.out.println(newBc);
         assertEquals(1L, java.util.stream.Stream.of(newBc).count());
-        assertEquals(TInst.of("start", TInt.of(50)), newBc.peak());
+        assertEquals(TInst.of("start", TInt.of(50)), newBc.peek());
         verifyTyping(newBc);
     }
 

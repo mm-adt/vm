@@ -75,7 +75,7 @@ public final class ObjectHelper {
         if (0 == objects.length)
             return constructor.apply(null);
         else if (1 == objects.length)
-            return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0]);
+            return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0] instanceof Query ? ((Query) objects[0]).bytecode() : objects[0]);
         else
             return constructor.apply(TStream.of(objects));
     }

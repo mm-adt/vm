@@ -43,7 +43,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.get;
+import static org.mmadt.language.__.gt;
+import static org.mmadt.language.__.gte;
 import static org.mmadt.language.__.is;
+import static org.mmadt.language.__.lt;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -98,10 +101,10 @@ final class TInstTest {
 
     @Test
     void shouldOrInstructionsCorrectly() {
-        final Int gt10 = TInt.gt(10).inst(TInst.of("add", 1), TInst.of("add", 2));
-        final Int lt50 = TInt.lt(50).inst(TInst.of("add", 3), TInst.of("add", 4));
-        final Int gte100 = TInt.gte(100).inst(TInst.of("sub", 1), TInst.of("sub", 2));
-        final Int combo = (TInt) gt10.and(lt50).or(gte100);
+        final Int gt10 = TInt.of(is(gt(10))).inst(TInst.of("add", 1), TInst.of("add", 2));
+        final Int lt50 = TInt.of(is(lt(50))).inst(TInst.of("add", 3), TInst.of("add", 4));
+        final Int gte100 = TInt.of(is(gte(100))).inst(TInst.of("sub", 1), TInst.of("sub", 2));
+        final Int combo = (TInt) gt10.and(lt50).or(gte100); // TODO: internal merge of instructions using or/and from inst
         final Int i9 = TInt.of(9);
         final Int i11 = TInt.of(11);
         //
@@ -133,7 +136,7 @@ final class TInstTest {
         //
         final Inst c = a.mult(b);
 //        assertEquals(Q.one, c.quantifier());
-        assertEquals(a, c.peak());
+        assertEquals(a, c.peek());
         //
         final Inst d = TInst.of("get", "age");
         final Inst e = c.mult(d);
@@ -171,13 +174,13 @@ final class TInstTest {
         //
         final Inst c = a.plus(b);
         assertEquals(c.q().one(), c.q());
-        assertEquals(c, c.peak());
+        assertEquals(c, c.peek());
         assertEquals(a, c.get(TInt.oneInt()));
         assertEquals(b, c.get(TInt.twoInt()));
         final Inst d = TInst.of("count");
         final Inst e = a.plus(b).plus(d);
         //       assertEquals(Q.qone, e.quantifier());
-        assertEquals(e, e.peak());
+        assertEquals(e, e.peek());
 
 
         System.out.println(a);

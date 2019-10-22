@@ -59,8 +59,8 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
     public A object();
 
     @Override
-    public default <O extends Obj> O peak() {
-        return (O) this.object().peak();
+    public default <O extends Obj> O peek() {
+        return (O) this.object().peek();
     }
 
     @Override
@@ -69,7 +69,7 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
     }
 
     public default A low() {
-        return this.object().peak();
+        return this.object().peek();
     }
 
     public default A high() {

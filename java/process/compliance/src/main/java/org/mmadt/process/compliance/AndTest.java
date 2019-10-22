@@ -20,21 +20,26 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.atomic;
+package org.mmadt.process.compliance;
 
-import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.junit.jupiter.api.Test;
+import org.mmadt.machine.object.impl.atomic.TInt;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.language.__.a;
+import static org.mmadt.language.__.and;
+import static org.mmadt.language.__.gt;
+import static org.mmadt.language.__.plus;
+import static org.mmadt.language.__.start;
 
 /**
- * A Java representation of the {@code int} object in mm-ADT.
- * An {@code int} is an ordered commutative ring with unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Int extends WithCommutativeRing<Int>, WithOrder<Int> {
+public abstract class AndTest extends AbstractTest {
 
-    public default Integer java() {
-        return this.get();
+    @Test
+    void startX0_1_2X_plusX1X_isXandXgtX0X__aXintX__plusX2X_gtX0XXX() {
+        assertEquals(objs(2, 3), submit(start(0, 1, 2).plus(1).is(and(gt(1), a(TInt.some()), plus(2).gt(0)))));
+        // assertEquals(objs(2, 3), submit(start(0, 1, 2).plus(1).is(gt(1).and(a(TInt.some())).and(plus(2).gt(0)))));
     }
-
 }

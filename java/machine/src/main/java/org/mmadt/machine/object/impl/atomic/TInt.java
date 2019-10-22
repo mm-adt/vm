@@ -31,6 +31,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.util.FunctionUtils;
 
 import static org.mmadt.language.compiler.Tokens.INT;
+import static org.mmadt.machine.object.model.type.PRel.Rel.GT;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,6 +42,8 @@ public final class TInt extends TObj implements Int {
     private static final Int ALL = new TInt(null).q(0, Integer.MAX_VALUE);
     private static final Int NONE = new TInt(null).q(0);
 
+    private static final Int MAX = new TInt(Integer.MAX_VALUE);
+    private static final Int MIN = new TInt(Integer.MIN_VALUE);
     private static final Int ZERO = new TInt(0);
     private static final Int ONE = new TInt(1);
     private static final Int TWO = new TInt(2);
@@ -86,14 +89,16 @@ public final class TInt extends TObj implements Int {
         return TWO;
     }
 
+    /////////////////////////////////
+
     @Override
     public Int max() {
-        return TInt.of(Integer.MAX_VALUE);
+        return MAX;
     }
 
     @Override
     public Int min() {
-        return TInt.of(Integer.MIN_VALUE);
+        return MIN;
     }
 
     @Override
@@ -108,7 +113,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int negate() {
-        return this.isType() ? this.q(this.q().negate()) : FunctionUtils.<Int, Integer>monad(this, x -> -x); // TODO: negate types?
+        return this.constant() ? FunctionUtils.<Int, Integer>monad(this, x -> -x) : this.q(this.q().negate()); // TODO: isolate types from instances somehow
     }
 
     @Override
@@ -123,39 +128,23 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Bool gt(final Int object) {
-        // TODO: generalize monad to functions, not just operators
-        //  return IteratorUtils.monad(this,(TInt)object,(x,y) -> x > y);
-        return TBool.of(((Integer) this.value).doubleValue() > object.<Number>get().doubleValue());
+        return TBool.of(this.java() > object.java());
     }
 
     @Override
-    public Bool eq(Obj object) {
-        return TBool.of(object instanceof Int && ((Integer) this.value).doubleValue() == object.<Number>get().doubleValue());
+    public Bool eq(final Obj object) {
+        return TBool.of(object instanceof Int && this.java().equals(object.get()));
     }
 
     @Override
     public Bool lt(final Int object) {
-        return TBool.of(((Integer) this.value).doubleValue() < object.<Number>get().doubleValue());
+        return TBool.of(this.java() < object.java());
     }
 
     ///// HELPER METHODS
 
     public static Int gt(int object) {
-        return new TInt(new PRel(PRel.Rel.GT, TInt.of(object)));
+        return new TInt(new PRel(GT, TInt.of(object)));
     }
 
-
-    public static Int gte(int object) {
-        return new TInt(new PRel(PRel.Rel.GTE, TInt.of(object)));
-    }
-
-
-    public static Int lte(int object) {
-        return new TInt(new PRel(PRel.Rel.LTE, TInt.of(object)));
-    }
-
-
-    public static Int lt(int object) {
-        return new TInt(new PRel(PRel.Rel.LT, TInt.of(object)));
-    }
 }

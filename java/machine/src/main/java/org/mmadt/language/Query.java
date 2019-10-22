@@ -23,9 +23,7 @@
 package org.mmadt.language;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -49,6 +47,10 @@ public final class Query {
         this(TInst.of(Tokens.ID));
     }
 
+    public Query and(final Object... objects) {
+        return this.compose(TInst.of(Tokens.AND, args(objects)));
+    }
+
     public Query branch(final Object... branches) {
         return this.compose(TInst.of(Tokens.BRANCH, args(branches)));
     }
@@ -63,10 +65,6 @@ public final class Query {
 
     public Query drop(final Object key) {
         return this.compose(TInst.of(Tokens.DROP, arg(key)));
-    }
-
-    public Query and(final Object... objects) {
-        return this.compose(TInst.of(Tokens.AND, args(objects)));
     }
 
     public Query dedup(final Object... objects) {
@@ -89,8 +87,16 @@ public final class Query {
         return this.compose(TInst.of(Tokens.GT, arg(obj)));
     }
 
+    public Query gte(final Object obj) {
+        return this.compose(TInst.of(Tokens.GTE, arg(obj)));
+    }
+
     public Query is(final Object bool) {
         return this.compose(TInst.of(Tokens.IS, arg(bool)));
+    }
+
+    public Query lt(final Object obj) {
+        return this.compose(TInst.of(Tokens.LT, arg(obj)));
     }
 
     public Query map(final Object obj) {

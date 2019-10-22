@@ -66,7 +66,7 @@ public final class FunctionUtils {
 
     public static <T extends Obj, U> T monad(final T objA, final T objB, final BinaryOperator<U> operator) {
         return objA.set(TStream.check(IteratorUtils.stream((Iterable<T>) objA.iterable()).
-                <T>map(x -> x.set(apply(() -> operator.apply(x.get(), objB.peak().get())))).collect(Collectors.toList())));
+                <T>map(x -> x.set(apply(() -> operator.apply(x.get(), objB.peek().get())))).collect(Collectors.toList())));
     }
 
     private static Object apply(final Supplier function) {

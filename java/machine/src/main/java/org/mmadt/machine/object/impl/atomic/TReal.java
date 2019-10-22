@@ -98,17 +98,17 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Bool gt(final Real object) {
-        return TBool.of(((Float) this.value).doubleValue() > object.<Number>get().doubleValue());
+        return TBool.of(this.java() > object.java());
     }
 
     @Override
     public Bool eq(final Obj object) {
-        return TBool.of(object instanceof Real && ((Float) this.value).doubleValue() == object.<Number>get().doubleValue());
+        return TBool.of(object instanceof Real && this.java().equals(object.get()));
     }
 
     @Override
     public Bool lt(final Real object) {
-        return TBool.of(((Float) this.value).doubleValue() < object.<Number>get().doubleValue());
+        return TBool.of(this.java() < object.java());
     }
 
     @Override

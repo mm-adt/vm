@@ -20,21 +20,13 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.atomic;
+package org.mmadt.process.mmproc.compliance;
 
-import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.mmadt.process.compliance.AndTest;
 
 /**
- * A Java representation of the {@code int} object in mm-ADT.
- * An {@code int} is an ordered commutative ring with unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Int extends WithCommutativeRing<Int>, WithOrder<Int> {
-
-    public default Integer java() {
-        return this.get();
-    }
+class ProcAndTest extends AndTest implements ProcTestMachine {
 
 }

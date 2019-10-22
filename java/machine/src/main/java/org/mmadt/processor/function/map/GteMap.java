@@ -20,21 +20,32 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.atomic;
+package org.mmadt.processor.function.map;
 
-import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.mmadt.processor.compiler.Argument;
+import org.mmadt.processor.function.AbstractFunction;
+import org.mmadt.processor.function.MapFunction;
 
 /**
- * A Java representation of the {@code int} object in mm-ADT.
- * An {@code int} is an ordered commutative ring with unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Int extends WithCommutativeRing<Int>, WithOrder<Int> {
+public final class GteMap<S extends WithOrder<S>> extends AbstractFunction implements MapFunction<S, Bool> {
 
-    public default Integer java() {
-        return this.get();
+    private GteMap(final Q quantifier, final String label, final Argument<S, S> argument) {
+        super(quantifier, label, argument);
     }
 
+    @Override
+    public Bool apply(final S obj) {
+        return obj.gte(this.<S, S>argument(0).mapArg(obj));
+    }
+
+    public static <S extends WithOrder<S>> GteMap<S> compile(final Inst inst) {
+        return new GteMap<>(inst.q(), inst.variable(), Argument.<S, S>create(inst.get(TInt.oneInt())));
+    }
 }

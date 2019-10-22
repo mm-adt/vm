@@ -32,6 +32,10 @@ public class __ {
         return create().a(type);
     }
 
+    public static Query and(final Object... branches) {
+        return create().and(branches);
+    }
+
     public static Query branch(final Object... branches) {
         return create().branch(branches);
     }
@@ -64,12 +68,20 @@ public class __ {
         return create().gt(object);
     }
 
+    public static Query gte(final Object object) {
+        return create().gte(object);
+    }
+
     public static Query id() {
         return create().id();
     }
 
     public static Query is(final Object bool) {
         return create().is(bool);
+    }
+
+    public static Query lt(final Object object) {
+        return create().lt(object);
     }
 
     public static Query map(final Object object) {

@@ -33,4 +33,8 @@ import org.mmadt.machine.object.model.type.algebra.WithOrder;
  */
 public interface Real extends WithField<Real>, WithOrder<Real> {
 
+    public default Float java() {
+        return this.get();
+    }
+
 }

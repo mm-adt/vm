@@ -42,8 +42,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
+import static org.mmadt.language.__.and;
+import static org.mmadt.language.__.gt;
+import static org.mmadt.language.__.is;
+import static org.mmadt.language.__.lt;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -79,14 +83,14 @@ class TObjTest {
         assertEquals(type6.q(star), type4.and(type6));
         assertFalse(type6.constant());
         //
-        Obj type7 = TInt.gt(1);
-        Obj type8 = TInt.lt(2);
-        Obj type9 = type7.and(type8);
-        Obj type10 = type7.or(type8);
+        Obj type7 = gt(1).bytecode();
+        Obj type8 = lt(2).bytecode();
+        Obj type9 = is(type7.and(type8)).bytecode();
+        Obj type10 = is(type7.or(type8)).bytecode();
 
         //System.out.println(TObj.some().gt(1).and(TObj.some().lt(2)));
-        assertEquals(TInt.gt(1).and(TInt.lt(2)), type9);
-        assertEquals(TInt.gt(1).or(TInt.lt(2)), type10);
+        assertEquals(is(and(gt(1), lt(2))).bytecode(), type9);
+        // TODO: NEED OrMap:: assertEquals(is(or(gt(1),lt(2))), type10);
         assertEquals(TInt.gt(32).as("x"), TInt.some().and(TInt.gt(32).as("x")));
         assertThrows(RuntimeException.class, () -> TInt.some().as("x").and(TInt.some().as("y")));
         //assertThrows(RuntimeException.class, () -> TInt.some().as("x").and(TStr.some().as("x")));
@@ -122,8 +126,8 @@ class TObjTest {
         assertEquals("[is,[get,'name'][eq,'marko']]", TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko"))).toString());
         assertEquals("list", TLst.some().toString());
         assertEquals("['get';4;true;3.2]", TLst.of("get", 4, true, 3.2).toString());
-        assertEquals("(gt(1)|lt(20))~x", TInt.gt(1).or(TInt.lt(20)).as("x").toString());
-        assertEquals("(gt(1)&lt(20))~x", TInt.gt(1).and(TInt.lt(20)).as("x").toString());
+        // TODO: assertEquals("(gt(1)|lt(20))~x", TInt.gt(1).or(TInt.lt(20)).as("x").toString());
+        // TODO: assertEquals("(gt(1)&lt(20))~x", TInt.of(is(and(gt(1),lt(20)))).as("x").toString());
         assertEquals("rec", TRec.some().toString());
         assertEquals("['name':str,'age':int]", TRec.of("name", TStr.some(), "age", TInt.some()).toString());
         assertEquals("['name':str,'age':int]", TRec.of("name", TStr.some(), "age", TInt.some()).symbol("person").toString()); // TODO: @person prefix?

@@ -81,7 +81,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     @Override
     public default Obj get(final Int index) {
-        final Object object = this.peak().get();
+        final Object object = this.peek().get();
         return (object instanceof PList && (((PList<Obj>) object).size() > index.<Integer>get())) ? ((PList<Obj>) object).get(index.get()) : TObj.none();
     }
 

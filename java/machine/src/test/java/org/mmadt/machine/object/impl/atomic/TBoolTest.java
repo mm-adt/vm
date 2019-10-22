@@ -28,10 +28,10 @@ import org.mmadt.machine.object.model.type.POr;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -47,7 +47,7 @@ final class TBoolTest {
         assertEquals("true{*}", TBool.of(true).q(star).and(TBool.some()).toString());
         assertEquals("false{*}~x", TBool.of(false).q(qmark).as("x").and(TBool.some().q(plus)).toString());
         assertEquals("false{*}~x", TBool.of(false).q(qmark).as("x").and(TBool.some().as("x").q(plus)).toString());
-        assertThrows(RuntimeException.class, () -> TBool.of(true).and(TBool.of(false)));
+        assertEquals(TBool.of(false), TBool.of(true).and(TBool.of(false)));
         assertThrows(RuntimeException.class, () -> TBool.of(false).q(qmark).as("x").and(TBool.some().q(plus).as("y")));
         assertEquals("false", TBool.some().and(TBool.of(false)).toString());
     }

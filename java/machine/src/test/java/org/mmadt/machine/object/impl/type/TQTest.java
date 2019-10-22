@@ -42,7 +42,7 @@ final class TQTest {
         final Q<Int> a = new TQ<>(TInt.of(3));
         final Q<Int> b = new TQ<>(TInt.of(3, 3));
         assertEquals(a, b);
-        assertEquals(a.<Int>peak(), a.last());
+        assertEquals(a.<Int>peek(), a.last());
     }
 
     @Test

@@ -22,9 +22,8 @@
 
 package org.mmadt.machine.object.model.atomic;
 
-import org.mmadt.machine.object.model.type.algebra.WithCommutativeMult;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
-import org.mmadt.machine.object.model.type.algebra.WithRing;
 
 /**
  * A Java representation of the {@code bool} object in mm-ADT.
@@ -33,5 +32,17 @@ import org.mmadt.machine.object.model.type.algebra.WithRing;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface Bool extends WithCommutativeRing<Bool> {
+
+    public default Boolean java() {
+        return (Boolean) this.get();
+    }
+
+    public default Bool java(final Boolean bool) {
+        return this.set(bool);
+    }
+
+    public default Bool and(final Bool bool) {
+        return this.constant() ? this.java(this.java() && bool.java()) : (Bool) this.and((Obj) bool); // TODO: Bool.Type class with respective overloading
+    }
 
 }

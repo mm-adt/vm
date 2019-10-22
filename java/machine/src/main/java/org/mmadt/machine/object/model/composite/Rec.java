@@ -50,7 +50,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithProduct<K, V> {
     @Override
     public default V get(final K key) {
         V v = (V) TObj.none();
-        final Object object = this.peak().get();
+        final Object object = this.peek().get();
         if (object instanceof PMap)
             v = ((PMap<K, V>) object).getOrDefault(key, (V) TObj.none());
         else if (object instanceof PAnd) {

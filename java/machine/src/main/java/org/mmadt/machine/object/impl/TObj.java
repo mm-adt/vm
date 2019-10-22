@@ -96,7 +96,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public boolean constant() {
-        return null != this.value;
+        return null != this.value && !(this.value instanceof Inst);
     }
 
     @Override

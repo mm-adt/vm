@@ -101,7 +101,7 @@ public final class TStream<A extends Obj> implements Stream<A> {
     }
 
     @Override
-    public A peak() {
+    public A peek() {
         return this.objects.isEmpty() ? (A) TObj.none() : this.objects.get(0);
     }
 

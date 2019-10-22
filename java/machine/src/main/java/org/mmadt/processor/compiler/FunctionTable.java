@@ -32,10 +32,13 @@ import org.mmadt.processor.function.filter.IsFilter;
 import org.mmadt.processor.function.flatmap.UnfoldFlatMap;
 import org.mmadt.processor.function.initial.StartInitial;
 import org.mmadt.processor.function.map.AMap;
+import org.mmadt.processor.function.map.AndMap;
 import org.mmadt.processor.function.map.DropMap;
 import org.mmadt.processor.function.map.EqMap;
 import org.mmadt.processor.function.map.GetMap;
 import org.mmadt.processor.function.map.GtMap;
+import org.mmadt.processor.function.map.GteMap;
+import org.mmadt.processor.function.map.LtMap;
 import org.mmadt.processor.function.map.MapMap;
 import org.mmadt.processor.function.map.MinusMap;
 import org.mmadt.processor.function.map.MultMap;
@@ -51,6 +54,7 @@ import org.mmadt.processor.function.reduce.ReduceReduce;
 import org.mmadt.processor.function.reduce.SumReduce;
 
 import static org.mmadt.language.compiler.Tokens.A;
+import static org.mmadt.language.compiler.Tokens.AND;
 import static org.mmadt.language.compiler.Tokens.BRANCH;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DB;
@@ -60,8 +64,10 @@ import static org.mmadt.language.compiler.Tokens.FILTER;
 import static org.mmadt.language.compiler.Tokens.GET;
 import static org.mmadt.language.compiler.Tokens.GROUPCOUNT;
 import static org.mmadt.language.compiler.Tokens.GT;
+import static org.mmadt.language.compiler.Tokens.GTE;
 import static org.mmadt.language.compiler.Tokens.ID;
 import static org.mmadt.language.compiler.Tokens.IS;
+import static org.mmadt.language.compiler.Tokens.LT;
 import static org.mmadt.language.compiler.Tokens.MAP;
 import static org.mmadt.language.compiler.Tokens.MINUS;
 import static org.mmadt.language.compiler.Tokens.MULT;
@@ -92,6 +98,8 @@ public final class FunctionTable {
         switch (opcode) {
             case A:
                 return AMap.compile(inst);
+            case AND:
+                return AndMap.compile(inst);
             case BRANCH:
                 return BranchBranch.compile(inst);
             case COUNT:
@@ -110,10 +118,14 @@ public final class FunctionTable {
                 return GroupCountReduce.compile(inst);
             case GT:
                 return GtMap.compile(inst);
+            case GTE:
+                return GteMap.compile(inst);
             case ID:
                 return IdentityFilter.compile(inst);
             case IS:
                 return IsFilter.compile(inst);
+            case LT:
+                return LtMap.compile(inst);
             case MAP:
                 return MapMap.compile(inst);
             case MINUS:

@@ -41,8 +41,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
+import static org.mmadt.language.__.gt;
+import static org.mmadt.language.__.is;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -156,7 +158,7 @@ class TDBTest {
         final TModel model = TModel.of("ex");
         final Inst bc =
                 TInst.of("define", "person", TRec.of("name", TStr.some(), "age", TInt.some(), "company", model.sym("company"))).mult(
-                        TInst.of("define", "company", TRec.of("title", TStr.some(), "ceo", model.sym("person").and(TRec.of("age", TInt.gt(30)))))).mult(
+                        TInst.of("define", "company", TRec.of("title", TStr.some(), "ceo", model.sym("person").and(TRec.of("age", is(gt(30))))))).mult(
                         TInst.of("define", "db", model.sym("company").q(star)));
 
         System.out.println(bc);

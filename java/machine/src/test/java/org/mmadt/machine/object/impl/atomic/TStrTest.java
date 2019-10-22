@@ -52,16 +52,6 @@ final class TStrTest {
     }
 
     @Test
-    void shouldAndCorrectly() {
-        assertEquals("str&(gt(100)|lt(20))", TStr.some().and(TInt.gt(100).or(TInt.lt(20))).toString());
-
-        final Str string1 = TStr.of("marko");
-        final Str string2 = TStr.of("kuppitz");
-        final Str string3 = TStr.some();
-        // System.out.println(string1.or(string2));
-    }
-
-    @Test
     void shouldSupportSemigroupAddition() {
         final Str a = TStr.of("marko");
         final Str b = TStr.of("rodriguez");

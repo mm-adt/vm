@@ -79,8 +79,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Bool eq(final Obj object);
 
-    public default <O extends Obj> O peak() {
-        return null == this.get() ? (O) TObj.none() : this.get() instanceof Stream ? ((Stream<O>) this.get()).peak() : (O) this;
+    public default <O extends Obj> O peek() {
+        return null == this.get() ? (O) TObj.none() : this.get() instanceof Stream ? ((Stream<O>) this.get()).peek() : (O) this;
     }
 
     public default <O extends Obj> O last() {

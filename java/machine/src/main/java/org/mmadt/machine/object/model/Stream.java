@@ -71,7 +71,7 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
 
     public A pop();
 
-    public A peak();
+    public A peek();
 
     public A last();
 
@@ -108,8 +108,8 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
             lowB = lowB.plus(b.q().low());
             highB = highB.plus(b.q().high());
         }
-        return ((WithRing) tester.q().low()).mult(lowA).peak().<Integer>get() <= ((WithRing) testee.q().low()).mult(lowB).peak().<Integer>get() &&
-                ((WithRing) tester.q().high()).mult(highA).peak().<Integer>get() >= ((WithRing) testee.q().high()).mult(highB).peak().<Integer>get();
+        return ((WithRing) tester.q().low()).mult(lowA).peek().<Integer>get() <= ((WithRing) testee.q().low()).mult(lowB).peek().<Integer>get() &&
+                ((WithRing) tester.q().high()).mult(highA).peek().<Integer>get() >= ((WithRing) testee.q().high()).mult(highB).peek().<Integer>get();
 
     }
 }

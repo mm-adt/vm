@@ -23,8 +23,8 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
+import org.mmadt.machine.object.model.type.algebra.WithOrder;
 
 /**
  * A Java representation of the {@code str} object in mm-ADT.
@@ -33,6 +33,10 @@ import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
+
+    public default String java() {
+        return this.get();
+    }
 
     public Bool regex(final Str pattern);
 
