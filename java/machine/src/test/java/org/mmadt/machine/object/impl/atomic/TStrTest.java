@@ -25,12 +25,17 @@ package org.mmadt.machine.object.impl.atomic;
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.atomic.Str;
-import org.mmadt.machine.object.model.type.PRel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.language.__.and;
+import static org.mmadt.language.__.eq;
+import static org.mmadt.language.__.is;
+import static org.mmadt.language.__.neq;
+import static org.mmadt.language.__.or;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
+import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,17 +43,17 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 final class TStrTest {
 
     @Test
-    void shouldHaveBasicSemantics() {
+    void shouldHaveTypeBasics() {
         assertTrue(TStr.some().test(TStr.of("hello")));
         assertFalse(TInt.some().test(TStr.of("hello")));
         assertTrue(TObj.all().test(TStr.of("hello")));
-        // System.out.println(TObj.all().eq("hello"));
         assertTrue(TStr.of("hello").q(star).test(TStr.of("hello")));
-        assertTrue(TStr.some().set(new PRel(PRel.Rel.EQ, TStr.of("id"))).test(TStr.of("id")));
-        assertTrue(TStr.some().set(new PRel(PRel.Rel.EQ, TStr.of("id").or(TStr.of("label")))).test(TStr.of("id")));
-        assertTrue(TStr.some().set(TStr.of("id").or(TStr.of("label"))).test(TStr.of("id")));
-        assertFalse(TStr.some().set(new PRel(PRel.Rel.NEQ, TStr.of("id").or(TStr.of("label")))).test(TStr.of("id")));
-        assertTrue(TStr.some().set(new PRel(PRel.Rel.NEQ, TStr.of("id").or(TStr.of("label")))).test(TStr.of("hello")));
+        assertFalse(TStr.of("hello").q(zero).test(TStr.of("hello")));
+        assertTrue(TStr.of(is(eq("id"))).test(TStr.of("id")));
+        assertTrue(TStr.of(is(or(eq("id"), eq("label")))).test(TStr.of("id")));
+        assertTrue(TStr.of("id").or(TStr.of("label")).test(TStr.of("id")));
+        assertFalse(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("id")));
+        assertTrue(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("hello")));
     }
 
     @Test

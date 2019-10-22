@@ -37,6 +37,8 @@ import static org.mmadt.language.compiler.Tokens.STR;
  */
 public final class TStr extends TObj implements Str {
 
+    private static final String MAX_VALUE = "zzzzzzzzzzzz";
+
     private static final Str SOME = new TStr(null);
     private static final Str NONE = new TStr(null).q(0);
     private static final Str ALL = new TStr(null).q(0, Integer.MAX_VALUE);
@@ -99,7 +101,7 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Str max() {
-        return TStr.of(ALL);
+        return TStr.of(MAX_VALUE);
     }
 
     @Override

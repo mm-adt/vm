@@ -25,6 +25,7 @@ package org.mmadt.machine.object.model;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -78,6 +79,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public PMap<Obj, Obj> members();
 
     public Bool eq(final Obj object);
+
+    public default Bool neq(final Obj object) {
+        return TBool.of(!this.eq(object).java());
+    }
 
     public default <O extends Obj> O peek() {
         return null == this.get() ? (O) TObj.none() : this.get() instanceof Stream ? ((Stream<O>) this.get()).peek() : (O) this;

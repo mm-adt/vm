@@ -100,6 +100,10 @@ public class __ {
         return create().mult(object);
     }
 
+    public static Query neq(final Object object) {
+        return create().neq(object);
+    }
+
     public static Query one() {
         return create().one();
     }
