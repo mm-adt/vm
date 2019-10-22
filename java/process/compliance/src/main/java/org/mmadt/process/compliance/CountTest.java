@@ -33,7 +33,7 @@ import static org.mmadt.language.__.start;
  */
 public abstract class CountTest extends AbstractTest {
 
-    //@Test
+    @Test
     void start_count() {
         assertEquals(objs(0), submit(start().count()));
     }

@@ -59,7 +59,7 @@ final class ReduceStep<S extends Obj, E extends Obj> extends AbstractStep<S, E> 
 
     @Override
     public boolean hasNext() {
-        return !this.done && this.previousStep.hasNext();
+        return !this.done || this.previousStep.hasNext();
     }
 
     @Override
