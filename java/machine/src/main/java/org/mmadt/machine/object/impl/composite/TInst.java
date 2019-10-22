@@ -96,7 +96,7 @@ public final class TInst extends TObj implements Inst {
             }
             this.quantifier = new TQ<>((Q) low.set(TStream.of(low, high)));
         }
-        return (TQ<Q>) this.quantifier;
+        return null == this.quantifier ? (TQ<Q>) TQ.ONE : (TQ<Q>) this.quantifier;
     }
 
     @Override

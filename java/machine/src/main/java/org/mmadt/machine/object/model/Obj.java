@@ -221,12 +221,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.q(tag.apply(this.q()));
     }
 
-    public default <O extends Obj> O q(final int low, final int high) {
-        return this.q(new TQ<>(low, high));
+    public default <O extends Obj> O q(final Object low, final Object high) {
+        return this.q((WithRing) ObjectHelper.from(high).clone().push(ObjectHelper.from(low)));
     }
 
-    public default <O extends Obj> O q(final int count) {
-        return this.q(count, count);
+    public default <O extends Obj> O q(final Object count) {
+        return this.q((WithRing) ObjectHelper.from(count));
     }
 
     public default <O extends Obj> O q(final WithRing count) {

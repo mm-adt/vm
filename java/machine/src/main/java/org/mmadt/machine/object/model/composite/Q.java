@@ -44,11 +44,11 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
                 case one:
                     return quantifier.set(quantifier.low().one());
                 case star:
-                    return quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.low().zero()));
+                    return quantifier.set(((WithOrder) quantifier.<WithOrder>last()).max().clone().push(quantifier.low().zero()));
                 case qmark:
                     return quantifier.set(quantifier.low().one().clone().push(quantifier.low().zero()));
                 case plus:
-                    return quantifier.set(quantifier.<WithOrder>last().max().clone().push(quantifier.low().one()));
+                    return quantifier.set(((WithOrder) quantifier.<WithOrder>last()).max().clone().push(quantifier.low().one()));
                 default:
                     throw new RuntimeException("Undefined short: " + this);
             }
@@ -57,6 +57,16 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
 
     // this is necessary as the quantifier is really wrapped in a supplier to avoid stackoverflow during construction
     public A object();
+
+    @Override
+    public default <O extends Obj> O peak() {
+        return (O) this.object().peak();
+    }
+
+    @Override
+    public default <O extends Obj> O last() {
+        return (O) this.object().last();
+    }
 
     public default A low() {
         return this.object().peak();

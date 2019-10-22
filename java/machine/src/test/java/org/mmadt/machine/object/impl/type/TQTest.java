@@ -27,6 +27,7 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.composite.Q;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,6 +36,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 final class TQTest {
+
+    @Test
+    void shouldSupportSingle() {
+        final Q<Int> a = new TQ<>(TInt.of(3));
+        final Q<Int> b = new TQ<>(TInt.of(3, 3));
+        assertEquals(a, b);
+        assertEquals(a.<Int>peak(), a.last());
+    }
 
     @Test
     void shouldNegate() {

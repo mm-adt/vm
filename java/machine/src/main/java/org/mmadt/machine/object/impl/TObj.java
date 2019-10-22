@@ -22,22 +22,16 @@
 
 package org.mmadt.machine.object.impl;
 
-import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.atomic.TReal;
-import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
-import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
-import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.machine.object.model.type.Pattern;
@@ -47,8 +41,6 @@ import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -57,19 +49,17 @@ import java.util.Objects;
 public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     private static final TObj SOME = new TObj(null);
-    private static final TObj ALL = new TObj(null).q(0, Integer.MAX_VALUE);
-    private static final TObj NONE = new TObj(null).q(0);
 
     public static Obj some() {
         return SOME;
     }
 
     public static Obj all() {
-        return ALL;
+        return new TObj(null).q(0, Integer.MAX_VALUE);
     }
 
     public static Obj none() {
-        return NONE;
+        return new TObj(null).q(TInt.zeroInt());
     }
 
     ////////
@@ -78,7 +68,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     protected Object value;                             // mutually exclusive with pattern (instance data)
     protected Obj type;                                 // an object that abstractly defines this object's forms
     protected String variable;                          // the ~bind string (if retrieved via a bind)
-    protected Q<?> quantifier = TQ.ONE;                 // the 'amount' of this object bundle
+    protected Q<?> quantifier;                          // the 'amount' of this object bundle
     // TODO: all fields below are type structures and should be bundled into a single field
     protected String symbol = Tokens.OBJ;               // the name of the object's form
     protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
@@ -116,7 +106,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <B extends WithRing<B>> Q<B> q() {
-        return (Q<B>) this.quantifier;
+        return null == this.quantifier ? TQ.ONE : (Q<B>) this.quantifier;
     }
 
     @Override
@@ -250,7 +240,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         final O clone = (O) this.clone();
         clone.access = null;
         clone.variable = null;
-        clone.quantifier = this.quantifier.one();
+        clone.quantifier = this.q().one();
         return clone;
     }
 

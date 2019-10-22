@@ -131,7 +131,7 @@ public final class Query {
             this.bytecode = TInst.of(Tokens.ID);
         else
             this.bytecode.<Stream<Inst>>get().drop(last);
-        return this.compose(last.q(new TQ<>(TInt.of(arg(quantifier), arg(quantifier))))); // TODO: generalize to 2-stream
+        return this.compose(last.q(arg(quantifier)));
     }
 
     public Query reduce(final Object seed, final Object reduce) {

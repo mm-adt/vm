@@ -40,10 +40,6 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
 
     public static final Q ONE = new TQ<>(1, 1); // TODO: necessary for default value
 
-    public static TQ<Int> of(final int low, final int high) {
-        return new TQ<>(low, high);
-    }
-
     public TQ(final int low, final int high) {
         super((Supplier) () -> TInt.of(low, high));
         assert low <= high;
