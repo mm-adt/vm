@@ -29,6 +29,8 @@ import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.util.BytecodeHelper;
 import org.mmadt.util.TestArgs;
@@ -115,7 +117,13 @@ class TypeTest {
             // TODO: if we know the EQ is a constant, then we know its constant{0,4}
             new TestArgs<>(List.of(
                     NONE, TInt.some(4), List.of(List.of(TInt.some(), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
-                    start(1, 2, 3, 4).map(map(plus(3).gt(2))).is(eq(true).id()))};
+                    start(1, 2, 3, 4).map(map(plus(3).gt(2))).is(eq(true).id())),
+            new TestArgs<>(List.of(
+                    NONE, TStr.some().q(4), List.of(List.of(TStr.some(), TStr.some())), TRec.of(TStr.some(),TInt.some())),
+                    start("a", "b", "c", "d").groupCount(plus("c"))),
+
+
+    };
 
     @TestFactory
     Stream<DynamicTest> testTypes() {

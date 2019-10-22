@@ -100,6 +100,10 @@ public class __ {
         return create().one();
     }
 
+    public static Query or(final Object... branches) {
+        return create().or(branches);
+    }
+
     public static Query plus(final Object object) {
         return create().plus(object);
     }

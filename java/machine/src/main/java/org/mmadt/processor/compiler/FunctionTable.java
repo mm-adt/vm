@@ -43,6 +43,7 @@ import org.mmadt.processor.function.map.MapMap;
 import org.mmadt.processor.function.map.MinusMap;
 import org.mmadt.processor.function.map.MultMap;
 import org.mmadt.processor.function.map.OneMap;
+import org.mmadt.processor.function.map.OrMap;
 import org.mmadt.processor.function.map.PlusMap;
 import org.mmadt.processor.function.map.PutMap;
 import org.mmadt.processor.function.map.QMap;
@@ -72,6 +73,7 @@ import static org.mmadt.language.compiler.Tokens.MAP;
 import static org.mmadt.language.compiler.Tokens.MINUS;
 import static org.mmadt.language.compiler.Tokens.MULT;
 import static org.mmadt.language.compiler.Tokens.ONE;
+import static org.mmadt.language.compiler.Tokens.OR;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.PUT;
 import static org.mmadt.language.compiler.Tokens.Q;
@@ -134,6 +136,8 @@ public final class FunctionTable {
                 return MultMap.compile(inst);
             case ONE:
                 return OneMap.compile(inst);
+            case OR:
+                return OrMap.compile(inst);
             case PLUS:
                 return PlusMap.compile(inst);
             case PUT:

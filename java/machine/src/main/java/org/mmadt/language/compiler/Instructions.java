@@ -26,6 +26,7 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -36,6 +37,7 @@ import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
+import static org.mmadt.language.compiler.Tokens.AND;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DB;
 import static org.mmadt.language.compiler.Tokens.DEDUP;
@@ -43,7 +45,9 @@ import static org.mmadt.language.compiler.Tokens.EQ;
 import static org.mmadt.language.compiler.Tokens.ERROR;
 import static org.mmadt.language.compiler.Tokens.FILTER;
 import static org.mmadt.language.compiler.Tokens.GET;
+import static org.mmadt.language.compiler.Tokens.GROUPCOUNT;
 import static org.mmadt.language.compiler.Tokens.GT;
+import static org.mmadt.language.compiler.Tokens.GTE;
 import static org.mmadt.language.compiler.Tokens.ID;
 import static org.mmadt.language.compiler.Tokens.IS;
 import static org.mmadt.language.compiler.Tokens.LT;
@@ -51,6 +55,7 @@ import static org.mmadt.language.compiler.Tokens.MAP;
 import static org.mmadt.language.compiler.Tokens.MINUS;
 import static org.mmadt.language.compiler.Tokens.MULT;
 import static org.mmadt.language.compiler.Tokens.ONE;
+import static org.mmadt.language.compiler.Tokens.OR;
 import static org.mmadt.language.compiler.Tokens.ORDER;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.PUT;
@@ -70,6 +75,8 @@ public final class Instructions {
     public static Obj getRange(final Inst inst, final Obj domain, final Model model) {
         final String op = inst.opcode().get();
         switch (op) {
+            case AND:
+                return map(domain, TBool.some(), inst);
             case DB:
                 return model.get(DB);
             case DEDUP:
@@ -86,16 +93,16 @@ public final class Instructions {
                 return map(domain, ((WithProduct) TSym.fetch(domain)).get(inst.get(TInt.oneInt())), inst);
             case GT:
                 return map(domain, TBool.some(), inst);
+            case GTE:
+                return map(domain, TBool.some(), inst);
+            case GROUPCOUNT:
+                return TRec.of(arg(inst, 1).q(inst.q()), domain.q().low().baseType()).q(one);
             case ID:
                 return endoMap(domain, inst);
             case IS:
                 return filter(domain, inst);
             case LT:
                 return map(domain, TBool.some(), inst);
-            case ONE:
-                return map(domain, ((WithOne) domain).one(), inst);
-            case ORDER:
-                return endoMap(domain, inst);
             case PUT:
                 return inst.get(TInt.twoInt());
             case REF:
@@ -106,6 +113,12 @@ public final class Instructions {
                 return endoMap(domain, inst);
             case MULT:
                 return endoMap(domain, inst);
+            case ONE:
+                return map(domain, ((WithOne) domain).one(), inst);
+            case ORDER:
+                return endoMap(domain, inst);
+            case OR:
+                return map(domain, TBool.some(), inst);
             case PLUS:
                 return endoMap(domain, inst);
             case Q:
@@ -160,7 +173,7 @@ public final class Instructions {
     }
 
     private static Obj reduce(final Obj domain, final Obj range) {
-        return domain.constant() ? range : range.set(null).q(one);
+        return (domain.constant() ? range : range.set(null)).q(one);
     }
 
     private static Obj endoReduce(final Obj domain) {

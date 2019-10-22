@@ -115,6 +115,10 @@ public final class Query {
         return this.compose(TInst.of(Tokens.ONE));
     }
 
+    public Query or(final Object... branches) {
+        return this.compose(TInst.of(Tokens.OR, args(branches)));
+    }
+
     public Query plus(final Object obj) {
         return this.compose(TInst.of(Tokens.PLUS, arg(obj)));
     }

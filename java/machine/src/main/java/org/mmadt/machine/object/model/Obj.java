@@ -91,6 +91,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Obj type();
 
+    public default Obj baseType() {
+        return this.set(null);
+    }
+
     public default Iterable<? extends Obj> iterable() {
         return this.q().isZero() ? List.of() : TStream.of(this);
     }

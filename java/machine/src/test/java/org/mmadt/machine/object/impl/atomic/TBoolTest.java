@@ -57,7 +57,7 @@ final class TBoolTest {
         assertEquals(TBool.of(true), TBool.of(true).or(TBool.of(true)));
         assertEquals(TBool.of(true).q(plus), TBool.of(true).q(plus).or(TBool.of(true).q(qmark)));
         assertEquals("bool|false", TBool.some().or(TBool.of(false)).toString());
-        assertEquals("true|false", TBool.of(true).or(TBool.of(false)).toString());
+        assertEquals("true", TBool.of(true).or(TBool.of(false)).toString());
         assertEquals("true{*}|false", TBool.of(true).q(star).or(TBool.of(false)).toString());
         assertEquals("true{*}~x|false~y", TBool.of(true).q(star).as("x").or(TBool.of(false).as("y")).toString());
         assertEquals("(true{*}~x|false~y)~z", TBool.of(true).q(star).as("x").or(TBool.of(false).as("y")).as("z").toString());

@@ -46,6 +46,7 @@ import static org.mmadt.language.__.and;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.lt;
+import static org.mmadt.language.__.or;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
@@ -126,8 +127,8 @@ class TObjTest {
         assertEquals("[is,[get,'name'][eq,'marko']]", TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko"))).toString());
         assertEquals("list", TLst.some().toString());
         assertEquals("['get';4;true;3.2]", TLst.of("get", 4, true, 3.2).toString());
-        // TODO: assertEquals("(gt(1)|lt(20))~x", TInt.gt(1).or(TInt.lt(20)).as("x").toString());
-        // TODO: assertEquals("(gt(1)&lt(20))~x", TInt.of(is(and(gt(1),lt(20)))).as("x").toString());
+       // TODO: assertEquals("(gt(1)|lt(20))~x", TInt.of(is(or(gt(1),lt(20)))).as("x").toString());
+       // TODO: assertEquals("(gt(1)&lt(20))~x", TInt.of(is(and(gt(1),lt(20)))).as("x").toString());
         assertEquals("rec", TRec.some().toString());
         assertEquals("['name':str,'age':int]", TRec.of("name", TStr.some(), "age", TInt.some()).toString());
         assertEquals("['name':str,'age':int]", TRec.of("name", TStr.some(), "age", TInt.some()).symbol("person").toString()); // TODO: @person prefix?
