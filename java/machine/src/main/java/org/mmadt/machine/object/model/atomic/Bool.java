@@ -33,6 +33,31 @@ import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
  */
 public interface Bool extends WithCommutativeRing<Bool> {
 
+    ////////////////////////////////
+    //// BOOL AS THE EXPERIMENT ////
+    ////////////////////////////////
+    // CLONE ALGEBRA METHODS THROUGH TYPE INTERFACES IF THIS REDUCES TYPECASTING //
+    @Override
+    public Bool one();
+
+    @Override
+    public Bool zero();
+
+    @Override
+    public Bool mult(final Bool object);
+
+    @Override
+    public Bool plus(final Bool object);
+
+    @Override
+    public default Bool minus(final Bool object) {
+        return this.plus(object.negate());
+    }
+
+    @Override
+    public Bool negate();
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     public default Boolean java() {
         return (Boolean) this.get();
     }

@@ -28,6 +28,8 @@ import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PMap;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -35,13 +37,31 @@ import java.util.Objects;
  */
 public final class TType implements Type {
 
-    protected Inst access;                       // access to its physical representation
-    protected PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (typically types)
-    protected PMap<Obj, Obj> members;
+    private static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
+    private Inst access;                       // access to its physical representation
+    private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (typically types)
+    private PMap<Obj, Obj> members;
+    private String symbol;
 
-    public static Type of() {
-        return new TType();
+    public static Type of(final String symbol) {
+        return BASE_TYPE_CACHE.computeIfAbsent(symbol, TType::new);
+    }
+
+    private TType(final String symbol) {
+        this.symbol = symbol;
+    }
+
+    @Override
+    public String symbol() {
+        return this.symbol;
+    }
+
+    @Override
+    public Type symbol(final String symbol) {
+        final TType clone = this.clone();
+        clone.symbol = symbol;
+        return clone;
     }
 
     @Override

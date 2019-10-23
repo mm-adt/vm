@@ -25,6 +25,7 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
@@ -55,7 +56,7 @@ public final class TInst extends TObj implements Inst {
 
     private TInst(final Object value) {
         super(value);
-        this.symbol = INST;
+        this.types = TType.of(INST);
     }
 
     public static Inst some() {

@@ -28,5 +28,22 @@ package org.mmadt.machine.object.model.type.algebra;
 public interface WithCommutativeRing<A extends WithCommutativeRing<A>> extends WithRing<A>, WithCommutativeMult<A> {
 
     @Override
+    public A one();
+
+    @Override
+    public A zero();
+
+    @Override
     public A mult(final A object);
+
+    @Override
+    public A plus(final A object);
+
+    @Override
+    public default A minus(final A object) {
+        return this.plus(object.negate());
+    }
+
+    @Override
+    public A negate();
 }

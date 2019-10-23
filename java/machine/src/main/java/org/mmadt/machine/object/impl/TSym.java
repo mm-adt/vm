@@ -46,7 +46,7 @@ public final class TSym<A extends Obj> extends TObj {
 
     private TSym(final String symbol, final A object) {
         super(null);
-        this.symbol = symbol;
+        this.types = TType.of(symbol);
         this.object.set(object);
     }
 
@@ -88,12 +88,12 @@ public final class TSym<A extends Obj> extends TObj {
 
     @Override
     public int hashCode() {
-        return this.symbol.hashCode();
+        return this.symbol().hashCode();
     }
 
     @Override
     public boolean equals(final Object object) {
-        return object instanceof TSym && Objects.equals(this.symbol, ((TSym) object).symbol);
+        return object instanceof TSym && Objects.equals(this.symbol(), ((TSym) object).symbol());
         //&&Objects.equals(this.getObject().symbol(), ((TSym) object).getObject().symbol());
     }
 }

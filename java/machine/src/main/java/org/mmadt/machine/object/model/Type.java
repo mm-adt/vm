@@ -30,6 +30,10 @@ import org.mmadt.machine.object.model.type.PMap;
  */
 public interface Type extends Cloneable {
 
+    public String symbol();
+
+    public Type symbol(final String symbol);
+
     public Type access(final Inst access);
 
     public Inst access();

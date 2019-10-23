@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.composite;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Lst;
@@ -41,9 +42,9 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     private static final Lst NONE = new TLst<>(null).q(0);
     private static final Lst ALL = new TLst<>(null).q(0, Integer.MAX_VALUE);
 
-    protected TLst(final Object value) {
+    private TLst(final Object value) {
         super(value);
-        this.symbol = LIST;
+        this.types = TType.of(LIST);
     }
 
     public static Lst all() {
@@ -118,7 +119,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> negate() {
-        return this; // TODO: need a good solution
+        return this; // TODO: need a good solution -- we need NOT to behave in a more standard way
     }
 
     @Override

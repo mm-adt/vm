@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -50,7 +51,7 @@ public final class TInt extends TObj implements Int {
 
     private TInt(final Object value) {
         super(value);
-        this.symbol = INT;
+        this.types = TType.of(INT);
     }
 
     public static Int all() {

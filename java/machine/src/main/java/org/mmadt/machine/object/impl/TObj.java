@@ -64,16 +64,13 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     ////////
-
-
     protected Object value;                             // mutually exclusive with pattern (instance data)
     protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
-    protected Obj type;                                 // an object that abstractly defines this object's forms
     protected String variable;                          // the ~bind string (if retrieved via a bind)
     protected Q<?> quantifier;                          // the 'amount' of this object bundle
-    // TODO: all fields below are type structures and should be bundled into a single field
-    protected Type types;
-    protected String symbol = Tokens.OBJ;
+    ///
+    protected Obj type;                                 // an object that abstractly defines this object's forms
+    protected Type types = TType.of(Tokens.OBJ);
 
     public TObj(final Object value) {
         if (null != value) {
@@ -88,15 +85,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         assert !(this.value instanceof Pattern) || ((Pattern) this.value).constant();
     }
 
-    private Type getType() {
-        if (null == this.types)
-            this.types = TType.of();
-        return this.types;
-    }
-
     @Override
     public String symbol() {
-        return this.symbol;
+        return this.types.symbol();
     }
 
     @Override
@@ -121,17 +112,17 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Inst access() {
-        return this.getType().access();
+        return this.types.access();
     }
 
     @Override
     public PMap<Inst, Inst> instructions() {
-        return this.getType().instructions();
+        return this.types.instructions();
     }
 
     @Override
     public PMap<Obj, Obj> members() {
-        return this.getType().members();
+        return this.types.members();
     }
 
     @Override
@@ -180,8 +171,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return this;
         else if (null != this.get() &&
                 this.get().equals(object.get()) &&
-                TInst.none().equals(this.getType().access()) &&
-                null == this.getType().instructions() &&
+                TInst.none().equals(this.types.access()) &&
+                null == this.types.instructions() &&
                 null == this.variable)
             return this.q(this.q().or(object.q()));
         else
@@ -196,7 +187,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 this.pattern,
                 this.variable,
                 this.q(),
-                this.getType());
+                this.types);
     }
 
     @Override
@@ -208,7 +199,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                                 Objects.equals(this.pattern, ((TObj) object).pattern) &&
                                 Objects.equals(this.variable, ((TObj) object).variable) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
-                                Objects.equals(this.getType(), ((TObj) object).getType())));
+                                Objects.equals(this.types, ((TObj) object).types)));
     }
 
     @Override
@@ -241,7 +232,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends TObj> O strip() { // TODO: gut this at some point
         final O clone = (O) this.clone();
-        clone.types = this.getType().access(null);
+        clone.types = this.types.access(null);
         clone.variable = null;
         clone.quantifier = this.q().one();
         return clone;
@@ -250,7 +241,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O symbol(final String symbol) {
         final TObj clone = this.clone();
-        clone.symbol = symbol;
+        clone.types = this.types.symbol(symbol);
         return (O) clone;
     }
 
@@ -287,26 +278,26 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O access(final Inst access) {
         final TObj clone = this.clone();
-        clone.types = this.getType().access(access);
+        clone.types = this.types.access(access);
         return (O) clone;
     }
 
     @Override
     public <O extends Obj> O inst(final Inst instA, final Inst instB) {
         final TObj clone = this.clone();
-        clone.types = this.getType().inst(instA, instB);
+        clone.types = this.types.inst(instA, instB);
         return (O) clone;
     }
 
     public <O extends TObj> O member(final Obj name, final Obj value) {
         final O clone = (O) this.clone();
-        clone.types = this.getType().member(name,value);
+        clone.types = this.types.member(name, value);
         return clone;
     }
 
     public <O extends Obj> O insts(final PMap<Inst, Inst> insts) {
         final TObj clone = this.clone();
-        clone.types = this.getType().insts(insts);
+        clone.types = this.types.insts(insts);
         return (O) clone;
     }
 }

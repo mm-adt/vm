@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Str;
@@ -45,7 +46,7 @@ public final class TStr extends TObj implements Str {
 
     private TStr(final Object value) {
         super(value);
-        this.symbol = STR;
+        this.types = TType.of(STR);
     }
 
     public static Str all() {

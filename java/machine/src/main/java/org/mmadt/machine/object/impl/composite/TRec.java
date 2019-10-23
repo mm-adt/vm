@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.composite;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
@@ -47,7 +48,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     private TRec(final Object value) {
         super(value);
-        this.symbol = REC;
+        this.types = TType.of(REC);
     }
 
     public static Rec<?, ?> some() {

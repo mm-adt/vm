@@ -22,13 +22,12 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-
-import static org.mmadt.language.compiler.Tokens.BOOL;
 
 
 /**
@@ -36,7 +35,7 @@ import static org.mmadt.language.compiler.Tokens.BOOL;
  */
 public final class TBool extends TObj implements Bool {
 
-    private static final Bool SOME = new TBool(null);
+
     private static final Bool NONE = new TBool(null).q(0);
     private static final Bool ALL = new TBool(null).q(0, Integer.MAX_VALUE);
     private static final Bool TRUE = new TBool(Boolean.TRUE);
@@ -45,7 +44,7 @@ public final class TBool extends TObj implements Bool {
 
     private TBool(final Object value) {
         super(value);
-        this.symbol = BOOL;
+        this.types = TType.of(Tokens.BOOL);
     }
 
     public static Bool all() {
@@ -57,7 +56,7 @@ public final class TBool extends TObj implements Bool {
     }
 
     public static Bool some() {
-        return SOME;
+        return new TBool(null);
     }
 
     public static Bool some(final int count) {
