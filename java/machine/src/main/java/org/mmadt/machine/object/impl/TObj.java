@@ -91,8 +91,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     protected String variable;                          // the ~bind string (if retrieved via a bind)
     protected Q quantifier = TQ.ONE;                    // the 'amount' of this object bundle
     ///
-    protected Obj type;                                 // an object that abstractly defines this object's forms
-    protected Type types;
+    protected Type types;                               // an object that abstractly defines this object's forms
+    protected Obj type;                                 // TODO: gut
 
     public TObj(final Object value) {
         this.types = TType.of(TObj.getBaseSymbol(this));
@@ -118,7 +118,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <B> B get() {
-        return null == this.value ? (B) this.types.pattern() : (B) this.value;
+        return this.constant() ? (B) this.value : (B) this.types.pattern();
     }
 
     @Override

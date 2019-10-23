@@ -24,7 +24,6 @@ package org.mmadt.machine.object.impl.composite;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
-import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
@@ -34,8 +33,6 @@ import org.mmadt.machine.object.model.util.StringFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.mmadt.language.compiler.Tokens.REC;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -92,14 +89,14 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     }
 
     @Override
-    public Rec<K, V> put(final K key, final V value) { // TODO: put() needs to account for PAnd.
+    public Rec<K, V> put(final K key, final V value) {
         ((PMap<K, V>) this.get()).put(key, value);
         return this;
     }
 
     @Override
     public Rec<K, V> drop(final K key) {
-        ((PMap<K, V>) this.value).remove(key);
+        ((PMap<K, V>) this.get()).remove(key);
         return this;
     }
 
