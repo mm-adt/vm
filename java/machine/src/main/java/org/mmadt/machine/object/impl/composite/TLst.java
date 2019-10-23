@@ -44,7 +44,6 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     private TLst(final Object value) {
         super(value);
-        this.types = TType.of(LIST);
     }
 
     public static Lst all() {
@@ -80,21 +79,21 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public void add(final V value) {
-        ((PList<V>) this.value).add(value);
+        ((PList<V>) this.get()).add(value);
     }
 
     @Override
     public Lst<V> put(final Int key, final V value) {
-        if (((PList<V>) this.value).size() <= key.<Integer>get())
+        if (((PList<V>) this.get()).size() <= key.<Integer>get())
             this.add(key, value);
         else
-            ((PList<V>) this.value).set(key.get(), value);
+            ((PList<V>) this.get()).set(key.get(), value);
         return this;
     }
 
     @Override
     public Lst<V> drop(final Int key) {
-        ((PList<V>) this.value).remove(key.<Integer>get().intValue());
+        ((PList<V>) this.get()).remove(key.<Integer>get().intValue());
         return this;
     }
 

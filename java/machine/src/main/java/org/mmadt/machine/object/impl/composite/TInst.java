@@ -56,7 +56,6 @@ public final class TInst extends TObj implements Inst {
 
     private TInst(final Object value) {
         super(value);
-        this.types = TType.of(INST);
     }
 
     public static Inst some() {

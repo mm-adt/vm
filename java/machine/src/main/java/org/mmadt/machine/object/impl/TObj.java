@@ -31,8 +31,13 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.atomic.Real;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.machine.object.model.type.Pattern;
@@ -63,26 +68,42 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return new TObj(null).q(TInt.zeroInt());
     }
 
+    private static String getBaseSymbol(final Obj obj) {
+        if (obj instanceof Bool)
+            return Tokens.BOOL;
+        if (obj instanceof Str)
+            return Tokens.STR;
+        if (obj instanceof Int)
+            return Tokens.INT;
+        if (obj instanceof Real)
+            return Tokens.REAL;
+        if (obj instanceof Rec)
+            return Tokens.REC;
+        if (obj instanceof Inst)
+            return Tokens.INST;
+        if (obj instanceof Lst)
+            return Tokens.LIST;
+        return Tokens.OBJ;
+    }
+
     ////////
     protected Object value;                             // mutually exclusive with pattern (instance data)
-    protected Pattern pattern;                          // mutually exclusive with value   (constraint data)
     protected String variable;                          // the ~bind string (if retrieved via a bind)
     protected Q<?> quantifier;                          // the 'amount' of this object bundle
     ///
     protected Obj type;                                 // an object that abstractly defines this object's forms
-    protected Type types = TType.of(Tokens.OBJ);
+    protected Type types;
 
     public TObj(final Object value) {
+        this.types = TType.of(TObj.getBaseSymbol(this));
         if (null != value) {
-            if (!(value instanceof Pattern) || ((Pattern) value).constant())
+            if (!(value instanceof Pattern) || (((Pattern) value).constant() && !(value instanceof Inst)))
                 this.value = value;
             else
-                this.pattern = (Pattern) value;
-        } else {
-            this.value = null;
-            this.pattern = null;
+                this.types = this.types.pattern((Pattern) value);
         }
         assert !(this.value instanceof Pattern) || ((Pattern) this.value).constant();
+
     }
 
     @Override
@@ -92,12 +113,12 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public boolean constant() {
-        return null != this.value && !(this.value instanceof Inst);
+        return null != this.value;
     }
 
     @Override
     public <B> B get() {
-        return null == this.value ? (B) this.pattern : (B) this.value;
+        return null == this.value ? (B) this.types.pattern() : (B) this.value;
     }
 
     @Override
@@ -181,9 +202,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public int hashCode() {
         return Objects.hash(
-                this.getClass(),
+                this.symbol(),
                 this.value,
-                this.pattern,
                 this.variable,
                 this.q(),
                 this.types);
@@ -193,9 +213,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public boolean equals(Object object) {
         return object instanceof TObj &&
                 ((this.q().isZero() && ((TObj) object).q().isZero()) ||
-                        (this.getClass().equals(object.getClass()) &&
+                        (this.symbol().equals(((TObj) object).symbol()) &&
                                 Objects.equals(this.value, ((TObj) object).value) &&
-                                Objects.equals(this.pattern, ((TObj) object).pattern) &&
                                 Objects.equals(this.variable, ((TObj) object).variable) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
                                 Objects.equals(this.types, ((TObj) object).types)));
@@ -249,13 +268,13 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         final TObj clone = this.clone();
         if (null == object) {
             clone.value = null;
-            clone.pattern = null;
+            clone.types = this.types.pattern(null);
         } else if (object instanceof Pattern && !((Pattern) object).constant()) {
             clone.value = null;
-            clone.pattern = (Pattern) object;
+            clone.types = this.types.pattern((Pattern) object);
         } else {
             clone.value = object;
-            clone.pattern = null;
+            clone.types = this.types.pattern(null);
         }
         return (O) clone;
     }

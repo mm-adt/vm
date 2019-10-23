@@ -43,7 +43,6 @@ public final class TReal extends TObj implements Real {
 
     private TReal(final Object value) {
         super(value);
-        this.types = TType.of(REAL);
     }
 
     public static Real some() {

@@ -44,7 +44,6 @@ public final class TBool extends TObj implements Bool {
 
     private TBool(final Object value) {
         super(value);
-        this.types = TType.of(Tokens.BOOL);
     }
 
     public static Bool all() {

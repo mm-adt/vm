@@ -34,6 +34,10 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.atomic.Real;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
@@ -169,8 +173,11 @@ public final class ObjectHelper {
             return null;
         if (object.named())
             return object.symbol();
-        else
+        else {
+         if(object.equals(object.type()))
+             return null;
             return ObjectHelper.getName(object.type());
+        }
     }
 
     public static Obj type(final Obj object) {
@@ -178,7 +185,6 @@ public final class ObjectHelper {
                 object.set(null) :
                 object.type();
     }
-
 
     public static void members(final Obj object, final Bindings bindings) {
         if (null != object.members()) {

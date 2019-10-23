@@ -51,7 +51,6 @@ public final class TInt extends TObj implements Int {
 
     private TInt(final Object value) {
         super(value);
-        this.types = TType.of(INT);
     }
 
     public static Int all() {

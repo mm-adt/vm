@@ -27,6 +27,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PMap;
+import org.mmadt.machine.object.model.type.Pattern;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +41,7 @@ public final class TType implements Type {
     private static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
+    protected Pattern pattern;                 // a predicate for testing an instance of the type
     private Inst access;                       // access to its physical representation
     private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (typically types)
     private PMap<Obj, Obj> members;
@@ -61,6 +63,18 @@ public final class TType implements Type {
     public Type symbol(final String symbol) {
         final TType clone = this.clone();
         clone.symbol = symbol;
+        return clone;
+    }
+
+    @Override
+    public Pattern pattern() {
+        return this.pattern;
+    }
+
+    @Override
+    public Type pattern(final Pattern pattern) {
+        final TType clone = this.clone();
+        clone.pattern = pattern;
         return clone;
     }
 
@@ -117,14 +131,16 @@ public final class TType implements Type {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.access, this.instructions);
+        return Objects.hash(this.symbol, this.access, this.instructions, this.pattern);
     }
 
     @Override
     public boolean equals(final Object object) {
         return object instanceof Type &&
-                Objects.equals(this.access(), ((TType) object).access()) &&
-                Objects.equals(this.instructions, ((TType) object).instructions);
+                Objects.equals(this.symbol, ((TType) object).symbol) &&
+                Objects.equals(this.access, ((TType) object).access) &&
+                Objects.equals(this.instructions, ((TType) object).instructions) &&
+                Objects.equals(this.pattern, ((TType) object).pattern);
 
     }
 

@@ -48,7 +48,6 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     private TRec(final Object value) {
         super(value);
-        this.types = TType.of(REC);
     }
 
     public static Rec<?, ?> some() {
@@ -94,10 +93,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> put(final K key, final V value) { // TODO: put() needs to account for PAnd.
-        if (null == this.value) {
-            ((PMap<K, V>) this.pattern).put(key, value);
-        } else
-            ((PMap<K, V>) this.value).put(key, value);
+        ((PMap<K, V>) this.get()).put(key, value);
         return this;
     }
 

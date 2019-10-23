@@ -46,7 +46,6 @@ public final class TStr extends TObj implements Str {
 
     private TStr(final Object value) {
         super(value);
-        this.types = TType.of(STR);
     }
 
     public static Str all() {

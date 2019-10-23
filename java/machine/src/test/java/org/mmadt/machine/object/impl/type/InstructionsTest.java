@@ -29,12 +29,6 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.Bindings;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,17 +46,5 @@ class InstructionsTest {
         System.out.println(model.get("a").toString());
         System.out.println(model.get("b").toString());
         System.out.println(a.and(b));
-    }
-
-    @Test
-    void shouldSupportInstructionDefinitions() {
-        final Inst bc = TInst.of("define", "ff", TInst.of("is", TObj.some())).mult(
-                TInst.of("define", "db", TInt.some().q(star).inst(TInst.of("filter", TInst.some().symbol("ff")), TInst.of("get", TStr.of("name")))));
-        final TModel model = TModel.of("ex").model(bc);
-        //assertEquals(1, db.definitions().size());
-        assertEquals(TInst.of("is", TObj.some()), model.get("ff"));
-        assertNotNull(model.get("db"));
-        assertEquals("db", model.sym("db").symbol());
-        assertEquals(TInst.of("get", "name"), model.get("db").inst(new Bindings(), TInst.of("filter", TInst.of("is", TInst.of("eq", 32)))).get());
     }
 }

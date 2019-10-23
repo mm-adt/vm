@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model;
 
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PMap;
+import org.mmadt.machine.object.model.type.Pattern;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,6 +34,10 @@ public interface Type extends Cloneable {
     public String symbol();
 
     public Type symbol(final String symbol);
+
+    public Pattern pattern();
+
+    public Type pattern(final Pattern pattern);
 
     public Type access(final Inst access);
 
