@@ -160,7 +160,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         else
             return ObjectHelper.root(this, object).
                     set(ObjectHelper.andValues(this, (TObj) object)).
-                    access(ObjectHelper.access(this, object)).
                     q(this.q().and(object.q())).
                     as(ObjectHelper.mergeVariables(this, object));
     }

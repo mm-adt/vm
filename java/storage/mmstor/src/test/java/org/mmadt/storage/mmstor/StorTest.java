@@ -23,10 +23,15 @@
 package org.mmadt.storage.mmstor;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.util.MinimalProcessor;
 import org.mmadt.storage.Storage;
@@ -36,6 +41,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.__.plus;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -55,4 +61,17 @@ class StorTest {
         assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(processor.iterator(storage.root())));
     }
 
+    @Test
+    void testModel() {
+        Storage storage = new Stor<>(TLst.of());
+        assertEquals(TLst.some(), storage.model().get(Tokens.DB));
+        //
+        final Rec<Str, Obj> person = TRec.of("name", TStr.some(), "age", TInt.some());
+        final Rec<Str, Obj> people = person.q(star);
+        final Rec<Str, Obj> instances = TRec.empty().type(people);
+        storage = new Stor<>(instances);
+        assertEquals(people, storage.model().get(Tokens.DB));
+        assertEquals(instances, storage.root());
+        assertEquals(people, storage.root().type());
+    }
 }

@@ -87,6 +87,7 @@ public final class Tokens {
     public static final String DROP = "drop";
     public static final String EQ = "eq";
     public static final String ERROR = "error";
+    public static final String EVAL = "eval";
     public static final String FILTER = "filter";
     public static final String FLATMAP = "flatMap";
     public static final String IS = "is";

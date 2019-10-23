@@ -63,6 +63,10 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
         return NONE;
     }
 
+    public static Rec<?, ?> empty() {
+        return new TRec<>(TStream.of());
+    }
+
     public static <K extends Obj, V extends Obj> Rec<K, V> of(final PMap<K, V> map) {
         return new TRec<>(map);
     }

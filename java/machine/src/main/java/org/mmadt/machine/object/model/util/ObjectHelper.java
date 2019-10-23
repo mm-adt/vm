@@ -107,15 +107,6 @@ public final class ObjectHelper {
         return null == object.access() ? TInst.none() : object.access();
     }
 
-    public static Inst access(final Obj object1, final Obj object2) {
-        if (!TObj.none().equals(object1.access()) && !TObj.none().equals(object2.access()))
-            throw new RuntimeException("Two accesses for these objects: " + object1 + ":::" + object2);
-        else if (!TObj.none().equals(object1.access()))
-            return object1.access();
-        else
-            return object2.access();
-    }
-
     public static String mergeVariables(final Obj object1, final Obj object2) {
         if (null != object1.variable() && null != object2.variable() && !object1.variable().equals(object2.variable()))
             throw new RuntimeException("The two objects have different variables: " + object1 + ":::" + object2);
@@ -173,10 +164,6 @@ public final class ObjectHelper {
             return TObj.some();
     }
 
-    public static boolean isSubClassOf(final Obj objectA, final Obj objectB) {
-        return objectA.symbol().equals(objectB.symbol()) || (objectA.getClass().equals(objectB.getClass()) || objectA.getClass().isAssignableFrom(objectB.getClass()));
-    }
-
     public static String getName(final Obj object) {
         if (null == object)
             return null;
@@ -187,12 +174,11 @@ public final class ObjectHelper {
     }
 
     public static Obj type(final Obj object) {
-        return null == object.type() ? object.set(null) : object.type();
+        return null == object.type() ?
+                object.set(null) :
+                object.type();
     }
 
-    public static <A extends Obj> A orNone(final A nullableObject) {
-        return null == nullableObject ? (A) TObj.none() : (A) nullableObject;
-    }
 
     public static void members(final Obj object, final Bindings bindings) {
         if (null != object.members()) {

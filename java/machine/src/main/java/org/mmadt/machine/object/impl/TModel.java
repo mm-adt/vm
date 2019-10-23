@@ -150,15 +150,4 @@ public final class TModel implements Model {
     public String toString() {
         return this.definitions.toString();
     }
-
-    //@Override
-    public void load(final TModel model) {
-        for (final Map.Entry<String, TSym<Obj>> entry : model.definitions.entrySet()) {
-            if (!this.definitions.containsKey(entry.getKey()))
-                this.definitions.put(entry.getKey(), entry.getValue());
-            else if (null == this.definitions.get(entry.getKey()).getObject())
-                this.definitions.get(entry.getKey()).setObject(TSym.fetch(entry.getValue()));
-        }
-        this.populate();
-    }
 }

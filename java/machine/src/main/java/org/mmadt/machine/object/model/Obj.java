@@ -128,7 +128,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return bindings.get(this.variable());
         return this.insts(null == this.instructions() ? null : this.instructions().bind(bindings)).
                 set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
-                access(this.access().equals(TInst.none()) ? null : (Inst) this.access().bind(bindings));
+                access(this.access().equals(TInst.none()) ? null : this.access().bind(bindings));
     }
 
     @Override
@@ -152,7 +152,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 else if (null != current)
                     return current instanceof Pattern ? ((Pattern) current).test(object) : current.equals(object.get());
                 else
-                    return ObjectHelper.isSubClassOf(this, object);
+                    return this.getClass().isAssignableFrom(object.getClass());
             }
         } finally {
             if (root)
@@ -183,7 +183,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 bindings.rollback();
                 return false;
             }
-        } else if (!ObjectHelper.isSubClassOf(this, object)) {
+        } else if (!this.getClass().isAssignableFrom(object.getClass())) {
             bindings.rollback();
             return false;
         }
@@ -199,7 +199,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (null != this.instructions()) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
                 if (entry.getKey().match(bindings, inst))
-                    return Optional.of((Inst) entry.getValue().bind(bindings));
+                    return Optional.of(entry.getValue().bind(bindings));
             }
         }
         if (null != this.type() && this.type().get() instanceof PConjunction) // TODO: this is why having a specialized variant class is important (so the logic is more recursive)

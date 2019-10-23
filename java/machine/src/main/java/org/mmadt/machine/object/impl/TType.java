@@ -39,10 +39,10 @@ public final class TType implements Type {
 
     private static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
+    private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
     private Inst access;                       // access to its physical representation
     private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (typically types)
     private PMap<Obj, Obj> members;
-    private String symbol;
 
     public static Type of(final String symbol) {
         return BASE_TYPE_CACHE.computeIfAbsent(symbol, TType::new);

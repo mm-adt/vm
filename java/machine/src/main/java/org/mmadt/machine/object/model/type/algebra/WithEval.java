@@ -20,45 +20,14 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.mmstor;
+package org.mmadt.machine.object.model.type.algebra;
 
-import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TModel;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.storage.Storage;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class Stor<A extends Obj> implements Storage<A> {
+public interface WithEval extends Obj {
 
-    private static final String SYMBOL = "mmstor";
-
-    private final A root;
-    private final Model model;
-
-    public Stor(final A root) { // TODO: make a Model-based constructor
-        assert null != root;
-        this.root = root;
-        this.model = TModel.of(SYMBOL);
-        this.model.define(Tokens.DB, ObjectHelper.type(this.root));
-    }
-
-    @Override
-    public boolean alive() {
-        return true;
-    }
-
-    @Override
-    public A root() {
-        return this.root;
-    }
-
-    @Override
-    public Model model() {
-        return this.model;
-    }
-
+    public <A extends Obj> A eval(final String function, final Obj... args) throws UnsupportedOperationException;
 }

@@ -35,6 +35,7 @@ import org.mmadt.processor.function.map.AMap;
 import org.mmadt.processor.function.map.AndMap;
 import org.mmadt.processor.function.map.DropMap;
 import org.mmadt.processor.function.map.EqMap;
+import org.mmadt.processor.function.map.EvalMap;
 import org.mmadt.processor.function.map.GetMap;
 import org.mmadt.processor.function.map.GtMap;
 import org.mmadt.processor.function.map.GteMap;
@@ -63,6 +64,7 @@ import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DB;
 import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
+import static org.mmadt.language.compiler.Tokens.EVAL;
 import static org.mmadt.language.compiler.Tokens.FILTER;
 import static org.mmadt.language.compiler.Tokens.GET;
 import static org.mmadt.language.compiler.Tokens.GROUPCOUNT;
@@ -116,6 +118,8 @@ public final class FunctionTable {
                 return DropMap.compile(inst);
             case EQ:
                 return EqMap.compile(inst);
+            case EVAL:
+                return EvalMap.compile(inst);
             case FILTER:
                 return FilterFilter.compile(inst);
             case GET:
