@@ -89,7 +89,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     ////////
     protected Object value;                             // mutually exclusive with pattern (instance data)
     protected String variable;                          // the ~bind string (if retrieved via a bind)
-    protected Q<?> quantifier;                          // the 'amount' of this object bundle
+    protected Q<?> quantifier = TQ.ONE;                 // the 'amount' of this object bundle
     ///
     protected Obj type;                                 // an object that abstractly defines this object's forms
     protected Type types;
@@ -123,7 +123,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <B extends WithRing<B>> Q<B> q() {
-        return null == this.quantifier ? TQ.ONE : (Q<B>) this.quantifier;
+        return (Q<B>) this.quantifier;
     }
 
     @Override

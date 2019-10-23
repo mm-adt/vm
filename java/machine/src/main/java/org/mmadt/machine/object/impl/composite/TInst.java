@@ -25,7 +25,6 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
-import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
@@ -39,8 +38,6 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.List;
-
-import static org.mmadt.language.compiler.Tokens.INST;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -96,7 +93,7 @@ public final class TInst extends TObj implements Inst {
             }
             this.quantifier = new TQ<>((Q) low.set(TStream.of(low, high)));
         }
-        return null == this.quantifier ? (TQ<Q>) TQ.ONE : (TQ<Q>) this.quantifier;
+        return (TQ<Q>) this.quantifier;
     }
 
     @Override
