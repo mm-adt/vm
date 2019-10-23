@@ -38,6 +38,7 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.type.PConjunction;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.machine.object.model.type.Pattern;
@@ -89,7 +90,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     ////////
     protected Object value;                             // mutually exclusive with pattern (instance data)
     protected Q quantifier = TQ.ONE;                    // the 'amount' of this object bundle
-    ///
     protected Type types;                               // an object that abstractly defines this object's forms
     protected Obj type;                                 // TODO: gut
 
@@ -112,7 +112,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public boolean constant() {
-        return null != this.value;
+        return null != this.value &&
+                !(this.value instanceof PConjunction) && !(this.value instanceof Inst); // TODO: remove pattern tests when stabilized
     }
 
     @Override
@@ -161,7 +162,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
         final Obj previous = this.type;
         this.type = type;
-        if (type.isType() && null != type.get() && !(this.get() instanceof Stream) ? !type.<Pattern>get().test(this) : !type.test(this)) {
+        if (null != type.get() && !(this.get() instanceof Stream) ? !type.<Pattern>get().test(this) : !type.test(this)) {
             this.type = previous;
             throw new RuntimeException("The specified type doesn't match the object: " + type + "::" + this);
         }
@@ -181,7 +182,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return ObjectHelper.root(this, object).
                     set(ObjectHelper.andValues(this, (TObj) object)).
                     q(this.q().and(object.q())).
-                    label(ObjectHelper.mergeVariables(this, object));
+                    label(ObjectHelper.mergeLabels(this, object));
     }
 
     @Override
@@ -199,19 +200,14 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                this.symbol(),
-                this.value,
-                this.q(),
-                this.types);
+        return Objects.hash(this.value, this.q(), this.types);
     }
 
     @Override
     public boolean equals(Object object) {
         return object instanceof TObj &&
                 ((this.q().isZero() && ((TObj) object).q().isZero()) ||
-                        (this.symbol().equals(((TObj) object).symbol()) &&
-                                Objects.equals(this.value, ((TObj) object).value) &&
+                        (Objects.equals(this.value, ((TObj) object).value) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
                                 Objects.equals(this.types, ((TObj) object).types)));
     }
@@ -231,12 +227,12 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public <O extends Obj> O pop() {
-        return this.get() instanceof Stream ? this.<Stream<O>>get().pop() : (O) this;
+        return this.value instanceof Stream ? this.<Stream<O>>get().pop() : (O) this;
     }
 
     public <O extends Obj> O push(final O obj) {
         assert obj.getClass().equals(this.getClass());
-        if (this.get() instanceof Stream)
+        if (this.value instanceof Stream)
             ((Stream<O>) this.get()).push(obj);
         else
             this.value = TStream.of(obj, this.clone());
