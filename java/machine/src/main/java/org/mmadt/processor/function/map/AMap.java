@@ -48,6 +48,6 @@ public final class AMap<S extends Obj> extends AbstractFunction implements MapFu
 
 
     public static <S extends Obj> AMap<S> compile(final Inst inst) {
-        return new AMap<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())));
+        return new AMap<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())));
     }
 }

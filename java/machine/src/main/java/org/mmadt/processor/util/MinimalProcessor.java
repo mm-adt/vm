@@ -59,8 +59,8 @@ public final class MinimalProcessor<S extends Obj, E extends Obj> extends Simple
             }
         }
         if (null != obj) {
-            if (null != this.bytecode.variable())
-                obj = obj.as(this.bytecode.variable()); // TODO: bytecode as a whole shouldn't be able to be labeled (only individual instructions)
+            if (null != this.bytecode.label())
+                obj = obj.label(this.bytecode.label()); // TODO: bytecode as a whole shouldn't be able to be labeled (only individual instructions)
             this.traverser = (E) obj;
         }
 

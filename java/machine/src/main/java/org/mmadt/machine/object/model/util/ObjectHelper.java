@@ -34,10 +34,6 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.atomic.Real;
-import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
@@ -112,12 +108,12 @@ public final class ObjectHelper {
     }
 
     public static String mergeVariables(final Obj object1, final Obj object2) {
-        if (null != object1.variable() && null != object2.variable() && !object1.variable().equals(object2.variable()))
+        if (null != object1.label() && null != object2.label() && !object1.label().equals(object2.label()))
             throw new RuntimeException("The two objects have different variables: " + object1 + ":::" + object2);
-        if (null != object1.variable())
-            return object1.variable();
+        if (null != object1.label())
+            return object1.label();
         else
-            return object2.variable();
+            return object2.label();
     }
 
     private static <K extends Obj, V extends Obj> Map<K, V> mergeMaps(final Map<K, V> map1, final Map<K, V> map2) {
@@ -189,8 +185,8 @@ public final class ObjectHelper {
     public static void members(final Obj object, final Bindings bindings) {
         if (null != object.members()) {
             for (final Map.Entry<Obj, Obj> entry : object.members().entrySet()) {
-                if (!bindings.has(entry.getKey().variable()))
-                    bindings.put(entry.getKey().variable(), entry.getValue());
+                if (!bindings.has(entry.getKey().label()))
+                    bindings.put(entry.getKey().label(), entry.getValue());
             }
         }
         if (object instanceof TSym && null != ((TSym) object).getObject())

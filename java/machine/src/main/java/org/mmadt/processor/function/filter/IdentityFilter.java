@@ -43,6 +43,6 @@ public final class IdentityFilter<S extends Obj> extends AbstractFunction implem
     }
 
     public static <S extends Obj> IdentityFilter<S> compile(final Inst inst) {
-        return new IdentityFilter<>(inst.q(), inst.variable());
+        return new IdentityFilter<>(inst.q(), inst.label());
     }
 }

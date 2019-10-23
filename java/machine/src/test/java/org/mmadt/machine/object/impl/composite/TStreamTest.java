@@ -95,7 +95,7 @@ class TStreamTest {
 
     //  @Test
     void shouldMatchCorrectly() {
-        Rec type = TRec.of("name", TStr.some(), "age", TInt.some().as("x"), "hobbies", TStr.some().q(star).as("y"));
+        Rec type = TRec.of("name", TStr.some(), "age", TInt.some().label("x"), "hobbies", TStr.some().q(star).label("y"));
         Rec instance1 = TRec.of(
                 TRec.of("name", "marko", "age", 29),
                 TRec.of("name", "stephen", "age", 29, "hobbies", "coding"));
@@ -136,7 +136,7 @@ class TStreamTest {
 
     // @Test
     void shouldTestWithOrCorrectly() {
-        Rec type = TRec.of("name", TStr.some(), "age", TInt.some().as("x"), "hobbies", TStr.some().q(star).as("y"));
+        Rec type = TRec.of("name", TStr.some(), "age", TInt.some().label("x"), "hobbies", TStr.some().q(star).label("y"));
         Rec instance1 = TRec.of(
                 TRec.of("name", "marko", "age", 29),
                 TRec.of("name", "stephen", "age", 29, "hobbies", "coding"));
@@ -176,7 +176,7 @@ class TStreamTest {
 
     //@Test
     void shouldSupportBinding() {
-        Rec type = TRec.of("name", TStr.some(), "age", TInt.some().as("x"), "hobbies", TStr.some().q(star).as("y"));
+        Rec type = TRec.of("name", TStr.some(), "age", TInt.some().label("x"), "hobbies", TStr.some().q(star).label("y"));
         Rec instance1 = TRec.of(
                 TRec.of("name", "marko", "age", 29),
                 TRec.of("name", "stephen", "age", 29, "hobbies", TStr.of(TStr.of("coding"), TStr.of("family"))));

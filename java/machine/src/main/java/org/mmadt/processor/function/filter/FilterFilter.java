@@ -45,7 +45,7 @@ public final class FilterFilter<S extends Obj> extends AbstractFunction implemen
     }
 
     public static <S extends Obj> FilterFilter<S> compile(final Inst inst) {
-        return new FilterFilter<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())));
+        return new FilterFilter<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())));
     }
 
 }

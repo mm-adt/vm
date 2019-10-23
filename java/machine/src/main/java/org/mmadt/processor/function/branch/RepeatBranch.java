@@ -134,6 +134,6 @@ public final class RepeatBranch<S extends Obj> extends AbstractFunction {
             else if (arg instanceof Boolean)
                 objects.add(new FilterProcessor<>((boolean) arg));
         }
-        return new RepeatBranch<>(inst.q(), inst.variable(), objects);
+        return new RepeatBranch<>(inst.q(), inst.label(), objects);
     }
 }

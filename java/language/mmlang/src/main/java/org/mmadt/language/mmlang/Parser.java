@@ -251,7 +251,7 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Binding(final Var<Obj> object) {
-        return Sequence(TILDE, VarSym(), object.set(object.get().as(match())), this.push(this.popSymTable().addVariable(match(), object.get())));
+        return Sequence(TILDE, VarSym(), object.set(object.get().label(match())), this.push(this.popSymTable().addVariable(match(), object.get())));
     }
 
     Rule BinaryOperator() {
@@ -352,7 +352,7 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule As(final Var<? extends Obj> object) {
-        return Sequence(TILDE, VarSym(), object.set(object.get().as(match())));
+        return Sequence(TILDE, VarSym(), object.set(object.get().label(match())));
     }
 
 

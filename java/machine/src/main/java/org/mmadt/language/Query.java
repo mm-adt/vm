@@ -178,7 +178,7 @@ public final class Query {
     }
 
     public Query as(final String key) {
-        this.bytecode = this.bytecode.as(key);
+        this.bytecode = this.bytecode.label(key);
         return this;
     }
 

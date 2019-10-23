@@ -46,6 +46,6 @@ public final class LteMap<S extends WithOrder<S>> extends AbstractFunction imple
     }
 
     public static <S extends WithOrder<S>> LteMap<S> compile(final Inst inst) {
-        return new LteMap<>(inst.q(), inst.variable(), Argument.<S, S>create(inst.get(TInt.oneInt())));
+        return new LteMap<>(inst.q(), inst.label(), Argument.<S, S>create(inst.get(TInt.oneInt())));
     }
 }

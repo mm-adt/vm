@@ -44,6 +44,6 @@ public final class QMap<S extends Obj, E extends WithRing<E>> extends AbstractFu
     }
 
     public static <S extends Obj, E extends WithRing<E>> QMap<S, E> compile(final Inst inst) {
-        return new QMap<>(inst.q(), inst.variable());
+        return new QMap<>(inst.q(), inst.label());
     }
 }

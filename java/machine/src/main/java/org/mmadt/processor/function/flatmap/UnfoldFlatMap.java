@@ -46,7 +46,7 @@ public final class UnfoldFlatMap<S extends Obj, E extends Obj> extends AbstractF
     }
 
     public static <S extends Obj, E extends Obj> UnfoldFlatMap<S, E> compile(final Inst inst) {
-        return new UnfoldFlatMap<>(inst.q(), inst.variable());
+        return new UnfoldFlatMap<>(inst.q(), inst.label());
     }
 
 

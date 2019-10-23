@@ -66,7 +66,7 @@ public final class GroupCountReduce<S extends Obj, E extends Obj, A extends With
     }
 
     public static <S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> GroupCountReduce<S, E, A> compile(final Inst inst) {
-        return new GroupCountReduce<>(inst.q(), inst.variable(), Argument.create(inst.args().isEmpty() ? TInst.of(Tokens.ID) : inst.args().get(0)));
+        return new GroupCountReduce<>(inst.q(), inst.label(), Argument.create(inst.args().isEmpty() ? TInst.of(Tokens.ID) : inst.args().get(0)));
     }
 
 }

@@ -81,7 +81,7 @@ public final class BranchBranch<S extends Obj, E extends Obj> extends AbstractFu
             final IR<S, E> branch = new IR<>(args.get(i + 1));
             branches.computeIfAbsent(predicate, p -> new ArrayList<>()).add(branch);
         }
-        return new BranchBranch<>(inst.q(), inst.variable(), branches);
+        return new BranchBranch<>(inst.q(), inst.label(), branches);
     }
 
     @Override

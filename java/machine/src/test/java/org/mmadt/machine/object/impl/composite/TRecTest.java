@@ -66,7 +66,7 @@ final class TRecTest {
         final Rec<Str, ?> type = TRec.of(
                 "name", is(eq("marko")).as("x"),
                 "age", is(type().a(TInt.some())).is(gt(23)).as("y"));
-        assertEquals("y", type.get(TStr.of("age")).variable());
+        assertEquals("y", type.get(TStr.of("age")).label());
         final Rec<Str, Obj> person = TRec.of("name", "marko", "age", 29);
         // System.out.println(type + ":::" + person);
         assertTrue(type.test(person));
@@ -78,7 +78,7 @@ final class TRecTest {
         // TODO final Rec<Str,?> bound = type.bind(bindings);
         // System.out.println(bound);
         //  assertEquals(person, bound);
-        final Lst list = TLst.of(TStr.some().as("x"), TInt.some().as("y"));
+        final Lst list = TLst.of(TStr.some().label("x"), TInt.some().label("y"));
         assertEquals(TLst.of("marko", 29), list.bind(bindings));
     }
 
@@ -177,7 +177,7 @@ final class TRecTest {
     @Test
     void shouldSupportQuantifiersInMatch() {
         Bindings bindings = new Bindings();
-        Rec<Obj, Obj> person = TRec.of("name", TStr.some(), "age", TInt.some().q(qmark).as("a")).symbol("person");
+        Rec<Obj, Obj> person = TRec.of("name", TStr.some(), "age", TInt.some().q(qmark).label("a")).symbol("person");
         final Rec marko = TRec.of("name", "marko", "age", TInt.of(29));
         final Rec kuppitz = TRec.of("name", "kuppitz");
         assertTrue(person.match(bindings, marko));
@@ -187,14 +187,14 @@ final class TRecTest {
         assertTrue(person.match(bindings, kuppitz));
         bindings.clear();
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.none().as("a")).symbol("person");
+        person = TRec.of("name", TStr.some(), "age", TInt.none().label("a")).symbol("person");
         assertFalse(person.match(bindings, marko));
         assertEquals(0, bindings.size());
         assertTrue(person.match(bindings, kuppitz));
         System.out.println(bindings);
         assertEquals(0, bindings.size());
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().q(star).as("a")).symbol("person");
+        person = TRec.of("name", TStr.some(), "age", TInt.some().q(star).label("a")).symbol("person");
         assertTrue(person.match(bindings, marko));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(29), bindings.get("a"));
@@ -203,7 +203,7 @@ final class TRecTest {
         assertEquals(0, bindings.size());
 
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().q(plus).as("a")).symbol("person");
+        person = TRec.of("name", TStr.some(), "age", TInt.some().q(plus).label("a")).symbol("person");
         assertTrue(person.match(bindings, marko));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(29), bindings.get("a"));
@@ -211,7 +211,7 @@ final class TRecTest {
         assertFalse(person.match(bindings, kuppitz));
         assertEquals(0, bindings.size());
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().as("a")).symbol("person");
+        person = TRec.of("name", TStr.some(), "age", TInt.some().label("a")).symbol("person");
         assertTrue(person.match(bindings, marko));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(29), bindings.get("a"));
@@ -240,10 +240,10 @@ final class TRecTest {
 
     @Test
     void shouldMatchNestedRecords1() {
-        final Rec person = TRec.of("name", TStr.some().as("n1"), "age", TInt.some(),
+        final Rec person = TRec.of("name", TStr.some().label("n1"), "age", TInt.some(),
                 "phones", TRec.of(
-                        "home", TInt.some().as("h1").or(TStr.some().as("h2")),
-                        "work", TInt.gt(0).as("w1").or(TStr.some()))).as("x");
+                        "home", TInt.some().label("h1").or(TStr.some().label("h2")),
+                        "work", TInt.gt(0).label("w1").or(TStr.some()))).label("x");
 
         final Rec marko = TRec.of("name", "marko", "age", 29, "phones", TRec.of("home", 123, "work", 34));
         assertTrue(person.test(marko));
@@ -261,7 +261,7 @@ final class TRecTest {
 
     @Test
     void shouldMatchNestedRecords2() {
-        Rec type1 = TRec.of("name", TStr.some().as("n"), "address", TRec.of("state", TStr.some().as("s"), "zipcode", TInt.some().as("z")));
+        Rec type1 = TRec.of("name", TStr.some().label("n"), "address", TRec.of("state", TStr.some().label("s"), "zipcode", TInt.some().label("z")));
         Rec rec1 = TRec.of("name", "marko", "address", TRec.of("state", "NM", "zipcode", 87506));
         assertTrue(rec1.constant());
         assertFalse(type1.constant());
@@ -277,7 +277,7 @@ final class TRecTest {
 
     @Test
     void shouldBindQuantifier() {
-        final Rec person = TRec.of("name", TStr.some().as("x"), "age", TInt.some()).q(qmark).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().as("x"))))));
+        final Rec person = TRec.of("name", TStr.some().label("x"), "age", TInt.some()).q(qmark).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x"))))));
         assertEquals(qmark.apply(person.q()), person.q());
         final Bindings bindings = new Bindings();
         bindings.put("x", TStr.of("marko"));
@@ -469,8 +469,8 @@ final class TRecTest {
 
     @Test
     void shouldSupportRecursiveTypeMatching() {
-        final Rec<Obj, Obj> person = TRec.of("name", TStr.some().as("a"), "friend", TRec.some().symbol("person")).symbol("person");
-        person.put(TStr.of("friend"), person.as("b").q(qmark));
+        final Rec<Obj, Obj> person = TRec.of("name", TStr.some().label("a"), "friend", TRec.some().symbol("person")).symbol("person");
+        person.put(TStr.of("friend"), person.label("b").q(qmark));
         assertDoesNotThrow(person::toString); // check for stack overflow
         final Rec<Obj, Obj> marko = TRec.of("name", "marko");
         marko.type(person);

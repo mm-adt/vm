@@ -47,6 +47,6 @@ public final class GetMap<K extends Obj, V extends Obj> extends AbstractFunction
     }
 
     public static <K extends Obj, V extends Obj> GetMap<K, V> compile(final Inst inst) {
-        return new GetMap<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())));
+        return new GetMap<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())));
     }
 }

@@ -109,8 +109,8 @@ class TDBTest {
         final TModel model = TModel.of("ex");
         final Inst bc =
                 TInst.of("define", "person", TRec.of("name", TStr.some(), "age", TInt.some(),
-                        "friend", model.sym("person").and(TRec.of("age", TInt.some().as("a"),
-                                "friend", model.sym("person").and(TRec.of("age", TInt.some().as("b"))).as("c"))).as("d"))).mult(
+                        "friend", model.sym("person").and(TRec.of("age", TInt.some().label("a"),
+                                "friend", model.sym("person").and(TRec.of("age", TInt.some().label("b"))).label("c"))).label("d"))).mult(
                         TInst.of("define", "people", model.sym("person").q(star))).mult(
                         TInst.of("define", "db", TRec.of("persons", model.sym("people"))));
 

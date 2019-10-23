@@ -47,6 +47,6 @@ public final class PutMap<K extends Obj, V extends Obj> extends AbstractFunction
     }
 
     public static <K extends Obj, V extends Obj> PutMap<K, V> compile(final Inst inst) {
-        return new PutMap<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())), Argument.create(inst.get(TInt.twoInt())));
+        return new PutMap<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())), Argument.create(inst.get(TInt.twoInt())));
     }
 }

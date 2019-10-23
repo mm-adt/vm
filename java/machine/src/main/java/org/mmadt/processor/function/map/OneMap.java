@@ -43,6 +43,6 @@ public final class OneMap<S extends WithOne<S>> extends AbstractFunction impleme
     }
 
     public static <S extends WithOne<S>> OneMap<S> compile(final Inst inst) {
-        return new OneMap<>(inst.q(), inst.variable());
+        return new OneMap<>(inst.q(), inst.label());
     }
 }

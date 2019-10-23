@@ -76,8 +76,8 @@ public final class PMap<K extends Obj, V extends Obj> extends LinkedHashMap<K, V
             final V thisValue = entry.getValue();
             final Obj otherValue = other.get(entry.getKey());
             if (null != otherValue.type() && otherValue.type().symbol().equals(thisValue.symbol())) {
-                if (null != thisValue.variable())
-                    bindings.put(thisValue.variable(), otherValue);
+                if (null != thisValue.label())
+                    bindings.put(thisValue.label(), otherValue);
             } else if (!thisValue.match(bindings, otherValue)) {
                 bindings.rollback();
                 return false;

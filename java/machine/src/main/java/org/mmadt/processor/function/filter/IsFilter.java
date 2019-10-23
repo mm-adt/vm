@@ -46,6 +46,6 @@ public final class IsFilter<S extends Obj> extends AbstractFunction implements F
     }
 
     public static <S extends Obj> IsFilter<S> compile(final Inst inst) {
-        return new IsFilter<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())));
+        return new IsFilter<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())));
     }
 }

@@ -39,6 +39,10 @@ public interface Type extends Cloneable {
 
     public Type pattern(final Pattern pattern);
 
+    public String label();
+
+    public Type label(final String label);
+
     public Type access(final Inst access);
 
     public Inst access();

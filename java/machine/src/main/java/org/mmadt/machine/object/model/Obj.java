@@ -70,7 +70,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <B extends WithRing<B>> Q<B> q();
 
-    public String variable();
+    public String label();
 
     public Inst access();
 
@@ -112,7 +112,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O q(final Q quantifier);
 
-    public <O extends Obj> O as(final String variable);
+    public <O extends Obj> O label(final String variable);
 
     public <O extends Obj> O access(final Inst access);
 
@@ -124,8 +124,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public default Obj bind(final Bindings bindings) {
-        if (bindings.has(this.variable()))
-            return bindings.get(this.variable());
+        if (bindings.has(this.label()))
+            return bindings.get(this.label());
         return this.insts(null == this.instructions() ? null : this.instructions().bind(bindings)).
                 set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
                 access(this.access().equals(TInst.none()) ? null : this.access().bind(bindings));
@@ -162,8 +162,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public default boolean match(final Bindings bindings, final Obj object) {
-        if (bindings.has(this.variable()))
-            return bindings.get(this.variable()).test(object);
+        if (bindings.has(this.label()))
+            return bindings.get(this.label()).test(object);
         else if (TObj.none().equals(this) || TObj.none().equals(object))
             return this.q().test(object);
         bindings.start();
@@ -187,8 +187,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             bindings.rollback();
             return false;
         }
-        if (null != this.variable())
-            bindings.put(this.variable(), object);
+        if (null != this.label())
+            bindings.put(this.label(), object);
         if (this instanceof WithProduct)
             bindings.commit();
         return true;

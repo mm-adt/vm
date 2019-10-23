@@ -51,6 +51,6 @@ public final class EvalMap<S extends WithEval, E extends Obj> extends AbstractFu
     }
 
     public static <S extends WithEval, E extends Obj> EvalMap<S, E> compile(final Inst inst) {
-        return new EvalMap<>(inst.q(), inst.variable(), Argument.<S, Obj>args(inst.args()));
+        return new EvalMap<>(inst.q(), inst.label(), Argument.<S, Obj>args(inst.args()));
     }
 }

@@ -56,6 +56,6 @@ public final class ReduceReduce<S extends WithRing<S>> extends AbstractFunction 
 
 
     public static <S extends WithRing<S>> ReduceReduce<S> compile(final Inst inst) {
-        return new ReduceReduce<>(inst.q(), inst.variable(), Argument.<S, S>create(inst.args().get(0)), Argument.<S, S>create(inst.args().get(1)));
+        return new ReduceReduce<>(inst.q(), inst.label(), Argument.<S, S>create(inst.args().get(0)), Argument.<S, S>create(inst.args().get(1)));
     }
 }

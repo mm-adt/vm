@@ -46,6 +46,6 @@ public final class GtMap<S extends WithOrder<S>> extends AbstractFunction implem
     }
 
     public static <S extends WithOrder<S>> GtMap<S> compile(final Inst inst) {
-        return new GtMap<>(inst.q(), inst.variable(), Argument.<S, S>create(inst.get(TInt.oneInt())));
+        return new GtMap<>(inst.q(), inst.label(), Argument.<S, S>create(inst.get(TInt.oneInt())));
     }
 }

@@ -41,6 +41,7 @@ public final class TType implements Type {
     private static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
+    private String label;                      // the ~bind string (if retrieved via a bind)
     protected Pattern pattern;                 // a predicate for testing an instance of the type
     private Inst access;                       // access to its physical representation
     private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (typically types)
@@ -75,6 +76,18 @@ public final class TType implements Type {
     public Type pattern(final Pattern pattern) {
         final TType clone = this.clone();
         clone.pattern = pattern;
+        return clone;
+    }
+
+    @Override
+    public String label() {
+        return this.label;
+    }
+
+    @Override
+    public Type label(final String label) {
+        final TType clone = this.clone();
+        clone.label = label;
         return clone;
     }
 
@@ -131,7 +144,7 @@ public final class TType implements Type {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.symbol, this.access, this.instructions, this.pattern);
+        return Objects.hash(this.symbol, this.label, this.access, this.instructions, this.pattern);
     }
 
     @Override
@@ -139,6 +152,7 @@ public final class TType implements Type {
         return object instanceof Type &&
                 Objects.equals(this.symbol, ((TType) object).symbol) &&
                 Objects.equals(this.access, ((TType) object).access) &&
+                Objects.equals(this.label, ((TType) object).label) &&
                 Objects.equals(this.instructions, ((TType) object).instructions) &&
                 Objects.equals(this.pattern, ((TType) object).pattern);
 

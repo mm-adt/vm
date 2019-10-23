@@ -88,7 +88,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     ////////
     protected Object value;                             // mutually exclusive with pattern (instance data)
-    protected String variable;                          // the ~bind string (if retrieved via a bind)
     protected Q quantifier = TQ.ONE;                    // the 'amount' of this object bundle
     ///
     protected Type types;                               // an object that abstractly defines this object's forms
@@ -127,8 +126,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public String variable() {
-        return this.variable;
+    public String label() {
+        return this.types.label();
     }
 
     @Override
@@ -182,7 +181,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return ObjectHelper.root(this, object).
                     set(ObjectHelper.andValues(this, (TObj) object)).
                     q(this.q().and(object.q())).
-                    as(ObjectHelper.mergeVariables(this, object));
+                    label(ObjectHelper.mergeVariables(this, object));
     }
 
     @Override
@@ -192,8 +191,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         else if (null != this.get() &&
                 this.get().equals(object.get()) &&
                 TInst.none().equals(this.types.access()) &&
-                null == this.types.instructions() &&
-                null == this.variable)
+                null == this.types.instructions())
             return this.q(this.q().or(object.q()));
         else
             return ObjectHelper.root(this, object).set(POr.or(this.get() instanceof POr ? this.get() : this, object));
@@ -204,7 +202,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return Objects.hash(
                 this.symbol(),
                 this.value,
-                this.variable,
                 this.q(),
                 this.types);
     }
@@ -215,7 +212,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 ((this.q().isZero() && ((TObj) object).q().isZero()) ||
                         (this.symbol().equals(((TObj) object).symbol()) &&
                                 Objects.equals(this.value, ((TObj) object).value) &&
-                                Objects.equals(this.variable, ((TObj) object).variable) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
                                 Objects.equals(this.types, ((TObj) object).types)));
     }
@@ -250,8 +246,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends TObj> O strip() { // TODO: gut this at some point
         final O clone = (O) this.clone();
-        clone.types = this.types.access(null);
-        clone.variable = null;
+        clone.types = this.types.access(null).label(null);
         clone.quantifier = this.q().one();
         return clone;
     }
@@ -287,9 +282,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O as(final String variable) {
+    public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
-        clone.variable = variable;
+        clone.types = this.types.label(variable);
         return (O) clone;
     }
 

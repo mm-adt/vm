@@ -54,6 +54,6 @@ public final class SumReduce<S extends WithRing<S>> extends AbstractFunction imp
 
 
     public static <S extends WithRing<S>> SumReduce<S> compile(final Inst inst) {
-        return new SumReduce<>(inst.q(), inst.variable());
+        return new SumReduce<>(inst.q(), inst.label());
     }
 }

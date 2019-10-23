@@ -82,10 +82,10 @@ class RewritingTest {
         // ORIGINAL: [[db][get,persons][is,[[get,name][eq,marko]]][get,age][gt,29][is,[[eq,true]]]]
         final Rec people = (TRec) TRec.of("name", TStr.some(), "age", TInt.some()).q(star).
                 access(TInst.of("db").mult(TInst.of("get", "persons"))).
-                inst(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().as("x")))),
-                        TInst.of("ref", TRec.of("name", TStr.some().as("x"), "age", TInt.some()).
+                inst(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x")))),
+                        TInst.of("ref", TRec.of("name", TStr.some().label("x"), "age", TInt.some()).
                                 q(qmark).
-                                access(TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().as("x"))))))));
+                                access(TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x"))))))));
 
         final Bindings bindings = new Bindings();
         final TModel model = TModel.of(TInst.of("define","db",TRec.of("persons", people).access(TInst.of("db"))));

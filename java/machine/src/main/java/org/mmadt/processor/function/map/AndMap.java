@@ -50,6 +50,6 @@ public final class AndMap<S extends Obj> extends AbstractFunction implements Map
 
 
     public static <S extends Obj> AndMap<S> compile(final Inst inst) {
-        return new AndMap<>(inst.q(), inst.variable(), Argument.<S, Bool>args(inst.args()));
+        return new AndMap<>(inst.q(), inst.label(), Argument.<S, Bool>args(inst.args()));
     }
 }

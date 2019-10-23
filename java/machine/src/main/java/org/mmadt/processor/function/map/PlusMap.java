@@ -45,6 +45,6 @@ public final class PlusMap<S extends WithPlus<S>> extends AbstractFunction imple
     }
 
     public static <S extends WithPlus<S>> PlusMap<S> compile(final Inst inst) {
-        return new PlusMap<>(inst.q(), inst.variable(), Argument.<S, S>create(inst.get(TInt.oneInt())));
+        return new PlusMap<>(inst.q(), inst.label(), Argument.<S, S>create(inst.get(TInt.oneInt())));
     }
 }

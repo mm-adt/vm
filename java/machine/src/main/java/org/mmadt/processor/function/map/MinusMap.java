@@ -45,6 +45,6 @@ public final class MinusMap<S extends WithMinus<S>> extends AbstractFunction imp
     }
 
     public static <S extends WithMinus<S>> MinusMap<S> compile(final Inst inst) {
-        return new MinusMap<>(inst.q(), inst.variable(), Argument.<S, S>create(inst.get(TInt.oneInt())));
+        return new MinusMap<>(inst.q(), inst.label(), Argument.<S, S>create(inst.get(TInt.oneInt())));
     }
 }

@@ -50,6 +50,6 @@ public final class OrMap<S extends Obj> extends AbstractFunction implements MapF
 
 
     public static <S extends Obj> OrMap<S> compile(final Inst inst) {
-        return new OrMap<>(inst.q(), inst.variable(), Argument.<S, Bool>args(inst.args()));
+        return new OrMap<>(inst.q(), inst.label(), Argument.<S, Bool>args(inst.args()));
     }
 }

@@ -45,6 +45,6 @@ public final class MapMap<S extends Obj, E extends Obj> extends AbstractFunction
     }
 
     public static <S extends Obj, E extends Obj> MapMap<S, E> compile(final Inst inst) {
-        return new MapMap<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())));
+        return new MapMap<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())));
     }
 }

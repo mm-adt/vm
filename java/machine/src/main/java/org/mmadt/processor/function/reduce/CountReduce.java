@@ -54,6 +54,6 @@ public final class CountReduce<S extends Obj, E extends WithMonoidPlus<E>> exten
     }
 
     public static <S extends Obj, E extends WithMonoidPlus<E>> CountReduce<S, E> compile(final Inst inst) {
-        return new CountReduce<>(inst.q(), inst.variable());
+        return new CountReduce<>(inst.q(), inst.label());
     }
 }

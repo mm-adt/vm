@@ -43,6 +43,6 @@ public final class ZeroMap<S extends WithZero<S>> extends AbstractFunction imple
     }
 
     public static <S extends WithZero<S>> ZeroMap<S> compile(final Inst inst) {
-        return new ZeroMap<>(inst.q(), inst.variable());
+        return new ZeroMap<>(inst.q(), inst.label());
     }
 }

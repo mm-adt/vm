@@ -45,17 +45,17 @@ public final class FunctionUtils {
     }
 
     public static <S extends Obj> Optional<S> test(final FilterFunction<S> predicate, final S object) {
-        return predicate.test(object) ? Optional.of(object.q(object.q().and(predicate.quantifier())).as(predicate.label())) : Optional.empty();
+        return predicate.test(object) ? Optional.of(object.q(object.q().and(predicate.quantifier())).label(predicate.label())) : Optional.empty();
         // TODO: test to make sure quantifier is not 1 (save clock cycles)
     }
 
     public static <S extends Obj, E extends Obj> Iterator<E> flatMap(final FlatMapFunction<S, E> function, final S object) {
-        return IteratorUtils.map(function.apply(object), e -> e.q(e.q().and(function.quantifier())).as(function.label()));
+        return IteratorUtils.map(function.apply(object), e -> e.q(e.q().and(function.quantifier())).label(function.label()));
         // TODO: test to make sure quantifier is not 1 (save clock cycles)
     }
 
     public static <S extends Obj, E extends Obj> E map(final MapFunction<S, E> function, final S object) {
-        return function.apply(object).q(object.q().and(function.quantifier())).as(function.label());
+        return function.apply(object).q(object.q().and(function.quantifier())).label(function.label());
         // TODO: test to make sure quantifier is not 1 (save clock cycles)
     }
 

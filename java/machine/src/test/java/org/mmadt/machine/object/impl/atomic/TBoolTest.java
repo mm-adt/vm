@@ -45,10 +45,10 @@ final class TBoolTest {
         assertEquals(TBool.of(true).q(one), TBool.of(true).and(TBool.of(true)));
         assertEquals(TBool.of(true).q(star), TBool.of(true).q(plus).and(TBool.of(true).q(qmark)));
         assertEquals("true{*}", TBool.of(true).q(star).and(TBool.some()).toString());
-        assertEquals("false{*}~x", TBool.of(false).q(qmark).as("x").and(TBool.some().q(plus)).toString());
-        assertEquals("false{*}~x", TBool.of(false).q(qmark).as("x").and(TBool.some().as("x").q(plus)).toString());
+        assertEquals("false{*}~x", TBool.of(false).q(qmark).label("x").and(TBool.some().q(plus)).toString());
+        assertEquals("false{*}~x", TBool.of(false).q(qmark).label("x").and(TBool.some().label("x").q(plus)).toString());
         assertEquals(TBool.of(false), TBool.of(true).and(TBool.of(false)));
-        assertThrows(RuntimeException.class, () -> TBool.of(false).q(qmark).as("x").and(TBool.some().q(plus).as("y")));
+        assertThrows(RuntimeException.class, () -> TBool.of(false).q(qmark).label("x").and(TBool.some().q(plus).label("y")));
         assertEquals("false", TBool.some().and(TBool.of(false)).toString());
     }
 
@@ -59,9 +59,9 @@ final class TBoolTest {
         assertEquals("bool|false", TBool.some().or(TBool.of(false)).toString());
         assertEquals("true", TBool.of(true).or(TBool.of(false)).toString());
         assertEquals("true{*}|false", TBool.of(true).q(star).or(TBool.of(false)).toString());
-        assertEquals("true{*}~x|false~y", TBool.of(true).q(star).as("x").or(TBool.of(false).as("y")).toString());
-        assertEquals("(true{*}~x|false~y)~z", TBool.of(true).q(star).as("x").or(TBool.of(false).as("y")).as("z").toString());
-        assertEquals("(true{*}~x|false~y){?}", TBool.of(true).q(star).as("x").or(TBool.of(false).as("y")).q(qmark).toString());
+        assertEquals("true{*}~x|false~y", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).toString());
+        assertEquals("(true{*}~x|false~y)~z", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).label("z").toString());
+        assertEquals("(true{*}~x|false~y){?}", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).q(qmark).toString());
         assertTrue(TBool.of(true).q(star).or(TBool.of(false)).isType());
         assertEquals(TBool.of(true).q(star), ((POr) TBool.of(true).q(star).or(TBool.of(false)).get()).predicates().get(0));
     }

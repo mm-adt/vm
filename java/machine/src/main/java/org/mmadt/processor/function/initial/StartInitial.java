@@ -48,6 +48,6 @@ public final class StartInitial<S extends Obj> extends AbstractFunction implemen
     }
 
     public static <S extends Obj> StartInitial<S> compile(final Inst inst) {
-        return new StartInitial<>(inst.q(), inst.variable(), Argument.create(TObj.all().q(inst.args().size()).set(TStream.of(inst.args()))));
+        return new StartInitial<>(inst.q(), inst.label(), Argument.create(TObj.all().q(inst.args().size()).set(TStream.of(inst.args()))));
     }
 }

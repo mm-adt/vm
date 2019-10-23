@@ -46,6 +46,6 @@ public final class EqMap<S extends Obj> extends AbstractFunction implements MapF
     }
 
     public static <S extends Obj> EqMap<S> compile(final Inst inst) {
-        return new EqMap<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())));
+        return new EqMap<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())));
     }
 }

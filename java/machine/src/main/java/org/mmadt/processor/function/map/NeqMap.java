@@ -46,6 +46,6 @@ public final class NeqMap<S extends Obj> extends AbstractFunction implements Map
     }
 
     public static <S extends Obj> NeqMap<S> compile(final Inst inst) {
-        return new NeqMap<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())));
+        return new NeqMap<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())));
     }
 }

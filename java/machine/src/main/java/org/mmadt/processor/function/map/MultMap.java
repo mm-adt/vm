@@ -45,6 +45,6 @@ public final class MultMap<S extends WithMult<S>> extends AbstractFunction imple
     }
 
     public static <S extends WithMult<S>> MultMap<S> compile(final Inst inst) {
-        return new MultMap<>(inst.q(), inst.variable(), Argument.<S, S>create(inst.get(TInt.oneInt())));
+        return new MultMap<>(inst.q(), inst.label(), Argument.<S, S>create(inst.get(TInt.oneInt())));
     }
 }

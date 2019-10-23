@@ -46,6 +46,6 @@ public final class DropMap<K extends Obj, V extends Obj> extends AbstractFunctio
     }
 
     public static <K extends Obj, V extends Obj> DropMap<K, V> compile(final Inst inst) {
-        return new DropMap<>(inst.q(), inst.variable(), Argument.create(inst.get(TInt.oneInt())));
+        return new DropMap<>(inst.q(), inst.label(), Argument.create(inst.get(TInt.oneInt())));
     }
 }

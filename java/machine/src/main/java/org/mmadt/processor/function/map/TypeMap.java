@@ -44,6 +44,6 @@ public final class TypeMap<S extends Obj> extends AbstractFunction implements Ma
     }
 
     public static <S extends Obj> TypeMap<S> compile(final Inst inst) {
-        return new TypeMap<>(inst.q(), inst.variable());
+        return new TypeMap<>(inst.q(), inst.label());
     }
 }

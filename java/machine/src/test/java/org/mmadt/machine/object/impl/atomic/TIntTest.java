@@ -119,18 +119,18 @@ final class TIntTest {
     @Test
     void shouldSupportStreamMatching() {
         final Bindings bindings = new Bindings();
-        assertTrue(TInt.of(TInt.of(TInt.some().as("a"), 1, 1)).q(3).match(bindings, TInt.of(1, 1, 1).q(3)));
+        assertTrue(TInt.of(TInt.of(TInt.some().label("a"), 1, 1)).q(3).match(bindings, TInt.of(1, 1, 1).q(3)));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(1), bindings.get("a"));
         //
         bindings.clear();
-        assertTrue(TInt.of(TInt.some().as("a"), 2, TInt.some().as("b"), TInt.none(), TInt.none(), TInt.none()).match(bindings, TInt.of(1, 2, 3)));
+        assertTrue(TInt.of(TInt.some().label("a"), 2, TInt.some().label("b"), TInt.none(), TInt.none(), TInt.none()).match(bindings, TInt.of(1, 2, 3)));
         assertEquals(2, bindings.size());
         assertEquals(TInt.of(1), bindings.get("a"));
         assertEquals(TInt.of(3), bindings.get("b"));
         //
         bindings.clear();
-        assertTrue(TInt.of(TInt.all().as("a"), TInt.all().as("b"), TInt.all().as("c")).match(bindings, TInt.of(TInt.none(), 2, TInt.all(), TInt.all())));
+        assertTrue(TInt.of(TInt.all().label("a"), TInt.all().label("b"), TInt.all().label("c")).match(bindings, TInt.of(TInt.none(), 2, TInt.all(), TInt.all())));
         assertEquals(2, bindings.size());
         // TODO: Ask @dkuppitz if None can be bound -- assertEquals(TInt.none(), bindings.get("a"));
         assertEquals(TInt.of(2), bindings.get("b"));

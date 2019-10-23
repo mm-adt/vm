@@ -89,8 +89,8 @@ public final class StringFactory {
     private static void objectMetadata(final Obj object, final StringBuilder builder) {
         if (!object.q().isOne())
             builder.append(object.q());
-        if (null != object.variable())
-            builder.append(TILDE).append(object.variable());
+        if (null != object.label())
+            builder.append(TILDE).append(object.label());
         if (!ObjectHelper.access(object).q().equals(object.q().zero()))
             builder.append(SPACE).append(MAPSFROM).append(SPACE).append(object.access());
         if (null != object.members()) {
@@ -198,7 +198,7 @@ public final class StringFactory {
         else {
             final boolean parens =
                     (o instanceof Obj || o instanceof Stream || o instanceof PConjunction) &&
-                            (null != object.variable() || !object.q().isOne());
+                            (null != object.label() || !object.q().isOne());
             if (parens)
                 builder.append(LPAREN);
             builder.append(o);
@@ -234,11 +234,11 @@ public final class StringFactory {
                 }
                 builder.append(RBRACKET);
                 builder.append(quantifier(single.q()));
-                if (null != single.variable())
-                    builder.append(TILDE).append(single.variable());
+                if (null != single.label())
+                    builder.append(TILDE).append(single.label());
             }
-            if (null != inst.variable()) // TODO: this shouldn't happen over the entire stream
-                builder.append(TILDE).append(inst.variable());
+            if (null != inst.label()) // TODO: this shouldn't happen over the entire stream
+                builder.append(TILDE).append(inst.label());
         } else
             builder.append(inst.symbol());
         return builder.toString();

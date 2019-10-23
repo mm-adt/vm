@@ -99,14 +99,14 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         if (object instanceof Inst)
             return WithProduct.super.match(bindings, (Inst) object);
 
-        if (bindings.has(this.variable()))
-            return bindings.get(this.variable()).test(object);
+        if (bindings.has(this.label()))
+            return bindings.get(this.label()).test(object);
         bindings.start();
         final Iterator<Obj> itty = new MinimalProcessor<>(this).iterator(object);
         if (itty.hasNext()) {
             final Obj obj = itty.next();
-            if (null != obj.variable())
-                bindings.put(obj.variable(), obj.as(null));
+            if (null != obj.label())
+                bindings.put(obj.label(), obj.label(null));
             return true;
         } else {
             bindings.rollback();

@@ -77,8 +77,8 @@ public final class TSym<A extends Obj> extends TObj {
             return false;
         else if (null != ObjectHelper.getName(this) &&
                 ObjectHelper.getName(this).equals(ObjectHelper.getName(object))) {
-            if (null != this.variable())
-                bindings.put(this.variable(), object);
+            if (null != this.label())
+                bindings.put(this.label(), object);
             return true;
         } else if (null == this.getObject())
             return true;
