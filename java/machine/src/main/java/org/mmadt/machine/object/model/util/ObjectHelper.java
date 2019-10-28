@@ -71,6 +71,7 @@ public final class ObjectHelper {
         // static helper class
     }
 
+    // TODO: REMOVE WHEN ObjectHelper.make() TAKES OVER
     public static <O extends Obj> O create(final Function<Object, O> constructor, final Object... objects) {
         if (0 == objects.length)
             return constructor.apply(null);
@@ -78,6 +79,15 @@ public final class ObjectHelper {
             return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0] instanceof Query ? ((Query) objects[0]).bytecode() : objects[0]);
         else
             return constructor.apply(TStream.of(objects));
+    }
+
+    public static <O extends Obj> O make(final Function<Object, O> constructor, final Object... objects) {
+        if (0 == objects.length)
+            return constructor.apply(null);
+        else if (1 == objects.length)
+            return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0] instanceof Query ? ((Query) objects[0]).bytecode() : objects[0]);
+        else
+            return constructor.apply(null).access(TInst.start(objects));
     }
 
     public static Object andValues(final TObj object1, final TObj object2) {
@@ -170,8 +180,8 @@ public final class ObjectHelper {
         if (object.named())
             return object.symbol();
         else {
-         if(object.equals(object.type()))
-             return null;
+            if (object.equals(object.type()))
+                return null;
             return ObjectHelper.getName(object.type());
         }
     }

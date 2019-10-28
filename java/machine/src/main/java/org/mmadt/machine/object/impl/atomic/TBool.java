@@ -22,12 +22,14 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.processor.util.MinimalProcessor;
+import org.mmadt.util.IteratorUtils;
+
+import java.util.List;
 
 
 /**
@@ -67,7 +69,7 @@ public final class TBool extends TObj implements Bool {
     }
 
     public static Bool of(final Object... objects) {
-        return ObjectHelper.create(TBool::new, objects);
+        return ObjectHelper.make(TBool::new, objects);
     }
 
     @Override
@@ -103,6 +105,11 @@ public final class TBool extends TObj implements Bool {
     @Override
     public Bool eq(final Obj obj) {
         return new TBool(obj instanceof Bool && this.java().equals(((Bool) obj).java()));
+    }
+
+    @Override
+    public Iterable<Bool> iterable() {
+        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Bool, Bool>(this.access()).iterator(this);
     }
 
     private static final boolean exclusiveOr(final boolean a, final boolean b) {

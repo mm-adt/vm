@@ -196,4 +196,11 @@ public final class TInst extends TObj implements Inst {
         return this;
     }
 
+    ////
+
+
+    public static Inst start(final Object... objects) {
+        return TInst.of(Tokens.START, objects);
+    }
+
 }

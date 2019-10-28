@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.type.POr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,5 +65,13 @@ final class TBoolTest {
         assertEquals("(true{*}~x|false~y){?}", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).q(qmark).toString());
         assertTrue(TBool.of(true).q(star).or(TBool.of(false)).isType());
         assertEquals(TBool.of(true).q(star), ((POr) TBool.of(true).q(star).or(TBool.of(false)).get()).predicates().get(0));
+    }
+
+    @Test
+    void shouldAccessCorrectly() {
+        final Bool a = TBool.of(true, true, false);
+        System.out.println(a);
+        System.out.println(a.iterable().iterator().next()); // TODO: this will come from Obj.iterable()
+        System.out.println(a);
     }
 }

@@ -27,6 +27,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.compiler.FunctionTable;
 import org.mmadt.processor.function.FilterFunction;
+import org.mmadt.processor.function.InitialFunction;
 import org.mmadt.processor.function.MapFunction;
 import org.mmadt.processor.function.QFunction;
 import org.mmadt.util.FunctionUtils;
@@ -54,6 +55,8 @@ public final class MinimalProcessor<S extends Obj, E extends Obj> extends Simple
                 if (null == obj) break;
             } else if (function instanceof MapFunction) {
                 obj = FunctionUtils.map((MapFunction) function, obj);
+            } else if (function instanceof InitialFunction) {
+                obj = ((InitialFunction<S>) function).get().next(); // TODO: along with flatmap, create intermediate Iterator
             } else {
                 throw new UnsupportedOperationException("This is not implemented yet: " + function);
             }
