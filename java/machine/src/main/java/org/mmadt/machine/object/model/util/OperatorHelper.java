@@ -22,7 +22,13 @@
 
 package org.mmadt.machine.object.model.util;
 
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,11 +50,36 @@ public class OperatorHelper {
             case ("|"):
                 return (A) lhs.or(rhs);
             case ("-"):
-                return (A) lhs.plus((A)rhs.negate());
+                return (A) lhs.plus((A) rhs.negate());
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }
     }
 
+    public static <A extends Obj, B extends Obj> B bifunction(final String opcode, final BiFunction<A, A, B> operator, final A objA, final A objB) {
+        if (objA.isInstance())
+            return operator.apply(objA, objB);
+        else if (objA.isReference())
+            return objA.access(objA.access().mult(TInst.of(opcode, objB)));
+        else
+            throw new IllegalStateException("Need to implement: ");
+    }
 
+    public static <A extends Obj> A binary(final String opcode, final BinaryOperator<A> operator, final A objA, final A objB) {
+        if (objA.isInstance())
+            return operator.apply(objA, objB);
+        else if (objA.isReference())
+            return objA.access(objA.access().mult(TInst.of(opcode, objB)));
+        else
+            throw new IllegalStateException("Need to implement: ");
+    }
+
+    public static <A extends Obj> A unary(final String opcode, final UnaryOperator<A> operator, final A objA) {
+        if (objA.isInstance())
+            return operator.apply(objA);
+        else if (objA.isReference())
+            return objA.access(objA.access().mult(TInst.of(opcode)));
+        else
+            throw new IllegalStateException("Need to implement: ");
+    }
 }

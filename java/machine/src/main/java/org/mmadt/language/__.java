@@ -76,6 +76,10 @@ public class __ {
         return create().id();
     }
 
+    public static Query inv() {
+        return create().inv();
+    }
+
     public static Query is(final Object bool) {
         return create().is(bool);
     }

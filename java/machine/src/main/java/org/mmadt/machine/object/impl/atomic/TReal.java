@@ -24,13 +24,12 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.processor.util.MinimalProcessor;
-import org.mmadt.util.FunctionUtils;
 
 import java.util.List;
 
@@ -85,43 +84,37 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real negate() {
-        if (this.isInstance())
-            return FunctionUtils.<Real, Float>monad(this, x -> -x);
-        else //if (this.isReference())
-            return this.access(this.access().mult(TInst.of(Tokens.NEG)));
+        return OperatorHelper.<Real>unary(Tokens.NEG, x -> TReal.of(-x.java()), this);
     }
 
     @Override
     public Real plus(final Real object) {
-        return FunctionUtils.<Real, Float>monad(this, object, (x, y) -> x + y);
+        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> TReal.of(x.java() + y.java()), this, object);
     }
 
     @Override
     public Real mult(final Real object) {
-        if (this.isInstance())
-            return FunctionUtils.<Real, Float>monad(this, object, (x, y) -> x * y);
-        else //if (this.isReference())
-            return this.access(this.access().mult(TInst.of(Tokens.MULT, object)));
+        return OperatorHelper.binary(Tokens.MULT, (x, y) -> TReal.of(x.java() * y.java()), this, object);
     }
 
     @Override
     public Bool gt(final Real object) {
-        return TBool.of(this.java() > object.java());
+        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java() > y.java()), this, object);
     }
 
     @Override
     public Bool eq(final Obj object) {
-        return TBool.of(object instanceof Real && this.java().equals(object.get()));
+        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Real && x.get().equals(y.get())), this, object);
     }
 
     @Override
     public Bool lt(final Real object) {
-        return TBool.of(this.java() < object.java());
+        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java() < y.java()), this, object);
     }
 
     @Override
     public Real inverse() {
-        return FunctionUtils.<Real, Float>monad(this, x -> 1.0f / x);
+        return OperatorHelper.<Real>unary(Tokens.INV, x -> TReal.of(1.0f / x.java()), this);
     }
 
     @Override

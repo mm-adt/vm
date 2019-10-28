@@ -96,6 +96,10 @@ public final class Query {
         return this.compose(TInst.of(Tokens.GTE, arg(obj)));
     }
 
+    public Query inv() {
+        return this.compose(TInst.of(Tokens.INV));
+    }
+
     public Query is(final Object bool) {
         return this.compose(TInst.of(Tokens.IS, arg(bool)));
     }
