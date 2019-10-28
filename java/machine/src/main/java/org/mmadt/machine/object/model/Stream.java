@@ -100,8 +100,8 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
             lowB = lowB.plus(b.q().low());
             highB = highB.plus(b.q().high());
         }
-        return ((WithRing) tester.q().low()).mult(lowA).peek().<Integer>get() <= ((WithRing) testee.q().low()).mult(lowB).peek().<Integer>get() &&
-                ((WithRing) tester.q().high()).mult(highA).peek().<Integer>get() >= ((WithRing) testee.q().high()).mult(highB).peek().<Integer>get();
+        return ((WithRing) tester.q().low()).mult(lowA).<Integer>get() <= ((WithRing) testee.q().low()).mult(lowB).<Integer>get() &&
+                ((WithRing) tester.q().high()).mult(highA).<Integer>get() >= ((WithRing) testee.q().high()).mult(highB).<Integer>get();
 
     }
 }

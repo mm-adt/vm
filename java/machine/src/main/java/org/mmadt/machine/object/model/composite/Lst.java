@@ -56,7 +56,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     @Override
     public default V get(final Int index) {
         V v = (V) TObj.none();
-        final Object object = this.peek().get();
+        final Object object = this.get();
         if (object instanceof PList)
             v = (((PList<V>) object).size() <= index.<Integer>get()) ? (V) TObj.none() : ((PList<V>) object).get(index.get());
         else if (object instanceof PAnd) {

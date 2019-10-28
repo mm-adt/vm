@@ -39,13 +39,6 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 final class TIntTest {
 
     @Test
-    void shouldSupportPeekAndLast() {
-        final Int a = TInt.of(7);
-        assertEquals(TInt.of(7),a.peek());
-        assertEquals(TInt.of(7),a.last());
-    }
-
-    @Test
     void shouldHaveBasicSemantics() {
         assertTrue(TInt.some().test(TInt.of(32)));
         assertFalse(TInt.some().test(TReal.of(43.0f)));
