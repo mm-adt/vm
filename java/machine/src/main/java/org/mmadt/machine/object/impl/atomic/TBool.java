@@ -22,12 +22,13 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.processor.util.MinimalProcessor;
-import org.mmadt.util.IteratorUtils;
 
 import java.util.List;
 
@@ -89,12 +90,12 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool mult(final Bool bool) {
-        return TBool.of(this.java() && bool.java());
+        return OperatorHelper.binary(Tokens.MULT, (x, y) -> TBool.of(x.java() && y.java()), this, bool);
     }
 
     @Override
     public Bool plus(final Bool bool) {
-        return TBool.of(exclusiveOr(this.java(), bool.java()));
+        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> TBool.of(exclusiveOr(this.java(), bool.java())), this, bool);
     }
 
     @Override
@@ -104,7 +105,7 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool eq(final Obj obj) {
-        return new TBool(obj instanceof Bool && this.java().equals(((Bool) obj).java()));
+        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj);
     }
 
     @Override

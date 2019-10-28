@@ -24,14 +24,12 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
-
-import static org.mmadt.language.compiler.Tokens.STR;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -61,7 +59,7 @@ public final class TStr extends TObj implements Str {
     }
 
     public static Str of(final Object... objects) {
-        return ObjectHelper.create(TStr::new, objects);
+        return ObjectHelper.make(TStr::new, objects);
     }
 
     @Override
@@ -71,27 +69,27 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Bool gt(final Str object) {
-        return TBool.of(this.java().compareTo(object.java()) > 0);
+        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java().compareTo(y.java()) > 0), this, object);
     }
 
     @Override
     public Bool eq(final Obj object) {
-        return TBool.of(object instanceof Str && this.java().equals(object.get()));
+        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Str && x.get().equals(y.get())), this, object);
     }
 
     @Override
     public Bool lt(final Str object) {
-        return TBool.of(this.java().compareTo(object.java()) < 0);
+        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java().compareTo(y.java()) < 0), this, object);
     }
 
     @Override
     public Bool regex(final Str pattern) {
         return TBool.of(this.java().matches(pattern.java()));
-    }
+    } // TODO: [regex,...]
 
     @Override
     public Str plus(final Str object) {
-        return new TStr(this.java().concat(object.java()));
+        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> TStr.of(x.java().concat(y.java())), this, object);
     }
 
     @Override
