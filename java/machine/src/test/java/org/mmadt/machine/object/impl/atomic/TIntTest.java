@@ -46,25 +46,6 @@ final class TIntTest {
     }
 
     @Test
-    void shouldSupportStreams() {
-        final Int a = TInt.of(1);
-        assertEquals(TInt.of(1, 1), a.q().object());
-        a.push(TInt.of(2));
-        assertEquals(TInt.of(2), a.q().object());
-        a.push(TInt.of(3));
-        assertEquals(TInt.of(3), a.q().object());
-        ///
-        assertEquals(TInt.of(3), a.peek());
-        assertEquals(TInt.of(3), a.pop());
-        assertEquals(TInt.of(2), a.pop());
-        assertEquals(TInt.of(1), a.peek());
-        assertEquals(TInt.of(1), a.peek());
-        assertEquals(TInt.of(1), a.pop());
-        assertEquals(TInt.none(), a.pop());
-        assertEquals(TInt.none(), a.pop());
-    }
-
-    @Test
     void shouldHaveBasicSemantics() {
         assertTrue(TInt.some().test(TInt.of(32)));
         assertFalse(TInt.some().test(TReal.of(43.0f)));

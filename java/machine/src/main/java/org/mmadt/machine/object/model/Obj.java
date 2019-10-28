@@ -106,8 +106,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O push(final O obj);
 
-    public <O extends Obj> O pop();
-
     public <O extends Obj> O set(final Object object);
 
     public <O extends Obj> O q(final Q quantifier);

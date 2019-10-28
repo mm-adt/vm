@@ -226,10 +226,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         }
     }
 
-    public <O extends Obj> O pop() {
-        return this.value instanceof Stream ? this.<Stream<O>>get().pop() : (O) this;
-    }
-
     public <O extends Obj> O push(final O obj) {
         assert obj.getClass().equals(this.getClass());
         if (this.value instanceof Stream)
