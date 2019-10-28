@@ -71,28 +71,8 @@ public final class TStream<A extends Obj> implements Stream<A> {
         return object.size() == 1 ? object.get(0).get() : TStream.of(object);
     }
 
-    @Override
-    public boolean empty() {
-        return this.objects.isEmpty();
-    }
-
-    @Override
-    public boolean one() {
-        return this.objects.size() == 1;
-    }
-
     private TStream(final List<A> objects) {
         this.objects = new ArrayList<>(objects);
-    }
-
-    @Override
-    public void push(final A object) {
-        this.objects.add(0, object);
-    }
-
-    @Override
-    public A pop() {
-        return this.objects.isEmpty() ? (A) TObj.none() : this.objects.remove(0);
     }
 
     @Override

@@ -67,17 +67,9 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
 
     public void drop(final A object);
 
-    public void push(final A object);
-
-    public A pop();
-
     public A peek();
 
     public A last();
-
-    public boolean empty();
-
-    public boolean one();
 
     ///////////////////
 
