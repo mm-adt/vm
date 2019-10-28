@@ -172,7 +172,7 @@ public final class Instructions {
 
 
     private static Obj filter(final Obj domain, final WithRing low, final Inst inst) {
-        return domain.q(domain.q().mult(inst.q()).high().push(low));
+        return domain.q(low,domain.q().mult(inst.q()).high());
     }
 
     private static Obj reduce(final Obj domain, final Obj range) {

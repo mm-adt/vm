@@ -226,16 +226,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         }
     }
 
-    public <O extends Obj> O push(final O obj) {
-        assert obj.getClass().equals(this.getClass());
-        if (this.value instanceof Stream)
-            ((Stream<O>) this.get()).push(obj);
-        else
-            this.value = TStream.of(obj, this.clone());
-        this.quantifier = this.q().or(obj.q());
-        return (O) this;
-    }
-
     public <O extends TObj> O strip() { // TODO: gut this at some point
         final O clone = (O) this.clone();
         clone.types = this.types.access(null).label(null);

@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.model.composite;
 
+import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
@@ -44,11 +45,11 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
                 case one:
                     return quantifier.set(quantifier.low().one());
                 case star:
-                    return quantifier.set(((WithOrder) quantifier.<WithOrder>last()).max().clone().push(quantifier.low().zero()));
+                    return quantifier.set(quantifier.low().baseType().set(TStream.of(quantifier.low().zero(), ((WithOrder) quantifier.high()).max())));
                 case qmark:
-                    return quantifier.set(quantifier.low().one().clone().push(quantifier.low().zero()));
+                    return quantifier.set(quantifier.low().baseType().set(TStream.of(quantifier.low().zero(), quantifier.high().one())));
                 case plus:
-                    return quantifier.set(((WithOrder) quantifier.<WithOrder>last()).max().clone().push(quantifier.low().one()));
+                    return quantifier.set(quantifier.low().baseType().set(TStream.of(quantifier.low().one(), ((WithOrder) quantifier.high()).max())));
                 default:
                     throw new RuntimeException("Undefined short: " + this);
             }
@@ -94,13 +95,13 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
     public default Q<A> and(final Q<A> obj) {
         final A lower = this.low().mult(obj.low());
         final A higher = this.high().mult(obj.high());
-        return this.set(lower.equals(higher) ? lower : higher.push(lower));
+        return this.set(lower.equals(higher) ? lower : higher.baseType().set(TStream.of(lower, higher)));
     }
 
     public default Q<A> or(final Q<A> obj) {
         final A lower = this.low().plus(obj.low());
         final A higher = this.high().plus(obj.high());
-        return this.set(lower.equals(higher) ? lower : higher.push(lower));
+        return this.set(lower.equals(higher) ? lower : higher.baseType().set(TStream.of(lower, higher)));
     }
 
     @Override

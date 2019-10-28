@@ -104,8 +104,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.q().isZero() ? List.of() : TStream.of(this);
     }
 
-    public <O extends Obj> O push(final O obj);
-
     public <O extends Obj> O set(final Object object);
 
     public <O extends Obj> O q(final Q quantifier);
@@ -229,7 +227,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O q(final Object low, final Object high) {
-        return this.q((WithRing) ObjectHelper.from(high).clone().push(ObjectHelper.from(low)));
+        return this.q((WithRing) ObjectHelper.from(high).clone().set(TStream.of(ObjectHelper.from(low),high)));
     }
 
     public default <O extends Obj> O q(final Object count) {
