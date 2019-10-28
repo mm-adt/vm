@@ -28,6 +28,7 @@ import org.mmadt.machine.object.model.composite.Inst;
 
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 /**
@@ -81,5 +82,13 @@ public class OperatorHelper {
             return objA.access(objA.access().mult(TInst.of(opcode)));
         else
             throw new IllegalStateException("Need to implement: ");
+    }
+
+    public static Object tryCatch(final Supplier function, final Object failValue) {
+        try {
+            return function.get();
+        } catch (final ArithmeticException e) {
+            return failValue;
+        }
     }
 }
