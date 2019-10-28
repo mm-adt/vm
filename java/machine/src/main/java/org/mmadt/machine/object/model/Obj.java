@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.model;
 
+import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
@@ -222,12 +223,16 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.constant() && (TObj.none().test(this.access()) || this.access().constant());
     }
 
+    public default <O extends Obj> O access(final Query access) {
+        return this.access(access.bytecode());
+    }
+
     public default <O extends Obj> O q(final Q.Tag tag) {
         return this.q(tag.apply(this.q()));
     }
 
     public default <O extends Obj> O q(final Object low, final Object high) {
-        return this.q((WithRing) ObjectHelper.from(high).clone().set(TStream.of(ObjectHelper.from(low),high)));
+        return this.q((WithRing) ObjectHelper.from(high).clone().set(TStream.of(ObjectHelper.from(low), high)));
     }
 
     public default <O extends Obj> O q(final Object count) {

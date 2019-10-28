@@ -101,6 +101,7 @@ public final class Tokens {
     public static final String MINUS = "minus";
     public static final String MODEL = "model";
     public static final String MULT = "mult";
+    public static final String NEG = "neg";
     public static final String NEQ = "neq";
     public static final String ONE = "one";
     public static final String OR = "or";

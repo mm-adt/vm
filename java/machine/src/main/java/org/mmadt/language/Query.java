@@ -120,6 +120,10 @@ public final class Query {
         return this.compose(TInst.of(Tokens.MULT, arg(obj)));
     }
 
+    public Query neg() {
+        return this.compose(TInst.of(Tokens.NEG));
+    }
+
     public Query neq(final Object obj) {
         return this.compose(TInst.of(Tokens.NEQ, arg(obj)));
     }

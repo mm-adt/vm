@@ -29,6 +29,7 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.Bindings;
@@ -136,7 +137,7 @@ final class TRecTest {
         assertFalse(recordType.isType());
         assertTrue(recordType.isReference());
         assertFalse(recordType.isInstance());
-        assertTrue(recordType.access(null).isType());
+        assertTrue(recordType.access((Inst)null).isType());
         ///
         assertFalse(recordType.constant());
         assertFalse(recordType.test(TRec.of("name", 2)));

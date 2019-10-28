@@ -22,15 +22,17 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TType;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.processor.util.MinimalProcessor;
 import org.mmadt.util.FunctionUtils;
 
-import static org.mmadt.language.compiler.Tokens.REAL;
+import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -58,7 +60,7 @@ public final class TReal extends TObj implements Real {
     }
 
     public static Real of(final Object... objects) {
-        return ObjectHelper.create(TReal::new, objects);
+        return ObjectHelper.make(TReal::new, objects);
     }
 
     @Override
@@ -83,7 +85,10 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real negate() {
-        return FunctionUtils.<Real, Float>monad(this, x -> -x);
+        if (this.isInstance())
+            return FunctionUtils.<Real, Float>monad(this, x -> -x);
+        else //if (this.isReference())
+            return this.access(this.access().mult(TInst.of(Tokens.NEG)));
     }
 
     @Override
@@ -93,7 +98,10 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real mult(final Real object) {
-        return FunctionUtils.<Real, Float>monad(this, object, (x, y) -> x * y);
+        if (this.isInstance())
+            return FunctionUtils.<Real, Float>monad(this, object, (x, y) -> x * y);
+        else //if (this.isReference())
+            return this.access(this.access().mult(TInst.of(Tokens.MULT, object)));
     }
 
     @Override
@@ -119,5 +127,10 @@ public final class TReal extends TObj implements Real {
     @Override
     public Real set(final Object value) {
         return super.set(value.equals(-0.0f) ? 0.0f : value);
+    }
+
+    @Override
+    public Iterable<Real> iterable() {
+        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Real, Real>(this.access()).iterator(this);
     }
 }
