@@ -105,9 +105,7 @@ class WithGroupPlusTest {
             assertEquals(running.access(running.access().mult(TInst.of(Tokens.PLUS, group.negate()))), second.minus(group));
             assertEquals(running.access(running.access().mult(TInst.of(Tokens.PLUS, group)).mult(TInst.of(Tokens.NEG))), second.plus(group).negate());
             assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, group.negate()))), second = second.plus(group.negate()));
-
         }
-
     }
 
     @TestFactory

@@ -25,7 +25,6 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
@@ -49,6 +48,11 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
         super((Supplier) () -> obj);
     }
 
+    public TQ(final A low, final A high) {
+        super((Supplier) () -> TInt.of(low, high));
+    }
+
+
     @Override
     public A object() {
         return ((Supplier<A>) this.value).get();
@@ -71,9 +75,7 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
 
     @Override
     public boolean test(final Obj object) {
-        return null == object ?
-                ((WithOrder<A>) this.low().get()).lte(this.low().zero()).get() : // TODO: need Order in the Interface
-                (((WithOrder<A>) object.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) object.q().high()).lte(this.high()).<Boolean>get());
+        return (((WithOrder<A>) object.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) object.q().high()).lte(this.high()).<Boolean>get());
     }
 
     @Override

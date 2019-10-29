@@ -86,13 +86,13 @@ public final class TInst extends TObj implements Inst {
     @Override
     public <A extends WithRing<A>> Q<A> q() {
         if (this.get() instanceof Stream) { // TODO: memoize this
-            WithRing low = null;
-            WithRing high = null;
-            for (final Obj a : this.<Stream<Obj>>get()) {
-                low = null == low ? a.q().low() : low.plus(a.q().low());
-                high = null == high ? a.q().high() : high.plus(a.q().high());
+            A low = null;
+            A high = null;
+            for (final Inst a : this.iterable()) {
+                low = null == low ? a.<A>q().low() : low.plus(a.<A>q().low());
+                high = null == high ? a.<A>q().high() : high.plus(a.<A>q().high());
             }
-            this.quantifier = new TQ<>(low.set(TStream.of(low, high)));
+            this.quantifier = new TQ<>(low, high);
         }
         return this.quantifier;
     }

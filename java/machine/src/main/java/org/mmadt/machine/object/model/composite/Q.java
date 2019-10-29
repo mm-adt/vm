@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.object.model.composite;
 
-import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
@@ -41,17 +41,17 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
         public Q apply(final Q quantifier) {
             switch (this) {
                 case zero:
-                    return quantifier.set(quantifier.low().zero());
+                    return new TQ<>(quantifier.low().zero());
                 case one:
-                    return quantifier.set(quantifier.low().one());
+                    return new TQ<>(quantifier.low().one());
                 case star:
-                    return quantifier.set(quantifier.low().baseType().set(TStream.of(quantifier.low().zero(), ((WithOrder) quantifier.high()).max())));
+                    return new TQ<>(quantifier.low().zero(), (WithRing) ((WithOrder) quantifier.high()).max());
                 case qmark:
-                    return quantifier.set(quantifier.low().baseType().set(TStream.of(quantifier.low().zero(), quantifier.high().one())));
+                    return new TQ<>(quantifier.low().zero(), quantifier.high().one());
                 case plus:
-                    return quantifier.set(quantifier.low().baseType().set(TStream.of(quantifier.low().one(), ((WithOrder) quantifier.high()).max())));
+                    return new TQ<>(quantifier.low().one(), (WithRing) ((WithOrder) quantifier.high()).max());
                 default:
-                    throw new RuntimeException("Undefined short: " + this);
+                    throw new RuntimeException("Undefined shorthand: " + this);
             }
         }
     }
@@ -79,29 +79,25 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
 
     @Override
     public default Q<A> mult(final Q<A> object) {
-        return this.set(this.object().mult(object.object()));
+        return new TQ<>(this.object().mult(object.object()));
     }
 
     @Override
     public default Q<A> plus(final Q<A> object) {
-        return this.set(this.object().plus(object.object()));
+        return new TQ<>(this.object().plus(object.object()));
     }
 
     @Override
     public default Q<A> negate() {
-        return this.set(this.object().negate());
+        return new TQ<>(this.low().negate(), this.high().negate());
     }
 
     public default Q<A> and(final Q<A> obj) {
-        final A lower = this.low().mult(obj.low());
-        final A higher = this.high().mult(obj.high());
-        return this.set(lower.equals(higher) ? lower : higher.baseType().set(TStream.of(lower, higher)));
+        return new TQ<>(this.low().mult(obj.low()), this.high().mult(obj.high()));
     }
 
     public default Q<A> or(final Q<A> obj) {
-        final A lower = this.low().plus(obj.low());
-        final A higher = this.high().plus(obj.high());
-        return this.set(lower.equals(higher) ? lower : higher.baseType().set(TStream.of(lower, higher)));
+        return new TQ<>(this.low().plus(obj.low()), this.high().plus(obj.high()));
     }
 
     @Override

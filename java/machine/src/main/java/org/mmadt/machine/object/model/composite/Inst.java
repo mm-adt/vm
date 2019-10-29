@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.type.Bindings;
@@ -121,7 +122,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     @Override
     public default Iterable<? extends Inst> iterable() {
-        return (Iterable<? extends Inst>) WithProduct.super.iterable();
+        return this.get() instanceof Stream ? this.<Stream<Inst>>get() : null == this.get() ? List.of() : List.of(this);
     }
 
 }

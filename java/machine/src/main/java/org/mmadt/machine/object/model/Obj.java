@@ -44,6 +44,7 @@ import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -86,11 +87,16 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O peek() {
-        return null == this.get() ? (O) TObj.none() : this.get() instanceof Stream ? ((Stream<O>) this.get()).peek() : (O) this;
+        return (O) this.iterable().iterator().next();
     }
 
     public default <O extends Obj> O last() {
-        return null == this.get() ? (O) TObj.none() : this.get() instanceof Stream ? ((Stream<O>) this.get()).last() : (O) this;
+        final Iterator<O> itty = (Iterator<O>) this.iterable().iterator();
+        O o = (O) TObj.none();
+        while (itty.hasNext()) {
+            o = itty.next();
+        }
+        return o;
     }
 
     public <O extends Obj> O type(final O type);
@@ -102,7 +108,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default Iterable<? extends Obj> iterable() {
-        return this.q().isZero() ? List.of() : TStream.of(this);
+        return null == this.get() ? List.of() : this.get() instanceof Stream ? this.<Stream>get() : List.of(this);
     }
 
     public <O extends Obj> O set(final Object object);
