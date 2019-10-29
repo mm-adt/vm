@@ -63,11 +63,11 @@ class WithFieldTest {
         assertEquals(two, two.div(field.one()));
         assertEquals(three, three.div(field.one()));
         // 1 = a * a^-1
-        assertEquals(field.one(), field.mult(field.inverse()));
+        assertEquals(field.one(), field.mult(field.inv()));
         // a^-1 = 1 / a
-        assertEquals(field.inverse(), field.one().div(field));
-        assertEquals(two.inverse(), two.one().div(two));
-        assertEquals(three.inverse(), three.one().div(three));
+        assertEquals(field.inv(), field.one().div(field));
+        assertEquals(two.inv(), two.one().div(two));
+        assertEquals(three.inv(), three.one().div(three));
         // a = a^2 / a
         assertEquals(field, field.mult(field).div(field));
         assertEquals(two, two.mult(two).div(two));

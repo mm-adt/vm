@@ -112,9 +112,9 @@ public final class TInt extends TObj implements Int {
     }
 
     @Override
-    public Int negate() {
+    public Int neg() {
         //  return OperatorHelper.<Int>unary(Tokens.NEG, x -> new TInt(-x.java()), this);
-        return this.constant() ? FunctionUtils.<Int, Integer>monad(this, x -> -x) : this.q(this.q().negate()); // TODO: isolate types from instances somehow
+        return this.constant() ? FunctionUtils.<Int, Integer>monad(this, x -> -x) : this.q(this.q().neg()); // TODO: isolate types from instances somehow
     }
 
     @Override

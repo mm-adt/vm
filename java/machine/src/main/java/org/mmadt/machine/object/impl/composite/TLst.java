@@ -125,7 +125,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     @Override
-    public Lst<V> negate() {
+    public Lst<V> neg() {
         return OperatorHelper.<Lst<V>>unary(Tokens.NEG, x -> TLst.of(x.<PList<V>>get()), this);
     }
 

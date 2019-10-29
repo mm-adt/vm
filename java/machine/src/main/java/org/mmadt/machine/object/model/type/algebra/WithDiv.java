@@ -33,5 +33,5 @@ public interface WithDiv<A extends WithDiv<A>> extends Obj {
 
     public A div(final A object);
 
-    public A inverse();
+    public A inv();
 }

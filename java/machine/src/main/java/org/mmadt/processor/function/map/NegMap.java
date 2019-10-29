@@ -39,7 +39,7 @@ public final class NegMap<S extends WithMinus<S>> extends AbstractFunction imple
 
     @Override
     public S apply(final S obj) {
-        return obj.negate();
+        return obj.neg();
     }
 
     public static <S extends WithMinus<S>> NegMap<S> compile(final Inst inst) {

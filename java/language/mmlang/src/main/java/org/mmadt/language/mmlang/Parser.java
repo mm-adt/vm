@@ -245,7 +245,7 @@ public class Parser extends BaseParser<Object> {
                         Symbol(object),
                         Bytecode(object),
                         Lst(object)),
-                !negate.get() || object.set(((WithMinus) object.getAndClear()).negate()),
+                !negate.get() || object.set(((WithMinus) object.getAndClear()).neg()),
                 Optional(Quantifier(object)),
                 Optional(Binding(object)));
     }

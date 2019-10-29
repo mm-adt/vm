@@ -119,7 +119,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     }
 
     @Override
-    public Rec<K,V> negate() {
+    public Rec<K,V> neg() {
         return OperatorHelper.<Rec<K,V>>unary(Tokens.NEG, x -> TRec.of(x.<PMap<K,V>>get()), this);
     }
 

@@ -36,10 +36,10 @@ public interface WithGroupPlus<A extends WithGroupPlus<A>> extends WithMonoidPlu
     public A plus(final A object);
 
     @Override
-    public A negate();
+    public A neg();
 
     @Override
     public default A minus(final A object) {
-        return this.plus(object.negate());
+        return this.plus(object.neg());
     }
 }

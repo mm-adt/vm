@@ -51,7 +51,7 @@ public class OperatorHelper {
             case ("|"):
                 return (A) lhs.or(rhs);
             case ("-"):
-                return (A) lhs.plus((A) rhs.negate());
+                return (A) lhs.plus((A) rhs.neg());
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

@@ -83,7 +83,7 @@ public final class TReal extends TObj implements Real {
     }
 
     @Override
-    public Real negate() {
+    public Real neg() {
         return OperatorHelper.<Real>unary(Tokens.NEG, x -> TReal.of(-x.java()), this);
     }
 
@@ -113,7 +113,7 @@ public final class TReal extends TObj implements Real {
     }
 
     @Override
-    public Real inverse() {
+    public Real inv() {
         return OperatorHelper.<Real>unary(Tokens.INV, x -> TReal.of(1.0f / x.java()), this);
     }
 

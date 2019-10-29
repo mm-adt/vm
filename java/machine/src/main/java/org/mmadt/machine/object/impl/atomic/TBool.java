@@ -84,7 +84,7 @@ public final class TBool extends TObj implements Bool {
     }
 
     @Override
-    public Bool negate() {
+    public Bool neg() {
         return OperatorHelper.unary(Tokens.NEG, x -> new TBool(x.java()), this);
     }
 

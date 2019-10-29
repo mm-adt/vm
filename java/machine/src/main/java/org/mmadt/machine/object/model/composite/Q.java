@@ -88,8 +88,8 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
     }
 
     @Override
-    public default Q<A> negate() {
-        return new TQ<>(this.low().negate(), this.high().negate());
+    public default Q<A> neg() {
+        return new TQ<>(this.low().neg(), this.high().neg());
     }
 
     public default Q<A> and(final Q<A> obj) {

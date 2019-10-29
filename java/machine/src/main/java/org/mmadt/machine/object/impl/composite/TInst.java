@@ -152,8 +152,8 @@ public final class TInst extends TObj implements Inst {
     }
 
     @Override
-    public Inst negate() {
-        return this.q(this.q().negate());
+    public Inst neg() {
+        return this.q(this.q().neg());
     }
 
     @Override

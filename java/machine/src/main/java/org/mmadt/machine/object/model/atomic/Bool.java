@@ -51,11 +51,11 @@ public interface Bool extends WithCommutativeRing<Bool> {
 
     @Override
     public default Bool minus(final Bool object) {
-        return this.plus(object.negate());
+        return this.plus(object.neg());
     }
 
     @Override
-    public Bool negate();
+    public Bool neg();
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public default Boolean java() {

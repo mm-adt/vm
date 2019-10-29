@@ -40,10 +40,10 @@ public interface WithRng<A extends WithRng<A>> extends WithGroupPlus<A>, WithCom
 
     @Override
     public default A minus(final A object) {
-        return this.plus(object.negate());
+        return this.plus(object.neg());
     }
 
     @Override
-    public A negate();
+    public A neg();
 
 }

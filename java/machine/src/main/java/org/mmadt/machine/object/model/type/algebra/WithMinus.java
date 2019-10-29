@@ -33,5 +33,5 @@ public interface WithMinus<A extends WithMinus<A>> extends Obj {
 
     public A minus(final A object);
 
-    public A negate();
+    public A neg();
 }

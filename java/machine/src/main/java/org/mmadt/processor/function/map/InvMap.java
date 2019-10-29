@@ -39,7 +39,7 @@ public final class InvMap<S extends WithDiv<S>> extends AbstractFunction impleme
 
     @Override
     public S apply(final S obj) {
-        return obj.inverse();
+        return obj.inv();
     }
 
     public static <S extends WithDiv<S>> InvMap<S> compile(final Inst inst) {

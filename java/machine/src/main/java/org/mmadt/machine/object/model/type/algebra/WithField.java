@@ -43,17 +43,17 @@ public interface WithField<A extends WithField<A>> extends WithCommutativeRing<A
 
     @Override
     public default A minus(final A object) {
-        return this.plus(object.negate());
+        return this.plus(object.neg());
     }
 
     @Override
-    public A negate();
+    public A neg();
 
     @Override
     public default A div(final A object) {
-        return this.mult(object.inverse());
+        return this.mult(object.inv());
     }
 
     @Override
-    public A inverse();
+    public A inv();
 }

@@ -41,9 +41,9 @@ public interface WithCommutativeRing<A extends WithCommutativeRing<A>> extends W
 
     @Override
     public default A minus(final A object) {
-        return this.plus(object.negate());
+        return this.plus(object.neg());
     }
 
     @Override
-    public A negate();
+    public A neg();
 }

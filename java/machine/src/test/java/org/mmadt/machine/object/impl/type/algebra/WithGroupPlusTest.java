@@ -93,23 +93,23 @@ class WithGroupPlusTest {
         assertEquals(group.zero(), group.minus(group));
         assertEquals(group.zero(), two.minus(two));
         // a = -(-a)
-        assertEquals(group, group.negate().negate());
-        assertEquals(two, two.negate().negate());
-        assertEquals(three, three.negate().negate());
+        assertEquals(group, group.neg().neg());
+        assertEquals(two, two.neg().neg());
+        assertEquals(three, three.neg().neg());
         // -a = 0 - a
-        assertEquals(group.negate(), group.zero().minus(group));
-        assertEquals(two.negate(), group.zero().minus(two));
-        assertEquals(three.negate(), group.zero().minus(three));
+        assertEquals(group.neg(), group.zero().minus(group));
+        assertEquals(two.neg(), group.zero().minus(two));
+        assertEquals(three.neg(), group.zero().minus(three));
     }
 
     static void testReferences(final WithGroupPlus group) {
         WithGroupPlus running = group;
         WithGroupPlus second = group;
         for (int i = 0; i < 10; i++) {
-            assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO)).mult(TInst.of(Tokens.NEG))), second.zero().negate());
+            assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO)).mult(TInst.of(Tokens.NEG))), second.zero().neg());
 //TODO:            assertEquals(running.access(running.access().mult(TInst.of(Tokens.PLUS, group.negate()))), second.minus(group));
-            assertEquals(running.access(running.access().mult(TInst.of(Tokens.PLUS, group)).mult(TInst.of(Tokens.NEG))), second.plus(group).negate());
-            assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, group.negate()))), second = second.plus(group.negate()));
+            assertEquals(running.access(running.access().mult(TInst.of(Tokens.PLUS, group)).mult(TInst.of(Tokens.NEG))), second.plus(group).neg());
+            assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, group.neg()))), second = second.plus(group.neg()));
         }
     }
 

@@ -43,9 +43,9 @@ public interface WithRing<A extends WithRing<A>> extends WithRng<A>, WithOne<A> 
 
     @Override
     public default A minus(final A object) {
-        return this.plus(object.negate());
+        return this.plus(object.neg());
     }
 
     @Override
-    public A negate();
+    public A neg();
 }
