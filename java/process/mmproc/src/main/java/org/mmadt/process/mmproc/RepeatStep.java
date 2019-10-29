@@ -43,8 +43,8 @@ final class RepeatStep<S extends Obj> extends AbstractStep<S, S> {
     private final IR<S, S> repeat;
     private Iterator<S> repeatIterator = Collections.emptyIterator();
     private ObjSet<S> repeatStarts = new ObjSet<>();
-    private ObjSet<S> outputTraversers = new ObjSet<>();
-    private ObjSet<S> inputTraversers = new ObjSet<>();
+    private ObjSet<S> outputObjs = new ObjSet<>();
+    private ObjSet<S> inputObjs = new ObjSet<>();
     private final boolean hasStartPredicates;
     private final boolean hasEndPredicates;
 
@@ -62,77 +62,77 @@ final class RepeatStep<S extends Obj> extends AbstractStep<S, S> {
 
     @Override
     public boolean hasNext() {
-        this.stageOutput();
-        return false;//!this.outputTraversers.isEmpty();
+        //this.stageOutput();
+        return !this.outputObjs.isEmpty();
     }
 
     @Override
     public S next() {
-        this.stageOutput();
-        return null; //this.outputTraversers.remove();
+        //this.stageOutput();
+        return this.outputObjs.remove();
     }
 
-    private boolean stageInput() {
-        /*if (!this.inputTraversers.isEmpty() || this.previousStep.hasNext()) {
-            final Traverser<C, S> traverser = this.inputTraversers.isEmpty() ? this.previousStep.next() : this.inputTraversers.remove();
+   /* private boolean stageInput() {
+        if (!this.inputObjs.isEmpty() || this.previousStep.hasNext()) {
+            final S obj = this.inputObjs.isEmpty() ? this.previousStep.next() : this.inputObjs.remove();
             if (this.hasStartPredicates) {
                 if (1 == this.untilLocation) {
-                    if (this.untilCompilation.filterTraverser(traverser)) {
-                        this.outputTraversers.add(traverser);
-                    } else if (2 == this.emitLocation && this.emitCompilation.filterTraverser(traverser)) {
-                        this.outputTraversers.add(traverser.repeatDone(this.repeatBranch));
-                        this.repeatStarts.add(traverser);
+                    if (this.untilCompilation.filterTraverser(obj)) {
+                        this.outputObjs.add(obj);
+                    } else if (2 == this.emitLocation && this.emitCompilation.filterTraverser(obj)) {
+                        this.outputObjs.add(traverser.repeatDone(this.repeatBranch));
+                        this.repeatStarts.add(obj);
                     } else
-                        this.repeatStarts.add(traverser);
+                        this.repeatStarts.add(obj);
                 } else if (1 == this.emitLocation) {
-                    if (this.emitCompilation.filterTraverser(traverser))
-                        this.outputTraversers.add(traverser.repeatDone(this.repeatBranch));
-                    if (2 == this.untilLocation && this.untilCompilation.filterTraverser(traverser))
-                        this.outputTraversers.add(traverser.repeatDone(this.repeatBranch));
+                    if (this.emitCompilation.filterTraverser(obj))
+                        this.outputObjs.add(traverser.repeatDone(this.repeatBranch));
+                    if (2 == this.untilLocation && this.untilCompilation.filterTraverser(obj))
+                        this.outputObjs.add(traverser.repeatDone(this.repeatBranch));
                     else
-                        this.repeatStarts.add(traverser);
+                        this.repeatStarts.add(obj);
                 }
             } else {
-                this.repeatStarts.add(traverser);
+                this.repeatStarts.add(obj);
             }
             return true;
-        }*/
+        }
         return false;
     }
 
     private void stageOutput() {
-       /* while (this.outputTraversers.isEmpty() && (this.repeatIterator.hasNext() || this.stageInput())) {
+        while (this.outputObjs.isEmpty() && (this.repeatIterator.hasNext() || this.stageInput())) {
             if (this.repeatIterator.hasNext()) {
-                final Traverser<C, S> traverser = this.repeatIterator.next().repeatLoop(this.repeatBranch);
+                final S obj = this.repeatIterator.next().repeatLoop(this.repeatBranch);
                 if (this.hasEndPredicates) {
                     if (3 == this.untilLocation) {
-                        if (this.untilCompilation.filterTraverser(traverser)) {
-                            this.outputTraversers.add(traverser.repeatDone(this.repeatBranch));
-                        } else if (4 == this.emitLocation && this.emitCompilation.filterTraverser(traverser)) {
-                            this.outputTraversers.add(traverser.repeatDone(this.repeatBranch));
-                            this.inputTraversers.add(traverser);
+                        if (this.untilCompilation.filterTraverser(obj)) {
+                            this.outputObjs.add(obj.repeatDone(this.repeatBranch));
+                        } else if (4 == this.emitLocation && this.emitCompilation.filterTraverser(obj)) {
+                            this.outputObjs.add(obj.repeatDone(this.repeatBranch));
+                            this.inputObjs.add(obj);
                         } else
-                            this.inputTraversers.add(traverser);
+                            this.inputObjs.add(obj);
                     } else if (3 == this.emitLocation) {
-                        if (this.emitCompilation.filterTraverser(traverser))
-                            this.outputTraversers.add(traverser.repeatDone(this.repeatBranch));
-                        if (4 == this.untilLocation && this.untilCompilation.filterTraverser(traverser))
-                            this.outputTraversers.add(traverser.repeatDone(this.repeatBranch));
+                        if (this.emitCompilation.filterTraverser(obj))
+                            this.outputObjs.add(obj.repeatDone(this.repeatBranch));
+                        if (4 == this.untilLocation && this.untilCompilation.filterTraverser(obj))
+                            this.outputObjs.add(obj.repeatDone(this.repeatBranch));
                         else
-                            this.inputTraversers.add(traverser);
+                            this.inputObjs.add(obj);
                     }
                 } else {
-                    this.inputTraversers.add(traverser);
+                    this.inputObjs.add(obj);
                 }
             } else {
                 this.repeatIterator = this.repeat.getProcessor().iterator(IteratorUtils.removeOnNext(this.repeatStarts.iterator()));
             }
-        }*/
-    }
+        }
+    }*/
 
     @Override
     public void reset() {
-        // this.inputTraversers.clear();
-        // this.outputTraversers.clear();
+        this.inputObjs.clear();
+        this.outputObjs.clear();
     }
 }
