@@ -27,7 +27,9 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
@@ -124,7 +126,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> negate() {
-        return this; // TODO: need a good solution -- we need NOT to behave in a more standard way
+        return OperatorHelper.<Lst<V>>unary(Tokens.NEG, x -> TLst.of(x.<PList<V>>get()), this);
     }
 
     @Override

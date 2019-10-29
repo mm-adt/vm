@@ -25,7 +25,10 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Real;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -34,6 +37,7 @@ import org.mmadt.machine.object.model.util.StringFactory;
 import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -115,13 +119,13 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     }
 
     @Override
-    public Rec<K, V> negate() {
-        return null;
+    public Rec<K,V> negate() {
+        return OperatorHelper.<Rec<K,V>>unary(Tokens.NEG, x -> TRec.of(x.<PMap<K,V>>get()), this);
     }
 
     @Override
     public Rec<K, V> minus(final Rec<K, V> object) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> {
+        return OperatorHelper.binary(Tokens.MINUS, (x, y) -> {
             final PMap<K, V> map = new PMap<>(x.<PMap<K, V>>get());
             y.<PMap<K, V>>get().forEach(map::remove);
             return new TRec<>(map);
