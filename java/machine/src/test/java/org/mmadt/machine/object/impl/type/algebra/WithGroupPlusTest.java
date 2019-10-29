@@ -55,9 +55,9 @@ class WithGroupPlusTest {
             //////////////// REFERENCES
             TLst.of(TLst.of(1, "a", "x"), TLst.of(1, "c", 32), TLst.of(false, "abc", true)),
             TRec.of(TRec.of("a", 1, "b", 2), TRec.of("a", 2, "c", 3), TRec.of("e", 4)),
-            // TInst.of(Tokens.ID),
+            // TInst.of(List.of(TInst.of(Tokens.START,TInt.of(1)), TInst.of(Tokens.NEG), TInst.of(Tokens.PLUS, TInt.of(32)))),
+            // TInt.of(1,2,3,4,5,6),
             TReal.of(1.0f, 2.0f, 3.0f),
-            // TInt.of(1),
             TBool.of(true, false, false));
 
     static void validate(final WithGroupPlus group) {
