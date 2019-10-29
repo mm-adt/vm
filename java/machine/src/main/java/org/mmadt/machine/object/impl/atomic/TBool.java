@@ -75,7 +75,7 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return OperatorHelper.unary(Tokens.ZERO, x -> new TBool(true), this);
+        return OperatorHelper.unary(Tokens.ONE, x -> new TBool(true), this);
     }
 
     @Override
