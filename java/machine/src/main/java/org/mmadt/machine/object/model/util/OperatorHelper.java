@@ -57,31 +57,26 @@ public class OperatorHelper {
         }
     }
 
-    public static <A extends Obj, B extends Obj> B bifunction(final String opcode, final BiFunction<A, A, B> operator, final A objA, final A objB) {
+    public static <A extends Obj, B extends Obj> B bifunction(final String opcode, final BiFunction<A, A, B> operator, final A objA, final A objB, final B type) {
         if (objA.isInstance())
             return operator.apply(objA, objB);
-        else if (objA.isReference())
-            return objA.access(objA.access().mult(TInst.of(opcode, objB)));
-        else
-            throw new IllegalStateException("Need to implement: ");
+        else //(objA.isReference())
+            return type.access(objA.access().mult(TInst.of(opcode, objB)));
     }
 
     public static <A extends Obj> A binary(final String opcode, final BinaryOperator<A> operator, final A objA, final A objB) {
         if (objA.isInstance())
             return operator.apply(objA, objB);
-        else if (objA.isReference())
+        else //(objA.isReference())
             return objA.access(objA.access().mult(TInst.of(opcode, objB)));
-        else
-            throw new IllegalStateException("Need to implement: ");
+
     }
 
     public static <A extends Obj> A unary(final String opcode, final UnaryOperator<A> operator, final A objA) {
         if (objA.isInstance())
             return operator.apply(objA);
-        else if (objA.isReference())
+        else //if (objA.isReference())
             return objA.access(objA.access().mult(TInst.of(opcode)));
-        else
-            throw new IllegalStateException("Need to implement: ");
     }
 
     public static Object tryCatch(final Supplier function, final Object failValue) {

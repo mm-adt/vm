@@ -23,12 +23,16 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.language.__;
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.type.POr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
@@ -69,9 +73,10 @@ final class TBoolTest {
 
     @Test
     void shouldAccessCorrectly() {
-        final Bool a = TBool.of(true, true, false);
-        System.out.println(a);
-        System.out.println(a.iterable().iterator().next()); // TODO: this will come from Obj.iterable()
-        System.out.println(a);
+        final Bool bool = TBool.of(true, true, false);
+        assertEquals(TInst.of(Tokens.START,true,true,false),bool.access());
+        assertEquals(TBool.of(true), bool.iterable().iterator().next());
+        assertEquals(start(true,true,false).plus(true).bytecode(), bool.plus(TBool.of(true)).access());
+        assertEquals(start(true,true,false).mult(true).bytecode(), bool.mult(TBool.of(true)).access());
     }
 }

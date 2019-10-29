@@ -75,17 +75,17 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return TRUE;
+        return OperatorHelper.unary(Tokens.ZERO, x -> new TBool(true), this);
     }
 
     @Override
     public Bool zero() {
-        return FALSE;
+        return OperatorHelper.unary(Tokens.ZERO, x -> new TBool(false), this);
     }
 
     @Override
     public Bool negate() {
-        return this;
+        return OperatorHelper.unary(Tokens.NEG, x -> new TBool(x.java()), this);
     }
 
     @Override
@@ -99,13 +99,8 @@ public final class TBool extends TObj implements Bool {
     }
 
     @Override
-    public Bool minus(final Bool bool) {
-        return this.plus(bool);
-    }
-
-    @Override
     public Bool eq(final Obj obj) {
-        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj);
+        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj, TBool.of());
     }
 
     @Override
@@ -116,5 +111,4 @@ public final class TBool extends TObj implements Bool {
     private static final boolean exclusiveOr(final boolean a, final boolean b) {
         return (a && !b) || (!a && b);
     }
-
 }

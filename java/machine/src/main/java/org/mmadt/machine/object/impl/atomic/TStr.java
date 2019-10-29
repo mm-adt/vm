@@ -69,17 +69,17 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Bool gt(final Str object) {
-        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java().compareTo(y.java()) > 0), this, object);
+        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java().compareTo(y.java()) > 0), this, object, TBool.of());
     }
 
     @Override
     public Bool eq(final Obj object) {
-        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Str && x.get().equals(y.get())), this, object);
+        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Str && x.get().equals(y.get())), this, object, TBool.of());
     }
 
     @Override
     public Bool lt(final Str object) {
-        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java().compareTo(y.java()) < 0), this, object);
+        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java().compareTo(y.java()) < 0), this, object, TBool.of());
     }
 
     @Override
@@ -89,21 +89,21 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Str plus(final Str object) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> TStr.of(x.java().concat(y.java())), this, object);
+        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> new TStr(x.java().concat(y.java())), this, object);
     }
 
     @Override
     public Str zero() {
-        return new TStr(Tokens.EMPTY);
+        return OperatorHelper.unary(Tokens.ZERO, x -> new TStr(Tokens.EMPTY), this);
     }
 
     @Override
     public Str max() {
-        return TStr.of(MAX_VALUE);
+        return new TStr(MAX_VALUE);
     }
 
     @Override
     public Str min() {
-        return TStr.of(Tokens.EMPTY);
+        return new TStr(Tokens.EMPTY);
     }
 }

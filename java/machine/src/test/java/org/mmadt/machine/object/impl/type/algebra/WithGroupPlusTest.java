@@ -48,11 +48,26 @@ class WithGroupPlusTest {
             TInst.of(Tokens.ID),
             TReal.of(1.0f),
             TInt.of(1),
-            TBool.of(true));
+            TBool.of(true),
+            /////
+            // TInst.of(Tokens.ID),
+            TReal.of(1.0f, 2.0f, 3.0f),
+            // TInt.of(1),
+            TBool.of(true, false, false));
 
     static void validate(final WithGroupPlus group) {
         WithMonoidPlusTest.validate(group);
-        //
+        ///
+        if (group.isInstance())
+            testInstances(group);
+        else if (group.isReference())
+            testReferences(group);
+        else
+            throw new RuntimeException("Bad: " + group);
+
+    }
+
+    static void testInstances(final WithGroupPlus group) {
         final WithGroupPlus two = group.plus(group);
         final WithGroupPlus three = group.plus(group).plus(group);
         final WithGroupPlus four = group.plus(group).plus(group).plus(group);
@@ -80,6 +95,19 @@ class WithGroupPlusTest {
         assertEquals(group.negate(), group.zero().minus(group));
         assertEquals(two.negate(), group.zero().minus(two));
         assertEquals(three.negate(), group.zero().minus(three));
+    }
+
+    static void testReferences(final WithGroupPlus group) {
+        WithGroupPlus running = group;
+        WithGroupPlus second = group;
+        for (int i = 0; i < 10; i++) {
+            assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO)).mult(TInst.of(Tokens.NEG))), second.zero().negate());
+            assertEquals(running.access(running.access().mult(TInst.of(Tokens.PLUS, group.negate()))), second.minus(group));
+            assertEquals(running.access(running.access().mult(TInst.of(Tokens.PLUS, group)).mult(TInst.of(Tokens.NEG))), second.plus(group).negate());
+            assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, group.negate()))), second = second.plus(group.negate()));
+
+        }
+
     }
 
     @TestFactory

@@ -47,14 +47,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class WithMonoidPlusTest {
 
     private static final List<WithMonoidPlus> TEST_ARGS = List.of(
+            //////////////// INSTANCES
             TLst.of(1),
             TInst.of(Tokens.ID),
             TStr.of("a"),
             TInt.of(1),
             TReal.of(1.0f),
-            TBool.of(true));
+            TBool.of(true),
+            //////////////// REFERENCES
+            // TLst.of(1),
+            // TInst.of(Tokens.ID),
+            TStr.of("a", "b", "c"),
+            // TInt.of(1),
+            TReal.of(1.0f, 2.0f, 3.0f),
+            TBool.of(true, true, false));
 
     static void validate(final WithMonoidPlus monoid) {
+        if (monoid.isInstance())
+            testInstances(monoid);
+        else if (monoid.isReference())
+            testReferences(monoid);
+        else
+            throw new RuntimeException("Bad: " + monoid);
+    }
+
+
+    static void testInstances(final WithMonoidPlus monoid) {
         final WithMonoidPlus two = monoid.plus(monoid);
         final WithMonoidPlus three = two.plus(monoid);
         final WithMonoidPlus four = three.plus(monoid);
@@ -69,6 +87,17 @@ class WithMonoidPlusTest {
         assertEquals(two, monoid.zero().plus(two));
         // (a+b)+c = a+(b+c)
         assertEquals(two.plus(three).plus(four), two.plus(three.plus(four)));
+    }
+
+    static void testReferences(final WithMonoidPlus monoid) {
+        WithMonoidPlus running = monoid;
+        WithMonoidPlus second = monoid;
+        for (int i = 0; i < 10; i++) {
+            //assertFalse(running.isZero());
+            assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO))), second.zero());
+            assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, monoid))), second = second.plus(monoid));
+        }
+
     }
 
     @TestFactory

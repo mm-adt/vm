@@ -74,12 +74,12 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return TReal.of(1.0f);
+        return OperatorHelper.unary(Tokens.ONE, x -> new TReal(1.0f), this);
     }
 
     @Override
     public Real zero() {
-        return TReal.of(0.0f);
+        return OperatorHelper.unary(Tokens.ZERO, x -> new TReal(0.0f), this);
     }
 
     @Override
@@ -99,17 +99,17 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Bool gt(final Real object) {
-        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java() > y.java()), this, object);
+        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java() > y.java()), this, object, TBool.of());
     }
 
     @Override
     public Bool eq(final Obj object) {
-        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Real && x.get().equals(y.get())), this, object);
+        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Real && x.java().equals(y.java())), this, (Real) object, TBool.of());
     }
 
     @Override
     public Bool lt(final Real object) {
-        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java() < y.java()), this, object);
+        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java() < y.java()), this, object, TBool.of());
     }
 
     @Override
