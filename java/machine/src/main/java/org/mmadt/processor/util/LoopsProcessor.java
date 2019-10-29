@@ -38,9 +38,9 @@ public final class LoopsProcessor<S extends Obj> extends SimpleProcessor<S, S> {
     }
 
     @Override
-    protected void processTraverser(final Iterator<S> starts) {
+    protected void processObj(final Iterator<S> starts) {
         final S traverser = starts.next();
-        this.traverser = traverser;
+        this.obj = traverser;
         //this.traverser = traverser.loops() == this.loops ? traverser : null; TODO: loop stack for mm-ADT objects
     }
 }

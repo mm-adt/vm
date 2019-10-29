@@ -23,15 +23,19 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.language.__;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.type.POr;
+import org.mmadt.util.IteratorUtils;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.language.__.id;
 import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
@@ -42,6 +46,14 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.star;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 final class TBoolTest {
+
+    @Test
+    void shouldStreamCorrectly() {
+        assertEquals(TInst.none(), TBool.of(true).access());
+        assertEquals(TBool.some().access(TInst.start(true, false, true, false)), TBool.of(true, false, true, false));
+        assertEquals(TLst.of(true, false, true, false).<List<Bool>>get(), IteratorUtils.list(TBool.of(true, false, true, false).iterable().iterator()));
+        assertEquals(TLst.of(true, true).<List<Bool>>get(), IteratorUtils.list(TBool.some().access(start(true,false,true,false).is(id())).iterable().iterator()));
+    }
 
     @Test
     void shouldAndCorrectly() {
@@ -74,9 +86,9 @@ final class TBoolTest {
     @Test
     void shouldAccessCorrectly() {
         final Bool bool = TBool.of(true, true, false);
-        assertEquals(TInst.of(Tokens.START,true,true,false),bool.access());
+        assertEquals(TInst.of(Tokens.START, true, true, false), bool.access());
         assertEquals(TBool.of(true), bool.iterable().iterator().next());
-        assertEquals(start(true,true,false).plus(true).bytecode(), bool.plus(TBool.of(true)).access());
-        assertEquals(start(true,true,false).mult(true).bytecode(), bool.mult(TBool.of(true)).access());
+        assertEquals(start(true, true, false).plus(true).bytecode(), bool.plus(TBool.of(true)).access());
+        assertEquals(start(true, true, false).mult(true).bytecode(), bool.mult(TBool.of(true)).access());
     }
 }

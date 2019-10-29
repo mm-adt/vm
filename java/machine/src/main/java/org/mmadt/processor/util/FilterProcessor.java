@@ -38,8 +38,8 @@ public final class FilterProcessor<S extends Obj> extends SimpleProcessor<S, S> 
     }
 
     @Override
-    protected void processTraverser(final Iterator<S> starts) {
+    protected void processObj(final Iterator<S> starts) {
         if (this.allow)
-            this.traverser = starts.next();
+            this.obj = starts.next();
     }
 }

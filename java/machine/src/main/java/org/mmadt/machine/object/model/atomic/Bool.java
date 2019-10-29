@@ -22,8 +22,14 @@
 
 package org.mmadt.machine.object.model.atomic;
 
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
+import org.mmadt.processor.util.MinimalProcessor;
+import org.mmadt.util.IteratorUtils;
+
+import java.util.List;
 
 /**
  * A Java representation of the {@code bool} object in mm-ADT.
@@ -75,6 +81,8 @@ public interface Bool extends WithCommutativeRing<Bool> {
     }
 
     @Override
-    public Iterable<Bool> iterable();
+    public default Iterable<Bool> iterable() {
+        return this.isInstance() ? List.of(this) : IteratorUtils.list(new MinimalProcessor<Bool, Bool>(this.access()).iterator(TBool.none()));
+    }
 
 }

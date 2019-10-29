@@ -90,22 +90,17 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool mult(final Bool bool) {
-        return OperatorHelper.binary(Tokens.MULT, (x, y) -> TBool.of(x.java() && y.java()), this, bool);
+        return OperatorHelper.binary(Tokens.MULT, (x, y) -> new TBool(x.java() && y.java()), this, bool);
     }
 
     @Override
     public Bool plus(final Bool bool) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> TBool.of(exclusiveOr(this.java(), bool.java())), this, bool);
+        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj, TBool.of());
-    }
-
-    @Override
-    public Iterable<Bool> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Bool, Bool>(this.access()).iterator(this);
+        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> new TBool(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj, TBool.of());
     }
 
     private static final boolean exclusiveOr(final boolean a, final boolean b) {

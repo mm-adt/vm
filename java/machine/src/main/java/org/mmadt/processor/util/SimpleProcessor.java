@@ -36,34 +36,34 @@ import java.util.function.Consumer;
  */
 public abstract class SimpleProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
 
-    protected E traverser = null;
+    protected E obj = null;
 
     @Override
     public void stop() {
-        this.traverser = null;
+        this.obj = null;
     }
 
     @Override
     public boolean alive() {
-        return null != this.traverser;
+        return null != this.obj;
     }
 
     @Override
     public Iterator<E> iterator(final Iterator<S> starts) {
-        this.processTraverser(starts);
+        this.processObj(starts);
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
-                return null != traverser;
+                return null != obj;
             }
 
             @Override
             public E next() {
-                if (null == traverser)
+                if (null == obj)
                     throw FastNoSuchElementException.instance();
                 else {
-                    final E temp = traverser;
-                    traverser = null;
+                    final E temp = obj;
+                    obj = null;
                     return temp;
                 }
             }
@@ -72,10 +72,10 @@ public abstract class SimpleProcessor<S extends Obj, E extends Obj> implements P
 
     @Override
     public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-        this.processTraverser(starts);
-        if (null != this.traverser)
-            consumer.accept(this.traverser);
-        this.traverser = null;
+        this.processObj(starts);
+        if (null != this.obj)
+            consumer.accept(this.obj);
+        this.obj = null;
     }
 
     @Override
@@ -83,5 +83,5 @@ public abstract class SimpleProcessor<S extends Obj, E extends Obj> implements P
         return (Processor<A, B>) this;
     }
 
-    protected abstract void processTraverser(final Iterator<S> starts);
+    protected abstract void processObj(final Iterator<S> starts);
 }

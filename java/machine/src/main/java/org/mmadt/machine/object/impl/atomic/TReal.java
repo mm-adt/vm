@@ -84,17 +84,17 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real neg() {
-        return OperatorHelper.<Real>unary(Tokens.NEG, x -> TReal.of(-x.java()), this);
+        return OperatorHelper.<Real>unary(Tokens.NEG, x -> new TReal(-x.java()), this);
     }
 
     @Override
     public Real plus(final Real object) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> TReal.of(x.java() + y.java()), this, object);
+        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> new TReal(x.java() + y.java()), this, object);
     }
 
     @Override
     public Real mult(final Real object) {
-        return OperatorHelper.binary(Tokens.MULT, (x, y) -> TReal.of(x.java() * y.java()), this, object);
+        return OperatorHelper.binary(Tokens.MULT, (x, y) -> new TReal(x.java() * y.java()), this, object);
     }
 
     @Override
@@ -114,7 +114,7 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real inv() {
-        return OperatorHelper.<Real>unary(Tokens.INV, x -> TReal.of(1.0f / x.java()), this);
+        return OperatorHelper.<Real>unary(Tokens.INV, x -> new TReal(1.0f / x.java()), this);
     }
 
     @Override

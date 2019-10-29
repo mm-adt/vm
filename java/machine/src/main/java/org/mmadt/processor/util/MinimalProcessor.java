@@ -25,48 +25,68 @@ package org.mmadt.processor.util;
 import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.processor.Processor;
+import org.mmadt.processor.ProcessorFactory;
 import org.mmadt.processor.compiler.FunctionTable;
 import org.mmadt.processor.function.FilterFunction;
 import org.mmadt.processor.function.InitialFunction;
 import org.mmadt.processor.function.MapFunction;
 import org.mmadt.processor.function.QFunction;
+import org.mmadt.util.EmptyIterator;
 import org.mmadt.util.FunctionUtils;
+import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class MinimalProcessor<S extends Obj, E extends Obj> extends SimpleProcessor<S, E> {
+public final class MinimalProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
 
     protected final Inst bytecode;
+    protected Iterator iterator = EmptyIterator.instance();
 
     public MinimalProcessor(final Inst inst) {
         this.bytecode = inst;
     }
 
-    @Override
-    protected void processTraverser(final Iterator<S> starts) {
-        Obj obj = starts.next();
-        for (final Inst inst : this.bytecode.iterable()) {
-            final QFunction function = FunctionTable.function(TModel.of("ex"), inst);
-            if (function instanceof FilterFunction) {
-                obj = FunctionUtils.test((FilterFunction<Obj>) function, obj).orElse(null);
-                if (null == obj) break;
-            } else if (function instanceof MapFunction) {
-                obj = FunctionUtils.map((MapFunction) function, obj);
-            } else if (function instanceof InitialFunction) {
-                obj = ((InitialFunction<S>) function).get().next(); // TODO: along with flatmap, create intermediate Iterator
-            } else {
-                throw new UnsupportedOperationException("This is not implemented yet: " + function);
-            }
-        }
-        if (null != obj) {
-            if (null != this.bytecode.label())
-                obj = obj.label(this.bytecode.label()); // TODO: bytecode as a whole shouldn't be able to be labeled (only individual instructions)
-            this.traverser = (E) obj;
-        }
 
+    private final Iterator<E> processTraverser(final E start, final Inst inst) {
+        final QFunction function = FunctionTable.function(TModel.of("ex"), inst);
+        if (function instanceof FilterFunction) {
+            return FunctionUtils.test((FilterFunction<Obj>) function, start).isPresent() ? IteratorUtils.of(start) : EmptyIterator.instance();
+        } else if (function instanceof MapFunction) {
+            return IteratorUtils.of((E) FunctionUtils.map((MapFunction) function, start));
+        } else if (function instanceof InitialFunction) {
+            return ((InitialFunction<E>) function).get();
+        } else {
+            throw new UnsupportedOperationException("This is not implemented yet: " + function);
+        }
     }
 
+    @Override
+    public boolean alive() {
+        return this.iterator.hasNext();
+    }
+
+    @Override
+    public void stop() {
+        this.iterator = EmptyIterator.instance();
+    }
+
+    @Override
+    public Iterator<E> iterator(final Iterator<S> starts) {
+        Stream<E> stream = (Stream<E>) IteratorUtils.stream(starts);
+        for (final Inst inst : this.bytecode.iterable()) {
+            stream = stream.flatMap(s -> IteratorUtils.stream(processTraverser(s, inst)));
+        }
+        return stream.map(s -> (E) s.label(this.bytecode.label())).iterator();
+    }
+
+    @Override
+    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
+
+    }
 }
