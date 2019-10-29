@@ -46,47 +46,44 @@ import java.util.stream.Stream;
 public final class MinimalProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
 
     protected final Inst bytecode;
-    protected Iterator iterator = EmptyIterator.instance();
 
     public MinimalProcessor(final Inst inst) {
         this.bytecode = inst;
     }
 
-
-    private final Iterator<E> processTraverser(final E start, final Inst inst) {
+    private static <E extends Obj> Iterator<E> processTraverser(final E start, final Inst inst) {
         final QFunction function = FunctionTable.function(TModel.of("ex"), inst);
-        if (function instanceof FilterFunction) {
+        if (function instanceof FilterFunction)
             return FunctionUtils.test((FilterFunction<Obj>) function, start).isPresent() ? IteratorUtils.of(start) : EmptyIterator.instance();
-        } else if (function instanceof MapFunction) {
+        else if (function instanceof MapFunction)
             return IteratorUtils.of((E) FunctionUtils.map((MapFunction) function, start));
-        } else if (function instanceof InitialFunction) {
+        else if (function instanceof InitialFunction)
             return ((InitialFunction<E>) function).get();
-        } else {
+        else
             throw new UnsupportedOperationException("This is not implemented yet: " + function);
-        }
+
     }
 
     @Override
     public boolean alive() {
-        return this.iterator.hasNext();
+        return true;
     }
 
     @Override
     public void stop() {
-        this.iterator = EmptyIterator.instance();
     }
 
     @Override
     public Iterator<E> iterator(final Iterator<S> starts) {
         Stream<E> stream = (Stream<E>) IteratorUtils.stream(starts);
         for (final Inst inst : this.bytecode.iterable()) {
-            stream = stream.flatMap(s -> IteratorUtils.stream(processTraverser(s, inst)));
+            stream = stream.flatMap(s -> IteratorUtils.stream(MinimalProcessor.processTraverser(s, inst)));
         }
         return stream.map(s -> (E) s.label(this.bytecode.label())).iterator();
     }
 
     @Override
     public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-
+        this.iterator(starts).forEachRemaining(consumer);
     }
 }
