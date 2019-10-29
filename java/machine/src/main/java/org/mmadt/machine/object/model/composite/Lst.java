@@ -30,8 +30,8 @@ import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.Pattern;
-import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
+import org.mmadt.machine.object.model.type.algebra.WithProduct;
 
 import java.util.List;
 
@@ -41,11 +41,9 @@ import java.util.List;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<Int,V> {
+public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<Int, V> {
 
-    public void add(final Int index, final V value);
-
-    public void add(final V value);
+    public Lst<V> put(final V value);
 
     @Override
     public Lst<V> put(final Int index, final V value);

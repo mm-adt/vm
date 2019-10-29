@@ -31,6 +31,7 @@ import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 
 import java.util.List;
@@ -55,7 +56,8 @@ class WithMonoidPlusTest {
             TReal.of(1.0f),
             TBool.of(true),
             //////////////// REFERENCES
-            // TLst.of(1),
+            TLst.of(TLst.of(1, "a", "x"), TLst.of(1, "c", 32), TLst.of(false, "abc", true)),
+            TRec.of(TRec.of("a", 1, "b", 2), TRec.of("a", 2, "c", 3), TRec.of("e", 4)),
             // TInst.of(Tokens.ID),
             TStr.of("a", "b", "c"),
             // TInt.of(1),

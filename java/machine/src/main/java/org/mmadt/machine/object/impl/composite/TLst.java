@@ -22,16 +22,15 @@
 
 package org.mmadt.machine.object.impl.composite;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
-
-import static org.mmadt.language.compiler.Tokens.LIST;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -59,42 +58,45 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     public static <V extends Obj> Lst<V> of(final Object... objects) {
-        if (objects.length == 1 && objects[0] instanceof PList) {
-            return new TLst<>(objects[0]);
+        if (objects.length > 0 && objects[0] instanceof Lst) {
+            return ObjectHelper.make(TLst::new, objects);
         } else {
             final PList<V> value = new PList<>();
             for (final Object object : objects) {
-                final V obj = (V) ObjectHelper.from(object);
-
-                value.add(obj);
+                if (object instanceof PList)
+                    value.addAll((PList<V>) object);
+                else
+                    value.add((V) ObjectHelper.from(object));
             }
             return new TLst<>(value);
         }
     }
 
-    @Override
-    public void add(final Int index, final V value) {
-        ((PList<V>) this.value).add(index.get(), value);
-    }
 
     @Override
-    public void add(final V value) {
-        ((PList<V>) this.get()).add(value);
+    public Lst<V> put(final V value) {
+        return OperatorHelper.binary(Tokens.PUT, (x, y) -> {
+            x.<PList<V>>get().add(value);
+            return x;
+        }, this, null); // TODO: should be based on PLUS
     }
 
     @Override
     public Lst<V> put(final Int key, final V value) {
-        if (((PList<V>) this.get()).size() <= key.<Integer>get())
-            this.add(key, value);
-        else
-            ((PList<V>) this.get()).set(key.get(), value);
-        return this;
+        return OperatorHelper.binary(Tokens.PUT, (x, y) -> {
+            final PList<V> list = new PList<>(x.<PList<V>>get());
+            list.add(key.java(), value);
+            return new TLst<>(list);
+        }, this, null); // TODO: should be based on PLUS
     }
 
     @Override
     public Lst<V> drop(final Int key) {
-        ((PList<V>) this.get()).remove(key.<Integer>get().intValue());
-        return this;
+        return OperatorHelper.binary(Tokens.DROP, (x, y) -> {
+            final PList<V> list = new PList<>(x.<PList<V>>get());
+            list.remove((int) key.java());
+            return new TLst<>(list);
+        }, this, null); // TODO: should be based on MINUS
     }
 
     @Override
@@ -104,16 +106,20 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> plus(final Lst<V> object) {
-        final PList<V> list = new PList<>(this.<PList<V>>get());
-        list.addAll(object.<PList<V>>get());
-        return TLst.of(list);
+        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> {
+            final PList<V> list = new PList<>(this.<PList<V>>get());
+            list.addAll(object.<PList<V>>get());
+            return new TLst<>(list);
+        }, this, object);
     }
 
     @Override
     public Lst<V> minus(final Lst<V> object) {
-        final PList<V> list = new PList<>(this.<PList<V>>get());
-        list.removeAll(object.<PList<V>>get());
-        return TLst.of(list);
+        return OperatorHelper.binary(Tokens.MINUS, (x, y) -> {
+            final PList<V> list = new PList<>(this.<PList<V>>get());
+            list.removeAll(object.<PList<V>>get());
+            return new TLst<>(list);
+        }, this, object);
     }
 
     @Override
@@ -123,7 +129,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> zero() {
-        return TLst.of();
+        return OperatorHelper.unary(Tokens.ZERO, x -> (TLst<V>) TLst.of(), this);
     }
 
 }

@@ -22,16 +22,16 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.type.PRel;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.util.FunctionUtils;
 
-import static org.mmadt.language.compiler.Tokens.INT;
 import static org.mmadt.machine.object.model.type.PRel.Rel.GT;
 
 /**
@@ -113,6 +113,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int negate() {
+        //  return OperatorHelper.<Int>unary(Tokens.NEG, x -> new TInt(-x.java()), this);
         return this.constant() ? FunctionUtils.<Int, Integer>monad(this, x -> -x) : this.q(this.q().negate()); // TODO: isolate types from instances somehow
     }
 
@@ -128,7 +129,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Bool gt(final Int object) {
-        return TBool.of(this.java() > object.java());
+        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java() > y.java()), this, object, TBool.of());
     }
 
     @Override
@@ -138,7 +139,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Bool lt(final Int object) {
-        return TBool.of(this.java() < object.java());
+        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java() < y.java()), this, object, TBool.of());
     }
 
     ///// HELPER METHODS

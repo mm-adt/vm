@@ -137,7 +137,7 @@ final class TRecTest {
         assertFalse(recordType.isType());
         assertTrue(recordType.isReference());
         assertFalse(recordType.isInstance());
-        assertTrue(recordType.access((Inst)null).isType());
+        assertTrue(recordType.access((Inst) null).isType());
         ///
         assertFalse(recordType.constant());
         assertFalse(recordType.test(TRec.of("name", 2)));
@@ -470,10 +470,11 @@ final class TRecTest {
 
     @Test
     void shouldSupportRecursiveTypeMatching() {
-        final Rec<Obj, Obj> person = TRec.of("name", TStr.some().label("a"), "friend", TRec.some().symbol("person")).symbol("person");
+        Rec<Obj, Obj> person = TRec.of("name", TStr.some().label("a"), "friend", TRec.some().symbol("person")).symbol("person");
         person.put(TStr.of("friend"), person.label("b").q(qmark));
         assertDoesNotThrow(person::toString); // check for stack overflow
         final Rec<Obj, Obj> marko = TRec.of("name", "marko");
+        System.out.println(person);
         marko.type(person);
         final Rec<Obj, Obj> kuppitz = TRec.of("name", "kuppitz", "friend", marko);
         kuppitz.type(person);

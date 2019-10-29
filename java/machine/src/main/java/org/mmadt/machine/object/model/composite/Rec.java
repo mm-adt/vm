@@ -25,11 +25,14 @@ package org.mmadt.machine.object.model.composite;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
+import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.List;
 
@@ -39,7 +42,7 @@ import java.util.List;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Rec<K extends Obj, V extends Obj> extends WithProduct<K, V> {
+public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K,V>>, WithProduct<K, V> {
 
     @Override
     public Rec<K, V> put(final K key, final V value);
@@ -78,7 +81,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithProduct<K, V> {
     }
 
     @Override
-    public default Iterable<? extends Rec> iterable() {
-        return (Iterable<? extends Rec>) WithProduct.super.iterable();
+    public default Iterable<Rec<K,V>> iterable() {
+        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Rec<K,V>, Rec<K,V>>(this.access()).iterator(this);
     }
 }

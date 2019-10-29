@@ -51,10 +51,10 @@ class StorTest {
     @Test
     void testRoot() {
         final Storage<Lst<Str>> storage = new Stor<>(TLst.of());
-        storage.root().add(TStr.of("a"));
-        storage.root().add(TStr.of("b"));
-        storage.root().add(TStr.of("c"));
-        storage.root().add(TStr.of("d"));
+        storage.root().put(TStr.of("a"));
+        storage.root().put(TStr.of("b"));
+        storage.root().put(TStr.of("c"));
+        storage.root().put(TStr.of("d"));
         assertEquals(TLst.of("a", "b", "c", "d"), storage.root());
 
         final Processor<Lst<Str>, Lst<Str>> processor = new MinimalProcessor<>(plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e")).bytecode());

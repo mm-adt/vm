@@ -218,7 +218,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && (TObj.none().test(this.access()) || !this.access().constant());
+        return !this.constant() && TObj.none().test(this.access());
     }
 
     public default boolean isReference() {
