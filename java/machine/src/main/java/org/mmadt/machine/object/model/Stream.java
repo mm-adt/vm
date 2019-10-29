@@ -25,6 +25,7 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.Pattern;
+import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 
 import java.util.Iterator;
@@ -100,8 +101,8 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
             lowB = lowB.plus(b.q().low());
             highB = highB.plus(b.q().high());
         }
-        return ((WithRing) tester.q().low()).mult(lowA).<Integer>get() <= ((WithRing) testee.q().low()).mult(lowB).<Integer>get() &&
-                ((WithRing) tester.q().high()).mult(highA).<Integer>get() >= ((WithRing) testee.q().high()).mult(highB).<Integer>get();
+        return ((WithOrder) ((WithRing) tester.q().low()).mult(lowA.peek())).lte(((WithRing) testee.q().low()).mult(lowB)).and(
+                ((WithOrder) ((WithRing) tester.q().high()).mult(highA.peek())).gte(((WithRing) testee.q().high()).mult(highB))).get();
 
     }
 }

@@ -41,9 +41,9 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
         public Q apply(final Q quantifier) {
             switch (this) {
                 case zero:
-                    return new TQ<>(quantifier.low().zero());
+                    return new TQ<>(quantifier.low().zero(), quantifier.low().zero());
                 case one:
-                    return new TQ<>(quantifier.low().one());
+                    return new TQ<>(quantifier.low().one(), quantifier.low().one());
                 case star:
                     return new TQ<>(quantifier.low().zero(), (WithRing) ((WithOrder) quantifier.high()).max());
                 case qmark:
@@ -79,12 +79,12 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
 
     @Override
     public default Q<A> mult(final Q<A> object) {
-        return new TQ<>(this.object().mult(object.object()));
+        return new TQ<>(this.low().mult(object.low()), this.high().mult(object.high()));
     }
 
     @Override
     public default Q<A> plus(final Q<A> object) {
-        return new TQ<>(this.object().plus(object.object()));
+        return new TQ<>(this.low().plus(object.low()), this.high().plus(object.high()));
     }
 
     @Override

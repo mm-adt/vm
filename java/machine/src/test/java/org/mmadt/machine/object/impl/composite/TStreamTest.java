@@ -58,8 +58,8 @@ class TStreamTest {
         assertFalse(type.isInstance());
         assertTrue(type.isType());
         instances.forEach(i -> {
-            assertTrue(i.isInstance());
-            assertFalse(i.isReference());
+            assertFalse(i.isInstance());
+            assertTrue(i.isReference());
             assertFalse(i.isType());
         });
         //

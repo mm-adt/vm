@@ -49,8 +49,8 @@ final class TQTest {
     void shouldNegate() {
         assertEquals(TInt.of(-4, -43), new TQ<>(4, 43).neg().object());
         assertEquals(TInt.of(-4, -43), new TQ<>(TInt.of(4, 43)).neg().object());
-        assertEquals(TInt.of(-4, -43), new TQ<>(TInt.of(4, 43).neg()).object());
-       // TODO: assertEquals(TReal.of().access(__.start(43.2, 411.34).neg()), new TQ<>(TReal.of(43.2, 411.34)).negate().object());
+//        assertEquals(TInt.of(-4, -43), new TQ<>(TInt.of(4, 43).neg()).object());
+        // TODO: assertEquals(TReal.of().access(__.start(43.2, 411.34).neg()), new TQ<>(TReal.of(43.2, 411.34)).negate().object());
         // TODO: non-mumeric obj testing
         //  assertEquals(TStr.of("marko","rodriguez"), new Q<>(TStr.of("marko","rodriguez")).negate().object());
 

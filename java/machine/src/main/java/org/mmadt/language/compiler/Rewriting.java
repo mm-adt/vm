@@ -105,7 +105,7 @@ public final class Rewriting {
     private static void insertInstruction(final Model model, final List<Inst> newBc, final Inst oldInst, final Obj domain, final Obj range) {
         if (range.constant() && range.q().constant()) { // TODO: ghetto, but this is the right idea.
             newBc.clear();
-            newBc.add(TInst.of(Tokens.START, (Object) range).range(range.peek())); // if the type is a constant, then use the constant! (you have derived a solution through compilation)
+            newBc.add(TInst.of(Tokens.START, (Object) range.peek()).range(range.peek())); // if the type is a constant, then use the constant! (you have derived a solution through compilation)
         } else {
             final PList<Obj> args = new PList<>();
             for (final Obj arg : oldInst.args()) {

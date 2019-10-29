@@ -50,7 +50,7 @@
    > 1          => [error]
   -> [mult,0]   => [map,0]  // 0 and 1 refer to the static member of the type
   -> [mult,1]   =>
-  -> [mult,-1]  => [map,-r]
+  -> [mult,-1]  => [map,r]  // try with -r
   -> [plus,0]   => ]
  [define,group,obj~m
    > 0          => [error]  // group has no internal structure and thus, serves as an interface -- all [error] mappings must be implemented by the extending type

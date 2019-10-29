@@ -29,9 +29,6 @@ import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.OperatorHelper;
-import org.mmadt.processor.util.MinimalProcessor;
-
-import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -120,10 +117,5 @@ public final class TReal extends TObj implements Real {
     @Override
     public Real set(final Object value) {
         return super.set(value.equals(-0.0f) ? 0.0f : value);
-    }
-
-    @Override
-    public Iterable<Real> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Real, Real>(this.access()).iterator(this);
     }
 }

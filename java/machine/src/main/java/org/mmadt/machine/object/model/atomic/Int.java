@@ -24,6 +24,9 @@ package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.mmadt.processor.util.MinimalProcessor;
+
+import java.util.List;
 
 /**
  * A Java representation of the {@code int} object in mm-ADT.
@@ -35,6 +38,11 @@ public interface Int extends WithCommutativeRing<Int>, WithOrder<Int> {
 
     public default Integer java() {
         return this.get();
+    }
+
+    @Override
+    public default Iterable<Int> iterable() {
+        return this.get() instanceof Integer ? List.of(this) : () -> new MinimalProcessor<Int, Int>(this.access()).iterator(this);
     }
 
 }

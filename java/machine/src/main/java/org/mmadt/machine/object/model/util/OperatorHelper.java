@@ -60,10 +60,9 @@ public class OperatorHelper {
     public static <A extends Obj, B extends Obj> B bifunction(final String opcode, final BiFunction<A, A, B> operator, final A objA, final A objB, final B type) {
         if (objA.isInstance() || objA.isType())
             return operator.apply(objA, objB);
-        else {
-            assert objA.isReference();
+        else
             return type.access(objA.access().mult(TInst.of(opcode, objB)));
-        }
+
     }
 
     public static <A extends Obj> A binary(final String opcode, final BinaryOperator<A> operator, final A objA, final A objB) {

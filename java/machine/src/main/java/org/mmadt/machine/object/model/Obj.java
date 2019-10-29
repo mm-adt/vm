@@ -218,15 +218,15 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && TObj.none().test(this.access());
+        return !this.constant() && (TInst.none().equals(this.access()));//|| !this.access().constant());
     }
 
     public default boolean isReference() {
-        return !this.constant() && (!TObj.none().test(this.access()) && this.access().constant());
+        return !this.constant() && !TInst.none().equals(this.access()) && this.access().constant();
     }
 
     public default boolean isInstance() {
-        return this.constant() && (TObj.none().test(this.access()) || this.access().constant());
+        return this.constant() && (TInst.none() == this.access() || this.access().constant());
     }
 
     public default <O extends Obj> O access(final Query access) {
@@ -238,7 +238,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O q(final Object low, final Object high) {
-        return this.q((WithRing) ObjectHelper.from(high).clone().set(TStream.of(ObjectHelper.from(low), high)));
+        return this.q(new TQ<>((WithRing) ObjectHelper.from(low), (WithRing) ObjectHelper.from(high)));
     }
 
     public default <O extends Obj> O q(final Object count) {

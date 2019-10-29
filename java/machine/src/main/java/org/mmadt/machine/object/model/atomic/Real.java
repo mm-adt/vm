@@ -24,6 +24,9 @@ package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.model.type.algebra.WithField;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.mmadt.processor.util.MinimalProcessor;
+
+import java.util.List;
 
 /**
  * A Java representation of the {@code real} object in mm-ADT.
@@ -35,6 +38,11 @@ public interface Real extends WithField<Real>, WithOrder<Real> {
 
     public default Float java() {
         return this.get();
+    }
+
+    @Override
+    public default Iterable<Real> iterable() {
+        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Real, Real>(this.access()).iterator(this);
     }
 
 }

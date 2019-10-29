@@ -30,7 +30,6 @@ import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.type.PRel;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.OperatorHelper;
-import org.mmadt.util.FunctionUtils;
 
 import static org.mmadt.machine.object.model.type.PRel.Rel.GT;
 
@@ -74,7 +73,7 @@ public final class TInt extends TObj implements Int {
     }
 
     public static Int of(final Object... objects) {
-        return ObjectHelper.create(TInt::new, objects);
+        return ObjectHelper.make(TInt::new, objects);
     }
 
     public static Int zeroInt() {
@@ -103,28 +102,27 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return ZERO;
+        return OperatorHelper.unary(Tokens.ZERO, x -> new TInt(0), this);
     }
 
     @Override
     public Int one() {
-        return ONE;
+        return OperatorHelper.unary(Tokens.ONE, x -> new TInt(1), this);
     }
 
     @Override
     public Int neg() {
-        //  return OperatorHelper.<Int>unary(Tokens.NEG, x -> new TInt(-x.java()), this);
-        return this.constant() ? FunctionUtils.<Int, Integer>monad(this, x -> -x) : this.q(this.q().neg()); // TODO: isolate types from instances somehow
+        return OperatorHelper.<Int>unary(Tokens.NEG, x -> new TInt(-x.java()), this);
     }
 
     @Override
     public Int plus(final Int object) {
-        return FunctionUtils.<Int, Integer>monad(this, object, Math::addExact);
+        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(x.java(), y.java()), Integer.MAX_VALUE)), this, object);
     }
 
     @Override
     public Int mult(final Int object) {
-        return FunctionUtils.<Int, Integer>monad(this, object, Math::multiplyExact);
+        return OperatorHelper.binary(Tokens.MULT, (x, y) -> new TInt(OperatorHelper.tryCatch(() -> Math.multiplyExact(x.java(), y.java()), Integer.MAX_VALUE)), this, object);
     }
 
     @Override
@@ -134,7 +132,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Bool eq(final Obj object) {
-        return TBool.of(object instanceof Int && this.java().equals(object.get()));
+        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Int && x.get().equals(y.get())), this, (Int) object, TBool.of());
     }
 
     @Override
