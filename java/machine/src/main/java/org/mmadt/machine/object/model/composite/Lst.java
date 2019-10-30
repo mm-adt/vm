@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.model.composite;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
@@ -32,6 +33,7 @@ import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.util.OperatorHelper;
 
 import java.util.List;
 
@@ -43,13 +45,32 @@ import java.util.List;
  */
 public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<Int, V> {
 
-    public Lst<V> put(final V value);
+    public default List<V> java() {
+        return this.get();
+    }
+
+    public default Lst<V> put(final V value) {
+        return OperatorHelper.unary(Tokens.PUT, () -> {
+            this.java().add(value);
+            return this;
+        }, this);
+    }
 
     @Override
-    public Lst<V> put(final Int index, final V value);
+    public default Lst<V> put(final Int key, final V value) {
+        return OperatorHelper.unary(Tokens.PUT, () -> {
+            this.java().add(key.java(), value);
+            return this;
+        }, this);
+    }
 
     @Override
-    public Lst<V> drop(final Int index);
+    public default Lst<V> drop(final Int key) {
+        return OperatorHelper.unary(Tokens.DROP, () -> {
+            this.java().remove(key.java());
+            return this;
+        }, this);
+    }
 
     @Override
     public default V get(final Int index) {

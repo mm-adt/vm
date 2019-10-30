@@ -71,47 +71,57 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return OperatorHelper.unary(Tokens.ONE, x -> new TReal(1.0f), this);
+        return OperatorHelper.unary(Tokens.ONE, () -> new TReal(1.0f), this);
     }
 
     @Override
     public Real zero() {
-        return OperatorHelper.unary(Tokens.ZERO, x -> new TReal(0.0f), this);
+        return OperatorHelper.unary(Tokens.ZERO, () -> new TReal(0.0f), this);
     }
 
     @Override
     public Real neg() {
-        return OperatorHelper.<Real>unary(Tokens.NEG, x -> new TReal(-x.java()), this);
+        return OperatorHelper.unary(Tokens.NEG, () -> new TReal(-this.java()), this);
     }
 
     @Override
-    public Real plus(final Real object) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> new TReal(x.java() + y.java()), this, object);
+    public Real minus(final Real real) {
+        return OperatorHelper.binary(Tokens.MINUS, () -> new TReal(this.java() - real.java()), this, real);
     }
 
     @Override
-    public Real mult(final Real object) {
-        return OperatorHelper.binary(Tokens.MULT, (x, y) -> new TReal(x.java() * y.java()), this, object);
+    public Real plus(final Real real) {
+        return OperatorHelper.binary(Tokens.PLUS, () -> new TReal(this.java() + real.java()), this, real);
     }
 
     @Override
-    public Bool gt(final Real object) {
-        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java() > y.java()), this, object, TBool.of());
+    public Real mult(final Real real) {
+        return OperatorHelper.binary(Tokens.MULT, () -> new TReal(this.java() * real.java()), this, real);
     }
 
     @Override
-    public Bool eq(final Obj object) {
-        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Real && x.java().equals(y.java())), this, (Real) object, TBool.of());
+    public Real div(final Real real) {
+        return OperatorHelper.binary(Tokens.DIV, () -> new TReal(this.java() / real.java()), this, real);
     }
 
     @Override
-    public Bool lt(final Real object) {
-        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java() < y.java()), this, object, TBool.of());
+    public Bool gt(final Real real) {
+        return OperatorHelper.binary(Tokens.GT, () -> TBool.of(this.java() > real.java()), this, real);
+    }
+
+    @Override
+    public Bool eq(final Obj obj) {
+        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Real && this.java().equals(((Real) obj).java())), this, obj);
+    }
+
+    @Override
+    public Bool lt(final Real real) {
+        return OperatorHelper.binary(Tokens.LT, () -> TBool.of(this.java() < real.java()), this, real);
     }
 
     @Override
     public Real inv() {
-        return OperatorHelper.<Real>unary(Tokens.INV, x -> new TReal(1.0f / x.java()), this);
+        return OperatorHelper.unary(Tokens.INV, () -> new TReal(1.0f / this.java()), this);
     }
 
     @Override

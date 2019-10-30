@@ -68,12 +68,16 @@ public final class Query {
         return this.compose(TInst.of(Tokens.COUNT));
     }
 
-    public Query drop(final Object key) {
-        return this.compose(TInst.of(Tokens.DROP, arg(key)));
-    }
-
     public Query dedup(final Object... objects) {
         return this.compose(TInst.of(Tokens.DEDUP, args(objects)));
+    }
+
+    public Query div(final Object obj) {
+        return this.compose(TInst.of(Tokens.DIV, arg(obj)));
+    }
+
+    public Query drop(final Object key) {
+        return this.compose(TInst.of(Tokens.DROP, arg(key)));
     }
 
     public Query eq(final Object obj) {

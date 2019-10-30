@@ -19,20 +19,32 @@
  * You can be released from the requirements of the license by purchasing
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
-package org.mmadt.machine.object.model.type.algebra;
 
-import org.mmadt.machine.object.model.Obj;
+package org.mmadt.processor.function.map;
+
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.type.algebra.WithDiv;
+import org.mmadt.processor.compiler.Argument;
+import org.mmadt.processor.function.AbstractFunction;
+import org.mmadt.processor.function.MapFunction;
 
 /**
- * An {@link org.mmadt.machine.object.model.Obj} with a + unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithZero<A extends WithZero<A>> extends Obj {
+public final class DivMap<S extends WithDiv<S>> extends AbstractFunction implements MapFunction<S, S> {
 
-    public A zero();
+    private DivMap(final Q quantifier, final String label, final Argument<S, S> argument) {
+        super(quantifier, label, argument);
+    }
 
-    public default boolean isZero() {
-        return this.eq(this.zero()).java();
+    @Override
+    public S apply(final S obj) {
+        return obj.div(this.<S, S>argument(0).mapArg(obj));
+    }
+
+    public static <S extends WithDiv<S>> DivMap<S> compile(final Inst inst) {
+        return new DivMap<>(inst.q(), inst.label(), Argument.<S, S>create(inst.get(TInt.oneInt())));
     }
 }

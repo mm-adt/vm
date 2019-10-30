@@ -22,19 +22,21 @@
 
 package org.mmadt.machine.object.model.composite;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A Java representation of the {@code rec} object in mm-ADT.
@@ -42,13 +44,27 @@ import java.util.List;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K,V>>, WithProduct<K, V> {
+public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, V>>, WithProduct<K, V> {
+
+    public default Map<K, V> java() {
+        return this.get();
+    }
 
     @Override
-    public Rec<K, V> put(final K key, final V value);
+    public default Rec<K, V> put(final K key, final V value) {
+        return OperatorHelper.unary(Tokens.PUT, () -> {
+            this.java().put(key, value);
+            return this;
+        }, this);
+    }
 
     @Override
-    public Rec<K, V> drop(final K key);
+    public default Rec<K, V> drop(final K key) {
+        return OperatorHelper.unary(Tokens.DROP, () -> {
+            this.java().remove(key);
+            return this;
+        }, this);
+    }
 
     @Override
     public default V get(final K key) {
@@ -81,7 +97,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K,V
     }
 
     @Override
-    public default Iterable<Rec<K,V>> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Rec<K,V>, Rec<K,V>>(this.access()).iterator(this);
+    public default Iterable<Rec<K, V>> iterable() {
+        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Rec<K, V>, Rec<K, V>>(this.access()).iterator(this);
     }
 }

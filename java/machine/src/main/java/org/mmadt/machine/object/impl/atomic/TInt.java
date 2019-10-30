@@ -102,42 +102,47 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return OperatorHelper.unary(Tokens.ZERO, x -> new TInt(0), this);
+        return OperatorHelper.unary(Tokens.ZERO, () -> ZERO, this);
     }
 
     @Override
     public Int one() {
-        return OperatorHelper.unary(Tokens.ONE, x -> new TInt(1), this);
+        return OperatorHelper.unary(Tokens.ONE, () -> ONE, this);
     }
 
     @Override
     public Int neg() {
-        return OperatorHelper.<Int>unary(Tokens.NEG, x -> new TInt(-x.java()), this);
+        return OperatorHelper.unary(Tokens.NEG, () -> new TInt(-this.java()), this);
     }
 
     @Override
-    public Int plus(final Int object) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(x.java(), y.java()), Integer.MAX_VALUE)), this, object);
+    public Int minus(final Int integer) {
+        return OperatorHelper.binary(Tokens.MINUS, () -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)), this, integer);
     }
 
     @Override
-    public Int mult(final Int object) {
-        return OperatorHelper.binary(Tokens.MULT, (x, y) -> new TInt(OperatorHelper.tryCatch(() -> Math.multiplyExact(x.java(), y.java()), Integer.MAX_VALUE)), this, object);
+    public Int plus(final Int integer) {
+        return OperatorHelper.binary(Tokens.PLUS, () -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
     }
 
     @Override
-    public Bool gt(final Int object) {
-        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java() > y.java()), this, object, TBool.of());
+    public Int mult(final Int integer) {
+        return OperatorHelper.binary(Tokens.MULT, () -> new TInt(OperatorHelper.tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
     }
 
     @Override
-    public Bool eq(final Obj object) {
-        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Int && x.get().equals(y.get())), this, (Int) object, TBool.of());
+    public Bool gt(final Int integer) {
+        return OperatorHelper.binary(Tokens.GT, () -> TBool.of(this.java() > integer.java()), this, integer);
     }
 
     @Override
-    public Bool lt(final Int object) {
-        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java() < y.java()), this, object, TBool.of());
+    public Bool eq(final Obj obj) {
+        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Int && this.java().equals(((Int) obj).java())), this, obj);
+    }
+
+    @Override
+    public Bool lt(final Int integer) {
+        return OperatorHelper.binary(Tokens.LT, () -> TBool.of(this.java() < integer.java()), this, integer);
     }
 
     ///// HELPER METHODS

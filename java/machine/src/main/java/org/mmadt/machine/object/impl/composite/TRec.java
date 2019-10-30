@@ -25,19 +25,12 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
-import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Real;
-import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
-import org.mmadt.processor.util.MinimalProcessor;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -65,7 +58,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     }
 
     public static Rec<?, ?> empty() {
-        return new TRec<>(TStream.of());
+        return new TRec<>(TStream.of()); // TODO: to get rid of Stream you must first change get()
     }
 
     public static <K extends Obj, V extends Obj> Rec<K, V> of(final PMap<K, V> map) {
@@ -77,11 +70,9 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
             return ObjectHelper.make(TRec::new, objects);
         } else {
             final PMap<K, V> map = new PMap<>();
-            boolean constant = true;
             for (int i = 0; i < objects.length; i = i + 2) {
                 final K key = (K) ObjectHelper.from(objects[i]);
                 final V value = (V) ObjectHelper.from(objects[i + 1]);
-                constant = constant && key.constant() && value.constant();
                 map.put(key, value);
             }
             return new TRec<>(map);
@@ -89,47 +80,31 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     }
 
     @Override
-    public Rec<K, V> put(final K key, final V value) {
-        return OperatorHelper.binary(Tokens.PUT, (x, y) -> {
-            x.<PMap<K, V>>get().put(key,value);
-            return x;
-        }, this, TRec.of(key, value));
-    }
-
-    @Override
-    public Rec<K, V> drop(final K key) {
-        return OperatorHelper.binary(Tokens.DROP, (x, y) -> {
-            x.<PMap<K,V>>get().remove(key);
-            return x;
-        }, this, null);
-    }
-
-    @Override
     public Rec<K, V> zero() {
-        return OperatorHelper.unary(Tokens.ZERO, x -> (TRec<K, V>) TRec.of(), this);
+        return OperatorHelper.unary(Tokens.ZERO, TRec::of, this);
     }
 
     @Override
     public Rec<K, V> plus(final Rec<K, V> object) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> {
-            final PMap<K, V> map = new PMap<>(x.peek().<PMap<K, V>>get());
-            map.putAll(y.peek().<PMap<K, V>>get());
+        return OperatorHelper.binary(Tokens.PLUS, () -> {
+            final PMap<K, V> map = new PMap<>(this.java());
+            map.putAll(object.java());
             return new TRec<>(map);
         }, this, object);
-    }
-
-    @Override
-    public Rec<K,V> neg() {
-        return OperatorHelper.<Rec<K,V>>unary(Tokens.NEG, x -> TRec.of(x.<PMap<K,V>>get()), this);
     }
 
     @Override
     public Rec<K, V> minus(final Rec<K, V> object) {
-        return OperatorHelper.binary(Tokens.MINUS, (x, y) -> {
-            final PMap<K, V> map = new PMap<>(x.<PMap<K, V>>get());
-            y.<PMap<K, V>>get().forEach(map::remove);
+        return OperatorHelper.binary(Tokens.MINUS, () -> {
+            final PMap<K, V> map = new PMap<>(this.java());
+            object.java().forEach(map::remove);
             return new TRec<>(map);
         }, this, object);
+    }
+
+    @Override
+    public Rec<K, V> neg() {
+        return OperatorHelper.<Rec<K, V>>unary(Tokens.NEG, () -> TRec.of(this.java()), this); // TODO: What is a -rec?
     }
 
     @Override

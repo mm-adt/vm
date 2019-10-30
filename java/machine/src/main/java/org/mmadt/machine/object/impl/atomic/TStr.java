@@ -63,38 +63,28 @@ public final class TStr extends TObj implements Str {
     }
 
     @Override
-    public String toString() {
-        return StringFactory.string(this);
+    public Bool gt(final Str str) {
+        return OperatorHelper.binary(Tokens.GT, () -> TBool.of(this.java().compareTo(str.java()) > 0), this, str);
     }
 
     @Override
-    public Bool gt(final Str object) {
-        return OperatorHelper.bifunction(Tokens.GT, (x, y) -> TBool.of(x.java().compareTo(y.java()) > 0), this, object, TBool.of());
+    public Bool eq(final Obj obj) {
+        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Str && this.java().equals(((Str) obj).java())), this, obj);
     }
 
     @Override
-    public Bool eq(final Obj object) {
-        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> TBool.of(object instanceof Str && x.get().equals(y.get())), this, object, TBool.of());
+    public Bool lt(final Str str) {
+        return OperatorHelper.binary(Tokens.LT, () -> TBool.of(this.java().compareTo(str.java()) < 0), this, str);
     }
 
     @Override
-    public Bool lt(final Str object) {
-        return OperatorHelper.bifunction(Tokens.LT, (x, y) -> TBool.of(x.java().compareTo(y.java()) < 0), this, object, TBool.of());
-    }
-
-    @Override
-    public Bool regex(final Str pattern) {
-        return TBool.of(this.java().matches(pattern.java()));
-    } // TODO: [regex,...]
-
-    @Override
-    public Str plus(final Str object) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> new TStr(x.java().concat(y.java())), this, object);
+    public Str plus(final Str str) {
+        return OperatorHelper.binary(Tokens.PLUS, () -> new TStr(this.java().concat(str.java())), this, str);
     }
 
     @Override
     public Str zero() {
-        return OperatorHelper.unary(Tokens.ZERO, x -> new TStr(Tokens.EMPTY), this);
+        return OperatorHelper.unary(Tokens.ZERO, () -> new TStr(Tokens.EMPTY), this);
     }
 
     @Override
@@ -106,4 +96,15 @@ public final class TStr extends TObj implements Str {
     public Str min() {
         return new TStr(Tokens.EMPTY);
     }
+
+    @Override
+    public Bool regex(final Str pattern) {
+        return TBool.of(this.java().matches(pattern.java()));
+    } // TODO: [regex,...]
+
+    @Override
+    public String toString() {
+        return StringFactory.string(this);
+    }
+
 }

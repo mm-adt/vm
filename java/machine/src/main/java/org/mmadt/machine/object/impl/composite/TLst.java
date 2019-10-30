@@ -25,11 +25,8 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
@@ -74,31 +71,32 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
         }
     }
 
-
     @Override
-    public Lst<V> put(final V value) {
-        return OperatorHelper.binary(Tokens.PUT, (x, y) -> {
-            x.<PList<V>>get().add(value);
-            return x;
-        }, this, null); // TODO: should be based on PLUS
+    public Lst<V> zero() {
+        return OperatorHelper.unary(Tokens.ZERO, TLst::of, this);
     }
 
     @Override
-    public Lst<V> put(final Int key, final V value) {
-        return OperatorHelper.binary(Tokens.PUT, (x, y) -> {
-            final PList<V> list = new PList<>(x.<PList<V>>get());
-            list.add(key.java(), value);
+    public Lst<V> plus(final Lst<V> object) {
+        return OperatorHelper.binary(Tokens.PLUS, () -> {
+            final PList<V> list = new PList<>(this.java());
+            list.addAll(object.java());
             return new TLst<>(list);
-        }, this, null); // TODO: should be based on PLUS
+        }, this, object);
     }
 
     @Override
-    public Lst<V> drop(final Int key) {
-        return OperatorHelper.binary(Tokens.DROP, (x, y) -> {
-            final PList<V> list = new PList<>(x.<PList<V>>get());
-            list.remove((int) key.java());
+    public Lst<V> minus(final Lst<V> object) {
+        return OperatorHelper.binary(Tokens.MINUS, () -> {
+            final PList<V> list = new PList<>(this.java());
+            list.removeAll(object.java());
             return new TLst<>(list);
-        }, this, null); // TODO: should be based on MINUS
+        }, this, object);
+    }
+
+    @Override
+    public Lst<V> neg() {
+        return OperatorHelper.<Lst<V>>unary(Tokens.NEG, () -> TLst.of(this.java()), this); // TODO: What is a -list?
     }
 
     @Override
@@ -106,32 +104,5 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
         return StringFactory.list(this);
     }
 
-    @Override
-    public Lst<V> plus(final Lst<V> object) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> {
-            final PList<V> list = new PList<>(this.<PList<V>>get());
-            list.addAll(object.<PList<V>>get());
-            return new TLst<>(list);
-        }, this, object);
-    }
-
-    @Override
-    public Lst<V> minus(final Lst<V> object) {
-        return OperatorHelper.binary(Tokens.MINUS, (x, y) -> {
-            final PList<V> list = new PList<>(this.<PList<V>>get());
-            list.removeAll(object.<PList<V>>get());
-            return new TLst<>(list);
-        }, this, object);
-    }
-
-    @Override
-    public Lst<V> neg() {
-        return OperatorHelper.<Lst<V>>unary(Tokens.NEG, x -> TLst.of(x.<PList<V>>get()), this);
-    }
-
-    @Override
-    public Lst<V> zero() {
-        return OperatorHelper.unary(Tokens.ZERO, x -> (TLst<V>) TLst.of(), this);
-    }
 
 }

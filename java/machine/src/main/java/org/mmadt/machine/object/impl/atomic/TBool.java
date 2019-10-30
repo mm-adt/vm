@@ -28,9 +28,6 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.OperatorHelper;
-import org.mmadt.processor.util.MinimalProcessor;
-
-import java.util.List;
 
 
 /**
@@ -75,35 +72,40 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return OperatorHelper.unary(Tokens.ONE, x -> new TBool(true), this);
+        return OperatorHelper.unary(Tokens.ONE, () -> TRUE, this);
     }
 
     @Override
     public Bool zero() {
-        return OperatorHelper.unary(Tokens.ZERO, x -> new TBool(false), this);
+        return OperatorHelper.unary(Tokens.ZERO, () -> FALSE, this);
     }
 
     @Override
     public Bool neg() {
-        return OperatorHelper.unary(Tokens.NEG, x -> new TBool(x.java()), this);
+        return OperatorHelper.unary(Tokens.NEG, () -> this, this);
     }
 
     @Override
     public Bool mult(final Bool bool) {
-        return OperatorHelper.binary(Tokens.MULT, (x, y) -> new TBool(x.java() && y.java()), this, bool);
+        return OperatorHelper.binary(Tokens.MULT, () -> new TBool(this.java() && bool.java()), this, bool);
+    }
+
+    @Override
+    public Bool minus(final Bool bool) {
+        return OperatorHelper.binary(Tokens.MINUS, () -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
     }
 
     @Override
     public Bool plus(final Bool bool) {
-        return OperatorHelper.binary(Tokens.PLUS, (x, y) -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
+        return OperatorHelper.binary(Tokens.PLUS, () -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return OperatorHelper.bifunction(Tokens.EQ, (x, y) -> new TBool(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj, TBool.of());
+        return OperatorHelper.binary(Tokens.EQ, () -> new TBool(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj);
     }
 
-    private static final boolean exclusiveOr(final boolean a, final boolean b) {
+    private static boolean exclusiveOr(final boolean a, final boolean b) {
         return (a && !b) || (!a && b);
     }
 }

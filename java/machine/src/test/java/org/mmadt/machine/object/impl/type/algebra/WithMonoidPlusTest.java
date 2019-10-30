@@ -58,9 +58,9 @@ class WithMonoidPlusTest {
             //////////////// REFERENCES
             TLst.of(TLst.of(1, "a", "x"), TLst.of(1, "c", 32), TLst.of(false, "abc", true)),
             TRec.of(TRec.of("a", 1, "b", 2), TRec.of("a", 2, "c", 3), TRec.of("e", 4)),
-            TInst.of(List.of(TInst.of(Tokens.START,TInt.of(1)),TInst.of(Tokens.NEG),TInst.of(Tokens.PLUS,TInt.of(32)))),
+            TInst.of(List.of(TInst.of(Tokens.START, TInt.of(1)), TInst.of(Tokens.NEG), TInst.of(Tokens.PLUS, TInt.of(32)))),
             TStr.of("a", "b", "c"),
-            //TInt.of(1,2,3,4,5,6),
+            TInt.of(1, 2, 3, 4, 5, 6),
             TReal.of(1.0f, 2.0f, 3.0f),
             TBool.of(true, true, false));
 
@@ -94,12 +94,11 @@ class WithMonoidPlusTest {
     static void testReferences(final WithMonoidPlus monoid) {
         WithMonoidPlus running = monoid;
         WithMonoidPlus second = monoid;
+        // assertFalse(monoid.isZero()); // TODO: Why?
         for (int i = 0; i < 10; i++) {
-            //assertFalse(running.isZero());
             assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO))), second.zero());
             assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, monoid))), second = second.plus(monoid));
         }
-
     }
 
     @TestFactory

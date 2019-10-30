@@ -33,6 +33,7 @@ import org.mmadt.processor.function.flatmap.UnfoldFlatMap;
 import org.mmadt.processor.function.initial.StartInitial;
 import org.mmadt.processor.function.map.AMap;
 import org.mmadt.processor.function.map.AndMap;
+import org.mmadt.processor.function.map.DivMap;
 import org.mmadt.processor.function.map.DropMap;
 import org.mmadt.processor.function.map.EqMap;
 import org.mmadt.processor.function.map.EvalMap;
@@ -64,6 +65,7 @@ import static org.mmadt.language.compiler.Tokens.AND;
 import static org.mmadt.language.compiler.Tokens.BRANCH;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DB;
+import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
 import static org.mmadt.language.compiler.Tokens.EVAL;
@@ -118,6 +120,8 @@ public final class FunctionTable {
                 return CountReduce.compile(inst);
             case DB:
                 return FunctionTable.function(model, model.get(DB).access().iterable().iterator().next()); // TODO...
+            case DIV:
+                return DivMap.compile(inst);
             case DROP:
                 return DropMap.compile(inst);
             case EQ:

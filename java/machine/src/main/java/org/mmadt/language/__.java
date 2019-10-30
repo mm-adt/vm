@@ -44,6 +44,10 @@ public class __ {
         return create().count();
     }
 
+    public static Query div(final Object object) {
+        return create().div(object);
+    }
+
     public static Query drop(final Object key) {
         return create().drop(key);
     }
