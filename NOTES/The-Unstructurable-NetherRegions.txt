@@ -1,0 +1,96 @@
+The Unstructurable Boundary Between the Description of a Process
+                          and
+Its Realized Structure Within the Reasonable Environment of mm-ADT
+
+		    Marko A. Rodriguez
+	   Emeritus TZar of North Flambshireton
+		    [October 29, 2019]
+
+----------------------------------------------------------------------
+
+The most important structure in mm-ADT is:
+
+    obj <= inst
+
+inst is the means of creating a data structure that is monomorphically embedded in obj ('instance of').
+
+inst a map() whose domain is "the netheregions from where there be dragons" (the pointerless process)
+        === TO ===>
+a shape of bits and bytes (the referential structure).
+
+The inst => obj mapping yields the obj predicate{?} ("The type"...bad word.
+                                                      ....The filter......The constraint...
+						      ....The withering...The aging...
+						      ....The fading to death...).
+
+obj <= inst can be type-annotated as
+
+	obj{0} => [inst] => x{1}    /* map()-inst to obj     */
+	       => [x{1}] => x{?}    /* obj to filter()-inst  */
+
+          ^-- from nothing
+	         something --^
+
+{0} == {0,0}  // none
+{1} == {1,1}  // some
+{?} == {0,1}  // maybe
+
+Follow my argument.
+
+	           obj <= inst_map
+
+	       /* apply the LHS equality */
+
+	   inst_filter <= inst_map
+
+	      /* apply the quantification algebra */
+
+	inst_filter{?} <= inst_map{1}
+
+What does that last line say in the language of saints?
+
+		"Manifest an obj from the process described by inst_map{1}.
+		 And then pass the resultant structure through the inst_filter{?} denoted obj."
+
+Thus,
+
+```
+inst_map * inst_filter       /* mult '*' is serial instruction composition.                                                 */
+[inst_map][inst_filter]      /* "closed under composition" -- a new algebra emerges here that simulates f . g = fg          */
+                             /* fg comes from an injective '.' that enters the world of factors & primes w/in groups of '*' */
+
+
+You can 'type' the flow at its junction points:
+
+                 obj{0} => [inst_map][inst_filter] => obj{?}
+
+  /* mm-ADT uses "stream signature notation" Domain => Function => Range.                  */
+  /* Equivalent to the Function: Domain -> Range 'block form'-syntax of yesteryears.       */
+  /* mmlang (the assembly language of mm-ADT) uses what the eye might call a 'flow form.'  */
+```
+
+Look at this symbol one more time:
+
+```
+		obj{0} => [inst_map][inst_filter] => obj{?}
+```
+
+It describes flittering patterns that attain a structural embedding to only then diffuse themselves
+back into the unreferenceable process -- maybe ({?} -- branch).
+
+obj{0} => obj{?}
+None   => Maybe   /* Is the Name of the Game */
+                  /* Thats the =UnStructurable=> Potential That Impinges Transitory Forms In the Structure */
+                  /* Fluctuations Abound */
+
+Block     vs. Flow
+Form      vs. Function
+Structure vs. Process
+Data      vs. Algorithms
+Was       vs. Shall Be
+Death     vs. Life
+----------------------------------
+Yo Mama   vs. So Fhat...Like Neno.
+
+Good night,
+Marko.

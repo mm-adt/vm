@@ -1,0 +1,87 @@
+A{x,y}     <= [...]
+ -> [...]  => [B <= [...]
+  -> [...] => []
+  -> [...] => [...]]
+ -> [...]  => C <= [...]
+ -> [...]  => D <= [...]
+
+
+[...] => type
+type <= [...]
+type => [...]
+
+((=> type) | (type <=))?
+
+
+@person[...]
+@person@loner
+
+[define,persons,[name:@str,age:@int]*                    <= [db][get,people]
+  -> [is,[get,name][eq,@str~x]][is,[get,age][gt,@int~y]] => [ref,@person[name:@str~x,age:@int&gt(@int~y)]? <= [...]]
+  -> [dedup,[get,name]]                                  => 
+  -> [get,firstname]                                     => [get,name][substr,0,[indexOf,' ']]
+  -> [get,name]
+    -> [is,eq,@str~x]                                    => [ref,@person[name:@str~x]? <= [db][get,people][is,[get,name][eq,@str~x]][get,name]]
+    -> [dedup]                                           => [get,name]]]
+
+1. [is][is] on the left hand side -- multi-instructions for bytecode lookahead and cleaner mm-ADT-bc syntax.
+2. [is][is] can be resorted dynamically for match because filter instructions form a commutative ring (* is an abelian group).
+3. [...] is a shorthand to "the instructions back to type root", thus [db][get,people][is][is].
+4. [get,name] with no => means that its a branching forward match (like [is][is] but not concatenative). Equivalent to:
+  -> [get,name][is,[eq,@str~x]] =>
+  -> [get,name][dedup]          =>
+5. What is @str? (list of chars, atomic entity, ?)
+
+
+
+@bool is a semiring
+-------------------
+true + false = true (or)
+true * false = false (and)
+true * (false + true) = (true * false) + (true * true) = false + true = true
+true * 0 = false (false is 0)
+true + 0 = true  (false is 0)
+
+@int is a ring
+--------------
+@real is a field
+----------------
+
+@str is a ring
+--------------
+'okram' + '123'   = 'okram123'
+'okram' + ''      = 'okram' ('' is 0 identity)
+'okram' * ''      = '' (??) 
+'okram' - 'am'    = 'okr' (- is remove characters)
+'okram' - 'okram' = '' (0)
+
+@rec is a group
+---------------
+
+[name:marko]*[age:29]      = [name:marko,age:29]
+[name:marko]*-[name:marko] = 0
+[name:marko]*-[name:bob]   = [-name:marko-bob]
+[name:marko]*-[age:29]     = [name:marko,-age:29]
+
+
+
+@inst is a ring
+---------------
+
+///////////////////////////
+
+A <= [...]
+  -> [...] => B <= [...]
+  -> [...] => C <= [...]
+
+B <= [...]
+  -> [...] => A <= [...]
+
+C -> [...] => B <= [...]
+
+//////////////////////////
+
+-> f => g
+-> 
+
+

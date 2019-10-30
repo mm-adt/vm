@@ -1,0 +1,111 @@
+////////////////////////////////////////////////////////
+// a property graph model-ADT
+// [<=pg] is an instruction that yields the root of the data structure (the stream of all vertices)
+// [<=str] are the only instructions that can be defined.
+// [<=str] instructions serve as pointers to data and processor sources
+// [<=pg] says "execute all subsequent instructions from the pg model" and stream the output into the current model
+////////////////////////////////////////////////////////
+
+[define,[<=pg],
+ [define,element,['id':obj,'label':str]]
+ [define,vertex,['outE':edge['outV':~]{*},'inV':edge['inV':~]{*}]]  // ~ is 'this'
+ [define,edge,['outV':vertex,'inV':vertex]]
+ [define,pg,vertex{*}
+  -> [dedup]                    => ]]
+
+
+////////////////////////////////////////////////////////
+// a property graph model-ADT embedded in the relational model-ADT.
+// [<=rdb][<=pg] are two instructions stating that the rdb is the ultimate source of the data for the pg model
+//   -- if multiple sources exist, + can be used.
+//   -- e.g. ([<=rdb]+[<=rdf])*[<=pg] which is compiled to [branch,[<=rdb],[<=rdf]][<=pg]
+// because [<=pg] was already defined (above), the definitions are simply &'d with the pure [<=pg] definitions
+//   -- this is how the "unembedded" pg model's definitions are merged with the definitions below (i.e. inheritance)
+////////////////////////////////////////////////////////
+
+[define,[<=rdb][<=pg],
+ [define,pg,vertex{*}           <= [<=rdb][get,'vtab']
+  -> [order,[gt,[get,'id']]]    => 
+  -> [is,[get,'id'][eq,int~x]]  => vertex[id:x]?]
+ [define,vertex,element['id'   :int~x,
+                        'inE'  :edge['inV':~]{*}         <= [<=rdb][get,'etab'][is,[get,'inV'][eq,x]],
+                        'outE' :edge['outV':~]{*}        <= [<=rdb][get,'etab'][is,[get,'outV'][eq,x]]] <= [<=rdb][get,'vtab'][is,[get,'rowId'][eq,x]]]
+ [define,edge,  element['id'   :int~x,
+                        'label':[get,'__tag'],
+                        'outV' :vertex['id':[get,'id']],
+                        'inV'  :vertex['id':[get,'id']]  <= [<=rdb][get,'etab'][is,[get,'rowId'][eq,x]]]]]
+
+
+
+////////////////////////////////////////////////////////
+// here is how the above model is specified by a query
+// the model is used to rewrite the bytecode so that it pulls its data from rdb 
+// g.V(1).out('knows').count()
+////////////////////////////////////////////////////////
+
+[<=rdb][<=pg]
+ [dedup]
+ [is,[get,'id'][eq,1]]
+ [get,'outE']
+  [is,[get,'label'][eq,'knows']]
+ [get,'inV']
+ [count]
+
+
+
+////////////////////////////////////////////////////////
+// The above query is re-written to the query below.
+// note that a RHS vertex is only derereferenced when there is no longer a path within pg to access the respective data
+// this is why [dedup][is,[get,'id'][eq,1]][get,outE] are all rewritten away.
+// note that the final [get,inV] doesn't lead to a rewrite because [count] doesn't access anything more that quantification
+////////////////////////////////////////////////////////
+
+[<=rdb]
+ [get,'etab'][is,[get,'outV'][eq,1]]
+  [is,[get,'__tag'][eq,'knows']]
+ [get,inV]
+ [count]
+
+
+////////////////////////////////////////////////////////
+// you can now imagine a schema atop a property graph 
+////////////////////////////////////////////////////////
+
+[define,[<=pg][<=social],
+ [define,social,person{*}   <= [<=pg]
+  -> [is,[get,'id'][eq,int~x]] <= person['id':x]]
+ [define,person,vertex['label' :'person',
+                       'name'  :str,
+                       'age'   :int] <= [<=pg][is,[get,'label'][eq,'person']][is,[get,'id'][eq,x]]]]
+
+
+[<=rdb][<=pg][<=social]              // social embedded in pg embedded in rdb embedded in mm-ADT
+  [is,[get,'id'][eq,1]]
+ [get,'name']
+
+=>
+
+[<=rdb][<=pg]
+  [is,[get,'label'][eq,'person']]    // pg embedded in rdb embedded in mm-ADT
+  [is,[get,'id'][eq,1]]]
+ [get,'name']
+
+=>
+
+[<=rdb]                              // rdb embedded in mm-ADT
+  [is,[get,'id'][eq,1]]
+ [get,'name']
+
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+Again, [<=str] can be defined to serve as a stream source. 
+I haven't figured out how "connections" are specified, 
+but I think that is outside mm-ADT in configuration files.
+
+Example [<=str] sources
+  - file system   [<=file][get,'/usr/local/passwords.txt']
+  - the web       [<=url][get,'http://blah.com']
+  - databases     [<=rdb][get,'my_table']
+ 
+  - ... anything that has an mm-ADT interface and thus, can produce mm-ADT objects (binary or Java).
