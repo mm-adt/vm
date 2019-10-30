@@ -102,10 +102,6 @@ public final class ObjectHelper {
         return PAnd.and(object1.get() instanceof PAnd ? object1.get() : object1.strip(), object2.strip());
     }
 
-    public static Inst access(final Obj object) {
-        return null == object.access() ? TInst.none() : object.access();
-    }
-
     public static String mergeLabels(final Obj object1, final Obj object2) {
         if (null != object1.label() && null != object2.label() && !object1.label().equals(object2.label()))
             throw new RuntimeException("The two objects have different variables: " + object1 + ":::" + object2);

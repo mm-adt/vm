@@ -91,7 +91,7 @@ public final class StringFactory {
             builder.append(object.q());
         if (null != object.label())
             builder.append(TILDE).append(object.label());
-        if (!ObjectHelper.access(object).q().equals(object.q().zero()))
+        if (!object.access().isZero())
             builder.append(SPACE).append(MAPSFROM).append(SPACE).append(object.access());
         if (null != object.members()) {
             builder.append(NEWLINE);

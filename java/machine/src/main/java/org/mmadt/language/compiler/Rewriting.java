@@ -30,7 +30,6 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.BytecodeHelper;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -65,17 +64,17 @@ public final class Rewriting {
                 range = ref ? BytecodeHelper.reference(oldInst2) : Instructions.getRange(oldInst2, domain, model);
                 if (ref) { // the current instruction is a reference and thus, traversing the referencing graph
                     inReferenceGraph = true;
-                    if (BytecodeHelper.isSubset(TInst.of(newBc), ObjectHelper.access(range))) { // if the bytecode is a subset of the current reference, remove it (the reference handles the processing)
+                    if (BytecodeHelper.isSubset(TInst.of(newBc), range.access())) { // if the bytecode is a subset of the current reference, remove it (the reference handles the processing)
                         newBc.clear();
                     }
                     int counter = 0;
                     while (!refBc.isEmpty() && // removes previous references that are a sub-references of the current reference
-                            ++counter < ObjectHelper.access(range).q().high().<Integer>get() &&
+                            ++counter < range.access().q().high().<Integer>get() &&
                             BytecodeHelper.isSubset(refBc.peekLast().opcode().get().equals(Tokens.REF) ?
-                                    BytecodeHelper.reference(refBc.peekLast()).access() : refBc.peekLast(), ObjectHelper.access(range))) {
+                                    BytecodeHelper.reference(refBc.peekLast()).access() : refBc.peekLast(), range.access())) {
                         domain = refBc.removeLast().domain();
                     }
-                    Rewriting.insertInstruction(model, refBc, ObjectHelper.access(range).q().equals(domain.q().zero()) ? oldInst : oldInst2, domain, range);
+                    Rewriting.insertInstruction(model, refBc, range.access().q().equals(domain.q().zero()) ? oldInst : oldInst2, domain, range);
                     domain = range;
                 } else { // if its not a ref, then drain the reference graph
                     if (inReferenceGraph) {

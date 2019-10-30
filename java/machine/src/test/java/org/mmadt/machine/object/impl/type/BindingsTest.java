@@ -166,8 +166,8 @@ class BindingsTest {
         final Obj type2 = type1.bind(bindings);
         assertNotEquals(type1, type2);
         assertFalse(type2.constant());
-        assertFalse(ObjectHelper.access(type1).constant());
-        assertTrue(ObjectHelper.access(type2).constant());
+        assertFalse(type1.access().constant());
+        assertTrue(type2.access().constant());
         type1.match(bindings, rec1);
         assertEquals(type2, type1.bind(bindings));
         assertNotSame(type2, type1.bind(bindings));
