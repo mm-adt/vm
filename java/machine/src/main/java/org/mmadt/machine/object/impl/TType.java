@@ -42,9 +42,9 @@ public final class TType implements Type {
 
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
     private String label;                      // the ~bind string (if retrieved via a bind)
-    private Pattern pattern;                 // a predicate for testing an instance of the type
-    private Inst access;                       // access to its physical representation
-    private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (typically types)
+    private Pattern pattern;                   // a predicate for testing an instance of the type
+    private Inst access;                       // access to the manifestations of this form
+    private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (this is the "FPGA" aspect of the VM)
     private PMap<Obj, Obj> members;
 
     public static Type of(final String symbol) {
@@ -151,7 +151,7 @@ public final class TType implements Type {
     public boolean equals(final Object object) {
         return object instanceof Type &&
                 Objects.equals(this.symbol, ((Type) object).symbol()) &&
-                Objects.equals(this.access(), ((Type) object).access()) && // TODO: set to TInst.none() (but when ObjectHelper doesn't cause initialization stack overflows)
+                Objects.equals(this.access(), ((Type) object).access()) &&
                 Objects.equals(this.label, ((Type) object).label()) &&
                 Objects.equals(this.instructions, ((Type) object).instructions()) &&
                 Objects.equals(this.pattern, ((Type) object).pattern());

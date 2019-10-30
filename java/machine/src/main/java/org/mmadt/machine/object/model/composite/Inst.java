@@ -121,7 +121,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     }
 
     @Override
-    public default Iterable<? extends Inst> iterable() {
+    public default Iterable<Inst> iterable() {
         return this.get() instanceof Stream ? this.<Stream<Inst>>get() : null == this.get() ? List.of() : List.of(this);
     }
 

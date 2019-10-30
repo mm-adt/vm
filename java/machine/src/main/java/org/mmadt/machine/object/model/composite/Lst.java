@@ -26,6 +26,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
@@ -34,6 +35,7 @@ import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.OperatorHelper;
+import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.List;
 
@@ -103,7 +105,8 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     }
 
     @Override
-    public default Iterable<? extends Lst> iterable() {
-        return (Iterable<? extends Lst>) WithProduct.super.iterable();
+    public default Iterable<Lst<V>> iterable() {
+        return this.get() instanceof Stream ? this.get() : () -> new MinimalProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this); // TODO: Where is this Stream coming from?
     }
+
 }

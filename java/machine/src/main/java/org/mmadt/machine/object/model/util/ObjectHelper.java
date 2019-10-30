@@ -24,7 +24,6 @@ package org.mmadt.machine.object.model.util;
 import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
@@ -69,16 +68,6 @@ public final class ObjectHelper {
 
     private ObjectHelper() {
         // static helper class
-    }
-
-    // TODO: REMOVE WHEN ObjectHelper.make() TAKES OVER
-    public static <O extends Obj> O create(final Function<Object, O> constructor, final Object... objects) {
-        if (0 == objects.length)
-            return constructor.apply(null);
-        else if (1 == objects.length)
-            return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0] instanceof Query ? ((Query) objects[0]).bytecode() : objects[0]);
-        else
-            return constructor.apply(TStream.of(objects));
     }
 
     public static <O extends Obj> O make(final Function<Object, O> constructor, final Object... objects) {

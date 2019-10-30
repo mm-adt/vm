@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.object.model.atomic;
 
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
@@ -39,45 +38,16 @@ import java.util.List;
  */
 public interface Bool extends WithCommutativeRing<Bool> {
 
-    ////////////////////////////////
-    //// BOOL AS THE EXPERIMENT ////
-    ////////////////////////////////
-    // CLONE ALGEBRA METHODS THROUGH TYPE INTERFACES IF THIS REDUCES TYPECASTING //
-    @Override
-    public Bool one();
-
-    @Override
-    public Bool zero();
-
-    @Override
-    public Bool mult(final Bool object);
-
-    @Override
-    public Bool plus(final Bool object);
-
-    @Override
-    public default Bool minus(final Bool object) {
-        return this.plus(object.neg());
-    }
-
-    @Override
-    public Bool neg();
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
     public default Boolean java() {
         return (Boolean) this.get();
     }
 
-    public default Bool java(final Boolean bool) {
-        return this.set(bool);
-    }
-
     public default Bool and(final Bool bool) {
-        return this.constant() ? this.java(this.java() && bool.java()) : (Bool) this.and((Obj) bool); // TODO: Bool.Type class with respective overloading
+        return this.constant() ? this.set(this.java() && bool.java()) : (Bool) this.and((Obj) bool); // TODO: Bool.Type class with respective overloading
     }
 
     public default Bool or(final Bool bool) {
-        return this.constant() ? this.java(this.java() || bool.java()) : (Bool) this.or((Obj) bool); // TODO: Bool.Type class with respective overloading
+        return this.constant() ? this.set(this.java() || bool.java()) : (Bool) this.or((Obj) bool); // TODO: Bool.Type class with respective overloading
     }
 
     @Override

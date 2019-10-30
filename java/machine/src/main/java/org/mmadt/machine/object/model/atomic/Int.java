@@ -42,7 +42,7 @@ public interface Int extends WithCommutativeRing<Int>, WithOrder<Int> {
 
     @Override
     public default Iterable<Int> iterable() {
-        return this.get() instanceof Integer ? List.of(this) : () -> new MinimalProcessor<Int, Int>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Int, Int>(this.access()).iterator(this);
     }
 
 }
