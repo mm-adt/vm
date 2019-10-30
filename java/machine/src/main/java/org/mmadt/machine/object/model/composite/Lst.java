@@ -106,6 +106,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
 
     @Override
     public default Iterable<Lst<V>> iterable() {
+        // return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this);
         return this.get() instanceof Stream ? this.get() : () -> new MinimalProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this); // TODO: Where is this Stream coming from?
     }
 

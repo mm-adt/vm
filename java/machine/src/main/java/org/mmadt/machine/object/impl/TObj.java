@@ -162,6 +162,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
         final Obj previous = this.type;
         this.type = type;
+        //   if (null != type.get() && this.isInstance() ? !type.<Pattern>get().test(this) : !type.test(this)) { // TODO: Rec.empty() is still defined in terms of stream (when gutted, replace)
         if (null != type.get() && !(this.get() instanceof Stream) ? !type.<Pattern>get().test(this) : !type.test(this)) {
             this.type = previous;
             throw new RuntimeException("The specified type doesn't match the object: " + type + "::" + this);

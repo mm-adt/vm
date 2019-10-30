@@ -43,22 +43,22 @@ public final class IteratorUtils {
     private IteratorUtils() {
     }
 
-    public static Iterator asIterator(final Object o) {
-        final Iterator itty;
+    public static <S> Iterator<S> asIterator(final Object o) {
+        final Iterator<S> itty;
         if (o instanceof Iterable)
-            itty = ((Iterable) o).iterator();
+            itty = ((Iterable<S>) o).iterator();
         else if (o instanceof Iterator)
-            itty = (Iterator) o;
+            itty = (Iterator<S>) o;
         else if (o instanceof Object[])
-            itty = new ArrayIterator<>((Object[]) o);
+            itty = new ArrayIterator<>((S[]) o);
         else if (o instanceof Stream)
-            itty = ((Stream) o).iterator();
+            itty = ((Stream<S>) o).iterator();
         else if (o instanceof Map)
             itty = ((Map) o).entrySet().iterator();
         else if (o instanceof Throwable)
-            itty = of(((Throwable) o).getMessage());
+            itty = (Iterator<S>) of(((Throwable) o).getMessage());
         else
-            itty = of(o);
+            itty = (Iterator<S>) of(o);
         return itty;
     }
 

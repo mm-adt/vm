@@ -23,31 +23,32 @@
 package org.mmadt.processor.function.initial;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.InitialFunction;
+import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class StartInitial<S extends Obj> extends AbstractFunction implements InitialFunction<S> {
 
-    private StartInitial(final Q quantifier, final String label, final Argument<Obj, S> argument) {
+    private StartInitial(final Q quantifier, final String label, final Argument<Obj, S>[] argument) {
         super(quantifier, label, argument);
     }
 
     @Override
     public Iterator<S> get() {
-        return this.<Obj, S>argument(0).flatMapArg(TObj.none());
+        return IteratorUtils.<Argument<Obj, S>, S>map(IteratorUtils.asIterator(arguments()), arg -> arg.mapArg(TObj.none()));
     }
 
     public static <S extends Obj> StartInitial<S> compile(final Inst inst) {
-        return new StartInitial<>(inst.q(), inst.label(), Argument.create(TObj.all().q(inst.args().size()).set(TStream.of(inst.args()))));
+        return new StartInitial<>(inst.q(), inst.label(), Argument.args(inst.args()));
     }
 }

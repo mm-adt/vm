@@ -96,7 +96,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> neg() {
-        return OperatorHelper.<Lst<V>>unary(Tokens.NEG, () -> TLst.of(this.java()), this); // TODO: What is a -list?
+        return OperatorHelper.<Lst<V>>unary(Tokens.NEG, () -> this, this); // TODO: What is a -list?
     }
 
     @Override

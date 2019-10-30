@@ -104,7 +104,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> neg() {
-        return OperatorHelper.<Rec<K, V>>unary(Tokens.NEG, () -> TRec.of(this.java()), this); // TODO: What is a -rec?
+        return OperatorHelper.<Rec<K, V>>unary(Tokens.NEG, () -> this, this); // TODO: What is a -rec?
     }
 
     @Override
