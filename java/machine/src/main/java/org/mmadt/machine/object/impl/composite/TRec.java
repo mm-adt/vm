@@ -24,7 +24,6 @@ package org.mmadt.machine.object.impl.composite;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -57,10 +56,6 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     public static Rec<?, ?> none() {
         return NONE;
-    }
-
-    public static Rec<?, ?> empty() {
-        return new TRec<>(TStream.of()); // TODO: to get rid of Stream you must first change get()
     }
 
     public static <K extends Obj, V extends Obj> Rec<K, V> of(final PMap<K, V> map) {

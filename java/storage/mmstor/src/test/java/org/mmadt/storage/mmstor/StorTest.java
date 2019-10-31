@@ -41,6 +41,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.__.plus;
+import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
@@ -68,7 +69,7 @@ class StorTest {
         //
         final Rec<Str, Obj> person = TRec.of("name", TStr.some(), "age", TInt.some());
         final Rec<Str, Obj> people = person.q(star);
-        final Rec<Str, Obj> instances = TRec.empty().type(people);
+        final Rec<Str, Obj> instances = people.access(start()).type(people);
         storage = new Stor<>(instances);
         assertEquals(people, storage.model().get(Tokens.DB));
         assertEquals(instances, storage.root());

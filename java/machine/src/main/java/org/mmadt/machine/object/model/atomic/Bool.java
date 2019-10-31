@@ -39,7 +39,7 @@ import java.util.List;
 public interface Bool extends WithCommutativeRing<Bool> {
 
     public default Boolean java() {
-        return (Boolean) this.get();
+        return this.get();
     }
 
     public default Bool and(final Bool bool) {
@@ -52,7 +52,7 @@ public interface Bool extends WithCommutativeRing<Bool> {
 
     @Override
     public default Iterable<Bool> iterable() {
-        return this.isInstance() ? List.of(this) : IteratorUtils.list(new MinimalProcessor<Bool, Bool>(this.access()).iterator(TBool.none()));
+        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Bool, Bool>(this.access()).iterator(this);
     }
 
 }
