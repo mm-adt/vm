@@ -37,15 +37,12 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
 
     @Override
     public default boolean test(final Obj object) {
-        for (final A a : this) {
-            if (!a.test(object))
-                return false;
-        }
-        return true;
+        throw new UnsupportedOperationException("This is not supported because stream is going away");
     }
 
     @Override
     public default boolean match(final Bindings bindings, final Obj object) {
+        // throw new UnsupportedOperationException("This is not supported because stream is going away");
         bindings.start();
         for (final A a : this) {
             if (!a.match(bindings, object)) {
@@ -67,10 +64,6 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
     }
 
     public void drop(final A object);
-
-    public A peek();
-
-    public A last();
 
     ///////////////////
 

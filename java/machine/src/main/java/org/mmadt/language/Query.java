@@ -50,7 +50,7 @@ public final class Query {
     public Query and(final Object... objects) {
         if (objects.length > 1)
             return this.compose(TInst.of(Tokens.AND, args(objects)));
-        else {
+        else { // TODO: CURRENTLY FOR SYNTAX SUGAR (SHOULD REMOVE)
             this.bytecode = (Inst) this.bytecode.and(arg(objects[0]));
             return this;
         }

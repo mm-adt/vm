@@ -62,40 +62,6 @@ final class TLstTest {
         TestHelper.validateKinds(instance, reference, type);
     }
 
-
-    // @Test TODO: This is all messed up because of nested quantifiers
-    void testList() {
-        final Lst formal = TLst.of(TObj.all().set(TObj.all()));
-        final Lst type0 = TLst.of(TObj.some().q(plus).set(TObj.some()));
-        final Lst type1 = TLst.of(TObj.all().set(TStream.of(TObj.some().q(qmark), TInt.some().q(plus))));
-        final Lst type2 = TLst.of(TObj.some().set(TStream.of(TObj.some().q(qmark), TInt.some().q(plus))));
-        final Lst type3 = TLst.of(TObj.some().q(plus).set(TStream.of(TObj.some().q(qmark), TInt.some().q(plus), TInt.of(3).q(star))));
-        assertEquals("[(obj{*}){*}]", formal.toString());
-        assertEquals("[(obj){+}]", type0.toString());
-        assertEquals("[(obj{?},int{+}){*}]", type1.toString());
-        assertEquals("[obj{?},int{+}]", type2.toString());
-        assertEquals("[(obj{?},int{+},3{*}){+}]", type3.toString());
-        assertTrue(formal.test(TLst.of(1)));
-        assertTrue(type0.test(TLst.of(1, 2, 3)));
-        assertTrue(type0.test(TLst.of(1)));
-        assertFalse(type0.test(TLst.of(TInt.of(1).q(zero))));
-        assertFalse(type0.test(TLst.of(TInt.of(1).q(star))));
-        assertFalse(type1.test(TLst.of(1)));
-        // TODO: assertTrue(type1.test(TLst.of(TObj.none(),2)));
-        assertTrue(formal.test(TLst.of(1, 2, "marko")));
-        assertTrue(formal.test(TLst.of(1, 2, TObj.none())));
-        assertTrue(formal.test(TLst.of(1, 2, TObj.none(), TLst.of("hello", "there"))));
-        //assertTrue(type2.test(TLst.of(1)));
-        assertFalse(type2.test(TLst.of(1)));
-        // TODO: assertTrue(formal.test(TLst.none()));
-
-        assertFalse(TLst.of(TInt.gt(32)).constant());
-        assertFalse(TInt.gt(32).constant());
-        assertTrue(TLst.of(134, 46, 88).constant());
-        assertFalse(TLst.of(TInt.gt(32)).test(TLst.of(2)));
-        assertTrue(TLst.of(TInt.gt(32)).test(TLst.of(72)));
-    }
-
     @Test
     void testPatterns() {
         assertTrue(TLst.of(TInt.some()).test(TLst.of(1)));

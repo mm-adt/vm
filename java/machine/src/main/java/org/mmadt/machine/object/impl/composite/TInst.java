@@ -136,7 +136,7 @@ public final class TInst extends TObj implements Inst {
                         object.q(object.q().mult(this.q())) :
                         object.isOne() ?
                                 this.q(this.q().mult(object.q())) :
-                                new TInst(TStream.of(this, object));
+                                new TInst(TStream.of(List.of(this, object)));
     }
 
     @Override

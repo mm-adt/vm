@@ -44,6 +44,10 @@ public final class TStream<A extends Obj> implements Stream<A> {
 
     private final List<A> objects;
 
+    private TStream(final List<A> objects) {
+        this.objects = new ArrayList<>(objects);
+    }
+
     public static <A extends Obj> TStream<A> of(final List objects) {
         if (objects.isEmpty())
             return EMPTY_STREAM;
@@ -63,34 +67,12 @@ public final class TStream<A extends Obj> implements Stream<A> {
         }
     }
 
-    public static <A extends Obj> TStream<A> of(final Object... objects) {
-        return TStream.of(List.of(objects));
-    }
-
-    public static <A extends Obj> Object check(final List<A> object) {
-        return object.size() == 1 ? object.get(0).get() : TStream.of(object);
-    }
-
-    private TStream(final List<A> objects) {
-        this.objects = new ArrayList<>(objects);
-    }
 
     @Override
     public void drop(final A object) {
         this.objects.remove(object);
     }
-
-    @Override
-    public A peek() {
-        return this.objects.isEmpty() ? (A) TObj.none() : this.objects.get(0);
-    }
-
-    @Override
-    public A last() {
-        return this.objects.isEmpty() ? (A) TObj.none() : this.objects.get(this.objects.size() - 1);
-    }
-
-
+    
     @Override
     public Pattern bind(final Bindings bindings) {
         final List<A> list = new ArrayList<>();
