@@ -55,7 +55,7 @@ public class OperatorHelper {
     }
 
     public static <A extends Obj, B extends Obj> B binary(final String opcode, final Supplier<B> operator, final A objA, final A objB) {
-        if (objA.isInstance() || objA.isType())
+        if (objA.isInstance())
             return operator.get();
         else
             return objA.access(objA.access().mult(TInst.of(opcode, objB)));
@@ -63,7 +63,7 @@ public class OperatorHelper {
     }
 
     public static <A extends Obj> A unary(final String opcode, final Supplier<A> operator, final A objA) {
-        if (objA.isInstance() || objA.isType())
+        if (objA.isInstance() || objA.isType()) // TODO: on the unary requires type (this will not be true when AND/OR move up the stack
             return operator.get();
         else
             return objA.access(objA.access().mult(TInst.of(opcode)));

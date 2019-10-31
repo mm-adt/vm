@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.atomic.Str;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,6 +35,7 @@ import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.neq;
 import static org.mmadt.language.__.or;
+import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
@@ -41,6 +43,19 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 final class TStrTest {
+
+    @Test
+    void testInstanceReferenceType() {
+        Str instance = TStr.of("a");
+        Str reference = TStr.of().access(start("a").plus("b"));
+        Str type = TStr.some();
+        TestHelper.validateKinds(instance, reference, type);
+        //////
+        instance = TStr.of("a").q(2);
+        reference = TStr.of("a", "b", "c");
+        type = TStr.of().q(45);
+        TestHelper.validateKinds(instance, reference, type);
+    }
 
     @Test
     void shouldHaveTypeBasics() {

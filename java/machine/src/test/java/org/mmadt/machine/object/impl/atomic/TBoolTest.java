@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.util.IteratorUtils;
@@ -48,11 +49,29 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 final class TBoolTest {
 
     @Test
+    void testInstanceReferenceType() {
+        Bool instance = TBool.of(true);
+        Bool reference = TBool.of().access(start(true, false, true, false));
+        Bool type = TBool.all();
+        TestHelper.validateKinds(instance, reference, type);
+        //////
+        instance = TBool.of(false).q(2);
+        reference = TBool.of(true, false, true, false);
+        type = TBool.of().q(45);
+        TestHelper.validateKinds(instance, reference, type);
+        //////
+        instance = TBool.of(false).access(start(true).neg());
+        reference = TBool.of(true,false).q(2, 10);
+        type = TBool.some();
+        TestHelper.validateKinds(instance, reference, type);
+    }
+
+    @Test
     void shouldStreamCorrectly() {
         assertEquals(TInst.none(), TBool.of(true).access());
         assertEquals(TBool.some().access(TInst.start(true, false, true, false)), TBool.of(true, false, true, false));
         assertEquals(TLst.of(true, false, true, false).<List<Bool>>get(), IteratorUtils.list(TBool.of(true, false, true, false).iterable().iterator()));
-        assertEquals(TLst.of(true, true).<List<Bool>>get(), IteratorUtils.list(TBool.some().access(start(true,false,true,false).is(id())).iterable().iterator()));
+        assertEquals(TLst.of(true, true).<List<Bool>>get(), IteratorUtils.list(TBool.some().access(start(true, false, true, false).is(id())).iterable().iterator()));
     }
 
     @Test

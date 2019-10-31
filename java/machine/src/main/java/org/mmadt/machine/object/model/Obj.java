@@ -222,11 +222,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default boolean isReference() {
-        return !this.constant() && !TInst.none().equals(this.access()) && this.access().constant();
+        return !this.constant() && this.access().constant();
     }
 
     public default boolean isInstance() {
-        return this.constant() && (TInst.none() == this.access() || this.access().constant());
+        return this.constant();
     }
 
     public default <O extends Obj> O access(final Query access) {

@@ -29,6 +29,7 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Lst;
@@ -39,14 +40,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 final class TLstTest {
+
+    @Test
+    void testInstanceReferenceType() {
+        /*Lst instance = TLst.of("a", true, false);
+        Lst reference = TLst.of().access(start(TLst.of("a", true, false)).plus(List.of("b")));
+        Lst type = TLst.of().q(45);
+        TestHelper.validateKinds(instance, reference, type);*/
+        //////
+        Lst instance = TLst.of(TLst.of("a", 2, 21.0)).q(2);
+        Lst reference = TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true));
+        Lst type = TLst.some().q(45);
+        TestHelper.validateKinds(instance, reference, type);
+    }
+
 
     // @Test TODO: This is all messed up because of nested quantifiers
     void testList() {

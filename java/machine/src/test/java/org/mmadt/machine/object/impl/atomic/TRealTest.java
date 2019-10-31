@@ -25,6 +25,8 @@ package org.mmadt.machine.object.impl.atomic;
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.util.TestHelper;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.util.IteratorUtils;
 
@@ -38,6 +40,19 @@ import static org.mmadt.language.__.start;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TRealTest {
+
+    @Test
+    void testInstanceReferenceType() {
+        Real instance = TReal.of(23.4f);
+        Real reference = TReal.of().access(start(1.46f,13.02f).plus(2.0f).div(1.4f));
+        Real type = TReal.some();
+        TestHelper.validateKinds(instance, reference, type);
+        //////
+        instance = TReal.of(41.3f).q(2);
+        reference = TReal.of(23.0f, 56.0f, 11.0f);
+        type = TReal.of().q(45);
+        TestHelper.validateKinds(instance, reference, type);
+    }
 
     @Test
     void shouldStreamCorrectly() {

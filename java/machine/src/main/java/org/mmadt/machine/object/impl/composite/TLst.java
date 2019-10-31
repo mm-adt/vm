@@ -31,6 +31,8 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
+import java.util.List;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -57,7 +59,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     public static <V extends Obj> Lst<V> of(final Object... objects) {
-        if (objects.length > 0 && objects[0] instanceof Lst) {
+        if (objects.length > 0 && (objects[0] instanceof Lst || objects[0] instanceof List)) {
             return ObjectHelper.make(TLst::new, objects);
         } else {
             final PList<V> value = new PList<>();

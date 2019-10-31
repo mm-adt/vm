@@ -27,6 +27,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
@@ -47,11 +48,34 @@ import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.gte;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.lt;
+import static org.mmadt.language.__.start;
+import static org.mmadt.language.compiler.Tokens.COUNT;
+import static org.mmadt.language.compiler.Tokens.PLUS;
+import static org.mmadt.language.compiler.Tokens.START;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 final class TInstTest {
+
+    @Test
+    void testInstanceReferenceType() {
+        final Inst instance = TInst.of(PLUS, 52);
+        final Inst reference = TInst.of(List.of(TInst.of(START, 3, 5), TInst.of(PLUS, 20), TInst.of(COUNT)));
+        final Inst type = TInst.of(PLUS, TInt.some());
+
+        assertTrue(instance.isInstance());
+        assertFalse(instance.isReference());
+        assertFalse(instance.isType());
+
+        // assertFalse(reference.isInstance()); // TODO: insts are not being pushed off to <=[=]
+        // assertTrue(reference.isReference());
+        assertFalse(reference.isType());
+
+        assertFalse(type.isInstance());
+        assertFalse(type.isReference());
+        assertTrue(type.isType());
+    }
 
     @Test
     void shouldTest() {

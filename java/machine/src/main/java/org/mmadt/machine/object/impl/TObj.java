@@ -38,7 +38,6 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.PConjunction;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.machine.object.model.type.Pattern;
@@ -101,8 +100,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             else
                 this.types = this.types.pattern((Pattern) value);
         }
-        assert !(this.value instanceof Pattern) || ((Pattern) this.value).constant();
-
+        assert !(this.value instanceof Obj) && (!(this.value instanceof Pattern) || ((Pattern) this.value).constant()); // TODO: Remove when proved
     }
 
     @Override
@@ -112,8 +110,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public boolean constant() {
-        return null != this.value &&
-                !(this.value instanceof PConjunction) && !(this.value instanceof Inst); // TODO: remove pattern tests when stabilized
+        return null != this.value;
     }
 
     @Override
@@ -254,6 +251,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             clone.value = object;
             clone.types = this.types.pattern(null);
         }
+        assert !(clone.value instanceof Inst) && (this.types == null || !(this.types.pattern() instanceof Inst)); // TODO: Remove when proved
         return (O) clone;
     }
 
