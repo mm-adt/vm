@@ -103,10 +103,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Obj type();
 
-    public default Obj baseType() {
-        return this.set(null);
-    }
-
     public default Iterable<? extends Obj> iterable() {
         return null == this.get() ? List.of() : this.get() instanceof Stream ? this.<Stream>get() : List.of(this);
     }

@@ -38,7 +38,7 @@ import java.util.Objects;
  */
 public final class TType implements Type {
 
-    private static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
+    protected static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
     private String label;                      // the ~bind string (if retrieved via a bind)

@@ -28,7 +28,6 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -87,10 +86,10 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     ////////
-    protected Object value;                             // mutually exclusive with pattern (instance data)
-    protected Q quantifier = TQ.ONE;                    // the 'amount' of this object bundle
-    protected Type types;                               // an object that abstractly defines this object's forms
-    protected Obj type;                                 // TODO: gut
+    protected Object value;                           // mutually exclusive with pattern (instance data)
+    Q quantifier = TQ.ONE;                            // the 'amount' of this object bundle
+    Type types;                                       // an object that abstractly defines this object's forms
+    private boolean typeSet = false;                  // TODO: this is because we have a distinction of 'type not set' (will remove at some point)
 
     public TObj(final Object value) {
         this.types = TType.of(TObj.getBaseSymbol(this));
@@ -149,27 +148,28 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O type(final O type) { // TODO: this should cause a clone as branches will have different types
+    public <O extends Obj> O type(final O type) { // TODO: this might need to clone obj as branches may have different types (variants)
         if (this == type)
             throw new RuntimeException("An object is already its own type: " + this + "::" + type);
-        if (null == type) {
-            this.type = null;
-            return (O) this;
-        }
-
-        final Obj previous = this.type;
-        this.type = type;
-        //   if (null != type.get() && this.isInstance() ? !type.<Pattern>get().test(this) : !type.test(this)) { // TODO: Rec.empty() is still defined in terms of stream (when gutted, replace)
-        if (null != type.get() && !(this.get() instanceof Stream) ? !type.<Pattern>get().test(this) : !type.test(this)) {
-            this.type = previous;
-            throw new RuntimeException("The specified type doesn't match the object: " + type + "::" + this);
+        if (null == type)
+            this.typeSet = false;
+        else {
+            if (!type.test(this))
+                throw new RuntimeException("The specified type does not match the object: " + type + "::" + this);
+            this.types = ((TObj) type).types;
+            this.typeSet = true;
         }
         return (O) this;
     }
 
     @Override
     public Obj type() {
-        return this.type;
+        if (this.typeSet) { // TODO: remove when types are always required
+            final TObj clone = this.clone();
+            clone.value = null;
+            return clone;
+        } else
+            return null;
     }
 
     @Override
@@ -224,11 +224,11 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         }
     }
 
-    public <O extends TObj> O strip() { // TODO: gut this at some point
-        final O clone = (O) this.clone();
+    public <O extends Obj> O strip() { // TODO: gut this at some point
+        final TObj clone = this.clone();
         clone.types = this.types.access(null).label(null);
         clone.quantifier = this.q().one();
-        return clone;
+        return (O) clone;
     }
 
     @Override
@@ -283,10 +283,10 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return (O) clone;
     }
 
-    public <O extends TObj> O member(final Obj name, final Obj value) {
-        final O clone = (O) this.clone();
+    public <O extends Obj> O member(final Obj name, final Obj value) {
+        final TObj clone = this.clone();
         clone.types = this.types.member(name, value);
-        return clone;
+        return (O) clone;
     }
 
     public <O extends Obj> O insts(final PMap<Inst, Inst> insts) {

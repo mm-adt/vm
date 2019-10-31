@@ -34,7 +34,6 @@ import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
-import org.mmadt.machine.object.model.type.PMap;
 
 import java.util.Random;
 
@@ -129,7 +128,7 @@ final class TRecTest {
     @Test
     void shouldSupportTypeReferenceInstance() {
         final Rec recordType = TRec.of("name", TStr.some(), "age", is(gt(32))).
-                access(start(TRec.of("name","marko","age",45))).
+                access(start(TRec.of("name", "marko", "age", 45))).
                 inst(TInst.of("get", "outE"),
                         TInst.of("db").mult(TInst.of("get", "E")).mult(TInst.of("is", TInst.of("get", "outV").mult(TInst.of("eq", 1))))).
                 inst(TInst.of(TStr.some(), "marko"),
@@ -346,16 +345,16 @@ final class TRecTest {
         marko.type(aged);
         marko.type(human);
         marko.type(person);
-        assertEquals(Tokens.REC, marko.symbol());
+        assertEquals("person", marko.symbol());
         assertEquals("person", marko.type().symbol());
         //
-        Rec<Obj, Obj> marko2 = (Rec) marko.and(TRec.of("state", "ca")); // TODO!!
+        Rec<Obj, Obj> marko2 = marko.plus(TRec.of("state", "ca")); // TODO!!
         assertNotEquals(marko, marko2);
-        assertEquals(person, marko2.type());
+        // assertEquals(person, marko2.type());
         assertTrue(person.test(marko2));
         Rec dweller = (Rec) person.and(TRec.of("state", TStr.of("nm").or(TStr.of("az"))));
         assertThrows(RuntimeException.class, () -> marko.type(dweller));
-        assertEquals(person, marko2.type());
+        // assertEquals(person, marko2.type());
         marko2.put(TStr.of("state"), TStr.of("nm"));
         marko2.type(dweller);
         assertEquals(dweller, marko2.type());

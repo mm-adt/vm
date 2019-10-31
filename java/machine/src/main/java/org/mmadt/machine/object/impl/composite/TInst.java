@@ -108,9 +108,9 @@ public final class TInst extends TObj implements Inst {
                 low = null == low ? a.<A>q().low() : low.plus(a.<A>q().low());
                 high = null == high ? a.<A>q().high() : high.plus(a.<A>q().high());
             }
-            this.quantifier = new TQ<>(low, high);
+            return new TQ<>(low, high);
         }
-        return this.quantifier;
+        return super.q();
     }
 
     @Override

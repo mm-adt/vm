@@ -97,7 +97,7 @@ public final class Instructions {
             case GTE:
                 return map(domain, TBool.some(), inst);
             case GROUPCOUNT:
-                return TRec.of(arg(inst, 1).q(inst.q()), domain.q().low().baseType()).q(one);
+                return TRec.of(arg(inst, 1).q(inst.q()), domain.q().low().set(null)).q(one);
             case ID:
                 return endoMap(domain, inst);
             case IS:
