@@ -67,8 +67,8 @@ public final class TSym<A extends Obj> extends TObj {
     }
 
     @Override
-    public boolean test(final Obj object) {
-        return this.getObject().test(object);
+    public boolean test(final Obj obj) {
+        return this.getObject().test(obj);
     }
 
     @Override

@@ -74,8 +74,8 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
     }
 
     @Override
-    public boolean test(final Obj object) {
-        return (((WithOrder<A>) object.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) object.q().high()).lte(this.high()).<Boolean>get());
+    public boolean test(final Obj obj) {
+        return (((WithOrder<A>) obj.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) obj.q().high()).lte(this.high()).<Boolean>get());
     }
 
     @Override

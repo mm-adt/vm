@@ -49,6 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
+import static org.mmadt.language.__.start;
 import static org.mmadt.language.__.type;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
@@ -128,7 +129,7 @@ final class TRecTest {
     @Test
     void shouldSupportTypeReferenceInstance() {
         final Rec recordType = TRec.of("name", TStr.some(), "age", is(gt(32))).
-                access(TInst.of("db").mult(TInst.of("get", "name")).mult(TInst.of("eq", "marko"))).
+                access(start(TRec.of("name","marko","age",45))).
                 inst(TInst.of("get", "outE"),
                         TInst.of("db").mult(TInst.of("get", "E")).mult(TInst.of("is", TInst.of("get", "outV").mult(TInst.of("eq", 1))))).
                 inst(TInst.of(TStr.some(), "marko"),
@@ -516,18 +517,4 @@ final class TRecTest {
         assertEquals(Tokens.REC, and.<TRec>get(1).symbol());
 
     }
-
-    @Test
-    void shouldSupportNoneEnds() {
-        final Rec<?, ?> a = TRec.of("name", "marko", "age", 29, TObj.none(), 32);
-        assertEquals(3, a.<PMap>get().size());
-        assertTrue(TRec.of("name", "marko").test(a));
-        assertTrue(TRec.of("age", TInt.some()).test(a));
-        assertFalse(TRec.of("name", "marko", "boo", TInt.some()).test(a));
-        assertFalse(TRec.of("age", TObj.none()).test(a));
-        assertFalse(TRec.of(TObj.none(), TObj.none()).test(a));
-        assertTrue(TRec.of(TObj.none(), 32).test(a));
-        assertEquals(TObj.none(), TRec.of("name", "null").get(TStr.of("blob")));
-    }
-
 }

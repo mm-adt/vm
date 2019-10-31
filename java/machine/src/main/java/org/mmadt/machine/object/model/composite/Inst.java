@@ -105,11 +105,11 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     }
 
     @Override
-    public default boolean test(final Obj object) {
+    public default boolean test(final Obj obj) {
         // when testing instruction against instruction, use list testing inst(x,y)
-        if (object instanceof Inst)
-            return WithProduct.super.test(((Inst) object));
-        return new MinimalProcessor<>(this).iterator(object).hasNext();
+        if (obj instanceof Inst)
+            return WithProduct.super.test(((Inst) obj));
+        return new MinimalProcessor<>(this).iterator(obj).hasNext();
     }
 
     @Override

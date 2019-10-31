@@ -135,27 +135,42 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public default boolean test(final Obj object) {
+    public default boolean test(final Obj obj) {
         boolean root = TRAMPOLINE.isEmpty();
-        if (TRAMPOLINE.contains(List.of(this, object)))
-            return true;
-        else
-            TRAMPOLINE.add(List.of(this, object));
         try {
-            if (TObj.none().equals(this) || TObj.none().equals(object))
-                return this.q().test(object);
-            else if (null != ObjectHelper.getName(this) && ObjectHelper.getName(this).equals(ObjectHelper.getName(object)))
-                return true;
-            else {
-                final Object current = this.get();
-                if (object.get() instanceof Stream) // TODO: only used by inst at this point (when inst is no longer stream-based, gut this)
-                    return Stream.testStream(this, object);
-                else if (this.get() instanceof PList && object.get() instanceof PList && !(this instanceof Inst))
-                    return Stream.testStream(this.set(TStream.of(this.<PList>get())), object.set(TStream.of(object.<PList>get())));
-                else if (null != current)
-                    return current instanceof Pattern ? ((Pattern) current).test(object) : current.equals(object.get());
+            if (TObj.none().equals(this) || TObj.none().equals(obj))
+                return this.q().test(obj);
+
+            if (this.isInstance())                                                              // INSTANCE CHECKING
+                return obj.isInstance() && this.eq(obj).java();
+            else if (this.isReference()) {                                                      // REFERENCE CHECKING
+                // if (!obj.isReference()) TODO: expose when type access is checked
+                //    return false;
+                // else {
+                final Iterator<? extends Obj> ittyA = this.iterable().iterator();
+                final Iterator<? extends Obj> ittyB = obj.iterable().iterator();
+                while (ittyA.hasNext()) {
+                    if (!ittyB.hasNext() || !(ittyB.next().test(ittyA.next())))
+                        return false;
+                }
+                return !ittyB.hasNext();
+                // }
+            } else {                                                                            // TYPE CHECKING
+                assert this.isType(); // TODO: remove when proved
+                if (null != ObjectHelper.getName(this) && ObjectHelper.getName(this).equals(ObjectHelper.getName(obj)))
+                    return true;
+                ////////////////////////////////////////////
+                if (TRAMPOLINE.contains(List.of(this, obj)))
+                    return true;
                 else
-                    return this.getClass().isAssignableFrom(object.getClass());
+                    TRAMPOLINE.add(List.of(this, obj));
+                ////////////////////////////////////////////
+                if (obj.get() instanceof Stream) // TODO: only used by inst at this point (when inst is no longer stream-based, gut this)
+                    return Stream.testStream(this, obj);
+                else if (this.get() instanceof PList && obj.get() instanceof PList && !(this instanceof Inst))
+                    return Stream.testStream(this.set(TStream.of(this.<PList>get())), obj.set(TStream.of(obj.<PList>get())));
+                else // testing pattern or if no pattern, check the raw class type (int/bool/str/list/etc)
+                    return null != this.get() ? this.<Pattern>get().test(obj) : this.getClass().isAssignableFrom(obj.getClass());
             }
         } finally {
             if (root)
@@ -198,7 +213,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
-        ObjectHelper.members(this, bindings);
+        // ObjectHelper.members(this, bindings);
         if (null != this.instructions()) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
                 if (entry.getKey().match(bindings, inst))
