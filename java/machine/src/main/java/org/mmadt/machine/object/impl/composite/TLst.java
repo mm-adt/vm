@@ -24,7 +24,9 @@ package org.mmadt.machine.object.impl.composite;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -99,6 +101,11 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     @Override
     public Lst<V> neg() {
         return OperatorHelper.<Lst<V>>unary(Tokens.NEG, () -> this, this); // TODO: What is a -list?
+    }
+
+    @Override
+    public Bool eq(final Obj obj) {
+        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Lst && this.java().equals(((Lst) obj).java())), this, obj);
     }
 
     @Override

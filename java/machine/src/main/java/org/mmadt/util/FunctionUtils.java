@@ -22,7 +22,6 @@
 
 package org.mmadt.util;
 
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.processor.function.FilterFunction;
 import org.mmadt.processor.function.FlatMapFunction;
@@ -30,10 +29,6 @@ import org.mmadt.processor.function.MapFunction;
 
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.BinaryOperator;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -57,23 +52,5 @@ public final class FunctionUtils {
     public static <S extends Obj, E extends Obj> E map(final MapFunction<S, E> function, final S object) {
         return function.apply(object).q(object.q().and(function.quantifier())).label(function.label());
         // TODO: test to make sure quantifier is not 1 (save clock cycles)
-    }
-
-    public static <T extends Obj, U> T monad(final T obj, final UnaryOperator<U> operator) {
-        return obj.set(TStream.check(IteratorUtils.stream((Iterable<T>) obj.iterable()).
-                <T>map(x -> x.set(operator.apply(x.get()))).collect(Collectors.toList())));
-    }
-
-    public static <T extends Obj, U> T monad(final T objA, final T objB, final BinaryOperator<U> operator) {
-        return objA.set(TStream.check(IteratorUtils.stream((Iterable<T>) objA.iterable()).
-                <T>map(x -> x.set(apply(() -> operator.apply(x.get(), objB.peek().get())))).collect(Collectors.toList())));
-    }
-
-    private static Object apply(final Supplier function) {
-        try {
-            return function.get();
-        } catch (final ArithmeticException e) {
-            return Integer.MAX_VALUE;
-        }
     }
 }

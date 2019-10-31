@@ -86,7 +86,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return TBool.of(!this.eq(object).java());
     }
 
-    public default <O extends Obj> O peek() {
+    public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
         return (O) this.iterable().iterator().next();
     }
 
@@ -148,7 +148,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 return true;
             else {
                 final Object current = this.get();
-                if (object.get() instanceof Stream)
+                if (object.get() instanceof Stream) // TODO: only used by inst at this point (when inst is no longer stream-based, gut this)
                     return Stream.testStream(this, object);
                 else if (this.get() instanceof PList && object.get() instanceof PList && !(this instanceof Inst))
                     return Stream.testStream(this.set(TStream.of(this.<PList>get())), object.set(TStream.of(object.<PList>get())));
@@ -218,11 +218,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && (TInst.none().equals(this.access()));//|| !this.access().constant());
+        return !this.constant() && (this.access().isZero());//|| this.access().isType());
     }
 
     public default boolean isReference() {
-        return !this.constant() && this.access().constant();
+        return !this.constant() && !this.access().isType();
     }
 
     public default boolean isInstance() {

@@ -38,6 +38,10 @@ public final class TReal extends TObj implements Real {
     private static final Real SOME = new TReal(null);
     private static final Real NONE = new TReal(null).q(0);
     private static final Real ALL = new TReal(null).q(0, Integer.MAX_VALUE);
+    private static final Real ZERO = new TReal(0.0f);
+    private static final Real ONE = new TReal(1.0f);
+    private static final Real MAX = new TReal(Float.MAX_VALUE);
+    private static final Real MIN = new TReal(Float.MIN_VALUE);
 
     private TReal(final Object value) {
         super(value);
@@ -61,22 +65,22 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real max() {
-        return TReal.of(Float.MAX_VALUE);
+        return MAX;
     }
 
     @Override
     public Real min() {
-        return TReal.of(Float.MIN_VALUE);
+        return MIN;
     }
 
     @Override
     public Real one() {
-        return OperatorHelper.unary(Tokens.ONE, () -> new TReal(1.0f), this);
+        return OperatorHelper.unary(Tokens.ONE, () -> ONE, this);
     }
 
     @Override
     public Real zero() {
-        return OperatorHelper.unary(Tokens.ZERO, () -> new TReal(0.0f), this);
+        return OperatorHelper.unary(Tokens.ZERO, () -> ZERO, this);
     }
 
     @Override

@@ -61,7 +61,7 @@ final class TBoolTest {
         TestHelper.validateKinds(instance, reference, type);
         //////
         instance = TBool.of(false).access(start(true).neg());
-        reference = TBool.of(true,false).q(2, 10);
+        reference = TBool.of(true, false).q(2, 10);
         type = TBool.some();
         TestHelper.validateKinds(instance, reference, type);
     }
@@ -69,7 +69,7 @@ final class TBoolTest {
     @Test
     void shouldStreamCorrectly() {
         assertEquals(TInst.none(), TBool.of(true).access());
-        assertEquals(TBool.some().access(TInst.start(true, false, true, false)), TBool.of(true, false, true, false));
+        assertEquals(TBool.some().access(start(true, false, true, false)), TBool.of(true, false, true, false));
         assertEquals(TLst.of(true, false, true, false).<List<Bool>>get(), IteratorUtils.list(TBool.of(true, false, true, false).iterable().iterator()));
         assertEquals(TLst.of(true, true).<List<Bool>>get(), IteratorUtils.list(TBool.some().access(start(true, false, true, false).is(id())).iterable().iterator()));
     }

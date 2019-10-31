@@ -36,11 +36,11 @@ import org.mmadt.machine.object.model.util.StringFactory;
  */
 public final class TStr extends TObj implements Str {
 
-    private static final String MAX_VALUE = "zzzzzzzzzzzz";
-
     private static final Str SOME = new TStr(null);
     private static final Str NONE = new TStr(null).q(0);
     private static final Str ALL = new TStr(null).q(0, Integer.MAX_VALUE);
+    private static final Str ZERO = new TStr("");
+    private static final Str MAX = new TStr("zzzzzzzzzzzz");
 
     private TStr(final Object value) {
         super(value);
@@ -84,17 +84,17 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Str zero() {
-        return OperatorHelper.unary(Tokens.ZERO, () -> new TStr(Tokens.EMPTY), this);
+        return OperatorHelper.unary(Tokens.ZERO, () -> ZERO, this);
     }
 
     @Override
     public Str max() {
-        return new TStr(MAX_VALUE);
+        return MAX;
     }
 
     @Override
     public Str min() {
-        return new TStr(Tokens.EMPTY);
+        return ZERO;
     }
 
     @Override

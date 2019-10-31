@@ -33,7 +33,6 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.Bindings;
@@ -48,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
 /**
@@ -76,7 +76,7 @@ public final class ObjectHelper {
         else if (1 == objects.length)
             return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0] instanceof Query ? ((Query) objects[0]).bytecode() : objects[0]);
         else
-            return constructor.apply(null).access(TInst.start(objects));
+            return constructor.apply(null).access(start(objects));
     }
 
     public static Object andValues(final TObj object1, final TObj object2) {

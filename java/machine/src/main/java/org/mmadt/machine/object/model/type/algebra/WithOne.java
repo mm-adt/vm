@@ -34,6 +34,6 @@ public interface WithOne<A extends WithOne<A>> extends Obj {
     public A one();
 
     public default boolean isOne() {
-        return this.eq(this.one()).get();
+        return this.eq(this.one()).java();
     }
 }

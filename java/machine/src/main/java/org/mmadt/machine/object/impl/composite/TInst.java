@@ -25,11 +25,9 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -48,6 +46,7 @@ public final class TInst extends TObj implements Inst {
     private static final Inst SOME = new TInst(PList.of(TStr.some(), TObj.all()));
     private static final Inst ALL = new TInst(null).q(0, Integer.MAX_VALUE);
     private static final Inst NONE = new TInst(null).q(0);
+    private static final Inst ONE = new TInst(PList.of(Tokens.ID));
 
     private Obj domain = TObj.none();
     private Obj range = TObj.none();
@@ -66,40 +65,6 @@ public final class TInst extends TObj implements Inst {
 
     public static Inst none() {
         return NONE;
-    }
-
-    @Override
-    public Str opcode() {
-        return (Str) this.get(TInt.zeroInt());
-    }
-
-    @Override
-    public Obj domain() {
-        return this.<TInst>peek().domain;
-    }
-
-    @Override
-    public Obj range() {
-        return this.<TInst>last().range;
-    }
-
-    @Override
-    public <A extends WithRing<A>> Q<A> q() {
-        if (this.get() instanceof Stream) { // TODO: memoize this
-            A low = null;
-            A high = null;
-            for (final Inst a : this.iterable()) {
-                low = null == low ? a.<A>q().low() : low.plus(a.<A>q().low());
-                high = null == high ? a.<A>q().high() : high.plus(a.<A>q().high());
-            }
-            this.quantifier = new TQ<>(low, high);
-        }
-        return this.quantifier;
-    }
-
-    @Override
-    public String toString() {
-        return StringFactory.inst(this);
     }
 
     public static Inst of(final String opcode, final Object... args) {
@@ -124,6 +89,29 @@ public final class TInst extends TObj implements Inst {
         return insts.isEmpty() ? TInst.none() : new TInst(TStream.of(insts));
     }
 
+    @Override
+    public Obj domain() {
+        return this.<TInst>peek().domain;
+    }
+
+    @Override
+    public Obj range() {
+        return this.<TInst>last().range;
+    }
+
+    @Override
+    public <A extends WithRing<A>> Q<A> q() {   // TODO: this might not make sense moving forward as an instruction can't have a quantifier and be quantified :|
+        if (this.get() instanceof Stream) { // TODO: memoize this
+            A low = null;
+            A high = null;
+            for (final Inst a : this.iterable()) {
+                low = null == low ? a.<A>q().low() : low.plus(a.<A>q().low());
+                high = null == high ? a.<A>q().high() : high.plus(a.<A>q().high());
+            }
+            this.quantifier = new TQ<>(low, high);
+        }
+        return this.quantifier;
+    }
 
     @Override
     public Inst and(final Obj obj) {
@@ -145,9 +133,9 @@ public final class TInst extends TObj implements Inst {
         return object.isZero() ?
                 this.zero() :
                 this.isOne() ?
-                        object.q(object.q().and(this.q())) :
+                        object.q(object.q().mult(this.q())) :
                         object.isOne() ?
-                                this.q(this.q().and(object.q())) :
+                                this.q(this.q().mult(object.q())) :
                                 new TInst(TStream.of(this, object));
     }
 
@@ -156,15 +144,25 @@ public final class TInst extends TObj implements Inst {
         return this.q(this.q().neg());
     }
 
+   /* @Override
+    public Inst zero() {
+        return OperatorHelper.unary(Tokens.ZERO, () -> NONE, this);
+    }*/
+
     @Override
     public Inst zero() {
-        return TInst.none();
+        return NONE; // TODO: need to make a zero instruction [none] (we are conflating absence of instruction with an instruction that represents * -> 0.
     }
 
     @Override
     public Inst one() {
-        return TInst.of(Tokens.ID);
+        return ONE;
     }
+
+    /*@Override
+    public Bool eq(final Obj obj) {
+        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Inst && this.java().equals(((Inst) obj).java())), this, obj);
+    }*/
 
     @Override
     public Inst domainAndRange(final Obj domain, final Obj range) {
@@ -176,31 +174,19 @@ public final class TInst extends TObj implements Inst {
 
     private Inst operator(final String opcode, final Obj obj) {
         final Inst inst = obj instanceof Inst ? (Inst) obj : TInst.of(Tokens.MAP, obj); // if the object isn't an instruction, make it one
-        if (this.opcode().get().equals(opcode)) {
-            final PList<Obj> list = new PList<>(this.<PList<Obj>>get());
+        final Inst last = this.last();
+        if (last.opcode().java().equals(opcode)) {
+            final PList<Obj> list = new PList<>(last.java());
             list.add(inst);
             return new TInst(list);
         } else
-            return this.eq(inst).get() ? this.q(this.q().or(inst.q())) : TInst.of(opcode, this, inst);
+            return this.eq(inst).java() ?
+                    this.q(this.q().plus(inst.q())) :
+                    TInst.of(opcode, this, inst); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
     }
 
     @Override
-    public Inst put(final Int key, final Obj value) {
-        ((PList<Obj>) this.value).set(key.get(), value);
-        return this;
+    public String toString() {
+        return StringFactory.inst(this);
     }
-
-    @Override
-    public Inst drop(final Int key) {
-        ((PList<Obj>) this.value).remove(key.<Integer>get().intValue());
-        return this;
-    }
-
-    ////
-
-
-    public static Inst start(final Object... objects) {
-        return TInst.of(Tokens.START, objects);
-    }
-
 }

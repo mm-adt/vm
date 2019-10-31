@@ -25,7 +25,9 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -105,6 +107,11 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     @Override
     public Rec<K, V> neg() {
         return OperatorHelper.<Rec<K, V>>unary(Tokens.NEG, () -> this, this); // TODO: What is a -rec?
+    }
+
+    @Override
+    public Bool eq(final Obj obj) {
+        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Rec && this.java().equals(((Rec) obj).java())), this, obj);
     }
 
     @Override
