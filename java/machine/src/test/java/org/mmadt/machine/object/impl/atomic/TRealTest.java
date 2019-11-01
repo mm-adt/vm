@@ -57,7 +57,7 @@ class TRealTest {
     @Test
     void shouldStreamCorrectly() {
         assertEquals(TInst.none(), TReal.of(1.0f).access());
-        assertEquals(TReal.some().access(start(1.0f, 2.0f, 3.0f, 4.0f)), TReal.of(1.0f, 2.0f, 3.0f, 4.0f));
+        assertEquals(TReal.some().access(start(1.0f, 2.0f, 3.0f, 4.0f)).q(4), TReal.of(1.0f, 2.0f, 3.0f, 4.0f));
         assertEquals(TLst.of(1.0f, 2.0f, 3.0f, 4.0f).<List<Real>>get(), IteratorUtils.list(TReal.of(1.0f, 2.0f, 3.0f, 4.0f).iterable().iterator()));
         assertEquals(TLst.of(3.0f, 4.0f).<List<Real>>get(), IteratorUtils.list(TReal.some().access(start(1.0f, 2.0f, 3.0f, 4.0f).is(gt(2.1f))).iterable().iterator()));
     }

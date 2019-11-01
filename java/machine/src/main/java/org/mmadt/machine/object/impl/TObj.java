@@ -25,7 +25,6 @@ package org.mmadt.machine.object.impl;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
@@ -189,7 +188,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return this;
         else if (null != this.get() &&
                 this.get().equals(object.get()) &&
-                TInst.none().equals(this.types.access()) &&
+                this.types.access().isZero() &&
                 null == this.types.instructions())
             return this.q(this.q().or(object.q()));
         else

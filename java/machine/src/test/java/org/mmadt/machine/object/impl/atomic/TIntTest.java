@@ -25,15 +25,12 @@ package org.mmadt.machine.object.impl.atomic;
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.util.TestHelper;
-import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.start;
-import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,82 +45,17 @@ final class TIntTest {
         TestHelper.validateKinds(instance, reference, type);
         //////
         instance = TInt.of(4).q(2);
-        reference = TInt.of(23,56,11);
+        reference = TInt.of(23, 56, 11);
         type = TInt.of().q(45);
         TestHelper.validateKinds(instance, reference, type);
     }
 
     @Test
-    void shouldHaveBasicSemantics() {
+    void shouldTest() {
         assertTrue(TInt.some().test(TInt.of(32)));
         assertFalse(TInt.some().test(TReal.of(43.0f)));
         assertTrue(TObj.all().test(TInt.of(-1)));
         assertNotEquals(TInt.some(), TBool.some());
         assertNotEquals(TInt.some(), TStr.some());
     }
-
-    @Test
-    void shouldSupportMathOperators() {
-        assertEquals(TInt.of(3), TInt.of(1).plus(TInt.of(2)));
-        assertEquals(TInt.of(2), TInt.of(1).mult(TInt.of(2)));
-        assertEquals(TInt.of(6), TInt.of(1).plus(TInt.of(2)).plus(TInt.of(3)));
-        assertEquals(TInt.of(9), TInt.of(1).plus(TInt.of(2)).mult(TInt.of(3)));
-        // System.out.println(TInt.of(9).or(TInt.of(10)).and(TInt.of(10).q(-1)));
-        // TODO: BAD System.out.println(TInt.of(9).add(TInt.some()));
-        assertEquals(TInt.of(9), TInt.of(9).and(TInt.some()));
-        assertEquals(TInt.of(9), TInt.some().and(TInt.of(9)));
-    }
-
-    // TODO @Test
-    void shouldSupportStreamTesting() {
-        // TODO: nested quantifiers is not exactly correct
-        assertTrue(TInt.of(1).q(3).test(TInt.of(1, 1, 1)));
-        System.out.println(TInt.of(TInt.of(TInt.of(1)).q(2)).q(3).toString());
-        System.out.println(TInt.of(TInt.of(TInt.of(1).q(5)).q(4)).q(3).toString());
-        assertTrue(TInt.of(TInt.of(1)).q(3).test(TInt.of(1, 2, 3)));
-        //assertTrue(TInt.of(TInt.of(1,2)).q(3).test(TInt.of(1, 2, 3)));
-        assertTrue(TInt.of(TInt.of(1, 2, 3)).q(3).test(TInt.of(1, 2, 3).q(3)));
-        assertFalse(TInt.of(TInt.of(1)).q(3).test(TInt.of(1, 1)));
-        //
-        assertTrue(TInt.of(TInt.of(TInt.some(), 1, 1)).q(3).test(TInt.of(1, 1, 1).q(3)));
-        assertTrue(TInt.some().q(3).test(TInt.of(1).q(3)));
-        assertTrue(TInt.of(TInt.some()).q(3).test(TInt.of(1, 2, 3)));
-        assertFalse(TInt.of(TInt.some().q(2)).test(TInt.of(1, 2, 3)));
-        assertFalse(TInt.of(TInt.some().q(3)).test(TInt.of(1, 2, 3)));
-        assertFalse(TInt.of(TInt.some()).q(2).test(TInt.of(1, 2, 3)));
-        assertTrue(TInt.of(TInt.some()).q(3).test(TInt.of(1, 2, 3)));
-        assertTrue(TInt.of(TInt.some(), 2, TInt.some(), TInt.none(), TInt.none(), TInt.none()).test(TInt.of(1, 2, 3)));
-        assertFalse(TInt.of(TInt.some(), 2, TInt.some(), TInt.none(), TInt.none(), TInt.none()).test(TInt.of(1, 2, 3, TInt.none(), 5)));
-        assertTrue(TInt.of(1, 2).test(TInt.of(1, 2)));
-        assertFalse(TInt.of(TInt.some()).q(2).test(TInt.of(1, 2, 3).q(3)));
-        assertTrue(TInt.of(TInt.some()).q(1, 6).test(TInt.of(1, 2, 3).q(2)));
-        assertTrue(TInt.of(TInt.some().q(1, 3), TInt.some(), TInt.none(), TInt.none()).q(1, 3).test(TInt.of(TInt.of(1).q(2), 2, TInt.of(3).q(zero)).q(2)));
-        assertTrue(TInt.some().q(1, 5).test(TInt.of(1, 2, 3)));
-        assertTrue(TInt.of(TInt.some()).q(1, 5).test(TInt.of(1, 2, 3)));
-        assertTrue(TInt.of(TInt.all(), TInt.all(), TInt.all()).test(TInt.of(TInt.none(), 2, TInt.none())));
-        assertFalse(TInt.of(TInt.all(), TInt.all(), 3).test(TInt.of(TInt.none(), 2, TInt.none())));
-        assertTrue(TInt.of(TInt.all(), TInt.all(), TInt.all()).test(TInt.of(TInt.none(), 2, TInt.none(), TInt.all())));
-    }
-
-/*    @Test
-    void shouldSupportStreamMatching() {
-        final Bindings bindings = new Bindings();
-        assertTrue(TInt.of(TInt.of(TInt.some().label("a"), 1, 1)).q(3).match(bindings, TInt.of(1, 1, 1).q(3)));
-        assertEquals(1, bindings.size());
-        assertEquals(TInt.of(1), bindings.get("a"));
-        //
-        bindings.clear();
-        assertTrue(TInt.of(TInt.some().label("a"), 2, TInt.some().label("b"), TInt.none(), TInt.none(), TInt.none()).match(bindings, TInt.of(1, 2, 3)));
-        assertEquals(2, bindings.size());
-        assertEquals(TInt.of(1), bindings.get("a"));
-        assertEquals(TInt.of(3), bindings.get("b"));
-        //
-        bindings.clear();
-        assertTrue(TInt.of(TInt.all().label("a"), TInt.all().label("b"), TInt.all().label("c")).match(bindings, TInt.of(TInt.none(), 2, TInt.all(), TInt.all())));
-        assertEquals(2, bindings.size());
-        // TODO: Ask @dkuppitz if None can be bound -- assertEquals(TInt.none(), bindings.get("a"));
-        assertEquals(TInt.of(2), bindings.get("b"));
-        assertEquals(TInt.all(), bindings.get("c"));
-    }*/
-
 }

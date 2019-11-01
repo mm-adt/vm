@@ -35,12 +35,10 @@ import org.mmadt.machine.object.model.util.OperatorHelper;
  */
 public final class TBool extends TObj implements Bool {
 
-
     private static final Bool NONE = new TBool(null).q(0);
     private static final Bool ALL = new TBool(null).q(0, Integer.MAX_VALUE);
     private static final Bool TRUE = new TBool(Boolean.TRUE);
     private static final Bool FALSE = new TBool(Boolean.FALSE);
-
 
     private TBool(final Object value) {
         super(value);

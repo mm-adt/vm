@@ -20,28 +20,30 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.atomic;
-
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.processor.util.MinimalProcessor;
-
-import java.util.List;
+package org.mmadt.machine.object.model.type.algebra;
 
 /**
- * A Java representation of the {@code int} object in mm-ADT.
- * An {@code int} is an ordered commutative ring with unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Int extends WithOrderedRing<Int> {
+public interface WithOrderedRing<A extends WithOrderedRing<A>> extends WithRing<A>, WithOrder<A> {
 
-    public default Integer java() {
-        return this.get();
+    @Override
+    public A one();
+
+    @Override
+    public A zero();
+
+    @Override
+    public A mult(final A object);
+
+    @Override
+    public A plus(final A object);
+
+    @Override
+    public default A minus(final A object) {
+        return this.plus(object.neg());
     }
 
     @Override
-    public default Iterable<Int> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Int, Int>(this.access()).iterator(this);
-    }
-
+    public A neg();
 }
