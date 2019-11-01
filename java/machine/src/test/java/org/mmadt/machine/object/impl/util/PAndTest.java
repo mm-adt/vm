@@ -46,10 +46,10 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 final class PAndTest {
     @Test
     void shouldToString() {
-        assertEquals("'marko'", TStr.of("marko").or(TStr.of("marko")).toString());
+        assertEquals("'marko'|'marko'", TStr.of("marko").or(TStr.of("marko")).toString());
         assertEquals("'marko'{*}|'marko'", TStr.of("marko").q(star).or(TStr.of("marko")).toString());
         assertEquals("'marko'{*}|'marko'{0}", TStr.of("marko").q(star).or(TStr.of("marko").q(zero)).toString());
-        assertEquals("'marko'{0}", TStr.of("marko").q(zero).or(TStr.of("marko").q(zero)).toString());
+        assertEquals("'marko'{0}|'marko'{0}", TStr.of("marko").q(zero).or(TStr.of("marko").q(zero)).toString());
         //
         assertEquals("'marko'", TStr.of("marko").and(TStr.of("marko")).toString());
         assertEquals("'marko'{*}", TStr.of("marko").q(star).and(TStr.of("marko")).toString());

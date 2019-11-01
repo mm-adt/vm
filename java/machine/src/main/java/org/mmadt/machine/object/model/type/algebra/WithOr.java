@@ -22,12 +22,20 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.language.__;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
+
+import static org.mmadt.language.__.is;
+
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports |.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithOr<A> {
+public interface WithOr<A extends Obj> {
 
-    public A or(final A obj);
+    public default A or(final A obj) {
+        return ObjectHelper.root((Obj) this, obj).set(is(__.or(__.a(this).as(((Obj) this).label()), __.a(obj).as(obj.label()))).bytecode());
+    }
 }

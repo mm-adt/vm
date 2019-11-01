@@ -69,6 +69,11 @@ public final class TBool extends TObj implements Bool {
     }
 
     @Override
+    public Obj or(final Obj obj) {
+        return this.constant() && this.q().constant() ? new TBool(this.java() || obj.<Boolean>get()) : super.or(obj);
+    }
+
+    @Override
     public Bool one() {
         return OperatorHelper.unary(Tokens.ONE, () -> TRUE, this);
     }

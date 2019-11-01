@@ -185,14 +185,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public Obj or(final Obj object) {
-        if (Objects.equals(this, object))
-            return this;
-        else
-            return ObjectHelper.root(this, object).set(is(__.or(__.a(this).as(this.label()), __.a(object).as(object.label()))).bytecode());
-    }
-
-    @Override
     public <O extends Obj> O symbol(final String symbol) {
         final TObj clone = this.clone();
         clone.types = this.types.symbol(symbol);
