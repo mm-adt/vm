@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.object.model.util;
 
-import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Model;
@@ -34,10 +34,8 @@ import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PAnd;
-import org.mmadt.machine.object.model.type.PConjunction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
-import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.processor.function.QFunction;
 
@@ -176,15 +174,12 @@ public final class StringFactory {
         return builder.toString();
     }
 
-    public static String conjunction(final PConjunction conjunction) {
+    public static String conjunction(final PAnd conjunction) {
         final StringBuilder builder = new StringBuilder();
-        int counter = 0;
+
         for (final Pattern pred : conjunction.predicates()) {
-            boolean parens = counter++ > 0 && conjunction instanceof PAnd && pred instanceof TObj && ((TObj) pred).get() instanceof POr;
-            if (parens) builder.append(LPAREN);
             builder.append(pred instanceof Obj ? nestedObject((Obj) pred) : pred);
-            if (parens) builder.append(RPAREN);
-            builder.append(conjunction instanceof PAnd ? AMPERSAND : BAR);
+            builder.append(AMPERSAND);
         }
         builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
@@ -195,9 +190,13 @@ public final class StringFactory {
         final Object o = object.get();
         if (null == o)
             builder.append(object.symbol());
-        else {
+        else if (o instanceof Inst) {
+            if (null != object.label() || !object.q().isOne()) builder.append(LPAREN);
+            builder.append(typeInstructions((Inst) o));
+            if (null != object.label() || !object.q().isOne()) builder.append(RPAREN);
+        } else {
             final boolean parens =
-                    (o instanceof Obj || o instanceof Stream || o instanceof PConjunction) &&
+                    (o instanceof Obj || o instanceof Stream || o instanceof PAnd) &&
                             (null != object.label() || !object.q().isOne());
             if (parens)
                 builder.append(LPAREN);
@@ -212,8 +211,8 @@ public final class StringFactory {
 
     public static String inst(final Inst inst) {
         final StringBuilder builder = new StringBuilder();
-        if (inst.get() instanceof PConjunction)
-            builder.append((PConjunction) inst.get());
+        if (inst.get() instanceof PAnd)
+            builder.append((PAnd) inst.get());
         else if (!TInst.some().get().equals(inst.get())) {
             for (Inst single : inst.iterable()) {
                 boolean first = true;
@@ -270,6 +269,8 @@ public final class StringFactory {
                 builder.append("'").append(string.<String>get()).append("'");
             else
                 builder.append(String.format("\"%s\"", string.<String>get().replaceAll("[\"\\\\]", "\\\\$0")));
+        } else if (string.get() instanceof Inst) {
+            builder.append(typeInstructions(string.get()));
         } else if (string.isType() && null != string.get())
             builder.append(string.get().toString());
         else
@@ -299,5 +300,19 @@ public final class StringFactory {
         if (null != function.label())
             name = name + "~" + function.label();
         return name;
+    }
+
+    private static String typeInstructions(final Inst inst) {
+        final StringBuilder builder = new StringBuilder();
+        if (inst.<Inst>peek().opcode().java().equals(Tokens.IS)) {
+            if (inst.<Inst>peek().args().get(0) instanceof Inst && ((Inst) inst.<Inst>peek().args().get(0)).opcode().java().equals(Tokens.OR)) {
+                for (final Obj i : ((Inst) inst.<Inst>peek().args().get(0)).args()) {
+                    builder.append(((Inst) i).args().get(0)).append(BAR);
+                }
+                builder.deleteCharAt(builder.length() - 1);
+                return builder.toString();
+            }
+        }
+        return inst.toString();
     }
 }

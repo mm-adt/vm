@@ -22,18 +22,82 @@
 
 package org.mmadt.machine.object.model.type;
 
+import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class PAnd extends PConjunction {
+public final class PAnd  implements Pattern {
+
+
+    final List<Pattern> patterns;
 
     PAnd(final List<Pattern> patterns) {
-        super(patterns);
+        this.patterns = patterns;
+    }
+
+    public List<Pattern> predicates() {
+        return Collections.unmodifiableList(this.patterns);
+    }
+
+    @Override
+    public PAnd bind(final Bindings bindings) {
+        final List<Pattern> patterns = new ArrayList<>();
+        for (final Pattern p : this.predicates()) {
+            patterns.add(p.bind(bindings));
+        }
+        return new PAnd(patterns);
+    }
+
+    public <A> A get(final int index) {
+        return (A) this.predicates().get(index);
+    }
+
+    @Override
+    public String toString() {
+        return StringFactory.conjunction(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.patterns.hashCode() ^ this.getClass().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        return object instanceof PAnd
+                && new HashSet<>(this.patterns).equals(new HashSet<>(((PAnd) object).patterns));
+    }
+
+    public Optional<Inst> inst(final Obj object, final Bindings bindings, final Inst inst) {
+        for (final Pattern p : this.predicates()) {
+            if (!object.constant() || p.test(object)) {
+                if (p.isObj()) {
+                    Optional<Inst> match = p.asObj().inst(bindings, inst);
+                    if (match.isPresent())
+                        return match;
+                    if (p instanceof TSym && null != ((TSym) p).getObject()) { // TODO: perhaps symbols shouldn't have instructions on them?!
+                        match = TSym.fetch(p.asObj()).inst(bindings, inst);
+                        if (match.isPresent())
+                            return match;
+                    }
+                } else if (p instanceof PAnd) {
+                    final Optional<Inst> match = ((PAnd) p).inst(object, bindings, inst);
+                    if (match.isPresent())
+                        return match;
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

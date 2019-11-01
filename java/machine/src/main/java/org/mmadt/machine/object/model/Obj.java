@@ -33,7 +33,7 @@ import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.Bindings;
-import org.mmadt.machine.object.model.type.PConjunction;
+import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
@@ -41,13 +41,14 @@ import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
-import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.util.IteratorUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -210,17 +211,35 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
-        // ObjectHelper.members(this, bindings);
+        ////////// THIS IS THE FUTURE DIRECTION:::::MAKE THIS SOLID //////////
+        // attach the bindings and inst to the traverser //
+        if (this.type() != null && this.type().get() instanceof Inst) {
+            Inst test = IteratorUtils.stream(this.type().<Inst>get().iterable()).
+                    filter(i -> i.opcode().java().equals(Tokens.IS)).
+                    map(is -> is.args().get(0)).
+                    filter(arg -> arg instanceof Inst && ((Inst) arg).opcode().java().equals(Tokens.OR)).
+                    flatMap(or -> ((Inst) or).args().stream()).
+                    filter(a -> a instanceof Inst && ((Inst) a).opcode().java().equals(Tokens.A)).
+                    filter(a -> ((Inst) a).args().get(0).test(this)).
+                    map(a -> ((Inst) a).args().get(0)).
+                    map(t -> t.inst(bindings, inst).orElse(null)).
+                    filter(Objects::nonNull).
+                    findFirst().
+                    orElse(null);
+            if (test != null)
+                return Optional.of(test);
+        }
+        //////////////////////////////////////////////////////////////////////
         if (null != this.instructions()) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
                 if (entry.getKey().match(bindings, inst))
                     return Optional.of(entry.getValue().bind(bindings));
             }
         }
-        if (null != this.type() && this.type().get() instanceof PConjunction) // TODO: this is why having a specialized variant class is important (so the logic is more recursive)
-            return ((PConjunction) this.type().get()).inst(this, bindings, inst);
-        else if (this.get() instanceof PConjunction)
-            return ((PConjunction) this.get()).inst(this, bindings, inst);
+        if (null != this.type() && this.type().get() instanceof PAnd) // TODO: this is why having a specialized variant class is important (so the logic is more recursive)
+            return ((PAnd) this.type().get()).inst(this, bindings, inst);
+        else if (this.get() instanceof PAnd)
+            return ((PAnd) this.get()).inst(this, bindings, inst);
         else
             return Optional.empty();
     }

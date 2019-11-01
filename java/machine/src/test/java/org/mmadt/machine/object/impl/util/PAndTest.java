@@ -36,19 +36,19 @@ import org.mmadt.machine.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class PConjunctionTest {
+final class PAndTest {
     @Test
     void shouldToString() {
         assertEquals("'marko'", TStr.of("marko").or(TStr.of("marko")).toString());
-        assertEquals("'marko'{+}", TStr.of("marko").q(star).or(TStr.of("marko")).toString());
-        assertEquals("'marko'{*}", TStr.of("marko").q(star).or(TStr.of("marko").q(zero)).toString());
+        assertEquals("'marko'{*}|'marko'", TStr.of("marko").q(star).or(TStr.of("marko")).toString());
+        assertEquals("'marko'{*}|'marko'{0}", TStr.of("marko").q(star).or(TStr.of("marko").q(zero)).toString());
         assertEquals("'marko'{0}", TStr.of("marko").q(zero).or(TStr.of("marko").q(zero)).toString());
         //
         assertEquals("'marko'", TStr.of("marko").and(TStr.of("marko")).toString());

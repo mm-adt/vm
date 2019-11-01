@@ -28,7 +28,6 @@ import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
-import org.mmadt.machine.object.model.type.PConjunction;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;

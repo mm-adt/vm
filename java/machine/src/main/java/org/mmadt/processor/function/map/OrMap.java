@@ -45,7 +45,7 @@ public final class OrMap<S extends Obj> extends AbstractFunction implements MapF
 
     @Override
     public Bool apply(final S obj) {
-        return Stream.of(this.<S, Bool>arguments()).map(a -> a.mapArg(obj)).reduce((a, b) -> a.or(b)).orElse(TBool.of(true));
+        return Stream.of(this.<S, Bool>arguments()).map(a -> a.mapArg(obj)).reduce(Bool::or).orElse(TBool.of(true));
     }
 
 

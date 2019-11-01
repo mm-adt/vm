@@ -24,7 +24,6 @@ package org.mmadt.machine.object.model.util;
 import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
@@ -35,9 +34,7 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
-import org.mmadt.machine.object.model.type.PConjunction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
@@ -80,7 +77,6 @@ public final class ObjectHelper {
     }
 
     public static Object andValues(final TObj object1, final TObj object2) {
-
         if (object1 instanceof Rec && object2 instanceof Rec)
             return (object1.symbol().equals(object2.symbol()) ?
                     ObjectHelper.mergeMaps(object1.get(), object2.get()) :
@@ -99,7 +95,7 @@ public final class ObjectHelper {
             else if (null == object2.get() && null == object2.instructions())
                 return object1.get();
         }
-        return PAnd.and(object1.get() instanceof PAnd ? object1.get() : object1.strip(), object2.strip());
+        return PAnd.and(object1.get() instanceof PAnd ? object1.get() : object1.q(one), object2.q(one));
     }
 
     public static String mergeLabels(final Obj object1, final Obj object2) {
@@ -175,25 +171,6 @@ public final class ObjectHelper {
         return null == object.type() ?
                 object.set(null) :
                 object.type();
-    }
-
-    public static void members(final Obj object, final Bindings bindings) {
-        if (null != object.members()) {
-            for (final Map.Entry<Obj, Obj> entry : object.members().entrySet()) {
-                if (!bindings.has(entry.getKey().label()))
-                    bindings.put(entry.getKey().label(), entry.getValue());
-            }
-        }
-        if (object instanceof TSym && null != ((TSym) object).getObject())
-            ObjectHelper.members(((TSym) object).getObject(), bindings);
-        if (object.get() instanceof PConjunction) {
-            ((PConjunction) object.get()).predicates().forEach(p -> {
-                if (p instanceof Obj) {
-                    ObjectHelper.members(p.asObj(), bindings);
-                }
-            });
-        }
-        //System.out.println(bindings);
     }
 
     public static Obj from(final Object object) {

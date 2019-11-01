@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.impl;
 
+import org.mmadt.language.__;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
@@ -37,16 +38,16 @@ import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
-import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.Objects;
+
+import static org.mmadt.language.__.is;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -179,7 +180,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         else
             return ObjectHelper.root(this, object).
                     set(ObjectHelper.andValues(this, (TObj) object)).
-                    q(this.q().and(object.q())).
+                    q(this.q().mult(object.q())).
                     label(ObjectHelper.mergeLabels(this, object));
     }
 
@@ -187,48 +188,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public Obj or(final Obj object) {
         if (Objects.equals(this, object))
             return this;
-        else if (null != this.get() &&
-                this.get().equals(object.get()) &&
-                this.types.access().isZero() &&
-                null == this.types.instructions())
-            return this.q(this.q().or(object.q()));
         else
-            return ObjectHelper.root(this, object).set(POr.or(this.get() instanceof POr ? this.get() : this, object));
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.value, this.q(), this.types);
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        return object instanceof TObj &&
-                ((this.q().isZero() && ((TObj) object).q().isZero()) ||
-                        (Objects.equals(this.value, ((TObj) object).value) &&
-                                Objects.equals(this.q(), ((TObj) object).q()) &&
-                                Objects.equals(this.types, ((TObj) object).types)));
-    }
-
-    @Override
-    public String toString() {
-        return StringFactory.object(this);
-    }
-
-    @Override
-    public TObj clone() {
-        try {
-            return (TObj) super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    public <O extends Obj> O strip() { // TODO: gut this at some point
-        final TObj clone = this.clone();
-        clone.types = this.types.access(null).label(null);
-        clone.quantifier = this.q().one();
-        return (O) clone;
+            return ObjectHelper.root(this, object).set(is(__.or(__.a(this).as(this.label()), __.a(object).as(object.label()))).bytecode());
     }
 
     @Override
@@ -244,14 +205,14 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         if (null == object) {
             clone.value = null;
             clone.types = this.types.pattern(null);
-        } else if (object instanceof Pattern && !((Pattern) object).constant()) {
+        } else if (object instanceof Pattern && (!((Pattern) object).constant()) || object instanceof Inst) {
             clone.value = null;
             clone.types = this.types.pattern((Pattern) object);
         } else {
             clone.value = object;
             clone.types = this.types.pattern(null);
         }
-        assert !(clone.value instanceof Inst) && (this.types == null || !(this.types.pattern() instanceof Inst)); // TODO: Remove when proved
+        assert !(clone.value instanceof Inst); // TODO: Remove when proved
         return (O) clone;
     }
 
@@ -283,15 +244,45 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return (O) clone;
     }
 
+    // @Override
     public <O extends Obj> O member(final Obj name, final Obj value) {
         final TObj clone = this.clone();
         clone.types = this.types.member(name, value);
         return (O) clone;
     }
 
+    @Override
     public <O extends Obj> O insts(final PMap<Inst, Inst> insts) {
         final TObj clone = this.clone();
         clone.types = this.types.insts(insts);
         return (O) clone;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.value, this.q(), this.types);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof TObj &&
+                ((this.q().isZero() && ((TObj) object).q().isZero()) ||
+                        (Objects.equals(this.value, ((TObj) object).value) &&
+                                Objects.equals(this.q(), ((TObj) object).q()) &&
+                                Objects.equals(this.types, ((TObj) object).types)));
+    }
+
+    @Override
+    public String toString() {
+        return StringFactory.object(this);
+    }
+
+    @Override
+    public TObj clone() {
+        try {
+            return (TObj) super.clone();
+        } catch (final CloneNotSupportedException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

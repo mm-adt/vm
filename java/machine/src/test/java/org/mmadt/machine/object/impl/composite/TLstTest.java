@@ -24,7 +24,6 @@ package org.mmadt.machine.object.impl.composite;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
@@ -32,17 +31,13 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.Bindings;
-import org.mmadt.machine.object.model.type.POr;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
-import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -93,9 +88,9 @@ final class TLstTest {
         assertFalse(list2.constant());
         // System.out.println(list1.or(list2));
         assertFalse(list1.or(list2).constant());
-        assertEquals(list1.or(list2), list2.or(list1));
+//        assertEquals(list1.or(list2), list2.or(list1));
         assertTrue(list1.or(list2).isType());
-        assertTrue(list1.or(list2).get() instanceof POr);
+        assertTrue(list1.or(list2).get() instanceof Inst);
 
     }
 

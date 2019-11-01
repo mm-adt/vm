@@ -28,7 +28,6 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.List;
@@ -91,7 +90,7 @@ final class TBoolTest {
     @Test
     void shouldOrCorrectly() {
         assertEquals(TBool.of(true), TBool.of(true).or(TBool.of(true)));
-        assertEquals(TBool.of(true).q(plus), TBool.of(true).q(plus).or(TBool.of(true).q(qmark)));
+        assertEquals("true{+}|true{?}", TBool.of(true).q(plus).or(TBool.of(true).q(qmark)).toString());
         assertEquals("bool|false", TBool.some().or(TBool.of(false)).toString());
         assertEquals("true", TBool.of(true).or(TBool.of(false)).toString());
         assertEquals("true{*}|false", TBool.of(true).q(star).or(TBool.of(false)).toString());
@@ -99,7 +98,7 @@ final class TBoolTest {
         assertEquals("(true{*}~x|false~y)~z", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).label("z").toString());
         assertEquals("(true{*}~x|false~y){?}", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).q(qmark).toString());
         assertTrue(TBool.of(true).q(star).or(TBool.of(false)).isType());
-        assertEquals(TBool.of(true).q(star), ((POr) TBool.of(true).q(star).or(TBool.of(false)).get()).predicates().get(0));
+        // assertEquals(TBool.of(true).q(star), ((POr) TBool.of(true).q(star).or(TBool.of(false)).get()).predicates().get(0));
     }
 
     @Test
