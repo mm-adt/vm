@@ -41,6 +41,7 @@ import org.mmadt.machine.object.model.type.POr;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
@@ -117,7 +118,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <B extends WithRing<B>> Q<B> q() {
+    public <B extends WithOrderedRing<B>> Q<B> q() {
         return this.quantifier;
     }
 

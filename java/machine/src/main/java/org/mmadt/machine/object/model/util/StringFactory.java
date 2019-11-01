@@ -254,11 +254,11 @@ public final class StringFactory {
         else if (quantifier.isPlus())
             return LCURL + CROSS + RCURL;
         else if (quantifier.constant())
-            return LCURL + quantifier.low() + RCURL;
+            return LCURL + quantifier.peek() + RCURL;
         else
             return LCURL +
-                    (quantifier.low().get().equals(Integer.MIN_VALUE) ? EMPTY : quantifier.low()) + COMMA +
-                    (quantifier.high().get().equals(Integer.MAX_VALUE) ? EMPTY : quantifier.high()) + RCURL;
+                    (quantifier.peek().get().equals(Integer.MIN_VALUE) ? EMPTY : quantifier.peek()) + COMMA +
+                    (quantifier.last().get().equals(Integer.MAX_VALUE) ? EMPTY : quantifier.last()) + RCURL;
     }
 
     public static String string(final Str string) {

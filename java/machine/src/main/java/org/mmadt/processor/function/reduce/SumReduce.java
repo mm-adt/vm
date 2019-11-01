@@ -24,14 +24,14 @@ package org.mmadt.processor.function.reduce;
 
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
-import org.mmadt.machine.object.model.type.algebra.WithRing;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.processor.function.AbstractFunction;
 import org.mmadt.processor.function.ReduceFunction;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class SumReduce<S extends WithRing<S>> extends AbstractFunction implements ReduceFunction<S, S> {
+public final class SumReduce<S extends WithOrderedRing<S>> extends AbstractFunction implements ReduceFunction<S, S> {
 
     private SumReduce(final Q quantifier, final String label) {
         super(quantifier, label);
@@ -39,7 +39,7 @@ public final class SumReduce<S extends WithRing<S>> extends AbstractFunction imp
 
     @Override
     public S apply(final S obj, final S current) {
-        return current.plus(obj).mult(obj.<S>q().low());
+        return current.plus(obj).mult(obj.<S>q().peek());
     }
 
     @Override
@@ -49,11 +49,11 @@ public final class SumReduce<S extends WithRing<S>> extends AbstractFunction imp
 
     @Override
     public S getInitialValue() {
-        return (S) this.quantifier().zero().low();
+        return (S) this.quantifier().zero().peek();
     }
 
 
-    public static <S extends WithRing<S>> SumReduce<S> compile(final Inst inst) {
+    public static <S extends WithOrderedRing<S>> SumReduce<S> compile(final Inst inst) {
         return new SumReduce<>(inst.q(), inst.label());
     }
 }

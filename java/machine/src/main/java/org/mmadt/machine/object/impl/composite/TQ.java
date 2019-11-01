@@ -27,7 +27,7 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.machine.object.model.type.algebra.WithRing;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.function.Supplier;
@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
+public final class TQ<A extends WithOrderedRing<A>> extends TObj implements Q<A> {
 
     public static final Q ONE = new TQ<>(1, 1); // TODO: necessary for default value
 
@@ -52,6 +52,16 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
         super(low.equals(high) ? (Supplier) () -> TInt.of(low) : (Supplier) () -> TInt.of(low, high));
     }
 
+    @Override
+    public A peek() {
+        return this.object().peek();
+    }
+
+    @Override
+    public A last() {
+        return this.object().last();
+    }
+
 
     @Override
     public A object() {
@@ -60,7 +70,7 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
 
     @Override
     public boolean constant() {
-        return this.low().equals(this.high());
+        return this.peek().equals(this.last());
     }
 
     @Override
@@ -75,7 +85,7 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
 
     @Override
     public boolean test(final Obj obj) {
-        return (((WithOrder<A>) obj.q().low()).gte(this.low()).<Boolean>get() && ((WithOrder<A>) obj.q().high()).lte(this.high()).<Boolean>get());
+        return (((WithOrder<A>) obj.q().peek()).gte(this.peek()).<Boolean>get() && ((WithOrder<A>) obj.q().last()).lte(this.last()).<Boolean>get());
     }
 
     @Override
@@ -86,8 +96,8 @@ public final class TQ<A extends WithRing<A>> extends TObj implements Q<A> {
     @Override
     public boolean equals(final Object object) {
         return object instanceof Q &&
-                this.high().equals(((Q) object).high()) &&
-                this.low().equals(((Q) object).low()); // TODO
+                this.last().equals(((Q) object).last()) &&
+                this.peek().equals(((Q) object).peek()); // TODO
     }
 
     @Override

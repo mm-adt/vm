@@ -27,7 +27,7 @@ package org.mmadt.machine.object.model.type.algebra;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithField<A extends WithField<A>> extends WithCommutativeRing<A>, WithGroupMult<A> {
+public interface WithField<A extends WithField<A>> extends WithOrderedRing<A>, WithGroupMult<A> {
 
     @Override
     public A one();

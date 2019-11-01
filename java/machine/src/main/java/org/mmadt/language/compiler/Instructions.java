@@ -81,9 +81,9 @@ public final class Instructions {
             case DB:
                 return model.get(DB);
             case DEDUP:
-                return filter(domain, domain.q().one().low(), inst);
+                return filter(domain, domain.q().one().peek(), inst);
             case COUNT:
-                return reduce(domain.q(), domain.q().low());
+                return reduce(domain.q(), domain.q().peek());
             case ERROR:
                 throw new RuntimeException("Compilation error: " + domain + "::" + inst);
             case EQ:
@@ -97,7 +97,7 @@ public final class Instructions {
             case GTE:
                 return map(domain, TBool.some(), inst);
             case GROUPCOUNT:
-                return TRec.of(arg(inst, 1).q(inst.q()), domain.q().low().set(null)).q(one);
+                return TRec.of(arg(inst, 1).q(inst.q()), domain.q().peek().set(null)).q(one);
             case ID:
                 return endoMap(domain, inst);
             case IS:
@@ -127,7 +127,7 @@ public final class Instructions {
             case Q:
                 return map(domain, domain.q(), inst);
             case RANGE: // TODO: none clip
-                return domain.q(min((Int) inst.get(TInt.twoInt()), TInt.of(max(domain.<Int>q().low(), (Int) inst.get(TInt.oneInt())))), min(domain.<Int>q().high(), (Int) inst.get(TInt.twoInt())));
+                return domain.q(min((Int) inst.get(TInt.twoInt()), TInt.of(max(domain.<Int>q().peek(), (Int) inst.get(TInt.oneInt())))), min(domain.<Int>q().last(), (Int) inst.get(TInt.twoInt())));
             case START:
                 return inst.args().isEmpty() ? TObj.none() :
                         1 == inst.args().size() ? inst.args().get(0) :
@@ -167,12 +167,12 @@ public final class Instructions {
     }
 
     private static Obj filter(final Obj domain, final Inst inst) {
-        return filter(domain, domain.q().zero().low(), inst);
+        return filter(domain, domain.q().zero().peek(), inst);
     }
 
 
     private static Obj filter(final Obj domain, final WithRing low, final Inst inst) {
-        return domain.q(low,domain.q().mult(inst.q()).high());
+        return domain.q(low,domain.q().mult(inst.q()).last());
     }
 
     private static Obj reduce(final Obj domain, final Obj range) {

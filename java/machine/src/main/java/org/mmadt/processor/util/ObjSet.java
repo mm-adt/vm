@@ -63,7 +63,7 @@ public final class ObjSet<S extends Obj> extends AbstractSet<S> implements Set<S
     public long count() {
         long count = 0L;
         for (final S obj : this.map.values()) {
-            count = count + obj.q().low().<Integer>get(); // TODO: smarter count-based quantification
+            count = count + obj.q().peek().<Integer>get(); // TODO: smarter count-based quantification
         }
         return count;
     }

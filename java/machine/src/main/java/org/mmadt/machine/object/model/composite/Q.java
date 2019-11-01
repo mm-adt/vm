@@ -22,17 +22,19 @@
 
 package org.mmadt.machine.object.model.composite;
 
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.machine.object.model.type.algebra.WithRing;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 
 import java.util.function.UnaryOperator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO: WithOrderedRing?
+public interface Q<A extends WithOrderedRing<A>> extends Obj, WithOrderedRing<Q<A>> { // TODO: WithOrderedRing?
 
     public enum Tag implements UnaryOperator<Q> {
         zero, one, star, qmark, plus;
@@ -41,15 +43,15 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
         public Q apply(final Q quantifier) {
             switch (this) {
                 case zero:
-                    return new TQ<>(quantifier.low().zero(), quantifier.low().zero());
+                    return new TQ<>(quantifier.peek().zero(), quantifier.peek().zero());
                 case one:
-                    return new TQ<>(quantifier.low().one(), quantifier.low().one());
+                    return new TQ<>(quantifier.peek().one(), quantifier.peek().one());
                 case star:
-                    return new TQ<>(quantifier.low().zero(), (WithRing) ((WithOrder) quantifier.high()).max());
+                    return new TQ<>(quantifier.peek().zero(), quantifier.last().max());
                 case qmark:
-                    return new TQ<>(quantifier.low().zero(), quantifier.high().one());
+                    return new TQ<>(quantifier.peek().zero(), quantifier.last().one());
                 case plus:
-                    return new TQ<>(quantifier.low().one(), (WithRing) ((WithOrder) quantifier.high()).max());
+                    return new TQ<>(quantifier.peek().one(), quantifier.last().max());
                 default:
                     throw new RuntimeException("Undefined shorthand: " + this);
             }
@@ -60,44 +62,56 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
     public A object();
 
     @Override
-    public default <O extends Obj> O peek() {
-        return (O) this.object().peek();
-    }
-
-    @Override
-    public default <O extends Obj> O last() {
-        return (O) this.object().last();
-    }
-
-    public default A low() {
+    public default A peek() {
         return this.object().peek();
     }
 
-    public default A high() {
+    @Override
+    public default A last() {
         return this.object().last();
     }
 
     @Override
     public default Q<A> mult(final Q<A> object) {
-        return new TQ<>(this.low().mult(object.low()), this.high().mult(object.high()));
+        return new TQ<>(this.peek().mult(object.peek()), this.last().mult(object.last()));
     }
 
     @Override
     public default Q<A> plus(final Q<A> object) {
-        return new TQ<>(this.low().plus(object.low()), this.high().plus(object.high()));
+        return new TQ<>(this.peek().plus(object.peek()), this.last().plus(object.last()));
     }
 
     @Override
     public default Q<A> neg() {
-        return new TQ<>(this.low().neg(), this.high().neg());
+        return new TQ<>(this.peek().neg(), this.last().neg());
+    }
+
+    @Override
+    public default Bool gt(final Q<A> object) {
+        return TBool.of(this.last().gt(object.last()));
+    }
+
+    @Override
+    public default Bool lt(Q<A> object) {
+        return TBool.of(this.last().lt(object.last()));
+    }
+
+    @Override
+    public default Q<A> max() {
+        return new TQ<>(this.peek().max(), this.last().max());
+    }
+
+    @Override
+    public default Q<A> min() {
+        return new TQ<>(this.peek().min(), this.last().min());
     }
 
     public default Q<A> and(final Q<A> obj) {
-        return new TQ<>(this.low().mult(obj.low()), this.high().mult(obj.high()));
+        return new TQ<>(this.peek().mult(obj.peek()), this.last().mult(obj.last()));
     }
 
     public default Q<A> or(final Q<A> obj) {
-        return new TQ<>(this.low().plus(obj.low()), this.high().plus(obj.high()));
+        return new TQ<>(this.peek().plus(obj.peek()), this.last().plus(obj.last()));
     }
 
     @Override
@@ -123,25 +137,25 @@ public interface Q<A extends WithRing<A>> extends Obj, WithRing<Q<A>> { // TODO:
     }
 
     public default boolean isStar() {
-        return this.low().isZero() && ((WithOrder) this.high()).isMax();
+        return this.peek().isZero() && ((WithOrder) this.last()).isMax();
     }
 
     public default boolean isPlus() {
-        return this.low().isOne() && ((WithOrder) this.high()).isMax();
+        return this.peek().isOne() && ((WithOrder) this.last()).isMax();
     }
 
     public default boolean isQMark() {
-        return this.low().isZero() && this.high().isOne();
+        return this.peek().isZero() && this.last().isOne();
     }
 
     @Override
     public default boolean isZero() {
-        return this.low().isZero() && this.high().isZero();
+        return this.peek().isZero() && this.last().isZero();
     }
 
     @Override
     public default boolean isOne() {
-        return this.low().isOne() && this.high().isOne();
+        return this.peek().isOne() && this.last().isOne();
     }
 
 

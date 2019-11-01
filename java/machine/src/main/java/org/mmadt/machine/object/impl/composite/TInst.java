@@ -32,6 +32,7 @@ import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
@@ -100,13 +101,13 @@ public final class TInst extends TObj implements Inst {
     }
 
     @Override
-    public <A extends WithRing<A>> Q<A> q() {   // TODO: this might not make sense moving forward as an instruction can't have a quantifier and be quantified :|
+    public <A extends WithOrderedRing<A>> Q<A> q() {   // TODO: this might not make sense moving forward as an instruction can't have a quantifier and be quantified :|
         if (this.get() instanceof Stream) { // TODO: memoize this
             A low = null;
             A high = null;
             for (final Inst a : this.iterable()) {
-                low = null == low ? a.<A>q().low() : low.plus(a.<A>q().low());
-                high = null == high ? a.<A>q().high() : high.plus(a.<A>q().high());
+                low = null == low ? a.<A>q().peek() : low.plus(a.<A>q().peek());
+                high = null == high ? a.<A>q().last() : high.plus(a.<A>q().last());
             }
             return new TQ<>(low, high);
         }

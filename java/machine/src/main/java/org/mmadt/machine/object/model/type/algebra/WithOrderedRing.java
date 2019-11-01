@@ -46,4 +46,10 @@ public interface WithOrderedRing<A extends WithOrderedRing<A>> extends WithRing<
 
     @Override
     public A neg();
+
+    @Override
+    public A max();
+
+    @Override
+    public A min();
 }

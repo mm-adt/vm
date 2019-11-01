@@ -39,6 +39,7 @@ import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -70,7 +71,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return null != this.symbol() && !BASE_SYMBOLS.contains(this.symbol());
     }
 
-    public <B extends WithRing<B>> Q<B> q();
+    public <B extends WithOrderedRing<B>> Q<B> q();
 
     public String label();
 
@@ -249,14 +250,14 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O q(final Object low, final Object high) {
-        return this.q(new TQ<>((WithRing) ObjectHelper.from(low), (WithRing) ObjectHelper.from(high)));
+        return this.q(new TQ<>((WithOrderedRing) ObjectHelper.from(low), (WithOrderedRing) ObjectHelper.from(high)));
     }
 
     public default <O extends Obj> O q(final Object count) {
-        return this.q((WithRing) ObjectHelper.from(count));
+        return this.q((WithOrderedRing) ObjectHelper.from(count));
     }
 
-    public default <O extends Obj> O q(final WithRing count) {
+    public default <O extends Obj> O q(final WithOrderedRing count) {
         return this.q(new TQ<>(count));
     }
 

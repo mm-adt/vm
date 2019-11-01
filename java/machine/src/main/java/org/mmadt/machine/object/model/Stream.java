@@ -88,14 +88,14 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
                         (!match && !a.test(b)) ||
                         (match && !a.match(bindings, b)))
                     return false;
-                lowA = lowA.plus(a.q().low());
-                highA = highA.plus(a.q().high());
+                lowA = lowA.plus(a.q().peek());
+                highA = highA.plus(a.q().last());
             }
-            lowB = lowB.plus(b.q().low());
-            highB = highB.plus(b.q().high());
+            lowB = lowB.plus(b.q().peek());
+            highB = highB.plus(b.q().last());
         }
-        return ((WithOrder) ((WithRing) tester.q().low()).mult(lowA.peek())).lte(((WithRing) testee.q().low()).mult(lowB)).and(
-                ((WithOrder) ((WithRing) tester.q().high()).mult(highA.peek())).gte(((WithRing) testee.q().high()).mult(highB))).get();
+        return ((WithOrder) ((WithRing) tester.q().peek()).mult(lowA.peek())).lte(((WithRing) testee.q().peek()).mult(lowB)).and(
+                ((WithOrder) ((WithRing) tester.q().last()).mult(highA.peek())).gte(((WithRing) testee.q().last()).mult(highB))).get();
 
     }
 }

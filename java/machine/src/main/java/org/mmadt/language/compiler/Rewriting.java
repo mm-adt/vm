@@ -69,7 +69,7 @@ public final class Rewriting {
                     }
                     int counter = 0;
                     while (!refBc.isEmpty() && // removes previous references that are a sub-references of the current reference
-                            ++counter < range.access().q().high().<Integer>get() &&
+                            ++counter < range.access().q().last().<Integer>get() &&
                             BytecodeHelper.isSubset(refBc.peekLast().opcode().get().equals(Tokens.REF) ?
                                     BytecodeHelper.reference(refBc.peekLast()).access() : refBc.peekLast(), range.access())) {
                         domain = refBc.removeLast().domain();

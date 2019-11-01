@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Real extends WithField<Real>, WithOrder<Real> {
+public interface Real extends WithField<Real> {
 
     public default Float java() {
         return this.get();
