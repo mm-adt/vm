@@ -26,7 +26,6 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 
 import java.util.function.UnaryOperator;
@@ -137,11 +136,11 @@ public interface Q<A extends WithOrderedRing<A>> extends Obj, WithOrderedRing<Q<
     }
 
     public default boolean isStar() {
-        return this.peek().isZero() && ((WithOrder) this.last()).isMax();
+        return this.peek().isZero() && this.last().isMax();
     }
 
     public default boolean isPlus() {
-        return this.peek().isOne() && ((WithOrder) this.last()).isMax();
+        return this.peek().isOne() && this.last().isMax();
     }
 
     public default boolean isQMark() {
