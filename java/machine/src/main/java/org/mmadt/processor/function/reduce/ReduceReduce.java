@@ -23,6 +23,7 @@
 package org.mmadt.processor.function.reduce;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
@@ -41,7 +42,7 @@ public final class ReduceReduce<S extends WithRing<S>> extends AbstractFunction 
 
     @Override
     public S apply(final S obj, final S current) {
-        return (S) argument(1).mapArg(obj);
+        return this.<S, S>argument(1).mapArg(obj);
     }
 
     @Override
@@ -51,7 +52,7 @@ public final class ReduceReduce<S extends WithRing<S>> extends AbstractFunction 
 
     @Override
     public S getInitialValue() {
-        return (S) argument(0).mapArg(TObj.none());
+        return this.<Obj, S>argument(0).mapArg(TObj.none());
     }
 
 

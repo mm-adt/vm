@@ -45,7 +45,7 @@ public final class AndMap<S extends Obj> extends AbstractFunction implements Map
 
     @Override
     public Bool apply(final S obj) {
-        return Stream.of(this.<S, Bool>arguments()).map(a -> a.mapArg(obj)).reduce((a, b) -> a.and(b)).orElse(TBool.of(true));
+        return Stream.of(this.<S, Bool>arguments()).map(a -> a.mapArg(obj)).reduce(Bool::and).orElse(TBool.of(true));
     }
 
 

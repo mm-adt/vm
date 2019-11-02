@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.language.Query;
-import org.mmadt.language.__;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
@@ -52,8 +51,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
-import static org.mmadt.language.__.is;
 
 /**
  * A Java representation of an mm-ADT {@code obj}.

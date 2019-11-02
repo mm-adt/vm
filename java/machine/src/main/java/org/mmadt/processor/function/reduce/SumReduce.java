@@ -52,7 +52,6 @@ public final class SumReduce<S extends WithOrderedRing<S>> extends AbstractFunct
         return (S) this.quantifier().zero().peek();
     }
 
-
     public static <S extends WithOrderedRing<S>> SumReduce<S> compile(final Inst inst) {
         return new SumReduce<>(inst.q(), inst.label());
     }

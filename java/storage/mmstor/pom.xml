@@ -39,5 +39,11 @@
             <artifactId>machine</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.mmadt.storage</groupId>
+            <artifactId>compliance</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

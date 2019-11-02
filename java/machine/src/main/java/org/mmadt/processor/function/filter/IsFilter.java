@@ -36,13 +36,13 @@ import org.mmadt.processor.function.FilterFunction;
  */
 public final class IsFilter<S extends Obj> extends AbstractFunction implements FilterFunction<S> {
 
-    private IsFilter(final Q quantifier, final String label, final Argument<S,Bool> argument) {
-        super(quantifier, label,argument);
+    private IsFilter(final Q quantifier, final String label, final Argument<S, Bool> argument) {
+        super(quantifier, label, argument);
     }
 
     @Override
     public boolean test(final S obj) {
-        return this.argument(0).mapArg(obj).<Boolean>get();
+        return this.<S, Bool>argument(0).mapArg(obj).java();
     }
 
     public static <S extends Obj> IsFilter<S> compile(final Inst inst) {

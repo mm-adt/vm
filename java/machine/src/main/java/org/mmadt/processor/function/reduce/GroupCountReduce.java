@@ -54,10 +54,10 @@ public final class GroupCountReduce<S extends Obj, E extends Obj, A extends With
 
     @Override
     public Rec<E, A> merge(final Rec<E, A> valueA, final Rec<E, A> valueB) {
-        final Rec<E, A> tuple = TRec.of();
-        valueA.<PMap<E, A>>get().forEach(tuple::put);
-        valueB.<PMap<E, A>>get().forEach(tuple::put);
-        return tuple;
+        final Rec<E, A> rec = TRec.of();
+        valueA.<PMap<E, A>>get().forEach(rec::put);
+        valueB.<PMap<E, A>>get().forEach(rec::put);
+        return rec;
     }
 
     @Override
