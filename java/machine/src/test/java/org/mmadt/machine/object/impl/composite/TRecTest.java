@@ -470,7 +470,7 @@ final class TRecTest {
     @Test
     void shouldSupportRecursiveTypeMatching() {
         Rec<Obj, Obj> person = TRec.of("name", TStr.some().label("a"), "friend", TRec.some().symbol("person")).symbol("person");
-        person = person.put(TStr.of("friend"), person.label("b").q(qmark));
+        person.put(TStr.of("friend"), person.label("b").q(qmark));
         assertDoesNotThrow(person::toString); // check for stack overflow
         final Rec<Obj, Obj> marko = TRec.of("name", "marko");
         marko.type(person);
