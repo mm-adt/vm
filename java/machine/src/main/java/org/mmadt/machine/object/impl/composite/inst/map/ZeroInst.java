@@ -20,36 +20,33 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.mmproc.util;
+package org.mmadt.machine.object.impl.composite.inst.map;
 
-import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.function.ReduceFunction;
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
+import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithZero;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class InMemoryReducer<S extends Obj, E extends Obj> implements Reducer<S, E> {
+public final class ZeroInst<S extends WithZero<S>> extends TInst implements MapInstruction<S, S> {
 
-    private final ReduceFunction<S, E> reduceFunction;
-    private E value;
-
-    public InMemoryReducer(final ReduceFunction<S, E> reduceFunction) {
-        this.reduceFunction = reduceFunction;
-        this.value = this.reduceFunction.getInitialValue();
+    private ZeroInst() {
+        super(PList.of(Tokens.ZERO));
     }
 
-    @Override
-    public E get() {
-        return this.value;
+    public S apply(final S s) {
+        return s.zero();
     }
 
-    @Override
-    public void add(final S obj) {
-        this.value = this.reduceFunction.apply(this.value, obj);
-    }
-
-    @Override
-    public void reset() {
-        this.value = this.reduceFunction.getInitialValue();
+    public static <S extends WithZero<S>> S create(final S source, final S zero) {
+        return ObjectHelper.allInstances(source) ?
+                zero :
+                source.q().constant() ?
+                        zero.q(source.q()) :
+                        zero.q(source.q()).access(source.access().mult(new ZeroInst<>()));
     }
 }

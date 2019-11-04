@@ -70,12 +70,12 @@ class TypeTest {
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2)),
                     TInt.of(1, 2).plus(TInt.of(7))),
-            new TestArgs<>(List.of(
-                    NONE, /*TInt.some(2),*/ TInt.zeroInt().q(2)),
-                    TInt.of(1, 2).plus(TInt.of(3)).zero()),
-            new TestArgs<>(List.of(
-                    NONE, /*TInt.some(2),*/ TInt.oneInt().q(2)),
-                    TInt.of(1, 2).one()),
+           // new TestArgs<>(List.of(
+           //         NONE, /*TInt.some(2),*/ TInt.zeroInt().q(2)),
+           //         TInt.of(1, 2).plus(TInt.of(3)).zero()),
+           // new TestArgs<>(List.of(
+           //         NONE, /*TInt.some(2),*/ TInt.oneInt().q(2)),
+           //         TInt.of(1, 2).one()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2)),
                     TInt.of(1, 2).plus(TInt.of(7)).dedup()),

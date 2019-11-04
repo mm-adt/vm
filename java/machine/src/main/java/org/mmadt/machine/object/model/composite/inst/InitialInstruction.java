@@ -20,36 +20,17 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.mmproc.util;
+package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.function.ReduceFunction;
+import org.mmadt.machine.object.model.composite.Inst;
+
+import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class InMemoryReducer<S extends Obj, E extends Obj> implements Reducer<S, E> {
+public interface InitialInstruction<S extends Obj> extends Inst { // Supplier<Iterator<S>> {
 
-    private final ReduceFunction<S, E> reduceFunction;
-    private E value;
-
-    public InMemoryReducer(final ReduceFunction<S, E> reduceFunction) {
-        this.reduceFunction = reduceFunction;
-        this.value = this.reduceFunction.getInitialValue();
-    }
-
-    @Override
-    public E get() {
-        return this.value;
-    }
-
-    @Override
-    public void add(final S obj) {
-        this.value = this.reduceFunction.apply(this.value, obj);
-    }
-
-    @Override
-    public void reset() {
-        this.value = this.reduceFunction.getInitialValue();
-    }
+    public Iterator<S> gett();
 }

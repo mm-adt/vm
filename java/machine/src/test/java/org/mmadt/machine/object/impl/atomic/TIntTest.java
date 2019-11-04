@@ -76,7 +76,7 @@ final class TIntTest {
 
         final Model model= TModel.of("ex");
         model.define("int",TInt.of().inst(TInst.of(Tokens.PLUS,TInt.some().label("a")), __.plus(model.sym("a")).bytecode()));*/
-        final Obj x = start(TInt.of(1,2,3)).plus(TInt.some().<Int>id().mult(TInt.of(4))).is(TInt.some().minus(TInt.of(2)).gt(TInt.of(7)).id()).get();
+        final Obj x = TInt.of(1,2,3).plus(TInt.of(12)).count();
         System.out.println(x);
         x.iterable().forEach(System.out::println);
     }

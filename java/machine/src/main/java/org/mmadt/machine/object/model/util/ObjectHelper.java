@@ -31,6 +31,7 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
@@ -72,7 +73,7 @@ public final class ObjectHelper {
         else if (1 == objects.length)
             return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0] instanceof Query ? ((Query) objects[0]).bytecode() : objects[0]);
         else {
-            return constructor.apply(null).access(TInst.of(Tokens.START, objects).domainAndRange(TObj.none(), TInt.some(objects.length))).q(objects.length);
+            return StartInst.create(constructor.apply(null), objects);//.access(TInst.of(Tokens.START, objects).domainAndRange(TObj.none(), TInt.some(objects.length))).q(objects.length);
         }
     }
 
@@ -198,15 +199,9 @@ public final class ObjectHelper {
 
     public static boolean allInstances(final Obj... args) {
         for (final Obj arg : args) {
-            if (!arg.isInstance())
+            if (null == arg || !arg.isInstance())
                 return false;
         }
         return true;
-    }
-
-    public static <A extends Obj> A instanceAccess(final A obj) {
-        if (obj.isInstance())
-            return obj.access(TInst.ids());
-        return obj;
     }
 }

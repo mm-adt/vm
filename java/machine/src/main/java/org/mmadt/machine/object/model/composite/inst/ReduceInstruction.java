@@ -20,16 +20,20 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.composite.inst.filter;
+package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 
-import java.util.function.Predicate;
+import java.util.function.BiFunction;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface FilterInstruction<S extends Obj> {
+public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BiFunction<E, S, E> {
 
-    boolean testt(S t);
+    public E getInitialValue();
+
+    public E merge(final E valueA, final E valueB);
+
 }

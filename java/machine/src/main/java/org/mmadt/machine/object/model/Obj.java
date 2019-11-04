@@ -31,6 +31,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -290,6 +291,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return ObjectHelper.allInstances(this) ?
                 (O) this :
                 this.q(this.q().one().peek(), this.q().last()).access(this.access().mult(TInst.of(Tokens.DEDUP).domainAndRange(this, this.q(this.q().one().peek(), this.q().last()))));
+    }
+
+
+    public default <O extends Obj> O count() {
+        return CountInst.create((O) this);
     }
 
     public default <O extends Obj> O is(final Bool bool) {

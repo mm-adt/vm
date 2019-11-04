@@ -46,7 +46,7 @@ public final class GroupCountReduce<S extends Obj, E extends Obj, A extends With
     }
 
     @Override
-    public Rec<E, A> apply(final S obj, final Rec<E, A> current) {
+    public Rec<E, A> apply(final Rec<E, A> current, final S obj) {
         final E object = this.<S, E>argument(0).mapArg(obj);
         current.put(object, ((A) object.q().peek()).plus(current.<PMap<E, A>>get().getOrDefault(object, (A) this.quantifier().zero().peek())));
         return current;

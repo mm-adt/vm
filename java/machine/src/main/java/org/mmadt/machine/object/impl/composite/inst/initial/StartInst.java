@@ -20,28 +20,36 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.impl.composite.inst.filter;
+package org.mmadt.machine.object.impl.composite.inst.initial;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
+import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.processor.compiler.Argument;
+import org.mmadt.util.IteratorUtils;
+
+import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class IdInst<S extends Obj> extends TInst implements FilterInstruction<S> {
+public final class StartInst<S extends Obj> extends TInst implements InitialInstruction<S> {
 
-    private IdInst() {
-        super(PList.of(Tokens.ID));
+    private StartInst(final Object... arguments) {
+        super(PList.of(arguments));
+        this.<PList<Obj>>get().add(0, TStr.of(Tokens.START));
     }
 
-    public boolean testt(final S s) {
-        return true;
+    @Override
+    public Iterator<S> gett() {
+        return IteratorUtils.<Argument<Obj, S>, S>map(IteratorUtils.asIterator(this.args()), arg -> arg.mapArg(TObj.none()));
     }
 
-    public static <S extends Obj> S create(final S source) {
-        return source;
+    public static <S extends Obj> S create(final S source, final Object... arguments) {
+        return source.access(new StartInst<>(arguments)).q(arguments.length);
     }
 }

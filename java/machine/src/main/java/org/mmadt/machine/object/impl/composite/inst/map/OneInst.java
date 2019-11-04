@@ -20,28 +20,35 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.impl.composite.inst.filter;
+package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithOne;
+import org.mmadt.machine.object.model.util.ObjectHelper;
+
+import java.util.function.Supplier;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class IdInst<S extends Obj> extends TInst implements FilterInstruction<S> {
+public final class OneInst<S extends WithOne<S>> extends TInst implements MapInstruction<S, S> {
 
-    private IdInst() {
-        super(PList.of(Tokens.ID));
+    private OneInst() {
+        super(PList.of(Tokens.ONE));
     }
 
-    public boolean testt(final S s) {
-        return true;
+    public S apply(final S s) {
+        return s.one();
     }
 
-    public static <S extends Obj> S create(final S source) {
-        return source;
+    public static <S extends WithOne<S>> S create(final S source, final S one) {
+        return ObjectHelper.allInstances(source) ?
+                one :
+                source.q().constant() ?
+                        one.q(source.q()) :
+                        one.q(source.q()).access(source.access().mult(new OneInst<>()));
     }
 }

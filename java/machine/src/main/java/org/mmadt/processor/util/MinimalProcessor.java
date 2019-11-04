@@ -23,6 +23,8 @@
 package org.mmadt.processor.util;
 
 import org.mmadt.machine.object.impl.TModel;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.Processor;
@@ -32,12 +34,15 @@ import org.mmadt.processor.function.FilterFunction;
 import org.mmadt.processor.function.InitialFunction;
 import org.mmadt.processor.function.MapFunction;
 import org.mmadt.processor.function.QFunction;
+import org.mmadt.processor.function.ReduceFunction;
 import org.mmadt.util.EmptyIterator;
 import org.mmadt.util.FunctionUtils;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -52,6 +57,7 @@ public final class MinimalProcessor<S extends Obj, E extends Obj> implements Pro
     }
 
     private static <E extends Obj> Iterator<E> processTraverser(final E start, final Inst inst) {
+
         final QFunction function = FunctionTable.function(TModel.of("ex"), inst);
         if (function instanceof FilterFunction)
             return FunctionUtils.test((FilterFunction<Obj>) function, start).isPresent() ? IteratorUtils.of(start) : EmptyIterator.instance();
@@ -59,6 +65,8 @@ public final class MinimalProcessor<S extends Obj, E extends Obj> implements Pro
             return IteratorUtils.of((E) FunctionUtils.map((MapFunction) function, start));
         else if (function instanceof InitialFunction)
             return ((InitialFunction<E>) function).get();
+        else if (function instanceof ReduceFunction)
+            return IteratorUtils.of(IteratorUtils.stream(((List<E>) start.get()).iterator()).reduce((E) TInt.zeroInt(), ((ReduceFunction<E, E>) function)::apply));
         else
             throw new UnsupportedOperationException("This is not implemented yet: " + function);
 
@@ -77,7 +85,10 @@ public final class MinimalProcessor<S extends Obj, E extends Obj> implements Pro
     public Iterator<E> iterator(final Iterator<S> starts) {
         Stream<E> stream = (Stream<E>) IteratorUtils.stream(starts);
         for (final Inst inst : this.bytecode.iterable()) {
-            stream = stream.flatMap(s -> IteratorUtils.stream(MinimalProcessor.processTraverser(s, inst)));
+            if (FunctionTable.function(TModel.of("ex"), inst) instanceof ReduceFunction)
+                stream = IteratorUtils.stream(MinimalProcessor.processTraverser((E) TLst.of(stream.collect(Collectors.toList())), inst));
+            else
+                stream = stream.flatMap(s -> IteratorUtils.stream(MinimalProcessor.processTraverser(s, inst)));
         }
         return stream.map(s -> (E) s.label(this.bytecode.label())).iterator();
     }

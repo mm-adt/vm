@@ -20,28 +20,43 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.impl.composite.inst.filter;
+package org.mmadt.machine.object.impl.composite.inst.reduce;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
+import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class IdInst<S extends Obj> extends TInst implements FilterInstruction<S> {
+public final class CountInst<S extends Obj, E extends WithMonoidPlus<E>> extends TInst implements ReduceInstruction<S, E> {
 
-    private IdInst() {
-        super(PList.of(Tokens.ID));
+    private CountInst() {
+        super(PList.of(Tokens.COUNT));
     }
 
-    public boolean testt(final S s) {
-        return true;
+    @Override
+    public E apply(final E current, final S obj) {
+        return current.plus((E) obj.q().peek()); // TODO: objects must not have range quantification?
+    }
+
+    @Override
+    public E merge(final E valueA, final E valueB) {
+        return valueA.plus(valueB);
+    }
+
+    @Override
+    public E getInitialValue() {
+        return (E) this.q().peek().zero();
     }
 
     public static <S extends Obj> S create(final S source) {
-        return source;
+        return ObjectHelper.allInstances(source) ?
+                (S) source.q().peek() :
+                source.q().peek().one().set(null).access(source.access().mult(new CountInst<>()));
     }
 }

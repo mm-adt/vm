@@ -29,7 +29,7 @@ import java.util.function.BiFunction;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface ReduceFunction<S extends Obj, E extends Obj> extends BiFunction<S, E, E>, QFunction {
+public interface ReduceFunction<S extends Obj, E extends Obj> extends BiFunction<E, S, E>, QFunction {
 
     public E getInitialValue();
 

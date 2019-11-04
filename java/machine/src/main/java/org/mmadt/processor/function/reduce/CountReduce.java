@@ -39,7 +39,7 @@ public final class CountReduce<S extends Obj, E extends WithMonoidPlus<E>> exten
     }
 
     @Override
-    public E apply(final S obj, final E current) {
+    public E apply(final E current, final S obj) {
         return current.plus((E) obj.q().peek()); // TODO: objects must not have range quantification?
     }
 
