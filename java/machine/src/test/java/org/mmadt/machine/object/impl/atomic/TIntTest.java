@@ -24,7 +24,9 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.util.TestHelper;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -57,5 +59,12 @@ final class TIntTest {
         assertTrue(TObj.all().test(TInt.of(-1)));
         assertNotEquals(TInt.some(), TBool.some());
         assertNotEquals(TInt.some(), TStr.some());
+    }
+
+    @Test
+    void shouldMonoid() {
+        final Obj obj = TInt.of(1,2,3).mult(TInt.of(5)).minus(TInt.of(3)).is(TInt.of().gt(TInt.of(2)));
+        System.out.println(obj);
+        obj.iterable().forEach(System.out::println);
     }
 }

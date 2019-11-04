@@ -132,7 +132,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Bool gt(final Int integer) {
-        return OperatorHelper.binary(Tokens.GT, () -> TBool.of(this.java() > integer.java()), this, integer);
+        return OperatorHelper.binary2(Tokens.GT, () -> TBool.of(this.java() > integer.java()), this, integer);
     }
 
     @Override

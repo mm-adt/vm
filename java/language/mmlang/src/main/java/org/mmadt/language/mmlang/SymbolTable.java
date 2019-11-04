@@ -42,7 +42,7 @@ public final class SymbolTable {
 
     private final TModel model;
     private final Map<String, Obj> variables;
-    private Inst bytecode = TInst.id();
+    private Inst bytecode = TInst.identity();
 
     public SymbolTable(final TModel model) {
         this.model = model.clone();
@@ -81,7 +81,7 @@ public final class SymbolTable {
 
     public SymbolTable addInst(final String operator, final Inst inst) {
         return new SymbolTable(this.model, this.variables,
-                TInst.id().equals(this.bytecode) ?
+                TInst.identity().equals(this.bytecode) ?
                         TInst.of(List.of(inst)) :
                         OperatorHelper.operation(operator, this.bytecode, inst));
     }

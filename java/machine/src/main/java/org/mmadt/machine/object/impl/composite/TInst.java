@@ -67,7 +67,7 @@ public final class TInst extends TObj implements Inst {
         return NONE;
     }
 
-    public static Inst id() {
+    public static Inst identity() {
         return TInst.of(Tokens.ID);
     }
 

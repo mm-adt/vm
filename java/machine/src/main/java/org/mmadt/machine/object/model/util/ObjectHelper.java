@@ -72,8 +72,9 @@ public final class ObjectHelper {
             return constructor.apply(null);
         else if (1 == objects.length)
             return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0] instanceof Query ? ((Query) objects[0]).bytecode() : objects[0]);
-        else
-            return constructor.apply(null).access(start(objects)).q(objects.length);
+        else {
+            return constructor.apply(null).access(TInst.of(Tokens.START, objects).domainAndRange(TObj.none(), TInt.some(objects.length))).q(objects.length);
+        }
     }
 
     public static Object andValues(final TObj object1, final TObj object2) {
@@ -194,5 +195,13 @@ public final class ObjectHelper {
             return ((Query) object).bytecode();
         else
             throw new IllegalStateException("Unknown type: " + object.getClass());
+    }
+
+    public static boolean allInstances(final Obj... args) {
+        for (final Obj arg : args) {
+            if (!arg.isInstance())
+                return false;
+        }
+        return true;
     }
 }

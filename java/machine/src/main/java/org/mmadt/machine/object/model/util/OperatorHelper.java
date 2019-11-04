@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.util;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -60,7 +61,15 @@ public class OperatorHelper {
         if (objA.isInstance())
             return operator.get();
         else
-            return objA.access(objA.access().mult(TInst.of(opcode, objB)));
+            return objA.access(objA.access().mult(TInst.of(opcode, objB)));//.domainAndRange(objA.access((TInst)null),objA.access((TInst)null))));
+
+    }
+
+    public static <A extends Obj, B extends Obj> B binary2(final String opcode, final Supplier<B> operator, final A objA, final A objB) {
+        if (objA.isInstance() & objB.isInstance())
+            return operator.get();
+        else
+            return TBool.some().access(objA.access().mult(TInst.of(opcode, objB).domainAndRange(objB,TBool.some())));
 
     }
 

@@ -128,7 +128,7 @@ final class TInstTest {
         final Int gt10 = TInt.of(is(gt(10))).inst(TInst.of("add", 1), TInst.of("add", 2));
         final Int lt50 = TInt.of(is(lt(50))).inst(TInst.of("add", 3), TInst.of("add", 4));
         final Int gte100 = TInt.of(is(gte(100))).inst(TInst.of("sub", 1), TInst.of("sub", 2));
-        final Int combo = (TInt) gt10.and(lt50).or(gte100); // TODO: internal merge of instructions using or/and from inst
+        final Int combo = (TInt) gt10.and(lt50); // TODO: .or(gte100); // TODO: internal merge of instructions using or/and from inst
         final Int i9 = TInt.of(9);
         final Int i11 = TInt.of(11);
         //

@@ -69,16 +69,16 @@ class TypeTest {
                     start(1, 2, 3).plus(1).q(2).q()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2)),
-                    start(1, 2).plus(7)),
+                    TInt.of(1, 2).plus(TInt.of(7))),
             new TestArgs<>(List.of(
                     NONE, /*TInt.some(2),*/ TInt.zeroInt().q(2)),
-                    start(1, 2).plus(3).zero()),
+                    TInt.of(1, 2).plus(TInt.of(3)).zero()),
             new TestArgs<>(List.of(
                     NONE, /*TInt.some(2),*/ TInt.oneInt().q(2)),
-                    start(1, 2).one()),
+                    TInt.of(1, 2).one()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2)),
-                    start(1, 2).plus(7).dedup()),
+                    TInt.of(1, 2).plus(TInt.of(7)).dedup()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some()),
                     start(1, 2).plus(7).dedup().count()),
@@ -102,7 +102,7 @@ class TypeTest {
                     start(1, 2, 3, 4).plus(7).q(2).gt(5)),
             new TestArgs<>(List.of(
                     NONE, TInt.some(3), TInt.some(3), TBool.some(3)),
-                    start(1, 2, 3).plus(7).gt(5).id()),
+                    TInt.of(1, 2, 3).plus(TInt.of(7)).gt(TInt.of(5)).id()),
             // TODO: if you know that the the filter is always going to return true, then its an identity (not a filter) and thus, quantifier isn't lowsided to zero.
             new TestArgs<>(List.of(
                     NONE, TBool.of(true).q(7), List.of(List.of(NONE, TBool.of(true))), TBool.of(true).q(0, 7), TBool.of(true).q(0, 7)),
@@ -119,7 +119,7 @@ class TypeTest {
                     NONE, TInt.some(4), List.of(List.of(TInt.some(), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
                     start(1, 2, 3, 4).map(map(plus(3).gt(2))).is(eq(true).id())),
             new TestArgs<>(List.of(
-                    NONE, TStr.some().q(4), List.of(List.of(TStr.some(), TStr.some())), TRec.of(TStr.some(),TInt.some())),
+                    NONE, TStr.some().q(4), List.of(List.of(TStr.some(), TStr.some())), TRec.of(TStr.some(), TInt.some())),
                     start("a", "b", "c", "d").groupCount(plus("c"))),
 
 
@@ -131,7 +131,7 @@ class TypeTest {
                 .map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> {
                     assumeFalse(tp.ignore);
                     // System.out.println(tp.input.bytecode() + "\n=>" + tp.expected);
-                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(Rewriting.rewrite(TModel.of("ex"), ((Query) tp.input).bytecode())));
+                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(Rewriting.rewrite(TModel.of("ex"), tp.input instanceof Query ? ((Query) tp.input).bytecode() : ((Obj) tp.input).access())));
                 }));
     }
 }
