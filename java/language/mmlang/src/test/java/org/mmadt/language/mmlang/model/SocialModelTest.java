@@ -58,7 +58,7 @@ class SocialModelTest {
             new TestArgs("[db][get,'persons'][ref,person&['address':address{0},'age':int <= [is,[and,[a,int],[gt,75]]]]{*} <= [id]][get,'address']", "[db][get,'persons'][is,[get,'alive']][get,'address']"),
     };
 
-    @TestFactory
+    // @TestFactory
     Stream<DynamicTest> testParse() {
         return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input, () -> {

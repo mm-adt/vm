@@ -85,7 +85,7 @@ class PropertyGraphTest {
             new TestArgs("[ref,vertex&['id':1]{?} <= [db][is,[get,'id'][eq,1]]]", "[db][is,[get,'id'][eq,1]]"),
     };
 
-    @TestFactory
+    // @TestFactory
     Stream<DynamicTest> testParse() {
         return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input, () -> {

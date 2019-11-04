@@ -62,7 +62,7 @@ class KeyValueTest {
             new TestArgs(REF, "[db][order,[gt,[get,0]]][dedup,[get,0]][dedup,[get,0]][order,[lt,[get,0]]][count]"), // TODO: lt shouldn't work
     };
 
-    @TestFactory
+    // @TestFactory
     Stream<DynamicTest> testParse() {
         return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input, () -> {

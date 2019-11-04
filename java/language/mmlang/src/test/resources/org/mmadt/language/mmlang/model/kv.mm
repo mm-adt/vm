@@ -27,8 +27,8 @@
   -> [drop,0|1]                    => [error]]                                                    // [SCHEMA]
  [define,db,kv{*}
   -> [put,k~a,v~b]                 => [coalesce,[is,[get,0][eq,k~a]][put,1,v~b],[put,k~a,v~b]]
-  -> [order,[gt,[get,0]]]          =>                                                             // [SORT ORDER]
-  -> [dedup,[get,0]]               =>                                                             // [UNIQUE]
+  -> [order,[gt,[get,0]]]          => [id]                                                        // [SORT ORDER]
+  -> [dedup,[get,0]]               => [id]                                                        // [UNIQUE]
   -> [count]                       => [ref,int  <= [db][count]                                    // [AGGREGATE]
     -> [sum]                       => ]
   -> [is,[get,0][eq,(str|real)~a]] => [ref,v{?} <= [db][is,[get,0][eq,(str|real)~a]]]]]           // [INDEX]

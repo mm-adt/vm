@@ -129,7 +129,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return bindings.get(this.label());
         return this.insts(null == this.instructions() ? null : this.instructions().bind(bindings)).
                 set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
-                access(this.access().equals(TInst.none()) ? null : this.access().bind(bindings));
+                access(this.access().isOne() ? null : this.access().bind(bindings));
     }
 
     @Override
@@ -249,11 +249,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && (this.access().isZero());//|| this.access().isType());
+        return !this.constant() && (this.access().isOne());//|| this.access().isType());
     }
 
     public default boolean isReference() {
-        return !this.constant() && !this.access().isType();
+        return !this.constant() && !this.access().isOne();
     }
 
     public default boolean isInstance() {

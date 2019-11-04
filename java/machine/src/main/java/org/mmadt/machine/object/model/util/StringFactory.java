@@ -89,7 +89,7 @@ public final class StringFactory {
             builder.append(object.q());
         if (null != object.label())
             builder.append(TILDE).append(object.label());
-        if (!object.access().isZero())
+        if (!object.access().isOne())
             builder.append(SPACE).append(MAPSFROM).append(SPACE).append(object.access());
         if (null != object.members()) {
             builder.append(NEWLINE);
@@ -215,26 +215,28 @@ public final class StringFactory {
             builder.append((PAnd) inst.get());
         else if (!TInst.some().get().equals(inst.get())) {
             for (Inst single : inst.iterable()) {
-                boolean first = true;
-                builder.append(LBRACKET);
-                if (single.opcode().get().equals(DEFINE))
-                    builder.append(DEFINE).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
-                else if (single.opcode().get().equals(MODEL))
-                    builder.append(MODEL).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
-                else {
-                    for (Obj object : single.<Iterable<Obj>>get()) {
-                        if (first) {
-                            builder.append(object.get().toString()).append(COMMA);
-                            first = false;
-                        } else
-                            builder.append(object).append(COMMA);
-                    }
-                    builder.deleteCharAt(builder.length() - 1);
-                }
-                builder.append(RBRACKET);
-                builder.append(quantifier(single.q()));
-                if (null != single.label())
-                    builder.append(TILDE).append(single.label());
+               if(!single.isZero()) {
+                   boolean first = true;
+                   builder.append(LBRACKET);
+                   if (single.opcode().get().equals(DEFINE))
+                       builder.append(DEFINE).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
+                   else if (single.opcode().get().equals(MODEL))
+                       builder.append(MODEL).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
+                   else {
+                       for (Obj object : single.<Iterable<Obj>>get()) {
+                           if (first) {
+                               builder.append(object.get().toString()).append(COMMA);
+                               first = false;
+                           } else
+                               builder.append(object).append(COMMA);
+                       }
+                       builder.deleteCharAt(builder.length() - 1);
+                   }
+                   builder.append(RBRACKET);
+                   builder.append(quantifier(single.q()));
+                   if (null != single.label())
+                       builder.append(TILDE).append(single.label());
+               }
             }
             if (null != inst.label()) // TODO: this shouldn't happen over the entire stream
                 builder.append(TILDE).append(inst.label());

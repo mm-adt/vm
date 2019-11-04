@@ -100,7 +100,7 @@ public final class TType implements Type {
 
     @Override
     public Inst access() {
-        return null == this.access ? TInst.none() : this.access;
+        return null == this.access ? TInst.id() : this.access;
     }
 
     @Override

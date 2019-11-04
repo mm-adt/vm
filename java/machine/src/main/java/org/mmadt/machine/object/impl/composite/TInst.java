@@ -33,7 +33,6 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
@@ -66,6 +65,10 @@ public final class TInst extends TObj implements Inst {
 
     public static Inst none() {
         return NONE;
+    }
+
+    public static Inst id() {
+        return TInst.of(Tokens.ID);
     }
 
     public static Inst of(final String opcode, final Object... args) {
