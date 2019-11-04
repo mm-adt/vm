@@ -22,9 +22,10 @@
 
 package org.mmadt.machine.object.model.composite;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
@@ -32,8 +33,7 @@ import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
-import org.mmadt.machine.object.model.util.OperatorHelper;
-import org.mmadt.processor.util.MinimalProcessor;
+import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
 import java.util.Map;
@@ -52,18 +52,18 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default Rec<K, V> put(final K key, final V value) {
-        return OperatorHelper.unary(Tokens.PUT, () -> {
+        return (Rec<K, V>) PutInst.create(() -> {
             this.java().put(key, value);
             return this;
-        }, this);
+        }, this, key, value);
     }
 
     @Override
     public default Rec<K, V> drop(final K key) {
-        return OperatorHelper.unary(Tokens.DROP, () -> {
+        return (Rec<K, V>) DropInst.create(() -> {
             this.java().remove(key);
             return this;
-        }, this);
+        }, this, key);
     }
 
     @Override
@@ -98,6 +98,6 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default Iterable<Rec<K, V>> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Rec<K, V>, Rec<K, V>>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Rec<K, V>, Rec<K, V>>(this.access()).iterator(this);
     }
 }

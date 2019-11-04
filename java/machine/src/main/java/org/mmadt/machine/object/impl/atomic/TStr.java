@@ -22,13 +22,16 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 /**
@@ -64,27 +67,27 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Bool gt(final Str str) {
-        return OperatorHelper.binary(Tokens.GT, () -> TBool.of(this.java().compareTo(str.java()) > 0), this, str);
+        return GtInst.create(() -> TBool.of(this.java().compareTo(str.java()) > 0), this, str);
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Str && this.java().equals(((Str) obj).java())), this, obj);
+        return EqInst.create(() -> TBool.of(obj instanceof Str && this.java().equals(((Str) obj).java())), this, obj);
     }
 
     @Override
     public Bool lt(final Str str) {
-        return OperatorHelper.binary(Tokens.LT, () -> TBool.of(this.java().compareTo(str.java()) < 0), this, str);
+        return LtInst.create(() -> TBool.of(this.java().compareTo(str.java()) < 0), this, str);
     }
 
     @Override
     public Str plus(final Str str) {
-        return OperatorHelper.binary(Tokens.PLUS, () -> new TStr(this.java().concat(str.java())), this, str);
+        return PlusInst.create(() -> new TStr(this.java().concat(str.java())), this, str);
     }
 
     @Override
     public Str zero() {
-        return OperatorHelper.unary(Tokens.ZERO, () -> ZERO, this);
+        return ZeroInst.create(this, ZERO);
     }
 
     @Override

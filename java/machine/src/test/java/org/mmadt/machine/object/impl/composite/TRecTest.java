@@ -48,7 +48,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.start;
 import static org.mmadt.language.__.type;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
@@ -126,14 +125,13 @@ final class TRecTest {
     @Test
     void shouldSupportTypeReferenceInstance() {
         final Rec recordType = TRec.of("name", TStr.some(), "age", is(gt(32))).
-                access(start(TRec.of("name", "marko", "age", 45))).
                 inst(TInst.of("get", "outE"),
                         TInst.of("db").mult(TInst.of("get", "E")).mult(TInst.of("is", TInst.of("get", "outV").mult(TInst.of("eq", 1))))).
                 inst(TInst.of(TStr.some(), "marko"),
                         TInst.of("db").mult(TInst.of("get", "E")).mult(TInst.of("is", TInst.of("get", "outV").mult(TInst.of("eq", 1)))));
         ///
-        assertFalse(recordType.isType());
-        assertTrue(recordType.isReference());
+        assertTrue(recordType.isType());
+        assertFalse(recordType.isReference());
         assertFalse(recordType.isInstance());
         assertTrue(recordType.access((Inst) null).isType());
         ///
@@ -472,10 +470,9 @@ final class TRecTest {
     @Test
     void shouldSupportRecursiveTypeMatching() {
         Rec<Obj, Obj> person = TRec.of("name", TStr.some().label("a"), "friend", TRec.some().symbol("person")).symbol("person");
-        person.put(TStr.of("friend"), person.label("b").q(qmark));
+        person = person.put(TStr.of("friend"), person.label("b").q(qmark));
         assertDoesNotThrow(person::toString); // check for stack overflow
         final Rec<Obj, Obj> marko = TRec.of("name", "marko");
-        System.out.println(person);
         marko.type(person);
         final Rec<Obj, Obj> kuppitz = TRec.of("name", "kuppitz", "friend", marko);
         kuppitz.type(person);

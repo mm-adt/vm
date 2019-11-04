@@ -46,7 +46,7 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
 
     @Override
     public Iterator<S> gett() {
-        return IteratorUtils.<Argument<Obj, S>, S>map(IteratorUtils.asIterator(this.args()), arg -> arg.mapArg(TObj.none()));
+        return IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(TObj.none()));
     }
 
     public static <S extends Obj> S create(final S source, final Object... arguments) {

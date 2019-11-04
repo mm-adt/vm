@@ -22,15 +22,18 @@
 
 package org.mmadt.machine.object.impl.composite;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 /**
@@ -78,12 +81,12 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> zero() {
-        return OperatorHelper.unary(Tokens.ZERO, TRec::of, this);
+        return ZeroInst.create(this, TRec.of());
     }
 
     @Override
     public Rec<K, V> plus(final Rec<K, V> object) {
-        return OperatorHelper.binary(Tokens.PLUS, () -> {
+        return PlusInst.create(() -> {
             final PMap<K, V> map = new PMap<>(this.java());
             map.putAll(object.java());
             return new TRec<>(map);
@@ -92,7 +95,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> minus(final Rec<K, V> object) {
-        return OperatorHelper.binary(Tokens.MINUS, () -> {
+        return MinusInst.create(() -> {
             final PMap<K, V> map = new PMap<>(this.java());
             object.java().forEach(map::remove);
             return new TRec<>(map);
@@ -101,12 +104,12 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> neg() {
-        return OperatorHelper.<Rec<K, V>>unary(Tokens.NEG, () -> this, this); // TODO: What is a -rec?
+        return NegInst.create(() -> this, this); // TODO: What is a -rec?
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Rec && this.java().equals(((Rec) obj).java())), this, obj);
+        return EqInst.create(() -> TBool.of(obj instanceof Rec && this.java().equals(((Rec) obj).java())), this, obj);
     }
 
     @Override

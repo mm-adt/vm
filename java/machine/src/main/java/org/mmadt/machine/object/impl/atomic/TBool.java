@@ -22,12 +22,17 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.machine.object.model.util.OperatorHelper;
 
 
 /**
@@ -75,37 +80,37 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return OperatorHelper.unary(Tokens.ONE, () -> TRUE, this);
+        return OneInst.create(this, TRUE);
     }
 
     @Override
     public Bool zero() {
-        return OperatorHelper.unary(Tokens.ZERO, () -> FALSE, this);
+        return ZeroInst.create(this, FALSE);
     }
 
     @Override
     public Bool neg() {
-        return OperatorHelper.unary(Tokens.NEG, () -> this, this);
+        return NegInst.create(() -> this, this);
     }
 
     @Override
     public Bool mult(final Bool bool) {
-        return OperatorHelper.binary(Tokens.MULT, () -> new TBool(this.java() && bool.java()), this, bool);
+        return MultInst.create(() -> new TBool(this.java() && bool.java()), this, bool);
     }
 
     @Override
     public Bool minus(final Bool bool) {
-        return OperatorHelper.binary(Tokens.MINUS, () -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
+        return MinusInst.create(() -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
     }
 
     @Override
     public Bool plus(final Bool bool) {
-        return OperatorHelper.binary(Tokens.PLUS, () -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
+        return PlusInst.create(() -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return OperatorHelper.binary(Tokens.EQ, () -> new TBool(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj);
+        return EqInst.create(() -> new TBool(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj);
     }
 
     private static boolean exclusiveOr(final boolean a, final boolean b) {

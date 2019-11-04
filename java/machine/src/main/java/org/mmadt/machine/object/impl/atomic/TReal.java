@@ -24,6 +24,15 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Real;
@@ -75,32 +84,32 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return OperatorHelper.unary(Tokens.ONE, () -> ONE, this);
+        return OneInst.create(this, ONE);
     }
 
     @Override
     public Real zero() {
-        return OperatorHelper.unary(Tokens.ZERO, () -> ZERO, this);
+        return ZeroInst.create(this, ZERO);
     }
 
     @Override
     public Real neg() {
-        return OperatorHelper.unary(Tokens.NEG, () -> new TReal(-this.java()), this);
+        return NegInst.create(() -> new TReal(-this.java()), this);
     }
 
     @Override
     public Real minus(final Real real) {
-        return OperatorHelper.binary(Tokens.MINUS, () -> new TReal(this.java() - real.java()), this, real);
+        return MinusInst.create(() -> new TReal(this.java() - real.java()), this, real);
     }
 
     @Override
     public Real plus(final Real real) {
-        return OperatorHelper.binary(Tokens.PLUS, () -> new TReal(this.java() + real.java()), this, real);
+        return PlusInst.create(() -> new TReal(this.java() + real.java()), this, real);
     }
 
     @Override
     public Real mult(final Real real) {
-        return OperatorHelper.binary(Tokens.MULT, () -> new TReal(this.java() * real.java()), this, real);
+        return MultInst.create(() -> new TReal(this.java() * real.java()), this, real);
     }
 
     @Override
@@ -110,17 +119,17 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Bool gt(final Real real) {
-        return OperatorHelper.binary(Tokens.GT, () -> TBool.of(this.java() > real.java()), this, real);
+        return GtInst.create(() -> TBool.of(this.java() > real.java()), this, real);
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Real && this.java().equals(((Real) obj).java())), this, obj);
+        return EqInst.create(() -> TBool.of(obj instanceof Real && this.java().equals(((Real) obj).java())), this, obj);
     }
 
     @Override
     public Bool lt(final Real real) {
-        return OperatorHelper.binary(Tokens.LT, () -> TBool.of(this.java() < real.java()), this, real);
+        return LtInst.create(() -> TBool.of(this.java() < real.java()), this, real);
     }
 
     @Override

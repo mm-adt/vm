@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
+import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public interface Bool extends WithCommutativeRing<Bool> {
 
     @Override
     public default Iterable<Bool> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Bool, Bool>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Bool, Bool>(this.access()).iterator(this);
     }
 
 }

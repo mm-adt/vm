@@ -25,6 +25,8 @@ package org.mmadt.machine.object.model.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -35,7 +37,7 @@ import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.OperatorHelper;
-import org.mmadt.processor.util.MinimalProcessor;
+import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
 
@@ -60,18 +62,18 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
 
     @Override
     public default Lst<V> put(final Int key, final V value) {
-        return OperatorHelper.unary(Tokens.PUT, () -> {
+        return (Lst<V>) PutInst.create(() -> {
             this.java().add(key.java(), value);
             return this;
-        }, this);
+        }, this, key, value);
     }
 
     @Override
     public default Lst<V> drop(final Int key) {
-        return OperatorHelper.unary(Tokens.DROP, () -> {
+        return (Lst<V>) DropInst.create(() -> {
             this.java().remove(key.java());
             return this;
-        }, this);
+        }, this, key);
     }
 
     @Override
@@ -107,7 +109,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     @Override
     public default Iterable<Lst<V>> iterable() {
         // return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this);
-        return this.get() instanceof Stream ? this.get() : () -> new MinimalProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this); // TODO: Where is this Stream coming from? (Obj.test())
+        return this.get() instanceof Stream ? this.get() : () -> new FastProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this); // TODO: Where is this Stream coming from? (Obj.test())
     }
 
 }

@@ -23,22 +23,14 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
-import static org.mmadt.language.Context.start;
-
-import org.mmadt.language.__;
-import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.util.TestHelper;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.start;
 
 /**
@@ -76,7 +68,7 @@ final class TIntTest {
 
         final Model model= TModel.of("ex");
         model.define("int",TInt.of().inst(TInst.of(Tokens.PLUS,TInt.some().label("a")), __.plus(model.sym("a")).bytecode()));*/
-        final Obj x = TInt.of(1,2,3).plus(TInt.of(12)).count();
+        final Obj x = TInt.of(1, 2, 3).plus(TInt.of(12)).count();
         System.out.println(x);
         x.iterable().forEach(System.out::println);
     }

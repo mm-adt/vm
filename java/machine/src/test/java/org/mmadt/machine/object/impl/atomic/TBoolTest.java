@@ -70,7 +70,6 @@ final class TBoolTest {
         assertEquals(TInst.ids(), TBool.of(true).access());
         assertEquals(TBool.some().access(start(true, false, true, false)).q(4), TBool.of(true, false, true, false));
         assertEquals(TLst.of(true, false, true, false).<List<Bool>>get(), IteratorUtils.list(TBool.of(true, false, true, false).iterable().iterator()));
-        assertEquals(TLst.of(true, true).<List<Bool>>get(), IteratorUtils.list(TBool.some().access(start(true, false, true, false).is(id())).iterable().iterator()));
     }
 
     @Test

@@ -20,15 +20,14 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.impl.composite.inst.map;
+package org.mmadt.machine.object.impl.composite.inst.sideeffect;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.composite.inst.MapInstruction;
+import org.mmadt.machine.object.model.composite.inst.SideEffectInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
@@ -36,19 +35,22 @@ import java.util.function.Supplier;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class EqInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
+public final class PutInst<K extends Obj, V extends Obj> extends TInst implements SideEffectInstruction<WithProduct<K, V>> {
 
-    private EqInst(final S argument) {
-        super(PList.of(Tokens.EQ, argument));
+    private PutInst(final K key, final V value) {
+        super(PList.of(Tokens.PUT, key, value));
     }
 
-    public Bool apply(final S s) {
-        return s.eq(Argument.<S, S>create(this.args().get(0)).mapArg(s));
+    @Override
+    public void accept(final WithProduct<K, V> s) {
+        s.put(Argument.<Obj, K>create(this.args().get(0)).mapArg(s), Argument.<Obj, V>create(this.args().get(1)).mapArg(s));
     }
 
-    public static <S extends Obj> Bool create(final Supplier<Bool> result, final S source, final Obj argument) {
-        return ObjectHelper.allInstances(source) ?
-                result.get() :
-                source.access(source.access().mult(new EqInst<>(argument)));
+    public static <K extends Obj, V extends Obj> WithProduct<K, V> create(final Supplier<WithProduct<K, V>> supplier, final WithProduct<K, V> source, final K key, final V value) {
+        return source.isInstance() || source.isType() ?
+                supplier.get() :
+                source.access(source.access().mult(new PutInst<>(key, value)));
     }
+
+
 }

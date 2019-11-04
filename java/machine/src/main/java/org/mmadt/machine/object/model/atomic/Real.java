@@ -23,8 +23,7 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.model.type.algebra.WithField;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.processor.util.MinimalProcessor;
+import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public interface Real extends WithField<Real> {
 
     @Override
     public default Iterable<Real> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Real, Real>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Real, Real>(this.access()).iterator(this);
     }
 
 }

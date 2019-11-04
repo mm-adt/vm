@@ -20,29 +20,15 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.atomic;
+package org.mmadt.machine.object.model.composite.inst;
 
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.processor.util.FastProcessor;
-import org.mmadt.processor.util.MinimalProcessor;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 /**
- * A Java representation of the {@code int} object in mm-ADT.
- * An {@code int} is an ordered commutative ring with unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Int extends WithOrderedRing<Int> {
-
-    public default Integer java() {
-        return this.get();
-    }
-
-    @Override
-    public default Iterable<Int> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Int, Int>(this.access()).iterator(this);
-    }
-
+public interface SideEffectInstruction<S extends Obj> extends Inst, Consumer<S> {
 }

@@ -25,7 +25,7 @@ package org.mmadt.machine.object.model.atomic;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.processor.util.MinimalProcessor;
+import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
 
     @Override
     public default Iterable<Str> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Str, Str>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Str, Str>(this.access()).iterator(this);
     }
 
 }

@@ -22,15 +22,18 @@
 
 package org.mmadt.machine.object.impl.composite;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.List;
@@ -77,12 +80,12 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> zero() {
-        return OperatorHelper.unary(Tokens.ZERO, TLst::of, this);
+        return ZeroInst.create(this, TLst.of());
     }
 
     @Override
     public Lst<V> plus(final Lst<V> object) {
-        return OperatorHelper.binary(Tokens.PLUS, () -> {
+        return PlusInst.create(() -> {
             final PList<V> list = new PList<>(this.java());
             list.addAll(object.java());
             return new TLst<>(list);
@@ -91,7 +94,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> minus(final Lst<V> object) {
-        return OperatorHelper.binary(Tokens.MINUS, () -> {
+        return MinusInst.create(() -> {
             final PList<V> list = new PList<>(this.java());
             list.removeAll(object.java());
             return new TLst<>(list);
@@ -100,12 +103,12 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> neg() {
-        return OperatorHelper.<Lst<V>>unary(Tokens.NEG, () -> this, this); // TODO: What is a -list?
+        return NegInst.create(() -> this, this); // TODO: What is a -list?
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return OperatorHelper.binary(Tokens.EQ, () -> TBool.of(obj instanceof Lst && this.java().equals(((Lst) obj).java())), this, obj);
+        return EqInst.create(() -> TBool.of(obj instanceof Lst && this.java().equals(((Lst) obj).java())), this, obj);
     }
 
     @Override
