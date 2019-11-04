@@ -46,7 +46,7 @@ public final class IRArgument<S extends Obj, E extends Obj> implements Argument<
 
     @Override
     public Iterator<E> flatMapArg(final S object) {
-        return null;
+        return new MinimalProcessor<S, E>(this.bytecode).iterator(object);
     }
 
     @Override

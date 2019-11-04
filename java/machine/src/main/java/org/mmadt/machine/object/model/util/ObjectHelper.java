@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
 /**
@@ -203,5 +202,11 @@ public final class ObjectHelper {
                 return false;
         }
         return true;
+    }
+
+    public static <A extends Obj> A instanceAccess(final A obj) {
+        if (obj.isInstance())
+            return obj.access(TInst.ids());
+        return obj;
     }
 }

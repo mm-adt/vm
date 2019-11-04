@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.util.TestHelper;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.util.IteratorUtils;
 
@@ -56,7 +55,7 @@ class TRealTest {
 
     @Test
     void shouldStreamCorrectly() {
-        assertEquals(TInst.identity(), TReal.of(1.0f).access());
+        assertEquals(TInst.ids(), TReal.of(1.0f).access());
         assertEquals(TReal.some().access(start(1.0f, 2.0f, 3.0f, 4.0f)).q(4), TReal.of(1.0f, 2.0f, 3.0f, 4.0f));
         assertEquals(TLst.of(1.0f, 2.0f, 3.0f, 4.0f).<List<Real>>get(), IteratorUtils.list(TReal.of(1.0f, 2.0f, 3.0f, 4.0f).iterable().iterator()));
         assertEquals(TLst.of(3.0f, 4.0f).<List<Real>>get(), IteratorUtils.list(TReal.some().access(start(1.0f, 2.0f, 3.0f, 4.0f).is(gt(2.1f))).iterable().iterator()));

@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TInst extends TObj implements Inst {
+public class TInst extends TObj implements Inst {
 
     private static final Inst SOME = new TInst(PList.of(TStr.some(), TObj.all()));
     private static final Inst ALL = new TInst(null).q(0, Integer.MAX_VALUE);
@@ -51,7 +51,7 @@ public final class TInst extends TObj implements Inst {
     private Obj domain = TObj.none();
     private Obj range = TObj.none();
 
-    private TInst(final Object value) {
+    protected TInst(final Object value) {
         super(value);
     }
 
@@ -67,7 +67,7 @@ public final class TInst extends TObj implements Inst {
         return NONE;
     }
 
-    public static Inst identity() {
+    public static Inst ids() {
         return TInst.of(Tokens.ID);
     }
 

@@ -24,6 +24,10 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -117,22 +121,22 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int minus(final Int integer) {
-        return OperatorHelper.binary(Tokens.MINUS, () -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)), this, integer);
+        return MinusInst.create(() -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)), this, integer);
     }
 
     @Override
     public Int plus(final Int integer) {
-        return OperatorHelper.binary(Tokens.PLUS, () -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
+        return PlusInst.create(() -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
     }
 
     @Override
     public Int mult(final Int integer) {
-        return OperatorHelper.binary(Tokens.MULT, () -> new TInt(OperatorHelper.tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
+        return MultInst.create(() -> new TInt(OperatorHelper.tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
     }
 
     @Override
     public Bool gt(final Int integer) {
-        return OperatorHelper.binary2(Tokens.GT, () -> TBool.of(this.java() > integer.java()), this, integer);
+        return GtInst.create(() -> TBool.of(this.java() > integer.java()), this, integer);
     }
 
     @Override

@@ -29,6 +29,8 @@ import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -51,8 +53,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
-import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
  * A Java representation of an mm-ADT {@code obj}.
@@ -289,19 +289,15 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O dedup() {
         return ObjectHelper.allInstances(this) ?
                 (O) this :
-                this.q(this.q().one().peek(), this.q().last()).access(this.access().mult(TInst.of(Tokens.DEDUP).domainAndRange(this,this.q(this.q().one().peek(), this.q().last()))));
+                this.q(this.q().one().peek(), this.q().last()).access(this.access().mult(TInst.of(Tokens.DEDUP).domainAndRange(this, this.q(this.q().one().peek(), this.q().last()))));
     }
 
     public default <O extends Obj> O is(final Bool bool) {
-        return ObjectHelper.allInstances(this, bool) ?
-                bool.java() ? (O) this : this.q(zero) :
-                this.q(this.q().zero().peek(), this.q().last()).access(this.access().mult(TInst.of(Tokens.IS, bool).domainAndRange(this,this.q(this.q().zero().peek(), this.q().last()))));
+        return IsInst.create((O) this, bool);
     }
 
     public default <O extends Obj> O id() {
-        return ObjectHelper.allInstances(this) ?
-                (O) this :
-                this.access(this.access().mult(TInst.of(Tokens.ID).domainAndRange(this,this)));
+        return IdInst.create((O) this);
     }
 
 }

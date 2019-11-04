@@ -20,16 +20,31 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.type.algebra;
+package org.mmadt.machine.object.impl.composite.inst.filter;
 
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.inst.filter.FilterInstruction;
+import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
- * An {@link org.mmadt.machine.object.model.Obj} that supports +.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithPlus<A extends Obj> extends Obj {
+public final class IdInst<S extends Obj> extends TInst implements FilterInstruction<S> {
 
-    public A plus(final A object);
+    private IdInst() {
+        super(PList.of(Tokens.ID));
+    }
+
+    public boolean testt(final S s) {
+        return true;
+    }
+
+    public static <S extends Obj> S create(final S source) {
+        return ObjectHelper.allInstances(source) ?
+                source :
+                source.access(source.access().mult(new IdInst<>()));
+    }
 }

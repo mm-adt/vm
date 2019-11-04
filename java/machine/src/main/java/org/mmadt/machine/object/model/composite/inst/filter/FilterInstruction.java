@@ -20,16 +20,16 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.type.algebra;
+package org.mmadt.machine.object.model.composite.inst.filter;
 
 import org.mmadt.machine.object.model.Obj;
 
+import java.util.function.Predicate;
+
 /**
- * An {@link org.mmadt.machine.object.model.Obj} that supports +.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithPlus<A extends Obj> extends Obj {
+public interface FilterInstruction<S extends Obj> {
 
-    public A plus(final A object);
+    boolean testt(S t);
 }

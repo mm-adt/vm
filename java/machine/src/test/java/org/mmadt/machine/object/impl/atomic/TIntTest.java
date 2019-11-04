@@ -23,15 +23,22 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
+import static org.mmadt.language.Context.start;
+
+import org.mmadt.language.__;
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.util.TestHelper;
+import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.start;
 
 /**
@@ -63,8 +70,14 @@ final class TIntTest {
 
     @Test
     void shouldMonoid() {
-        final Obj obj = TInt.of(1,2,3).mult(TInt.of(5)).minus(TInt.of(3)).is(TInt.of().gt(TInt.of(2)));
+        /*final Obj obj = TInt.of(1,2,3).mult(TInt.of(5)).minus(TInt.of(3)).<Int>is(TInt.of().gt(TInt.of(2))).zero();
         System.out.println(obj);
         obj.iterable().forEach(System.out::println);
+
+        final Model model= TModel.of("ex");
+        model.define("int",TInt.of().inst(TInst.of(Tokens.PLUS,TInt.some().label("a")), __.plus(model.sym("a")).bytecode()));*/
+        final Obj x = start(TInt.of(1,2,3)).plus(TInt.some().<Int>id().mult(TInt.of(4))).is(TInt.some().minus(TInt.of(2)).gt(TInt.of(7)).id()).get();
+        System.out.println(x);
+        x.iterable().forEach(System.out::println);
     }
 }
