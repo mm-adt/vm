@@ -24,11 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.sideeffect;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.SideEffectInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -42,15 +42,15 @@ public final class DropInst<K extends Obj, V extends Obj> extends TInst implemen
     }
 
     @Override
-    public void accept(final WithProduct<K, V> s) {
-        s.drop(Argument.<Obj, K>create(this.args().get(0)).mapArg(s));
+    public void accept(final WithProduct<K, V> obj) {
+        obj.drop(this.<Obj, K>argument(0).mapArg(obj));
     }
 
-    public static <K extends Obj, V extends Obj> WithProduct<K, V> create(final Supplier<WithProduct<K, V>> supplier, final WithProduct<K, V> source, final K key) {
-        return source.isInstance() || source.isType() ?
-                supplier.get() :
-                source.access(source.access().mult(new DropInst<>(key)));
+    public static <K extends Obj, V extends Obj> WithProduct<K, V> create(final Supplier<WithProduct<K, V>> compute, final WithProduct<K, V> obj, final K key) {
+        return InstructionHelper.<WithProduct<K, V>>rewrite(obj, new DropInst<>(key)).orElse(
+                obj.isInstance() || obj.isType() ? // this is necessary because records and lists store their patterns in maps and lists respectively
+                        compute.get() :
+                        obj.append(new DropInst<>(key)));
     }
-
 
 }
