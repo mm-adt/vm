@@ -31,7 +31,6 @@ import org.mmadt.machine.object.model.atomic.Int;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,7 +40,7 @@ final class TIntTest {
     @Test
     void testInstanceReferenceType() {
         Int instance = TInt.of(23);
-        Int reference = TInt.of().access(start(1).plus(2).minus(7));
+        Int reference = TInt.of(1, 2).plus(TInt.of(2)).minus(TInt.of(7));
         Int type = TInt.some();
         TestHelper.validateKinds(instance, reference, type);
         //////

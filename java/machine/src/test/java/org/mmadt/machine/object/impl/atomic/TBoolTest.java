@@ -50,16 +50,16 @@ final class TBoolTest {
     @Test
     void testInstanceReferenceType() {
         Bool instance = TBool.of(true);
-        Bool reference = TBool.of().access(start(true, false, true, false));
+        Bool reference = TBool.of(true, false, true, false);
         Bool type = TBool.all();
         TestHelper.validateKinds(instance, reference, type);
         //////
         instance = TBool.of(false).q(2);
         reference = TBool.of(true, false, true, false);
-        type = TBool.of().q(45);
+        type = TBool.of().q(1,45);
         TestHelper.validateKinds(instance, reference, type);
         //////
-        instance = TBool.of(false).access(start(true).neg());
+        instance = TBool.of(true).neg();
         reference = TBool.of(true, false).q(2, 10);
         type = TBool.some();
         TestHelper.validateKinds(instance, reference, type);

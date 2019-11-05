@@ -38,12 +38,14 @@ public class TestHelper {
     }
 
     public static void validateKinds(final Obj instance, final Obj reference, final Obj type) {
-        assertEquals(instance.getClass(),reference.getClass());
-        assertEquals(reference.getClass(),type.getClass());
+        assertEquals(instance.getClass(), reference.getClass());
+        assertEquals(reference.getClass(), type.getClass());
 
         assertTrue(instance.isInstance());
         assertFalse(instance.isReference());
         assertFalse(instance.isType());
+        assertTrue(instance.a(instance).java());
+         assertTrue(instance.a(type).java());
 
         assertFalse(reference.isInstance());
         assertTrue(reference.isReference());
@@ -52,5 +54,7 @@ public class TestHelper {
         assertFalse(type.isInstance());
         assertFalse(type.isReference());
         assertTrue(type.isType());
+        // assertFalse(type.a(type).java());
+        assertFalse(type.a(instance).java());
     }
 }

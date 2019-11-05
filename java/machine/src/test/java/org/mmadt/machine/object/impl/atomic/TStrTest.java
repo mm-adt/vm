@@ -47,11 +47,11 @@ final class TStrTest {
     @Test
     void testInstanceReferenceType() {
         Str instance = TStr.of("a");
-        Str reference = TStr.of().access(start("a").plus("b"));
+        Str reference = TStr.of("a","b").plus(TStr.of("b"));
         Str type = TStr.some();
         TestHelper.validateKinds(instance, reference, type);
         //////
-        instance = TStr.of("a").q(2);
+        instance = TStr.of("a").q(45);
         reference = TStr.of("a", "b", "c");
         type = TStr.of().q(45);
         TestHelper.validateKinds(instance, reference, type);

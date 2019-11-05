@@ -50,7 +50,7 @@ class BoolTest<A extends WithOrderedRing<A>> {
         assertTrue(bools.quantifier() instanceof Int);
         //////
         Bool instance = bools.of(true);
-        Bool reference = bools.star().access(start(true, false, true, false));
+        Bool reference = bools.of(true, false, true, false);
         Bool type = bools.star();
         TestHelper.validateKinds(instance, reference, type);
         //////
@@ -59,7 +59,7 @@ class BoolTest<A extends WithOrderedRing<A>> {
         type = bools.of().q(45);
         TestHelper.validateKinds(instance, reference, type);
         //////
-        instance = bools.of(false).access(start(true).neg());
+        instance = bools.of(false).neg();
         reference = bools.of(true, false).q(2, 10);
         type = bools.one();
         TestHelper.validateKinds(instance, reference, type);
