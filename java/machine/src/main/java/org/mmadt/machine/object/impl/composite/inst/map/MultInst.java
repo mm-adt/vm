@@ -24,16 +24,12 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
-import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
-import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.compiler.Argument;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -41,27 +37,18 @@ import java.util.function.Supplier;
  */
 public final class MultInst<S extends WithMult<S>> extends TInst implements MapInstruction<S, S> {
 
-    private MultInst(final S argument) {
-        super(PList.of(Tokens.MULT, argument));
+    private MultInst(final S arg) {
+        super(PList.of(Tokens.MULT, arg));
     }
 
-    public S apply(final S s) {
-        return s.mult(Argument.<S, S>create(this.args().get(0)).mapArg(s));
+    public S apply(final S obj) {
+        return obj.mult(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithMult<S>> S create(final Supplier<S> result, final S source, final S argument) {
-        final Optional<Inst> optional = source.inst(new Bindings(), new IsInst<>(argument));
-        if (optional.isPresent()) {
-            S temp = source;
-            for(Inst inst : optional.get().iterable()) {
-                temp = temp.access(temp.access().mult(inst));
-            }
-            return temp;
-        } else {
-
-            return ObjectHelper.allInstances(source, argument) ?
-                    result.get() :
-                    source.access(source.access().mult(new MultInst<>(argument)));
-        }
+    public static <S extends WithMult<S>> S create(final Supplier<S> compute, final S obj, final S arg) {
+        return InstructionHelper.<S>rewrite(obj, new MultInst<>(arg)).orElse(
+                ObjectHelper.allInstances(obj, arg) ?
+                        compute.get() :
+                        obj.append(new MultInst<>(arg)));
     }
 }

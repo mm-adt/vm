@@ -24,11 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -37,17 +37,18 @@ import java.util.function.Supplier;
  */
 public final class MapInst<S extends Obj, E extends Obj> extends TInst implements MapInstruction<S, E> {
 
-    private MapInst(final E argument) {
-        super(PList.of(Tokens.MAP, argument));
+    private MapInst(final E arg) {
+        super(PList.of(Tokens.MAP, arg));
     }
 
-    public E apply(final S s) {
-        return s.map(Argument.<S, E>create(this.args().get(0)).mapArg(s));
+    public E apply(final S obj) {
+        return obj.map(this.<S, E>argument(0).mapArg(obj));
     }
 
-    public static <S extends Obj, E extends Obj> S create(final Supplier<S> result, final S source, final E argument) {
-        return ObjectHelper.allInstances(source, argument) ?
-                result.get() :
-                source.access(source.access().mult(new MapInst<>(argument)));
+    public static <S extends Obj, E extends Obj> S create(final Supplier<S> compute, final S obj, final E arg) {
+        return InstructionHelper.<S>rewrite(obj, new MapInst<>(arg)).orElse(
+                ObjectHelper.allInstances(obj, arg) ?
+                        compute.get() :
+                        obj.append(new MapInst<>(arg)));
     }
 }
