@@ -24,13 +24,13 @@ package org.mmadt.machine.object.impl.composite.inst.filter;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.compiler.Argument;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,13 +41,14 @@ public final class IsInst<S extends Obj> extends TInst implements FilterInstruct
         super(PList.of(Tokens.IS, argument));
     }
 
-    public boolean testt(final S s) {
-        return Argument.<S, Bool>create(this.args().get(0)).mapArg(s).java();
+    public boolean testt(final S obj) {
+        return !obj.is(this.<S, Bool>argument(0).mapArg(obj)).q().isZero();
     }
 
-    public static <S extends Obj> S create(final S source, final Bool argument) {
-        return ObjectHelper.allInstances(source, argument) ?
-                argument.java() ? source : (S) source.q(Q.Tag.zero) :
-                source.q(source.q().peek().zero(), source.q().last()).access(source.access().mult(new IsInst<>(argument)));
+    public static <S extends Obj> S create(final S obj, final Bool arg) {
+        return InstructionHelper.<S>rewrite(obj, new IsInst<>(arg)).orElseGet(() ->
+                ObjectHelper.allInstances(obj, arg) ?
+                        arg.java() ? obj : obj.q(Q.Tag.zero) :  // compute given bool arg
+                        obj.q(obj.q().peek().zero(), obj.q().last()).append(new IsInst<>(arg))); // append to access and zero-out quantification
     }
 }

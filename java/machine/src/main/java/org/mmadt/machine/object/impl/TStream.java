@@ -42,7 +42,7 @@ public final class TStream<A extends Obj> implements Stream<A> {
 
     private static final TStream EMPTY_STREAM = new TStream<>(List.of());
 
-    private final List<A> objects;
+    public final List<A> objects;
 
     private TStream(final List<A> objects) {
         this.objects = new ArrayList<>(objects);

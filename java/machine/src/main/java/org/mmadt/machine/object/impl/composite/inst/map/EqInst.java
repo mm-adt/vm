@@ -25,12 +25,12 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -39,17 +39,18 @@ import java.util.function.Supplier;
  */
 public final class EqInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
 
-    private EqInst(final S argument) {
-        super(PList.of(Tokens.EQ, argument));
+    private EqInst(final S arg) {
+        super(PList.of(Tokens.EQ, arg));
     }
 
-    public Bool apply(final S s) {
-        return s.eq(Argument.<S, S>create(this.args().get(0)).mapArg(s));
+    public Bool apply(final S obj) {
+        return obj.eq(this.<S, Obj>argument(0).mapArg(obj));
     }
 
-    public static <S extends Obj> Bool create(final Supplier<Bool> result, final S source, final Obj argument) {
-        return ObjectHelper.allInstances(source) ?
-                result.get() :
-                TBool.of().q(source.q()).access(source.access().mult(new EqInst<>(argument)));
+    public static <S extends Obj> Bool create(final Supplier<Bool> compute, final S obj, final Obj arg) {
+        return InstructionHelper.<Bool>rewrite(obj, new EqInst<>(arg)).orElse(
+                ObjectHelper.allInstances(obj) ?
+                        compute.get() :
+                        TBool.of().q(obj.q()).append(new EqInst<>(arg)));
     }
 }

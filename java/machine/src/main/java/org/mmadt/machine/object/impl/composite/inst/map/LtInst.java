@@ -25,12 +25,12 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -39,17 +39,18 @@ import java.util.function.Supplier;
  */
 public final class LtInst<S extends WithOrder<S>> extends TInst implements MapInstruction<S, Bool> {
 
-    private LtInst(final S argument) {
-        super(PList.of(Tokens.LT, argument));
+    private LtInst(final S arg) {
+        super(PList.of(Tokens.LT, arg));
     }
 
-    public Bool apply(final S s) {
-        return s.lt(Argument.<S, S>create(this.args().get(0)).mapArg(s));
+    public Bool apply(final S obj) {
+        return obj.lt(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithOrder<S>> Bool create(final Supplier<Bool> result, final S source, final S argument) {
-        return ObjectHelper.allInstances(source, argument) ?
-                result.get() :
-                TBool.of().q(source.q()).access(source.access().mult(new LtInst<>(argument)));
+    public static <S extends WithOrder<S>> Bool create(final Supplier<Bool> compute, final S obj, final S arg) {
+        return InstructionHelper.<Bool>rewrite(obj, new LtInst<>(arg)).orElse(
+                ObjectHelper.allInstances(obj, arg) ?
+                        compute.get() :
+                        TBool.of().q(obj.q()).append(new LtInst<>(arg)));
     }
 }

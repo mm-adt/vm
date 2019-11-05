@@ -122,6 +122,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O access(final Inst access);
 
+    public default <O extends Obj> O append(final Inst inst) {
+        return this.access(this.access().mult(inst));
+    }
+
     public <O extends Obj> O inst(final Inst instA, final Inst instB);
 
     public <O extends Obj> O symbol(final String symbol);

@@ -24,11 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -37,17 +37,18 @@ import java.util.function.Supplier;
  */
 public final class PlusInst<S extends WithPlus<S>> extends TInst implements MapInstruction<S, S> {
 
-    private PlusInst(final S argument) {
-        super(PList.of(Tokens.PLUS, argument));
+    public PlusInst(final S arg) {
+        super(PList.of(Tokens.PLUS, arg));
     }
 
-    public S apply(final S s) {
-        return s.plus(Argument.<S, S>create(this.args().get(0)).mapArg(s));
+    public S apply(final S obj) {
+        return obj.plus(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithPlus<S>> S create(final Supplier<S> result, final S source, final S argument) {
-        return ObjectHelper.allInstances(source, argument) ?
-                result.get() :
-                source.access(source.access().mult(new PlusInst<>(argument)));
+    public static <S extends WithPlus<S>> S create(final Supplier<S> compute, final S obj, final S arg) {
+        return InstructionHelper.<S>rewrite(obj, new PlusInst<>(arg)).orElse(
+                ObjectHelper.allInstances(obj, arg) ?
+                        compute.get() :
+                        obj.append(new PlusInst<>(arg)));
     }
 }

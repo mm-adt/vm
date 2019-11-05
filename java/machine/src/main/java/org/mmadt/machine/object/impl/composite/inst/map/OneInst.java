@@ -24,12 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOne;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-
-import java.util.function.Supplier;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,15 +39,16 @@ public final class OneInst<S extends WithOne<S>> extends TInst implements MapIns
         super(PList.of(Tokens.ONE));
     }
 
-    public S apply(final S s) {
-        return s.one();
+    public S apply(final S obj) {
+        return obj.one();
     }
 
-    public static <S extends WithOne<S>> S create(final S source, final S one) {
-        return ObjectHelper.allInstances(source) ?
-                one :
-                source.q().constant() ?
-                        one.q(source.q()) :
-                        one.q(source.q()).access(source.access().mult(new OneInst<>()));
+    public static <S extends WithOne<S>> S create(final S obj, final S one) {
+        return InstructionHelper.<S>rewrite(obj, new OneInst<>()).orElse(
+                ObjectHelper.allInstances(obj) ? // one is constant
+                        one :
+                        obj.q().constant() ?
+                                one.q(obj.q()) :
+                                one.q(obj.q()).append(new OneInst<>()));
     }
 }

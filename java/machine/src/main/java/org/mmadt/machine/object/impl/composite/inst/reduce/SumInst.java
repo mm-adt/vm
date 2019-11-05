@@ -35,7 +35,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  */
 public final class SumInst<S extends WithOrderedRing<S>> extends TInst implements ReduceInstruction<S, S> {
 
-    private SumInst() {
+    public SumInst() {
         super(PList.of(Tokens.SUM));
     }
 

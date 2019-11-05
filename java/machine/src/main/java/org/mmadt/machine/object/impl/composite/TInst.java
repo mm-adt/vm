@@ -29,14 +29,12 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
+import org.mmadt.processor.compiler.Argument;
 
 import java.util.List;
 
@@ -93,6 +91,10 @@ public class TInst extends TObj implements Inst {
 
     public static Inst of(final List<Inst> insts) {
         return insts.isEmpty() ? TInst.none() : new TInst(TStream.of(insts));
+    }
+
+    public <S extends Obj, E extends Obj> Argument<S, E> argument(final int index) {
+        return Argument.<S, E>create(this.args().get(index));
     }
 
     @Override
@@ -165,7 +167,7 @@ public class TInst extends TObj implements Inst {
     }
 
     private Inst operator(final String opcode, final Obj obj) {
-        final Inst inst = obj instanceof Inst ? (Inst) obj : MapInst.create(()->this,this,obj); // if the object isn't an instruction, make it one
+        final Inst inst = obj instanceof Inst ? (Inst) obj : MapInst.create(() -> this, this, obj); // if the object isn't an instruction, make it one
         final Inst last = this.last();
         if (last.opcode().java().equals(opcode)) {
             final PList<Obj> list = new PList<>(last.java());

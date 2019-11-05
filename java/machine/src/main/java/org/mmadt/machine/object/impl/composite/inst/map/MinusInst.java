@@ -24,11 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -37,17 +37,18 @@ import java.util.function.Supplier;
  */
 public final class MinusInst<S extends WithMinus<S>> extends TInst implements MapInstruction<S, S> {
 
-    private MinusInst(final S argument) {
-        super(PList.of(Tokens.MINUS, argument));
+    private MinusInst(final S arg) {
+        super(PList.of(Tokens.MINUS, arg));
     }
 
-    public S apply(final S s) {
-        return s.minus(Argument.<S, S>create(this.args().get(0)).mapArg(s));
+    public S apply(final S obj) {
+        return obj.minus(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithMinus<S>> S create(final Supplier<S> result, final S source, final S argument) {
-        return ObjectHelper.allInstances(source, argument) ?
-                result.get() :
-                source.access(source.access().mult(new MinusInst<>(argument)));
+    public static <S extends WithMinus<S>> S create(final Supplier<S> compute, final S obj, final S arg) {
+        return InstructionHelper.<S>rewrite(obj, new MinusInst<>(arg)).orElse(
+                ObjectHelper.allInstances(obj, arg) ?
+                        compute.get() :
+                        obj.append(new MinusInst<>(arg)));
     }
 }

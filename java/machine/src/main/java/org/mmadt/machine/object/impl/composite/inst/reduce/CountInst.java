@@ -35,7 +35,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  */
 public final class CountInst<S extends Obj, E extends WithMonoidPlus<E>> extends TInst implements ReduceInstruction<S, E> {
 
-    private CountInst() {
+    public CountInst() {
         super(PList.of(Tokens.COUNT));
     }
 

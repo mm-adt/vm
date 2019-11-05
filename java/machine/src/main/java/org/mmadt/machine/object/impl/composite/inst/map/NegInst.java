@@ -24,11 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.function.Supplier;
 
@@ -41,13 +41,14 @@ public final class NegInst<S extends WithMinus<S>> extends TInst implements MapI
         super(PList.of(Tokens.NEG));
     }
 
-    public S apply(final S s) {
-        return s.neg();
+    public S apply(final S obj) {
+        return obj.neg();
     }
 
-    public static <S extends WithPlus<S>> S create(final Supplier<S> result, final S source) {
-        return ObjectHelper.allInstances(source) ?
-                result.get() :
-                source.access(source.access().mult(new NegInst<>()));
+    public static <S extends WithPlus<S>> S create(final Supplier<S> compute, final S obj) {
+        return InstructionHelper.<S>rewrite(obj, new NegInst<>()).orElse(
+                obj.isInstance() ?
+                        compute.get() :
+                        obj.append(new NegInst<>()));
     }
 }

@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
@@ -38,15 +39,16 @@ public final class ZeroInst<S extends WithZero<S>> extends TInst implements MapI
         super(PList.of(Tokens.ZERO));
     }
 
-    public S apply(final S s) {
-        return s.zero();
+    public S apply(final S obj) {
+        return obj.zero();
     }
 
-    public static <S extends WithZero<S>> S create(final S source, final S zero) {
-        return ObjectHelper.allInstances(source) ?
-                zero :
-                source.q().constant() ?
-                        zero.q(source.q()) :
-                        zero.q(source.q()).access(source.access().mult(new ZeroInst<>()));
+    public static <S extends WithZero<S>> S create(final S obj, final S zero) {
+        return InstructionHelper.<S>rewrite(obj, new ZeroInst<>()).orElse(
+                ObjectHelper.allInstances(obj) ? // zero is a constant
+                        zero :
+                        obj.q().constant() ?
+                                zero.q(obj.q()) :
+                                zero.q(obj.q()).append(new ZeroInst<>()));
     }
 }

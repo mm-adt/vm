@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -40,6 +41,7 @@ public final class TType implements Type {
 
     protected static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
+    // private Model model;
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
     private String label;                      // the ~bind string (if retrieved via a bind)
     private Pattern pattern;                   // a predicate for testing an instance of the type
