@@ -27,6 +27,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TQ;
+import org.mmadt.machine.object.impl.composite.inst.map.QInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;

@@ -37,7 +37,7 @@ import org.mmadt.processor.compiler.Argument;
  */
 public final class IsInst<S extends Obj> extends TInst implements FilterInstruction<S> {
 
-    private IsInst(final S argument) {
+    public IsInst(final S argument) {
         super(PList.of(Tokens.IS, argument));
     }
 

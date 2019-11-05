@@ -27,7 +27,6 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TBool;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
@@ -145,7 +144,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             if (TObj.none().equals(this) || TObj.none().equals(obj))
                 return this.q().test(obj);
 
-            if (this.isInstance())                                                              // INSTANCE CHECKING
+            if (this.isInstance() && !(this.get() instanceof Inst))                                                              // INSTANCE CHECKING
                 return obj.isInstance() && this.eq(obj).java();
             else if (this.isReference()) {                                                      // REFERENCE CHECKING
                 // if (!obj.isReference()) TODO: expose when type access is checked
@@ -160,7 +159,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 return !ittyB.hasNext();
                 // }
             } else {                                                                            // TYPE CHECKING
-                assert this.isType(); // TODO: remove when proved
+                //assert this.isType(); // TODO: remove when proved
                 if (null != ObjectHelper.getName(this) && ObjectHelper.getName(this).equals(ObjectHelper.getName(obj)))
                     return true;
                 ////////////////////////////////////////////
@@ -169,7 +168,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 else
                     TRAMPOLINE.add(List.of(this, obj));
                 ////////////////////////////////////////////
-                if (obj.get() instanceof Stream) // TODO: only used by inst at this point (when inst is no longer stream-based, gut this)
+                if (obj.get() instanceof Stream && !(this.get() instanceof Inst)) // TODO: only used by inst at this point (when inst is no longer stream-based, gut this)
                     return Stream.testStream(this, obj);
                 else if (this.get() instanceof PList && obj.get() instanceof PList && !(this instanceof Inst))
                     return Stream.testStream(this.set(TStream.of(this.<PList>get())), obj.set(TStream.of(obj.<PList>get())));
@@ -307,7 +306,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O map(final O object) {
-        return MapInst.create(() -> object, (O)this, object);
+        return MapInst.create(() -> object, (O) this, object);
     }
 
     public default <O extends Obj> O sum() {

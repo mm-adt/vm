@@ -27,6 +27,6 @@ import org.mmadt.process.compliance.AndTest;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ProcAndTest extends AndTest implements ProcTestMachine {
+class ProcAndTest {//extends AndTest implements ProcTestMachine {
 
 }

@@ -55,6 +55,9 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     public Obj range();
 
+    @Override
+    public Inst or(final Obj obj);
+
     public default Inst domain(final Obj domain) {
         return this.domainAndRange(domain, this.range());
     }

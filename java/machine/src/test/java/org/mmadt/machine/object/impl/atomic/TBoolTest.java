@@ -68,7 +68,7 @@ final class TBoolTest {
     @Test
     void shouldStreamCorrectly() {
         assertEquals(TInst.ids(), TBool.of(true).access());
-        assertEquals(TBool.some().access(start(true, false, true, false)).q(4), TBool.of(true, false, true, false));
+        assertEquals(TBool.of(true, false, true, false).q(4), TBool.of(true, false, true, false));
         assertEquals(TLst.of(true, false, true, false).<List<Bool>>get(), IteratorUtils.list(TBool.of(true, false, true, false).iterable().iterator()));
     }
 
@@ -105,7 +105,7 @@ final class TBoolTest {
         final Bool bool = TBool.of(true, true, false);
         assertEquals(TInst.of(Tokens.START, true, true, false), bool.access());
         assertEquals(TBool.of(true), bool.iterable().iterator().next());
-        assertEquals(start(true, true, false).plus(true).bytecode(), bool.plus(TBool.of(true)).access());
-        assertEquals(start(true, true, false).mult(true).bytecode(), bool.mult(TBool.of(true)).access());
+        assertEquals(start(true, true, false).plus(true).obj(), bool.plus(TBool.of(true)));
+        assertEquals(start(true, true, false).mult(true).obj(), bool.mult(TBool.of(true)));
     }
 }

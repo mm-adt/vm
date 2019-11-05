@@ -45,7 +45,7 @@ public class TestHelper {
         assertFalse(instance.isReference());
         assertFalse(instance.isType());
         assertTrue(instance.a(instance).java());
-         assertTrue(instance.a(type).java());
+        assertTrue(instance.a(type).java());
 
         assertFalse(reference.isInstance());
         assertTrue(reference.isReference());

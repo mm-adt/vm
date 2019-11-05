@@ -25,6 +25,7 @@ package org.mmadt.machine.object.model.type;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.LinkedHashMap;
@@ -95,7 +96,7 @@ public final class PMap<K extends Obj, V extends Obj> extends LinkedHashMap<K, V
     @Override
     public final boolean constant() {
         for (final Map.Entry<? extends Obj, ? extends Obj> entry : this.entrySet()) {
-            if (!entry.getValue().constant() || !entry.getKey().constant())
+            if (!entry.getValue().constant() || !entry.getKey().constant() || entry.getValue() instanceof Inst || entry.getKey() instanceof Inst)
                 return false;
         }
         return true;

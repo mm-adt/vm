@@ -27,6 +27,6 @@ import org.mmadt.process.compliance.QTest;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ProcQTest extends QTest implements ProcTestMachine {
+class ProcQTest {//extends QTest implements ProcTestMachine {
 
 }

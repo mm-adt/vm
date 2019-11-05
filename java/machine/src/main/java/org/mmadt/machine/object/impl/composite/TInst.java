@@ -26,6 +26,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Str;
@@ -177,16 +178,17 @@ public class TInst extends TObj implements Inst {
     }
 
     private Inst operator(final String opcode, final Obj obj) {
-        final Inst inst = obj instanceof Inst ? (Inst) obj : TInst.of(Tokens.MAP, obj); // if the object isn't an instruction, make it one
+        final Inst inst = obj instanceof Inst ? (Inst) obj : obj.access(); // if the object isn't an instruction, make it one
         final Inst last = this.last();
         if (last.opcode().java().equals(opcode)) {
             final PList<Obj> list = new PList<>(last.java());
             list.add(inst);
-            return new TInst(list);
+            list.remove(0);
+            return opcode.equals(Tokens.OR) ? new OrInst<>(list.toArray(new Object[]{})) : TInst.of(opcode, list);
         } else
-            return this.eq(inst).java() ?
+            return this.get().equals(inst.get()) ?
                     this.q(this.q().plus(inst.q())) :
-                    TInst.of(opcode, this, inst); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
+                    opcode.equals(Tokens.OR) ? new OrInst<>(this, inst) : TInst.of(opcode, this, inst); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
     }
 
     @Override

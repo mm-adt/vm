@@ -20,31 +20,32 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.process.compliance;
+package org.mmadt.machine.object.impl.composite.inst.map;
 
-import org.mmadt.language.Query;
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
+import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.util.IteratorUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTest implements TestMachine {
+public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst implements MapInstruction<S, E> {
 
-    <E extends Obj> List<E> submit(final Query query) {
-        System.out.println(query.toString());
-        return IteratorUtils.list(machine().submit(query.obj().access()));
+    private QInst() {
+        super(PList.of(Tokens.Q));
     }
 
-    <E extends Obj> List<E> objs(final Object... objects) {
-        final List<E> objs = new ArrayList<>();
-        for (final Object object : objects) {
-            objs.add((E) ObjectHelper.from(object));
-        }
-        return objs;
+    public E apply(final S s) {
+        return (E) s.q().peek();
+    }
+
+    public static <S extends Obj, E extends WithOrderedRing<E>> E create(final S source) {
+        return ObjectHelper.allInstances(source) ?
+                (E) source.q().peek() :
+                source.access(source.access().mult(new QInst<>()));
     }
 }

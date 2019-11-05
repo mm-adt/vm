@@ -272,7 +272,9 @@ public final class StringFactory {
             else
                 builder.append(String.format("\"%s\"", string.<String>get().replaceAll("[\"\\\\]", "\\\\$0")));
         } else if (string.get() instanceof Inst) {
+            if (null != string.label() || !string.q().isOne()) builder.append(LPAREN);
             builder.append(typeInstructions(string.get()));
+            if (null != string.label() || !string.q().isOne()) builder.append(RPAREN);
         } else if (string.isType() && null != string.get())
             builder.append(string.get().toString());
         else
@@ -309,7 +311,7 @@ public final class StringFactory {
         if (inst.<Inst>peek().opcode().java().equals(Tokens.IS)) {
             if (inst.<Inst>peek().args().get(0) instanceof Inst && ((Inst) inst.<Inst>peek().args().get(0)).opcode().java().equals(Tokens.OR)) {
                 for (final Obj i : ((Inst) inst.<Inst>peek().args().get(0)).args()) {
-                    builder.append(((Inst) i).args().get(0)).append(BAR);
+                    builder.append(i).append(BAR);
                 }
                 builder.deleteCharAt(builder.length() - 1);
                 return builder.toString();

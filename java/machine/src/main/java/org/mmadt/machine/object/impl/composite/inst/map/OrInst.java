@@ -28,11 +28,13 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.compiler.Argument;
 
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -41,18 +43,16 @@ import java.util.stream.Stream;
  */
 public class OrInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
 
-    private OrInst(final Object... arguments) {
-        super(PList.of(arguments));
+    public OrInst(final Object... argument) {
+        super(PList.of(argument));
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.OR));
     }
 
     public Bool apply(final S s) {
-        return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(s)).reduce(Bool::and).orElse(TBool.of(true));
+        return TBool.of(Stream.of(Argument.<S, S>args(args())).map(a -> a.mapArg(s).test(s)).reduce((a,b) -> a||b).orElse(true));
     }
 
-    public static <S extends Obj> Bool create(final Supplier<Bool> result, final S source, final Object... arguments) {
-        return ObjectHelper.allInstances(source) ?
-                result.get() :
-                TBool.of().q(source.q()).access(source.access().mult(new OrInst<>(arguments)));
+    public static <S extends Obj> Obj create(final Supplier<Obj> result, final S source, final Object argument) {
+        return  source.set((source.access()).or(ObjectHelper.from(argument)));
     }
 }

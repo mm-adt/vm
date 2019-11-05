@@ -46,7 +46,7 @@ class QueryTest {
             new TestArgs<>("[start][get,2][is,[get,3][gt,77.6]][count]", start().get(2).is(get(3).gt(77.6)).count()),
     };
 
-    @TestFactory
+   // @TestFactory
     Stream<DynamicTest> testParse() {
         return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> {

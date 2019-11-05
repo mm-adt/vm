@@ -30,6 +30,7 @@ import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.Bindings;
+import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.Optional;

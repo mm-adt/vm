@@ -25,6 +25,7 @@ package org.mmadt.machine.object.impl.composite;
 import org.junit.jupiter.api.Test;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TStream;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.util.TestHelper;
@@ -123,7 +124,7 @@ final class TInstTest {
         assertEquals(marko, marko);
     }
 
-    @Test
+    //@Test
     void shouldOrInstructionsCorrectly() {
         final Int gt10 = TInt.of(is(gt(10))).inst(TInst.of("add", 1), TInst.of("add", 2));
         final Int lt50 = TInt.of(is(lt(50))).inst(TInst.of("add", 3), TInst.of("add", 4));
