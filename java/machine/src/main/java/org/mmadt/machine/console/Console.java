@@ -27,6 +27,11 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.processor.util.FastProcessor;
+import org.mmadt.processor.util.MinimalProcessor;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.BasicParseRunner;
 import org.parboiled.parserunners.ParseRunner;
@@ -60,20 +65,28 @@ public class Console {
         terminal.pause(true);
         final DefaultParser parser = new DefaultParser();
         final LineReader reader = LineReaderBuilder.builder()
+                .appName("mm-ADT Console")
                 .terminal(terminal)
                 .parser(parser)
                 .build();
-
         terminal.writer().println(HEADER);
         terminal.flush();
         while (true) {
             String line = null;
             try {
-                line = reader.readLine(PROMPT).trim();
+                line = reader.readLine(PROMPT);
                 if (line.equals(QUIT) || line.equals(Q)) break;
-                final ParsingResult result = runner.run(reader.getParsedLine().line());
-                if (!result.valueStack.isEmpty())
-                    terminal.writer().println(RESULT + result.valueStack.pop());
+                final ParsingResult result = runner.run(line);
+                if (!result.valueStack.isEmpty()) {
+                    final Obj obj = (Obj) result.valueStack.pop();
+                    result.valueStack.clear();
+                    terminal.writer().println(RESULT + obj);
+                    terminal.writer().flush();
+                    new MinimalProcessor<>((Inst)obj).iterator(TObj.none()).forEachRemaining(o -> {
+                        terminal.writer().println(RESULT + o.toString());
+                    });
+                    terminal.flush();
+                }
             } catch (final Throwable t) {
                 t.printStackTrace();
             }

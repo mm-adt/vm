@@ -31,16 +31,18 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.OperatorHelper;
+import org.parboiled.Action;
 import org.parboiled.BaseParser;
+import org.parboiled.Context;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
-import org.parboiled.annotations.DontLabel;
 import org.parboiled.annotations.SuppressNode;
 import org.parboiled.annotations.SuppressSubnodes;
 import org.parboiled.support.Var;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -92,8 +94,13 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<Obj> left = new Var<>();
         final Var<Obj> right = new Var<>();
         final Var<String> operator = new Var<>();
-        return Sequence(Obj(left), Optional(BinaryOperator(), operator.set(match().trim()), Obj(right)),
-                this.push(operator.isSet() ? OperatorHelper.operation(operator.get(), left.get(), right.get()) : left.get()));
+        return ZeroOrMore(
+                ACTION(this.currentIndex() <= 0 || left.set((Obj) this.pop())),
+                Optional(Obj(left)),
+                Sequence(BinaryOperator(), operator.set(match().trim()), Obj(right)),
+                ACTION(this.push(operator.isSet() ?
+                        OperatorHelper.operation(operator.getAndClear(), left.getAndClear(), right.getAndClear()) :
+                        left.getAndClear())));
     }
 
 
@@ -108,7 +115,7 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressNode
     Rule Obj(final Var<Obj> obj) {
-        return FirstOf(Real(obj), Int(obj), Bool(obj), Str(obj), Sequence(Inst(), obj.set((Obj) this.pop())));
+        return FirstOf(obj.isSet(), Real(obj), Int(obj), Bool(obj), Str(obj), Sequence(Inst(), obj.set((Obj) this.pop())));
     }
 
     @SuppressNode
