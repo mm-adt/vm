@@ -29,7 +29,7 @@ import org.mmadt.machine.object.model.Obj;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithPlus<A extends Obj> extends Obj {
+public interface WithPlus<A extends WithPlus<A>> extends Obj {
 
     public A plus(final A object);
 }

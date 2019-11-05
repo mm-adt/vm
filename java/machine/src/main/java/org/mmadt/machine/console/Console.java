@@ -24,20 +24,18 @@ package org.mmadt.machine.console;
 
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.ParsedLine;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-
-import java.io.IOException;
-import java.util.Arrays;
+import org.parboiled.Parboiled;
+import org.parboiled.parserunners.BasicParseRunner;
+import org.parboiled.parserunners.ParseRunner;
+import org.parboiled.support.ParsingResult;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public class Console {
-
-    private static final String prompt = "mmadt> ";
 
     private static final String HEADER =
             "                                   _____ _______ \n" +
@@ -48,37 +46,37 @@ public class Console {
                     "|_| |_| |_|_| |_| |_|   /_/    \\_|_____/  |_|   \n" +
                     "                                   mm-adt.org  ";
 
-    public static void main(final String[] args) throws IOException {
+
+    private static final String PROMPT = "mmadt> ";
+    private static final String RESULT = "==>";
+    private static final String QUIT = ":quit";
+    private static final String Q = ":q";
+    private static final SimpleParser PARSER = Parboiled.createParser(SimpleParser.class);
+
+    public static void main(final String[] args) throws Exception {
+        final ParseRunner runner = new BasicParseRunner<>(PARSER.Source());
         final Terminal terminal = TerminalBuilder.terminal();
+        terminal.echo(false);
+        terminal.pause(true);
+        final DefaultParser parser = new DefaultParser();
         final LineReader reader = LineReaderBuilder.builder()
                 .terminal(terminal)
-                .parser(new DefaultParser())
-                .variable(LineReader.SECONDARY_PROMPT_PATTERN, "%M%P > ")
-                .variable(LineReader.INDENTATION, 2)
-                .option(LineReader.Option.INSERT_BRACKET, true)
+                .parser(parser)
                 .build();
 
         terminal.writer().println(HEADER);
         terminal.flush();
         while (true) {
-
             String line = null;
             try {
-
-                line = reader.readLine(prompt).trim();
-                terminal.writer().println("==>" + line);
-                terminal.flush();
-
-                if (line.equalsIgnoreCase("quit") || line.equalsIgnoreCase("exit")) {
-                    break;
-                }
-                ParsedLine pl = reader.getParser().parse(line, 0);
-                String[] argv = pl.words().subList(1, pl.words().size()).toArray(new String[0]);
-                terminal.writer().println(Arrays.toString(argv));
+                line = reader.readLine(PROMPT).trim();
+                if (line.equals(QUIT) || line.equals(Q)) break;
+                final ParsingResult result = runner.run(reader.getParsedLine().line());
+                if (!result.valueStack.isEmpty())
+                    terminal.writer().println(RESULT + result.valueStack.pop());
             } catch (final Throwable t) {
                 t.printStackTrace();
             }
         }
-
     }
 }
