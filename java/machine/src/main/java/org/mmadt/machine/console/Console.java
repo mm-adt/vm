@@ -39,6 +39,15 @@ public class Console {
 
     private static final String prompt = "mmadt> ";
 
+    private static final String HEADER =
+            "                                   _____ _______ \n" +
+                    "                            /\\   |  __ |__   __|\n" +
+                    " _ __ ___  _ __ ___ ______ /  \\  | |  | | | |   \n" +
+                    "| '_ ` _ \\| '_ ` _ |______/ / \\\\ | |  | | | |   \n" +
+                    "| | | | | | | | | | |    / ____ \\| |__| | | |   \n" +
+                    "|_| |_| |_|_| |_| |_|   /_/    \\_|_____/  |_|   \n" +
+                    "                                   mm-adt.org  ";
+
     public static void main(final String[] args) throws IOException {
         final Terminal terminal = TerminalBuilder.terminal();
         final LineReader reader = LineReaderBuilder.builder()
@@ -49,9 +58,13 @@ public class Console {
                 .option(LineReader.Option.INSERT_BRACKET, true)
                 .build();
 
+        terminal.writer().println(HEADER);
+        terminal.flush();
         while (true) {
+
             String line = null;
             try {
+
                 line = reader.readLine(prompt).trim();
                 terminal.writer().println("==>" + line);
                 terminal.flush();
