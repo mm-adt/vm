@@ -31,7 +31,10 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -287,23 +290,28 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
 
-    public default <O extends Obj> O dedup() {
-        return ObjectHelper.allInstances(this) ?
-                (O) this :
-                this.q(this.q().one().peek(), this.q().last()).access(this.access().mult(TInst.of(Tokens.DEDUP).domainAndRange(this, this.q(this.q().one().peek(), this.q().last()))));
+    public default Bool a(final Obj obj) {
+        return AInst.create(() -> TBool.of(obj.test(this)), this, obj);
     }
-
 
     public default <O extends Obj> O count() {
         return CountInst.create((O) this);
+    }
+
+    public default <O extends Obj> O id() {
+        return IdInst.create((O) this);
     }
 
     public default <O extends Obj> O is(final Bool bool) {
         return IsInst.create((O) this, bool);
     }
 
-    public default <O extends Obj> O id() {
-        return IdInst.create((O) this);
+    public default <O extends Obj> O map(final O object) {
+        return MapInst.create(() -> object, (O)this, object);
+    }
+
+    public default <O extends Obj> O sum() {
+        return SumInst.create((O) this);
     }
 
 }

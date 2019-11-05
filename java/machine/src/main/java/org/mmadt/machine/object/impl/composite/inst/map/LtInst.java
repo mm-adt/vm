@@ -50,6 +50,6 @@ public final class LtInst<S extends WithOrder<S>> extends TInst implements MapIn
     public static <S extends WithOrder<S>> Bool create(final Supplier<Bool> result, final S source, final S argument) {
         return ObjectHelper.allInstances(source, argument) ?
                 result.get() :
-                TBool.of().access(source.access().mult(new LtInst<>(argument)));
+                TBool.of().q(source.q()).access(source.access().mult(new LtInst<>(argument)));
     }
 }

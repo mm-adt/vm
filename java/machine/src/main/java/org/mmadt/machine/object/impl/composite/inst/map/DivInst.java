@@ -23,12 +23,10 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.compiler.Argument;
 
@@ -37,19 +35,19 @@ import java.util.function.Supplier;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class GtInst<S extends WithOrder<S>> extends TInst implements MapInstruction<S, Bool> {
+public final class DivInst<S extends WithDiv<S>> extends TInst implements MapInstruction<S, S> {
 
-    private GtInst(final S argument) {
-        super(PList.of(Tokens.GT, argument));
+    private DivInst(final S argument) {
+        super(PList.of(Tokens.DIV, argument));
     }
 
-    public Bool apply(final S s) {
-        return s.gt(Argument.<S, S>create(this.args().get(0)).mapArg(s));
+    public S apply(final S s) {
+        return s.div(Argument.<S, S>create(this.args().get(0)).mapArg(s));
     }
 
-    public static <S extends WithOrder<S>> Bool create(final Supplier<Bool> result, final S source, final S argument) {
+    public static <S extends WithDiv<S>> S create(final Supplier<S> result, final S source, final S argument) {
         return ObjectHelper.allInstances(source, argument) ?
                 result.get() :
-                TBool.of().q(source.q()).access(source.access().mult(new GtInst<>(argument)));
+                source.access(source.access().mult(new DivInst<>(argument)));
     }
 }

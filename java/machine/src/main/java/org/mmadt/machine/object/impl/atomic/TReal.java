@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
@@ -114,7 +115,7 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real div(final Real real) {
-        return OperatorHelper.binary(Tokens.DIV, () -> new TReal(this.java() / real.java()), this, real);
+        return DivInst.create(() -> new TReal(this.java() / real.java()), this, real);
     }
 
     @Override

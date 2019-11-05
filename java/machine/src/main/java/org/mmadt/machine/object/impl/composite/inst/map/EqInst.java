@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -49,6 +50,6 @@ public final class EqInst<S extends Obj> extends TInst implements MapInstruction
     public static <S extends Obj> Bool create(final Supplier<Bool> result, final S source, final Obj argument) {
         return ObjectHelper.allInstances(source) ?
                 result.get() :
-                source.access(source.access().mult(new EqInst<>(argument)));
+                TBool.of().q(source.q()).access(source.access().mult(new EqInst<>(argument)));
     }
 }

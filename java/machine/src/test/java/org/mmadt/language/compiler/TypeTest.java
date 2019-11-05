@@ -78,7 +78,7 @@ class TypeTest {
            //         TInt.of(1, 2).one()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2)),
-                    TInt.of(1, 2).plus(TInt.of(7)).dedup()),
+                    start(1, 2).plus(TInt.of(7)).dedup()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some()),
                     start(1, 2).plus(7).dedup().count()),

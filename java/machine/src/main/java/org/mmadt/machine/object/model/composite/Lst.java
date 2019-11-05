@@ -25,6 +25,7 @@ package org.mmadt.machine.object.model.composite;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
+import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -78,27 +79,29 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
 
     @Override
     public default V get(final Int index) {
-        V v = (V) TObj.none();
-        final Object object = this.get();
-        if (object instanceof PList)
-            v = (((PList<V>) object).size() <= index.<Integer>get()) ? (V) TObj.none() : ((PList<V>) object).get(index.get());
-        else if (object instanceof PAnd) {
-            final List<Pattern> ps = ((PAnd) object).predicates(); // go backwards as recent AND has higher precedence
-            for (int i = ps.size() - 1; i >= 0; i--) {
-                final Pattern p = ps.get(i);
-                if (p instanceof Lst) {
-                    v = ((Lst<V>) p).get(index);
-                    if (!TObj.none().equals(v)) break;
-                } else if (p instanceof TSym) {
-                    final Lst<V> temp = ((TSym<Lst<V>>) p).getObject();
-                    if (null != temp) {
-                        v = temp.get(index);
+        return GetInst.create(() -> {
+            V v = (V) TObj.none();
+            final Object object = this.get();
+            if (object instanceof PList)
+                v = (((PList<V>) object).size() <= index.<Integer>get()) ? (V) TObj.none() : ((PList<V>) object).get(index.get());
+            else if (object instanceof PAnd) {
+                final List<Pattern> ps = ((PAnd) object).predicates(); // go backwards as recent AND has higher precedence
+                for (int i = ps.size() - 1; i >= 0; i--) {
+                    final Pattern p = ps.get(i);
+                    if (p instanceof Lst) {
+                        v = ((Lst<V>) p).get(index);
                         if (!TObj.none().equals(v)) break;
+                    } else if (p instanceof TSym) {
+                        final Lst<V> temp = ((TSym<Lst<V>>) p).getObject();
+                        if (null != temp) {
+                            v = temp.get(index);
+                            if (!TObj.none().equals(v)) break;
+                        }
                     }
                 }
             }
-        }
-        return v;
+            return v;
+        }, this, index);
     }
 
     @Override

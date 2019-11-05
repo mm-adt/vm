@@ -51,12 +51,12 @@ public final class CountInst<S extends Obj, E extends WithMonoidPlus<E>> extends
 
     @Override
     public E getInitialValue() {
-        return (E) this.q().peek().zero();
+        return (E) this.q().zero().peek();
     }
 
     public static <S extends Obj> S create(final S source) {
         return ObjectHelper.allInstances(source) ?
                 (S) source.q().peek() :
-                source.q().peek().one().set(null).access(source.access().mult(new CountInst<>()));
+                source.set(null).q(source.q().one()).access(source.access().mult(new CountInst<>()));
     }
 }
