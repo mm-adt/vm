@@ -28,7 +28,10 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.parboiled.Action;
@@ -42,7 +45,6 @@ import org.parboiled.support.Var;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -85,6 +87,14 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule SEMICOLON = Terminal(Tokens.SEMICOLON);
     final Rule TRUE = Terminal(Tokens.TRUE);
     final Rule FALSE = Terminal(Tokens.FALSE);
+    ///
+    final Rule INT = Terminal(Tokens.INT);
+    final Rule REAL = Terminal(Tokens.REAL);
+    final Rule STR = Terminal(Tokens.STR);
+    final Rule BOOL = Terminal(Tokens.BOOL);
+    final Rule REC = Terminal(Tokens.REC);
+    final Rule LST = Terminal(Tokens.LIST);
+    final Rule INST = Terminal(Tokens.INST);
 
     final Rule OP_ID = Terminal(Tokens.ID);
     final Rule OP_DEFINE = Terminal(Tokens.DEFINE);
@@ -115,7 +125,8 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressNode
     Rule Obj(final Var<Obj> obj) {
-        return FirstOf(obj.isSet(), Real(obj), Int(obj), Bool(obj), Str(obj), Sequence(Inst(), obj.set((Obj) this.pop())));
+        final Var<Inst> access = new Var<>(IdInst.some().one());
+        return Sequence(FirstOf(obj.isSet(), Real(obj), Int(obj), Bool(obj), Str(obj), Lst(obj), Sequence(Inst(), obj.set((Obj) this.pop()))), Optional(MAPSFROM, OneOrMore(Inst(), access.set(access.get().mult((Inst) this.pop())))), obj.set(obj.get().access(access.get())));
     }
 
     @SuppressNode
@@ -146,7 +157,7 @@ public class SimpleParser extends BaseParser<Object> {
         ));
     }
 
-   /* Rule Lst(final Var<Obj> object) {
+    Rule Lst(final Var<Obj> object) {
         final Var<PList<Obj>> list = new Var<>(new PList<>());
         return Sequence(LBRACKET,
                 FirstOf(SEMICOLON, // empty list
@@ -163,7 +174,7 @@ public class SimpleParser extends BaseParser<Object> {
                         }))), RBRACKET, object.set(TLst.of(list.get())));
     }
 
-    Rule Rec(final Var<Obj> object) {
+    /*Rule Rec(final Var<Obj> object) {
         final Var<PMap<Obj, Obj>> rec = new Var<>(new PMap<>());
         return Sequence(LBRACKET,
                 FirstOf(COLON, // empty record
@@ -184,12 +195,12 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule Real(final Var<Obj> object) {
-        return Sequence(Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit())), object.set(TReal.of(Float.valueOf(match()))));
+        return FirstOf(Sequence(REAL, object.set(TReal.of())), Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit()), object.set(TReal.of(Float.valueOf(match())))));
     }
 
     @SuppressSubnodes
     Rule Int(final Var<Obj> object) {
-        return Sequence(OneOrMore(Digit()), object.set(TInt.of(Integer.valueOf(match()))));
+        return FirstOf(Sequence(INT, object.set(TInt.some())), Sequence(OneOrMore(Digit()), object.set(TInt.of(Integer.valueOf(match())))));
     }
 
 
@@ -211,13 +222,13 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<Obj> key = new Var<>();
         final Var<Obj> value = new Var<>();
         return Sequence(TypeExpress(key), COLON, TypeExpress(value), this.push(key.get()), this.push(value.get()), swap());
-    }
+    }*/
 
     @SuppressSubnodes
     Rule Entry() {
         final Var<Obj> value = new Var<>();
-        return Sequence(TypeExpress(value), this.push(value.get()));
-    }*/
+        return Sequence(Obj(value), this.push(value.get()));
+    }
 
     @SuppressSubnodes
     Rule Digit() {

@@ -27,10 +27,8 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.processor.util.MinimalProcessor;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.BasicParseRunner;
@@ -80,9 +78,8 @@ public class Console {
                 if (!result.valueStack.isEmpty()) {
                     final Obj obj = (Obj) result.valueStack.pop();
                     result.valueStack.clear();
-                    terminal.writer().println(RESULT + obj);
-                    terminal.writer().flush();
-                    new MinimalProcessor<>((Inst)obj).iterator(TObj.none()).forEachRemaining(o -> {
+                    terminal.flush();
+                    new MinimalProcessor<>(obj instanceof Inst ? (Inst) obj : obj.access()).iterator(obj).forEachRemaining(o -> {
                         terminal.writer().println(RESULT + o.toString());
                     });
                     terminal.flush();
