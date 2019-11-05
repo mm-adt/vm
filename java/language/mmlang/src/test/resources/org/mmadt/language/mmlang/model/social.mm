@@ -27,11 +27,11 @@
                    'spouse':person{?}]]
   [define,address,['city':str,'street':str,'state':str]]
   [define,singles,person&['address':address,'spouse':[is,[a,person{0}]]]{50}
-    -> [dedup,[get,'name']]                                =>
+    -> [dedup,[get,'name']]                                => [id]
     -> [get,'address']                                     => [ref,address{50}
-     -> [order,[get,'state']]                              =>
-     -> [dedup]                                            =>
-    -> [dedup,[get,'street']]                              =>
+     -> [order,[get,'state']]                              => [id]
+     -> [dedup]                                            => [id]
+    -> [dedup,[get,'street']]                              => [id]
     -> [get,'street']                                      => [ref,str{50}
      -> [dedup] => ]]]
   [define,db,['persons':person{,200}
@@ -42,6 +42,6 @@
     -> [is,[get,'spouse'][count][eq,0]]                    => [ref,singles                                 <= [db][get,'persons'][is,[get,'spouse'][count][eq,0]]]
     -> [is,[get,'alive']]                                  => [ref,person&['address':address{0},
                                                                            'age'    :int <= [is,[and,[a,int],[gt,75]]]]{*} <= [id]]
-    -> [order,[get,'age']]                                 =>
+    -> [order,[get,'age']]                                 => [id]
     -> [get,'address']                                     => [ref,address{,200}
-          -> [order,[gt,[get,'state'|'city']]]             => ]]]]
+          -> [order,[gt,[get,'state'|'city']]]             => [id]]]]]

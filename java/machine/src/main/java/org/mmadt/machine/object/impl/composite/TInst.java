@@ -26,6 +26,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
@@ -105,20 +106,6 @@ public class TInst extends TObj implements Inst {
     }
 
     @Override
-    public <A extends WithOrderedRing<A>> Q<A> q() {   // TODO: this might not make sense moving forward as an instruction can't have a quantifier and be quantified :|
-        if (this.get() instanceof Stream) { // TODO: memoize this
-            A low = null;
-            A high = null;
-            for (final Inst a : this.iterable()) {
-                low = null == low ? a.<A>q().peek() : low.plus(a.<A>q().peek());
-                high = null == high ? a.<A>q().last() : high.plus(a.<A>q().last());
-            }
-            return new TQ<>(low, high);
-        }
-        return super.q();
-    }
-
-    @Override
     public Inst and(final Obj obj) {
         return this.operator(Tokens.AND, obj);
     }
@@ -178,7 +165,7 @@ public class TInst extends TObj implements Inst {
     }
 
     private Inst operator(final String opcode, final Obj obj) {
-        final Inst inst = obj instanceof Inst ? (Inst) obj : obj.access(); // if the object isn't an instruction, make it one
+        final Inst inst = obj instanceof Inst ? (Inst) obj : MapInst.create(()->this,this,obj); // if the object isn't an instruction, make it one
         final Inst last = this.last();
         if (last.opcode().java().equals(opcode)) {
             final PList<Obj> list = new PList<>(last.java());

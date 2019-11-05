@@ -56,15 +56,15 @@
      -> [get,'label']                                  => [ref,str                                 <= [get,'inV'][get,'label']]]]                                          // e.inV().label()                  [DENORM]
  [define,db,vertex{*}
    -> [count]                                          => [ref,int                                 <= [db][count]]                                                         // g.V().count()                    [AGGREGATE]
-   -> [dedup,[get,'id']]                               =>                                                                                                                  // g.V().dedup()                    [SCHEMA]
-   -> [order,[gt,[get,'label']]]                       =>                                                                                                                  // g.V().order().by(label,ASC)      [SCHEMA]
+   -> [dedup,[get,'id']]                               => [id]                                                                                                             // g.V().dedup()                    [SCHEMA]
+   -> [order,[gt,[get,'label']]]                       => [id]                                                                                                             // g.V().order().by(label,ASC)      [SCHEMA]
    -> [is,[get,'id'][eq,int~a]]                        => [ref,vertex&['id':int~a]{?}              <= [db][is,[get,'id'][eq,int~a]]]                                       // g.V(1)                           [INDEX]
    -> [is,[get,'label'][eq,str~b]]                     => [ref,vertex&['label':str~b]{*}           <= [db][is,[get,'label'][eq,str~b]]                                     // g.V().hasLabel(person)           [INDEX]
-     -> [dedup,[get,'id']]                             =>                                                                                                                  // g.V().hasLabel(person).dedup()   [INDEX+SCHEMA]
+     -> [dedup,[get,'id']]                             => [id]                                                                                                             // g.V().hasLabel(person).dedup()   [INDEX+SCHEMA]
      -> [count]                                        => [ref,int                                 <= [db][is,[get,'label'][eq,str~b]][count]]]                            // g.V().hasLabel(person).count()   [INDEX+AGGREGATE]
    -> [get,('inE'|'outE')~c]                           => [ref,edge{*}
-     -> [dedup,[get,'id']]                             =>                                                                                                                  // g.V().outE().dedup()             [SCHEMA]
+     -> [dedup,[get,'id']]                             => [id]                                                                                                             // g.V().outE().dedup()             [SCHEMA]
      -> [count]                                        => [ref,int                                 <= [db][get,str~c][count]]                                              // g.V().outE().count()             [AGGREGATE]
      -> [get,('outV'|'inV')~d]                         => [ref,vertex{*}
-       -> [dedup,[get,'id']]                           =>                                                                                                                  // g.V().out().dedup()              [SCHEMA]
+       -> [dedup,[get,'id']]                           => [id]                                                                                                             // g.V().out().dedup()              [SCHEMA]
        -> [count]                                      => [ref,int                                 <= [db][get,str~c][get,str~d][count]]]]]]                               // g.V().out().count()              [AGGREGATE]
