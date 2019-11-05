@@ -53,6 +53,7 @@
     </licenses>
     <properties>
         <junit.version>5.4.0</junit.version>
+        <jline.version>3.13.1</jline.version>
     </properties>
     <developers>
         <developer>

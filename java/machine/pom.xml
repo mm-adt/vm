@@ -31,4 +31,11 @@
     </parent>
     <name>mm-ADT :: Machine</name>
     <artifactId>machine</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>${jline.version}</version>
+        </dependency>
+    </dependencies>
 </project>
