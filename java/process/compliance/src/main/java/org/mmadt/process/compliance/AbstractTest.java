@@ -37,7 +37,7 @@ abstract class AbstractTest implements TestMachine {
 
     <E extends Obj> List<E> submit(final Query query) {
         System.out.println(query.toString());
-        return IteratorUtils.list(machine().submit(query.obj().access()));
+        return IteratorUtils.list(machine().submit(query.obj()));
     }
 
     <E extends Obj> List<E> objs(final Object... objects) {

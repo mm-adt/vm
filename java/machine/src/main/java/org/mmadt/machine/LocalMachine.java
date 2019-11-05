@@ -37,7 +37,7 @@ public final class LocalMachine implements Machine {
     }
 
     @Override
-    public <E extends Obj> Iterator<E> submit(final Inst bytecode) {
+    public <E extends Obj> Iterator<E> submit(final E obj) {
         return null;
     }
 

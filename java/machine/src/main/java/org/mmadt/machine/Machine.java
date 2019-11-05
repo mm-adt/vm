@@ -23,7 +23,6 @@
 package org.mmadt.machine;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 
 import java.io.Closeable;
 import java.util.Iterator;
@@ -33,7 +32,7 @@ import java.util.Iterator;
  */
 public interface Machine extends Closeable {
 
-    public <E extends Obj> Iterator<E> submit(final Inst bytecode);
+    public <E extends Obj> Iterator<E> submit(final E obj);
 
     public void close();
 

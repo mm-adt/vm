@@ -24,7 +24,6 @@ package org.mmadt.process.mmproc.compliance;
 
 import org.mmadt.machine.Machine;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.process.compliance.TestMachine;
 import org.mmadt.process.mmproc.ProcProcessor;
 import org.mmadt.processor.compiler.IR;
@@ -41,8 +40,8 @@ public interface ProcTestMachine extends TestMachine {
     public default Machine machine() {
         return new Machine() {
             @Override
-            public <E extends Obj> Iterator<E> submit(final Inst bytecode) {
-                return new ProcProcessor(Map.of()).<Obj, E>mint(new IR<>(bytecode)).iterator(EmptyIterator.instance());
+            public <E extends Obj> Iterator<E> submit(final E obj) {
+                return new ProcProcessor(Map.of()).<Obj, E>mint(new IR<>(obj.access())).iterator(EmptyIterator.instance());
             }
 
             @Override
