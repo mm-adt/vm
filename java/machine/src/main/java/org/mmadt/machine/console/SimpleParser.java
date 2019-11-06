@@ -29,10 +29,11 @@ import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.parboiled.Action;
 import org.parboiled.BaseParser;
@@ -104,29 +105,26 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<Obj> left = new Var<>();
         final Var<Obj> right = new Var<>();
         final Var<String> operator = new Var<>();
-        return ZeroOrMore(
-                ACTION(this.currentIndex() <= 0 || left.set((Obj) this.pop())),
-                Optional(Obj(left)),
-                Sequence(BinaryOperator(), operator.set(match().trim()), Obj(right)),
-                ACTION(this.push(operator.isSet() ?
-                        OperatorHelper.operation(operator.getAndClear(), left.getAndClear(), right.getAndClear()) :
-                        left.getAndClear())));
+        return Sequence(
+                Obj(left), this.push(left.getAndClear()),
+                ZeroOrMore(left.set((Obj) this.pop()),
+                        BinaryOperator(operator),
+                        Obj(right), this.push(OperatorHelper.operation(operator.getAndClear(), left.getAndClear(), right.getAndClear()))));
     }
 
-
-    @SuppressNode
-    Rule Inst() {
-        final Var<String> opcode = new Var<>();
-        final Var<Obj> value = new Var<>();
-        final Var<PList<Obj>> args = new Var<>(new PList<>());
-        return Sequence(LBRACKET, VarSym(), opcode.set(match()), ZeroOrMore(COMMA, Obj(value), args.get().add(value.getAndClear())), RBRACKET, this.push(TInst.of(opcode.get(), args.get())));
-    }
     ///////////////
 
     @SuppressNode
     Rule Obj(final Var<Obj> obj) {
-        final Var<Inst> access = new Var<>(IdInst.some().one());
-        return Sequence(FirstOf(obj.isSet(), Real(obj), Int(obj), Bool(obj), Str(obj), Lst(obj), Sequence(Inst(), obj.set((Obj) this.pop()))), Optional(MAPSFROM, OneOrMore(Inst(), access.set(access.get().mult((Inst) this.pop())))), obj.set(obj.get().access(access.get())));
+        final Var<Obj> access = new Var<>();
+        return Sequence(FirstOf(
+                Bool(obj),
+                Int(obj),
+                Real(obj),
+                Str(obj),
+                Lst(obj),
+                Rec(obj),
+                Inst(obj)), Optional(MAPSFROM, Inst(access), obj.set(obj.get().access((Inst) access.get()))));
     }
 
     @SuppressNode
@@ -135,8 +133,8 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     @SuppressNode
-    Rule BinaryOperator() {
-        return FirstOf(STAR, PLUS, SUB, AND, OR);
+    Rule BinaryOperator(final Var<String> operator) {
+        return Sequence(FirstOf(STAR, PLUS, SUB, AND, OR), operator.set(this.match().trim()));
     }
 
 
@@ -148,65 +146,71 @@ public class SimpleParser extends BaseParser<Object> {
     @SuppressNode
     Rule Spacing() {
         return ZeroOrMore(FirstOf(
-                // whitespace
-                OneOrMore(AnyOf(" \t\r\n\f").label("Whitespace")),
-                // traditional comment
-                Sequence("/*", ZeroOrMore(TestNot("*/"), ANY), "*/"),
-                // end of line comment
-                Sequence("//", ZeroOrMore(TestNot(AnyOf("\r\n")), ANY), FirstOf("\r\n", '\r', '\n', EOI))
+                OneOrMore(AnyOf(" \t\r\n\f")),                                                            // whitespace
+                Sequence("/*", ZeroOrMore(TestNot("*/"), ANY), "*/"),                                     // block comment
+                Sequence("//", ZeroOrMore(TestNot(AnyOf("\r\n")), ANY), FirstOf("\r\n", '\r', '\n', EOI)) // line comment
         ));
     }
 
     Rule Lst(final Var<Obj> object) {
         final Var<PList<Obj>> list = new Var<>(new PList<>());
-        return Sequence(LBRACKET,
-                FirstOf(SEMICOLON, // empty list
-                        Sequence(Entry(), new Action<>() {
-                            @Override
-                            public boolean run(final Context<Object> context) {
-                                return list.get().add((Obj) pop());
-                            }
-                        }, ZeroOrMore(SEMICOLON, Entry(), new Action<>() {
-                            @Override
-                            public boolean run(final Context<Object> context) {
-                                return list.get().add((Obj) pop());
-                            }
-                        }))), RBRACKET, object.set(TLst.of(list.get())));
+        return FirstOf(
+                Sequence(LST, object.set(TLst.some())),
+                Sequence(LBRACKET,
+                        FirstOf(SEMICOLON, // empty list
+                                Sequence(Entry(), new Action<>() {
+                                    @Override
+                                    public boolean run(final Context<Object> context) {
+                                        return list.get().add((Obj) pop());
+                                    }
+                                }, ZeroOrMore(SEMICOLON, Entry(), new Action<>() {
+                                    @Override
+                                    public boolean run(final Context<Object> context) {
+                                        return list.get().add((Obj) pop());
+                                    }
+                                }))), RBRACKET, object.set(TLst.of(list.get()))));
     }
 
-    /*Rule Rec(final Var<Obj> object) {
+    Rule Rec(final Var<Obj> object) {
         final Var<PMap<Obj, Obj>> rec = new Var<>(new PMap<>());
-        return Sequence(LBRACKET,
-                FirstOf(COLON, // empty record
-                        Sequence(Field(), new Action<>() {
-                            @Override
-                            public boolean run(final Context<Object> context) {
-                                rec.get().put((Obj) pop(), (Obj) pop());
-                                return true;
-                            }
-                        }, ZeroOrMore(COMMA, Field(), new Action<>() {
-                            @Override
-                            public boolean run(final Context<Object> context) {
-                                rec.get().put((Obj) pop(), (Obj) pop());
-                                return true;
-                            }
-                        }))), RBRACKET, object.set(TRec.of(rec.get())));
-    }*/
+        return FirstOf(
+                Sequence(REC, object.set(TRec.some())),
+                Sequence(LBRACKET,
+                        FirstOf(COLON, // empty record
+                                Sequence(Field(), new Action<>() {
+                                    @Override
+                                    public boolean run(final Context<Object> context) {
+                                        rec.get().put((Obj) pop(), (Obj) pop());
+                                        return true;
+                                    }
+                                }, ZeroOrMore(COMMA, Field(), new Action<>() {
+                                    @Override
+                                    public boolean run(final Context<Object> context) {
+                                        rec.get().put((Obj) pop(), (Obj) pop());
+                                        return true;
+                                    }
+                                }))), RBRACKET, object.set(TRec.of(rec.get()))));
+    }
 
     @SuppressSubnodes
     Rule Real(final Var<Obj> object) {
-        return FirstOf(Sequence(REAL, object.set(TReal.of())), Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit()), object.set(TReal.of(Float.valueOf(match())))));
+        return FirstOf(
+                Sequence(REAL, object.set(TReal.of())),
+                Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit()), object.set(TReal.of(Float.valueOf(match())))));
     }
 
     @SuppressSubnodes
     Rule Int(final Var<Obj> object) {
-        return FirstOf(Sequence(INT, object.set(TInt.some())), Sequence(OneOrMore(Digit()), object.set(TInt.of(Integer.valueOf(match())))));
+        return FirstOf(
+                Sequence(INT, object.set(TInt.some())),
+                Sequence(OneOrMore(Digit()), object.set(TInt.of(Integer.valueOf(match())))));
     }
 
 
     @SuppressSubnodes
     Rule Str(final Var<Obj> object) {
         return FirstOf(
+                Sequence(STR, object.set(TStr.some())),
                 Sequence(TRIPLE_QUOTE, ZeroOrMore(Sequence(TestNot(TRIPLE_QUOTE), ANY)), object.set(TStr.of(match())), TRIPLE_QUOTE),
                 Sequence(SINGLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\\'")), ANY)), object.set(TStr.of(match())), SINGLE_QUOTE),
                 Sequence(DOUBLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\"")), ANY)), object.set(TStr.of(match())), DOUBLE_QUOTE));
@@ -214,15 +218,33 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule Bool(final Var<Obj> object) {
-        return Sequence(FirstOf(TRUE, FALSE), object.set(TBool.of(Boolean.valueOf(match()))));
+        return FirstOf(
+                Sequence(BOOL, object.set(TBool.some())),
+                Sequence(TRUE, object.set(TBool.of(Boolean.valueOf(match())))),
+                Sequence(FALSE, object.set(TBool.of(Boolean.valueOf(match())))));
     }
 
-   /* @SuppressSubnodes
+    @SuppressNode
+    Rule Inst(final Var<Obj> object) {
+        return FirstOf(
+                Sequence(INST, object.set(TInst.some())),
+                Sequence(object.set(TInst.ids()), OneOrMore(Single_Inst(), object.set(((Inst) object.getAndClear()).mult((Inst) this.pop())))));
+    }
+
+    @SuppressNode
+    Rule Single_Inst() {
+        final Var<String> opcode = new Var<>();
+        final Var<Obj> value = new Var<>();
+        final Var<PList<Obj>> args = new Var<>(new PList<>());
+        return Sequence(LBRACKET, VarSym(), opcode.set(match()), ZeroOrMore(COMMA, Obj(value), args.get().add(value.getAndClear())), RBRACKET, this.push(TInst.of(opcode.get(), args.get())));
+    }
+
+    @SuppressSubnodes
     Rule Field() {
         final Var<Obj> key = new Var<>();
         final Var<Obj> value = new Var<>();
-        return Sequence(TypeExpress(key), COLON, TypeExpress(value), this.push(key.get()), this.push(value.get()), swap());
-    }*/
+        return Sequence(Obj(key), COLON, Obj(value), this.push(key.get()), this.push(value.get()), swap());
+    }
 
     @SuppressSubnodes
     Rule Entry() {

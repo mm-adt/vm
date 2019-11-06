@@ -34,10 +34,6 @@ import org.parboiled.Parboiled;
 import org.parboiled.parserunners.BasicParseRunner;
 import org.parboiled.parserunners.ParseRunner;
 import org.parboiled.support.ParsingResult;
-import sun.misc.Unsafe;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -56,12 +52,10 @@ public class Console {
 
     private static final String PROMPT = "mmadt> ";
     private static final String RESULT = "==>";
-    private static final String QUIT = ":quit";
     private static final String Q = ":q";
     private static final SimpleParser PARSER = Parboiled.createParser(SimpleParser.class);
 
     public static void main(final String[] args) throws Exception {
-        disableAccessWarnings();
         final ParseRunner runner = new BasicParseRunner<>(PARSER.Source());
         final Terminal terminal = TerminalBuilder.terminal();
         terminal.echo(false);
@@ -74,16 +68,14 @@ public class Console {
                 .build();
         terminal.writer().println(HEADER);
         terminal.flush();
+        String line;
         while (true) {
-            String line = null;
             try {
                 line = reader.readLine(PROMPT);
-                if (line.equals(QUIT) || line.equals(Q)) break;
+                if (line.equals(Q)) break;
                 final ParsingResult result = runner.run(line);
                 if (!result.valueStack.isEmpty()) {
                     final Obj obj = (Obj) result.valueStack.pop();
-                    result.valueStack.clear();
-                    terminal.flush();
                     new MinimalProcessor<>(obj instanceof Inst ? (Inst) obj : obj.access()).iterator(obj).forEachRemaining(o -> {
                         terminal.writer().println(RESULT + o.toString());
                     });
@@ -92,25 +84,6 @@ public class Console {
             } catch (final Throwable t) {
                 t.printStackTrace();
             }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void disableAccessWarnings() {
-        try {
-            Class unsafeClass = Class.forName("sun.misc.Unsafe");
-            Field field = unsafeClass.getDeclaredField("theUnsafe");
-            field.setAccessible(true);
-            Object unsafe = field.get(null);
-
-            Method putObjectVolatile = unsafeClass.getDeclaredMethod("putObjectVolatile", Object.class, long.class, Object.class);
-            Method staticFieldOffset = unsafeClass.getDeclaredMethod("staticFieldOffset", Field.class);
-
-            Class loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
-            Field loggerField = loggerClass.getDeclaredField("logger");
-            Long offset = (Long) staticFieldOffset.invoke(unsafe, loggerField);
-            putObjectVolatile.invoke(unsafe, loggerClass, offset, null);
-        } catch (Exception ignored) {
         }
     }
 }
