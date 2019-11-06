@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.object.model.util;
 
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
@@ -43,7 +42,7 @@ public class OperatorHelper {
     }
 
     public static <A extends Obj> A operation(final String operator, final A lhs, final A rhs) {
-        switch (operator.trim()) {
+        switch (operator) {
             case ("*"):
                 return (A) ((WithMult) lhs).mult((WithMult) rhs);
             case ("+"):

@@ -115,7 +115,7 @@ public class SimpleParser extends BaseParser<Object> {
                 ZeroOrMore(left.set((Obj) this.pop()),
                         BinaryOperator(operator),
                         Optional(SUB, unary.set(Tokens.DASH)),
-                        Obj(right), ACTION(unary.isNotSet() || left.set(((WithMinus) left.getAndClear()).neg())), this.push(OperatorHelper.operation(operator.get(), left.get(), right.get()))));
+                        Obj(right), ACTION(unary.isNotSet() || (unary.clear() && left.set(((WithMinus) left.get()).neg()))), this.push(OperatorHelper.operation(operator.get(), left.get(), right.get()))));
     }
 
     ///////////////
@@ -152,8 +152,8 @@ public class SimpleParser extends BaseParser<Object> {
                 Sequence(REC, object.set(TRec.some())),
                 Sequence(LBRACKET,
                         FirstOf(COLON, // empty record
-                                Sequence(Field(), ACTION(rec.get().put((Obj) pop(), (Obj) pop()) instanceof Obj),
-                                        ZeroOrMore(COMMA, ACTION(rec.get().put((Obj) pop(), (Obj) pop()) instanceof Obj)))),
+                                Sequence(Field(), ACTION(null == rec.get().put((Obj) pop(), (Obj) pop()) || true),
+                                        ZeroOrMore(COMMA, Field(), ACTION(null == rec.get().put((Obj) pop(), (Obj) pop()) || true)))),
                         RBRACKET, object.set(TRec.of(rec.get()))));
     }
 
@@ -184,8 +184,8 @@ public class SimpleParser extends BaseParser<Object> {
     Rule Bool(final Var<Obj> object) {
         return FirstOf(
                 Sequence(BOOL, object.set(TBool.some())),
-                Sequence(TRUE, object.set(TBool.of(Boolean.valueOf(match())))),
-                Sequence(FALSE, object.set(TBool.of(Boolean.valueOf(match())))));
+                Sequence(TRUE, object.set(TBool.of(true))),
+                Sequence(FALSE, object.set(TBool.of(false))));
     }
 
     Rule Inst(final Var<Obj> object) {
