@@ -37,7 +37,8 @@ import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.type.PRel;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.machine.object.model.util.OperatorHelper;
+
+import java.util.function.Supplier;
 
 import static org.mmadt.machine.object.model.type.PRel.Rel.GT;
 
@@ -125,17 +126,17 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int minus(final Int integer) {
-        return MinusInst.create(() -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)), this, integer);
+        return MinusInst.create(() -> new TInt(TInt.tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)), this, integer);
     }
 
     @Override
     public Int plus(final Int integer) {
-        return PlusInst.create(() -> new TInt(OperatorHelper.tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
+        return PlusInst.create(() -> new TInt(TInt.tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
     }
 
     @Override
     public Int mult(final Int integer) {
-        return MultInst.create(() -> new TInt(OperatorHelper.tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
+        return MultInst.create(() -> new TInt(TInt.tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
     }
 
     @Override
@@ -154,6 +155,14 @@ public final class TInt extends TObj implements Int {
     }
 
     ///// HELPER METHODS
+
+    private static Integer tryCatch(final Supplier<Integer> function, final Integer failValue) {
+        try {
+            return function.get();
+        } catch (final ArithmeticException e) {
+            return failValue;
+        }
+    }
 
     public static Int gt(int object) {
         return new TInt(new PRel(GT, TInt.of(object)));

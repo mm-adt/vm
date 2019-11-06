@@ -135,6 +135,7 @@
                         <exclude>**/*.iml</exclude>
                         <exclude>**/*.md</exclude>
                         <exclude>**/target/**</exclude>
+                        <exclude>.mmadt_history</exclude>
                     </excludes>
                     <licenses>
                         <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">

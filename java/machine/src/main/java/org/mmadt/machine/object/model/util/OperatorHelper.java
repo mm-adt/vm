@@ -50,31 +50,15 @@ public class OperatorHelper {
                 return (A) ((WithPlus) lhs).plus((WithPlus) rhs);
             case ("/"):
                 return (A) ((WithDiv) lhs).div((WithDiv) rhs);
+            case ("-"):
+                return (A) ((WithMinus) lhs).minus((WithMinus) rhs);
             case ("&"):
                 return (A) ((WithAnd) lhs).and(rhs);
             case ("|"):
                 return (A) lhs.or(rhs);
-            case ("-"):
-                return (A) ((WithMinus) lhs).minus((WithMinus) rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }
-    }
-
-    public static <A extends Obj, B extends Obj> B binary(final String opcode, final Supplier<B> operator, final A objA, final A objB) {
-        if (objA.isInstance())
-            return operator.get();
-        else
-            return objA.access(objA.access().mult(TInst.of(opcode, objB)));//.domainAndRange(objA.access((TInst)null),objA.access((TInst)null))));
-
-    }
-
-    public static <A extends Obj, B extends Obj> B binary2(final String opcode, final Supplier<B> operator, final A objA, final A objB) {
-        if (objA.isInstance() & objB.isInstance())
-            return operator.get();
-        else
-            return TBool.some().access(objA.access().mult(TInst.of(opcode, objB).domainAndRange(objB, TBool.some())));
-
     }
 
     public static <A extends Obj> A unary(final String opcode, final Supplier<A> operator, final A objA) {
@@ -82,13 +66,5 @@ public class OperatorHelper {
             return operator.get();
         else
             return objA.access(objA.access().mult(TInst.of(opcode)));
-    }
-
-    public static Object tryCatch(final Supplier function, final Object failValue) {
-        try {
-            return function.get();
-        } catch (final ArithmeticException e) {
-            return failValue;
-        }
     }
 }

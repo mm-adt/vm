@@ -52,8 +52,8 @@ public final class MinimalProcessor<S extends Obj, E extends Obj> implements Pro
 
     protected final Inst bytecode;
 
-    public MinimalProcessor(final Inst inst) {
-        this.bytecode = inst;
+    public MinimalProcessor(final Obj obj) {
+        this.bytecode = obj.access();
     }
 
     private static <E extends Obj> Iterator<E> processTraverser(final E start, final Inst inst) {

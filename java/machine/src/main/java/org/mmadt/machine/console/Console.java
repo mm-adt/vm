@@ -24,11 +24,12 @@ package org.mmadt.machine.console;
 
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
 import org.jline.reader.impl.DefaultParser;
+import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.MinimalProcessor;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.BasicParseRunner;
@@ -40,16 +41,17 @@ import org.parboiled.support.ParsingResult;
  */
 public class Console {
 
-    private static final String HEADER =
+    private static final String HEADER = "" +
             "                                _____ _______ \n" +
-                    "                           /\\  |  __ |__   __|\n" +
-                    " _ __ ___  _ __ ___ _____ /  \\ | |  | | | |   \n" +
-                    "| '_ ` _ \\| '_ ` _ |_____/ /\\ \\| |  | | | |   \n" +
-                    "| | | | | | | | | | |   / ____ \\ |__| | | |   \n" +
-                    "|_| |_| |_|_| |_| |_|  /_/    \\_\\____/  |_|   \n" +
-                    "                                 mm-adt.org  ";
+            "                           /\\  |  __ |__   __|\n" +
+            " _ __ ___  _ __ ___ _____ /  \\ | |  | | | |   \n" +
+            "| '_ ` _ \\| '_ ` _ |_____/ /\\ \\| |  | | | |   \n" +
+            "| | | | | | | | | | |   / ____ \\ |__| | | |   \n" +
+            "|_| |_| |_|_| |_| |_|  /_/    \\_\\____/  |_|   \n" +
+            "                                 mm-adt.org  ";
 
 
+    private static final String HISTORY = ".mmadt_history";
     private static final String PROMPT = "mmadt> ";
     private static final String RESULT = "==>";
     private static final String Q = ":q";
@@ -58,14 +60,17 @@ public class Console {
     public static void main(final String[] args) throws Exception {
         final ParseRunner runner = new BasicParseRunner<>(PARSER.Source());
         final Terminal terminal = TerminalBuilder.terminal();
-        terminal.echo(false);
-        terminal.pause(true);
+        final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
         final LineReader reader = LineReaderBuilder.builder()
                 .appName("mm-ADT Console")
                 .terminal(terminal)
+                .variable(LineReader.HISTORY_FILE, HISTORY)
+                //.variable(LineReader.HISTORY_IGNORE, List.of(Q)) TODO: don't want to have :q in the history
+                .history(history)
                 .parser(parser)
                 .build();
+        ///////////////////////////////////
         terminal.writer().println(HEADER);
         terminal.flush();
         String line;
@@ -76,12 +81,14 @@ public class Console {
                 final ParsingResult result = runner.run(line);
                 if (!result.valueStack.isEmpty()) {
                     final Obj obj = (Obj) result.valueStack.pop();
-                    new MinimalProcessor<>(obj instanceof Inst ? (Inst) obj : obj.access()).iterator(obj).forEachRemaining(o -> {
+                    new MinimalProcessor<>(obj).iterator(obj).forEachRemaining(o -> {
                         terminal.writer().println(RESULT + o.toString());
                     });
                     terminal.flush();
                 }
             } catch (final Throwable t) {
+                if (t instanceof UserInterruptException)
+                    break;
                 t.printStackTrace();
             }
         }

@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -112,7 +113,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         // when testing instruction against instruction, use list testing inst(x,y)
         if (obj instanceof Inst)
             return WithProduct.super.test(((Inst) obj));
-        return new MinimalProcessor<>(this).iterator(obj).hasNext();
+        return new MinimalProcessor<>(TInst.some().access(this)).iterator(obj).hasNext();
     }
 
     @Override
@@ -124,7 +125,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         if (bindings.has(this.label()))
             return bindings.get(this.label()).test(object);
         bindings.start();
-        final Iterator<Obj> itty = new MinimalProcessor<>(this).iterator(object);
+        final Iterator<Obj> itty = new MinimalProcessor<>(TInst.some().access(this)).iterator(object);
         if (itty.hasNext()) {
             final Obj obj = itty.next();
             if (null != obj.label())

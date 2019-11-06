@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.compiler;
 
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
@@ -42,17 +43,17 @@ public final class IRArgument<S extends Obj, E extends Obj> implements Argument<
 
     @Override
     public E mapArg(final S object) {
-        return new MinimalProcessor<S, E>(this.bytecode).iterator(object).next();
+        return new MinimalProcessor<S, E>(TInst.some().access(this.bytecode)).iterator(object).next();
     }
 
     @Override
     public Iterator<E> flatMapArg(final S object) {
-        return new MinimalProcessor<S, E>(this.bytecode).iterator(object);
+        return new MinimalProcessor<S, E>(TInst.some().access(this.bytecode)).iterator(object);
     }
 
     @Override
     public boolean filterArg(final S object) {
-        return new MinimalProcessor<S, E>(this.bytecode).iterator(object).hasNext(); // TODO: this should not be hardcoded to a processor
+        return new MinimalProcessor<S, E>(TInst.some().access(this.bytecode)).iterator(object).hasNext(); // TODO: this should not be hardcoded to a processor
     }
 
     @Override

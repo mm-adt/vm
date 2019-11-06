@@ -33,6 +33,7 @@ public final class Tokens {
         // static helper class
     }
 
+    public static final String BACKSLASH = "/";
     public static final String COLON = ":";
     public static final String COMMA = ",";
     public static final String SEMICOLON = ";";

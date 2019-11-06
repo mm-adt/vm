@@ -126,7 +126,7 @@ public final class RepeatBranch<S extends Obj> extends AbstractFunction {
         final List<Object> objects = new ArrayList<>();
         for (final Object arg : inst.args()) {
             if (arg instanceof Inst)
-                objects.add(new MinimalProcessor<>((Inst) arg)); // TODO: this needs to be dynamically determined
+                objects.add(new MinimalProcessor<>(null)); // TODO: this needs to be dynamically determined
             else if (arg instanceof Character)
                 objects.add(arg);
             else if (arg instanceof Integer)

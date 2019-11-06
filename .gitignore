@@ -6,3 +6,4 @@ target/
 fileTemplates/
 html/
 .DS_Store
+.mmadt_history

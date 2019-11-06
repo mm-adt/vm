@@ -36,6 +36,7 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
+import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.parboiled.BaseParser;
@@ -70,6 +71,7 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule PLUS = Terminal(Tokens.CROSS);
     final Rule QMARK = Terminal(Tokens.QUESTION);
     final Rule SUB = Terminal(Tokens.DASH);
+    final Rule DIV = Terminal(Tokens.BACKSLASH);
     final Rule MAPSFROM = Terminal(Tokens.MAPSFROM);
     final Rule MAPSTO = Terminal(Tokens.MAPSTO);
     final Rule LBRACKET = Terminal(Tokens.LBRACKET);
@@ -106,12 +108,14 @@ public class SimpleParser extends BaseParser<Object> {
     public Rule Source() {
         final Var<Obj> left = new Var<>();
         final Var<Obj> right = new Var<>();
+        final Var<String> unary = new Var<>();
         final Var<String> operator = new Var<>();
         return Sequence(
-                Obj(left), this.push(left.get()),
+                Optional(SUB, unary.set(Tokens.DASH)), Obj(left), ACTION(unary.isNotSet() || left.set(((WithMinus) left.getAndClear()).neg())), this.push(left.get()),
                 ZeroOrMore(left.set((Obj) this.pop()),
                         BinaryOperator(operator),
-                        Obj(right), this.push(OperatorHelper.operation(operator.get(), left.get(), right.get()))));
+                        Optional(SUB, unary.set(Tokens.DASH)),
+                        Obj(right), ACTION(unary.isNotSet() || left.set(((WithMinus) left.getAndClear()).neg())), this.push(OperatorHelper.operation(operator.get(), left.get(), right.get()))));
     }
 
     ///////////////
@@ -222,7 +226,7 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule BinaryOperator(final Var<String> operator) {
-        return Sequence(FirstOf(STAR, PLUS, SUB, AND, OR), operator.set(this.match().trim()));
+        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR), operator.set(this.match().trim()));
     }
 
     @SuppressNode
