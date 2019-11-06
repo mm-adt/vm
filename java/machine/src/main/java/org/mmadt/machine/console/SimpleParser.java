@@ -29,15 +29,16 @@ import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.OperatorHelper;
-import org.parboiled.Action;
 import org.parboiled.BaseParser;
-import org.parboiled.Context;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
 import org.parboiled.annotations.SuppressNode;
@@ -88,7 +89,8 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule SEMICOLON = Terminal(Tokens.SEMICOLON);
     final Rule TRUE = Terminal(Tokens.TRUE);
     final Rule FALSE = Terminal(Tokens.FALSE);
-    ///
+
+    /// built-int type symbols
     final Rule INT = Terminal(Tokens.INT);
     final Rule REAL = Terminal(Tokens.REAL);
     final Rule STR = Terminal(Tokens.STR);
@@ -106,50 +108,27 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<Obj> right = new Var<>();
         final Var<String> operator = new Var<>();
         return Sequence(
-                Obj(left), this.push(left.getAndClear()),
+                Obj(left), this.push(left.get()),
                 ZeroOrMore(left.set((Obj) this.pop()),
                         BinaryOperator(operator),
-                        Obj(right), this.push(OperatorHelper.operation(operator.getAndClear(), left.getAndClear(), right.getAndClear()))));
+                        Obj(right), this.push(OperatorHelper.operation(operator.get(), left.get(), right.get()))));
     }
 
     ///////////////
 
-    @SuppressNode
     Rule Obj(final Var<Obj> obj) {
         final Var<Obj> access = new Var<>();
-        return Sequence(FirstOf(
-                Bool(obj),
-                Int(obj),
-                Real(obj),
-                Str(obj),
-                Lst(obj),
-                Rec(obj),
-                Inst(obj)), Optional(MAPSFROM, Inst(access), obj.set(obj.get().access((Inst) access.get()))));
-    }
-
-    @SuppressNode
-    Rule VarSym() {
-        return Sequence(Char(), ZeroOrMore(FirstOf(Char(), Digit())));
-    }
-
-    @SuppressNode
-    Rule BinaryOperator(final Var<String> operator) {
-        return Sequence(FirstOf(STAR, PLUS, SUB, AND, OR), operator.set(this.match().trim()));
-    }
-
-
-    @SuppressNode
-    Rule Terminal(final String string) {
-        return Sequence(Spacing(), string, Spacing());
-    }
-
-    @SuppressNode
-    Rule Spacing() {
-        return ZeroOrMore(FirstOf(
-                OneOrMore(AnyOf(" \t\r\n\f")),                                                            // whitespace
-                Sequence("/*", ZeroOrMore(TestNot("*/"), ANY), "*/"),                                     // block comment
-                Sequence("//", ZeroOrMore(TestNot(AnyOf("\r\n")), ANY), FirstOf("\r\n", '\r', '\n', EOI)) // line comment
-        ));
+        final Var<Q> quantifier = new Var<>();
+        return Sequence(
+                FirstOf(Bool(obj),
+                        Int(obj),
+                        Real(obj),
+                        Str(obj),
+                        Lst(obj),
+                        Rec(obj),
+                        Inst(obj)),                                                                     // obj
+                Optional(Quantifier(quantifier), obj.set(obj.get().q(quantifier.get()))),               // {quantifier}
+                Optional(MAPSFROM, Inst(access), obj.set(obj.get().access((Inst) access.get()))));      // <= inst
     }
 
     Rule Lst(final Var<Obj> object) {
@@ -158,17 +137,9 @@ public class SimpleParser extends BaseParser<Object> {
                 Sequence(LST, object.set(TLst.some())),
                 Sequence(LBRACKET,
                         FirstOf(SEMICOLON, // empty list
-                                Sequence(Entry(), new Action<>() {
-                                    @Override
-                                    public boolean run(final Context<Object> context) {
-                                        return list.get().add((Obj) pop());
-                                    }
-                                }, ZeroOrMore(SEMICOLON, Entry(), new Action<>() {
-                                    @Override
-                                    public boolean run(final Context<Object> context) {
-                                        return list.get().add((Obj) pop());
-                                    }
-                                }))), RBRACKET, object.set(TLst.of(list.get()))));
+                                Sequence(Entry(), ACTION(list.get().add((Obj) pop())),
+                                        ZeroOrMore(SEMICOLON, Entry(), ACTION(list.get().add((Obj) pop()))))),
+                        RBRACKET, object.set(TLst.of(list.get()))));
     }
 
     Rule Rec(final Var<Obj> object) {
@@ -177,19 +148,9 @@ public class SimpleParser extends BaseParser<Object> {
                 Sequence(REC, object.set(TRec.some())),
                 Sequence(LBRACKET,
                         FirstOf(COLON, // empty record
-                                Sequence(Field(), new Action<>() {
-                                    @Override
-                                    public boolean run(final Context<Object> context) {
-                                        rec.get().put((Obj) pop(), (Obj) pop());
-                                        return true;
-                                    }
-                                }, ZeroOrMore(COMMA, Field(), new Action<>() {
-                                    @Override
-                                    public boolean run(final Context<Object> context) {
-                                        rec.get().put((Obj) pop(), (Obj) pop());
-                                        return true;
-                                    }
-                                }))), RBRACKET, object.set(TRec.of(rec.get()))));
+                                Sequence(Field(), ACTION(rec.get().put((Obj) pop(), (Obj) pop()) instanceof Obj),
+                                        ZeroOrMore(COMMA, ACTION(rec.get().put((Obj) pop(), (Obj) pop()) instanceof Obj)))),
+                        RBRACKET, object.set(TRec.of(rec.get()))));
     }
 
     @SuppressSubnodes
@@ -205,7 +166,6 @@ public class SimpleParser extends BaseParser<Object> {
                 Sequence(INT, object.set(TInt.some())),
                 Sequence(OneOrMore(Digit()), object.set(TInt.of(Integer.valueOf(match())))));
     }
-
 
     @SuppressSubnodes
     Rule Str(final Var<Obj> object) {
@@ -224,19 +184,22 @@ public class SimpleParser extends BaseParser<Object> {
                 Sequence(FALSE, object.set(TBool.of(Boolean.valueOf(match())))));
     }
 
-    @SuppressNode
     Rule Inst(final Var<Obj> object) {
         return FirstOf(
                 Sequence(INST, object.set(TInst.some())),
                 Sequence(object.set(TInst.ids()), OneOrMore(Single_Inst(), object.set(((Inst) object.getAndClear()).mult((Inst) this.pop())))));
     }
 
-    @SuppressNode
+    @SuppressSubnodes
     Rule Single_Inst() {
         final Var<String> opcode = new Var<>();
         final Var<Obj> value = new Var<>();
         final Var<PList<Obj>> args = new Var<>(new PList<>());
-        return Sequence(LBRACKET, VarSym(), opcode.set(match()), ZeroOrMore(COMMA, Obj(value), args.get().add(value.getAndClear())), RBRACKET, this.push(TInst.of(opcode.get(), args.get())));
+        return Sequence(
+                LBRACKET,
+                VarSym(), opcode.set(match()),                                         // opcode
+                ZeroOrMore(COMMA, Obj(value), args.get().add(value.getAndClear())),    // arguments
+                RBRACKET, this.push(TInst.of(opcode.get(), args.get())));
     }
 
     @SuppressSubnodes
@@ -253,12 +216,57 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     @SuppressSubnodes
+    Rule VarSym() {
+        return Sequence(Char(), ZeroOrMore(FirstOf(Char(), Digit())));
+    }
+
+    @SuppressSubnodes
+    Rule BinaryOperator(final Var<String> operator) {
+        return Sequence(FirstOf(STAR, PLUS, SUB, AND, OR), operator.set(this.match().trim()));
+    }
+
+    @SuppressNode
+    Rule Terminal(final String string) {
+        return Sequence(Spacing(), string, Spacing());
+    }
+
+    @SuppressNode
+    Rule Spacing() {
+        return ZeroOrMore(FirstOf(
+                OneOrMore(AnyOf(" \t\r\n\f")),                                                               // whitespace
+                Sequence("/*", ZeroOrMore(TestNot("*/"), ANY), "*/"),                                        // block comment
+                Sequence("//", ZeroOrMore(TestNot(AnyOf("\r\n")), ANY), FirstOf("\r\n", '\r', '\n', EOI)))); // line comment
+    }
+
+    @SuppressNode
     Rule Digit() {
         return CharRange('0', '9');
     }
 
-    @SuppressSubnodes
+    @SuppressNode
     Rule Char() {
         return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'));
+    }
+
+    @SuppressSubnodes
+    Rule Quantifier(final Var<Q> quantifier) {
+        return Sequence(Q(), quantifier.set((Q) this.pop()));
+    }
+
+    @SuppressSubnodes
+    Rule Q() {
+        final Var<WithOrderedRing> low = new Var<>();
+        final Var<WithOrderedRing> high = new Var<>();
+        return Sequence(
+                LCURL,  // TODO: the *, +, ? shorthands assume Int ring. (this will need to change)
+                FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                    // {*}
+                        Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                    // {+}
+                        Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                   // {?}
+                        Sequence(COMMA, Obj((Var) high), this.push(new TQ<>(high.get().min(), high.get()))),          // {,10}
+                        Sequence(Obj((Var) low),
+                                FirstOf(Sequence(COMMA, Obj((Var) high), this.push(new TQ<>(low.get(), high.get()))), // {1,10}
+                                        Sequence(COMMA, this.push(new TQ<>(low.get(), low.get().max()))),
+                                        this.push(new TQ<>(low.get(), low.get()))))),                                 // {1}
+                RCURL);
     }
 }
