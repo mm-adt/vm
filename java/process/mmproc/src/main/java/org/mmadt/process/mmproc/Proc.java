@@ -31,7 +31,6 @@ import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.composite.inst.SideEffectInstruction;
 import org.mmadt.process.mmproc.util.InMemoryReducer;
 import org.mmadt.processor.Processor;
-import org.mmadt.processor.compiler.IR;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.ArrayList;
@@ -50,9 +49,9 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
     private SourceStep<S> startStep;
     private AtomicBoolean alive = new AtomicBoolean(Boolean.FALSE);
 
-    public Proc(final IR<S, E> compilation) {
+    Proc(final Inst inst) {
         Step<?, S> previousStep = EmptyStep.instance();
-        for (final Inst function : compilation.bytecode().iterable()) {
+        for (final Inst function : inst.iterable()) {
             final Step nextStep;
             if (this.steps.isEmpty() && !(function instanceof InitialInstruction)) {
                 this.startStep = new SourceStep<>();

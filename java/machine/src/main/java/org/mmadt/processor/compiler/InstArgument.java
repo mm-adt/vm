@@ -22,41 +22,36 @@
 
 package org.mmadt.processor.compiler;
 
-import org.mmadt.machine.object.impl.TModel;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.processor.util.FastProcessor;
+
+import java.util.Iterator;
 
 /**
- * A Java representation of mm-ADT bytecode.
- * The bytecode instructions are represented as functions.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class IR<S extends Obj, E extends Obj> {
+public final class InstArgument<S extends Obj, E extends Obj> implements Argument<S, E> {
 
     private final Inst bytecode;
 
-    public IR(final Inst bytecode) {
-        this(TModel.of("ex"), bytecode);
-    }
-
-    public IR(final Model model, final Inst bytecode) {
+    InstArgument(final Inst bytecode) {
         this.bytecode = bytecode;
     }
 
-    public Inst bytecode() {
-        return this.bytecode;
+    @Override
+    public E mapArg(final S object) {
+        return new FastProcessor<S, E>(this.bytecode).iterator(object).next();
     }
 
     @Override
-    public int hashCode() {
-        return this.bytecode.hashCode();
+    public Iterator<E> flatMapArg(final S object) {
+        return new FastProcessor<S, E>(this.bytecode).iterator(object);
     }
 
     @Override
-    public boolean equals(final Object object) {
-        return object instanceof IR && ((IR) object).bytecode.equals(this.bytecode);
+    public boolean filterArg(final S object) {
+        return new FastProcessor<S, E>(this.bytecode).iterator(object).hasNext(); // TODO: this should not be hardcoded to a processor
     }
 
     @Override

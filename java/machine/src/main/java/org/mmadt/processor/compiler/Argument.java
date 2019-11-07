@@ -41,10 +41,7 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
     public boolean filterArg(final S object);
 
     public static <S extends Obj, E extends Obj> Argument<S, E> create(final Object arg) {
-        if (arg instanceof Inst)
-            return new IRArgument<>((Inst) arg);
-        else
-            return new ConstantArgument<>((E) arg);
+        return arg instanceof Inst ? new InstArgument<>((Inst) arg) : new ObjArgument<>((E) arg);
     }
 
     public static <S extends Obj, E extends Obj> Argument<S, E>[] args(final List args) {

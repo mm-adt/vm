@@ -23,9 +23,9 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
-import org.mmadt.processor.compiler.IR;
 
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public final class ProcProcessor implements ProcessorFactory {
     }
 
     @Override
-    public <S extends Obj, E extends Obj> Processor<S, E> mint(final IR<S, E> compilation) {
-        return new Proc<>(compilation);
+    public <S extends Obj, E extends Obj> Processor<S, E> mint(final Inst inst) {
+        return new Proc<>(inst);
     }
 }

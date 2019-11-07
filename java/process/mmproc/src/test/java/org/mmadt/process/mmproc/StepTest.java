@@ -25,11 +25,8 @@ package org.mmadt.process.mmproc;
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.Processor;
-import org.mmadt.processor.compiler.IR;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.List;
@@ -52,52 +49,38 @@ class StepTest {
 
     @Test
     void testDrop() {
-        final IR<Int, Int> ir = print(new IR<>(start(TRec.of("a", 1, "b", 2)).put("c", 3).drop("b").obj().access()));
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(ir);
+        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(TRec.of("a", 1, "b", 2)).put("c", 3).drop("b").bytecode());
         assertEquals(List.of(TRec.of("a", 1, "c", 3)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     //TODO    @Test
     void testGroupCount() {
-        final Inst bytecode = start(0, 0, 2).plus(1).mult(1).plus(0).groupCount(plus(2).plus(-3).plus(3)).bytecode();
-        final IR<Int, Int> ir = print(new IR<>(bytecode));
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(ir);
+        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 0, 2).plus(1).mult(1).plus(0).groupCount(plus(2).plus(-3).plus(3)).bytecode());
         assertEquals(List.of(TRec.of(3, 2, 5, 1)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     //@Test
     void testMinus() {
-        final IR<Int, Int> ir = print(new IR<>(start(1, 2, 3).minus(2).branch(is(eq(-1)), plus(1), is(eq(0)), id(), is(eq(1)), minus(1)).plus(1).obj().access()));
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(ir);
+        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(1, 2, 3).minus(2).branch(is(eq(-1)), plus(1), is(eq(0)), id(), is(eq(1)), minus(1)).plus(1).bytecode());
         assertEquals(List.of(TInt.of(1), TInt.of(1), TInt.of(1)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     @Test
     void testOne() {
-        final IR<Int, Int> ir = print(new IR<>(start(0, 1, 2).mult(one()).plus(one()).obj().access()));
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(ir);
+        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 1, 2).mult(one()).plus(one()).bytecode());
         assertEquals(List.of(TInt.of(1), TInt.of(2), TInt.of(3)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     @Test
     void testPlus() {
-        final IR<Int, Int> ir = print(new IR<>(start(0, 1, 2).plus(2).plus(-1).plus(1).obj().access()));
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(ir);
+        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 1, 2).plus(2).plus(-1).plus(1).bytecode());
         assertEquals(List.of(TInt.of(2), TInt.of(3), TInt.of(4)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     @Test
     void testZero() {
-        final IR<Int, Int> ir = print(new IR<>(start(0, 1, 2).plus(zero()).mult(zero()).obj().access()));
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(ir);
+        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 1, 2).plus(zero()).mult(zero()).bytecode());
         assertEquals(List.of(TInt.of(0), TInt.of(0), TInt.of(0)), IteratorUtils.list(processor.iterator(TInt.none())));
-    }
-
-    private static <S extends Obj, E extends Obj> IR<S, E> print(final IR<S, E> ir) {
-        if (true) { // TODO: Ultimately, all of this needs to be put in a general test-suite package
-            System.out.println(ir.bytecode());
-        }
-        return ir;
     }
 
 }

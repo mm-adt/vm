@@ -23,9 +23,9 @@
 package org.mmadt.processor.util;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
-import org.mmadt.processor.compiler.IR;
 import org.mmadt.util.FastNoSuchElementException;
 
 import java.util.Iterator;
@@ -79,7 +79,7 @@ public abstract class SimpleProcessor<S extends Obj, E extends Obj> implements P
     }
 
     @Override
-    public <A extends Obj, B extends Obj> Processor<A, B> mint(final IR<A, B> compilation) {
+    public <A extends Obj, B extends Obj> Processor<A, B> mint(final Inst inst) {
         return (Processor<A, B>) this;
     }
 

@@ -23,7 +23,7 @@
 package org.mmadt.processor;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.compiler.IR;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.EmptyProcessor;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ import java.io.Serializable;
  */
 public interface ProcessorFactory extends Serializable {
 
-    public default <S extends Obj, E extends Obj> Processor<S, E> mint(final IR<S, E> compilation) {
+    public default <S extends Obj, E extends Obj> Processor<S, E> mint(final Inst inst) {
         return EmptyProcessor.instance();
     }
 

@@ -23,39 +23,47 @@
 package org.mmadt.processor.compiler;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.processor.util.FastProcessor;
 
 import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class IRArgument<S extends Obj, E extends Obj> implements Argument<S, E> {
+public final class ObjArgument<S extends Obj, E extends Obj> implements Argument<S, E> {
 
-    private final Inst bytecode;
+    private final E constant;
 
-    IRArgument(final Inst bytecode) {
-        this.bytecode = bytecode;
+    ObjArgument(final E constant) {
+        this.constant = constant;
     }
 
     @Override
     public E mapArg(final S object) {
-        return new FastProcessor<S, E>(this.bytecode).iterator(object).next();
+        return this.constant;
     }
 
     @Override
     public Iterator<E> flatMapArg(final S object) {
-        return new FastProcessor<S, E>(this.bytecode).iterator(object);
+        return (Iterator<E>) this.constant.iterable().iterator();
     }
 
     @Override
     public boolean filterArg(final S object) {
-        return new FastProcessor<S, E>(this.bytecode).iterator(object).hasNext(); // TODO: this should not be hardcoded to a processor
+        return (Boolean) this.constant.get();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.constant.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        return object instanceof ObjArgument && this.constant.equals(((ObjArgument) object).constant);
     }
 
     @Override
     public String toString() {
-        return new IR<>(this.bytecode).toString();
+        return this.constant.toString();
     }
 }
