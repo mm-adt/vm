@@ -22,11 +22,11 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.InvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
@@ -38,7 +38,6 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.machine.object.model.util.OperatorHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -135,7 +134,7 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real inv() {
-        return OperatorHelper.unary(Tokens.INV, () -> new TReal(1.0f / this.java()), this);
+        return InvInst.create(() -> new TReal(1.0f / this.java()), this);
     }
 
     @Override

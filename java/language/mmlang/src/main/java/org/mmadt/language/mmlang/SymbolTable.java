@@ -27,7 +27,7 @@ import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.util.OperatorHelper;
+import org.mmadt.language.compiler.OperatorHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,7 +83,7 @@ public final class SymbolTable {
         return new SymbolTable(this.model, this.variables,
                 TInst.ids().equals(this.bytecode) ?
                         TInst.of(List.of(inst)) :
-                        OperatorHelper.operation(operator, this.bytecode, inst));
+                        OperatorHelper.applyBinary(operator, this.bytecode, inst));
     }
 
     public boolean hasVariable(final String symbol) {

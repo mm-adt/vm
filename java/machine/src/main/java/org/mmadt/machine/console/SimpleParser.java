@@ -39,7 +39,7 @@ import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.util.OperatorHelper;
+import org.mmadt.language.compiler.OperatorHelper;
 import org.parboiled.BaseParser;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
@@ -116,7 +116,7 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<String> operator = new Var<>();
         return Sequence(
                 BinaryOperator(), operator.set((String) this.pop()),
-                Expression(), swap(), this.push(OperatorHelper.operation(operator.get(), type(this.pop()), type(this.pop()))));
+                Expression(), swap(), this.push(OperatorHelper.applyBinary(operator.get(), type(this.pop()), type(this.pop()))));
     }
 
     Rule Grouping() {

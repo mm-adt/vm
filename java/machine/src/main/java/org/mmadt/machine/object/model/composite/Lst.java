@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.object.model.composite;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
@@ -36,7 +35,6 @@ import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
-import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -54,10 +52,10 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     }
 
     public default Lst<V> put(final V value) {
-        return OperatorHelper.unary(Tokens.PUT, () -> {
-            this.java().add(value);
+        return (Lst<V>) PutInst.create(() -> {
+            this.java().add(this.java().size(), value);
             return this;
-        }, this);
+        }, this, null, value); // TODO: need an add (not a put)
     }
 
     @Override

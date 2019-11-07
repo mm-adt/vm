@@ -20,17 +20,14 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.util;
+package org.mmadt.language.compiler;
 
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
-
-import java.util.function.Supplier;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,7 +38,7 @@ public class OperatorHelper {
         // static helper class
     }
 
-    public static <A extends Obj> A operation(final String operator, final A lhs, final A rhs) {
+    public static <A extends Obj> A applyBinary(final String operator, final A lhs, final A rhs) {
         switch (operator) {
             case ("*"):
                 return (A) ((WithMult) lhs).mult((WithMult) rhs);
@@ -58,12 +55,5 @@ public class OperatorHelper {
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }
-    }
-
-    public static <A extends Obj> A unary(final String opcode, final Supplier<A> operator, final A objA) {
-        if (objA.isInstance() || objA.isType()) // TODO: on the unary requires type (this will not be true when AND/OR move up the stack
-            return operator.get();
-        else
-            return objA.access(objA.access().mult(TInst.of(opcode)));
     }
 }

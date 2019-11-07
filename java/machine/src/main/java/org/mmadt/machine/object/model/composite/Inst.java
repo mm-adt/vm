@@ -22,9 +22,10 @@
 
 package org.mmadt.machine.object.model.composite;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -33,7 +34,6 @@ import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
-import org.mmadt.machine.object.model.util.OperatorHelper;
 import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.ArrayList;
@@ -88,18 +88,18 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     @Override
     public default Inst put(final Int index, final Obj value) {
-        return OperatorHelper.unary(Tokens.PUT, () -> {
+        return (Inst) PutInst.create(() -> {
             this.java().add(index.java(), value);
             return this;
-        }, this);
+        }, this, index, value);
     }
 
     @Override
     public default Inst drop(final Int key) {
-        return OperatorHelper.unary(Tokens.DROP, () -> {
+        return (Inst) DropInst.create(() -> {
             this.java().remove(key.java());
             return this;
-        }, this);
+        }, this, key);
     }
 
     @Override
