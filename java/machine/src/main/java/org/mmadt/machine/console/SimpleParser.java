@@ -55,13 +55,6 @@ import java.util.Map;
 @BuildParseTree
 public class SimpleParser extends BaseParser<Object> {
 
-    final Map<Integer, Rule> ARROWS = new HashMap<>() {{
-        put(0, Terminal(">"));
-        put(1, Terminal("->"));
-        put(2, Terminal("-->"));
-        put(3, Terminal("--->"));
-    }};
-
     final Rule COLON = Terminal(Tokens.COLON);
     final Rule COMMA = Terminal(Tokens.COMMA);
     final Rule PERIOD = Terminal(Tokens.PERIOD);
@@ -105,39 +98,34 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule OP_DEFINE = Terminal(Tokens.DEFINE);
     final Rule OP_MODEL = Terminal(Tokens.MODEL);
 
-    public Rule Source() {
-        final Var<Obj> left = new Var<>();
-        final Var<Obj> right = new Var<>();
-        final Var<String> unary = new Var<>();
-        final Var<String> operator = new Var<>();
-        return Sequence(
-                Optional(SUB, unary.set(Tokens.DASH)), Obj(), left.set((Obj) this.pop()), ACTION(unary.isNotSet() || left.set(((WithMinus) left.getAndClear()).neg())), this.push(left.get()),
-                ZeroOrMore(left.set((Obj) this.pop()),
-                        BinaryOperator(operator),
-                        Optional(SUB, unary.set(Tokens.DASH)),
-                        Obj(), right.set((Obj) this.pop()), ACTION(unary.isNotSet() || (unary.clear() && left.set(((WithMinus) left.get()).neg()))), this.push(OperatorHelper.operation(operator.get(), left.get(), right.get()))));
-    }
-
     ///////////////
 
-    /*public Rule Source2() {
-        return Expression();
-    }*/
+    Rule Source() {
+        return Sequence(Program(), EOI);
+    }
 
-    /*Rule Expression() {
-        return FirstOf(
-                Grouping(),
-                Binary(),
-                Obj());
+    Rule Program() {
+        return OneOrMore(Expression());
+    }
+
+    Rule Expression() {
+        return FirstOf(Obj(), Unary(), Binary(), Grouping());
+    }
+
+    Rule Unary() {
+        return Sequence(UnaryOperator(), Expression(), this.push(((WithMinus) this.pop()).neg())); // currently the only unary operator is -
     }
 
     Rule Binary() {
-        return Sequence(Expression(), BinaryOperator(), Expression(), swap(), this.push(OperatorHelper.operation(type(this.pop()), type(this.pop()), type(this.pop()))));
+        final Var<String> operator = new Var<>();
+        return Sequence(
+                BinaryOperator(), operator.set((String) this.pop()),
+                Expression(), swap(), this.push(OperatorHelper.operation(operator.get(), type(this.pop()), type(this.pop()))));
     }
 
     Rule Grouping() {
-        return Sequence(LPAREN, Expression(), RPAREN);
-    }*/
+        return Sequence(LPAREN, OneOrMore(Program()), RPAREN);
+    }
 
     Rule Obj() {
         return Sequence(
@@ -147,7 +135,7 @@ public class SimpleParser extends BaseParser<Object> {
                         Str(),
                         Rec(),
                         Lst(),
-                        Inst()),                                                                               // obj
+                        Inst()),                                                                              // obj
                 Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),              // {quantifier}
                 Optional(MAPSFROM, Inst(), swap(), this.push(type(this.pop()).access((Inst) this.pop()))));   // <= inst
     }
@@ -158,8 +146,8 @@ public class SimpleParser extends BaseParser<Object> {
                 Sequence(LST, this.push(TLst.some())),
                 Sequence(LBRACKET, SEMICOLON, RBRACKET, this.push(TLst.of())),
                 Sequence(
-                        LBRACKET, Obj(), ACTION(list.get().add((Obj) pop()) || true),
-                        ZeroOrMore(SEMICOLON, Obj(), ACTION(list.get().add((Obj) pop()) || true)),
+                        LBRACKET, Expression(), ACTION(list.get().add((Obj) pop()) || true),
+                        ZeroOrMore(SEMICOLON, Expression(), ACTION(list.get().add((Obj) pop()) || true)),
                         RBRACKET, this.push(TLst.of(list.get()))));
     }
 
@@ -169,7 +157,7 @@ public class SimpleParser extends BaseParser<Object> {
                 Sequence(REC, this.push(TRec.some())),
                 Sequence(LBRACKET, COLON, RBRACKET, this.push(TRec.of())),
                 Sequence(LBRACKET,
-                        Obj(), COLON, Obj(), swap(), ACTION(null == rec.get().put(type(this.pop()), type(this.pop())) || true),
+                        Expression(), COLON, Expression(), swap(), ACTION(null == rec.get().put(type(this.pop()), type(this.pop())) || true),
                         RBRACKET, this.push(TRec.of(rec.get()))));
     }
 
@@ -217,7 +205,7 @@ public class SimpleParser extends BaseParser<Object> {
         return Sequence(
                 LBRACKET,
                 VarSym(), opcode.set(match()),                                      // opcode
-                ZeroOrMore(COMMA, Obj(), args.get().add(type(this.pop()))),         // arguments
+                ZeroOrMore(COMMA, Expression(), args.get().add(type(this.pop()))),  // arguments
                 RBRACKET, this.push(TInst.of(opcode.get(), args.get())));
     }
 
@@ -226,14 +214,14 @@ public class SimpleParser extends BaseParser<Object> {
         return Sequence(Char(), ZeroOrMore(FirstOf(Char(), Digit())));
     }
 
-    /*@SuppressSubnodes
-    Rule BinaryOperator() {
-        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR), this.push(this.match().trim()));
-    }*/
+    @SuppressSubnodes
+    Rule UnaryOperator() {
+        return SUB;
+    }
 
     @SuppressSubnodes
-    Rule BinaryOperator(final Var<String> operator) {
-        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR), operator.set(this.match().trim()));
+    Rule BinaryOperator() {
+        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR), this.push(this.match().trim()));
     }
 
     @SuppressNode
@@ -263,14 +251,14 @@ public class SimpleParser extends BaseParser<Object> {
     Rule Quantifier() {
         return Sequence(
                 LCURL,  // TODO: the *, +, ? shorthands assume Int ring. (this will need to change)
-                FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                    // {*}
-                        Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                    // {+}
-                        Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                   // {?}
-                        Sequence(COMMA, Obj(), this.push(new TQ<>((this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),          // {,10}
-                        Sequence(Obj(),
-                                FirstOf(Sequence(COMMA, Obj(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))), // {1,10}
-                                        Sequence(COMMA, this.push(new TQ<>(type(this.peek()), (this.<WithOrderedRing>type(this.peek())).max()))),             // {10,}
-                                        this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                 // {1}
+                FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                                                      // {*}
+                        Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                                                      // {+}
+                        Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                                                     // {?}
+                        Sequence(COMMA, Expression(), this.push(new TQ<>((this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),          // {,10}
+                        Sequence(Expression(),
+                                FirstOf(Sequence(COMMA, Expression(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))),                 // {1,10}
+                                        Sequence(COMMA, this.push(new TQ<>(type(this.peek()), (this.<WithOrderedRing>type(this.peek())).max()))),       // {10,}
+                                        this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                                    // {1}
                 RCURL);
     }
 
