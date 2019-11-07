@@ -37,6 +37,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.InvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
@@ -136,7 +137,7 @@ public final class Query {
     }
 
     public Query lte(final Object obj) {
-        return this.compose(TInst.of(Tokens.LTE, arg(obj)));
+        return this.compose(LteInst.create(obj));
     }
 
     public Query map(final Object obj) {
@@ -189,11 +190,11 @@ public final class Query {
             this.bytecode = TInst.of(Tokens.ID);
         else
             this.bytecode.<Stream<Inst>>get().drop(last);
-        return this.compose(last.q((Obj) arg(quantifier)));
+        return this.compose(last.q(ObjectHelper.from(quantifier)));
     }
 
     public Query reduce(final Object seed, final Object reduce) {
-        return this.compose(TInst.of(Tokens.REDUCE, arg(seed), arg(reduce)));
+        return this.compose(TInst.of(Tokens.REDUCE, ObjectHelper.from(seed), ObjectHelper.from(reduce)));
     }
 
     public Query start(final Object... objects) {
@@ -257,11 +258,4 @@ public final class Query {
         }
         return objs;
     }
-
-
-    private static <A extends Obj> A arg(final Object object) {
-        return object instanceof Query ? (A) ((Query) object).bytecode : (A) ObjectHelper.from(object);
-    }
-
-
 }

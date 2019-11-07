@@ -26,6 +26,7 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
@@ -78,6 +79,11 @@ public final class TStr extends TObj implements Str {
     @Override
     public Bool lt(final Str str) {
         return LtInst.create(() -> TBool.of(this.java().compareTo(str.java()) < 0), this, str);
+    }
+
+    @Override
+    public Bool lte(final Str str) {
+        return LteInst.create(() -> TBool.of(this.java().compareTo(str.java()) <= 0), this, str);
     }
 
     @Override
