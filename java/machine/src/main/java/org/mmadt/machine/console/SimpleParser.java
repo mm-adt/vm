@@ -142,8 +142,8 @@ public class SimpleParser extends BaseParser<Object> {
     Rule Obj() {
         return Sequence(
                 FirstOf(Bool(),
-                        Int(),
                         Real(),
+                        Int(),
                         Str(),
                         Rec(),
                         Lst(),
@@ -177,7 +177,7 @@ public class SimpleParser extends BaseParser<Object> {
     Rule Real() {
         return FirstOf(
                 Sequence(REAL, this.push(TReal.of())),
-                Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit()), this.push(TReal.of(Float.valueOf(match())))));
+                Sequence(Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit())), this.push(TReal.of(Float.valueOf(match())))));
     }
 
     @SuppressSubnodes
