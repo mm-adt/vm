@@ -91,7 +91,6 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule REC = Terminal(Tokens.REC);
     final Rule LST = Terminal(Tokens.LIST);
     final Rule INST = Terminal(Tokens.INST);
-    final Rule END = Sequence(Spacing(), EOI);
 
     final Rule OP_ID = Terminal(Tokens.ID);
     final Rule OP_DEFINE = Terminal(Tokens.DEFINE);
@@ -100,7 +99,7 @@ public class SimpleParser extends BaseParser<Object> {
     ///////////////
 
     Rule Source() {
-        return Sequence(Expression(), END);
+        return Sequence(Expression(), EOI);
     }
 
     Rule Expression() {
@@ -152,7 +151,7 @@ public class SimpleParser extends BaseParser<Object> {
                 Sequence(REC, this.push(TRec.some())),
                 Sequence(LBRACKET, COLON, RBRACKET, this.push(TRec.of())),
                 Sequence(LBRACKET,
-                        this.push(TRec.of()), Field(), swap(), this.push(((Rec) this.pop()).plus(type(this.pop()))),
+                        this.push(TRec.of()), Field(), swap(), this.push(((Rec) this.pop()).plus(type(this.pop()))), // using plus (should use put -- but hard swap logic)
                         ZeroOrMore(COMMA, Field(), swap(), this.push(((Rec) this.pop()).plus(type(this.pop())))),
                         RBRACKET));
     }

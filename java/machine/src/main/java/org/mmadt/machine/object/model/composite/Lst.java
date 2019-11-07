@@ -29,7 +29,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
@@ -111,8 +110,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
 
     @Override
     public default Iterable<Lst<V>> iterable() {
-        // return this.isInstance() ? List.of(this) : () -> new MinimalProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this);
-        return this.get() instanceof Stream ? this.get() : () -> new FastProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this); // TODO: Where is this Stream coming from? (Obj.test())
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this);
     }
 
 }
