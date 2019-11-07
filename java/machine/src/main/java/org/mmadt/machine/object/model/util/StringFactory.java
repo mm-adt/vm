@@ -280,7 +280,7 @@ public final class StringFactory {
     }
 
 
-    private static String typeInstructions(final Inst inst) {
+    private static String typeInstructions(final Inst inst) { // TODO: this is just for backwards compatibility and will be removed once mmlang gets refactored
         final StringBuilder builder = new StringBuilder();
         if (inst.<Inst>peek().opcode().java().equals(Tokens.IS)) {
             if (inst.<Inst>peek().args().get(0) instanceof Inst && ((Inst) inst.<Inst>peek().args().get(0)).opcode().java().equals(Tokens.OR)) {
