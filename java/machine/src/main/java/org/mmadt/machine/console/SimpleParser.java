@@ -33,9 +33,10 @@ import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.OperatorHelper;
@@ -45,9 +46,6 @@ import org.parboiled.annotations.BuildParseTree;
 import org.parboiled.annotations.SuppressNode;
 import org.parboiled.annotations.SuppressSubnodes;
 import org.parboiled.support.Var;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -93,6 +91,7 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule REC = Terminal(Tokens.REC);
     final Rule LST = Terminal(Tokens.LIST);
     final Rule INST = Terminal(Tokens.INST);
+    final Rule END = Sequence(Spacing(), EOI);
 
     final Rule OP_ID = Terminal(Tokens.ID);
     final Rule OP_DEFINE = Terminal(Tokens.DEFINE);
@@ -101,15 +100,13 @@ public class SimpleParser extends BaseParser<Object> {
     ///////////////
 
     Rule Source() {
-        return Sequence(Program(), EOI);
-    }
-
-    Rule Program() {
-        return OneOrMore(Expression());
+        return Sequence(Expression(), END);
     }
 
     Rule Expression() {
-        return FirstOf(Obj(), Unary(), Binary(), Grouping());
+        return OneOrMore(
+                FirstOf(Unary(), Grouping(), Obj()),
+                ZeroOrMore(Binary()));
     }
 
     Rule Unary() {
@@ -124,7 +121,7 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     Rule Grouping() {
-        return Sequence(LPAREN, OneOrMore(Program()), RPAREN);
+        return Sequence(LPAREN, Expression(), RPAREN);
     }
 
     Rule Obj() {
@@ -141,38 +138,42 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     Rule Lst() {
-        final Var<PList<Obj>> list = new Var<>(new PList<>());
         return FirstOf(
                 Sequence(LST, this.push(TLst.some())),
                 Sequence(LBRACKET, SEMICOLON, RBRACKET, this.push(TLst.of())),
                 Sequence(
-                        LBRACKET, Expression(), ACTION(list.get().add((Obj) pop()) || true),
-                        ZeroOrMore(SEMICOLON, Expression(), ACTION(list.get().add((Obj) pop()) || true)),
-                        RBRACKET, this.push(TLst.of(list.get()))));
+                        LBRACKET, this.push(TLst.of()), Expression(), swap(), this.push(((Lst) this.pop()).put(type(this.pop()))),
+                        ZeroOrMore(SEMICOLON, Expression(), swap(), this.push(((Lst) this.pop()).put(type(this.pop())))),
+                        RBRACKET));
     }
 
     Rule Rec() {
-        final Var<PMap<Obj, Obj>> rec = new Var<>(new PMap<>());
         return FirstOf(
                 Sequence(REC, this.push(TRec.some())),
                 Sequence(LBRACKET, COLON, RBRACKET, this.push(TRec.of())),
                 Sequence(LBRACKET,
-                        Expression(), COLON, Expression(), swap(), ACTION(null == rec.get().put(type(this.pop()), type(this.pop())) || true),
-                        RBRACKET, this.push(TRec.of(rec.get()))));
+                        this.push(TRec.of()), Field(), swap(), this.push(((Rec) this.pop()).plus(type(this.pop()))),
+                        ZeroOrMore(COMMA, Field(), swap(), this.push(((Rec) this.pop()).plus(type(this.pop())))),
+                        RBRACKET));
+    }
+
+    @SuppressSubnodes
+    Rule Field() {
+        return Sequence(Expression(), COLON, Expression(), swap(), this.push(TRec.of(this.pop(), this.pop())));
     }
 
     @SuppressSubnodes
     Rule Real() {
         return FirstOf(
                 Sequence(REAL, this.push(TReal.of())),
-                Sequence(Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit())), this.push(TReal.of(Float.valueOf(match())))));
+                Sequence(Sequence(Number(), PERIOD, Number()), this.push(TReal.of(Float.valueOf(match().trim())))));
     }
 
     @SuppressSubnodes
     Rule Int() {
         return FirstOf(
                 Sequence(INT, this.push(TInt.some())),
-                Sequence(OneOrMore(Digit()), this.push(TInt.of(Integer.valueOf(match())))));
+                Sequence(Number(), this.push(TInt.of(Integer.valueOf(match().trim())))));
     }
 
     @SuppressSubnodes
@@ -195,7 +196,7 @@ public class SimpleParser extends BaseParser<Object> {
     Rule Inst() {
         return FirstOf(
                 Sequence(INST, this.push(TInst.some())),
-                Sequence(this.push(TInst.ids()), OneOrMore(Single_Inst(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
+                Sequence(this.push(TInst.ids()), OneOrMore(Single_Inst(), swap(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
     }
 
     @SuppressSubnodes
@@ -204,14 +205,14 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<PList<Obj>> args = new Var<>(new PList<>());
         return Sequence(
                 LBRACKET,
-                VarSym(), opcode.set(match()),                                      // opcode
-                ZeroOrMore(COMMA, Expression(), args.get().add(type(this.pop()))),  // arguments
+                Symbol(), opcode.set(match().trim()),                                         // opcode
+                ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop()))),  // arguments
                 RBRACKET, this.push(TInst.of(opcode.get(), args.get())));
     }
 
     @SuppressSubnodes
-    Rule VarSym() {
-        return Sequence(Char(), ZeroOrMore(FirstOf(Char(), Digit())));
+    Rule Symbol() {
+        return Word(); //Sequence(Word(), ZeroOrMore(FirstOf(Number(), Word())));
     }
 
     @SuppressSubnodes
@@ -238,13 +239,13 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     @SuppressNode
-    Rule Digit() {
-        return CharRange('0', '9');
+    Rule Number() {
+        return Sequence(OneOrMore(CharRange('0', '9')), Spacing());
     }
 
     @SuppressNode
-    Rule Char() {
-        return FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'));
+    Rule Word() {
+        return Sequence(OneOrMore(FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'))), Spacing());
     }
 
     @SuppressSubnodes
@@ -265,6 +266,4 @@ public class SimpleParser extends BaseParser<Object> {
     <A extends Obj> A type(final Object object) {
         return (A) object;
     }
-
-
 }
