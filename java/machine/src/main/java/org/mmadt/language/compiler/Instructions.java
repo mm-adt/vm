@@ -95,7 +95,7 @@ public final class Instructions {
 
     public static Inst compile(final Inst inst) {
         final PList<Obj> list = new PList<>();
-        inst.<PList<Obj>>get().forEach(obj -> list.add(obj instanceof Inst ? compile(inst) : ObjectHelper.from(obj)));
+        inst.<PList<Obj>>get().forEach(obj -> list.add(obj instanceof Inst ? compile((Inst)obj) : ObjectHelper.from(obj)));
         return Instructions.function(list);
     }
 
