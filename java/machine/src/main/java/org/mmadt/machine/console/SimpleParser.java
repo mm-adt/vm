@@ -111,118 +111,125 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<String> unary = new Var<>();
         final Var<String> operator = new Var<>();
         return Sequence(
-                Optional(SUB, unary.set(Tokens.DASH)), Obj(left), ACTION(unary.isNotSet() || left.set(((WithMinus) left.getAndClear()).neg())), this.push(left.get()),
+                Optional(SUB, unary.set(Tokens.DASH)), Obj(), left.set((Obj) this.pop()), ACTION(unary.isNotSet() || left.set(((WithMinus) left.getAndClear()).neg())), this.push(left.get()),
                 ZeroOrMore(left.set((Obj) this.pop()),
                         BinaryOperator(operator),
                         Optional(SUB, unary.set(Tokens.DASH)),
-                        Obj(right), ACTION(unary.isNotSet() || (unary.clear() && left.set(((WithMinus) left.get()).neg()))), this.push(OperatorHelper.operation(operator.get(), left.get(), right.get()))));
+                        Obj(), right.set((Obj) this.pop()), ACTION(unary.isNotSet() || (unary.clear() && left.set(((WithMinus) left.get()).neg()))), this.push(OperatorHelper.operation(operator.get(), left.get(), right.get()))));
     }
 
     ///////////////
 
-    Rule Obj(final Var<Obj> obj) {
-        final Var<Obj> access = new Var<>();
-        final Var<Q> quantifier = new Var<>();
-        return Sequence(
-                FirstOf(Bool(obj),
-                        Int(obj),
-                        Real(obj),
-                        Str(obj),
-                        Lst(obj),
-                        Rec(obj),
-                        Inst(obj)),                                                                     // obj
-                Optional(Quantifier(quantifier), obj.set(obj.get().q(quantifier.get()))),               // {quantifier}
-                Optional(MAPSFROM, Inst(access), obj.set(obj.get().access((Inst) access.get()))));      // <= inst
+    /*public Rule Source2() {
+        return Expression();
+    }*/
+
+    /*Rule Expression() {
+        return FirstOf(
+                Grouping(),
+                Binary(),
+                Obj());
     }
 
-    Rule Lst(final Var<Obj> object) {
+    Rule Binary() {
+        return Sequence(Expression(), BinaryOperator(), Expression(), swap(), this.push(OperatorHelper.operation(type(this.pop()), type(this.pop()), type(this.pop()))));
+    }
+
+    Rule Grouping() {
+        return Sequence(LPAREN, Expression(), RPAREN);
+    }*/
+
+    Rule Obj() {
+        return Sequence(
+                FirstOf(Bool(),
+                        Int(),
+                        Real(),
+                        Str(),
+                        Rec(),
+                        Lst(),
+                        Inst()),                                                                               // obj
+                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),              // {quantifier}
+                Optional(MAPSFROM, Inst(), swap(), this.push(type(this.pop()).access((Inst) this.pop()))));   // <= inst
+    }
+
+    Rule Lst() {
         final Var<PList<Obj>> list = new Var<>(new PList<>());
         return FirstOf(
-                Sequence(LST, object.set(TLst.some())),
-                Sequence(LBRACKET,
-                        FirstOf(SEMICOLON, // empty list
-                                Sequence(Entry(), ACTION(list.get().add((Obj) pop())),
-                                        ZeroOrMore(SEMICOLON, Entry(), ACTION(list.get().add((Obj) pop()))))),
-                        RBRACKET, object.set(TLst.of(list.get()))));
+                Sequence(LST, this.push(TLst.some())),
+                Sequence(LBRACKET, SEMICOLON, RBRACKET, this.push(TLst.of())),
+                Sequence(
+                        LBRACKET, Obj(), ACTION(list.get().add((Obj) pop()) || true),
+                        ZeroOrMore(SEMICOLON, Obj(), ACTION(list.get().add((Obj) pop()) || true)),
+                        RBRACKET, this.push(TLst.of(list.get()))));
     }
 
-    Rule Rec(final Var<Obj> object) {
+    Rule Rec() {
         final Var<PMap<Obj, Obj>> rec = new Var<>(new PMap<>());
         return FirstOf(
-                Sequence(REC, object.set(TRec.some())),
+                Sequence(REC, this.push(TRec.some())),
+                Sequence(LBRACKET, COLON, RBRACKET, this.push(TRec.of())),
                 Sequence(LBRACKET,
-                        FirstOf(COLON, // empty record
-                                Sequence(Field(), ACTION(null == rec.get().put((Obj) pop(), (Obj) pop()) || true),
-                                        ZeroOrMore(COMMA, Field(), ACTION(null == rec.get().put((Obj) pop(), (Obj) pop()) || true)))),
-                        RBRACKET, object.set(TRec.of(rec.get()))));
+                        Obj(), COLON, Obj(), swap(), ACTION(null == rec.get().put(type(this.pop()), type(this.pop())) || true),
+                        RBRACKET, this.push(TRec.of(rec.get()))));
     }
 
     @SuppressSubnodes
-    Rule Real(final Var<Obj> object) {
+    Rule Real() {
         return FirstOf(
-                Sequence(REAL, object.set(TReal.of())),
-                Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit()), object.set(TReal.of(Float.valueOf(match())))));
+                Sequence(REAL, this.push(TReal.of())),
+                Sequence(OneOrMore(Digit()), PERIOD, OneOrMore(Digit()), this.push(TReal.of(Float.valueOf(match())))));
     }
 
     @SuppressSubnodes
-    Rule Int(final Var<Obj> object) {
+    Rule Int() {
         return FirstOf(
-                Sequence(INT, object.set(TInt.some())),
-                Sequence(OneOrMore(Digit()), object.set(TInt.of(Integer.valueOf(match())))));
+                Sequence(INT, this.push(TInt.some())),
+                Sequence(OneOrMore(Digit()), this.push(TInt.of(Integer.valueOf(match())))));
     }
 
     @SuppressSubnodes
-    Rule Str(final Var<Obj> object) {
+    Rule Str() {
         return FirstOf(
-                Sequence(STR, object.set(TStr.some())),
-                Sequence(TRIPLE_QUOTE, ZeroOrMore(Sequence(TestNot(TRIPLE_QUOTE), ANY)), object.set(TStr.of(match())), TRIPLE_QUOTE),
-                Sequence(SINGLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\\'")), ANY)), object.set(TStr.of(match())), SINGLE_QUOTE),
-                Sequence(DOUBLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\"")), ANY)), object.set(TStr.of(match())), DOUBLE_QUOTE));
+                Sequence(STR, this.push(TStr.some())),
+                Sequence(TRIPLE_QUOTE, ZeroOrMore(Sequence(TestNot(TRIPLE_QUOTE), ANY)), this.push(TStr.of(match())), TRIPLE_QUOTE),
+                Sequence(SINGLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\\'")), ANY)), this.push(TStr.of(match())), SINGLE_QUOTE),
+                Sequence(DOUBLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\"")), ANY)), this.push(TStr.of(match())), DOUBLE_QUOTE));
     }
 
     @SuppressSubnodes
-    Rule Bool(final Var<Obj> object) {
+    Rule Bool() {
         return FirstOf(
-                Sequence(BOOL, object.set(TBool.some())),
-                Sequence(TRUE, object.set(TBool.of(true))),
-                Sequence(FALSE, object.set(TBool.of(false))));
+                Sequence(BOOL, this.push(TBool.some())),
+                Sequence(TRUE, this.push(TBool.of(true))),
+                Sequence(FALSE, this.push(TBool.of(false))));
     }
 
-    Rule Inst(final Var<Obj> object) {
+    Rule Inst() {
         return FirstOf(
-                Sequence(INST, object.set(TInst.some())),
-                Sequence(object.set(TInst.ids()), OneOrMore(Single_Inst(), object.set(((Inst) object.getAndClear()).mult((Inst) this.pop())))));
+                Sequence(INST, this.push(TInst.some())),
+                Sequence(this.push(TInst.ids()), OneOrMore(Single_Inst(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
     }
 
     @SuppressSubnodes
     Rule Single_Inst() {
         final Var<String> opcode = new Var<>();
-        final Var<Obj> value = new Var<>();
         final Var<PList<Obj>> args = new Var<>(new PList<>());
         return Sequence(
                 LBRACKET,
-                VarSym(), opcode.set(match()),                                         // opcode
-                ZeroOrMore(COMMA, Obj(value), args.get().add(value.getAndClear())),    // arguments
+                VarSym(), opcode.set(match()),                                      // opcode
+                ZeroOrMore(COMMA, Obj(), args.get().add(type(this.pop()))),         // arguments
                 RBRACKET, this.push(TInst.of(opcode.get(), args.get())));
-    }
-
-    @SuppressSubnodes
-    Rule Field() {
-        final Var<Obj> key = new Var<>();
-        final Var<Obj> value = new Var<>();
-        return Sequence(Obj(key), COLON, Obj(value), this.push(key.get()), this.push(value.get()), swap());
-    }
-
-    @SuppressSubnodes
-    Rule Entry() {
-        final Var<Obj> value = new Var<>();
-        return Sequence(Obj(value), this.push(value.get()));
     }
 
     @SuppressSubnodes
     Rule VarSym() {
         return Sequence(Char(), ZeroOrMore(FirstOf(Char(), Digit())));
     }
+
+    /*@SuppressSubnodes
+    Rule BinaryOperator() {
+        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR), this.push(this.match().trim()));
+    }*/
 
     @SuppressSubnodes
     Rule BinaryOperator(final Var<String> operator) {
@@ -253,24 +260,23 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     @SuppressSubnodes
-    Rule Quantifier(final Var<Q> quantifier) {
-        return Sequence(Q(), quantifier.set((Q) this.pop()));
-    }
-
-    @SuppressSubnodes
-    Rule Q() {
-        final Var<WithOrderedRing> low = new Var<>();
-        final Var<WithOrderedRing> high = new Var<>();
+    Rule Quantifier() {
         return Sequence(
                 LCURL,  // TODO: the *, +, ? shorthands assume Int ring. (this will need to change)
                 FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                    // {*}
                         Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                    // {+}
                         Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                   // {?}
-                        Sequence(COMMA, Obj((Var) high), this.push(new TQ<>(high.get().min(), high.get()))),          // {,10}
-                        Sequence(Obj((Var) low),
-                                FirstOf(Sequence(COMMA, Obj((Var) high), this.push(new TQ<>(low.get(), high.get()))), // {1,10}
-                                        Sequence(COMMA, this.push(new TQ<>(low.get(), low.get().max()))),
-                                        this.push(new TQ<>(low.get(), low.get()))))),                                 // {1}
+                        Sequence(COMMA, Obj(), this.push(new TQ<>((this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),          // {,10}
+                        Sequence(Obj(),
+                                FirstOf(Sequence(COMMA, Obj(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))), // {1,10}
+                                        Sequence(COMMA, this.push(new TQ<>(type(this.peek()), (this.<WithOrderedRing>type(this.peek())).max()))),             // {10,}
+                                        this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                 // {1}
                 RCURL);
     }
+
+    <A extends Obj> A type(final Object object) {
+        return (A) object;
+    }
+
+
 }
