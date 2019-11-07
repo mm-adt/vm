@@ -94,7 +94,7 @@ final class TInstTest {
     void shouldBindInstructions() {
         final TRec<Str, Obj> person = TRec.of(
                 "name", TStr.some(),
-                "age", TInt.gt(0)).inst(TInst.of("get", "name"), TInst.of("get", TStr.some().label("x")));
+                "age", TInt.of(is(gt(0)))).inst(TInst.of("get", "name"), TInst.of("get", TStr.some().label("x")));
         final Bindings bindings = new Bindings();
         bindings.put("x", TStr.of("alias"));
         final Optional<Inst> bc = person.inst(bindings, TInst.of("get", "name"));
@@ -109,12 +109,12 @@ final class TInstTest {
     void shouldBindAccess() {
         final TRec<Str, Obj> person = TRec.of(
                 "name", TStr.some().label("y"),
-                "age", TInt.gt(0)).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("y"))))));
+                "age", TInt.of(is(gt(0)))).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("y"))))));
         final Bindings bindings = new Bindings();
         bindings.put("y", TStr.of("marko"));
         Rec<Str, Obj> marko = person.bind(bindings);
         assertEquals(TStr.of("marko"), marko.get(TStr.of("name")));
-        assertEquals(TInt.gt(0), marko.get(TStr.of("age")));
+        assertEquals(TInt.of(is(gt(0))), marko.get(TStr.of("age")));
         assertFalse(marko.isInstance());
         assertTrue(marko.isReference());
         assertFalse(marko.isType());

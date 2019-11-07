@@ -36,7 +36,6 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
-import org.mmadt.machine.object.model.type.PRel;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
@@ -240,7 +239,6 @@ public class Parser extends BaseParser<Object> {
                         Int(object),
                         Rec(object),
                         Bool(object),
-                        Func(object),
                         Variable(object),
                         Symbol(object),
                         Bytecode(object),
@@ -256,16 +254,6 @@ public class Parser extends BaseParser<Object> {
 
     Rule BinaryOperator() {
         return FirstOf(STAR, PLUS, SUB, AND, OR);
-    }
-
-    Rule Func(final Var<Obj> object) {
-        return Sequence(Func(), object.set((Obj) this.pop()));
-    }
-
-    Rule Func() { // TODO: either remove this model or add more functions()
-        final Var<Obj> value = new Var<>();
-        final Var<String> op = new Var<>();
-        return Sequence(FirstOf(GT, LT, NEQ), op.set(match()), LPAREN, Atom(value), RPAREN, push(TObj.some().set(new PRel(PRel.Rel.valueOf(op.get().toUpperCase()), value.getAndClear()))));
     }
 
     Rule Access(final Var<Obj> type) {

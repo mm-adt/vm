@@ -100,16 +100,4 @@ class TypingTest {
         assertEquals(TInst.of("start", TInt.of(50)), newBc.peek());
         verifyTyping(newBc);
     }
-
-    @Test
-    void testBC3() {
-        Model model = TModel.of(Compiler.asInst(TypingTest.class.getResourceAsStream("pg.mm")));
-        final Inst oldBc = Compiler.asInst(TypingTest.class.getResourceAsStream("bc3.mm"));
-        final Inst newBc = Rewriting.rewrite(model, oldBc);
-        verifyTyping(newBc);
-        final Inst newBc2 = Rewriting.rewrite(model, newBc);
-        verifyTyping(newBc2);
-        final Inst newBc3 = Rewriting.rewrite(model, newBc2);
-        verifyTyping(newBc3);
-    }
 }

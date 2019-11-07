@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ModelTest {
 
     private final static String[] SCRIPTS = new String[]{
-            "org/mmadt/language/mmlang/model/pg.mm",
+            // "org/mmadt/language/mmlang/model/pg.mm",
             "org/mmadt/language/mmlang/model/kv.mm",
             "org/mmadt/language/mmlang/model/bc1.mm",
             "org/mmadt/language/mmlang/model/bc2.mm",

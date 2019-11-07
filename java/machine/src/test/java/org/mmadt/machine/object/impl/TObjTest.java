@@ -73,14 +73,14 @@ class TObjTest {
         assertEquals(type2, type2.and(type2));
         assertEquals(type1, type1.or(type1));*/
         //
-        Obj type3 = TInt.gt(32);
+        Obj type3 = TInt.of(is(gt(32)));
         Int type4 = TInt.some();
-        Obj type5 = TInt.gt(32).q(star);
+        Obj type5 = TInt.of(is(gt(32))).q(star);
         assertFalse(type3.constant());
         assertFalse(type4.constant());
         assertFalse(type5.constant());
         //
-        Obj type6 = TInt.gt(32).q(star);
+        Obj type6 = TInt.of(is(gt(32))).q(star);
         assertEquals(type5.q(star), type4.and(type6));
         assertEquals(type6.q(star), type4.and(type6));
         assertFalse(type6.constant());
@@ -93,7 +93,7 @@ class TObjTest {
         //System.out.println(TObj.some().gt(1).and(TObj.some().lt(2)));
         assertEquals(is(and(gt(1), lt(2))).bytecode(), type9);
         // TODO: NEED OrMap:: assertEquals(is(or(gt(1),lt(2))), type10);
-        assertEquals(TInt.gt(32).label("x"), TInt.some().and(TInt.gt(32).label("x")));
+        assertEquals(TInt.of(is(gt(32))).label("x"), TInt.some().and(TInt.of(is(gt(32))).label("x")));
         assertThrows(RuntimeException.class, () -> TInt.some().label("x").and(TInt.some().label("y")));
         //assertThrows(RuntimeException.class, () -> TInt.some().as("x").and(TStr.some().as("x")));
     }

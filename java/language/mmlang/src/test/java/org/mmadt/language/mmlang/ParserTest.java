@@ -70,25 +70,25 @@ class ParserTest {
             new TestArgs("[define,person,['name':str{,3}]]"),
             new TestArgs("[define,person,['name':str{3}]]"),
             new TestArgs("[define,person,['name':str,'age':int]]"),
-            new TestArgs("[define,person,['name':str,'age':int&gt(32)]]"),
-            new TestArgs("[define,person,['name':str,'age':int&gt(32)&lt(40)]]"),
-            new TestArgs("[define,person,['name':str,'age':int&lt(32)|int&gt(40)]]"),
-            new TestArgs("[define,person,['age':int&gt(32)]]"),
-            new TestArgs("[define,person,['name':str,'age':gt(32)]]"),
-            new TestArgs("[define,person,[str;int&gt(32)]]"),
-            new TestArgs("[define,person,['name':str,'age':gt(32)]]"),
-            new TestArgs("[define,person,['name':str,'age':gt(32)&lt(40)]]"),
-            new TestArgs("[define,person,['name':str,'age':gt(32)|lt(40)]]"),
-            new TestArgs("[define,person,['name':str,'age':gt(32)&lt(40)|gt(50)]]"),
-            new TestArgs("[define,person,['name':str,'age':gt(32)&lt(40)|gt(50)]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[gt,32]]]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[gt,32]][is,[lt,40]]]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[or,[lt,32],[gt,40]]]]]"),
+            new TestArgs("[define,person,['age':[is,[gt,32]]]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[gt,32]]]]"),
+            new TestArgs("[define,person,[str;[is,[gt,32]]]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[gt,32]]]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[gt,32]][is,[lt,40]]]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[or,[gt,32]],[lt,40]]]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[gt,32]][is,[or,[lt,40],[gt,50]]]]]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[gt,32]][is,[or,[lt,40],[gt,50]]]]]"),
             new TestArgs("[define,person,['name':str,'age':int]{*}]"),
             new TestArgs("[define,person,['name':str,'age':int{+}]{*}]"),
-            new TestArgs("[define,person,['name':str,'age':(int&gt(32)){+}]{*}]"),
+            new TestArgs("[define,person,['name':str,'age':[is,[gt,32]]]{*}]"),
             new TestArgs("[define,person,['loc':obj~z,'name':str{+}~x,'age':int~y]]"),
             new TestArgs("[define,person,['name':str~x,'age':int] <= [db][is,[get,'name'][eq,str~x]]]"),
             new TestArgs("[define,persons,['name':str,'age':int]{*} <= [db][get,'persons']\n" +
                     " -> [is,[get,'name'][eq,str~x]] => [ref,['name':str~x,'age':int]{?}]\n" +
-                    " -> [is,[get,'age'][gt,int~x]] => [ref,['name':str,'age':int&gt(int~x)]{?}]]"),
+                    " -> [is,[get,'age'][gt,int~x]] => [ref,['name':str,'age':[is,[gt,int~x]{2}]]]]"),
             new TestArgs("[define,person,['name':str~x,'age':int] <= [db][is,[get,'name'][eq,str~x]]]"),
             new TestArgs("[define,row,['col':bool|int|str]]"),
             new TestArgs("[define,row,[str:bool|int|str]]"),
@@ -96,7 +96,7 @@ class ParserTest {
             //new TestParameters("[define,row,[str:bool|int&(gt(0)|str)]]", "[define,row,[str:bool|int&(gt(0)|str)]]"),
             new TestArgs("[define,strList,[str{*}]]" +
                     "[define,row,[str:str|int|bool|strList]]" +
-                    "[define,person,row&['name':str,'age':int&gt(0),'tags':strList]]" +
+                    "[define,person,row&['name':str,'age':[is,[gt,0]],'tags':strList]]" +
                     "[define,people,person{*}]"),
             new TestArgs(true, "[[define,row,[(@str:@bool|@int*|@str){+}]]]"), // todo: field quantifiers
             new TestArgs("[define,db,['persons':obj~people]]"),

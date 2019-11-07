@@ -222,14 +222,14 @@ final class TRecTest {
         final Random random = new Random();
         Obj recordType = null;
         for (int i = 0; i < 100; i++) {
-            recordType = TRec.of("name", TStr.some(), "age", TInt.gt(28));
+            recordType = TRec.of("name", TStr.some(), "age", TInt.of(is(gt(28))));
             if (random.nextBoolean())
                 recordType = recordType.and(TRec.of("name", TStr.some()).and(recordType));
             if (random.nextBoolean())
                 recordType = TRec.some().and(TRec.of("name", TStr.some())).and(TRec.of("age", TInt.some()));
         }
-        recordType = TRec.of("name", TStr.some(), "age", TInt.gt(28)).and(recordType);
-        assertEquals(recordType, TRec.of("name", TStr.some(), "age", TInt.gt(28)));
+        recordType = TRec.of("name", TStr.some(), "age", TInt.of(is(gt(28)))).and(recordType);
+        assertEquals(recordType, TRec.of("name", TStr.some(), "age", TInt.of(is(gt(28)))));
         assertTrue(recordType.isType());
         assertFalse(recordType.isReference());
         assertFalse(recordType.isInstance());
@@ -240,7 +240,7 @@ final class TRecTest {
         final Rec person = TRec.of("name", TStr.some().label("n1"), "age", TInt.some(),
                 "phones", TRec.of(
                         "home", TInt.some().label("h1").or(TStr.some().label("h2")),
-                        "work", TInt.gt(0).label("w1").or(TStr.some()))).label("x");
+                        "work", TInt.of(is(gt(0))).label("w1").or(TStr.some()))).label("x");
 
         final Rec marko = TRec.of("name", "marko", "age", 29, "phones", TRec.of("home", 123, "work", 34));
         assertTrue(person.test(marko));

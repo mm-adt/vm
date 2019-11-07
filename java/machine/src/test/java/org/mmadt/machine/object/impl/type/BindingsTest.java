@@ -38,6 +38,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.language.__.gt;
+import static org.mmadt.language.__.is;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
@@ -48,7 +50,7 @@ class BindingsTest {
 
     @Test
     void shouldBindAtomics() {
-        Obj type1 = TInt.gt(29).label("x");
+        Obj type1 = TInt.of(is(gt(29))).label("x");
         System.out.println(type1);
         final Bindings bindings = new Bindings();
         assertFalse(type1.match(bindings, TInt.of(23)));

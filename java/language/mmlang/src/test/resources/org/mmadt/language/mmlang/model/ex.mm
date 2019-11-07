@@ -25,7 +25,7 @@
   -> [count]                       => [is,bool{1}   <= [eq,w]
                                           -> [eq,x] => [eq,false]]] // bytecode can have a specified range() which is the output object's type cast (thus, "bytecode" can also just be types)
  [define,animal,['alive':[is,[count][eq,4]]]] // variable framing makes it so the compiler thinks w is a type (which is a bad compilation, but correct state behavior)
- [define,person,animal['name':str~x,'age':int&gt(0)]           <= [db]*[get,'people']{16}*[is,[get,'name'][eq,x]]]*([db][count]&[sum]&[get,'name'][sum]) // {16} is the coefficient of the preceding instruction (see [define,q])
+ [define,person,animal['name':str~x,'age':[is,[gt,0]]]           <= [db]*[get,'people']{16}*[is,[get,'name'][eq,x]]]*([db][count]&[sum]&[get,'name'][sum]) // {16} is the coefficient of the preceding instruction (see [define,q])
  [define,people,person{*}                                      <= [db][get,'people']*(([get,'organizations']{2}[count]{4})-[sum]{45})*([count][sum])
   -> [is,[get,'name'][eq,str~y]]                               => [<=rdb,person['name':y]{?} <= [db][get,'name']{0}
   --> [get,'name'] => [map,y]

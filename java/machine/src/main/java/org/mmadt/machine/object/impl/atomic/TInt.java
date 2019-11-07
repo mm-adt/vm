@@ -35,12 +35,9 @@ import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.type.PRel;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.function.Supplier;
-
-import static org.mmadt.machine.object.model.type.PRel.Rel.GT;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -163,9 +160,4 @@ public final class TInt extends TObj implements Int {
             return failValue;
         }
     }
-
-    public static Int gt(int object) {
-        return new TInt(new PRel(GT, TInt.of(object)));
-    }
-
 }

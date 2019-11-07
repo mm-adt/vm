@@ -22,6 +22,8 @@
 
 package org.mmadt.language;
 
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -151,7 +153,7 @@ public class __ {
     ///
 
     private static Query create() {
-        return new Query();
+        return new Query(IdInst.create());
     }
 
 }

@@ -67,16 +67,12 @@ public final class Query {
     private Inst bytecode;
     private Obj obj;
 
-    private Query(final Inst inst) {
+    Query(final Inst inst) {
         if (inst.opcode().java().equals(Tokens.START) && !inst.args().isEmpty())
             this.obj = inst.args().get(0).set(null);
         else
             this.obj = TObj.none();
         this.bytecode = inst;
-    }
-
-    Query() {
-        this(IdInst.create());
     }
 
     public Query and(final Object... objects) {
