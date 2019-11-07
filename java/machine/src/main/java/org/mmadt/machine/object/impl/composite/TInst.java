@@ -26,6 +26,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.model.Obj;
@@ -68,7 +69,7 @@ public class TInst extends TObj implements Inst {
     }
 
     public static Inst ids() {
-        return TInst.of(Tokens.ID);
+        return IdInst.create();
     }
 
     public static Inst of(final String opcode, final Object... args) {

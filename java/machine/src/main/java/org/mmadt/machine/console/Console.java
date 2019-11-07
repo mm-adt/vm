@@ -89,7 +89,7 @@ public class Console {
             } catch (final Throwable t) {
                 if (t instanceof UserInterruptException)
                     break;
-                terminal.writer().println(t.getCause().getMessage());
+                terminal.writer().println(t.getMessage());
                 terminal.flush();
             }
         }

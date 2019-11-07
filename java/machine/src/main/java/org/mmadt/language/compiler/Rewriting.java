@@ -61,7 +61,7 @@ public final class Rewriting {
             // if the bytecode is empty, that is a noop (move on to the next instruction -- don't mess with domain/range)
             for (final Inst oldInst2 : bcMatch.iterable()) {
                 final boolean ref = oldInst2.opcode().get().equals(Tokens.REF);
-                range = ref ? BytecodeHelper.reference(oldInst2) : Instructions.getRange(oldInst2, domain, model);
+                range = ref ? BytecodeHelper.reference(oldInst2) : Ranger.getRange(oldInst2, domain, model);
                 if (ref) { // the current instruction is a reference and thus, traversing the referencing graph
                     inReferenceGraph = true;
                     if (BytecodeHelper.isSubset(TInst.of(newBc), range.access())) { // if the bytecode is a subset of the current reference, remove it (the reference handles the processing)
@@ -116,7 +116,7 @@ public final class Rewriting {
                     args.add(arg);
             }
             final Inst newInst = TInst.of(oldInst.opcode(), args).q(oldInst.q());
-            newBc.add(newInst.domainAndRange(domain, Instructions.getRange(newInst, domain, model))); // clone the old instruction with new domain/range modifiers
+            newBc.add(newInst.domainAndRange(domain, Ranger.getRange(newInst, domain, model))); // clone the old instruction with new domain/range modifiers
         }
     }
 }

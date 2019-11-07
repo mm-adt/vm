@@ -28,7 +28,6 @@ import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -42,7 +41,7 @@ public final class DivInst<S extends WithDiv<S>> extends TInst implements MapIns
     }
 
     public S apply(final S s) {
-        return s.div(Argument.<S, S>create(this.args().get(0)).mapArg(s));
+        return s.div(this.<S, S>argument(0).mapArg(s));
     }
 
     public static <S extends WithDiv<S>> S create(final Supplier<S> result, final S source, final S argument) {

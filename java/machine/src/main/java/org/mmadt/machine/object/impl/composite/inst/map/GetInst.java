@@ -28,7 +28,6 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -43,7 +42,7 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst implement
 
     @Override
     public V apply(final WithProduct<K, V> s) {
-        return s.get(Argument.<Obj, K>create(this.args().get(0)).mapArg(s));
+        return s.get(this.<Obj, K>argument(0).mapArg(s));
     }
 
     public static <K extends Obj, V extends Obj> V create(final Supplier<V> supplier, final WithProduct<K, V> source, final K key) {

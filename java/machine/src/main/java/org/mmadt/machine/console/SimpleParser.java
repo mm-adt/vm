@@ -22,6 +22,8 @@
 
 package org.mmadt.machine.console;
 
+import org.mmadt.language.compiler.Instructions;
+import org.mmadt.language.compiler.OperatorHelper;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
@@ -39,7 +41,6 @@ import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.language.compiler.OperatorHelper;
 import org.parboiled.BaseParser;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
@@ -204,9 +205,9 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<PList<Obj>> args = new Var<>(new PList<>());
         return Sequence(
                 LBRACKET,
-                Symbol(), opcode.set(match().trim()),                                         // opcode
-                ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop()))),  // arguments
-                RBRACKET, this.push(TInst.of(opcode.get(), args.get())));
+                Symbol(), opcode.set(match().trim()),                                           // opcode
+                ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop()))),    // arguments
+                RBRACKET, this.push(Instructions.compile(TInst.of(opcode.get(), args.get())))); // compiler grabs the instruction type
     }
 
     @SuppressSubnodes

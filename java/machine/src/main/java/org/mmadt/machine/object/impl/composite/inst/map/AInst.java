@@ -27,9 +27,9 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.processor.compiler.Argument;
 
 import java.util.function.Supplier;
 
@@ -43,7 +43,7 @@ public final class AInst<S extends Obj> extends TInst implements MapInstruction<
     }
 
     public Bool apply(final S s) {
-        return TBool.of(Argument.<S, S>create(this.args().get(0)).mapArg(s).test(s));
+        return TBool.of(this.<S, S>argument(0).mapArg(s).test(s));
     }
 
     public static <S extends Obj> Bool create(final Supplier<Bool> result, final S source, final S argument) {
@@ -52,5 +52,9 @@ public final class AInst<S extends Obj> extends TInst implements MapInstruction<
 
     public static <S extends Obj> AInst<S> create(final Object arg) {
         return new AInst<>(arg);
+    }
+
+    public static <S extends Obj> AInst<S> compile(final Inst inst) {
+        return new AInst<>(inst.args().get(0));
     }
 }
