@@ -26,10 +26,6 @@ import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.processor.function.QFunction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A Java representation of mm-ADT bytecode.
@@ -37,10 +33,9 @@ import java.util.List;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class IR<S extends Obj, E extends Obj> implements Cloneable {
+public final class IR<S extends Obj, E extends Obj> {
 
     private final Inst bytecode;
-    private final List<QFunction> functions;
 
     public IR(final Inst bytecode) {
         this(TModel.of("ex"), bytecode);
@@ -48,26 +43,10 @@ public final class IR<S extends Obj, E extends Obj> implements Cloneable {
 
     public IR(final Model model, final Inst bytecode) {
         this.bytecode = bytecode;
-        this.functions = new ArrayList<>();
-        for (final Inst inst : bytecode.iterable()) {
-            this.functions.add(FunctionTable.function(model, inst));
-        }
-    }
-
-    public List<QFunction> functions() {
-        return this.functions;
     }
 
     public Inst bytecode() {
         return this.bytecode;
-    }
-
-    public IR<S, E> clone() {
-        try {
-            return (IR<S, E>) super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
     }
 
     @Override
@@ -82,6 +61,6 @@ public final class IR<S extends Obj, E extends Obj> implements Cloneable {
 
     @Override
     public String toString() {
-        return this.functions.toString();
+        return this.bytecode.toString();
     }
 }

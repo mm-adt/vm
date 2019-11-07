@@ -23,17 +23,17 @@
 package org.mmadt.process.mmproc.util;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.function.ReduceFunction;
+import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class InMemoryReducer<S extends Obj, E extends Obj> implements Reducer<S, E> {
 
-    private final ReduceFunction<S, E> reduceFunction;
+    private final ReduceInstruction<S, E> reduceFunction;
     private E value;
 
-    public InMemoryReducer(final ReduceFunction<S, E> reduceFunction) {
+    public InMemoryReducer(final ReduceInstruction<S, E> reduceFunction) {
         this.reduceFunction = reduceFunction;
         this.value = this.reduceFunction.getInitialValue();
     }

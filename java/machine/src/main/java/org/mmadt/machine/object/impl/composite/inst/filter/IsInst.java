@@ -37,7 +37,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  */
 public final class IsInst<S extends Obj> extends TInst implements FilterInstruction<S> {
 
-    public IsInst(final S argument) {
+    private IsInst(final Object argument) {
         super(PList.of(Tokens.IS, argument));
     }
 
@@ -47,8 +47,12 @@ public final class IsInst<S extends Obj> extends TInst implements FilterInstruct
 
     public static <S extends Obj> S create(final S obj, final Bool arg) {
         return InstructionHelper.<S>rewrite(obj, new IsInst<>(arg)).orElseGet(() ->
-                ObjectHelper.allInstances(obj, arg) ?
+             ObjectHelper.allInstances(obj, arg) ?
                         arg.java() ? obj : obj.q(Q.Tag.zero) :  // compute given bool arg
                         obj.q(obj.q().peek().zero(), obj.q().last()).append(new IsInst<>(arg))); // append to access and zero-out quantification
+    }
+
+    public static <S extends Obj> IsInst<S> create(final Object arg) {
+        return new IsInst<>(arg);
     }
 }

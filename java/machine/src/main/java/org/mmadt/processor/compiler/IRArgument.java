@@ -22,11 +22,9 @@
 
 package org.mmadt.processor.compiler;
 
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
-import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.Iterator;
 
@@ -37,32 +35,23 @@ public final class IRArgument<S extends Obj, E extends Obj> implements Argument<
 
     private final Inst bytecode;
 
-    public IRArgument(final Inst bytecode) {
+    IRArgument(final Inst bytecode) {
         this.bytecode = bytecode;
     }
 
     @Override
     public E mapArg(final S object) {
-        return new MinimalProcessor<S, E>(TInst.some().access(this.bytecode)).iterator(object).next();
+        return new FastProcessor<S, E>(this.bytecode).iterator(object).next();
     }
 
     @Override
     public Iterator<E> flatMapArg(final S object) {
-        return new MinimalProcessor<S, E>(TInst.some().access(this.bytecode)).iterator(object);
+        return new FastProcessor<S, E>(this.bytecode).iterator(object);
     }
 
     @Override
     public boolean filterArg(final S object) {
-        return new MinimalProcessor<S, E>(TInst.some().access(this.bytecode)).iterator(object).hasNext(); // TODO: this should not be hardcoded to a processor
-    }
-
-    @Override
-    public IRArgument<S, E> clone() {
-        try {
-            return (IRArgument<S, E>) super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        return new FastProcessor<S, E>(this.bytecode).iterator(object).hasNext(); // TODO: this should not be hardcoded to a processor
     }
 
     @Override

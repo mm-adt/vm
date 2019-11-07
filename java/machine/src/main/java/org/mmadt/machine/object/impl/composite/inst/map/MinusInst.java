@@ -28,6 +28,7 @@ import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
+import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.function.Supplier;
@@ -37,7 +38,7 @@ import java.util.function.Supplier;
  */
 public final class MinusInst<S extends WithMinus<S>> extends TInst implements MapInstruction<S, S> {
 
-    private MinusInst(final S arg) {
+    private MinusInst(final Object arg) {
         super(PList.of(Tokens.MINUS, arg));
     }
 
@@ -50,5 +51,8 @@ public final class MinusInst<S extends WithMinus<S>> extends TInst implements Ma
                 ObjectHelper.allInstances(obj, arg) ?
                         compute.get() :
                         obj.append(new MinusInst<>(arg)));
+    }
+    public static <S extends WithMinus<S>> MinusInst<S> create(final Object arg) {
+        return new MinusInst<>(arg);
     }
 }

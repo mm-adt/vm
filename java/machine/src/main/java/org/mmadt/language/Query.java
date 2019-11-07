@@ -25,24 +25,39 @@ package org.mmadt.language;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
+import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
+import org.mmadt.machine.object.impl.composite.inst.map.InvInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.QInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithDiv;
-import org.mmadt.machine.object.model.type.algebra.WithMinus;
-import org.mmadt.machine.object.model.type.algebra.WithMult;
-import org.mmadt.machine.object.model.type.algebra.WithOne;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.machine.object.model.type.algebra.WithPlus;
-import org.mmadt.machine.object.model.type.algebra.WithProduct;
-import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -50,23 +65,22 @@ import java.util.function.Function;
 public final class Query {
 
     private Inst bytecode;
-    private Function<Obj, Obj> function;
     private Obj obj;
 
     private Query(final Inst inst) {
+        if (inst.opcode().java().equals(Tokens.START) && !inst.args().isEmpty())
+            this.obj = inst.args().get(0).set(null);
+        else
+            this.obj = TObj.none();
         this.bytecode = inst;
     }
 
-    private Query(final Obj obj) {
-        this.obj = obj;
-    }
-
     Query() {
-        this(TInst.of(Tokens.ID));
+        this(IdInst.create());
     }
 
     public Query and(final Object... objects) {
-        return this.append(a -> a.access(a.access().mult(TInst.of(Tokens.AND, args(objects)))));
+        return this.compose(AndInst.create(objects));
     }
 
     public Query branch(final Object... branches) {
@@ -74,11 +88,11 @@ public final class Query {
     }
 
     public Query id() {
-        return this.append(Obj::id);
+        return this.compose(IdInst.create());
     }
 
     public Query count() {
-        return this.append(Obj::count);
+        return this.compose(CountInst.create());
     }
 
     public Query dedup(final Object... objects) {
@@ -86,45 +100,43 @@ public final class Query {
     }
 
     public Query div(final Object obj) {
-        return this.append(a -> ((WithDiv<?>) a).div(prep(obj)));
+        return this.compose(DivInst.create(obj));
     }
 
     public Query drop(final Object key) {
-        return this.append(a -> ((WithProduct<?, ?>) a).drop(prep(key)));
+        return this.compose(DropInst.create(key));
     }
 
     public Query eq(final Object obj) {
-        return this.append(a -> a.eq(prep(obj)));
+        return this.compose(EqInst.create(obj));
     }
 
     public Query get(final Object key) {
-        return this.append(a -> ((WithProduct<?, ?>) a).get(prep(key)));
+        return this.compose(GetInst.create(key));
     }
 
     public Query groupCount(final Object key) {
-        return this.compose(TInst.of(Tokens.GROUPCOUNT, arg(key)));
+        return this.compose(TInst.of(Tokens.GROUPCOUNT, key));
     }
 
     public Query gt(final Object obj) {
-        return this.append(a -> ((WithOrder<?>) a).gt(prep(obj)));
-        //return this.compose(TInst.of(Tokens.GT, arg(obj)));
+        return this.compose(GtInst.create(obj));
     }
 
     public Query gte(final Object obj) {
-        return this.compose(TInst.of(Tokens.GTE, arg(obj)));
+        return this.compose(GteInst.create(obj));
     }
 
     public Query inv() {
-        return this.compose(TInst.of(Tokens.INV));
+        return this.compose(InvInst.create());
     }
 
     public Query is(final Object bool) {
-        return this.append(a -> a.is(prep(bool)));
-        // return this.compose(TInst.of(Tokens.IS, arg(bool)));
+        return this.compose(IsInst.create(bool));
     }
 
     public Query lt(final Object obj) {
-        return this.append(a -> ((WithOrder<?>) a).lt(prep(obj)));
+        return this.compose(LtInst.create(obj));
     }
 
     public Query lte(final Object obj) {
@@ -132,49 +144,47 @@ public final class Query {
     }
 
     public Query map(final Object obj) {
-        return this.append(a -> a.map(prep(obj)));
+        return this.compose(MapInst.create(obj));
     }
 
     public Query minus(final Object obj) {
-        return this.append(a -> ((WithMinus<?>) a).minus(prep(obj)));
+        return this.compose(MinusInst.create(obj));
     }
 
     public Query mult(final Object obj) {
-        return this.append(a -> ((WithMult<?>) a).mult(prep(obj)));
-        //return this.compose(TInst.of(Tokens.MULT, arg(obj)));
+        return this.compose(MultInst.create(obj));
     }
 
     public Query neg() {
-        return this.append(a -> ((WithMinus) a).neg());
+        return this.compose(NegInst.create());
     }
 
     public Query neq(final Object obj) {
-        return this.compose(TInst.of(Tokens.NEQ, arg(obj)));
+        return this.compose(NeqInst.create(obj));
     }
 
     public Query one() {
-        return this.append(a -> ((WithOne<?>) a).one());
+        return this.compose(OneInst.create());
     }
 
-    public Query or(final Object branch) {
-        return this.append(a -> a.or(prep(branch)));
+    public Query or(final Object... branches) {
+        return this.compose(OrInst.create(branches));
     }
 
     public Query plus(final Object obj) {
-        return this.append(a -> ((WithPlus<?>) a).plus(prep(obj)));
-        // return this.compose(TInst.of(Tokens.PLUS, arg(obj)));
+        return this.compose(PlusInst.create(obj));
     }
 
     public Query put(final Object key, final Object value) {
-        return this.append(a -> ((WithProduct<?, ?>) a).put(prep(key), prep(value)));
+        return this.compose(PutInst.create(key, value));
     }
 
     public Query a(final Object obj) {
-        return this.append(a -> a.a(prep(obj)));
+        return this.compose(AInst.create(obj));
     }
 
     public Query q() {
-        return this.append(a -> a.q());
+        return this.compose(QInst.create());
     }
 
     public Query q(final Object quantifier) {
@@ -183,7 +193,7 @@ public final class Query {
             this.bytecode = TInst.of(Tokens.ID);
         else
             this.bytecode.<Stream<Inst>>get().drop(last);
-        return this.compose(last.q(arg(quantifier)));
+        return this.compose(last.q((Obj) arg(quantifier)));
     }
 
     public Query reduce(final Object seed, final Object reduce) {
@@ -191,20 +201,19 @@ public final class Query {
     }
 
     public Query start(final Object... objects) {
-        return new Query(0 == objects.length ? TObj.none() : StartInst.create(arg(objects[0]).<Obj>set(null), objects));
-        // return new Query(TInst.of(Tokens.START, args(objects)));
+        return new Query(StartInst.create(objects));
     }
 
     public Query sum() {
-        return this.append(Obj::sum);
+        return this.compose(SumInst.create());
     }
 
     public Query type() {
-        return this.append(a -> ObjectHelper.type(a));
+        return this;// this.append(a -> ObjectHelper.type(a));
     }
 
     public Query zero() {
-        return this.append(a -> ((WithZero<?>) a).zero());
+        return this.compose(ZeroInst.create());
     }
 
     public Query as(final String key) {
@@ -220,12 +229,12 @@ public final class Query {
     }
 
     public <A extends Obj> A obj() {
-        return (A) this.obj;
+        return (A) this.obj.access(this.bytecode);
     }
 
     @Override
     public String toString() {
-        return null != this.obj ? this.obj.toString() : null != this.bytecode ? this.bytecode.toString() : "nothing";
+        return this.bytecode.toString();
     }
 
     @Override
@@ -248,39 +257,14 @@ public final class Query {
     private Obj[] args(final Object[] objects) {
         final Obj[] objs = new Obj[objects.length];
         for (int i = 0; i < objects.length; i++) {
-            objs[i] = prep(objects[i]);
+            objs[i] = ObjectHelper.from(objects[i]);
         }
         return objs;
     }
 
-    private static Obj arg(final Object object) {
-        return object instanceof Query ? ((Query) object).bytecode : ObjectHelper.from(object);
-    }
 
-    private <A extends Obj> A prep(final Object object) {
-        A a = null;
-        if (object instanceof Query) {
-            if (null == ((Query) object).obj) {
-                if (null == this.obj)
-                    throw new IllegalStateException("No available root: " + this);
-                else if (null != ((Query) object).function)
-                    a = (A) ((Query) object).function.apply(this.obj.q(Q.Tag.one).access((Inst) null));
-            } else
-                a = (A) ((Query) object).obj;
-        } else
-            a = (A) ObjectHelper.from(object);
-        if (null == this.obj && null != a)
-            this.obj = a.set(null);
-        return a;
-    }
-
-    private Query append(final Function<Obj, Obj> function) {
-        this.function = null == this.function ? function : this.function.andThen(function);
-        if (null != this.obj) {
-            this.obj = this.function.apply(this.obj);
-            this.function = null;
-        }
-        return this;
+    private static <A extends Obj> A arg(final Object object) {
+        return object instanceof Query ? (A) ((Query) object).bytecode : (A) ObjectHelper.from(object);
     }
 
 

@@ -96,7 +96,6 @@ class StepTest {
     private static <S extends Obj, E extends Obj> IR<S, E> print(final IR<S, E> ir) {
         if (true) { // TODO: Ultimately, all of this needs to be put in a general test-suite package
             System.out.println(ir.bytecode());
-            System.out.println(ir.functions() + "\n");
         }
         return ir;
     }

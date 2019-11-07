@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -40,8 +41,9 @@ import java.util.stream.Stream;
  */
 public final class AndInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
 
-    private AndInst(final S argument) {
-        super(PList.of(Tokens.AND, argument));
+    private AndInst(final Object... arguments) {
+        super(PList.of(arguments));
+        this.<PList<Obj>>get().add(0, TStr.of(Tokens.AND));
     }
 
     public Bool apply(final S s) {
@@ -53,4 +55,9 @@ public final class AndInst<S extends Obj> extends TInst implements MapInstructio
                 result.get() :
                 TBool.of().q(source.q()).access(source.access().mult(new AndInst<>(argument)));
     }
+
+    public static <S extends Obj> AndInst<S> create(final Object... args) {
+        return new AndInst<>(args);
+    }
+
 }

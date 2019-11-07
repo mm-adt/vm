@@ -23,18 +23,15 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
+import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
+import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
+import org.mmadt.machine.object.model.composite.inst.SideEffectInstruction;
 import org.mmadt.process.mmproc.util.InMemoryReducer;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.compiler.IR;
-import org.mmadt.processor.function.BarrierFunction;
-import org.mmadt.processor.function.BranchFunction;
-import org.mmadt.processor.function.FilterFunction;
-import org.mmadt.processor.function.FlatMapFunction;
-import org.mmadt.processor.function.InitialFunction;
-import org.mmadt.processor.function.MapFunction;
-import org.mmadt.processor.function.QFunction;
-import org.mmadt.processor.function.ReduceFunction;
-import org.mmadt.processor.function.branch.RepeatBranch;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.ArrayList;
@@ -55,30 +52,32 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
 
     public Proc(final IR<S, E> compilation) {
         Step<?, S> previousStep = EmptyStep.instance();
-        for (final QFunction function : compilation.functions()) {
+        for (final Inst function : compilation.bytecode().iterable()) {
             final Step nextStep;
-            if (this.steps.isEmpty() && !(function instanceof InitialFunction)) {
+            if (this.steps.isEmpty() && !(function instanceof InitialInstruction)) {
                 this.startStep = new SourceStep<>();
                 this.steps.add(this.startStep);
                 previousStep = this.startStep;
             }
 
-            if (function instanceof RepeatBranch)
-                nextStep = new RepeatStep<>(previousStep, (RepeatBranch<S>) function);
-            else if (function instanceof BranchFunction)
-                nextStep = new BranchStep<>(previousStep, (BranchFunction<S, E>) function);
-            else if (function instanceof FilterFunction)
-                nextStep = new FilterStep<>(previousStep, (FilterFunction<S>) function);
-            else if (function instanceof FlatMapFunction)
-                nextStep = new FlatMapStep<>(previousStep, (FlatMapFunction<S, E>) function);
-            else if (function instanceof MapFunction)
-                nextStep = new MapStep<>(previousStep, (MapFunction<S, E>) function);
-            else if (function instanceof InitialFunction)
-                nextStep = new InitialStep<>((InitialFunction<S>) function);
-            else if (function instanceof BarrierFunction)
-                nextStep = new BarrierStep<>(previousStep, (BarrierFunction<S, E, Object>) function);
-            else if (function instanceof ReduceFunction)
-                nextStep = new ReduceStep<>(previousStep, (ReduceFunction<S, E>) function, new InMemoryReducer<>((ReduceFunction<S, E>) function));
+            // if (function instanceof RepeatBranch)
+            //    nextStep = new RepeatStep<>(previousStep, (RepeatBranch<S>) function);
+            //else if (function instanceof BranchFunction)
+            //    nextStep = new BranchStep<>(previousStep, (BranchFunction<S, E>) function);
+            if (function instanceof FilterInstruction)
+                nextStep = new FilterStep<>(previousStep, (FilterInstruction<S>) function);
+                // else if (function instanceof FlatMapFunction)
+                //     nextStep = new FlatMapStep<>(previousStep, (FlatMapFunction<S, E>) function);
+            else if (function instanceof MapInstruction)
+                nextStep = new MapStep<>(previousStep, (MapInstruction<S, E>) function);
+            else if (function instanceof InitialInstruction)
+                nextStep = new InitialStep<>((InitialInstruction<S>) function);
+                //  else if (function instanceof BarrierFunction)
+                //      nextStep = new BarrierStep<>(previousStep, (BarrierFunction<S, E, Object>) function);
+            else if (function instanceof ReduceInstruction)
+                nextStep = new ReduceStep<>(previousStep, (ReduceInstruction<S, E>) function, new InMemoryReducer<>((ReduceInstruction<S, E>) function));
+            else if (function instanceof SideEffectInstruction)
+                nextStep = new SideEffectStep<>(previousStep, (SideEffectInstruction<S>) function);
             else
                 throw new RuntimeException("You need a new step type:" + function);
 

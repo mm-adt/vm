@@ -35,7 +35,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  */
 public final class CountInst<S extends Obj, E extends WithMonoidPlus<E>> extends TInst implements ReduceInstruction<S, E> {
 
-    public CountInst() {
+    private CountInst() {
         super(PList.of(Tokens.COUNT));
     }
 
@@ -58,5 +58,9 @@ public final class CountInst<S extends Obj, E extends WithMonoidPlus<E>> extends
         return ObjectHelper.allInstances(source) ?
                 (S) source.q().peek() :
                 source.set(null).q(source.q().one()).access(source.access().mult(new CountInst<>()));
+    }
+
+    public static <S extends Obj, E extends WithMonoidPlus<E>> CountInst<S, E> create() {
+        return new CountInst<>();
     }
 }

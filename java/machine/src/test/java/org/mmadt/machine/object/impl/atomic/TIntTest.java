@@ -26,28 +26,20 @@ import org.junit.jupiter.api.Test;
 import org.mmadt.language.__;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
-import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.composite.Inst;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.lt;
-import static org.mmadt.language.__.mult;
+import static org.mmadt.language.__.or;
 import static org.mmadt.language.__.plus;
-import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -78,27 +70,15 @@ final class TIntTest {
 
     @Test
     void shouldMonoid() {
-        /*final Obj obj = TInt.of(1,2,3).mult(TInt.of(5)).minus(TInt.of(3)).<Int>is(TInt.of().gt(TInt.of(2))).zero();
-        System.out.println(obj);
-        obj.iterable().forEach(System.out::println);
-
-        final Model model= TModel.of("ex");
-        model.define("int",TInt.of().inst(TInst.of(Tokens.PLUS,TInt.some().label("a")), __.plus(model.sym("a")).bytecode()));*/
-        final Obj x = __.start(1,2,3).is(gt(2)).mult(plus(34)).is(gt(1).or(gt(110)).or(lt(10))).obj();
+        final Obj x = __.start(TInt.of(1), 2, 3).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110))).obj();
         System.out.println(x);
         x.iterable().forEach(System.out::println);
     }
 
     @Test
     void shouldMonoid2() {
-        /*final Obj obj = TInt.of(1,2,3).mult(TInt.of(5)).minus(TInt.of(3)).<Int>is(TInt.of().gt(TInt.of(2))).zero();
-        System.out.println(obj);
-        obj.iterable().forEach(System.out::println);
-
-        final Model model= TModel.of("ex");
-        model.define("int",TInt.of().inst(TInst.of(Tokens.PLUS,TInt.some().label("a")), __.plus(model.sym("a")).bytecode()));*/
-        Int t = TInt.of(1,2,3).inst(TInst.of(Tokens.IS), new SumInst<>()).inst(TInst.of(Tokens.MULT,TInt.some()),new PlusInst<>(TInt.of(23)));
-        final Obj x = __.start(t).is(gt(2)).mult(plus(34)).is(gt(1).or(gt(110)).or(lt(10000))).obj();
+        Int t = TInt.of(1, 2, 3).inst(TInst.of(Tokens.IS), SumInst.create()).inst(TInst.of(Tokens.MULT, TInt.some()), PlusInst.create(23));
+        final Obj x = __.start(t).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110), lt(10000))).obj();
         System.out.println(x);
         x.iterable().forEach(System.out::println);
     }

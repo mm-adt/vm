@@ -37,11 +37,7 @@ import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
-import org.mmadt.processor.function.QFunction;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import static org.mmadt.language.compiler.Tokens.AMPERSAND;
@@ -215,28 +211,28 @@ public final class StringFactory {
             builder.append((PAnd) inst.get());
         else if (!TInst.some().get().equals(inst.get())) {
             for (Inst single : inst.iterable()) {
-               if(!single.isZero()) {
-                   boolean first = true;
-                   builder.append(LBRACKET);
-                   if (single.opcode().get().equals(DEFINE))
-                       builder.append(DEFINE).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
-                   else if (single.opcode().get().equals(MODEL))
-                       builder.append(MODEL).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
-                   else {
-                       for (Obj object : single.<Iterable<Obj>>get()) {
-                           if (first) {
-                               builder.append(object.get().toString()).append(COMMA);
-                               first = false;
-                           } else
-                               builder.append(object).append(COMMA);
-                       }
-                       builder.deleteCharAt(builder.length() - 1);
-                   }
-                   builder.append(RBRACKET);
-                   builder.append(quantifier(single.q()));
-                   if (null != single.label())
-                       builder.append(TILDE).append(single.label());
-               }
+                if (!single.isZero()) {
+                    boolean first = true;
+                    builder.append(LBRACKET);
+                    if (single.opcode().get().equals(DEFINE))
+                        builder.append(DEFINE).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
+                    else if (single.opcode().get().equals(MODEL))
+                        builder.append(MODEL).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
+                    else {
+                        for (Obj object : single.<Iterable<Obj>>get()) {
+                            if (first) {
+                                builder.append(object.get().toString()).append(COMMA);
+                                first = false;
+                            } else
+                                builder.append(object).append(COMMA);
+                        }
+                        builder.deleteCharAt(builder.length() - 1);
+                    }
+                    builder.append(RBRACKET);
+                    builder.append(quantifier(single.q()));
+                    if (null != single.label())
+                        builder.append(TILDE).append(single.label());
+                }
             }
             if (null != inst.label()) // TODO: this shouldn't happen over the entire stream
                 builder.append(TILDE).append(inst.label());
@@ -283,35 +279,13 @@ public final class StringFactory {
         return builder.toString();
     }
 
-    ////////////// PROCESSOR
-    public static String function(final QFunction function, final Object... args) {
-        final List<Object> arguments = new ArrayList<>(args.length);
-        Collections.addAll(arguments, args);
-        arguments.remove(null);
-
-        String name = function.getClass().getSimpleName();
-        if (arguments.size() > 0)
-            name = name + "(";
-        for (final Object object : arguments) {
-            name = name + object + ",";
-        }
-        if (arguments.size() > 0) {
-            name = name.substring(0, name.length() - 1);
-            name = name + ")";
-        }
-        if (!function.quantifier().isOne())
-            name = name + function.quantifier();
-        if (null != function.label())
-            name = name + "~" + function.label();
-        return name;
-    }
 
     private static String typeInstructions(final Inst inst) {
         final StringBuilder builder = new StringBuilder();
         if (inst.<Inst>peek().opcode().java().equals(Tokens.IS)) {
             if (inst.<Inst>peek().args().get(0) instanceof Inst && ((Inst) inst.<Inst>peek().args().get(0)).opcode().java().equals(Tokens.OR)) {
                 for (final Obj i : ((Inst) inst.<Inst>peek().args().get(0)).args()) {
-                    builder.append(i).append(BAR);
+                    builder.append(i.<PList>get().get(1)).append(BAR);
                 }
                 builder.deleteCharAt(builder.length() - 1);
                 return builder.toString();

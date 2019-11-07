@@ -28,6 +28,7 @@ import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOne;
+import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
@@ -50,5 +51,9 @@ public final class OneInst<S extends WithOne<S>> extends TInst implements MapIns
                         obj.q().constant() ?
                                 one.q(obj.q()) :
                                 one.q(obj.q()).append(new OneInst<>()));
+    }
+
+    public static <S extends WithOne<S>> OneInst<S> create() {
+        return new OneInst<>();
     }
 }

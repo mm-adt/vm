@@ -25,7 +25,6 @@ package org.mmadt.machine.object.model.atomic;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
 import org.mmadt.processor.util.FastProcessor;
-import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.List;
 

@@ -35,7 +35,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.id;
 import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
@@ -56,7 +55,7 @@ final class TBoolTest {
         //////
         instance = TBool.of(false).q(2);
         reference = TBool.of(true, false, true, false);
-        type = TBool.of().q(1,45);
+        type = TBool.of().q(1, 45);
         TestHelper.validateKinds(instance, reference, type);
         //////
         instance = TBool.of(true).neg();
@@ -97,7 +96,6 @@ final class TBoolTest {
         assertEquals("(true{*}~x|false~y)~z", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).label("z").toString());
         assertEquals("(true{*}~x|false~y){?}", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).q(qmark).toString());
         assertTrue(TBool.of(true).q(star).or(TBool.of(false)).isType());
-        // assertEquals(TBool.of(true).q(star), ((POr) TBool.of(true).q(star).or(TBool.of(false)).get()).predicates().get(0));
     }
 
     @Test
@@ -105,7 +103,7 @@ final class TBoolTest {
         final Bool bool = TBool.of(true, true, false);
         assertEquals(TInst.of(Tokens.START, true, true, false), bool.access());
         assertEquals(TBool.of(true), bool.iterable().iterator().next());
-        assertEquals(start(true, true, false).plus(true).obj(), bool.plus(TBool.of(true)));
-        assertEquals(start(true, true, false).mult(true).obj(), bool.mult(TBool.of(true)));
+        assertEquals(start(true, true, false).plus(true).bytecode(), bool.plus(TBool.of(true)).access());
+        assertEquals(start(true, true, false).mult(true).bytecode(), bool.mult(TBool.of(true)).access());
     }
 }

@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  */
 public final class PlusInst<S extends WithPlus<S>> extends TInst implements MapInstruction<S, S> {
 
-    public PlusInst(final S arg) {
+    private PlusInst(final Object arg) {
         super(PList.of(Tokens.PLUS, arg));
     }
 
@@ -50,5 +50,9 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst implements MapI
                 ObjectHelper.allInstances(obj, arg) ?
                         compute.get() :
                         obj.append(new PlusInst<>(arg)));
+    }
+
+    public static <S extends WithPlus<S>> PlusInst<S> create(final Object arg) {
+        return new PlusInst<>(arg);
     }
 }

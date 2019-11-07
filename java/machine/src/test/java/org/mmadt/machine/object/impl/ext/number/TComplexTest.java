@@ -31,7 +31,6 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.processor.util.FastProcessor;
-import org.mmadt.processor.util.MinimalProcessor;
 
 import java.util.Optional;
 
@@ -54,6 +53,6 @@ class TComplexTest {
         bindings.put("xi", TReal.of(3.0f));
         final Optional<Inst> match = complex.inst(bindings, plus(TLst.of(TReal.of(4.0f), TReal.of(5.0f))).bytecode());
         System.out.println(match);
-        new MinimalProcessor<>(match.get()).iterator(TReal.of(1.0)).forEachRemaining(System.out::println);
+        new FastProcessor<>(match.get()).iterator(TReal.of(1.0)).forEachRemaining(System.out::println);
     }
 }

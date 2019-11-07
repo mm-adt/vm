@@ -45,13 +45,12 @@ import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.util.IteratorUtils;
+import org.mmadt.processor.util.FastProcessor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -87,9 +86,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Bool eq(final Obj object);
 
-    public default Bool neq(final Obj object) {
-        return TBool.of(!this.eq(object).java());
-    }
+    public Bool neq(final Obj object);
 
     public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
         return (O) this.iterable().iterator().next();
@@ -109,7 +106,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Obj type();
 
     public default Iterable<? extends Obj> iterable() {
-        return null == this.get() ? List.of() : this.get() instanceof Stream ? this.<Stream>get() : List.of(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<>(this.access()).iterator(this);
     }
 
     public <O extends Obj> O set(final Object object);
@@ -146,7 +143,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             if (TObj.none().equals(this) || TObj.none().equals(obj))
                 return this.q().test(obj);
 
-            if (this.isInstance() )                                                             // INSTANCE CHECKING
+            if (this.isInstance())                                                             // INSTANCE CHECKING
                 return obj.isInstance() && this.eq(obj).java();
             else if (this.isReference()) {                                                      // REFERENCE CHECKING
                 // if (!obj.isReference()) TODO: expose when type access is checked
@@ -216,25 +213,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
-        ////////// THIS IS THE FUTURE DIRECTION:::::MAKE THIS SOLID //////////
-        // attach the bindings and inst to the traverser //
-        if (this.type() != null && this.type().get() instanceof Inst) {
-            Inst test = IteratorUtils.stream(this.type().<Inst>get().iterable()).
-                    filter(i -> i.opcode().java().equals(Tokens.IS)).
-                    map(is -> is.args().get(0)).
-                    filter(arg -> arg instanceof Inst && ((Inst) arg).opcode().java().equals(Tokens.OR)).
-                    flatMap(or -> ((Inst) or).args().stream()).
-                    filter(a -> a instanceof Inst && ((Inst) a).opcode().java().equals(Tokens.A)).
-                    filter(a -> ((Inst) a).args().get(0).test(this)).
-                    map(a -> ((Inst) a).args().get(0)).
-                    map(t -> t.inst(bindings, inst).orElse(null)).
-                    filter(Objects::nonNull).
-                    findFirst().
-                    orElse(null);
-            if (test != null)
-                return Optional.of(test);
-        }
-        //////////////////////////////////////////////////////////////////////
         if (null != this.instructions()) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
                 if (entry.getKey().match(bindings, inst))

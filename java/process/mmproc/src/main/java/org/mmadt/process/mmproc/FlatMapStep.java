@@ -23,23 +23,20 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.function.FlatMapFunction;
+import org.mmadt.machine.object.model.composite.inst.FlatMapInstruction;
 import org.mmadt.util.EmptyIterator;
-import org.mmadt.util.FunctionUtils;
 
 import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class FlatMapStep<S extends Obj, E extends Obj> extends AbstractStep<S, E> {
+final class FlatMapStep<S extends Obj, E extends Obj> extends AbstractStep<S, E, FlatMapInstruction<S, E>> {
 
-    private final FlatMapFunction<S, E> flatMapFunction;
     private Iterator<E> iterator = EmptyIterator.instance();
 
-    FlatMapStep(final Step<?, S> previousStep, final FlatMapFunction<S, E> flatMapFunction) {
+    FlatMapStep(final Step<?, S> previousStep, final FlatMapInstruction<S, E> flatMapFunction) {
         super(previousStep, flatMapFunction);
-        this.flatMapFunction = flatMapFunction;
     }
 
     @Override
@@ -57,7 +54,7 @@ final class FlatMapStep<S extends Obj, E extends Obj> extends AbstractStep<S, E>
     private void stageNextObj() {
         while (!this.iterator.hasNext()) {
             if (this.previousStep.hasNext())
-                this.iterator = FunctionUtils.flatMap(this.flatMapFunction, this.previousStep.next());
+                this.iterator = this.inst.apply(this.previousStep.next());
             else
                 return;
         }

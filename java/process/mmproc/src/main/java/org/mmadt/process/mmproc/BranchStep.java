@@ -23,20 +23,12 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.compiler.IR;
-import org.mmadt.processor.function.BranchFunction;
-import org.mmadt.util.EmptyIterator;
-import org.mmadt.util.MultiIterator;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class BranchStep<S extends Obj, E extends Obj, M> extends AbstractStep<S, E> {
+final class BranchStep<S extends Obj, E extends Obj, M> { //extends AbstractStep<S, E> {
+} /*{
 
     private final Map<IR<S, ?>, List<IR<S, E>>> branches;
     private final List<IR<S, E>> defaultBranches;
@@ -86,4 +78,4 @@ final class BranchStep<S extends Obj, E extends Obj, M> extends AbstractStep<S, 
     public void reset() {
         this.nextObjs = EmptyIterator.instance();
     }
-}
+}*/

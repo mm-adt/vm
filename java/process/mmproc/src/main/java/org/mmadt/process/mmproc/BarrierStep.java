@@ -23,17 +23,12 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.process.mmproc.util.Barrier;
-import org.mmadt.process.mmproc.util.InMemoryBarrier;
-import org.mmadt.processor.function.BarrierFunction;
-import org.mmadt.util.EmptyIterator;
-
-import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class BarrierStep<S extends Obj, E extends Obj, B> extends AbstractStep<S, E> {
+final class BarrierStep<S extends Obj, E extends Obj, B> {
+} /*extends AbstractStep<S, E> {
 
     private final Barrier<B> barrier;
     private final BarrierFunction<S, E, B> barrierFunction;
@@ -69,4 +64,4 @@ final class BarrierStep<S extends Obj, E extends Obj, B> extends AbstractStep<S,
         this.output = EmptyIterator.instance();
         this.done = false;
     }
-}
+}*/

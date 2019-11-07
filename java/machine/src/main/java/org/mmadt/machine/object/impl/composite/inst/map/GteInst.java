@@ -20,32 +20,41 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.function.map;
+package org.mmadt.machine.object.impl.composite.inst.map;
 
-import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
+import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.processor.compiler.Argument;
-import org.mmadt.processor.function.AbstractFunction;
-import org.mmadt.processor.function.MapFunction;
+import org.mmadt.machine.object.model.util.ObjectHelper;
+
+import java.util.function.Supplier;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class GtMap<S extends WithOrder<S>> extends AbstractFunction implements MapFunction<S, Bool> {
+public final class GteInst<S extends WithOrder<S>> extends TInst implements MapInstruction<S, Bool> {
 
-    private GtMap(final Q quantifier, final String label, final Argument<S, S> argument) {
-        super(quantifier, label, argument);
+    private GteInst(final Object arg) {
+        super(PList.of(Tokens.GTE, arg));
     }
 
-    @Override
     public Bool apply(final S obj) {
         return obj.gt(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithOrder<S>> GtMap<S> compile(final Inst inst) {
-        return new GtMap<>(inst.q(), inst.label(), Argument.<S, S>create(inst.get(TInt.oneInt())));
+    public static <S extends WithOrder<S>> Bool create(final Supplier<Bool> compute, final S obj, final S arg) {
+        return InstructionHelper.<Bool>rewrite(obj, new GteInst<>(arg)).orElse(
+                ObjectHelper.allInstances(obj, arg) ?
+                        compute.get() :
+                        TBool.of().q(obj.q()).append(new GteInst<>(arg)));
+    }
+
+    public static <S extends WithOrder<S>> GteInst<S> create(final Object arg) {
+        return new GteInst<>(arg);
     }
 }

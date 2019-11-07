@@ -30,7 +30,7 @@ import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.util.MinimalProcessor;
+import org.mmadt.processor.util.FastProcessor;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.BasicParseRunner;
 import org.parboiled.parserunners.ParseRunner;
@@ -81,7 +81,7 @@ public class Console {
                 final ParsingResult result = runner.run(line);
                 if (!result.valueStack.isEmpty()) {
                     final Obj obj = (Obj) result.valueStack.pop();
-                    new MinimalProcessor<>(obj).iterator(obj).forEachRemaining(o -> {
+                    new FastProcessor<>(obj.access()).iterator(obj).forEachRemaining(o -> {
                         terminal.writer().println(RESULT + o.toString());
                     });
                     terminal.flush();

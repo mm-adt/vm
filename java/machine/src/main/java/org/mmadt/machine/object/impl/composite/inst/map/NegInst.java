@@ -51,4 +51,8 @@ public final class NegInst<S extends WithMinus<S>> extends TInst implements MapI
                         compute.get() :
                         obj.append(new NegInst<>()));
     }
+
+    public static <S extends WithMinus<S>> NegInst<S> create() {
+        return new NegInst<>();
+    }
 }

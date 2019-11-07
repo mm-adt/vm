@@ -35,7 +35,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  */
 public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst implements MapInstruction<S, E> {
 
-    private QInst() {
+    public QInst() {
         super(PList.of(Tokens.Q));
     }
 
@@ -47,5 +47,9 @@ public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TI
         return ObjectHelper.allInstances(source) ?
                 (E) source.q().peek() :
                 source.access(source.access().mult(new QInst<>()));
+    }
+
+    public static <S extends Obj, E extends WithOrderedRing<E>> QInst<S, E> create() {
+        return new QInst<>();
     }
 }

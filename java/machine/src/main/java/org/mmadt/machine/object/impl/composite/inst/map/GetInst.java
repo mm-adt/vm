@@ -35,9 +35,9 @@ import java.util.function.Supplier;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class GetInst<K extends Obj, V extends Obj, E extends Obj> extends TInst implements MapInstruction<WithProduct<K, V>, V> {
+public final class GetInst<K extends Obj, V extends Obj> extends TInst implements MapInstruction<WithProduct<K, V>, V> {
 
-    private GetInst(final K key) {
+    private GetInst(final Object key) {
         super(PList.of(Tokens.GET, key));
     }
 
@@ -47,9 +47,11 @@ public final class GetInst<K extends Obj, V extends Obj, E extends Obj> extends 
     }
 
     public static <K extends Obj, V extends Obj> V create(final Supplier<V> supplier, final WithProduct<K, V> source, final K key) {
-        return //source.isInstance() || source.isType() || s ?
-                supplier.get();
-                //source.access(source.access().mult(new GetInst<>(key)));
+        return supplier.get();
+    }
+
+    public static <K extends Obj, V extends Obj> GetInst<K, V> create(final Object arg) {
+        return new GetInst<>(arg);
     }
 
 

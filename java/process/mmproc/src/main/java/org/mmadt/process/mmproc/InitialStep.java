@@ -23,7 +23,7 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.function.InitialFunction;
+import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.util.EmptyIterator;
 
 import java.util.Iterator;
@@ -31,13 +31,13 @@ import java.util.Iterator;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class InitialStep<S extends Obj> extends AbstractStep<S, S> {
+final class InitialStep<S extends Obj> extends AbstractStep<S, S, InitialInstruction<S>> {
 
     private Iterator<S> objs;
 
-    InitialStep(final InitialFunction<S> initialFunction) {
+    InitialStep(final InitialInstruction<S> initialFunction) {
         super(EmptyStep.instance(), initialFunction);
-        this.objs = initialFunction.get();
+        this.objs = initialFunction.gett();
     }
 
     @Override
@@ -47,7 +47,7 @@ final class InitialStep<S extends Obj> extends AbstractStep<S, S> {
 
     @Override
     public S next() {
-        return this.objs.next().q(this.function.quantifier()); // TODO: quantifier mult via this.function
+        return this.objs.next();
     }
 
     @Override

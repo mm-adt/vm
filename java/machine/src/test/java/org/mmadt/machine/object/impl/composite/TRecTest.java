@@ -49,7 +49,6 @@ import static org.mmadt.language.__.a;
 import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.type;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
@@ -66,10 +65,10 @@ final class TRecTest {
         final Bindings bindings = new Bindings();
         final Rec<Str, ?> type = TRec.of(
                 "name", is(eq("marko")).as("x"),
-                "age", is(a(TInt.some())).is(gt(23)).as("y"));
+                "age", (is(a(TInt.some())).is(gt(23))).as("y"));
         assertEquals("y", type.get(TStr.of("age")).label());
         final Rec<Str, Obj> person = TRec.of("name", "marko", "age", 29);
-        // System.out.println(type + ":::" + person);
+        System.out.println(type + ":::" + person);
         assertTrue(type.test(person));
         assertFalse(person.test(type));
         assertTrue(type.match(bindings, person));

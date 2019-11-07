@@ -20,36 +20,41 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.function.map;
+package org.mmadt.machine.object.impl.composite.inst.map;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
-import org.mmadt.processor.compiler.Argument;
-import org.mmadt.processor.function.AbstractFunction;
-import org.mmadt.processor.function.MapFunction;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
+import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
-import java.util.stream.Stream;
+import java.util.function.Supplier;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class OrMap<S extends Obj> extends AbstractFunction implements MapFunction<S, Bool> {
+public final class NeqInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
 
-    @SafeVarargs
-    private OrMap(final Q quantifier, final String label, final Argument<S, Bool>... arguments) {
-        super(quantifier, label, arguments);
+    private NeqInst(final Object arg) {
+        super(PList.of(Tokens.NEQ, arg));
     }
 
-    @Override
     public Bool apply(final S obj) {
-        return TBool.of(Stream.of(this.<S, S>arguments()).map(a -> a.mapArg(obj).test(obj)).reduce((a, b) ->  a||b).orElse(true));
+        return obj.neq(this.<S, Obj>argument(0).mapArg(obj));
     }
 
+    public static <S extends Obj> Bool create(final Supplier<Bool> compute, final S obj, final Obj arg) {
+        return InstructionHelper.<Bool>rewrite(obj, new NeqInst<>(arg)).orElse(
+                ObjectHelper.allInstances(obj) ?
+                        compute.get() :
+                        TBool.of().q(obj.q()).append(new NeqInst<>(arg)));
+    }
 
-    public static <S extends Obj> OrMap<S> compile(final Inst inst) {
-        return new OrMap<>(inst.q(), inst.label(), Argument.<S, Bool>args(inst.args()));
+    public static <S extends Obj> NeqInst<S> create(final Object arg) {
+        return new NeqInst<>(arg);
     }
 }

@@ -34,14 +34,12 @@ import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.util.FastProcessor;
-import org.mmadt.processor.util.MinimalProcessor;
 import org.mmadt.storage.Storage;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 

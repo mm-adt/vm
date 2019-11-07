@@ -27,6 +27,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
@@ -50,5 +51,9 @@ public final class ZeroInst<S extends WithZero<S>> extends TInst implements MapI
                         obj.q().constant() ?
                                 zero.q(obj.q()) :
                                 zero.q(obj.q()).append(new ZeroInst<>()));
+    }
+
+    public static <S extends WithZero<S>> ZeroInst<S> create() {
+        return new ZeroInst<>();
     }
 }

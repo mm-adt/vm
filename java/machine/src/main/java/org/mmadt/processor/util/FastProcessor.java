@@ -66,7 +66,7 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
             ((SideEffectInstruction) inst).accept(start);
             return IteratorUtils.of(start);
         } else
-            throw new UnsupportedOperationException("This is not implemented yet: " + inst);
+            throw new UnsupportedOperationException("This is not implemented yet: " + inst + "--" + start);
 
     }
 

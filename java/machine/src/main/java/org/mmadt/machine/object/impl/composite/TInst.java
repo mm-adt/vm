@@ -173,11 +173,11 @@ public class TInst extends TObj implements Inst {
             final PList<Obj> list = new PList<>(last.java());
             list.add(inst);
             list.remove(0);
-            return opcode.equals(Tokens.OR) ? new OrInst<>(list.toArray(new Object[]{})) : TInst.of(opcode, list);
+            return opcode.equals(Tokens.OR) ? OrInst.create(list.toArray(new Object[]{})) : TInst.of(opcode, list);
         } else
             return this.get().equals(inst.get()) ?
                     this.q(this.q().plus(inst.q())) :
-                    opcode.equals(Tokens.OR) ? new OrInst<>(this, inst) : TInst.of(opcode, this, inst); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
+                    opcode.equals(Tokens.OR) ? OrInst.create(this, inst) : TInst.of(opcode, this, inst); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
     }
 
     @Override

@@ -39,18 +39,22 @@ import java.util.stream.Stream;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class OrInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
+public final class OrInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
 
-    public OrInst(final Object... argument) {
+    private OrInst(final Object... argument) {
         super(PList.of(argument));
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.OR));
     }
 
     public Bool apply(final S s) {
-        return TBool.of(Stream.of(Argument.<S, S>args(args())).map(a -> a.mapArg(s).test(s)).reduce((a, b) -> a || b).orElse(true));
+        return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(s)).reduce((a, b) -> (TBool) a.or(b)).orElse(TBool.of(true));
     }
 
     public static <S extends Obj> Obj create(final Supplier<Obj> result, final S source, final Object argument) {
         return source.set((source.access()).or(ObjectHelper.from(argument)));
+    }
+
+    public static <S extends Obj> OrInst<S> create(final Object... arguments) {
+        return new OrInst<>(arguments);
     }
 }

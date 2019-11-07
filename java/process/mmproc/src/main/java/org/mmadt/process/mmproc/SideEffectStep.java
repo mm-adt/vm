@@ -20,31 +20,34 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.function.map;
+package org.mmadt.process.mmproc;
 
-import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
-import org.mmadt.machine.object.model.type.algebra.WithPlus;
-import org.mmadt.processor.compiler.Argument;
-import org.mmadt.processor.function.AbstractFunction;
-import org.mmadt.processor.function.MapFunction;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.inst.SideEffectInstruction;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class PlusMap<S extends WithPlus<S>> extends AbstractFunction implements MapFunction<S, S> {
+final class SideEffectStep<S extends Obj> extends AbstractStep<S, S, SideEffectInstruction<S>> {
 
-    private PlusMap(final Q quantifier, final String label, final Argument<S, S> argument) {
-        super(quantifier, label, argument);
+    SideEffectStep(final Step<?, S> previousStep, final SideEffectInstruction<S> sideEffectInstruction) {
+        super(previousStep, sideEffectInstruction);
     }
 
     @Override
-    public S apply(final S obj) {
-        return obj.plus(this.<S, S>argument(0).mapArg(obj));
+    public boolean hasNext() {
+        return this.previousStep.hasNext();
     }
 
-    public static <S extends WithPlus<S>> PlusMap<S> compile(final Inst inst) {
-        return new PlusMap<>(inst.q(), inst.label(), Argument.<S, S>create(inst.get(TInt.oneInt())));
+    @Override
+    public S next() {
+        final S obj = this.previousStep.next();
+        this.inst.accept(obj);
+        return obj;
+    }
+
+    @Override
+    public void reset() {
+
     }
 }

@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  */
 public final class EqInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
 
-    private EqInst(final S arg) {
+    private EqInst(final Object arg) {
         super(PList.of(Tokens.EQ, arg));
     }
 
@@ -52,5 +52,9 @@ public final class EqInst<S extends Obj> extends TInst implements MapInstruction
                 ObjectHelper.allInstances(obj) ?
                         compute.get() :
                         TBool.of().q(obj.q()).append(new EqInst<>(arg)));
+    }
+
+    public static <S extends Obj> EqInst<S> create(final Object arg) {
+        return new EqInst<>(arg);
     }
 }

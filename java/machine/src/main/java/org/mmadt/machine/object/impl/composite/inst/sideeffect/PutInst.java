@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  */
 public final class PutInst<K extends Obj, V extends Obj> extends TInst implements SideEffectInstruction<WithProduct<K, V>> {
 
-    private PutInst(final K key, final V value) {
+    private PutInst(final Object key, final Object value) {
         super(PList.of(Tokens.PUT, key, value));
     }
 
@@ -54,6 +54,10 @@ public final class PutInst<K extends Obj, V extends Obj> extends TInst implement
                 obj.isInstance() || obj.isType() ? // this is necessary because records and lists store their patterns in maps and lists respectively
                         compute.get() :
                         obj.append(new PutInst<>(key, value)));
+    }
+
+    public static <K extends Obj, V extends Obj> PutInst<K, V> create(final Object key, final Object value) {
+        return new PutInst<>(key, value);
     }
 
 

@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  */
 public final class GtInst<S extends WithOrder<S>> extends TInst implements MapInstruction<S, Bool> {
 
-    private GtInst(final S arg) {
+    private GtInst(final Object arg) {
         super(PList.of(Tokens.GT, arg));
     }
 
@@ -52,5 +52,9 @@ public final class GtInst<S extends WithOrder<S>> extends TInst implements MapIn
                 ObjectHelper.allInstances(obj, arg) ?
                         compute.get() :
                         TBool.of().q(obj.q()).append(new GtInst<>(arg)));
+    }
+
+    public static <S extends WithOrder<S>> GtInst<S> create(final Object arg) {
+        return new GtInst<>(arg);
     }
 }

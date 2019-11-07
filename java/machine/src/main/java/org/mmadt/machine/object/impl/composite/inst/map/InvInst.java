@@ -50,4 +50,8 @@ public final class InvInst<S extends WithDiv<S>> extends TInst implements MapIns
                         compute.get() :
                         obj.append(new InvInst<>()));
     }
+
+    public static <S extends WithDiv<S>> InvInst<S> create() {
+        return new InvInst<>();
+    }
 }

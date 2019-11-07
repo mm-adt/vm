@@ -35,9 +35,12 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.Bindings;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,14 +49,14 @@ final class TLstTest {
 
     @Test
     void testInstanceReferenceType() {
-        /*Lst instance = TLst.of("a", true, false);
-        Lst reference = TLst.of().access(start(TLst.of("a", true, false)).plus(List.of("b")));
-        Lst type = TLst.of().q(45);
-        TestHelper.validateKinds(instance, reference, type);*/
-        //////
-        Lst instance = TLst.of(TLst.of("a", 2, 21.0)).q(2);
+        Lst instance = TLst.of("a", true, false);
         Lst reference = TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true));
         Lst type = TLst.some().q(45);
+        TestHelper.validateKinds(instance, reference, type);
+        /////
+        instance = TLst.of(TLst.of("a", 2, 21.0)).q(2);
+        reference = TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true));
+        type = TLst.some().q(45);
         TestHelper.validateKinds(instance, reference, type);
     }
 
@@ -61,10 +64,10 @@ final class TLstTest {
     void testPatterns() {
         assertTrue(TLst.of(TInt.some()).test(TLst.of(1)));
         assertTrue(TLst.of(TInt.some()).q(2).test(TLst.of(TInt.of(1)).q(2)));
-    //  assertFalse(TLst.of(TInt.some()).q(2).test(TLst.of(TInt.of(1)).q(3)));
+        //  assertFalse(TLst.of(TInt.some()).q(2).test(TLst.of(TInt.of(1)).q(3)));
         assertTrue(TLst.of(TInt.some()).q(1, 4).test(TLst.of(TInt.of(1)).q(3)));
         assertTrue(TLst.of(TInt.some(), 2, "marko").q(1, 4).test(TLst.of(1, 2, "marko").q(3)));
-    //  assertFalse(TLst.of(TInt.some(), 2, "marko").q(1, 4).test(TLst.of(1, 2, "marko").q(6)));
+        //  assertFalse(TLst.of(TInt.some(), 2, "marko").q(1, 4).test(TLst.of(1, 2, "marko").q(6)));
         assertFalse(TLst.of(TInt.some(), 2, TReal.some()).q(1, 4).test(TLst.of(1, 2, "marko").q(6)));
         assertTrue(TLst.of(TInt.some(), TLst.of(1, TInt.some(), 3), TReal.some()).q(1, 4).test(TLst.of(1, TLst.of(1, 2, 3), 0.2).q(4)));
     }

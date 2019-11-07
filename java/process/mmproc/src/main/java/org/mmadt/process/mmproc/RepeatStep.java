@@ -23,19 +23,14 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.compiler.IR;
-import org.mmadt.processor.function.branch.RepeatBranch;
-import org.mmadt.processor.util.ObjSet;
-
-import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class RepeatStep<S extends Obj> extends AbstractStep<S, S> {
+final class RepeatStep<S extends Obj> {
+}/* extends AbstractStep<S, S> {
 
-    private final RepeatBranch<S> repeatBranch;
+    //private final RepeatBranch<S> repeatBranch;
     private final int untilLocation;
     private final int emitLocation;
     private final IR<S, ?> untilCompilation;
@@ -128,11 +123,10 @@ final class RepeatStep<S extends Obj> extends AbstractStep<S, S> {
                 this.repeatIterator = this.repeat.getProcessor().iterator(IteratorUtils.removeOnNext(this.repeatStarts.iterator()));
             }
         }
-    }*/
+    }
 
     @Override
     public void reset() {
         this.inputObjs.clear();
         this.outputObjs.clear();
-    }
-}
+    }*/

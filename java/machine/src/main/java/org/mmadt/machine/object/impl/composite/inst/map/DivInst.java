@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  */
 public final class DivInst<S extends WithDiv<S>> extends TInst implements MapInstruction<S, S> {
 
-    private DivInst(final S argument) {
+    private DivInst(final Object argument) {
         super(PList.of(Tokens.DIV, argument));
     }
 
@@ -49,5 +49,9 @@ public final class DivInst<S extends WithDiv<S>> extends TInst implements MapIns
         return ObjectHelper.allInstances(source, argument) ?
                 result.get() :
                 source.access(source.access().mult(new DivInst<>(argument)));
+    }
+
+    public static <S extends WithDiv<S>> DivInst<S> create(final Object arg) {
+        return new DivInst<>(arg);
     }
 }

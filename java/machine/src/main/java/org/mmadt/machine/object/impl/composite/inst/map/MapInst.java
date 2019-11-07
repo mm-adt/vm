@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  */
 public final class MapInst<S extends Obj, E extends Obj> extends TInst implements MapInstruction<S, E> {
 
-    private MapInst(final E arg) {
+    private MapInst(final Object arg) {
         super(PList.of(Tokens.MAP, arg));
     }
 
@@ -50,5 +50,9 @@ public final class MapInst<S extends Obj, E extends Obj> extends TInst implement
                 ObjectHelper.allInstances(obj, arg) ?
                         compute.get() :
                         obj.append(new MapInst<>(arg)));
+    }
+
+    public static <S extends Obj, E extends Obj> MapInst<S, E> create(final Object arg) {
+        return new MapInst<>(arg);
     }
 }

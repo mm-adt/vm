@@ -35,7 +35,6 @@ import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.neq;
 import static org.mmadt.language.__.or;
-import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
@@ -47,7 +46,7 @@ final class TStrTest {
     @Test
     void testInstanceReferenceType() {
         Str instance = TStr.of("a");
-        Str reference = TStr.of("a","b").plus(TStr.of("b"));
+        Str reference = TStr.of("a", "b").plus(TStr.of("b"));
         Str type = TStr.some();
         TestHelper.validateKinds(instance, reference, type);
         //////
@@ -67,8 +66,8 @@ final class TStrTest {
         assertTrue(TStr.of(is(eq("id"))).test(TStr.of("id")));
         assertTrue(TStr.of(is(or(eq("id"), eq("label")))).test(TStr.of("id")));
         assertTrue(TStr.of("id").or(TStr.of("label")).test(TStr.of("id")));
-//        assertFalse(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("id")));
- //       assertTrue(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("hello")));
+        assertFalse(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("id")));
+        assertTrue(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("hello")));
     }
 
     @Test

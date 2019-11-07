@@ -43,9 +43,8 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
     public static <S extends Obj, E extends Obj> Argument<S, E> create(final Object arg) {
         if (arg instanceof Inst)
             return new IRArgument<>((Inst) arg);
-        else if (arg instanceof Obj && !((Obj) arg).isInstance())
-            return create(((Obj) arg).access());
-        else return new ConstantArgument<>((E) arg);
+        else
+            return new ConstantArgument<>((E) arg);
     }
 
     public static <S extends Obj, E extends Obj> Argument<S, E>[] args(final List args) {
@@ -55,7 +54,4 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
         }
         return array;
     }
-
-    public Argument<S, E> clone();
-
 }

@@ -23,12 +23,13 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.util.FastNoSuchElementException;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class EmptyStep<S extends Obj, E extends Obj> extends AbstractStep<S, E> {
+final class EmptyStep<S extends Obj, E extends Obj> extends AbstractStep<S, E, Inst> {
 
     private static final EmptyStep INSTANCE = new EmptyStep<>();
 

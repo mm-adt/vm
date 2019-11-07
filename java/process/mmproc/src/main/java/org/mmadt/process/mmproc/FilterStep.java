@@ -23,21 +23,18 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.function.FilterFunction;
+import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.util.FastNoSuchElementException;
-import org.mmadt.util.FunctionUtils;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class FilterStep<S extends Obj> extends AbstractStep<S, S> {
+final class FilterStep<S extends Obj> extends AbstractStep<S, S, FilterInstruction<S>> {
 
-    private final FilterFunction<S> filterFunction;
     private S nextObj = null;
 
-    FilterStep(final Step<?, S> previousStep, final FilterFunction<S> filterFunction) {
-        super(previousStep, filterFunction);
-        this.filterFunction = filterFunction;
+    FilterStep(final Step<?, S> previousStep, final FilterInstruction<S> filterInstruction) {
+        super(previousStep, filterInstruction);
     }
 
     @Override
@@ -60,7 +57,9 @@ final class FilterStep<S extends Obj> extends AbstractStep<S, S> {
 
     private void stageNextObj() {
         while (null == this.nextObj && this.previousStep.hasNext()) {
-            FunctionUtils.test(this.filterFunction, this.previousStep.next()).ifPresent(traverser -> this.nextObj = traverser);
+            final S temp = this.previousStep.next();
+            if (this.inst.testt(temp))
+                this.nextObj = temp;
         }
     }
 

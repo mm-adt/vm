@@ -22,12 +22,11 @@
 
 package org.mmadt.machine.object.impl;
 
-import org.mmadt.language.__;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TQ;
-import org.mmadt.machine.object.impl.composite.inst.map.QInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -47,8 +46,6 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.Objects;
-
-import static org.mmadt.language.__.is;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -147,6 +144,11 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public Bool eq(final Obj object) {
         return TBool.of(Objects.equals(this.get(), object.get()));
+    }
+
+    @Override
+    public Bool neq(final Obj object) {
+        return NeqInst.create(() -> TBool.of(!this.get().equals(object.get())), this, object);
     }
 
     @Override

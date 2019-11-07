@@ -23,23 +23,23 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.function.QFunction;
+import org.mmadt.machine.object.model.composite.Inst;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractStep<S extends Obj, E extends Obj> implements Step<S, E> {
+abstract class AbstractStep<S extends Obj, E extends Obj, A extends Inst> implements Step<S, E> {
 
-    final QFunction function;
+    final A inst;
     final Step<?, S> previousStep;
 
-    public AbstractStep(final Step<?, S> previousStep, final QFunction function) {
+    public AbstractStep(final Step<?, S> previousStep, final A inst) {
         this.previousStep = previousStep;
-        this.function = function;
+        this.inst = inst;
     }
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "[" + this.function.toString() + "]";
+        return this.getClass().getSimpleName() + "[" + this.inst.toString() + "]";
     }
 }

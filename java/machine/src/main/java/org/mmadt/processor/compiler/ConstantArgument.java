@@ -33,7 +33,7 @@ public final class ConstantArgument<S extends Obj, E extends Obj> implements Arg
 
     private final E constant;
 
-    public ConstantArgument(final E constant) {
+    ConstantArgument(final E constant) {
         this.constant = constant;
     }
 
@@ -50,11 +50,6 @@ public final class ConstantArgument<S extends Obj, E extends Obj> implements Arg
     @Override
     public boolean filterArg(final S object) {
         return (Boolean) this.constant.get();
-    }
-
-    @Override
-    public ConstantArgument<S, E> clone() {
-        return this;
     }
 
     @Override

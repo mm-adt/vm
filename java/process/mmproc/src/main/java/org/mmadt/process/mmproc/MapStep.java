@@ -23,19 +23,15 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.function.MapFunction;
-import org.mmadt.util.FunctionUtils;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class MapStep<S extends Obj, E extends Obj> extends AbstractStep<S, E> {
+final class MapStep<S extends Obj, E extends Obj> extends AbstractStep<S, E, MapInstruction<S, E>> {
 
-    private final MapFunction<S, E> mapFunction;
-
-    MapStep(final Step<?, S> previousStep, final MapFunction<S, E> mapFunction) {
-        super(previousStep, mapFunction);
-        this.mapFunction = mapFunction;
+    MapStep(final Step<?, S> previousStep, final MapInstruction<S, E> mapInstruction) {
+        super(previousStep, mapInstruction);
     }
 
     @Override
@@ -45,7 +41,7 @@ final class MapStep<S extends Obj, E extends Obj> extends AbstractStep<S, E> {
 
     @Override
     public E next() {
-        return FunctionUtils.map(this.mapFunction, this.previousStep.next());
+        return this.inst.apply(this.previousStep.next());
     }
 
     @Override

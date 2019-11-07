@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  */
 public final class LtInst<S extends WithOrder<S>> extends TInst implements MapInstruction<S, Bool> {
 
-    private LtInst(final S arg) {
+    private LtInst(final Object arg) {
         super(PList.of(Tokens.LT, arg));
     }
 
@@ -53,4 +53,9 @@ public final class LtInst<S extends WithOrder<S>> extends TInst implements MapIn
                         compute.get() :
                         TBool.of().q(obj.q()).append(new LtInst<>(arg)));
     }
+
+    public static <S extends WithOrder<S>> LtInst<S> create(final Object arg) {
+        return new LtInst<>(arg);
+    }
+
 }

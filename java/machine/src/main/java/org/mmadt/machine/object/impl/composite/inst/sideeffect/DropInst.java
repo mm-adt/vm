@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  */
 public final class DropInst<K extends Obj, V extends Obj> extends TInst implements SideEffectInstruction<WithProduct<K, V>> {
 
-    private DropInst(final K key) {
+    private DropInst(final Object key) {
         super(PList.of(Tokens.DROP, key));
     }
 
@@ -52,5 +52,10 @@ public final class DropInst<K extends Obj, V extends Obj> extends TInst implemen
                         compute.get() :
                         obj.append(new DropInst<>(key)));
     }
+
+    public static <K extends Obj, V extends Obj> DropInst<K, V> create(final Object arg) {
+        return new DropInst<>(arg);
+    }
+
 
 }

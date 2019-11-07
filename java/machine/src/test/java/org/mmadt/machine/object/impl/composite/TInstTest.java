@@ -169,7 +169,7 @@ final class TInstTest {
         for (final TInst inst : e.<TStream<TInst>>get()) {
             assertEquals(inst.q().one(), inst.q());
             if (inst.opcode().get().equals("is"))
-                assertEquals(new TQ(2, 2), inst.get(TInt.oneInt()).q());
+                assertTrue(inst.get(TInt.oneInt()).q().isOne());
             else if (inst.opcode().get().equals("db"))
                 assertEquals(inst.q().zero(), inst.get(TInt.oneInt()).q());
             else {

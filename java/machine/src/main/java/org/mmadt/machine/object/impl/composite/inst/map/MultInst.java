@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  */
 public final class MultInst<S extends WithMult<S>> extends TInst implements MapInstruction<S, S> {
 
-    private MultInst(final S arg) {
+    private MultInst(final Object arg) {
         super(PList.of(Tokens.MULT, arg));
     }
 
@@ -50,5 +50,9 @@ public final class MultInst<S extends WithMult<S>> extends TInst implements MapI
                 ObjectHelper.allInstances(obj, arg) ?
                         compute.get() :
                         obj.append(new MultInst<>(arg)));
+    }
+
+    public static <S extends WithMult<S>> MultInst<S> create(final Object arg) {
+        return new MultInst<>(arg);
     }
 }
