@@ -35,6 +35,36 @@ import java.util.List;
  */
 public interface Int extends WithOrderedRing<Int> {
 
+    @Override
+    public Int one(); // {a,b} => {a,b}
+
+    @Override
+    public Int zero(); // {a,b} => {a,b}
+
+    @Override
+    public Int mult(final Int object); // {a,b} * {c,d} => {a,b}
+
+    @Override
+    public Int plus(final Int object); // {a,b} + {c,d} => {a,b}
+
+    @Override
+    public Int minus(final Int object); // {a,b} - {c,d} => {a,b}
+
+    @Override
+    public Int neg(); // {a,b} => {a,b}
+
+    @Override
+    public Int max(); // {a,b} => {a,b}
+
+    @Override
+    public Int min(); // {a,b} => {a,b}
+
+    //@Override
+    //public Int and(final Int object); // {a,b} & {c,d} => {a&c,b&d}
+
+    //@Override
+    //public Int or(final Obj object); // {a,b} | {c,d} => [{a,b},{c,d}]  (the branches are uncoupled -- variants)
+
     public default Integer java() {
         return this.get();
     }

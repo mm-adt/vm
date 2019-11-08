@@ -30,9 +30,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
-import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
-import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -49,8 +47,6 @@ public final class TInt extends TObj implements Int {
     private static final Int ALL = new TInt(null).q(0, Integer.MAX_VALUE);
     private static final Int NONE = new TInt(null).q(0);
 
-    private static final Int MAX = new TInt(Integer.MAX_VALUE);
-    private static final Int MIN = new TInt(Integer.MIN_VALUE);
     private static final Int ZERO = new TInt(0);
     private static final Int ONE = new TInt(1);
     private static final Int TWO = new TInt(2);
@@ -99,62 +95,76 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int max() {
-        return MAX;
+        return this.set(Integer.MAX_VALUE);
     }
 
     @Override
     public Int min() {
-        return MIN;
+        return this.set(Integer.MIN_VALUE);
     }
 
     @Override
     public Int zero() {
-        return ZeroInst.create(this, ZERO);
+        return this.set(0);
     }
 
     @Override
     public Int one() {
-        return OneInst.create(this, ONE);
+        return this.set(1);
     }
 
     @Override
     public Int neg() {
-        return NegInst.create(() -> new TInt(-this.java()), this);
+        return this.isInstance() ? this.set(-this.java()) : this.append(NegInst.create());
     }
 
     @Override
     public Int minus(final Int integer) {
-        return MinusInst.create(() -> new TInt(TInt.tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)), this, integer);
+        return (this.isInstance() && integer.isInstance()) ?
+                this.set(tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)) :
+                this.append(MinusInst.create(integer));
     }
 
     @Override
     public Int plus(final Int integer) {
-        return PlusInst.create(() -> new TInt(TInt.tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
+        return (this.isInstance() && integer.isInstance()) ?
+                this.set(tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
+                this.append(PlusInst.create(integer));
     }
 
     @Override
     public Int mult(final Int integer) {
-        return MultInst.create(() -> new TInt(TInt.tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)), this, integer);
+        return (this.isInstance() && integer.isInstance()) ?
+                this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
+                this.append(MultInst.create(integer));
     }
 
     @Override
     public Bool gt(final Int integer) {
-        return GtInst.create(() -> TBool.of(this.java() > integer.java()), this, integer);
+        return (this.isInstance() && integer.isInstance()) ?
+                TBool.of(this.java() > integer.java()).q(this.q()) :
+                TBool.of().q(this.q()).append(GtInst.create(integer));
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return EqInst.create(() -> TBool.of(obj instanceof Int && this.java().equals(((Int) obj).java())), this, obj);
+        return this.isInstance() ?
+                TBool.of(obj instanceof Int && this.java().equals(obj.get())).q(this.q()) :
+                TBool.of().q(this.q()).append(EqInst.create(obj));
     }
 
     @Override
     public Bool lt(final Int integer) {
-        return LtInst.create(() -> TBool.of(this.java() < integer.java()), this, integer);
+        return (this.isInstance() && integer.isInstance()) ?
+                TBool.of(this.java() < integer.java()).q(this.q()) :
+                TBool.of().q(this.q()).append(LtInst.create(integer));
     }
 
     @Override
     public Bool lte(final Int integer) {
-        return LteInst.create(() -> TBool.of(this.java() <= integer.java()), this, integer);
+        return (this.isInstance() && integer.isInstance()) ?
+                TBool.of(this.java() <= integer.java()).q(this.q()) :
+                TBool.of().q(this.q()).append(LteInst.create(integer));
     }
 
     ///// HELPER METHODS

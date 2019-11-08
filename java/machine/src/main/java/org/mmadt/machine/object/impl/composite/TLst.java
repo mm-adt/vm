@@ -84,12 +84,13 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     @Override
-    public Lst<V> plus(final Lst<V> object) {
-        return PlusInst.create(() -> {
+    public Lst<V> plus(final Lst<V> lst) {
+        if (this.isInstance() && lst.isInstance()) {
             final PList<V> list = new PList<>(this.java());
-            list.addAll(object.java());
-            return new TLst<>(list);
-        }, this, object);
+            list.addAll(lst.java());
+            return this.set(list);
+        } else
+            return this.append(PlusInst.create(lst));
     }
 
     @Override

@@ -240,7 +240,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default boolean isInstance() {
-        return this.constant();
+        return this.constant(); // && this.q().constant();
     }
 
     public default <O extends Obj> O access(final Query access) {

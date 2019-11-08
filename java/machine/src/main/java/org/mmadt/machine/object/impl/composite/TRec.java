@@ -85,12 +85,13 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     }
 
     @Override
-    public Rec<K, V> plus(final Rec<K, V> object) {
-        return PlusInst.create(() -> {
+    public Rec<K, V> plus(final Rec<K, V> rec) {
+        if (this.isInstance() && rec.isInstance()) {
             final PMap<K, V> map = new PMap<>(this.java());
-            map.putAll(object.java());
-            return new TRec<>(map);
-        }, this, object);
+            map.putAll(rec.java());
+            return this.set(map);
+        } else
+            return this.append(PlusInst.create(rec));
     }
 
     @Override
@@ -116,5 +117,4 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     public String toString() {
         return StringFactory.record(this);
     }
-
 }

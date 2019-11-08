@@ -48,7 +48,7 @@ public final class NegInst<S extends WithMinus<S>> extends TInst implements MapI
     public static <S extends WithPlus<S>> S create(final Supplier<S> compute, final S obj) {
         return InstructionHelper.<S>rewrite(obj, new NegInst<>()).orElse(
                 obj.isInstance() ?
-                        compute.get() :
+                        compute.get().q(obj.q()) :
                         obj.append(new NegInst<>()));
     }
 

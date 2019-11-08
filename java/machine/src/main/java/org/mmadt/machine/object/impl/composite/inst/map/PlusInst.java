@@ -24,13 +24,9 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
-import org.mmadt.machine.object.model.util.ObjectHelper;
-
-import java.util.function.Supplier;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,13 +39,6 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst implements MapI
 
     public S apply(final S obj) {
         return obj.plus(this.<S, S>argument(0).mapArg(obj));
-    }
-
-    public static <S extends WithPlus<S>> S create(final Supplier<S> compute, final S obj, final S arg) {
-        return InstructionHelper.<S>rewrite(obj, new PlusInst<>(arg)).orElse(
-                ObjectHelper.allInstances(obj, arg) ?
-                        compute.get() :
-                        obj.append(new PlusInst<>(arg)));
     }
 
     public static <S extends WithPlus<S>> PlusInst<S> create(final Object arg) {

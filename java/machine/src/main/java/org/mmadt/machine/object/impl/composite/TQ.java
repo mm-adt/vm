@@ -70,7 +70,7 @@ public final class TQ<A extends WithOrderedRing<A>> extends TObj implements Q<A>
 
     @Override
     public boolean constant() {
-        return this.peek().equals(this.last());
+        return this.peek().get().equals(this.last().get());
     }
 
     @Override

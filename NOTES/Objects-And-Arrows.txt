@@ -1,0 +1,54 @@
+Okay. Here is a very pretty idea that could serve as a foundational concept to mm-ADT.
+
+There are only 2 types of mappings in mm-ADT:
+
+	<= obj mapper    -- objects      -- sets     
+	<- inst mapper   -- morphisms    -- functions
+	
+Every object can have 0 or more of these guys dangling off them with the following semantics and syntax.
+
+
+```
+person[name:x] <=[=mongo][get,'users'][is,[get,'name'][eq,x]]
+               <-[-mongo] *   [order]        <= [id]   | 
+                              [dedup,'name'] <= [id]   |
+                              [age,[lt,0]]   <= [none]
+               <-[-group] *   [zero]                        <= [map,person['alive':false]] | 
+                              ([plus,0]      | [mult,1])    <= [id]                        |
+                              ([minus,[neg]] | [div,[inv]]) <= [id]
+```
+
+* `[=mongo]`: this is an object mapper that demonstrates how "person" is encoded in JSON (the mongo model).
+* `[-mongo]`: this is an instruction mapper that serves as a rewriter to theorems in mongo's secondary structures (indices, sort orders, ..)
+* `[-group]`: this is a standard library arrow generator that is based on group theorems. this constrains the object read/write rules to the group axioms and thus, their entailments as well.
+
+**That is all you can do in mm-ADT. Define object and arrow morphisms between models.**
+
+When `<-` is there, the instruction being executed on the object (of 'type' person), is being redirected to the `[-group]` processing pipeline, where the object flowing through is the instruction! (you can reason on it like any other structure).
+
+```
+mmadt> [start,2,3] <= [get,1]
+==>2
+mmadt> [start,2,3] <= [get,0]
+==>'start'
+```
+
+Think of it as being in a "world" (domain of discourse) and you realize that you are coupled in some functorial way to another world. Not necessarily an isomorphism ("pure merge")...But then you realize, its a freakin' multi-verse of coupled "algebraic environments" (laws of physics). And these coupled worlds (at all scopes of abstraction) are _free energy machines_ because they just keep pushing off their structure and process to other worlds in a game of "hot potatoe." That is how the universe is and these `[=xxx]` `[-yyy]` captures that conceptualization. I cost nothing because I'm modeled everywhere (like hologramy-style projections).
+
+
+
+Note that there is nothing weird about the syntax. Why?
+
+```
+[a] * [b] == [a][b]
+[a] | [b] == [choose,[a],[b]]
+[a] + [b] == [branch,[a],[b]]
+[a] & [b] == [a][b]
+[a] / [b] == [error]          // its a ring
+```
+
+Thus, you can use a cleaner "pattern matching"-syntax (the guard style) with the standard algebra operators.
+
+Objects and arrows are all you need to reason on.
+
+Marko.
