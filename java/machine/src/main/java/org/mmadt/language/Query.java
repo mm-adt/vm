@@ -49,6 +49,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.QInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
@@ -113,7 +114,7 @@ public final class Query {
     }
 
     public Query groupCount(final Object key) {
-        return this.compose(TInst.of(Tokens.GROUPCOUNT, key));
+        return this.compose(GroupCountInst.create(key));
     }
 
     public Query gt(final Object obj) {

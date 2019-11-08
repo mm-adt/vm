@@ -53,7 +53,7 @@ class StepTest {
         assertEquals(List.of(TRec.of("a", 1, "c", 3)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
-    //TODO    @Test
+    @Test
     void testGroupCount() {
         final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 0, 2).plus(1).mult(1).plus(0).groupCount(plus(2).plus(-3).plus(3)).bytecode());
         assertEquals(List.of(TRec.of(3, 2, 5, 1)), IteratorUtils.list(processor.iterator(TInt.none())));

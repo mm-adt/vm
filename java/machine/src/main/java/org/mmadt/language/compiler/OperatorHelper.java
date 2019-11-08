@@ -32,7 +32,7 @@ import org.mmadt.machine.object.model.type.algebra.WithPlus;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class OperatorHelper {
+public final class OperatorHelper {
 
     private OperatorHelper() {
         // static helper class

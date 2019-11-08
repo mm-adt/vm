@@ -47,6 +47,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.QInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
@@ -65,6 +66,7 @@ import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
 import static org.mmadt.language.compiler.Tokens.GET;
+import static org.mmadt.language.compiler.Tokens.GROUPCOUNT;
 import static org.mmadt.language.compiler.Tokens.GT;
 import static org.mmadt.language.compiler.Tokens.GTE;
 import static org.mmadt.language.compiler.Tokens.ID;
@@ -125,6 +127,8 @@ public final class Instructions {
                 return GtInst.create(inst.get(0));
             case GTE:
                 return GteInst.create(inst.get(0));
+            case GROUPCOUNT:
+                return GroupCountInst.create(inst.get(0));
             case ID:
                 return IdInst.create();
             case INV:
