@@ -44,12 +44,6 @@ public final class DivInst<S extends WithDiv<S>> extends TInst implements MapIns
         return s.div(this.<S, S>argument(0).mapArg(s));
     }
 
-    public static <S extends WithDiv<S>> S create(final Supplier<S> result, final S source, final S argument) {
-        return ObjectHelper.allInstances(source, argument) ?
-                result.get() :
-                source.access(source.access().mult(new DivInst<>(argument)));
-    }
-
     public static <S extends WithDiv<S>> DivInst<S> create(final Object arg) {
         return new DivInst<>(arg);
     }

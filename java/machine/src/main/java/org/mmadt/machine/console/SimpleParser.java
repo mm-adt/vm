@@ -196,7 +196,7 @@ public class SimpleParser extends BaseParser<Object> {
     Rule Inst() {
         return FirstOf(
                 Sequence(INST, this.push(TInst.some())),
-                Sequence(this.push(TInst.ids()), OneOrMore(Single_Inst(), swap(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
+                Sequence(this.push(TInst.ID()), OneOrMore(Single_Inst(), swap(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
     }
 
     @SuppressSubnodes

@@ -47,13 +47,6 @@ public final class LtInst<S extends WithOrder<S>> extends TInst implements MapIn
         return obj.lt(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithOrder<S>> Bool create(final Supplier<Bool> compute, final S obj, final S arg) {
-        return InstructionHelper.<Bool>rewrite(obj, new LtInst<>(arg)).orElse(
-                ObjectHelper.allInstances(obj, arg) ?
-                        compute.get() :
-                        TBool.of().q(obj.q()).append(new LtInst<>(arg)));
-    }
-
     public static <S extends WithOrder<S>> LtInst<S> create(final Object arg) {
         return new LtInst<>(arg);
     }

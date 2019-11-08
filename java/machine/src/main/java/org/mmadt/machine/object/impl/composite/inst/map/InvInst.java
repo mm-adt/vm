@@ -44,13 +44,6 @@ public final class InvInst<S extends WithDiv<S>> extends TInst implements MapIns
         return obj.inv();
     }
 
-    public static <S extends WithDiv<S>> S create(final Supplier<S> compute, final S obj) {
-        return InstructionHelper.<S>rewrite(obj, new InvInst<>()).orElse(
-                obj.isInstance() ?
-                        compute.get() :
-                        obj.append(new InvInst<>()));
-    }
-
     public static <S extends WithDiv<S>> InvInst<S> create() {
         return new InvInst<>();
     }

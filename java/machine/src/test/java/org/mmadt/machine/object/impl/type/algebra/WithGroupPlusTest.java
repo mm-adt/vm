@@ -31,7 +31,14 @@ import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
+import org.mmadt.processor.util.ObjSet;
+
+import static org.mmadt.util.IteratorUtils.list;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -106,10 +113,10 @@ class WithGroupPlusTest {
         WithGroupPlus running = group;
         WithGroupPlus second = group;
         for (int i = 0; i < 10; i++) {
-            // assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO)).mult(TInst.of(Tokens.NEG))), second.zero().neg());
-            assertEquals(running.access(running.access().mult(TInst.of(Tokens.MINUS, group))), second.minus(group));
-            assertEquals(running.access(running.access().mult(TInst.of(Tokens.PLUS, group)).mult(TInst.of(Tokens.NEG))), second.plus(group).neg());
-            assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, group.neg()))), second = second.plus(group.neg()));
+//            assertEquals(ObjSet.create(running.access(running.access().mult(ZeroInst.create()).mult(NegInst.create()))), ObjSet.create(second.zero().neg()));
+            assertEquals(running.access(running.access().mult(MinusInst.create(group))), second.minus(group));
+            assertEquals(list(running.access(running.access().mult(PlusInst.create(group)).mult(NegInst.create())).iterable()), list(second.plus(group).neg().iterable()));
+            assertEquals(running = running.access(running.access().mult(PlusInst.create(group.neg()))), second = second.plus(group.neg()));
         }
     }
 
@@ -117,5 +124,6 @@ class WithGroupPlusTest {
     Stream<DynamicTest> testGroupPlus() {
         return TEST_ARGS.stream().map(algebra -> DynamicTest.dynamicTest(algebra.toString(), () -> validate(algebra)));
     }
+
 
 }

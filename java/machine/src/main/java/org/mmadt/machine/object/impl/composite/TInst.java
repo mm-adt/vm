@@ -68,7 +68,7 @@ public class TInst extends TObj implements Inst {
         return NONE;
     }
 
-    public static Inst ids() {
+    public static Inst ID() {
         return IdInst.create();
     }
 

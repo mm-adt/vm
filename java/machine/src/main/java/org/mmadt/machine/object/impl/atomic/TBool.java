@@ -26,7 +26,6 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
-import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
@@ -90,17 +89,21 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool neg() {
-        return NegInst.create(() -> this, this);
+        return this;
     }
 
     @Override
     public Bool mult(final Bool bool) {
-        return MultInst.create(() -> new TBool(this.java() && bool.java()), this, bool);
+        return (this.isInstance() && bool.isInstance()) ?
+                this.set(this.java() && bool.java()) :
+                this.append(MultInst.create(bool));
     }
 
     @Override
     public Bool minus(final Bool bool) {
-        return MinusInst.create(() -> new TBool(exclusiveOr(this.java(), bool.java())), this, bool);
+        return (this.isInstance() && bool.isInstance()) ?
+                this.set(exclusiveOr(this.java(), bool.java())) :
+                this.append(MinusInst.create(bool));
     }
 
     @Override
@@ -112,7 +115,9 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool eq(final Obj obj) {
-        return EqInst.create(() -> new TBool(obj instanceof Bool && this.java().equals(((Bool) obj).java())), this, obj);
+        return this.isInstance() ?
+                this.set(obj instanceof Bool && this.java().equals(((Bool) obj).java())) :
+                this.append(EqInst.create(obj));
     }
 
     private static boolean exclusiveOr(final boolean a, final boolean b) {

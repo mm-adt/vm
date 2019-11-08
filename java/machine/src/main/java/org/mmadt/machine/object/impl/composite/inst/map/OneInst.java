@@ -44,15 +44,6 @@ public final class OneInst<S extends WithOne<S>> extends TInst implements MapIns
         return obj.one();
     }
 
-    public static <S extends WithOne<S>> S create(final S obj, final S one) {
-        return InstructionHelper.<S>rewrite(obj, new OneInst<>()).orElse(
-                ObjectHelper.allInstances(obj) ? // one is constant
-                        one :
-                        obj.q().constant() ?
-                                one.q(obj.q()) :
-                                one.q(obj.q()).append(new OneInst<>()));
-    }
-
     public static <S extends WithOne<S>> OneInst<S> create() {
         return new OneInst<>();
     }

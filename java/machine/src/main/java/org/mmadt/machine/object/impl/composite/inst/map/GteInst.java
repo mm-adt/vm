@@ -47,13 +47,6 @@ public final class GteInst<S extends WithOrder<S>> extends TInst implements MapI
         return obj.gt(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithOrder<S>> Bool create(final Supplier<Bool> compute, final S obj, final S arg) {
-        return InstructionHelper.<Bool>rewrite(obj, new GteInst<>(arg)).orElse(
-                ObjectHelper.allInstances(obj, arg) ?
-                        compute.get() :
-                        TBool.of().q(obj.q()).append(new GteInst<>(arg)));
-    }
-
     public static <S extends WithOrder<S>> GteInst<S> create(final Object arg) {
         return new GteInst<>(arg);
     }

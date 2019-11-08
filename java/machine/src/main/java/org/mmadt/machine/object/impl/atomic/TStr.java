@@ -36,6 +36,8 @@ import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -69,22 +71,30 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Bool gt(final Str str) {
-        return GtInst.create(() -> TBool.of(this.java().compareTo(str.java()) > 0), this, str);
+        return (this.isInstance() && str.isInstance()) ?
+                TBool.of(this.java().compareTo(str.java()) > 0).q(this.q()) :
+                TBool.of().q(this.q()).append(GtInst.create(str));
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return EqInst.create(() -> TBool.of(obj instanceof Str && this.java().equals(((Str) obj).java())), this, obj);
+        return this.isInstance() ?
+                TBool.of(obj instanceof Str && this.java().equals(((Str) obj).java())).q(this.q()) :
+                TBool.of().q(this.q()).append(EqInst.create(obj));
     }
 
     @Override
     public Bool lt(final Str str) {
-        return LtInst.create(() -> TBool.of(this.java().compareTo(str.java()) < 0), this, str);
+        return (this.isInstance() && str.isInstance()) ?
+                TBool.of(this.java().compareTo(str.java()) < 0).q(this.q()) :
+                TBool.of().q(this.q()).append(LtInst.create(str));
     }
 
     @Override
     public Bool lte(final Str str) {
-        return LteInst.create(() -> TBool.of(this.java().compareTo(str.java()) <= 0), this, str);
+        return (this.isInstance() && str.isInstance()) ?
+                TBool.of(this.java().compareTo(str.java()) <= 0).q(this.q()) :
+                TBool.of().q(this.q()).append(LteInst.create(str));
     }
 
     @Override
@@ -96,7 +106,7 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Str zero() {
-        return this.q().constant() ? this.set(Tokens.EMPTY) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(Tokens.EMPTY).access(ID()) : this.append(ZeroInst.create());
     }
 
     @Override

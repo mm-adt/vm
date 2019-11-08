@@ -30,10 +30,8 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.compiler.Argument;
 
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -48,10 +46,6 @@ public final class OrInst<S extends Obj> extends TInst implements MapInstruction
 
     public Bool apply(final S s) {
         return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(s)).reduce((a, b) -> (TBool) a.or(b)).orElse(TBool.of(true));
-    }
-
-    public static <S extends Obj> Obj create(final Supplier<Obj> result, final S source, final Object argument) {
-        return source.set((source.access()).or(ObjectHelper.from(argument)));
     }
 
     public static <S extends Obj> OrInst<S> create(final Object... arguments) {

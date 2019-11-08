@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
@@ -38,6 +39,8 @@ import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.function.Supplier;
+
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -106,12 +109,12 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return this.q().constant() ? this.set(0) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(0).access(ID()) : this.append(ZeroInst.create());
     }
 
     @Override
     public Int one() {
-        return this.q().constant() ? this.set(1) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(1).access(ID()) : this.append(ZeroInst.create());
     }
 
     @Override
@@ -150,7 +153,7 @@ public final class TInt extends TObj implements Int {
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.of(obj instanceof Int && this.java().equals(obj.get())).q(this.q()) :
+                TBool.of(obj instanceof Int && this.java().equals(((Int) obj).java())).q(this.q()) :
                 TBool.of().q(this.q()).append(EqInst.create(obj));
     }
 

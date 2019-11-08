@@ -46,12 +46,6 @@ public final class MinusInst<S extends WithMinus<S>> extends TInst implements Ma
         return obj.minus(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithMinus<S>> S create(final Supplier<S> compute, final S obj, final S arg) {
-        return InstructionHelper.<S>rewrite(obj, new MinusInst<>(arg)).orElse(
-                ObjectHelper.allInstances(obj, arg) ?
-                        compute.get() :
-                        obj.append(new MinusInst<>(arg)));
-    }
     public static <S extends WithMinus<S>> MinusInst<S> create(final Object arg) {
         return new MinusInst<>(arg);
     }

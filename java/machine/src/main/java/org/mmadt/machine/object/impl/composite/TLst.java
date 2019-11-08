@@ -26,7 +26,6 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
-import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
@@ -37,6 +36,8 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.List;
+
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -80,7 +81,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> zero() {
-        return this.q().constant() ? this.set(PList.of()) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(PList.of()).access(ID()) : this.append(ZeroInst.create());
     }
 
     @Override
@@ -94,22 +95,25 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     @Override
-    public Lst<V> minus(final Lst<V> object) {
-        return MinusInst.create(() -> {
+    public Lst<V> minus(final Lst<V> lst) {
+        if (this.isInstance() && lst.isInstance()) {
             final PList<V> list = new PList<>(this.java());
-            list.removeAll(object.java());
-            return new TLst<>(list);
-        }, this, object);
+            list.removeAll(lst.java());
+            return this.set(list);
+        } else
+            return this.append(MinusInst.create(lst));
     }
 
     @Override
     public Lst<V> neg() {
-        return NegInst.create(() -> this, this); // TODO: What is a -list?
+        return this; // this.isInstance() ? this : this.append(NegInst.create()); // TODO: if its an identity then you don't need [neg] appendage
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return EqInst.create(() -> TBool.of(obj instanceof Lst && this.java().equals(((Lst) obj).java())), this, obj);
+        return this.isInstance() ?
+                TBool.of(obj instanceof Lst && this.java().equals(((Lst) obj).java())).q(this.q()) :
+                TBool.of().q(this.q()).append(EqInst.create(obj));
     }
 
     @Override

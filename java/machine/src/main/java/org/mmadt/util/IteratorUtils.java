@@ -112,6 +112,11 @@ public final class IteratorUtils {
     }
 
 
+    public static <S> List<S> list(final Iterable<S> iterable) {
+        return fill(iterable.iterator(), new ArrayList<>());
+    }
+
+
     ///////////////
 
     public static final <S, E> Iterator<E> map(final Iterator<S> iterator, final Function<S, E> function) {

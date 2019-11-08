@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -102,7 +101,7 @@ public final class TType implements Type {
 
     @Override
     public Inst access() {
-        return null == this.access ? TInst.ids() : this.access;
+        return null == this.access ? TInst.ID() : this.access;
     }
 
     @Override

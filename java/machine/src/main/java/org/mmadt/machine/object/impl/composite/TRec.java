@@ -26,7 +26,6 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
-import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
@@ -35,6 +34,8 @@ import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
+
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -81,7 +82,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> zero() {
-        return this.q().constant() ? this.set(PMap.of()) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(PMap.of()).access(ID()) : this.append(ZeroInst.create());
     }
 
     @Override
@@ -95,22 +96,25 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     }
 
     @Override
-    public Rec<K, V> minus(final Rec<K, V> object) {
-        return MinusInst.create(() -> {
+    public Rec<K, V> minus(final Rec<K, V> rec) {
+        if (this.isInstance() && rec.isInstance()) {
             final PMap<K, V> map = new PMap<>(this.java());
-            object.java().forEach(map::remove);
-            return new TRec<>(map);
-        }, this, object);
+            rec.java().forEach(map::remove);
+            return this.set(map);
+        } else
+            return this.append(MinusInst.create(rec));
     }
 
     @Override
     public Rec<K, V> neg() {
-        return NegInst.create(() -> this, this); // TODO: What is a -rec?
+        return this; // this.isInstance() ? this : this.append(NegInst.create()); // TODO: if its an identity then you don't need [neg] appendage
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return EqInst.create(() -> TBool.of(obj instanceof Rec && this.java().equals(((Rec) obj).java())), this, obj);
+        return this.isInstance() ?
+                TBool.of(obj instanceof Rec && this.java().equals(((Rec) obj).java())).q(this.q()) :
+                TBool.of().q(this.q()).append(EqInst.create(obj));
     }
 
     @Override

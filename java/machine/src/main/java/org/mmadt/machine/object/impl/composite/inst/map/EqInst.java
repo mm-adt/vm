@@ -47,13 +47,6 @@ public final class EqInst<S extends Obj> extends TInst implements MapInstruction
         return obj.eq(this.<S, Obj>argument(0).mapArg(obj));
     }
 
-    public static <S extends Obj> Bool create(final Supplier<Bool> compute, final S obj, final Obj arg) {
-        return InstructionHelper.<Bool>rewrite(obj, new EqInst<>(arg)).orElse(
-                ObjectHelper.allInstances(obj) ?
-                        compute.get() :
-                        TBool.of().q(obj.q()).append(new EqInst<>(arg)));
-    }
-
     public static <S extends Obj> EqInst<S> create(final Object arg) {
         return new EqInst<>(arg);
     }

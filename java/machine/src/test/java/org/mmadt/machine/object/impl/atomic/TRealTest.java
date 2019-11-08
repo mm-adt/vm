@@ -32,8 +32,6 @@ import org.mmadt.util.IteratorUtils;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.__.gt;
-import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -55,7 +53,7 @@ class TRealTest {
 
     @Test
     void shouldStreamCorrectly() {
-        assertEquals(TInst.ids(), TReal.of(1.0f).access());
+        assertEquals(TInst.ID(), TReal.of(1.0f).access());
         assertEquals(TReal.of(1.0f, 2.0f, 3.0f, 4.0f).q(4), TReal.of(1.0f, 2.0f, 3.0f, 4.0f));
         assertEquals(TLst.of(1.0f, 2.0f, 3.0f, 4.0f).<List<Real>>get(), IteratorUtils.list(TReal.of(1.0f, 2.0f, 3.0f, 4.0f).iterable().iterator()));
     }

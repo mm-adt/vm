@@ -50,12 +50,6 @@ public final class AndInst<S extends Obj> extends TInst implements MapInstructio
         return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(s)).reduce(Bool::and).orElse(TBool.of(true));
     }
 
-    public static <S extends Obj> Bool create(final Supplier<Bool> result, final S source, final S argument) {
-        return ObjectHelper.allInstances(source, argument) ?
-                result.get() :
-                TBool.of().q(source.q()).access(source.access().mult(new AndInst<>(argument)));
-    }
-
     public static <S extends Obj> AndInst<S> create(final Object... args) {
         return new AndInst<>(args);
     }

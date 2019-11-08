@@ -26,7 +26,6 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
-import org.mmadt.machine.object.impl.composite.inst.map.InvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
@@ -39,6 +38,8 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -85,12 +86,12 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return this.q().constant() ? super.set(1.0f) : this.append(OneInst.create()); // no need to check -0.0
+        return this.q().constant() ? super.set(1.0f).access(ID()) : this.append(OneInst.create()); // no need to check -0.0
     }
 
     @Override
     public Real zero() {
-        return this.q().constant() ? super.set(0.0f) : this.append(ZeroInst.create()); // no need to check -0.0
+        return this.q().constant() ? super.set(0.0f).access(ID()) : this.append(ZeroInst.create()); // no need to check -0.0
     }
 
     @Override
@@ -100,7 +101,9 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real minus(final Real real) {
-        return MinusInst.create(() -> new TReal(this.java() - real.java()), this, real);
+        return (this.isInstance() && real.isInstance()) ?
+                this.set(this.java() - real.java()) :
+                this.append(MinusInst.create(real));
     }
 
     @Override
@@ -112,37 +115,49 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real mult(final Real real) {
-        return MultInst.create(() -> new TReal(this.java() * real.java()), this, real);
+        return (this.isInstance() && real.isInstance()) ?
+                this.set(this.java() * real.java()) :
+                this.append(MultInst.create(real));
     }
 
     @Override
     public Real div(final Real real) {
-        return DivInst.create(() -> new TReal(this.java() / real.java()), this, real);
+        return (this.isInstance() && real.isInstance()) ?
+                this.set(this.java() / real.java()) :
+                this.append(DivInst.create(real));
     }
 
     @Override
     public Bool gt(final Real real) {
-        return GtInst.create(() -> TBool.of(this.java() > real.java()), this, real);
+        return (this.isInstance() && real.isInstance()) ?
+                TBool.of(this.java() > real.java()).q(this.q()) :
+                TBool.of().q(this.q()).append(GtInst.create(real));
     }
 
     @Override
     public Bool eq(final Obj obj) {
-        return EqInst.create(() -> TBool.of(obj instanceof Real && this.java().equals(((Real) obj).java())), this, obj);
+        return this.isInstance() ?
+                TBool.of(obj instanceof Real && this.java().equals(((Real) obj).java())).q(this.q()) :
+                TBool.of().q(this.q()).append(EqInst.create(obj));
     }
 
     @Override
     public Bool lt(final Real real) {
-        return LtInst.create(() -> TBool.of(this.java() < real.java()), this, real);
+        return (this.isInstance() && real.isInstance()) ?
+                TBool.of(this.java() < real.java()).q(this.q()) :
+                TBool.of().q(this.q()).append(LtInst.create(real));
     }
 
     @Override
     public Bool lte(final Real real) {
-        return LteInst.create(() -> TBool.of(this.java() <= real.java()), this, real);
+        return (this.isInstance() && real.isInstance()) ?
+                TBool.of(this.java() <= real.java()).q(this.q()) :
+                TBool.of().q(this.q()).append(LteInst.create(real));
     }
 
     @Override
     public Real inv() {
-        return InvInst.create(() -> new TReal(1.0f / this.java()), this);
+        return this.isInstance() ? super.set(1.0f / this.java()) : this.append(NegInst.create()); // no need to check -0.0
     }
 
     @Override

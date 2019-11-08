@@ -47,13 +47,6 @@ public final class LteInst<S extends WithOrder<S>> extends TInst implements MapI
         return obj.lte(this.<S, S>argument(0).mapArg(obj));
     }
 
-    public static <S extends WithOrder<S>> Bool create(final Supplier<Bool> compute, final S obj, final S arg) {
-        return InstructionHelper.<Bool>rewrite(obj, new LteInst<>(arg)).orElse(
-                ObjectHelper.allInstances(obj, arg) ?
-                        compute.get() :
-                        TBool.of().q(obj.q()).append(new LteInst<>(arg)));
-    }
-
     public static <S extends WithOrder<S>> LteInst<S> create(final Object arg) {
         return new LteInst<>(arg);
     }

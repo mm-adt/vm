@@ -24,13 +24,9 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
-import org.mmadt.machine.object.model.type.algebra.WithPlus;
-
-import java.util.function.Supplier;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,13 +39,6 @@ public final class NegInst<S extends WithMinus<S>> extends TInst implements MapI
 
     public S apply(final S obj) {
         return obj.neg();
-    }
-
-    public static <S extends WithPlus<S>> S create(final Supplier<S> compute, final S obj) {
-        return InstructionHelper.<S>rewrite(obj, new NegInst<>()).orElse(
-                obj.isInstance() ?
-                        compute.get().q(obj.q()) :
-                        obj.append(new NegInst<>()));
     }
 
     public static <S extends WithMinus<S>> NegInst<S> create() {

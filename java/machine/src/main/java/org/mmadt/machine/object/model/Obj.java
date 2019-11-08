@@ -85,10 +85,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public PMap<Obj, Obj> members();
 
-    public Bool eq(final Obj object);
-
-    public Bool neq(final Obj object);
-
     public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
         return (O) this.iterable().iterator().next();
     }
@@ -298,5 +294,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 (O) this :                  // TODO: this.set(this.mult(this.q().peek()));
                 this.append(SumInst.create());
     }
+
+    public Bool eq(final Obj object);
+
+    public Bool neq(final Obj object);
 
 }
