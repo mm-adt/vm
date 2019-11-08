@@ -45,13 +45,6 @@ public final class IsInst<S extends Obj> extends TInst implements FilterInstruct
         return !obj.is(this.<S, Bool>argument(0).mapArg(obj)).q().isZero();
     }
 
-    public static <S extends Obj> S create(final S obj, final Bool arg) {
-        return InstructionHelper.<S>rewrite(obj, new IsInst<>(arg)).orElseGet(() ->
-             ObjectHelper.allInstances(obj, arg) ?
-                        arg.java() ? obj : obj.q(Q.Tag.zero) :  // compute given bool arg
-                        obj.q(obj.q().peek().zero(), obj.q().last()).append(new IsInst<>(arg))); // append to access and zero-out quantification
-    }
-
     public static <S extends Obj> IsInst<S> create(final Object arg) {
         return new IsInst<>(arg);
     }

@@ -81,7 +81,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> zero() {
-        return ZeroInst.create(this, TRec.of());
+        return this.q().constant() ? this.set(PMap.of()) : this.append(ZeroInst.create());
     }
 
     @Override

@@ -54,12 +54,6 @@ public final class SumInst<S extends WithOrderedRing<S>> extends TInst implement
         return (S) this.q().peek().zero();
     }
 
-    public static <S extends Obj> S create(final S source) {
-        return ObjectHelper.allInstances(source) ?
-                (S) source.q().peek() :
-                source.set(null).q(source.q().one()).access(source.access().mult(new SumInst<>()));
-    }
-
     public static <S extends WithOrderedRing<S>> SumInst<S> create() {
         return new SumInst<S>();
     }

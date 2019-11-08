@@ -31,6 +31,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -105,12 +106,12 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return this.set(0);
+        return this.q().constant() ? this.set(0) : this.append(ZeroInst.create());
     }
 
     @Override
     public Int one() {
-        return this.set(1);
+        return this.q().constant() ? this.set(1) : this.append(ZeroInst.create());
     }
 
     @Override

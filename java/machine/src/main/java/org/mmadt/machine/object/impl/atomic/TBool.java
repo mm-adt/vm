@@ -80,12 +80,12 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return OneInst.create(this, TRUE);
+        return this.q().constant() ? this.set(Boolean.TRUE) : this.append(OneInst.create());
     }
 
     @Override
     public Bool zero() {
-        return ZeroInst.create(this, FALSE);
+        return this.q().constant() ? this.set(Boolean.FALSE) : this.append(ZeroInst.create());
     }
 
     @Override

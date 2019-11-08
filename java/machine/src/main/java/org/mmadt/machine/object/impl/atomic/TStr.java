@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
@@ -95,7 +96,7 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Str zero() {
-        return ZeroInst.create(this, ZERO);
+        return this.q().constant() ? this.set(Tokens.EMPTY) : this.append(ZeroInst.create());
     }
 
     @Override

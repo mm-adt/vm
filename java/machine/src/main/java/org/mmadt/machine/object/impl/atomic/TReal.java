@@ -85,17 +85,17 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return OneInst.create(this, ONE);
+        return this.q().constant() ? super.set(1.0f) : this.append(OneInst.create()); // no need to check -0.0
     }
 
     @Override
     public Real zero() {
-        return ZeroInst.create(this, ZERO);
+        return this.q().constant() ? super.set(0.0f) : this.append(ZeroInst.create()); // no need to check -0.0
     }
 
     @Override
     public Real neg() {
-        return NegInst.create(() -> new TReal(-this.java()), this);
+        return this.isInstance() ? this.set(-this.java()) : this.append(NegInst.create());
     }
 
     @Override

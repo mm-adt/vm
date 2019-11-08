@@ -80,7 +80,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> zero() {
-        return ZeroInst.create(this, TLst.of());
+        return this.q().constant() ? this.set(PList.of()) : this.append(ZeroInst.create());
     }
 
     @Override

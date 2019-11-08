@@ -27,7 +27,6 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TQ;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
@@ -53,6 +52,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
  * A Java representation of an mm-ADT {@code obj}.
@@ -272,15 +273,20 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O count() {
-        return CountInst.create((O) this);
+        if (this.isInstance())
+            return (O) this.q().peek().q(q().one());
+        else
+            return this.append(CountInst.create());
     }
 
     public default <O extends Obj> O id() {
-        return IdInst.create((O) this);
+        return (O) this;
     }
 
     public default <O extends Obj> O is(final Bool bool) {
-        return IsInst.create((O) this, bool);
+        return (this.isInstance() && bool.isInstance()) ?
+                bool.java() ? (O) this : this.q(zero) :
+                this.append(IsInst.create(bool));
     }
 
     public default <O extends Obj> O map(final O object) {
@@ -288,7 +294,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O sum() {
-        return SumInst.create((O) this);
+        return this.isInstance() ?
+                (O) this :                  // TODO: this.set(this.mult(this.q().peek()));
+                this.append(SumInst.create());
     }
 
 }

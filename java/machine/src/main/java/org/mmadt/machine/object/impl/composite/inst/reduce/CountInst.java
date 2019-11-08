@@ -54,12 +54,6 @@ public final class CountInst<S extends Obj, E extends WithMonoidPlus<E>> extends
         return (E) this.q().zero().peek();
     }
 
-    public static <S extends Obj> S create(final S source) {
-        return ObjectHelper.allInstances(source) ?
-                (S) source.q().peek() :
-                source.set(null).q(source.q().one()).access(source.access().mult(new CountInst<>()));
-    }
-
     public static <S extends Obj, E extends WithMonoidPlus<E>> CountInst<S, E> create() {
         return new CountInst<>();
     }
