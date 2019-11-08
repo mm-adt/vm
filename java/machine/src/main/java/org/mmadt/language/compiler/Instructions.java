@@ -26,6 +26,7 @@ import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AccessInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
@@ -57,6 +58,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import java.util.List;
 
 import static org.mmadt.language.compiler.Tokens.A;
+import static org.mmadt.language.compiler.Tokens.ACCESS;
 import static org.mmadt.language.compiler.Tokens.AND;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DIV;
@@ -95,16 +97,18 @@ public final class Instructions {
 
     public static Inst compile(final Inst inst) {
         final PList<Obj> list = new PList<>();
-        inst.<PList<Obj>>get().forEach(obj -> list.add(obj instanceof Inst ? compile((Inst)obj) : ObjectHelper.from(obj)));
+        inst.<PList<Obj>>get().forEach(obj -> list.add(obj instanceof Inst ? compile((Inst) obj) : ObjectHelper.from(obj)));
         return Instructions.function(list);
     }
 
     private static Inst function(final List<Obj> inst) {
         final String opcode = inst.get(0).get();
-        inst.remove(0);
+        inst.remove(0); // drop the opcode
         switch (opcode) {
             case A:
                 return AInst.create(inst.get(0));
+            case ACCESS:
+                return AccessInst.create();
             case AND:
                 return AndInst.create(inst.toArray(new Object[]{}));
             case COUNT:

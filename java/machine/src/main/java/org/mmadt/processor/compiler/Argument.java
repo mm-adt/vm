@@ -40,11 +40,16 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
 
     public boolean filterArg(final S object);
 
-    public static <S extends Obj, E extends Obj> Argument<S, E> create(final Object arg) {
-        return arg instanceof Inst ? new InstArgument<>((Inst) arg) : new ObjArgument<>((E) arg);
+    public static <S extends Obj, E extends Obj> Argument<S, E> create(final S arg) {
+        if (arg instanceof Inst)
+            return new InstArgument<>((Inst) arg); // TODO: should we do this?
+        else if (arg.isInstance() || arg.isType())
+            return new ObjArgument<>((E) arg);
+        else
+            return new InstArgument<>(arg.access());
     }
 
-    public static <S extends Obj, E extends Obj> Argument<S, E>[] args(final List args) {
+    public static <S extends Obj, E extends Obj> Argument<S, E>[] args(final List<S> args) {
         final Argument<S, E>[] array = new Argument[args.size()];
         for (int i = 0; i < args.size(); i++) {
             array[i] = create(args.get(i));

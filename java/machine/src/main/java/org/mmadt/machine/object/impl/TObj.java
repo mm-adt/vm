@@ -127,11 +127,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public Inst access() {
-        return this.types.access();
-    }
-
-    @Override
     public PMap<Inst, Inst> instructions() {
         return this.types.instructions();
     }
@@ -280,4 +275,17 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Bool a(final Obj obj) {
+        return TBool.of(obj.test(this)).q(this.q());
+    }
+
+    @Override
+    public Inst access() {
+        return this.types.access(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
+    }
+
 }

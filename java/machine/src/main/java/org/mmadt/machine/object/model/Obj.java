@@ -25,10 +25,8 @@ package org.mmadt.machine.object.model;
 import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
-import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
@@ -229,11 +227,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && (this.access().isOne());//|| this.access().isType());
+        return !this.constant() && (this.access().isOne() || this.access().isType());
     }
 
     public default boolean isReference() {
-        return !this.constant() && !this.access().isOne();
+        return !this.constant() && !this.access().isOne() && !this.access().isType(); // && this.q().constant() ?
     }
 
     public default boolean isInstance() {
@@ -264,15 +262,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
 
-    public default Bool a(final Obj obj) {
-        return AInst.create(() -> TBool.of(obj.test(this)), this, obj);
-    }
+    public Bool a(final Obj obj);
 
     public default <O extends Obj> O count() {
-        if (this.isInstance())
-            return (O) this.q().peek().q(q().one());
-        else
-            return this.append(CountInst.create());
+        return this.q().constant() ? (O) this.q().peek().q(q().one()) : this.append(CountInst.create());
     }
 
     public default <O extends Obj> O id() {
@@ -280,13 +273,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O is(final Bool bool) {
-        return (this.isInstance() && bool.isInstance()) ?
-                bool.java() ? (O) this : this.q(zero) :
-                this.append(IsInst.create(bool));
+        return (this.isInstance() && bool.isInstance()) ? bool.java() ? (O) this : this.q(zero) : this.append(IsInst.create(bool));
     }
 
-    public default <O extends Obj> O map(final O object) {
-        return MapInst.create(() -> object, (O) this, object);
+    public default <O extends Obj> O map(final O obj) {
+        return this.isInstance() & obj.isInstance() ? obj.q(this.q()) : this.append(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {

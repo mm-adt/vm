@@ -20,41 +20,29 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.impl.composite.inst.reduce;
+package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class SumInst<S extends WithOrderedRing<S>> extends TInst implements ReduceInstruction<S, S> {
+public final class AccessInst<S extends Obj> extends TInst implements MapInstruction<S, Inst> {
 
-    private SumInst() {
-        super(PList.of(Tokens.SUM));
+    private AccessInst() {
+        super(PList.of(Tokens.A));
     }
 
-    @Override
-    public S apply(final S current, final S obj) {
-        return current.plus(obj).mult(obj.<S>q().peek());
+    public Inst apply(final S s) {
+        return s.access();
     }
 
-    @Override
-    public S merge(final S valueA, final S valueB) {
-        return valueA.plus(valueB);
-    }
-
-    @Override
-    public S getInitialValue() {
-        return (S) this.q().peek().zero();
-    }
-
-    public static <S extends WithOrderedRing<S>> SumInst<S> create() {
-        return new SumInst<>();
+    public static <S extends Obj> AccessInst<S> create() {
+        return new AccessInst<>();
     }
 }

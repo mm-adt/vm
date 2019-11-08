@@ -26,6 +26,7 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
@@ -132,6 +133,13 @@ public final class TReal extends TObj implements Real {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.of(this.java() > real.java()).q(this.q()) :
                 TBool.of().q(this.q()).append(GtInst.create(real));
+    }
+
+    @Override
+    public Bool gte(final Real real) {
+        return (this.isInstance() && real.isInstance()) ?
+                TBool.of(this.java() >= real.java()).q(this.q()) :
+                TBool.of().q(this.q()).append(GteInst.create(real));
     }
 
     @Override

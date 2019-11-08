@@ -23,14 +23,15 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
@@ -114,7 +115,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int one() {
-        return this.q().constant() ? this.set(1).access(ID()) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(1).access(ID()) : this.append(OneInst.create());
     }
 
     @Override
@@ -137,10 +138,14 @@ public final class TInt extends TObj implements Int {
     }
 
     @Override
-    public Int mult(final Int integer) {
-        return (this.isInstance() && integer.isInstance()) ?
-                this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
-                this.append(MultInst.create(integer));
+    public Int mult(final Int integer) {   // TODO: should dereferencing happen like this?
+        if (this.isInstance()) {
+            if (integer.isInstance())
+                return this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE));
+            else if (integer.isReference())
+                return MultInst.<Int>create(integer).apply(this);
+        }
+        return this.append(MultInst.create(integer));
     }
 
     @Override
@@ -148,6 +153,13 @@ public final class TInt extends TObj implements Int {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.of(this.java() > integer.java()).q(this.q()) :
                 TBool.of().q(this.q()).append(GtInst.create(integer));
+    }
+
+    @Override
+    public Bool gte(final Int integer) {
+        return (this.isInstance() && integer.isInstance()) ?
+                TBool.of(this.java() >= integer.java()).q(this.q()) :
+                TBool.of().q(this.q()).append(GteInst.create(integer));
     }
 
     @Override

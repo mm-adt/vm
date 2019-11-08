@@ -95,7 +95,7 @@ public class TInst extends TObj implements Inst {
     }
 
     public <S extends Obj, E extends Obj> Argument<S, E> argument(final int index) {
-        return Argument.<S, E>create(this.args().get(index));
+        return Argument.create(this.<S>args().get(index));
     }
 
     @Override

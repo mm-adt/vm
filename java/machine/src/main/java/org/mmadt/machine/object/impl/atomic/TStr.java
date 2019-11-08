@@ -26,6 +26,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
@@ -75,6 +76,14 @@ public final class TStr extends TObj implements Str {
                 TBool.of(this.java().compareTo(str.java()) > 0).q(this.q()) :
                 TBool.of().q(this.q()).append(GtInst.create(str));
     }
+
+    @Override
+    public Bool gte(final Str str) {
+        return (this.isInstance() && str.isInstance()) ?
+                TBool.of(this.java().compareTo(str.java()) >= 0).q(this.q()) :
+                TBool.of().q(this.q()).append(GteInst.create(str));
+    }
+
 
     @Override
     public Bool eq(final Obj obj) {
