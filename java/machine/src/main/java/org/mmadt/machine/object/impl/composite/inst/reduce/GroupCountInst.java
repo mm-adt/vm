@@ -32,6 +32,8 @@ import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 
+import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -44,7 +46,8 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
     @Override
     public Rec<E, A> apply(final Rec<E, A> current, final S obj) {
         final E object = this.<S, E>argument(0).mapArg(obj);
-        current.put(object, ((A) object.q().peek()).plus(current.<PMap<E, A>>get().getOrDefault(object, (A) this.q().zero().peek())));
+        final E objectOne = object.q(one);
+        current.put(objectOne, ((A) object.q()).plus(current.<PMap<E, A>>get().getOrDefault(objectOne, (A) this.q().zero())));
         return current;
     }
 

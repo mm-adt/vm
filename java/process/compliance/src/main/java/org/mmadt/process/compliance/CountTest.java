@@ -35,22 +35,22 @@ public abstract class CountTest extends AbstractTest {
 
     @Test
     void start_count() {
-        assertEquals(objs(0), submit(start().count()));
+        assertEquals(qs(0), submit(start().count()));
     }
 
     @Test
     void startXa_b_cX_count() {
-        assertEquals(objs(3), submit(start("a", "b", "c").count()));
+        assertEquals(qs(3), submit(start("a", "b", "c").count()));
     }
 
     @Test
     void startXa_b_cX_count_count() {
-        assertEquals(objs(1), submit(start("a", "b", "c").count().count()));
+        assertEquals(qs(1), submit(start("a", "b", "c").count().count()));
     }
 
     @Test
     void startXa_b_cX_isXgtXaXX_count() {
-        assertEquals(objs(2), submit(start("a", "b", "c").is(gt("a")).count()));
+        assertEquals(qs(2), submit(start("a", "b", "c").is(gt("a")).count()));
     }
 
 

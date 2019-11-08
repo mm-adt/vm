@@ -23,7 +23,10 @@
 package org.mmadt.process.compliance;
 
 import org.mmadt.language.Query;
+import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.util.IteratorUtils;
 
@@ -44,6 +47,14 @@ abstract class AbstractTest implements TestMachine {
         final List<E> objs = new ArrayList<>();
         for (final Object object : objects) {
             objs.add((E) ObjectHelper.from(object));
+        }
+        return objs;
+    }
+
+    <E extends WithOrderedRing<E>> List<Q<E>> qs(final Object... objects) {
+        final List<Q<E>> objs = new ArrayList<>();
+        for (final Object object : objects) {
+            objs.add(new TQ<>((E) ObjectHelper.from(object)));
         }
         return objs;
     }

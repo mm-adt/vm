@@ -24,34 +24,34 @@ package org.mmadt.machine.object.impl.composite.inst.reduce;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.impl.composite.TQ;
+import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class SumInst<S extends WithOrderedRing<S>> extends TInst implements ReduceInstruction<S, S> {
+public final class SumInst<S extends WithOrderedRing<S>> extends TInst implements ReduceInstruction<S, Q<S>> {
 
     private SumInst() {
         super(PList.of(Tokens.SUM));
     }
 
     @Override
-    public S apply(final S current, final S obj) {
-        return current.plus(obj).mult(obj.<S>q().peek());
+    public Q<S> apply(final Q<S> current, final S obj) {
+        return current.plus(new TQ<>(obj)).mult(obj.q());
     }
 
     @Override
-    public S merge(final S valueA, final S valueB) {
+    public Q<S> merge(final Q<S> valueA, final Q<S> valueB) {
         return valueA.plus(valueB);
     }
 
     @Override
-    public S getInitialValue() {
-        return (S) this.q().peek().zero();
+    public Q<S> getInitialValue() {
+        return (Q<S>) this.q().zero();
     }
 
     public static <S extends WithOrderedRing<S>> SumInst<S> create() {

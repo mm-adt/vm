@@ -25,36 +25,36 @@ package org.mmadt.machine.object.impl.composite.inst.reduce;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
-import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class CountInst<S extends Obj, E extends WithMonoidPlus<E>> extends TInst implements ReduceInstruction<S, E> {
+public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst implements ReduceInstruction<S, Q<E>> {
 
     private CountInst() {
         super(PList.of(Tokens.COUNT));
     }
 
     @Override
-    public E apply(final E current, final S obj) {
-        return current.plus((E) obj.q().peek()); // TODO: objects must not have range quantification?
+    public Q<E> apply(final Q<E> current, final S obj) {
+        return current.plus(obj.q()); // TODO: objects must not have range quantification?
     }
 
     @Override
-    public E merge(final E valueA, final E valueB) {
+    public Q<E> merge(final Q<E> valueA, final Q<E> valueB) {
         return valueA.plus(valueB);
     }
 
     @Override
-    public E getInitialValue() {
-        return (E) this.q().zero().peek();
+    public Q<E> getInitialValue() {
+        return (Q<E>) this.q().zero();
     }
 
-    public static <S extends Obj, E extends WithMonoidPlus<E>> CountInst<S, E> create() {
+    public static <S extends Obj, E extends WithOrderedRing<E>> CountInst<S, E> create() {
         return new CountInst<>();
     }
 }

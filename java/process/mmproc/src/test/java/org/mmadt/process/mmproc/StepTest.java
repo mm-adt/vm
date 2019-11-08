@@ -24,6 +24,8 @@ package org.mmadt.process.mmproc;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.processor.Processor;
@@ -56,7 +58,7 @@ class StepTest {
     @Test
     void testGroupCount() {
         final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 0, 2).plus(1).mult(1).plus(0).groupCount(plus(2).plus(-3).plus(3)).bytecode());
-        assertEquals(List.of(TRec.of(3, 2, 5, 1)), IteratorUtils.list(processor.iterator(TInt.none())));
+        assertEquals(List.of(TRec.of(3, new TQ<>(TInt.of(2)), 5, new TQ<>(TInt.of(1)))), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     //@Test

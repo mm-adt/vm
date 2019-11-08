@@ -34,7 +34,7 @@ public abstract class SumTest extends AbstractTest {
 
     @Test
     void startX3_2_1X_multX2X_sum() {
-        assertEquals(objs(12), submit(start(3, 2, 1).mult(2).sum()));
+        assertEquals(qs(12), submit(start(3, 2, 1).mult(2).sum()));
     }
 
 }
