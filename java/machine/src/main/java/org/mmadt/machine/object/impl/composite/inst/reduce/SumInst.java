@@ -41,12 +41,12 @@ public final class SumInst<S extends WithOrderedRing<S>> extends TInst implement
 
     @Override
     public Q<S> apply(final Q<S> current, final S obj) {
-        return current.plus(new TQ<>(obj)).mult(obj.q());
+        return current.plus(new TQ<>(obj,obj).mult(obj.q()));
     }
 
     @Override
-    public Q<S> merge(final Q<S> valueA, final Q<S> valueB) {
-        return valueA.plus(valueB);
+    public Q<S> merge(final Q<S> objA, final Q<S> objB) {
+        return objA.plus(objB);
     }
 
     @Override

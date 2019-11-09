@@ -59,7 +59,7 @@ final class TBoolTest {
         TestHelper.validateKinds(instance, reference, type);
         //////
         instance = TBool.of(true).neg();
-        reference = TBool.of(true, false).q(2, 10);
+        reference = TBool.of(true, false).q(10);
         type = TBool.some();
         TestHelper.validateKinds(instance, reference, type);
     }

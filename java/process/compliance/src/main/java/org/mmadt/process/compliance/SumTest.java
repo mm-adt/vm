@@ -23,9 +23,16 @@
 package org.mmadt.process.compliance;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TQ;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.language.__.mult;
+import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
+import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,6 +42,12 @@ public abstract class SumTest extends AbstractTest {
     @Test
     void startX3_2_1X_multX2X_sum() {
         assertEquals(qs(12), submit(start(3, 2, 1).mult(2).sum()));
+    }
+
+    @Test
+    void xxx_sum() {
+        assertEquals(List.of(new TQ<>(TInt.of(2).access(plus(TInt.some(1, 3).access(mult(1)))), TInt.of(7).access(plus(TInt.some(1, 3).access(mult(3)))))),
+                submit(start(1, 1, TInt.some().q(1, 3), TInt.of(5).q(qmark)).sum()));
     }
 
 }
