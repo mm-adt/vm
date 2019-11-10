@@ -22,6 +22,7 @@
 
 package org.mmadt.language.compiler;
 
+import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
@@ -61,6 +62,7 @@ import java.util.List;
 import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.ACCESS;
 import static org.mmadt.language.compiler.Tokens.AND;
+import static org.mmadt.language.compiler.Tokens.BRANCH;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
@@ -113,6 +115,8 @@ public final class Instructions {
                 return AccessInst.create();
             case AND:
                 return AndInst.create(inst.toArray(new Object[]{}));
+            case BRANCH:
+                return BranchInst.create(inst.toArray(new Object[]{}));
             case COUNT:
                 return CountInst.create();
             case DIV:

@@ -27,6 +27,6 @@ import org.mmadt.process.compliance.BranchTest;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ProcBranchTest {//extends BranchTest implements ProcTestMachine {
+class ProcBranchTest extends BranchTest implements ProcTestMachine {
 
 }

@@ -23,18 +23,27 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
+import org.mmadt.util.EmptyIterator;
+import org.mmadt.util.MultiIterator;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class BranchStep<S extends Obj, E extends Obj, M> { //extends AbstractStep<S, E> {
-} /*{
+final class BranchStep<S extends Obj, E extends Obj, M> extends AbstractStep<S, E, BranchInstruction<S, E>> {
 
-    private final Map<IR<S, ?>, List<IR<S, E>>> branches;
-    private final List<IR<S, E>> defaultBranches;
+
+    private final Map<Inst, List<Inst>> branches;
+    private final List<Inst> defaultBranches;
     private Iterator<E> nextObjs = EmptyIterator.instance();
 
-    BranchStep(final Step<?, S> previousStep, final BranchFunction<S, E> branchFunction) {
+    BranchStep(final Step<?, S> previousStep, final BranchInstruction<S, E> branchFunction) {
         super(previousStep, branchFunction);
         this.branches = branchFunction.getBranches();
         this.defaultBranches = this.branches.getOrDefault(null, Collections.emptyList());
@@ -58,17 +67,17 @@ final class BranchStep<S extends Obj, E extends Obj, M> { //extends AbstractStep
             boolean found = false;
             this.nextObjs = new MultiIterator<>();
             final S obj = this.previousStep.next();
-            for (final Map.Entry<IR<S, ?>, List<IR<S, E>>> entry : this.branches.entrySet()) {
+            for (final Map.Entry<Inst, List<Inst>> entry : this.branches.entrySet()) {
                 if (new Proc<>(entry.getKey()).iterator(obj).hasNext()) {
                     found = true;
-                    for (final IR<S, E> branch : entry.getValue()) {
-                        ((MultiIterator<E>) this.nextObjs).addIterator(new Proc<>(branch).iterator(obj)); // TODO: make sure this is global
+                    for (final Inst branch : entry.getValue()) {
+                        ((MultiIterator<E>) this.nextObjs).addIterator(new Proc<S, E>(branch).iterator(obj)); // TODO: make sure this is global
                     }
                 }
             }
             if (!found) {
-                for (final IR<S, E> defaultBranch : this.defaultBranches) {
-                    ((MultiIterator<E>) this.nextObjs).addIterator(new Proc<>(defaultBranch).iterator(obj));
+                for (final Inst defaultBranch : this.defaultBranches) {
+                    ((MultiIterator<E>) this.nextObjs).addIterator(new Proc<S, E>(defaultBranch).iterator(obj));
                 }
             }
         }
@@ -78,4 +87,4 @@ final class BranchStep<S extends Obj, E extends Obj, M> { //extends AbstractStep
     public void reset() {
         this.nextObjs = EmptyIterator.instance();
     }
-}*/
+}

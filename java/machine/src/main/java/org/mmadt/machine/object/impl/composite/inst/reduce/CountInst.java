@@ -41,7 +41,7 @@ public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extend
 
     @Override
     public Q<E> apply(final Q<E> current, final S obj) {
-        return current.plus(obj.q()); // TODO: objects must not have range quantification?
+        return current.plus(obj.q());
     }
 
     @Override

@@ -24,6 +24,7 @@ package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
@@ -34,6 +35,7 @@ import org.mmadt.processor.Processor;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -61,9 +63,9 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
 
             // if (function instanceof RepeatBranch)
             //    nextStep = new RepeatStep<>(previousStep, (RepeatBranch<S>) function);
-            //else if (function instanceof BranchFunction)
-            //    nextStep = new BranchStep<>(previousStep, (BranchFunction<S, E>) function);
-            if (function instanceof FilterInstruction)
+            if (function instanceof BranchInstruction)
+                nextStep = new BranchStep<>(previousStep, (BranchInstruction<S, E>) function);
+            else if (function instanceof FilterInstruction)
                 nextStep = new FilterStep<>(previousStep, (FilterInstruction<S>) function);
                 // else if (function instanceof FlatMapFunction)
                 //     nextStep = new FlatMapStep<>(previousStep, (FlatMapFunction<S, E>) function);
@@ -78,7 +80,7 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
             else if (function instanceof SideEffectInstruction)
                 nextStep = new SideEffectStep<>(previousStep, (SideEffectInstruction<S>) function);
             else
-                throw new RuntimeException("You need a new step type:" + function);
+                throw new RuntimeException("You need a new step type:" + function + "::" + Arrays.toString(function.getClass().getInterfaces()));
 
             this.steps.add(nextStep);
             previousStep = nextStep;

@@ -76,10 +76,6 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule TILDE = Terminal(Tokens.TILDE);
     final Rule LPAREN = Terminal(Tokens.LPAREN);
     final Rule RPAREN = Terminal(Tokens.RPAREN);
-    final Rule EQUALS = Terminal(Tokens.EQUALS);
-    final Rule GT = Terminal(Tokens.GT);
-    final Rule LT = Terminal(Tokens.LT);
-    final Rule NEQ = Terminal(Tokens.NEQ);
     final Rule SEMICOLON = Terminal(Tokens.SEMICOLON);
     final Rule TRUE = Terminal(Tokens.TRUE);
     final Rule FALSE = Terminal(Tokens.FALSE);
@@ -92,10 +88,6 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule REC = Terminal(Tokens.REC);
     final Rule LST = Terminal(Tokens.LIST);
     final Rule INST = Terminal(Tokens.INST);
-
-    final Rule OP_ID = Terminal(Tokens.ID);
-    final Rule OP_DEFINE = Terminal(Tokens.DEFINE);
-    final Rule OP_MODEL = Terminal(Tokens.MODEL);
 
     ///////////////
 
@@ -132,8 +124,8 @@ public class SimpleParser extends BaseParser<Object> {
                         Str(),
                         Rec(),
                         Lst(),
-                        Inst()),                                                                              // obj
-                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),              // {quantifier}
+                        Inst()),                                                                                    // obj
+                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                    // {quantifier}
                 Optional(MAPSFROM, Expression(), swap(), this.push(type(this.pop()).access((Inst) this.pop()))));   // <= inst
     }
 
@@ -252,14 +244,14 @@ public class SimpleParser extends BaseParser<Object> {
     Rule Quantifier() {
         return Sequence(
                 LCURL,  // TODO: the *, +, ? shorthands assume Int ring. (this will need to change)
-                FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                                                      // {*}
-                        Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                                                      // {+}
-                        Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                                                     // {?}
+                FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                                        // {*}
+                        Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                                        // {+}
+                        Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                                       // {?}
                         Sequence(COMMA, Expression(), this.push(new TQ<>((this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),          // {,10}
                         Sequence(Expression(),
-                                FirstOf(Sequence(COMMA, Expression(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))),                 // {1,10}
+                                FirstOf(Sequence(COMMA, Expression(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))),   // {1,10}
                                         Sequence(COMMA, this.push(new TQ<>(type(this.peek()), (this.<WithOrderedRing>type(this.peek())).max()))),       // {10,}
-                                        this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                                    // {1}
+                                        this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                      // {1}
                 RCURL);
     }
 

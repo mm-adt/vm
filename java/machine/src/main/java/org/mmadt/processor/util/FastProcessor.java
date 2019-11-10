@@ -25,6 +25,7 @@ package org.mmadt.processor.util;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
@@ -53,7 +54,9 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
     }
 
     private static <E extends Obj> Iterator<E> processTraverser(final E start, final Inst inst) {
-        if (inst instanceof FilterInstruction)
+        if (inst instanceof BranchInstruction)
+            return ((BranchInstruction<E, E>) inst).distribute(start);
+        else if (inst instanceof FilterInstruction)
             return ((FilterInstruction<E>) inst).testt(start) ? IteratorUtils.of(start) : EmptyIterator.instance();
         else if (inst instanceof MapInstruction)
             return IteratorUtils.of(((MapInstruction<E, E>) inst).apply(start));

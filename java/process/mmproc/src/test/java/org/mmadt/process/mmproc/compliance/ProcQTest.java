@@ -22,8 +22,6 @@
 
 package org.mmadt.process.mmproc.compliance;
 
-import org.mmadt.process.compliance.QTest;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */

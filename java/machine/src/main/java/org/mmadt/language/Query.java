@@ -25,6 +25,7 @@ package org.mmadt.language;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
@@ -82,7 +83,7 @@ public final class Query {
     }
 
     public Query branch(final Object... branches) {
-        return this.compose(TInst.of(Tokens.BRANCH, args(branches)));
+        return this.compose(BranchInst.create(args(branches)));
     }
 
     public Query id() {
