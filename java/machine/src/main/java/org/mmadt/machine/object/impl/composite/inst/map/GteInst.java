@@ -44,7 +44,7 @@ public final class GteInst<S extends WithOrder<S>> extends TInst implements MapI
     }
 
     public Bool apply(final S obj) {
-        return obj.gt(this.<S, S>argument(0).mapArg(obj));
+        return obj.gte(this.<S, S>argument(0).mapArg(obj));
     }
 
     public static <S extends WithOrder<S>> GteInst<S> create(final Object arg) {

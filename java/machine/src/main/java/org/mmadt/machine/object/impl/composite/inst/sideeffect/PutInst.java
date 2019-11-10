@@ -46,16 +46,6 @@ public final class PutInst<K extends Obj, V extends Obj> extends TInst implement
         obj.put(this.<Obj, K>argument(0).mapArg(obj), this.<Obj, V>argument(1).mapArg(obj));
     }
 
-    public static <K extends Obj, V extends Obj> WithProduct<K, V> create(final Supplier<WithProduct<K, V>> compute,
-                                                                          final WithProduct<K, V> obj,
-                                                                          final K key,
-                                                                          final V value) {
-        return InstructionHelper.<WithProduct<K, V>>rewrite(obj, new PutInst<>(key, value)).orElse(
-                obj.isInstance() || obj.isType() ? // this is necessary because records and lists store their patterns in maps and lists respectively
-                        compute.get() :
-                        obj.append(new PutInst<>(key, value)));
-    }
-
     public static <K extends Obj, V extends Obj> PutInst<K, V> create(final Object key, final Object value) {
         return new PutInst<>(key, value);
     }

@@ -46,13 +46,6 @@ public final class DropInst<K extends Obj, V extends Obj> extends TInst implemen
         obj.drop(this.<Obj, K>argument(0).mapArg(obj));
     }
 
-    public static <K extends Obj, V extends Obj> WithProduct<K, V> create(final Supplier<WithProduct<K, V>> compute, final WithProduct<K, V> obj, final K key) {
-        return InstructionHelper.<WithProduct<K, V>>rewrite(obj, new DropInst<>(key)).orElse(
-                obj.isInstance() || obj.isType() ? // this is necessary because records and lists store their patterns in maps and lists respectively
-                        compute.get() :
-                        obj.append(new DropInst<>(key)));
-    }
-
     public static <K extends Obj, V extends Obj> DropInst<K, V> create(final Object arg) {
         return new DropInst<>(arg);
     }

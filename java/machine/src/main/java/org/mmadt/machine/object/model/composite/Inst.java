@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -88,18 +87,20 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     @Override
     public default Inst put(final Int index, final Obj value) {
-        return (Inst) PutInst.create(() -> {
+        if (this.isInstance() || this.isType()) {
             this.java().add(index.java(), value);
             return this;
-        }, this, index, value);
+        } else
+            return this.append(PutInst.create(index, value));
     }
 
     @Override
-    public default Inst drop(final Int key) {
-        return (Inst) DropInst.create(() -> {
-            this.java().remove(key.java());
+    public default Inst drop(final Int index) {
+        if (this.isInstance() || this.isType()) {
+            this.java().remove((int) index.java());
             return this;
-        }, this, key);
+        } else
+            return this.append(DropInst.create(index));
     }
 
     @Override

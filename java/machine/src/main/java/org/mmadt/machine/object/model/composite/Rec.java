@@ -51,20 +51,23 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
         return this.get();
     }
 
+
     @Override
     public default Rec<K, V> put(final K key, final V value) {
-        return (Rec<K, V>) PutInst.create(() -> {
+        if (this.isInstance() || this.isType()) {
             this.java().put(key, value);
             return this;
-        }, this, key, value);
+        } else
+            return this.append(PutInst.create(key, value));
     }
 
     @Override
     public default Rec<K, V> drop(final K key) {
-        return (Rec<K, V>) DropInst.create(() -> {
+        if (this.isInstance() || this.isType()) {
             this.java().remove(key);
             return this;
-        }, this, key);
+        } else
+            return this.append(DropInst.create(key));
     }
 
     @Override

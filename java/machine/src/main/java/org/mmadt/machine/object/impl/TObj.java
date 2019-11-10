@@ -143,7 +143,10 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Bool neq(final Obj object) {
-        return NeqInst.create(() -> TBool.of(!this.get().equals(object.get())), this, object);
+        if (this.isInstance() && object.isInstance())
+            return TBool.of(!Objects.equals(this.get(), object.get())).q(this.q());
+        else
+            return this.append(NeqInst.create(object));
     }
 
     @Override

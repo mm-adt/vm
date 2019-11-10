@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
@@ -52,26 +53,29 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     }
 
     public default Lst<V> put(final V value) {
-        return (Lst<V>) PutInst.create(() -> {
-            this.java().add(this.java().size(), value);
+        if (this.isInstance() || this.isType()) {
+            this.java().add(value);
             return this;
-        }, this, null, value); // TODO: need an add (not a put)
+        } else
+            return this.append(PutInst.create(TInt.of(100), value)); // TODO: should have isolated put(value) (like add(value))
     }
 
     @Override
-    public default Lst<V> put(final Int key, final V value) {
-        return (Lst<V>) PutInst.create(() -> {
-            this.java().add(key.java(), value);
+    public default Lst<V> put(final Int index, final V value) {
+        if (this.isInstance() || this.isType()) {
+            this.java().add(index.java(), value);
             return this;
-        }, this, key, value);
+        } else
+            return this.append(PutInst.create(index, value));
     }
 
     @Override
     public default Lst<V> drop(final Int key) {
-        return (Lst<V>) DropInst.create(() -> {
-            this.java().remove(key.java());
+        if (this.isInstance() || this.isType()) {
+            this.java().remove((int) key.java());
             return this;
-        }, this, key);
+        } else
+            return this.append(DropInst.create(key));
     }
 
     @Override

@@ -168,7 +168,7 @@ public class TInst extends TObj implements Inst {
     }
 
     private Inst operator(final String opcode, final Obj obj) {
-        final Inst inst = obj instanceof Inst ? (Inst) obj : MapInst.create(() -> this, this, obj); // if the object isn't an instruction, make it one
+        final Inst inst = obj instanceof Inst ? (Inst) obj : MapInst.create(obj); // if the object isn't an instruction, make it one
         final Inst last = this.last();
         if (last.opcode().java().equals(opcode)) {
             final PList<Obj> list = new PList<>(last.java());

@@ -47,13 +47,6 @@ public final class NeqInst<S extends Obj> extends TInst implements MapInstructio
         return obj.neq(this.<S, Obj>argument(0).mapArg(obj));
     }
 
-    public static <S extends Obj> Bool create(final Supplier<Bool> compute, final S obj, final Obj arg) {
-        return InstructionHelper.<Bool>rewrite(obj, new NeqInst<>(arg)).orElse(
-                ObjectHelper.allInstances(obj) ?
-                        compute.get() :
-                        TBool.of().q(obj.q()).append(new NeqInst<>(arg)));
-    }
-
     public static <S extends Obj> NeqInst<S> create(final Object arg) {
         return new NeqInst<>(arg);
     }
