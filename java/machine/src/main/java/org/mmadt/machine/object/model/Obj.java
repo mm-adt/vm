@@ -38,6 +38,7 @@ import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
+import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
@@ -227,7 +228,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.q().constant() || (!this.constant() &&  (this.access().isOne() || this.access().isType()));
+        return !this.q().constant() || (!this.constant() && (this.access().isOne() || this.access().isType()));
     }
 
     public default boolean isReference() {
@@ -282,7 +283,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O sum() {
         return this.isInstance() ?
-                (O) this :                  // TODO: this.set(this.mult(this.q().peek()));
+                (O) this.set(((WithMult) this).mult(this.q())) :
                 this.append(SumInst.create());
     }
 

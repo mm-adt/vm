@@ -24,7 +24,6 @@ package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
-import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -72,29 +71,27 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default V get(final K key) {
-        return GetInst.create(() -> {
-            V v = (V) TObj.none();
-            final Object object = this.get();
-            if (object instanceof PMap)
-                v = ((PMap<K, V>) object).getOrDefault(key, (V) TObj.none());
-            else if (object instanceof PAnd) {
-                final List<Pattern> ps = ((PAnd) object).predicates(); // go backwards as recent AND has higher precedence
-                for (int i = ps.size() - 1; i >= 0; i--) {
-                    final Pattern p = ps.get(i);
-                    if (p instanceof Rec) {
-                        v = ((Rec<K, V>) p).get(key);
+        V v = (V) TObj.none();
+        final Object object = this.get();
+        if (object instanceof PMap)
+            v = ((PMap<K, V>) object).getOrDefault(key, (V) TObj.none());
+        else if (object instanceof PAnd) {
+            final List<Pattern> ps = ((PAnd) object).predicates(); // go backwards as recent AND has higher precedence
+            for (int i = ps.size() - 1; i >= 0; i--) {
+                final Pattern p = ps.get(i);
+                if (p instanceof Rec) {
+                    v = ((Rec<K, V>) p).get(key);
+                    if (!TObj.none().equals(v)) break;
+                } else if (p instanceof TSym) {
+                    final Rec<K, V> temp = ((TSym<Rec<K, V>>) p).getObject();
+                    if (null != temp) {
+                        v = temp.get(key);
                         if (!TObj.none().equals(v)) break;
-                    } else if (p instanceof TSym) {
-                        final Rec<K, V> temp = ((TSym<Rec<K, V>>) p).getObject();
-                        if (null != temp) {
-                            v = temp.get(key);
-                            if (!TObj.none().equals(v)) break;
-                        }
                     }
                 }
             }
-            return v;
-        }, this, key);
+        }
+        return v;
     }
 
     @Override
