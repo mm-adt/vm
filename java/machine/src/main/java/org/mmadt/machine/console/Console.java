@@ -89,16 +89,16 @@ public class Console {
                     }
                 } catch (final Exception e) {
                     // terminal.writer().println(Stream.of(e.getMessage().split("\n")).skip(1).limit(2).reduce((a, b) -> a + "\n" + b).get());
+                    if (null == e.getCause())
+                        throw e;
                     throw e.getCause();
                 }
-            } catch (final IllegalStateException e) {
-                terminal.writer().println(e.getMessage());
             } catch (final UserInterruptException e) {
                 break;
-            } catch (final Throwable t) {
-                terminal.writer().println(t.getMessage());
-                terminal.flush();
+            } catch (final Throwable e) {
+                terminal.writer().println(e.getMessage());
             }
+            terminal.flush();
         }
     }
 }
