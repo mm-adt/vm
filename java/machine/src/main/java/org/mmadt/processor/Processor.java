@@ -22,6 +22,7 @@
 
 package org.mmadt.processor;
 
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.util.IteratorUtils;
 
@@ -50,7 +51,7 @@ public interface Processor<S extends Obj, E extends Obj> {
     public Iterator<E> iterator(final Iterator<S> starts);
 
     public default Iterator<E> iterator(final S start) {
-        return this.iterator(IteratorUtils.of(start));
+        return this.iterator(IteratorUtils.of(start.access(IdInst.create())));
     }
 
     /**
