@@ -20,30 +20,46 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.impl.composite.inst.sideeffect;
+package org.mmadt.machine.object.model;
 
-import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
-import org.mmadt.machine.object.model.composite.inst.SideEffectInstruction;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.processor.util.FastProcessor;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class DefineInst<S extends Obj, V extends Obj> extends TInst implements SideEffectInstruction<S> {
+public interface MModel<S extends Obj> extends WithProduct<Str, S> {
 
-    private DefineInst(final Object symbol, final Object obj) {
-        super(PList.of(Tokens.DEFINE, symbol, obj));
+    public default Map<Str, S> java() {
+        return this.get();
+    }
+
+    public Str name();
+
+    @Override
+    public default MModel<S> put(final Str symbol, final S obj) {
+        this.java().put(symbol, obj);
+        return this;
     }
 
     @Override
-    public void accept(final S obj) {
-        obj.model().define(this.<S, Str>argument(0).mapArg(obj).java(), this.<S, V>argument(1).mapArg(obj));
+    public default MModel<S> drop(final Str symbol) {
+        this.java().remove(symbol);
+        return this;
     }
 
-    public static <S extends Obj, V extends Obj> DefineInst<S, V> create(final Object symbol, final Object obj) {
-        return new DefineInst<>(symbol, obj);
+    @Override
+    public default S get(final Str symbol) {
+        return this.java().get(symbol);
     }
+
+    @Override
+    public default Iterable<MModel<S>> iterable() {
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<MModel<S>, MModel<S>>(this.access()).iterator(this);
+    }
+
 }

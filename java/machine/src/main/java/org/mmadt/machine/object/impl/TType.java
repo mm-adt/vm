@@ -42,7 +42,7 @@ public final class TType implements Type {
 
     protected static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
-    private Model model = Model.MODELS.get("mm").get();
+    // private Model model = Model.MODELS.get("mm").get();
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
     private String label;                      // the ~bind string (if retrieved via a bind)
     private Pattern pattern;                   // a predicate for testing an instance of the type
@@ -58,7 +58,7 @@ public final class TType implements Type {
         this.symbol = symbol;
     }
 
-    @Override
+    /*@Override
     public Model model() {
         return this.model;
     }
@@ -68,7 +68,7 @@ public final class TType implements Type {
         final TType clone = this.clone();
         clone.model = model;
         return clone;
-    }
+    }*/
 
     @Override
     public String symbol() {

@@ -24,8 +24,6 @@ package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
-import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -55,7 +53,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default Rec<K, V> put(final K key, final V value) {
-        if (this.isInstance() || this.isType()) {
+        if ((this.isInstance() || this.isType()) && !key.isReference() && !value.isReference()) {
             this.java().put(key, value);
             return this;
         } else
@@ -64,7 +62,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default Rec<K, V> drop(final K key) {
-        if (this.isInstance() || this.isType()) {
+        if ((this.isInstance() || this.isType()) && !key.isReference()) {
             this.java().remove(key);
             return this;
         } else
@@ -93,7 +91,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
                 }
             }
         }
-       return v;
+        return v;
         // return v.isType() ? v.access(TInst.of(List.of(this.access(), GetInst.create(key)))).q(this.q()) : v;
     }
 

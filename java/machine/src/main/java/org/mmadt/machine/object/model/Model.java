@@ -41,16 +41,6 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.star;
  */
 public interface Model extends Cloneable {
 
-    public static Map<String, Supplier<Model>> MODELS = new HashMap<>() {{
-        put(Tokens.MM, () -> TModel.of(Tokens.MM));
-        put("social", () -> {
-            final Model model = TModel.of("social");
-            model.define("person", TRec.of("name", TStr.some(), "age", TInt.some()).symbol("person"));
-            model.define("social", model.get("person").q(star));
-            return model;
-        });
-    }};
-
     public String symbol();
 
     public <A extends Obj> TSym<A> sym(final String symbol);

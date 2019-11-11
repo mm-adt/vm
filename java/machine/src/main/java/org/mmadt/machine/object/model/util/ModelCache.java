@@ -20,46 +20,19 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model;
+package org.mmadt.machine.object.model.util;
 
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.PMap;
-import org.mmadt.machine.object.model.type.Pattern;
+import org.mmadt.machine.object.model.MModel;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Type extends Cloneable {
+public final class ModelCache {
 
-    /*public Model model();
+    public static final Map<String, MModel<?>> CACHE = new ConcurrentHashMap<>();
 
-    public Type model(final Model model);*/
 
-    public String symbol();
-
-    public Type symbol(final String symbol);
-
-    public Pattern pattern();
-
-    public Type pattern(final Pattern pattern);
-
-    public String label();
-
-    public Type label(final String label);
-
-    public Type access(final Inst access);
-
-    public Inst access();
-
-    public PMap<Obj, Obj> members();
-
-    public Type member(final Obj name, final Obj value);
-
-    public Type inst(final Inst instA, final Inst instB);
-
-    public Type insts(final PMap<Inst, Inst> insts);
-
-    public PMap<Inst, Inst> instructions();
-
-    public Type clone();
 }

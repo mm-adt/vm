@@ -76,7 +76,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <B extends WithOrderedRing<B>> Q<B> q();
 
-    public Model model();
+    // public Model model();
 
     public String label();
 

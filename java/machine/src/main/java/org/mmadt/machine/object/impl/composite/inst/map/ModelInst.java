@@ -20,38 +20,40 @@
  * a commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.impl.composite.inst.model;
+package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Model;
+import org.mmadt.machine.object.model.MModel;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.ModelCache;
+
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class ObjInst<S extends Obj, E extends Obj> extends TInst implements MapInstruction<S, E> {
-
+public final class ModelInst<S extends Obj, E extends Obj> extends TInst implements MapInstruction<S, E> {
 
     private final String name;
 
-
-    private ObjInst(final String name) {
+    private ModelInst(final String name) {
         super(PList.of(Tokens.EQUALS.concat(name)));
         this.name = name;
     }
 
     public E apply(final S obj) {
-        final Model model = Model.MODELS.get(this.name).get();
-        if (model.has(this.name))
-            return model.get(this.name).access(ObjInst.create(this.name));
+        final MModel model = ModelCache.CACHE.get(this.name);
+        if (model.java().containsKey(TStr.of(this.name)))
+            return (E) model.java().get(TStr.of(this.name));//.append(ModelInst.create(this.name);
         else
             return (E) obj;
     }
 
-    public static <S extends Obj, E extends Obj> ObjInst<S, E> create(final String name) {
-        return new ObjInst<>(name);
+    public static <S extends Obj, E extends Obj> ModelInst<S, E> create(final String name) {
+        return new ModelInst<>(name);
     }
 }

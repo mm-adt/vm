@@ -23,6 +23,7 @@
 package org.mmadt.language.compiler;
 
 import org.mmadt.machine.object.impl.TSym;
+import org.mmadt.machine.object.impl.TTModel;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TRec;
@@ -35,6 +36,7 @@ import org.mmadt.machine.object.model.type.algebra.WithOne;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
+import org.mmadt.machine.object.model.util.ModelCache;
 
 import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.AND;
@@ -59,6 +61,7 @@ import static org.mmadt.language.compiler.Tokens.LT;
 import static org.mmadt.language.compiler.Tokens.LTE;
 import static org.mmadt.language.compiler.Tokens.MAP;
 import static org.mmadt.language.compiler.Tokens.MINUS;
+import static org.mmadt.language.compiler.Tokens.MODEL;
 import static org.mmadt.language.compiler.Tokens.MULT;
 import static org.mmadt.language.compiler.Tokens.NEG;
 import static org.mmadt.language.compiler.Tokens.NEQ;
@@ -83,7 +86,7 @@ public final class Ranger {
     public static Obj getRange(final Inst inst, final Obj domain, final Model model) {
         final String op = inst.opcode().get();
         if (op.startsWith(Tokens.EQUALS))
-            return Model.MODELS.get(op.substring(1)).get().has(op.substring(1)) ? Model.MODELS.get(op.substring(1)).get().get(op.substring(1)) : domain;
+            return ModelCache.CACHE.containsKey(op.substring(1)) ? ModelCache.CACHE.get(op.substring(1)) : domain;
 
         switch (op) {
             case A:
@@ -134,7 +137,9 @@ public final class Ranger {
                 return map(domain, inst.get(TInt.oneInt()), inst);
             case MAP:
                 return map(domain, arg(inst, 1), inst);
-            case MINUS:
+            case MODEL:
+                return map(domain, TTModel.some(),inst);
+                case MINUS:
                 return endoMap(domain, inst);
             case MULT:
                 return endoMap(domain, inst);

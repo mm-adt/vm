@@ -25,6 +25,8 @@ package org.mmadt.machine.console;
 import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.OperatorHelper;
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TSym;
+import org.mmadt.machine.object.impl.TTModel;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
@@ -34,6 +36,7 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -41,6 +44,7 @@ import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.ModelCache;
 import org.parboiled.BaseParser;
 import org.parboiled.Rule;
 import org.parboiled.annotations.BuildParseTree;
@@ -80,6 +84,7 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule TRUE = Terminal(Tokens.TRUE);
     final Rule FALSE = Terminal(Tokens.FALSE);
     final Rule EQUALS = Terminal(Tokens.EQUALS);
+    final Rule DOUBLE_COLON = Terminal(Tokens.COLON + Tokens.COLON);
 
     /// built-int type symbols
     final Rule INT = Terminal(Tokens.INT);
@@ -89,6 +94,7 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule REC = Terminal(Tokens.REC);
     final Rule LST = Terminal(Tokens.LIST);
     final Rule INST = Terminal(Tokens.INST);
+    final Rule MODEL = Terminal(Tokens.MODEL);
 
     ///////////////
 
@@ -125,7 +131,9 @@ public class SimpleParser extends BaseParser<Object> {
                         Str(),
                         Rec(),
                         Lst(),
-                        Inst()),                                                                                    // obj
+                        Inst(),
+                        Model()),
+                       // Name()),                                                                                    // obj
                 Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                    // {quantifier}
                 Optional(MAPSFROM, Expression(), swap(), this.push(type(this.pop()).access((Inst) this.pop()))));   // <= inst
     }
@@ -153,6 +161,21 @@ public class SimpleParser extends BaseParser<Object> {
     @SuppressSubnodes
     Rule Field() {
         return Sequence(Expression(), COLON, Expression(), swap(), this.push(TRec.of(this.pop(), this.pop())));
+    }
+
+    @SuppressSubnodes
+    Rule Name() {
+        return Sequence(Word(), this.push(TSym.of(match().trim())));
+    }
+
+    @SuppressSubnodes
+    Rule Model() {
+        return FirstOf(
+                Sequence(MODEL, this.push(TTModel.some())),
+                Sequence(Word(), this.push(this.match().trim()),
+                        FirstOf(
+                                Sequence(DOUBLE_COLON, Rec(), swap(), this.push(TTModel.of(this.pop().toString(), (Rec<Str, Obj>) this.pop()))),
+                                Sequence(ACTION(ModelCache.CACHE.containsKey(this.peek())), this.push(ModelCache.CACHE.get(this.pop()))))));
     }
 
     @SuppressSubnodes
@@ -198,7 +221,8 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<PList<Obj>> args = new Var<>(new PList<>());
         return Sequence(
                 LBRACKET,
-                Sequence(Optional(EQUALS), Symbol()), opcode.set(match().trim()),                                           // opcode
+                FirstOf(Sequence(Sequence(EQUALS, Symbol()), opcode.set(match().trim()), ACTION(ModelCache.CACHE.containsKey(opcode.get().substring(1)))),               // opcode
+                        Sequence(Symbol(), opcode.set(match().trim()))),
                 ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop()))),    // arguments
                 RBRACKET, this.push(Instructions.compile(TInst.of(opcode.get(), args.get())))); // compiler grabs the instruction type
     }

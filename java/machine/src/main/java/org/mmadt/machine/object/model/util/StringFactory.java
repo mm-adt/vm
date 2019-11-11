@@ -25,6 +25,7 @@ package org.mmadt.machine.object.model.util;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.MModel;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
@@ -77,6 +78,15 @@ public final class StringFactory {
     public static String model(final Model model) {
         StringBuilder builder = new StringBuilder();
         builder.append(MODEL).append(model.get("db").get().toString()).append(NEWLINE);
+        return builder.toString();
+    }
+
+    public static String mmodel(final MModel model) {
+        StringBuilder builder = new StringBuilder();
+        if (null == model.name())
+            builder.append(MODEL);
+        else
+            builder.append(model.name().java()).append("::").append(model.get().toString());
         return builder.toString();
     }
 

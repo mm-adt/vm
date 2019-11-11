@@ -166,10 +166,10 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return (O) this;
     }
 
-    @Override
+    /*@Override
     public Model model() {
         return this.types.model();
-    }
+    }*/
 
     @Override
     public Obj type() {
