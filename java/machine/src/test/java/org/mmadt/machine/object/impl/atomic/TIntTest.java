@@ -47,6 +47,11 @@ import static org.mmadt.language.__.plus;
 final class TIntTest {
 
     @Test
+    void xxx() {
+        // System.out.println(IteratorUtils.list(TInt.some().access(start(3).plus(2).div(5)).iterable()));
+    }
+
+    @Test
     void testInstanceReferenceType() {
         Int instance = TInt.of(23);
         Int reference = TInt.of(1, 2).plus(TInt.of(2)).minus(TInt.of(7));

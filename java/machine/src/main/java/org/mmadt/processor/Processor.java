@@ -24,6 +24,7 @@ package org.mmadt.processor;
 
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
@@ -66,6 +67,10 @@ public interface Processor<S extends Obj, E extends Obj> {
 
         public static IllegalStateException processorIsCurrentlyRunning(final Processor processor) {
             return new IllegalStateException("The processor can not be started because it is currently running: " + processor);
+        }
+
+        public static IllegalStateException objDoesNotSupportInst(final Obj start, final Inst inst) {
+            return new IllegalStateException("error: " + start + " does not support " + inst.opcode().java() + ".");
         }
     }
 

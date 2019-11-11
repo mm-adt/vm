@@ -54,23 +54,26 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
     }
 
     private static <E extends Obj> Iterator<E> processTraverser(final E start, final Inst inst) {
-        if (inst instanceof BranchInstruction)
-            return ((BranchInstruction<E, E>) inst).distribute(start);
-        else if (inst instanceof FilterInstruction)
-            return ((FilterInstruction<E>) inst).testt(start) ? IteratorUtils.of(start) : EmptyIterator.instance();
-        else if (inst instanceof MapInstruction)
-            return IteratorUtils.of(((MapInstruction<E, E>) inst).apply(start));
-        else if (inst instanceof InitialInstruction)
-            return ((InitialInstruction<E>) inst).gett();
-        else if (inst instanceof ReduceInstruction)
-            return IteratorUtils.of(IteratorUtils.stream(((List<E>) start.get()).iterator()).
-                    reduce(((ReduceInstruction<E, E>) inst).getInitialValue(), ((ReduceInstruction<E, E>) inst)::apply));
-        else if (inst instanceof SideEffectInstruction) {
-            ((SideEffectInstruction) inst).accept(start);
-            return IteratorUtils.of(start);
-        } else
-            throw new UnsupportedOperationException("This is not implemented yet: " + inst + "--" + start);
-
+        try {
+            if (inst instanceof BranchInstruction)
+                return ((BranchInstruction<E, E>) inst).distribute(start);
+            else if (inst instanceof FilterInstruction)
+                return ((FilterInstruction<E>) inst).testt(start) ? IteratorUtils.of(start) : EmptyIterator.instance();
+            else if (inst instanceof MapInstruction)
+                return IteratorUtils.of(((MapInstruction<E, E>) inst).apply(start));
+            else if (inst instanceof InitialInstruction)
+                return ((InitialInstruction<E>) inst).gett();
+            else if (inst instanceof ReduceInstruction)
+                return IteratorUtils.of(IteratorUtils.stream(((List<E>) start.get()).iterator()).
+                        reduce(((ReduceInstruction<E, E>) inst).getInitialValue(), ((ReduceInstruction<E, E>) inst)::apply));
+            else if (inst instanceof SideEffectInstruction) {
+                ((SideEffectInstruction) inst).accept(start);
+                return IteratorUtils.of(start);
+            } else
+                throw new UnsupportedOperationException("This is not implemented yet: " + inst + "--" + start);
+        } catch (final ClassCastException e) {
+            throw Processor.Exceptions.objDoesNotSupportInst(start, inst);
+        }
     }
 
     @Override
@@ -91,7 +94,7 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
             else
                 stream = stream.flatMap(s -> IteratorUtils.stream(FastProcessor.processTraverser(s, inst)));
 
-           stream = stream.filter(s -> !s.q().isZero());
+            stream = stream.filter(s -> !s.q().isZero());
         }
         return stream.map(s -> (E) s.label(this.bytecode.label())).iterator();
     }
