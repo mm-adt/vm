@@ -85,11 +85,11 @@ class ParserTest {
             new TestArgs("[define,person,['name':str,'age':int{+}]{*}]"),
             new TestArgs("[define,person,['name':str,'age':[is,[gt,32]]]{*}]"),
             new TestArgs("[define,person,['loc':obj~z,'name':str{+}~x,'age':int~y]]"),
-            new TestArgs("[define,person,['name':str~x,'age':int] <= [db][is,[get,'name'][eq,str~x]]]"),
+            new TestArgs("[define,person,['name':str~x,'age':int]{?} <= [db][is,[get,'name'][eq,str~x]]]"),
             new TestArgs("[define,persons,['name':str,'age':int]{*} <= [db][get,'persons']\n" +
                     " -> [is,[get,'name'][eq,str~x]] => [ref,['name':str~x,'age':int]{?}]\n" +
                     " -> [is,[get,'age'][gt,int~x]] => [ref,['name':str,'age':[is,[gt,int~x]{2}]]]]"),
-            new TestArgs("[define,person,['name':str~x,'age':int] <= [db][is,[get,'name'][eq,str~x]]]"),
+            new TestArgs("[define,person,['name':str~x,'age':int]{?} <= [db][is,[get,'name'][eq,str~x]]]"),
             new TestArgs("[define,row,['col':bool|int|str]]"),
             new TestArgs("[define,row,[str:bool|int|str]]"),
             //new TestParameters(true, "[define,row,[@str:@bool|@int&gt(0)|@str]]", "[define,row,[@str:@bool|@int&(gt(0)|@str)]]"),
@@ -102,8 +102,8 @@ class ParserTest {
             new TestArgs("[define,db,['persons':obj~people]]"),
             new TestArgs("[ref,['name':str~x,'age':int]{?} <= [is,[get,'name'][eq,str~x]]]"),
             new TestArgs("[ref,int{*}]"),
-            new TestArgs("[ref,bool{*} <= [db][get,'V']]"),
-            new TestArgs("[ref,real{*} <= [db][get,'V']\n -> [dedup] => ]"),
+            new TestArgs("[ref,bool <= [eq,true]]"),
+            new TestArgs("[ref,real <= [plus,10.4]\n -> [dedup] => ]"),
             new TestArgs("[define,project,['outE':['edges';str]{*},'name':str,'label':str]]" +
                     "[define,edge,['inV':person,'label':str]]" +
                     "[define,person,['name':str,'age':int]]" +
@@ -111,8 +111,8 @@ class ParserTest {
                     " -> [dedup] => \n" +
                     " -> [is,[get,'label'][eq,str~x]] => [ref,project{*} <= [db][get,'V']\n" +
                     " -> [dedup] => ]]]"),
-            new TestArgs("[get,str <= [start,'name']]", "[get,(str <= [start,'name'])]"),
-            new TestArgs("[get,str <= [start,'name']]"),
+            new TestArgs("[get,str{2} <= [start,'name','age']]", "[get,(str{2} <= [start,'name','age'])]"),
+            new TestArgs("[get,str{2} <= [start,'name','age']]"),
             /*new TestParameters(true, "[[define,keyvalue,[@obj~k,@obj~v] <= ([key:@obj~k,val:@obj~v] <= [[db][get,kv][is,[[get,key][eq,@obj~k]]]])]]"), // TODO: access of type TType
             new TestParameters("[define,ff,[is,@bool]|[filter,@obj?]]"),
             new TestParameters("[define,ff,[is,@bool]]"),
@@ -122,7 +122,7 @@ class ParserTest {
             //new TestParameters("[model,rdb=>mm]"),
             new TestArgs("[model,rdb=>mm,[define,foo,int]]"),
             new TestArgs("[model,rdb=>mm,[define,foo,int][define,bar,str]]"),
-            new TestArgs("[ref,['name':'marko','age':int]{?} <= [db][get,'persons'][is,[get,'name'][eq,'marko']][get,'age'][gt,29]]"),
+            new TestArgs("[ref,['name':'marko','age':int]{?} <= [db][get,'persons'][is,[get,'name'][eq,'marko']]]"),
     };
 
 

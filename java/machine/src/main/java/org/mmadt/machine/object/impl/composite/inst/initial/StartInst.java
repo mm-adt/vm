@@ -29,6 +29,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.util.IteratorUtils;
 
@@ -50,10 +51,16 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
     }
 
     public static <S extends Obj> S create(final S source, final Object... arguments) {
-        return source.access(new StartInst<>(arguments)).q(arguments.length);
+        final StartInst<S> inst = StartInst.create(arguments);
+        return source.access(inst).q(inst.range().q());
     }
 
     public static <S extends Obj> StartInst<S> create(final Object... args) {
-        return new StartInst<>(args);
+        final StartInst<S> inst = new StartInst<>(args);
+        Obj kind = inst.args().isEmpty() ? TObj.none() : inst.args().get(0);
+        for (int i = 1; i < inst.args().size(); i++) {
+            kind = ObjectHelper.root(kind, inst.args().get(i)).q(kind.q().plus(inst.args().get(i).q()));
+        }
+        return (StartInst<S>) inst.domainAndRange(TObj.none(), kind);
     }
 }

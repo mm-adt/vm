@@ -25,7 +25,6 @@ package org.mmadt.language.compiler;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
-import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AccessInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
@@ -86,7 +85,6 @@ import static org.mmadt.language.compiler.Tokens.OR;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.PUT;
 import static org.mmadt.language.compiler.Tokens.Q;
-import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.SUM;
 import static org.mmadt.language.compiler.Tokens.ZERO;
 
@@ -163,8 +161,6 @@ public final class Instructions {
                 return PutInst.create(inst.get(0), inst.get(1));
             case Q:
                 return QInst.create();
-            case START:
-                return StartInst.create(inst.toArray(new Object[]{}));
             case SUM:
                 return SumInst.create();
             case ZERO:

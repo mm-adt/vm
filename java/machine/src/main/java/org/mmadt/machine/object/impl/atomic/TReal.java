@@ -170,6 +170,6 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real set(final Object value) {
-        return super.set(value.equals(-0.0f) ? 0.0f : value);
+        return super.set(Float.valueOf(-0.0f).equals(value) ? 0.0f : value);
     }
 }

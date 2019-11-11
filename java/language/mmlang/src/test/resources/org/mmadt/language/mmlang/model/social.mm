@@ -35,13 +35,13 @@
     -> [get,'street']                                      => [ref,str{50}
      -> [dedup] => ]]]
   [define,db,['persons':person{,200}
-    -> [is,[get,'name'][eq,str~a]]                         => [ref,person{,200}                            <= [db][get,'persons'][is,[get,'name'][eq,str~a]]
-      -> [is,[get,'age'][eq,int~c]]                        => [ref,person{?}                               <= [db][get,'persons'][is,[get,'name'][eq,str~a]][is,[get,'age'][eq,int~c]]]]
-    -> [is,[get,'age'][eq,int~a]]                          => [ref,person&['age':int~a]{,200}              <= [db][get,'persons'][is,[get,'age'][eq,int~a]]
-      -> [is,[get,'name'][eq,str~c]]                       => [ref,person&['age':int~a,'name':str~c]{?}    <= [db][get,'persons'][is,[get,'name'][eq,str~c]][is,[get,'age'][eq,int~a]]]]
-    -> [is,[get,'spouse'][count][eq,0]]                    => [ref,singles                                 <= [db][get,'persons'][is,[get,'spouse'][count][eq,0]]]
+    -> [is,[get,'name'][eq,str~a]]                         => [ref,person{0,200}                         <= [db][get,'persons'][is,[get,'name'][eq,str~a]]
+      -> [is,[get,'age'][eq,int~c]]                        => [ref,person{?}                             <= [db][get,'persons'][is,[get,'name'][eq,str~a]][is,[get,'age'][eq,int~c]]]]
+    -> [is,[get,'age'][eq,int~a]]                          => [ref,person&['age':int~a]{0,200}           <= [db][get,'persons'][is,[get,'age'][eq,int~a]]
+      -> [is,[get,'name'][eq,str~c]]                       => [ref,person&['age':int~a,'name':str~c]{?}  <= [db][get,'persons'][is,[get,'name'][eq,str~c]][is,[get,'age'][eq,int~a]]]]
+    -> [is,[get,'spouse'][count][eq,0]]                    => [ref,singles{?}                            <= [db][get,'persons'][is,[get,'spouse'][count][eq,0]]]
     -> [is,[get,'alive']]                                  => [ref,person&['address':address{0},
-                                                                           'age'    :int <= [is,[and,[a,int],[gt,75]]]]{*}]
+                                                                           'age'    :int{?} <= [is,[and,[a,int],[gt,75]]]]{*}]
     -> [order,[get,'age']]                                 => [id]
     -> [get,'address']                                     => [ref,address{,200}
           -> [order,[gt,[get,'state'|'city']]]             => [id]]]]]

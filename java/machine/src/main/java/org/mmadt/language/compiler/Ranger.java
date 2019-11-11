@@ -27,6 +27,7 @@ import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -37,10 +38,16 @@ import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
+import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.AND;
+import static org.mmadt.language.compiler.Tokens.BRANCH;
+import static org.mmadt.language.compiler.Tokens.COALESCE;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DB;
 import static org.mmadt.language.compiler.Tokens.DEDUP;
+import static org.mmadt.language.compiler.Tokens.DEFINE;
+import static org.mmadt.language.compiler.Tokens.DIV;
+import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
 import static org.mmadt.language.compiler.Tokens.ERROR;
 import static org.mmadt.language.compiler.Tokens.FILTER;
@@ -55,6 +62,8 @@ import static org.mmadt.language.compiler.Tokens.LTE;
 import static org.mmadt.language.compiler.Tokens.MAP;
 import static org.mmadt.language.compiler.Tokens.MINUS;
 import static org.mmadt.language.compiler.Tokens.MULT;
+import static org.mmadt.language.compiler.Tokens.NEG;
+import static org.mmadt.language.compiler.Tokens.NEQ;
 import static org.mmadt.language.compiler.Tokens.ONE;
 import static org.mmadt.language.compiler.Tokens.OR;
 import static org.mmadt.language.compiler.Tokens.ORDER;
@@ -67,21 +76,34 @@ import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.SUM;
 import static org.mmadt.language.compiler.Tokens.ZERO;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class Ranger {
+public final class Ranger {
 
-    static Obj getRange(final Inst inst, final Obj domain, final Model model) {
+    public static Obj getRange(final Inst inst, final Obj domain, final Model model) {
         final String op = inst.opcode().get();
         switch (op) {
+            case A:
+                return map(domain, TBool.some(), inst);
             case AND:
                 return map(domain, TBool.some(), inst);
+            case BRANCH:
+                return map(domain, inst.range(), inst);
+            case COALESCE:
+                return domain; // TODO
             case DB:
-                return model.get(DB);
+                return model.has(DB) ? model.get(DB) : domain;
+            case DEFINE:
+                return sideEffect(domain);
             case DEDUP:
                 return filter(domain, domain.q().one().peek(), inst);
+            case DIV:
+                return endoMap(domain, inst);
+            case DROP:
+                return sideEffect(domain);
             case COUNT:
                 return reduce(domain.q(), domain.q().peek());
             case ERROR:
@@ -109,13 +131,17 @@ final class Ranger {
             case PUT:
                 return inst.get(TInt.twoInt());
             case REF:
-                return inst.get(TInt.oneInt());
+                return map(domain, inst.get(TInt.oneInt()),inst);
             case MAP:
                 return map(domain, arg(inst, 1), inst);
             case MINUS:
                 return endoMap(domain, inst);
             case MULT:
                 return endoMap(domain, inst);
+            case NEG:
+                return endoMap(domain, inst);
+            case NEQ:
+                return map(domain, TBool.some(), inst);
             case ONE:
                 return map(domain, ((WithOne) domain).one(), inst);
             case ORDER:
@@ -129,9 +155,7 @@ final class Ranger {
             case RANGE: // TODO: none clip
                 return domain.q(min((Int) inst.get(TInt.twoInt()), TInt.of(max(domain.<Int>q().peek(), (Int) inst.get(TInt.oneInt())))), min(domain.<Int>q().last(), (Int) inst.get(TInt.twoInt())));
             case START:
-                return inst.args().isEmpty() ? TObj.none() :
-                        1 == inst.args().size() ? inst.args().get(0) :
-                                ObjectHelper.type(inst.args().get(0)).q(inst.args().size());
+                return StartInst.create(inst.args().toArray(new Object[]{})).range();
             case SUM:
                 return endoReduce(domain);
             case ZERO:
@@ -181,6 +205,10 @@ final class Ranger {
 
     private static Obj endoReduce(final Obj domain) {
         return reduce(domain, domain);
+    }
+
+    private static Obj sideEffect(final Obj domain) {
+        return domain;
     }
 
     private static Obj arg(final Inst arg, final int index) {

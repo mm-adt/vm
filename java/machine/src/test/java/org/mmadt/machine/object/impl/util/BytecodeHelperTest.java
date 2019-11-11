@@ -31,6 +31,7 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.util.BytecodeHelper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.language.__.mult;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,7 +40,7 @@ class BytecodeHelperTest {
 
     @Test
     void shouldExtractReference() {
-        final TRec person = TRec.of("name", TStr.some(), "age", TInt.some()).access(TInst.of("db").mult(TInst.of("get", "name")));
+        final TRec person = TRec.of("name", TStr.some(), "age", TInt.some()).access(mult(TInst.of("get", "name")));
         final Inst inst = TInst.of("ref", person);
         assertEquals(person, BytecodeHelper.reference(inst));
     }

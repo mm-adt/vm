@@ -62,19 +62,16 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.Objects;
 
+import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class Query {
 
     private Inst bytecode;
-    private Obj obj;
 
     Query(final Inst inst) {
-        if (inst.opcode().java().equals(Tokens.START) && !inst.args().isEmpty())
-            this.obj = inst.args().get(0).set(null);
-        else
-            this.obj = TObj.none();
         this.bytecode = inst;
     }
 
@@ -228,7 +225,7 @@ public final class Query {
     }
 
     public <A extends Obj> A obj() {
-        return (A) this.obj.access(this.bytecode);
+        return (A) this.bytecode.domain().access(this.bytecode);
     }
 
     @Override
@@ -251,6 +248,11 @@ public final class Query {
     private Query compose(final Inst inst) {
         this.bytecode = this.bytecode.mult(inst);
         return this;
+    }
+
+    private Obj arg(final Obj domain, final Object object) {
+        final Obj obj = ObjectHelper.from(object);
+        return object instanceof Query ? domain.clone().q(one).access(((Query) object).bytecode()).access() : obj;
     }
 
     private Obj[] args(final Object[] objects) {

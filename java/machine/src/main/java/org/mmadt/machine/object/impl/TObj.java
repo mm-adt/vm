@@ -42,6 +42,7 @@ import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.BytecodeHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
@@ -226,7 +227,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O access(final Inst access) {
         final TObj clone = this.clone();
-        clone.types = this.types.access(access);
+        clone.types = this.types.access(BytecodeHelper.apply(clone, access));
         return (O) clone;
     }
 

@@ -29,7 +29,7 @@
   > int~one          => 1
   -> [plus,2] => [plus,1]~a[plus,1][plus,3]~b[plus,-3]
   -> [plus,3] => [plus,5]~c[plus,-2]]
- [define,db,int{*} <= [start,1,2,3,4,5,6{3}]]
+ [define,db,int{8} <= [start,1,2,3,4,5,6{3}]]
  [define,play,real{*}
    -> [mult,2] => [db,[[plus,1];[plus,1]]]]
    // TODO: -> [mult,2] => real{2,3} <=[=rdb,[plus,1][plus,1]]]

@@ -40,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
+import static org.mmadt.language.__.mult;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
@@ -156,7 +157,7 @@ class BindingsTest {
     @Test
     void shouldBindAccess() {
         final Rec type1 = TRec.of("name", TStr.some().label("a"), "age", TInt.some())
-                .access(TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("a"))))));
+                .access(mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("a"))))));
         assertNotEquals(TInst.none(), type1.access());
         Rec rec1 = TRec.of("name", "marko", "age", 29);
         assertFalse(type1.constant());

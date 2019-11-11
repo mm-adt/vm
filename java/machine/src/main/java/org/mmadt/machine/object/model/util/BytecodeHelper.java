@@ -22,6 +22,11 @@
 
 package org.mmadt.machine.object.model.util;
 
+import org.mmadt.language.compiler.Ranger;
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TModel;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -84,4 +89,20 @@ public final class BytecodeHelper {
         return list;
     }
 
+
+    public static Inst apply(final Obj source, final Inst inst) {
+        Inst inst2 = IdInst.create();
+        if (null == inst || inst.<Inst>peek().opcode().java().equals(Tokens.ID))
+            return inst2.domainAndRange(source, source);
+        else {
+            Obj domain = source;
+            for (final Inst i : inst.iterable()) {
+                domain = i.opcode().java().equals(Tokens.START) ? TObj.none() : domain;
+                Obj range = Ranger.getRange(i, domain, TModel.of("ex"));
+                inst2 = inst2.mult(i.domainAndRange(domain, range));
+                domain = range;
+            }
+            return inst2;
+        }
+    }
 }
