@@ -90,6 +90,8 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
                 stream = IteratorUtils.stream(FastProcessor.processTraverser((E) TLst.of(stream.collect(Collectors.toList())), inst));
             else
                 stream = stream.flatMap(s -> IteratorUtils.stream(FastProcessor.processTraverser(s, inst)));
+
+           stream = stream.filter(s -> !s.q().isZero());
         }
         return stream.map(s -> (E) s.label(this.bytecode.label())).iterator();
     }

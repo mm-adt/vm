@@ -132,8 +132,8 @@ public class SimpleParser extends BaseParser<Object> {
                         Rec(),
                         Lst(),
                         Inst(),
-                        Model()),
-                       // Name()),                                                                                    // obj
+                        Model(),
+                        Name()),                                                                                    // obj
                 Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                    // {quantifier}
                 Optional(MAPSFROM, Expression(), swap(), this.push(type(this.pop()).access((Inst) this.pop()))));   // <= inst
     }

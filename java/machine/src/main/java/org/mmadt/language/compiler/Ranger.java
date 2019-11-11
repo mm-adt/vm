@@ -28,11 +28,18 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.type.algebra.WithOne;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.type.algebra.WithPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
@@ -50,6 +57,7 @@ import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
 import static org.mmadt.language.compiler.Tokens.ERROR;
+import static org.mmadt.language.compiler.Tokens.EXPLAIN;
 import static org.mmadt.language.compiler.Tokens.FILTER;
 import static org.mmadt.language.compiler.Tokens.GET;
 import static org.mmadt.language.compiler.Tokens.GROUPCOUNT;
@@ -83,6 +91,8 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
  */
 public final class Ranger {
 
+    // TODO: move range computing to the instruction's themselves and get rid of this class
+
     public static Obj getRange(final Inst inst, final Obj domain, final Model model) {
         final String op = inst.opcode().get();
         if (op.startsWith(Tokens.EQUALS))
@@ -106,6 +116,8 @@ public final class Ranger {
             case DIV:
                 return endoMap(domain, inst);
             case DROP:
+                return sideEffect(domain);
+            case EXPLAIN:
                 return sideEffect(domain);
             case COUNT:
                 return reduce(domain.q(), domain.q().peek());
@@ -138,11 +150,11 @@ public final class Ranger {
             case MAP:
                 return map(domain, arg(inst, 1), inst);
             case MODEL:
-                return map(domain, TTModel.some(),inst);
-                case MINUS:
+                return map(domain, TTModel.some(), inst);
+            case MINUS:
                 return endoMap(domain, inst);
             case MULT:
-                return endoMap(domain, inst);
+                return domain.isInstance() ? ((MultInst) inst).apply((WithMult) domain) : endoMap(domain, inst);
             case NEG:
                 return endoMap(domain, inst);
             case NEQ:
@@ -154,7 +166,7 @@ public final class Ranger {
             case OR:
                 return map(domain, TBool.some(), inst);
             case PLUS:
-                return endoMap(domain, inst);
+                return /*domain.isInstance() ? PlusInst.<WithPlus>create(inst.args().get(0)).apply(((WithPlus)domain)) :*/ endoMap(domain, inst);
             case Q:
                 return map(domain, domain.q(), inst);
             case RANGE: // TODO: none clip
@@ -162,7 +174,7 @@ public final class Ranger {
             case START:
                 return StartInst.create(inst.args().toArray(new Object[]{})).range();
             case SUM:
-                return endoReduce(domain);
+                return domain.isInstance() ? SumInst.<WithOrderedRing>create().apply((Q) domain.q().zero(), (WithOrderedRing) domain).q(one) : domain.q(one);
             case ZERO:
                 return map(domain, ((WithZero) domain).zero(), inst);
             default:

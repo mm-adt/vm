@@ -39,6 +39,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ModelInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
@@ -47,11 +48,11 @@ import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.QInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
-import org.mmadt.machine.object.impl.composite.inst.map.ModelInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -68,6 +69,7 @@ import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
+import static org.mmadt.language.compiler.Tokens.EXPLAIN;
 import static org.mmadt.language.compiler.Tokens.GET;
 import static org.mmadt.language.compiler.Tokens.GROUPCOUNT;
 import static org.mmadt.language.compiler.Tokens.GT;
@@ -129,6 +131,8 @@ public final class Instructions {
                 return DropInst.create(inst.get(0));
             case EQ:
                 return EqInst.create(inst.get(0));
+            case EXPLAIN:
+                return ExplainInst.create(inst.get(0));
             case GET:
                 return GetInst.create(inst.get(0));
             case GT:
