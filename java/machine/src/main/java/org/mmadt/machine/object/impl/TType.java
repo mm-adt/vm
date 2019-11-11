@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -41,7 +42,7 @@ public final class TType implements Type {
 
     protected static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
-    // private Model model;
+    private Model model = Model.MODELS.get("mm").get();
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
     private String label;                      // the ~bind string (if retrieved via a bind)
     private Pattern pattern;                   // a predicate for testing an instance of the type
@@ -55,6 +56,18 @@ public final class TType implements Type {
 
     private TType(final String symbol) {
         this.symbol = symbol;
+    }
+
+    @Override
+    public Model model() {
+        return this.model;
+    }
+
+    @Override
+    public Type model(final Model model) {
+        final TType clone = this.clone();
+        clone.model = model;
+        return clone;
     }
 
     @Override

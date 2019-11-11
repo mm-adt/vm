@@ -31,6 +31,10 @@ import org.mmadt.machine.object.model.type.Pattern;
  */
 public interface Type extends Cloneable {
 
+    public Model model();
+
+    public Type model(final Model model);
+
     public String symbol();
 
     public Type symbol(final String symbol);

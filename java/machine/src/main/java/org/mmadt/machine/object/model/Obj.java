@@ -76,6 +76,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <B extends WithOrderedRing<B>> Q<B> q();
 
+    public Model model();
+
     public String label();
 
     public Inst access();
@@ -278,7 +280,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O map(final O obj) {
-        return this.isInstance() & obj.isInstance() ? obj.q(this.q()) : this.append(MapInst.create(obj));
+        return obj.isInstance() ? obj.q(this.q()) : this.append(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {

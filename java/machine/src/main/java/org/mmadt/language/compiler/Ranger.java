@@ -22,7 +22,6 @@
 
 package org.mmadt.language.compiler;
 
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
@@ -36,7 +35,6 @@ import org.mmadt.machine.object.model.type.algebra.WithOne;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.AND;
@@ -76,7 +74,6 @@ import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.SUM;
 import static org.mmadt.language.compiler.Tokens.ZERO;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -85,6 +82,9 @@ public final class Ranger {
 
     public static Obj getRange(final Inst inst, final Obj domain, final Model model) {
         final String op = inst.opcode().get();
+        if (op.startsWith(Tokens.EQUALS))
+            return Model.MODELS.get(op.substring(1)).get().has(op.substring(1)) ? Model.MODELS.get(op.substring(1)).get().get(op.substring(1)) : domain;
+
         switch (op) {
             case A:
                 return map(domain, TBool.some(), inst);
@@ -131,7 +131,7 @@ public final class Ranger {
             case PUT:
                 return inst.get(TInt.twoInt());
             case REF:
-                return map(domain, inst.get(TInt.oneInt()),inst);
+                return map(domain, inst.get(TInt.oneInt()), inst);
             case MAP:
                 return map(domain, arg(inst, 1), inst);
             case MINUS:

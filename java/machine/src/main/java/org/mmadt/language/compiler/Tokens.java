@@ -120,4 +120,6 @@ public final class Tokens {
     public static final String TYPE = "type";
     public static final String UNFOLD = "unfold";
     public static final String ZERO = "zero";
+
+    public static final String MM = "mm";
 }

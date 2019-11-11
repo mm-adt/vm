@@ -79,6 +79,7 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule SEMICOLON = Terminal(Tokens.SEMICOLON);
     final Rule TRUE = Terminal(Tokens.TRUE);
     final Rule FALSE = Terminal(Tokens.FALSE);
+    final Rule EQUALS = Terminal(Tokens.EQUALS);
 
     /// built-int type symbols
     final Rule INT = Terminal(Tokens.INT);
@@ -197,7 +198,7 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<PList<Obj>> args = new Var<>(new PList<>());
         return Sequence(
                 LBRACKET,
-                Symbol(), opcode.set(match().trim()),                                           // opcode
+                Sequence(Optional(EQUALS), Symbol()), opcode.set(match().trim()),                                           // opcode
                 ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop()))),    // arguments
                 RBRACKET, this.push(Instructions.compile(TInst.of(opcode.get(), args.get())))); // compiler grabs the instruction type
     }

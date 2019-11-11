@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.model.composite;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
@@ -49,6 +50,10 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     public default List<Obj> java() {
         return this.get();
+    }
+
+    public default boolean modelMap() {
+        return this.<Inst>peek().opcode().java().startsWith(Tokens.EQUALS);
     }
 
     public Obj domain();

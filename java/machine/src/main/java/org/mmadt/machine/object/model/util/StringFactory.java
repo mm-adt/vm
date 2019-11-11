@@ -85,8 +85,12 @@ public final class StringFactory {
             builder.append(object.q());
         if (null != object.label())
             builder.append(TILDE).append(object.label());
-        if (!object.access().isOne())
-            builder.append(SPACE).append(MAPSFROM).append(SPACE).append(object.access());
+        if (!object.access().isOne()) {
+            builder.append(SPACE).append(MAPSFROM);
+            if (!object.access().modelMap())
+                builder.append(SPACE);
+            builder.append(object.access());
+        }
         if (null != object.members()) {
             builder.append(NEWLINE);
             for (final Map.Entry<Obj, Obj> member : object.members().entrySet()) {

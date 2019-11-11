@@ -27,6 +27,7 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
+import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -163,6 +164,11 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             this.typeSet = true;
         }
         return (O) this;
+    }
+
+    @Override
+    public Model model() {
+        return this.types.model();
     }
 
     @Override

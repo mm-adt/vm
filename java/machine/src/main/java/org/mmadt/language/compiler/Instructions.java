@@ -25,6 +25,7 @@ package org.mmadt.language.compiler;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AccessInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
@@ -46,9 +47,11 @@ import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.QInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
+import org.mmadt.machine.object.impl.composite.inst.model.ObjInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.DefineInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -63,6 +66,7 @@ import static org.mmadt.language.compiler.Tokens.ACCESS;
 import static org.mmadt.language.compiler.Tokens.AND;
 import static org.mmadt.language.compiler.Tokens.BRANCH;
 import static org.mmadt.language.compiler.Tokens.COUNT;
+import static org.mmadt.language.compiler.Tokens.DEFINE;
 import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
@@ -85,6 +89,7 @@ import static org.mmadt.language.compiler.Tokens.OR;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.PUT;
 import static org.mmadt.language.compiler.Tokens.Q;
+import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.SUM;
 import static org.mmadt.language.compiler.Tokens.ZERO;
 
@@ -105,6 +110,9 @@ public final class Instructions {
 
     private static Inst function(final List<Obj> inst) {
         final String opcode = inst.get(0).get();
+        if (opcode.startsWith(Tokens.EQUALS))
+            return ObjInst.create(opcode.substring(1));
+
         inst.remove(0); // drop the opcode
         switch (opcode) {
             case A:
@@ -117,6 +125,8 @@ public final class Instructions {
                 return BranchInst.create(inst.toArray(new Object[]{}));
             case COUNT:
                 return CountInst.create();
+            case DEFINE:
+                return DefineInst.create(inst.get(0), inst.get(1));
             case DIV:
                 return DivInst.create(inst.get(0));
             case DROP:
@@ -163,10 +173,12 @@ public final class Instructions {
                 return QInst.create();
             case SUM:
                 return SumInst.create();
+            case START:
+                return StartInst.create(inst.toArray(new Object[]{}));
             case ZERO:
                 return ZeroInst.create();
             default:
-                throw new RuntimeException("Unknown instruction: " + inst);
+                throw new RuntimeException("Unknown instruction: " + opcode);
         }
     }
 }
