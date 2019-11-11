@@ -32,6 +32,7 @@ import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.util.IteratorUtils;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -40,6 +41,7 @@ import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.lt;
 import static org.mmadt.language.__.or;
 import static org.mmadt.language.__.plus;
+import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,7 +50,7 @@ final class TIntTest {
 
     @Test
     void xxx() {
-        // System.out.println(IteratorUtils.list(TInt.some().access(start(3).plus(2).div(5)).iterable()));
+       //  System.out.println(IteratorUtils.list(TInt.some().access(start(3).plus(2).div(5)).iterable()));
     }
 
     @Test
@@ -75,7 +77,7 @@ final class TIntTest {
 
     @Test
     void shouldMonoid() {
-        final Obj x = __.start(TInt.of(1), 2, 3).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110))).obj();
+        final Obj x = start(TInt.of(1), 2, 3).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110))).obj();
         System.out.println(x);
         x.iterable().forEach(System.out::println);
     }
@@ -83,7 +85,7 @@ final class TIntTest {
     @Test
     void shouldMonoid2() {
         Int t = TInt.of(1, 2, 3).inst(TInst.of(Tokens.IS), SumInst.create()).inst(TInst.of(Tokens.MULT, TInt.some()), PlusInst.create(23));
-        final Obj x = __.start(t).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110), lt(10000))).obj();
+        final Obj x = start(t).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110), lt(10000))).obj();
         System.out.println(x);
         x.iterable().forEach(System.out::println);
     }

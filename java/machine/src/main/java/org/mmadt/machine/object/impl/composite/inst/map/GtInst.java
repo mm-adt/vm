@@ -25,14 +25,12 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.machine.object.model.util.ObjectHelper;
-
-import java.util.function.Supplier;
+import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,5 +47,10 @@ public final class GtInst<S extends WithOrder<S>> extends TInst implements MapIn
 
     public static <S extends WithOrder<S>> GtInst<S> create(final Object arg) {
         return new GtInst<>(arg);
+    }
+
+    public Bool computeRange(final Obj domain) {
+        Processor.Validators.testJavaTyping(domain, WithOrder.class, this);
+        return MapInstruction.super.computeRange(TBool.of().q(domain.q()));
     }
 }

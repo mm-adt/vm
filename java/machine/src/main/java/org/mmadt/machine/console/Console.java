@@ -29,7 +29,6 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.processor.util.FastProcessor;
 import org.parboiled.Parboiled;
@@ -79,17 +78,24 @@ public class Console {
             try {
                 line = reader.readLine(PROMPT);
                 if (line.equals(Q)) break;
-                final ParsingResult result = runner.run(line);
-                if (!result.valueStack.isEmpty()) {
-                    final Obj obj = (Obj) result.valueStack.pop();
-                    new FastProcessor<>(obj.access()).iterator(obj).forEachRemaining(o -> {
-                        terminal.writer().println(RESULT + o.toString());
-                    });
-                    terminal.flush();
+                try {
+                    final ParsingResult result = runner.run(line);
+                    if (!result.valueStack.isEmpty()) {
+                        final Obj obj = (Obj) result.valueStack.pop();
+                        new FastProcessor<>(obj.access()).iterator(obj).forEachRemaining(o -> {
+                            terminal.writer().println(RESULT + o.toString());
+                        });
+                        terminal.flush();
+                    }
+                } catch (final Exception e) {
+                    // terminal.writer().println(Stream.of(e.getMessage().split("\n")).skip(1).limit(2).reduce((a, b) -> a + "\n" + b).get());
+                    throw e.getCause();
                 }
+            } catch (final IllegalStateException e) {
+                terminal.writer().println(e.getMessage());
+            } catch (final UserInterruptException e) {
+                break;
             } catch (final Throwable t) {
-                if (t instanceof UserInterruptException)
-                    break;
                 terminal.writer().println(t.getMessage());
                 terminal.flush();
             }

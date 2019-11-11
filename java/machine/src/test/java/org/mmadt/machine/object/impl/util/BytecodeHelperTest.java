@@ -40,7 +40,7 @@ class BytecodeHelperTest {
 
     @Test
     void shouldExtractReference() {
-        final TRec person = TRec.of("name", TStr.some(), "age", TInt.some()).access(mult(TInst.of("get", "name")));
+        final TRec person = TRec.of("name", TStr.some(), "age", TInt.some()).access(TInst.of("get", "name"));
         final Inst inst = TInst.of("ref", person);
         assertEquals(person, BytecodeHelper.reference(inst));
     }

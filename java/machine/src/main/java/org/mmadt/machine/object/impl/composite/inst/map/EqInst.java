@@ -30,7 +30,9 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.processor.Processor;
 
 import java.util.function.Supplier;
 
@@ -49,5 +51,9 @@ public final class EqInst<S extends Obj> extends TInst implements MapInstruction
 
     public static <S extends Obj> EqInst<S> create(final Object arg) {
         return new EqInst<>(arg);
+    }
+
+    public Bool computeRange(final Obj domain) {
+        return TBool.some().q(domain.q());
     }
 }

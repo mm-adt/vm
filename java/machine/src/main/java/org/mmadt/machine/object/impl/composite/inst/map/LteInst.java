@@ -26,11 +26,13 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.processor.Processor;
 
 import java.util.function.Supplier;
 
@@ -49,6 +51,11 @@ public final class LteInst<S extends WithOrder<S>> extends TInst implements MapI
 
     public static <S extends WithOrder<S>> LteInst<S> create(final Object arg) {
         return new LteInst<>(arg);
+    }
+
+    public Bool computeRange(final Obj domain) {
+        Processor.Validators.testJavaTyping(domain, WithOrder.class, this);
+        return MapInstruction.super.computeRange(TBool.of().q(domain.q()));
     }
 
 }

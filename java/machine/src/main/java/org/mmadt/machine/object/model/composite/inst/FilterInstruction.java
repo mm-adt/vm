@@ -25,12 +25,15 @@ package org.mmadt.machine.object.model.composite.inst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 
-import java.util.function.Predicate;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface FilterInstruction<S extends Obj> extends Inst {
 
     boolean testt(S t);
+
+    public default S computeRange(final Obj domain) {
+        return domain.q(domain.q().peek().zero(), domain.q().mult(this.q()).last());
+    }
+
 }

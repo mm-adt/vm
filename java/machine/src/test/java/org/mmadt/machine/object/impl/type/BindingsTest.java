@@ -157,7 +157,7 @@ class BindingsTest {
     @Test
     void shouldBindAccess() {
         final Rec type1 = TRec.of("name", TStr.some().label("a"), "age", TInt.some())
-                .access(mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("a"))))));
+                .access(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name"))).mult(TInst.of("eq", TStr.some().label("a"))));
         assertNotEquals(TInst.none(), type1.access());
         Rec rec1 = TRec.of("name", "marko", "age", 29);
         assertFalse(type1.constant());

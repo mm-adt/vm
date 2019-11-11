@@ -70,7 +70,15 @@ public interface Processor<S extends Obj, E extends Obj> {
         }
 
         public static IllegalStateException objDoesNotSupportInst(final Obj start, final Inst inst) {
-            return new IllegalStateException("error: " + start + " does not support " + inst.opcode().java() + ".");
+            return new IllegalStateException("error: " + inst + " can not process " + start);
+        }
+    }
+
+    public class Validators {
+
+        public static void testJavaTyping(final Obj obj, final Class<? extends Obj> objClass, final Inst inst) {
+            if (!objClass.isInstance(obj))
+                throw Exceptions.objDoesNotSupportInst(obj, inst);
         }
     }
 

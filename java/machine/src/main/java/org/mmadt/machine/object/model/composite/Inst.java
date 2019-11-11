@@ -22,8 +22,11 @@
 
 package org.mmadt.machine.object.model.composite;
 
+import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -59,6 +62,12 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     public Obj domain();
 
     public Obj range();
+
+    public default Obj computeRange(final Obj domain) {
+        return Instructions.compile(TInst.of(this.opcode(), this.args().toArray(new Object[]{}))).computeRange(domain).q(new TQ(
+                domain.q().peek().mult(this.q().object().peek()),
+                domain.q().last().mult(this.q().object().last())));
+    }
 
     @Override
     public Inst or(final Obj obj);

@@ -22,25 +22,20 @@
 
 package org.mmadt.language.compiler;
 
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.TTModel;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
-import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
-import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.type.algebra.WithOne;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.type.algebra.WithPlus;
-import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
 import org.mmadt.machine.object.model.util.ModelCache;
@@ -104,7 +99,7 @@ public final class Ranger {
             case AND:
                 return map(domain, TBool.some(), inst);
             case BRANCH:
-                return map(domain, inst.range(), inst);
+                return map(domain, domain, inst);
             case COALESCE:
                 return domain; // TODO
             case DB:
@@ -114,7 +109,7 @@ public final class Ranger {
             case DEDUP:
                 return filter(domain, domain.q().one().peek(), inst);
             case DIV:
-                return endoMap(domain, inst);
+                return inst.computeRange(domain);
             case DROP:
                 return sideEffect(domain);
             case EXPLAIN:
@@ -124,25 +119,25 @@ public final class Ranger {
             case ERROR:
                 throw new RuntimeException("Compilation error: " + domain + "::" + inst);
             case EQ:
-                return map(domain, TBool.some(), inst);
+                return inst.computeRange(domain);
             case FILTER:
                 return filter(domain, inst);
             case GET:
-                return map(domain, ((WithProduct) TSym.fetch(domain)).get(inst.get(TInt.oneInt())), inst);
+                return inst.computeRange(domain);
             case GT:
-                return map(domain, TBool.some(), inst);
+                return inst.computeRange(domain);
             case GTE:
-                return map(domain, TBool.some(), inst);
+                return inst.computeRange(domain);
             case GROUPCOUNT:
                 return TRec.of(arg(inst, 1).q(inst.q()), domain.q().peek().set(null)).q(one);
             case ID:
                 return endoMap(domain, inst);
             case IS:
-                return filter(domain, inst);
+                return inst.computeRange(domain);
             case LT:
-                return map(domain, TBool.some(), inst);
+                return inst.computeRange(domain);
             case LTE:
-                return map(domain, TBool.some(), inst);
+                return inst.computeRange(domain);
             case PUT:
                 return inst.get(TInt.twoInt());
             case REF:
@@ -152,9 +147,9 @@ public final class Ranger {
             case MODEL:
                 return map(domain, TTModel.some(), inst);
             case MINUS:
-                return endoMap(domain, inst);
+                return inst.computeRange(domain);
             case MULT:
-                return domain.isInstance() ? ((MultInst) inst).apply((WithMult) domain) : endoMap(domain, inst);
+                return MultInst.create(inst.args().get(0)).computeRange(domain);
             case NEG:
                 return endoMap(domain, inst);
             case NEQ:
@@ -166,7 +161,7 @@ public final class Ranger {
             case OR:
                 return map(domain, TBool.some(), inst);
             case PLUS:
-                return /*domain.isInstance() ? PlusInst.<WithPlus>create(inst.args().get(0)).apply(((WithPlus)domain)) :*/ endoMap(domain, inst);
+                return inst.computeRange(domain);
             case Q:
                 return map(domain, domain.q(), inst);
             case RANGE: // TODO: none clip

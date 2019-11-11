@@ -23,11 +23,14 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -47,5 +50,8 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst implement
         return new GetInst<>(arg);
     }
 
-
+    public V computeRange(final Obj domain) {
+//        Processor.Validators.testJavaTyping(domain, WithProduct.class,this);
+        return MapInstruction.super.computeRange(this.apply((WithProduct)TSym.fetch(domain)));
+    }
 }

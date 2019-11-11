@@ -24,14 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
-import org.mmadt.machine.object.model.type.algebra.WithMult;
-import org.mmadt.machine.object.model.util.ObjectHelper;
-
-import java.util.function.Supplier;
+import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,5 +45,10 @@ public final class MinusInst<S extends WithMinus<S>> extends TInst implements Ma
 
     public static <S extends WithMinus<S>> MinusInst<S> create(final Object arg) {
         return new MinusInst<>(arg);
+    }
+
+    public S computeRange(final Obj domain) {
+        Processor.Validators.testJavaTyping(domain, WithMinus.class, this);
+        return MapInstruction.super.computeRange(domain);
     }
 }
