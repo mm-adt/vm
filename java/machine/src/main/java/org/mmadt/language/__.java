@@ -46,6 +46,10 @@ public class __ {
         return create().count();
     }
 
+    public static Query dedup(final Object... projections) {
+        return create().dedup(projections);
+    }
+
     public static Query div(final Object object) {
         return create().div(object);
     }

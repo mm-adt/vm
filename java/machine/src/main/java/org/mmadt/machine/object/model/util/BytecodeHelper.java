@@ -107,7 +107,9 @@ public final class BytecodeHelper {
             for (final Inst i : inst.iterable()) {
                 if (i.args().size() == 1 && i.args().get(0) instanceof Inst) {
                     i.<PList<Obj>>get().set(1, apply(domain.q(Q.Tag.one), (Inst) i.args().get(0).clone()));
-                    range = ((Inst) i.args().get(0)).range().q(domain.q());
+                    range = computeRange(i, i instanceof MapInstruction ?
+                            ((Inst) i.args().get(0)).range().q(domain.q()) :  // maps go for range    (this needs to be cleaner)
+                            ((Inst) i.args().get(0)).domain().q(domain.q())); // filters go for domain
                 } else
                     range = computeRange(i, domain);
                 inst2 = inst2.mult(i.domainAndRange(domain, range));

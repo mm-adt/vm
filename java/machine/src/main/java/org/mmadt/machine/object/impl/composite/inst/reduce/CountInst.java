@@ -25,6 +25,7 @@ package org.mmadt.machine.object.impl.composite.inst.reduce;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
@@ -52,6 +53,6 @@ public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extend
 
     @Override
     public Obj computeRange(final Obj domain) {
-        return (domain.q().constant() ? domain.q().peek() : domain.q().set(null)).q(one);
+        return (domain.q().constant() ? domain.q().peek() : domain.q().object().set(null).access((Inst) null)).q(one); // TODO: garbage
     }
 }

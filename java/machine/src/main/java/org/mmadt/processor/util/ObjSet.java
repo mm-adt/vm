@@ -47,14 +47,13 @@ public final class ObjSet<S extends Obj> extends AbstractSet<S> implements Set<S
     private final Map<S, S> map = Collections.synchronizedMap(new LinkedHashMap<>());
 
     @SafeVarargs
-    public static <S extends Obj> ObjSet<S> create(final S obj, final S... objs) {
-        final ObjSet<S> set = new ObjSet<>(obj);
+    public static <S extends Obj> ObjSet<S> create(final S... objs) {
+        final ObjSet<S> set = new ObjSet<>();
         Collections.addAll(set, objs);
         return set;
     }
 
-    private ObjSet(final S obj) {
-        this.add(obj);
+    private ObjSet() {
     }
 
     @Override

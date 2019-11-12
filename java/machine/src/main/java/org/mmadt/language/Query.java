@@ -24,6 +24,7 @@ package org.mmadt.language;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
@@ -91,7 +92,7 @@ public final class Query {
     }
 
     public Query dedup(final Object... objects) {
-        return this.compose(TInst.of(Tokens.DEDUP, args(objects)));
+        return this.compose(DedupInst.create(objects));
     }
 
     public Query div(final Object obj) {

@@ -25,6 +25,7 @@ package org.mmadt.processor.util;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
@@ -57,6 +58,10 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
         try {
             if (inst instanceof BranchInstruction)
                 return ((BranchInstruction<E, E>) inst).distribute(start);
+            else if (inst instanceof BarrierInstruction)
+                return IteratorUtils.stream(((List<E>) start.get()).iterator()).
+                        map(e -> ((BarrierInstruction<E, ObjSet<E>>) inst).apply(e, ((BarrierInstruction<E, ObjSet<E>>) inst).getInitialValue())).
+                        reduce(((BarrierInstruction<E, ObjSet<E>>) inst)::merge).map(x -> ((BarrierInstruction<E, ObjSet<E>>) inst).createIterator(x)).get();
             else if (inst instanceof FilterInstruction)
                 return ((FilterInstruction<E>) inst).testt(start) ? IteratorUtils.of(start) : EmptyIterator.instance();
             else if (inst instanceof MapInstruction)
@@ -89,7 +94,7 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
     public Iterator<E> iterator(final Iterator<S> starts) {
         Stream<E> stream = (Stream<E>) IteratorUtils.stream(starts);
         for (final Inst inst : this.bytecode.iterable()) {
-            if (inst instanceof ReduceInstruction)
+            if (inst instanceof ReduceInstruction || inst instanceof BarrierInstruction)
                 stream = IteratorUtils.stream(FastProcessor.processTraverser((E) TLst.of(stream.collect(Collectors.toList())), inst));
             else
                 stream = stream.flatMap(s -> IteratorUtils.stream(FastProcessor.processTraverser(s, inst)));

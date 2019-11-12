@@ -268,8 +268,8 @@ public final class StringFactory {
             return LCURL + quantifier.peek() + RCURL;
         else
             return LCURL +
-                    (quantifier.peek().get().equals(Integer.MIN_VALUE) ? EMPTY : quantifier.peek()) + COMMA +
-                    (quantifier.last().get().equals(Integer.MAX_VALUE) ? EMPTY : quantifier.last()) + RCURL;
+                    (quantifier.peek().isMin() ? EMPTY : quantifier.object().peek()) + COMMA +
+                    (quantifier.last().isMax() ? EMPTY : quantifier.object().last()) + RCURL;
     }
 
     public static String string(final Str string) {

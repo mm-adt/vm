@@ -56,6 +56,8 @@ final class TIntTest {
     void xxx() {
      // System.out.println(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(start(2,4,7).is(gt(6)).bytecode()))));
       System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(mult(1)).count()).count().sum().count()))).iterable()));
+
+     start(1, 2).plus(7).dedup().count().obj().iterable().forEach(System.out::println);
     }
 
     @Test
