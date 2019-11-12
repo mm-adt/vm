@@ -1,0 +1,57 @@
+Computing via Model Coupling
+----------------------------
+
+
+The `obj` in mm-ADT and the traverser in TP3 wrap some primitive data type and 
+decorate the primitive with extra computational metadata. These decorations extend
+what would be limited to regular expression into a more expressive process (why? -- memory).
+
+What sort of decorations are there?
+
+1. Path history with bifurcating objs (at branches) diverge from a shared geneology.
+2. Loop stack w/ labels for pushing how many times a paritcular [repeat] has gone through.
+3. Sack w/ labels for storing side data such as monoidal structures (compressable) -- counters, weights, etc.
+4. Positive naturals as bulk (in TP3), but now arbitrary rings as coefficients in mm-ADT.
+
+mm-ADT has to primary concepts:
+
+	obj
+	inst
+
+You access objects and you rewrite instructions.
+
+<- rewrite
+<= access
+
+The morphisms begin at once!
+
+The smallest object is the primitive value: int, bool, str, real.
+
+
+
+
+```
+
+[int,                                                                       // the primitive data type
+ [(str,obj)*] <=[=path]                                                     // a path map [http://tinkerpop.apache.org/docs/current/reference/#path-step]
+              <-[-path] * [a,map~x] <- x + obj{0} <=[=path][put,'a',[id]],  // any time a map-instruction evaluated on an instance of this form, the current obj is stored in the [=path] storage system (main-memory).
+ int          <=[=loop]                                                     // the loop counter for repeat (not a stack, so no nested loops allowed)
+              <-[-loop] * [emit]  <- [=loop][drop]   |                      // drop the loop counter when breaking out of the loop
+                          [until] <- [=loop][plus,1] |                      // incr the loop counter when entering an predicate check
+                          [repeat <- [error,'no nested loops']]]            // no nested loops allowed -- its just an int counter
+```
+
+
+The "Traverser Monad" gets tatted up with data structures and instruction rewrites as needed to express the semantics
+of the operations...just build and build out the primitive data type with complexity via obj and inst mappings.
+
+
+Assume the above structure containing the primitive value, a labeled path map, and a int loop counter 
+is called OPR_Traverser -- traverser.
+ 
+[start,t1,t2][plus,2]
+               |________ this triggers the rewrite_______
+                                                        |
+                                                    [start,t1,t2][branch,obj{0} <=[=path][put,'a',[id]],
+                                                                         [plus,2]]
+
