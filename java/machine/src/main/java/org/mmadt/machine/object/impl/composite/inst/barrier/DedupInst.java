@@ -73,7 +73,7 @@ public final class DedupInst<S extends Obj> extends TInst implements BarrierInst
         return new DedupInst<>(projections);
     }
 
-    public Obj computeRange(final Obj domain) {
-        return domain.set(null).q(domain.q().peek().one(), domain.q().last());
+    public S computeRange(final Obj domain) {
+        return BarrierInstruction.super.computeRange(domain.set(null).q(domain.q().peek().one(), domain.q().last()));
     }
 }

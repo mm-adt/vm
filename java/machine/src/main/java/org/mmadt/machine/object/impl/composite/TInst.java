@@ -49,8 +49,8 @@ public class TInst extends TObj implements Inst {
     private static final Inst NONE = new TInst(null).q(0);
     private static final Inst ONE = new TInst(PList.of(Tokens.ID));
 
-    private Obj domain = TObj.none();
-    private Obj range = TObj.none();
+    public Obj domain = TObj.none();
+    public Obj range = TObj.none();
 
     protected TInst(final Object value) {
         super(value);

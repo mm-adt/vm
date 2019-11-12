@@ -34,6 +34,7 @@ import org.mmadt.machine.object.model.composite.Inst;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,7 +47,7 @@ class TypingTest {
         Inst previous = null;
         for (final Inst inst : bc.iterable()) {
             //System.out.println(bc.and().get(i).domain() + " ==> " + bc.and().get(i).range());
-            //assertNotEquals(inst.range(), TObj.none()); // just to make sure we are not propagating none's through
+            assertNotEquals(inst.range(), TObj.none()); // just to make sure we are not propagating none's through
             if (null != previous)
                 assertEquals(previous.range(), inst.domain());
             else
@@ -56,7 +57,6 @@ class TypingTest {
         // bytecode domain=>range
         assertEquals(bc.domain(), TObj.none());
         assertEquals(bc.range(), bc.<Inst>last().range());
-        // assertEquals(bc.range(), bc.<Inst>tail().range());
         return bc;
     }
 

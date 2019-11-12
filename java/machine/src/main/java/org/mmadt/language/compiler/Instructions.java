@@ -104,7 +104,7 @@ public final class Instructions {
 
     public static Inst compile(final Inst inst) {
         final PList<Obj> args = new PList<>();
-        args.addAll(inst.peek().<PList<Obj>>get());
+        args.addAll(inst.<PList<Obj>>get());
         // model handling
         final String opcode = args.get(0).get();
         if (opcode.startsWith(Tokens.EQUALS))

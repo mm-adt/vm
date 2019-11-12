@@ -80,6 +80,9 @@ class TypeTest {
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2)),
                     start(1, 2).plus(TInt.of(7)).dedup()),
             new TestArgs<>(List.of(
+                    NONE, TInt.some(2), TInt.some(2), TInt.some(10, 20)),
+                    start(1, 2).plus(TInt.of(7)).dedup().q(10)),
+            new TestArgs<>(List.of(
                     NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some()),
                     start(1, 2).plus(7).dedup().count()),
             new TestArgs<>(List.of(
@@ -113,13 +116,17 @@ class TypeTest {
                     NONE, TInt.some(4), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
                     start(1, 2, 3, 4).map(plus(3).gt(2)).is(id())),
             new TestArgs<>(List.of(
+                    NONE, TInt.some(4), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 28)),
+                    start(1, 2, 3, 4).map(plus(3).gt(2)).is(id()).q(7)),
+            new TestArgs<>(List.of(
                     NONE, TInt.some(4), List.of(List.of(TInt.some(), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
                     start(1, 2, 3, 4).map(map(plus(3).gt(2))).is(eq(true).id())),
             new TestArgs<>(List.of(
                     NONE, TStr.some().q(4), List.of(List.of(TStr.some(), TStr.some())), TRec.of(TStr.some(), TInt.some())),
                     start("a", "b", "c", "d").groupCount(plus("c"))),
-
-
+            new TestArgs<>(List.of(
+                    NONE, TStr.some().q(4), List.of(List.of(TStr.some().q(4), TStr.some().q(4)), List.of(TStr.some().q(4), TStr.some().q(4)), List.of(TStr.some().q(4), TStr.some().q(4)), List.of(TStr.some().q(4), TStr.some().q(4))), TStr.some().q(8), List.of(List.of(TStr.some(), TStr.some())), TStr.some().q(8)),
+                    start("a", "b", "c", "d").branch(id(), id(), id(), id()).plus(id())),
     };
 
     @TestFactory
@@ -128,7 +135,7 @@ class TypeTest {
                 .map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> {
                     assumeFalse(tp.ignore);
                     // System.out.println(tp.input.bytecode() + "\n=>" + tp.expected);
-                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(TObj.none().access(((Query) tp.input).bytecode()).access()));
+                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(TObj.none().access(((Query) tp.input)).access()));
                 }));
     }
 }
