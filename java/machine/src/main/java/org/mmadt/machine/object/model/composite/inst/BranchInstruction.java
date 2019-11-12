@@ -64,14 +64,10 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst {
         this.<Inst>args().forEach(i -> {
             ((TInst) i).domain = domain;
             ((TInst) i).range = i.computeRange(domain);
-        });
-
+        }); // TODO: I don't think we should ever have a domain/range specification for an instruction (it must always be determined via type obj propagation)
         final Obj range = this.getBranches().values().stream().
                 flatMap(List::stream).
-                map(i -> {
-                    ((TInst) i).domain = domain;
-                    return ((TInst) i).range = i.computeRange(domain);
-                }).
+                map(i -> i.computeRange(domain)).
                 reduce((a, b) -> ((a.isInstance() && b.isInstance() && a.equals(b)) ?
                         a :
                         ObjectHelper.root(a, b))

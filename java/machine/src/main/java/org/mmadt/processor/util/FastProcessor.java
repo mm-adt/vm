@@ -34,7 +34,6 @@ import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.composite.inst.SideEffectInstruction;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
-import org.mmadt.util.EmptyIterator;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
@@ -63,7 +62,7 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
                         map(e -> ((BarrierInstruction<E, ObjSet<E>>) inst).apply(e, ((BarrierInstruction<E, ObjSet<E>>) inst).getInitialValue())).
                         reduce(((BarrierInstruction<E, ObjSet<E>>) inst)::merge).map(x -> ((BarrierInstruction<E, ObjSet<E>>) inst).createIterator(x)).get();
             else if (inst instanceof FilterInstruction)
-                return ((FilterInstruction<E>) inst).testt(start) ? IteratorUtils.of(start) : EmptyIterator.instance();
+                return IteratorUtils.of(((FilterInstruction<E>) inst).testt(start));
             else if (inst instanceof MapInstruction)
                 return IteratorUtils.of(((MapInstruction<E, E>) inst).apply(start));
             else if (inst instanceof InitialInstruction)

@@ -23,14 +23,13 @@
 package org.mmadt.machine.object.impl.composite.inst.filter;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
-import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithProduct;
+
+import java.util.Optional;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,8 +40,8 @@ public final class IsInst<S extends Obj> extends TInst implements FilterInstruct
         super(PList.of(Tokens.IS, argument));
     }
 
-    public boolean testt(final S obj) {
-        return !obj.is(this.<S, Bool>argument(0).mapArg(obj)).q().isZero();
+    public S testt(final S obj) {
+        return obj.is(this.<S, Bool>argument(0).mapArg(obj));
     }
 
     public static <S extends Obj> IsInst<S> create(final Object arg) {

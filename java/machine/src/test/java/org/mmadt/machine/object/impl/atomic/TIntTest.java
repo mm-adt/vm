@@ -38,6 +38,7 @@ import org.mmadt.util.IteratorUtils;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.id;
 import static org.mmadt.language.__.is;
@@ -58,6 +59,8 @@ final class TIntTest {
       System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(mult(1)).count()).count().sum().count()))).iterable()));
 System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TStr.some().access(start("a").branch(id(), id(), id(), id()).plus(id())))).iterable()));
      start(1, 2).plus(7).dedup().count().obj().iterable().forEach(System.out::println);
+
+     start(TInt.some(5)).plus(3).mult(5).is(eq(43)).obj().iterable().forEach(System.out::println);
     }
 
     @Test
