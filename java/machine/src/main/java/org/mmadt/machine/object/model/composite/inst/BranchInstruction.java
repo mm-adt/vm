@@ -33,11 +33,12 @@ import org.mmadt.util.MultiIterator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst {
+public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, Function<S,E> {
 
     public Map<Inst, List<Inst>> getBranches();
 
@@ -58,6 +59,10 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst {
             }
         }
         return itty;
+    }
+
+    public default E apply(final S obj) {
+        return obj.set(distribute(obj));
     }
 
     public default E computeRange(final Obj domain) {

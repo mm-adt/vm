@@ -43,9 +43,9 @@ final class FilterStep<S extends Obj> extends AbstractStep<S, S, FilterInstructi
         if (null == this.nextObj)
             throw FastNoSuchElementException.instance();
         else {
-            final S traverser = this.nextObj;
+            final S obj = this.nextObj;
             this.nextObj = null;
-            return traverser;
+            return obj;
         }
     }
 
@@ -58,7 +58,7 @@ final class FilterStep<S extends Obj> extends AbstractStep<S, S, FilterInstructi
     private void stageNextObj() {
         while (null == this.nextObj && this.previousStep.hasNext()) {
             final S temp = this.previousStep.next();
-            this.nextObj = this.inst.testt(temp);
+            this.nextObj = this.inst.apply(temp);
             if (this.nextObj.q().isZero())
                 this.nextObj = null;
         }

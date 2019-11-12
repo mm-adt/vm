@@ -27,6 +27,7 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
+import org.mmadt.machine.object.model.composite.inst.FlatMapInstruction;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
@@ -68,8 +69,8 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
                 nextStep = new BranchStep<>(previousStep, (BranchInstruction<S, E>) function);
             else if (function instanceof FilterInstruction)
                 nextStep = new FilterStep<>(previousStep, (FilterInstruction<S>) function);
-                // else if (function instanceof FlatMapFunction)
-                //     nextStep = new FlatMapStep<>(previousStep, (FlatMapFunction<S, E>) function);
+            else if (function instanceof FlatMapInstruction)
+                nextStep = new FlatMapStep<>(previousStep, (FlatMapInstruction<S, E>) function);
             else if (function instanceof MapInstruction)
                 nextStep = new MapStep<>(previousStep, (MapInstruction<S, E>) function);
             else if (function instanceof InitialInstruction)

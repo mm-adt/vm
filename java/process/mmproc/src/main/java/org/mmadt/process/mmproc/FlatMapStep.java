@@ -54,7 +54,7 @@ final class FlatMapStep<S extends Obj, E extends Obj> extends AbstractStep<S, E,
     private void stageNextObj() {
         while (!this.iterator.hasNext()) {
             if (this.previousStep.hasNext())
-                this.iterator = this.inst.apply(this.previousStep.next());
+                this.iterator = (Iterator<E>) this.inst.apply(this.previousStep.next()).iterable().iterator();
             else
                 return;
         }

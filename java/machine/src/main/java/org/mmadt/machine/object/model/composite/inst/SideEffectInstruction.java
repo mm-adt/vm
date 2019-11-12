@@ -26,12 +26,19 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface SideEffectInstruction<S extends Obj> extends Inst, Consumer<S> {
+public interface SideEffectInstruction<S extends Obj> extends Inst, Consumer<S>, Function<S, S> {
 
     @Override
     public void accept(final S obj);
+
+    @Override
+    public default S apply(final S obj) {
+        this.accept(obj);
+        return obj;
+    }
 }

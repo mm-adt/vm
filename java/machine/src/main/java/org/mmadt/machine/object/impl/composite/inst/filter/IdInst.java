@@ -37,7 +37,7 @@ public final class IdInst<S extends Obj> extends TInst implements FilterInstruct
         super(PList.of(Tokens.ID));
     }
 
-    public S testt(final S s) {
+    public S apply(final S s) {
         return s;
     }
 

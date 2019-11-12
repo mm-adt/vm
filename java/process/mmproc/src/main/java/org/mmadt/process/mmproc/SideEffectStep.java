@@ -41,9 +41,7 @@ final class SideEffectStep<S extends Obj> extends AbstractStep<S, S, SideEffectI
 
     @Override
     public S next() {
-        final S obj = this.previousStep.next();
-        this.inst.accept(obj);
-        return obj;
+        return this.inst.apply(this.previousStep.next());
     }
 
     @Override

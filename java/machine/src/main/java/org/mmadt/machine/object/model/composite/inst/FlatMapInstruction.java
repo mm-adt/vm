@@ -25,14 +25,13 @@ package org.mmadt.machine.object.model.composite.inst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 
-import java.util.Iterator;
 import java.util.function.Function;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface FlatMapInstruction<S extends Obj, E extends Obj> extends Inst, Function<S, Iterator<E>> {
+public interface FlatMapInstruction<S extends Obj, E extends Obj> extends Inst, Function<S, E> {
 
     @Override
-    public Iterator<E> apply(final S obj);
+    public E apply(final S obj);
 }

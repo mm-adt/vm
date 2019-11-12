@@ -45,11 +45,6 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.START));
     }
 
-    @Override
-    public Iterator<S> gett() {
-        return IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(TObj.none()));
-    }
-
     public static <S extends Obj> S create(final S source, final Object... arguments) {
         final StartInst<S> inst = StartInst.create(arguments);
         return source.access(inst).q(inst.range().q());
@@ -70,5 +65,10 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
             kind = ObjectHelper.root(kind, this.args().get(i)).q(kind.q().plus(this.args().get(i).q()));
         }
         return kind;
+    }
+
+    @Override
+    public S apply(final S s) {
+        return s.set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(TObj.none())));
     }
 }

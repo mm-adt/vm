@@ -40,7 +40,7 @@ public final class IsInst<S extends Obj> extends TInst implements FilterInstruct
         super(PList.of(Tokens.IS, argument));
     }
 
-    public S testt(final S obj) {
+    public S apply(final S obj) {
         return obj.is(this.<S, Bool>argument(0).mapArg(obj));
     }
 

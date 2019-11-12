@@ -22,6 +22,7 @@
 
 package org.mmadt.process.mmproc;
 
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.util.EmptyIterator;
@@ -37,7 +38,7 @@ final class InitialStep<S extends Obj> extends AbstractStep<S, S, InitialInstruc
 
     InitialStep(final InitialInstruction<S> initialFunction) {
         super(EmptyStep.instance(), initialFunction);
-        this.objs = initialFunction.gett();
+        this.objs = initialFunction.apply((S) TObj.none()).get();
     }
 
     @Override
