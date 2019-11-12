@@ -22,14 +22,18 @@
 
 package org.mmadt.machine.object.model.util;
 
-import org.mmadt.language.compiler.Ranger;
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TModel;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.Bindings;
 
 import java.util.ArrayList;
@@ -91,18 +95,28 @@ public final class BytecodeHelper {
 
 
     public static Inst apply(final Obj source, final Inst inst) {
-        Inst inst2 = IdInst.create();
-        if (null == inst || inst.<Inst>peek().opcode().java().equals(Tokens.ID))
-            return inst2.domainAndRange(source, source);
-        else {
+        Inst inst2 = IdInst.create().domainAndRange(source, source);
+        if (null != inst && !inst.<Inst>peek().opcode().java().equals(Tokens.ID)) {
             Obj domain = source;
             for (final Inst i : inst.iterable()) {
-                domain = i.opcode().java().equals(Tokens.START) ? TObj.none() : domain;
-                Obj range = Ranger.getRange(i, domain, TModel.of("ex"));
+                final Obj range = apply(i, domain);
                 inst2 = inst2.mult(i.domainAndRange(domain, range));
                 domain = range;
             }
-            return inst2;
         }
+        return inst2;
+    }
+
+    public static Obj apply(final Inst inst, final Obj domain) {
+        if (inst instanceof MapInstruction &&
+                !(inst instanceof PlusInst) &&
+                !(inst instanceof GtInst) &&
+                !(inst instanceof MultInst) &&
+                !(inst instanceof DivInst) &&
+                !(inst instanceof MinusInst) &&
+                !(inst instanceof NegInst))
+            return ((MapInstruction) inst).apply(domain);
+        else
+            return inst.computeRange(domain);
     }
 }

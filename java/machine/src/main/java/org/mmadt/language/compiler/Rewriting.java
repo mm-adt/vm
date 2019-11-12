@@ -61,7 +61,10 @@ public final class Rewriting {
             // if the bytecode is empty, that is a noop (move on to the next instruction -- don't mess with domain/range)
             for (final Inst oldInst2 : bcMatch.iterable()) {
                 final boolean ref = oldInst2.opcode().get().equals(Tokens.REF);
-                range = ref ? BytecodeHelper.reference(oldInst2) : Ranger.getRange(oldInst2, domain, model);
+                range = ref ? BytecodeHelper.reference(oldInst2) :
+                        oldInst2.opcode().java().equals(Tokens.DB) ?
+                                model.get(Tokens.DB) :
+                                Instructions.compile(oldInst2).computeRange(domain).q(oldInst2.q());
                 if (ref) { // the current instruction is a reference and thus, traversing the referencing graph
                     inReferenceGraph = true;
                     if (BytecodeHelper.isSubset(TInst.of(newBc), range.access())) { // if the bytecode is a subset of the current reference, remove it (the reference handles the processing)
@@ -102,8 +105,8 @@ public final class Rewriting {
     }
 
     private static void insertInstruction(final Model model, final List<Inst> newBc, final Inst oldInst, final Obj domain, final Obj range) {
-       if(oldInst.isOne())
-           return;
+        if (oldInst.isOne())
+            return;
         if (range.constant() && range.q().constant()) { // TODO: ghetto, but this is the right idea.
             newBc.clear();
             newBc.add(TInst.of(Tokens.START, (Object) range.peek()).range(range.peek())); // if the type is a constant, then use the constant! (you have derived a solution through compilation)
@@ -115,9 +118,18 @@ public final class Rewriting {
                 else
                     args.add(arg);
             }
-            final Inst newInst = TInst.of(oldInst.opcode(), args).q(oldInst.q());
-            newBc.add(newInst.domainAndRange(domain, Ranger.getRange(newInst, domain, model))); // clone the old instruction with new domain/range modifiers
+            newBc.add(process(TInst.of(oldInst.opcode(), args).q(oldInst.q()), domain, model)); // clone the old instruction with new domain/range modifiers
         }
+    }
+
+    private static Inst process(final Inst inst, final Obj domain, final Model model) {
+        final String opcode = inst.<Inst>peek().opcode().java();
+        return inst.domainAndRange(domain,
+                opcode.equals(Tokens.DB) ?
+                        model.get(Tokens.DB) :
+                        opcode.equals(Tokens.REF) ?
+                                inst.args().get(0).q(inst.q()) :
+                                Instructions.compile(inst).computeRange(domain));
     }
 }
 

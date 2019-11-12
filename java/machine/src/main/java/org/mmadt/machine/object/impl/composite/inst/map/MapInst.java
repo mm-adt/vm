@@ -38,10 +38,11 @@ public final class MapInst<S extends Obj, E extends Obj> extends TInst implement
     }
 
     public E apply(final S obj) {
-        return obj.map(this.<S, E>argument(0).mapArg(obj));
+        return MapInstruction.super.computeRange(obj.map(this.<S, E>argument(0).mapArg(obj)));
     }
 
     public static <S extends Obj, E extends Obj> MapInst<S, E> create(final Object arg) {
         return new MapInst<>(arg);
     }
+
 }

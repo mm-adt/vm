@@ -24,9 +24,12 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithZero;
+import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,10 +41,11 @@ public final class ZeroInst<S extends WithZero<S>> extends TInst implements MapI
     }
 
     public S apply(final S obj) {
-        return obj.zero();
+        return MapInstruction.super.computeRange(obj.zero());
     }
 
     public static <S extends WithZero<S>> ZeroInst<S> create() {
         return new ZeroInst<>();
     }
+
 }

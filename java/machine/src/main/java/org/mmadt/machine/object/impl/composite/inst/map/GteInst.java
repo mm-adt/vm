@@ -42,15 +42,11 @@ public final class GteInst<S extends WithOrder<S>> extends TInst implements MapI
     }
 
     public Bool apply(final S obj) {
-        return obj.gte(this.<S, S>argument(0).mapArg(obj));
+         return MapInstruction.super.computeRange(obj.gte(this.<S, S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithOrder<S>> GteInst<S> create(final Object arg) {
         return new GteInst<>(arg);
     }
 
-    public Bool computeRange(final Obj domain) {
-        Processor.Validators.testJavaTyping(domain, WithOrder.class, this);
-        return MapInstruction.super.computeRange(TBool.of().q(domain.q()));
-    }
 }

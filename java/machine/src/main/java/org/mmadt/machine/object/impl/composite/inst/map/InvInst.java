@@ -24,12 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithDiv;
-
-import java.util.function.Supplier;
+import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,10 +40,11 @@ public final class InvInst<S extends WithDiv<S>> extends TInst implements MapIns
     }
 
     public S apply(final S obj) {
-        return obj.inv();
+        return MapInstruction.super.computeRange(obj.inv());
     }
 
     public static <S extends WithDiv<S>> InvInst<S> create() {
         return new InvInst<>();
     }
+
 }

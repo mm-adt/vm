@@ -30,6 +30,8 @@ import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 
+import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -56,5 +58,10 @@ public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extend
 
     public static <S extends Obj, E extends WithOrderedRing<E>> CountInst<S, E> create() {
         return new CountInst<>();
+    }
+
+    @Override
+    public Obj computeRange(final Obj domain) {
+        return (domain.q().constant() ? domain.q().peek() : domain.q().set(null)).q(one);
     }
 }

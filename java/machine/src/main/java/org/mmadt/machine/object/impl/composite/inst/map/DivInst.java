@@ -40,15 +40,12 @@ public final class DivInst<S extends WithDiv<S>> extends TInst implements MapIns
     }
 
     public S apply(final S obj) {
-        return obj.div(this.<S, S>argument(0).mapArg(obj));
+        return  MapInstruction.super.computeRange(obj.div(this.<S, S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithDiv<S>> DivInst<S> create(final Object arg) {
         return new DivInst<>(arg);
     }
 
-    public S computeRange(final Obj domain) {
-        Processor.Validators.testJavaTyping(domain, WithDiv.class,this);
-        return MapInstruction.super.computeRange(domain);
-    }
+
 }

@@ -41,16 +41,11 @@ public final class LtInst<S extends WithOrder<S>> extends TInst implements MapIn
     }
 
     public Bool apply(final S obj) {
-        return obj.lt(this.<S, S>argument(0).mapArg(obj));
+        return MapInstruction.super.computeRange(obj.lt(this.<S, S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithOrder<S>> LtInst<S> create(final Object arg) {
         return new LtInst<>(arg);
-    }
-
-    public Bool computeRange(final Obj domain) {
-//        Processor.Validators.testJavaTyping(domain, WithOrder.class, this);
-        return MapInstruction.super.computeRange(TBool.of().q(domain.q()));
     }
 
 }

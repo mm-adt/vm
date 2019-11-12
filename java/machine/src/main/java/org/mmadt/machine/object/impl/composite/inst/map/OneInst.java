@@ -24,12 +24,11 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.util.InstructionHelper;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOne;
-import org.mmadt.machine.object.model.type.algebra.WithZero;
-import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,10 +40,11 @@ public final class OneInst<S extends WithOne<S>> extends TInst implements MapIns
     }
 
     public S apply(final S obj) {
-        return obj.one();
+        return MapInstruction.super.computeRange(obj.one());
     }
 
     public static <S extends WithOne<S>> OneInst<S> create() {
         return new OneInst<>();
     }
+    
 }

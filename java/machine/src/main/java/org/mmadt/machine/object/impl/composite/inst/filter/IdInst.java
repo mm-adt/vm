@@ -44,4 +44,5 @@ public final class IdInst<S extends Obj> extends TInst implements FilterInstruct
     public static <S extends Obj> IdInst<S> create() {
         return new IdInst<>();
     }
+
 }

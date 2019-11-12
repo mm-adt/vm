@@ -79,14 +79,14 @@ class TypingTest {
         verifyTyping(newBc);
     }
 
-    @Test
-    void testBC1() {
-        final TModel model = TModel.of(Compiler.asInst(TypingTest.class.getResourceAsStream("db1.mm")));
-        final Inst oldBc = Compiler.asInst(model, Compiler.asString(TypingTest.class.getResourceAsStream("bc1.mm")));
-        final Inst newBc = model.query(oldBc);
-        verifyTyping(newBc);
-    }
-
+    /* @Test TODO: DEDUP
+     void testBC1() {
+         final TModel model = TModel.of(Compiler.asInst(TypingTest.class.getResourceAsStream("db1.mm")));
+         final Inst oldBc = Compiler.asInst(model, Compiler.asString(TypingTest.class.getResourceAsStream("bc1.mm")));
+         final Inst newBc = model.query(oldBc);
+         verifyTyping(newBc);
+     }
+ */
     @Test
     void testBC2() {
         Model model = TModel.of(Compiler.asInst(TypingTest.class.getResourceAsStream("social.mm")));

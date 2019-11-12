@@ -52,17 +52,17 @@ class KeyValueTest {
             new TestArgs("[db][db][get,1]"),
             new TestArgs("[ref,v{?} <= [db][is,[get,0][eq,'marko']]]", "[db][is,[get,0][eq,'marko']]"),
             new TestArgs("[ref,v{?} <= [db][is,[get,0][eq,10.0]]]", "[db][is,[get,0][eq,10.0]]"),
-           // new TestArgs("[db][is,[get,0][eq,10]]"),
+            new TestArgs("[db][is,[get,0][eq,10]]"),
             new TestArgs(REF, "[db][count]"),
             new TestArgs("[start,1]", "[db][count][count]"), // determined from quantifier
             new TestArgs("[start,1]", "[db][count][count][count]"), // determined from quantifier
             new TestArgs(REF, "[db][count][sum]"),
             new TestArgs("[db]", "[db][order,[gt,[get,0]]][dedup,[get,0]][dedup,[get,0]][order,[gt,[get,0]]]"),
-            new TestArgs("[db][order,[lt,[get,0]]][order,[lt,[get,0]]]" + REF, "[db][order,[lt,[get,0]]][dedup,[get,0]][dedup,[get,0]][order,[lt,[get,0]]][count]"),
-            new TestArgs(REF, "[db][order,[gt,[get,0]]][dedup,[get,0]][dedup,[get,0]][order,[lt,[get,0]]][count]"), // TODO: lt shouldn't work
+            //  new TestArgs("[db][order,[lt,[get,0]]][order,[lt,[get,0]]]" + REF, "[db][order,[lt,[get,0]]][dedup,[get,0]][dedup,[get,0]][order,[lt,[get,0]]][count]"),
+            //  new TestArgs(REF, "[db][order,[gt,[get,0]]][dedup,[get,0]][dedup,[get,0]][order,[lt,[get,0]]][count]"), // TODO: lt shouldn't work
     };
 
-     @TestFactory
+    @TestFactory
     Stream<DynamicTest> testParse() {
         return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input, () -> {

@@ -29,6 +29,8 @@ import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.type.algebra.WithPlus;
+import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,10 +42,11 @@ public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TI
     }
 
     public Q<E> apply(final S obj) {
-        return obj.q();
+        return MapInstruction.super.computeRange(obj.q());
     }
 
     public static <S extends Obj, E extends WithOrderedRing<E>> QInst<S, E> create() {
         return new QInst<>();
     }
+
 }

@@ -64,9 +64,11 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     public Obj range();
 
     public default Obj computeRange(final Obj domain) {
-        return Instructions.compile(TInst.of(this.opcode(), this.args().toArray(new Object[]{}))).computeRange(domain).q(new TQ(
+        return domain;
+       /* return Instructions.compile(TInst.of(this.opcode(), this.args().toArray(new Object[]{}))).computeRange(domain).q(new TQ(
                 domain.q().peek().mult(this.q().object().peek()),
                 domain.q().last().mult(this.q().object().last())));
+              */
     }
 
     @Override

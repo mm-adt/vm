@@ -42,7 +42,7 @@ public final class GtInst<S extends WithOrder<S>> extends TInst implements MapIn
     }
 
     public Bool apply(final S obj) {
-        return obj.gt(this.<S, S>argument(0).mapArg(obj));
+        return MapInstruction.super.computeRange(obj.gt(this.<S, S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithOrder<S>> GtInst<S> create(final Object arg) {

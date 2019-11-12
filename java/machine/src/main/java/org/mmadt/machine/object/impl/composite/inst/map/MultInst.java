@@ -24,11 +24,9 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMult;
-import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -45,10 +43,5 @@ public final class MultInst<S extends WithMult<S>> extends TInst implements MapI
 
     public static <S extends WithMult<S>> MultInst<S> create(final Object arg) {
         return new MultInst<>(arg);
-    }
-
-    public S computeRange(final Obj domain) {
-        Processor.Validators.testJavaTyping(domain, WithMult.class, this);
-        return MapInstruction.super.computeRange(domain);
     }
 }

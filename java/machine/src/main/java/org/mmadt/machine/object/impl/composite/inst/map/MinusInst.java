@@ -40,15 +40,11 @@ public final class MinusInst<S extends WithMinus<S>> extends TInst implements Ma
     }
 
     public S apply(final S obj) {
-        return obj.minus(this.<S, S>argument(0).mapArg(obj));
+        return  MapInstruction.super.computeRange(obj.minus(this.<S, S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithMinus<S>> MinusInst<S> create(final Object arg) {
         return new MinusInst<>(arg);
     }
 
-    public S computeRange(final Obj domain) {
-        Processor.Validators.testJavaTyping(domain, WithMinus.class, this);
-        return MapInstruction.super.computeRange(domain);
-    }
 }
