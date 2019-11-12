@@ -63,7 +63,7 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
     }
 
     @Override
-    public Obj computeRange(final Obj domain) {
+    public Rec<E, A> computeRange(final Obj domain) {
         return TRec.of(this.argument(0).mapArg(domain).access((Inst) null).q(one), TInt.some());   // shit show
     }
 }

@@ -28,6 +28,8 @@ import org.mmadt.machine.object.model.type.algebra.WithPlus;
 
 import java.util.function.BiFunction;
 
+import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -40,6 +42,10 @@ public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, B
 
     public default E getInitialValue() {
         return (E) this.q().zero();
+    }
+
+    public default Obj computeRange(final Obj domain) {
+        return domain.q(one);
     }
 
 }

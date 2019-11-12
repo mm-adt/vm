@@ -41,4 +41,8 @@ public interface SideEffectInstruction<S extends Obj> extends Inst, Consumer<S>,
         this.accept(obj);
         return obj;
     }
+
+    public default S computeRange(final Obj domain) {
+        return domain.q(domain.q().mult(this.q()));
+    }
 }

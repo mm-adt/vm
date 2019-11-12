@@ -26,13 +26,8 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
-import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
-import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.composite.inst.FlatMapInstruction;
-import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
-import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
-import org.mmadt.machine.object.model.composite.inst.SideEffectInstruction;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
 import org.mmadt.util.IteratorUtils;
@@ -40,6 +35,7 @@ import org.mmadt.util.IteratorUtils;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,27 +52,19 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
 
     private static <E extends Obj> Iterator<E> processTraverser(final E start, final Inst inst) {
         try {
-            if (inst instanceof BranchInstruction)
-                return ((BranchInstruction<E, E>) inst).apply(start).get();
-            else if (inst instanceof BarrierInstruction)
+            if (inst instanceof BarrierInstruction)
                 return IteratorUtils.stream(((List<E>) start.get()).iterator()).
                         map(e -> ((BarrierInstruction<E, ObjSet<E>>) inst).apply(e, ((BarrierInstruction<E, ObjSet<E>>) inst).getInitialValue())).
                         reduce(((BarrierInstruction<E, ObjSet<E>>) inst)::merge).map(x -> ((BarrierInstruction<E, ObjSet<E>>) inst).createIterator(x)).get();
             else if (inst instanceof FlatMapInstruction)
                 return ((Iterable<E>) ((FlatMapInstruction<E, E>) inst).apply(start).iterable()).iterator();
-            else if (inst instanceof FilterInstruction)
-                return IteratorUtils.of(((FilterInstruction<E>) inst).apply(start));
-            else if (inst instanceof MapInstruction)
-                return IteratorUtils.of(((MapInstruction<E, E>) inst).apply(start));
-            else if (inst instanceof InitialInstruction)
-                return ((InitialInstruction<E>) inst).apply(start).get();
             else if (inst instanceof ReduceInstruction)
                 return IteratorUtils.of(IteratorUtils.stream(((List<E>) start.get()).iterator()).
                         reduce(((ReduceInstruction<E, E>) inst).getInitialValue(), ((ReduceInstruction<E, E>) inst)::apply));
-            else if (inst instanceof SideEffectInstruction) {
-                return IteratorUtils.of(((SideEffectInstruction<E>) inst).apply(start));
-            } else
-                throw new UnsupportedOperationException("This is not implemented yet: " + inst + "--" + start);
+            else {
+                final E e = ((Function<E, E>) inst).apply(start);
+                return e.get() instanceof Iterator ? e.get() : IteratorUtils.of(e);
+            }
         } catch (final ClassCastException e) {
             throw Processor.Exceptions.objDoesNotSupportInst(start, inst);
         }

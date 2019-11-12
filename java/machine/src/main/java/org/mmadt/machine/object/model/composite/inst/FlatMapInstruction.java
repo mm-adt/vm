@@ -34,4 +34,8 @@ public interface FlatMapInstruction<S extends Obj, E extends Obj> extends Inst, 
 
     @Override
     public E apply(final S obj);
+
+    public default E computeRange(final Obj domain) {
+        return domain.q(domain.q().mult(this.q()));
+    }
 }

@@ -38,7 +38,7 @@ import java.util.function.Function;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, Function<S,E> {
+public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, Function<S, E> {
 
     public Map<Inst, List<Inst>> getBranches();
 
@@ -63,7 +63,7 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
 
     public default E apply(final S obj) {
         return obj.set(distribute(obj));
-    }
+    } // this should all be done through subscription semantics and then its just a lazy round-robin
 
     public default E computeRange(final Obj domain) {
         this.<Inst>args().forEach(i -> {
