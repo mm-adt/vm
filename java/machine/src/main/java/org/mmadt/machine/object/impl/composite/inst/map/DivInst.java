@@ -39,8 +39,8 @@ public final class DivInst<S extends WithDiv<S>> extends TInst implements MapIns
         super(PList.of(Tokens.DIV, argument));
     }
 
-    public S apply(final S s) {
-        return s.div(this.<S, S>argument(0).mapArg(s));
+    public S apply(final S obj) {
+        return obj.div(this.<S, S>argument(0).mapArg(obj));
     }
 
     public static <S extends WithDiv<S>> DivInst<S> create(final Object arg) {

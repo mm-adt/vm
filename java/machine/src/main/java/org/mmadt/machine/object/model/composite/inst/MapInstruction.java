@@ -32,6 +32,9 @@ import java.util.function.Function;
  */
 public interface MapInstruction<S extends Obj, E extends Obj> extends Inst, Function<S, E> {
 
+    @Override
+    public E apply(final S obj);
+
     public default E computeRange(final Obj domain) {
         return domain.q(domain.q().mult(this.q()));
     }

@@ -46,8 +46,8 @@ public final class AndInst<S extends Obj> extends TInst implements MapInstructio
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.AND));
     }
 
-    public Bool apply(final S s) {
-        return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(s)).reduce(Bool::and).orElse(TBool.of(true));
+    public Bool apply(final S obj) {
+        return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(obj)).reduce(Bool::and).orElse(TBool.of(true));
     }
 
     public static <S extends Obj> AndInst<S> create(final Object... args) {

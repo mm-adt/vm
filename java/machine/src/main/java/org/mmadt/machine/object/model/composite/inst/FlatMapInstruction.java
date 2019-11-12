@@ -32,4 +32,7 @@ import java.util.function.Function;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface FlatMapInstruction<S extends Obj, E extends Obj> extends Inst, Function<S, Iterator<E>> {
+
+    @Override
+    public Iterator<E> apply(final S obj);
 }

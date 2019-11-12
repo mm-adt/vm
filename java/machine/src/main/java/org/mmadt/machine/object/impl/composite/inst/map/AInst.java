@@ -38,8 +38,8 @@ public final class AInst<S extends Obj> extends TInst implements MapInstruction<
         super(PList.of(Tokens.A, argument));
     }
 
-    public Bool apply(final S s) {
-        return s.a(this.<S, S>argument(0).mapArg(s));
+    public Bool apply(final S obj) {
+        return obj.a(this.<S, S>argument(0).mapArg(obj));
     }
 
     public static <S extends Obj> AInst<S> create(final Object arg) {

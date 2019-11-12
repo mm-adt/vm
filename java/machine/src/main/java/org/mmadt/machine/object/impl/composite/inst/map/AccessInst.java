@@ -38,8 +38,8 @@ public final class AccessInst<S extends Obj> extends TInst implements MapInstruc
         super(PList.of(Tokens.A));
     }
 
-    public Inst apply(final S s) {
-        return s.access();
+    public Inst apply(final S obj) {
+        return obj.access();
     }
 
     public static <S extends Obj> AccessInst<S> create() {

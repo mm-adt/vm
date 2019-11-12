@@ -31,4 +31,7 @@ import java.util.function.Consumer;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface SideEffectInstruction<S extends Obj> extends Inst, Consumer<S> {
+
+    @Override
+    public void accept(final S obj);
 }

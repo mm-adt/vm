@@ -44,8 +44,8 @@ public final class OrInst<S extends Obj> extends TInst implements MapInstruction
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.OR));
     }
 
-    public Bool apply(final S s) {
-        return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(s)).reduce((a, b) -> (TBool) a.or(b)).orElse(TBool.of(true));
+    public Bool apply(final S obj) {
+        return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(obj)).reduce((a, b) -> (TBool) a.or(b)).orElse(TBool.of(true));
     }
 
     public static <S extends Obj> OrInst<S> create(final Object... arguments) {

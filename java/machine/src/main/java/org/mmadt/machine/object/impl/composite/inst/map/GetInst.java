@@ -42,8 +42,8 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst implement
     }
 
     @Override
-    public V apply(final WithProduct<K, V> s) {
-        return s.get(this.<Obj, K>argument(0).mapArg(s));
+    public V apply(final WithProduct<K, V> obj) {
+        return obj.get(this.<Obj, K>argument(0).mapArg(obj));
     }
 
     public static <K extends Obj, V extends Obj> GetInst<K, V> create(final Object arg) {
