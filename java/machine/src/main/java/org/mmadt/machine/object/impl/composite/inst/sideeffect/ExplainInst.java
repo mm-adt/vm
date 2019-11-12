@@ -40,9 +40,19 @@ public final class ExplainInst<S extends Obj> extends TInst implements SideEffec
 
     @Override
     public void accept(final S obj) {
-        System.out.println("EXPLAIN: " + this.args().get(0));
-        for (final Inst i : this.args().get(0).access().iterable()) {
-            System.out.println(pad(i + ":", 15) + pad(i.domain(), 10) + " -> " + i.range());
+        System.out.println("EXPLAIN: " + this.args().get(0) + "\n");
+        printInst(0,this.args().get(0).access());
+
+    }
+
+    private final void printInst(int indent, final Inst inst) {
+        for (final Inst i : inst.iterable()) {
+            System.out.println(pad("",indent) + pad(i + ":", 40-indent) + pad(i.domain(), 30) + " -> " + i.range());
+            for (final Obj x : i.args()) {
+                if (x instanceof Inst) {
+                    printInst((1+indent)*2,(Inst) x);
+                }
+            }
         }
     }
 

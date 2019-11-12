@@ -41,7 +41,7 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst implements MapI
     }
 
     public S apply(final S obj) {
-        return obj.plus(this.<S, S>argument(0).mapArg(obj));
+        return MapInstruction.super.computeRange(obj.plus(this.<S, S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithPlus<S>> PlusInst<S> create(final Object arg) {

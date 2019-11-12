@@ -29,6 +29,7 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
 import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -38,7 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.gt;
+import static org.mmadt.language.__.id;
+import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.lt;
+import static org.mmadt.language.__.mult;
 import static org.mmadt.language.__.or;
 import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
@@ -50,7 +54,8 @@ final class TIntTest {
 
     @Test
     void xxx() {
-       //  System.out.println(IteratorUtils.list(TInt.some().access(start(3).plus(2).div(5)).iterable()));
+     // System.out.println(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(start(2,4,7).is(gt(6)).bytecode()))));
+      System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(666).count()).count().sum().count()))).iterable()));
     }
 
     @Test

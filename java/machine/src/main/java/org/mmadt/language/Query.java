@@ -23,7 +23,6 @@
 package org.mmadt.language;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;

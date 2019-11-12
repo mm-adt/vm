@@ -57,15 +57,13 @@ import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.util.ObjectHelper;
-
-import java.util.List;
 
 import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.ACCESS;
 import static org.mmadt.language.compiler.Tokens.AND;
 import static org.mmadt.language.compiler.Tokens.BRANCH;
 import static org.mmadt.language.compiler.Tokens.COUNT;
+import static org.mmadt.language.compiler.Tokens.DB;
 import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
@@ -103,80 +101,78 @@ public final class Instructions {
     }
 
     public static Inst compile(final Inst inst) {
-        final PList<Obj> list = new PList<>();
-        inst.peek().<PList<Obj>>get().forEach(obj -> list.add(obj instanceof Inst ? compile((Inst) obj) : ObjectHelper.from(obj)));
-        return Instructions.function(list);
-    }
-
-    private static Inst function(final List<Obj> inst) {
-        final String opcode = inst.get(0).get();
+        final PList<Obj> args = new PList<>();
+        args.addAll(inst.peek().<PList<Obj>>get());
+        // model handling
+        final String opcode = args.get(0).get();
         if (opcode.startsWith(Tokens.EQUALS))
             return ModelInst.create(opcode.substring(1));
-
-        inst.remove(0); // drop the opcode
+        args.remove(0); // drop the opcode
         switch (opcode) {
             case A:
-                return AInst.create(inst.get(0));
+                return AInst.create(args.get(0));
             case ACCESS:
                 return AccessInst.create();
             case AND:
-                return AndInst.create(inst.toArray(new Object[]{}));
+                return AndInst.create(args.toArray(new Object[]{}));
             case BRANCH:
-                return BranchInst.create(inst.toArray(new Object[]{}));
+                return BranchInst.create(args.toArray(new Object[]{}));
             case COUNT:
                 return CountInst.create();
             case DIV:
-                return DivInst.create(inst.get(0));
+                return DivInst.create(args.get(0));
             case DROP:
-                return DropInst.create(inst.get(0));
+                return DropInst.create(args.get(0));
             case EQ:
-                return EqInst.create(inst.get(0));
+                return EqInst.create(args.get(0));
             case EXPLAIN:
-                return ExplainInst.create(inst.get(0));
+                return ExplainInst.create(args.get(0));
             case GET:
-                return GetInst.create(inst.get(0));
+                return GetInst.create(args.get(0));
             case GT:
-                return GtInst.create(inst.get(0));
+                return GtInst.create(args.get(0));
             case GTE:
-                return GteInst.create(inst.get(0));
+                return GteInst.create(args.get(0));
             case GROUPCOUNT:
-                return GroupCountInst.create(inst.get(0));
+                return GroupCountInst.create(args.get(0));
             case ID:
                 return IdInst.create();
             case INV:
                 return InvInst.create();
             case IS:
-                return IsInst.create(inst.get(0));
+                return IsInst.create(args.get(0));
             case LT:
-                return LtInst.create(inst.get(0));
+                return LtInst.create(args.get(0));
             case LTE:
-                return LteInst.create(inst.get(0));
+                return LteInst.create(args.get(0));
             case MAP:
-                return MapInst.create(inst.get(0));
+                return MapInst.create(args.get(0));
             case MINUS:
-                return MinusInst.create(inst.get(0));
+                return MinusInst.create(args.get(0));
             case MULT:
-                return MultInst.create(inst.get(0));
+                return MultInst.create(args.get(0));
             case NEG:
                 return NegInst.create();
             case NEQ:
-                return NeqInst.create(inst.get(0));
+                return NeqInst.create(args.get(0));
             case ONE:
                 return OneInst.create();
             case OR:
-                return OrInst.create(inst.toArray(new Object[]{}));
+                return OrInst.create(args.toArray(new Object[]{}));
             case PLUS:
-                return PlusInst.create(inst.get(0));
+                return PlusInst.create(args.get(0));
             case PUT:
-                return PutInst.create(inst.get(0), inst.get(1));
+                return PutInst.create(args.get(0), args.get(1));
             case Q:
                 return QInst.create();
             case SUM:
                 return SumInst.create();
             case START:
-                return StartInst.create(inst.toArray(new Object[]{}));
+                return StartInst.create(args.toArray(new Object[]{}));
             case ZERO:
                 return ZeroInst.create();
+            case DB:
+                return IdInst.create();
             default:
                 throw new RuntimeException("Unknown instruction: " + opcode);
         }

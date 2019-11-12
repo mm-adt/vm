@@ -50,7 +50,7 @@ public final class GtInst<S extends WithOrder<S>> extends TInst implements MapIn
     }
 
     public Bool computeRange(final Obj domain) {
-        Processor.Validators.testJavaTyping(domain, WithOrder.class, this);
+//        Processor.Validators.testJavaTyping(domain, WithOrder.class, this);
         return MapInstruction.super.computeRange(TBool.of().q(domain.q()));
     }
 }

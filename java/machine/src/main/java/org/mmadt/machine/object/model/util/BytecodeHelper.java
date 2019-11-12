@@ -25,7 +25,11 @@ package org.mmadt.machine.object.model.util;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
@@ -33,8 +37,10 @@ import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.Bindings;
+import org.mmadt.machine.object.model.type.PList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,13 +99,17 @@ public final class BytecodeHelper {
         return list;
     }
 
-
     public static Inst apply(final Obj source, final Inst inst) {
         Inst inst2 = IdInst.create().domainAndRange(source, source);
         if (null != inst && !inst.<Inst>peek().opcode().java().equals(Tokens.ID)) {
-            Obj domain = source;
+            Obj domain = source.access((Inst) null);
+            Obj range;
             for (final Inst i : inst.iterable()) {
-                final Obj range = apply(i, domain);
+                if (i.args().size() == 1 && i.args().get(0) instanceof Inst && i.opcode().java().equals(Tokens.MAP)) {
+                    i.<PList<Obj>>get().set(1, apply(domain.q(Q.Tag.one), (Inst) i.args().get(0).clone()));
+                    range = ((Inst) i.args().get(0)).range().q(domain.q());
+                } else
+                    range = computeRange(i, domain);
                 inst2 = inst2.mult(i.domainAndRange(domain, range));
                 domain = range;
             }
@@ -107,13 +117,17 @@ public final class BytecodeHelper {
         return inst2;
     }
 
-    public static Obj apply(final Inst inst, final Obj domain) {
-        if (inst instanceof MapInstruction &&
+    private static Obj computeRange(final Inst inst, final Obj domain) {
+        if (!domain.isReference() && inst instanceof MapInstruction &&
+                !(inst instanceof MapInst) &&
                 !(inst instanceof PlusInst) &&
                 !(inst instanceof GtInst) &&
+                !(inst instanceof LteInst) &&
+                !(inst instanceof LtInst) &&
                 !(inst instanceof MultInst) &&
                 !(inst instanceof DivInst) &&
                 !(inst instanceof MinusInst) &&
+                !(inst instanceof EqInst) &&
                 !(inst instanceof NegInst))
             return ((MapInstruction) inst).apply(domain);
         else
