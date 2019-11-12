@@ -50,8 +50,6 @@ public final class TReal extends TObj implements Real {
     private static final Real SOME = new TReal(null);
     private static final Real NONE = new TReal(null).q(0);
     private static final Real ALL = new TReal(null).q(0, Integer.MAX_VALUE);
-    private static final Real ZERO = new TReal(0.0f);
-    private static final Real ONE = new TReal(1.0f);
     private static final Real MAX = new TReal(Float.MAX_VALUE);
     private static final Real MIN = new TReal(Float.MIN_VALUE);
 

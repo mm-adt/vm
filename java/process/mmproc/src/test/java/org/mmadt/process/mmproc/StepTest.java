@@ -24,7 +24,6 @@ package org.mmadt.process.mmproc;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -61,7 +60,7 @@ class StepTest {
         assertEquals(List.of(TRec.of(3, new TQ<>(TInt.of(2)), 5, new TQ<>(TInt.of(1)))), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
-    //@Test
+    @Test
     void testMinus() {
         final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(1, 2, 3).minus(2).branch(is(eq(-1)), plus(1), is(eq(0)), id(), is(eq(1)), minus(1)).plus(1).bytecode());
         assertEquals(List.of(TInt.of(1), TInt.of(1), TInt.of(1)), IteratorUtils.list(processor.iterator(TInt.none())));
@@ -69,7 +68,7 @@ class StepTest {
 
     @Test
     void testOne() {
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 1, 2).mult(one()).plus(one()).bytecode());
+        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(TInt.of(0).q(7), 1, 2).mult(one()).plus(one()).dedup().bytecode());
         assertEquals(List.of(TInt.of(1), TInt.of(2), TInt.of(3)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 

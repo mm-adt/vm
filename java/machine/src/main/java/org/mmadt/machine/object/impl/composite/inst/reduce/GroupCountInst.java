@@ -23,9 +23,11 @@
 package org.mmadt.machine.object.impl.composite.inst.reduce;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
@@ -58,5 +60,10 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
 
     public static <S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> GroupCountInst<S, E, A> create(final Object arg) {
         return new GroupCountInst<>(arg);
+    }
+
+    @Override
+    public Obj computeRange(final Obj domain) {
+        return TRec.of(this.argument(0).mapArg(domain).access((Inst) null).q(one), TInt.some());   // shit show
     }
 }

@@ -24,6 +24,7 @@ package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
@@ -73,8 +74,8 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
                 nextStep = new MapStep<>(previousStep, (MapInstruction<S, E>) function);
             else if (function instanceof InitialInstruction)
                 nextStep = new InitialStep<>((InitialInstruction<S>) function);
-                //  else if (function instanceof BarrierFunction)
-                //      nextStep = new BarrierStep<>(previousStep, (BarrierFunction<S, E, Object>) function);
+            else if (function instanceof BarrierInstruction)
+                nextStep = new BarrierStep<>(previousStep, (BarrierInstruction<S, Object>) function);
             else if (function instanceof ReduceInstruction)
                 nextStep = new ReduceStep<>(previousStep, (ReduceInstruction<S, E>) function, new InMemoryReducer<>((ReduceInstruction<S, E>) function));
             else if (function instanceof SideEffectInstruction)

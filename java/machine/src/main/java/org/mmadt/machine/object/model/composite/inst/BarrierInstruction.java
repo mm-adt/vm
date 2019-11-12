@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 
 import java.util.Iterator;
 import java.util.function.BiFunction;
@@ -30,7 +31,7 @@ import java.util.function.BiFunction;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface BarrierInstruction<S extends Obj, B> extends BiFunction<S, B, B> {
+public interface BarrierInstruction<S extends Obj, B> extends BiFunction<S, B, B>, Inst {
 
     public B getInitialValue();
 

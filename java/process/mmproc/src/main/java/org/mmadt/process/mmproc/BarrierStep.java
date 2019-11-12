@@ -23,26 +23,31 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
+import org.mmadt.process.mmproc.util.Barrier;
+import org.mmadt.process.mmproc.util.InMemoryBarrier;
+import org.mmadt.util.EmptyIterator;
+
+import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class BarrierStep<S extends Obj, E extends Obj, B> {
-} /*extends AbstractStep<S, E> {
+final class BarrierStep<S extends Obj, B> extends AbstractStep<S, S, BarrierInstruction<S, B>> {
 
     private final Barrier<B> barrier;
-    private final BarrierFunction<S, E, B> barrierFunction;
+    private final BarrierInstruction<S, B> barrierFunction;
     private boolean done = false;
-    private Iterator<E> output = EmptyIterator.instance();
+    private Iterator<S> output = EmptyIterator.instance();
 
-    BarrierStep(final Step<?, S> previousStep, final BarrierFunction<S, E, B> barrierFunction) {
+    BarrierStep(final Step<?, S> previousStep, final BarrierInstruction<S, B> barrierFunction) {
         super(previousStep, barrierFunction);
         this.barrier = new InMemoryBarrier<>(barrierFunction.getInitialValue()); // TODO: move to strategy determination
         this.barrierFunction = barrierFunction;
     }
 
     @Override
-    public E next() {
+    public S next() {
         if (!this.done) {
             while (this.previousStep.hasNext()) {
                 this.barrier.update(this.barrierFunction.apply(super.previousStep.next(), this.barrier.get()));
@@ -64,4 +69,4 @@ final class BarrierStep<S extends Obj, E extends Obj, B> {
         this.output = EmptyIterator.instance();
         this.done = false;
     }
-}*/
+}
