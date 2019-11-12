@@ -35,7 +35,7 @@ import org.mmadt.machine.object.model.type.PList;
 public final class AccessInst<S extends Obj> extends TInst implements MapInstruction<S, Inst> {
 
     private AccessInst() {
-        super(PList.of(Tokens.A));
+        super(PList.of(Tokens.ACCESS));
     }
 
     public Inst apply(final S obj) {

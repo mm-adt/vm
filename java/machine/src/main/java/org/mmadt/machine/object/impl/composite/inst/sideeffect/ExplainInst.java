@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.impl.composite.inst.sideeffect;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -34,7 +35,7 @@ import org.mmadt.machine.object.model.type.PList;
 public final class ExplainInst<S extends Obj> extends TInst implements SideEffectInstruction<S> {
 
     private ExplainInst(final Object key) {
-        super(PList.of("explain", key));
+        super(PList.of(Tokens.EXPLAIN, key));
     }
 
     @Override

@@ -46,16 +46,6 @@ public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extend
         return current.plus(obj.q());
     }
 
-    @Override
-    public Q<E> merge(final Q<E> valueA, final Q<E> valueB) {
-        return valueA.plus(valueB);
-    }
-
-    @Override
-    public Q<E> getInitialValue() {
-        return (Q<E>) this.q().zero();
-    }
-
     public static <S extends Obj, E extends WithOrderedRing<E>> CountInst<S, E> create() {
         return new CountInst<>();
     }

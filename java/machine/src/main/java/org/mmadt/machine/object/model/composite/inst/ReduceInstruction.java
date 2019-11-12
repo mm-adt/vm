@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.type.algebra.WithPlus;
 
 import java.util.function.BiFunction;
 
@@ -32,8 +33,13 @@ import java.util.function.BiFunction;
  */
 public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BiFunction<E, S, E> {
 
-    public E getInitialValue();
+    public default E merge(final E objA, final E objB) {
+        return (E) ((WithPlus) objA).plus((WithPlus) objB);
+    }
 
-    public E merge(final E valueA, final E valueB);
+
+    public default E getInitialValue() {
+        return (E) this.q().zero();
+    }
 
 }

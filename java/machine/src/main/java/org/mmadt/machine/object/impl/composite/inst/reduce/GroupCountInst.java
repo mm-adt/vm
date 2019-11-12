@@ -52,14 +52,6 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
     }
 
     @Override
-    public Rec<E, A> merge(final Rec<E, A> valueA, final Rec<E, A> valueB) {
-        final Rec<E, A> rec = TRec.of();
-        valueA.<PMap<E, A>>get().forEach(rec::put);
-        valueB.<PMap<E, A>>get().forEach(rec::put);
-        return rec;
-    }
-
-    @Override
     public Rec<E, A> getInitialValue() {
         return TRec.of().q(this.q().one());
     }

@@ -195,12 +195,4 @@ public final class ObjectHelper {
         else
             throw new IllegalStateException("Unknown type: " + object.getClass());
     }
-
-    public static boolean allInstances(final Obj... args) {
-        for (final Obj arg : args) {
-            if (null == arg || !arg.isInstance())
-                return false;
-        }
-        return true;
-    }
 }
