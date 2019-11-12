@@ -105,7 +105,7 @@ public final class BytecodeHelper {
             Obj domain = source.access((Inst) null);
             Obj range;
             for (final Inst i : inst.iterable()) {
-                if (i.args().size() == 1 && i.args().get(0) instanceof Inst && i.opcode().java().equals(Tokens.MAP)) {
+                if (i.args().size() == 1 && i.args().get(0) instanceof Inst) {
                     i.<PList<Obj>>get().set(1, apply(domain.q(Q.Tag.one), (Inst) i.args().get(0).clone()));
                     range = ((Inst) i.args().get(0)).range().q(domain.q());
                 } else
@@ -118,7 +118,7 @@ public final class BytecodeHelper {
     }
 
     private static Obj computeRange(final Inst inst, final Obj domain) {
-        if (!domain.isReference() && inst instanceof MapInstruction &&
+        if (inst instanceof MapInstruction &&
                 !(inst instanceof MapInst) &&
                 !(inst instanceof PlusInst) &&
                 !(inst instanceof GtInst) &&

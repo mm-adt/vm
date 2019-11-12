@@ -47,7 +47,7 @@ public final class ExplainInst<S extends Obj> extends TInst implements SideEffec
 
     private final void printInst(int indent, final Inst inst) {
         for (final Inst i : inst.iterable()) {
-            System.out.println(pad("",indent) + pad(i + ":", 40-indent) + pad(i.domain(), 30) + " -> " + i.range());
+            System.out.println(pad("",indent) + pad(i + ":", 50-indent) + pad(i.domain(), 30) + " -> " + i.range());
             for (final Obj x : i.args()) {
                 if (x instanceof Inst) {
                     printInst((1+indent)*2,(Inst) x);

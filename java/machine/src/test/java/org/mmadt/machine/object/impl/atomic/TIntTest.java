@@ -55,7 +55,7 @@ final class TIntTest {
     @Test
     void xxx() {
      // System.out.println(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(start(2,4,7).is(gt(6)).bytecode()))));
-      System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(666).count()).count().sum().count()))).iterable()));
+      System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(mult(1)).count()).count().sum().count()))).iterable()));
     }
 
     @Test
@@ -80,7 +80,7 @@ final class TIntTest {
         assertNotEquals(TInt.some(), TStr.some());
     }
 
-    @Test
+    /*@Test
     void shouldMonoid() {
         final Obj x = start(TInt.of(1), 2, 3).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110))).obj();
         System.out.println(x);
@@ -93,5 +93,5 @@ final class TIntTest {
         final Obj x = start(t).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110), lt(10000))).obj();
         System.out.println(x);
         x.iterable().forEach(System.out::println);
-    }
+    }*/
 }
