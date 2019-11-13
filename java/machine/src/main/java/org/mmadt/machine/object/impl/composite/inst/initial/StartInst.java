@@ -40,7 +40,7 @@ import java.util.Iterator;
  */
 public final class StartInst<S extends Obj> extends TInst implements InitialInstruction<S> {
 
-    private StartInst(final Object... arguments) {
+    public StartInst(final Object... arguments) {
         super(PList.of(arguments));
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.START));
     }
@@ -68,7 +68,7 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
     }
 
     @Override
-    public S apply(final S s) {
-        return s.set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(TObj.none())));
+    public S apply(final S obj) {
+        return obj.set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(obj)));
     }
 }

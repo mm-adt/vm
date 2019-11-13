@@ -27,6 +27,7 @@ import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithMult;
+import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
 
 /**
@@ -52,6 +53,15 @@ public final class OperatorHelper {
                 return (A) ((WithAnd) lhs).and(rhs);
             case ("|"):
                 return (A) lhs.or(rhs);
+            case (">"):
+                return (A) ((WithOrder) lhs).gt(rhs);
+            case ("<"):
+                return (A) ((WithOrder) lhs).lt(rhs);
+            case (">="):
+                return (A) ((WithOrder) lhs).gte(rhs);
+            case ("=="):
+                return (A) ((WithOrder) lhs).eq(rhs);
+
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

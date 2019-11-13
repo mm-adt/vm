@@ -23,15 +23,9 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.language.__;
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
-import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
 import org.mmadt.machine.object.impl.util.TestHelper;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;
 
@@ -41,11 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.id;
-import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.lt;
 import static org.mmadt.language.__.mult;
-import static org.mmadt.language.__.or;
-import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
 
 /**
@@ -55,12 +45,15 @@ final class TIntTest {
 
     @Test
     void xxx() {
-     // System.out.println(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(start(2,4,7).is(gt(6)).bytecode()))));
-      System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(mult(1)).count()).count().sum().count()))).iterable()));
-System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TStr.some().access(start("a").branch(id(), id(), id(), id()).plus(id())))).iterable()));
-     start(1, 2).plus(7).dedup().count().obj().iterable().forEach(System.out::println);
+        // System.out.println(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(start(2,4,7).is(gt(6)).bytecode()))));
+        // System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(mult(1)).count()).count().sum().count()))).iterable()));
+        // System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TStr.some().access(start("a").branch(id(), id(), id(), id()).plus(id())))).iterable()));
+        // start(1, 2).plus(7).dedup().count().obj().iterable().forEach(System.out::println);
 
-     start(TInt.some(5)).plus(3).mult(5).is(eq(43)).obj().iterable().forEach(System.out::println);
+        //start(TInt.some(5)).obj().iterable().forEach(System.out::println);
+        //start(TInt.some(5)).plus(3).obj().iterable().forEach(System.out::println);
+        //start(TInt.some(5)).plus(3).gt(50).obj().iterable().forEach(System.out::println);
+        start(TInt.some(5)).plus(5).mult(5).is(gt(5)).plus(100).is(mult(45).minus(10).gt(0)).obj().iterable().forEach(System.out::println);
     }
 
     @Test

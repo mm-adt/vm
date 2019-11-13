@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -47,7 +46,7 @@ public final class EqInst<S extends Obj> extends TInst implements MapInstruction
         return new EqInst<>(arg);
     }
 
-    public Bool computeRange(final Obj domain) {
+    /*public Bool computeRange(final Obj domain) {
         return TBool.some().q(domain.q());
-    }
+    }*/
 }

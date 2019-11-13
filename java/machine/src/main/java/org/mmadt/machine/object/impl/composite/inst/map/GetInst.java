@@ -52,6 +52,6 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst implement
 
     public V computeRange(final Obj domain) {
 //        Processor.Validators.testJavaTyping(domain, WithProduct.class,this);
-        return MapInstruction.super.computeRange(this.apply((WithProduct)TSym.fetch(domain)));
+       return MapInstruction.super.computeRange(this.apply((WithProduct)TSym.fetch(domain)));
     }
 }

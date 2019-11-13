@@ -27,6 +27,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
@@ -116,7 +117,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O access(final Inst access);
 
     public default <O extends Obj> O append(final Inst inst) {
-        return this.access(this.access().mult(inst));
+        Inst compose = this.access().mult(inst);
+        if (!compose.isOne() && !compose.<Inst>peek().opcode().get().equals(Tokens.START))
+            compose = StartInst.create((Object) this.access((Inst) null)).mult(this.access()).mult(inst);
+        return (O) inst.computeRange(this).access(compose);
     }
 
     public <O extends Obj> O inst(final Inst instA, final Inst instB);
@@ -276,7 +280,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O is(final Bool bool) {
-        return (this.isInstance() && bool.isInstance()) ? bool.java() ? (O) this : this.q(zero) : this.append(IsInst.create(bool));
+        return (this.isInstance() && bool.isInstance()) ?
+                bool.java() ? (O) this : this.q(zero) :
+                (O) this.append(IsInst.create(bool));
     }
 
     public default <O extends Obj> O map(final O obj) {

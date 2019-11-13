@@ -70,6 +70,10 @@ public final class TBool extends TObj implements Bool {
         return ObjectHelper.make(TBool::new, objects);
     }
 
+    public static Bool from(final Obj obj) {
+        return TBool.some().q(obj.q()).access(obj.access());
+    }
+
     @Override
     public Obj or(final Obj obj) {
         return this.constant() && this.q().constant() ? new TBool(this.java() || obj.<Boolean>get()) : super.or(obj);

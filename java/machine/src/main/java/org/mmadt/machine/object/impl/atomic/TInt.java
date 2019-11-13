@@ -138,49 +138,52 @@ public final class TInt extends TObj implements Int {
     }
 
     @Override
-    public Int mult(final Int integer) {   // TODO: should dereferencing happen like this?
-        if (this.isInstance()) {
+    public Int mult(final Int integer) {
+        return (this.isInstance() && integer.isInstance()) ?
+                this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
+                this.append(MultInst.create(integer));
+        /*if (this.isInstance()) {
             if (integer.isInstance())
                 return this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE));
             else if (integer.isReference())
                 return MultInst.<Int>create(integer).apply(this);
         }
-        return this.append(MultInst.create(integer));
+        return this.append(MultInst.create(integer));*/   // TODO: should dereferencing happen like this?
     }
 
     @Override
     public Bool gt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
-                TBool.of(this.java() > integer.java()).q(this.q()) :
-                TBool.of().q(this.q()).append(GtInst.create(integer));
+                TBool.from(this).set(this.java() > integer.java()) :
+                TBool.from(this.append(GtInst.create(integer)));
     }
 
     @Override
     public Bool gte(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
-                TBool.of(this.java() >= integer.java()).q(this.q()) :
-                TBool.of().q(this.q()).append(GteInst.create(integer));
+                TBool.from(this).set(this.java() >= integer.java()) :
+                TBool.from(this.append(GteInst.create(integer)));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.of(obj instanceof Int && this.java().equals(((Int) obj).java())).q(this.q()) :
-                TBool.of().q(this.q()).append(EqInst.create(obj));
+                TBool.from(this).set(obj instanceof Int && this.java().equals(((Int) obj).java())) :
+                TBool.from(this.append(EqInst.create(obj)));
     }
 
     @Override
     public Bool lt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
-                TBool.of(this.java() < integer.java()).q(this.q()) :
-                TBool.of().q(this.q()).append(LtInst.create(integer));
+                TBool.from(this).set(this.java() < integer.java()) :
+                TBool.from(this.append(LtInst.create(integer)));
     }
 
     @Override
     public Bool lte(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
-                TBool.of(this.java() <= integer.java()).q(this.q()) :
-                TBool.of().q(this.q()).append(LteInst.create(integer));
+                TBool.from(this).set(this.java() <= integer.java()) :
+                TBool.from(this.append(LteInst.create(integer)));
     }
 
     ///// HELPER METHODS

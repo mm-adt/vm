@@ -48,8 +48,4 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst implements MapI
         return new PlusInst<>(arg);
     }
 
-    public S computeRange(final Obj domain) {
-        Processor.Validators.testJavaTyping(domain, WithPlus.class, this);
-        return MapInstruction.super.computeRange(domain);
-    }
 }

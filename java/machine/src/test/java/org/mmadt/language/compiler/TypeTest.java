@@ -129,7 +129,7 @@ class TypeTest {
                     start("a", "b", "c", "d").branch(id(), id(), id(), id()).plus(id())),
     };
 
-    @TestFactory
+    // @TestFactory
     Stream<DynamicTest> testTypes() {
         return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> {

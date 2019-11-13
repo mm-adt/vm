@@ -239,7 +239,7 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR), this.push(this.match().trim()));
+        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR, Terminal(">="), Terminal(">"), Terminal("<"), Terminal("==")), this.push(this.match().trim()));
     }
 
     @SuppressNode

@@ -99,7 +99,7 @@ public final class BytecodeHelper {
         return list;
     }
 
-    public static Inst apply(final Obj source, final Inst inst) {
+    /*public static Inst apply(final Obj source, final Inst inst) {
         Inst inst2 = IdInst.create().domainAndRange(source, source);
         if (null != inst && !inst.<Inst>peek().opcode().java().equals(Tokens.ID)) {
             Obj domain = source.access((Inst) null);
@@ -134,5 +134,5 @@ public final class BytecodeHelper {
             return ((MapInstruction) inst).apply(domain);
         else
             return inst.computeRange(domain);
-    }
+    }*/
 }
