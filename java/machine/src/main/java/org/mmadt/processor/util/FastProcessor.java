@@ -22,22 +22,17 @@
 
 package org.mmadt.processor.util;
 
-import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
-import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
-import org.mmadt.machine.object.model.composite.inst.FlatMapInstruction;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -49,26 +44,6 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
 
     public FastProcessor(final Inst inst) {
         this.bytecode = inst;
-    }
-
-    private static <E extends Obj> Iterator<E> processTraverser(final E start, final Inst inst) {
-        try {
-            if (inst instanceof BarrierInstruction)
-                return IteratorUtils.stream(((List<E>) start.get()).iterator()).
-                        map(e -> ((BarrierInstruction<E, ObjSet<E>>) inst).apply(e, ((BarrierInstruction<E, ObjSet<E>>) inst).getInitialValue())).
-                        reduce(((BarrierInstruction<E, ObjSet<E>>) inst)::merge).map(x -> ((BarrierInstruction<E, ObjSet<E>>) inst).createIterator(x)).get();
-            else if (inst instanceof FlatMapInstruction)
-                return ((Iterable<E>) ((FlatMapInstruction<E, E>) inst).apply(start).iterable()).iterator();
-            else if (inst instanceof ReduceInstruction)
-                return IteratorUtils.of(IteratorUtils.stream(((List<E>) start.get()).iterator()).
-                        reduce(((ReduceInstruction<E, E>) inst).getInitialValue(), ((ReduceInstruction<E, E>) inst)::apply));
-            else {
-                final E e = ((Function<E, E>) inst).apply(start);
-                return e.get() instanceof Iterator ? e.get() : IteratorUtils.of(e);
-            }
-        } catch (final ClassCastException e) {
-            throw Processor.Exceptions.objDoesNotSupportInst(start, inst);
-        }
     }
 
     @Override
@@ -84,11 +59,12 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
     public Iterator<E> iterator(final Iterator<S> starts) {
         Stream<E> stream = (Stream<E>) IteratorUtils.stream(starts);
         for (final Inst inst : this.bytecode.iterable()) {
-            if (inst instanceof ReduceInstruction || inst instanceof BarrierInstruction)
-                stream = IteratorUtils.stream(FastProcessor.processTraverser((E) TLst.of(stream.collect(Collectors.toList())), inst));
+            if (inst instanceof ReduceInstruction)
+                stream = Stream.of(stream.reduce(((ReduceInstruction<E, E>) inst).getInitialValue(), ((ReduceInstruction<E, E>) inst)::apply));
+            else if (inst instanceof BarrierInstruction)
+                stream = IteratorUtils.stream(stream.map(e -> ((BarrierInstruction<E, ObjSet<E>>) inst).apply(e, ((BarrierInstruction<E, ObjSet<E>>) inst).getInitialValue())).reduce(((BarrierInstruction<E, ObjSet<E>>) inst)::merge).map(x -> ((BarrierInstruction<E, ObjSet<E>>) inst).createIterator(x)).get());
             else
-                stream = stream.flatMap(s -> IteratorUtils.stream(FastProcessor.processTraverser(s, inst)));
-
+                stream = stream.map(((Function<E, E>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());
         }
         return stream.map(s -> (E) s.label(this.bytecode.label())).iterator();

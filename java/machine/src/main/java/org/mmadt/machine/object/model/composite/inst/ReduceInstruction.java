@@ -39,7 +39,6 @@ public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, B
         return (E) ((WithPlus) objA).plus((WithPlus) objB);
     }
 
-
     public default E getInitialValue() {
         return (E) this.q().zero();
     }
