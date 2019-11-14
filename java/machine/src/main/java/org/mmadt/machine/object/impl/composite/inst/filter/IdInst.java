@@ -48,6 +48,4 @@ public final class IdInst<S extends Obj> extends TInst implements FilterInstruct
     public S computeRange(final Obj domain) { // never filters
         return domain.q(domain.q().mult(this.q()));
     }
-
-
 }

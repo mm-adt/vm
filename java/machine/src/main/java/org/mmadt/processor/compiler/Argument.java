@@ -42,11 +42,11 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
 
     public static <S extends Obj, E extends Obj> Argument<S, E> create(final S arg) {
         if (arg instanceof Inst)
-            return new InstArgument<>((Inst) arg); // TODO: should we do this?
-        else if (arg.isInstance() || arg.isType()) // TODO: this means types can propagate
+            return new InstArgument<>((Inst) arg);         // TODO: should we do this?
+        else if (!arg.isReference())
             return new ObjArgument<>((E) arg);
         else
-            return new InstArgument<>(arg.access());
+            return new InstArgument<>(arg.access());       // TODO: references are dereferenced by their access instructions
     }
 
     public static <S extends Obj, E extends Obj> Argument<S, E>[] args(final List<S> args) {
