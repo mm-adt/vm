@@ -51,7 +51,7 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
                 }
             }
         }
-        if (!found) {
+        if (!found && this.getBranches().containsKey(null)) {
             for (final Inst defaultBranch : this.getBranches().get(null)) {
                 itty.addIterator(new FastProcessor<S, E>(defaultBranch).iterator(obj));
             }

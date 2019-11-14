@@ -25,12 +25,16 @@ package org.mmadt.machine.object.impl.composite.inst.branch;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,13 +43,13 @@ import java.util.stream.Stream;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class BranchInst<S extends Obj, E extends Obj> extends TInst implements BranchInstruction<S, E> {
+public final class ChooseInst<S extends Obj, E extends Obj> extends TInst implements BranchInstruction<S, E> {
 
     private Map<Inst, List<Inst>> branches;
 
-    private BranchInst(final Map<Inst, List<Inst>> branches, final Object... args) {
+    private ChooseInst(final Map<Inst, List<Inst>> branches, final Object... args) {
         super(PList.of(args));
-        this.<PList<Obj>>get().add(0, TStr.of(Tokens.BRANCH));
+        this.<PList<Obj>>get().add(0, TStr.of(Tokens.CHOOSE));
         this.branches = branches;
     }
 
@@ -54,7 +58,14 @@ public final class BranchInst<S extends Obj, E extends Obj> extends TInst implem
         return this.branches;
     }
 
-    public static <S extends Obj, E extends Obj> BranchInst<S, E> create(final Object... a) {
-        return new BranchInst<>(new HashMap<>(Map.of(ID(), Stream.of(a).map(x -> (Inst) x).collect(Collectors.toList()))), a);
+    public static <S extends Obj, E extends Obj> ChooseInst<S, E> create(final Object... a) {
+        final List<Obj> args = Stream.of(a).map(ObjectHelper::from).collect(Collectors.toList());
+        final Map<Inst, List<Inst>> branches = new LinkedHashMap<>();
+        for (int i = 0; i < args.size(); i = i + 2) {
+            final Inst predicate = args.get(i) instanceof Inst ? (Inst) args.get(i) : IsInst.create(AInst.create(args.get(i)));
+            final Inst branch = args.get(i + 1) instanceof Inst ? (Inst) args.get(i + 1) : MapInst.create(args.get(i + 1));
+            branches.put(predicate, List.of(branch));
+        }
+        return new ChooseInst<>(branches, args.toArray(new Object[]{}));
     }
 }

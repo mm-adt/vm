@@ -103,9 +103,7 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     Rule Expression() {
-        return OneOrMore(
-                FirstOf(Unary(), Grouping(), Obj()),
-                ZeroOrMore(Binary()));
+        return OneOrMore(FirstOf(Unary(), Grouping(), Obj(), Binary()));
     }
 
     Rule Unary() {

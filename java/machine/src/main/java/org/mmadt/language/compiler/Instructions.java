@@ -24,6 +24,7 @@ package org.mmadt.language.compiler;
 
 import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
+import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
@@ -63,6 +64,7 @@ import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.ACCESS;
 import static org.mmadt.language.compiler.Tokens.AND;
 import static org.mmadt.language.compiler.Tokens.BRANCH;
+import static org.mmadt.language.compiler.Tokens.CHOOSE;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.DB;
 import static org.mmadt.language.compiler.Tokens.DEDUP;
@@ -121,6 +123,8 @@ public final class Instructions {
                 return BranchInst.create(args.toArray(new Object[]{}));
             case COUNT:
                 return CountInst.create();
+            case CHOOSE:
+                return ChooseInst.create(args.toArray(new Object[]{}));
             case DEDUP:
                 return DedupInst.create(args.toArray(new Object[]{}));
             case DIV:

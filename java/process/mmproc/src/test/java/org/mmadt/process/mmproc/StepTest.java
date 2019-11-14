@@ -62,7 +62,7 @@ class StepTest {
 
     @Test
     void testMinus() {
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(1, 2, 3).minus(2).branch(is(eq(-1)), plus(1), is(eq(0)), id(), is(eq(1)), minus(1)).plus(1).bytecode());
+        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(1, 2, 3).minus(2).branch(is(eq(-1)).plus(1), is(eq(0)), is(eq(1)).minus(1)).plus(1).bytecode());
         assertEquals(List.of(TInt.of(1), TInt.of(1), TInt.of(1)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 

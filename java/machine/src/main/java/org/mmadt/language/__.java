@@ -42,6 +42,10 @@ public class __ {
         return create().branch(branches);
     }
 
+    public static Query choose(final Object... branches) {
+        return create().choose(branches);
+    }
+
     public static Query count() {
         return create().count();
     }

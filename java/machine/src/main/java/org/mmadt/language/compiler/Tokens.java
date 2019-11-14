@@ -83,6 +83,7 @@ public final class Tokens {
     public static final String BRANCH = "branch";
     public static final String COALESCE = "coalesce";
     public static final String COUNT = "count";
+    public static final String CHOOSE = "choose";
     public static final String DB = "db";
     public static final String DEDUP = "dedup";
     public static final String DEFINE = "define";

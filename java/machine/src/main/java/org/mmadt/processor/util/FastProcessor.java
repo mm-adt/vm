@@ -67,7 +67,7 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
                 stream = stream.map(((Function<E, E>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());
         }
-        return stream.map(s -> (E) s.label(this.bytecode.label())).iterator();
+        return stream.map(s -> (E) s.label(this.bytecode.label())).filter(s -> !s.q().isZero()).iterator();
     }
 
     @Override
