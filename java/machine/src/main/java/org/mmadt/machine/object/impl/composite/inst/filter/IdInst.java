@@ -37,15 +37,11 @@ public final class IdInst<S extends Obj> extends TInst implements FilterInstruct
         super(PList.of(Tokens.ID));
     }
 
-    public S apply(final S s) {
-        return s;
+    public S apply(final S obj) {
+        return obj;
     }
 
     public static <S extends Obj> IdInst<S> create() {
         return new IdInst<>();
-    }
-
-    public S computeRange(final Obj domain) { // never filters
-        return domain.q(domain.q().mult(this.q()));
     }
 }

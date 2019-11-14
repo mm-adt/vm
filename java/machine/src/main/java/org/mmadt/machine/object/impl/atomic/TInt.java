@@ -99,7 +99,7 @@ public final class TInt extends TObj implements Int {
     @Override
     public Int max() {
         return this.set(Integer.MAX_VALUE);
-    }
+    } // TODO: these should be made [min]/[max]
 
     @Override
     public Int min() {

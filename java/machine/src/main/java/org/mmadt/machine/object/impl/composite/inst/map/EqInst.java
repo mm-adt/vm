@@ -45,8 +45,4 @@ public final class EqInst<S extends Obj> extends TInst implements MapInstruction
     public static <S extends Obj> EqInst<S> create(final Object arg) {
         return new EqInst<>(arg);
     }
-
-    /*public Bool computeRange(final Obj domain) {
-        return TBool.some().q(domain.q());
-    }*/
 }
