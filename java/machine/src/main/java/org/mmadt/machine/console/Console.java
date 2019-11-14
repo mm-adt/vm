@@ -84,10 +84,12 @@ public class Console {
                 try {
                     final ParsingResult result = runner.run(line);
                     if (!result.valueStack.isEmpty()) {
-                        final Obj obj = Console.getExecutableObj((Obj) result.valueStack.pop());
-                        new FastProcessor<>(obj.access()).iterator(obj).forEachRemaining(o -> {
-                            terminal.writer().println(RESULT + o.toString());
-                        });
+                        final Obj obj = (Obj) result.valueStack.pop();
+                        final Inst inst = obj instanceof Inst ? (Inst) obj : obj.access();
+                        if (inst.peek() instanceof InitialInstruction)
+                            new FastProcessor<>(inst).iterator(TObj.none()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
+                        else
+                            terminal.writer().println(RESULT + obj);
                         terminal.flush();
                     }
                 } catch (final Exception e) {
@@ -102,11 +104,5 @@ public class Console {
             }
             terminal.flush();
         }
-    }
-
-    private static Obj getExecutableObj(final Obj obj) {
-        return (obj instanceof Inst && obj.<Inst>peek() instanceof InitialInstruction) ?
-                TObj.none().access((Inst) obj) :
-                obj;
     }
 }

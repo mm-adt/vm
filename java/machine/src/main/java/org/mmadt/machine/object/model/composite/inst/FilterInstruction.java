@@ -36,7 +36,9 @@ public interface FilterInstruction<S extends Obj> extends Inst, Function<S, S> {
     S apply(final S t);
 
     public default S computeRange(final Obj domain) {
-        return domain.q(domain.q().peek().zero(), domain.q().mult(this.q()).last());
+        return domain.isInstance() ?
+                domain.q(domain.q().mult(this.q())) :
+                domain.q(domain.q().peek().zero(), domain.q().mult(this.q()).last());
     }
 
 }

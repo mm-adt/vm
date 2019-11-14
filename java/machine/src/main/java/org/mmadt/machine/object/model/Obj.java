@@ -25,8 +25,10 @@ package org.mmadt.machine.object.model;
 import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
@@ -116,7 +118,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O access(final Inst access);
 
     public default <O extends Obj> O append(final Inst inst) {
-        return inst.computeRange(this).access(this.access().mult(inst));
+        final Inst compose = this.access().equals(TInst.ID()) ?
+                IsInst.create(AInst.create(this.access((Inst) null))).mult(this.access()).mult(inst) : // DOMAIN SPECIFICATION THROUGH is(a(obj))
+                this.access().mult(inst);
+        return inst.computeRange(this).access(compose);
     }
 
     public <O extends Obj> O inst(final Inst instA, final Inst instB);

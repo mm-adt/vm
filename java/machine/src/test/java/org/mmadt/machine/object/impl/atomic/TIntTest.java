@@ -23,9 +23,14 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
 import org.mmadt.machine.object.impl.util.TestHelper;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;
 
@@ -35,7 +40,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.id;
+import static org.mmadt.language.__.lt;
 import static org.mmadt.language.__.mult;
+import static org.mmadt.language.__.or;
+import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
 
 /**
@@ -53,8 +61,9 @@ final class TIntTest {
         //start(TInt.some(5)).obj().iterable().forEach(System.out::println);
         //start(TInt.some(5)).plus(3).obj().iterable().forEach(System.out::println);
         //start(TInt.some(5)).plus(3).gt(50).obj().iterable().forEach(System.out::println);
-        System.out.println(start(1).plus(id()).obj().toString());
-       start(TInt.some()).plus(id()).obj().iterable().forEach(System.out::println);
+       System.out.println(start(TInt.of(175)).plus(id()).mult(2).is(gt(5)).plus(100).is(gt(6)));
+       start(TInt.some()).plus(id()).mult(2).is(gt(5)).plus(100).is(gt(6)).obj().iterable().forEach(System.out::println);
+       // start(TInt.some()).gt(5).obj().iterable().forEach(System.out::println);
         //start(TInt.some(5)).plus(5).mult(5).is(gt(5)).plus(100).is(mult(45).minus(10).gt(0)).obj().iterable().forEach(System.out::println);
     }
 
@@ -80,7 +89,7 @@ final class TIntTest {
         assertNotEquals(TInt.some(), TStr.some());
     }
 
-    /*@Test
+    @Test
     void shouldMonoid() {
         final Obj x = start(TInt.of(1), 2, 3).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110))).obj();
         System.out.println(x);
@@ -93,5 +102,5 @@ final class TIntTest {
         final Obj x = start(t).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110), lt(10000))).obj();
         System.out.println(x);
         x.iterable().forEach(System.out::println);
-    }*/
+    }
 }
