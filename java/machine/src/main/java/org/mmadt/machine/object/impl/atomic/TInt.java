@@ -41,8 +41,6 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.function.Supplier;
 
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -110,12 +108,12 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return this.q().constant() ? this.set(0).access(ID()) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(0) : this.append(ZeroInst.create());
     }
 
     @Override
     public Int one() {
-        return this.q().constant() ? this.set(1).access(ID()) : this.append(OneInst.create());
+        return this.q().constant() ? this.set(1) : this.append(OneInst.create());
     }
 
     @Override

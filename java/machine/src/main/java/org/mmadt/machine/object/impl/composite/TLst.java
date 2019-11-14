@@ -37,8 +37,6 @@ import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.List;
 
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -81,7 +79,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> zero() {
-        return this.q().constant() ? this.set(PList.of()).access(ID()) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(PList.of()) : this.append(ZeroInst.create());
     }
 
     @Override
@@ -112,8 +110,8 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.of(obj instanceof Lst && this.java().equals(((Lst) obj).java())).q(this.q()) :
-                TBool.of().q(this.q()).append(EqInst.create(obj));
+                TBool.from(this).set(obj instanceof Lst && this.java().equals(((Lst) obj).java())) :
+                TBool.from(this).append(EqInst.create(obj));
     }
 
     @Override

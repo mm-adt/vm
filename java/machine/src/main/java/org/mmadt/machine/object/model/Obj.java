@@ -25,7 +25,6 @@ package org.mmadt.machine.object.model;
 import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
@@ -119,7 +118,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O access(final Inst access);
 
     public default <O extends Obj> O append(final Inst inst) {
-        final Inst compose = this.access().equals(TInst.ID()) ?
+        final Inst compose = this.access().isOne() ?
                 IsInst.create(AInst.create(this)).mult(this.access()).mult(inst) : // DOMAIN SPECIFICATION THROUGH is(a(obj))
                 this.access().mult(inst);
         return inst.computeRange(this).access(compose);
@@ -247,6 +246,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.constant(); // && this.q().constant();
     }
 
+
     public default <O extends Obj> O access(final Query access) {
         return this.access(access.bytecode());
     }
@@ -293,7 +293,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O map(final O obj) {
         return obj.isInstance() ?
-                obj.q(this.q()) : this.append(MapInst.create(obj));
+                obj.q(this.q()) : // TODO: X.from(obj)
+                this.append(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {

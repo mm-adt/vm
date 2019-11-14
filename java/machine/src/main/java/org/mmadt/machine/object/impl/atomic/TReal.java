@@ -40,8 +40,6 @@ import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -85,12 +83,12 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return this.q().constant() ? super.set(1.0f).access(ID()) : this.append(OneInst.create()); // no need to check -0.0
+        return this.q().constant() ? super.set(1.0f) : this.append(OneInst.create()); // no need to check -0.0
     }
 
     @Override
     public Real zero() {
-        return this.q().constant() ? super.set(0.0f).access(ID()) : this.append(ZeroInst.create()); // no need to check -0.0
+        return this.q().constant() ? super.set(0.0f) : this.append(ZeroInst.create()); // no need to check -0.0
     }
 
     @Override
@@ -136,29 +134,29 @@ public final class TReal extends TObj implements Real {
     @Override
     public Bool gte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.of(this.java() >= real.java()).q(this.q()) :
-                TBool.of().q(this.q()).append(GteInst.create(real));
+                TBool.from(this).set(this.java() >= real.java()) :
+                TBool.from(this).append(GteInst.create(real));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.of(obj instanceof Real && this.java().equals(((Real) obj).java())).q(this.q()) :
-                TBool.of().q(this.q()).append(EqInst.create(obj));
+                TBool.from(this).set(obj instanceof Real && this.java().equals(((Real) obj).java())) :
+                TBool.from(this).append(EqInst.create(obj));
     }
 
     @Override
     public Bool lt(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.of(this.java() < real.java()).q(this.q()) :
-                TBool.of().q(this.q()).append(LtInst.create(real));
+                TBool.from(this).set(this.java() < real.java()).q(this.q()) :
+                TBool.from(this).append(LtInst.create(real));
     }
 
     @Override
     public Bool lte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.of(this.java() <= real.java()).q(this.q()) :
-                TBool.of().q(this.q()).append(LteInst.create(real));
+                TBool.from(this).set(this.java() <= real.java()).q(this.q()) :
+                TBool.from(this).append(LteInst.create(real));
     }
 
     @Override

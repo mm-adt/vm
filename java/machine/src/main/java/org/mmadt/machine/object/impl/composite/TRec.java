@@ -35,8 +35,6 @@ import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -82,7 +80,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> zero() {
-        return this.q().constant() ? this.set(PMap.of()).access(ID()) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(PMap.of()) : this.append(ZeroInst.create());
     }
 
     @Override
@@ -113,8 +111,8 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.of(obj instanceof Rec && this.java().equals(((Rec) obj).java())).q(this.q()) :
-                TBool.of().q(this.q()).append(EqInst.create(obj));
+                TBool.from(this).set(obj instanceof Rec && this.java().equals(((Rec) obj).java())) :
+                TBool.from(this).append(EqInst.create(obj));
     }
 
     @Override

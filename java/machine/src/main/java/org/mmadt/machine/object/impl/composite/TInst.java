@@ -47,7 +47,7 @@ public class TInst extends TObj implements Inst {
     private static final Inst SOME = new TInst(PList.of(TStr.some(), TObj.all()));
     private static final Inst ALL = new TInst(null).q(0, Integer.MAX_VALUE);
     private static final Inst NONE = new TInst(null).q(0);
-    private static final Inst ONE = new TInst(PList.of(Tokens.ID));
+    private static final Inst ONE = IdInst.create();
 
     public Obj domain = TObj.none();
     public Obj range = TObj.none();
@@ -69,7 +69,7 @@ public class TInst extends TObj implements Inst {
     }
 
     public static Inst ID() {
-        return IdInst.create();
+        return ONE;
     }
 
     public static Inst of(final String opcode, final Object... args) {

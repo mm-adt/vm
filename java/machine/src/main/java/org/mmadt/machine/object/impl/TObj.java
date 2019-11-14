@@ -201,6 +201,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O set(final Object object) {
         final TObj clone = this.clone();
+        boolean madeInstance = false;
         if (null == object) {
             clone.value = null;
             clone.types = this.types.pattern(null);
@@ -210,9 +211,10 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         } else {
             clone.value = object;
             clone.types = this.types.pattern(null);
+            madeInstance = true;
         }
         assert !(clone.value instanceof Inst); // TODO: Remove when proved
-        return (O) clone;
+        return madeInstance ? clone.access((Inst) null) : (O) clone;
     }
 
     @Override
@@ -231,6 +233,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <O extends Obj> O access(final Inst access) {
+        if (this.constant())
+            return (O) this; // TODO: this is a new rule -- instances can't have accesses (they are already 'accessed')
         final TObj clone = this.clone();
         clone.types = this.types.access(access);
         return (O) clone;
