@@ -61,6 +61,7 @@ public class Console {
     private static final SimpleParser PARSER = Parboiled.createParser(SimpleParser.class);
 
     public static void main(final String[] args) throws Exception {
+        disableWarning();
         final ParseRunner runner = new BasicParseRunner<>(PARSER.Source());
         final Terminal terminal = TerminalBuilder.terminal();
         final DefaultHistory history = new DefaultHistory();
@@ -104,5 +105,10 @@ public class Console {
             }
             terminal.flush();
         }
+    }
+
+    public static void disableWarning() {
+        System.err.close();
+        // System.setErr(System.out);
     }
 }
