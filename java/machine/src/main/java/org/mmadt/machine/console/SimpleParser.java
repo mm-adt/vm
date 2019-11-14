@@ -116,7 +116,7 @@ public class SimpleParser extends BaseParser<Object> {
         final Var<String> operator = new Var<>();
         return Sequence(
                 BinaryOperator(), operator.set((String) this.pop()),
-                Expression(), swap(), this.push(OperatorHelper.applyBinary(operator.get(), type(this.pop()), type(this.pop()))));
+                FirstOf(Unary(), Grouping(), Obj()), swap(), this.push(OperatorHelper.applyBinary(operator.get(), type(this.pop()), type(this.pop())))); // always left associative
     }
 
     Rule Grouping() {
