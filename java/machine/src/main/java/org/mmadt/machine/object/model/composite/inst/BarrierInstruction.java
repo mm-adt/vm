@@ -39,9 +39,4 @@ public interface BarrierInstruction<S extends Obj, B> extends BiFunction<S, B, B
 
     public Iterator<S> createIterator(final B barrier);
 
-    public default S computeRange(final Obj domain) {
-        return domain.q(domain.q().mult(this.q()));
-    }
-
-
 }

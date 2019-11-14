@@ -41,26 +41,28 @@ public final class OperatorHelper {
 
     public static <A extends Obj> A applyBinary(final String operator, final A lhs, final A rhs) {
         switch (operator) {
-            case ("*"):
+            case (Tokens.ASTERIX):
                 return (A) ((WithMult) lhs).mult((WithMult) rhs);
-            case ("+"):
+            case (Tokens.CROSS):
                 return (A) ((WithPlus) lhs).plus((WithPlus) rhs);
-            case ("/"):
+            case (Tokens.BACKSLASH):
                 return (A) ((WithDiv) lhs).div((WithDiv) rhs);
-            case ("-"):
+            case (Tokens.DASH):
                 return (A) ((WithMinus) lhs).minus((WithMinus) rhs);
-            case ("&"):
+            case (Tokens.AMPERSAND):
                 return (A) ((WithAnd) lhs).and(rhs);
-            case ("|"):
+            case (Tokens.BAR):
                 return (A) lhs.or(rhs);
-            case (">"):
+            case (Tokens.RANGLE):
                 return (A) ((WithOrder) lhs).gt(rhs);
-            case ("<"):
+            case (Tokens.LANGLE):
                 return (A) ((WithOrder) lhs).lt(rhs);
-            case (">="):
+            case (Tokens.REQUALS):
                 return (A) ((WithOrder) lhs).gte(rhs);
-            case ("=="):
-                return (A) ((WithOrder) lhs).eq(rhs);
+            case (Tokens.LEQUALS):
+                return (A) ((WithOrder) lhs).gte(rhs);
+            case (Tokens.DEQUALS):
+                return (A) lhs.eq(rhs);
 
             default:
                 throw new RuntimeException("Unknown operator: " + operator);

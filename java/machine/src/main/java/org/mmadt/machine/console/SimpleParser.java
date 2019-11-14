@@ -84,6 +84,12 @@ public class SimpleParser extends BaseParser<Object> {
     final Rule TRUE = Terminal(Tokens.TRUE);
     final Rule FALSE = Terminal(Tokens.FALSE);
     final Rule EQUALS = Terminal(Tokens.EQUALS);
+    final Rule DEQUALS = Terminal(Tokens.DEQUALS);
+    final Rule LTE = Terminal(Tokens.LEQUALS);
+    final Rule GTE = Terminal(Tokens.REQUALS);
+    final Rule LT = Terminal(Tokens.LANGLE);
+    final Rule GT = Terminal(Tokens.RANGLE);
+
     final Rule DOUBLE_COLON = Terminal(Tokens.COLON + Tokens.COLON);
 
     /// built-int type symbols
@@ -103,7 +109,9 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     Rule Expression() {
-        return OneOrMore(FirstOf(Unary(), Grouping(), Obj(), Binary()));
+        return OneOrMore(
+                FirstOf(Unary(), Grouping(), Obj()),
+                ZeroOrMore(Binary()));
     }
 
     Rule Unary() {
@@ -237,7 +245,7 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR, Terminal(">="), Terminal(">"), Terminal("<"), Terminal("==")), this.push(this.match().trim()));
+        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressNode

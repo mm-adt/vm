@@ -45,6 +45,7 @@ public final class Tokens {
     public static final String ASTERIX = "*";
     public static final String CROSS = "+";
     public static final String EQUALS = "=";
+    public static final String DEQUALS = "==";
     public static final String EMPTY = "";
     public static final String NEWLINE = "\n";
     public static final String QUESTION = "?";
@@ -54,6 +55,8 @@ public final class Tokens {
     public static final String RCURL = "}";
     public static final String LANGLE = "<";
     public static final String RANGLE = ">";
+    public static final String LEQUALS = "<=";
+    public static final String REQUALS = ">=";
     public static final String LPAREN = "(";
     public static final String RPAREN = ")";
     public static final String DQUOTE = "\"";

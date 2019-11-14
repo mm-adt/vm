@@ -26,7 +26,6 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TQ;
-import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -46,6 +45,8 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.Objects;
+
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -137,20 +138,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public Bool eq(final Obj object) {
-        // return TBool.of(Objects.equals(this.get(), object.get()));
-        return TBool.from(this).set(Objects.equals(this.get(), object.get()));
-    }
-
-    @Override
-    public Bool neq(final Obj object) {
-        if (this.isInstance() && object.isInstance())
-            return TBool.of(!Objects.equals(this.get(), object.get())).q(this.q());
-        else
-            return this.append(NeqInst.create(object));
-    }
-
-    @Override
     public <O extends Obj> O type(final O type) { // TODO: this might need to clone obj as branches may have different types (variants)
         if (this == type)
             throw new RuntimeException("An object is already its own type: " + this + "::" + type);
@@ -214,7 +201,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             madeInstance = true;
         }
         assert !(clone.value instanceof Inst); // TODO: Remove when proved
-        return madeInstance ? clone.access((Inst) null) : (O) clone;
+        return madeInstance ? clone.access(ID()) : (O) clone;
     }
 
     @Override
@@ -262,6 +249,13 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
+    public Inst access() {
+        return this.types.access(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+
+    @Override
     public int hashCode() {
         return Objects.hash(this.value, this.q(), this.types);
     }
@@ -296,9 +290,16 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return TBool.from(this).set(obj.test(this));
     }
 
+
     @Override
-    public Inst access() {
-        return this.types.access(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
+    public Bool eq(final Obj object) {
+        // return TBool.of(Objects.equals(this.get(), object.get()));
+        return TBool.from(this).set(Objects.equals(this.get(), object.get()));
+    }
+
+    @Override
+    public Bool neq(final Obj object) {
+        return TBool.from(this).set(!Objects.equals(this.get(), object.get()));
     }
 
 }
