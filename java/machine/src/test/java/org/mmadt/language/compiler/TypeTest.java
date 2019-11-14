@@ -23,7 +23,6 @@
 package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.Query;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;

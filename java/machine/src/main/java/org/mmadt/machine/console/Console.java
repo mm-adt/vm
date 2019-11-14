@@ -29,7 +29,10 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.processor.util.FastProcessor;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.BasicParseRunner;
@@ -81,14 +84,13 @@ public class Console {
                 try {
                     final ParsingResult result = runner.run(line);
                     if (!result.valueStack.isEmpty()) {
-                        final Obj obj = (Obj) result.valueStack.pop();
+                        final Obj obj = Console.getExecutableObj((Obj) result.valueStack.pop());
                         new FastProcessor<>(obj.access()).iterator(obj).forEachRemaining(o -> {
                             terminal.writer().println(RESULT + o.toString());
                         });
                         terminal.flush();
                     }
                 } catch (final Exception e) {
-                    // terminal.writer().println(Stream.of(e.getMessage().split("\n")).skip(1).limit(2).reduce((a, b) -> a + "\n" + b).get());
                     if (null == e.getCause())
                         throw e;
                     throw e.getCause();
@@ -100,5 +102,11 @@ public class Console {
             }
             terminal.flush();
         }
+    }
+
+    private static Obj getExecutableObj(final Obj obj) {
+        return (obj instanceof Inst && obj.<Inst>peek() instanceof InitialInstruction) ?
+                TObj.none().access((Inst) obj) :
+                obj;
     }
 }

@@ -124,14 +124,14 @@ public class TInst extends TObj implements Inst {
     }
 
     @Override
-    public Inst mult(final Inst object) { // TODO: optimize this nest
-        return object.isZero() ?
+    public Inst mult(final Inst inst) { // TODO: optimize this nest
+        return inst.isZero() ?
                 this.zero() :
                 this.isOne() ?
-                        object.q(object.q().mult(this.q())) :
-                        object.isOne() ?
-                                this.q(this.q().mult(object.q())) :
-                                new TInst(TStream.of(List.of(this, object)));
+                        inst.q(inst.q().mult(this.q())) :
+                        inst.isOne() ?
+                                this.q(this.q().mult(inst.q())) :
+                                new TInst(TStream.of(List.of(this, inst)));
     }
 
     @Override

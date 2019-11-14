@@ -33,8 +33,6 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.util.IteratorUtils;
 
-import java.util.Iterator;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -69,6 +67,6 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
 
     @Override
     public S apply(final S obj) {
-        return obj.set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(obj)));
+        return TObj.none().set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(TObj.none())));
     }
 }
