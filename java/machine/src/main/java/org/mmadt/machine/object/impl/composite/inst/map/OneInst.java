@@ -40,7 +40,7 @@ public final class OneInst<S extends WithOne<S>> extends TInst implements MapIns
     }
 
     public S apply(final S obj) {
-        return MapInstruction.super.computeRange(obj.one());
+        return obj.one();
     }
 
     public static <S extends WithOne<S>> OneInst<S> create() {

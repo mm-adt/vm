@@ -41,7 +41,7 @@ public final class LtInst<S extends WithOrder<S>> extends TInst implements MapIn
     }
 
     public Bool apply(final S obj) {
-        return MapInstruction.super.computeRange(obj.lt(this.<S, S>argument(0).mapArg(obj)));
+        return obj.lt(this.<S, S>argument(0).mapArg(obj));
     }
 
     public static <S extends WithOrder<S>> LtInst<S> create(final Object arg) {

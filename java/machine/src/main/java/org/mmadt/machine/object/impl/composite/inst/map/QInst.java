@@ -42,7 +42,7 @@ public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TI
     }
 
     public Q<E> apply(final S obj) {
-        return MapInstruction.super.computeRange(obj.q());
+        return obj.q();
     }
 
     public static <S extends Obj, E extends WithOrderedRing<E>> QInst<S, E> create() {

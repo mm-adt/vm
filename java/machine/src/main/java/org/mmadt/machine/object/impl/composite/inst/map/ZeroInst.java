@@ -41,7 +41,7 @@ public final class ZeroInst<S extends WithZero<S>> extends TInst implements MapI
     }
 
     public S apply(final S obj) {
-        return MapInstruction.super.computeRange(obj.zero());
+        return obj.zero();
     }
 
     public static <S extends WithZero<S>> ZeroInst<S> create() {

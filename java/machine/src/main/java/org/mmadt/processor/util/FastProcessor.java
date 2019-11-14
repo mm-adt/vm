@@ -26,6 +26,7 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
+import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.composite.inst.FlatMapInstruction;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.processor.Processor;

@@ -52,7 +52,7 @@ public interface Processor<S extends Obj, E extends Obj> {
     public Iterator<E> iterator(final Iterator<S> starts);
 
     public default Iterator<E> iterator(final S start) {
-        return this.iterator(IteratorUtils.of(start.access(IdInst.create())));
+        return this.iterator(IteratorUtils.of(start));
     }
 
     /**

@@ -42,7 +42,6 @@ import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.util.BytecodeHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
@@ -139,7 +138,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Bool eq(final Obj object) {
-        return TBool.of(Objects.equals(this.get(), object.get()));
+        // return TBool.of(Objects.equals(this.get(), object.get()));
+        return TBool.from(this).set(Objects.equals(this.get(), object.get()));
     }
 
     @Override
@@ -289,7 +289,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Bool a(final Obj obj) {
-        return TBool.of(obj.test(this)).q(this.q());
+        return TBool.from(this).set(obj.test(this));
     }
 
     @Override

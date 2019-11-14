@@ -28,9 +28,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
-import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,7 +41,7 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst implement
 
     @Override
     public V apply(final WithProduct<K, V> obj) {
-        return MapInstruction.super.computeRange(obj.get(this.<Obj, K>argument(0).mapArg(obj)));
+        return obj.get(this.<Obj, K>argument(0).mapArg(obj));
     }
 
     public static <K extends Obj, V extends Obj> GetInst<K, V> create(final Object arg) {
@@ -51,7 +49,7 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst implement
     }
 
     public V computeRange(final Obj domain) {
-//        Processor.Validators.testJavaTyping(domain, WithProduct.class,this);
-       return MapInstruction.super.computeRange(this.apply((WithProduct)TSym.fetch(domain)));
+        return (V) super.computeRange(this.apply((WithProduct) TSym.fetch(domain)));
     }
+
 }

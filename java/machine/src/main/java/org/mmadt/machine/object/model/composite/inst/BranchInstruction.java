@@ -23,10 +23,8 @@
 package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.MultiIterator;
 
@@ -62,21 +60,6 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
     }
 
     public default E apply(final S obj) {
-        return obj.set(distribute(obj));
+        return TObj.none().set(distribute(obj));
     } // this should all be done through subscription semantics and then its just a lazy round-robin
-
-    public default E computeRange(final Obj domain) {
-        this.<Inst>args().forEach(i -> {
-            ((TInst) i).domain = domain;
-            ((TInst) i).range = i.computeRange(domain);
-        }); // TODO: I don't think we should ever have a domain/range specification for an instruction (it must always be determined via type obj propagation)
-        final Obj range = this.getBranches().values().stream().
-                flatMap(List::stream).
-                map(i -> i.computeRange(domain)).
-                reduce((a, b) -> ((a.isInstance() && b.isInstance() && a.equals(b)) ?
-                        a :
-                        ObjectHelper.root(a, b))
-                        .q(a.q().plus(b.q()))).orElse(TObj.none());
-        return range.q(range.q().mult(this.q()));
-    }
 }

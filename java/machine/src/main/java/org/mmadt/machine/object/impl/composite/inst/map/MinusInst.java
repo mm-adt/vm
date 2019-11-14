@@ -24,11 +24,9 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
-import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,7 +38,7 @@ public final class MinusInst<S extends WithMinus<S>> extends TInst implements Ma
     }
 
     public S apply(final S obj) {
-        return  MapInstruction.super.computeRange(obj.minus(this.<S, S>argument(0).mapArg(obj)));
+        return obj.minus(this.<S, S>argument(0).mapArg(obj));
     }
 
     public static <S extends WithMinus<S>> MinusInst<S> create(final Object arg) {

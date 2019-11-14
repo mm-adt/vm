@@ -24,10 +24,11 @@ package org.mmadt.machine.object.impl;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 
@@ -109,7 +110,7 @@ public final class TType implements Type {
     @Override
     public Type access(final Inst access) {
         final TType clone = this.clone();
-        clone.access = null == access || access.<Inst>peek().opcode().java().equals(Tokens.ID) ? null : access;
+        clone.access = null == access || (access.get() instanceof PList && access.<PList<Str>>get().get(0).java().equals(Tokens.ID)) ? null : access;
         return clone;
     }
 
@@ -170,7 +171,6 @@ public final class TType implements Type {
                 Objects.equals(this.label, ((Type) object).label()) &&
                 Objects.equals(this.instructions, ((Type) object).instructions()) &&
                 Objects.equals(this.pattern, ((Type) object).pattern());
-
     }
 
     @Override

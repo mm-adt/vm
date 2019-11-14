@@ -40,7 +40,7 @@ public final class DivInst<S extends WithDiv<S>> extends TInst implements MapIns
     }
 
     public S apply(final S obj) {
-        return  MapInstruction.super.computeRange(obj.div(this.<S, S>argument(0).mapArg(obj)));
+        return obj.div(this.<S, S>argument(0).mapArg(obj));
     }
 
     public static <S extends WithDiv<S>> DivInst<S> create(final Object arg) {

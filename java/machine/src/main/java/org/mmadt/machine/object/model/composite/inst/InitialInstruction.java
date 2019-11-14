@@ -33,9 +33,6 @@ import java.util.function.Function;
 public interface InitialInstruction<S extends Obj> extends Inst, Function<S, S> {
 
     @Override
-    public S apply(final S s);
+    S apply(final S s);
 
-    public default S computeRange(final Obj domain) {
-        return domain.q(domain.q().mult(this.q()));
-    }
 }

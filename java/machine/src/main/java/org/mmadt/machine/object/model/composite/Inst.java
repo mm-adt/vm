@@ -61,7 +61,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     public Obj range();
 
     public default Obj computeRange(final Obj domain) {
-        return domain;
+        return this.q().isOne() ? domain : domain.q(domain.q().mult(this.q()));
     }
 
     @Override
