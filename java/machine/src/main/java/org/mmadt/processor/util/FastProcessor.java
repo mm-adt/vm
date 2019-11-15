@@ -35,16 +35,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class FastProcessor<S extends Obj> implements Processor<S>, ProcessorFactory {
-
-    protected final Inst bytecode;
-
-    public FastProcessor(final Inst inst) {
-        this.bytecode = inst;
-    }
 
     @Override
     public boolean alive() {
@@ -57,8 +53,9 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
 
     @Override
     public Iterator<S> iterator(final S obj) {
-        Stream<S> stream = Stream.of(obj);
-        for (final Inst inst : this.bytecode.iterable()) {
+        final Inst bytecode = obj.access();
+        Stream<S> stream = Stream.of(obj.access(ID()));
+        for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof ReduceInstruction)
                 stream = Stream.of(stream.reduce(((ReduceInstruction<S, S>) inst).getInitialValue(), ((ReduceInstruction<S, S>) inst)::apply));
             else if (inst instanceof BarrierInstruction)
@@ -67,7 +64,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
                 stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());
         }
-        return stream.map(s -> s.<S>label(this.bytecode.label())).filter(s -> !s.q().isZero()).iterator();
+        return stream.map(s -> s.<S>label(bytecode.label())).filter(s -> !s.q().isZero()).iterator();
     }
 
     @Override

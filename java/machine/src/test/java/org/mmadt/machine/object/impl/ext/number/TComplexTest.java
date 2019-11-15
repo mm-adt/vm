@@ -53,6 +53,6 @@ class TComplexTest {
         bindings.put("xi", TReal.of(3.0f));
         final Optional<Inst> match = complex.inst(bindings, plus(TLst.of(TReal.of(4.0f), TReal.of(5.0f))).bytecode());
         System.out.println(match);
-        new FastProcessor<>(match.get()).iterator(TReal.of(1.0)).forEachRemaining(System.out::println);
+        new FastProcessor<>().iterator(TReal.of(1.0f).append(match.get())).forEachRemaining(System.out::println);
     }
 }

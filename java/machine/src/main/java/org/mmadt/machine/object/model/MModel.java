@@ -59,7 +59,7 @@ public interface MModel<S extends Obj> extends WithProduct<Str, S> {
 
     @Override
     public default Iterable<MModel<S>> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new FastProcessor<MModel<S>>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<MModel<S>>().iterator(this);
     }
 
 }

@@ -29,10 +29,7 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.processor.util.FastProcessor;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.BasicParseRunner;
@@ -90,11 +87,7 @@ public class Console {
                     final ParsingResult result = runner.run(line);
                     if (!result.valueStack.isEmpty()) {
                         final Obj obj = (Obj) result.valueStack.pop();
-                        final Inst inst = obj instanceof Inst ? (Inst) obj : obj.access();
-                        if (inst.peek() instanceof InitialInstruction)
-                            new FastProcessor<>(inst).iterator(TObj.none()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
-                        else
-                            terminal.writer().println(RESULT + obj);
+                        new FastProcessor<>().iterator(obj).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
                         terminal.flush();
                     }
                 } catch (final Exception e) {

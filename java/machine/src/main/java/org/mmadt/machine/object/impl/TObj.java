@@ -220,8 +220,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <O extends Obj> O access(final Inst access) {
-        if (this.constant())
-            return (O) this; // TODO: this is a new rule -- instances can't have accesses (they are already 'accessed')
+        //if (this.constant())
+        //    return (O) this; // TODO: this is a new rule -- instances can't have accesses (they are already 'accessed')
         final TObj clone = this.clone();
         clone.types = this.types.access(access);
         return (O) clone;
