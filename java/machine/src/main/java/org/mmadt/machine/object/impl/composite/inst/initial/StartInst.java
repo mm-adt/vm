@@ -38,7 +38,7 @@ import org.mmadt.util.IteratorUtils;
  */
 public final class StartInst<S extends Obj> extends TInst implements InitialInstruction<S> {
 
-    public StartInst(final Object... arguments) {
+    private StartInst(final Object... arguments) {
         super(PList.of(arguments));
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.START));
     }

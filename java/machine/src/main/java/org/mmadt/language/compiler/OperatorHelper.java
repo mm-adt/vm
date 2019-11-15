@@ -22,6 +22,11 @@
 
 package org.mmadt.language.compiler;
 
+import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithDiv;
@@ -63,7 +68,21 @@ public final class OperatorHelper {
                 return (A) ((WithOrder) lhs).gte(rhs);
             case (Tokens.DEQUALS):
                 return (A) lhs.eq(rhs);
+            default:
+                throw new RuntimeException("Unknown operator: " + operator);
+        }
+    }
 
+    public static Obj applyUnary(final String operator, final Obj rhs) {
+        switch (operator) {
+            case (Tokens.ASTERIX):
+                return MultInst.create(rhs);
+            case (Tokens.CROSS):
+                return PlusInst.create(rhs);
+            case (Tokens.DASH):
+                return rhs instanceof WithMinus ? ((WithMinus) rhs).neg() : MapInst.create(rhs).mult(NegInst.create());
+            case (Tokens.DIV):
+                return DivInst.create(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

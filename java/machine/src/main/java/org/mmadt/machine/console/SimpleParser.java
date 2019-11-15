@@ -42,7 +42,6 @@ import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ModelCache;
 import org.parboiled.BaseParser;
@@ -115,7 +114,7 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     Rule Unary() {
-        return Sequence(UnaryOperator(), Expression(), this.push(((WithMinus) this.pop()).neg())); // currently the only unary operator is -
+        return Sequence(UnaryOperator(), FirstOf(Unary(), Grouping(), Obj()), swap(), this.push(OperatorHelper.applyUnary((String) this.pop(), type(this.pop())))); // always left associative
     }
 
     Rule Binary() {
@@ -240,7 +239,7 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule UnaryOperator() {
-        return SUB;
+        return Sequence(FirstOf(STAR, SUB, PLUS, DIV, SUB), this.push(this.match().trim()));
     }
 
     @SuppressSubnodes
