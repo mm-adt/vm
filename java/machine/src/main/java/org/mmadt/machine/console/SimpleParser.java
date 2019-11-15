@@ -35,6 +35,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -138,9 +139,9 @@ public class SimpleParser extends BaseParser<Object> {
                         Inst(),
                         Lst(),
                         Model(),
-                        Name()),                                                                                    // obj
-                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                    // {quantifier}
-                Optional(MAPSFROM, Expression(), swap(), this.push(type(this.pop()).access((Inst) this.pop()))));   // <= inst
+                        Name()),                                                                                         // obj
+                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                         // {quantifier}
+                Optional(MAPSFROM, Expression(), swap(), this.push(type(this.pop()).access(castToInst(this.pop())))));   // <= inst  (the pop from the stack will cast to inst)
     }
 
     Rule Lst() {
@@ -287,5 +288,9 @@ public class SimpleParser extends BaseParser<Object> {
 
     <A extends Obj> A type(final Object object) {
         return (A) object;
+    }
+
+    Inst castToInst(final Object object) {
+        return object instanceof Inst ? (Inst) object : StartInst.create(object); // start or map?
     }
 }

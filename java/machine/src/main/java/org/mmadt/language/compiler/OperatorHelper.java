@@ -81,7 +81,7 @@ public final class OperatorHelper {
                 return PlusInst.create(rhs);
             case (Tokens.DASH):
                 return rhs instanceof WithMinus ? ((WithMinus) rhs).neg() : MapInst.create(rhs).mult(NegInst.create());
-            case (Tokens.DIV):
+            case (Tokens.BACKSLASH):
                 return DivInst.create(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
