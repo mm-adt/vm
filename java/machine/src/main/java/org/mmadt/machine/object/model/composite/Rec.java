@@ -102,6 +102,6 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default Iterable<Rec<K, V>> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Rec<K, V>, Rec<K, V>>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Rec<K, V>>(this.access()).iterator(this);
     }
 }

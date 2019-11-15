@@ -46,11 +46,11 @@ import java.util.function.Consumer;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E> {
+public final class Proc<S extends Obj> implements Processor<S> {
 
     private final List<Step<?, ?>> steps = new ArrayList<>();
-    private Step<?, E> endStep;
-    private SourceStep<S> startStep;
+    private Step<?, S> endStep;
+    private SourceStep<Obj> startStep;
     private AtomicBoolean alive = new AtomicBoolean(Boolean.FALSE);
 
     Proc(final Inst inst) {
@@ -60,25 +60,25 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
             if (this.steps.isEmpty() && !(function instanceof InitialInstruction)) {
                 this.startStep = new SourceStep<>();
                 this.steps.add(this.startStep);
-                previousStep = this.startStep;
+                previousStep = (Step) this.startStep;
             }
 
             // if (function instanceof RepeatBranch)
             //    nextStep = new RepeatStep<>(previousStep, (RepeatBranch<S>) function);
             if (function instanceof BranchInstruction)
-                nextStep = new BranchStep<>(previousStep, (BranchInstruction<S, E>) function);
+                nextStep = new BranchStep<>(previousStep, (BranchInstruction<S, S>) function);
             else if (function instanceof FilterInstruction)
                 nextStep = new FilterStep<>(previousStep, (FilterInstruction<S>) function);
             else if (function instanceof FlatMapInstruction)
-                nextStep = new FlatMapStep<>(previousStep, (FlatMapInstruction<S, E>) function);
+                nextStep = new FlatMapStep<>(previousStep, (FlatMapInstruction<S, S>) function);
             else if (function instanceof MapInstruction)
-                nextStep = new MapStep<>(previousStep, (MapInstruction<S, E>) function);
+                nextStep = new MapStep<>(previousStep, (MapInstruction<S, S>) function);
             else if (function instanceof InitialInstruction)
                 nextStep = new InitialStep<>((InitialInstruction<S>) function);
             else if (function instanceof BarrierInstruction)
                 nextStep = new BarrierStep<>(previousStep, (BarrierInstruction<S, Object>) function);
             else if (function instanceof ReduceInstruction)
-                nextStep = new ReduceStep<>(previousStep, (ReduceInstruction<S, E>) function, new InMemoryReducer<>((ReduceInstruction<S, E>) function));
+                nextStep = new ReduceStep<>(previousStep, (ReduceInstruction<S, S>) function, new InMemoryReducer<>((ReduceInstruction<S, S>) function));
             else if (function instanceof SideEffectInstruction)
                 nextStep = new SideEffectStep<>(previousStep, (SideEffectInstruction<S>) function);
             else
@@ -87,7 +87,7 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
             this.steps.add(nextStep);
             previousStep = nextStep;
         }
-        this.endStep = (Step<?, E>) previousStep;
+        this.endStep = previousStep;
     }
 
     @Override
@@ -104,24 +104,24 @@ public final class Proc<S extends Obj, E extends Obj> implements Processor<S, E>
     }
 
     @Override
-    public Iterator<E> iterator(final Iterator<S> starts) {
+    public Iterator<S> iterator(final S obj) {
         if (this.alive())
             throw Processor.Exceptions.processorIsCurrentlyRunning(this);
 
         this.alive.set(Boolean.TRUE);
         if (null != this.startStep)
-            starts.forEachRemaining(this.startStep::addStart);
+            this.startStep.addStart(obj);
         return IteratorUtils.onLast(this.endStep, () -> this.alive.set(Boolean.FALSE));
     }
 
 
     @Override
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
+    public void subscribe(final S obj, final Consumer<S> consumer) {
         if (this.alive())
             throw Processor.Exceptions.processorIsCurrentlyRunning(this);
 
         new Thread(() -> {
-            final Iterator<E> iterator = this.iterator(starts);
+            final Iterator<S> iterator = this.iterator(obj);
             while (iterator.hasNext()) {
                 if (!this.alive.get())
                     break;

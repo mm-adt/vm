@@ -34,9 +34,9 @@ import java.util.function.Consumer;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public abstract class SimpleProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
+public abstract class SimpleProcessor<S extends Obj> implements Processor<S>, ProcessorFactory {
 
-    protected E obj = null;
+    protected S obj = null;
 
     @Override
     public void stop() {
@@ -49,21 +49,21 @@ public abstract class SimpleProcessor<S extends Obj, E extends Obj> implements P
     }
 
     @Override
-    public Iterator<E> iterator(final Iterator<S> starts) {
-        this.processObj(starts);
+    public Iterator<S> iterator(final S obj) {
+        this.processObj(obj);
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
-                return null != obj;
+                return null != SimpleProcessor.this.obj;
             }
 
             @Override
-            public E next() {
-                if (null == obj)
+            public S next() {
+                if (null == SimpleProcessor.this.obj)
                     throw FastNoSuchElementException.instance();
                 else {
-                    final E temp = obj;
-                    obj = null;
+                    final S temp = SimpleProcessor.this.obj;
+                    SimpleProcessor.this.obj = null;
                     return temp;
                 }
             }
@@ -71,17 +71,17 @@ public abstract class SimpleProcessor<S extends Obj, E extends Obj> implements P
     }
 
     @Override
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-        this.processObj(starts);
+    public void subscribe(final S obj, final Consumer<S> consumer) {
+        this.processObj(obj);
         if (null != this.obj)
             consumer.accept(this.obj);
         this.obj = null;
     }
 
     @Override
-    public <A extends Obj, B extends Obj> Processor<A, B> mint(final Inst inst) {
-        return (Processor<A, B>) this;
+    public <A extends Obj> Processor<A> mint(final Inst inst) {
+        return (Processor<A>) this;
     }
 
-    protected abstract void processObj(final Iterator<S> starts);
+    protected abstract void processObj(final S starts);
 }

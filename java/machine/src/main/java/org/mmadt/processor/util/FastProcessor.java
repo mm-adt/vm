@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class FastProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
+public final class FastProcessor<S extends Obj> implements Processor<S>, ProcessorFactory {
 
     protected final Inst bytecode;
 
@@ -56,22 +56,22 @@ public final class FastProcessor<S extends Obj, E extends Obj> implements Proces
     }
 
     @Override
-    public Iterator<E> iterator(final Iterator<S> starts) {
-        Stream<E> stream = (Stream<E>) IteratorUtils.stream(starts);
+    public Iterator<S> iterator(final S obj) {
+        Stream<S> stream = Stream.of(obj);
         for (final Inst inst : this.bytecode.iterable()) {
             if (inst instanceof ReduceInstruction)
-                stream = Stream.of(stream.reduce(((ReduceInstruction<E, E>) inst).getInitialValue(), ((ReduceInstruction<E, E>) inst)::apply));
+                stream = Stream.of(stream.reduce(((ReduceInstruction<S, S>) inst).getInitialValue(), ((ReduceInstruction<S, S>) inst)::apply));
             else if (inst instanceof BarrierInstruction)
-                stream = IteratorUtils.stream(stream.map(e -> ((BarrierInstruction<E, ObjSet<E>>) inst).apply(e, ((BarrierInstruction<E, ObjSet<E>>) inst).getInitialValue())).reduce(((BarrierInstruction<E, ObjSet<E>>) inst)::merge).map(x -> ((BarrierInstruction<E, ObjSet<E>>) inst).createIterator(x)).get());
+                stream = IteratorUtils.stream(stream.map(e -> ((BarrierInstruction<S, ObjSet<S>>) inst).apply(e, ((BarrierInstruction<S, ObjSet<S>>) inst).getInitialValue())).reduce(((BarrierInstruction<S, ObjSet<S>>) inst)::merge).map(x -> ((BarrierInstruction<S, ObjSet<S>>) inst).createIterator(x)).get());
             else
-                stream = stream.map(((Function<E, E>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
+                stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());
         }
-        return stream.map(s -> (E) s.label(this.bytecode.label())).filter(s -> !s.q().isZero()).iterator();
+        return stream.map(s -> s.<S>label(this.bytecode.label())).filter(s -> !s.q().isZero()).iterator();
     }
 
     @Override
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
-        this.iterator(starts).forEachRemaining(consumer);
+    public void subscribe(final S obj, final Consumer<S> consumer) {
+        this.iterator(obj).forEachRemaining(consumer);
     }
 }

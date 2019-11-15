@@ -39,7 +39,7 @@ public final class ProcProcessor implements ProcessorFactory {
     }
 
     @Override
-    public <S extends Obj, E extends Obj> Processor<S, E> mint(final Inst inst) {
+    public <S extends Obj> Processor<S> mint(final Inst inst) {
         return new Proc<>(inst);
     }
 }

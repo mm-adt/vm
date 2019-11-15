@@ -24,12 +24,10 @@ package org.mmadt.processor.util;
 
 import org.mmadt.machine.object.model.Obj;
 
-import java.util.Iterator;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class FilterProcessor<S extends Obj> extends SimpleProcessor<S, S> {
+public final class FilterProcessor<S extends Obj> extends SimpleProcessor<S> {
 
     private final boolean allow;
 
@@ -38,8 +36,8 @@ public final class FilterProcessor<S extends Obj> extends SimpleProcessor<S, S> 
     }
 
     @Override
-    protected void processObj(final Iterator<S> starts) {
+    protected void processObj(final S start) {
         if (this.allow)
-            this.obj = starts.next();
+            this.obj = start;
     }
 }

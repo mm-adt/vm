@@ -29,7 +29,7 @@ import java.util.Iterator;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class LoopsProcessor<S extends Obj> extends SimpleProcessor<S, S> {
+public final class LoopsProcessor<S extends Obj> extends SimpleProcessor<S> {
 
     private final int loops;
 
@@ -38,9 +38,8 @@ public final class LoopsProcessor<S extends Obj> extends SimpleProcessor<S, S> {
     }
 
     @Override
-    protected void processObj(final Iterator<S> starts) {
-        final S traverser = starts.next();
-        this.obj = traverser;
+    protected void processObj(final S start) {
+        this.obj = start;
         //this.traverser = traverser.loops() == this.loops ? traverser : null; TODO: loop stack for mm-ADT objects
     }
 }

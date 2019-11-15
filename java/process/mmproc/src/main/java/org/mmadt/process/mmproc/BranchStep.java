@@ -71,13 +71,13 @@ final class BranchStep<S extends Obj, E extends Obj, M> extends AbstractStep<S, 
                 if (new Proc<>(entry.getKey()).iterator(obj).hasNext()) {
                     found = true;
                     for (final Inst branch : entry.getValue()) {
-                        ((MultiIterator<E>) this.nextObjs).addIterator(new Proc<S, E>(branch).iterator(obj)); // TODO: make sure this is global
+                        ((MultiIterator<E>) this.nextObjs).addIterator(new Proc(branch).iterator(obj)); // TODO: make sure this is global
                     }
                 }
             }
             if (!found) {
                 for (final Inst defaultBranch : this.defaultBranches) {
-                    ((MultiIterator<E>) this.nextObjs).addIterator(new Proc<S, E>(defaultBranch).iterator(obj));
+                    ((MultiIterator<E>) this.nextObjs).addIterator(new Proc(defaultBranch).iterator(obj));
                 }
             }
         }

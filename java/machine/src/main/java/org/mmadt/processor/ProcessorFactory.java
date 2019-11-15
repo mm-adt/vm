@@ -33,7 +33,7 @@ import java.io.Serializable;
  */
 public interface ProcessorFactory extends Serializable {
 
-    public default <S extends Obj, E extends Obj> Processor<S, E> mint(final Inst inst) {
+    public default <S extends Obj> Processor<S> mint(final Inst inst) {
         return EmptyProcessor.instance();
     }
 

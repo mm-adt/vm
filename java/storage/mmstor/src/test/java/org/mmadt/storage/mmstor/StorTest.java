@@ -58,7 +58,7 @@ class StorTest {
         storage.root().put(TStr.of("d"));
         assertEquals(TLst.of("a", "b", "c", "d"), storage.root());
 
-        final Processor<Lst<Str>, Lst<Str>> processor = new FastProcessor<>(TLst.some().access(plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e"))).access());
+        final Processor<Lst<Str>> processor = new FastProcessor<>(TLst.some().access(plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e"))).access());
         assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(processor.iterator(storage.root())));
     }
 

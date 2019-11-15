@@ -109,7 +109,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
 
     @Override
     public default Iterable<Lst<V>> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Lst<V>, Lst<V>>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Lst<V>>(this.access()).iterator(this);
     }
 
 }

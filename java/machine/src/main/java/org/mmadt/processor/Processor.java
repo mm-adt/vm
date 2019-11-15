@@ -22,10 +22,8 @@
 
 package org.mmadt.processor;
 
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
 import java.util.function.Consumer;
@@ -33,7 +31,7 @@ import java.util.function.Consumer;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Processor<S extends Obj, E extends Obj> {
+public interface Processor<S extends Obj> {
 
 
     public boolean alive();
@@ -49,11 +47,7 @@ public interface Processor<S extends Obj, E extends Obj> {
      *
      * @return an iterator of traverser results
      */
-    public Iterator<E> iterator(final Iterator<S> starts);
-
-    public default Iterator<E> iterator(final S start) {
-        return this.iterator(IteratorUtils.of(start));
-    }
+    public Iterator<S> iterator(final S obj);
 
     /**
      * Start the processor and process the resultant objects using the push-based consumer.
@@ -61,7 +55,7 @@ public interface Processor<S extends Obj, E extends Obj> {
      *
      * @param consumer a consumer of traversers results
      */
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer);
+    public void subscribe(final S obj, final Consumer<S> consumer);
 
     public class Exceptions {
 

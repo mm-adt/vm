@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class EmptyProcessor<S extends Obj, E extends Obj> implements Processor<S, E>, ProcessorFactory {
+public final class EmptyProcessor<S extends Obj> implements Processor<S>, ProcessorFactory {
 
     private static final EmptyProcessor INSTANCE = new EmptyProcessor();
 
@@ -52,16 +52,16 @@ public final class EmptyProcessor<S extends Obj, E extends Obj> implements Proce
     }
 
     @Override
-    public Iterator<E> iterator(final Iterator<S> starts) {
+    public Iterator<S> iterator(final S obj) {
         return Collections.emptyIterator();
     }
 
     @Override
-    public void subscribe(final Iterator<S> starts, final Consumer<E> consumer) {
+    public void subscribe(final S obj, final Consumer<S> consumer) {
 
     }
 
-    public static <S extends Obj, E extends Obj> EmptyProcessor<S, E> instance() {
+    public static <S extends Obj, E extends Obj> EmptyProcessor<S> instance() {
         return INSTANCE;
     }
 }

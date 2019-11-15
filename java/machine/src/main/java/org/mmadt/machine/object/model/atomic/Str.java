@@ -45,7 +45,7 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
 
     @Override
     public default Iterable<Str> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Str, Str>(this.access()).iterator(this);
+        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Str>(this.access()).iterator(this);
     }
 
 }

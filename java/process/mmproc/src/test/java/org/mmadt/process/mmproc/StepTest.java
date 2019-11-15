@@ -50,37 +50,37 @@ class StepTest {
 
     @Test
     void testDrop() {
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(TRec.of("a", 1, "b", 2)).put("c", 3).drop("b").bytecode());
+        final Processor<Int> processor = new ProcProcessor(Map.of()).mint(start(TRec.of("a", 1, "b", 2)).put("c", 3).drop("b").bytecode());
         assertEquals(List.of(TRec.of("a", 1, "c", 3)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     @Test
     void testGroupCount() {
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 0, 2).plus(1).mult(1).plus(0).groupCount(plus(2).plus(-3).plus(3)).bytecode());
+        final Processor<Int> processor = new ProcProcessor(Map.of()).mint(start(0, 0, 2).plus(1).mult(1).plus(0).groupCount(plus(2).plus(-3).plus(3)).bytecode());
         assertEquals(List.of(TRec.of(3, new TQ<>(TInt.of(2)), 5, new TQ<>(TInt.of(1)))), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     @Test
     void testMinus() {
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(1, 2, 3).minus(2).branch(is(eq(-1)).plus(1), is(eq(0)), is(eq(1)).minus(1)).plus(1).bytecode());
+        final Processor<Int> processor = new ProcProcessor(Map.of()).mint(start(1, 2, 3).minus(2).branch(is(eq(-1)).plus(1), is(eq(0)), is(eq(1)).minus(1)).plus(1).bytecode());
         assertEquals(List.of(TInt.of(1), TInt.of(1), TInt.of(1)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     @Test
     void testOne() {
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(TInt.of(0).q(7), 1, 2).mult(one()).plus(one()).dedup().bytecode());
+        final Processor<Int> processor = new ProcProcessor(Map.of()).mint(start(TInt.of(0).q(7), 1, 2).mult(one()).plus(one()).dedup().bytecode());
         assertEquals(List.of(TInt.of(1), TInt.of(2), TInt.of(3)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     @Test
     void testPlus() {
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 1, 2).plus(2).plus(-1).plus(1).bytecode());
+        final Processor<Int> processor = new ProcProcessor(Map.of()).mint(start(0, 1, 2).plus(2).plus(-1).plus(1).bytecode());
         assertEquals(List.of(TInt.of(2), TInt.of(3), TInt.of(4)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 
     @Test
     void testZero() {
-        final Processor<Int, Int> processor = new ProcProcessor(Map.of()).mint(start(0, 1, 2).plus(zero()).mult(zero()).bytecode());
+        final Processor<Int> processor = new ProcProcessor(Map.of()).mint(start(0, 1, 2).plus(zero()).mult(zero()).bytecode());
         assertEquals(List.of(TInt.of(0), TInt.of(0), TInt.of(0)), IteratorUtils.list(processor.iterator(TInt.none())));
     }
 

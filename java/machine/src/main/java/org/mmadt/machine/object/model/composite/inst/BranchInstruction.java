@@ -47,13 +47,13 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
             if (new FastProcessor<>(entry.getKey()).iterator(obj).hasNext()) {
                 found = true;
                 for (final Inst branch : entry.getValue()) {
-                    itty.addIterator(new FastProcessor<S, E>(branch).iterator(obj)); // TODO: make sure this is global
+                    itty.addIterator(new FastProcessor<E>(branch).iterator((E)obj)); // TODO: make sure this is global
                 }
             }
         }
         if (!found && this.getBranches().containsKey(null)) {
             for (final Inst defaultBranch : this.getBranches().get(null)) {
-                itty.addIterator(new FastProcessor<S, E>(defaultBranch).iterator(obj));
+                itty.addIterator(new FastProcessor<E>(defaultBranch).iterator((E)obj));
             }
         }
         return itty;
