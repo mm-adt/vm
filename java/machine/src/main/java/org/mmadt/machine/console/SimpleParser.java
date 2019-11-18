@@ -139,9 +139,10 @@ public class SimpleParser extends BaseParser<Object> {
                         Inst(),
                         Lst(),
                         Model(),
-                        Name()),                                                                                         // obj
-                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                         // {quantifier}
-                Optional(MAPSFROM, Expression(), swap(), this.push(type(this.pop()).access(castToInst(this.pop())))));   // <= inst  (the pop from the stack will cast to inst)
+                        Name()),                                                                                        // obj
+                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))));                       // {quantifier}
+        // Optional(Sequence(MAPSFROM, Inst(), swap(), this.push(type(this.pop()).accessFrom(castToInst(this.pop()))))),
+        // Optional(Sequence(MAPSTO, Inst(), swap(), this.push(type(this.pop()).accessTo(castToInst(this.pop()))))));   // <= inst  (the pop from the stack will cast to inst)
     }
 
     Rule Lst() {
@@ -245,7 +246,7 @@ public class SimpleParser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR, MAPSFROM, MAPSTO /*GTE, LTE, GT, LT, DEQUALS*/), this.push(this.match().trim()));
     }
 
     @SuppressNode

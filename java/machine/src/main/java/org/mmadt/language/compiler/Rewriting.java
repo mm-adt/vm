@@ -67,21 +67,21 @@ public final class Rewriting {
                                 Instructions.compile(oldInst2).computeRange(domain).q(oldInst2.q());
                 if (ref) { // the current instruction is a reference and thus, traversing the referencing graph
                     inReferenceGraph = true;
-                    if (BytecodeHelper.isSubset(TInst.of(newBc), range.access())) { // if the bytecode is a subset of the current reference, remove it (the reference handles the processing)
+                    if (BytecodeHelper.isSubset(TInst.of(newBc), range.accessFrom())) { // if the bytecode is a subset of the current reference, remove it (the reference handles the processing)
                         newBc.clear();
                     }
                     int counter = 0;
                     while (!refBc.isEmpty() && // removes previous references that are a sub-references of the current reference
-                            ++counter < range.access().q().last().<Integer>get() &&
+                            ++counter < range.accessFrom().q().last().<Integer>get() &&
                             BytecodeHelper.isSubset(refBc.peekLast().opcode().get().equals(Tokens.REF) ?
-                                    BytecodeHelper.reference(refBc.peekLast()).access() : refBc.peekLast(), range.access())) {
+                                    BytecodeHelper.reference(refBc.peekLast()).accessFrom() : refBc.peekLast(), range.accessFrom())) {
                         domain = refBc.removeLast().domain();
                     }
-                    Rewriting.insertInstruction(model, refBc, range.access().q().equals(domain.q().zero()) ? oldInst : oldInst2, domain, range);
+                    Rewriting.insertInstruction(model, refBc, range.accessFrom().q().equals(domain.q().zero()) ? oldInst : oldInst2, domain, range);
                     domain = range;
                 } else { // if its not a ref, then drain the reference graph
                     if (inReferenceGraph) {
-                        if (domain.inst(bindings, oldInst).isEmpty()) // only allow those access-less references that did not lead to an instruction bind
+                        if (domain.inst(bindings, oldInst).isEmpty()) // only allow those accessFrom-less references that did not lead to an instruction bind
                             drainReferences(model, refBc, newBc);
                         if (null != newBc.peekLast())
                             domain = newBc.getLast().range();

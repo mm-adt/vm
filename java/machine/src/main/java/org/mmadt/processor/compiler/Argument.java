@@ -46,7 +46,7 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
         else if (!arg.isReference())
             return new ObjArgument<>((E) arg);
         else
-            return new InstArgument<>(arg.access());       // TODO: references are dereferenced by their access instructions
+            return new InstArgument<>(arg.accessFrom());       // TODO: references are dereferenced by their accessFrom instructions
     }
 
     public static <S extends Obj, E extends Obj> Argument<S, E>[] args(final List<S> args) {

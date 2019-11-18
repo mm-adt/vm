@@ -95,11 +95,17 @@ public final class StringFactory {
             builder.append(object.q());
         if (null != object.label())
             builder.append(TILDE).append(object.label());
-        if (!object.access().isOne()) {
+        if (!object.accessFrom().isOne()) {
             builder.append(SPACE).append(MAPSFROM);
-            if (!object.access().modelMap())
+            if (!object.accessFrom().modelMap())
                 builder.append(SPACE);
-            builder.append(object.access());
+            builder.append(object.accessFrom());
+        }
+        if (!object.accessTo().isOne()) {
+            builder.append(SPACE).append(MAPSTO);
+            if (!object.accessTo().modelMap())
+                builder.append(SPACE);
+            builder.append(object.accessTo());
         }
         if (null != object.members()) {
             builder.append(NEWLINE);

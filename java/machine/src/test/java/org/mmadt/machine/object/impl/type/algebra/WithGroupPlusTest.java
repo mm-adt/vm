@@ -34,9 +34,7 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
-import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
-import org.mmadt.processor.util.ObjSet;
 
 import static org.mmadt.util.IteratorUtils.list;
 
@@ -113,10 +111,10 @@ class WithGroupPlusTest {
         WithGroupPlus running = group;
         WithGroupPlus second = group;
         for (int i = 0; i < 10; i++) {
-//            assertEquals(ObjSet.create(running.access(running.access().mult(ZeroInst.create()).mult(NegInst.create()))), ObjSet.create(second.zero().neg()));
-            assertEquals(running.access(running.access().mult(MinusInst.create(group))), second.minus(group));
-            assertEquals(list(running.access(running.access().mult(PlusInst.create(group)).mult(NegInst.create())).iterable()), list(second.plus(group).neg().iterable()));
-            assertEquals(running = running.access(running.access().mult(PlusInst.create(group.neg()))), second = second.plus(group.neg()));
+//            assertEquals(ObjSet.create(running.accessFrom(running.accessFrom().mult(ZeroInst.create()).mult(NegInst.create()))), ObjSet.create(second.zero().neg()));
+            assertEquals(running.accessFrom(running.accessFrom().mult(MinusInst.create(group))), second.minus(group));
+            assertEquals(list(running.accessFrom(running.accessFrom().mult(PlusInst.create(group)).mult(NegInst.create())).iterable()), list(second.plus(group).neg().iterable()));
+            assertEquals(running = running.accessFrom(running.accessFrom().mult(PlusInst.create(group.neg()))), second = second.plus(group.neg()));
         }
     }
 

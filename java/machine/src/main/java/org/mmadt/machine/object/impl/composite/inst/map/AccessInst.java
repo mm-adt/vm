@@ -39,7 +39,7 @@ public final class AccessInst<S extends Obj> extends TInst implements MapInstruc
     }
 
     public Inst apply(final S obj) {
-        return obj.access();
+        return obj.accessFrom();
     }
 
     public static <S extends Obj> AccessInst<S> create() {

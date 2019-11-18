@@ -92,7 +92,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
             }
         }
         return v;
-        // return v.isType() ? v.access(TInst.of(List.of(this.access(), GetInst.create(key)))).q(this.q()) : v;
+        // return v.isType() ? v.accessFrom(TInst.of(List.of(this.accessFrom(), GetInst.create(key)))).q(this.q()) : v;
     }
 
     @Override

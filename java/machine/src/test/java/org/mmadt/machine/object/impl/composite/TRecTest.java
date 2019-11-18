@@ -133,7 +133,7 @@ final class TRecTest {
         assertTrue(recordType.isType());
         assertFalse(recordType.isReference());
         assertFalse(recordType.isInstance());
-        assertTrue(recordType.access((Inst) null).isType());
+        assertTrue(recordType.accessFrom((Inst) null).isType());
         ///
         assertFalse(recordType.constant());
         assertFalse(recordType.test(TRec.of("name", 2)));
@@ -276,7 +276,7 @@ final class TRecTest {
 
     @Test
     void shouldBindQuantifier() {
-        final Rec person = TRec.of("name", TStr.some().label("x"), "age", TInt.some()).q(qmark).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x"))))));
+        final Rec person = TRec.of("name", TStr.some().label("x"), "age", TInt.some()).q(qmark).accessFrom(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x"))))));
         assertEquals(qmark.apply(person.q()), person.q());
         final Bindings bindings = new Bindings();
         bindings.put("x", TStr.of("marko"));

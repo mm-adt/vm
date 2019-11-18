@@ -258,7 +258,7 @@ public class Parser extends BaseParser<Object> {
 
     Rule Access(final Var<Obj> type) {
         final Var<Obj> access = new Var<>();
-        return Sequence(MAPSFROM, Bytecode(access), type.set(type.get().access(((TInst) access.get()).domain(((TInst) access.get()).domain()))));
+        return Sequence(MAPSFROM, Bytecode(access), type.set(type.get().accessFrom(((TInst) access.get()).domain(((TInst) access.get()).domain()))));
     }
 
     Rule Arrows() {

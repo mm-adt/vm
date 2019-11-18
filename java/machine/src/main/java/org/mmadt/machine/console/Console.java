@@ -42,7 +42,7 @@ import org.parboiled.support.ParsingResult;
 public class Console {
 
     static {
-        System.err.close(); // this is only to get around the parboiled illegal access issues. TODO: write a wrapper to intercept
+        System.err.close(); // this is only to get around the parboiled illegal accessFrom issues. TODO: write a wrapper to intercept
     }
 
     private static final String HEADER = "" +

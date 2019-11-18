@@ -25,10 +25,8 @@ package org.mmadt.machine.object.impl.composite;
 import org.junit.jupiter.api.Test;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TStream;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
@@ -49,7 +47,6 @@ import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.gte;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.lt;
-import static org.mmadt.language.__.start;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.START;
@@ -109,7 +106,7 @@ final class TInstTest {
     void shouldBindAccess() {
         final TRec<Str, Obj> person = TRec.of(
                 "name", TStr.some().label("y"),
-                "age", TInt.of(is(gt(0)))).access(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("y")))));
+                "age", TInt.of(is(gt(0)))).accessFrom(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("y")))));
         final Bindings bindings = new Bindings();
         bindings.put("y", TStr.of("marko"));
         Rec<Str, Obj> marko = person.bind(bindings);
@@ -118,7 +115,7 @@ final class TInstTest {
         assertFalse(marko.isInstance());
         assertTrue(marko.isReference());
         assertFalse(marko.isType());
-        assertEquals(marko.access(), TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of("marko")))));
+        assertEquals(marko.accessFrom(), TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of("marko")))));
         assertNotEquals(person, marko);
         assertEquals(person, person);
         assertEquals(marko, marko);

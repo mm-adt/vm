@@ -40,7 +40,6 @@ import org.mmadt.util.IteratorUtils;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
@@ -59,7 +58,7 @@ class StorTest {
         assertEquals(TLst.of("a", "b", "c", "d"), storage.root());
 
         final Processor<Lst<Str>> processor = new FastProcessor<>();
-        assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(processor.iterator(TLst.some().access(start(storage.root()).plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e"))))));
+        assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(processor.iterator(TLst.some().accessTo(start(storage.root()).plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e"))))));
     }
 
     @Test
@@ -69,7 +68,7 @@ class StorTest {
         //
         final Rec<Str, Obj> person = TRec.of("name", TStr.some(), "age", TInt.some());
         final Rec<Str, Obj> people = person.q(star);
-        final Rec<Str, Obj> instances = people.access(start()).type(people);
+        final Rec<Str, Obj> instances = people.accessFrom(start()).type(people);
         storage = new Stor<>(instances);
         assertEquals(people, storage.model().get(Tokens.DB));
         assertEquals(instances, storage.root());

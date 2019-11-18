@@ -46,8 +46,6 @@ import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.Objects;
 
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -188,7 +186,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O set(final Object object) {
         final TObj clone = this.clone();
-        boolean madeInstance = false;
         if (null == object) {
             clone.value = null;
             clone.types = this.types.pattern(null);
@@ -198,10 +195,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         } else {
             clone.value = object;
             clone.types = this.types.pattern(null);
-            madeInstance = true;
         }
         assert !(clone.value instanceof Inst); // TODO: Remove when proved
-        return madeInstance ? clone.access(ID()) : (O) clone;
+        return (O) clone;
     }
 
     @Override
@@ -219,11 +215,16 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O access(final Inst access) {
-        //if (this.constant())
-        //    return (O) this; // TODO: this is a new rule -- instances can't have accesses (they are already 'accessed')
+    public <O extends Obj> O accessFrom(final Inst access) {
         final TObj clone = this.clone();
-        clone.types = this.types.access(access);
+        clone.types = this.types.accessFrom(access);
+        return (O) clone;
+    }
+
+    @Override
+    public <O extends Obj> O accessTo(final Inst access) {
+        final TObj clone = this.clone();
+        clone.types = this.types.accessTo(access);
         return (O) clone;
     }
 
@@ -249,8 +250,13 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public Inst access() {
-        return this.types.access(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
+    public Inst accessFrom() {
+        return this.types.accessFrom(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
+    }
+
+    @Override
+    public Inst accessTo() {
+        return this.types.accessTo(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
     }
 
     ///////////////////////////////////////////////////////////////////////////////////

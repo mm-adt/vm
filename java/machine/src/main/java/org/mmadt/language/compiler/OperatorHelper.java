@@ -28,6 +28,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
@@ -64,10 +65,14 @@ public final class OperatorHelper {
                 return (A) ((WithOrder) lhs).lt(rhs);
             case (Tokens.REQUALS):
                 return (A) ((WithOrder) lhs).gte(rhs);
-            case (Tokens.LEQUALS):
-                return (A) ((WithOrder) lhs).gte(rhs);
+            //case (Tokens.LEQUALS):
+            //    return (A) ((WithOrder) lhs).gte(rhs);
             case (Tokens.DEQUALS):
                 return (A) lhs.eq(rhs);
+            case (Tokens.MAPSTO):
+                return (A) rhs instanceof Inst ? lhs.prefix((Inst) rhs) : rhs.append(lhs.accessTo());
+            case (Tokens.MAPSFROM):
+                return (A) rhs instanceof Inst ? lhs.append((Inst) rhs) : rhs.prefix(lhs.accessFrom());
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

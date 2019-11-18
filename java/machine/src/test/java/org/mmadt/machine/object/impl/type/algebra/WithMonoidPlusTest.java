@@ -96,8 +96,8 @@ class WithMonoidPlusTest {
         WithMonoidPlus second = monoid;
         // assertFalse(monoid.isZero()); // TODO: Why?
         for (int i = 0; i < 10; i++) {
-            // assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO))), second.zero());
-            assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, monoid))), second = second.plus(monoid));
+            // assertEquals(running.accessFrom(running.accessFrom().mult(TInst.of(Tokens.ZERO))), second.zero());
+            assertEquals(running = running.accessFrom(running.accessFrom().mult(TInst.of(Tokens.PLUS, monoid))), second = second.plus(monoid));
         }
     }
 

@@ -134,7 +134,7 @@ class TypeTest {
                 .map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> {
                     assumeFalse(tp.ignore);
                     // System.out.println(tp.input.bytecode() + "\n=>" + tp.expected);
-                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(TObj.none().access(((Query) tp.input)).access()));
+                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(TObj.none().accessFrom(((Query) tp.input)).accessFrom()));
                 }));
     }
 }

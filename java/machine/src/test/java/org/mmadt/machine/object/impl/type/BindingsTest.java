@@ -31,7 +31,6 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.Bindings;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -40,7 +39,6 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.mult;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
@@ -157,8 +155,8 @@ class BindingsTest {
     @Test
     void shouldBindAccess() {
         final Rec type1 = TRec.of("name", TStr.some().label("a"), "age", TInt.some())
-                .access(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name"))).mult(TInst.of("eq", TStr.some().label("a"))));
-        assertNotEquals(TInst.none(), type1.access());
+                .accessFrom(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name"))).mult(TInst.of("eq", TStr.some().label("a"))));
+        assertNotEquals(TInst.none(), type1.accessFrom());
         Rec rec1 = TRec.of("name", "marko", "age", 29);
         assertFalse(type1.constant());
         assertTrue(rec1.constant());
@@ -169,8 +167,8 @@ class BindingsTest {
         final Obj type2 = type1.bind(bindings);
         assertNotEquals(type1, type2);
         assertFalse(type2.constant());
-        assertFalse(type1.access().constant());
-        assertTrue(type2.access().constant());
+        assertFalse(type1.accessFrom().constant());
+        assertTrue(type2.accessFrom().constant());
         type1.match(bindings, rec1);
         assertEquals(type2, type1.bind(bindings));
         assertNotSame(type2, type1.bind(bindings));

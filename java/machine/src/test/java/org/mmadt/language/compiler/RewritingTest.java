@@ -81,14 +81,14 @@ class RewritingTest {
     void testReferenceRewrite() {
         // ORIGINAL: [[db][get,persons][is,[[get,name][eq,marko]]][get,age][gt,29][is,[[eq,true]]]]
         final Rec people = (TRec) TRec.of("name", TStr.some(), "age", TInt.some()).q(star).
-                access(TInst.of("db").mult(TInst.of("get", "persons"))).
+                accessFrom(TInst.of("db").mult(TInst.of("get", "persons"))).
                 inst(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x")))),
                         TInst.of("ref", TRec.of("name", TStr.some().label("x"), "age", TInt.some()).
                                 q(qmark).
-                                access(TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x"))))))));
+                                accessFrom(TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x"))))))));
 
         final Bindings bindings = new Bindings();
-        final TModel model = TModel.of(TInst.of("define","db",TRec.of("persons", people).access(TInst.of("db"))));
+        final TModel model = TModel.of(TInst.of("define","db",TRec.of("persons", people).accessFrom(TInst.of("db"))));
         bindings.clear();
         final Inst bytecode =
                 TInst.of("db").mult(
@@ -100,7 +100,7 @@ class RewritingTest {
         final Inst newBc = Rewriting.rewrite(model, bytecode, bindings);
         // REWROTE: [[ref,[name:marko,age:@int]? <= [[db][get,persons][is,[[get,name][eq,marko]]]]][get,age][gt,29][is,[[eq,true]]]]
         assertEquals(
-                TInst.of("ref", TRec.of("name", "marko", "age", TInt.some()).q(qmark).access(TInst.of("db").mult(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko"))))))).mult(
+                TInst.of("ref", TRec.of("name", "marko", "age", TInt.some()).q(qmark).accessFrom(TInst.of("db").mult(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko"))))))).mult(
                         TInst.of("get", "age")).mult(
                         TInst.of("gt", 29)).mult(
                         TInst.of("is", TInst.of("eq", true))).toString(), newBc.toString());

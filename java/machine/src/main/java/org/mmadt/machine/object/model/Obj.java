@@ -81,7 +81,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public String label();
 
-    public Inst access();
+    public Inst accessFrom();
+
+    public Inst accessTo();
 
     public PMap<Inst, Inst> instructions();
 
@@ -114,10 +116,16 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O label(final String variable);
 
-    public <O extends Obj> O access(final Inst access);
+    public <O extends Obj> O accessFrom(final Inst access);
+
+    public <O extends Obj> O accessTo(final Inst access);
 
     public default <O extends Obj> O append(final Inst inst) {
-        return inst.computeRange(this).access(this.access().mult(inst));
+        return inst.computeRange(this).accessFrom(this.accessFrom().mult(inst));
+    }
+
+    public default <O extends Obj> O prefix(final Inst inst) {
+        return inst.computeRange(this).accessTo(this.accessTo().mult(inst));
     }
 
     public <O extends Obj> O inst(final Inst instA, final Inst instB);
@@ -132,7 +140,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return bindings.get(this.label());
         return this.insts(null == this.instructions() ? null : this.instructions().bind(bindings)).
                 set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
-                access(this.access().isOne() ? null : this.access().bind(bindings));
+                accessFrom(this.accessFrom().isOne() ? null : this.accessFrom().bind(bindings));
     }
 
     @Override
@@ -145,7 +153,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             if (this.isInstance())                                                             // INSTANCE CHECKING
                 return obj.isInstance() && this.eq(obj).java();
             else if (this.isReference()) {                                                      // REFERENCE CHECKING
-                // if (!obj.isReference()) TODO: expose when type access is checked
+                // if (!obj.isReference()) TODO: expose when type accessFrom is checked
                 //    return false;
                 // else {
                 final Iterator<? extends Obj> ittyA = this.iterable().iterator();
@@ -231,11 +239,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && (this.access().isOne() || this.access().isType());
+        return !this.constant() && (this.accessTo().isOne() && this.accessFrom().isOne());
     }
 
     public default boolean isReference() {
-        return !this.constant() && !this.access().isOne(); // && !this.access().isType() -- this is tricky as [a,int] is "a type" but not meant in that context.
+        return !this.constant() && (!this.accessFrom().isOne() || !this.accessTo().isOne()); // && !this.accessFrom().isType() -- this is tricky as [a,int] is "a type" but not meant in that context.
     }
 
     public default boolean isInstance() {
@@ -243,8 +251,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
 
-    public default <O extends Obj> O access(final Query access) {
-        return this.access(access.bytecode());
+    public default <O extends Obj> O accessFrom(final Query access) {
+        return this.accessFrom(access.bytecode());
+    }
+
+    public default <O extends Obj> O accessTo(final Query access) {
+        return this.accessTo(access.bytecode());
     }
 
     public default <O extends Obj> O q(final Q.Tag tag) {
