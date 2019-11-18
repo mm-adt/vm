@@ -70,9 +70,9 @@ public final class OperatorHelper {
             case (Tokens.DEQUALS):
                 return (A) lhs.eq(rhs);
             case (Tokens.MAPSTO):
-                return (A) rhs instanceof Inst ? lhs.prefix((Inst) rhs) : rhs.append(lhs.accessTo());
+                return lhs.mapTo(rhs);
             case (Tokens.MAPSFROM):
-                return (A) rhs instanceof Inst ? lhs.append((Inst) rhs) : rhs.prefix(lhs.accessFrom());
+                return lhs.mapFrom(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

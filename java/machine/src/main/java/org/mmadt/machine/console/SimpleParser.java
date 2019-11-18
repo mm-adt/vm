@@ -141,8 +141,6 @@ public class SimpleParser extends BaseParser<Object> {
                         Model(),
                         Name()),                                                                                        // obj
                 Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))));                       // {quantifier}
-        // Optional(Sequence(MAPSFROM, Inst(), swap(), this.push(type(this.pop()).accessFrom(castToInst(this.pop()))))),
-        // Optional(Sequence(MAPSTO, Inst(), swap(), this.push(type(this.pop()).accessTo(castToInst(this.pop()))))));   // <= inst  (the pop from the stack will cast to inst)
     }
 
     Rule Lst() {

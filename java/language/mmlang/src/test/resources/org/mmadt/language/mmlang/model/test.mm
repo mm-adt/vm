@@ -25,8 +25,6 @@
   -> [plus,int~zero]  =>
   -> [mult,int~one]   => ]
  [define,int,ring&int
-  > int~zero         => 0
-  > int~one          => 1
   -> [plus,2] => [plus,1]~a[plus,1][plus,3]~b[plus,-3]
   -> [plus,3] => [plus,5]~c[plus,-2]]
  [define,db,int{8} <= [start,1,2,3,4,5,6{3}]]

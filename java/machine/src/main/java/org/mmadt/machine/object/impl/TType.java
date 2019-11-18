@@ -24,7 +24,6 @@ package org.mmadt.machine.object.impl;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -50,7 +49,6 @@ public final class TType implements Type {
     private Inst accessTo;                     // accessTo to the manifestations of this form
     private Inst accessFrom;                   // accessFrom to the manifestations of this form
     private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (this is the "FPGA" aspect of the VM)
-    private PMap<Obj, Obj> members;
 
     public static Type of(final String symbol) {
         return BASE_TYPE_CACHE.computeIfAbsent(symbol, TType::new);
@@ -130,21 +128,6 @@ public final class TType implements Type {
     @Override
     public Inst accessTo() {
         return null == this.accessTo ? IdInst.create() : this.accessTo;
-    }
-
-    @Override
-    public PMap<Obj, Obj> members() {
-        return this.members;
-    }
-
-    @Override
-    public Type member(final Obj name, final Obj value) {
-        final TType clone = this.clone();
-        clone.members = new PMap<>();
-        if (null != this.members)
-            clone.members.putAll(this.members);
-        clone.members.put(name, value);
-        return clone;
     }
 
     @Override

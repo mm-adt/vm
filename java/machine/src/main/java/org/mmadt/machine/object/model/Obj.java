@@ -28,6 +28,8 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
@@ -87,8 +89,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public PMap<Inst, Inst> instructions();
 
-    public PMap<Obj, Obj> members();
-
     public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
         return (O) this.iterable().iterator().next();
     }
@@ -121,11 +121,13 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O accessTo(final Inst access);
 
     public default <O extends Obj> O append(final Inst inst) {
-        return inst.computeRange(this).accessFrom(this.accessFrom().mult(inst));
+        final Obj range = inst.computeRange(this);
+        return range.accessFrom(this.accessFrom().mult(inst.range(range)));
     }
 
     public default <O extends Obj> O prefix(final Inst inst) {
-        return inst.computeRange(this).accessTo(this.accessTo().mult(inst));
+        final Obj range = inst.computeRange(this);
+        return this.accessTo(this.accessTo().mult(inst.domainAndRange(this, range)));
     }
 
     public <O extends Obj> O inst(final Inst instA, final Inst instB);
@@ -234,12 +236,20 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return Optional.empty();
     }
 
+    public default <O extends Obj> O mapFrom(final Obj obj) {
+        return obj instanceof Inst ? this.append((Inst) obj) : obj.append(this.accessFrom()).append(this.accessTo());
+    }
+
+    public default <O extends Obj> O mapTo(final Obj obj) {
+        return obj instanceof Inst ? this.prefix((Inst) obj) : obj.prefix(this.accessFrom()).prefix(this.accessTo());
+    }
+
     public Obj clone();
 
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && (this.accessTo().isOne() && this.accessFrom().isOne());
+        return !this.constant() && this.accessTo().isOne() && this.accessFrom().isOne();
     }
 
     public default boolean isReference() {
@@ -284,31 +294,31 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O count() {
         return this.q().constant() ?
                 (O) this.q().peek().q(q().one()) :
-                this.append(CountInst.create());
+                this.mapFrom(CountInst.create());
     }
 
     public default <O extends Obj> O id() {
         return this.isInstance() ?
                 (O) this :
-                (O) this.append(IdInst.create());
+                (O) this.mapFrom(IdInst.create());
     }
 
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
                 bool.java() ? (O) this : this.q(zero) :
-                (O) this.append(IsInst.create(bool));
+                (O) this.mapFrom(IsInst.create(bool));
     }
 
     public default <O extends Obj> O map(final O obj) {
         return obj.isInstance() ?
                 obj.q(this.q()) : // TODO: X.from(obj)
-                this.append(MapInst.create(obj));
+                this.mapFrom(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {
         return this.isInstance() ?
                 (O) this.set(((WithMult) this).mult(this.q())) :
-                this.append(SumInst.create());
+                this.mapFrom(SumInst.create());
     }
 
     public Bool eq(final Obj object);

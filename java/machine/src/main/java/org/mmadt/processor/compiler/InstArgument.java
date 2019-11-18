@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.compiler;
 
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
@@ -41,7 +42,7 @@ public final class InstArgument<S extends Obj, E extends Obj> implements Argumen
 
     @Override
     public E mapArg(final S object) {
-        return new FastProcessor<E>().iterator(object.accessTo(this.bytecode)).next();  // TODO: necessary to clip parent accessFrom
+        return new FastProcessor<E>().iterator(object.accessFrom(TInst.ID()).accessTo(this.bytecode)).next();  // TODO: necessary to clip parent accessFrom
     }
 
     @Override

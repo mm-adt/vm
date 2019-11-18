@@ -72,14 +72,14 @@ public final class TStr extends TObj implements Str {
     public Bool gt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.from(this).set(this.java().compareTo(str.java()) > 0) :
-                TBool.from(this).append(GtInst.create(str));
+                TBool.from(this).mapFrom(GtInst.create(str));
     }
 
     @Override
     public Bool gte(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.from(this).set(this.java().compareTo(str.java()) >= 0) :
-                TBool.from(this).append(GteInst.create(str));
+                TBool.from(this).mapFrom(GteInst.create(str));
     }
 
 
@@ -87,33 +87,33 @@ public final class TStr extends TObj implements Str {
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Str && this.java().equals(((Str) obj).java())) :
-                TBool.from(this).append(EqInst.create(obj));
+                TBool.from(this).mapFrom(EqInst.create(obj));
     }
 
     @Override
     public Bool lt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.from(this).set(this.java().compareTo(str.java()) < 0).q(this.q()) :
-                TBool.from(this).append(LtInst.create(str));
+                TBool.from(this).mapFrom(LtInst.create(str));
     }
 
     @Override
     public Bool lte(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.from(this).set(this.java().compareTo(str.java()) <= 0) :
-                TBool.from(this).append(LteInst.create(str));
+                TBool.from(this).mapFrom(LteInst.create(str));
     }
 
     @Override
     public Str plus(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 this.set(this.java().concat(str.java())) :
-                this.append(PlusInst.create(str));
+                this.mapFrom(PlusInst.create(str));
     }
 
     @Override
     public Str zero() {
-        return this.q().constant() ? this.set(Tokens.EMPTY) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(Tokens.EMPTY) : this.mapFrom(ZeroInst.create());
     }
 
     @Override

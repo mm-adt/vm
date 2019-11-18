@@ -71,7 +71,7 @@ public final class TBool extends TObj implements Bool {
     }
 
     public static Bool from(final Obj obj) {
-        return TBool.some().q(obj.q()).accessFrom(obj.accessFrom());
+        return TBool.some().q(obj.q()).accessFrom(obj.accessFrom()).accessTo(obj.accessTo());
     }
 
     @Override
@@ -81,12 +81,12 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return this.q().constant() ? this.set(Boolean.TRUE) : this.append(OneInst.create());
+        return this.q().constant() ? this.set(Boolean.TRUE) : this.mapFrom(OneInst.create());
     }
 
     @Override
     public Bool zero() {
-        return this.q().constant() ? this.set(Boolean.FALSE) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(Boolean.FALSE) : this.mapFrom(ZeroInst.create());
     }
 
     @Override
@@ -98,28 +98,28 @@ public final class TBool extends TObj implements Bool {
     public Bool mult(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(this.java() && bool.java()) :
-                this.append(MultInst.create(bool));
+                this.mapFrom(MultInst.create(bool));
     }
 
     @Override
     public Bool minus(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(exclusiveOr(this.java(), bool.java())) :
-                this.append(MinusInst.create(bool));
+                this.mapFrom(MinusInst.create(bool));
     }
 
     @Override
     public Bool plus(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(exclusiveOr(this.java(), bool.java())) :
-                this.append(PlusInst.create(bool));
+                this.mapFrom(PlusInst.create(bool));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 this.set(obj instanceof Bool && this.java().equals(((Bool) obj).java())) :
-                this.append(EqInst.create(obj));
+                this.mapFrom(EqInst.create(obj));
     }
 
     private static boolean exclusiveOr(final boolean a, final boolean b) {

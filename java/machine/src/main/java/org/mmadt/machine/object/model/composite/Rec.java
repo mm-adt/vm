@@ -57,7 +57,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
             this.java().put(key, value);
             return this;
         } else
-            return this.append(PutInst.create(key, value));
+            return this.mapFrom(PutInst.create(key, value));
     }
 
     @Override
@@ -66,7 +66,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
             this.java().remove(key);
             return this;
         } else
-            return this.append(DropInst.create(key));
+            return this.mapFrom(DropInst.create(key));
     }
 
     @Override

@@ -268,8 +268,7 @@ public class Parser extends BaseParser<Object> {
     Rule Rewrite(final Var<Obj> type) {
         final Var<Obj> lhs = new Var<>();
         final Var<Obj> rhs = new Var<>(TInst.none());
-        return FirstOf(Sequence(Arrows(), this.newFrame(), Bytecode(lhs), MAPSTO, Optional(Bytecode(rhs)), type.set(type.get().inst((Inst) lhs.getAndClear(), (Inst) rhs.getAndClear())), this.mergeFrame(true)),
-                Sequence(ARROWS.get(0), this.newFrame(), Expression(lhs), MAPSTO, Expression(rhs), type.set(((TObj) type.get()).member(lhs.getAndClear(), rhs.getAndClear())), this.mergeFrame(true)));
+        return Sequence(Arrows(), this.newFrame(), Bytecode(lhs), MAPSTO, Optional(Bytecode(rhs)), type.set(type.get().inst((Inst) lhs.getAndClear(), (Inst) rhs.getAndClear())), this.mergeFrame(true));
     }
 
     ///////

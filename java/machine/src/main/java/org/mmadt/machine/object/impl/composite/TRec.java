@@ -80,7 +80,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> zero() {
-        return this.q().constant() ? this.set(PMap.of()) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(PMap.of()) : this.mapFrom(ZeroInst.create());
     }
 
     @Override
@@ -90,7 +90,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
             map.putAll(rec.java());
             return this.set(map);
         } else
-            return this.append(PlusInst.create(rec));
+            return this.mapFrom(PlusInst.create(rec));
     }
 
     @Override
@@ -100,7 +100,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
             rec.java().forEach(map::remove);
             return this.set(map);
         } else
-            return this.append(MinusInst.create(rec));
+            return this.mapFrom(MinusInst.create(rec));
     }
 
     @Override
@@ -112,7 +112,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Rec && this.java().equals(((Rec) obj).java())) :
-                TBool.from(this).append(EqInst.create(obj));
+                TBool.from(this).mapFrom(EqInst.create(obj));
     }
 
     @Override

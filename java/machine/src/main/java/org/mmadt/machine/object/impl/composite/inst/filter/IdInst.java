@@ -44,4 +44,9 @@ public final class IdInst<S extends Obj> extends TInst implements FilterInstruct
     public static <S extends Obj> IdInst<S> create() {
         return new IdInst<>();
     }
+
+    public S computeRange(final Obj domain) {
+        return (S) (this.q().isOne() ? domain : domain.q(domain.q().mult(this.q())));
+    }
+
 }

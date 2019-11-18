@@ -55,10 +55,6 @@ public interface Type extends Cloneable {
 
     public Inst accessTo();
 
-    public PMap<Obj, Obj> members();
-
-    public Type member(final Obj name, final Obj value);
-
     public Type inst(final Inst instA, final Inst instB);
 
     public Type insts(final PMap<Inst, Inst> insts);

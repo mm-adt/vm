@@ -79,7 +79,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> zero() {
-        return this.q().constant() ? this.set(PList.of()) : this.append(ZeroInst.create());
+        return this.q().constant() ? this.set(PList.of()) : this.mapFrom(ZeroInst.create());
     }
 
     @Override
@@ -89,7 +89,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
             list.addAll(lst.java());
             return this.set(list);
         } else
-            return this.append(PlusInst.create(lst));
+            return this.mapFrom(PlusInst.create(lst));
     }
 
     @Override
@@ -99,7 +99,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
             list.removeAll(lst.java());
             return this.set(list);
         } else
-            return this.append(MinusInst.create(lst));
+            return this.mapFrom(MinusInst.create(lst));
     }
 
     @Override
@@ -111,7 +111,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Lst && this.java().equals(((Lst) obj).java())) :
-                TBool.from(this).append(EqInst.create(obj));
+                TBool.from(this).mapFrom(EqInst.create(obj));
     }
 
     @Override

@@ -57,7 +57,6 @@ import static org.mmadt.language.compiler.Tokens.MAPSTO;
 import static org.mmadt.language.compiler.Tokens.MODEL;
 import static org.mmadt.language.compiler.Tokens.NEWLINE;
 import static org.mmadt.language.compiler.Tokens.QUESTION;
-import static org.mmadt.language.compiler.Tokens.RANGLE;
 import static org.mmadt.language.compiler.Tokens.RBRACKET;
 import static org.mmadt.language.compiler.Tokens.RCURL;
 import static org.mmadt.language.compiler.Tokens.RPAREN;
@@ -106,13 +105,6 @@ public final class StringFactory {
             if (!object.accessTo().modelMap())
                 builder.append(SPACE);
             builder.append(object.accessTo());
-        }
-        if (null != object.members()) {
-            builder.append(NEWLINE);
-            for (final Map.Entry<Obj, Obj> member : object.members().entrySet()) {
-                builder.append(RANGLE).append(SPACE).append(member.getKey()).append(MAPSTO).append(SPACE).append(member.getValue()).append(NEWLINE);
-            }
-            builder.deleteCharAt(builder.length() - 1);
         }
         if (null != object.instructions()) {
             builder.append(NEWLINE);

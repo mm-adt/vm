@@ -83,85 +83,85 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return this.q().constant() ? super.set(1.0f) : this.append(OneInst.create()); // no need to check -0.0
+        return this.q().constant() ? super.set(1.0f) : this.mapFrom(OneInst.create()); // no need to check -0.0
     }
 
     @Override
     public Real zero() {
-        return this.q().constant() ? super.set(0.0f) : this.append(ZeroInst.create()); // no need to check -0.0
+        return this.q().constant() ? super.set(0.0f) : this.mapFrom(ZeroInst.create()); // no need to check -0.0
     }
 
     @Override
     public Real neg() {
-        return this.isInstance() ? this.set(-this.java()) : this.append(NegInst.create());
+        return this.isInstance() ? this.set(-this.java()) : this.mapFrom(NegInst.create());
     }
 
     @Override
     public Real minus(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 this.set(this.java() - real.java()) :
-                this.append(MinusInst.create(real));
+                this.mapFrom(MinusInst.create(real));
     }
 
     @Override
     public Real plus(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 this.set(this.java() + real.java()) :
-                this.append(PlusInst.create(real));
+                this.mapFrom(PlusInst.create(real));
     }
 
     @Override
     public Real mult(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 this.set(this.java() * real.java()) :
-                this.append(MultInst.create(real));
+                this.mapFrom(MultInst.create(real));
     }
 
     @Override
     public Real div(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 this.set(this.java() / real.java()) :
-                this.append(DivInst.create(real));
+                this.mapFrom(DivInst.create(real));
     }
 
     @Override
     public Bool gt(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.of(this.java() > real.java()).q(this.q()) :
-                TBool.of().q(this.q()).append(GtInst.create(real));
+                TBool.from(this).mapFrom(GtInst.create(real));
     }
 
     @Override
     public Bool gte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.from(this).set(this.java() >= real.java()) :
-                TBool.from(this).append(GteInst.create(real));
+                TBool.from(this).mapFrom(GteInst.create(real));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Real && this.java().equals(((Real) obj).java())) :
-                TBool.from(this).append(EqInst.create(obj));
+                TBool.from(this).mapFrom(EqInst.create(obj));
     }
 
     @Override
     public Bool lt(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.from(this).set(this.java() < real.java()).q(this.q()) :
-                TBool.from(this).append(LtInst.create(real));
+                TBool.from(this).mapFrom(LtInst.create(real));
     }
 
     @Override
     public Bool lte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.from(this).set(this.java() <= real.java()).q(this.q()) :
-                TBool.from(this).append(LteInst.create(real));
+                TBool.from(this).mapFrom(LteInst.create(real));
     }
 
     @Override
     public Real inv() {
-        return this.isInstance() ? super.set(1.0f / this.java()) : this.append(NegInst.create()); // no need to check -0.0
+        return this.isInstance() ? super.set(1.0f / this.java()) : this.mapFrom(NegInst.create()); // no need to check -0.0
     }
 
     @Override

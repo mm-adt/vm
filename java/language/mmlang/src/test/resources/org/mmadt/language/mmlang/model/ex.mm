@@ -39,24 +39,24 @@
 // we will most likely have a standard library
 // where the standard algebraic structures are defined (in mm-ADT)
  [define,complex,ring[real~x;real~y]
-   > 0                             => complex[0.0;0.0] // instances should be replaced throughout the bytecode via the symbol table
-   > 1                             => complex[1.0;0.0]
+  // > 0                             => complex[0.0;0.0] // instances should be replaced throughout the bytecode via the symbol table
+  // > 1                             => complex[1.0;0.0]
   -> [mult,complex[1.0;0.0]]       =>                      // no-op as multiplying by 1 does nothing. this rewrite isn't needed as its inherited from ring (perhaps compilation warning?)
   -> [plus,complex[real~a;real~b]] => [map,complex[[map,x][plus,b];[map,y][plus,b]]]
   -> [mult,complex[real~a;real~b]] => [map,complex&[y;b]]
   -> [mult,22]                     => ([count]|[sum])&[get,'name']*[is,[map,true]|[map,false]]] // just playing with + * & and | which do branching, composition, and'ing, and or'ing in stream theory
  [define,ring,int~r
-   > 0          => [error]
-   > 1          => [error]
+  // > 0          => [error]
+  // > 1          => [error]
   -> [mult,0]   => [map,0]  // 0 and 1 refer to the static member of the type
   -> [mult,1]   =>
   -> [mult,-1]  => [map,r]  // try with -r
   -> [plus,0]   => ]
  [define,group,obj~m
-   > 0          => [error]  // group has no internal structure and thus, serves as an interface -- all [error] mappings must be implemented by the extending type
-   > 1          => [error]
-   > 'test'     => [map,0|1 <= [map,'test'][coalesce,[is,[eq,'mult']][map,1],[map,0]]]  // solve the infinite recursion so types can be on the rhs of =>
-   > 'marko'    => 'mult'|'plus' // the instruction to use for the group operation is specified by the extending type
+  // > 0          => [error]  // group has no internal structure and thus, serves as an interface -- all [error] mappings must be implemented by the extending type
+  // > 1          => [error]
+  // > 'test'     => [map,0|1 <= [map,'test'][coalesce,[is,[eq,'mult']][map,1],[map,0]]]  // solve the infinite recursion so types can be on the rhs of =>
+  // > 'marko'    => 'mult'|'plus' // the instruction to use for the group operation is specified by the extending type
   -> [get,m]  =>
   -> [get,'t4'] => [map,"""test_a_very_long_adsf_long"""]]
  /*[define,tree,(obj~a|[tree~b;tree~c])~T                           // capital variables (T and U) allow access to the instance variables within the larger structure via dot notation (idea -- T.b.b.b.b.b ? :))
