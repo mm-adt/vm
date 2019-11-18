@@ -131,19 +131,19 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     }
 
     @Override
-    public default boolean match(final Bindings bindings, final Obj object) {
+    public default boolean match(final Bindings bindings, final Obj obj) {
         // when matching instruction against instruction, use list matching inst(x,y)
-        if (object instanceof Inst)
-            return WithProduct.super.match(bindings, (Inst) object);
+        if (obj instanceof Inst)
+            return WithProduct.super.match(bindings, (Inst) obj);
 
         if (bindings.has(this.label()))
-            return bindings.get(this.label()).test(object);
+            return bindings.get(this.label()).test(obj);
         bindings.start();
-        final Iterator<Obj> itty = new FastProcessor<>().iterator(object.mapTo(this));
+        final Iterator<Obj> itty = new FastProcessor<>().iterator(obj.mapTo(this));
         if (itty.hasNext()) {
-            final Obj obj = itty.next();
-            if (null != obj.label())
-                bindings.put(obj.label(), obj.label(null));
+            final Obj object = itty.next();
+            if (null != object.label())
+                bindings.put(object.label(), object.label(null));
             return true;
         } else {
             bindings.rollback();
