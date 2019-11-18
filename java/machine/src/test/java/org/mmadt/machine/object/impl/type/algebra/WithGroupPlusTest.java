@@ -112,9 +112,9 @@ class WithGroupPlusTest {
         WithGroupPlus second = group;
         for (int i = 0; i < 10; i++) {
 //            assertEquals(ObjSet.create(running.accessFrom(running.accessFrom().mult(ZeroInst.create()).mult(NegInst.create()))), ObjSet.create(second.zero().neg()));
-            assertEquals(running.accessFrom(running.accessFrom().mult(MinusInst.create(group))), second.minus(group));
-            assertEquals(list(running.accessFrom(running.accessFrom().mult(PlusInst.create(group)).mult(NegInst.create())).iterable()), list(second.plus(group).neg().iterable()));
-            assertEquals(running = running.accessFrom(running.accessFrom().mult(PlusInst.create(group.neg()))), second = second.plus(group.neg()));
+            assertEquals(running.accessTo(running.accessTo().mult(MinusInst.create(group))), second.minus(group));
+            assertEquals(list(running.accessTo(running.accessTo().mult(PlusInst.create(group)).mult(NegInst.create())).iterable()), list(second.plus(group).neg().iterable()));
+            assertEquals(running = running.accessTo(running.accessTo().mult(PlusInst.create(group.neg()))), second = second.plus(group.neg()));
         }
     }
 

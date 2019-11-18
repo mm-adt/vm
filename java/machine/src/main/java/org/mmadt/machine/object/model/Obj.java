@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.language.Query;
+import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TQ;
@@ -34,6 +35,7 @@ import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PMap;
@@ -53,6 +55,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
@@ -235,7 +239,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////// DELETE WHEN PROPERLY MIXED
     private <O extends Obj> O append(final Inst inst) {
         final Obj range = inst.computeRange(this);
-        return range.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range)));
+        return this.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range)));
     }
 
     private <O extends Obj> O prefix(final Inst inst) {
@@ -302,35 +306,40 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O count() {
         return this.q().constant() ?
                 (O) this.q().peek().q(q().one()) :
-                this.mapFrom(CountInst.create());
+                this.mapTo(CountInst.create());
     }
 
     public default <O extends Obj> O id() {
         return this.isInstance() ?
                 (O) this :
-                (O) this.mapFrom(IdInst.create());
+                (O) this.mapTo(IdInst.create());
     }
 
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
                 bool.java() ? (O) this : this.q(zero) :
-                (O) this.mapFrom(IsInst.create(bool));
+                (O) this.mapTo(IsInst.create(bool));
     }
 
     public default <O extends Obj> O map(final O obj) {
         return obj.isInstance() ?
                 obj.q(this.q()) : // TODO: X.from(obj)
-                this.mapFrom(MapInst.create(obj));
+                this.mapTo(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {
         return this.isInstance() ?
                 (O) this.set(((WithMult) this).mult(this.q())) :
-                this.mapFrom(SumInst.create());
+                this.mapTo(SumInst.create());
     }
 
     public Bool eq(final Obj object);
 
     public Bool neq(final Obj object);
 
+    /////////////////////////////////////////////////////////////////
+
+    public default <O extends Obj> O is(final Object bool) {
+        return this.is((Bool) ObjectHelper.from(bool));
+    }
 }
