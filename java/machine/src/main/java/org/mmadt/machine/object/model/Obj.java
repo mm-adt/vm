@@ -28,8 +28,6 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
-import org.mmadt.machine.object.impl.composite.inst.map.AInst;
-import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
@@ -119,16 +117,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O accessFrom(final Inst access);
 
     public <O extends Obj> O accessTo(final Inst access);
-
-    public default <O extends Obj> O append(final Inst inst) {
-        final Obj range = inst.computeRange(this);
-        return range.accessFrom(this.accessFrom().mult(inst.range(range)));
-    }
-
-    public default <O extends Obj> O prefix(final Inst inst) {
-        final Obj range = inst.computeRange(this);
-        return this.accessTo(this.accessTo().mult(inst.domainAndRange(this, range)));
-    }
 
     public <O extends Obj> O inst(final Inst instA, final Inst instB);
 
@@ -236,6 +224,18 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return Optional.empty();
     }
 
+    /////////////// DELETE WHEN PROPERLY MIXED
+    private <O extends Obj> O append(final Inst inst) {
+        final Obj range = inst.computeRange(this);
+        return range.accessFrom(this.accessFrom().mult(inst.range(range)));
+    }
+
+    private <O extends Obj> O prefix(final Inst inst) {
+        final Obj range = inst.computeRange(this);
+        return this.accessTo(this.accessTo().mult(inst.domainAndRange(this, range)));
+    }
+    /////////////// DELETE WHEN PROPERLY MIXED
+
     public default <O extends Obj> O mapFrom(final Obj obj) {
         return obj instanceof Inst ? this.append((Inst) obj) : obj.append(this.accessFrom()).append(this.accessTo());
     }
@@ -253,11 +253,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default boolean isReference() {
-        return !this.constant() && (!this.accessFrom().isOne() || !this.accessTo().isOne()); // && !this.accessFrom().isType() -- this is tricky as [a,int] is "a type" but not meant in that context.
+        return !this.constant() && (!this.accessFrom().isOne() || !this.accessTo().isOne());
     }
 
     public default boolean isInstance() {
-        return this.constant(); // && this.q().constant();
+        return this.constant();
     }
 
 

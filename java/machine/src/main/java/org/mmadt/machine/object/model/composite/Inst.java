@@ -100,7 +100,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
             this.java().add(index.java(), value);
             return this;
         } else
-            return this.append(PutInst.create(index, value));
+            return this.mapFrom(PutInst.create(index, value));
     }
 
     @Override
@@ -109,7 +109,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
             this.java().remove((int) index.java());
             return this;
         } else
-            return this.append(DropInst.create(index));
+            return this.mapFrom(DropInst.create(index));
     }
 
     @Override
