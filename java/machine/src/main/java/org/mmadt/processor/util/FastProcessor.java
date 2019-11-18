@@ -53,7 +53,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
     @Override
     public Iterator<S> iterator(final S obj) {
         final Inst bytecode = obj.accessTo();
-        // System.out.println("\nPROCESSING: " + obj + "=>" + obj.accessTo() + "<=" + obj.accessFrom());
+        // System.out.println("\nPROCESSING: " + obj);
         Stream<S> stream = Stream.of(obj.accessTo(TInst.ID()));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof ReduceInstruction)

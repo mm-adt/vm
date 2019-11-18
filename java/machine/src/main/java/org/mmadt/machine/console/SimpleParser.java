@@ -108,26 +108,34 @@ public class SimpleParser extends BaseParser<Object> {
         return Sequence(Expression(), EOI);
     }
 
+    Rule Singles() {
+        return FirstOf(Unary(), Grouping(), Obj());
+    }
+
     Rule Expression() {
         return OneOrMore(
-                FirstOf(Unary(), Grouping(), Obj()),
+                Singles(),
                 ZeroOrMore(Binary()));
     }
 
     Rule Unary() {
-        return Sequence(UnaryOperator(), FirstOf(Unary(), Grouping(), Obj()), swap(), this.push(OperatorHelper.applyUnary((String) this.pop(), type(this.pop())))); // always left associative
+        return Sequence(UnaryOperator(), Singles(), swap(), this.push(OperatorHelper.applyUnary((String) this.pop(), type(this.pop())))); // always left associative
     }
 
     Rule Binary() {
         final Var<String> operator = new Var<>();
         return Sequence(
                 BinaryOperator(), operator.set((String) this.pop()),
-                FirstOf(Unary(), Grouping(), Obj()), swap(), this.push(OperatorHelper.applyBinary(operator.get(), type(this.pop()), type(this.pop())))); // always left associative
+                Singles(), swap(), this.push(OperatorHelper.applyBinary(operator.get(), type(this.pop()), type(this.pop())))); // always left associative
     }
 
     Rule Grouping() {
         return Sequence(LPAREN, Expression(), RPAREN);
     }
+
+    /*Rule Stream() {
+        return Sequence(LCURL, Singles(), ZeroOrMore(COMMA,Singles(),swap(),this.push(((Obj)this.peek()).set(null).accessFrom(start(this.pop(),this.pop())))), RCURL);
+    }*/
 
     Rule Obj() {
         return Sequence(
