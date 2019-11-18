@@ -33,7 +33,7 @@ public final class ObjArgument<S extends Obj, E extends Obj> implements Argument
 
     private final E constant;
 
-    ObjArgument(final E constant) {
+    public ObjArgument(final E constant) {
         this.constant = constant;
     }
 

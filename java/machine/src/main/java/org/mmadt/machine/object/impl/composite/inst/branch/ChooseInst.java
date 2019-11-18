@@ -61,11 +61,16 @@ public final class ChooseInst<S extends Obj, E extends Obj> extends TInst implem
     public static <S extends Obj, E extends Obj> ChooseInst<S, E> create(final Object... a) {
         final List<Obj> args = Stream.of(a).map(ObjectHelper::from).collect(Collectors.toList());
         final Map<Inst, List<Inst>> branches = new LinkedHashMap<>();
-        for (int i = 0; i < args.size(); i = i + 2) {
-            final Inst predicate = args.get(i) instanceof Inst ? (Inst) args.get(i) : IsInst.create(AInst.create(args.get(i)));
-            final Inst branch = args.get(i + 1) instanceof Inst ? (Inst) args.get(i + 1) : MapInst.create(args.get(i + 1));
-            branches.put(predicate, List.of(branch));
+        for (int i = 0; i < args.size(); i++) {
+            final Inst predicate = IsInst.create(AInst.create(args.get(i)));
+            final Inst branch = args.get(i).accessFrom().asInst(false);
+            branches.put(predicate, List.of(MapInst.create(branch)));
         }
         return new ChooseInst<>(branches, args.toArray(new Object[]{}));
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.opcode().java() + "," + this.branches + "]";
     }
 }

@@ -52,6 +52,8 @@ import org.parboiled.annotations.SuppressNode;
 import org.parboiled.annotations.SuppressSubnodes;
 import org.parboiled.support.Var;
 
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -119,7 +121,9 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     Rule Unary() {
-        return Sequence(UnaryOperator(), Singles(), swap(), this.push(OperatorHelper.applyUnary((String) this.pop(), type(this.pop())))); // always left associative
+        return FirstOf(
+                Sequence(Terminal("->"), Expression(), swap(), this.push(type(this.pop()).inst(castToInst(this.pop()), ID()))),
+                Sequence(UnaryOperator(), Singles(), swap(), this.push(OperatorHelper.applyUnary((String) this.pop(), type(this.pop()))))); // always left associative
     }
 
     Rule Binary() {
@@ -225,7 +229,7 @@ public class SimpleParser extends BaseParser<Object> {
     Rule Inst() {
         return FirstOf(
                 Sequence(INST, this.push(TInst.some())),
-                Sequence(this.push(TInst.ID()), OneOrMore(Single_Inst(), swap(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
+                Sequence(this.push(ID()), OneOrMore(Single_Inst(), swap(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
     }
 
     @SuppressSubnodes

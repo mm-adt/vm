@@ -60,6 +60,10 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     public Obj range();
 
+    public boolean asInst();
+
+    public Inst asInst(final boolean asInst);
+
     public default Obj computeRange(final Obj domain) {
         return this.q().isOne() ? domain : domain.q(domain.q().mult(this.q()));
     }

@@ -22,16 +22,17 @@
 
 package org.mmadt.machine.object.impl.composite;
 
+import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
-import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
@@ -49,11 +50,23 @@ public class TInst extends TObj implements Inst {
     private static final Inst NONE = new TInst(null).q(0);
     private static final Inst ONE = IdInst.create();
 
+
     public Obj domain = TObj.none();
     public Obj range = TObj.none();
+    private boolean inst = true;
 
     protected TInst(final Object value) {
         super(value);
+    }
+
+    public boolean asInst() {
+        return this.inst;
+    }
+
+    public Inst asInst(final boolean asInst) {
+        final TInst clone = (TInst) this.clone();
+        clone.inst = asInst;
+        return clone;
     }
 
     public static Inst some() {
@@ -115,7 +128,7 @@ public class TInst extends TObj implements Inst {
 
     @Override
     public Inst or(final Obj obj) {
-        return this.operator(Tokens.OR, obj);
+        return this.operator(Tokens.CHOOSE, obj);
     }
 
     @Override
@@ -124,7 +137,9 @@ public class TInst extends TObj implements Inst {
     }
 
     @Override
-    public Inst mult(final Inst inst) { // TODO: optimize this nest
+    public Inst mult(Inst inst) { // TODO: optimize this nest
+        if (!inst.isZero())
+            inst = inst.domain().inst(new Bindings(), inst).orElse(inst);
         return inst.isZero() ?
                 this.zero() :
                 this.isOne() ?
@@ -174,11 +189,11 @@ public class TInst extends TObj implements Inst {
             final PList<Obj> list = new PList<>(last.java());
             list.add(inst);
             list.remove(0);
-            return opcode.equals(Tokens.OR) ? OrInst.create(list.toArray(new Object[]{})) : TInst.of(opcode, list);
+            return Instructions.compile(TInst.of(opcode, list.toArray(new Object[]{})));
         } else
             return this.get().equals(inst.get()) ?
                     this.q(this.q().plus(inst.q())) :
-                    opcode.equals(Tokens.OR) ? OrInst.create(this, inst) : TInst.of(opcode, this, inst); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
+                    Instructions.compile(TInst.of(opcode, this, inst)); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
     }
 
     @Override

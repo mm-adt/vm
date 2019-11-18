@@ -39,7 +39,7 @@ public final class AInst<S extends Obj> extends TInst implements MapInstruction<
     }
 
     public Bool apply(final S obj) {
-        return obj.a(this.<S, S>argument(0).mapArg(obj));
+        return obj.a(this.args().get(0));
     }
 
     public static <S extends Obj> AInst<S> create(final Object arg) {

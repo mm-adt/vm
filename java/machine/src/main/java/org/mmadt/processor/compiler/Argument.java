@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.compiler;
 
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 
@@ -41,7 +42,7 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
     public boolean filterArg(final S object);
 
     public static <S extends Obj, E extends Obj> Argument<S, E> create(final S arg) {
-        if (arg instanceof Inst)
+        if (arg instanceof Inst && ((Inst) arg).asInst())
             return new InstArgument<>((Inst) arg);         // TODO: should we do this?
         else if (!arg.isReference())
             return new ObjArgument<>((E) arg);

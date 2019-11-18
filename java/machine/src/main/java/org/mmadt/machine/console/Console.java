@@ -62,7 +62,7 @@ public class Console {
     private static final SimpleParser PARSER = Parboiled.createParser(SimpleParser.class);
 
     public static void main(final String[] args) throws Exception {
-
+        System.setErr(System.out);
         final ParseRunner runner = new BasicParseRunner<>(PARSER.Source());
         final Terminal terminal = TerminalBuilder.terminal();
         final DefaultHistory history = new DefaultHistory();
@@ -91,6 +91,7 @@ public class Console {
                         terminal.flush();
                     }
                 } catch (final Exception e) {
+                    e.printStackTrace();
                     if (null == e.getCause())
                         throw e;
                     throw e.getCause();

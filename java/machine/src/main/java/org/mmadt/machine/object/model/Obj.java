@@ -210,6 +210,14 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
+        if (null != this.instructions() && this.instructions().values().stream().allMatch(Inst::isOne)) {
+            for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
+                final Iterator<Inst> itty = new FastProcessor<Inst>().iterator(inst.asInst(false).mapTo(entry.getKey()));
+                if (itty.hasNext())
+                    return Optional.of(itty.next());
+            }
+        }
+
         if (null != this.instructions()) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
                 if (entry.getKey().match(bindings, inst))
@@ -227,7 +235,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////// DELETE WHEN PROPERLY MIXED
     private <O extends Obj> O append(final Inst inst) {
         final Obj range = inst.computeRange(this);
-        return range.accessFrom(this.accessFrom().mult(inst.range(range)));
+        return range.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range)));
     }
 
     private <O extends Obj> O prefix(final Inst inst) {

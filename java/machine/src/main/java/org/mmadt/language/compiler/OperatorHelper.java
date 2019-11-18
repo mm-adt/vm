@@ -36,6 +36,8 @@ import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
 
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -88,6 +90,7 @@ public final class OperatorHelper {
                 return rhs instanceof WithMinus ? ((WithMinus) rhs).neg() : MapInst.create(rhs).mult(NegInst.create());
             case (Tokens.BACKSLASH):
                 return DivInst.create(rhs);
+
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

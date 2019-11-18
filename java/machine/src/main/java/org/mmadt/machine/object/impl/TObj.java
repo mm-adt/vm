@@ -281,7 +281,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Bool a(final Obj obj) {
-        return TBool.from(this).set(obj.test(this));
+        return TBool.from(this).set(obj.equals(this) || obj.test(this));
     }
 
 
