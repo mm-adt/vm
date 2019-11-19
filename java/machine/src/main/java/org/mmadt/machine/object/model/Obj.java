@@ -234,23 +234,23 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     /////////////// DELETE WHEN PROPERLY MIXED
-    private <O extends Obj> O append(final Inst inst) {
+    private <O extends Obj> O appendFrom(final Inst inst) {
         final Obj range = inst.computeRange(this);
         return this.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range))).q(range.q());
     }
 
-    private <O extends Obj> O prefix(final Inst inst) {
+    private <O extends Obj> O appendTo(final Inst inst) {
         final Obj range = inst.computeRange(this);
         return this.accessTo(this.accessTo().mult(inst.domainAndRange(this, range))).q(range.q());
     }
     /////////////// DELETE WHEN PROPERLY MIXED
 
     public default <O extends Obj> O mapFrom(final Obj obj) {
-        return obj instanceof Inst ? this.append((Inst) obj) : obj.append(this.accessFrom()).append(this.accessTo());
+        return obj instanceof Inst ? this.appendFrom((Inst) obj) : this.accessFrom(obj.accessFrom()).appendFrom(IsInst.isA(this)).appendFrom(this.accessFrom());
     }
 
     public default <O extends Obj> O mapTo(final Obj obj) {
-        return obj instanceof Inst ? this.prefix((Inst) obj) : obj.prefix(this.accessFrom()).prefix(this.accessTo());
+        return obj instanceof Inst ? this.appendTo((Inst) obj) : obj.q(obj.q().mult(this.q())).accessFrom(this.accessFrom()).appendFrom(obj.accessFrom()).appendFrom(IsInst.isA(obj));
     }
 
     public Obj clone();

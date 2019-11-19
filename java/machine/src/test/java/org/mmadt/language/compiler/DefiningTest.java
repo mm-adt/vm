@@ -24,7 +24,6 @@ package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.TModel;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
@@ -32,13 +31,11 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
@@ -66,8 +63,16 @@ class DefiningTest {
 
     @Test
     void test() {
-        Bool stream = TInt.of(1,2,3,4).mult(2).plus(50).gt(34).<Bool>is(true).plus(TBool.of(false));
+        Bool stream = TInt.of(1, 2, 3, 4).mult(2).plus(50).gt(34).<Bool>is(true).plus(TBool.of(false));
         System.out.println(stream);
         FastProcessor.process(stream).forEachRemaining(System.out::println);
+
+        // {1,2,3} => int{5} => { }
+
+
+        Obj obj = TInt.of(1, 2, 3).mapTo(TStr.some());
+        System.out.println(obj.toString());
+        FastProcessor.process(obj).forEachRemaining(System.out::println);
+
     }
 }
