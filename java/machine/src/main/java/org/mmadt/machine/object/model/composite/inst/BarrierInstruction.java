@@ -31,12 +31,15 @@ import java.util.function.BiFunction;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface BarrierInstruction<S extends Obj, B> extends BiFunction<S, B, B>, Inst {
+public interface BarrierInstruction<S extends Obj, E> extends BiFunction<E, S, E>, Inst {
 
-    public B getInitialValue();
+    public E getInitialValue();
 
-    public B merge(final B barrierA, final B barrierB);
+    public E merge(final E barrierA, final E barrierB);
 
-    public Iterator<S> createIterator(final B barrier);
+    @Override
+    public E apply(E a, S b);
+
+    public Iterator<E> createIterator(final E barrier);
 
 }

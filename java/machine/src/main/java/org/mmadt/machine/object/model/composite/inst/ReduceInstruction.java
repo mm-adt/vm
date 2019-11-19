@@ -25,7 +25,9 @@ package org.mmadt.machine.object.model.composite.inst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
+import org.mmadt.util.IteratorUtils;
 
+import java.util.Iterator;
 import java.util.function.BiFunction;
 
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
@@ -33,7 +35,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BiFunction<E, S, E> {
+public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BarrierInstruction<S, E>, BiFunction<E, S, E> {
 
     public default E merge(final E objA, final E objB) {
         return (E) ((WithPlus) objA).plus((WithPlus) objB);
@@ -41,6 +43,10 @@ public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, B
 
     public default E getInitialValue() {
         return (E) this.q().zero();
+    }
+
+    public default Iterator<E> createIterator(final E reduction) {
+        return IteratorUtils.of(reduction);
     }
 
     public default Obj computeRange(final Obj domain) {

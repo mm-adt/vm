@@ -26,6 +26,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
 import org.mmadt.process.mmproc.util.Barrier;
 import org.mmadt.process.mmproc.util.InMemoryBarrier;
+import org.mmadt.processor.util.ObjSet;
 import org.mmadt.util.EmptyIterator;
 
 import java.util.Iterator;
@@ -33,14 +34,14 @@ import java.util.Iterator;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class BarrierStep<S extends Obj, B> extends AbstractStep<S, S, BarrierInstruction<S, B>> {
+final class BarrierStep<S extends Obj, E> extends AbstractStep<S, S, BarrierInstruction<S, E>> {
 
-    private final Barrier<B> barrier;
-    private final BarrierInstruction<S, B> barrierFunction;
+    private final Barrier<E> barrier;
+    private final BarrierInstruction<S, E> barrierFunction;
     private boolean done = false;
     private Iterator<S> output = EmptyIterator.instance();
 
-    BarrierStep(final Step<?, S> previousStep, final BarrierInstruction<S, B> barrierFunction) {
+    BarrierStep(final Step<?, S> previousStep, final BarrierInstruction<S, E> barrierFunction) {
         super(previousStep, barrierFunction);
         this.barrier = new InMemoryBarrier<>(barrierFunction.getInitialValue()); // TODO: move to strategy determination
         this.barrierFunction = barrierFunction;
@@ -50,12 +51,13 @@ final class BarrierStep<S extends Obj, B> extends AbstractStep<S, S, BarrierInst
     public S next() {
         if (!this.done) {
             while (this.previousStep.hasNext()) {
-                this.barrier.update(this.barrierFunction.apply(super.previousStep.next(), this.barrier.get()));
+                this.barrier.update(this.barrierFunction.apply(this.barrier.get(), super.previousStep.next()));
             }
             this.done = true;
-            this.output = this.barrierFunction.createIterator(this.barrier.get());
+            this.output = (Iterator) this.barrierFunction.createIterator(this.barrier.get());
         }
-        return this.output.next();
+        final Object object = this.output.next();
+        return object instanceof ObjSet ? ((ObjSet<S>) object).remove() : (S) object; // hack for barrier (ObjSet should not exist. TThat is what should back objects
     }
 
     @Override

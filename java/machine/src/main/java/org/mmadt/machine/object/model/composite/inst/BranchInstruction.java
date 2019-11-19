@@ -28,7 +28,6 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.MultiIterator;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,7 +39,8 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
 
     public Map<Inst, List<Inst>> getBranches();
 
-    public default Iterator<E> distribute(final S obj) {
+    @Override
+    default E apply(final S obj) {
         boolean found = false;
         final MultiIterator<E> itty = new MultiIterator<>();
         for (final Map.Entry<Inst, List<Inst>> entry : this.getBranches().entrySet()) {
@@ -56,10 +56,6 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
                 itty.addIterator(FastProcessor.process(obj.mapTo(defaultBranch)));
             }
         }
-        return itty;
-    }
-
-    public default E apply(final S obj) {
-        return TObj.none().set(distribute(obj));
+        return TObj.none().set(itty);
     } // this should all be done through subscription semantics and then its just a lazy round-robin
 }

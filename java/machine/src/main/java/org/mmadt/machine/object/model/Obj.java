@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.language.Query;
-import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TQ;
@@ -35,7 +34,6 @@ import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
-import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PMap;
@@ -55,8 +53,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
@@ -134,6 +130,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return bindings.get(this.label());
         return this.insts(null == this.instructions() ? null : this.instructions().bind(bindings)).
                 set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
+                accessTo(this.accessTo().isOne() ? null : this.accessTo().bind(bindings)).
                 accessFrom(this.accessFrom().isOne() ? null : this.accessFrom().bind(bindings));
     }
 
@@ -144,20 +141,20 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             if (TObj.none().equals(this) || TObj.none().equals(obj))
                 return this.q().test(obj);
 
-            if (this.isInstance())                                                             // INSTANCE CHECKING
+            if (this.isInstance())                                                              // INSTANCE CHECKING
                 return obj.isInstance() && this.eq(obj).java();
             else if (this.isReference()) {                                                      // REFERENCE CHECKING
-                // if (!obj.isReference()) TODO: expose when type accessFrom is checked
-                //    return false;
-                // else {
-                final Iterator<? extends Obj> ittyA = this.iterable().iterator();
-                final Iterator<? extends Obj> ittyB = obj.iterable().iterator();
-                while (ittyA.hasNext()) {
-                    if (!ittyB.hasNext() || !(ittyB.next().test(ittyA.next())))
-                        return false;
+                if (!obj.isReference())
+                    return false;
+                else {
+                    final Iterator<? extends Obj> ittyA = this.iterable().iterator();
+                    final Iterator<? extends Obj> ittyB = obj.iterable().iterator();
+                    while (ittyA.hasNext()) {
+                        if (!ittyB.hasNext() || !(ittyB.next().test(ittyA.next())))
+                            return false;
+                    }
+                    return !ittyB.hasNext();
                 }
-                return !ittyB.hasNext();
-                // }
             } else {                                                                             // TYPE CHECKING
                 assert this.isType(); // TODO: remove when proved
                 if (null != ObjectHelper.getName(this) && ObjectHelper.getName(this).equals(ObjectHelper.getName(obj)))

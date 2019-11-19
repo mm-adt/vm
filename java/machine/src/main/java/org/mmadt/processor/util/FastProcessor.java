@@ -22,11 +22,9 @@
 
 package org.mmadt.processor.util;
 
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
-import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
 import org.mmadt.util.IteratorUtils;
@@ -62,10 +60,8 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
         // System.out.println("\nPROCESSING: " + obj);
         Stream<S> stream = Stream.of(obj.accessTo(ID()));
         for (final Inst inst : bytecode.iterable()) {
-            if (inst instanceof ReduceInstruction)
-                stream = Stream.of(stream.reduce(((ReduceInstruction<S, S>) inst).getInitialValue(), ((ReduceInstruction<S, S>) inst)::apply));
-            else if (inst instanceof BarrierInstruction)
-                stream = IteratorUtils.stream(stream.map(e -> ((BarrierInstruction<S, ObjSet<S>>) inst).apply(e, ((BarrierInstruction<S, ObjSet<S>>) inst).getInitialValue())).reduce(((BarrierInstruction<S, ObjSet<S>>) inst)::merge).map(x -> ((BarrierInstruction<S, ObjSet<S>>) inst).createIterator(x)).get());
+            if (inst instanceof BarrierInstruction)  // two patterns: *-to-* and 1-to-*.
+                stream = IteratorUtils.stream((Iterator<S>) stream.reduce(((BarrierInstruction<S, S>) inst).getInitialValue(), ((BarrierInstruction<S, S>) inst)::apply)).map(x -> (S) ((BarrierInstruction<S, S>) inst).createIterator(x));
             else
                 stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());

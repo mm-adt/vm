@@ -40,6 +40,17 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
  */
 public final class DedupInst<S extends Obj> extends TInst implements BarrierInstruction<S, ObjSet<S>> {
 
+    /*
+        public E getInitialValue();
+
+    public E merge(final E barrierA, final E barrierB);
+
+    @Override
+    public E apply(E a, S b);
+
+    public Iterator<E> createIterator(final E barrier);
+     */
+
     private DedupInst(final Object... arguments) {
         super(PList.of(arguments));
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.DEDUP));
@@ -59,12 +70,12 @@ public final class DedupInst<S extends Obj> extends TInst implements BarrierInst
     }
 
     @Override
-    public Iterator<S> createIterator(final ObjSet<S> barrier) {
-        return IteratorUtils.map(barrier.iterator(), a -> a.q(one));
+    public Iterator<ObjSet<S>> createIterator(final ObjSet<S> barrier) {
+        return IteratorUtils.map(barrier.iterator(), a -> ObjSet.create(a.q(one)));
     }
 
     @Override
-    public ObjSet<S> apply(final S s, final ObjSet<S> barrier) {
+    public ObjSet<S> apply(final ObjSet<S> barrier, final S s) {
         barrier.add(s);
         return barrier;
     }
