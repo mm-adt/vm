@@ -246,11 +246,13 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////// DELETE WHEN PROPERLY MIXED
 
     public default <O extends Obj> O mapFrom(final Obj obj) {
-        return obj instanceof Inst ? this.appendFrom((Inst) obj) : this.accessFrom(obj.accessFrom()).appendFrom(IsInst.isA(this)).appendFrom(this.accessFrom());
+        return obj instanceof Inst ? this.appendFrom((Inst) obj) : this.q(this.q().mult(obj.q())).accessFrom(obj.accessFrom()).appendFrom(obj.accessTo()).appendFrom(this.accessFrom()).appendFrom(IsInst.isA(this));
     }
 
     public default <O extends Obj> O mapTo(final Obj obj) {
-        return obj instanceof Inst ? this.appendTo((Inst) obj) : obj.q(obj.q().mult(this.q())).accessFrom(this.accessFrom()).appendFrom(obj.accessFrom()).appendFrom(IsInst.isA(obj));
+        return obj instanceof Inst ? this.appendTo((Inst) obj) : obj.mapFrom(this);
+        // mapTo is defined in terms of mapFrom (symmetric)
+        // obj.q(obj.q().mult(this.q())).accessFrom(this.accessFrom()).appendFrom(this.accessTo()).appendFrom(obj.accessFrom()).appendFrom(IsInst.isA(obj));
     }
 
     public Obj clone();
