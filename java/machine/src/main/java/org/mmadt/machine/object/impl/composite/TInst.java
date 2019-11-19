@@ -45,12 +45,6 @@ import java.util.List;
  */
 public class TInst extends TObj implements Inst {
 
-    private static final Inst SOME = new TInst(PList.of(TStr.some(), TObj.all()));
-    private static final Inst ALL = new TInst(null).q(0, Integer.MAX_VALUE);
-    private static final Inst NONE = new TInst(null).q(0);
-    private static final Inst ONE = IdInst.create();
-
-
     public Obj domain = TObj.none();
     public Obj range = TObj.none();
     private boolean inst = true;
@@ -70,19 +64,19 @@ public class TInst extends TObj implements Inst {
     }
 
     public static Inst some() {
-        return SOME;
+        return new TInst(PList.of(TStr.some(), TObj.all()));
     }
 
     public static Inst all() {
-        return ALL;
+        return new TInst(null).q(0, Integer.MAX_VALUE);
     }
 
     public static Inst none() {
-        return NONE;
+        return new TInst(null).q(0);
     }
 
     public static Inst ID() {
-        return ONE;
+        return IdInst.create();
     }
 
     public static Inst of(final String opcode, final Object... args) {
@@ -161,12 +155,12 @@ public class TInst extends TObj implements Inst {
 
     @Override
     public Inst zero() {
-        return NONE; // TODO: need to make a zero instruction [none] (we are conflating absence of instruction with an instruction that represents * -> 0.
+        return none(); // TODO: need to make a zero instruction [none] (we are conflating absence of instruction with an instruction that represents * -> 0.
     }
 
     @Override
     public Inst one() {
-        return ONE;
+        return ID();
     }
 
     /*@Override

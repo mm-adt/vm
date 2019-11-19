@@ -40,24 +40,20 @@ import org.mmadt.machine.object.model.util.StringFactory;
  */
 public final class TRec<K extends Obj, V extends Obj> extends TObj implements Rec<K, V> {
 
-    private static final Rec<Obj, Obj> SOME = new TRec<>(null);
-    private static final Rec<Obj, Obj> ALL = new TRec<>(null).q(0, Integer.MAX_VALUE);
-    private static final Rec<Obj, Obj> NONE = new TRec<>(null).q(0);
-
     private TRec(final Object value) {
         super(value);
     }
 
     public static Rec<?, ?> some() {
-        return SOME;
+        return new TRec<>(null);
     }
 
     public static Rec<?, ?> all() {
-        return ALL;
+        return new TRec<>(null).q(0, Integer.MAX_VALUE);
     }
 
     public static Rec<?, ?> none() {
-        return NONE;
+        return new TRec<>(null).q(0);
     }
 
     public static <K extends Obj, V extends Obj> Rec<K, V> of(final PMap<K, V> map) {
@@ -90,7 +86,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
             map.putAll(rec.java());
             return this.set(map);
         } else
-            return this.mapTo(PlusInst.create(rec));
+            return this.mapFrom(PlusInst.create(rec));
     }
 
     @Override
@@ -100,7 +96,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
             rec.java().forEach(map::remove);
             return this.set(map);
         } else
-            return this.mapTo(MinusInst.create(rec));
+            return this.mapFrom(MinusInst.create(rec));
     }
 
     @Override
@@ -112,7 +108,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Rec && this.java().equals(((Rec) obj).java())) :
-                TBool.from(this).mapTo(EqInst.create(obj));
+                TBool.from(this).mapFrom(EqInst.create(obj));
     }
 
     @Override

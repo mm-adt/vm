@@ -39,19 +39,16 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  */
 public final class TBool extends TObj implements Bool {
 
-    private static final Bool NONE = new TBool(null).q(0);
-    private static final Bool ALL = new TBool(null).q(0, Integer.MAX_VALUE);
-
     private TBool(final Object value) {
         super(value);
     }
 
     public static Bool all() {
-        return ALL;
+        return new TBool(null).q(0, Integer.MAX_VALUE);
     }
 
     public static Bool none() {
-        return NONE;
+        return new TBool(null).q(0);
     }
 
     public static Bool some() {
@@ -81,12 +78,12 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return this.q().constant() ? this.set(Boolean.TRUE) : this.mapTo(OneInst.create());
+        return this.q().constant() ? this.set(Boolean.TRUE) : this.mapFrom(OneInst.create());
     }
 
     @Override
     public Bool zero() {
-        return this.q().constant() ? this.set(Boolean.FALSE) : this.mapTo(ZeroInst.create());
+        return this.q().constant() ? this.set(Boolean.FALSE) : this.mapFrom(ZeroInst.create());
     }
 
     @Override
@@ -98,28 +95,28 @@ public final class TBool extends TObj implements Bool {
     public Bool mult(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(this.java() && bool.java()) :
-                this.mapTo(MultInst.create(bool));
+                this.mapFrom(MultInst.create(bool));
     }
 
     @Override
     public Bool minus(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(exclusiveOr(this.java(), bool.java())) :
-                this.mapTo(MinusInst.create(bool));
+                this.mapFrom(MinusInst.create(bool));
     }
 
     @Override
     public Bool plus(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(exclusiveOr(this.java(), bool.java())) :
-                this.mapTo(PlusInst.create(bool));
+                this.mapFrom(PlusInst.create(bool));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 this.set(obj instanceof Bool && this.java().equals(((Bool) obj).java())) :
-                this.mapTo(EqInst.create(obj));
+                this.mapFrom(EqInst.create(obj));
     }
 
     private static boolean exclusiveOr(final boolean a, final boolean b) {

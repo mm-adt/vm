@@ -46,28 +46,20 @@ import java.util.function.Supplier;
  */
 public final class TInt extends TObj implements Int {
 
-    private static final Int SOME = new TInt(null);
-    private static final Int ALL = new TInt(null).q(0, Integer.MAX_VALUE);
-    private static final Int NONE = new TInt(null).q(0);
-
-    private static final Int ZERO = new TInt(0);
-    private static final Int ONE = new TInt(1);
-    private static final Int TWO = new TInt(2);
-
     private TInt(final Object value) {
         super(value);
     }
 
     public static Int all() {
-        return ALL;
+        return new TInt(null).q(0, Integer.MAX_VALUE);
     }
 
     public static Int none() {
-        return NONE;
+        return new TInt(null).q(0);
     }
 
     public static Int some() {
-        return SOME;
+        return new TInt(null);
     }
 
     public static Int some(final int low, final int high) {
@@ -83,15 +75,15 @@ public final class TInt extends TObj implements Int {
     }
 
     public static Int zeroInt() {
-        return ZERO;
+        return new TInt(0);
     }
 
     public static Int oneInt() {
-        return ONE;
+        return new TInt(1);
     }
 
     public static Int twoInt() {
-        return TWO;
+        return new TInt(2);
     }
 
     /////////////////////////////////
@@ -108,38 +100,38 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return this.q().constant() ? this.set(0) : this.mapTo(ZeroInst.create());
+        return this.q().constant() ? this.set(0) : this.mapFrom(ZeroInst.create());
     }
 
     @Override
     public Int one() {
-        return this.q().constant() ? this.set(1) : this.mapTo(OneInst.create());
+        return this.q().constant() ? this.set(1) : this.mapFrom(OneInst.create());
     }
 
     @Override
     public Int neg() {
-        return this.isInstance() ? this.set(-this.java()) : this.mapTo(NegInst.create());
+        return this.isInstance() ? this.set(-this.java()) : this.mapFrom(NegInst.create());
     }
 
     @Override
     public Int minus(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 this.set(tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)) :
-                this.mapTo(MinusInst.create(integer));
+                this.mapFrom(MinusInst.create(integer));
     }
 
     @Override
     public Int plus(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 this.set(tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
-                this.mapTo(PlusInst.create(integer));
+                this.mapFrom(PlusInst.create(integer));
     }
 
     @Override
     public Int mult(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
-                this.mapTo(MultInst.create(integer));
+                this.mapFrom(MultInst.create(integer));
         /*if (this.isInstance()) {
             if (integer.isInstance())
                 return this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE));
@@ -153,35 +145,35 @@ public final class TInt extends TObj implements Int {
     public Bool gt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() > integer.java()) :
-                TBool.from(this).mapTo(GtInst.create(integer));
+                TBool.from(this.mapFrom(GtInst.create(integer)));
     }
 
     @Override
     public Bool gte(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() >= integer.java()) :
-                TBool.from(this).mapTo(GteInst.create(integer));
+                TBool.from(this).mapFrom(GteInst.create(integer));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Int && this.java().equals(((Int) obj).java())) :
-                TBool.from(this).mapTo(EqInst.create(obj));
+                TBool.from(this).mapFrom(EqInst.create(obj));
     }
 
     @Override
     public Bool lt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() < integer.java()) :
-                TBool.from(this).mapTo(LtInst.create(integer));
+                TBool.from(this).mapFrom(LtInst.create(integer));
     }
 
     @Override
     public Bool lte(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() <= integer.java()) :
-                TBool.from(this).mapTo(LteInst.create(integer));
+                TBool.from(this).mapFrom(LteInst.create(integer));
     }
 
     ///// HELPER METHODS

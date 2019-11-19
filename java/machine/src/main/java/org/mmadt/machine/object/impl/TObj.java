@@ -51,10 +51,8 @@ import java.util.Objects;
  */
 public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
-    private static final TObj SOME = new TObj(null);
-
     public static Obj some() {
-        return SOME;
+        return new TObj(null);
     }
 
     public static Obj all() {
@@ -85,7 +83,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     ////////
     protected Object value;                           // mutually exclusive with pattern (instance data)
-    Q quantifier = TQ.ONE;                            // the 'amount' of this object bundle
+    Q quantifier = null;                            // the 'amount' of this object bundle
     Type types;                                       // an object that abstractly defines this object's forms
     private boolean typeSet = false;                  // TODO: this is because we have a distinction of 'type not set' (will remove at some point)
 
@@ -117,7 +115,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <B extends WithOrderedRing<B>> Q<B> q() {
-        return this.quantifier;
+        return null == this.quantifier ? TQ.ONE : this.quantifier;
     }
 
     @Override

@@ -42,26 +42,20 @@ import org.mmadt.machine.object.model.util.StringFactory;
  */
 public final class TStr extends TObj implements Str {
 
-    private static final Str SOME = new TStr(null);
-    private static final Str NONE = new TStr(null).q(0);
-    private static final Str ALL = new TStr(null).q(0, Integer.MAX_VALUE);
-    private static final Str ZERO = new TStr("");
-    private static final Str MAX = new TStr("zzzzzzzzzzzz");
-
     private TStr(final Object value) {
         super(value);
     }
 
     public static Str all() {
-        return ALL;
+        return new TStr(null).q(0, Integer.MAX_VALUE);
     }
 
     public static Str none() {
-        return NONE;
+        return new TStr(null).q(0);
     }
 
     public static Str some() {
-        return SOME;
+        return new TStr(null);
     }
 
     public static Str of(final Object... objects) {
@@ -72,14 +66,14 @@ public final class TStr extends TObj implements Str {
     public Bool gt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.from(this).set(this.java().compareTo(str.java()) > 0) :
-                TBool.from(this).mapTo(GtInst.create(str));
+                TBool.from(this).mapFrom(GtInst.create(str));
     }
 
     @Override
     public Bool gte(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.from(this).set(this.java().compareTo(str.java()) >= 0) :
-                TBool.from(this).mapTo(GteInst.create(str));
+                TBool.from(this).mapFrom(GteInst.create(str));
     }
 
 
@@ -87,43 +81,43 @@ public final class TStr extends TObj implements Str {
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Str && this.java().equals(((Str) obj).java())) :
-                TBool.from(this).mapTo(EqInst.create(obj));
+                TBool.from(this).mapFrom(EqInst.create(obj));
     }
 
     @Override
     public Bool lt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.from(this).set(this.java().compareTo(str.java()) < 0).q(this.q()) :
-                TBool.from(this).mapTo(LtInst.create(str));
+                TBool.from(this).mapFrom(LtInst.create(str));
     }
 
     @Override
     public Bool lte(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.from(this).set(this.java().compareTo(str.java()) <= 0) :
-                TBool.from(this).mapTo(LteInst.create(str));
+                TBool.from(this).mapFrom(LteInst.create(str));
     }
 
     @Override
     public Str plus(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 this.set(this.java().concat(str.java())) :
-                this.mapTo(PlusInst.create(str));
+                this.mapFrom(PlusInst.create(str));
     }
 
     @Override
     public Str zero() {
-        return this.q().constant() ? this.set(Tokens.EMPTY) : this.mapTo(ZeroInst.create());
+        return this.q().constant() ? this.set(Tokens.EMPTY) : this.mapFrom(ZeroInst.create());
     }
 
     @Override
     public Str max() {
-        return MAX;
+        return new TStr("zzzzzzzzzzzz");
     }
 
     @Override
     public Str min() {
-        return ZERO;
+        return new TStr("");
     }
 
     @Override

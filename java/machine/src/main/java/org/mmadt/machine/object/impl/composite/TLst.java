@@ -42,24 +42,20 @@ import java.util.List;
  */
 public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
-    private static final Lst SOME = new TLst<>(null);
-    private static final Lst NONE = new TLst<>(null).q(0);
-    private static final Lst ALL = new TLst<>(null).q(0, Integer.MAX_VALUE);
-
     private TLst(final Object value) {
         super(value);
     }
 
     public static Lst all() {
-        return ALL;
+        return new TLst<>(null).q(0, Integer.MAX_VALUE);
     }
 
     public static Lst none() {
-        return NONE;
+        return new TLst<>(null).q(0);
     }
 
     public static Lst some() {
-        return SOME;
+        return new TLst<>(null);
     }
 
     public static <V extends Obj> Lst<V> of(final Object... objects) {
@@ -89,7 +85,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
             list.addAll(lst.java());
             return this.set(list);
         } else
-            return this.mapTo(PlusInst.create(lst));
+            return this.mapFrom(PlusInst.create(lst));
     }
 
     @Override
@@ -99,7 +95,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
             list.removeAll(lst.java());
             return this.set(list);
         } else
-            return this.mapTo(MinusInst.create(lst));
+            return this.mapFrom(MinusInst.create(lst));
     }
 
     @Override
@@ -111,7 +107,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Lst && this.java().equals(((Lst) obj).java())) :
-                TBool.from(this).mapTo(EqInst.create(obj));
+                TBool.from(this).mapFrom(EqInst.create(obj));
     }
 
     @Override

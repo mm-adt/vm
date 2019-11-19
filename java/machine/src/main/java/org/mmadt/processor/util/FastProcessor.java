@@ -36,6 +36,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -56,9 +58,9 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
 
     @Override
     public Iterator<S> iterator(final S obj) {
-        final Inst bytecode = obj.accessTo();
+        final Inst bytecode = obj.accessTo().isOne() ? obj.accessFrom() : obj.accessTo();
         // System.out.println("\nPROCESSING: " + obj);
-        Stream<S> stream = Stream.of(obj.accessTo(TInst.ID()));
+        Stream<S> stream = Stream.of(obj.accessTo(ID()));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof ReduceInstruction)
                 stream = Stream.of(stream.reduce(((ReduceInstruction<S, S>) inst).getInitialValue(), ((ReduceInstruction<S, S>) inst)::apply));

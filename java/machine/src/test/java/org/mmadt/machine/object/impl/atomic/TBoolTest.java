@@ -100,14 +100,14 @@ final class TBoolTest {
         assertTrue(TBool.of(true).q(star).or(TBool.of(false)).isType());
     }
 
-   /* @Test
+    @Test
     void shouldAccessCorrectly() {
         final Bool bool = TBool.of(true, true, false);
-        assertEquals(TInst.of(Tokens.START, true, true, false), bool.accessTo());
+        assertEquals(TInst.of(Tokens.START, true, true, false), bool.accessFrom());
         assertEquals(TBool.of(true), bool.iterable().iterator().next());
-        assertEquals(start(true, true, false).bytecode(), bool.plus(TBool.of(true)).accessTo());
-        assertEquals(plus(true).bytecode(), bool.plus(TBool.of(true)).accessFrom());
-        assertEquals(start(true, true, false).bytecode(), bool.mult(TBool.of(true)).accessTo());
-        assertEquals(mult(true).bytecode(), bool.mult(TBool.of(true)).accessFrom());
-    }*/
+        assertEquals(start(true, true, false).plus(true).bytecode(), bool.plus(TBool.of(true)).accessFrom());
+        // assertEquals(plus(true).bytecode(), bool.plus(TBool.of(true)).accessFrom());
+        assertEquals(start(true, true, false).mult(true).bytecode(), bool.mult(TBool.of(true)).accessFrom());
+        // assertEquals(mult(true).bytecode(), bool.mult(TBool.of(true)).accessFrom());
+    }
 }

@@ -45,7 +45,7 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
 
     public static <S extends Obj> S create(final S source, final Object... arguments) {
         final StartInst<S> inst = StartInst.create(arguments);
-        return source.accessTo(inst).q(inst.range().q());
+        return source.mapFrom(inst).q(inst.range().q());
     }
 
     public static <S extends Obj> StartInst<S> create(final Object... args) {

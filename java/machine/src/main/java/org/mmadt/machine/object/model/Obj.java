@@ -239,12 +239,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////// DELETE WHEN PROPERLY MIXED
     private <O extends Obj> O append(final Inst inst) {
         final Obj range = inst.computeRange(this);
-        return this.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range)));
+        return this.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range))).q(range.q());
     }
 
     private <O extends Obj> O prefix(final Inst inst) {
         final Obj range = inst.computeRange(this);
-        return this.accessTo(this.accessTo().mult(inst.domainAndRange(this, range)));
+        return this.accessTo(this.accessTo().mult(inst.domainAndRange(this, range))).q(range.q());
     }
     /////////////// DELETE WHEN PROPERLY MIXED
 
@@ -306,31 +306,31 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O count() {
         return this.q().constant() ?
                 (O) this.q().peek().q(q().one()) :
-                this.mapTo(CountInst.create());
+                this.mapFrom(CountInst.create());
     }
 
     public default <O extends Obj> O id() {
         return this.isInstance() ?
                 (O) this :
-                (O) this.mapTo(IdInst.create());
+                (O) this.mapFrom(IdInst.create());
     }
 
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
                 bool.java() ? (O) this : this.q(zero) :
-                (O) this.mapTo(IsInst.create(bool));
+                (O) this.mapFrom(IsInst.create(bool));
     }
 
     public default <O extends Obj> O map(final O obj) {
         return obj.isInstance() ?
                 obj.q(this.q()) : // TODO: X.from(obj)
-                this.mapTo(MapInst.create(obj));
+                this.mapFrom(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {
         return this.isInstance() ?
                 (O) this.set(((WithMult) this).mult(this.q())) :
-                this.mapTo(SumInst.create());
+                this.mapFrom(SumInst.create());
     }
 
     public Bool eq(final Obj object);
