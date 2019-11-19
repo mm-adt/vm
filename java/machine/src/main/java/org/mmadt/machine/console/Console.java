@@ -87,7 +87,7 @@ public class Console {
                     final ParsingResult result = runner.run(line);
                     if (!result.valueStack.isEmpty()) {
                         final Obj obj = (Obj) result.valueStack.pop();
-                        new FastProcessor<>().iterator(obj).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
+                        FastProcessor.process(obj).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
                         terminal.flush();
                     }
                 } catch (final Exception e) {

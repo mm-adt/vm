@@ -41,6 +41,10 @@ import java.util.stream.Stream;
  */
 public final class FastProcessor<S extends Obj> implements Processor<S>, ProcessorFactory {
 
+    private FastProcessor() {
+        // hidden constructor
+    }
+
     @Override
     public boolean alive() {
         return true;
@@ -70,5 +74,9 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
     @Override
     public void subscribe(final S obj, final Consumer<S> consumer) {
         this.iterator(obj).forEachRemaining(consumer);
+    }
+
+    public static <S extends Obj> Iterator<S> process(final S obj) {
+        return new FastProcessor<S>().iterator(obj);
     }
 }

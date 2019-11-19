@@ -68,6 +68,6 @@ class DefiningTest {
     void test() {
         Bool stream = TInt.of(1,2,3,4).mult(2).plus(50).gt(34).<Bool>is(true).plus(TBool.of(false));
         System.out.println(stream);
-       new FastProcessor<>().iterator(stream).forEachRemaining(System.out::println);
+        FastProcessor.process(stream).forEachRemaining(System.out::println);
     }
 }

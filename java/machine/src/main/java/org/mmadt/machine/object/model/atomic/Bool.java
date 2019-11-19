@@ -46,7 +46,7 @@ public interface Bool extends WithCommutativeRing<Bool> {
 
     @Override
     public default Iterable<Bool> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Bool>().iterator(this);
+        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 
 }

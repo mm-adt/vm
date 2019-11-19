@@ -84,7 +84,7 @@ public interface Int extends WithOrderedRing<Int> {
 
     @Override
     public default Iterable<Int> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new FastProcessor<Int>().iterator(this);
+        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 
     /////////////////////////////////////// RAW OBJECT METHODS

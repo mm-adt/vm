@@ -109,7 +109,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Obj type();
 
     public default Iterable<? extends Obj> iterable() {
-        return this.isInstance() ? List.of(this) : () -> new FastProcessor<>().iterator(this);
+        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 
     public <O extends Obj> O set(final Object object);
@@ -216,7 +216,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
         if (null != this.instructions() && this.instructions().values().stream().allMatch(Inst::isOne)) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
-                final Iterator<Inst> itty = new FastProcessor<Inst>().iterator(inst.asInst(false).mapTo(entry.getKey()));
+                final Iterator<Inst> itty = FastProcessor.process(inst.asInst(false).mapTo(entry.getKey()));
                 if (itty.hasNext())
                     return Optional.of(itty.next());
             }

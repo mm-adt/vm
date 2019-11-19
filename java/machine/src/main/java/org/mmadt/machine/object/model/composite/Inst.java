@@ -127,7 +127,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         // when testing instruction against instruction, use list testing inst(x,y)
         if (obj instanceof Inst)
             return WithProduct.super.test(((Inst) obj));
-        return new FastProcessor<>().iterator(obj.mapTo(this)).hasNext();
+        return FastProcessor.process(obj.mapTo(this)).hasNext();
     }
 
     @Override
@@ -139,7 +139,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         if (bindings.has(this.label()))
             return bindings.get(this.label()).test(obj);
         bindings.start();
-        final Iterator<Obj> itty = new FastProcessor<>().iterator(obj.mapTo(this));
+        final Iterator<Obj> itty = FastProcessor.process(obj.mapTo(this));
         if (itty.hasNext()) {
             final Obj object = itty.next();
             if (null != object.label())
