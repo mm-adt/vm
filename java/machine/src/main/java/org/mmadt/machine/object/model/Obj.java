@@ -116,6 +116,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O accessFrom(final Inst access);
 
+    // TODO: this might not be needed with mapTo defined in terms of mapFrom
     public <O extends Obj> O accessTo(final Inst access);
 
     public <O extends Obj> O inst(final Inst instA, final Inst instB);
@@ -246,7 +247,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////// DELETE WHEN PROPERLY MIXED
 
     public default <O extends Obj> O mapFrom(final Obj obj) {
-        return obj instanceof Inst ? this.appendFrom((Inst) obj) : this.q(this.q().mult(obj.q())).accessFrom(obj.accessFrom()).appendFrom(obj.accessTo()).appendFrom(this.accessFrom()).appendFrom(IsInst.isA(this));
+        return obj instanceof Inst ?
+                this.appendFrom((Inst) obj) :
+                this.q(this.q().mult(obj.q())).accessFrom(obj.accessFrom()).appendFrom(obj.accessTo()).appendFrom(IsInst.isA(this)).appendFrom(this.accessFrom());
     }
 
     public default <O extends Obj> O mapTo(final Obj obj) {
@@ -274,10 +277,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O accessFrom(final Query access) {
         return this.accessFrom(access.bytecode());
-    }
-
-    public default <O extends Obj> O accessTo(final Query access) {
-        return this.accessTo(access.bytecode());
     }
 
     public default <O extends Obj> O q(final Q.Tag tag) {

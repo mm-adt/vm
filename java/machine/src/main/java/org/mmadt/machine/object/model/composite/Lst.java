@@ -56,7 +56,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
             this.java().add(value);
             return this;
         } else
-            return this.mapTo(PutInst.create(TInt.of(100), value)); // TODO: should have isolated put(value) (like add(value))
+            return this.mapFrom(PutInst.create(TInt.of(100), value)); // TODO: should have isolated put(value) (like add(value))
     }
 
     @Override
@@ -65,7 +65,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
             this.java().add(index.java(), value);
             return this;
         } else
-            return this.mapTo(PutInst.create(index, value));
+            return this.mapFrom(PutInst.create(index, value));
     }
 
     @Override
@@ -74,7 +74,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
             this.java().remove((int) index.java());
             return this;
         } else
-            return this.mapTo(DropInst.create(index));
+            return this.mapFrom(DropInst.create(index));
     }
 
     @Override

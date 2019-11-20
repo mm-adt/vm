@@ -25,6 +25,7 @@ package org.mmadt.machine.object.model.atomic;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -46,6 +47,28 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
     @Override
     public default Iterable<Str> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
+    }
+
+    /////////////////////////////////////// RAW OBJECT METHODS
+
+    public default Str plus(final Object object) {
+        return this.plus((Str) ObjectHelper.from(object));
+    }
+
+    public default Bool gt(final Object object) {
+        return this.gt((Str) ObjectHelper.from(object));
+    }
+
+    public default Bool gte(final Object object) {
+        return this.gte((Str) ObjectHelper.from(object));
+    }
+
+    public default Bool lte(final Object object) {
+        return this.lte((Str) ObjectHelper.from(object));
+    }
+
+    public default Bool lt(final Object object) {
+        return this.lt((Str) ObjectHelper.from(object));
     }
 
 }

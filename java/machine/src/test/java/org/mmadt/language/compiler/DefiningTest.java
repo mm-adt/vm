@@ -31,6 +31,8 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
 
@@ -63,15 +65,17 @@ class DefiningTest {
 
     @Test
     void test() {
-        Bool stream = TInt.of(1, 2, 3, 4).mult(2).plus(50).gt(34).<Bool>is(true).plus(TBool.of(false));
+        Bool stream = TInt.of(1, 2, 3, 4).mult(2).plus(50).gt(34).<Bool>is(true).plus(false);
         System.out.println(stream);
         FastProcessor.process(stream).forEachRemaining(System.out::println);
 
         // {1,2,3} => int{5} => { }
 
 
-        Obj obj = TInt.of(1, 2, 3).mapTo(TStr.some());
+        Obj obj = TInt.of(1, 2, 3).mapTo(TStr.some().plus("marko"));
         System.out.println(obj.toString());
+        System.out.println(TInt.of(1,2,3).<Int>is(TInt.some().a(TStr.some())).toString());
+        System.out.println(TStr.some().plus("marko").mapFrom(TInt.of(1, 2, 3)).toString());
         FastProcessor.process(obj).forEachRemaining(System.out::println);
 
     }

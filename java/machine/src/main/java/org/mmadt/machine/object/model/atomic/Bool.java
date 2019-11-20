@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -47,6 +48,20 @@ public interface Bool extends WithCommutativeRing<Bool> {
     @Override
     public default Iterable<Bool> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
+    }
+
+    /////////////////////////////////////// RAW OBJECT METHODS
+
+    public default Bool mult(final Object object) {
+        return this.mult((Bool) ObjectHelper.from(object));
+    }
+
+    public default Bool plus(final Object object) {
+        return this.plus((Bool) ObjectHelper.from(object));
+    }
+
+    public default Bool minus(final Object object) {
+        return this.minus((Bool) ObjectHelper.from(object));
     }
 
 }

@@ -36,48 +36,6 @@ import java.util.List;
  */
 public interface Int extends WithOrderedRing<Int> {
 
-    @Override
-    public Bool gt(final Int object);
-
-    @Override
-    public Bool gte(final Int object);
-
-    @Override
-    public Bool lte(final Int object);
-
-    @Override
-    public Bool lt(final Int object);
-
-    @Override
-    public Int one(); // {a,b} => {a,b}
-
-    @Override
-    public Int zero(); // {a,b} => {a,b}
-
-    @Override
-    public Int mult(final Int object); // {a,b} * {c,d} => {a,b}
-
-    @Override
-    public Int plus(final Int object); // {a,b} + {c,d} => {a,b}
-
-    @Override
-    public Int minus(final Int object); // {a,b} - {c,d} => {a,b}
-
-    @Override
-    public Int neg(); // {a,b} => {a,b}
-
-    @Override
-    public Int max(); // {a,b} => {a,b}
-
-    @Override
-    public Int min(); // {a,b} => {a,b}
-
-    //@Override
-    //public Int and(final Int object); // {a,b} & {c,d} => {a&c,b&d}
-
-    //@Override
-    //public Int or(final Obj object); // {a,b} | {c,d} => [{a,b},{c,d}]  (the branches are uncoupled -- variants)
-
     public default Integer java() {
         return this.get();
     }
@@ -108,7 +66,6 @@ public interface Int extends WithOrderedRing<Int> {
     public default Bool gte(final Object object) {
         return this.gte((Int) ObjectHelper.from(object));
     }
-
 
     public default Bool lte(final Object object) {
         return this.lte((Int) ObjectHelper.from(object));

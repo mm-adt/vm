@@ -32,7 +32,6 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.processor.Processor;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.storage.Storage;
 import org.mmadt.util.IteratorUtils;
@@ -56,7 +55,7 @@ class StorTest {
         storage.root().put(TStr.of("c"));
         storage.root().put(TStr.of("d"));
         assertEquals(TLst.of("a", "b", "c", "d"), storage.root());
-        assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(FastProcessor.process(TLst.some().accessTo(start(storage.root()).plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e"))))));
+        assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(FastProcessor.process(TLst.some().mapTo(start(storage.root()).plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e")).bytecode()))));
     }
 
     @Test
