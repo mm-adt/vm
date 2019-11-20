@@ -58,11 +58,7 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
     }
 
     public S computeRange(final Obj domain) {
-        S kind = (S) (this.args().isEmpty() ? TObj.none() : this.args().get(0).set(null)); // TODO: for lst and rec, I think this should be .setValue()
-        for (int i = 1; i < this.args().size(); i++) {
-            kind = ObjectHelper.root(kind, this.args().get(i)).q(kind.q().plus(this.args().get(i).q()));
-        }
-        return kind;
+        return (S) this.range;
     }
 
     @Override

@@ -45,8 +45,8 @@ import java.util.List;
  */
 public class TInst extends TObj implements Inst {
 
-    public Obj domain = TObj.none();
-    public Obj range = TObj.none();
+    protected Obj domain = TObj.none();
+    protected Obj range = TObj.none();
     private boolean inst = true;
 
     protected TInst(final Object value) {
