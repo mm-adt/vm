@@ -206,6 +206,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
+        // TODO: this if-block is play code as we explore rewriting written in mm-ADT using choose()
         if (null != this.instructions() && this.instructions().values().stream().allMatch(Inst::isOne)) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
                 final Iterator<Inst> itty = FastProcessor.process(inst.asInst(false).mapFrom(entry.getKey()));
@@ -231,7 +232,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////// DELETE WHEN PROPERLY MIXED
     private <O extends Obj> O appendFrom(final Inst inst) {
         final Obj range = inst.computeRange(this);
-        return range.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range))).q(range.q());
+        return range.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range)));
     }
     /////////////// DELETE WHEN PROPERLY MIXED
 
