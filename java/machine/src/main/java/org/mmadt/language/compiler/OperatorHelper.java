@@ -72,7 +72,7 @@ public final class OperatorHelper {
             case (Tokens.DEQUALS):
                 return (A) lhs.eq(rhs);
             case (Tokens.MAPSTO):
-                return rhs instanceof Inst ? lhs.mapTo(rhs) : rhs.mapFrom(lhs);
+                return rhs.mapFrom(lhs);
             case (Tokens.MAPSFROM):
                 return lhs.mapFrom(rhs);
             default:

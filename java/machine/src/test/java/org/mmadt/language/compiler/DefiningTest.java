@@ -29,6 +29,9 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -72,11 +75,14 @@ class DefiningTest {
         // {1,2,3} => int{5} => { }
 
 
-        Obj obj = TInt.of(1, 2, 3).mapTo(TStr.some().plus("marko"));
-        System.out.println(obj.toString());
         System.out.println(TInt.of(1,2,3).<Int>is(TInt.some().a(TStr.some())).toString());
         System.out.println(TStr.some().plus("marko").mapFrom(TInt.of(1, 2, 3)).toString());
-        FastProcessor.process(obj).forEachRemaining(System.out::println);
+//        FastProcessor.process(obj).forEachRemaining(System.out::println);
+
+
+        ////
+
+        //System.out.println(TInt.of(1,2,3).mapFrom(PlusInst.create(34)).mapTo(MultInst.create(22)).toString());
 
     }
 }

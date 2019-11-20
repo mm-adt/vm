@@ -46,7 +46,6 @@ public final class TType implements Type {
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
     private String label;                      // the ~bind string (if retrieved via a bind)
     private Pattern pattern;                   // a predicate for testing an instance of the type
-    private Inst accessTo;                     // accessTo to the manifestations of this form
     private Inst accessFrom;                   // accessFrom to the manifestations of this form
     private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (this is the "FPGA" aspect of the VM)
 
@@ -114,20 +113,8 @@ public final class TType implements Type {
     }
 
     @Override
-    public Type accessTo(final Inst access) {
-        final TType clone = this.clone();
-        clone.accessTo = null == access || (access.get() instanceof PList && access.<PList<Str>>get().get(0).java().equals(Tokens.ID)) ? null : access;
-        return clone;
-    }
-
-    @Override
     public Inst accessFrom() {
         return null == this.accessFrom ? IdInst.create() : this.accessFrom;
-    }
-
-    @Override
-    public Inst accessTo() {
-        return null == this.accessTo ? IdInst.create() : this.accessTo;
     }
 
     @Override
@@ -156,7 +143,7 @@ public final class TType implements Type {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.symbol, this.label, this.accessFrom, this.accessTo, this.instructions, this.pattern);
+        return Objects.hash(this.symbol, this.label, this.accessFrom, this.instructions, this.pattern);
     }
 
     @Override
@@ -164,7 +151,6 @@ public final class TType implements Type {
         return object instanceof Type &&
                 Objects.equals(this.symbol, ((Type) object).symbol()) &&
                 Objects.equals(this.accessFrom(), ((Type) object).accessFrom()) &&
-                Objects.equals(this.accessTo(), ((Type) object).accessTo()) &&
                 Objects.equals(this.label, ((Type) object).label()) &&
                 Objects.equals(this.instructions, ((Type) object).instructions()) &&
                 Objects.equals(this.pattern, ((Type) object).pattern());

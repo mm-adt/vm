@@ -100,12 +100,6 @@ public final class StringFactory {
                 builder.append(SPACE);
             builder.append(object.accessFrom());
         }
-        if (!object.accessTo().isOne()) {
-            builder.append(SPACE).append(MAPSTO);
-            if (!object.accessTo().modelMap())
-                builder.append(SPACE);
-            builder.append(object.accessTo());
-        }
         if (null != object.instructions()) {
             builder.append(NEWLINE);
             for (final Map.Entry<Inst, Inst> inst : object.instructions().entrySet()) {

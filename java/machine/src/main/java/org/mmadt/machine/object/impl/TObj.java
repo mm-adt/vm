@@ -215,13 +215,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O accessTo(final Inst access) {
-        final TObj clone = this.clone();
-        clone.types = this.types.accessTo(access);
-        return (O) clone;
-    }
-
-    @Override
     public <O extends Obj> O inst(final Inst instA, final Inst instB) {
         final TObj clone = this.clone();
         clone.types = this.types.inst(instA, instB);
@@ -238,11 +231,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public Inst accessFrom() {
         return this.types.accessFrom(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
-    }
-
-    @Override
-    public Inst accessTo() {
-        return this.types.accessTo(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
     }
 
     ///////////////////////////////////////////////////////////////////////////////////

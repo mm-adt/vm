@@ -50,7 +50,7 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
 
     public static <S extends Obj> StartInst<S> create(final Object... args) {
         final StartInst<S> inst = new StartInst<>(args);
-        Obj kind = inst.args().isEmpty() ? TObj.none() : inst.args().get(0);
+        Obj kind = inst.args().isEmpty() ? TObj.none() : inst.args().get(0).set(null); // TODO: for lst and rec, I think this should be .setValue()
         for (int i = 1; i < inst.args().size(); i++) {
             kind = ObjectHelper.root(kind, inst.args().get(i)).q(kind.q().plus(inst.args().get(i).q()));
         }
@@ -58,7 +58,7 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
     }
 
     public S computeRange(final Obj domain) {
-        S kind = (S) (this.args().isEmpty() ? TObj.none() : this.args().get(0));
+        S kind = (S) (this.args().isEmpty() ? TObj.none() : this.args().get(0).set(null)); // TODO: for lst and rec, I think this should be .setValue()
         for (int i = 1; i < this.args().size(); i++) {
             kind = ObjectHelper.root(kind, this.args().get(i)).q(kind.q().plus(this.args().get(i).q()));
         }

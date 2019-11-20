@@ -68,7 +68,7 @@ public final class TBool extends TObj implements Bool {
     }
 
     public static Bool from(final Obj obj) {
-        return TBool.some().q(obj.q()).accessFrom(obj.accessFrom()).accessTo(obj.accessTo());
+        return TBool.some().q(obj.q()).accessFrom(obj.accessFrom());
     }
 
     @Override

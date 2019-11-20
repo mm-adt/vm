@@ -83,8 +83,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Inst accessFrom();
 
-    public Inst accessTo();
-
     public PMap<Inst, Inst> instructions();
 
     public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
@@ -116,9 +114,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O accessFrom(final Inst access);
 
-    // TODO: this might not be needed with mapTo defined in terms of mapFrom
-    public <O extends Obj> O accessTo(final Inst access);
-
     public <O extends Obj> O inst(final Inst instA, final Inst instB);
 
     public <O extends Obj> O symbol(final String symbol);
@@ -131,7 +126,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return bindings.get(this.label());
         return this.insts(null == this.instructions() ? null : this.instructions().bind(bindings)).
                 set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
-                accessTo(this.accessTo().isOne() ? null : this.accessTo().bind(bindings)).
                 accessFrom(this.accessFrom().isOne() ? null : this.accessFrom().bind(bindings));
     }
 
@@ -214,7 +208,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
         if (null != this.instructions() && this.instructions().values().stream().allMatch(Inst::isOne)) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
-                final Iterator<Inst> itty = FastProcessor.process(inst.asInst(false).mapTo(entry.getKey()));
+                final Iterator<Inst> itty = FastProcessor.process(inst.asInst(false).mapFrom(entry.getKey()));
                 if (itty.hasNext())
                     return Optional.of(itty.next());
             }
@@ -237,25 +231,16 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////// DELETE WHEN PROPERLY MIXED
     private <O extends Obj> O appendFrom(final Inst inst) {
         final Obj range = inst.computeRange(this);
-        return this.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range))).q(range.q());
-    }
-
-    private <O extends Obj> O appendTo(final Inst inst) {
-        final Obj range = inst.computeRange(this);
-        return this.accessTo(this.accessTo().mult(inst.domainAndRange(this, range))).q(range.q());
+        return range.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range))).q(range.q());
     }
     /////////////// DELETE WHEN PROPERLY MIXED
 
     public default <O extends Obj> O mapFrom(final Obj obj) {
         return obj instanceof Inst ?
                 this.appendFrom((Inst) obj) :
-                this.q(this.q().mult(obj.q())).accessFrom(obj.accessFrom()).appendFrom(obj.accessTo()).appendFrom(IsInst.isA(this)).appendFrom(this.accessFrom());
-    }
-
-    public default <O extends Obj> O mapTo(final Obj obj) {
-        return obj instanceof Inst ? this.appendTo((Inst) obj) : obj.mapFrom(this);
-        // mapTo is defined in terms of mapFrom (symmetric)
-        // obj.q(obj.q().mult(this.q())).accessFrom(this.accessFrom()).appendFrom(this.accessTo()).appendFrom(obj.accessFrom()).appendFrom(IsInst.isA(obj));
+                this instanceof Inst ?
+                        obj.mapFrom(this) :
+                        this.q(this.q().mult(obj.q())).accessFrom(obj.accessFrom()).appendFrom(IsInst.isA(this)).appendFrom(this.accessFrom());
     }
 
     public Obj clone();
@@ -263,17 +248,16 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && this.accessTo().isOne() && this.accessFrom().isOne();
+        return !this.constant() && this.accessFrom().isOne();
     }
 
     public default boolean isReference() {
-        return !this.constant() && (!this.accessFrom().isOne() || !this.accessTo().isOne());
+        return !this.constant() && !this.accessFrom().isOne();
     }
 
     public default boolean isInstance() {
         return this.constant();
     }
-
 
     public default <O extends Obj> O accessFrom(final Query access) {
         return this.accessFrom(access.bytecode());

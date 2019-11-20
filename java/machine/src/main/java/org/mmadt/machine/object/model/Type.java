@@ -49,11 +49,7 @@ public interface Type extends Cloneable {
 
     public Type accessFrom(final Inst access);
 
-    public Type accessTo(final Inst access);
-
     public Inst accessFrom();
-
-    public Inst accessTo();
 
     public Type inst(final Inst instA, final Inst instB);
 

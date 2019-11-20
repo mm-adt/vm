@@ -44,16 +44,16 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
         boolean found = false;
         final MultiIterator<E> itty = new MultiIterator<>();
         for (final Map.Entry<Inst, List<Inst>> entry : this.getBranches().entrySet()) {
-            if (FastProcessor.process(obj.mapTo(entry.getKey())).hasNext()) {
+            if (FastProcessor.process(obj.mapFrom(entry.getKey())).hasNext()) {
                 found = true;
                 for (final Inst branch : entry.getValue()) {
-                    itty.addIterator(FastProcessor.process(obj.mapTo(branch))); // TODO: make sure this is global
+                    itty.addIterator(FastProcessor.process(obj.mapFrom(branch))); // TODO: make sure this is global
                 }
             }
         }
         if (!found && this.getBranches().containsKey(null)) {
             for (final Inst defaultBranch : this.getBranches().get(null)) {
-                itty.addIterator(FastProcessor.process(obj.mapTo(defaultBranch)));
+                itty.addIterator(FastProcessor.process(obj.mapFrom(defaultBranch)));
             }
         }
         return TObj.none().set(itty);
