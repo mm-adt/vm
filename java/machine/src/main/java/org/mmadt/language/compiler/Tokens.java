@@ -92,6 +92,7 @@ public final class Tokens {
     public static final String DEFINE = "define";
     public static final String DIV = "div";
     public static final String DROP = "drop";
+    public static final String ENV = "env";
     public static final String EQ = "eq";
     public static final String ERROR = "error";
     public static final String EVAL = "eval";

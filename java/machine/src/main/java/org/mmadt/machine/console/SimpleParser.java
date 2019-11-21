@@ -152,7 +152,9 @@ public class SimpleParser extends BaseParser<Object> {
                         Lst(),
                         Model(),
                         Name()),                                                                                        // obj
-                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))));                       // {quantifier}
+                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                        // {quantifier}
+                ZeroOrMore(Sequence(SUB, Word(), this.push(TStr.of(this.match().trim())), Terminal("->"), Obj(), MAPSFROM, Inst(), swap(),
+                        this.push(type(this.pop()).accessFrom(castToInst(this.pop()))), swap3(), this.push(type(this.pop()).env(type(this.pop()), type(this.pop())))))); // -evn->
     }
 
     Rule Lst() {

@@ -25,13 +25,16 @@ package org.mmadt.machine.object.model;
 import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.Bindings;
@@ -77,11 +80,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <B extends WithOrderedRing<B>> Q<B> q();
 
-    // public Model model();
-
     public String label();
 
     public Inst accessFrom();
+
+    public Map<Str, Obj> env();
 
     public PMap<Inst, Inst> instructions();
 
@@ -119,6 +122,20 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O symbol(final String symbol);
 
     public <O extends Obj> O insts(final PMap<Inst, Inst> insts);
+
+    public default <O extends Obj> O env(final Map<Str, Obj> env) {
+        Obj obj = this;
+        for (final Map.Entry<Str, Obj> entry : env.entrySet()) {
+            obj = obj.env(entry.getKey(), entry.getValue());
+        }
+        return (O) obj;
+    }
+
+    public <O extends Obj> O env(final Str name, final Obj obj);
+
+    public default <O extends Obj> O copy(final Obj obj) {
+        return this.q(obj.q()).accessFrom(obj.accessFrom()).env(obj.env());
+    }
 
     @Override
     public default Obj bind(final Bindings bindings) {
@@ -206,15 +223,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
-        // TODO: this if-block is play code as we explore rewriting written in mm-ADT using choose()
-        if (null != this.instructions() && this.instructions().values().stream().allMatch(Inst::isOne)) {
-            for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
-                final Iterator<Inst> itty = FastProcessor.process(inst.asInst(false).mapFrom(entry.getKey()));
-                if (itty.hasNext())
-                    return Optional.of(itty.next());
-            }
-        }
-
         if (null != this.instructions()) {
             for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
                 if (entry.getKey().match(bindings, inst))
@@ -288,31 +296,37 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O count() {
         return this.q().constant() ?
-                (O) this.q().peek().q(q().one()) :
+                this.q().peek().q(q().one()) :
                 this.mapFrom(CountInst.create());
+    }
+
+    public default <O extends Obj> O env(final Str symbol) {
+        return (this.isInstance()) ?
+                this.set(this.get()).env().getOrDefault(symbol, TObj.none()).copy(this) :
+                TLst.some().copy(this).mapFrom(EnvInst.create(symbol));
     }
 
     public default <O extends Obj> O id() {
         return this.isInstance() ?
                 (O) this :
-                (O) this.mapFrom(IdInst.create());
+                this.mapFrom(IdInst.create());
     }
 
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
                 bool.java() ? (O) this : this.q(zero) :
-                (O) this.mapFrom(IsInst.create(bool));
+                this.mapFrom(IsInst.create(bool));
     }
 
     public default <O extends Obj> O map(final O obj) {
         return obj.isInstance() ?
-                obj.q(this.q()) : // TODO: X.from(obj)
+                obj.copy(this) :
                 this.mapFrom(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {
         return this.isInstance() ?
-                (O) this.set(((WithMult) this).mult(this.q())) :
+                this.set(((WithMult) this).mult(this.q())) :
                 this.mapFrom(SumInst.create());
     }
 
@@ -324,5 +338,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O is(final Object bool) {
         return this.is((Bool) ObjectHelper.from(bool));
+    }
+
+    public default <O extends Obj> O env(final Object symbol) {
+        return this.env((Str) ObjectHelper.from(symbol));
     }
 }

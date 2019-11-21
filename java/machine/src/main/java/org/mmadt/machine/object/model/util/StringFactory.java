@@ -47,6 +47,7 @@ import static org.mmadt.language.compiler.Tokens.BAR;
 import static org.mmadt.language.compiler.Tokens.COLON;
 import static org.mmadt.language.compiler.Tokens.COMMA;
 import static org.mmadt.language.compiler.Tokens.CROSS;
+import static org.mmadt.language.compiler.Tokens.DASH;
 import static org.mmadt.language.compiler.Tokens.DEFINE;
 import static org.mmadt.language.compiler.Tokens.EMPTY;
 import static org.mmadt.language.compiler.Tokens.LBRACKET;
@@ -57,6 +58,7 @@ import static org.mmadt.language.compiler.Tokens.MAPSTO;
 import static org.mmadt.language.compiler.Tokens.MODEL;
 import static org.mmadt.language.compiler.Tokens.NEWLINE;
 import static org.mmadt.language.compiler.Tokens.QUESTION;
+import static org.mmadt.language.compiler.Tokens.RANGLE;
 import static org.mmadt.language.compiler.Tokens.RBRACKET;
 import static org.mmadt.language.compiler.Tokens.RCURL;
 import static org.mmadt.language.compiler.Tokens.RPAREN;
@@ -107,6 +109,13 @@ public final class StringFactory {
             }
             builder.deleteCharAt(builder.length() - 1);
         }
+        /*if (null != object.env()) {
+            builder.append(NEWLINE);
+            for (final Map.Entry<Str, Obj> var : object.env().entrySet()) {
+                builder.append(SPACE).append(DASH).append(var.getKey().java()).append(DASH).append(RANGLE).append(nestedObject(var.getValue())).append(NEWLINE);
+            }
+            builder.deleteCharAt(builder.length() - 1);
+        }*/
     }
 
     private static String nestedObject(final Obj object) {

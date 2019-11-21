@@ -23,24 +23,23 @@
 package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.language.__;
 import org.mmadt.machine.object.impl.TModel;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
-import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
-import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.processor.util.FastProcessor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.language.__.env;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
@@ -75,7 +74,7 @@ class DefiningTest {
         // {1,2,3} => int{5} => { }
 
 
-        System.out.println(TInt.of(1,2,3).<Int>is(TInt.some().a(TStr.some())).toString());
+        System.out.println(TInt.of(1, 2, 3).<Int>is(TInt.some().a(TStr.some())).toString());
         System.out.println(TStr.some().plus("marko").mapFrom(TInt.of(1, 2, 3)).toString());
 //        FastProcessor.process(obj).forEachRemaining(System.out::println);
 
@@ -83,6 +82,18 @@ class DefiningTest {
         ////
 
         //System.out.println(TInt.of(1,2,3).mapFrom(PlusInst.create(34)).mapTo(MultInst.create(22)).toString());
+
+    }
+
+    @Test
+    void test2() {
+        final TInt startA = TInt.of(5).env(TStr.of("path"), TLst.of().accessFrom(__.put(0, env("this"))));
+        final TInt startB = TInt.of(6).env(TStr.of("path"), TLst.of().accessFrom(__.put(0, env("this"))));
+        System.out.println(startA.env());
+        System.out.println(startB.env());
+        final Obj path = TInt.of(startA, startB).mult(2).plus(50).plus(6).plus(2).<Lst<?>>env("path").plus(TLst.of(1, 2, 3));
+        System.out.println(path);
+        FastProcessor.process(path).forEachRemaining(System.out::println);
 
     }
 }

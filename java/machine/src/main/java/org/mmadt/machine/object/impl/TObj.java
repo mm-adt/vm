@@ -25,6 +25,8 @@ package org.mmadt.machine.object.impl;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
@@ -43,7 +45,10 @@ import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
+import org.mmadt.processor.util.FastProcessor;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -82,10 +87,11 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     ////////
-    protected Object value;                           // mutually exclusive with pattern (instance data)
-    Q quantifier = null;                            // the 'amount' of this object bundle
-    Type types;                                       // an object that abstractly defines this object's forms
-    private boolean typeSet = false;                  // TODO: this is because we have a distinction of 'type not set' (will remove at some point)
+    protected Object value;                             // mutually exclusive with pattern (instance data)
+    private Q quantifier = null;                                // the 'amount' of this object bundle
+    Type types;                                         // an object that abstractly defines this object's forms
+    private boolean typeSet = false;                    // TODO: this is because we have a distinction of 'type not set' (will remove at some point)
+    private Map<Str, Obj> environment;
 
     public TObj(final Object value) {
         this.types = TType.of(TObj.getBaseSymbol(this));
@@ -97,6 +103,23 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         }
         assert !(this.value instanceof Obj) && (!(this.value instanceof Pattern) || ((Pattern) this.value).constant()); // TODO: Remove when proved
     }
+
+    public <O extends Obj> O bindings(final Inst inst) {
+        if (null == this.environment)
+            return (O) this;
+
+        final TObj clone = this.clone();
+        clone.environment = new LinkedHashMap<>();
+        final Map<Str, Obj> newEnv = new LinkedHashMap<>(this.environment);
+        for (final Map.Entry<Str, Obj> effect : this.environment.entrySet()) {
+            final Obj next = FastProcessor.process(effect.getValue().env(TStr.of("this"), clone)).next();
+            next.env().clear();
+            newEnv.put(effect.getKey(), next.accessFrom(effect.getValue().accessFrom()));
+        }
+        clone.environment.putAll(newEnv);
+        return (O) clone;
+    }
+
 
     @Override
     public String symbol() {
@@ -143,10 +166,20 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return (O) this;
     }
 
-    /*@Override
-    public Model model() {
-        return this.types.model();
-    }*/
+    @Override
+    public Map<Str, Obj> env() {
+        return null == this.environment ? Map.of() : this.environment;
+    }
+
+    @Override
+    public <O extends Obj> O env(final Str name, final Obj obj) {
+        final TObj clone = this.clone();
+        clone.environment = new LinkedHashMap<>();
+        if (null != this.environment)
+            clone.environment.putAll(this.environment);
+        clone.environment.put(name, obj);
+        return (O) clone;
+    }
 
     @Override
     public Obj type() {
@@ -178,7 +211,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <O extends Obj> O set(final Object object) {
-        final TObj clone = this.clone();
+        final TObj clone = this.clone().bindings(TInst.none());
         if (null == object) {
             clone.value = null;
             clone.types = this.types.pattern(null);
@@ -233,6 +266,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return this.types.accessFrom(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
     }
 
+
     ///////////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -269,7 +303,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public Bool a(final Obj obj) {
         return TBool.from(this).set(obj.equals(this) || obj.test(this));
     }
-
 
     @Override
     public Bool eq(final Obj object) {

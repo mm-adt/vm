@@ -33,6 +33,7 @@ import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
@@ -86,6 +87,10 @@ public final class Query {
 
     public Query choose(final Object... branches) {
         return this.compose(ChooseInst.create(branches));
+    }
+
+    public Query env(final Object key) {
+        return this.compose(EnvInst.create(key));
     }
 
     public Query id() {

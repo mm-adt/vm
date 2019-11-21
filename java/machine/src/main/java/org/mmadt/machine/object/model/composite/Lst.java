@@ -35,6 +35,7 @@ import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -110,6 +111,12 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     @Override
     public default Iterable<Lst<V>> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
+    }
+
+    ///////
+
+    public default Lst<V> plus(final Object object) {
+        return this.plus((Lst<V>) ObjectHelper.from(object));
     }
 
 }

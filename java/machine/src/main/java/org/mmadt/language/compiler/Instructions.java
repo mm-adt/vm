@@ -32,6 +32,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AccessInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
@@ -70,6 +71,7 @@ import static org.mmadt.language.compiler.Tokens.DB;
 import static org.mmadt.language.compiler.Tokens.DEDUP;
 import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
+import static org.mmadt.language.compiler.Tokens.ENV;
 import static org.mmadt.language.compiler.Tokens.EQ;
 import static org.mmadt.language.compiler.Tokens.EXPLAIN;
 import static org.mmadt.language.compiler.Tokens.GET;
@@ -131,6 +133,8 @@ public final class Instructions {
                 return DivInst.create(args.get(0));
             case DROP:
                 return DropInst.create(args.get(0));
+            case ENV:
+                return EnvInst.create(args.get(0));
             case EQ:
                 return EqInst.create(args.get(0));
             case EXPLAIN:
