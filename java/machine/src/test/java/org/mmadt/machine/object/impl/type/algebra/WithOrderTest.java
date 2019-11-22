@@ -46,12 +46,12 @@ class WithOrderTest {
             List.of(TInt.of(2), TInt.of(4545), TInt.of(467788)),
             List.of(TReal.of(65.0f), TReal.of(787.235f), TReal.of(103455677.13f)));
 
-    static void validate(final List<WithOrder> orders) {
-        final WithOrder min = (WithOrder) orders.get(0).min();
-        final WithOrder max = (WithOrder) orders.get(0).max();
-        final WithOrder one = orders.get(0);
-        final WithOrder two = orders.get(1);
-        final WithOrder three = orders.get(2);
+    static <A extends WithOrder<A>> void validate(final List<A> orders) {
+        final A min = orders.get(0).min();
+        final A max = orders.get(0).max();
+        final A one = orders.get(0);
+        final A two = orders.get(1);
+        final A three = orders.get(2);
         ////////////////////////////////////////
         assertTrue(min.isMin());
         assertTrue(max.isMax());

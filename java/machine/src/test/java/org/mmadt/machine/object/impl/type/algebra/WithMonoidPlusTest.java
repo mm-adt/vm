@@ -64,7 +64,7 @@ class WithMonoidPlusTest {
             TReal.of(1.0f, 2.0f, 3.0f),
             TBool.of(true, true, false));
 
-    static void validate(final WithMonoidPlus monoid) {
+    static <A extends WithMonoidPlus<A>> void validate(final A monoid) {
         if (monoid.isInstance())
             testInstances(monoid);
         else if (monoid.isReference())
@@ -72,7 +72,6 @@ class WithMonoidPlusTest {
         else
             throw new RuntimeException("Bad: " + monoid);
     }
-
 
     static <A extends WithMonoidPlus<A>> void testInstances(final A monoid) {
         final A two = monoid.plus(monoid);
