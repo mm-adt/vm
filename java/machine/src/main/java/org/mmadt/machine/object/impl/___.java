@@ -29,7 +29,9 @@ import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 
@@ -64,5 +66,13 @@ public class ___ {
 
     public static Inst mult(final Object object) {
         return MultInst.create(object);
+    }
+
+    public static Inst one() {
+        return OneInst.create();
+    }
+
+    public static Inst zero() {
+        return ZeroInst.create();
     }
 }

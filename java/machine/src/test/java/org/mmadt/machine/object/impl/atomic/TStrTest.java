@@ -23,37 +23,48 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.util.TestHelper;
-import org.mmadt.machine.object.model.atomic.Str;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.and;
 import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.neq;
 import static org.mmadt.language.__.or;
+import static org.mmadt.machine.object.impl.___.zero;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class TStrTest {
+final class TStrTest implements TestUtilities {
+
+    @Test
+    void testType() {
+        validateTypes(TStr.some());
+    }
+
+    @Test
+    void testIsA() {
+        validateIsA(TStr.some());
+    }
 
     @Test
     void testInstanceReferenceType() {
-        Str instance = TStr.of("a");
-        Str reference = TStr.of("a", "b").plus(TStr.of("b"));
-        Str type = TStr.some();
-        TestHelper.validateKinds(instance, reference, type);
-        //////
-        instance = TStr.of("a").q(45);
-        reference = TStr.of("a", "b", "c");
-        type = TStr.of().q(45);
-        TestHelper.validateKinds(instance, reference, type);
+        validateKinds(TStr.of("a"), TStr.of("a", "b").plus(TStr.of("b")), TStr.some());
+        validateKinds(TStr.of("a").q(45), TStr.of("a", "b", "c"), TStr.of().q(45));
+    }
+
+    @Test
+    void testAccess() {
+        assertEquals(objs("marko"), submit(TStr.of("marko")));
+        assertNotEquals(objs("mark"), submit(TStr.of("marko")));
+        assertEquals(objs("marko rodriguez"), submit(TStr.of("marko").plus(" ").plus(zero()).plus("rodriguez").plus(zero())));
     }
 
     @Test
@@ -68,12 +79,5 @@ final class TStrTest {
         assertTrue(TStr.of("id").or(TStr.of("label")).test(TStr.of("id")));
         assertFalse(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("id")));
         assertTrue(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("hello")));
-    }
-
-    @Test
-    void shouldSupportSemigroupAddition() {
-        final Str a = TStr.of("marko");
-        final Str b = TStr.of("rodriguez");
-        assertEquals(TStr.of("marko rodriguez"), a.plus(TStr.of(" ").plus(b).plus(a.zero())));
     }
 }
