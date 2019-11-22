@@ -62,7 +62,7 @@ final class TIntTest {
         //start(TInt.some(5)).plus(3).obj().iterable().forEach(System.out::println);
         //start(TInt.some(5)).plus(3).gt(50).obj().iterable().forEach(System.out::println);
        System.out.println(start(TInt.of(175)).plus(id()).mult(2).is(gt(5)).plus(100).is(gt(6)));
-       start(TInt.some()).plus(id()).mult(2).is(gt(5)).plus(100).is(gt(6)).obj().iterable().forEach(System.out::println);
+       TInt.some().plus(TInt.some().id()).mult(2).<Int>is(TInt.some().gt(5)).plus(100).is(TInt.some().gt(6)).iterable().forEach(System.out::println);
        // start(TInt.some()).gt(5).obj().iterable().forEach(System.out::println);
         //start(TInt.some(5)).plus(5).mult(5).is(gt(5)).plus(100).is(mult(45).minus(10).gt(0)).obj().iterable().forEach(System.out::println);
     }

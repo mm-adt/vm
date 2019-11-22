@@ -60,7 +60,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
  */
 final class TRecTest {
 
-    @Test
+    /*@Test
     void testBytecodeTestingMatchingAndBinding() {
         final Bindings bindings = new Bindings();
         final Rec<Str, ?> type = TRec.of(
@@ -80,7 +80,7 @@ final class TRecTest {
         //  assertEquals(person, bound);
         final Lst list = TLst.of(TStr.some().label("x"), TInt.some().label("y"));
         assertEquals(TLst.of("marko", 29), list.bind(bindings));
-    }
+    }*/
 
     @Test
     void shouldAndCorrectly() {

@@ -83,16 +83,4 @@ class DefiningTest {
         //System.out.println(TInt.of(1,2,3).mapFrom(PlusInst.create(34)).mapTo(MultInst.create(22)).toString());
 
     }
-
-    @Test
-    void test2() {
-        final TInt startA = TInt.of(5).env(TStr.of("path"), TLst.of().access(__.put(0, env("this"))));
-        final TInt startB = TInt.of(6).env(TStr.of("path"), TLst.of().access(__.put(0, env("this"))));
-        System.out.println(startA.env());
-        System.out.println(startB.env());
-        final Obj path = TInt.of(startA, startB).mult(2).plus(50).plus(6).plus(2).<Lst<?>>env("path").plus(TLst.of(1, 2, 3));
-        System.out.println(path);
-        FastProcessor.process(path).forEachRemaining(System.out::println);
-
-    }
 }

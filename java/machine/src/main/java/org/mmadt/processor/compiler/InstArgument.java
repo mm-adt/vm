@@ -41,7 +41,7 @@ public final class InstArgument<S extends Obj, E extends Obj> implements Argumen
 
     @Override
     public E mapArg(final S object) {
-        return FastProcessor.<E>process(object.access((Inst)null).mapFrom(this.bytecode)).next();  // TODO: necessary to clip parent access
+        return FastProcessor.<E>process(object.access((Inst)null).mapTo(this.bytecode)).next();  // TODO: necessary to clip parent access
     }
 
     @Override

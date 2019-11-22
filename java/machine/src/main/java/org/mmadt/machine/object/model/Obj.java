@@ -258,7 +258,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O mapTo(final Obj obj) {
         if (obj instanceof Inst) {
-            O o = this.access().isOne() ? this.append(StartInst.create((Object) this)) : (O) this;
+            O o = this.access().isOne() ? this.access(IdInst.create().domainAndRange(this,this)) : (O) this.access(this.access().domain(this));
             for (final Inst inst : ((Inst) obj).iterable()) {
                 o = o.q(o.q().mult(obj.q())).append(inst);
             }
@@ -358,6 +358,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O is(final Object bool) {
         return this.is((Bool) ObjectHelper.from(bool));
+    }
+
+    public default <O extends Obj> O as(final String label) {
+        return this.label(label);
     }
 
     public default <O extends Obj> O env(final Object symbol) {
