@@ -30,4 +30,5 @@ package org.mmadt.machine.object.model.type.algebra;
 public interface WithAnd<A> {
 
     public A and(final A obj);
+
 }

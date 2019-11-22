@@ -26,9 +26,9 @@ import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
+import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
@@ -351,6 +351,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     }
 
+    public default <O extends Obj> O branch(final Object... branches) {
+        return this.mapTo(BranchInst.create(branches));
+    }
+
     public Bool eq(final Obj object);
 
     public Bool neq(final Obj object);
@@ -358,7 +362,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////////////////////////////////////////////////////////
 
     public default <O extends Obj> O is(final Object bool) {
-        return this.is(ObjectHelper.create(TBool.some(),bool));
+        return this.is(ObjectHelper.create(TBool.some(), bool));
     }
 
     public default <O extends Obj> O as(final String label) {

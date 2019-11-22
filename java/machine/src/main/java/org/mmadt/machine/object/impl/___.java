@@ -23,6 +23,8 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
@@ -74,5 +76,13 @@ public class ___ {
 
     public static Inst zero() {
         return ZeroInst.create();
+    }
+
+    public static Inst id() {
+        return IdInst.create();
+    }
+
+    public static Inst and(final Object... args) {
+        return AndInst.create(args);
     }
 }

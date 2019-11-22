@@ -24,18 +24,13 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.TestUtilities;
-import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TLst;
-import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.util.IteratorUtils;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.start;
+import static org.mmadt.machine.object.impl.___.and;
+import static org.mmadt.machine.object.impl.___.id;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
@@ -48,27 +43,30 @@ final class TBoolTest implements TestUtilities {
 
     @Test
     void testInstanceReferenceType() {
-        Bool instance = TBool.of(true);
-        Bool reference = TBool.of(true, false, true, false);
-        Bool type = TBool.all();
-        this.validateKinds(instance, reference, type);
-        //////
-        instance = TBool.of(false).q(2);
-        reference = TBool.of(true, false, true, false);
-        type = TBool.of().q(1, 45);
-        this.validateKinds(instance, reference, type);
-        //////
-        instance = TBool.of(true).neg();
-        reference = TBool.of(true, false).q(10);
-        type = TBool.some();
-        this.validateKinds(instance, reference, type);
+        validateKinds(TBool.of(true), TBool.of(true, false, true, false), TBool.all());
+        validateKinds(TBool.of(false).q(2), TBool.of(true, false, true, false), TBool.of().q(1, 45));
+        validateKinds(TBool.of(true).neg(), TBool.of(true, false).q(10), TBool.some());
     }
 
     @Test
-    void shouldStreamCorrectly() {
-        assertEquals(TInst.ID(), TBool.of(true).access());
-        assertEquals(TBool.of(true, false, true, false).q(4), TBool.of(true, false, true, false));
-        assertEquals(TLst.of(true, false, true, false).<List<Bool>>get(), IteratorUtils.list(TBool.of(true, false, true, false).iterable().iterator()));
+    void testType() {
+        validateTypes(TBool.some());
+    }
+
+    @Test
+    void testIsA() {
+        validateIsA(TBool.some());
+    }
+
+
+    @Test
+    void testAccess() {
+        assertEquals(objs(true), submit(TBool.of(true)));
+        assertNotEquals(objs(false), submit(TBool.of(true)));
+        assertNotEquals(objs(true, false), submit(TBool.of(true, false).branch(id(), id())));
+        assertEquals(objs(true, true, false, false), submit(TBool.of(true, true, false, false)));
+        assertEquals(objs(true, true, false, false), submit(TBool.of(true, false).branch(id(), id())));
+        assertEquals(objs(), submit(TBool.of(true, false).branch(id(), id()).is(and(false)).id().id()));
     }
 
     @Test
@@ -96,16 +94,5 @@ final class TBoolTest implements TestUtilities {
         assertEquals("(true{*}~x|false~y)~z", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).label("z").toString());
         assertEquals("(true{*}~x|false~y){?}", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).q(qmark).toString());
         assertTrue(TBool.of(true).q(star).or(TBool.of(false)).isType());
-    }
-
-    @Test
-    void shouldAccessCorrectly() {
-        final Bool bool = TBool.of(true, true, false);
-        assertEquals(TInst.of(Tokens.START, true, true, false), bool.access());
-        assertEquals(TBool.of(true), bool.iterable().iterator().next());
-        assertEquals(start(true, true, false).plus(true).bytecode(), bool.plus(TBool.of(true)).access());
-        // assertEquals(plus(true).bytecode(), bool.plus(TBool.of(true)).access());
-        assertEquals(start(true, true, false).mult(true).bytecode(), bool.mult(TBool.of(true)).access());
-        // assertEquals(mult(true).bytecode(), bool.mult(TBool.of(true)).access());
     }
 }
