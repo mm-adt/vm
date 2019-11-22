@@ -122,35 +122,35 @@ public final class TReal extends TObj implements Real {
     public Bool gt(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.from(this).set(this.java() > real.java()).q(this.q()) :
-                TBool.from(this).mapFrom(GtInst.create(real));
+                TBool.from(this.mapTo(GtInst.create(real)));
     }
 
     @Override
     public Bool gte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.from(this).set(this.java() >= real.java()) :
-                TBool.from(this).mapFrom(GteInst.create(real));
+                TBool.from(this.mapTo(GteInst.create(real)));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Real && this.java().equals(((Real) obj).java())) :
-                TBool.from(this).mapFrom(EqInst.create(obj));
+                TBool.from(this.mapTo(EqInst.create(obj)));
     }
 
     @Override
     public Bool lt(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.from(this).set(this.java() < real.java()).q(this.q()) :
-                TBool.from(this).mapFrom(LtInst.create(real));
+                TBool.from(this.mapTo(LtInst.create(real)));
     }
 
     @Override
     public Bool lte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 TBool.from(this).set(this.java() <= real.java()).q(this.q()) :
-                TBool.from(this).mapFrom(LteInst.create(real));
+                TBool.from(this.mapTo(LteInst.create(real)));
     }
 
     @Override

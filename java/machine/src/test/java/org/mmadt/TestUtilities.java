@@ -70,7 +70,20 @@ public interface TestUtilities {
                 assertNotEquals(o.symbol(), obj.symbol());
             }
         }
-        assertTrue(TObj.all().test(obj));
+        assertTrue(obj.access().isOne());
+        assertTrue(obj.a(TObj.all()).java());
+    }
+
+    public default void validateIsA(final Obj obj) {
+        final List<Obj> list = List.of(TBool.of(true), TInt.of(1), TReal.of(1.0), TStr.of("a"), TLst.of("a", 1), TRec.of("a", 1));
+        for (final Obj o : list) {
+            if (obj.getClass().equals(o.getClass())) {
+                assertTrue(o.a(obj).java());
+            } else {
+                assertFalse(o.a(obj).java());
+            }
+        }
+        assertTrue(obj.a(obj).java());
     }
 
     public default void validateKinds(final Obj instance, final Obj reference, final Obj type) {

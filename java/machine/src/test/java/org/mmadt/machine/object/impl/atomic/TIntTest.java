@@ -24,12 +24,9 @@ package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.TestUtilities;
-import org.mmadt.machine.object.model.atomic.Int;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.gte;
 import static org.mmadt.machine.object.impl.___.lt;
@@ -43,15 +40,8 @@ final class TIntTest implements TestUtilities {
 
     @Test
     void testInstanceReferenceType() {
-        Int instance = TInt.of(23);
-        Int reference = TInt.of(1, 2).plus(TInt.of(2)).minus(TInt.of(7));
-        Int type = TInt.some();
-        validateKinds(instance, reference, type);
-        //////
-        instance = TInt.of(4).q(2);
-        reference = TInt.of(23, 56, 11);
-        type = TInt.of().q(45);
-        validateKinds(instance, reference, type);
+        validateKinds(TInt.of(23), TInt.of(1, 2).plus(TInt.of(2)).minus(TInt.of(7)), TInt.some());
+        validateKinds(TInt.of(4).q(2), TInt.of(23, 56, 11), TInt.of().q(45));
     }
 
     @Test
@@ -61,8 +51,7 @@ final class TIntTest implements TestUtilities {
 
     @Test
     void testIsA() {
-        assertTrue(TInt.some().test(TInt.of(32)));
-        assertFalse(TInt.some().test(TReal.of(43.0f)));
+        validateIsA(TInt.some());
     }
 
     @Test

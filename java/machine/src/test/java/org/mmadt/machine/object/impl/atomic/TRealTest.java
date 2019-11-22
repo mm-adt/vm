@@ -23,38 +23,45 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.impl.util.TestHelper;
-import org.mmadt.machine.object.model.atomic.Real;
-import org.mmadt.util.IteratorUtils;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mmadt.machine.object.impl.___.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRealTest {
+class TRealTest implements TestUtilities {
 
     @Test
     void testInstanceReferenceType() {
-        Real instance = TReal.of(23.4f);
-        Real reference = TReal.of(1.46f,13.02f).plus(TReal.of(2.0f)).div(TReal.of(1.4f));
-        Real type = TReal.some();
-        TestHelper.validateKinds(instance, reference, type);
-        //////
-        instance = TReal.of(41.3f).q(2);
-        reference = TReal.of(23.0f, 56.0f, 11.0f);
-        type = TReal.of().q(1,45);
-        TestHelper.validateKinds(instance, reference, type);
+        validateKinds(TReal.of(23.4f), TReal.of(1.46f, 13.02f).plus(TReal.of(2.0f)).div(TReal.of(1.4f)), TReal.some());
+        TestHelper.validateKinds(TReal.of(41.3f).q(2), TReal.of(23.0f, 56.0f, 11.0f), TReal.of().q(1, 45));
     }
 
     @Test
-    void shouldStreamCorrectly() {
-        assertEquals(TInst.ID(), TReal.of(1.0f).access());
-        assertEquals(TReal.of(1.0f, 2.0f, 3.0f, 4.0f).q(4), TReal.of(1.0f, 2.0f, 3.0f, 4.0f));
-        assertEquals(TLst.of(1.0f, 2.0f, 3.0f, 4.0f).<List<Real>>get(), IteratorUtils.list(TReal.of(1.0f, 2.0f, 3.0f, 4.0f).iterable().iterator()));
+    void testType() {
+        validateTypes(TReal.some());
+    }
+
+    @Test
+    void testIsA() {
+        validateIsA(TReal.some());
+    }
+
+    @Test
+    void testAccess() {
+        assertEquals(objs(1.0f, 2.0f, 3.0f, 4.0f), submit(TReal.of(1.0f, 2.0f, 3.0f, 4.0f)));
+        assertEquals(objs(1.1f), submit(TReal.of(1.1f)));
+        assertEquals(List.of(TReal.of(1.1f).q(2)), submit(TReal.of(1.1f).mult(1.0f).q(2)));
+        assertNotEquals(objs(1.1f), submit(TReal.of(2.3f)));
+        assertNotEquals(objs(1), submit(TReal.of(1.0f)));
+        assertEquals(objs(4.2f), submit(TReal.of(1.0f).plus(plus(plus(1.2f)))));
+        assertEquals(objs(4.2f), submit(TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f)));
+        assertEquals(objs(false), submit(TReal.of(1.0f).plus(1.2f).gt(plus(0.1f))));
     }
 }
