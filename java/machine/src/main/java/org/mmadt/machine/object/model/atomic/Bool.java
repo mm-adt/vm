@@ -49,19 +49,4 @@ public interface Bool extends WithCommutativeRing<Bool> {
     public default Iterable<Bool> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
-
-    /////////////////////////////////////// RAW OBJECT METHODS
-
-    public default Bool mult(final Object object) {
-        return this.mult((Bool) ObjectHelper.from(object));
-    }
-
-    public default Bool plus(final Object object) {
-        return this.plus((Bool) ObjectHelper.from(object));
-    }
-
-    public default Bool minus(final Object object) {
-        return this.minus((Bool) ObjectHelper.from(object));
-    }
-
 }

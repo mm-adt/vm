@@ -48,27 +48,4 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
     public default Iterable<Str> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
-
-    /////////////////////////////////////// RAW OBJECT METHODS
-
-    public default Str plus(final Object object) {
-        return this.plus((Str) ObjectHelper.from(object));
-    }
-
-    public default Bool gt(final Object object) {
-        return this.gt((Str) ObjectHelper.from(object));
-    }
-
-    public default Bool gte(final Object object) {
-        return this.gte((Str) ObjectHelper.from(object));
-    }
-
-    public default Bool lte(final Object object) {
-        return this.lte((Str) ObjectHelper.from(object));
-    }
-
-    public default Bool lt(final Object object) {
-        return this.lt((Str) ObjectHelper.from(object));
-    }
-
 }
