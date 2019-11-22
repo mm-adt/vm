@@ -63,7 +63,7 @@ public final class ChooseInst<S extends Obj, E extends Obj> extends TInst implem
         final Map<Inst, List<Inst>> branches = new LinkedHashMap<>();
         for (int i = 0; i < args.size(); i++) {
             final Inst predicate = IsInst.create(AInst.create(args.get(i)));
-            final Inst branch = args.get(i).accessFrom().asInst(false);
+            final Inst branch = args.get(i).access().asInst(false);
             branches.put(predicate, List.of(MapInst.create(branch)));
         }
         return new ChooseInst<>(branches, args.toArray(new Object[]{}));

@@ -65,7 +65,7 @@ class StorTest {
         //
         final Rec<Str, Obj> person = TRec.of("name", TStr.some(), "age", TInt.some());
         final Rec<Str, Obj> people = person.q(star);
-        final Rec<Str, Obj> instances = people.accessFrom(start()).type(people);
+        final Rec<Str, Obj> instances = people.access(start()).type(people);
         storage = new Stor<>(instances);
         assertEquals(people, storage.model().get(Tokens.DB));
         assertEquals(instances, storage.root());

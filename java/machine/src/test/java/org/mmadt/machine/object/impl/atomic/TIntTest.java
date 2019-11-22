@@ -53,9 +53,9 @@ final class TIntTest {
 
     @Test
     void xxx() {
-        // System.out.println(ExplainInst.create(TInt.some().accessFrom(start(3,5,6).plus(2).map(start(2,4,7).is(gt(6)).bytecode()))));
-        // System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().accessFrom(start(3,5,6).plus(2).map(plus(4).plus(mult(1)).count()).count().sum().count()))).iterable()));
-        // System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TStr.some().accessFrom(start("a").branch(id(), id(), id(), id()).plus(id())))).iterable()));
+        // System.out.println(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(start(2,4,7).is(gt(6)).bytecode()))));
+        // System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(mult(1)).count()).count().sum().count()))).iterable()));
+        // System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TStr.some().access(start("a").branch(id(), id(), id(), id()).plus(id())))).iterable()));
         // start(1, 2).plus(7).dedup().count().obj().iterable().forEach(System.out::println);
 
         //start(TInt.some(5)).obj().iterable().forEach(System.out::println);

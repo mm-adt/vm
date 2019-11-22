@@ -138,7 +138,7 @@ public class SimpleParser extends BaseParser<Object> {
     }
 
     /*Rule Stream() {
-        return Sequence(LCURL, Singles(), ZeroOrMore(COMMA,Singles(),swap(),this.push(((Obj)this.peek()).set(null).accessFrom(start(this.pop(),this.pop())))), RCURL);
+        return Sequence(LCURL, Singles(), ZeroOrMore(COMMA,Singles(),swap(),this.push(((Obj)this.peek()).set(null).access(start(this.pop(),this.pop())))), RCURL);
     }*/
 
     Rule Obj() {
@@ -154,7 +154,7 @@ public class SimpleParser extends BaseParser<Object> {
                         Name()),                                                                                        // obj
                 Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                        // {quantifier}
                 ZeroOrMore(Sequence(SUB, Word(), this.push(TStr.of(this.match().trim())), Terminal("->"), Obj(), MAPSFROM, Inst(), swap(),
-                        this.push(type(this.pop()).accessFrom(castToInst(this.pop()))), swap3(), this.push(type(this.pop()).env(type(this.pop()), type(this.pop())))))); // -evn->
+                        this.push(type(this.pop()).access(castToInst(this.pop()))), swap3(), this.push(type(this.pop()).env(type(this.pop()), type(this.pop())))))); // -env->
     }
 
     Rule Lst() {

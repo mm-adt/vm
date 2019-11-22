@@ -102,7 +102,7 @@ public final class BytecodeHelper {
     /*public static Inst apply(final Obj source, final Inst inst) {
         Inst inst2 = IdInst.create().domainAndRange(source, source);
         if (null != inst && !inst.<Inst>peek().opcode().java().equals(Tokens.ID)) {
-            Obj domain = source.accessFrom((Inst) null);
+            Obj domain = source.access((Inst) null);
             Obj range;
             for (final Inst i : inst.iterable()) {
                 if (i.args().size() == 1 && i.args().get(0) instanceof Inst) {

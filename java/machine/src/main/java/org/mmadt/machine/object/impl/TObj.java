@@ -114,7 +114,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         for (final Map.Entry<Str, Obj> effect : this.environment.entrySet()) {
             final Obj next = FastProcessor.process(effect.getValue().env(TStr.of("this"), clone)).next();
             next.env().clear();
-            newEnv.put(effect.getKey(), next.accessFrom(effect.getValue().accessFrom()));
+            newEnv.put(effect.getKey(), next.access(effect.getValue().access()));
         }
         clone.environment.putAll(newEnv);
         return (O) clone;
@@ -241,9 +241,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O accessFrom(final Inst access) {
+    public <O extends Obj> O access(final Inst access) {
         final TObj clone = this.clone();
-        clone.types = this.types.accessFrom(access);
+        clone.types = this.types.access(access);
         return (O) clone;
     }
 
@@ -262,8 +262,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public Inst accessFrom() {
-        return this.types.accessFrom(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
+    public Inst access() {
+        return this.types.access(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
     }
 
 

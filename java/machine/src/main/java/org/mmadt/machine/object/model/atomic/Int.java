@@ -45,6 +45,12 @@ public interface Int extends WithOrderedRing<Int> {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 
+    @Override
+    public Int mult(final Int object);
+
+    @Override
+    public Int plus(final Int object);
+
     /////////////////////////////////////// RAW OBJECT METHODS
 
     public default Int mult(final Object object) {

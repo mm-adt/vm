@@ -49,6 +49,6 @@ public final class IsInst<S extends Obj> extends TInst implements FilterInstruct
 
 
     public static <S extends Obj> IsInst<S> isA(final Obj obj) {
-        return IsInst.create(AInst.create(obj.accessFrom(ID())));
+        return IsInst.create(AInst.create(obj.access(ID())));
     }
 }

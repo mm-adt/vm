@@ -35,8 +35,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.mult;
-import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
@@ -68,7 +66,7 @@ final class TBoolTest {
 
     @Test
     void shouldStreamCorrectly() {
-        assertEquals(TInst.ID(), TBool.of(true).accessFrom());
+        assertEquals(TInst.ID(), TBool.of(true).access());
         assertEquals(TBool.of(true, false, true, false).q(4), TBool.of(true, false, true, false));
         assertEquals(TLst.of(true, false, true, false).<List<Bool>>get(), IteratorUtils.list(TBool.of(true, false, true, false).iterable().iterator()));
     }
@@ -103,11 +101,11 @@ final class TBoolTest {
     @Test
     void shouldAccessCorrectly() {
         final Bool bool = TBool.of(true, true, false);
-        assertEquals(TInst.of(Tokens.START, true, true, false), bool.accessFrom());
+        assertEquals(TInst.of(Tokens.START, true, true, false), bool.access());
         assertEquals(TBool.of(true), bool.iterable().iterator().next());
-        assertEquals(start(true, true, false).plus(true).bytecode(), bool.plus(TBool.of(true)).accessFrom());
-        // assertEquals(plus(true).bytecode(), bool.plus(TBool.of(true)).accessFrom());
-        assertEquals(start(true, true, false).mult(true).bytecode(), bool.mult(TBool.of(true)).accessFrom());
-        // assertEquals(mult(true).bytecode(), bool.mult(TBool.of(true)).accessFrom());
+        assertEquals(start(true, true, false).plus(true).bytecode(), bool.plus(TBool.of(true)).access());
+        // assertEquals(plus(true).bytecode(), bool.plus(TBool.of(true)).access());
+        assertEquals(start(true, true, false).mult(true).bytecode(), bool.mult(TBool.of(true)).access());
+        // assertEquals(mult(true).bytecode(), bool.mult(TBool.of(true)).access());
     }
 }

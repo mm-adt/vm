@@ -106,7 +106,7 @@ final class TInstTest {
     void shouldBindAccess() {
         final TRec<Str, Obj> person = TRec.of(
                 "name", TStr.some().label("y"),
-                "age", TInt.of(is(gt(0)))).accessFrom(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("y")))));
+                "age", TInt.of(is(gt(0)))).access(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("y")))));
         final Bindings bindings = new Bindings();
         bindings.put("y", TStr.of("marko"));
         Rec<Str, Obj> marko = person.bind(bindings);
@@ -115,7 +115,7 @@ final class TInstTest {
         assertFalse(marko.isInstance());
         assertTrue(marko.isReference());
         assertFalse(marko.isType());
-        assertEquals(marko.accessFrom(), TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of("marko")))));
+        assertEquals(marko.access(), TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of("marko")))));
         assertNotEquals(person, marko);
         assertEquals(person, person);
         assertEquals(marko, marko);

@@ -100,52 +100,45 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return this.q().constant() ? this.set(0) : this.mapFrom(ZeroInst.create());
+        return this.q().constant() ? this.set(0) : this.mapTo(ZeroInst.create());
     }
 
     @Override
     public Int one() {
-        return this.q().constant() ? this.set(1) : this.mapFrom(OneInst.create());
+        return this.q().constant() ? this.set(1) : this.mapTo(OneInst.create());
     }
 
     @Override
     public Int neg() {
-        return this.isInstance() ? this.set(-this.java()) : this.mapFrom(NegInst.create());
+        return this.isInstance() ? this.set(-this.java()) : this.mapTo(NegInst.create());
     }
 
     @Override
     public Int minus(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 this.set(tryCatch(() -> Math.addExact(this.java(), -integer.java()), Integer.MIN_VALUE)) :
-                this.mapFrom(MinusInst.create(integer));
+                this.mapTo(MinusInst.create(integer));
     }
 
     @Override
     public Int plus(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 this.set(tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
-                this.mapFrom(PlusInst.create(integer));
+                this.mapTo(PlusInst.create(integer));
     }
 
     @Override
     public Int mult(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
-                this.mapFrom(MultInst.create(integer));
-        /*if (this.isInstance()) {
-            if (integer.isInstance())
-                return this.set(tryCatch(() -> Math.multiplyExact(this.java(), integer.java()), Integer.MAX_VALUE));
-            else if (integer.isReference())
-                return MultInst.<Int>create(integer).apply(this);
-        }
-        return this.append(MultInst.create(integer));*/   // TODO: should dereferencing happen like this?
+                this.mapTo(MultInst.create(integer));
     }
 
     @Override
     public Bool gt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() > integer.java()) :
-                TBool.from(this.mapFrom(GtInst.create(integer)));
+                TBool.from(this).mapFrom(GtInst.create(integer));  // TODO: change to mapTo() syntax when test cases changed
     }
 
     @Override

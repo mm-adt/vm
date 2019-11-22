@@ -56,12 +56,13 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
 
     @Override
     public Iterator<S> iterator(final S obj) {
-        final Inst bytecode = obj.accessFrom();
+        final Inst bytecode = obj.access();
         // System.out.println("\nPROCESSING: " + obj);
-        Stream<S> stream = Stream.of(obj.accessFrom(ID()));
+        Stream<S> stream = Stream.of(obj.access(ID()));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof BarrierInstruction)  // two patterns: *-to-* and 1-to-*.
-                stream = IteratorUtils.stream((Iterator<S>) stream.reduce(((BarrierInstruction<S, S>) inst).getInitialValue(), ((BarrierInstruction<S, S>) inst)::apply)).map(x -> (S) ((BarrierInstruction<S, S>) inst).createIterator(x));
+                stream = IteratorUtils.stream(((BarrierInstruction<S, S>) inst).createIterator(
+                        stream.reduce(((BarrierInstruction<S, S>) inst).getInitialValue(), ((BarrierInstruction<S, S>) inst)::apply)));
             else
                 stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());

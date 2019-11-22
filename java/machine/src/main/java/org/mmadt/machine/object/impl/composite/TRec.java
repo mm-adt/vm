@@ -86,7 +86,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
             map.putAll(rec.java());
             return this.set(map);
         } else
-            return this.mapFrom(PlusInst.create(rec));
+            return this.mapTo(PlusInst.create(rec));
     }
 
     @Override
@@ -96,7 +96,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
             rec.java().forEach(map::remove);
             return this.set(map);
         } else
-            return this.mapFrom(MinusInst.create(rec));
+            return this.mapTo(MinusInst.create(rec));
     }
 
     @Override

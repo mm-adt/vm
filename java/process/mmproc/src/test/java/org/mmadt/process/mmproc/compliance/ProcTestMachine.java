@@ -40,7 +40,7 @@ public interface ProcTestMachine extends TestMachine {
         return new Machine() {
             @Override
             public <E extends Obj> Iterator<E> submit(final E obj) {
-                return new ProcProcessor(Map.of()).<E>mint(obj.accessFrom()).iterator((E) TObj.none());
+                return new ProcProcessor(Map.of()).<E>mint(obj.access()).iterator((E) TObj.none());
             }
 
             @Override

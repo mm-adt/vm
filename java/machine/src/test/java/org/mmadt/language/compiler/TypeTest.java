@@ -131,7 +131,7 @@ class TypeTest {
                 .map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> {
                     assumeFalse(tp.ignore);
                     // System.out.println(tp.input.bytecode() + "\n=>" + tp.expected);
-                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(((Obj) tp.input).accessFrom()));
+                    assertEquals(tp.expected, BytecodeHelper.domainRangeNested(((Obj) tp.input).access()));
                 }));
     }
 }

@@ -41,7 +41,7 @@ public final class ExplainInst<S extends Obj> extends TInst implements SideEffec
     @Override
     public void accept(final S obj) {
         System.out.println("EXPLAIN: " + this.args().get(0) + "\n");
-        printInst(0,this.args().get(0).accessFrom());
+        printInst(0,this.args().get(0).access());
 
     }
 

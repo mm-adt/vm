@@ -32,7 +32,6 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.processor.util.FastProcessor;
@@ -68,14 +67,14 @@ class DefiningTest {
     @Test
     void test() {
         Bool stream = TInt.of(1, 2, 3, 4).mult(2).plus(50).gt(34).<Bool>is(true).plus(false);
-        System.out.println(stream);
-        FastProcessor.process(stream).forEachRemaining(System.out::println);
+      //  System.out.println(stream);
+        //FastProcessor.process(stream).forEachRemaining(System.out::println);
 
         // {1,2,3} => int{5} => { }
 
 
-        System.out.println(TInt.of(1, 2, 3).<Int>is(TInt.some().a(TStr.some())).toString());
-        System.out.println(TStr.some().plus("marko").mapFrom(TInt.of(1, 2, 3)).toString());
+        System.out.println(TInt.some().is(TInt.some().gt(2)).toString());
+      //  System.out.println(TStr.some().plus("marko").mapFrom(TInt.of(1, 2, 3)).toString());
 //        FastProcessor.process(obj).forEachRemaining(System.out::println);
 
 
@@ -87,8 +86,8 @@ class DefiningTest {
 
     @Test
     void test2() {
-        final TInt startA = TInt.of(5).env(TStr.of("path"), TLst.of().accessFrom(__.put(0, env("this"))));
-        final TInt startB = TInt.of(6).env(TStr.of("path"), TLst.of().accessFrom(__.put(0, env("this"))));
+        final TInt startA = TInt.of(5).env(TStr.of("path"), TLst.of().access(__.put(0, env("this"))));
+        final TInt startB = TInt.of(6).env(TStr.of("path"), TLst.of().access(__.put(0, env("this"))));
         System.out.println(startA.env());
         System.out.println(startB.env());
         final Obj path = TInt.of(startA, startB).mult(2).plus(50).plus(6).plus(2).<Lst<?>>env("path").plus(TLst.of(1, 2, 3));

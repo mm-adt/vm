@@ -155,8 +155,8 @@ class BindingsTest {
     @Test
     void shouldBindAccess() {
         final Rec type1 = TRec.of("name", TStr.some().label("a"), "age", TInt.some())
-                .accessFrom(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name"))).mult(TInst.of("eq", TStr.some().label("a"))));
-        assertNotEquals(TInst.none(), type1.accessFrom());
+                .access(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name"))).mult(TInst.of("eq", TStr.some().label("a"))));
+        assertNotEquals(TInst.none(), type1.access());
         Rec rec1 = TRec.of("name", "marko", "age", 29);
         assertFalse(type1.constant());
         assertTrue(rec1.constant());
@@ -167,8 +167,8 @@ class BindingsTest {
         final Obj type2 = type1.bind(bindings);
         assertNotEquals(type1, type2);
         assertFalse(type2.constant());
-        assertFalse(type1.accessFrom().constant());
-        assertTrue(type2.accessFrom().constant());
+        assertFalse(type1.access().constant());
+        assertTrue(type2.access().constant());
         type1.match(bindings, rec1);
         assertEquals(type2, type1.bind(bindings));
         assertNotSame(type2, type1.bind(bindings));

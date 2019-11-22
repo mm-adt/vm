@@ -47,9 +47,9 @@ public interface Type extends Cloneable {
 
     public Type label(final String label);
 
-    public Type accessFrom(final Inst access);
+    public Type access(final Inst access);
 
-    public Inst accessFrom();
+    public Inst access();
 
     public Type inst(final Inst instA, final Inst instB);
 

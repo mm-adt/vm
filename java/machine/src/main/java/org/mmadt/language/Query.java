@@ -235,7 +235,7 @@ public final class Query {
     }
 
     public <A extends Obj> A obj() {
-        return (A) this.bytecode.domain().accessFrom(this.bytecode);
+        return (A) this.bytecode.domain().access(this.bytecode);
     }
 
     @Override
@@ -262,7 +262,7 @@ public final class Query {
 
     private Obj arg(final Obj domain, final Object object) {
         final Obj obj = ObjectHelper.from(object);
-        return object instanceof Query ? domain.clone().q(one).accessFrom(((Query) object).bytecode()).accessFrom() : obj;
+        return object instanceof Query ? domain.clone().q(one).access(((Query) object).bytecode()).access() : obj;
     }
 
     private Obj[] args(final Object[] objects) {

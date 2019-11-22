@@ -53,6 +53,6 @@ public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extend
 
     @Override
     public E computeRange(final Obj domain) {
-        return (domain.q().constant() ? domain.q().peek() : domain.q().object().set(null).accessFrom((Inst) null)).q(one); // TODO: garbage
+        return (domain.q().constant() ? domain.q().peek() : domain.q().object().set(null).access((Inst) null)).q(one); // TODO: garbage
     }
 }

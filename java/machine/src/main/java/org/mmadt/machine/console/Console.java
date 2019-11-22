@@ -42,7 +42,7 @@ import org.parboiled.support.ParsingResult;
 public class Console {
 
     static {
-        System.err.close(); // this is only to get around the parboiled illegal accessFrom issues. TODO: write a wrapper to intercept
+        System.err.close(); // this is only to get around the parboiled illegal access issues. TODO: write a wrapper to intercept
     }
 
     private static final String HEADER = "" +
@@ -87,6 +87,7 @@ public class Console {
                     final ParsingResult result = runner.run(line);
                     if (!result.valueStack.isEmpty()) {
                         final Obj obj = (Obj) result.valueStack.pop();
+                        terminal.writer().println("\nExecuting: " + obj);
                         FastProcessor.process(obj).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
                         terminal.flush();
                     }

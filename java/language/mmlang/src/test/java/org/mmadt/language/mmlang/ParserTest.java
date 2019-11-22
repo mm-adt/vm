@@ -113,7 +113,7 @@ class ParserTest {
                     " -> [dedup] => ]]]"),
             new TestArgs("[get,str{2} <= [start,'name','age']]", "[get,(str{2} <= [start,'name','age'])]"),
             new TestArgs("[get,str{2} <= [start,'name','age']]"),
-            /*new TestParameters(true, "[[define,keyvalue,[@obj~k,@obj~v] <= ([key:@obj~k,val:@obj~v] <= [[db][get,kv][is,[[get,key][eq,@obj~k]]]])]]"), // TODO: accessFrom of type TType
+            /*new TestParameters(true, "[[define,keyvalue,[@obj~k,@obj~v] <= ([key:@obj~k,val:@obj~v] <= [[db][get,kv][is,[[get,key][eq,@obj~k]]]])]]"), // TODO: access of type TType
             new TestParameters("[define,ff,[is,@bool]|[filter,@obj?]]"),
             new TestParameters("[define,ff,[is,@bool]]"),
             new TestParameters("[define,db,@int*\n -> [filter,@ff*~a] => ^[@obj~a]]"),

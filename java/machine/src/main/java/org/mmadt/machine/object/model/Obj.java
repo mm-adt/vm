@@ -29,6 +29,7 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
@@ -82,7 +83,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public String label();
 
-    public Inst accessFrom();
+    public Inst access();
 
     public Map<Str, Obj> env();
 
@@ -115,7 +116,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O label(final String variable);
 
-    public <O extends Obj> O accessFrom(final Inst access);
+    public <O extends Obj> O access(final Inst access);
 
     public <O extends Obj> O inst(final Inst instA, final Inst instB);
 
@@ -134,7 +135,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O env(final Str name, final Obj obj);
 
     public default <O extends Obj> O copy(final Obj obj) {
-        return this.q(obj.q()).accessFrom(obj.accessFrom()).env(obj.env());
+        return this.q(obj.q()).access(obj.access()).env(obj.env());
     }
 
     @Override
@@ -143,7 +144,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return bindings.get(this.label());
         return this.insts(null == this.instructions() ? null : this.instructions().bind(bindings)).
                 set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
-                accessFrom(this.accessFrom().isOne() ? null : this.accessFrom().bind(bindings));
+                access(this.access().isOne() ? null : this.access().bind(bindings));
     }
 
     @Override
@@ -238,18 +239,32 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     /////////////// DELETE WHEN PROPERLY MIXED
-    private <O extends Obj> O appendFrom(final Inst inst) {
+    private <O extends Obj> O append(final Inst inst) {
         final Obj range = inst.computeRange(this);
-        return range.accessFrom(this.accessFrom().mult(inst.domainAndRange(this, range)));
+        return range.access(this.access().mult(inst.domainAndRange(this, range)));
     }
     /////////////// DELETE WHEN PROPERLY MIXED
 
     public default <O extends Obj> O mapFrom(final Obj obj) {
         return obj instanceof Inst ?
-                this.appendFrom((Inst) obj) :
                 this instanceof Inst ?
-                        obj.mapFrom(this) :
-                        this.q(this.q().mult(obj.q())).accessFrom(obj.accessFrom()).appendFrom(IsInst.isA(this)).appendFrom(this.accessFrom());
+                        (O) ((Inst) this).mult((Inst) obj) :
+                        this.append((Inst) obj) :
+                this instanceof Inst ?
+                        obj.access(((Inst) this)).append(obj.access()) :
+                        this.q(this.q().mult(obj.q())).access(this.access()).append(IsInst.isA(this)).append(obj.access());
+
+    }
+
+    public default <O extends Obj> O mapTo(final Obj obj) {
+        if (obj instanceof Inst) {
+            O o = this.access().isOne() ? this.append(StartInst.create((Object) this)) : (O) this;
+            for (final Inst inst : ((Inst) obj).iterable()) {
+                o = o.q(o.q().mult(obj.q())).append(inst);
+            }
+            return o;
+        } else
+            return obj.mapFrom(this);
     }
 
     public Obj clone();
@@ -257,19 +272,19 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     //////////////
 
     public default boolean isType() {
-        return !this.constant() && this.accessFrom().isOne();
+        return !this.constant() && this.access().isOne();
     }
 
     public default boolean isReference() {
-        return !this.constant() && !this.accessFrom().isOne();
+        return !this.constant() && !this.access().isOne();
     }
 
     public default boolean isInstance() {
         return this.constant();
     }
 
-    public default <O extends Obj> O accessFrom(final Query access) {
-        return this.accessFrom(access.bytecode());
+    public default <O extends Obj> O access(final Query access) {
+        return this.access(access.bytecode());
     }
 
     public default <O extends Obj> O q(final Q.Tag tag) {
@@ -314,7 +329,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
-                bool.java() ? (O) this : this.q(zero) :
+                bool.java() ? (O) this : this.set(null).q(zero) :
                 this.mapFrom(IsInst.create(bool));
     }
 
@@ -326,8 +341,13 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O sum() {
         return this.isInstance() ?
-                this.set(((WithMult) this).mult(this.q())) :
-                this.mapFrom(SumInst.create());
+                this instanceof Q ?
+                        (O) ((WithMult) this).mult(this.q()) :
+                        (O) new TQ((WithOrderedRing) this).mult(this.q()) :
+                this instanceof Q ?
+                        this.mapFrom(SumInst.create()) :
+                        new TQ((WithOrderedRing) this).mapFrom(SumInst.create());
+
     }
 
     public Bool eq(final Obj object);

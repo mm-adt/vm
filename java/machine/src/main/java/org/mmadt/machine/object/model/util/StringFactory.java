@@ -47,7 +47,6 @@ import static org.mmadt.language.compiler.Tokens.BAR;
 import static org.mmadt.language.compiler.Tokens.COLON;
 import static org.mmadt.language.compiler.Tokens.COMMA;
 import static org.mmadt.language.compiler.Tokens.CROSS;
-import static org.mmadt.language.compiler.Tokens.DASH;
 import static org.mmadt.language.compiler.Tokens.DEFINE;
 import static org.mmadt.language.compiler.Tokens.EMPTY;
 import static org.mmadt.language.compiler.Tokens.LBRACKET;
@@ -58,7 +57,6 @@ import static org.mmadt.language.compiler.Tokens.MAPSTO;
 import static org.mmadt.language.compiler.Tokens.MODEL;
 import static org.mmadt.language.compiler.Tokens.NEWLINE;
 import static org.mmadt.language.compiler.Tokens.QUESTION;
-import static org.mmadt.language.compiler.Tokens.RANGLE;
 import static org.mmadt.language.compiler.Tokens.RBRACKET;
 import static org.mmadt.language.compiler.Tokens.RCURL;
 import static org.mmadt.language.compiler.Tokens.RPAREN;
@@ -96,11 +94,11 @@ public final class StringFactory {
             builder.append(object.q());
         if (null != object.label())
             builder.append(TILDE).append(object.label());
-        if (!object.accessFrom().isOne()) {
+        if (!object.access().isOne()) {
             builder.append(SPACE).append(MAPSFROM);
-            if (!object.accessFrom().modelMap())
+            if (!object.access().modelMap())
                 builder.append(SPACE);
-            builder.append(object.accessFrom());
+            builder.append(object.access());
         }
         if (null != object.instructions()) {
             builder.append(NEWLINE);
@@ -228,6 +226,7 @@ public final class StringFactory {
             for (Inst single : inst.iterable()) {
                 if (!single.isZero()) {
                     boolean first = true;
+                    // TODO:  this shows the intermediate domain between insts: builder.append(nestedObject(single.domain().access((Inst)null)));
                     builder.append(LBRACKET);
                     if (single.opcode().get().equals(DEFINE))
                         builder.append(DEFINE).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));

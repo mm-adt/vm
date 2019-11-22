@@ -77,45 +77,45 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return this.q().constant() ? super.set(1.0f) : this.mapFrom(OneInst.create()); // no need to check -0.0
+        return this.q().constant() ? super.set(1.0f) : this.mapTo(OneInst.create()); // no need to check -0.0
     }
 
     @Override
     public Real zero() {
-        return this.q().constant() ? super.set(0.0f) : this.mapFrom(ZeroInst.create()); // no need to check -0.0
+        return this.q().constant() ? super.set(0.0f) : this.mapTo(ZeroInst.create()); // no need to check -0.0
     }
 
     @Override
     public Real neg() {
-        return this.isInstance() ? this.set(-this.java()) : this.mapFrom(NegInst.create());
+        return this.isInstance() ? this.set(-this.java()) : this.mapTo(NegInst.create());
     }
 
     @Override
     public Real minus(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 this.set(this.java() - real.java()) :
-                this.mapFrom(MinusInst.create(real));
+                this.mapTo(MinusInst.create(real));
     }
 
     @Override
     public Real plus(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 this.set(this.java() + real.java()) :
-                this.mapFrom(PlusInst.create(real));
+                this.mapTo(PlusInst.create(real));
     }
 
     @Override
     public Real mult(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 this.set(this.java() * real.java()) :
-                this.mapFrom(MultInst.create(real));
+                this.mapTo(MultInst.create(real));
     }
 
     @Override
     public Real div(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
                 this.set(this.java() / real.java()) :
-                this.mapFrom(DivInst.create(real));
+                this.mapTo(DivInst.create(real));
     }
 
     @Override
@@ -155,7 +155,7 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real inv() {
-        return this.isInstance() ? super.set(1.0f / this.java()) : this.mapFrom(NegInst.create()); // no need to check -0.0
+        return this.isInstance() ? super.set(1.0f / this.java()) : this.mapTo(NegInst.create()); // no need to check -0.0
     }
 
     @Override
