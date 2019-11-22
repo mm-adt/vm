@@ -23,10 +23,10 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.TestUtilities;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
-import org.mmadt.machine.object.impl.util.TestHelper;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.util.IteratorUtils;
 
@@ -44,24 +44,24 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class TBoolTest {
+final class TBoolTest implements TestUtilities {
 
     @Test
     void testInstanceReferenceType() {
         Bool instance = TBool.of(true);
         Bool reference = TBool.of(true, false, true, false);
         Bool type = TBool.all();
-        TestHelper.validateKinds(instance, reference, type);
+        this.validateKinds(instance, reference, type);
         //////
         instance = TBool.of(false).q(2);
         reference = TBool.of(true, false, true, false);
         type = TBool.of().q(1, 45);
-        TestHelper.validateKinds(instance, reference, type);
+        this.validateKinds(instance, reference, type);
         //////
         instance = TBool.of(true).neg();
         reference = TBool.of(true, false).q(10);
         type = TBool.some();
-        TestHelper.validateKinds(instance, reference, type);
+        this.validateKinds(instance, reference, type);
     }
 
     @Test

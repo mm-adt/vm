@@ -138,35 +138,35 @@ public final class TInt extends TObj implements Int {
     public Bool gt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() > integer.java()) :
-                TBool.from(this.mapFrom(GtInst.create(integer)));  // TODO: change to mapTo() syntax when test cases changed
+                TBool.from(this.mapTo(GtInst.create(integer)));
     }
 
     @Override
     public Bool gte(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() >= integer.java()) :
-                TBool.from(this).mapFrom(GteInst.create(integer));
+                TBool.from(this.mapTo(GteInst.create(integer)));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.from(this).set(obj instanceof Int && this.java().equals(((Int) obj).java())) :
-                TBool.from(this).mapFrom(EqInst.create(obj));
+                TBool.from(this.mapTo(EqInst.create(obj)));
     }
 
     @Override
     public Bool lt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() < integer.java()) :
-                TBool.from(this).mapFrom(LtInst.create(integer));
+                TBool.from(this.mapTo(LtInst.create(integer)));
     }
 
     @Override
     public Bool lte(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() <= integer.java()) :
-                TBool.from(this).mapFrom(LteInst.create(integer));
+                TBool.from(this.mapTo(LteInst.create(integer)));
     }
 
     ///// HELPER METHODS

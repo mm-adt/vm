@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
@@ -47,40 +46,34 @@ public interface Int extends WithOrderedRing<Int> {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 
-    @Override
-    public Int mult(final Int object);
-
-    @Override
-    public Int plus(final Int object);
-
     /////////////////////////////////////// RAW OBJECT METHODS
 
     public default Int mult(final Object object) {
-        return this.mult((Int) ObjectHelper.from(object));
+        return this.mult(ObjectHelper.create(TInt.some(), object));
     }
 
     public default Int plus(final Object object) {
-        return this.plus((Int) ObjectHelper.from(object));
+        return this.plus(ObjectHelper.create(TInt.some(), object));
     }
 
     public default Int minus(final Object object) {
-        return this.minus((Int) ObjectHelper.from(object));
+        return this.minus(ObjectHelper.create(TInt.some(), object));
     }
 
     public default Bool gt(final Object object) {
-        return object instanceof Inst ? this.gt(TInt.some().access((Inst) object)) : this.gt((Int) ObjectHelper.from(object));
+        return this.gt(ObjectHelper.create(TInt.some(), object));
     }
 
     public default Bool gte(final Object object) {
-        return this.gte((Int) ObjectHelper.from(object));
+        return this.gte(ObjectHelper.create(TInt.some(), object));
     }
 
     public default Bool lte(final Object object) {
-        return this.lte((Int) ObjectHelper.from(object));
+        return this.lte(ObjectHelper.create(TInt.some(), object));
     }
 
     public default Bool lt(final Object object) {
-        return this.lt((Int) ObjectHelper.from(object));
+        return this.lt(ObjectHelper.create(TInt.some(), object));
     }
 
 }

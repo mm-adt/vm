@@ -23,7 +23,12 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -37,7 +42,27 @@ public class ___ {
         return TBool.some().access(GtInst.create(object));
     }
 
+    public static Bool gte(final Object object) {
+        return TBool.some().access(GteInst.create(object));
+    }
+
+    public static Bool eq(final Object object) {
+        return TBool.some().access(EqInst.create(object));
+    }
+
+    public static Bool lte(final Object object) {
+        return TBool.some().access(LteInst.create(object));
+    }
+
+    public static Bool lt(final Object object) {
+        return TBool.some().access(LtInst.create(object));
+    }
+
     public static Inst plus(final Object object) {
         return PlusInst.create(object);
+    }
+
+    public static Inst mult(final Object object) {
+        return MultInst.create(object);
     }
 }

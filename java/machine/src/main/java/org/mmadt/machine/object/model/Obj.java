@@ -25,6 +25,8 @@ package org.mmadt.machine.object.model;
 import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
@@ -356,7 +358,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////////////////////////////////////////////////////////
 
     public default <O extends Obj> O is(final Object bool) {
-        return this.is((Bool) ObjectHelper.from(bool));
+        return this.is(ObjectHelper.create(TBool.some(),bool));
     }
 
     public default <O extends Obj> O as(final String label) {

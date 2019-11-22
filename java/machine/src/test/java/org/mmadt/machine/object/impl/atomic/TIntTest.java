@@ -23,51 +23,62 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.___;
-import org.mmadt.machine.object.impl.util.TestHelper;
+import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.processor.util.FastProcessor;
-import org.mmadt.util.IteratorUtils;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.machine.object.impl.___.gt;
+import static org.mmadt.machine.object.impl.___.gte;
+import static org.mmadt.machine.object.impl.___.lt;
+import static org.mmadt.machine.object.impl.___.lte;
+import static org.mmadt.machine.object.impl.___.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class TIntTest {
+final class TIntTest implements TestUtilities {
 
     @Test
     void testInstanceReferenceType() {
         Int instance = TInt.of(23);
         Int reference = TInt.of(1, 2).plus(TInt.of(2)).minus(TInt.of(7));
         Int type = TInt.some();
-        TestHelper.validateKinds(instance, reference, type);
+        validateKinds(instance, reference, type);
         //////
         instance = TInt.of(4).q(2);
         reference = TInt.of(23, 56, 11);
         type = TInt.of().q(45);
-        TestHelper.validateKinds(instance, reference, type);
+        validateKinds(instance, reference, type);
     }
 
     @Test
-    void testBasicEqualities() {
+    void testType() {
+        validateTypes(TInt.some());
+    }
+
+    @Test
+    void testIsA() {
         assertTrue(TInt.some().test(TInt.of(32)));
         assertFalse(TInt.some().test(TReal.of(43.0f)));
-        assertTrue(TObj.all().test(TInt.of(-1)));
-        assertNotEquals(TInt.some(), TBool.some());
-        assertNotEquals(TInt.some(), TStr.some());
     }
 
     @Test
     void testAccess() {
-        assertEquals(List.of(TInt.of(50)), IteratorUtils.list(TInt.of(1).plus(4).mult(10).iterable()));
-        assertEquals(List.of(TInt.of(50)), IteratorUtils.list(FastProcessor.process(TInt.of(1).plus(4).mult(10).is(___.gt(___.plus(-50))))));
-        assertEquals(List.of(TBool.of(true)), IteratorUtils.list(FastProcessor.process(TInt.of(1).plus(4).mult(10).gt(___.plus(-50)))));
+        assertEquals(objs(1), submit(TInt.of(1)));
+        assertNotEquals(objs(1.0), submit(TInt.of(1)));
+        assertEquals(objs(4), submit(TInt.of(1).plus(plus(plus(1)))));
+        assertEquals(objs(50), submit(TInt.of(1).plus(4).mult(10)));
+        assertEquals(objs(50), submit(TInt.of(1).plus(4).mult(10).is(gt(plus(-50)))));
+        assertEquals(objs(true), submit(TInt.of(1).plus(4).mult(10).gt(plus(-50))));
+        assertEquals(objs(true), submit(TInt.of(1).plus(4).mult(10).gt(plus(plus(-60)))));
+        assertEquals(objs(49, 50), submit(TInt.of(49, 50).is(gt(plus(-1)))));
+        assertEquals(objs(49, 50), submit(TInt.of(49, 50).is(gte(plus(-1)))));
+        assertEquals(objs(), submit(TInt.of(49, 50).is(lt(plus(-1)))));
+        assertEquals(objs(49, 50), submit(TInt.of(49, 50).is(lt(plus(1)))));
+        assertEquals(objs(49, 50), submit(TInt.of(49, 50).is(lte(plus(1)))));
+        assertEquals(objs(), submit(TInt.of(49, 50).is(gt(plus(1)))));
     }
 }

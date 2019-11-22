@@ -33,6 +33,7 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PAnd;
@@ -65,6 +66,10 @@ public final class ObjectHelper {
 
     private ObjectHelper() {
         // static helper class
+    }
+
+    public static <O extends Obj> O create(final O obj, final Object object) {
+        return object instanceof Inst ? obj.access((Inst) object) : (O) ObjectHelper.from(object);
     }
 
     public static <O extends Obj> O make(final Function<Object, O> constructor, final Object... objects) {

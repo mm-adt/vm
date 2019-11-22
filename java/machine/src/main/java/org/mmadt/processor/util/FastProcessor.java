@@ -57,8 +57,8 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
     @Override
     public Iterator<S> iterator(final S obj) {
         final Inst bytecode = obj.access();
-        // System.out.println("\nPROCESSING: " + obj);
-        Stream<S> stream = Stream.of((S)obj.access().domain().access(ID()));
+        if (bytecode.isOne()) return IteratorUtils.of(obj);
+        Stream<S> stream = Stream.of((S) obj.access().domain().access(ID()));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof BarrierInstruction)  // two patterns: *-to-* and 1-to-*.
                 stream = IteratorUtils.stream(((BarrierInstruction<S, S>) inst).createIterator(
