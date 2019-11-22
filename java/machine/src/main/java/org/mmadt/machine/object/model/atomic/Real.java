@@ -46,33 +46,4 @@ public interface Real extends WithField<Real> {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 
-    /////////////////////////////////////// RAW OBJECT METHODS  (TODO: this can all be added to super interfaces given TXXX.some() can be accessed)
-
-    public default Real mult(final Object object) {
-        return this.mult(ObjectHelper.create(TReal.some(), object));
-    }
-
-    public default Real plus(final Object object) {
-        return this.plus(ObjectHelper.create(TReal.some(), object));
-    }
-
-    public default Real minus(final Object object) {
-        return this.minus(ObjectHelper.create(TReal.some(), object));
-    }
-
-    public default Bool gt(final Object object) {
-        return this.gt(ObjectHelper.create(TReal.some(), object));
-    }
-
-    public default Bool gte(final Object object) {
-        return this.gte(ObjectHelper.create(TReal.some(), object));
-    }
-
-    public default Bool lte(final Object object) {
-        return this.lte(ObjectHelper.create(TReal.some(), object));
-    }
-
-    public default Bool lt(final Object object) {
-        return this.lt(ObjectHelper.create(TReal.some(), object));
-    }
 }

@@ -50,12 +50,12 @@ class WithRingTest {
             TInt.of(1),
             TBool.of(true));
 
-    static void validate(final WithRing ring) {
+    static <A extends WithRing<A>> void validate(final A ring) {
         WithGroupPlusTest.validate(ring);
         //
-        final WithRing two = ring.plus(ring.one());
-        final WithRing three = ring.plus(ring.one()).plus(ring.one());
-        final WithRing four = ring.plus(ring.one()).plus(ring.one()).plus(ring.one());
+        final A two = ring.plus(ring.one());
+        final A three = ring.plus(ring.one()).plus(ring.one());
+        final A four = ring.plus(ring.one()).plus(ring.one()).plus(ring.one());
         assertTrue(ring.isOne());
         assertFalse(ring.isZero());
         assertTrue(ring.one().isOne());
@@ -91,7 +91,7 @@ class WithRingTest {
         // a - a = 0
         assertEquals(ring.zero(), ring.one().minus(ring.one()));
         // 1 = 3a - 2a
-         assertEquals(ring.one(), three.minus(two));
+        assertEquals(ring.one(), three.minus(two));
         // a * (b + c) = (a * b) + (a * c)
         assertEquals(two.mult(three.plus(four)), (two.mult(three)).plus(two.mult(four)));
         // (a + b) * c = (a * c) + (b * c)

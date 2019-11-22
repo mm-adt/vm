@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.type.algebra;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports *.
@@ -32,4 +33,8 @@ import org.mmadt.machine.object.model.Obj;
 public interface WithMult<A extends WithMult<A>> extends Obj {
 
     public A mult(final A object);
+
+    public default A mult(final Object object) {
+        return this.mult(ObjectHelper.create(this.set(null), object));
+    }
 }

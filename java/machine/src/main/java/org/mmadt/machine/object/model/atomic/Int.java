@@ -22,9 +22,7 @@
 
 package org.mmadt.machine.object.model.atomic;
 
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -44,36 +42,6 @@ public interface Int extends WithOrderedRing<Int> {
     @Override
     public default Iterable<Int> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
-    }
-
-    /////////////////////////////////////// RAW OBJECT METHODS
-
-    public default Int mult(final Object object) {
-        return this.mult(ObjectHelper.create(TInt.some(), object));
-    }
-
-    public default Int plus(final Object object) {
-        return this.plus(ObjectHelper.create(TInt.some(), object));
-    }
-
-    public default Int minus(final Object object) {
-        return this.minus(ObjectHelper.create(TInt.some(), object));
-    }
-
-    public default Bool gt(final Object object) {
-        return this.gt(ObjectHelper.create(TInt.some(), object));
-    }
-
-    public default Bool gte(final Object object) {
-        return this.gte(ObjectHelper.create(TInt.some(), object));
-    }
-
-    public default Bool lte(final Object object) {
-        return this.lte(ObjectHelper.create(TInt.some(), object));
-    }
-
-    public default Bool lt(final Object object) {
-        return this.lt(ObjectHelper.create(TInt.some(), object));
     }
 
 }

@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.type.algebra;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports -.
@@ -34,4 +35,8 @@ public interface WithMinus<A extends WithMinus<A>> extends Obj {
     public A minus(final A object);
 
     public A neg();
+
+    public default A minus(final Object object) {
+        return this.minus(ObjectHelper.create(this.set(null), object));
+    }
 }

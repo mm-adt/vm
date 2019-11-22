@@ -29,6 +29,4 @@ package org.mmadt.machine.object.model.type.algebra;
  */
 public interface WithCommutativePlus<A extends WithCommutativePlus<A>> extends WithPlus<A> {
 
-    @Override
-    public A plus(final A a);
 }

@@ -30,12 +30,6 @@ package org.mmadt.machine.object.model.type.algebra;
 public interface WithGroupMult<A extends WithGroupMult<A>> extends WithMonoidMult<A>, WithDiv<A> {
 
     @Override
-    public A one();
-
-    @Override
-    public A mult(final A object);
-
-    @Override
     public A inv();
 
     @Override

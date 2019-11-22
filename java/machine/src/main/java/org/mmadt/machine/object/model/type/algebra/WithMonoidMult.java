@@ -27,10 +27,4 @@ package org.mmadt.machine.object.model.type.algebra;
  */
 public interface WithMonoidMult<A extends WithMonoidMult<A>> extends WithSemigroupMult<A>, WithOne<A> {
 
-    @Override
-    public A one();
-
-    @Override
-    public A mult(final A object);
-
 }

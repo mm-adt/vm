@@ -29,21 +29,5 @@ package org.mmadt.machine.object.model.type.algebra;
  */
 public interface WithRng<A extends WithRng<A>> extends WithGroupPlus<A>, WithCommutativePlus<A>, WithMonoidMult<A> {
 
-    @Override
-    public A zero();
-
-    @Override
-    public A mult(final A object);
-
-    @Override
-    public A plus(final A object);
-
-    @Override
-    public default A minus(final A object) {
-        return this.plus(object.neg());
-    }
-
-    @Override
-    public A neg();
 
 }

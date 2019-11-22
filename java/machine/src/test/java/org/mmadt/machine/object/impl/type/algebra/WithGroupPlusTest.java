@@ -36,8 +36,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 
-import static org.mmadt.util.IteratorUtils.list;
-
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -45,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.util.IteratorUtils.list;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -77,10 +76,10 @@ class WithGroupPlusTest {
 
     }
 
-    static void testInstances(final WithGroupPlus group) {
-        final WithGroupPlus two = group.plus(group);
-        final WithGroupPlus three = group.plus(group).plus(group);
-        final WithGroupPlus four = group.plus(group).plus(group).plus(group);
+    static <A extends WithGroupPlus<A>> void testInstances(final A group) {
+        final A two = group.plus(group);
+        final A three = group.plus(group).plus(group);
+        final A four = group.plus(group).plus(group).plus(group);
         assertFalse(group.isZero());
         assertTrue(group.zero().isZero());
         assertNotEquals(group, group.zero());
@@ -107,9 +106,9 @@ class WithGroupPlusTest {
         assertEquals(three.neg(), group.zero().minus(three));
     }
 
-    static void testReferences(final WithGroupPlus group) {
-        WithGroupPlus running = group;
-        WithGroupPlus second = group;
+    static <A extends WithGroupPlus<A>> void testReferences(final A group) {
+        A running = group;
+        A second = group;
         for (int i = 0; i < 10; i++) {
 //            assertEquals(ObjSet.create(running.access(running.access().mult(ZeroInst.create()).mult(NegInst.create()))), ObjSet.create(second.zero().neg()));
             assertEquals(running.access(running.access().mult(MinusInst.create(group))), second.minus(group));

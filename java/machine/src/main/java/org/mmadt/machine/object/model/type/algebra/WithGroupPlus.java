@@ -30,12 +30,6 @@ package org.mmadt.machine.object.model.type.algebra;
 public interface WithGroupPlus<A extends WithGroupPlus<A>> extends WithMonoidPlus<A>, WithMinus<A> {
 
     @Override
-    public A zero();
-
-    @Override
-    public A plus(final A object);
-
-    @Override
     public A neg();
 
     @Override

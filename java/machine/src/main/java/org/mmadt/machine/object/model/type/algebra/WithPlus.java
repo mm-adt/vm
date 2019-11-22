@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.type.algebra;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports +.
@@ -32,4 +33,8 @@ import org.mmadt.machine.object.model.Obj;
 public interface WithPlus<A extends WithPlus<A>> extends Obj {
 
     public A plus(final A object);
+
+    public default A plus(final Object object) {
+        return this.plus(ObjectHelper.create(this.set(null), object));
+    }
 }

@@ -29,10 +29,4 @@ package org.mmadt.machine.object.model.type.algebra;
  */
 public interface WithMonoidPlus<A extends WithMonoidPlus<A>> extends WithSemigroupPlus<A>, WithZero<A> {
 
-    @Override
-    public A zero();
-
-    @Override
-    public A plus(final A object);
-
 }

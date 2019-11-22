@@ -74,10 +74,10 @@ class WithMonoidPlusTest {
     }
 
 
-    static void testInstances(final WithMonoidPlus monoid) {
-        final WithMonoidPlus two = monoid.plus(monoid);
-        final WithMonoidPlus three = two.plus(monoid);
-        final WithMonoidPlus four = three.plus(monoid);
+    static <A extends WithMonoidPlus<A>> void testInstances(final A monoid) {
+        final A two = monoid.plus(monoid);
+        final A three = two.plus(monoid);
+        final A four = three.plus(monoid);
         assertFalse(monoid.isZero());
         assertTrue(monoid.zero().isZero());
         assertNotEquals(monoid, monoid.zero());
@@ -91,9 +91,9 @@ class WithMonoidPlusTest {
         assertEquals(two.plus(three).plus(four), two.plus(three.plus(four)));
     }
 
-    static void testReferences(final WithMonoidPlus monoid) {
-        WithMonoidPlus running = monoid;
-        WithMonoidPlus second = monoid;
+    static <A extends WithMonoidPlus<A>> void testReferences(final A monoid) {
+        A running = monoid;
+        A second = monoid;
         // assertFalse(monoid.isZero()); // TODO: Why?
         for (int i = 0; i < 10; i++) {
             // assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO))), second.zero());

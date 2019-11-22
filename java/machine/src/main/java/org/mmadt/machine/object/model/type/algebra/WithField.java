@@ -27,33 +27,6 @@ package org.mmadt.machine.object.model.type.algebra;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithField<A extends WithField<A>> extends WithOrderedRing<A>, WithGroupMult<A> {
+public interface WithField<A extends WithField<A>> extends WithOrderedRing<A>, WithGroupMult<A>, WithGroupPlus<A> {
 
-    @Override
-    public A one();
-
-    @Override
-    public A zero();
-
-    @Override
-    public A mult(final A object);
-
-    @Override
-    public A plus(final A object);
-
-    @Override
-    public default A minus(final A object) {
-        return this.plus(object.neg());
-    }
-
-    @Override
-    public A neg();
-
-    @Override
-    public default A div(final A object) {
-        return this.mult(object.inv());
-    }
-
-    @Override
-    public A inv();
 }

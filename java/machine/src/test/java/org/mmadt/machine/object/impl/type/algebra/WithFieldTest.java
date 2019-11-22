@@ -42,12 +42,12 @@ class WithFieldTest {
 
     private static final List<WithField> TEST_ARGS = List.of(TReal.of(1.0f));
 
-    private static void validate(final WithField field) {
+    private static <A extends WithField<A>> void validate(final A field) {
         WithRingTest.validate(field);
         //
-        final WithField two = field.plus(field.one());
-        final WithField three = field.plus(field.one()).plus(field.one());
-        final WithField four = field.plus(field.one()).plus(field.one()).plus(field.one());
+        final A two = field.plus(field.one());
+        final A three = field.plus(field.one()).plus(field.one());
+        final A four = field.plus(field.one()).plus(field.one()).plus(field.one());
         assertTrue(field.isOne());
         assertFalse(field.isZero());
         assertTrue(field.one().isOne());
