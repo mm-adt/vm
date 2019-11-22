@@ -23,22 +23,16 @@
 package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.language.__;
 import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.processor.util.FastProcessor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.env;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
@@ -62,25 +56,5 @@ class DefiningTest {
         assertEquals(TRec.of("name", TStr.some(), "age", TInt.some()).symbol("person"), model.<Obj>get("person"));
         final Inst qInst = TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("get", "name")).mult(TInst.of("is", TInst.of("eq", "marko")));
         RewritingTest.verifyTyping(Rewriting.rewrite(model, qInst));
-    }
-
-    @Test
-    void test() {
-        Bool stream = TInt.of(1, 2, 3, 4).mult(2).plus(50).gt(34).<Bool>is(true).plus(false);
-      //  System.out.println(stream);
-        //FastProcessor.process(stream).forEachRemaining(System.out::println);
-
-        // {1,2,3} => int{5} => { }
-
-
-        System.out.println(TInt.some().is(TInt.some().gt(2)).toString());
-      //  System.out.println(TStr.some().plus("marko").mapFrom(TInt.of(1, 2, 3)).toString());
-//        FastProcessor.process(obj).forEachRemaining(System.out::println);
-
-
-        ////
-
-        //System.out.println(TInt.of(1,2,3).mapFrom(PlusInst.create(34)).mapTo(MultInst.create(22)).toString());
-
     }
 }

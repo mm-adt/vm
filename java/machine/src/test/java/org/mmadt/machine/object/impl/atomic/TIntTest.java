@@ -23,49 +23,24 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
-import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
-import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
+import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.util.TestHelper;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.IteratorUtils;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.eq;
-import static org.mmadt.language.__.gt;
-import static org.mmadt.language.__.id;
-import static org.mmadt.language.__.lt;
-import static org.mmadt.language.__.mult;
-import static org.mmadt.language.__.or;
-import static org.mmadt.language.__.plus;
-import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 final class TIntTest {
-
-    @Test
-    void xxx() {
-        // System.out.println(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(start(2,4,7).is(gt(6)).bytecode()))));
-        // System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TInt.some().access(start(3,5,6).plus(2).map(plus(4).plus(mult(1)).count()).count().sum().count()))).iterable()));
-        // System.out.println(IteratorUtils.list(TInt.some().append(ExplainInst.create(TStr.some().access(start("a").branch(id(), id(), id(), id()).plus(id())))).iterable()));
-        // start(1, 2).plus(7).dedup().count().obj().iterable().forEach(System.out::println);
-
-        //start(TInt.some(5)).obj().iterable().forEach(System.out::println);
-        //start(TInt.some(5)).plus(3).obj().iterable().forEach(System.out::println);
-        //start(TInt.some(5)).plus(3).gt(50).obj().iterable().forEach(System.out::println);
-       System.out.println(start(TInt.of(175)).plus(id()).mult(2).is(gt(5)).plus(100).is(gt(6)));
-       TInt.some().plus(TInt.some().id()).mult(2).<Int>is(TInt.some().gt(5)).plus(100).is(TInt.some().gt(6)).iterable().forEach(System.out::println);
-       // start(TInt.some()).gt(5).obj().iterable().forEach(System.out::println);
-        //start(TInt.some(5)).plus(5).mult(5).is(gt(5)).plus(100).is(mult(45).minus(10).gt(0)).obj().iterable().forEach(System.out::println);
-    }
 
     @Test
     void testInstanceReferenceType() {
@@ -81,7 +56,7 @@ final class TIntTest {
     }
 
     @Test
-    void shouldTest() {
+    void testBasicEqualities() {
         assertTrue(TInt.some().test(TInt.of(32)));
         assertFalse(TInt.some().test(TReal.of(43.0f)));
         assertTrue(TObj.all().test(TInt.of(-1)));
@@ -90,17 +65,9 @@ final class TIntTest {
     }
 
     @Test
-    void shouldMonoid() {
-        final Obj x = start(TInt.of(1), 2, 3).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110))).obj();
-        System.out.println(x);
-        x.iterable().forEach(System.out::println);
-    }
-
-    @Test
-    void shouldMonoid2() {
-        Int t = TInt.of(1, 2, 3).inst(TInst.of(Tokens.IS), SumInst.create()).inst(TInst.of(Tokens.MULT, TInt.some()), PlusInst.create(23));
-        final Obj x = start(t).is(gt(2)).mult(plus(34)).is(or(gt(1), gt(110), lt(10000))).obj();
-        System.out.println(x);
-        x.iterable().forEach(System.out::println);
+    void testAccess() {
+        assertEquals(List.of(TInt.of(50)), IteratorUtils.list(TInt.of(1).plus(4).mult(10).iterable()));
+        assertEquals(List.of(TInt.of(50)), IteratorUtils.list(FastProcessor.process(TInt.of(1).plus(4).mult(10).is(___.gt(___.plus(-50))))));
+        assertEquals(List.of(TBool.of(true)), IteratorUtils.list(FastProcessor.process(TInt.of(1).plus(4).mult(10).gt(___.plus(-50)))));
     }
 }

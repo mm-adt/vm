@@ -138,7 +138,7 @@ public final class TInt extends TObj implements Int {
     public Bool gt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
                 TBool.from(this).set(this.java() > integer.java()) :
-                TBool.from(this).mapFrom(GtInst.create(integer));  // TODO: change to mapTo() syntax when test cases changed
+                TBool.from(this.mapFrom(GtInst.create(integer)));  // TODO: change to mapTo() syntax when test cases changed
     }
 
     @Override

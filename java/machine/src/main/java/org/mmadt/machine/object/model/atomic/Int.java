@@ -22,6 +22,8 @@
 
 package org.mmadt.machine.object.model.atomic;
 
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
@@ -66,7 +68,7 @@ public interface Int extends WithOrderedRing<Int> {
     }
 
     public default Bool gt(final Object object) {
-        return this.gt((Int) ObjectHelper.from(object));
+        return object instanceof Inst ? this.gt(TInt.some().access((Inst) object)) : this.gt((Int) ObjectHelper.from(object));
     }
 
     public default Bool gte(final Object object) {

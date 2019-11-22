@@ -29,7 +29,6 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
-import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
@@ -258,7 +257,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O mapTo(final Obj obj) {
         if (obj instanceof Inst) {
-            O o = this.access().isOne() ? this.access(IdInst.create().domainAndRange(this,this)) : (O) this.access(this.access().domain(this));
+            O o = this.access().isOne() ? this.access(IdInst.create().domainAndRange(this, this)) : (O) this.access(this.access().domain(this));
             for (final Inst inst : ((Inst) obj).iterable()) {
                 o = o.q(o.q().mult(obj.q())).append(inst);
             }
@@ -324,19 +323,19 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O id() {
         return this.isInstance() ?
                 (O) this :
-                this.mapFrom(IdInst.create());
+                this.mapTo(IdInst.create());
     }
 
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
                 bool.java() ? (O) this : this.set(null).q(zero) :
-                this.mapFrom(IsInst.create(bool));
+                this.mapTo(IsInst.create(bool));
     }
 
     public default <O extends Obj> O map(final O obj) {
         return obj.isInstance() ?
                 obj.copy(this) :
-                this.mapFrom(MapInst.create(obj));
+                this.mapTo(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {
