@@ -45,6 +45,8 @@ final class TIntTest implements TestUtilities {
 
     private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
             ProcessArgs.of(List.of(1), TInt.of(1)),
+            ProcessArgs.of(List.of(-1), TInt.of(1).neg()),
+            ProcessArgs.of(List.of(0), TInt.of(1).zero()),
             // ProcessArgs.of(List.of(1), TInt.of(1).sum()),
             // ProcessArgs.of(List.of(10), TInt.of(1,2,3,4).sum()),
             ProcessArgs.of(List.of(4), TInt.of(1).plus(plus(plus(1)))),

@@ -25,11 +25,13 @@ package org.mmadt.machine.object.impl;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
@@ -40,6 +42,10 @@ import org.mmadt.machine.object.model.composite.Inst;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public class ___ {
+
+    public static Inst get(final Object object) {
+        return GetInst.create(object);
+    }
 
     public static Inst gt(final Object object) {
         return GtInst.create(object);
@@ -67,6 +73,10 @@ public class ___ {
 
     public static Inst mult(final Object object) {
         return MultInst.create(object);
+    }
+
+    public static Inst neg() {
+        return NegInst.create();
     }
 
     public static Inst one() {

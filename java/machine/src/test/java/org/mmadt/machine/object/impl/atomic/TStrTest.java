@@ -54,6 +54,7 @@ final class TStrTest implements TestUtilities {
             ProcessArgs.of(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
             ProcessArgs.of(List.of("abcde"), TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
             ProcessArgs.of(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
+            // ProcessArgs.of(List.of("a"), TStr.of("a", "a","a").branch(id(),id()).dedup()),
     };
 
     @TestFactory

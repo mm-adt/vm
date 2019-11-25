@@ -80,7 +80,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> plus(final Lst<V> lst) {
-        if (this.isInstance() && lst.isInstance()) {
+        if (lst.isInstance()) {
             final PList<V> list = new PList<>(this.java());
             list.addAll(lst.java());
             return this.set(list);

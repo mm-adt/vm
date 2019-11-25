@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -40,6 +41,14 @@ public interface Int extends WithOrderedRing<Int> {
 
     public default Integer java() {
         return this.get();
+    }
+
+    public default Int dedup(final Object... branches) {
+        return this.mapTo(DedupInst.create(branches));
+    }
+
+    public default Int id() {
+        return this;
     }
 
     public default Int is(final Inst inst) {

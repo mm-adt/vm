@@ -63,7 +63,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     @Override
     public default Lst<V> put(final Int index, final V value) {
         if (this.isInstance() || this.isType()) {
-            this.java().add(index.java(), value);
+            this.java().set(index.java(), value);
             return this;
         } else
             return this.mapTo(PutInst.create(index, value));
@@ -101,6 +101,18 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
             }
         }
         return v;
+    }
+
+    public default Lst<V> id() {
+        return this;
+    }
+
+    public default <A extends Obj> A get(final Object index) {
+        return (A) this.get(ObjectHelper.create(TInt.some(), index));
+    }
+
+    public default Lst<V> put(final Object index, final Object value) {
+        return this.put(ObjectHelper.create(TInt.some(), index), (V) ObjectHelper.create(TObj.some(), value));
     }
 
     @Override

@@ -23,8 +23,11 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -45,8 +48,20 @@ public interface Bool extends WithCommutativeRing<Bool> {
         return this.constant() ? this.set(this.java() && bool.java()) : (Bool) this.and((Obj) bool); // TODO: Bool.Type class with respective overloading
     }
 
+    public default Bool dedup(final Object... branches) {
+        return this.mapTo(DedupInst.create(branches));
+    }
+
+    public default Bool id() {
+        return this;
+    }
+
     public default Bool is(final Boolean bool) {
         return this.is(TBool.of(bool));
+    }
+
+    public default Bool is(final Inst bool) {
+        return this.is(ObjectHelper.create(TBool.some(), bool));
     }
 
     @Override

@@ -51,7 +51,7 @@ final class TBoolTest implements TestUtilities {
             ProcessArgs.of(List.of(true), TBool.of(true)),
             ProcessArgs.of(List.of(true, true, false, false), TBool.of(true, true, false, false)),
             ProcessArgs.of(List.of(true, true, false, false), TBool.of(true, false).branch(id(), id())),
-            ProcessArgs.of(List.of(), TBool.of(true, false).branch(id(), id()).is(and(false)).id().id()),
+            ProcessArgs.of(List.of(), TBool.of(true, false).<Bool>branch(id(), id()).is(and(false)).id().id()),
             // ProcessArgs.of(List.of(true), TBool.of(true, false).branch(id(), id()).is(or(false)).id().id()),
     };
 

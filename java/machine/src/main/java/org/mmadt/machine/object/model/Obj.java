@@ -30,7 +30,6 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
@@ -325,15 +324,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 TLst.some().copy(this).mapFrom(EnvInst.create(symbol));
     }
 
-    public default <O extends Obj> O id() {
-        return this.isInstance() ?
-                (O) this :
-                this.mapTo(IdInst.create());
-    }
-
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
-                bool.java() ? (O) this : this.set(null).q(zero) :
+                bool.java() ? (O) this : this.q(zero) :
                 this.mapTo(IsInst.create(bool));
     }
 

@@ -22,10 +22,10 @@
 
 package org.mmadt.machine.object.model.atomic;
 
+import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -40,6 +40,14 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
 
     public default String java() {
         return this.get();
+    }
+
+    public default Str dedup(final Object... branches) {
+        return this.mapTo(DedupInst.create(branches));
+    }
+
+    public default Str id() {
+        return this;
     }
 
     public Bool regex(final Str pattern);
