@@ -23,14 +23,13 @@
 package org.mmadt.machine.object.impl.composite;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.TestUtilities;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
@@ -45,8 +44,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.a;
-import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
 import static org.mmadt.machine.object.model.composite.Q.Tag.one;
@@ -58,7 +55,22 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class TRecTest {
+final class TRecTest implements TestUtilities {
+
+    @Test
+    void testInstanceReferenceType() {
+
+    }
+
+    @Test
+    void testType() {
+        validateTypes(TRec.some());
+    }
+
+    @Test
+    void testIsA() {
+        validateIsA(TRec.some());
+    }
 
     /*@Test
     void testBytecodeTestingMatchingAndBinding() {

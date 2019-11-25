@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.composite;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
@@ -35,29 +36,29 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.type.Bindings;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class TLstTest {
+final class TLstTest implements TestUtilities {
 
     @Test
     void testInstanceReferenceType() {
-        Lst instance = TLst.of("a", true, false);
-        Lst reference = TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true));
-        Lst type = TLst.some().q(45);
-        TestHelper.validateKinds(instance, reference, type);
-        /////
-        instance = TLst.of(TLst.of("a", 2, 21.0)).q(2);
-        reference = TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true));
-        type = TLst.some().q(45);
-        TestHelper.validateKinds(instance, reference, type);
+        validateKinds(TLst.of("a", true, false), TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true)), TLst.some().q(45));
+        validateKinds(TLst.of(TLst.of("a", 2, 21.0)).q(2), TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true)), TLst.some());
+    }
+
+    @Test
+    void testType() {
+        validateTypes(TLst.some());
+    }
+
+    @Test
+    void testIsA() {
+        validateIsA(TLst.some());
     }
 
     @Test
