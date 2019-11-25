@@ -65,7 +65,8 @@ final class TStrTest implements TestUtilities {
         assertEquals(objs("marko"), submit(TStr.of("marko")));
         assertNotEquals(objs("mark"), submit(TStr.of("marko")));
         assertEquals(objs("marko rodriguez"), submit(TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())));
-        // assertEquals(objs("abcde"), submit(TStr.of("a").plus("b").<Str>map((Object)TStr.some().plus("c").plus("d")).plus("e")));
+        assertEquals(objs("abcde"), submit(TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")));
+        assertEquals(objs("abcde", "aabcde"), submit(TStr.of("a", "aa").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")));
     }
 
     @Test

@@ -64,5 +64,6 @@ class TRealTest implements TestUtilities {
         assertEquals(objs(4.2f), submit(TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f)));
         assertEquals(objs(false), submit(TReal.of(1.0f).plus(1.2f).gt(plus(0.1f))));
         assertEquals(objs(false), submit(TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(false)));
+        assertEquals(objs(true), submit(TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(true)));
     }
 }

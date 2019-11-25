@@ -261,7 +261,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O mapTo(final Obj obj) {
         if (obj instanceof Inst) {
             // TODO: get rid of start in favor a non-idempotent "id()"
-            O o = this.access().isOne() ? this.access(StartInst.create(((Object)this)).domainAndRange(this,this)) : (O) this.access(this.access().domain(this));
+            O o = this.access().isOne() && this.isInstance() ?
+                    this.access(StartInst.create(((Object) this)).domainAndRange(this, this)) :
+                    this.access(this.access().domain(this));
             for (final Inst inst : ((Inst) obj).iterable()) {
                 o = o.q(o.q().mult(obj.q())).append(inst);
             }
@@ -283,7 +285,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default boolean isInstance() {
-        return this.constant();
+        return this.constant() && this.access().<Inst>peek().opcode().java().equals(Tokens.ID); // TODO: make this fast with null access?
     }
 
     public default <O extends Obj> O access(final Query access) {
@@ -368,7 +370,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O map(final Object object) {
-        return this.map((O)ObjectHelper.create(this, object));
+        return this.map((O) ObjectHelper.create(this, object));
     }
 
     public default <O extends Obj> O as(final String label) {
