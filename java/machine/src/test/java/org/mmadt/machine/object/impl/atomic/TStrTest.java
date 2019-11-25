@@ -64,7 +64,8 @@ final class TStrTest implements TestUtilities {
     void testAccess() {
         assertEquals(objs("marko"), submit(TStr.of("marko")));
         assertNotEquals(objs("mark"), submit(TStr.of("marko")));
-        assertEquals(objs("marko rodriguez"), submit(TStr.of("marko").plus(" ").plus(zero()).plus("rodriguez").plus(zero())));
+        assertEquals(objs("marko rodriguez"), submit(TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())));
+        // assertEquals(objs("abcde"), submit(TStr.of("a").plus("b").<Str>map((Object)TStr.some().plus("c").plus("d")).plus("e")));
     }
 
     @Test

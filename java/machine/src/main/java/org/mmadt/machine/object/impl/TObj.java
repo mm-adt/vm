@@ -26,7 +26,6 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
@@ -211,7 +210,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <O extends Obj> O set(final Object object) {
-        final TObj clone = this.clone().bindings(TInst.none());
+        final TObj clone = this.clone();//.bindings(TInst.none());
         if (null == object) {
             clone.value = null;
             clone.types = this.types.pattern(null);
@@ -263,7 +262,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Inst access() {
-        return this.types.access(); // TODO: does the quantifier transfer from ring to ring? .q(this.q());
+        return this.types.access().domain(this);
+        // TODO: does the quantifier transfer from ring to ring? .q(this.q());
+        // TODO: we should only assume domain(this) on id()-type heads
     }
 
 

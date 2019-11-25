@@ -31,6 +31,7 @@ import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
@@ -259,7 +260,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O mapTo(final Obj obj) {
         if (obj instanceof Inst) {
-            O o = this.access().isOne() ? this.access(IdInst.create().domainAndRange(this, this)) : (O) this.access(this.access().domain(this));
+            // TODO: get rid of start in favor a non-idempotent "id()"
+            O o = this.access().isOne() ? this.access(StartInst.create(((Object)this)).domainAndRange(this,this)) : (O) this.access(this.access().domain(this));
             for (final Inst inst : ((Inst) obj).iterable()) {
                 o = o.q(o.q().mult(obj.q())).append(inst);
             }
@@ -335,7 +337,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O map(final O obj) {
-        return obj.isInstance() ?
+        return this.isInstance() && obj.isInstance() ?
                 obj.copy(this) :
                 this.mapTo(MapInst.create(obj));
     }
@@ -363,6 +365,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O is(final Object bool) {
         return this.is(ObjectHelper.create(TBool.some(), bool));
+    }
+
+    public default <O extends Obj> O map(final Object object) {
+        return this.map((O)ObjectHelper.create(this, object));
     }
 
     public default <O extends Obj> O as(final String label) {

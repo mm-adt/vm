@@ -87,7 +87,7 @@ public final class TStr extends TObj implements Str {
     @Override
     public Bool lt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
-                TBool.from(this).set(this.java().compareTo(str.java()) < 0).q(this.q()) :
+                TBool.from(this).set(this.java().compareTo(str.java()) < 0) :
                 TBool.from(this.mapTo(LtInst.create(str)));
     }
 
@@ -102,7 +102,7 @@ public final class TStr extends TObj implements Str {
     public Str plus(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 this.set(this.java().concat(str.java())) :
-                this.mapTo(PlusInst.create(str));
+                this.mapFrom(PlusInst.create(str));
     }
 
     @Override
