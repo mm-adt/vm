@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
+import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;

@@ -22,7 +22,10 @@
 
 package org.mmadt.machine.object.model.atomic;
 
+import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -37,6 +40,10 @@ public interface Int extends WithOrderedRing<Int> {
 
     public default Integer java() {
         return this.get();
+    }
+
+    public default Int is(final Inst inst) {
+        return this.is(ObjectHelper.create(TBool.some(), inst));
     }
 
     @Override

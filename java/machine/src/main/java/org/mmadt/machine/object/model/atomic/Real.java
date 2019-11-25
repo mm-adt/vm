@@ -22,7 +22,9 @@
 
 package org.mmadt.machine.object.model.atomic;
 
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TReal;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithField;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
@@ -39,6 +41,10 @@ public interface Real extends WithField<Real> {
 
     public default Float java() {
         return this.get();
+    }
+
+    public default Real is(final Inst inst) {
+        return this.is(ObjectHelper.create(TBool.some(), inst));
     }
 
     @Override

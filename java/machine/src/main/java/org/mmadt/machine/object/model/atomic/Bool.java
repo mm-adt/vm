@@ -22,9 +22,9 @@
 
 package org.mmadt.machine.object.model.atomic;
 
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -43,6 +43,10 @@ public interface Bool extends WithCommutativeRing<Bool> {
 
     public default Bool and(final Bool bool) {
         return this.constant() ? this.set(this.java() && bool.java()) : (Bool) this.and((Obj) bool); // TODO: Bool.Type class with respective overloading
+    }
+
+    public default Bool is(final Boolean bool) {
+        return this.is(TBool.of(bool));
     }
 
     @Override

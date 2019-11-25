@@ -26,7 +26,6 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;
@@ -46,6 +45,8 @@ final class TIntTest implements TestUtilities {
 
     private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
             ProcessArgs.of(List.of(1), TInt.of(1)),
+            // ProcessArgs.of(List.of(1), TInt.of(1).sum()),
+            // ProcessArgs.of(List.of(10), TInt.of(1,2,3,4).sum()),
             ProcessArgs.of(List.of(4), TInt.of(1).plus(plus(plus(1)))),
             ProcessArgs.of(List.of(50), TInt.of(1).plus(4).mult(10)),
             ProcessArgs.of(List.of(50), TInt.of(1).plus(4).mult(10).is(gt(plus(-50)))),
@@ -53,11 +54,14 @@ final class TIntTest implements TestUtilities {
             ProcessArgs.of(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60)))),
             ProcessArgs.of(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(true)),
             ProcessArgs.of(List.of(), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(false)),
+            ProcessArgs.of(List.of(50, 51), TInt.of(49, 50).is(gt(plus(-1))).plus(1)),
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(gt(plus(-1)))),
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(gte(plus(-1)))),
+            ProcessArgs.of(List.of(), TInt.of(49, 50).is(lt(plus(-1)))),
             ProcessArgs.of(List.of(), TInt.of(49, 50).is(lt(plus(-1))).map(32)),
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(lt(plus(1)))),
-            ProcessArgs.of(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).<Int>map(1).plus(plus(8))),
+            ProcessArgs.of(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(1).plus(plus(8))),
+            ProcessArgs.of(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(TInt.of(0, 1, 2).plus(1).plus(0)).plus(plus(8))), // TODO: dangerous as assuming order
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(lte(plus(1)))),
             ProcessArgs.of(List.of(), TInt.of(49, 50).is(gt(plus(1))))
     };

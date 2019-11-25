@@ -26,6 +26,7 @@ import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
@@ -37,6 +38,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -366,8 +368,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.is(ObjectHelper.create(TBool.some(), bool));
     }
 
-    public default <O extends Obj> O map(final Object object) {
-        return this.map((O) ObjectHelper.create(this, object));
+    public default <O extends Obj> O map(final Inst inst) {
+        return this.map((O) ObjectHelper.create(this, inst));
+    }
+
+    public default Int map(final Integer integer) {
+        return this.map(TInt.of(integer));
     }
 
     public default <O extends Obj> O as(final String label) {
