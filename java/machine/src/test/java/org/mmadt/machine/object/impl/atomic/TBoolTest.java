@@ -22,11 +22,16 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
+import org.mmadt.util.ProcessArgs;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.___.and;
@@ -40,6 +45,18 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.star;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 final class TBoolTest implements TestUtilities {
+
+    private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
+            ProcessArgs.of(List.of(true), TBool.of(true)),
+            ProcessArgs.of(List.of(true, true, false, false), TBool.of(true, true, false, false)),
+            ProcessArgs.of(List.of(true, true, false, false), TBool.of(true, false).branch(id(), id())),
+            ProcessArgs.of(List.of(), TBool.of(true, false).branch(id(), id()).is(and(false)).id().id()),
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testTypes() {
+        return Stream.of(TEST_PARAMETERS).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
+    }
 
     @Test
     void testInstanceReferenceType() {
@@ -56,17 +73,6 @@ final class TBoolTest implements TestUtilities {
     @Test
     void testIsA() {
         validateIsA(TBool.some());
-    }
-
-
-    @Test
-    void testAccess() {
-        assertEquals(objs(true), submit(TBool.of(true)));
-        assertNotEquals(objs(false), submit(TBool.of(true)));
-        assertNotEquals(objs(true, false), submit(TBool.of(true, false).branch(id(), id())));
-        assertEquals(objs(true, true, false, false), submit(TBool.of(true, true, false, false)));
-        assertEquals(objs(true, true, false, false), submit(TBool.of(true, false).branch(id(), id())));
-        assertEquals(objs(), submit(TBool.of(true, false).branch(id(), id()).is(and(false)).id().id()));
     }
 
     @Test
@@ -95,4 +101,5 @@ final class TBoolTest implements TestUtilities {
         assertEquals("(true{*}~x|false~y){?}", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).q(qmark).toString());
         assertTrue(TBool.of(true).q(star).or(TBool.of(false)).isType());
     }
+
 }

@@ -22,13 +22,18 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.util.ProcessArgs;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.and;
 import static org.mmadt.language.__.eq;
@@ -44,6 +49,18 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
  */
 final class TStrTest implements TestUtilities {
 
+    private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
+            ProcessArgs.of(List.of("marko"), TStr.of("marko")),
+            ProcessArgs.of(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
+            ProcessArgs.of(List.of("abcde"), TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
+            ProcessArgs.of(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testTypes() {
+        return Stream.of(TEST_PARAMETERS).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
+    }
+
     @Test
     void testType() {
         validateTypes(TStr.some());
@@ -58,15 +75,6 @@ final class TStrTest implements TestUtilities {
     void testInstanceReferenceType() {
         validateKinds(TStr.of("a"), TStr.of("a", "b").plus(TStr.of("b")), TStr.some());
         validateKinds(TStr.of("a").q(45), TStr.of("a", "b", "c"), TStr.of().q(45));
-    }
-
-    @Test
-    void testAccess() {
-        assertEquals(objs("marko"), submit(TStr.of("marko")));
-        assertNotEquals(objs("mark"), submit(TStr.of("marko")));
-        assertEquals(objs("marko rodriguez"), submit(TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())));
-        assertEquals(objs("abcde"), submit(TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")));
-        assertEquals(objs("abcde", "aabcde"), submit(TStr.of("a", "aa").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")));
     }
 
     @Test

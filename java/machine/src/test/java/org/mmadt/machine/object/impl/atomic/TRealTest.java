@@ -22,14 +22,16 @@
 
 package org.mmadt.machine.object.impl.atomic;
 
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
-import org.mmadt.machine.object.impl.util.TestHelper;
+import org.mmadt.util.ProcessArgs;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mmadt.machine.object.impl.___.plus;
 
 /**
@@ -37,10 +39,26 @@ import static org.mmadt.machine.object.impl.___.plus;
  */
 class TRealTest implements TestUtilities {
 
+    private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
+            ProcessArgs.of(List.of(1.0f, 2.0f, 3.0f, 4.0f), TReal.of(1.0f, 2.0f, 3.0f, 4.0f)),
+            ProcessArgs.of(List.of(1.1f), TReal.of(1.1f)),
+            ProcessArgs.of(List.of(TReal.of(1.1f).q(2)), TReal.of(1.1f).mult(1.0f).q(2)),
+            ProcessArgs.of(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f)))),
+            ProcessArgs.of(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f)),
+            ProcessArgs.of(List.of(false), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f))),
+            ProcessArgs.of(List.of(false), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(false)),
+            ProcessArgs.of(List.of(true), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(true)),
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testTypes() {
+        return Stream.of(TEST_PARAMETERS).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
+    }
+
     @Test
     void testInstanceReferenceType() {
         validateKinds(TReal.of(23.4f), TReal.of(1.46f, 13.02f).plus(TReal.of(2.0f)).div(TReal.of(1.4f)), TReal.some());
-        TestHelper.validateKinds(TReal.of(41.3f).q(2), TReal.of(23.0f, 56.0f, 11.0f), TReal.of().q(1, 45));
+        validateKinds(TReal.of(41.3f).q(2), TReal.of(23.0f, 56.0f, 11.0f), TReal.of().q(1, 45));
     }
 
     @Test
@@ -53,17 +71,5 @@ class TRealTest implements TestUtilities {
         validateIsA(TReal.some());
     }
 
-    @Test
-    void testAccess() {
-        assertEquals(objs(1.0f, 2.0f, 3.0f, 4.0f), submit(TReal.of(1.0f, 2.0f, 3.0f, 4.0f)));
-        assertEquals(objs(1.1f), submit(TReal.of(1.1f)));
-        assertEquals(List.of(TReal.of(1.1f).q(2)), submit(TReal.of(1.1f).mult(1.0f).q(2)));
-        assertNotEquals(objs(1.1f), submit(TReal.of(2.3f)));
-        assertNotEquals(objs(1), submit(TReal.of(1.0f)));
-        assertEquals(objs(4.2f), submit(TReal.of(1.0f).plus(plus(plus(1.2f)))));
-        assertEquals(objs(4.2f), submit(TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f)));
-        assertEquals(objs(false), submit(TReal.of(1.0f).plus(1.2f).gt(plus(0.1f))));
-        assertEquals(objs(false), submit(TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(false)));
-        assertEquals(objs(true), submit(TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(true)));
-    }
+
 }
