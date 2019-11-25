@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;
@@ -50,10 +51,13 @@ final class TIntTest implements TestUtilities {
             ProcessArgs.of(List.of(50), TInt.of(1).plus(4).mult(10).is(gt(plus(-50)))),
             ProcessArgs.of(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(-50))),
             ProcessArgs.of(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60)))),
+            ProcessArgs.of(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(true)),
+            ProcessArgs.of(List.of(), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(false)),
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(gt(plus(-1)))),
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(gte(plus(-1)))),
-            ProcessArgs.of(List.of(), TInt.of(49, 50).is(lt(plus(-1)))),
+            ProcessArgs.of(List.of(), TInt.of(49, 50).is(lt(plus(-1))).map(32)),
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(lt(plus(1)))),
+            ProcessArgs.of(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).<Int>map(1).plus(plus(8))),
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(lte(plus(1)))),
             ProcessArgs.of(List.of(), TInt.of(49, 50).is(gt(plus(1))))
     };

@@ -32,6 +32,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -84,5 +85,9 @@ public class ___ {
 
     public static Inst and(final Object... args) {
         return AndInst.create(args);
+    }
+
+    public static Inst or(final Object... args) {
+        return OrInst.create(args);
     }
 }

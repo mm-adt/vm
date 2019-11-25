@@ -262,9 +262,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Inst access() {
-        return this.types.access().domain(this);
-        // TODO: does the quantifier transfer from ring to ring? .q(this.q());
-        // TODO: we should only assume domain(this) on id()-type heads
+        return this.types.access();
     }
 
 

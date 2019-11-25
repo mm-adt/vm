@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.plus;
 
 /**
@@ -45,6 +46,8 @@ class TRealTest implements TestUtilities {
             ProcessArgs.of(List.of(TReal.of(1.1f).q(2)), TReal.of(1.1f).mult(1.0f).q(2)),
             ProcessArgs.of(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f)))),
             ProcessArgs.of(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f)),
+            ProcessArgs.of(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f)))),
+            ProcessArgs.of(List.of(), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f).plus(0.1f)))),
             ProcessArgs.of(List.of(false), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f))),
             ProcessArgs.of(List.of(false), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(false)),
             ProcessArgs.of(List.of(true), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(true)),
