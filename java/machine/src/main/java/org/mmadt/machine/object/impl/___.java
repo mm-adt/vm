@@ -26,7 +26,6 @@ import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
-import org.mmadt.machine.object.impl.composite.inst.map.FromInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
@@ -59,10 +58,6 @@ public class ___ {
 
     public static Inst eq(final Object object) {
         return EqInst.create(object);
-    }
-
-    public static Inst from(final Object object) {
-        return FromInst.create(object);
     }
 
     public static Inst lte(final Object object) {

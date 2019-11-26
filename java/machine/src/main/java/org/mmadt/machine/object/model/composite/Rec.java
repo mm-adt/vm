@@ -25,7 +25,6 @@ package org.mmadt.machine.object.model.composite;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
@@ -107,10 +106,14 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
         return this.get((K) ObjectHelper.create(TInt.of(), index));
     }
 
-    public default Rec<K, V> as(final Rec<K, V> obj) {
+    @Override
+    public default <O extends Obj> O as(final O obj) {
         final Rec<K, V> map = TRec.of(Map.of());
-        for (final Map.Entry<K, V> entry : this.java().entrySet()) {
-            map.put(entry.getKey(), entry.getValue().as(obj.get(entry.getKey())));
+        for (final Map.Entry<K, V> entry : ((Rec<K, V>) obj).java().entrySet()) {
+            final V value = this.get(entry.getKey()).as(entry.getValue());
+            if (value.q().isZero())
+                return obj.q(obj.q().zero());
+            map.put(entry.getKey(), value);
         }
         return map.symbol(obj.symbol()).access(obj.access()).label(obj.label());
     }

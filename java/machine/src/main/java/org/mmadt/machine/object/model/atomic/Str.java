@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.impl.atomic.TBool;
-import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -56,10 +55,6 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
 
     public default Str is(final Inst inst) {
         return this.is(ObjectHelper.create(TBool.of(), inst));
-    }
-
-    public default Str to(final Object label) {
-        return this.to(ObjectHelper.create(TStr.of(), label));
     }
 
     public Bool regex(final Str pattern);

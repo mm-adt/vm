@@ -34,15 +34,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.impl.___.eq;
-import static org.mmadt.machine.object.impl.___.from;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.gte;
 import static org.mmadt.machine.object.impl.___.lt;
 import static org.mmadt.machine.object.impl.___.lte;
 import static org.mmadt.machine.object.impl.___.mult;
 import static org.mmadt.machine.object.impl.___.plus;
-import static org.mmadt.machine.object.impl.___.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -83,10 +80,6 @@ final class TIntTest implements TestUtilities {
             ProcessArgs.of(List.of(TInt.of().plus(mult(3)).is(gt(45)).map(10)), TInt.of().plus(mult(3)).is(gt(45)).map(10)),
             ProcessArgs.of(List.of(TInt.of().plus(mult(3)).map(10)), TInt.of().plus(mult(3)).map(10)), // TODO: should just be the instance 10
             // state
-            ProcessArgs.of(List.of(1), TInt.of(1).to("a").from("a")),
-            ProcessArgs.of(List.of(), TInt.of(1).to("a").mult(5).is(lt(from("a")))),
-            ProcessArgs.of(List.of(5), TInt.of(1).to("a").mult(5).is(gt(from(TStr.of("").plus(zero()).plus("a").plus(zero()))))),
-            ProcessArgs.of(List.of(1), TInt.of(1).to("a").mult(1).is(eq(from("a")))),
             ProcessArgs.of(List.of(TInt.of(1).symbol("age").label("a")), TInt.of(1).as(TInt.of().symbol("age").label("a"))),
     };
 

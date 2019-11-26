@@ -56,10 +56,6 @@ public interface Int extends WithOrderedRing<Int> {
         return this.is(ObjectHelper.create(TBool.of(), inst));
     }
 
-    public default Int to(final Object label) {
-        return this.to(ObjectHelper.create(TStr.of(), label));
-    }
-
     @Override
     public default Iterable<Int> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
