@@ -26,7 +26,6 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,12 +35,8 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
 
     public E mapArg(final S object);
 
-    public Iterator<E> flatMapArg(final S object);
-
-    public boolean filterArg(final S object);
-
     public static <S extends Obj, E extends Obj> Argument<S, E> create(final S arg) {
-        if (arg instanceof Inst && ((Inst) arg).asInst())
+        if (arg instanceof Inst)
             return new InstArgument<>((Inst) arg);         // TODO: should we do this?
         else if (!arg.isReference())
             return new ObjArgument<>((E) arg);

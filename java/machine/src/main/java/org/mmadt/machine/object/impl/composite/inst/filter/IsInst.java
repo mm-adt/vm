@@ -27,8 +27,11 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.type.PList;
+
+import java.util.Optional;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -47,8 +50,17 @@ public final class IsInst<S extends Obj> extends TInst implements FilterInstruct
         return new IsInst<>(arg);
     }
 
-
     public static <S extends Obj> IsInst<S> isA(final Obj obj) {
         return IsInst.create(AInst.create(obj.access(ID())));
+    }
+
+    public S computeRange(final Obj domain) {
+        return (S) super.computeRange(isARange().orElse(domain));
+    }
+
+    private Optional<Obj> isARange() {
+        final Obj arg = this.args().get(0);
+        final Inst inst = arg.access().peek();
+        return inst instanceof AInst ? Optional.of(inst.args().get(0)) : Optional.empty();
     }
 }

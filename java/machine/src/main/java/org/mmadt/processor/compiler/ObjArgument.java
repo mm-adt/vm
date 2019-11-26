@@ -24,8 +24,6 @@ package org.mmadt.processor.compiler;
 
 import org.mmadt.machine.object.model.Obj;
 
-import java.util.Iterator;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -40,16 +38,6 @@ public final class ObjArgument<S extends Obj, E extends Obj> implements Argument
     @Override
     public E mapArg(final S object) {
         return this.constant;
-    }
-
-    @Override
-    public Iterator<E> flatMapArg(final S object) {
-        return (Iterator<E>) this.constant.iterable().iterator();
-    }
-
-    @Override
-    public boolean filterArg(final S object) {
-        return (Boolean) this.constant.get();
     }
 
     @Override

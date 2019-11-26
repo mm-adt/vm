@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.object.model.util;
 
-import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
@@ -41,7 +40,6 @@ import java.util.Map;
 
 import static org.mmadt.language.compiler.Tokens.AMPERSAND;
 import static org.mmadt.language.compiler.Tokens.ASTERIX;
-import static org.mmadt.language.compiler.Tokens.BAR;
 import static org.mmadt.language.compiler.Tokens.COLON;
 import static org.mmadt.language.compiler.Tokens.COMMA;
 import static org.mmadt.language.compiler.Tokens.CROSS;
@@ -52,7 +50,6 @@ import static org.mmadt.language.compiler.Tokens.LCURL;
 import static org.mmadt.language.compiler.Tokens.LPAREN;
 import static org.mmadt.language.compiler.Tokens.MAPSFROM;
 import static org.mmadt.language.compiler.Tokens.MODEL;
-import static org.mmadt.language.compiler.Tokens.NEWLINE;
 import static org.mmadt.language.compiler.Tokens.QUESTION;
 import static org.mmadt.language.compiler.Tokens.RBRACKET;
 import static org.mmadt.language.compiler.Tokens.RCURL;
@@ -168,7 +165,7 @@ public final class StringFactory {
             builder.append(object.symbol());
         else if (o instanceof Inst) {
             if (null != object.label() || !object.q().isOne()) builder.append(LPAREN);
-            builder.append(typeInstructions((Inst) o));
+            builder.append(object.symbol()).append(o);
             if (null != object.label() || !object.q().isOne()) builder.append(RPAREN);
         } else {
             final boolean parens =
@@ -250,7 +247,7 @@ public final class StringFactory {
                 builder.append(String.format("\"%s\"", string.<String>get().replaceAll("[\"\\\\]", "\\\\$0")));
         } else if (string.get() instanceof Inst) {
             if (null != string.label() || !string.q().isOne()) builder.append(LPAREN);
-            builder.append(typeInstructions(string.get()));
+            builder.append(string.get().toString());
             if (null != string.label() || !string.q().isOne()) builder.append(RPAREN);
         } else if (string.isType() && null != string.get())
             builder.append(string.get().toString());
@@ -260,18 +257,4 @@ public final class StringFactory {
         return builder.toString();
     }
 
-
-    private static String typeInstructions(final Inst inst) { // TODO: this is just for backwards compatibility and will be removed once mmlang gets refactored
-        final StringBuilder builder = new StringBuilder();
-        if (inst.<Inst>peek().opcode().java().equals(Tokens.IS)) {
-            if (inst.<Inst>peek().args().get(0) instanceof Inst && ((Inst) inst.<Inst>peek().args().get(0)).opcode().java().equals(Tokens.OR)) {
-                for (final Obj i : ((Inst) inst.<Inst>peek().args().get(0)).args()) {
-                    builder.append(i.<PList>get().get(1)).append(BAR);
-                }
-                builder.deleteCharAt(builder.length() - 1);
-                return builder.toString();
-            }
-        }
-        return inst.toString();
-    }
 }

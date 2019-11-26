@@ -27,16 +27,12 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
@@ -46,17 +42,17 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 final class PAndTest {
     @Test
     void shouldToString() {
-        assertEquals("'marko'|'marko'", TStr.of("marko").or(TStr.of("marko")).toString());
-        assertEquals("'marko'{*}|'marko'", TStr.of("marko").q(star).or(TStr.of("marko")).toString());
-        assertEquals("'marko'{*}|'marko'{0}", TStr.of("marko").q(star).or(TStr.of("marko").q(zero)).toString());
-        assertEquals("'marko'{0}|'marko'{0}", TStr.of("marko").q(zero).or(TStr.of("marko").q(zero)).toString());
+//        assertEquals("'marko'|'marko'", TStr.of("marko").or(TStr.of("marko")).toString());
+//        assertEquals("'marko'{*}|'marko'", TStr.of("marko").q(star).or(TStr.of("marko")).toString());
+//        assertEquals("'marko'{*}|'marko'{0}", TStr.of("marko").q(star).or(TStr.of("marko").q(zero)).toString());
+//        assertEquals("'marko'{0}|'marko'{0}", TStr.of("marko").q(zero).or(TStr.of("marko").q(zero)).toString());
         //
         assertEquals("'marko'", TStr.of("marko").and(TStr.of("marko")).toString());
         assertEquals("'marko'{*}", TStr.of("marko").q(star).and(TStr.of("marko")).toString());
         assertEquals("'marko'{0}", TStr.of("marko").q(star).and(TStr.of("marko").q(zero)).toString());
         //
-        assertEquals("'marko'|'stephen'", TStr.of("marko").or(TStr.of("stephen")).toString());
-        assertEquals("'marko'{?}|'stephen'", TStr.of("marko").q(qmark).or(TStr.of("stephen")).toString());
+//        assertEquals("'marko'|'stephen'", TStr.of("marko").or(TStr.of("stephen")).toString());
+//        assertEquals("'marko'{?}|'stephen'", TStr.of("marko").q(qmark).or(TStr.of("stephen")).toString());
     }
 
     @Test

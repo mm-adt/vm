@@ -179,21 +179,21 @@ public class Parser extends BaseParser<Object> {
     @SuppressSubnodes
     Rule Real() {
         return FirstOf(
-                Sequence(REAL, this.push(TReal.of())),
+                Sequence(REAL, this.push(TReal.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),
                 Sequence(Sequence(Number(), PERIOD, Number()), this.push(TReal.of(Float.valueOf(match().trim())))));
     }
 
     @SuppressSubnodes
     Rule Int() {
         return FirstOf(
-                Sequence(INT, this.push(TInt.of())),
+                Sequence(INT, this.push(TInt.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),
                 Sequence(Number(), this.push(TInt.of(Integer.valueOf(match().trim())))));
     }
 
     @SuppressSubnodes
     Rule Str() {
         return FirstOf(
-                Sequence(STR, this.push(TStr.of())),
+                Sequence(STR, this.push(TStr.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),
                 Sequence("\"\"\"", ZeroOrMore(Sequence(TestNot("\"\"\""), ANY)), this.push(TStr.of(match())), "\"\"\""),
                 Sequence("\'", ZeroOrMore(Sequence(TestNot("\'"), ANY)), this.push(TStr.of(match())), "\'"),
                 Sequence("\"", ZeroOrMore(Sequence(TestNot("\""), ANY)), this.push(TStr.of(match())), "\""));
@@ -202,7 +202,7 @@ public class Parser extends BaseParser<Object> {
     @SuppressSubnodes
     Rule Bool() {
         return FirstOf(
-                Sequence(BOOL, this.push(TBool.of())),
+                Sequence(BOOL, this.push(TBool.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),
                 Sequence(TRUE, this.push(TBool.of(true))),
                 Sequence(FALSE, this.push(TBool.of(false))));
     }

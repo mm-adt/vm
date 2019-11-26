@@ -48,20 +48,9 @@ public class TInst extends TObj implements Inst {
 
     protected Obj domain = TObj.none();
     protected Obj range = TObj.none();
-    private boolean inst = true;
 
     protected TInst(final Object value) {
         super(value);
-    }
-
-    public boolean asInst() {
-        return this.inst;
-    }
-
-    public Inst asInst(final boolean asInst) {
-        final TInst clone = (TInst) this.clone();
-        clone.inst = asInst;
-        return clone;
     }
 
     public static Inst some() {

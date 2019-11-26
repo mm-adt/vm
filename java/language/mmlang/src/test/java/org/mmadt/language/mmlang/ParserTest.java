@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.machine.object.impl.___.gt;
+import static org.mmadt.machine.object.impl.___.is;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -65,6 +67,9 @@ class ParserTest {
             ParserArgs.of(List.of(TInt.of(10).label("a")), "10 => (int~a | str~b | real~c)"),
             ParserArgs.of(List.of(TInt.of(20).label("a")), "10 => (int~a | str~b | real~c) => [plus,[id]]"),
             ParserArgs.of(List.of(TStr.of("marko rodriguez").label("b")), "'marko' => (int~a | str~b | real~c) => [is,[a,str]][plus,' '][plus,'rodriguez']"),
+            ParserArgs.of(List.of(40), "40 => int[is[gt,20]]"),
+            ParserArgs.of(List.of(), "40 => [mult,2] => int[is[gt,100]]"),
+            ParserArgs.of(List.of(TInt.of(is(gt(100)))), "int => int[is[gt,100]]"),
             /////////////////// MAP FROM <= ///////////////////
             ParserArgs.of(List.of(11), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
             ParserArgs.of(List.of(TStr.of().plus("a")), "str <= [plus,'a']"),

@@ -45,16 +45,6 @@ public final class InstArgument<S extends Obj, E extends Obj> implements Argumen
     }
 
     @Override
-    public Iterator<E> flatMapArg(final S object) {
-        throw new IllegalStateException("Not implemented yet");
-    }
-
-    @Override
-    public boolean filterArg(final S object) {
-        throw new IllegalStateException("Not implemented yet");
-    }
-
-    @Override
     public String toString() {
         return this.bytecode.toString();
     }

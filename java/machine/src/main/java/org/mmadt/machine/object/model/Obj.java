@@ -336,9 +336,14 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Bool neq(final Obj object);
 
     public default <O extends Obj> O as(final O obj) {
-        return obj.test(this) ?
-                this.symbol(obj.symbol()).access(obj.access()).label(obj.label()) :
-                obj.q(obj.q().zero());
+        if (!obj.test(this))
+            return obj.q(obj.q().zero());
+        else if (this.isType())
+            return this.symbol(obj.symbol()).label(obj.label()).access(obj.access()).set(obj.get());
+        else if (this.isReference())
+            return this.symbol(obj.symbol()).label(obj.label()).set(obj.get());
+        else
+            return this.symbol(obj.symbol()).label(obj.label());
     }
 
     public default <O extends Obj> O is(final Object bool) {

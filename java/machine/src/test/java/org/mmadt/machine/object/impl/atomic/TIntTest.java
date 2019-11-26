@@ -34,8 +34,10 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.machine.object.impl.___.a;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.gte;
+import static org.mmadt.machine.object.impl.___.is;
 import static org.mmadt.machine.object.impl.___.lt;
 import static org.mmadt.machine.object.impl.___.lte;
 import static org.mmadt.machine.object.impl.___.mult;
@@ -79,9 +81,18 @@ final class TIntTest implements TestUtilities {
             ProcessArgs.of(List.of(TInt.of().plus(mult(3))), TInt.of().plus(TInt.of().mult(3))),
             ProcessArgs.of(List.of(TInt.of().plus(mult(3)).is(gt(45)).map(10)), TInt.of().plus(mult(3)).is(gt(45)).map(10)),
             ProcessArgs.of(List.of(TInt.of().plus(mult(3)).map(10)), TInt.of().plus(mult(3)).map(10)), // TODO: should just be the instance 10
+            // predicate type
+            ProcessArgs.of(List.of(), TInt.of(20).is(a(TInt.of(is(gt(50)))))),
+            ProcessArgs.of(List.of(20), TInt.of(20).as(TInt.of(is(lt(50))))),
+
             // state
             ProcessArgs.of(List.of(TInt.of(1).symbol("age").label("a")), TInt.of(1).as(TInt.of().symbol("age").label("a"))),
     };
+
+    /*@Test
+    public void xxx() {
+        System.out.println(TInt.of(is(gt(50))).mapTo(is(lt(100))).toString());
+    }*/
 
     @TestFactory
     Stream<DynamicTest> testProcessing() {
@@ -106,7 +117,9 @@ final class TIntTest implements TestUtilities {
     private final static Int[] TYPES = new Int[]{
             TInt.of(),
             TInt.of().q(45),
-            TInt.of().q(0)
+            TInt.of().q(0),
+            TInt.of(is(lt(50))).q(2)
+
     };
 
     @TestFactory
