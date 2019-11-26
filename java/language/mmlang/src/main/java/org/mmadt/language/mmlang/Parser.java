@@ -194,9 +194,9 @@ public class Parser extends BaseParser<Object> {
     Rule Str() {
         return FirstOf(
                 Sequence(STR, this.push(TStr.of())),
-                Sequence(TRIPLE_QUOTE, ZeroOrMore(Sequence(TestNot(TRIPLE_QUOTE), ANY)), this.push(TStr.of(match())), TRIPLE_QUOTE),
-                Sequence(SINGLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\\'")), ANY)), this.push(TStr.of(match())), SINGLE_QUOTE),
-                Sequence(DOUBLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\"")), ANY)), this.push(TStr.of(match())), DOUBLE_QUOTE));
+                Sequence("\"\"\"", ZeroOrMore(Sequence(TestNot("\"\"\""), ANY)), this.push(TStr.of(match())), "\"\"\""),
+                Sequence("\'", ZeroOrMore(Sequence(TestNot("\'"), ANY)), this.push(TStr.of(match())), "\'"),
+                Sequence("\"", ZeroOrMore(Sequence(TestNot("\""), ANY)), this.push(TStr.of(match())), "\""));
     }
 
     @SuppressSubnodes

@@ -27,6 +27,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.model.Obj;

@@ -22,6 +22,9 @@
 
 package org.mmadt.language.compiler;
 
+import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
@@ -58,7 +61,7 @@ public final class OperatorHelper {
             case (Tokens.AMPERSAND):
                 return (A) ((WithAnd) lhs).and(rhs);
             case (Tokens.BAR):
-                return (A) lhs.or(rhs);
+                return (A) ChooseInst.create(lhs,rhs);
             case (Tokens.RANGLE):
                 return (A) ((WithOrder) lhs).gt(rhs);
             case (Tokens.LANGLE):

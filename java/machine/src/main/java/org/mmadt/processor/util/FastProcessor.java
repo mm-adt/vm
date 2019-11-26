@@ -57,6 +57,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
 
     @Override
     public Iterator<S> iterator(final S obj) {
+        // System.out.println("PPR: " + obj);
         final Inst bytecode = obj.access();
         if (bytecode.isOne()) return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
         Stream<S> stream = Stream.of((S) obj.access().domain().access(ID()));

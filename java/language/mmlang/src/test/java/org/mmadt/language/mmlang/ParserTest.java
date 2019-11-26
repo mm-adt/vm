@@ -62,6 +62,9 @@ class ParserTest {
             ParserArgs.of(List.of(1, 2, 3), "1 => ([id] + [plus,1] + [plus,2])"),
             ParserArgs.of(List.of(-1, -2, -3), "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
             ParserArgs.of(List.of(TInt.of(1).label("a"), TInt.of(2).label("a"), TInt.of(3).label("a")), "1 => ([id] + [plus,1] + [plus,2]) => int~a"),
+            ParserArgs.of(List.of(TInt.of(10).label("a")), "10 => (int~a | str~b | real~c)"),
+            ParserArgs.of(List.of(TInt.of(20).label("a")), "10 => (int~a | str~b | real~c) => [plus,[id]]"),
+            ParserArgs.of(List.of(TStr.of("marko rodriguez").label("b")), "'marko' => (int~a | str~b | real~c) => [is,[a,str]][plus,' '][plus,'rodriguez']"),
             /////////////////// MAP FROM <= ///////////////////
             ParserArgs.of(List.of(11), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
             ParserArgs.of(List.of(TStr.of().plus("a")), "str <= [plus,'a']"),

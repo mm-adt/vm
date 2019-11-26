@@ -25,9 +25,7 @@ package org.mmadt.machine.object.impl.composite.inst.branch;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
-import org.mmadt.machine.object.impl.composite.inst.map.AInst;
-import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
@@ -59,18 +57,12 @@ public final class ChooseInst<S extends Obj, E extends Obj> extends TInst implem
     }
 
     public static <S extends Obj, E extends Obj> ChooseInst<S, E> create(final Object... a) {
-        final List<Obj> args = Stream.of(a).map(ObjectHelper::from).collect(Collectors.toList());
+        final List<Obj> args = Stream.of(a).flatMap(x -> x instanceof ChooseInst ? ((ChooseInst) x).args().stream() : Stream.of(x)).map(ObjectHelper::from).collect(Collectors.toList());
         final Map<Inst, List<Inst>> branches = new LinkedHashMap<>();
         for (int i = 0; i < args.size(); i++) {
-            final Inst predicate = IsInst.create(AInst.create(args.get(i)));
-            final Inst branch = args.get(i).access().asInst(false);
-            branches.put(predicate, List.of(MapInst.create(branch)));
+            final Inst branch = args.get(i) instanceof Inst ? (Inst) args.get(i) : AsInst.create(args.get(i));
+            branches.put(branch, List.of(branch));
         }
         return new ChooseInst<>(branches, args.toArray(new Object[]{}));
-    }
-
-    @Override
-    public String toString() {
-        return "[" + this.opcode().java() + "," + this.branches + "]";
     }
 }
