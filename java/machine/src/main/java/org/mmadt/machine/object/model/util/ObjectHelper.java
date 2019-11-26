@@ -149,7 +149,7 @@ public final class ObjectHelper {
         if (object1 instanceof Rec)
             return object1.symbol(Tokens.REC);   // necessary for mutability
         else if (object1 instanceof Lst)
-            return object1.symbol(Tokens.LIST); // necessary for mutability
+            return object1.symbol(Tokens.LST); // necessary for mutability
         else if (object1.getClass().equals(object2.getClass()))
             return SYMBOL_MAP.get(object1.getClass());
         else if (object1.named() && null == object1.get())

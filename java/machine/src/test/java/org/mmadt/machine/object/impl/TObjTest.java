@@ -106,7 +106,7 @@ class TObjTest {
         assertEquals("real", TReal.of().symbol());
         assertEquals("str", TStr.of().symbol());
         assertEquals("inst", TInst.some().symbol());
-        assertEquals("list", TLst.some().symbol());
+        assertEquals("lst", TLst.some().symbol());
         assertEquals("rec", TRec.some().symbol());
         //
         assertEquals("lucky", TBool.of(true).symbol("lucky").symbol());
@@ -126,7 +126,7 @@ class TObjTest {
         assertEquals("[get,'inE'][get,'outV']", TInst.of("get", "inE").mult(TInst.of("get", "outV")).toString());
         assertEquals("inst", TInst.some().toString());
         assertEquals("[is,[get,'name'][eq,'marko']]", TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko"))).toString());
-        assertEquals("list", TLst.some().toString());
+        assertEquals("lst", TLst.some().toString());
         assertEquals("['get';4;true;3.2]", TLst.of("get", 4, true, 3.2).toString());
         // TODO: assertEquals("(gt(1)|lt(20))~x", TInt.of(is(or(gt(1),lt(20)))).as("x").toString());
         // TODO: assertEquals("(gt(1)&lt(20))~x", TInt.of(is(and(gt(1),lt(20)))).as("x").toString());

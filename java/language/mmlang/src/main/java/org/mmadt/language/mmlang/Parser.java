@@ -97,7 +97,7 @@ public class Parser extends BaseParser<Object> {
     final Rule STR = Terminal(Tokens.STR);
     final Rule BOOL = Terminal(Tokens.BOOL);
     final Rule REC = Terminal(Tokens.REC);
-    final Rule LST = Terminal(Tokens.LIST);
+    final Rule LST = Terminal(Tokens.LST);
     final Rule INST = Terminal(Tokens.INST);
 
     ///////////////

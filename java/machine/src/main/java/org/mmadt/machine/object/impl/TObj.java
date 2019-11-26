@@ -37,7 +37,6 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
@@ -81,7 +80,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         if (obj instanceof Inst)
             return Tokens.INST;
         if (obj instanceof Lst)
-            return Tokens.LIST;
+            return Tokens.LST;
         return Tokens.OBJ;
     }
 

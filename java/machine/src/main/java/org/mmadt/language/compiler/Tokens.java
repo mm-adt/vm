@@ -74,7 +74,7 @@ public final class Tokens {
     public static final String INT = "int";
     public static final String REAL = "real";
     public static final String STR = "str";
-    public static final String LIST = "list";
+    public static final String LST = "lst";
     public static final String REC = "rec";
     public static final String INST = "inst";
     public static final String Q = "q";
