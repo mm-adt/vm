@@ -50,7 +50,7 @@ public interface TestUtilities {
     }
 
     public default void validateTypes(final Obj obj) {
-        final List<Obj> list = List.of(TBool.some(), TInt.some(), TReal.some(), TStr.some(), TLst.some(), TRec.some());
+        final List<Obj> list = List.of(TBool.of(), TInt.of(), TReal.of(), TStr.of(), TLst.some(), TRec.some());
         for (final Obj o : list) {
             if (obj.getClass().equals(o.getClass())) {
                 assertEquals(o, obj);

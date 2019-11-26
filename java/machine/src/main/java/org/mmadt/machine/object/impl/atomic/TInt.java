@@ -58,10 +58,6 @@ public final class TInt extends TObj implements Int {
         return new TInt(null).q(0);
     }
 
-    public static Int some() {
-        return new TInt(null);
-    }
-
     public static Int some(final int low, final int high) {
         return new TInt(null).q(low, high);
     }

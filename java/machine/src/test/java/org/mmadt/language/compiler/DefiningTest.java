@@ -44,7 +44,7 @@ class DefiningTest {
     void testDefine() {
         final TModel model = TModel.of("ex");
         final Inst mInst =
-                TInst.of("define", "person", TRec.of("name", TStr.some(), "age", TInt.some())).mult(
+                TInst.of("define", "person", TRec.of("name", TStr.of(), "age", TInt.of())).mult(
                         TInst.of("define", "people", model.sym("person").q(star))).mult(
                         TInst.of("define", "db", TRec.of("persons", model.sym("people"))));
         model.model(mInst);
@@ -53,7 +53,7 @@ class DefiningTest {
         assertEquals("person", model.sym("person").symbol());
         assertEquals("people", model.sym("people").symbol());
         // assertEquals(2, model.definitions.size());
-        assertEquals(TRec.of("name", TStr.some(), "age", TInt.some()).symbol("person"), model.<Obj>get("person"));
+        assertEquals(TRec.of("name", TStr.of(), "age", TInt.of()).symbol("person"), model.<Obj>get("person"));
         final Inst qInst = TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("get", "name")).mult(TInst.of("is", TInst.of("eq", "marko")));
         RewritingTest.verifyTyping(Rewriting.rewrite(model, qInst));
     }

@@ -61,8 +61,8 @@ final class PAndTest {
 
     @Test
     void shouldMatchConjunctions() {
-        final TSym<Rec<TStr, TObj>> vertex = TSym.of("vertex", TRec.of("id", TInt.some(), "label", TStr.some()));
-        final Rec<TStr, TObj> idField = TRec.of("id", TInt.some().label("x"));
+        final TSym<Rec<TStr, TObj>> vertex = TSym.of("vertex", TRec.of("id", TInt.of(), "label", TStr.of()));
+        final Rec<TStr, TObj> idField = TRec.of("id", TInt.of().label("x"));
         final Bindings bindings = new Bindings();
         assertTrue(vertex.and(idField).match(bindings, vertex.and(TRec.of("id", 2))));
         assertEquals(TInt.of(2), bindings.get("x"));
@@ -70,11 +70,11 @@ final class PAndTest {
 
     @Test
     void shouldMatchConjunctionInstruction() {
-        TSym<Rec<TStr, TObj>> vertex = TSym.of("vertex", TRec.of("id", TInt.some(), "label", TStr.some()));
-        final Rec<TStr, TObj> idField = TRec.of("id", TInt.some().label("x"));
+        TSym<Rec<TStr, TObj>> vertex = TSym.of("vertex", TRec.of("id", TInt.of(), "label", TStr.of()));
+        final Rec<TStr, TObj> idField = TRec.of("id", TInt.of().label("x"));
         final Obj and = vertex.and(idField);
         final Inst inst = TInst.of("eq", and);
-        vertex = vertex.inst(inst, TInst.of("get", "id").mult(TInst.of("eq", TInt.some().label("x"))));
+        vertex = vertex.inst(inst, TInst.of("get", "id").mult(TInst.of("eq", TInt.of().label("x"))));
         //
         final Bindings bindings = new Bindings();
         assertTrue(vertex.and(idField).match(bindings, vertex.and(TRec.of("id", 2))));

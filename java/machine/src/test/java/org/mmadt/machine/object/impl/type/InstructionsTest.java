@@ -38,8 +38,8 @@ class InstructionsTest {
     @Test
     void shouldMergeInstructions() {
         TModel model = TModel.of("ex");
-        TObj a = TRec.of("name", TStr.some()).symbol("a").inst(TInst.of("get", "outE"), TInst.of("error"));
-        TObj b = TRec.of("age", TInt.some()).symbol("b").inst(TInst.of("get", "inE"), TInst.of("get", "outE"));
+        TObj a = TRec.of("name", TStr.of()).symbol("a").inst(TInst.of("get", "outE"), TInst.of("error"));
+        TObj b = TRec.of("age", TInt.of()).symbol("b").inst(TInst.of("get", "inE"), TInst.of("get", "outE"));
         model.define("a", a);
         model.define("b", b);
 

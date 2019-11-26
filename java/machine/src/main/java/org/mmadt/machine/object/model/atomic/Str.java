@@ -54,7 +54,7 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
     }
 
     public default Str is(final Inst inst) {
-        return this.is(ObjectHelper.create(TBool.some(), inst));
+        return this.is(ObjectHelper.create(TBool.of(), inst));
     }
 
     public Bool regex(final Str pattern);

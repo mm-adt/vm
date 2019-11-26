@@ -64,7 +64,7 @@ class RewritingTest {
 
     @Test
     void testBasicTyping() {
-        final TModel model = TModel.of(TInst.of("define","db",TRec.of("persons", TRec.of("name", TStr.some(), "age", TInt.some()).q(star))));
+        final TModel model = TModel.of(TInst.of("define","db",TRec.of("persons", TRec.of("name", TStr.of(), "age", TInt.of()).q(star))));
         final Inst bc =
                 TInst.of("db").mult(
                         TInst.of("get", "persons")).mult(
@@ -80,12 +80,12 @@ class RewritingTest {
     @Test
     void testReferenceRewrite() {
         // ORIGINAL: [[db][get,persons][is,[[get,name][eq,marko]]][get,age][gt,29][is,[[eq,true]]]]
-        final Rec people = (TRec) TRec.of("name", TStr.some(), "age", TInt.some()).q(star).
+        final Rec people = (TRec) TRec.of("name", TStr.of(), "age", TInt.of()).q(star).
                 access(TInst.of("db").mult(TInst.of("get", "persons"))).
-                inst(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x")))),
-                        TInst.of("ref", TRec.of("name", TStr.some().label("x"), "age", TInt.some()).
+                inst(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of().label("x")))),
+                        TInst.of("ref", TRec.of("name", TStr.of().label("x"), "age", TInt.of()).
                                 q(qmark).
-                                access(TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x"))))))));
+                                access(TInst.of("db").mult(TInst.of("get", "persons")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of().label("x"))))))));
 
         final Bindings bindings = new Bindings();
         final TModel model = TModel.of(TInst.of("define","db",TRec.of("persons", people).access(TInst.of("db"))));
@@ -100,7 +100,7 @@ class RewritingTest {
         final Inst newBc = Rewriting.rewrite(model, bytecode, bindings);
         // REWROTE: [[ref,[name:marko,age:@int]? <= [[db][get,persons][is,[[get,name][eq,marko]]]]][get,age][gt,29][is,[[eq,true]]]]
         assertEquals(
-                TInst.of("ref", TRec.of("name", "marko", "age", TInt.some()).q(qmark).access(TInst.of("db").mult(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko"))))))).mult(
+                TInst.of("ref", TRec.of("name", "marko", "age", TInt.of()).q(qmark).access(TInst.of("db").mult(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", "marko"))))))).mult(
                         TInst.of("get", "age")).mult(
                         TInst.of("gt", 29)).mult(
                         TInst.of("is", TInst.of("eq", true))).toString(), newBc.toString());

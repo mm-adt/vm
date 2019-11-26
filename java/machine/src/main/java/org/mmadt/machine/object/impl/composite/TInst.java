@@ -64,7 +64,7 @@ public class TInst extends TObj implements Inst {
     }
 
     public static Inst some() {
-        return new TInst(PList.of(TStr.some(), TObj.all()));
+        return new TInst(PList.of(TStr.of(), TObj.all()));
     }
 
     public static Inst all() {

@@ -55,10 +55,10 @@ public final class ObjectHelper {
 
     private static final Map<Class, Obj> SYMBOL_MAP = new HashMap<>() {{
         put(TObj.class, TObj.some());
-        put(TBool.class, TBool.some());
-        put(TInt.class, TInt.some());
-        put(TReal.class, TReal.some());
-        put(TStr.class, TStr.some());
+        put(TBool.class, TBool.of());
+        put(TInt.class, TInt.of());
+        put(TReal.class, TReal.of());
+        put(TStr.class, TStr.of());
         put(TLst.class, TLst.some());
         put(TRec.class, TRec.some());
         put(TInst.class, TInst.some());

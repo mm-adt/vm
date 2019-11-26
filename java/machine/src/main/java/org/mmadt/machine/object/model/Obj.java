@@ -379,7 +379,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     /////////////////////////////////////////////////////////////////
 
     public default <O extends Obj> O is(final Object bool) {
-        return this.is(ObjectHelper.create(TBool.some(), bool));
+        return this.is(ObjectHelper.create(TBool.of(), bool));
     }
 
     public default <O extends Obj> O map(final Inst inst) {

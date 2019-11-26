@@ -55,10 +55,10 @@ final class TStrTest implements TestUtilities {
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             ProcessArgs.of(List.of("marko"), TStr.of("marko")),
             ProcessArgs.of(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
-            ProcessArgs.of(List.of("abcde"), TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
-            ProcessArgs.of(List.of("abcdef"), TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e").is(gt("")).plus("f")),
-            ProcessArgs.of(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
-            ProcessArgs.of(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.some().plus("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
+            ProcessArgs.of(List.of("abcde"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
+            ProcessArgs.of(List.of("abcdef"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e").is(gt("")).plus("f")),
+            ProcessArgs.of(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
+            ProcessArgs.of(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.of().plus("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
             // ProcessArgs.of(List.of("a"), TStr.of("a", "a","a").branch(id(),id()).dedup()),
     };
 
@@ -72,7 +72,7 @@ final class TStrTest implements TestUtilities {
     private final static Str[] INSTANCES = new Str[]{
             TStr.of("a"),
             TStr.of("a").q(2),
-            TStr.some().min()
+            TStr.of().min()
     };
 
     @TestFactory
@@ -83,9 +83,9 @@ final class TStrTest implements TestUtilities {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final static Str[] TYPES = new Str[]{
-            TStr.some(),
-            TStr.some().q(1, 45),
-            TStr.some().q(45)
+            TStr.of(),
+            TStr.of().q(1, 45),
+            TStr.of().q(45)
     };
 
     @TestFactory
@@ -108,18 +108,18 @@ final class TStrTest implements TestUtilities {
 
     @Test
     void testType() {
-        validateTypes(TStr.some());
+        validateTypes(TStr.of());
     }
 
     @Test
     void testIsA() {
-        validateIsA(TStr.some());
+        validateIsA(TStr.of());
     }
 
     @Test
     void shouldHaveTypeBasics() {
-        assertTrue(TStr.some().test(TStr.of("hello")));
-        assertFalse(TInt.some().test(TStr.of("hello")));
+        assertTrue(TStr.of().test(TStr.of("hello")));
+        assertFalse(TInt.of().test(TStr.of("hello")));
         assertTrue(TObj.all().test(TStr.of("hello")));
         assertTrue(TStr.of("hello").q(star).test(TStr.of("hello")));
         assertFalse(TStr.of("hello").q(zero).test(TStr.of("hello")));

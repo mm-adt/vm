@@ -74,7 +74,7 @@ class TRealTest implements TestUtilities {
     private final static Real[] INSTANCES = new Real[]{
             TReal.of(23.4f),
             TReal.of(41.3f).q(2),
-            TReal.some().zero()
+            TReal.of().zero()
     };
 
     @TestFactory
@@ -85,9 +85,9 @@ class TRealTest implements TestUtilities {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final static Real[] TYPES = new Real[]{
-            TReal.some(),
+            TReal.of(),
             TReal.of().q(1, 45),
-            TReal.some().q(1, 45)
+            TReal.of().q(1, 45)
     };
 
     @TestFactory
@@ -111,12 +111,12 @@ class TRealTest implements TestUtilities {
 
     @Test
     void testType() {
-        validateTypes(TReal.some());
+        validateTypes(TReal.of());
     }
 
     @Test
     void testIsA() {
-        validateIsA(TReal.some());
+        validateIsA(TReal.of());
     }
 
 

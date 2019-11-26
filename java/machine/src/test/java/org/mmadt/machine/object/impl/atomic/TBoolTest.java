@@ -65,7 +65,7 @@ final class TBoolTest implements TestUtilities {
     private final static Bool[] INSTANCES = new Bool[]{
             TBool.of(true),
             TBool.of(false),
-            TBool.some().zero(),
+            TBool.of().zero(),
     };
 
     @TestFactory
@@ -78,7 +78,7 @@ final class TBoolTest implements TestUtilities {
     private final static Bool[] TYPES = new Bool[]{
             TBool.all(),
             TBool.of().q(1, 45),
-            TBool.some(),
+            TBool.of(),
     };
 
     @TestFactory
@@ -103,12 +103,12 @@ final class TBoolTest implements TestUtilities {
 
     @Test
     void testType() {
-        validateTypes(TBool.some());
+        validateTypes(TBool.of());
     }
 
     @Test
     void testIsA() {
-        validateIsA(TBool.some());
+        validateIsA(TBool.of());
     }
 
     @Test
@@ -117,19 +117,19 @@ final class TBoolTest implements TestUtilities {
         assertEquals(TBool.of(true), TBool.of(true).and(TBool.of(true)));
         assertEquals(TBool.of(true).q(one), TBool.of(true).and(TBool.of(true)));
         assertEquals(TBool.of(true).q(star), TBool.of(true).q(plus).and(TBool.of(true).q(qmark)));
-        assertEquals("true{*}", TBool.of(true).q(star).and(TBool.some()).toString());
-        assertEquals("false{*}~x", TBool.of(false).q(qmark).label("x").and(TBool.some().q(plus)).toString());
-        assertEquals("false{*}~x", TBool.of(false).q(qmark).label("x").and(TBool.some().label("x").q(plus)).toString());
+        assertEquals("true{*}", TBool.of(true).q(star).and(TBool.of()).toString());
+        assertEquals("false{*}~x", TBool.of(false).q(qmark).label("x").and(TBool.of().q(plus)).toString());
+        assertEquals("false{*}~x", TBool.of(false).q(qmark).label("x").and(TBool.of().label("x").q(plus)).toString());
         assertEquals(TBool.of(false), TBool.of(true).and(TBool.of(false)));
-        assertThrows(RuntimeException.class, () -> TBool.of(false).q(qmark).label("x").and(TBool.some().q(plus).label("y")));
-        assertEquals("false", TBool.some().and(TBool.of(false)).toString());
+        assertThrows(RuntimeException.class, () -> TBool.of(false).q(qmark).label("x").and(TBool.of().q(plus).label("y")));
+        assertEquals("false", TBool.of().and(TBool.of(false)).toString());
     }
 
     @Test
     void shouldOrCorrectly() {
         assertEquals(TBool.of(true), TBool.of(true).or(TBool.of(true)));
         assertEquals("true{+}|true{?}", TBool.of(true).q(plus).or(TBool.of(true).q(qmark)).toString());
-        assertEquals("bool|false", TBool.some().or(TBool.of(false)).toString());
+        assertEquals("bool|false", TBool.of().or(TBool.of(false)).toString());
         assertEquals("true", TBool.of(true).or(TBool.of(false)).toString());
         assertEquals("true{*}|false", TBool.of(true).q(star).or(TBool.of(false)).toString());
         assertEquals("true{*}~x|false~y", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).toString());

@@ -64,9 +64,9 @@ class BindingsTest {
 
     @Test
     void shouldBindRecords() {
-        Rec type1 = TRec.of("name", TStr.some().label("x")); // [name:@string$x]
-        Rec type2 = TRec.of("name", TStr.some()).label("x"); // [name:@string]$x
-        Rec type3 = TRec.of("name", TStr.some().label("x"), "alias", TStr.some().label("x")); // [name:@string$x,alias:@string$x]
+        Rec type1 = TRec.of("name", TStr.of().label("x")); // [name:@string$x]
+        Rec type2 = TRec.of("name", TStr.of()).label("x"); // [name:@string]$x
+        Rec type3 = TRec.of("name", TStr.of().label("x"), "alias", TStr.of().label("x")); // [name:@string$x,alias:@string$x]
         Rec rec1 = TRec.of("name", "marko");
         Rec rec2 = TRec.of("name", "kuppitz", "alias", "guru");
         Rec rec3 = TRec.of("name", "marko", "alias", "marko");
@@ -119,10 +119,10 @@ class BindingsTest {
 
     @Test
     void shouldBindInstructions() {
-        Rec<?, ?> type1 = TRec.of("name", TStr.some().label("a"), "age", TInt.some().label("b"))
+        Rec<?, ?> type1 = TRec.of("name", TStr.of().label("a"), "age", TInt.of().label("b"))
                 .q(star)
                 .inst(TInst.of("get", "age"),
-                        TInst.of("db").mult(TInst.of("get", "ages")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("a"))))).mult(TInst.of("get", "age")));
+                        TInst.of("db").mult(TInst.of("get", "ages")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of().label("a"))))).mult(TInst.of("get", "age")));
         Rec rec1 = TRec.of("name", "marko", "age", 29);
         final Bindings bindings = new Bindings();
         assertTrue(type1.match(bindings, rec1));
@@ -154,8 +154,8 @@ class BindingsTest {
 
     @Test
     void shouldBindAccess() {
-        final Rec type1 = TRec.of("name", TStr.some().label("a"), "age", TInt.some())
-                .access(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name"))).mult(TInst.of("eq", TStr.some().label("a"))));
+        final Rec type1 = TRec.of("name", TStr.of().label("a"), "age", TInt.of())
+                .access(TInst.of("get", "persons").mult(TInst.of("is", TInst.of("get", "name"))).mult(TInst.of("eq", TStr.of().label("a"))));
         assertNotEquals(TInst.none(), type1.access());
         Rec rec1 = TRec.of("name", "marko", "age", 29);
         assertFalse(type1.constant());

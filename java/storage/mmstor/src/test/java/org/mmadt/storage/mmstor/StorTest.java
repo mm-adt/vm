@@ -63,7 +63,7 @@ class StorTest {
         Storage storage = new Stor<>(TLst.of());
         assertEquals(TLst.some(), storage.model().get(Tokens.DB));
         //
-        final Rec<Str, Obj> person = TRec.of("name", TStr.some(), "age", TInt.some());
+        final Rec<Str, Obj> person = TRec.of("name", TStr.of(), "age", TInt.of());
         final Rec<Str, Obj> people = person.q(star);
         final Rec<Str, Obj> instances = people.access(start()).type(people);
         storage = new Stor<>(instances);

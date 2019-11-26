@@ -362,13 +362,13 @@ public class Parser extends BaseParser<Object> {
                     case (Tokens.OBJ):
                         return object.set(TObj.some());
                     case (Tokens.BOOL):
-                        return object.set(TBool.some());
+                        return object.set(TBool.of());
                     case (Tokens.INT):
-                        return object.set(TInt.some());
+                        return object.set(TInt.of());
                     case (Tokens.REAL):
-                        return object.set(TReal.some());
+                        return object.set(TReal.of());
                     case (Tokens.STR):
-                        return object.set(TStr.some());
+                        return object.set(TStr.of());
                     case (Tokens.REC):
                         return object.set(TRec.some());
                     case (Tokens.LIST):

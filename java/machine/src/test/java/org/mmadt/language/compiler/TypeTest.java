@@ -79,22 +79,22 @@ class TypeTest {
                     NONE, TInt.some(2), TInt.some(2), TInt.some(10, 20)),
                     start(1, 2).plus(TInt.of(7)).dedup().q(10)),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some()),
+                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.of()),
                     start(1, 2).plus(7).dedup().count()),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(), TInt.some()),
+                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.of(), TInt.of()),
                     start(1, 2).plus(7).dedup().count().mult(5)),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(), TInt.some(10)),
+                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.of(), TInt.some(10)),
                     start(1, 2).plus(7).dedup().count().mult(5).q(10)),
             new TestArgs<>(List.of( // TODO: 0 quantifier handling
-                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(), TInt.none()), // TOOD: just drop the whole pipeline to none
+                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.of(), TInt.none()), // TOOD: just drop the whole pipeline to none
                     start(1, 2).plus(7).dedup().count().mult(5).q(0)),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.some(), TInt.of(1)),
+                    NONE, TInt.some(2), TInt.some(2), TInt.some(1, 2), TInt.of(), TInt.of(1)),
                     start(1, 2).plus(7).dedup().count().count()),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(4), TInt.some(4), TInt.some(1, 4), TInt.some(), TInt.some()),
+                    NONE, TInt.some(4), TInt.some(4), TInt.some(1, 4), TInt.of(), TInt.of()),
                     start(1, 2, 3, 4).plus(7).dedup().count().sum()),
             new TestArgs<>(List.of(
                     NONE, TInt.some(4), TInt.some(8), TBool.some(8)),
@@ -106,22 +106,22 @@ class TypeTest {
                     NONE, TBool.of(true).q(7), List.of(List.of(TBool.of(true), TBool.of(true))), TBool.of(true).q(0, 7), TBool.of(true).q(0, 7)),
                     start(TBool.of(true).q(7)).is(id()).is(true)),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(4), TInt.some(4), TInt.some(1, 4), List.of(List.of(TInt.some(), TBool.some())), TInt.some(0, 4)),
+                    NONE, TInt.some(4), TInt.some(4), TInt.some(1, 4), List.of(List.of(TInt.of(), TBool.of())), TInt.some(0, 4)),
                     start(1, 2, 3, 4).plus(7).dedup().is(gt(5))),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(4), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
+                    NONE, TInt.some(4), List.of(List.of(TInt.of(), TInt.of(), TBool.of())), TBool.some(4), List.of(List.of(TBool.of(), TBool.of())), TBool.some(0, 4)),
                     start(1, 2, 3, 4).map(plus(3).gt(2)).is(id())),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(4), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 28)),
+                    NONE, TInt.some(4), List.of(List.of(TInt.of(), TInt.of(), TBool.of())), TBool.some(4), List.of(List.of(TBool.of(), TBool.of())), TBool.some(0, 28)),
                     start(1, 2, 3, 4).map(plus(3).gt(2)).is(id()).q(7)),
             new TestArgs<>(List.of(
-                    NONE, TInt.some(4), List.of(List.of(TInt.some(), List.of(List.of(TInt.some(), TInt.some(), TBool.some())), TBool.some())), TBool.some(4), List.of(List.of(TBool.some(), TBool.some())), TBool.some(0, 4)),
-                    null),//TInt.of(1, 2, 3, 4).map(TBool.some().map(TInt.some().plus(3).gt(2))).is(eq(true).id())),
+                    NONE, TInt.some(4), List.of(List.of(TInt.of(), List.of(List.of(TInt.of(), TInt.of(), TBool.of())), TBool.of())), TBool.some(4), List.of(List.of(TBool.of(), TBool.of())), TBool.some(0, 4)),
+                    null),//TInt.of(1, 2, 3, 4).map(TBool.of().map(TInt.of().plus(3).gt(2))).is(eq(true).id())),
             new TestArgs<>(List.of(
-                    NONE, TStr.some().q(4), List.of(List.of(TStr.some(), TStr.some())), TRec.of(TStr.some(), TInt.some())),
+                    NONE, TStr.of().q(4), List.of(List.of(TStr.of(), TStr.of())), TRec.of(TStr.of(), TInt.of())),
                     start("a", "b", "c", "d").groupCount(plus("c"))),
             new TestArgs<>(List.of(
-                    NONE, TStr.some().q(4), List.of(List.of(TStr.some().q(4), TStr.some().q(4)), List.of(TStr.some().q(4), TStr.some().q(4)), List.of(TStr.some().q(4), TStr.some().q(4)), List.of(TStr.some().q(4), TStr.some().q(4))), TStr.some().q(8), List.of(List.of(TStr.some(), TStr.some())), TStr.some().q(8)),
+                    NONE, TStr.of().q(4), List.of(List.of(TStr.of().q(4), TStr.of().q(4)), List.of(TStr.of().q(4), TStr.of().q(4)), List.of(TStr.of().q(4), TStr.of().q(4)), List.of(TStr.of().q(4), TStr.of().q(4))), TStr.of().q(8), List.of(List.of(TStr.of(), TStr.of())), TStr.of().q(8)),
                     null),//TStr.of("a", "b", "c", "d").<Str>branch(ID(), ID(), ID(), ID()).plus(TStr.of())),
     };
 

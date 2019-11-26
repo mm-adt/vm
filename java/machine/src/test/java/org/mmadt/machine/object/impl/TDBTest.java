@@ -55,7 +55,7 @@ class TDBTest {
     void shouldInflateNestedRecursiveTypes() {
         final TModel model = TModel.of("ex");
         final Inst bc =
-                TInst.of("define", "person", TRec.of("name", TStr.some(), "age", TInt.some(), "friend", model.sym("person"))).mult(
+                TInst.of("define", "person", TRec.of("name", TStr.of(), "age", TInt.of(), "friend", model.sym("person"))).mult(
                         TInst.of("define", "people", model.sym("person").q(star))).mult(
                         TInst.of("define", "db", TRec.of("persons", model.sym("people"))));
 
@@ -70,8 +70,8 @@ class TDBTest {
         assertNotEquals(person, people);
         assertNotEquals(person.toString(), people.toString());
         //
-        assertEquals(TStr.some(), person.get(TStr.of("name")));
-        assertEquals(TInt.some(), person.get(TStr.of("age")));
+        assertEquals(TStr.of(), person.get(TStr.of("name")));
+        assertEquals(TInt.of(), person.get(TStr.of("age")));
         final Obj friend = person.get(TStr.of("friend"));
         assertEquals("person", friend.symbol());
         assertEquals(person, TSym.fetch(friend));
@@ -108,9 +108,9 @@ class TDBTest {
         // @person&[name:@string,age:@int,friend:@person&[age:@int~a,friend:@person&[age:@int~b]~c]~d]
         final TModel model = TModel.of("ex");
         final Inst bc =
-                TInst.of("define", "person", TRec.of("name", TStr.some(), "age", TInt.some(),
-                        "friend", model.sym("person").and(TRec.of("age", TInt.some().label("a"),
-                                "friend", model.sym("person").and(TRec.of("age", TInt.some().label("b"))).label("c"))).label("d"))).mult(
+                TInst.of("define", "person", TRec.of("name", TStr.of(), "age", TInt.of(),
+                        "friend", model.sym("person").and(TRec.of("age", TInt.of().label("a"),
+                                "friend", model.sym("person").and(TRec.of("age", TInt.of().label("b"))).label("c"))).label("d"))).mult(
                         TInst.of("define", "people", model.sym("person").q(star))).mult(
                         TInst.of("define", "db", TRec.of("persons", model.sym("people"))));
 
@@ -157,8 +157,8 @@ class TDBTest {
     void shouldSupportSecondDegreeRecursiveTypes() {
         final TModel model = TModel.of("ex");
         final Inst bc =
-                TInst.of("define", "person", TRec.of("name", TStr.some(), "age", TInt.some(), "company", model.sym("company"))).mult(
-                        TInst.of("define", "company", TRec.of("title", TStr.some(), "ceo", model.sym("person").and(TRec.of("age", is(gt(30))))))).mult(
+                TInst.of("define", "person", TRec.of("name", TStr.of(), "age", TInt.of(), "company", model.sym("company"))).mult(
+                        TInst.of("define", "company", TRec.of("title", TStr.of(), "ceo", model.sym("person").and(TRec.of("age", is(gt(30))))))).mult(
                         TInst.of("define", "db", model.sym("company").q(star)));
 
         System.out.println(bc);
@@ -180,13 +180,13 @@ class TDBTest {
     void shouldSupportSubtyping() {
         final TModel model = TModel.of("ex");
         final Inst bc =
-                TInst.of("define", "element", TRec.of("id", TInt.some(), "label", TStr.some())).mult(
+                TInst.of("define", "element", TRec.of("id", TInt.of(), "label", TStr.of())).mult(
                         TInst.of("define", "vertex", model.sym("element").and(TRec.of("outV", model.sym("vertex"), "inV", model.sym("vertex"))))).mult(
                         TInst.of("define", "db", model.sym("vertex").q(star)));
 
         model.model(bc);
         final TRec<Obj, Obj> element = model.get("element");
-        assertEquals(TStr.some(), element.get(TStr.of("label")));
+        assertEquals(TStr.of(), element.get(TStr.of("label")));
         final TRec<Obj, Obj> vertex = model.get("vertex");
         assertEquals(vertex, TSym.fetch(vertex.get(TStr.of("outV")))); // TODO: fetch?
     }

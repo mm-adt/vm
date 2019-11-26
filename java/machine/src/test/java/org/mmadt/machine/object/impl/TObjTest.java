@@ -55,17 +55,17 @@ class TObjTest {
 
     @Test
     void shouldOrCorrectly() {
-        //      final Obj unionType = TInt.some().or(TBool.some()).or(TStr.some()).or(TReal.some());
+        //      final Obj unionType = TInt.of().or(TBool.of()).or(TStr.of()).or(TReal.of());
 //        assertEquals(4, (((POr) unionType.get()).predicates().size()));
 
 
-        System.out.println(TInt.some().or(TBool.some()).or(TReal.some()).or(TStr.some()).test(TLst.of("marko")));
+        System.out.println(TInt.of().or(TBool.of()).or(TReal.of()).or(TStr.of()).test(TLst.of("marko")));
     }
 
     @Test
     void testAtomicAndOr() {
-        /*Str type1 = TStr.some();
-        Obj type2 = TStr.some().gt("marko");
+        /*Str type1 = TStr.of();
+        Obj type2 = TStr.of().gt("marko");
         assertFalse(type1.constant());
         assertFalse(type2.constant());
         assertEquals(type2, type1.and(type2));
@@ -74,7 +74,7 @@ class TObjTest {
         assertEquals(type1, type1.or(type1));*/
         //
         Obj type3 = TInt.of(is(gt(32)));
-        Int type4 = TInt.some();
+        Int type4 = TInt.of();
         Obj type5 = TInt.of(is(gt(32))).q(star);
         assertFalse(type3.constant());
         assertFalse(type4.constant());
@@ -90,38 +90,38 @@ class TObjTest {
         Obj type9 = is(type7.and(type8)).bytecode();
         Obj type10 = is(type7.or(type8)).bytecode();
 
-        //System.out.println(TObj.some().gt(1).and(TObj.some().lt(2)));
+        //System.out.println(TObj.of().gt(1).and(TObj.of().lt(2)));
         assertEquals(is(and(gt(1), lt(2))).bytecode(), type9);
         // TODO: NEED OrMap:: assertEquals(is(or(gt(1),lt(2))), type10);
-        assertEquals(TInt.of(is(gt(32))).label("x"), TInt.some().and(TInt.of(is(gt(32))).label("x")));
-        assertThrows(RuntimeException.class, () -> TInt.some().label("x").and(TInt.some().label("y")));
-        //assertThrows(RuntimeException.class, () -> TInt.some().as("x").and(TStr.some().as("x")));
+        assertEquals(TInt.of(is(gt(32))).label("x"), TInt.of().and(TInt.of(is(gt(32))).label("x")));
+        assertThrows(RuntimeException.class, () -> TInt.of().label("x").and(TInt.of().label("y")));
+        //assertThrows(RuntimeException.class, () -> TInt.of().as("x").and(TStr.of().as("x")));
     }
 
 
     @Test
     void shouldHaveSymbols() {
-        assertEquals("bool", TBool.some().symbol());
-        assertEquals("int", TInt.some().symbol());
-        assertEquals("real", TReal.some().symbol());
-        assertEquals("str", TStr.some().symbol());
+        assertEquals("bool", TBool.of().symbol());
+        assertEquals("int", TInt.of().symbol());
+        assertEquals("real", TReal.of().symbol());
+        assertEquals("str", TStr.of().symbol());
         assertEquals("inst", TInst.some().symbol());
         assertEquals("list", TLst.some().symbol());
         assertEquals("rec", TRec.some().symbol());
         //
         assertEquals("lucky", TBool.of(true).symbol("lucky").symbol());
-        assertEquals("person", TRec.of("name", TStr.some(), "age", TInt.some()).symbol("person").symbol());
+        assertEquals("person", TRec.of("name", TStr.of(), "age", TInt.of()).symbol("person").symbol());
     }
 
     @Test
     void shouldToString() {
-        assertEquals("bool", TBool.some().toString());
+        assertEquals("bool", TBool.of().toString());
         assertEquals("true", TBool.of(true).toString());
-        assertEquals("int~x", TInt.some().label("x").toString());
+        assertEquals("int~x", TInt.of().label("x").toString());
         assertEquals("3", TInt.of(3).toString());
-        assertEquals("real", TReal.some().toString());
+        assertEquals("real", TReal.of().toString());
         assertEquals("6.6", TReal.of(6.6f).toString());
-        assertEquals("str", TStr.some().toString());
+        assertEquals("str", TStr.of().toString());
         assertEquals("'hello'", TStr.of("hello").toString());
         assertEquals("[get,'inE'][get,'outV']", TInst.of("get", "inE").mult(TInst.of("get", "outV")).toString());
         assertEquals("inst", TInst.some().toString());
@@ -131,20 +131,20 @@ class TObjTest {
         // TODO: assertEquals("(gt(1)|lt(20))~x", TInt.of(is(or(gt(1),lt(20)))).as("x").toString());
         // TODO: assertEquals("(gt(1)&lt(20))~x", TInt.of(is(and(gt(1),lt(20)))).as("x").toString());
         assertEquals("rec", TRec.some().toString());
-        assertEquals("['name':str,'age':int]", TRec.of("name", TStr.some(), "age", TInt.some()).toString());
-        assertEquals("['name':str,'age':int]", TRec.of("name", TStr.some(), "age", TInt.some()).symbol("person").toString()); // TODO: @person prefix?
-        assertEquals("['name':str~x,'age':int~y]~z", TRec.of("name", TStr.some().label("x"), "age", TInt.some().label("y")).label("z").symbol("person").toString());
+        assertEquals("['name':str,'age':int]", TRec.of("name", TStr.of(), "age", TInt.of()).toString());
+        assertEquals("['name':str,'age':int]", TRec.of("name", TStr.of(), "age", TInt.of()).symbol("person").toString()); // TODO: @person prefix?
+        assertEquals("['name':str~x,'age':int~y]~z", TRec.of("name", TStr.of().label("x"), "age", TInt.of().label("y")).label("z").symbol("person").toString());
     }
 
     @Test
     void shouldTestAny() {
-        assertTrue(TBool.some().test(TBool.of(true)));
-        assertTrue(TBool.some().test(TBool.of(false)));
-        assertTrue(TInt.some().test(TInt.of(6)));
-        assertTrue(TReal.some().test(TReal.of(6.3f)));
-        assertTrue(TStr.some().test(TStr.of("hello")));
+        assertTrue(TBool.of().test(TBool.of(true)));
+        assertTrue(TBool.of().test(TBool.of(false)));
+        assertTrue(TInt.of().test(TInt.of(6)));
+        assertTrue(TReal.of().test(TReal.of(6.3f)));
+        assertTrue(TStr.of().test(TStr.of("hello")));
         assertTrue(TLst.some().test(TLst.of("get", 4, true, 3.2)));
-        assertTrue(TRec.some().test(TRec.of("name", TStr.some(), "age", TInt.some())));
+        assertTrue(TRec.some().test(TRec.of("name", TStr.of(), "age", TInt.of())));
     }
 
     @Test
@@ -155,7 +155,7 @@ class TObjTest {
         assertEquals(TBool.of(true), bindings.get("a"));
         ///
         bindings.clear();
-        TInt.some().label("a").match(bindings, TInt.of(6));
+        TInt.of().label("a").match(bindings, TInt.of(6));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(6), bindings.get("a"));
         //
@@ -165,7 +165,7 @@ class TObjTest {
         assertEquals(TReal.of(6.6f), bindings.get("a"));
         ///
         bindings.clear();
-        TStr.some().label("a").match(bindings, TStr.of("marko"));
+        TStr.of().label("a").match(bindings, TStr.of("marko"));
         assertEquals(1, bindings.size());
         assertEquals(TStr.of("marko"), bindings.get("a"));
         //
@@ -181,13 +181,13 @@ class TObjTest {
         assertEquals(TInst.of("get", "outE"), bindings.get("a"));
         //
         bindings.clear();
-        TLst.of("get", TInt.some().label("a"), true, 3.2).label("b").match(bindings, TLst.of("get", 4, true, 3.2));
+        TLst.of("get", TInt.of().label("a"), true, 3.2).label("b").match(bindings, TLst.of("get", 4, true, 3.2));
         assertEquals(2, bindings.size());
         assertEquals(TInt.of(4), bindings.get("a"));
         assertEquals(TLst.of("get", 4, true, 3.2), bindings.get("b"));
         //
         bindings.clear();
-        TRec.of("name", TStr.some().label("a"), "age", TInt.some().label("b")).label("c").match(bindings, TRec.of("name", "marko", "age", 29));
+        TRec.of("name", TStr.of().label("a"), "age", TInt.of().label("b")).label("c").match(bindings, TRec.of("name", "marko", "age", 29));
         assertEquals(3, bindings.size());
         assertEquals(TStr.of("marko"), bindings.get("a"));
         assertEquals(TInt.of(29), bindings.get("b"));
@@ -196,10 +196,10 @@ class TObjTest {
 
     @Test
     void shouldTypeInstance() {
-        assertTrue(TStr.some().isType());
-        assertTrue(TStr.some().q(qmark).isType());
-        assertTrue(TStr.some().set("marko").isInstance());
-        assertTrue(TStr.some().symbol("str").label("a").isType());
+        assertTrue(TStr.of().isType());
+        assertTrue(TStr.of().q(qmark).isType());
+        assertTrue(TStr.of().set("marko").isInstance());
+        assertTrue(TStr.of().symbol("str").label("a").isType());
     }
 
     @Test
@@ -214,7 +214,7 @@ class TObjTest {
         assertEquals(TReal.none(), TRec.none());
 
         final List<Obj> nones = List.of(TObj.none(), TBool.none(), TInt.none(), TReal.none(), TStr.none(), TLst.none(), TRec.none(), TInst.none());
-        final List<Obj> somes = List.of(TObj.some(), TBool.some(), TInt.some(), TReal.some(), TStr.some(), TLst.some(), TRec.some(), TInst.some());
+        final List<Obj> somes = List.of(TObj.some(), TBool.of(), TInt.of(), TReal.of(), TStr.of(), TLst.some(), TRec.some(), TInst.some());
         final List<Obj> alls = List.of(TObj.all(), TBool.all(), TInt.all(), TReal.all(), TStr.all(), TLst.all(), TRec.all(), TInst.all());
 
         nones.forEach(a -> nones.forEach(b -> {

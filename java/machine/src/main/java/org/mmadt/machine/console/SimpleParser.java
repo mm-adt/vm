@@ -190,14 +190,14 @@ public class SimpleParser extends BaseParser<Object> {
     @SuppressSubnodes
     Rule Int() {
         return FirstOf(
-                Sequence(INT, this.push(TInt.some())),
+                Sequence(INT, this.push(TInt.of())),
                 Sequence(Number(), this.push(TInt.of(Integer.valueOf(match().trim())))));
     }
 
     @SuppressSubnodes
     Rule Str() {
         return FirstOf(
-                Sequence(STR, this.push(TStr.some())),
+                Sequence(STR, this.push(TStr.of())),
                 Sequence(TRIPLE_QUOTE, ZeroOrMore(Sequence(TestNot(TRIPLE_QUOTE), ANY)), this.push(TStr.of(match())), TRIPLE_QUOTE),
                 Sequence(SINGLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\\'")), ANY)), this.push(TStr.of(match())), SINGLE_QUOTE),
                 Sequence(DOUBLE_QUOTE, ZeroOrMore(Sequence(TestNot(AnyOf("\r\n\"")), ANY)), this.push(TStr.of(match())), DOUBLE_QUOTE));
@@ -206,7 +206,7 @@ public class SimpleParser extends BaseParser<Object> {
     @SuppressSubnodes
     Rule Bool() {
         return FirstOf(
-                Sequence(BOOL, this.push(TBool.some())),
+                Sequence(BOOL, this.push(TBool.of())),
                 Sequence(TRUE, this.push(TBool.of(true))),
                 Sequence(FALSE, this.push(TBool.of(false))));
     }

@@ -44,9 +44,9 @@ class TComplexTest {
 
     @Test
     void testComplex() {
-        final Lst<Real> complex = TLst.of(TReal.some().label("x"), TReal.some().label("xi")).
-                inst(plus(TLst.of(TReal.some().label("y"), TReal.some().label("yi"))).bytecode(),
-                        map(TLst.of()).put(TInt.of(0), map(TReal.some().label("x")).plus(TReal.some().label("y"))).put(TInt.of(1), map(TReal.some().label("xi")).plus(TReal.some().label("yi"))).bytecode());
+        final Lst<Real> complex = TLst.of(TReal.of().label("x"), TReal.of().label("xi")).
+                inst(plus(TLst.of(TReal.of().label("y"), TReal.of().label("yi"))).bytecode(),
+                        map(TLst.of()).put(TInt.of(0), map(TReal.of().label("x")).plus(TReal.of().label("y"))).put(TInt.of(1), map(TReal.of().label("xi")).plus(TReal.of().label("yi"))).bytecode());
         System.out.println(complex);
         Bindings bindings = new Bindings();
         bindings.put("x", TReal.of(2.0f));

@@ -89,7 +89,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     protected Object value;                             // mutually exclusive with pattern (instance data)
     private Q quantifier = null;                                // the 'amount' of this object bundle
     Type types;                                         // an object that abstractly defines this object's forms
-    private boolean typeSet = false;                    // TODO: this is because we have a distinction of 'type not set' (will remove at some point)
+    private boolean typeSet = false;                    // TODO: this is because we have a distinction of 'type not set' (will remove at of point)
     private Map<Str, Obj> environment;
 
     public TObj(final Object value) {

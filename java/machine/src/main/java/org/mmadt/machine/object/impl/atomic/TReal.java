@@ -49,10 +49,6 @@ public final class TReal extends TObj implements Real {
         super(value);
     }
 
-    public static Real some() {
-        return new TReal(null);
-    }
-
     public static Real all() {
         return new TReal(null).q(0, Integer.MAX_VALUE);
     }

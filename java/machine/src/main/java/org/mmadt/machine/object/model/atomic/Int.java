@@ -53,7 +53,7 @@ public interface Int extends WithOrderedRing<Int> {
     }
 
     public default Int is(final Inst inst) {
-        return this.is(ObjectHelper.create(TBool.some(), inst));
+        return this.is(ObjectHelper.create(TBool.of(), inst));
     }
 
     public default Int to(final Object label) {

@@ -66,10 +66,10 @@ final class TLstTest implements TestUtilities {
             ProcessArgs.of(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), "c")),
             ProcessArgs.of(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), TStr.of("").plus("c").id().plus(zero()))),
             // types
-            ProcessArgs.of(List.of(TLst.of(TInt.some(), TStr.some(), 1.0f, false)), TLst.of(TInt.some(), TStr.some()).plus(TLst.of(1.0f, false))),
-            ProcessArgs.of(List.of(TLst.of(TInt.some(), TStr.some()).plus(TLst.of(TInt.some().mult(6), false))), TLst.of(TInt.some(), TStr.some()).plus(TLst.of(TInt.some().mult(6), false))),
+            ProcessArgs.of(List.of(TLst.of(TInt.of(), TStr.of(), 1.0f, false)), TLst.of(TInt.of(), TStr.of()).plus(TLst.of(1.0f, false))),
+            ProcessArgs.of(List.of(TLst.of(TInt.of(), TStr.of()).plus(TLst.of(TInt.of().mult(6), false))), TLst.of(TInt.of(), TStr.of()).plus(TLst.of(TInt.of().mult(6), false))),
             // state
-            // ProcessArgs.of(List.of(TLst.of(TInt.some(), TStr.some(), 1.0f, false)), TLst.of(TInt.some().to("a"), TStr.some().to("b")).plus(TLst.of(1.0f, false)).from("a")),
+            // ProcessArgs.of(List.of(TLst.of(TInt.of(), TStr.of(), 1.0f, false)), TLst.of(TInt.of().to("a"), TStr.of().to("b")).plus(TLst.of(1.0f, false)).from("a")),
 
     };
 
@@ -80,8 +80,8 @@ final class TLstTest implements TestUtilities {
 
     /*@Test
     void testInstanceReferenceType() {
-        validateKinds(TLst.of("a", true, false), TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true)), TLst.some().q(45));
-        validateKinds(TLst.of(TLst.of("a", 2, 21.0)).q(2), TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true)), TLst.some());
+        validateKinds(TLst.of("a", true, false), TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true)), TLst.of().q(45));
+        validateKinds(TLst.of(TLst.of("a", 2, 21.0)).q(2), TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true)), TLst.of());
     }*/
 
     @Test
@@ -96,20 +96,20 @@ final class TLstTest implements TestUtilities {
 
     @Test
     void testPatterns() {
-        assertTrue(TLst.of(TInt.some()).test(TLst.of(1)));
-        assertTrue(TLst.of(TInt.some()).q(2).test(TLst.of(TInt.of(1)).q(2)));
-        //  assertFalse(TLst.of(TInt.some()).q(2).test(TLst.of(TInt.of(1)).q(3)));
-        assertTrue(TLst.of(TInt.some()).q(1, 4).test(TLst.of(TInt.of(1)).q(3)));
-        assertTrue(TLst.of(TInt.some(), 2, "marko").q(1, 4).test(TLst.of(1, 2, "marko").q(3)));
-        //  assertFalse(TLst.of(TInt.some(), 2, "marko").q(1, 4).test(TLst.of(1, 2, "marko").q(6)));
-        assertFalse(TLst.of(TInt.some(), 2, TReal.some()).q(1, 4).test(TLst.of(1, 2, "marko").q(6)));
-        assertTrue(TLst.of(TInt.some(), TLst.of(1, TInt.some(), 3), TReal.some()).q(1, 4).test(TLst.of(1, TLst.of(1, 2, 3), 0.2).q(4)));
+        assertTrue(TLst.of(TInt.of()).test(TLst.of(1)));
+        assertTrue(TLst.of(TInt.of()).q(2).test(TLst.of(TInt.of(1)).q(2)));
+        //  assertFalse(TLst.of(TInt.of()).q(2).test(TLst.of(TInt.of(1)).q(3)));
+        assertTrue(TLst.of(TInt.of()).q(1, 4).test(TLst.of(TInt.of(1)).q(3)));
+        assertTrue(TLst.of(TInt.of(), 2, "marko").q(1, 4).test(TLst.of(1, 2, "marko").q(3)));
+        //  assertFalse(TLst.of(TInt.of(), 2, "marko").q(1, 4).test(TLst.of(1, 2, "marko").q(6)));
+        assertFalse(TLst.of(TInt.of(), 2, TReal.of()).q(1, 4).test(TLst.of(1, 2, "marko").q(6)));
+        assertTrue(TLst.of(TInt.of(), TLst.of(1, TInt.of(), 3), TReal.of()).q(1, 4).test(TLst.of(1, TLst.of(1, 2, 3), 0.2).q(4)));
     }
 
     @Test
     void shouldAndCorrectly() {
         Lst<Str> list1 = TLst.of("my", "name", "is", "marko");
-        Lst<Str> list2 = TLst.of("my", "name", "is", TStr.some());
+        Lst<Str> list2 = TLst.of("my", "name", "is", TStr.of());
         assertTrue(list1.constant());
         assertFalse(list2.constant());
         assertTrue(list2.and(list1).constant());
@@ -120,7 +120,7 @@ final class TLstTest implements TestUtilities {
     @Test
     void shouldOrCorrectly() {
         Lst<Str> list1 = TLst.of("my", "name", "is", "marko");
-        Lst<Str> list2 = TLst.of("my", "name", "is", TStr.some());
+        Lst<Str> list2 = TLst.of("my", "name", "is", TStr.of());
         assertTrue(list1.constant());
         assertFalse(list2.constant());
         // System.out.println(list1.or(list2));
@@ -133,7 +133,7 @@ final class TLstTest implements TestUtilities {
 
     @Test
     void shouldBindNestedLists() {
-        Lst<Obj> list = TLst.of(TStr.some().label("a"), TInt.of(29).label("b"), TBool.of(true), TLst.of(TReal.some(), TReal.some().label("c"), TLst.of(TReal.some().label("d"))).label("e")).label("f");
+        Lst<Obj> list = TLst.of(TStr.of().label("a"), TInt.of(29).label("b"), TBool.of(true), TLst.of(TReal.of(), TReal.of().label("c"), TLst.of(TReal.of().label("d"))).label("e")).label("f");
         Lst<Obj> good = TLst.of("marko", 29, true, TLst.of(66.6f, 11.1f, TLst.of(1.0f)));
         Lst<Obj> bad1 = TLst.of("marko", 30, true, TLst.of(66.6f, 11.1f, TLst.of(1.0f)));
         Lst<Obj> bad2 = TLst.of(7, 29, true, TLst.of(66.6f, 11.1f, TLst.of(1.0f)));
@@ -168,9 +168,9 @@ final class TLstTest implements TestUtilities {
     @Test
     void shouldSupportNoneEndings() {
         final Lst<Obj> a = TLst.of("marko", 29);
-        assertFalse(TLst.of(TStr.some(), TObj.none()).test(a));
-        assertTrue(TLst.of(TStr.some(), 29, TObj.none()).test(a));
-        assertTrue(TLst.of(TStr.some(), 29, TObj.none(), TObj.none()).test(a));
-        assertFalse(TLst.of(TStr.some(), TObj.none(), 29, TObj.none()).test(a));
+        assertFalse(TLst.of(TStr.of(), TObj.none()).test(a));
+        assertTrue(TLst.of(TStr.of(), 29, TObj.none()).test(a));
+        assertTrue(TLst.of(TStr.of(), 29, TObj.none(), TObj.none()).test(a));
+        assertFalse(TLst.of(TStr.of(), TObj.none(), 29, TObj.none()).test(a));
     }
 }

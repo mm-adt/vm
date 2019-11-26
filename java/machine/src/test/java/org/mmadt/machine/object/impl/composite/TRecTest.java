@@ -77,7 +77,7 @@ final class TRecTest implements TestUtilities {
         final Bindings bindings = new Bindings();
         final Rec<Str, ?> type = TRec.of(
                 "name", is(eq("marko")).as("x"),
-                "age", (is(a(TInt.some())).is(gt(23))).as("y"));
+                "age", (is(a(TInt.of())).is(gt(23))).as("y"));
         assertEquals("y", type.get(TStr.of("age")).label());
         final Rec<Str, Obj> person = TRec.of("name", "marko", "age", 29);
         System.out.println(type + ":::" + person);
@@ -90,7 +90,7 @@ final class TRecTest implements TestUtilities {
         // TODO final Rec<Str,?> bound = type.bind(bindings);
         // System.out.println(bound);
         //  assertEquals(person, bound);
-        final Lst list = TLst.of(TStr.some().label("x"), TInt.some().label("y"));
+        final Lst list = TLst.of(TStr.of().label("x"), TInt.of().label("y"));
         assertEquals(TLst.of("marko", 29), list.bind(bindings));
     }*/
 
@@ -109,9 +109,9 @@ final class TRecTest implements TestUtilities {
         assertTrue(rec1.constant());
         assertEquals(TRec.of("name", "marko", "age", 29), rec1.and(rec2));
         //
-        rec1 = TRec.of("name", TStr.some());
+        rec1 = TRec.of("name", TStr.of());
         assertFalse(rec1.constant());
-        assertEquals(TRec.of("name", TStr.some(), "age", 29), rec1.and(rec2));
+        assertEquals(TRec.of("name", TStr.of(), "age", 29), rec1.and(rec2));
     }
 
     @Test
@@ -129,17 +129,17 @@ final class TRecTest implements TestUtilities {
         assertTrue(rec1.constant());
         assertEquals(rec3, rec1.or(rec2));
         //
-        Rec rec4 = (TRec) TRec.of("name", TStr.some()).or(TRec.of("age", 29));
+        Rec rec4 = (TRec) TRec.of("name", TStr.of()).or(TRec.of("age", 29));
         assertFalse(rec4.constant());
-        assertEquals(rec4, TRec.of("name", TStr.some()).or(rec2));
+        assertEquals(rec4, TRec.of("name", TStr.of()).or(rec2));
     }
 
     @Test
     void shouldSupportTypeReferenceInstance() {
-        final Rec recordType = TRec.of("name", TStr.some(), "age", is(gt(32))).
+        final Rec recordType = TRec.of("name", TStr.of(), "age", is(gt(32))).
                 inst(TInst.of("get", "outE"),
                         TInst.of("db").mult(TInst.of("get", "E")).mult(TInst.of("is", TInst.of("get", "outV").mult(TInst.of("eq", 1))))).
-                inst(TInst.of(TStr.some(), "marko"),
+                inst(TInst.of(TStr.of(), "marko"),
                         TInst.of("db").mult(TInst.of("get", "E")).mult(TInst.of("is", TInst.of("get", "outV").mult(TInst.of("eq", 1)))));
         ///
         assertTrue(recordType.isType());
@@ -151,34 +151,34 @@ final class TRecTest implements TestUtilities {
         assertFalse(recordType.test(TRec.of("name", 2)));
         assertTrue(recordType.test(TRec.of("name", "marko", "age", 45)));
 
-        assertFalse(TRec.of("name", TStr.some(), "age", TInt.some()).constant());
-        assertFalse(TRec.of("name", "marko", "stats", TRec.of("age", TInt.some())).constant());
+        assertFalse(TRec.of("name", TStr.of(), "age", TInt.of()).constant());
+        assertFalse(TRec.of("name", "marko", "stats", TRec.of("age", TInt.of())).constant());
         assertTrue(TRec.of("name", "marko", "stats", TRec.of("age", 29)).constant());
-        assertFalse(TRec.of("name", TStr.some(), "age", TInt.some()).constant());
-        assertFalse(TRec.of("name", TStr.some(), "age", TInt.some()).constant());
+        assertFalse(TRec.of("name", TStr.of(), "age", TInt.of()).constant());
+        assertFalse(TRec.of("name", TStr.of(), "age", TInt.of()).constant());
     }
 
     @Test
     void shouldSupportQuantifiersInTest() {
-        Rec person = TRec.of("name", TStr.some(), "age", TInt.some().q(qmark)).symbol("person");
+        Rec person = TRec.of("name", TStr.of(), "age", TInt.of().q(qmark)).symbol("person");
         final Rec marko = TRec.of("name", "marko", "age", TInt.of(29));
         final Rec kuppitz = TRec.of("name", "kuppitz");
         assertTrue(person.test(marko));
         assertTrue(person.test(kuppitz));
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().q(zero)).symbol("person");
+        person = TRec.of("name", TStr.of(), "age", TInt.of().q(zero)).symbol("person");
         assertFalse(person.test(marko));
         assertTrue(person.test(kuppitz));
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().q(star)).symbol("person");
+        person = TRec.of("name", TStr.of(), "age", TInt.of().q(star)).symbol("person");
         assertTrue(person.test(marko));
         assertTrue(person.test(kuppitz));
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().q(plus)).symbol("person");
+        person = TRec.of("name", TStr.of(), "age", TInt.of().q(plus)).symbol("person");
         assertTrue(person.test(marko));
         assertFalse(person.test(kuppitz));
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().q(one)).symbol("person");
+        person = TRec.of("name", TStr.of(), "age", TInt.of().q(one)).symbol("person");
         assertTrue(person.test(marko));
         assertFalse(person.test(kuppitz));
     }
@@ -186,7 +186,7 @@ final class TRecTest implements TestUtilities {
     @Test
     void shouldSupportQuantifiersInMatch() {
         Bindings bindings = new Bindings();
-        Rec<Obj, Obj> person = TRec.of("name", TStr.some(), "age", TInt.some().q(qmark).label("a")).symbol("person");
+        Rec<Obj, Obj> person = TRec.of("name", TStr.of(), "age", TInt.of().q(qmark).label("a")).symbol("person");
         final Rec marko = TRec.of("name", "marko", "age", TInt.of(29));
         final Rec kuppitz = TRec.of("name", "kuppitz");
         assertTrue(person.match(bindings, marko));
@@ -196,14 +196,14 @@ final class TRecTest implements TestUtilities {
         assertTrue(person.match(bindings, kuppitz));
         bindings.clear();
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.none().label("a")).symbol("person");
+        person = TRec.of("name", TStr.of(), "age", TInt.none().label("a")).symbol("person");
         assertFalse(person.match(bindings, marko));
         assertEquals(0, bindings.size());
         assertTrue(person.match(bindings, kuppitz));
         System.out.println(bindings);
         assertEquals(0, bindings.size());
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().q(star).label("a")).symbol("person");
+        person = TRec.of("name", TStr.of(), "age", TInt.of().q(star).label("a")).symbol("person");
         assertTrue(person.match(bindings, marko));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(29), bindings.get("a"));
@@ -212,7 +212,7 @@ final class TRecTest implements TestUtilities {
         assertEquals(0, bindings.size());
 
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().q(plus).label("a")).symbol("person");
+        person = TRec.of("name", TStr.of(), "age", TInt.of().q(plus).label("a")).symbol("person");
         assertTrue(person.match(bindings, marko));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(29), bindings.get("a"));
@@ -220,7 +220,7 @@ final class TRecTest implements TestUtilities {
         assertFalse(person.match(bindings, kuppitz));
         assertEquals(0, bindings.size());
         //
-        person = TRec.of("name", TStr.some(), "age", TInt.some().label("a")).symbol("person");
+        person = TRec.of("name", TStr.of(), "age", TInt.of().label("a")).symbol("person");
         assertTrue(person.match(bindings, marko));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(29), bindings.get("a"));
@@ -234,14 +234,14 @@ final class TRecTest implements TestUtilities {
         final Random random = new Random();
         Obj recordType = null;
         for (int i = 0; i < 100; i++) {
-            recordType = TRec.of("name", TStr.some(), "age", TInt.of(is(gt(28))));
+            recordType = TRec.of("name", TStr.of(), "age", TInt.of(is(gt(28))));
             if (random.nextBoolean())
-                recordType = recordType.and(TRec.of("name", TStr.some()).and(recordType));
+                recordType = recordType.and(TRec.of("name", TStr.of()).and(recordType));
             if (random.nextBoolean())
-                recordType = TRec.some().and(TRec.of("name", TStr.some())).and(TRec.of("age", TInt.some()));
+                recordType = TRec.some().and(TRec.of("name", TStr.of())).and(TRec.of("age", TInt.of()));
         }
-        recordType = TRec.of("name", TStr.some(), "age", TInt.of(is(gt(28)))).and(recordType);
-        assertEquals(recordType, TRec.of("name", TStr.some(), "age", TInt.of(is(gt(28)))));
+        recordType = TRec.of("name", TStr.of(), "age", TInt.of(is(gt(28)))).and(recordType);
+        assertEquals(recordType, TRec.of("name", TStr.of(), "age", TInt.of(is(gt(28)))));
         assertTrue(recordType.isType());
         assertFalse(recordType.isReference());
         assertFalse(recordType.isInstance());
@@ -249,10 +249,10 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldMatchNestedRecords1() {
-        final Rec person = TRec.of("name", TStr.some().label("n1"), "age", TInt.some(),
+        final Rec person = TRec.of("name", TStr.of().label("n1"), "age", TInt.of(),
                 "phones", TRec.of(
-                        "home", TInt.some().label("h1").or(TStr.some().label("h2")),
-                        "work", TInt.of(is(gt(0))).label("w1").or(TStr.some()))).label("x");
+                        "home", TInt.of().label("h1").or(TStr.of().label("h2")),
+                        "work", TInt.of(is(gt(0))).label("w1").or(TStr.of()))).label("x");
 
         final Rec marko = TRec.of("name", "marko", "age", 29, "phones", TRec.of("home", 123, "work", 34));
         assertTrue(person.test(marko));
@@ -272,7 +272,7 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldMatchNestedRecords2() {
-        Rec type1 = TRec.of("name", TStr.some().label("n"), "address", TRec.of("state", TStr.some().label("s"), "zipcode", TInt.some().label("z")));
+        Rec type1 = TRec.of("name", TStr.of().label("n"), "address", TRec.of("state", TStr.of().label("s"), "zipcode", TInt.of().label("z")));
         Rec rec1 = TRec.of("name", "marko", "address", TRec.of("state", "NM", "zipcode", 87506));
         assertTrue(rec1.constant());
         assertFalse(type1.constant());
@@ -288,7 +288,7 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldBindQuantifier() {
-        final Rec person = TRec.of("name", TStr.some().label("x"), "age", TInt.some()).q(qmark).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("x"))))));
+        final Rec person = TRec.of("name", TStr.of().label("x"), "age", TInt.of()).q(qmark).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of().label("x"))))));
         assertEquals(qmark.apply(person.q()), person.q());
         final Bindings bindings = new Bindings();
         bindings.put("x", TStr.of("marko"));
@@ -299,8 +299,8 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldAndTypesAndInstances() {
-        final Rec<?, ?> named = TRec.of("name", TStr.some()).symbol("named");
-        final Rec<?, ?> aged = TRec.of("age", TInt.some());
+        final Rec<?, ?> named = TRec.of("name", TStr.of()).symbol("named");
+        final Rec<?, ?> aged = TRec.of("age", TInt.of());
         final Rec<?, ?> human = TRec.some().symbol("human");
         final Rec<?, ?> person = named.and(aged).and(human).symbol("person");
         final Rec<Obj, Obj> marko = TRec.of("name", "marko");
@@ -382,8 +382,8 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldOrTypesAndInstances() {
-        final Rec<?, ?> named = TRec.of("name", TStr.some()).symbol("named");
-        final Rec<?, ?> aged = TRec.of("age", TInt.some()).inst(TInst.of("get", "age"), TInst.of("get", "years"));
+        final Rec<?, ?> named = TRec.of("name", TStr.of()).symbol("named");
+        final Rec<?, ?> aged = TRec.of("age", TInt.of()).inst(TInst.of("get", "age"), TInst.of("get", "years"));
         final Rec<?, ?> human = TRec.some().symbol("human");
         final Obj object = TObj.some().inst(TInst.of("get", "name"), TInst.of("get", "alias"));
         final Obj person = named.or(aged).and(human).or(object).symbol("person");
@@ -434,7 +434,7 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldAndWithObject() {
-        final Rec<?, ?> person = TRec.of("name", TStr.some(), "age", TInt.some()).symbol("person");
+        final Rec<?, ?> person = TRec.of("name", TStr.of(), "age", TInt.of()).symbol("person");
         final Obj object = TObj.some().inst(TInst.of("get", "name"), TInst.of("get", "alias"));
         final Rec personObject = (Rec) person.and(object);
         final Rec<Obj, Obj> marko = TRec.of("name", "marko", "age", 29);
@@ -464,7 +464,7 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldSupportRecursiveTypeTesting() {
-        final Rec<Obj, Obj> person = TRec.of("name", TStr.some(), "friend", TRec.some().symbol("person")).symbol("person");
+        final Rec<Obj, Obj> person = TRec.of("name", TStr.of(), "friend", TRec.some().symbol("person")).symbol("person");
         person.put(TStr.of("friend"), person);
         assertDoesNotThrow(person::toString); // check for stack overflow
         final Rec<Obj, Obj> marko = TRec.of("name", "marko");
@@ -482,7 +482,7 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldSupportRecursiveTypeMatching() {
-        Rec<Obj, Obj> person = TRec.of("name", TStr.some().label("a"), "friend", TRec.some().symbol("person")).symbol("person");
+        Rec<Obj, Obj> person = TRec.of("name", TStr.of().label("a"), "friend", TRec.some().symbol("person")).symbol("person");
         person.put(TStr.of("friend"), person.label("b").q(qmark));
         assertDoesNotThrow(person::toString); // check for stack overflow
         final Rec<Obj, Obj> marko = TRec.of("name", "marko");
@@ -515,8 +515,8 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldCarrySymbols() {
-        final Rec<?, ?> person = TRec.of("name", TStr.some()).symbol("person");
-        final Rec<?, ?> aged = TRec.of("age", TInt.some());
+        final Rec<?, ?> person = TRec.of("name", TStr.of()).symbol("person");
+        final Rec<?, ?> aged = TRec.of("age", TInt.of());
         assertEquals("person", person.symbol());
         assertEquals(Tokens.REC, aged.symbol());
         final Rec<?, ?> personAndAged = (Rec) person.and(aged);

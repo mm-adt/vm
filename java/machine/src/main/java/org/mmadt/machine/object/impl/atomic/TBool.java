@@ -51,10 +51,6 @@ public final class TBool extends TObj implements Bool {
         return new TBool(null).q(0);
     }
 
-    public static Bool some() {
-        return new TBool(null);
-    }
-
     public static Bool some(final int count) {
         return TBool.some(count, count);
     }
@@ -68,7 +64,7 @@ public final class TBool extends TObj implements Bool {
     }
 
     public static Bool via(final Obj obj) {
-        return TBool.some().q(obj.q()).access(obj.access()).env(obj.env());
+        return TBool.of().q(obj.q()).access(obj.access()).env(obj.env());
     }
 
     @Override

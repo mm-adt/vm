@@ -54,10 +54,6 @@ public final class TStr extends TObj implements Str {
         return new TStr(null).q(0);
     }
 
-    public static Str some() {
-        return new TStr(null);
-    }
-
     public static Str of(final Object... objects) {
         return ObjectHelper.make(TStr::new, objects);
     }

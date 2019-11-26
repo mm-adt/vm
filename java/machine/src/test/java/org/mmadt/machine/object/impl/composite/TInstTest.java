@@ -60,7 +60,7 @@ final class TInstTest {
     void testInstanceReferenceType() {
         final Inst instance = TInst.of(PLUS, 52);
         final Inst reference = TInst.of(List.of(TInst.of(START, 3, 5), TInst.of(PLUS, 20), TInst.of(COUNT)));
-        final Inst type = TInst.of(PLUS, TInt.some());
+        final Inst type = TInst.of(PLUS, TInt.of());
 
         assertTrue(instance.isInstance());
         assertFalse(instance.isReference());
@@ -84,14 +84,14 @@ final class TInstTest {
         assertTrue(TInst.some().test(TInst.of("get", "outV")));
         assertFalse(TInst.some().test(TInst.of("get", "outV").mult(TInst.of("get", "name"))));
         assertTrue(TInst.some().mult(TInst.some()).test(TInst.of("get", "outV").mult(TInst.of("get", "name"))));
-        assertTrue(TInst.some().mult(TInst.of("get", TStr.some())).test(TInst.of("get", "outV").mult(TInst.of("get", "name"))));
+        assertTrue(TInst.some().mult(TInst.of("get", TStr.of())).test(TInst.of("get", "outV").mult(TInst.of("get", "name"))));
     }
 
     @Test
     void shouldBindInstructions() {
         final TRec<Str, Obj> person = TRec.of(
-                "name", TStr.some(),
-                "age", TInt.of(is(gt(0)))).inst(TInst.of("get", "name"), TInst.of("get", TStr.some().label("x")));
+                "name", TStr.of(),
+                "age", TInt.of(is(gt(0)))).inst(TInst.of("get", "name"), TInst.of("get", TStr.of().label("x")));
         final Bindings bindings = new Bindings();
         bindings.put("x", TStr.of("alias"));
         final Optional<Inst> bc = person.inst(bindings, TInst.of("get", "name"));
@@ -105,8 +105,8 @@ final class TInstTest {
     @Test
     void shouldBindAccess() {
         final TRec<Str, Obj> person = TRec.of(
-                "name", TStr.some().label("y"),
-                "age", TInt.of(is(gt(0)))).access(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.some().label("y")))));
+                "name", TStr.of().label("y"),
+                "age", TInt.of(is(gt(0)))).access(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of().label("y")))));
         final Bindings bindings = new Bindings();
         bindings.put("y", TStr.of("marko"));
         Rec<Str, Obj> marko = person.bind(bindings);

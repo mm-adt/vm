@@ -108,11 +108,11 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     }
 
     public default <A extends Obj> A get(final Object index) {
-        return (A) this.get(ObjectHelper.create(TInt.some(), index));
+        return (A) this.get(ObjectHelper.create(TInt.of(), index));
     }
 
     public default Lst<V> put(final Object index, final Object value) {
-        return this.put(ObjectHelper.create(TInt.some(), index), (V) ObjectHelper.create(TObj.some(), value));
+        return this.put(ObjectHelper.create(TInt.of(), index), (V) ObjectHelper.create(TObj.some(), value));
     }
 
     @Override
