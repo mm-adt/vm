@@ -29,9 +29,9 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.model.Obj;
 
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.util.Iterator;
 
@@ -55,13 +55,14 @@ public class Console {
 
 
     private static final String HISTORY = ".mmadt_history";
-    private static final String PROMPT = "mmadt> ";
     private static final String RESULT = "==>";
     private static final String Q = ":q";
+    private static final String L = ":l";
 
     public static void main(final String[] args) throws Exception {
         System.setErr(System.out);
-        final ScriptEngine engine = new ScriptEngineManager().getEngineByName("mmlang");
+        String engineName = "mmlang";
+        final ScriptEngineManager manager = new ScriptEngineManager(Class.forName("org.mmadt.language.mmlang.jsr223.mmLangScriptEngineFactory").getClassLoader());
         final Terminal terminal = TerminalBuilder.terminal();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
@@ -78,16 +79,22 @@ public class Console {
         terminal.flush();
         while (true) {
             try {
-                final String line = reader.readLine(PROMPT);
-                if (line.equals(Q)) break;
-                try {
-                    ((Iterator<Obj>) engine.eval(line)).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
-                    terminal.flush();
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                    if (null == e.getCause())
-                        throw e;
-                    throw e.getCause();
+                final String line = reader.readLine(engineName + Tokens.RANGLE + Tokens.SPACE);
+                if (line.equals(Q))
+                    break;
+                else if (line.equals(L))
+                    manager.getEngineFactories().forEach(factory -> terminal.writer().println(RESULT + factory.getEngineName()));
+                else if (line.startsWith(L))
+                    engineName = line.replace(L, "").trim();
+                else {
+                    try {
+                        ((Iterator<Obj>) manager.getEngineByName(engineName).eval(line)).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                        if (null == e.getCause())
+                            throw e;
+                        throw e.getCause();
+                    }
                 }
             } catch (final UserInterruptException e) {
                 break;

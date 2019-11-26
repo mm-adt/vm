@@ -60,7 +60,7 @@ public final class mmLangScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public List<String> getNames() {
-        return List.of("mm");
+        return List.of("mmlang");
     }
 
     @Override
