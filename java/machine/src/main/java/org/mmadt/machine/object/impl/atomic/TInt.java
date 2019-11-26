@@ -58,14 +58,6 @@ public final class TInt extends TObj implements Int {
         return new TInt(null).q(0);
     }
 
-    public static Int some(final int low, final int high) {
-        return new TInt(null).q(low, high);
-    }
-
-    public static Int some(final int count) {
-        return TInt.some(count, count);
-    }
-
     public static Int of(final Object... objects) {
         return ObjectHelper.make(TInt::new, objects);
     }

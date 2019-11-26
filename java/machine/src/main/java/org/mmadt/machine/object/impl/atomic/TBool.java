@@ -51,14 +51,6 @@ public final class TBool extends TObj implements Bool {
         return new TBool(null).q(0);
     }
 
-    public static Bool some(final int count) {
-        return TBool.some(count, count);
-    }
-
-    public static Bool some(final int low, final int high) {
-        return new TBool(null).q(low, high);
-    }
-
     public static Bool of(final Object... objects) {
         return ObjectHelper.make(TBool::new, objects);
     }
