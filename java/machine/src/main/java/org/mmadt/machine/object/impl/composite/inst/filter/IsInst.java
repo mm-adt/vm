@@ -55,7 +55,7 @@ public final class IsInst<S extends Obj> extends TInst implements FilterInstruct
     }
 
     public S computeRange(final Obj domain) {
-        return (S) super.computeRange(isARange().orElse(domain));
+        return FilterInstruction.super.computeRange(isARange().orElse(domain));
     }
 
     private Optional<Obj> isARange() {
