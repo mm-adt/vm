@@ -121,10 +121,7 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Binary() {
-        final Var<String> operator = new Var<>();
-        return Sequence(
-                BinaryOperator(), operator.set((String) this.pop()),
-                Singles(), swap(), this.push(OperatorHelper.applyBinary(operator.get(), type(this.pop()), type(this.pop())))); // always left associative
+        return Sequence(BinaryOperator(), Singles(), swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop())))); // always left associative
     }
 
     Rule Grouping() {

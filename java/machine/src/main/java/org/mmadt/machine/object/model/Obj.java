@@ -243,7 +243,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             }
             return o;
         } else if (obj.isType()) {
-            return (O) this.as(obj);
+            return this.isReference() ? (O) this.as(obj).append(this.access()) : (O) this.as(obj);
         } else
             return obj.mapFrom(this);
     }

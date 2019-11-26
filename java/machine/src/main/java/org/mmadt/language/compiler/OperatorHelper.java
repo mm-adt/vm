@@ -28,15 +28,12 @@ import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
-
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,6 +45,7 @@ public final class OperatorHelper {
     }
 
     public static <A extends Obj> A applyBinary(final String operator, final A lhs, final A rhs) {
+        // System.out.println(lhs + " " + operator + " " + rhs);
         switch (operator) {
             case (Tokens.ASTERIX):
                 return (A) ((WithMult) lhs).mult((WithMult) rhs);

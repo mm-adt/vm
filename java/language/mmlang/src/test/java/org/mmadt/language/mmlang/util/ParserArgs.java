@@ -22,39 +22,35 @@
 
 package org.mmadt.language.mmlang.util;
 
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TestArgs {
-    public final boolean ignore;
-    public final String expected;
+public final class ParserArgs<A extends Obj> {
+    public final List<A> expected;
     public final String input;
-    public final Class<? extends Exception> ex;
 
-    public TestArgs(final String input) {
-        this(input, input);
-    }
-
-    public TestArgs(final boolean ignore, final String input) {
-        this(ignore, input, input, null);
-    }
-
-    public TestArgs(final String expected, final String input) {
-        this(false, expected, input, null);
-    }
-
-    public TestArgs(final String expected, final String input, final Class<? extends Exception> ex) {
-        this(false, expected, input, ex);
-    }
-
-    public TestArgs(final boolean ignore, final String expected, final String input) {
-        this(ignore, expected, input, null);
-    }
-
-    public TestArgs(final boolean ignore, final String expected, final String input, final Class<? extends Exception> ex) {
-        this.ignore = ignore;
+    private ParserArgs(final List<A> expected, final String input) {
         this.expected = expected;
         this.input = input;
-        this.ex = ex;
     }
+
+    public static <A extends Obj> ParserArgs<A> of(final List<Object> expected, final String input) {
+        return new ParserArgs<>(objs(expected), input);
+    }
+
+    private static <A extends Obj> List<A> objs(final List<Object> objects) {
+        final List<A> objs = new ArrayList<>();
+        for (final Object object : objects) {
+            objs.add((A) ObjectHelper.from(object));
+        }
+        return objs;
+    }
+
+
 }
