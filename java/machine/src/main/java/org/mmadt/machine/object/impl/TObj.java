@@ -230,6 +230,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         final TObj clone = this.clone();
         clone.quantifier = quantifier;
         return (O) clone;
+
     }
 
     @Override

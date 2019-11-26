@@ -47,7 +47,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.star;
  */
 final class TBoolTest implements TestUtilities {
 
-    private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
+    private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             ProcessArgs.of(List.of(true), TBool.of(true)),
             ProcessArgs.of(List.of(true, true, false, false), TBool.of(true, true, false, false)),
             ProcessArgs.of(List.of(true, true, false, false), TBool.of(true, false).branch(id(), id())),
@@ -56,16 +56,50 @@ final class TBoolTest implements TestUtilities {
     };
 
     @TestFactory
-    Stream<DynamicTest> testTypes() {
-        return Stream.of(TEST_PARAMETERS).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
+    Stream<DynamicTest> testProcessing() {
+        return Stream.of(PROCESSING).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
     }
 
-    @Test
-    void testInstanceReferenceType() {
-        validateKinds(TBool.of(true), TBool.of(true, false, true, false), TBool.all());
-        validateKinds(TBool.of(false).q(2), TBool.of(true, false, true, false), TBool.of().q(1, 45));
-        validateKinds(TBool.of(true).neg(), TBool.of(true, false).q(10), TBool.some());
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Bool[] INSTANCES = new Bool[]{
+            TBool.of(true),
+            TBool.of(false),
+            TBool.some().zero(),
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testInstances() {
+        return Stream.of(INSTANCES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isInstance())));
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Bool[] TYPES = new Bool[]{
+            TBool.all(),
+            TBool.of().q(1, 45),
+            TBool.some(),
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testTypes() {
+        return Stream.of(TYPES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isType())));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Bool[] REFERENCES = new Bool[]{
+            TBool.of(true, false, true, false),
+            TBool.of(true, false).q(10),
+            TBool.of(true, false, true, false).plus(true), // TODO: should just be true{4}
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testReferences() {
+        return Stream.of(REFERENCES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isReference())));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Test
     void testType() {

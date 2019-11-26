@@ -82,7 +82,7 @@ class WithFieldTest {
     }
 
     @TestFactory
-    Stream<DynamicTest> testFieldPlus() {
+    Stream<DynamicTest> testField() {
         return TEST_ARGS.stream().map(algebra -> DynamicTest.dynamicTest(algebra.toString(), () -> validate(algebra)));
     }
 }

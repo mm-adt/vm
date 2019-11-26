@@ -30,11 +30,9 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.IteratorUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,14 +44,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface TestUtilities {
-
-    public default <E extends Obj> List<E> objs(final Object... objects) {
-        final List<E> objs = new ArrayList<>();
-        for (final Object object : objects) {
-            objs.add((E) ObjectHelper.from(object));
-        }
-        return objs;
-    }
 
     public default <E extends Obj> List<E> submit(final E obj) {
         return IteratorUtils.list(FastProcessor.process(obj));
@@ -84,26 +74,5 @@ public interface TestUtilities {
             }
         }
         assertTrue(obj.a(obj).java());
-    }
-
-    public default void validateKinds(final Obj instance, final Obj reference, final Obj type) {
-        assertEquals(instance.getClass(), reference.getClass());
-        assertEquals(reference.getClass(), type.getClass());
-
-        assertTrue(instance.isInstance());
-        assertFalse(instance.isReference());
-        assertFalse(instance.isType());
-        assertTrue(instance.a(instance).java());
-        assertTrue(instance.a(type).java());
-
-        assertFalse(reference.isInstance());
-        assertTrue(reference.isReference());
-        assertFalse(reference.isType());
-
-        assertFalse(type.isInstance());
-        assertFalse(type.isReference());
-        assertTrue(type.isType());
-        // assertFalse(type.a(type).java());
-        assertFalse(type.a(instance).java());
     }
 }

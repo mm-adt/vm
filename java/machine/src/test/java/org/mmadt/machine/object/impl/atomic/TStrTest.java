@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;
@@ -40,6 +41,7 @@ import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.neq;
 import static org.mmadt.language.__.or;
+import static org.mmadt.machine.object.impl.___.id;
 import static org.mmadt.machine.object.impl.___.zero;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
@@ -49,17 +51,57 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
  */
 final class TStrTest implements TestUtilities {
 
-    private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
+    private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             ProcessArgs.of(List.of("marko"), TStr.of("marko")),
             ProcessArgs.of(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
             ProcessArgs.of(List.of("abcde"), TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
             ProcessArgs.of(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
+            ProcessArgs.of(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.some().plus("c").plus("d")).plus("e")),
             // ProcessArgs.of(List.of("a"), TStr.of("a", "a","a").branch(id(),id()).dedup()),
     };
 
     @TestFactory
+    Stream<DynamicTest> testProcessing() {
+        return Stream.of(PROCESSING).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Str[] INSTANCES = new Str[]{
+            TStr.of("a"),
+            TStr.of("a").q(2),
+            TStr.some().min()
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testInstances() {
+        return Stream.of(INSTANCES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isInstance())));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Str[] TYPES = new Str[]{
+            TStr.some(),
+            TStr.some().q(1, 45),
+            TStr.some().q(45)
+    };
+
+    @TestFactory
     Stream<DynamicTest> testTypes() {
-        return Stream.of(TEST_PARAMETERS).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
+        return Stream.of(TYPES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isType())));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Str[] REFERENCES = new Str[]{
+            TStr.of("a", "b").plus(TStr.of("b")),
+            TStr.of("a", "b", "c"),
+            TStr.of("a", "b", "c").q(3)
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testReferences() {
+        return Stream.of(REFERENCES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isReference())));
     }
 
     @Test
@@ -70,12 +112,6 @@ final class TStrTest implements TestUtilities {
     @Test
     void testIsA() {
         validateIsA(TStr.some());
-    }
-
-    @Test
-    void testInstanceReferenceType() {
-        validateKinds(TStr.of("a"), TStr.of("a", "b").plus(TStr.of("b")), TStr.some());
-        validateKinds(TStr.of("a").q(45), TStr.of("a", "b", "c"), TStr.of().q(45));
     }
 
     @Test

@@ -243,35 +243,4 @@ class TObjTest {
             assertNotEquals(a.q(), b.q());
         }));
     }
-
-    // TODO @Test members
-   /* void testMembers() {
-        final TModel model = TModel.of("ex");
-        model.define("ring", TObj.some().
-                inst(TInst.of("xx", model.sym("ring").as("one")), TInst.of("map", 66)).
-                inst(TInst.of("plus", model.sym("ring").as("one")), TInst.of("map", 55)));
-        model.define("int", model.sym("ring").and(TInt.some()).
-                member(TInt.some().as("zero"), TInt.zeroInt()).
-                member(TInt.some().as("one"), TInt.oneInt()).
-                inst(TInst.of("plus", TInt.some().as("zero")), TInst.of("map", 32)).
-                inst(TInst.of("mult", TInt.some().as("one")), TInst.of("map", 77)));
-        final Bindings bindings = new Bindings();
-        assertEquals(TInst.of("map", 32), model.get("int").inst(bindings, TInst.of("plus", 0)).get());
-        checkBindings(bindings);
-        assertEquals(TInst.of("map", 77), model.get("int").inst(bindings, TInst.of("mult", 1)).get());
-        checkBindings(bindings);
-        assertEquals(TInst.of("map", 66), model.get("int").inst(bindings, TInst.of("xx", 1)).get());
-        checkBindings(bindings);
-        assertEquals(TInst.of("map", 55), model.get("int").inst(bindings, TInst.of("plus", 1)).get());
-        checkBindings(bindings);
-        System.out.println(model.get("int").toString());
-        System.out.println(model.get("ring").toString());
-    }*/
-
-    private void checkBindings(final Bindings bindings) {
-        assertEquals(2, bindings.size());
-        assertTrue(bindings.has("zero"));
-        assertTrue(bindings.has("one"));
-        bindings.clear();
-    }
 }

@@ -33,8 +33,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.id;
+import static org.mmadt.machine.object.impl.___.mult;
 import static org.mmadt.machine.object.impl.___.plus;
 import static org.mmadt.machine.object.impl.___.zero;
 
@@ -43,14 +45,15 @@ import static org.mmadt.machine.object.impl.___.zero;
  */
 class TRealTest implements TestUtilities {
 
-    private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
+    private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             ProcessArgs.of(List.of(1.0f, 2.0f, 3.0f, 4.0f), TReal.of(1.0f, 2.0f, 3.0f, 4.0f)),
             ProcessArgs.of(List.of(1.1f), TReal.of(1.1f)),
             ProcessArgs.of(List.of(-1.1f), TReal.of(1.1f).neg()),
             ProcessArgs.of(List.of(0.0f), TReal.of(1.1f).zero()),
+            ProcessArgs.of(List.of(0.0f), TReal.of(1.1f).mult(zero())),
             ProcessArgs.of(List.of(2.1f, 1.0f), TReal.of(1.1f).<Real>branch(id(), zero()).plus(1.0f)),
             ProcessArgs.of(List.of(4.2f), TReal.of(1.1f).<Real>branch(id(), zero()).plus(1.0f).is(gt(2.0f)).mult(2.0f)),
-            ProcessArgs.of(List.of(TReal.of(1.1f).q(2)), TReal.of(1.1f).mult(1.0f).q(2)),
+            // ProcessArgs.of(List.of(TReal.of(1.1f).q(2)), TReal.of(1.1f).mult(one()).q(2)), // TODO: quantifier needs to also be appended to access
             ProcessArgs.of(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f)))),
             ProcessArgs.of(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f)),
             ProcessArgs.of(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f)))),
@@ -62,15 +65,49 @@ class TRealTest implements TestUtilities {
     };
 
     @TestFactory
-    Stream<DynamicTest> testTypes() {
-        return Stream.of(TEST_PARAMETERS).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
+    Stream<DynamicTest> testProcessing() {
+        return Stream.of(PROCESSING).map(obj -> DynamicTest.dynamicTest(obj.input.toString(), () -> assertEquals(obj.expected, submit(obj.input))));
     }
 
-    @Test
-    void testInstanceReferenceType() {
-        validateKinds(TReal.of(23.4f), TReal.of(1.46f, 13.02f).plus(TReal.of(2.0f)).div(TReal.of(1.4f)), TReal.some());
-        validateKinds(TReal.of(41.3f).q(2), TReal.of(23.0f, 56.0f, 11.0f), TReal.of().q(1, 45));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Real[] INSTANCES = new Real[]{
+            TReal.of(23.4f),
+            TReal.of(41.3f).q(2),
+            TReal.some().zero()
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testInstances() {
+        return Stream.of(INSTANCES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isInstance())));
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Real[] TYPES = new Real[]{
+            TReal.some(),
+            TReal.of().q(1, 45),
+            TReal.some().q(1, 45)
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testTypes() {
+        return Stream.of(TYPES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isType())));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private final static Real[] REFERENCES = new Real[]{
+            TReal.of(1.46f, 13.02f).plus(TReal.of(2.0f)).div(TReal.of(1.4f)),
+            TReal.of(23.0f, 56.0f, 11.0f),
+            TReal.of(23.0f).plus(mult(2.0f))
+    };
+
+    @TestFactory
+    Stream<DynamicTest> testReferences() {
+        return Stream.of(REFERENCES).map(obj -> DynamicTest.dynamicTest(obj.toString(), () -> assertTrue(obj.isReference())));
+    }
+
 
     @Test
     void testType() {

@@ -64,7 +64,7 @@ class WithGroupPlusTest {
             TReal.of(1.0f, 2.0f, 3.0f),
             TBool.of(true, false, false));
 
-    static void validate(final WithGroupPlus group) {
+    static <A extends WithGroupPlus<A>> void validate(final A group) {
         WithMonoidPlusTest.validate(group);
         ///
         if (group.isInstance())
@@ -73,7 +73,6 @@ class WithGroupPlusTest {
             testReferences(group);
         else
             throw new RuntimeException("Bad: " + group);
-
     }
 
     static <A extends WithGroupPlus<A>> void testInstances(final A group) {

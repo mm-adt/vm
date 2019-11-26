@@ -76,11 +76,11 @@ final class TLstTest implements TestUtilities {
         return Stream.of(TEST_PARAMETERS).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
     }
 
-    @Test
+    /*@Test
     void testInstanceReferenceType() {
         validateKinds(TLst.of("a", true, false), TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true)), TLst.some().q(45));
         validateKinds(TLst.of(TLst.of("a", 2, 21.0)).q(2), TLst.of(TLst.of("a"), TLst.of("b", 2), TLst.of("c", 5, true)), TLst.some());
-    }
+    }*/
 
     @Test
     void testType() {

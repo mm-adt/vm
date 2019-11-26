@@ -23,6 +23,8 @@
 package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
@@ -58,4 +60,8 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
         }
         return TObj.none().set(itty);
     } // this should all be done through subscription semantics and then its just a lazy round-robin
+
+    public default Obj computeRange(final Obj domain) {
+        return domain.q(domain.q().mult(getBranches().values().stream().flatMap(List::stream).map(Obj::q).reduce(new TQ(TInt.of(0)), (a, b) -> a.plus(b))));
+    }
 }
