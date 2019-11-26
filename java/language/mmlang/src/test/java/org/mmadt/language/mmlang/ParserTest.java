@@ -45,6 +45,9 @@ class ParserTest {
 
     private final static ParserArgs[] PARSING = new ParserArgs[]{
             ParserArgs.of(List.of(11), "11"),
+            ParserArgs.of(List.of(0), "11 => [zero]"),
+            ParserArgs.of(List.of(), "11 => [zero] => 11"),
+            ParserArgs.of(List.of(11), "11 => [zero] => [plus,11]"),
             ParserArgs.of(List.of(11), "11 => int"),
             ParserArgs.of(List.of(TInt.of(11).label("a")), "11 => int~a"),
             ParserArgs.of(List.of(11), "11 => [plus,[zero]]"),
@@ -52,6 +55,7 @@ class ParserTest {
             ParserArgs.of(List.of(30), "11 + 4 * 2"),
             ParserArgs.of(List.of(30), "11 => [plus,4] => [mult,2]"),
             ParserArgs.of(List.of(30), "11 => [plus,4][mult,2] => int => [id]"),
+            ParserArgs.of(List.of(30), "11 => ([plus,4] * [mult,2]) => int => [id]"), // TODO: do we have binary operator precedence with => and <= being lowest?
             ParserArgs.of(List.of(PlusInst.create(11)), "[plus,11]"),
             ParserArgs.of(List.of(-1, -2, -3), "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
             ParserArgs.of(List.of(TInt.of(1).label("a"), TInt.of(2).label("a"), TInt.of(3).label("a")), "1 => ([id] + [plus,1] + [plus,2]) => int~a"),
@@ -60,8 +64,8 @@ class ParserTest {
 
     @TestFactory
     Stream<DynamicTest> testParsing() {
+        final ScriptEngine engine = new mmLangScriptEngine();
         return Stream.of(PARSING).map(query -> DynamicTest.dynamicTest(query.input, () -> {
-            ScriptEngine engine = new mmLangScriptEngine();
             assertEquals(query.expected, IteratorUtils.list((Iterator<Obj>) engine.eval(query.input)));
         }));
     }

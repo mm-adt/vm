@@ -238,15 +238,14 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O mapTo(final Obj obj) {
         if (obj instanceof Inst) {
-            O o = this.isInstance() ? this.set(null).access(StartInst.create(this)) : (O) this;
+            Obj o = this.isInstance() ? this.set(null).append(StartInst.create(this)) : this;
             for (final Inst inst : ((Inst) obj).iterable()) {
-                o = o.q(o.q().mult(obj.q())).append(inst);
+                o = o.append(inst);
             }
-            return o;
-        } else if (obj.isType()) {
-            return this.isReference() ? (O) this.append(AsInst.create(obj)) : (O) this.as(obj);
+            return (O) o;
         } else
-            return obj.mapFrom(this);
+            return this.isReference() ? this.append(AsInst.create(obj)) : this.as((O) obj);
+
     }
 
     public Obj clone();
