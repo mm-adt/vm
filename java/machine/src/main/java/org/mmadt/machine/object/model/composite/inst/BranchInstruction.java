@@ -23,10 +23,9 @@
 package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.MultiIterator;
 
@@ -46,22 +45,22 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
         boolean found = false;
         final MultiIterator<E> itty = new MultiIterator<>();
         for (final Map.Entry<Inst, List<Inst>> entry : this.getBranches().entrySet()) {
-            if (FastProcessor.process(obj.mapFrom(entry.getKey())).hasNext()) {
+            if (FastProcessor.process(obj.mapTo(entry.getKey())).hasNext()) {
                 found = true;
                 for (final Inst branch : entry.getValue()) {
-                    itty.addIterator(FastProcessor.process(obj.mapFrom(branch))); // TODO: make sure this is global
+                    itty.addIterator(FastProcessor.process(obj.mapTo(branch))); // TODO: make sure this is global
                 }
             }
         }
         if (!found && this.getBranches().containsKey(null)) {
             for (final Inst defaultBranch : this.getBranches().get(null)) {
-                itty.addIterator(FastProcessor.process(obj.mapFrom(defaultBranch)));
+                itty.addIterator(FastProcessor.process(obj.mapTo(defaultBranch)));
             }
         }
         return TObj.none().set(itty);
     } // this should all be done through subscription semantics and then its just a lazy round-robin
 
     public default Obj computeRange(final Obj domain) {
-        return domain.q(domain.q().mult(getBranches().values().stream().flatMap(List::stream).map(Obj::q).reduce(new TQ(TInt.of(0)), (a, b) -> a.plus(b))));
+        return domain.q(domain.q().mult(getBranches().values().stream().flatMap(List::stream).map(Obj::q).reduce((Q) domain.q().zero(), Q::plus)));
     }
 }

@@ -229,7 +229,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return obj instanceof Inst ?
                 this instanceof Inst ?
                         (O) ((Inst) this).mult((Inst) obj) :
-                        this.append((Inst) obj) :
+                        this.isInstance() ? (O) this : this.append((Inst) obj) :
                 this instanceof Inst ?
                         obj.access(((Inst) this)).append(obj.access()) :
                         this.q(this.q().mult(obj.q())).access(this.access()).append(obj.access());

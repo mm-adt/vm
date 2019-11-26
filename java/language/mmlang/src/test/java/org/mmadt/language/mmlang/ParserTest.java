@@ -27,6 +27,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.util.IteratorUtils;
@@ -44,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ParserTest {
 
     private final static ParserArgs[] PARSING = new ParserArgs[]{
+            /////////////////// MAP TO => ///////////////////
             ParserArgs.of(List.of(11), "11"),
             ParserArgs.of(List.of(0), "11 => [zero]"),
             ParserArgs.of(List.of(), "11 => [zero] => 11"),
@@ -55,10 +57,15 @@ class ParserTest {
             ParserArgs.of(List.of(30), "11 + 4 * 2"),
             ParserArgs.of(List.of(30), "11 => [plus,4] => [mult,2]"),
             ParserArgs.of(List.of(30), "11 => [plus,4][mult,2] => int => [id]"),
-            ParserArgs.of(List.of(30), "11 => ([plus,4] * [mult,2]) => int => [id]"), // TODO: do we have binary operator precedence with => and <= being lowest?
+            ParserArgs.of(List.of(30), "11 => ([plus,4] * [mult,2]) => int => [id]"),   // TODO: do we have binary operator precedence with => and <= being lowest?
             ParserArgs.of(List.of(PlusInst.create(11)), "[plus,11]"),
+            ParserArgs.of(List.of(1, 2, 3), "1 => ([id] + [plus,1] + [plus,2])"),
             ParserArgs.of(List.of(-1, -2, -3), "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
             ParserArgs.of(List.of(TInt.of(1).label("a"), TInt.of(2).label("a"), TInt.of(3).label("a")), "1 => ([id] + [plus,1] + [plus,2]) => int~a"),
+            /////////////////// MAP FROM <= ///////////////////
+            ParserArgs.of(List.of(11), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
+            ParserArgs.of(List.of(TStr.of().plus("a")), "str <= [plus,'a']"),
+            ParserArgs.of(List.of(TStr.of().plus("a").plus("bc")), "str <= [plus,'a'] => [plus,'bc']"),
     };
 
 

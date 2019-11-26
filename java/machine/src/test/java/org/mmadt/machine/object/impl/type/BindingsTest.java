@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.impl.type;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
@@ -39,15 +38,13 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
-import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class BindingsTest {
 
-    @Test
+    // @Test
     void shouldBindAtomics() {
         Obj type1 = TInt.of(is(gt(29))).label("x");
         System.out.println(type1);
