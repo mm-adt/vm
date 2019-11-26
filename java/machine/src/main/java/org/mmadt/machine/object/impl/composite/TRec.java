@@ -35,6 +35,8 @@ import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
+import java.util.Map;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -63,6 +65,14 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     public static <K extends Obj, V extends Obj> Rec<K, V> of(final Object... objects) {
         if (objects.length > 0 && objects[0] instanceof Rec) {
             return ObjectHelper.make(TRec::new, objects);
+        } else if (objects.length == 1) {
+            final PMap<K, V> map = new PMap<>();
+            for (final Map.Entry<K, V> entry : ((Map<K, V>) objects[0]).entrySet()) {
+                final K key = (K) ObjectHelper.from(entry.getKey());
+                final V value = (V) ObjectHelper.from(entry.getValue());
+                map.put(key, value);
+            }
+            return new TRec<>(map);
         } else {
             final PMap<K, V> map = new PMap<>();
             for (int i = 0; i < objects.length; i = i + 2) {

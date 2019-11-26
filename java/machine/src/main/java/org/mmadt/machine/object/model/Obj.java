@@ -342,7 +342,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O map(final O obj) {
         return this.isInstance() && obj.isInstance() ?
                 obj.copy(this) :
-                this.mapTo(MapInst.create(obj));
+                this.getClass().equals(obj.getClass()) ?
+                        this.mapTo(MapInst.create(obj)) :
+                        obj.copy(this).mapTo(MapInst.create(obj));
     }
 
     public default <O extends Obj> O sum() {

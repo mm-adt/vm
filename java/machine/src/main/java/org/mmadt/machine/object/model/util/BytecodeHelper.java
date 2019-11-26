@@ -45,6 +45,8 @@ import org.mmadt.machine.object.model.type.PList;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -84,17 +86,17 @@ public final class BytecodeHelper {
         for (final Inst inst : bytecode.iterable()) {
             if (first) {
                 first = false;
-                list.add(inst.domain());
+                list.add(inst.domain().access(ID()));
             }
             final List<Object> oneDeep = new ArrayList<>();
             for (final Obj arg : inst.args()) {
-                if (arg instanceof Inst) {
-                    oneDeep.add(domainRangeNested((Inst) arg));
+                if (!arg.access().isOne()) {
+                    oneDeep.add(domainRangeNested(arg.access()));
                 }
             }
             if (!oneDeep.isEmpty())
                 list.add(oneDeep);
-            list.add(inst.range());
+            list.add(inst.range().access(ID()));
         }
         return list;
     }

@@ -43,11 +43,6 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.START));
     }
 
-    public static <S extends Obj> S create(final S source, final Object... arguments) {
-        final StartInst<S> inst = StartInst.create(arguments);
-        return source.mapFrom(inst).q(inst.range().q());
-    }
-
     public static <S extends Obj> StartInst<S> create(final Object... args) {
         final StartInst<S> inst = new StartInst<>(args);
         Obj kind = inst.args().isEmpty() ? TObj.none() : inst.args().get(0).set(null); // TODO: for lst and rec, I think this should be .setValue()

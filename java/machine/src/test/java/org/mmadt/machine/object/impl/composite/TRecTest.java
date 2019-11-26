@@ -22,10 +22,13 @@
 
 package org.mmadt.machine.object.impl.composite;
 
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
@@ -33,8 +36,12 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
+import org.mmadt.util.ProcessArgs;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,9 +64,23 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
  */
 final class TRecTest implements TestUtilities {
 
-    @Test
-    void testInstanceReferenceType() {
+    private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
+            // instances
+            ProcessArgs.of(List.of(TRec.of(Map.of("a", 1))), TRec.of(Map.of("a", 1))),
+            // ProcessArgs.of(List.of(TRec.of(Map.of("name", TStr.of("marko")))), TRec.of(Map.of("name", TStr.of().to("a"))).from("a")),
 
+    };
+
+    /*@Test
+    void xxx() {
+        System.out.println(TRec.of(Map.of("name", "marko", "age", TInt.of())).cast(
+                TRec.of(Map.of("name", TStr.of().to("a"), "age", TInt.of().to("b"))).mapFrom(TRec.all().is(TRec.some().get("name").eq(___.from("a"))))).toString());
+        //System.out.println(TRec.of(Map.of("name","marko","age",TInt.of())).cast(TRec.of(Map.of("name", TStr.of().to("a"), "age", TInt.of().to("b"))).mapFrom(TRec.some().is(TRec.some().get("name").eq(from("a"))))).toString());
+    }*/
+
+    @TestFactory
+    Stream<DynamicTest> testProcessing() {
+        return Stream.of(PROCESSING).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
     }
 
     @Test

@@ -87,7 +87,6 @@ final class TIntTest implements TestUtilities {
             ProcessArgs.of(List.of(), TInt.of(1).to("a").mult(5).is(lt(from("a")))),
             ProcessArgs.of(List.of(5), TInt.of(1).to("a").mult(5).is(gt(from(TStr.of("").plus(zero()).plus("a").plus(zero()))))),
             ProcessArgs.of(List.of(1), TInt.of(1).to("a").mult(1).is(eq(from("a")))),
-
     };
 
     @TestFactory

@@ -54,7 +54,7 @@ import static org.mmadt.machine.object.impl.___.zero;
  */
 final class TLstTest implements TestUtilities {
 
-    private final static ProcessArgs[] TEST_PARAMETERS = new ProcessArgs[]{
+    private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             // instances
             ProcessArgs.of(List.of(TLst.of("a", 1)), TLst.of("a", 1)),
             ProcessArgs.of(List.of("a"), TLst.of("a", 1).get(0)),
@@ -75,7 +75,7 @@ final class TLstTest implements TestUtilities {
 
     @TestFactory
     Stream<DynamicTest> testTypes() {
-        return Stream.of(TEST_PARAMETERS).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
+        return Stream.of(PROCESSING).map(tp -> DynamicTest.dynamicTest(tp.input.toString(), () -> assertEquals(tp.expected, submit(tp.input))));
     }
 
     /*@Test

@@ -78,7 +78,7 @@ public final class ObjectHelper {
         else if (1 == objects.length)
             return objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0] instanceof Query ? ((Query) objects[0]).bytecode() : objects[0]);
         else
-            return StartInst.create(constructor.apply(null), objects);
+            return constructor.apply(null).q(objects.length).access(StartInst.create(objects));
     }
 
     public static Object andValues(final TObj object1, final TObj object2) {

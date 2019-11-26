@@ -24,6 +24,7 @@ package org.mmadt.language.compiler;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
@@ -74,18 +75,18 @@ class TypeTest {
                     TInt.of(1, 2).one()),
             new TestArgs<>(List.of(
                     NONE, TInt.of().q(2), TInt.of().q(2), TInt.of().q(1, 2)),
-                    start(1, 2).plus(TInt.of(7)).dedup()),
+                    TInt.of(1, 2).plus(TInt.of(7)).dedup()),
             new TestArgs<>(List.of(
-                    NONE,TInt.of().q(2), TInt.of().q(2), TInt.of().q(10, 20)),
-                    start(1, 2).plus(TInt.of(7)).dedup().q(10)),
+                    NONE, TInt.of().q(2), TInt.of().q(2), TInt.of().q(10, 20)),
+                    TInt.of(1, 2).plus(TInt.of(7)).dedup().q(10)),
             new TestArgs<>(List.of(
-                    NONE,TInt.of().q(2), TInt.of().q(2), TInt.of().q(1, 2), TInt.of()),
-                    start(1, 2).plus(7).dedup().count()),
+                    NONE, TInt.of().q(2), TInt.of().q(2), TInt.of().q(1, 2), TInt.of()),
+                    TInt.of(1, 2).plus(7).dedup().count()),
             new TestArgs<>(List.of(
                     NONE, TInt.of().q(2), TInt.of().q(2), TInt.of().q(1, 2), TInt.of(), TInt.of()),
                     start(1, 2).plus(7).dedup().count().mult(5)),
             new TestArgs<>(List.of(
-                    NONE, TInt.of().q(2),TInt.of().q(2), TInt.of().q(1, 2), TInt.of(), TInt.of().q(10)),
+                    NONE, TInt.of().q(2), TInt.of().q(2), TInt.of().q(1, 2), TInt.of(), TInt.of().q(10)),
                     start(1, 2).plus(7).dedup().count().mult(5).q(10)),
             new TestArgs<>(List.of( // TODO: 0 quantifier handling
                     NONE, TInt.of().q(2), TInt.of().q(2), TInt.of().q(1, 2), TInt.of(), TInt.none()), // TOOD: just drop the whole pipeline to none
@@ -101,7 +102,7 @@ class TypeTest {
                     start(1, 2, 3, 4).plus(7).q(2).gt(5)),
             new TestArgs<>(List.of(
                     NONE, TInt.of().q(3), TInt.of().q(3), TBool.of().q(3)),
-                    start(1, 2, 3).plus(TInt.of(7)).gt(TInt.of(5)).id()),
+                    TInt.of(1, 2, 3).plus(7).gt(5).id()),
             new TestArgs<>(List.of(
                     NONE, TBool.of(true).q(7), List.of(List.of(TBool.of(true), TBool.of(true))), TBool.of(true).q(0, 7), TBool.of(true).q(0, 7)),
                     start(TBool.of(true).q(7)).is(id()).is(true)),
@@ -110,12 +111,12 @@ class TypeTest {
                     start(1, 2, 3, 4).plus(7).dedup().is(gt(5))),
             new TestArgs<>(List.of(
                     NONE, TInt.of().q(4), List.of(List.of(TInt.of(), TInt.of(), TBool.of())), TBool.of().q(4), List.of(List.of(TBool.of(), TBool.of())), TBool.of().q(0, 4)),
-                    start(1, 2, 3, 4).map(plus(3).gt(2)).is(id())),
+                    TInt.of(1, 2, 3, 4).map(TInt.of().plus(3).gt(2)).is(___.plus(true))),
             new TestArgs<>(List.of(
                     NONE, TInt.of().q(4), List.of(List.of(TInt.of(), TInt.of(), TBool.of())), TBool.of().q(4), List.of(List.of(TBool.of(), TBool.of())), TBool.of().q(0, 28)),
                     start(1, 2, 3, 4).map(plus(3).gt(2)).is(id()).q(7)),
             new TestArgs<>(List.of(
-                    NONE, TInt.of().q(4), List.of(List.of(TInt.of(), List.of(List.of(TInt.of(), TInt.of(), TBool.of())), TBool.of())), TBool.of().q(4), List.of(List.of(TBool.of(), TBool.of())),TBool.of().q(0, 4)),
+                    NONE, TInt.of().q(4), List.of(List.of(TInt.of(), List.of(List.of(TInt.of(), TInt.of(), TBool.of())), TBool.of())), TBool.of().q(4), List.of(List.of(TBool.of(), TBool.of())), TBool.of().q(0, 4)),
                     null),//TInt.of(1, 2, 3, 4).map(TBool.of().map(TInt.of().plus(3).gt(2))).is(eq(true).id())),
             new TestArgs<>(List.of(
                     NONE, TInt.of().q(4), List.of(List.of(TStr.of(), TStr.of())), TRec.of(TStr.of(), TInt.of())),
