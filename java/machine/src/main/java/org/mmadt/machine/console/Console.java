@@ -62,7 +62,7 @@ public class Console {
     public static void main(final String[] args) throws Exception {
         System.setErr(System.out);
         String engineName = "mmlang";
-        final ScriptEngineManager manager = new ScriptEngineManager(Class.forName("org.mmadt.language.mmlang.jsr223.mmLangScriptEngineFactory").getClassLoader());
+        final ScriptEngineManager manager = new ScriptEngineManager();
         final Terminal terminal = TerminalBuilder.terminal();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
