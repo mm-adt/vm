@@ -41,6 +41,7 @@ import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.is;
 import static org.mmadt.language.__.neq;
 import static org.mmadt.language.__.or;
+import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.id;
 import static org.mmadt.machine.object.impl.___.zero;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
@@ -55,8 +56,9 @@ final class TStrTest implements TestUtilities {
             ProcessArgs.of(List.of("marko"), TStr.of("marko")),
             ProcessArgs.of(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
             ProcessArgs.of(List.of("abcde"), TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
+            ProcessArgs.of(List.of("abcdef"), TStr.of("a").plus("b").map(TStr.some().plus("c").plus("d")).plus("e").is(gt("")).plus("f")),
             ProcessArgs.of(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.some().plus("c").plus("d")).plus("e")),
-            ProcessArgs.of(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.some().plus("c").plus("d")).plus("e")),
+            ProcessArgs.of(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.some().plus("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
             // ProcessArgs.of(List.of("a"), TStr.of("a", "a","a").branch(id(),id()).dedup()),
     };
 

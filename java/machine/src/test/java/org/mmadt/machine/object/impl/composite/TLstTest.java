@@ -67,7 +67,9 @@ final class TLstTest implements TestUtilities {
             ProcessArgs.of(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), TStr.of("").plus("c").id().plus(zero()))),
             // types
             ProcessArgs.of(List.of(TLst.of(TInt.some(), TStr.some(), 1.0f, false)), TLst.of(TInt.some(), TStr.some()).plus(TLst.of(1.0f, false))),
-            ProcessArgs.of(List.of(TLst.of(TInt.some(), TStr.some()).plus(TLst.of(TInt.some().mult(6), false))), TLst.of(TInt.some(), TStr.some()).plus(TLst.of(TInt.some().mult(6), false)))
+            ProcessArgs.of(List.of(TLst.of(TInt.some(), TStr.some()).plus(TLst.of(TInt.some().mult(6), false))), TLst.of(TInt.some(), TStr.some()).plus(TLst.of(TInt.some().mult(6), false))),
+            // state
+            // ProcessArgs.of(List.of(TLst.of(TInt.some(), TStr.some(), 1.0f, false)), TLst.of(TInt.some().to("a"), TStr.some().to("b")).plus(TLst.of(1.0f, false)).from("a")),
 
     };
 

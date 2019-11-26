@@ -22,10 +22,13 @@
 
 package org.mmadt.machine.object.model.atomic;
 
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
@@ -48,6 +51,10 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
 
     public default Str id() {
         return this;
+    }
+
+    public default Str is(final Inst inst) {
+        return this.is(ObjectHelper.create(TBool.some(), inst));
     }
 
     public Bool regex(final Str pattern);

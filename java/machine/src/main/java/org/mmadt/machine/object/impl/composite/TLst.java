@@ -106,8 +106,8 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.from(this).set(obj instanceof Lst && this.java().equals(((Lst) obj).java())) :
-                TBool.from(this).mapFrom(EqInst.create(obj));
+                TBool.via(this).set(obj instanceof Lst && this.java().equals(((Lst) obj).java())) :
+                TBool.via(this).mapFrom(EqInst.create(obj));
     }
 
     @Override

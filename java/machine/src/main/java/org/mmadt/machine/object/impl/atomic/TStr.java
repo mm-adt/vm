@@ -65,37 +65,37 @@ public final class TStr extends TObj implements Str {
     @Override
     public Bool gt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
-                TBool.from(this).set(this.java().compareTo(str.java()) > 0) :
-                TBool.from(this.mapTo(GtInst.create(str)));
+                TBool.via(this).set(this.java().compareTo(str.java()) > 0) :
+                TBool.via(this.mapTo(GtInst.create(str)));
     }
 
     @Override
     public Bool gte(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
-                TBool.from(this).set(this.java().compareTo(str.java()) >= 0) :
-                TBool.from(this.mapTo(GteInst.create(str)));
+                TBool.via(this).set(this.java().compareTo(str.java()) >= 0) :
+                TBool.via(this.mapTo(GteInst.create(str)));
     }
 
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.from(this).set(obj instanceof Str && this.java().equals(((Str) obj).java())) :
-                TBool.from(this.mapTo(EqInst.create(obj)));
+                TBool.via(this).set(obj instanceof Str && this.java().equals(((Str) obj).java())) :
+                TBool.via(this.mapTo(EqInst.create(obj)));
     }
 
     @Override
     public Bool lt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
-                TBool.from(this).set(this.java().compareTo(str.java()) < 0) :
-                TBool.from(this.mapTo(LtInst.create(str)));
+                TBool.via(this).set(this.java().compareTo(str.java()) < 0) :
+                TBool.via(this.mapTo(LtInst.create(str)));
     }
 
     @Override
     public Bool lte(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
-                TBool.from(this).set(this.java().compareTo(str.java()) <= 0) :
-                TBool.from(this.mapTo(LteInst.create(str)));
+                TBool.via(this).set(this.java().compareTo(str.java()) <= 0) :
+                TBool.via(this.mapTo(LteInst.create(str)));
     }
 
     @Override

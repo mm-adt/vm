@@ -67,7 +67,7 @@ public final class TBool extends TObj implements Bool {
         return ObjectHelper.make(TBool::new, objects);
     }
 
-    public static Bool from(final Obj obj) {
+    public static Bool via(final Obj obj) {
         return TBool.some().q(obj.q()).access(obj.access()).env(obj.env());
     }
 

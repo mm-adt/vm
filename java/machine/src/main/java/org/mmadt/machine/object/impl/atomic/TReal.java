@@ -121,36 +121,36 @@ public final class TReal extends TObj implements Real {
     @Override
     public Bool gt(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.from(this).set(this.java() > real.java()).q(this.q()) :
-                TBool.from(this.mapTo(GtInst.create(real)));
+                TBool.via(this).set(this.java() > real.java()).q(this.q()) :
+                TBool.via(this.mapTo(GtInst.create(real)));
     }
 
     @Override
     public Bool gte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.from(this).set(this.java() >= real.java()) :
-                TBool.from(this.mapTo(GteInst.create(real)));
+                TBool.via(this).set(this.java() >= real.java()) :
+                TBool.via(this.mapTo(GteInst.create(real)));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.from(this).set(obj instanceof Real && this.java().equals(((Real) obj).java())) :
-                TBool.from(this.mapTo(EqInst.create(obj)));
+                TBool.via(this).set(obj instanceof Real && this.java().equals(((Real) obj).java())) :
+                TBool.via(this.mapTo(EqInst.create(obj)));
     }
 
     @Override
     public Bool lt(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.from(this).set(this.java() < real.java()).q(this.q()) :
-                TBool.from(this.mapTo(LtInst.create(real)));
+                TBool.via(this).set(this.java() < real.java()).q(this.q()) :
+                TBool.via(this.mapTo(LtInst.create(real)));
     }
 
     @Override
     public Bool lte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.from(this).set(this.java() <= real.java()).q(this.q()) :
-                TBool.from(this.mapTo(LteInst.create(real)));
+                TBool.via(this).set(this.java() <= real.java()).q(this.q()) :
+                TBool.via(this.mapTo(LteInst.create(real)));
     }
 
     @Override

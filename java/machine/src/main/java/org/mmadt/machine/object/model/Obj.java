@@ -27,13 +27,16 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
+import org.mmadt.machine.object.impl.composite.inst.map.FromInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ToInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -312,6 +315,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Bool a(final Obj obj);
 
+    public default <O extends Obj> O as(final Str label) {
+        return this.isInstance() && label.isInstance() ?
+                this.env(label, this) :
+                this.mapTo(EnvInst.create(label));
+    }
+
     public default <O extends Obj> O count() {
         return this.q().constant() ?
                 this.q().peek().q(q().one()) :
@@ -355,6 +364,18 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Bool neq(final Obj object);
 
+    public default <O extends Obj> O to(final Str label) {
+        return this.isInstance() && label.isInstance() ?
+                this.env(label, this) :
+                this.mapTo(ToInst.create(label));
+    }
+
+    public default <O extends Obj> O from(final Str label) {
+        return this.isInstance() && label.isInstance() ?
+                this.env(label) :
+                this.mapTo(FromInst.create(label));
+    }
+
     /////////////////////////////////////////////////////////////////
 
     public default <O extends Obj> O is(final Object bool) {
@@ -370,10 +391,18 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O as(final String label) {
-        return this.label(label);
+        return this.env(TStr.of(label), this);
     }
 
     public default <O extends Obj> O env(final Object symbol) {
         return this.env((Str) ObjectHelper.from(symbol));
+    }
+
+    public default <O extends Obj> O to(final Object label) {
+        return this.to((Str) ObjectHelper.from(label));
+    }
+
+    public default <O extends Obj> O from(final Object label) {
+        return this.from((Str) ObjectHelper.from(label));
     }
 }

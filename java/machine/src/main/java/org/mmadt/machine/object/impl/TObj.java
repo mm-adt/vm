@@ -291,7 +291,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public TObj clone() {
         try {
-            return (TObj) super.clone();
+            final TObj clone = (TObj) super.clone();
+            // clone.types = clone.types.label(null);
+            return clone;
         } catch (final CloneNotSupportedException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -301,18 +303,18 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Bool a(final Obj obj) {
-        return TBool.from(this).set(obj.equals(this) || obj.test(this));
+        return TBool.via(this).set(obj.equals(this) || obj.test(this));
     }
 
     @Override
     public Bool eq(final Obj object) {
         // return TBool.of(Objects.equals(this.get(), object.get()));
-        return TBool.from(this).set(Objects.equals(this.get(), object.get()));
+        return TBool.via(this).set(Objects.equals(this.get(), object.get()));
     }
 
     @Override
     public Bool neq(final Obj object) {
-        return TBool.from(this).set(!Objects.equals(this.get(), object.get()));
+        return TBool.via(this).set(!Objects.equals(this.get(), object.get()));
     }
 
 }

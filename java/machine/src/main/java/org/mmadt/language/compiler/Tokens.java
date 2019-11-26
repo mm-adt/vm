@@ -99,6 +99,7 @@ public final class Tokens {
     public static final String EXPLAIN = "explain";
     public static final String FILTER = "filter";
     public static final String FLATMAP = "flatMap";
+    public static final String FROM = "from";
     public static final String IS = "is";
     public static final String GET = "get";
     public static final String GT = "gt";
@@ -123,6 +124,7 @@ public final class Tokens {
     public static final String REF = "ref";
     public static final String START = "start";
     public static final String SUM = "sum";
+    public static final String TO = "to";
     public static final String TYPE = "type";
     public static final String UNFOLD = "unfold";
     public static final String ZERO = "zero";

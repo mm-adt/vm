@@ -137,36 +137,36 @@ public final class TInt extends TObj implements Int {
     @Override
     public Bool gt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
-                TBool.from(this).set(this.java() > integer.java()) :
-                TBool.from(this.mapTo(GtInst.create(integer)));
+                TBool.via(this).set(this.java() > integer.java()) :
+                TBool.via(this.mapTo(GtInst.create(integer)));
     }
 
     @Override
     public Bool gte(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
-                TBool.from(this).set(this.java() >= integer.java()) :
-                TBool.from(this.mapTo(GteInst.create(integer)));
+                TBool.via(this).set(this.java() >= integer.java()) :
+                TBool.via(this.mapTo(GteInst.create(integer)));
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.from(this).set(obj instanceof Int && this.java().equals(((Int) obj).java())) :
-                TBool.from(this.mapTo(EqInst.create(obj)));
+                TBool.via(this).set(obj instanceof Int && this.java().equals(((Int) obj).java())) :
+                TBool.via(this.mapTo(EqInst.create(obj)));
     }
 
     @Override
     public Bool lt(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
-                TBool.from(this).set(this.java() < integer.java()) :
-                TBool.from(this.mapTo(LtInst.create(integer)));
+                TBool.via(this).set(this.java() < integer.java()) :
+                TBool.via(this.mapTo(LtInst.create(integer)));
     }
 
     @Override
     public Bool lte(final Int integer) {
         return (this.isInstance() && integer.isInstance()) ?
-                TBool.from(this).set(this.java() <= integer.java()) :
-                TBool.from(this.mapTo(LteInst.create(integer)));
+                TBool.via(this).set(this.java() <= integer.java()) :
+                TBool.via(this.mapTo(LteInst.create(integer)));
     }
 
     ///// HELPER METHODS

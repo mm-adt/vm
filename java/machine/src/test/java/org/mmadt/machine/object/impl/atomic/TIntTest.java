@@ -34,12 +34,15 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.machine.object.impl.___.eq;
+import static org.mmadt.machine.object.impl.___.from;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.gte;
 import static org.mmadt.machine.object.impl.___.lt;
 import static org.mmadt.machine.object.impl.___.lte;
 import static org.mmadt.machine.object.impl.___.mult;
 import static org.mmadt.machine.object.impl.___.plus;
+import static org.mmadt.machine.object.impl.___.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -51,7 +54,7 @@ final class TIntTest implements TestUtilities {
             ProcessArgs.of(List.of(1), TInt.of(1)),
             ProcessArgs.of(List.of(-1), TInt.of(1).neg()),
             ProcessArgs.of(List.of(0), TInt.of(1).zero()),
-            ProcessArgs.of(List.of(1), TInt.some().one()),
+            ProcessArgs.of(List.of(1), TInt.of().one()),
             ProcessArgs.of(List.of(20), TInt.of(2).mult(10)),
             // ProcessArgs.of(List.of(1), TInt.of(1).sum()),
             // ProcessArgs.of(List.of(10), TInt.of(1,2,3,4).sum()),
@@ -74,11 +77,16 @@ final class TIntTest implements TestUtilities {
             ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(lte(plus(1)))),
             ProcessArgs.of(List.of(), TInt.of(49, 50).is(gt(plus(1)))),
             // type
-            ProcessArgs.of(List.of(), TInt.none().plus(TInt.some())),
-            ProcessArgs.of(List.of(TInt.some().plus(TInt.some())), TInt.some().plus(TInt.some())),
-            ProcessArgs.of(List.of(TInt.some().plus(mult(3))), TInt.some().plus(TInt.some().mult(3))),
-            ProcessArgs.of(List.of(TInt.some().plus(mult(3)).is(gt(45)).map(10)), TInt.some().plus(mult(3)).is(gt(45)).map(10)),
-            ProcessArgs.of(List.of(TInt.some().plus(mult(3)).map(10)), TInt.some().plus(mult(3)).map(10)), // TODO: should just be the instance 10
+            ProcessArgs.of(List.of(), TInt.none().plus(TInt.of())),
+            ProcessArgs.of(List.of(TInt.of().plus(TInt.of())), TInt.of().plus(TInt.of())),
+            ProcessArgs.of(List.of(TInt.of().plus(mult(3))), TInt.of().plus(TInt.of().mult(3))),
+            ProcessArgs.of(List.of(TInt.of().plus(mult(3)).is(gt(45)).map(10)), TInt.of().plus(mult(3)).is(gt(45)).map(10)),
+            ProcessArgs.of(List.of(TInt.of().plus(mult(3)).map(10)), TInt.of().plus(mult(3)).map(10)), // TODO: should just be the instance 10
+            // state
+            ProcessArgs.of(List.of(1), TInt.of(1).to("a").from("a")),
+            ProcessArgs.of(List.of(), TInt.of(1).to("a").mult(5).is(lt(from("a")))),
+            ProcessArgs.of(List.of(5), TInt.of(1).to("a").mult(5).is(gt(from(TStr.of("").plus(zero()).plus("a").plus(zero()))))),
+            ProcessArgs.of(List.of(1), TInt.of(1).to("a").mult(1).is(eq(from("a")))),
 
     };
 
@@ -103,9 +111,9 @@ final class TIntTest implements TestUtilities {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private final static Int[] TYPES = new Int[]{
-            TInt.some(),
+            TInt.of(),
             TInt.of().q(45),
-            TInt.some().q(0)
+            TInt.of().q(0)
     };
 
     @TestFactory
@@ -129,11 +137,11 @@ final class TIntTest implements TestUtilities {
 
     @Test
     void testType() {
-        validateTypes(TInt.some());
+        validateTypes(TInt.of());
     }
 
     @Test
     void testIsA() {
-        validateIsA(TInt.some());
+        validateIsA(TInt.of());
     }
 }

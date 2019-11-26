@@ -107,8 +107,8 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.from(this).set(obj instanceof Rec && this.java().equals(((Rec) obj).java())) :
-                TBool.from(this).mapFrom(EqInst.create(obj));
+                TBool.via(this).set(obj instanceof Rec && this.java().equals(((Rec) obj).java())) :
+                TBool.via(this).mapFrom(EqInst.create(obj));
     }
 
     @Override
