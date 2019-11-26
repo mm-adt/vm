@@ -90,7 +90,7 @@ public class Console {
                     try {
                         ((Iterator<Obj>) manager.getEngineByName(engineName).eval(line)).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
                     } catch (final Exception e) {
-                        e.printStackTrace();
+                        terminal.writer().println(e.getMessage());
                         if (null == e.getCause())
                             throw e;
                         throw e.getCause();

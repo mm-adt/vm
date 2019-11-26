@@ -23,12 +23,17 @@
 package org.mmadt.language.compiler;
 
 import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
-import org.mmadt.machine.object.impl.composite.inst.map.AInst;
-import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
+import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
@@ -61,15 +66,15 @@ public final class OperatorHelper {
             case (Tokens.AMPERSAND):
                 return (A) ((WithAnd) lhs).and(rhs);
             case (Tokens.BAR):
-                return (A) ChooseInst.create(lhs,rhs);
+                return (A) ChooseInst.create(lhs, rhs);
             case (Tokens.RANGLE):
                 return (A) ((WithOrder) lhs).gt(rhs);
             case (Tokens.LANGLE):
                 return (A) ((WithOrder) lhs).lt(rhs);
             case (Tokens.REQUALS):
                 return (A) ((WithOrder) lhs).gte(rhs);
-            //case (Tokens.LEQUALS):
-            //    return (A) ((WithOrder) lhs).gte(rhs);
+            case (Tokens.LEQUALS):
+                return (A) ((WithOrder) lhs).lte(rhs);
             case (Tokens.DEQUALS):
                 return (A) lhs.eq(rhs);
             case (Tokens.MAPSTO):
@@ -91,7 +96,20 @@ public final class OperatorHelper {
                 return rhs instanceof WithMinus ? ((WithMinus) rhs).neg() : MapInst.create(rhs).mult(NegInst.create());
             case (Tokens.BACKSLASH):
                 return DivInst.create(rhs);
-
+            case (Tokens.AMPERSAND):
+                return AndInst.create(rhs);
+            case (Tokens.BAR):
+                return OrInst.create(rhs);
+            case (Tokens.RANGLE):
+                return GtInst.create(rhs);
+            case (Tokens.LANGLE):
+                return LtInst.create(rhs);
+            case (Tokens.REQUALS):
+                return GteInst.create(rhs);
+            case (Tokens.LEQUALS):
+                return LteInst.create(rhs);
+            case (Tokens.DEQUALS):
+                return EqInst.create(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

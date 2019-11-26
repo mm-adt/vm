@@ -73,9 +73,6 @@ public class Parser extends BaseParser<Object> {
     final Rule RBRACKET = Terminal(Tokens.RBRACKET);
     final Rule LCURL = Terminal(Tokens.LCURL);
     final Rule RCURL = Terminal(Tokens.RCURL);
-    final Rule TRIPLE_QUOTE = Terminal(Tokens.DQUOTE + Tokens.DQUOTE + Tokens.DQUOTE);
-    final Rule DOUBLE_QUOTE = Terminal(Tokens.DQUOTE);
-    final Rule SINGLE_QUOTE = Terminal(Tokens.SQUOTE);
     final Rule TILDE = Terminal(Tokens.TILDE);
     final Rule LPAREN = Terminal(Tokens.LPAREN);
     final Rule RPAREN = Terminal(Tokens.RPAREN);
@@ -88,8 +85,6 @@ public class Parser extends BaseParser<Object> {
     final Rule GTE = Terminal(Tokens.REQUALS);
     final Rule LT = Terminal(Tokens.LANGLE);
     final Rule GT = Terminal(Tokens.RANGLE);
-
-    final Rule DOUBLE_COLON = Terminal(Tokens.COLON + Tokens.COLON);
 
     /// built-int type symbols
     final Rule INT = Terminal(Tokens.INT);
@@ -179,21 +174,21 @@ public class Parser extends BaseParser<Object> {
     @SuppressSubnodes
     Rule Real() {
         return FirstOf(
-                Sequence(REAL, this.push(TReal.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),
+                Sequence(REAL, this.push(TReal.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))), // type predicate
                 Sequence(Sequence(Number(), PERIOD, Number()), this.push(TReal.of(Float.valueOf(match().trim())))));
     }
 
     @SuppressSubnodes
     Rule Int() {
         return FirstOf(
-                Sequence(INT, this.push(TInt.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),
+                Sequence(INT, this.push(TInt.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate
                 Sequence(Number(), this.push(TInt.of(Integer.valueOf(match().trim())))));
     }
 
     @SuppressSubnodes
     Rule Str() {
         return FirstOf(
-                Sequence(STR, this.push(TStr.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),
+                Sequence(STR, this.push(TStr.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate
                 Sequence("\"\"\"", ZeroOrMore(Sequence(TestNot("\"\"\""), ANY)), this.push(TStr.of(match())), "\"\"\""),
                 Sequence("\'", ZeroOrMore(Sequence(TestNot("\'"), ANY)), this.push(TStr.of(match())), "\'"),
                 Sequence("\"", ZeroOrMore(Sequence(TestNot("\""), ANY)), this.push(TStr.of(match())), "\""));
@@ -202,7 +197,7 @@ public class Parser extends BaseParser<Object> {
     @SuppressSubnodes
     Rule Bool() {
         return FirstOf(
-                Sequence(BOOL, this.push(TBool.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),
+                Sequence(BOOL, this.push(TBool.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate
                 Sequence(TRUE, this.push(TBool.of(true))),
                 Sequence(FALSE, this.push(TBool.of(false))));
     }
@@ -230,12 +225,12 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule UnaryOperator() {
-        return Sequence(FirstOf(STAR, SUB, PLUS, DIV, SUB), this.push(this.match().trim()));
+        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR, MAPSFROM, MAPSTO /*GTE, LTE, GT, LT, DEQUALS*/), this.push(this.match().trim()));
+        return Sequence(FirstOf(MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressNode

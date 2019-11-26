@@ -55,7 +55,7 @@ public final class Tokens {
     public static final String RCURL = "}";
     public static final String LANGLE = "<";
     public static final String RANGLE = ">";
-    public static final String LEQUALS = "<=";
+    public static final String LEQUALS = "=<";
     public static final String REQUALS = ">=";
     public static final String LPAREN = "(";
     public static final String RPAREN = ")";
