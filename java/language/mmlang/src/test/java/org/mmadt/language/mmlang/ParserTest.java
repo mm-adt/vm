@@ -126,13 +126,13 @@ class ParserTest {
     };
 
 
-    @TestFactory
+    /*@TestFactory
     Stream<DynamicTest> testParse() {
         return Stream.of(TEST_PARAMETERS)
                 .map(tp -> DynamicTest.dynamicTest(tp.input, () -> {
                     assumeFalse(tp.ignore);
                     assertEquals(tp.expected, Compiler.asInst(tp.input).toString());
                 }));
-    }
+    }*/
 
 }

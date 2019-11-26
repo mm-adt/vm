@@ -172,6 +172,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <O extends Obj> O env(final Str name, final Obj obj) {
+        if(!name.isInstance())
+            return (O)this;
         final TObj clone = this.clone();
         clone.environment = new LinkedHashMap<>();
         if (null != this.environment)
@@ -237,7 +239,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
         clone.types = this.types.label(variable);
-        return (O) clone;
+        return (O) clone.env(TStr.of(variable),clone);
     }
 
     @Override

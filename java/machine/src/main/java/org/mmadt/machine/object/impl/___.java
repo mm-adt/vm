@@ -23,8 +23,8 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
-import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.FromInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
@@ -95,6 +95,10 @@ public class ___ {
 
     public static Inst id() {
         return IdInst.create();
+    }
+
+    public static Inst is(final Object object) {
+        return IsInst.create(object);
     }
 
     public static Inst and(final Object... args) {

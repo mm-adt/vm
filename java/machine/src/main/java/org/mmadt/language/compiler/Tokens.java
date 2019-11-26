@@ -81,6 +81,7 @@ public final class Tokens {
 
     public static final String A = "a";
     public static final String ACCESS = "access";
+    public static final String AS = "as";
     public static final String AND = "and";
     public static final String ID = "id";
     public static final String BRANCH = "branch";

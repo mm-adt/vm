@@ -31,6 +31,7 @@ import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AccessInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
@@ -64,6 +65,7 @@ import org.mmadt.machine.object.model.type.PList;
 import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.ACCESS;
 import static org.mmadt.language.compiler.Tokens.AND;
+import static org.mmadt.language.compiler.Tokens.AS;
 import static org.mmadt.language.compiler.Tokens.BRANCH;
 import static org.mmadt.language.compiler.Tokens.CHOOSE;
 import static org.mmadt.language.compiler.Tokens.COUNT;
@@ -119,6 +121,8 @@ public final class Instructions {
                 return AInst.create(args.get(0));
             case ACCESS:
                 return AccessInst.create();
+            case AS:
+                return AsInst.create(args.get(0));
             case AND:
                 return AndInst.create(args.toArray(new Object[]{}));
             case BRANCH:

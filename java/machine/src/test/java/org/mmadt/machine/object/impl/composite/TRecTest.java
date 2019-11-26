@@ -28,7 +28,6 @@ import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
@@ -67,16 +66,10 @@ final class TRecTest implements TestUtilities {
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             // instances
             ProcessArgs.of(List.of(TRec.of(Map.of("a", 1))), TRec.of(Map.of("a", 1))),
-            // ProcessArgs.of(List.of(TRec.of(Map.of("name", TStr.of("marko")))), TRec.of(Map.of("name", TStr.of().to("a"))).from("a")),
+            ProcessArgs.of(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"))).label("c")), TRec.of(Map.of("name", TStr.of("marko"))).as(TRec.of(Map.of("name", TStr.of().label("a"))).label("c"))),
+            // ProcessArgs.of(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"), "age", TInt.of().label("b")))), TRec.of(Map.of("name", "marko", "age", TInt.of())).as(TRec.of(Map.of("name", TStr.of().label("a"), "age", TInt.of().label("b"))))),
 
     };
-
-    /*@Test
-    void xxx() {
-        System.out.println(TRec.of(Map.of("name", "marko", "age", TInt.of())).cast(
-                TRec.of(Map.of("name", TStr.of().to("a"), "age", TInt.of().to("b"))).mapFrom(TRec.all().is(TRec.some().get("name").eq(___.from("a"))))).toString());
-        //System.out.println(TRec.of(Map.of("name","marko","age",TInt.of())).cast(TRec.of(Map.of("name", TStr.of().to("a"), "age", TInt.of().to("b"))).mapFrom(TRec.some().is(TRec.some().get("name").eq(from("a"))))).toString());
-    }*/
 
     @TestFactory
     Stream<DynamicTest> testProcessing() {

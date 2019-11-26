@@ -42,11 +42,10 @@ public final class TType implements Type {
 
     protected static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
-    // private Model model = Model.MODELS.get("mm").get();
     private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
     private String label;                      // the ~bind string (if retrieved via a bind)
     private Pattern pattern;                   // a predicate for testing an instance of the type
-    private Inst accessFrom;                   // access to the manifestations of this form
+    private Inst access;                       // access to the manifestations of this form
     private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (this is the "FPGA" aspect of the VM)
 
     public static Type of(final String symbol) {
@@ -56,18 +55,6 @@ public final class TType implements Type {
     private TType(final String symbol) {
         this.symbol = symbol;
     }
-
-    /*@Override
-    public Model model() {
-        return this.model;
-    }
-
-    @Override
-    public Type model(final Model model) {
-        final TType clone = this.clone();
-        clone.model = model;
-        return clone;
-    }*/
 
     @Override
     public String symbol() {
@@ -108,13 +95,13 @@ public final class TType implements Type {
     @Override
     public Type access(final Inst access) {
         final TType clone = this.clone();
-        clone.accessFrom = null == access || (access.get() instanceof PList && access.<PList<Str>>get().get(0).java().equals(Tokens.ID)) ? null : access;
+        clone.access = null == access || (access.get() instanceof PList && access.<PList<Str>>get().get(0).java().equals(Tokens.ID)) ? null : access;
         return clone;
     }
 
     @Override
     public Inst access() {
-        return null == this.accessFrom ? IdInst.create() : this.accessFrom;
+        return null == this.access ? IdInst.create() : this.access;
     }
 
     @Override
@@ -143,7 +130,7 @@ public final class TType implements Type {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.symbol, this.label, this.accessFrom, this.instructions, this.pattern);
+        return Objects.hash(this.symbol, this.label, this.access, this.instructions, this.pattern);
     }
 
     @Override

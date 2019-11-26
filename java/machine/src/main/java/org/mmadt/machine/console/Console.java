@@ -30,11 +30,10 @@ import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.processor.util.FastProcessor;
-import org.parboiled.Parboiled;
-import org.parboiled.parserunners.BasicParseRunner;
-import org.parboiled.parserunners.ParseRunner;
-import org.parboiled.support.ParsingResult;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -59,11 +58,10 @@ public class Console {
     private static final String PROMPT = "mmadt> ";
     private static final String RESULT = "==>";
     private static final String Q = ":q";
-    private static final SimpleParser PARSER = Parboiled.createParser(SimpleParser.class);
 
     public static void main(final String[] args) throws Exception {
         System.setErr(System.out);
-        final ParseRunner runner = new BasicParseRunner<>(PARSER.Source());
+        final ScriptEngine engine = new ScriptEngineManager().getEngineByName("mmlang");
         final Terminal terminal = TerminalBuilder.terminal();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
@@ -78,19 +76,13 @@ public class Console {
         ///////////////////////////////////
         terminal.writer().println(HEADER);
         terminal.flush();
-        String line;
         while (true) {
             try {
-                line = reader.readLine(PROMPT);
+                final String line = reader.readLine(PROMPT);
                 if (line.equals(Q)) break;
                 try {
-                    final ParsingResult result = runner.run(line);
-                    if (!result.valueStack.isEmpty()) {
-                        final Obj obj = (Obj) result.valueStack.pop();
-                        terminal.writer().println("\nExecuting: " + obj);
-                        FastProcessor.process(obj).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
-                        terminal.flush();
-                    }
+                    ((Iterator<Obj>) engine.eval(line)).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
+                    terminal.flush();
                 } catch (final Exception e) {
                     e.printStackTrace();
                     if (null == e.getCause())

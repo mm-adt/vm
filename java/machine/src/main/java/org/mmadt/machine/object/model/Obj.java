@@ -27,7 +27,6 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
@@ -258,7 +257,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                         this.append((Inst) obj) :
                 this instanceof Inst ?
                         obj.access(((Inst) this)).append(obj.access()) :
-                        this.q(this.q().mult(obj.q())).access(this.access()).append(IsInst.isA(this)).append(obj.access());
+                        this.q(this.q().mult(obj.q())).access(this.access()).append(obj.access());
 
     }
 
@@ -314,12 +313,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
 
     public Bool a(final Obj obj);
-
-    public default <O extends Obj> O as(final Str label) {
-        return this.isInstance() && label.isInstance() ?
-                this.env(label, this) :
-                this.mapTo(EnvInst.create(label));
-    }
 
     public default <O extends Obj> O count() {
         return this.q().constant() ?
@@ -380,6 +373,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     /////////////////////////////////////////////////////////////////
 
+    public default <O extends Obj> O as(final O obj) {
+        return this.symbol(obj.symbol()).access(obj.access()).label(obj.label());
+    }
+
     public default <O extends Obj> O is(final Object bool) {
         return this.is(ObjectHelper.create(TBool.of(), bool));
     }
@@ -390,10 +387,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default Int map(final Integer integer) {
         return this.map(TInt.of(integer));
-    }
-
-    public default <O extends Obj> O as(final String label) {
-        return this.env(TStr.of(label), this);
     }
 
     public default <O extends Obj> O env(final Object symbol) {
