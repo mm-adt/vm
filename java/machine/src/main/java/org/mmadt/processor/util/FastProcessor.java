@@ -27,6 +27,7 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
+import org.mmadt.util.EmptyIterator;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
@@ -57,7 +58,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
     @Override
     public Iterator<S> iterator(final S obj) {
         final Inst bytecode = obj.access();
-        if (bytecode.isOne()) return IteratorUtils.of(obj);
+        if (bytecode.isOne()) return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
         Stream<S> stream = Stream.of((S) obj.access().domain().access(ID()));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof BarrierInstruction)  // two patterns: *-to-* and 1-to-*.
@@ -67,7 +68,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
                 stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());
         }
-        return stream.map(s -> s.<S>label(bytecode.label())).filter(s -> !s.q().isZero()).iterator();
+        return stream.filter(s -> !s.q().isZero()).iterator();
     }
 
     @Override

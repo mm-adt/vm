@@ -54,6 +54,7 @@ public final class mmLangScriptEngine extends AbstractScriptEngine {
         if (!result.valueStack.isEmpty()) {
             // TODO: context bindings are Obj.env();
             final Obj obj = (Obj) result.valueStack.pop();
+            // System.out.println("PROCESSING: " + obj);
             return FastProcessor.process(obj);
         }
         return EmptyIterator.instance();

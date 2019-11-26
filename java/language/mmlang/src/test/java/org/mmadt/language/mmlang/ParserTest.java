@@ -26,6 +26,8 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.util.IteratorUtils;
 
@@ -44,8 +46,15 @@ class ParserTest {
     private final static ParserArgs[] PARSING = new ParserArgs[]{
             ParserArgs.of(List.of(11), "11"),
             ParserArgs.of(List.of(11), "11 => int"),
+            ParserArgs.of(List.of(TInt.of(11).label("a")), "11 => int~a"),
+            ParserArgs.of(List.of(11), "11 => [plus,[zero]]"),
+            ParserArgs.of(List.of(11), "11 + 0"),
+            ParserArgs.of(List.of(30), "11 + 4 * 2"),
             ParserArgs.of(List.of(30), "11 => [plus,4] => [mult,2]"),
             ParserArgs.of(List.of(30), "11 => [plus,4][mult,2] => int => [id]"),
+            ParserArgs.of(List.of(PlusInst.create(11)), "[plus,11]"),
+            ParserArgs.of(List.of(-1, -2, -3), "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
+            ParserArgs.of(List.of(TInt.of(1).label("a"), TInt.of(2).label("a"), TInt.of(3).label("a")), "1 => ([id] + [plus,1] + [plus,2]) => int~a"),
     };
 
 

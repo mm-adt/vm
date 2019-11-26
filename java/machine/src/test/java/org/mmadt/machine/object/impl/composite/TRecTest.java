@@ -69,7 +69,7 @@ final class TRecTest implements TestUtilities {
             ProcessArgs.of(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"))).label("c")), TRec.of(Map.of("name", "marko")).as(TRec.of(Map.of("name", TStr.of().label("a"))).label("c"))),
             ProcessArgs.of(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"))).label("c")), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of("name", TStr.of().label("a"))).label("c"))),
             ProcessArgs.of(List.of(TRec.of(Map.of()).label("c")), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of()).label("c"))),
-            ProcessArgs.of(List.of(TRec.of(Map.of("friend", "bob")).label("c").q(zero)), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of("friend", "bob")).label("c"))),
+            ProcessArgs.of(List.of(), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of("friend", "bob")).label("c"))),
             // ProcessArgs.of(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"), "age", TInt.of().label("b")))), TRec.of(Map.of("name", "marko", "age", TInt.of())).as(TRec.of(Map.of("name", TStr.of().label("a"), "age", TInt.of().label("b"))))),
 
     };

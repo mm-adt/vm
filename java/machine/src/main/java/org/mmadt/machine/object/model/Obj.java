@@ -32,6 +32,7 @@ import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
@@ -243,7 +244,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             }
             return o;
         } else if (obj.isType()) {
-            return this.isReference() ? (O) this.as(obj).append(this.access()) : (O) this.as(obj);
+            return this.isReference() ? (O) this.append(AsInst.create(obj)) : (O) this.as(obj);
         } else
             return obj.mapFrom(this);
     }
