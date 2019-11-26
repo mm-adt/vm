@@ -146,11 +146,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public PMap<Inst, Inst> instructions() {
-        return this.types.instructions();
-    }
-
-    @Override
     public <O extends Obj> O type(final O type) { // TODO: this might need to clone obj as branches may have different types (variants)
         if (this == type)
             throw new RuntimeException("An object is already its own type: " + this + "::" + type);
@@ -246,20 +241,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O access(final Inst access) {
         final TObj clone = this.clone();
         clone.types = this.types.access(access);
-        return (O) clone;
-    }
-
-    @Override
-    public <O extends Obj> O inst(final Inst instA, final Inst instB) {
-        final TObj clone = this.clone();
-        clone.types = this.types.inst(instA, instB);
-        return (O) clone;
-    }
-
-    @Override
-    public <O extends Obj> O insts(final PMap<Inst, Inst> insts) {
-        final TObj clone = this.clone();
-        clone.types = this.types.insts(insts);
         return (O) clone;
     }
 

@@ -132,8 +132,6 @@ public class TInst extends TObj implements Inst {
 
     @Override
     public Inst mult(Inst inst) { // TODO: optimize this nest
-        if (!inst.isZero())
-            inst = inst.domain().inst(new Bindings(), inst).orElse(inst);
         return inst.isZero() ?
                 this.zero() :
                 this.isOne() ?

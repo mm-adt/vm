@@ -88,21 +88,6 @@ final class TInstTest {
     }
 
     @Test
-    void shouldBindInstructions() {
-        final TRec<Str, Obj> person = TRec.of(
-                "name", TStr.of(),
-                "age", TInt.of(is(gt(0)))).inst(TInst.of("get", "name"), TInst.of("get", TStr.of().label("x")));
-        final Bindings bindings = new Bindings();
-        bindings.put("x", TStr.of("alias"));
-        final Optional<Inst> bc = person.inst(bindings, TInst.of("get", "name"));
-        assertTrue(bc.isPresent());
-        assertEquals(TInst.of("get", "alias"), bc.get());
-        assertTrue(person.isType());
-        assertFalse(person.isReference());
-        assertFalse(person.isInstance());
-    }
-
-    @Test
     void shouldBindAccess() {
         final TRec<Str, Obj> person = TRec.of(
                 "name", TStr.of().label("y"),
@@ -119,33 +104,6 @@ final class TInstTest {
         assertNotEquals(person, marko);
         assertEquals(person, person);
         assertEquals(marko, marko);
-    }
-
-    //@Test
-    void shouldOrInstructionsCorrectly() {
-        final Int gt10 = TInt.of(is(gt(10))).inst(TInst.of("add", 1), TInst.of("add", 2));
-        final Int lt50 = TInt.of(is(lt(50))).inst(TInst.of("add", 3), TInst.of("add", 4));
-        final Int gte100 = TInt.of(is(gte(100))).inst(TInst.of("sub", 1), TInst.of("sub", 2));
-        final Int combo = (TInt) gt10.and(lt50); // TODO: .or(gte100); // TODO: internal merge of instructions using or/and from inst
-        final Int i9 = TInt.of(9);
-        final Int i11 = TInt.of(11);
-        //
-        assertFalse(gt10.test(i9));
-        assertTrue(lt50.test(i9));
-        assertFalse(gte100.test(i9));
-        assertFalse(combo.test(i9));
-        assertThrows(RuntimeException.class, () -> i9.type(combo));
-        //
-        assertTrue(gt10.test(i11));
-        assertTrue(lt50.test(i11));
-        assertFalse(gte100.test(i11));
-        assertTrue(combo.test(i11));
-        i11.type(combo);
-        assertTrue(combo.test(i11));
-        assertFalse(i11.inst(new Bindings(), TInst.of("sub", 1)).isPresent());
-        assertTrue(i11.inst(new Bindings(), TInst.of("add", 1)).isPresent());
-        assertTrue(i11.inst(new Bindings(), TInst.of("add", 3)).isPresent());
-
     }
 
     @Test

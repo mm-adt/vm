@@ -28,7 +28,6 @@ import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 
 import java.util.HashMap;
@@ -46,7 +45,6 @@ public final class TType implements Type {
     private String label;                      // the ~bind string (if retrieved via a bind)
     private Pattern pattern;                   // a predicate for testing an instance of the type
     private Inst access;                       // access to the manifestations of this form
-    private PMap<Inst, Inst> instructions;     // rewrite rules for the vm instruction set (this is the "FPGA" aspect of the VM)
 
     public static Type of(final String symbol) {
         return BASE_TYPE_CACHE.computeIfAbsent(symbol, TType::new);
@@ -104,33 +102,10 @@ public final class TType implements Type {
         return null == this.access ? IdInst.create() : this.access;
     }
 
-    @Override
-    public Type inst(final Inst instA, final Inst instB) {
-        final TType clone = this.clone();
-        clone.instructions = new PMap<>();
-        if (null != this.instructions)
-            clone.instructions.putAll(this.instructions);
-        clone.instructions.put(instA, instB);
-        return clone;
-    }
-
-    @Override
-    public PMap<Inst, Inst> instructions() {
-        return this.instructions;
-    }
-
-    @Override
-    public Type insts(final PMap<Inst, Inst> insts) {
-        if (null == insts)
-            return this;
-        final TType clone = this.clone();
-        clone.instructions = new PMap<>(insts);
-        return clone;
-    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.symbol, this.label, this.access, this.instructions, this.pattern);
+        return Objects.hash(this.symbol, this.label, this.access, this.pattern);
     }
 
     @Override
@@ -139,7 +114,6 @@ public final class TType implements Type {
                 Objects.equals(this.symbol, ((Type) object).symbol()) &&
                 Objects.equals(this.access(), ((Type) object).access()) &&
                 Objects.equals(this.label, ((Type) object).label()) &&
-                Objects.equals(this.instructions, ((Type) object).instructions()) &&
                 Objects.equals(this.pattern, ((Type) object).pattern());
     }
 

@@ -95,9 +95,9 @@ public final class ObjectHelper {
                 throw new RuntimeException("AND'ing non-equal values: " + object1.get() + "::" + object2.get());
             return object1.get();
         } else if (object1.getClass().equals(object2.getClass())) {
-            if (null == object1.get() && null == object1.instructions())
+            if (null == object1.get())
                 return object2.get();
-            else if (null == object2.get() && null == object2.instructions())
+            else if (null == object2.get())
                 return object1.get();
         }
         return PAnd.and(object1.get() instanceof PAnd ? object1.get() : object1.q(one), object2.q(one));

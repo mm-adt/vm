@@ -68,18 +68,4 @@ final class PAndTest {
         assertEquals(TInt.of(2), bindings.get("x"));
     }
 
-    @Test
-    void shouldMatchConjunctionInstruction() {
-        TSym<Rec<TStr, TObj>> vertex = TSym.of("vertex", TRec.of("id", TInt.of(), "label", TStr.of()));
-        final Rec<TStr, TObj> idField = TRec.of("id", TInt.of().label("x"));
-        final Obj and = vertex.and(idField);
-        final Inst inst = TInst.of("eq", and);
-        vertex = vertex.inst(inst, TInst.of("get", "id").mult(TInst.of("eq", TInt.of().label("x"))));
-        //
-        final Bindings bindings = new Bindings();
-        assertTrue(vertex.and(idField).match(bindings, vertex.and(TRec.of("id", 2))));
-        assertEquals(TInt.of(2), bindings.get("x"));
-    }
-
-
 }

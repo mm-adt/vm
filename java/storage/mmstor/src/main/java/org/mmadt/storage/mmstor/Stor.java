@@ -22,11 +22,7 @@
 
 package org.mmadt.storage.mmstor;
 
-import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TModel;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.storage.Storage;
 
 /**
@@ -37,13 +33,11 @@ public final class Stor<A extends Obj> implements Storage<A> {
     private static final String SYMBOL = "mmstor";
 
     private final A root;
-    private final Model model;
 
-    public Stor(final A root) { // TODO: make a Model-based constructor
+    public Stor(final A root) {
         assert null != root;
         this.root = root;
-        this.model = TModel.of(SYMBOL);
-        this.model.define(Tokens.DB, ObjectHelper.type(this.root));
+
     }
 
     @Override
@@ -54,11 +48,6 @@ public final class Stor<A extends Obj> implements Storage<A> {
     @Override
     public A root() {
         return this.root;
-    }
-
-    @Override
-    public Model model() {
-        return this.model;
     }
 
 }

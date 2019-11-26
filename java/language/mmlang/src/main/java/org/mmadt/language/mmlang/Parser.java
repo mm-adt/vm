@@ -117,9 +117,7 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Unary() {
-        return FirstOf(
-                Sequence(Terminal("->"), Expression(), swap(), this.push(type(this.pop()).inst(castToInst(this.pop()), ID()))),
-                Sequence(UnaryOperator(), Singles(), swap(), this.push(OperatorHelper.applyUnary((String) this.pop(), type(this.pop()))))); // always left associative
+        return Sequence(UnaryOperator(), Singles(), swap(), this.push(OperatorHelper.applyUnary((String) this.pop(), type(this.pop())))); // always left associative
     }
 
     Rule Binary() {

@@ -22,7 +22,6 @@
 
 package org.mmadt.storage;
 
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 
 /**
@@ -33,7 +32,4 @@ public interface Storage<A extends Obj> {
     public boolean alive();
 
     public A root();
-
-    public Model model();
-
 }

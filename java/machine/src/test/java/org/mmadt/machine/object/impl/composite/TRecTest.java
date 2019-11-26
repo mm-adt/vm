@@ -152,30 +152,6 @@ final class TRecTest implements TestUtilities {
     }
 
     @Test
-    void shouldSupportTypeReferenceInstance() {
-        final Rec recordType = TRec.of("name", TStr.of(), "age", is(gt(32))).
-                inst(TInst.of("get", "outE"),
-                        TInst.of("db").mult(TInst.of("get", "E")).mult(TInst.of("is", TInst.of("get", "outV").mult(TInst.of("eq", 1))))).
-                inst(TInst.of(TStr.of(), "marko"),
-                        TInst.of("db").mult(TInst.of("get", "E")).mult(TInst.of("is", TInst.of("get", "outV").mult(TInst.of("eq", 1)))));
-        ///
-        assertTrue(recordType.isType());
-        assertFalse(recordType.isReference());
-        assertFalse(recordType.isInstance());
-        assertTrue(recordType.access((Inst) null).isType());
-        ///
-        assertFalse(recordType.constant());
-        assertFalse(recordType.test(TRec.of("name", 2)));
-        assertTrue(recordType.test(TRec.of("name", "marko", "age", 45)));
-
-        assertFalse(TRec.of("name", TStr.of(), "age", TInt.of()).constant());
-        assertFalse(TRec.of("name", "marko", "stats", TRec.of("age", TInt.of())).constant());
-        assertTrue(TRec.of("name", "marko", "stats", TRec.of("age", 29)).constant());
-        assertFalse(TRec.of("name", TStr.of(), "age", TInt.of()).constant());
-        assertFalse(TRec.of("name", TStr.of(), "age", TInt.of()).constant());
-    }
-
-    @Test
     void shouldSupportQuantifiersInTest() {
         Rec person = TRec.of("name", TStr.of(), "age", TInt.of().q(qmark)).symbol("person");
         final Rec marko = TRec.of("name", "marko", "age", TInt.of(29));
@@ -395,88 +371,6 @@ final class TRecTest implements TestUtilities {
         System.out.println(marko);
         System.out.println(marko2);*/
 
-    }
-
-    @Test
-    void shouldOrTypesAndInstances() {
-        final Rec<?, ?> named = TRec.of("name", TStr.of()).symbol("named");
-        final Rec<?, ?> aged = TRec.of("age", TInt.of()).inst(TInst.of("get", "age"), TInst.of("get", "years"));
-        final Rec<?, ?> human = TRec.some().symbol("human");
-        final Obj object = TObj.some().inst(TInst.of("get", "name"), TInst.of("get", "alias"));
-        final Obj person = named.or(aged).and(human).or(object).symbol("person");
-        final Rec<Obj, Obj> marko = TRec.of("name", "marko");
-        final Rec<Obj, Obj> kuppitz = TRec.of("age", 25);
-        final Rec<?, ?> markoKuppitz = (TRec) marko.or(kuppitz);
-        //
-        assertEquals("named", named.symbol());
-        assertEquals(Tokens.REC, aged.symbol());
-        assertEquals("person", person.symbol());
-        assertEquals(Tokens.REC, markoKuppitz.symbol());
-        //
-        assertTrue(named.test(marko));
-        assertFalse(aged.test(marko));
-        assertTrue(human.test(marko));
-        assertTrue(person.test(marko));
-        assertTrue(marko.test(marko));
-        assertTrue(object.test(marko));
-        assertFalse(marko.test(object));
-        //
-        assertFalse(named.test(kuppitz));
-        assertTrue(aged.test(kuppitz));
-        assertTrue(human.test(kuppitz));
-        System.out.println(person);
-        assertTrue(person.test(kuppitz));
-        assertTrue(kuppitz.test(kuppitz));
-        assertTrue(object.test(kuppitz));
-        assertFalse(kuppitz.test(object));
-        //
-//        assertTrue(markoKuppitz.isType());
-        assertTrue(markoKuppitz.test(marko));
-        assertTrue(markoKuppitz.test(kuppitz));
-        //
-        marko.type(markoKuppitz);
-        marko.type(person);
-        kuppitz.type(markoKuppitz);
-        kuppitz.type(person);
-        //
-        marko.type(named);
-        assertFalse(marko.inst(new Bindings(), TInst.of("get", "name")).isPresent());
-        marko.type(person);
-        // assertFalse(marko.inst(new Bindings(), TInst.of("get", "age")).isPresent()); // TODO: only instructions for the bound type should be available
-        System.out.println(person);
-//        assertEquals(TInst.of("get", "alias"), marko.inst(new Bindings(), TInst.of("get", "name")).get());
-
-
-    }
-
-    @Test
-    void shouldAndWithObject() {
-        final Rec<?, ?> person = TRec.of("name", TStr.of(), "age", TInt.of()).symbol("person");
-        final Obj object = TObj.some().inst(TInst.of("get", "name"), TInst.of("get", "alias"));
-        final Rec personObject = (Rec) person.and(object);
-        final Rec<Obj, Obj> marko = TRec.of("name", "marko", "age", 29);
-        //
-        assertTrue(person.test(marko));
-        assertTrue(object.test(marko));
-        assertTrue(personObject.test(marko));
-        //
-        assertTrue(person.isType());
-        assertTrue(object.isType());
-        assertTrue(marko.isInstance());
-        //
-        assertEquals("person", person.symbol());
-        assertEquals(Tokens.OBJ, object.symbol());
-        assertEquals(Tokens.REC, personObject.symbol());
-        assertTrue(personObject.get() instanceof PAnd);
-        assertEquals(2, ((PAnd) personObject.get()).predicates().size());
-        //
-        assertNull(person.instructions());
-        assertEquals(1, object.instructions().size());
-// TODO: merge conjunctions?        assertEquals(1, personObject.instructions().size());
-        //
-        assertFalse(marko.inst(new Bindings(), TInst.of("get", "name")).isPresent());
-        marko.type(personObject);
-        assertEquals(TInst.of("get", "alias"), marko.inst(new Bindings(), TInst.of("get", "name")).get());
     }
 
     @Test

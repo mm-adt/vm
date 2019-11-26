@@ -78,28 +78,6 @@ public final class PAnd  implements Pattern {
                 && new HashSet<>(this.patterns).equals(new HashSet<>(((PAnd) object).patterns));
     }
 
-    public Optional<Inst> inst(final Obj object, final Bindings bindings, final Inst inst) {
-        for (final Pattern p : this.predicates()) {
-            if (!object.constant() || p.test(object)) {
-                if (p.isObj()) {
-                    Optional<Inst> match = p.asObj().inst(bindings, inst);
-                    if (match.isPresent())
-                        return match;
-                    if (p instanceof TSym && null != ((TSym) p).getObject()) { // TODO: perhaps symbols shouldn't have instructions on them?!
-                        match = TSym.fetch(p.asObj()).inst(bindings, inst);
-                        if (match.isPresent())
-                            return match;
-                    }
-                } else if (p instanceof PAnd) {
-                    final Optional<Inst> match = ((PAnd) p).inst(object, bindings, inst);
-                    if (match.isPresent())
-                        return match;
-                }
-            }
-        }
-        return Optional.empty();
-    }
-
     @Override
     public boolean constant() {
         for (final Pattern pattern : this.predicates()) {

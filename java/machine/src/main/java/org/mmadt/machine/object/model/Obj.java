@@ -42,8 +42,6 @@ import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.Bindings;
-import org.mmadt.machine.object.model.type.PAnd;
-import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithMult;
@@ -57,7 +55,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
@@ -90,8 +87,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Map<Str, Obj> env();
 
-    public PMap<Inst, Inst> instructions();
-
     public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
         return (O) this.iterable().iterator().next();
     }
@@ -121,11 +116,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O access(final Inst access);
 
-    public <O extends Obj> O inst(final Inst instA, final Inst instB);
-
     public <O extends Obj> O symbol(final String symbol);
-
-    public <O extends Obj> O insts(final PMap<Inst, Inst> insts);
 
     public default <O extends Obj> O env(final Map<Str, Obj> env) {
         Obj obj = this;
@@ -145,8 +136,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default Obj bind(final Bindings bindings) {
         if (bindings.has(this.label()))
             return bindings.get(this.label());
-        return this.insts(null == this.instructions() ? null : this.instructions().bind(bindings)).
-                set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
+        return this.set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
                 access(this.access().isOne() ? null : this.access().bind(bindings));
     }
 
@@ -226,20 +216,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return true;
     }
 
-    public default Optional<Inst> inst(final Bindings bindings, final Inst inst) {
-        if (null != this.instructions()) {
-            for (final Map.Entry<Inst, Inst> entry : this.instructions().entrySet()) {
-                if (entry.getKey().match(bindings, inst))
-                    return Optional.of(entry.getValue().bind(bindings));
-            }
-        }
-        if (null != this.type() && this.type().get() instanceof PAnd) // TODO: this is why having a specialized variant class is important (so the logic is more recursive)
-            return ((PAnd) this.type().get()).inst(this, bindings, inst);
-        else if (this.get() instanceof PAnd)
-            return ((PAnd) this.get()).inst(this, bindings, inst);
-        else
-            return Optional.empty();
-    }
 
     /////////////// DELETE WHEN PROPERLY MIXED
     private <O extends Obj> O append(final Inst inst) {
@@ -261,7 +237,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O mapTo(final Obj obj) {
         if (obj instanceof Inst) {
-            O o = this.isInstance() ? this.set(null).access(StartInst.create(((Object) this))) : (O) this;
+            O o = this.isInstance() ? this.set(null).access(StartInst.create(this)) : (O) this;
             for (final Inst inst : ((Inst) obj).iterable()) {
                 o = o.q(o.q().mult(obj.q())).append(inst);
             }

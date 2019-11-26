@@ -116,42 +116,6 @@ class BindingsTest {
         assertEquals(TStr.of("marko"), bindings.get("x"));
     }
 
-
-    @Test
-    void shouldBindInstructions() {
-        Rec<?, ?> type1 = TRec.of("name", TStr.of().label("a"), "age", TInt.of().label("b"))
-                .q(star)
-                .inst(TInst.of("get", "age"),
-                        TInst.of("db").mult(TInst.of("get", "ages")).mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of().label("a"))))).mult(TInst.of("get", "age")));
-        Rec rec1 = TRec.of("name", "marko", "age", 29);
-        final Bindings bindings = new Bindings();
-        assertTrue(type1.match(bindings, rec1));
-        assertEquals(TStr.of("marko"), bindings.get("a"));
-        assertEquals(TInt.of(29), bindings.get("b"));
-        assertEquals(2, bindings.size());
-        final Rec type2 = type1.bind(bindings);
-        assertNotEquals(type1, type2);
-        assertNotEquals(type1.instructions(), type2.instructions());
-        assertFalse(type1.constant());
-        assertTrue(type2.constant());
-        assertTrue(type2.instructions().toString().contains("marko"));
-        assertTrue(type2.instructions().entrySet().iterator().next().getKey().constant());
-        assertTrue(type2.instructions().entrySet().iterator().next().getValue().constant());
-        assertTrue(type1.instructions().entrySet().iterator().next().getKey().constant());
-        assertFalse(type1.instructions().entrySet().iterator().next().getValue().constant());
-        //
-        assertTrue(type1.q().isStar());
-        assertTrue(type2.q().isStar());
-        final TObj type3 = type2.q(one);
-        assertEquals(type2.instructions(), type3.instructions());
-        assertTrue(type1.q().isStar());
-        assertTrue(type2.q().isStar());
-        assertEquals(type3.q().one(), type3.q());
-        assertNotEquals(type1, type2);
-        assertNotEquals(type2, type3);
-        assertNotEquals(type3, type1);
-    }
-
     @Test
     void shouldBindAccess() {
         final Rec type1 = TRec.of("name", TStr.of().label("a"), "age", TInt.of())

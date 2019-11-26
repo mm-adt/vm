@@ -25,8 +25,6 @@ package org.mmadt.machine.object.model.util;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.MModel;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Str;
@@ -53,7 +51,6 @@ import static org.mmadt.language.compiler.Tokens.LBRACKET;
 import static org.mmadt.language.compiler.Tokens.LCURL;
 import static org.mmadt.language.compiler.Tokens.LPAREN;
 import static org.mmadt.language.compiler.Tokens.MAPSFROM;
-import static org.mmadt.language.compiler.Tokens.MAPSTO;
 import static org.mmadt.language.compiler.Tokens.MODEL;
 import static org.mmadt.language.compiler.Tokens.NEWLINE;
 import static org.mmadt.language.compiler.Tokens.QUESTION;
@@ -62,7 +59,6 @@ import static org.mmadt.language.compiler.Tokens.RCURL;
 import static org.mmadt.language.compiler.Tokens.RPAREN;
 import static org.mmadt.language.compiler.Tokens.SEMICOLON;
 import static org.mmadt.language.compiler.Tokens.SPACE;
-import static org.mmadt.language.compiler.Tokens.STEP;
 import static org.mmadt.language.compiler.Tokens.TILDE;
 
 /**
@@ -72,21 +68,6 @@ public final class StringFactory {
 
     private StringFactory() {
         // for static method use
-    }
-
-    public static String model(final Model model) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(MODEL).append(model.get("db").get().toString()).append(NEWLINE);
-        return builder.toString();
-    }
-
-    public static String mmodel(final MModel model) {
-        StringBuilder builder = new StringBuilder();
-        if (null == model.name())
-            builder.append(MODEL);
-        else
-            builder.append(model.name().java()).append("::").append(model.get().toString());
-        return builder.toString();
     }
 
     private static void objectMetadata(final Obj object, final StringBuilder builder) {
@@ -100,20 +81,6 @@ public final class StringFactory {
                 builder.append(SPACE);
             builder.append(object.access());
         }
-        if (null != object.instructions()) {
-            builder.append(NEWLINE);
-            for (final Map.Entry<Inst, Inst> inst : object.instructions().entrySet()) {
-                builder.append(SPACE).append(STEP).append(SPACE).append(inst.getKey()).append(SPACE).append(MAPSTO).append(SPACE).append(inst.getValue()).append(NEWLINE);
-            }
-            builder.deleteCharAt(builder.length() - 1);
-        }
-        /*if (null != object.env()) {
-            builder.append(NEWLINE);
-            for (final Map.Entry<Str, Obj> var : object.env().entrySet()) {
-                builder.append(SPACE).append(DASH).append(var.getKey().java()).append(DASH).append(RANGLE).append(nestedObject(var.getValue())).append(NEWLINE);
-            }
-            builder.deleteCharAt(builder.length() - 1);
-        }*/
     }
 
     private static String nestedObject(final Obj object) {

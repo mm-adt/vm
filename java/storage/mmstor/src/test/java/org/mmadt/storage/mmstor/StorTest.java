@@ -57,18 +57,4 @@ class StorTest {
         assertEquals(TLst.of("a", "b", "c", "d"), storage.root());
         assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(FastProcessor.process(TLst.some().mapFrom(start(storage.root()).plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e")).bytecode()))));
     }
-
-    @Test
-    void testModel() {
-        Storage storage = new Stor<>(TLst.of());
-        assertEquals(TLst.some(), storage.model().get(Tokens.DB));
-        //
-        final Rec<Str, Obj> person = TRec.of("name", TStr.of(), "age", TInt.of());
-        final Rec<Str, Obj> people = person.q(star);
-        final Rec<Str, Obj> instances = people.access(start()).type(people);
-        storage = new Stor<>(instances);
-        assertEquals(people, storage.model().get(Tokens.DB));
-        assertEquals(instances, storage.root());
-        assertEquals(people, storage.root().type());
-    }
 }

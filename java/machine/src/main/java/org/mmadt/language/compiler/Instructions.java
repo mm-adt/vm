@@ -43,7 +43,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
-import org.mmadt.machine.object.impl.composite.inst.map.ModelInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
@@ -113,8 +112,6 @@ public final class Instructions {
         args.addAll(inst.<PList<Obj>>get());
         // model handling
         final String opcode = args.get(0).get();
-        if (opcode.startsWith(Tokens.EQUALS))
-            return ModelInst.create(opcode.substring(1));
         args.remove(0); // drop the opcode
         switch (opcode) {
             case A:
