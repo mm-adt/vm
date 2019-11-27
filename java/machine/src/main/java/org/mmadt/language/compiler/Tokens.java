@@ -33,6 +33,18 @@ public final class Tokens {
         // static helper class
     }
 
+    public static String space(final int amount) {
+        return repeater(amount, SPACE);
+    }
+
+    public static String repeater(final int amount, final String symbol) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < amount; i++) {
+            builder.append(symbol);
+        }
+        return builder.toString();
+    }
+
     public static final String BACKSLASH = "/";
     public static final String COLON = ":";
     public static final String COMMA = ",";

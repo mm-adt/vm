@@ -33,7 +33,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.AccessInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
-import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
@@ -50,6 +49,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.QInst;
+import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
@@ -72,7 +72,6 @@ import static org.mmadt.language.compiler.Tokens.DB;
 import static org.mmadt.language.compiler.Tokens.DEDUP;
 import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
-import static org.mmadt.language.compiler.Tokens.STATE;
 import static org.mmadt.language.compiler.Tokens.EQ;
 import static org.mmadt.language.compiler.Tokens.EXPLAIN;
 import static org.mmadt.language.compiler.Tokens.GET;
@@ -95,6 +94,7 @@ import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.PUT;
 import static org.mmadt.language.compiler.Tokens.Q;
 import static org.mmadt.language.compiler.Tokens.START;
+import static org.mmadt.language.compiler.Tokens.STATE;
 import static org.mmadt.language.compiler.Tokens.SUM;
 import static org.mmadt.language.compiler.Tokens.ZERO;
 
@@ -139,7 +139,7 @@ public final class Instructions {
             case EQ:
                 return EqInst.create(args.get(0));
             case EXPLAIN:
-                return ExplainInst.create(args.get(0));
+                return args.isEmpty() ? ExplainInst.create() : ExplainInst.create(args.get(0));
             case GET:
                 return GetInst.create(args.get(0));
             case GT:

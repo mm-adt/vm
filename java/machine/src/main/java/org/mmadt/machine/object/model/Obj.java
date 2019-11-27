@@ -36,6 +36,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
@@ -342,7 +343,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O is(final Object bool) {
-        return this.is(ObjectHelper.create(TBool.of(), bool));
+        return Obj.this.is(ObjectHelper.create(TBool.of(), bool));
     }
 
     public default <O extends Obj> O map(final Inst inst) {
@@ -355,5 +356,13 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O state(final Object symbol) {
         return this.state((Str) ObjectHelper.from(symbol));
+    }
+
+    public default <O extends Obj> O explain(final Obj obj) {
+        return this.mapTo(ExplainInst.create(obj));
+    }
+
+    public default <O extends Obj> O explain() {
+        return this.mapTo(ExplainInst.create());
     }
 }
