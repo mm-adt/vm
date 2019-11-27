@@ -26,7 +26,6 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
-import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -67,26 +66,27 @@ public final class StringFactory {
         // for static method use
     }
 
-    private static void objectMetadata(final Obj object, final StringBuilder builder) {
-        if (!object.q().isOne())
-            builder.append(object.q());
-        if (null != object.label())
-            builder.append(TILDE).append(object.label());
-        if (!object.access().isOne()) {
-            builder.append(SPACE).append(MAPSFROM);
-            if (!object.access().modelMap())
-                builder.append(SPACE);
-            builder.append(object.access());
+    private static void objMetadata(final Obj obj, final StringBuilder builder) {
+        if (!obj.q().isOne())
+            builder.append(obj.q());
+        if (null != obj.label())
+            builder.append(TILDE)
+                    .append(obj.label());
+        if (!obj.access().isOne()) {
+            builder.append(SPACE)
+                    .append(MAPSFROM)
+                    .append(SPACE)
+                    .append(obj.access());
         }
     }
 
-    private static String nestedObject(final Obj object) {
+    private static String nestedObj(final Obj obj) {
         final StringBuilder builder = new StringBuilder();
-        if (object.constant() || !object.named())
-            builder.append(object);
+        if (obj.constant() || !obj.named())
+            builder.append(obj);
         else {
-            builder.append(object.symbol());
-            StringFactory.objectMetadata(object, builder);
+            builder.append(obj.symbol());
+            StringFactory.objMetadata(obj, builder);
         }
         return builder.toString();
     }
@@ -94,7 +94,7 @@ public final class StringFactory {
     public static String stream(final Stream<? extends Obj> stream) {
         final StringBuilder builder = new StringBuilder();
         for (Obj object : stream) {
-            builder.append(nestedObject(object)).append(COMMA);
+            builder.append(nestedObj(object)).append(COMMA);
         }
         if (builder.length() > 0)
             builder.deleteCharAt(builder.length() - 1);
@@ -107,7 +107,7 @@ public final class StringFactory {
             builder.append(record.<PMap>get());
         else
             builder.append(record.symbol());
-        StringFactory.objectMetadata(record, builder);
+        StringFactory.objMetadata(record, builder);
         return builder.toString();
     }
 
@@ -118,7 +118,7 @@ public final class StringFactory {
             builder.append(COLON);
         else {
             for (final Map.Entry<? extends Obj, ? extends Obj> entry : map.entrySet()) {
-                builder.append(nestedObject(entry.getKey())).append(COLON).append(nestedObject(entry.getValue())).append(COMMA);
+                builder.append(nestedObj(entry.getKey())).append(COLON).append(nestedObj(entry.getValue())).append(COMMA);
             }
             builder.deleteCharAt(builder.length() - 1);
         }
@@ -134,7 +134,7 @@ public final class StringFactory {
                 builder.append(SEMICOLON);
             else {
                 for (Obj object : list.<PList<Obj>>get()) {
-                    builder.append(nestedObject(object)).append(SEMICOLON);
+                    builder.append(nestedObj(object)).append(SEMICOLON);
                 }
                 builder.deleteCharAt(builder.length() - 1);
             }
@@ -143,7 +143,7 @@ public final class StringFactory {
             builder.append(list.get().toString());
         else
             builder.append(list.symbol());
-        StringFactory.objectMetadata(list, builder);
+        StringFactory.objMetadata(list, builder);
         return builder.toString();
     }
 
@@ -151,34 +151,30 @@ public final class StringFactory {
         final StringBuilder builder = new StringBuilder();
 
         for (final Pattern pred : conjunction.predicates()) {
-            builder.append(pred instanceof Obj ? nestedObject((Obj) pred) : pred);
+            builder.append(pred instanceof Obj ? nestedObj((Obj) pred) : pred);
             builder.append(AMPERSAND);
         }
         builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
     }
 
-    public static String object(final Obj object) {
+    public static String obj(final Obj obj) {
         final StringBuilder builder = new StringBuilder();
-        final Object o = object.get();
+        final Object o = obj.get();
         if (null == o)
-            builder.append(object.symbol());
-        else if (o instanceof Inst) {
-            if (null != object.label() || !object.q().isOne()) builder.append(LPAREN);
-            builder.append(object.symbol()).append(o);
-            if (null != object.label() || !object.q().isOne()) builder.append(RPAREN);
-        } else {
-            final boolean parens =
-                    (o instanceof Obj || o instanceof Stream || o instanceof PAnd) &&
-                            (null != object.label() || !object.q().isOne());
-            if (parens)
-                builder.append(LPAREN);
-            builder.append(o);
-            if (parens)
-                builder.append(RPAREN);
+            builder.append(obj.symbol());
+        else {
+            final boolean parentheses = (o instanceof Inst || o instanceof PAnd) && (null != obj.label() || !obj.q().isOne());
+            if (parentheses) builder.append(LPAREN);
+            if (o instanceof Inst)
+                builder.append(obj.symbol());
+            final String oString = o instanceof String ?
+                    String.format("'%s'", ((String) o).replaceAll("[\"\\\\]", "\\\\$0")) :
+                    o.toString();
+            builder.append(oString);
+            if (parentheses) builder.append(RPAREN);
         }
-
-        StringFactory.objectMetadata(object, builder);
+        StringFactory.objMetadata(obj, builder);
         return builder.toString();
     }
 
@@ -190,7 +186,7 @@ public final class StringFactory {
             for (Inst single : inst.iterable()) {
                 if (!single.isZero()) {
                     boolean first = true;
-                    // TODO:  this shows the intermediate domain between insts: builder.append(nestedObject(single.domain().access((Inst)null)));
+                    // TODO:  this shows the intermediate domain between insts: builder.append(nestedObj(single.domain().access((Inst)null)));
                     builder.append(LBRACKET);
                     if (single.opcode().get().equals(DEFINE))
                         builder.append(DEFINE).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
@@ -235,26 +231,4 @@ public final class StringFactory {
                     (quantifier.peek().isMin() ? EMPTY : quantifier.object().peek()) + COMMA +
                     (quantifier.last().isMax() ? EMPTY : quantifier.object().last()) + RCURL;
     }
-
-    public static String string(final Str string) {
-        final StringBuilder builder = new StringBuilder();
-        if (string.isInstance()) {
-            if (string.get() instanceof Stream)
-                builder.append(string.symbol()).append("..");
-            else if (java.util.regex.Pattern.compile("^[a-zA-Z]*$").matcher(string.<String>get()).matches())
-                builder.append("'").append(string.<String>get()).append("'");
-            else
-                builder.append(String.format("\"%s\"", string.<String>get().replaceAll("[\"\\\\]", "\\\\$0")));
-        } else if (string.get() instanceof Inst) {
-            if (null != string.label() || !string.q().isOne()) builder.append(LPAREN);
-            builder.append(string.get().toString());
-            if (null != string.label() || !string.q().isOne()) builder.append(RPAREN);
-        } else if (string.isType() && null != string.get())
-            builder.append(string.get().toString());
-        else
-            builder.append(string.symbol());
-        StringFactory.objectMetadata(string, builder);
-        return builder.toString();
-    }
-
 }

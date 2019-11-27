@@ -123,7 +123,7 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public String toString() {
-        return StringFactory.string(this);
+        return StringFactory.obj(this);
     }
 
 }

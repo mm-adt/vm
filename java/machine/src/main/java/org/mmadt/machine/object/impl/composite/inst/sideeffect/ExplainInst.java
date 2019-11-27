@@ -74,22 +74,22 @@ public final class ExplainInst<S extends Obj> extends TInst implements SideEffec
             this.build(0, root.access());
         }
 
-        private List<String> normalize(final List<String> column) {
-            final int maxFunction = column.stream().map(String::length).max(Comparator.naturalOrder()).orElse(0);
-            return column.stream().map(s -> s + Tokens.space(maxFunction - s.length())).collect(Collectors.toList());
-        }
-
         private void build(int indent, final Inst inst) {
             for (final Inst i : inst.iterable()) {
                 final String space = Tokens.space(indent);
                 this.function.add(space + i.toString());
                 this.domain.add(space + i.domain().access(null).toString());
                 this.range.add(space + i.range().access(null).toString());
-                for (final Obj x : i.args()) {
-                    if (!x.isInstance())
-                        build((1 + indent) * 2, x.access());
+                for (final Obj arg : i.args()) {
+                    if (!arg.isInstance())
+                        build((1 + indent) * 2, arg.access());
                 }
             }
+        }
+
+        private List<String> normalize(final List<String> column) {
+            final int maxFunction = column.stream().map(String::length).max(Comparator.naturalOrder()).orElse(0);
+            return column.stream().map(s -> s + Tokens.space(maxFunction - s.length())).collect(Collectors.toList());
         }
 
         @Override

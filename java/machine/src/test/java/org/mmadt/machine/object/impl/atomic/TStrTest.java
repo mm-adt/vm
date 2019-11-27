@@ -27,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.util.ProcessArgs;
 
@@ -36,10 +38,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.and;
 import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.neq;
 import static org.mmadt.language.__.or;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.id;
@@ -114,6 +114,15 @@ final class TStrTest implements TestUtilities {
     @Test
     void testIsA() {
         validateIsA(TStr.of());
+    }
+
+    @Test
+    void testString() {
+        assertEquals("str", TStr.of().toString());
+        assertEquals("'marko'", TStr.of("marko").toString());
+        assertEquals("str[is,[gt,'a']]", TStr.of(IsInst.create(GtInst.create("a"))).toString());
+        assertEquals("(str[is,[gt,'a']])~x", TStr.of(IsInst.create(GtInst.create("a"))).label("x").toString()); // TODO: perhaps str([is]){x,y}~a
+        assertEquals("(str[is,[gt,'a']]){0,2}", TStr.of(IsInst.create(GtInst.create("a"))).q(0,2).toString());
     }
 
     @Test

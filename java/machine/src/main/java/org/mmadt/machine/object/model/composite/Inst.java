@@ -52,10 +52,6 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         return this.get();
     }
 
-    public default boolean modelMap() {
-        return this.<Inst>peek().opcode().java().startsWith(Tokens.EQUALS);
-    }
-
     public Obj domain();
 
     public Obj range();
