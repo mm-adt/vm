@@ -54,7 +54,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 public final class ObjectHelper {
 
     private static final Map<Class, Obj> SYMBOL_MAP = new HashMap<>() {{
-        put(TObj.class, TObj.some());
+        put(TObj.class, TObj.single());
         put(TBool.class, TBool.of());
         put(TInt.class, TInt.of());
         put(TReal.class, TReal.of());
@@ -159,7 +159,7 @@ public final class ObjectHelper {
         else if (object2.named() && null == object2.get())
             return SYMBOL_MAP.get(object1.getClass());
         else
-            return TObj.some();
+            return TObj.single();
     }
 
     public static String getName(final Obj object) {

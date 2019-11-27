@@ -20,28 +20,31 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.impl.util;
+package org.mmadt.machine.object.impl.composite.inst.map;
 
-import org.junit.jupiter.api.Test;
-import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.util.BytecodeHelper;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
+import org.mmadt.machine.object.model.type.PList;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class BytecodeHelperTest {
+public final class StateInst<S extends Obj, E extends Obj> extends TInst implements MapInstruction<S, E> {
 
-    @Test
-    void shouldExtractReference() {
-        final TRec person = TRec.of("name", TStr.of(), "age", TInt.of()).access(TInst.of("get", "name"));
-        final Inst inst = TInst.of("ref", person);
-        assertEquals(person, BytecodeHelper.reference(inst));
+    private StateInst(final Object key) {
+        super(PList.of(Tokens.STATE, key));
+    }
+
+    @Override
+    public E apply(final S obj) {
+        return obj.state(this.<S, Str>argument(0).mapArg(obj));
+    }
+
+    public static <S extends Obj, E extends Obj> StateInst<S, E> create(final Object arg) {
+        return new StateInst<>(arg);
     }
 
 }

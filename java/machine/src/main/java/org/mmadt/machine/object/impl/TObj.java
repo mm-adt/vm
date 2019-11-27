@@ -43,7 +43,6 @@ import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
-import org.mmadt.processor.util.FastProcessor;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -54,7 +53,7 @@ import java.util.Objects;
  */
 public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
-    public static Obj some() {
+    public static Obj single(final Object... objects) {
         return new TObj(null);
     }
 
@@ -89,7 +88,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     private Q quantifier = null;                                // the 'amount' of this object bundle
     Type types;                                         // an object that abstractly defines this object's forms
     private boolean typeSet = false;                    // TODO: this is because we have a distinction of 'type not set' (will remove at of point)
-    private Map<Str, Obj> environment;
+    private Map<Str, Obj> state;
 
     public TObj(final Object value) {
         this.types = TType.of(TObj.getBaseSymbol(this));
@@ -101,23 +100,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         }
         assert !(this.value instanceof Obj) && (!(this.value instanceof Pattern) || ((Pattern) this.value).constant()); // TODO: Remove when proved
     }
-
-    public <O extends Obj> O bindings(final Inst inst) {
-        if (null == this.environment)
-            return (O) this;
-
-        final TObj clone = this.clone();
-        clone.environment = new LinkedHashMap<>();
-        final Map<Str, Obj> newEnv = new LinkedHashMap<>(this.environment);
-        for (final Map.Entry<Str, Obj> effect : this.environment.entrySet()) {
-            final Obj next = FastProcessor.process(effect.getValue().env(TStr.of("this"), clone)).next();
-            next.env().clear();
-            newEnv.put(effect.getKey(), next.access(effect.getValue().access()));
-        }
-        clone.environment.putAll(newEnv);
-        return (O) clone;
-    }
-
 
     @Override
     public String symbol() {
@@ -160,19 +142,19 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public Map<Str, Obj> env() {
-        return null == this.environment ? Map.of() : this.environment;
+    public Map<Str, Obj> state() {
+        return null == this.state ? Map.of() : this.state;
     }
 
     @Override
-    public <O extends Obj> O env(final Str name, final Obj obj) {
-        if(!name.isInstance())
-            return (O)this;
+    public <O extends Obj> O state(final Str name, final Obj obj) {
+        if (!name.isInstance())
+            return (O) this;
         final TObj clone = this.clone();
-        clone.environment = new LinkedHashMap<>();
-        if (null != this.environment)
-            clone.environment.putAll(this.environment);
-        clone.environment.put(name, obj);
+        clone.state = new LinkedHashMap<>();
+        if (null != this.state)
+            clone.state.putAll(this.state);
+        clone.state.put(name, obj);
         return (O) clone;
     }
 
@@ -206,7 +188,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <O extends Obj> O set(final Object object) {
-        final TObj clone = this.clone();//.bindings(TInst.none());
+        final TObj clone = this.clone();
         if (null == object) {
             clone.value = null;
             clone.types = this.types.pattern(null);
@@ -233,7 +215,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
         clone.types = this.types.label(variable);
-        return (O) clone.env(TStr.of(variable),clone);
+        return (O) clone.state(TStr.of(variable), clone);
     }
 
     @Override

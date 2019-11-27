@@ -62,8 +62,8 @@ public class __ {
         return create().drop(key);
     }
 
-    public static Query env(final Object key) {
-        return create().env(key);
+    public static Query state(final Object key) {
+        return create().state(key);
     }
 
     public static Query start(final Object... starts) {

@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.object.model;
 
-import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
@@ -33,7 +32,7 @@ import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
-import org.mmadt.machine.object.impl.composite.inst.map.EnvInst;
+import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
@@ -86,7 +85,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Inst access();
 
-    public Map<Str, Obj> env();
+    public Map<Str, Obj> state();
 
     public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
         return (O) this.iterable().iterator().next();
@@ -119,18 +118,18 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O symbol(final String symbol);
 
-    public default <O extends Obj> O env(final Map<Str, Obj> env) {
+    public default <O extends Obj> O state(final Map<Str, Obj> env) {
         Obj obj = this;
         for (final Map.Entry<Str, Obj> entry : env.entrySet()) {
-            obj = obj.env(entry.getKey(), entry.getValue());
+            obj = obj.state(entry.getKey(), entry.getValue());
         }
         return (O) obj;
     }
 
-    public <O extends Obj> O env(final Str name, final Obj obj);
+    public <O extends Obj> O state(final Str name, final Obj obj);
 
     public default <O extends Obj> O copy(final Obj obj) {
-        return this.q(obj.q()).access(obj.access()).env(obj.env());
+        return this.q(obj.q()).access(obj.access()).state(obj.state());
     }
 
     @Override
@@ -264,10 +263,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.constant();
     }
 
-    public default <O extends Obj> O access(final Query access) {
-        return this.access(access.bytecode());
-    }
-
     public default <O extends Obj> O q(final Q.Tag tag) {
         return this.q(tag.apply(this.q()));
     }
@@ -296,10 +291,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 this.mapFrom(CountInst.create());
     }
 
-    public default <O extends Obj> O env(final Str symbol) {
+    public default <O extends Obj> O state(final Str symbol) {
         return (this.isInstance()) ?
-                this.set(this.get()).env().getOrDefault(symbol, TObj.none()).copy(this) :
-                TLst.some().copy(this).mapFrom(EnvInst.create(symbol));
+                this.set(this.get()).state().getOrDefault(symbol, TObj.none()).copy(this) :
+                TLst.some().copy(this).mapFrom(StateInst.create(symbol));
     }
 
     public default <O extends Obj> O is(final Bool bool) {
@@ -358,7 +353,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.map(TInt.of(integer));
     }
 
-    public default <O extends Obj> O env(final Object symbol) {
-        return this.env((Str) ObjectHelper.from(symbol));
+    public default <O extends Obj> O state(final Object symbol) {
+        return this.state((Str) ObjectHelper.from(symbol));
     }
 }

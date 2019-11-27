@@ -112,7 +112,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     }
 
     public default Lst<V> put(final Object index, final Object value) {
-        return this.put(ObjectHelper.create(TInt.of(), index), (V) ObjectHelper.create(TObj.some(), value));
+        return this.put(ObjectHelper.create(TInt.of(), index), (V) ObjectHelper.create(TObj.single(), value));
     }
 
     @Override

@@ -39,10 +39,6 @@ public final class BytecodeHelper {
         // static help class
     }
 
-    public static Obj reference(final Inst ref) {
-        return ref.<List<Obj>>get().get(1);
-    }
-
     public static List<Object> domainRangeNested(final Inst bytecode) {
         final List<Object> list = new ArrayList<>();
         boolean first = true;

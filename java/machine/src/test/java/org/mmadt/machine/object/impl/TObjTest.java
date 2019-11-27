@@ -214,7 +214,7 @@ class TObjTest {
         assertEquals(TReal.none(), TRec.none());
 
         final List<Obj> nones = List.of(TObj.none(), TBool.none(), TInt.none(), TReal.none(), TStr.none(), TLst.none(), TRec.none(), TInst.none());
-        final List<Obj> somes = List.of(TObj.some(), TBool.of(), TInt.of(), TReal.of(), TStr.of(), TLst.some(), TRec.some(), TInst.some());
+        final List<Obj> somes = List.of(TObj.single(), TBool.of(), TInt.of(), TReal.of(), TStr.of(), TLst.some(), TRec.some(), TInst.some());
         final List<Obj> alls = List.of(TObj.all(), TBool.all(), TInt.all(), TReal.all(), TStr.all(), TLst.all(), TRec.all(), TInst.all());
 
         nones.forEach(a -> nones.forEach(b -> {

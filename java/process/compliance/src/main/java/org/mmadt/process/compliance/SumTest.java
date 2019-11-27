@@ -44,10 +44,4 @@ public abstract class SumTest extends AbstractTest {
         assertEquals(qs(12), submit(start(3, 2, 1).mult(2).sum()));
     }
 
-    //@Test
-    void xxx_sum() {
-        assertEquals(List.of(new TQ<>(TInt.of(2).access(plus(TInt.of().q(1, 3).access(mult(1)))), TInt.of(7).access(plus(TInt.of().q(1, 3).access(mult(3)))))),
-                submit(start(1, 1, TInt.of().q(1, 3), TInt.of(5).q(qmark)).sum()));
-    }
-
 }

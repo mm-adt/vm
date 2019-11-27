@@ -52,7 +52,7 @@ public final class mmLangScriptEngine extends AbstractScriptEngine {
     public Iterator<Obj> eval(final String script, final ScriptContext context) throws ScriptException {
         final ParsingResult result = RUNNER.run(script);
         if (!result.valueStack.isEmpty()) {
-            // TODO: context bindings are Obj.env();
+            // TODO: context bindings are Obj.state();
             final Obj obj = (Obj) result.valueStack.pop();
             // System.out.println("PROCESSING: " + obj);
             return FastProcessor.process(obj);
