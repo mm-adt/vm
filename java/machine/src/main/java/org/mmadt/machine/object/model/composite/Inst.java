@@ -144,11 +144,6 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     }
 
     @Override
-    public default Inst bind(final Bindings bindings) {
-        return (Inst) WithProduct.super.bind(bindings);
-    }
-
-    @Override
     public default Iterable<Inst> iterable() {
         return this.get() instanceof Stream ? this.<Stream<Inst>>get() : null == this.get() ? List.of() : List.of(this);
     }

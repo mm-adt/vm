@@ -134,14 +134,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public default Obj bind(final Bindings bindings) {
-        if (bindings.has(this.label()))
-            return bindings.get(this.label());
-        return this.set(this.get() instanceof Pattern ? ((Pattern) this.get()).bind(bindings) : this.get()).
-                access(this.access().isOne() ? null : this.access().bind(bindings));
-    }
-
-    @Override
     public default boolean test(final Obj obj) {
         boolean root = TRAMPOLINE.isEmpty();
         try {

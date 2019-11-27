@@ -38,7 +38,6 @@ import java.util.Optional;
  */
 public final class PAnd  implements Pattern {
 
-
     final List<Pattern> patterns;
 
     PAnd(final List<Pattern> patterns) {
@@ -47,15 +46,6 @@ public final class PAnd  implements Pattern {
 
     public List<Pattern> predicates() {
         return Collections.unmodifiableList(this.patterns);
-    }
-
-    @Override
-    public PAnd bind(final Bindings bindings) {
-        final List<Pattern> patterns = new ArrayList<>();
-        for (final Pattern p : this.predicates()) {
-            patterns.add(p.bind(bindings));
-        }
-        return new PAnd(patterns);
     }
 
     public <A> A get(final int index) {

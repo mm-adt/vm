@@ -72,7 +72,7 @@ public final class PMap<K extends Obj, V extends Obj> extends LinkedHashMap<K, V
     @Override
     public boolean match(final Bindings bindings, final Obj object) {
         bindings.start();
-        final TRec<K, V> other = object.asObj();
+        final TRec<K, V> other = (TRec<K, V>) object;
         for (final Map.Entry<K, V> entry : this.entrySet()) {
             final V thisValue = entry.getValue();
             final Obj otherValue = other.get(entry.getKey());
@@ -100,15 +100,5 @@ public final class PMap<K extends Obj, V extends Obj> extends LinkedHashMap<K, V
                 return false;
         }
         return true;
-    }
-
-    @Override
-    public PMap<K, V> bind(Bindings bindings) {
-        final PMap<K, V> newMap = new PMap<>();
-        for (final Map.Entry<K, V> entry : this.entrySet()) {
-            newMap.put((K) entry.getKey().bind(bindings), (V) entry.getValue().bind(bindings));
-        }
-        return newMap;
-
     }
 }

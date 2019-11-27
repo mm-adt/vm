@@ -72,15 +72,6 @@ public final class TStream<A extends Obj> implements Stream<A> {
     public void drop(final A object) {
         this.objects.remove(object);
     }
-    
-    @Override
-    public Pattern bind(final Bindings bindings) {
-        final List<A> list = new ArrayList<>();
-        for (final A a : this) {
-            list.add((A) a.bind(bindings));
-        }
-        return TStream.of(list);
-    }
 
     @Override
     public Iterator<A> iterator() {

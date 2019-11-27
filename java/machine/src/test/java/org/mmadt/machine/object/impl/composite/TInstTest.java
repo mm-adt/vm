@@ -88,25 +88,6 @@ final class TInstTest {
     }
 
     @Test
-    void shouldBindAccess() {
-        final TRec<Str, Obj> person = TRec.of(
-                "name", TStr.of().label("y"),
-                "age", TInt.of(is(gt(0)))).access(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of().label("y")))));
-        final Bindings bindings = new Bindings();
-        bindings.put("y", TStr.of("marko"));
-        Rec<Str, Obj> marko = person.bind(bindings);
-        assertEquals(TStr.of("marko"), marko.get(TStr.of("name")));
-        assertEquals(TInt.of(is(gt(0))), marko.get(TStr.of("age")));
-        assertFalse(marko.isInstance());
-        assertTrue(marko.isReference());
-        assertFalse(marko.isType());
-        assertEquals(marko.access(), TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of("marko")))));
-        assertNotEquals(person, marko);
-        assertEquals(person, person);
-        assertEquals(marko, marko);
-    }
-
-    @Test
     void testInstructionComposition() {
         final Inst a = TInst.of("db");
         final Inst b = is(get("name").eq("marko")).bytecode();

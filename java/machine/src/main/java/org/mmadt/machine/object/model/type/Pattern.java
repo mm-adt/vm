@@ -33,16 +33,6 @@ public interface Pattern {
 
     public boolean match(final Bindings bindings, final Obj object);
 
-    public Pattern bind(final Bindings bindings);
-
     public boolean constant();
-
-    public default <A extends Obj> A asObj() {
-        return (A) this;
-    }
-
-    public default boolean isObj() {
-        return this instanceof Obj;
-    }
 
 }

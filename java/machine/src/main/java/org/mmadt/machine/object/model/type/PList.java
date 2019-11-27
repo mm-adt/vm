@@ -104,13 +104,4 @@ public final class PList<V extends Obj> extends ArrayList<V> implements Pattern 
         }
         return true;
     }
-
-    @Override
-    public PList<V> bind(Bindings bindings) {
-        final PList<V> newList = new PList<>();
-        for (final Obj object : this) {
-            newList.add((V) object.bind(bindings));
-        }
-        return newList;
-    }
 }

@@ -280,17 +280,6 @@ final class TRecTest implements TestUtilities {
     }
 
     @Test
-    void shouldBindQuantifier() {
-        final Rec person = TRec.of("name", TStr.of().label("x"), "age", TInt.of()).q(qmark).access(TInst.of("db").mult(TInst.of("is", TInst.of("get", "name").mult(TInst.of("eq", TStr.of().label("x"))))));
-        assertEquals(qmark.apply(person.q()), person.q());
-        final Bindings bindings = new Bindings();
-        bindings.put("x", TStr.of("marko"));
-        final Obj marko = person.bind(bindings);
-        assertEquals(qmark.apply(person.q()), person.q());
-        assertEquals(qmark.apply(marko.q()), marko.q());
-    }
-
-    @Test
     void shouldAndTypesAndInstances() {
         final Rec<?, ?> named = TRec.of("name", TStr.of()).symbol("named");
         final Rec<?, ?> aged = TRec.of("age", TInt.of());

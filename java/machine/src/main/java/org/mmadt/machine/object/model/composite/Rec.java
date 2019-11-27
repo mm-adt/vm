@@ -119,11 +119,6 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
     }
 
     @Override
-    public default Rec<K, V> bind(final Bindings bindings) {
-        return (Rec<K, V>) WithProduct.super.bind(bindings);
-    }
-
-    @Override
     public default Iterable<Rec<K, V>> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }

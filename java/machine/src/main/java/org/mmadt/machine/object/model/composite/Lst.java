@@ -116,11 +116,6 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     }
 
     @Override
-    public default Lst<V> bind(final Bindings bindings) {
-        return (Lst<V>) WithProduct.super.bind(bindings);
-    }
-
-    @Override
     public default Iterable<Lst<V>> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
