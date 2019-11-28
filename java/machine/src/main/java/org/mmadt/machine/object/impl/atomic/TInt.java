@@ -88,7 +88,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return this.q().constant() ? this.set(0) : ZeroInst.<Int>create().attach(this);
+        return this.q().constant() ? this.set(0).access(null) : ZeroInst.<Int>create().attach(this);
     }
 
     @Override

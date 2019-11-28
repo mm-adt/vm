@@ -22,29 +22,54 @@
 
 package org.mmadt.util;
 
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.processor.util.FastProcessor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class TestArgs<A, B> {
-    public final boolean ignore;
+
+    public static final Obj none = TObj.none();
+
     public final A expected;
     public final B input;
 
-    public TestArgs(final B input) {
-        this((A) input, input);
-    }
-
-    public TestArgs(final boolean ignore, final B input) {
-        this(ignore, (A) input, input);
-    }
-
     public TestArgs(final A expected, final B input) {
-        this(false, expected, input);
-    }
-
-    public TestArgs(final boolean ignore, final A expected, final B input) {
-        this.ignore = ignore;
         this.expected = expected;
         this.input = input;
+    }
+
+    public static <A, B> TestArgs<A, B> args(final A expected, final B input) {
+        return new TestArgs<>(expected, input);
+    }
+
+    public static List<Object> objs(final Object... objects) {
+        final List<Object> objs = new ArrayList<>();
+        for (final Object object : objects) {
+            objs.add(object instanceof List ? object : ObjectHelper.from(object)); // NOTE THAT LISTS DON'T CONVERT (NECESSARY FOR TESTING)
+        }
+        return objs;
+    }
+
+    public static Int ints(final Object... integers) {
+        return TInt.of(integers);
+    }
+
+    public static Bool bools(final Object... booleans) {
+        return TBool.of(booleans);
+    }
+
+    public static Obj process(final Obj obj) {
+        return FastProcessor.process(obj).next();
     }
 }

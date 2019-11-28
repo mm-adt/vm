@@ -47,10 +47,6 @@ public interface Int extends WithOrderedRing<Int> {
         return DedupInst.<Int>create(branches).attach(this);
     }
 
-    public default Int id() {
-        return this;
-    }
-
     public default Int is(final Inst inst) {
         return this.is(ObjectHelper.create(TBool.of(), inst));
     }

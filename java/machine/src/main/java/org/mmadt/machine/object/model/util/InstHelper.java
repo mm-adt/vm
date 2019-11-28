@@ -33,9 +33,9 @@ import static org.mmadt.machine.object.impl.composite.TInst.ID;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class BytecodeHelper {
+public final class InstHelper {
 
-    private BytecodeHelper() {
+    private InstHelper() {
         // static help class
     }
 

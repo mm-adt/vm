@@ -215,7 +215,8 @@ public class Parser extends BaseParser<Object> {
         return Sequence(
                 LBRACKET,
                 Sequence(Symbol(), opcode.set(match().trim()), ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop())))),    // arguments
-                RBRACKET, this.push(Instructions.compile(TInst.of(opcode.get(), args.get())))); // compiler grabs the instruction type
+                RBRACKET, this.push(Instructions.compile(TInst.of(opcode.get(), args.get()))),                                                  // compiler grabs the instruction type
+                Optional(Quantifier(), swap(), this.push(castToInst(this.pop()).q(this.pop()))));
     }
 
     @SuppressSubnodes
@@ -260,14 +261,14 @@ public class Parser extends BaseParser<Object> {
     Rule Quantifier() {
         return Sequence(
                 LCURL,  // TODO: the *, +, ? shorthands assume Int ring. (this will need to change)
-                FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                                        // {*}
-                        Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                                        // {+}
-                        Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                                       // {?}
-                        Sequence(COMMA, Expression(), this.push(new TQ<>((this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),          // {,10}
+                FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                                                // {*}
+                        Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                                                // {+}
+                        Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                                               // {?}
+                        Sequence(COMMA, Expression(), this.push(new TQ<>((this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),                  // {,10}
                         Sequence(Expression(),
-                                FirstOf(Sequence(COMMA, Expression(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))),   // {1,10}
-                                        Sequence(COMMA, this.push(new TQ<>(type(this.peek()), (this.<WithOrderedRing>type(this.peek())).max()))),       // {10,}
-                                        this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                      // {1}
+                                FirstOf(Sequence(COMMA, Expression(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))),           // {1,10}
+                                        Sequence(COMMA, this.push(new TQ<>(type(this.peek()), (this.<WithOrderedRing>type(this.pop())).max()))),  // {10,}
+                                        this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                              // {1}
                 RCURL);
     }
 

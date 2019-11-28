@@ -57,6 +57,6 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
     private Optional<S> isARange() {
         final Obj arg = this.args().get(0);
         final Inst inst = arg.access().peek();
-        return inst instanceof AInst ? Optional.of((S) inst.args().get(0)) : Optional.empty();
+        return inst instanceof AInst && !(inst.args().get(0).get() instanceof Inst) ? Optional.of((S) inst.args().get(0)) : Optional.empty();
     }
 }

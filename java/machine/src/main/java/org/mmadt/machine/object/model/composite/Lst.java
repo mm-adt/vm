@@ -102,10 +102,6 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
         return v;
     }
 
-    public default Lst<V> id() {
-        return this;
-    }
-
     public default <A extends Obj> A get(final Object index) {
         return (A) this.get(ObjectHelper.create(TInt.of(), index));
     }

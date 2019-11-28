@@ -48,6 +48,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.mmadt.machine.object.impl.composite.TInst.ID;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -227,7 +229,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Inst access() {
-        return this.types.access();
+        final Inst inst = this.types.access();
+        return null == inst ? ID().domainAndRange(this, this) : inst; // instances require domain/range spec on [id] access
     }
 
 

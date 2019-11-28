@@ -174,12 +174,6 @@ public final class ObjectHelper {
         }
     }
 
-    public static Obj type(final Obj object) {
-        return null == object.type() ?
-                object.set(null) :
-                object.type();
-    }
-
     public static Obj from(final Object object) {
         if (object instanceof Obj)
             return (Obj) object;

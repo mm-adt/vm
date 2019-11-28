@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -99,7 +98,7 @@ public final class TType implements Type {
 
     @Override
     public Inst access() {
-        return null == this.access ? IdInst.create() : this.access;
+        return this.access;
     }
 
 

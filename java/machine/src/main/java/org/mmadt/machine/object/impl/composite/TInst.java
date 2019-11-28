@@ -92,7 +92,9 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
 
     public E attach(final S domain, final E range) {
         this.domain = domain;
-        this.range = range.access(range.access().mult(this.range(range))); // TODO: cloning issue with this.range(range)
+        this.range = this.quantifyRange(range);
+        this.<TInst>last().range = this.range;  // TODO: this is dumb (need to store concatenated insts better)
+        this.range = this.range.access(this.range.access().mult(this));
         return (E) this.range;
     }
 

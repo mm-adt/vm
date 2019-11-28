@@ -47,10 +47,6 @@ public interface Bool extends WithCommutativeRing<Bool> {
         return this.constant() ? this.set(this.java() && bool.java()) : (Bool) this.and((Obj) bool); // TODO: Bool.Type class with respective overloading
     }
 
-    public default Bool id() {
-        return this;
-    }
-
     public default Bool is(final Inst bool) {
         return this.is(ObjectHelper.create(TBool.of(), bool));
     }

@@ -30,6 +30,7 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -40,6 +41,11 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.is;
+import static org.mmadt.machine.object.impl.___.minus;
+import static org.mmadt.machine.object.impl.___.plus;
+import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
+import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -59,7 +65,7 @@ class ParserTest {
             ParserArgs.of(List.of(30), "11 + 4 * 2"),
             ParserArgs.of(List.of(30), "11 => [plus,4] => [mult,2]"),
             ParserArgs.of(List.of(30), "11 => [plus,4][mult,2] => int => [id]"),
-            ParserArgs.of(List.of(30), "11 => ([plus,4] * [mult,2]) => int => [id]"),   // TODO: do we have binary operator precedence with => and <= being lowest?
+            ParserArgs.of(List.of(30), "11 => ([plus,4] * [mult,2]) => int => [id]"),   // TODO: should we have binary operator precedence with => and <= being lowest?
             ParserArgs.of(List.of(PlusInst.create(11)), "[plus,11]"),
             ParserArgs.of(List.of(1, 2, 3), "1 => ([id] + [plus,1] + [plus,2])"),
             ParserArgs.of(List.of(-1, -2, -3), "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
@@ -70,6 +76,21 @@ class ParserTest {
             ParserArgs.of(List.of(40), "40 => int[is[gt,20]]"),
             ParserArgs.of(List.of(), "40 => [mult,2] => int[is[gt,100]]"),
             ParserArgs.of(List.of(TInt.of(is(gt(100)))), "int => int[is[gt,100]]"),
+
+            /////////////////// QUANTIFIER TESTING ///////////////////
+            ParserArgs.of(List.of(TInt.of().q(1)), "int"),
+            ParserArgs.of(List.of(TInt.of().q(star)), "int{*}"),
+            ParserArgs.of(List.of(TInt.of().q(qmark)), "int{?}"),
+            ParserArgs.of(List.of(TInt.of().q(plus)), "int{+}"),
+            ParserArgs.of(List.of(), "int{0}"),
+            ParserArgs.of(List.of(TInt.of().q(1, 2)), "int{1,2}"),
+            ParserArgs.of(List.of(TInt.of().q(2, TInt.of().max())), "int{2,}"),
+            ParserArgs.of(List.of(TInt.of().q(TInt.of().min(), 2)), "int{,2}"),
+            ParserArgs.of(List.of(PlusInst.create(11).q(2)), "[plus,11]{2}"),
+            ParserArgs.of(List.of(plus(11).<Inst>q(2).mult(minus(TInt.of()).q(3, 4))), "[plus,11]{2}[minus,int]{3,4}"), // TODO: type <Int>q()
+            // ParserArgs.of(List.of(TInt.of().q(2).mapTo(plus(5).q(3))), "int{2} => [plus,5]{3}"),
+
+
             /////////////////// MAP FROM <= ///////////////////
             ParserArgs.of(List.of(11), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
             ParserArgs.of(List.of(TStr.of().plus("a")), "str <= [plus,'a']"),
