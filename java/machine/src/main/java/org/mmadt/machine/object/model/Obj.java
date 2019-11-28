@@ -224,7 +224,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (obj instanceof Inst) {
             Obj o = this;
             for (final Inst inst : ((Inst) obj).iterable()) {
-                if (inst instanceof BranchInstruction)
+                if (inst instanceof BranchInstruction) // TODO: need to unify branches and chains
                     o = ((TInst) inst).attach(o);
                 else
                     o = ((Function<Obj, O>) inst).apply(o);

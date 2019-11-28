@@ -33,6 +33,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 
 import java.util.List;
@@ -96,7 +97,7 @@ class WithMonoidPlusTest {
         A second = monoid;
         // assertFalse(monoid.isZero()); // TODO: Why?
         for (int i = 0; i < 10; i++) {
-            // assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO))), second.zero());
+            assertEquals(running.mapTo(ZeroInst.create()), second.zero());
             assertEquals(running = running.access(running.access().mult(PlusInst.create(monoid))), second = second.plus(monoid));
         }
     }

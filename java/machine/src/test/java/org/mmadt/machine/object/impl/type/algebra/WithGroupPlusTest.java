@@ -59,7 +59,7 @@ class WithGroupPlusTest {
             //////////////// REFERENCES
             TLst.of(TLst.of(1, "a", "x"), TLst.of(1, "c", 32), TLst.of(false, "abc", true)),
             TRec.of(TRec.of("a", 1, "b", 2), TRec.of("a", 2, "c", 3), TRec.of("e", 4)),
-            // TInst.of(List.of(TInst.of(Tokens.START,TInt.of(1)), TInst.of(Tokens.NEG), TInst.of(Tokens.PLUS, TInt.of(32)))),
+            TInst.of(List.of(TInst.of(Tokens.START,TInt.of(1)), TInst.of(Tokens.NEG), TInst.of(Tokens.PLUS, TInt.of(32)))),
             TInt.of(1, 2, 3, 4, 5, 6),
             TReal.of(1.0f, 2.0f, 3.0f),
             TBool.of(true, false, false));
@@ -109,7 +109,6 @@ class WithGroupPlusTest {
         A running = group;
         A second = group;
         for (int i = 0; i < 10; i++) {
-            // assertEquals(ObjSet.create(running.access(running.access().mult(ZeroInst.create()).mult(NegInst.create()))), ObjSet.create(second.zero().neg()));
             assertEquals(running.access(running.access().mult(MinusInst.create(group))), second.minus(group));
             assertEquals(list(running.access(running.access().mult(PlusInst.create(group)).mult(NegInst.create())).iterable()), list(second.plus(group).neg().iterable()));
             assertEquals(running = running.access(running.access().mult(PlusInst.create(group.neg()))), second = second.plus(group.neg()));
