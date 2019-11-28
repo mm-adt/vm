@@ -22,8 +22,15 @@
 
 package org.mmadt.language.mmlang.util;
 
+import org.mmadt.machine.object.impl.atomic.TBool;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.processor.util.FastProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,16 +47,37 @@ public final class ParserArgs<A extends Obj> {
         this.input = input;
     }
 
-    public static <A extends Obj> ParserArgs<A> of(final List<Object> expected, final String input) {
-        return new ParserArgs<>(objs(expected), input);
+    public static <A extends Obj> ParserArgs<A> args(final List<A> expected, final String input) {
+        return new ParserArgs<>(expected, input);
     }
 
-    private static <A extends Obj> List<A> objs(final List<Object> objects) {
+    public static <A extends Obj> ParserArgs<A> args(final A expected, final String input) {
+        return new ParserArgs<>(List.of(expected), input);
+    }
+
+    public static <A extends Obj> List<A> objs(final Object... objects) {
         final List<A> objs = new ArrayList<>();
         for (final Object object : objects) {
             objs.add((A) ObjectHelper.from(object));
         }
         return objs;
+    }
+
+    public static Int ints(final Object... integers) {
+        return TInt.of(integers);
+    }
+
+    public static Bool bools(final Object... booleans) {
+        return TBool.of(booleans);
+    }
+
+    public static Str strs(final Object... strings) {
+        return TStr.of(strings);
+    }
+
+
+    public static Obj process(final Obj obj) {
+        return FastProcessor.process(obj).next();
     }
 
 
