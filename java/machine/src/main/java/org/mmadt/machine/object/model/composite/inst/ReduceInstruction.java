@@ -49,7 +49,7 @@ public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, B
         return IteratorUtils.of(reduction);
     }
 
-    public default Obj computeRange(final Obj domain) {
+    public default Obj quantifyRange(final Obj domain) {
         return domain.q(one);
     }
 

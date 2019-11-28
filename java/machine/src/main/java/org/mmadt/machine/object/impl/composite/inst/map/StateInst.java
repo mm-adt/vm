@@ -32,7 +32,7 @@ import org.mmadt.machine.object.model.type.PList;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class StateInst<S extends Obj, E extends Obj> extends TInst implements MapInstruction<S, E> {
+public final class StateInst<S extends Obj, E extends Obj> extends TInst<S, E> implements MapInstruction<S, E> {
 
     private StateInst(final Object key) {
         super(PList.of(Tokens.STATE, key));
@@ -40,7 +40,7 @@ public final class StateInst<S extends Obj, E extends Obj> extends TInst impleme
 
     @Override
     public E apply(final S obj) {
-        return obj.state(this.<S, Str>argument(0).mapArg(obj));
+        return this.quantifyRange(obj.state(this.<Str>argument(0).mapArg(obj)));
     }
 
     public static <S extends Obj, E extends Obj> StateInst<S, E> create(final Object arg) {

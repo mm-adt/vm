@@ -35,9 +35,8 @@ public interface FilterInstruction<S extends Obj> extends Inst, Function<S, S> {
     @Override
     S apply(final S t);
 
-    public default S computeRange(final Obj domain) {
-        final S range = (S) Inst.super.computeRange(domain);
-        return domain.isInstance() ? range : range.q(range.q().peek().zero(), range.q().last());
+    public default S quantifyRange(final S range) {
+        return range.isInstance() ? range : range.q(range.q().peek().zero(), range.q().last());
     }
 
 }

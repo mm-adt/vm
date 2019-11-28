@@ -22,21 +22,18 @@
 
 package org.mmadt.machine.object.model.type;
 
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class PAnd  implements Pattern {
+public final class PAnd implements Pattern {
 
     final List<Pattern> patterns;
 

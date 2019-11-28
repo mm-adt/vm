@@ -23,7 +23,6 @@
 package org.mmadt.machine;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 
 import java.util.Iterator;
 

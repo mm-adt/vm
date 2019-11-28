@@ -32,7 +32,7 @@ import org.mmadt.machine.object.model.type.algebra.WithProduct;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class PutInst<K extends Obj, V extends Obj> extends TInst implements SideEffectInstruction<WithProduct<K, V>> {
+public final class PutInst<K extends Obj, V extends Obj> extends TInst<WithProduct<K, V>, WithProduct<K, V>> implements SideEffectInstruction<WithProduct<K, V>> {
 
     private PutInst(final Object key, final Object value) {
         super(PList.of(Tokens.PUT, key, value));
@@ -40,7 +40,7 @@ public final class PutInst<K extends Obj, V extends Obj> extends TInst implement
 
     @Override
     public void accept(final WithProduct<K, V> obj) {
-        obj.put(this.<Obj, K>argument(0).mapArg(obj), this.<Obj, V>argument(1).mapArg(obj));
+        obj.put(this.<K>argument(0).mapArg(obj), this.<V>argument(1).mapArg(obj));
     }
 
     public static <K extends Obj, V extends Obj> PutInst<K, V> create(final Object key, final Object value) {

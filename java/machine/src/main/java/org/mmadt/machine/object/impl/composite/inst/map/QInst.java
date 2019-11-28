@@ -29,20 +29,18 @@ import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.type.algebra.WithPlus;
-import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst implements MapInstruction<S, Q<E>> {
+public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst<S, Q<E>> implements MapInstruction<S, Q<E>> {
 
     private QInst() {
         super(PList.of(Tokens.Q));
     }
 
     public Q<E> apply(final S obj) {
-        return obj.q();
+        return this.quantifyRange(obj.q());
     }
 
     public static <S extends Obj, E extends WithOrderedRing<E>> QInst<S, E> create() {

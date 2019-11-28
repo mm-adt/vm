@@ -35,9 +35,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.__.eq;
-import static org.mmadt.language.__.id;
 import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.minus;
 import static org.mmadt.language.__.one;
 import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;

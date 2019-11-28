@@ -25,7 +25,6 @@ package org.mmadt.machine.object.impl.type;
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
@@ -33,8 +32,6 @@ import org.mmadt.machine.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.gt;
 import static org.mmadt.language.__.is;

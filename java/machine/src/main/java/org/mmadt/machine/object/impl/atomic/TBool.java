@@ -66,12 +66,12 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return this.q().constant() ? this.set(Boolean.TRUE) : this.mapTo(OneInst.create());
+        return this.q().constant() ? this.set(Boolean.TRUE) : OneInst.<Bool>create().attach(this);
     }
 
     @Override
     public Bool zero() {
-        return this.q().constant() ? this.set(Boolean.FALSE) : this.mapTo(ZeroInst.create());
+        return this.q().constant() ? this.set(Boolean.FALSE) : ZeroInst.<Bool>create().attach(this);
     }
 
     @Override
@@ -83,28 +83,28 @@ public final class TBool extends TObj implements Bool {
     public Bool mult(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(this.java() && bool.java()) :
-                this.mapTo(MultInst.create(bool));
+                MultInst.<Bool>create(bool).attach(this);
     }
 
     @Override
     public Bool minus(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(exclusiveOr(this.java(), bool.java())) :
-                this.mapTo(MinusInst.create(bool));
+                MinusInst.<Bool>create(bool).attach(this);
     }
 
     @Override
     public Bool plus(final Bool bool) {
         return (this.isInstance() && bool.isInstance()) ?
                 this.set(exclusiveOr(this.java(), bool.java())) :
-                this.mapTo(PlusInst.create(bool));
+                PlusInst.<Bool>create(bool).attach(this);
     }
 
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 this.set(obj instanceof Bool && this.java().equals(((Bool) obj).java())) :
-                this.mapTo(EqInst.create(obj));
+                EqInst.<Bool>create(obj).attach(this);
     }
 
     private static boolean exclusiveOr(final boolean a, final boolean b) {

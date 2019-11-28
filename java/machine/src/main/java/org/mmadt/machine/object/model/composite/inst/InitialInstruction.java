@@ -30,9 +30,9 @@ import java.util.function.Function;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface InitialInstruction<S extends Obj> extends Inst, Function<S, S> {
+public interface InitialInstruction<S extends Obj> extends Inst, Function<Obj, S> {
 
     @Override
-    S apply(final S s);
+    S apply(final Obj s);
 
 }

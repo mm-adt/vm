@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.impl.atomic.TBool;
-import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
@@ -43,10 +42,6 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
 
     public default String java() {
         return this.get();
-    }
-
-    public default Str dedup(final Object... branches) {
-        return this.mapTo(DedupInst.create(branches));
     }
 
     public default Str id() {

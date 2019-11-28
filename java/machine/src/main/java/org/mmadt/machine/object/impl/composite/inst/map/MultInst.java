@@ -31,14 +31,14 @@ import org.mmadt.machine.object.model.type.algebra.WithMult;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class MultInst<S extends WithMult<S>> extends TInst implements MapInstruction<S, S> {
+public final class MultInst<S extends WithMult<S>> extends TInst<S, S> implements MapInstruction<S, S> {
 
     private MultInst(final Object arg) {
         super(PList.of(Tokens.MULT, arg));
     }
 
     public S apply(final S obj) {
-        return obj.mult(this.<S, S>argument(0).mapArg(obj));
+        return this.quantifyRange(obj.mult(this.<S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithMult<S>> MultInst<S> create(final Object arg) {

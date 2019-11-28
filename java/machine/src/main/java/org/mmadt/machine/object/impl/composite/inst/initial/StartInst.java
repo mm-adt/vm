@@ -36,11 +36,21 @@ import org.mmadt.util.IteratorUtils;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class StartInst<S extends Obj> extends TInst implements InitialInstruction<S> {
+public final class StartInst<S extends Obj> extends TInst<Obj, S> implements InitialInstruction<S> {
 
     private StartInst(final Object... arguments) {
         super(PList.of(arguments));
         this.<PList<Obj>>get().add(0, TStr.of(Tokens.START));
+    }
+
+    @Override
+    public S apply(final Obj obj) {
+        return TObj.none().set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(TObj.none())));
+    }
+
+    @Override
+    public S quantifyRange(final Obj range) {
+        return (S) this.range;
     }
 
     public static <S extends Obj> StartInst<S> create(final Object... args) {
@@ -52,12 +62,5 @@ public final class StartInst<S extends Obj> extends TInst implements InitialInst
         return (StartInst<S>) inst.domainAndRange(TObj.none(), kind);
     }
 
-    public S computeRange(final Obj domain) {
-        return (S) this.range;
-    }
 
-    @Override
-    public S apply(final S obj) {
-        return TObj.none().set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(TObj.none())));
-    }
 }

@@ -23,9 +23,7 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
@@ -34,14 +32,14 @@ import org.mmadt.machine.object.model.type.algebra.WithOrder;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class LtInst<S extends WithOrder<S>> extends TInst implements MapInstruction<S, Bool> {
+public final class LtInst<S extends WithOrder<S>> extends TInst<S, Bool> implements MapInstruction<S, Bool> {
 
     private LtInst(final Object arg) {
         super(PList.of(Tokens.LT, arg));
     }
 
     public Bool apply(final S obj) {
-        return obj.lt(this.<S, S>argument(0).mapArg(obj));
+        return this.quantifyRange(obj.lt(this.<S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithOrder<S>> LtInst<S> create(final Object arg) {

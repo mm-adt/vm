@@ -23,16 +23,9 @@
 package org.mmadt.process.compliance;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.TQ;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.__.mult;
-import static org.mmadt.language.__.plus;
 import static org.mmadt.language.__.start;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

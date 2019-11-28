@@ -38,7 +38,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class DedupInst<S extends Obj> extends TInst implements BarrierInstruction<S, ObjSet<S>> {
+public final class DedupInst<S extends Obj> extends TInst<S, S> implements BarrierInstruction<S, ObjSet<S>> {
 
     private DedupInst(final Object... arguments) {
         super(PList.of(arguments));

@@ -122,7 +122,7 @@ final class TStrTest implements TestUtilities {
         assertEquals("'marko'", TStr.of("marko").toString());
         assertEquals("str[is,[gt,'a']]", TStr.of(IsInst.create(GtInst.create("a"))).toString());
         assertEquals("(str[is,[gt,'a']])~x", TStr.of(IsInst.create(GtInst.create("a"))).label("x").toString()); // TODO: perhaps str([is]){x,y}~a
-        assertEquals("(str[is,[gt,'a']]){0,2}", TStr.of(IsInst.create(GtInst.create("a"))).q(0,2).toString());
+        assertEquals("(str[is,[gt,'a']]){0,2}", TStr.of(IsInst.create(GtInst.create("a"))).q(0, 2).toString());
     }
 
     @Test

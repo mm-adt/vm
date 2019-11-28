@@ -23,22 +23,14 @@
 package org.mmadt.machine.object.model.type.algebra;
 
 import org.mmadt.language.__;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
-import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
-import java.util.function.Supplier;
-
 import static org.mmadt.language.__.a;
-import static org.mmadt.language.__.eq;
 import static org.mmadt.language.__.is;
 
 /**
@@ -49,7 +41,7 @@ import static org.mmadt.language.__.is;
 public interface WithOr<A extends Obj> {
 
     public default A or(final A obj) {
-        return this instanceof Rec ? (A)((Obj)this).set(IsInst.create( OrInst.create(AInst.create(this),AInst.create(obj)))): ObjectHelper.root((Obj)this,obj).set(is(__.or(a(this),a(obj))).bytecode());
+        return this instanceof Rec ? (A) ((Obj) this).set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(obj)))) : ObjectHelper.root((Obj) this, obj).set(is(__.or(a(this), a(obj))).bytecode());
         // (A)((Obj)this).label(null).set(IsInst.create(OrInst.create(this, obj))).q(Q.Tag.one);
     }
 }

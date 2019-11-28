@@ -25,7 +25,6 @@ package org.mmadt.machine.object.impl.composite.inst.reduce;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
@@ -36,7 +35,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst implements ReduceInstruction<S, Q<E>> {
+public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst<Obj, Obj> implements ReduceInstruction<S, Q<E>> {
 
     private CountInst() {
         super(PList.of(Tokens.COUNT));
@@ -52,7 +51,7 @@ public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extend
     }
 
     @Override
-    public E computeRange(final Obj domain) {
-        return (domain.q().constant() ? domain.q().peek() : domain.q().object().set(null).access((Inst) null)).q(one); // TODO: garbage
+    public E quantifyRange(final Obj domain) {
+        return (domain.q().constant() ? domain.q().peek() : domain.q().object().set(null).access(null)).q(one); // TODO: garbage
     }
 }

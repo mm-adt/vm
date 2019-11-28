@@ -51,7 +51,7 @@ public final class PList<V extends Obj> extends ArrayList<V> implements Pattern 
     public static <V extends Obj> PList<V> of(final Object... objects) {
         final List<V> list = new ArrayList<>();
         for (final Object object : objects) {
-            if(null != object) // Why is this needed?
+            if (null != object) // Why is this needed?
                 list.add((V) ObjectHelper.from(object));
         }
         return new PList<>(list);
@@ -67,7 +67,7 @@ public final class PList<V extends Obj> extends ArrayList<V> implements Pattern 
             return false;
         final List<V> other = object.get();
         for (int i = 0; i < this.size(); i++) {
-            if(other.size() <= i)
+            if (other.size() <= i)
                 return this.get(i).test(TObj.none());
             if (!this.get(i).test(other.get(i)))
                 return false;

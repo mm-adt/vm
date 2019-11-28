@@ -30,16 +30,14 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.compiler.Argument;
 
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class AndInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
+public final class AndInst<S extends Obj> extends TInst<S, Bool> implements MapInstruction<S, Bool> {
 
     private AndInst(final Object... arguments) {
         super(PList.of(arguments));
@@ -47,7 +45,7 @@ public final class AndInst<S extends Obj> extends TInst implements MapInstructio
     }
 
     public Bool apply(final S obj) {
-        return Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(obj)).reduce(Bool::and).orElse(TBool.of(true));
+        return this.quantifyRange(Stream.of(Argument.<S, Bool>args(args())).map(a -> a.mapArg(obj)).reduce(Bool::and).orElse(TBool.of(true)));
     }
 
     public static <S extends Obj> AndInst<S> create(final Object... args) {

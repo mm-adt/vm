@@ -23,11 +23,9 @@
 package org.mmadt.machine.object.impl.composite.inst.reduce;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
@@ -39,7 +37,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> extends TInst implements ReduceInstruction<S, Rec<E, A>> {
+public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> extends TInst<S, E> implements ReduceInstruction<S, Rec<E, A>> {
 
     private GroupCountInst(final Object arg) {
         super(PList.of(Tokens.GROUPCOUNT, arg));
@@ -47,7 +45,7 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
 
     @Override
     public Rec<E, A> apply(final Rec<E, A> current, final S obj) {
-        final E object = this.<S, E>argument(0).mapArg(obj);
+        final E object = this.<E>argument(0).mapArg(obj);
         final E objectOne = object.q(one);
         current.put(objectOne, ((A) object.q()).plus(current.<PMap<E, A>>get().getOrDefault(objectOne, (A) this.q().zero())));
         return current;
@@ -60,10 +58,5 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
 
     public static <S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> GroupCountInst<S, E, A> create(final Object arg) {
         return new GroupCountInst<>(arg);
-    }
-
-    @Override
-    public Rec<E, A> computeRange(final Obj domain) {
-        return TRec.of(this.argument(0).mapArg(domain).access((Inst) null).q(one), TInt.of());   // shit show
     }
 }

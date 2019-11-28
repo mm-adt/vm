@@ -32,6 +32,7 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 
 import java.util.List;
@@ -96,7 +97,7 @@ class WithMonoidPlusTest {
         // assertFalse(monoid.isZero()); // TODO: Why?
         for (int i = 0; i < 10; i++) {
             // assertEquals(running.access(running.access().mult(TInst.of(Tokens.ZERO))), second.zero());
-            assertEquals(running = running.access(running.access().mult(TInst.of(Tokens.PLUS, monoid))), second = second.plus(monoid));
+            assertEquals(running = running.access(running.access().mult(PlusInst.create(monoid))), second = second.plus(monoid));
         }
     }
 

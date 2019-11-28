@@ -23,26 +23,23 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class GteInst<S extends WithOrder<S>> extends TInst implements MapInstruction<S, Bool> {
+public final class GteInst<S extends WithOrder<S>> extends TInst<S, Bool> implements MapInstruction<S, Bool> {
 
     private GteInst(final Object arg) {
         super(PList.of(Tokens.GTE, arg));
     }
 
     public Bool apply(final S obj) {
-         return obj.gte(this.<S, S>argument(0).mapArg(obj));
+        return this.quantifyRange(obj.gte(this.<S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithOrder<S>> GteInst<S> create(final Object arg) {

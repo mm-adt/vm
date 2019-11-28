@@ -32,7 +32,7 @@ import org.mmadt.machine.object.model.type.algebra.WithProduct;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class DropInst<K extends Obj, V extends Obj> extends TInst implements SideEffectInstruction<WithProduct<K, V>> {
+public final class DropInst<K extends Obj, V extends Obj> extends TInst<WithProduct<K, V>, WithProduct<K, V>> implements SideEffectInstruction<WithProduct<K, V>> {
 
     private DropInst(final Object key) {
         super(PList.of(Tokens.DROP, key));
@@ -40,7 +40,7 @@ public final class DropInst<K extends Obj, V extends Obj> extends TInst implemen
 
     @Override
     public void accept(final WithProduct<K, V> obj) {
-        obj.drop(this.<Obj, K>argument(0).mapArg(obj));
+        obj.drop(this.<K>argument(0).mapArg(obj));
     }
 
     public static <K extends Obj, V extends Obj> DropInst<K, V> create(final Object arg) {

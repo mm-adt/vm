@@ -26,14 +26,14 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
-import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
-import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
+import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
@@ -42,6 +42,7 @@ import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
@@ -57,6 +58,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
@@ -137,7 +139,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default boolean test(final Obj obj) {
         boolean root = TRAMPOLINE.isEmpty();
         try {
-            if (TObj.none().equals(this) || TObj.none().equals(obj))
+            if (this.q().isZero() || obj.q().isZero())
                 return this.q().test(obj);
 
             if (this.isInstance())                                                              // INSTANCE CHECKING
@@ -209,34 +211,27 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return true;
     }
 
-
-    /////////////// DELETE WHEN PROPERLY MIXED
-    private <O extends Obj> O append(final Inst inst) {
-        final Obj range = inst.computeRange(this);
-        return range.access(this.access().mult(inst.domainAndRange(this, range)));
-    }
-    /////////////// DELETE WHEN PROPERLY MIXED
-
     public default <O extends Obj> O mapFrom(final Obj obj) {
         return obj instanceof Inst ?
                 this instanceof Inst ?
                         (O) ((Inst) this).mult((Inst) obj) :
-                        this.isInstance() ? (O) this : this.append((Inst) obj) :
-                this instanceof Inst ?
-                        obj.access(((Inst) this)).append(obj.access()) :
-                        this.q(this.q().mult(obj.q())).access(this.access()).append(obj.access());
+                        this.isInstance() ? (O) this : (O) ((TInst) obj).attach(this) :
+                obj.mapTo(this);
 
     }
 
     public default <O extends Obj> O mapTo(final Obj obj) {
         if (obj instanceof Inst) {
-            Obj o = this.isInstance() ? this.set(null).append(StartInst.create(this)) : this;
+            Obj o = this;
             for (final Inst inst : ((Inst) obj).iterable()) {
-                o = o.append(inst);
+                if (inst instanceof BranchInstruction)
+                    o = ((TInst) inst).attach(o);
+                else
+                    o = ((Function<Obj, O>) inst).apply(o);
             }
             return (O) o;
         } else
-            return this.isReference() ? this.append(AsInst.create(obj)) : this.as((O) obj);
+            return this.isReference() ? AsInst.<O>create(obj).attach((O) this) : this.as((O) obj);
 
     }
 
@@ -293,15 +288,15 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
                 bool.java() ? (O) this : this.q(zero) :
-                this.mapTo(IsInst.create(bool));
+                (O) IsInst.create(bool).attach(this);
     }
 
     public default <O extends Obj> O map(final O obj) {
         return this.isInstance() && obj.isInstance() ?
                 obj.copy(this) :
                 this.getClass().equals(obj.getClass()) ?
-                        this.mapTo(MapInst.create(obj)) :
-                        obj.copy(this).mapTo(MapInst.create(obj));
+                        MapInst.<Obj, O>create(obj).attach(this) :
+                        MapInst.<Obj, O>create(obj).attach(this, obj.copy(this));
     }
 
     public default <O extends Obj> O sum() {
@@ -316,7 +311,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O branch(final Object... branches) {
-        return this.mapTo(BranchInst.create(branches));
+        return (O) BranchInst.create(branches).attach(this);
     }
 
     public Bool eq(final Obj object);
@@ -339,7 +334,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O map(final Inst inst) {
-        return this.map((O) ObjectHelper.create(this, inst));
+        return this.map((O) ObjectHelper.create(this.set(null), inst));
     }
 
     public default Int map(final Integer integer) {
@@ -351,10 +346,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O explain(final Obj obj) {
-        return this.mapTo(ExplainInst.create(obj));
+        return ExplainInst.<O>create(obj).attach((O) this);
     }
 
     public default <O extends Obj> O explain() {
-        return this.mapTo(ExplainInst.create());
+        return ExplainInst.<O>create().attach((O) this);
     }
 }

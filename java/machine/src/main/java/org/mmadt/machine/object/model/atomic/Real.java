@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.impl.atomic.TBool;
-import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithField;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -50,11 +49,6 @@ public interface Real extends WithField<Real> {
     public default Real is(final Inst inst) {
         return this.is(ObjectHelper.create(TBool.of(), inst));
     }
-
-    public default Real dedup(final Object... branches) {
-        return this.mapTo(DedupInst.create(branches));
-    }
-
 
     @Override
     public default Iterable<Real> iterable() {

@@ -27,26 +27,15 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.Bindings;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.language.__.get;
-import static org.mmadt.language.__.gt;
-import static org.mmadt.language.__.gte;
 import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.lt;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.START;

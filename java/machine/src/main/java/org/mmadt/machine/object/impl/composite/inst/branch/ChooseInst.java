@@ -41,7 +41,7 @@ import java.util.stream.Stream;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ChooseInst<S extends Obj, E extends Obj> extends TInst implements BranchInstruction<S, E> {
+public final class ChooseInst<S extends Obj, E extends Obj> extends TInst<Obj, Obj> implements BranchInstruction<S, E> {
 
     private Map<Inst, List<Inst>> branches;
 

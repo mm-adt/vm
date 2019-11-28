@@ -31,14 +31,14 @@ import org.mmadt.machine.object.model.type.algebra.WithMinus;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class NegInst<S extends WithMinus<S>> extends TInst implements MapInstruction<S, S> {
+public final class NegInst<S extends WithMinus<S>> extends TInst<S, S> implements MapInstruction<S, S> {
 
     private NegInst() {
         super(PList.of(Tokens.NEG));
     }
 
     public S apply(final S obj) {
-        return obj.neg();
+        return this.quantifyRange(obj.neg());
     }
 
     public static <S extends WithMinus<S>> NegInst<S> create() {

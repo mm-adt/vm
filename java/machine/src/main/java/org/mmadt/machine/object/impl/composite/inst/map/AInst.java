@@ -32,14 +32,14 @@ import org.mmadt.machine.object.model.type.PList;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class AInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
+public final class AInst<S extends Obj> extends TInst<S, Bool> implements MapInstruction<S, Bool> {
 
     private AInst(final Object argument) {
         super(PList.of(Tokens.A, argument));
     }
 
     public Bool apply(final S obj) {
-        return obj.a(this.args().get(0));
+        return this.quantifyRange(obj.a(this.args().get(0)));
     }
 
     public static <S extends Obj> AInst<S> create(final Object arg) {

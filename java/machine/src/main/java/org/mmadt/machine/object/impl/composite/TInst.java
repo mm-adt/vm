@@ -27,13 +27,12 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
@@ -44,7 +43,7 @@ import java.util.List;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class TInst extends TObj implements Inst {
+public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
 
     protected Obj domain = TObj.none();
     protected Obj range = TObj.none();
@@ -87,11 +86,27 @@ public class TInst extends TObj implements Inst {
         }
     }
 
+    public E quantifyRange(final E range) {
+        return this.q().isOne() ? range : range.q(range.q().mult(this.q()));
+    }
+
+    public E attach(final S domain, final E range) {
+        this.domain = domain;
+        this.range = range.access(range.access().mult(this.range(range))); // TODO: cloning issue with this.range(range)
+        return (E) this.range;
+    }
+
+    public E attach(S domainRange) {
+        if (domainRange.isInstance())
+            domainRange = domainRange.set(null).access(StartInst.create(domainRange));
+        return this.attach(domainRange, (E) domainRange);
+    }
+
     public static Inst of(final List<Inst> insts) {
         return insts.isEmpty() ? TInst.none() : new TInst(TStream.of(insts));
     }
 
-    public <S extends Obj, E extends Obj> Argument<S, E> argument(final int index) {
+    public <A extends Obj> Argument<S, A> argument(final int index) {
         return Argument.create(this.<S>args().get(index));
     }
 
@@ -121,7 +136,7 @@ public class TInst extends TObj implements Inst {
     }
 
     @Override
-    public Inst mult(Inst inst) { // TODO: optimize this nest
+    public Inst mult(final Inst inst) { // TODO: optimize this nest
         return inst.isZero() ?
                 this.zero() :
                 this.isOne() ?

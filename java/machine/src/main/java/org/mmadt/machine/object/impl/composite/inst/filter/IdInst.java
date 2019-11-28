@@ -31,22 +31,22 @@ import org.mmadt.machine.object.model.type.PList;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class IdInst<S extends Obj> extends TInst implements FilterInstruction<S> {
+public final class IdInst<S extends Obj> extends TInst<S, S> implements FilterInstruction<S> {
 
     private IdInst() {
         super(PList.of(Tokens.ID));
     }
 
     public S apply(final S obj) {
-        return obj;
+        return this.quantifyRange(obj);
     }
 
     public static <S extends Obj> IdInst<S> create() {
         return new IdInst<>();
     }
 
-    public S computeRange(final Obj domain) {
-        return (S) (this.q().isOne() ? domain : domain.q(domain.q().mult(this.q())));
+    public S quantifyRange(final S domain) {
+        return this.q().isOne() ? domain : domain.q(domain.q().mult(this.q()));
     }
 
 }

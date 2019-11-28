@@ -24,7 +24,6 @@ package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
-import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.util.ObjectHelper;

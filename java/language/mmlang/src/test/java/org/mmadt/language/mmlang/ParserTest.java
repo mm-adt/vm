@@ -65,7 +65,7 @@ class ParserTest {
             ParserArgs.of(List.of(-1, -2, -3), "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
             ParserArgs.of(List.of(TInt.of(1).label("a"), TInt.of(2).label("a"), TInt.of(3).label("a")), "1 => ([id] + [plus,1] + [plus,2]) => int~a"),
             ParserArgs.of(List.of(TInt.of(10).label("a")), "10 => (int~a | str~b | real~c)"),
-            ParserArgs.of(List.of(TInt.of(20).label("a")), "10 => (int~a | str~b | real~c) => [plus,[id]]"),
+            // ParserArgs.of(List.of(TInt.of(20).label("a")), "10 => (int~a | str~b | real~c) => [plus,[id]]"),
             ParserArgs.of(List.of(TStr.of("marko rodriguez").label("b")), "'marko' => (int~a | str~b | real~c) => [is,[a,str]][plus,' '][plus,'rodriguez']"),
             ParserArgs.of(List.of(40), "40 => int[is[gt,20]]"),
             ParserArgs.of(List.of(), "40 => [mult,2] => int[is[gt,100]]"),
@@ -80,9 +80,7 @@ class ParserTest {
     @TestFactory
     Stream<DynamicTest> testParsing() {
         final ScriptEngine engine = new mmLangScriptEngine();
-        return Stream.of(PARSING).map(query -> DynamicTest.dynamicTest(query.input, () -> {
-            assertEquals(query.expected, IteratorUtils.list((Iterator<Obj>) engine.eval(query.input)));
-        }));
+        return Stream.of(PARSING).map(query -> DynamicTest.dynamicTest(query.input, () -> assertEquals(query.expected, IteratorUtils.list((Iterator<Obj>) engine.eval(query.input)))));
     }
 
 }

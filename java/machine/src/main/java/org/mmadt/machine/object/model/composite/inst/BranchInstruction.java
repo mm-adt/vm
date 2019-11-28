@@ -58,9 +58,9 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
             }
         }
         return TObj.none().set(itty);
-    } // this should all be done through subscription semantics and then its just a lazy round-robin
+    } // this should all be done through subscription semantics and then its just a append round-robin
 
-    public default Obj computeRange(final Obj domain) {
+    public default E quantifyRange(final S domain) {
         return domain.q(domain.q().mult(getBranches().values().stream().flatMap(List::stream).map(Obj::q).reduce((Q) domain.q().zero(), Q::plus)));
     }
 }

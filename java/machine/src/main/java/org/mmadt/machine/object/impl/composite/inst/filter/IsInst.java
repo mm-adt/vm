@@ -36,31 +36,27 @@ import java.util.Optional;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class IsInst<S extends Obj> extends TInst implements FilterInstruction<S> {
+public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterInstruction<S> {
 
     private IsInst(final Object argument) {
         super(PList.of(Tokens.IS, argument));
     }
 
     public S apply(final S obj) {
-        return obj.is(this.<S, Bool>argument(0).mapArg(obj));
+        return FilterInstruction.super.quantifyRange(obj.is(this.<Bool>argument(0).mapArg(obj)));
     }
 
     public static <S extends Obj> IsInst<S> create(final Object arg) {
         return new IsInst<>(arg);
     }
 
-    public static <S extends Obj> IsInst<S> isA(final Obj obj) {
-        return IsInst.create(AInst.create(obj.access(ID())));
+    public S quantifyRange(final S domain) {
+        return FilterInstruction.super.quantifyRange(isARange().orElse(domain));
     }
 
-    public S computeRange(final Obj domain) {
-        return FilterInstruction.super.computeRange(isARange().orElse(domain));
-    }
-
-    private Optional<Obj> isARange() {
+    private Optional<S> isARange() {
         final Obj arg = this.args().get(0);
         final Inst inst = arg.access().peek();
-        return inst instanceof AInst ? Optional.of(inst.args().get(0)) : Optional.empty();
+        return inst instanceof AInst ? Optional.of((S) inst.args().get(0)) : Optional.empty();
     }
 }

@@ -24,8 +24,6 @@ package org.mmadt.processor.util;
 
 import org.mmadt.machine.object.model.Obj;
 
-import java.util.Iterator;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */

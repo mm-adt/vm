@@ -48,6 +48,6 @@ public abstract class BranchTest extends AbstractTest {
 
     @Test
     void startX0_1_2X_branchXplusX1X__plusX2X_plusXn1X_plusX1X_isXaXboolXX_multX2X_plusX0X() {
-        assertEquals(objs(4, 6, 6, 8), submit(start(0, 1, 2).branch( is(gt(1)).plus(1), plus(2).plus(-1).plus(1), is(false)).mult(2).plus(0)));
+        assertEquals(objs(4, 6, 6, 8), submit(start(0, 1, 2).branch(is(gt(1)).plus(1), plus(2).plus(-1).plus(1), is(false)).mult(2).plus(0)));
     }
 }

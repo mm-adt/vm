@@ -30,7 +30,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.Pattern;
@@ -61,7 +60,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
             this.java().put(key, value);
             return this;
         } else
-            return this.mapTo(PutInst.create(key, value));
+            return (Rec<K, V>) PutInst.<K, V>create(key, value).attach(this);
     }
 
     @Override
@@ -70,13 +69,13 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
             this.java().remove(key);
             return this;
         } else
-            return this.mapTo(DropInst.create(key));
+            return (Rec<K, V>) DropInst.<K, V>create(key).attach(this);
     }
 
     @Override
     public default V get(final K key) {
         if (null == this.get())
-            return (V) ObjectHelper.create(this, GetInst.create(key));
+            return GetInst.<K, V>create(key).attach(this);
 
         V v = (V) TObj.none();
         final Object object = this.get();

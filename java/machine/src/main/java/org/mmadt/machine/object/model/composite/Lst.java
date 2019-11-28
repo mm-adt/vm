@@ -29,7 +29,6 @@ import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.Pattern;
@@ -57,7 +56,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
             this.java().add(value);
             return this;
         } else
-            return this.mapTo(PutInst.create(TInt.of(100), value)); // TODO: should have isolated put(value) (like add(value))
+            return (Lst<V>) PutInst.<Int, V>create(TInt.of(100), value).attach(this); // TODO: should have isolated put(value) (like add(value))
     }
 
     @Override
@@ -66,7 +65,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
             this.java().set(index.java(), value);
             return this;
         } else
-            return this.mapTo(PutInst.create(index, value));
+            return (Lst<V>) PutInst.<Int, V>create(index, value).attach(this);
     }
 
     @Override
@@ -75,7 +74,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
             this.java().remove((int) index.java());
             return this;
         } else
-            return this.mapTo(DropInst.create(index));
+            return (Lst<V>) DropInst.<Int, V>create(index).attach(this);
     }
 
     @Override

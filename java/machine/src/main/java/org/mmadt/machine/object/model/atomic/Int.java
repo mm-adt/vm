@@ -24,7 +24,6 @@ package org.mmadt.machine.object.model.atomic;
 
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -45,7 +44,7 @@ public interface Int extends WithOrderedRing<Int> {
     }
 
     public default Int dedup(final Object... branches) {
-        return this.mapTo(DedupInst.create(branches));
+        return DedupInst.<Int>create(branches).attach(this);
     }
 
     public default Int id() {
@@ -56,6 +55,7 @@ public interface Int extends WithOrderedRing<Int> {
         return this.is(ObjectHelper.create(TBool.of(), inst));
     }
 
+    @Override
     public default Int is(final Bool bool) {
         return WithOrderedRing.super.is(bool);
     }

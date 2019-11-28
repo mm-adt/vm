@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ExplainInst<S extends Obj> extends TInst implements SideEffectInstruction<S> {
+public final class ExplainInst<S extends Obj> extends TInst<S, S> implements SideEffectInstruction<S> {
 
     private ExplainInst(final Object obj) {
         super(PList.of(Tokens.EXPLAIN, obj));

@@ -32,14 +32,14 @@ import org.mmadt.machine.object.model.type.PList;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class EqInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
+public final class EqInst<S extends Obj> extends TInst<S, Bool> implements MapInstruction<S, Bool> {
 
     private EqInst(final Object arg) {
         super(PList.of(Tokens.EQ, arg));
     }
 
     public Bool apply(final S obj) {
-        return obj.eq(this.<S, Obj>argument(0).mapArg(obj));
+        return this.quantifyRange(obj.eq(this.argument(0).mapArg(obj)));
     }
 
     public static <S extends Obj> EqInst<S> create(final Object arg) {

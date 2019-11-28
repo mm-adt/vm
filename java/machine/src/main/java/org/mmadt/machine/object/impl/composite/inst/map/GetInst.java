@@ -33,7 +33,7 @@ import org.mmadt.machine.object.model.type.algebra.WithProduct;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class GetInst<K extends Obj, V extends Obj> extends TInst implements MapInstruction<WithProduct<K, V>, V> {
+public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProduct<K, V>, V> implements MapInstruction<WithProduct<K, V>, V> {
 
     private GetInst(final Object key) {
         super(PList.of(Tokens.GET, key));
@@ -41,15 +41,15 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst implement
 
     @Override
     public V apply(final WithProduct<K, V> obj) {
-        return obj.get(this.<Obj, K>argument(0).mapArg(obj));
+        return obj.get(this.<K>argument(0).mapArg(obj)); // TODO: why can't I quantify the range?
+    }
+
+    public V quantifyRange(final V range) {
+        return super.quantifyRange(this.apply((WithProduct<K, V>) TSym.fetch(range)));
     }
 
     public static <K extends Obj, V extends Obj> GetInst<K, V> create(final Object arg) {
         return new GetInst<>(arg);
-    }
-
-    public V computeRange(final Obj domain) {
-        return (V) super.computeRange(this.apply((WithProduct) TSym.fetch(domain)));
     }
 
 }

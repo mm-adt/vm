@@ -24,24 +24,21 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
-import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class PlusInst<S extends WithPlus<S>> extends TInst implements MapInstruction<S, S> {
+public final class PlusInst<S extends WithPlus<S>> extends TInst<S, S> implements MapInstruction<S, S> {
 
     private PlusInst(final Object arg) {
         super(PList.of(Tokens.PLUS, arg));
     }
 
     public S apply(final S obj) {
-        return obj.plus(this.<S, S>argument(0).mapArg(obj));
+        return this.quantifyRange(obj.plus(this.<S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithPlus<S>> PlusInst<S> create(final Object arg) {

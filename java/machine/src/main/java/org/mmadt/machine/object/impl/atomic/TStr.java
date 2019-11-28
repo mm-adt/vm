@@ -62,14 +62,14 @@ public final class TStr extends TObj implements Str {
     public Bool gt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.via(this).set(this.java().compareTo(str.java()) > 0) :
-                TBool.via(this.mapTo(GtInst.create(str)));
+                GtInst.<Str>create(str).attach(this, TBool.via(this));
     }
 
     @Override
     public Bool gte(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.via(this).set(this.java().compareTo(str.java()) >= 0) :
-                TBool.via(this.mapTo(GteInst.create(str)));
+                GteInst.<Str>create(str).attach(this, TBool.via(this));
     }
 
 
@@ -77,33 +77,33 @@ public final class TStr extends TObj implements Str {
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.via(this).set(obj instanceof Str && this.java().equals(((Str) obj).java())) :
-                TBool.via(this.mapTo(EqInst.create(obj)));
+                EqInst.<Str>create(obj).attach(this, TBool.via(this));
     }
 
     @Override
     public Bool lt(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.via(this).set(this.java().compareTo(str.java()) < 0) :
-                TBool.via(this.mapTo(LtInst.create(str)));
+                LtInst.<Str>create(str).attach(this, TBool.via(this));
     }
 
     @Override
     public Bool lte(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 TBool.via(this).set(this.java().compareTo(str.java()) <= 0) :
-                TBool.via(this.mapTo(LteInst.create(str)));
+                LteInst.<Str>create(str).attach(this, TBool.via(this));
     }
 
     @Override
     public Str plus(final Str str) {
         return (this.isInstance() && str.isInstance()) ?
                 this.set(this.java().concat(str.java())) :
-                this.mapTo(PlusInst.create(str));
+                PlusInst.<Str>create(str).attach(this);
     }
 
     @Override
     public Str zero() {
-        return this.q().constant() ? this.set(Tokens.EMPTY) : this.mapTo(ZeroInst.create());
+        return this.q().constant() ? this.set(Tokens.EMPTY) : ZeroInst.<Str>create().attach(this);
     }
 
     @Override

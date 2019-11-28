@@ -32,14 +32,14 @@ import org.mmadt.machine.object.model.type.PList;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class NeqInst<S extends Obj> extends TInst implements MapInstruction<S, Bool> {
+public final class NeqInst<S extends Obj> extends TInst<S, Bool> implements MapInstruction<S, Bool> {
 
     private NeqInst(final Object arg) {
         super(PList.of(Tokens.NEQ, arg));
     }
 
     public Bool apply(final S obj) {
-        return obj.neq(this.<S, Obj>argument(0).mapArg(obj));
+        return this.quantifyRange(obj.neq(this.argument(0).mapArg(obj)));
     }
 
     public static <S extends Obj> NeqInst<S> create(final Object arg) {

@@ -22,8 +22,6 @@
 
 package org.mmadt.process.mmproc.compliance;
 
-import org.mmadt.process.compliance.AndTest;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */

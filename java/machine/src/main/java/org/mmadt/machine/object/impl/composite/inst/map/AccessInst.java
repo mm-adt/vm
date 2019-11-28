@@ -32,14 +32,14 @@ import org.mmadt.machine.object.model.type.PList;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class AccessInst<S extends Obj> extends TInst implements MapInstruction<S, Inst> {
+public final class AccessInst<S extends Obj> extends TInst<S, Inst> implements MapInstruction<S, Inst> {
 
     private AccessInst() {
         super(PList.of(Tokens.ACCESS));
     }
 
     public Inst apply(final S obj) {
-        return obj.access();
+        return this.quantifyRange(obj.access());
     }
 
     public static <S extends Obj> AccessInst<S> create() {

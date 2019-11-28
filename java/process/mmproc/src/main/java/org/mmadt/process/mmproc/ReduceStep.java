@@ -30,7 +30,7 @@ import org.mmadt.util.FastNoSuchElementException;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-final class ReduceStep<S extends Obj, E extends Obj> extends AbstractStep<S, E, ReduceInstruction<S,E>> {
+final class ReduceStep<S extends Obj, E extends Obj> extends AbstractStep<S, E, ReduceInstruction<S, E>> {
 
     private final Reducer<S, E> reducer;
     private boolean done = false;

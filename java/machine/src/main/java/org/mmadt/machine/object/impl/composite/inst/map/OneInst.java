@@ -24,27 +24,25 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOne;
-import org.mmadt.processor.Processor;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class OneInst<S extends WithOne<S>> extends TInst implements MapInstruction<S, S> {
+public final class OneInst<S extends WithOne<S>> extends TInst<S, S> implements MapInstruction<S, S> {
 
     private OneInst() {
         super(PList.of(Tokens.ONE));
     }
 
     public S apply(final S obj) {
-        return obj.one();
+        return this.quantifyRange(obj.one());
     }
 
     public static <S extends WithOne<S>> OneInst<S> create() {
         return new OneInst<>();
     }
-    
+
 }

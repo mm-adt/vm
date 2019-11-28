@@ -85,7 +85,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
             list.addAll(lst.java());
             return this.set(list);
         } else
-            return this.mapTo(PlusInst.create(lst));
+            return PlusInst.<Lst<V>>create(lst).attach(this);
     }
 
     @Override
@@ -95,7 +95,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
             list.removeAll(lst.java());
             return this.set(list);
         } else
-            return this.mapTo(MinusInst.create(lst));
+            return MinusInst.<Lst<V>>create(lst).attach(this);
     }
 
     @Override
@@ -107,7 +107,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
                 TBool.via(this).set(obj instanceof Lst && this.java().equals(((Lst) obj).java())) :
-                TBool.via(this).mapFrom(EqInst.create(obj));
+                EqInst.create(obj).attach(this, TBool.via(this));
     }
 
     @Override

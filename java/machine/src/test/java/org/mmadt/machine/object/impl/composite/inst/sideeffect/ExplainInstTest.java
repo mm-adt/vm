@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.impl.composite.inst.sideeffect;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.processor.util.FastProcessor;
 
