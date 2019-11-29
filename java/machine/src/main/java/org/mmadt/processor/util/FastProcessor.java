@@ -25,6 +25,7 @@ package org.mmadt.processor.util;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
+import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
 import org.mmadt.util.EmptyIterator;
@@ -34,8 +35,6 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -59,8 +58,10 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
     public Iterator<S> iterator(final S obj) {
         // System.out.println("PPR: " + obj);
         final Inst bytecode = obj.access();
-        if (bytecode.isOne()) return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
-        Stream<S> stream = Stream.of((S) obj.access().domain().access(ID()));
+        if (bytecode.isOne() ||
+                !(bytecode.<Inst>peek() instanceof InitialInstruction) && bytecode.domain().q().isZero())
+            return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
+        Stream<S> stream = Stream.of((S) bytecode.domain().access(null));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof BarrierInstruction)  // two patterns: *-to-* and 1-to-*.
                 stream = IteratorUtils.stream(((BarrierInstruction<S, S>) inst).createIterator(

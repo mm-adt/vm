@@ -216,7 +216,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (this.isInstance())
             return (O) this; // TODO: solve the inverse problem and then: AsInst.<O>create(obj).attach((O) this);
         else if (obj instanceof Inst)
-            return (O) ((TInst) obj).attach(this);
+            return (O) this.access((Inst)obj);
         else
             return obj.mapTo(this);
 

@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
+import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
@@ -39,6 +40,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
+import static org.mmadt.language.mmlang.util.ParserArgs.bools;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.language.mmlang.util.ParserArgs.strs;
@@ -113,15 +115,16 @@ class ParserTest {
             args(ints().plus(2), "int => (int <= [plus,2])"),
             args(ints().plus(2), "int => (int => [plus,2])"),
             args(ints().<Int>label("a").plus(2), "int => (int~a => [plus,2])"),
-            args(ints().<Int>label("a").plus(2), "(int => int~a) <= [plus,2]"),
+            // args(ints().<Int>label("a").plus(2), "(int => int~a) <= [plus,2]"),
             args(ints().<Int>label("a").plus(2), "int => (int~a <= [plus,2])"),
-            args(ints().<Int>label("a").plus(2), "int => int~a <= [plus,2]"),
+            // args(ints().<Int>label("a").plus(2), "int => int~a <= [plus,2]"),
             // args(ints().<Int>label("a").plus(2), "int <= int~a <= [plus,2]"),   // TODO: the meaning of this needs to be thought through
             // args(ints().<Int>label("a").plus(2), "int <= (int~a <= [plus,2])"), // TODO: the meaning of this needs to be thought through
             // args(ints().<Int>label("a").plus(2), "int => (int => [plus,2]~a)"), // TODO: step labels (like quantifiers) transfer from inst to obj
             args(objs(), "str => 1"),
             args(strs("a"), "str => 'a'"),
             args(objs(), "str => int"),
+            args((Obj)bools().access(___.gt(10)), "bool <= [gt,10]"),
 
 
             // references <=> instances | type | reference
