@@ -214,12 +214,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O mapFrom(final Obj obj) {
         if (this.isInstance())
-            return (O) this;
-        else if (obj instanceof Inst) {
-            return this instanceof Inst ?
-                    (O) ((Inst) this).mult((Inst) obj) :
-                    this.isInstance() ? (O) this : (O) ((TInst) obj).attach(this);
-        } else
+            return (O) this; // TODO: solve the inverse problem and then: AsInst.<O>create(obj).attach((O) this);
+        else if (obj instanceof Inst)
+            return (O) ((TInst) obj).attach(this);
+        else
             return obj.mapTo(this);
 
     }
@@ -234,13 +232,14 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                     o = ((Function<Obj, O>) inst).apply(o);
             }
             return (O) o;
-        } else if (obj.isReference()) {
+        } else if (obj.isReference())
             return this.mapTo(obj.access()).mapTo(obj.access(null));
-        } else if (obj.isInstance() && this.isType()) {
-            return obj.mapFrom(this);
-        } else
-            return this.isReference() ? AsInst.<O>create(obj).attach((O) this) : this.as((O) obj);
-
+        else if (this.isInstance())
+            return this.as((O) obj);
+        else if (obj.isInstance())
+            return obj.as((O) this);
+        else
+            return AsInst.<O>create(obj).attach((O) this);
     }
 
     public Obj clone();

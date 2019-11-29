@@ -101,6 +101,9 @@ class ParserTest {
             args(ints(3), "(1 => int) => [plus,2]"),
             args(ints(3), "1 => (int <= [plus,2])"),
             args(ints(1), "1 <= (int <= [plus,2])"),
+            args(ints(1), "1 <= [id]"),
+
+
             // type <=> instance | type | reference
             args(ints(1), "int => 1"),
             args(ints(1), "int => (1 => [id])"),
@@ -116,6 +119,11 @@ class ParserTest {
             // args(ints().<Int>label("a").plus(2), "int <= int~a <= [plus,2]"),   // TODO: the meaning of this needs to be thought through
             // args(ints().<Int>label("a").plus(2), "int <= (int~a <= [plus,2])"), // TODO: the meaning of this needs to be thought through
             // args(ints().<Int>label("a").plus(2), "int => (int => [plus,2]~a)"), // TODO: step labels (like quantifiers) transfer from inst to obj
+            args(objs(), "str => 1"),
+            args(strs("a"), "str => 'a'"),
+            args(objs(), "str => int"),
+
+
             // references <=> instances | type | reference
             args(ints().plus(2).mult(3), "(int <= [plus,2]) => [mult,3]"),
 
