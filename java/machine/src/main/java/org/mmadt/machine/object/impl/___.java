@@ -39,6 +39,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.composite.Inst;
 
 /**
@@ -76,6 +77,10 @@ public class ___ {
 
     public static Inst plus(final Object object) {
         return PlusInst.create(object);
+    }
+
+    public static Inst put(final Object index, final Object value) {
+        return PutInst.create(index,value);
     }
 
     public static Inst minus(final Object object) {

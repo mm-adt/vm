@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -33,6 +34,7 @@ import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.ArrayList;
@@ -95,14 +97,14 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
             this.java().add(index.java(), value);
             return this;
         } else
-            return this.mapFrom(PutInst.create(index, value));
+            return this.mapTo(PutInst.create(index, value));
     }
 
     @Override
     public default Inst drop(final Int index) {
         if (this.isInstance() || this.isType()) {
             this.java().remove((int) index.java());
-            return this;
+            return this; // TODO ?? Instructions.compile(this);
         } else
             return this.mapFrom(DropInst.create(index));
     }
@@ -145,5 +147,17 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     @Override
     public default Iterable<Inst> iterable() {
         return this.get() instanceof Stream ? this.<Stream<Inst>>get() : null == this.get() ? List.of() : List.of(this);
+    }
+
+
+    ///////////////
+
+    public default Inst put(final Object index, final Object value) {
+        return this.put(ObjectHelper.create(TInt.of().copy(this), index), ObjectHelper.create(TObj.single().copy(this), value));
+    }
+
+
+    public default Inst drop(final Object index) {
+        return this.drop(ObjectHelper.create(TInt.of().copy(this), index));
     }
 }
