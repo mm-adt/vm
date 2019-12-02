@@ -105,7 +105,6 @@ class ParserTest {
             args(ints(1), "1 <= (int <= [plus,2])"),
             args(ints(1), "1 <= [id]"),
 
-
             // type <=> instance | type | reference
             args(ints(1), "int => 1"),
             args(ints(1), "int => (1 => [id])"),
@@ -124,7 +123,7 @@ class ParserTest {
             args(objs(), "str => 1"),
             args(strs("a"), "str => 'a'"),
             args(objs(), "str => int"),
-            args((Obj)bools().access(___.gt(10)), "bool <= [gt,10]"),
+            args((Obj) bools().access(___.gt(10)), "bool <= [gt,10]"),
 
 
             // references <=> instances | type | reference

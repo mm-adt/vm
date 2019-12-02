@@ -133,11 +133,9 @@ public class Parser extends BaseParser<Object> {
                         Rec(),
                         Inst(),
                         Lst(),
-                        Name()),                                                                                          // obj
-                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),                          // {quantifier}
-                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))),                          // ~label
-                ZeroOrMore(Sequence(SUB, Word(), this.push(TStr.of(this.match().trim())), Terminal("->"), Obj(), MAPSFROM, Inst(), swap(),
-                        this.push(type(this.pop()).access(castToInst(this.pop()))), swap3(), this.push(type(this.pop()).state(type(this.pop()), type(this.pop())))))); // -state->
+                        Name()),                                                                    // obj
+                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),    // {quantifier}
+                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));   // ~label
     }
 
     Rule Lst() {
