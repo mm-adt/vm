@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.composite.inst.sideeffect;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.processor.util.FastProcessor;
 
@@ -33,7 +34,7 @@ class ExplainInstTest {
 
     @Test
     void testVisually() {
-        FastProcessor.process(TInt.of().plus(15).is(TInt.of().mult(22).gt(2)).lt(17).is(true).explain()).forEachRemaining(obj -> {
+        FastProcessor.process(TInt.of().plus(15).is(TInt.of().mult(22).gt(2)).lt(17).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
         });
     }
 }

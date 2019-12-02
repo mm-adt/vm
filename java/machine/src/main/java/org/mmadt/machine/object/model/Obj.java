@@ -33,6 +33,7 @@ import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
@@ -187,12 +188,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         bindings.start();
         final Object current = this.get();
         if (null != current) {
-            if (object.get() instanceof Stream) {
-                if (!Stream.matchStream(bindings, this, object)) {
-                    bindings.rollback();
-                    return false;
-                }
-            } else if (current instanceof Pattern) {
+            if (current instanceof Pattern) {
                 if (!((Pattern) current).match(bindings, object)) {
                     bindings.rollback();
                     return false;
@@ -362,5 +358,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O explain() {
         return ExplainInst.<O>create().attach((O) this);
+    }
+
+    public default Bool eq(final Object object) {
+        return EqInst.create(object).attach(this);
     }
 }
