@@ -22,16 +22,13 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
-import org.mmadt.language.__;
+import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-
-import static org.mmadt.language.__.a;
-import static org.mmadt.language.__.is;
 
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports |.
@@ -41,7 +38,7 @@ import static org.mmadt.language.__.is;
 public interface WithOr<A extends Obj> {
 
     public default A or(final A obj) {
-        return this instanceof Rec ? (A) ((Obj) this).set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(obj)))) : ObjectHelper.root((Obj) this, obj).set(is(__.or(a(this), a(obj))).bytecode());
+        return this instanceof Rec ? (A) ((Obj) this).set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(obj)))) : ObjectHelper.root((Obj) this, obj).set(___.is(___.or(___.a(this), ___.a(obj))));
         // (A)((Obj)this).label(null).set(IsInst.create(OrInst.create(this, obj))).q(Q.Tag.one);
     }
 }

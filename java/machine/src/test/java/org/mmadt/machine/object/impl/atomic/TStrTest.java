@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.model.atomic.Str;
@@ -38,9 +39,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.eq;
-import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.or;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.id;
 import static org.mmadt.machine.object.impl.___.zero;
@@ -53,12 +51,12 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 final class TStrTest implements TestUtilities {
 
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
-            ProcessArgs.of(List.of("marko"), TStr.of("marko")),
-            ProcessArgs.of(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
-            ProcessArgs.of(List.of("abcde"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
-            ProcessArgs.of(List.of("abcdef"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e").is(gt("")).plus("f")),
-            ProcessArgs.of(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
-            ProcessArgs.of(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.of().plus("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
+            ProcessArgs.args(List.of("marko"), TStr.of("marko")),
+            ProcessArgs.args(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
+            ProcessArgs.args(List.of("abcde"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
+            ProcessArgs.args(List.of("abcdef"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e").is(gt("")).plus("f")),
+            ProcessArgs.args(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
+            ProcessArgs.args(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.of().plus("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
             // ProcessArgs.of(List.of("a"), TStr.of("a", "a","a").branch(id(),id()).dedup()),
     };
 
@@ -132,8 +130,8 @@ final class TStrTest implements TestUtilities {
         assertTrue(TObj.all().test(TStr.of("hello")));
         assertTrue(TStr.of("hello").q(star).test(TStr.of("hello")));
         assertFalse(TStr.of("hello").q(zero).test(TStr.of("hello")));
-        assertTrue(TStr.of(is(eq("id"))).test(TStr.of("id")));
-        assertTrue(TStr.of(is(or(eq("id"), eq("label")))).test(TStr.of("id")));
+        assertTrue(TStr.of(___.is(___.eq("id"))).test(TStr.of("id")));
+        assertTrue(TStr.of(___.is(___.or(___.eq("id"), ___.eq("label")))).test(TStr.of("id")));
         assertTrue(TStr.of("id").or(TStr.of("label")).test(TStr.of("id")));
         // assertFalse(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("id")));
         // assertTrue(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("hello")));

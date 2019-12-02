@@ -44,8 +44,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.get;
-import static org.mmadt.language.__.id;
 import static org.mmadt.machine.object.impl.___.neg;
 import static org.mmadt.machine.object.impl.___.zero;
 
@@ -56,18 +54,18 @@ final class TLstTest implements TestUtilities {
 
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             // instances
-            ProcessArgs.of(List.of(TLst.of("a", 1)), TLst.of("a", 1)),
-            ProcessArgs.of(List.of("a"), TLst.of("a", 1).get(0)),
-            ProcessArgs.of(List.of(1), TLst.of("a", 1).get(1)),
+            ProcessArgs.args(List.of(TLst.of("a", 1)), TLst.of("a", 1)),
+            ProcessArgs.args(List.of("a"), TLst.of("a", 1).get(0)),
+            ProcessArgs.args(List.of(1), TLst.of("a", 1).get(1)),
             // references
-            ProcessArgs.of(List.of(TLst.of("a", 1), TLst.of("b", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2))),
-            ProcessArgs.of(List.of(TLst.of("a", "acac"), TLst.of("b", "bcbc")), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).plus(zero()).put(1, get(0).plus("c").plus(zero()).plus(id()))),
-            ProcessArgs.of(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(0, "c")),
-            ProcessArgs.of(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), "c")),
-            ProcessArgs.of(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), TStr.of("").plus("c").id().plus(zero()))),
+            ProcessArgs.args(List.of(TLst.of("a", 1), TLst.of("b", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2))),
+            // ProcessArgs.args(List.of(TLst.of("a", "acac"), TLst.of("b", "bcbc")), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).plus(zero()).put(1, get(0).plus("c").plus(zero()).plus(id()))),
+            ProcessArgs.args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(0, "c")),
+            ProcessArgs.args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), "c")),
+            ProcessArgs.args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), TStr.of("").plus("c").id().plus(zero()))),
             // types
-            ProcessArgs.of(List.of(TLst.of(TInt.of(), TStr.of(), 1.0f, false)), TLst.of(TInt.of(), TStr.of()).plus(TLst.of(1.0f, false))),
-            ProcessArgs.of(List.of(TLst.of(TInt.of(), TStr.of()).plus(TLst.of(TInt.of().mult(6), false))), TLst.of(TInt.of(), TStr.of()).plus(TLst.of(TInt.of().mult(6), false))),
+            ProcessArgs.args(List.of(TLst.of(TInt.of(), TStr.of(), 1.0f, false)), TLst.of(TInt.of(), TStr.of()).plus(TLst.of(1.0f, false))),
+            ProcessArgs.args(List.of(TLst.of(TInt.of(), TStr.of()).plus(TLst.of(TInt.of().mult(6), false))), TLst.of(TInt.of(), TStr.of()).plus(TLst.of(TInt.of().mult(6), false))),
             // state
             // ProcessArgs.of(List.of(TLst.of(TInt.of(), TStr.of(), 1.0f, false)), TLst.of(TInt.of().to("a"), TStr.of().to("b")).plus(TLst.of(1.0f, false)).from("a")),
 

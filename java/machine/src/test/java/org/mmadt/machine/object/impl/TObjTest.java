@@ -41,10 +41,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.and;
-import static org.mmadt.language.__.gt;
-import static org.mmadt.language.__.is;
-import static org.mmadt.language.__.lt;
+import static org.mmadt.machine.object.impl.___.and;
+import static org.mmadt.machine.object.impl.___.gt;
+import static org.mmadt.machine.object.impl.___.is;
+import static org.mmadt.machine.object.impl.___.lt;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
@@ -85,13 +85,13 @@ class TObjTest {
         assertEquals(type6.q(star), type4.and(type6));
         assertFalse(type6.constant());
         //
-        Obj type7 = gt(1).bytecode();
-        Obj type8 = lt(2).bytecode();
-        Obj type9 = is(type7.and(type8)).bytecode();
-        Obj type10 = is(type7.or(type8)).bytecode();
+        Obj type7 = gt(1);
+        Obj type8 = lt(2);
+        Obj type9 = is(type7.and(type8));
+        Obj type10 = is(type7.or(type8));
 
         //System.out.println(TObj.of().gt(1).and(TObj.of().lt(2)));
-        assertEquals(is(and(gt(1), lt(2))).bytecode(), type9);
+        assertEquals(is(and(gt(1), lt(2))), type9);
         // TODO: NEED OrMap:: assertEquals(is(or(gt(1),lt(2))), type10);
         assertEquals(TInt.of(is(gt(32))).label("x"), TInt.of().and(TInt.of(is(gt(32))).label("x")));
         assertThrows(RuntimeException.class, () -> TInt.of().label("x").and(TInt.of().label("y")));

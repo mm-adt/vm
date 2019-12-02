@@ -42,6 +42,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
+import static org.mmadt.util.ProcessArgs.args;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,11 +50,11 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 final class TBoolTest implements TestUtilities {
 
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
-            ProcessArgs.of(List.of(true), TBool.of(true)),
-            ProcessArgs.of(List.of(true, true, false, false), TBool.of(true, true, false, false)),
-            ProcessArgs.of(List.of(true, true, false, false), TBool.of(true, false).branch(id(), id())),
-            ProcessArgs.of(List.of(), TBool.of(true, false).<Bool>branch(id(), id()).is(and(false)).id().id()),
-            ProcessArgs.of(List.of(TBool.of().mapFrom(gt(10))), TInt.of().gt(10)),
+            args(List.of(true), TBool.of(true)),
+            args(List.of(true, true, false, false), TBool.of(true, true, false, false)),
+            args(List.of(true, true, false, false), TBool.of(true, false).branch(id(), id())),
+            args(List.of(), TBool.of(true, false).<Bool>branch(id(), id()).is(and(false)).id().id()),
+            args(List.of(TBool.of().mapFrom(gt(10))), TInt.of().gt(10)),
             // ProcessArgs.of(List.of(true), TBool.of(true, false).branch(id(), id()).is(or(false)).id().id()),
     };
 

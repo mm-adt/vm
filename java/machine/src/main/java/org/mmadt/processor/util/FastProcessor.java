@@ -56,10 +56,10 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
 
     @Override
     public Iterator<S> iterator(final S obj) {
-        // System.out.println("PPR: " + obj);
+        // System.out.println("PROCESSING: " + obj);
         final Inst bytecode = obj.access();
         if (bytecode.isOne() ||
-                !(bytecode.<Inst>peek() instanceof InitialInstruction) && bytecode.domain().q().isZero())
+                (!(bytecode.<Inst>peek() instanceof InitialInstruction) && bytecode.domain().q().isZero()))
             return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
         Stream<S> stream = Stream.of((S) bytecode.domain().access(null));
         for (final Inst inst : bytecode.iterable()) {
@@ -70,7 +70,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
                 stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());
         }
-        return stream.filter(s -> !s.q().isZero()).iterator();
+        return stream.iterator();
     }
 
     @Override

@@ -66,7 +66,7 @@ public final class OperatorHelper {
             case (Tokens.AMPERSAND):
                 return (A) ((WithAnd) lhs).and(rhs);
             case (Tokens.BAR):
-                return (A) ChooseInst.create(lhs, rhs);
+                return (A) ChooseInst.create(lhs, rhs); // why lhs.or(rhs) doesn't work for ~label?
             case (Tokens.RANGLE):
                 return (A) ((WithOrder) lhs).gt(rhs);
             case (Tokens.LANGLE):

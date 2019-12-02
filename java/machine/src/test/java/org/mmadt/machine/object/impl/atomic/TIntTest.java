@@ -53,43 +53,43 @@ final class TIntTest implements TestUtilities {
 
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             // instances
-            ProcessArgs.of(List.of(1), TInt.of(1)),
-            ProcessArgs.of(List.of(-1), TInt.of(1).neg()),
-            ProcessArgs.of(List.of(0), TInt.of(1).zero()),
-            ProcessArgs.of(List.of(1), TInt.of().one()),
-            ProcessArgs.of(List.of(20), TInt.of(2).mult(10)),
+            ProcessArgs.args(List.of(1), TInt.of(1)),
+            ProcessArgs.args(List.of(-1), TInt.of(1).neg()),
+            ProcessArgs.args(List.of(0), TInt.of(1).zero()),
+            ProcessArgs.args(List.of(1), TInt.of().one()),
+            ProcessArgs.args(List.of(20), TInt.of(2).mult(10)),
             // ProcessArgs.of(List.of(1), TInt.of(1).sum()),
             // ProcessArgs.of(List.of(10), TInt.of(1,2,3,4).sum()),
-            ProcessArgs.of(List.of(4), TInt.of(1).plus(plus(plus(1)))),
-            ProcessArgs.of(List.of(50), TInt.of(1).plus(4).mult(10)),
-            ProcessArgs.of(List.of(50), TInt.of(1).plus(4).mult(10).is(gt(plus(-50)))),
-            ProcessArgs.of(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(-50))),
-            ProcessArgs.of(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60)))),
-            ProcessArgs.of(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(true)),
-            ProcessArgs.of(List.of(), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(false)),
+            ProcessArgs.args(List.of(4), TInt.of(1).plus(plus(plus(1)))),
+            ProcessArgs.args(List.of(50), TInt.of(1).plus(4).mult(10)),
+            ProcessArgs.args(List.of(50), TInt.of(1).plus(4).mult(10).is(gt(plus(-50)))),
+            ProcessArgs.args(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(-50))),
+            ProcessArgs.args(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60)))),
+            ProcessArgs.args(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(true)),
+            ProcessArgs.args(List.of(), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(false)),
             // references
-            ProcessArgs.of(List.of(50, 51), TInt.of(49, 50).is(gt(plus(-1))).plus(1)),
-            ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(gt(plus(-1)))),
-            ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(gte(plus(-1)))),
-            ProcessArgs.of(List.of(), TInt.of(49, 50).is(lt(plus(-1)))),
-            ProcessArgs.of(List.of(), TInt.of(49, 50).is(lt(plus(-1))).map(32)),
-            ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(lt(plus(1)))),
-            ProcessArgs.of(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(1).plus(plus(8))),
-            ProcessArgs.of(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(TInt.of(0, 1, 2).plus(1).plus(0)).plus(plus(8))),
-            ProcessArgs.of(List.of(49, 50), TInt.of(49, 50).is(lte(plus(1)))),
-            ProcessArgs.of(List.of(), TInt.of(49, 50).is(gt(plus(1)))),
+            ProcessArgs.args(List.of(50, 51), TInt.of(49, 50).is(gt(plus(-1))).plus(1)),
+            ProcessArgs.args(List.of(49, 50), TInt.of(49, 50).is(gt(plus(-1)))),
+            ProcessArgs.args(List.of(49, 50), TInt.of(49, 50).is(gte(plus(-1)))),
+            ProcessArgs.args(List.of(), TInt.of(49, 50).is(lt(plus(-1)))),
+            ProcessArgs.args(List.of(), TInt.of(49, 50).is(lt(plus(-1))).map(32)),
+            ProcessArgs.args(List.of(49, 50), TInt.of(49, 50).is(lt(plus(1)))),
+            ProcessArgs.args(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(1).plus(plus(8))),
+            ProcessArgs.args(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(TInt.of(0, 1, 2).plus(1).plus(0)).plus(plus(8))),
+            ProcessArgs.args(List.of(49, 50), TInt.of(49, 50).is(lte(plus(1)))),
+            ProcessArgs.args(List.of(), TInt.of(49, 50).is(gt(plus(1)))),
             // type
-            ProcessArgs.of(List.of(), TInt.none().plus(TInt.of())),
-            ProcessArgs.of(List.of(TInt.of().plus(TInt.of())), TInt.of().plus(TInt.of())),
-            ProcessArgs.of(List.of(TInt.of().plus(mult(3))), TInt.of().plus(TInt.of().mult(3))),
-            ProcessArgs.of(List.of(TInt.of().plus(mult(3)).is(gt(45)).map(10).q(qmark)), TInt.of().plus(mult(3)).is(gt(45)).map(10)),
-            ProcessArgs.of(List.of(TInt.of().plus(mult(3)).map(10)), TInt.of().plus(mult(3)).map(10)), // TODO: should just be the instance 10
+            ProcessArgs.args(List.of(), TInt.none().plus(TInt.of())),
+            ProcessArgs.args(List.of(TInt.of().plus(TInt.of())), TInt.of().plus(TInt.of())),
+            ProcessArgs.args(List.of(TInt.of().plus(mult(3))), TInt.of().plus(TInt.of().mult(3))),
+            ProcessArgs.args(List.of(TInt.of().plus(mult(3)).is(gt(45)).map(10).q(qmark)), TInt.of().plus(mult(3)).is(gt(45)).map(10)),
+            ProcessArgs.args(List.of(TInt.of().plus(mult(3)).map(10)), TInt.of().plus(mult(3)).map(10)), // TODO: should just be the instance 10
             // predicate type
-            ProcessArgs.of(List.of(), TInt.of(20).is(a(TInt.of(is(gt(50)))))),
-            ProcessArgs.of(List.of(20), TInt.of(20).as(TInt.of(is(lt(50))))),
+            ProcessArgs.args(List.of(), TInt.of(20).is(a(TInt.of(is(gt(50)))))),
+            ProcessArgs.args(List.of(20), TInt.of(20).as(TInt.of(is(lt(50))))),
 
             // state
-            ProcessArgs.of(List.of(TInt.of(1).symbol("age").label("a")), TInt.of(1).as(TInt.of().symbol("age").label("a"))),
+            ProcessArgs.args(List.of(TInt.of(1).symbol("age").label("a")), TInt.of(1).as(TInt.of().symbol("age").label("a"))),
     };
 
 

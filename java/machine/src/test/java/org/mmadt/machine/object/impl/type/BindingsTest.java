@@ -33,8 +33,9 @@ import org.mmadt.machine.object.model.type.Bindings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.gt;
-import static org.mmadt.language.__.is;
+import static org.mmadt.machine.object.impl.___.gt;
+import static org.mmadt.machine.object.impl.___.is;
+
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

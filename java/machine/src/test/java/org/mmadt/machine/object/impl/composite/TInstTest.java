@@ -23,8 +23,6 @@
 package org.mmadt.machine.object.impl.composite;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -34,8 +32,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.language.__.get;
-import static org.mmadt.language.__.is;
 import static org.mmadt.language.compiler.Tokens.COUNT;
 import static org.mmadt.language.compiler.Tokens.PLUS;
 import static org.mmadt.language.compiler.Tokens.START;
@@ -76,7 +72,7 @@ final class TInstTest {
         assertTrue(TInst.some().mult(TInst.of("get", TStr.of())).test(TInst.of("get", "outV").mult(TInst.of("get", "name"))));
     }
 
-    @Test
+    /*@Test
     void testInstructionComposition() {
         final Inst a = TInst.of("db");
         final Inst b = is(get("name").eq("marko")).bytecode();
@@ -112,7 +108,7 @@ final class TInstTest {
         System.out.println(c);
         System.out.println(d);
         System.out.println(e);
-    }
+    }*/
 
     @Test
     void testInstructionBranching() {

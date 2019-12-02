@@ -233,7 +233,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return null == inst ? ID().domainAndRange(this, this) : inst; // instances require domain/range spec on [id] access
     }
 
-
     ///////////////////////////////////////////////////////////////////////////////////
 
     @Override

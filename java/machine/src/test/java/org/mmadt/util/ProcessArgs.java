@@ -40,7 +40,7 @@ public final class ProcessArgs<A extends Obj> {
         this.input = input;
     }
 
-    public static <A extends Obj> ProcessArgs<A> of(final List<Object> expected, final A input) {
+    public static <A extends Obj> ProcessArgs<A> args(final List<Object> expected, final A input) {
         return new ProcessArgs<>(objs(expected), input);
     }
 

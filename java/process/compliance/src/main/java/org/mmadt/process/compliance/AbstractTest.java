@@ -38,10 +38,10 @@ import java.util.List;
  */
 abstract class AbstractTest implements TestMachine {
 
-    <E extends Obj> List<E> submit(final Query query) {
+    /*<E extends Obj> List<E> submit(final Query query) {
         System.out.println(query.toString());
         return IteratorUtils.list(machine().submit(query.obj()));
-    }
+    }*/
 
     <E extends Obj> List<E> objs(final Object... objects) {
         final List<E> objs = new ArrayList<>();
