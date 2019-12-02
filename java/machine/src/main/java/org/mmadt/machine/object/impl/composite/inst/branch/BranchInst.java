@@ -25,6 +25,7 @@ package org.mmadt.machine.object.impl.composite.inst.branch;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
@@ -55,6 +56,6 @@ public final class BranchInst<S extends Obj, E extends Obj> extends TInst<Obj, O
     }
 
     public static <S extends Obj, E extends Obj> BranchInst<S, E> create(final Object... a) {
-        return new BranchInst<>(new HashMap<>(Map.of(ID(), Stream.of(a).map(x -> (Inst) x).collect(Collectors.toList()))), a);
+        return new BranchInst<>(new HashMap<>(Map.of(IdInst.create(), Stream.of(a).map(x -> (Inst) x).collect(Collectors.toList()))), a);
     }
 }

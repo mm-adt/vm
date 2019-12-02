@@ -27,6 +27,7 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TQ;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -47,8 +48,6 @@ import org.mmadt.machine.object.model.util.StringFactory;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -230,7 +229,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public Inst access() {
         final Inst inst = this.types.access();
-        return null == inst ? ID().domainAndRange(this, this) : inst; // instances require domain/range spec on [id] access
+        return null == inst ? IdInst.create().domainAndRange(this, this) : inst; // instances require domain/range spec on [id] access
     }
 
     ///////////////////////////////////////////////////////////////////////////////////

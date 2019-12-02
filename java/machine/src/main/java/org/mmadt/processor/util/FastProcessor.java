@@ -61,7 +61,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
         if (bytecode.isOne() ||
                 (!(bytecode.<Inst>peek() instanceof InitialInstruction) && bytecode.domain().q().isZero()))
             return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
-        Stream<S> stream = Stream.of((S) bytecode.domain().access(null));
+        Stream<S> stream = Stream.of(bytecode.domain().access(null));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof BarrierInstruction)  // two patterns: *-to-* and 1-to-*.
                 stream = IteratorUtils.stream(((BarrierInstruction<S, S>) inst).createIterator(

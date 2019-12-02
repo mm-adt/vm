@@ -28,8 +28,6 @@ import org.mmadt.machine.object.model.composite.Inst;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mmadt.machine.object.impl.composite.TInst.ID;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -45,7 +43,7 @@ public final class InstHelper {
         for (final Inst inst : bytecode.iterable()) {
             if (first) {
                 first = false;
-                list.add(inst.domain().access(ID()));
+                list.add(inst.domain().access(null));
             }
             final List<Object> oneDeep = new ArrayList<>();
             for (final Obj arg : inst.args()) {
@@ -55,7 +53,7 @@ public final class InstHelper {
             }
             if (!oneDeep.isEmpty())
                 list.add(oneDeep);
-            list.add(inst.range().access(ID()));
+            list.add(inst.range().access(null));
         }
         return list;
     }

@@ -64,10 +64,6 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
         return new TInst(null).q(0);
     }
 
-    public static Inst ID() {
-        return IdInst.create();
-    }
-
     public static Inst of(final String opcode, final Object... args) {
         return TInst.of(TStr.of(opcode), args);
     }
@@ -165,7 +161,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
 
     @Override
     public Inst one() {
-        return ID();
+        return IdInst.create();
     }
 
     /*@Override
