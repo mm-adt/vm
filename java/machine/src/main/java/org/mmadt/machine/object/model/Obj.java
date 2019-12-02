@@ -81,7 +81,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <B> B get();
 
     public default boolean named() {
-        return null != this.symbol() && !BASE_SYMBOLS.contains(this.symbol());
+        return !BASE_SYMBOLS.contains(this.symbol());
     }
 
     public <B extends WithOrderedRing<B>> Q<B> q();
@@ -160,8 +160,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 }
             } else {                                                                             // TYPE CHECKING
                 assert this.isType(); // TODO: remove when proved
-                if (null != ObjectHelper.getName(this) && ObjectHelper.getName(this).equals(ObjectHelper.getName(obj)))
-                    return true;
                 ////////////////////////////////////////////
                 if (TRAMPOLINE.contains(List.of(this, obj)))
                     return true;
@@ -270,9 +268,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.q(new TQ<>(count));
     }
 
-
-    //////////////
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////// FLUENT METHODS ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Bool a(final Obj obj);
 

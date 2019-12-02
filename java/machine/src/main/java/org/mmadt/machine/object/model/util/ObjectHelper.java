@@ -160,18 +160,6 @@ public final class ObjectHelper {
             return TObj.single();
     }
 
-    public static String getName(final Obj object) {
-        if (null == object)
-            return null;
-        if (object.named())
-            return object.symbol();
-        else {
-            if (object.equals(object.type()))
-                return null;
-            return ObjectHelper.getName(object.type());
-        }
-    }
-
     public static Obj from(final Object object) {
         if (object instanceof Obj)
             return (Obj) object;

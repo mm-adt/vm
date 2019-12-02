@@ -24,7 +24,6 @@ package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.Bindings;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -75,12 +74,7 @@ public final class TSym<A extends Obj> extends TObj {
     public boolean match(final Bindings bindings, final Obj object) {
         if (!this.q().test(object))
             return false;
-        else if (null != ObjectHelper.getName(this) &&
-                ObjectHelper.getName(this).equals(ObjectHelper.getName(object))) {
-            if (null != this.label())
-                bindings.put(this.label(), object);
-            return true;
-        } else if (null == this.getObject())
+        else if (null == this.getObject())
             return true;
         else
             return this.getObject().match(bindings, object);
