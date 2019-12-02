@@ -87,22 +87,22 @@ class ParserTest {
             args(ints(1), "1 => 1"),
             args(ints(1), "1 <= 1"),
             args(ints(1).<Int>label("a"), "1 => 1~a"),
-            args(ints(1), "1 <= 1~a"),
+            args(ints(1).<Int>label("a"), "1 <= 1~a"),
             args(objs(), "1 => 2"),
-            args(ints(1), "1 <= 2"),
+            args(objs(), "1 <= 2"),
             args(ints(1), "1 => int"),
             args(ints(1).<Int>label("a"), "1 => int~a"),
             args(objs(), "1 => str"),
             args(objs(), "1 => str~a"),
-            args(ints(1), "1 <= str"),
-            args(ints(1), "1 <= str~a"),
-            args(ints(1), "1 <= [plus,2]"),
+            args(objs(), "1 <= str"),
+            args(objs(), "1 <= str~a"),
+            args(objs(ints(1).access(plus(2))), "1 <= [plus,2]"),
             args(ints(3), "1 => int => [plus,2]"),
             args(ints(3), "1 => (int => [plus,2])"),
             args(ints(3), "1 => int => [plus,2]"),
             args(ints(3), "(1 => int) => [plus,2]"),
             args(ints(3), "1 => (int <= [plus,2])"),
-            args(ints(1), "1 <= (int <= [plus,2])"),
+            args(ints(1).<Int>access(plus(2)), "1 <= (int <= [plus,2])"),
             args(ints(1), "1 <= [id]"),
 
             // type <=> instance | type | reference
@@ -148,7 +148,8 @@ class ParserTest {
             // ParserArgs.of(objs(TInt.of().q(2).mapTo(plus(5).q(3))), "int{2} => [plus,5]{3}"),
 
             /////////////////// MAP FROM <= ///////////////////
-            args(objs(11), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
+            args(objs(11), "9 => (11 <= [plus,2])"),
+            args(objs(ints(11).access(plus(2))), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
             args(strs().plus("a"), "str <= [plus,'a']"),
             args(strs().plus("a").plus("bc"), "str <= [plus,'a'] => [plus,'bc']"),
     };
