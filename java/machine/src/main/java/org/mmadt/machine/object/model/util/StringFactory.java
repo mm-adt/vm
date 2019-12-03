@@ -212,6 +212,7 @@ public final class StringFactory {
                 builder.append(TILDE).append(inst.label());
         } else
             builder.append(inst.symbol());
+        StringFactory.objMetadata(inst,builder);
         return builder.toString();
     }
 

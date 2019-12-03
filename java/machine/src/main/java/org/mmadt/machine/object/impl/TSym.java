@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.type.Bindings;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,8 +40,8 @@ public final class TSym<A extends Obj> extends TObj {
         return new TSym<>(symbol, null);
     }
 
-    public static <A extends Obj> TSym<A> of(final String symbol, final A object) {
-        return new TSym<A>(symbol, object);
+    public static <A extends Obj> TSym<A> of(final String symbol, final Object object) {
+        return new TSym<A>(symbol, (A)ObjectHelper.from(object));
     }
 
     private TSym(final String symbol, final A object) {
@@ -89,5 +90,10 @@ public final class TSym<A extends Obj> extends TObj {
     public boolean equals(final Object object) {
         return object instanceof TSym && Objects.equals(this.symbol(), ((TSym) object).symbol());
         //&&Objects.equals(this.getObject().symbol(), ((TSym) object).getObject().symbol());
+    }
+
+    @Override
+    public String toString() {
+        return this.symbol() + (null != this.getObject() ? " <= " + this.getObject() : "");
     }
 }

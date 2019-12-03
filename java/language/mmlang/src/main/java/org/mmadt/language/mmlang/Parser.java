@@ -84,6 +84,7 @@ public class Parser extends BaseParser<Object> {
     final Rule GTE = Terminal(Tokens.REQUALS);
     final Rule LT = Terminal(Tokens.LANGLE);
     final Rule GT = Terminal(Tokens.RANGLE);
+    final Rule STATE = Terminal(Tokens.STEP);
 
     /// built-int type symbols
     final Rule INT = Terminal(Tokens.INT);
@@ -132,9 +133,10 @@ public class Parser extends BaseParser<Object> {
                         Rec(),
                         Inst(),
                         Lst(),
-                        Name()),                                                                    // obj
-                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),    // {quantifier}
-                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));   // ~label
+                        Symbol()),                                                                       // obj
+                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),         // {quantifier}
+                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));         // ~label
+
     }
 
     Rule Lst() {
@@ -161,12 +163,6 @@ public class Parser extends BaseParser<Object> {
     Rule Field() {
         return Sequence(Expression(), COLON, Expression(), swap(), this.push(TRec.of(this.pop(), this.pop())));
     }
-
-    @SuppressSubnodes
-    Rule Name() {
-        return Sequence(Word(), this.push(TSym.of(match().trim())));
-    }
-
 
     @SuppressSubnodes
     Rule Real() {
@@ -211,24 +207,24 @@ public class Parser extends BaseParser<Object> {
         final Var<PList<Obj>> args = new Var<>(new PList<>());
         return Sequence(
                 LBRACKET,
-                Sequence(Symbol(), opcode.set(match().trim()), ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop())))),    // arguments
+                Sequence(Word(), opcode.set(match().trim()), ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop())))),    // arguments
                 RBRACKET, this.push(Instructions.compile(TInst.of(opcode.get(), args.get()))),                                                  // compiler grabs the instruction type
                 Optional(Quantifier(), swap(), this.push(castToInst(this.pop()).q(this.pop()))));
     }
 
     @SuppressSubnodes
     Rule Symbol() {
-        return Word(); //Sequence(Word(), ZeroOrMore(FirstOf(Number(), Word())));
+        return Sequence(Word(), this.push(TSym.of(match().trim()))); //Sequence(Word(), ZeroOrMore(FirstOf(Number(), Word())));
     }
 
     @SuppressSubnodes
     Rule UnaryOperator() {
-        return Sequence(FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(TestNot(STATE), FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(FirstOf(MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(FirstOf(STATE, MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressNode

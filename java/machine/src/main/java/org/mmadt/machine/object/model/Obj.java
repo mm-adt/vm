@@ -24,10 +24,10 @@ package org.mmadt.machine.object.model;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
@@ -35,7 +35,6 @@ import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
-import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
@@ -58,7 +57,6 @@ import org.mmadt.processor.util.FastProcessor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -90,7 +88,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Inst access();
 
-    public Map<Str, Obj> state();
 
     public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
         return (O) this.iterable().iterator().next();
@@ -123,15 +120,19 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O symbol(final String symbol);
 
-    public default <O extends Obj> O state(final Map<Str, Obj> env) {
+    public default <O extends Obj> O state(final List<Obj> env) {
         Obj obj = this;
-        for (final Map.Entry<Str, Obj> entry : env.entrySet()) {
-            obj = obj.state(entry.getKey(), entry.getValue());
+        for (final Obj x : env) {
+            obj = obj.write(x);
         }
         return (O) obj;
     }
 
-    public <O extends Obj> O state(final Str name, final Obj obj);
+    public List<Obj> state();
+
+    public <O extends Obj> O write(final Obj obj);
+
+    public <O extends Obj> O read(final Obj obj);
 
     public default <O extends Obj> O copy(final Obj obj) {
         return this.q(obj.q()).access(obj.access()).state(obj.state());
@@ -209,6 +210,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O mapFrom(final Obj obj) {
         if (obj instanceof Inst)
             return (O) this.access((Inst) obj);
+        else if (this instanceof TSym)
+            return (O) TSym.of(this.symbol(), obj);
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
 
@@ -224,6 +227,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                     o = ((Function<Obj, O>) inst).apply(o);
             }
             return (O) o;
+        } else if (obj instanceof TSym) {
+            return this.write(TSym.of(obj.symbol(), this));
         } else if (!obj.access().isOne())
             return this.mapTo(obj.access()).mapTo(obj.access(null));
         else if (this.isInstance())
@@ -278,12 +283,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.q().constant() ?
                 this.q().peek().q(q().one()) :
                 this.mapFrom(CountInst.create());
-    }
-
-    public default <O extends Obj> O state(final Str symbol) {
-        return (this.isInstance()) ?
-                this.set(this.get()).state().getOrDefault(symbol, TObj.none()).copy(this) :
-                TLst.some().copy(this).mapFrom(StateInst.create(symbol));
     }
 
     public default <O extends Obj> O is(final Bool bool) {
@@ -344,10 +343,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default Int map(final Integer integer) {
         return this.map(TInt.of(integer));
-    }
-
-    public default <O extends Obj> O state(final Object symbol) {
-        return this.state((Str) ObjectHelper.from(symbol));
     }
 
     public default <O extends Obj> O explain(final Obj obj) {

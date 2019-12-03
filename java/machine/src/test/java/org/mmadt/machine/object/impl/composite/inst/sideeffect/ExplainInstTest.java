@@ -23,9 +23,15 @@
 package org.mmadt.machine.object.impl.composite.inst.sideeffect;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.processor.util.FastProcessor;
+
+import static org.mmadt.machine.object.impl.___.id;
+import static org.mmadt.machine.object.impl.___.plus;
+
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,7 +40,11 @@ class ExplainInstTest {
 
     @Test
     void testVisually() {
-        FastProcessor.process(TInt.of().plus(15).is(TInt.of().mult(22).gt(2)).lt(17).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
+        FastProcessor.process(TInt.of().plus(15).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(17).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
+        });
+
+
+        FastProcessor.process(TInt.of().<Int>write(TSym.of("x",55)).plus(TSym.of("x")).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(TSym.of("x")).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
         });
     }
 }

@@ -65,12 +65,14 @@ public final class ExplainInst<S extends Obj> extends TInst<S, S> implements Sid
         private List<String> function = new ArrayList<>();
         private List<String> domain = new ArrayList<>();
         private List<String> range = new ArrayList<>();
+        private List<String> state = new ArrayList<>();
 
         Table(final Obj root) {
             this.header = root.toString();
             this.function.add("instruction");
             this.domain.add("domain");
             this.range.add("range");
+            this.state.add("state");
             this.build(0, root.access());
         }
 
@@ -80,9 +82,10 @@ public final class ExplainInst<S extends Obj> extends TInst<S, S> implements Sid
                 this.function.add(space + i.toString());
                 this.domain.add(space + i.domain().access(null).toString());
                 this.range.add(space + i.range().access(null).toString());
+                this.state.add(space + i.domain().state().toString());
                 for (final Obj arg : i.args()) {
                     if (!arg.isInstance())
-                        build((1 + indent) * 2, arg.access());
+                        build((1 + indent), arg.access());
                 }
             }
         }
@@ -97,16 +100,23 @@ public final class ExplainInst<S extends Obj> extends TInst<S, S> implements Sid
             this.function = normalize(this.function);
             this.domain = normalize(this.domain);
             this.range = normalize(this.range);
+            final boolean doState = this.state.toString().replace("]", "").replace("[", "").replace("state", "").replace(",", "").trim().length() > 0;
+            this.state = normalize(this.state);
             final StringBuilder builder = new StringBuilder(Tokens.NEWLINE)
                     .append(this.header)
                     .append(Tokens.repeater(2, Tokens.NEWLINE));
             for (int i = 0; i < this.function.size(); i++) {
                 builder.append(this.function.get(i))
-                        .append(Tokens.space(2))
+                        .append(Tokens.space(4))
                         .append(this.domain.get(i))
-                        .append(0 == i ? Tokens.space(6) : "  ->  ")
-                        .append(this.range.get(i))
-                        .append(Tokens.NEWLINE);
+                        .append(0 == i ? Tokens.space(6) : "  =>  ")
+                        .append(this.range.get(i));
+                if (doState) {
+                    builder.append(0 == i ? Tokens.space(6) : "  ->  ")
+                            .append(this.state.get(i));
+                }
+
+                builder.append(Tokens.NEWLINE);
                 if (0 == i)
                     builder.append(Tokens.repeater((builder.length() - builder.lastIndexOf("\n", builder.length() - 2)) - 3, Tokens.DASH))
                             .append(Tokens.NEWLINE);
@@ -114,5 +124,4 @@ public final class ExplainInst<S extends Obj> extends TInst<S, S> implements Sid
             return builder.toString();
         }
     }
-
 }

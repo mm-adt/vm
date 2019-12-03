@@ -81,6 +81,8 @@ public final class OperatorHelper {
                 return lhs.mapTo(rhs);
             case (Tokens.MAPSFROM):
                 return lhs.mapFrom(rhs);
+            case (Tokens.STEP):
+                return lhs.write(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

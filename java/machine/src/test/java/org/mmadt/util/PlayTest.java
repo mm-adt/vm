@@ -20,39 +20,34 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.compiler;
+package org.mmadt.util;
 
+import org.junit.jupiter.api.Test;
+import org.mmadt.language.compiler.Instructions;
 import org.mmadt.machine.object.impl.TSym;
-import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.impl.___;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.model.atomic.Int;
+
+import static org.mmadt.machine.object.impl.___.gt;
+import static org.mmadt.machine.object.impl.___.is;
+import static org.mmadt.machine.object.impl.___.mult;
+import static org.mmadt.machine.object.impl.___.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ObjArgument<S extends Obj, E extends Obj> implements Argument<S, E> {
+class PlayTest {
 
-    private final E constant;
-
-    public ObjArgument(final E constant) {
-        this.constant = constant;
+    @Test
+    void xxx() {
+        System.out.println(TInt.of().<Int>write(TSym.of("x", 43)).<Int>write(plus(TInt.of(is(gt(50)))).mapFrom(mult(10))).state().toString());
+        System.out.println(TInt.of().<Int>write(TSym.of("x", 43)).<Int>write(plus(TInt.of(is(gt(50)))).mapFrom(mult(10))).plus(TSym.of("x")).plus(800).toString());
     }
 
-    @Override
-    public E mapArg(final S object) {
-        return this.constant instanceof TSym ? (E)object.read(this.constant) : this.constant;
+    @Test
+    void yyy() {
+        System.out.println(Instructions.compile(___.plus(2).mapTo(___.put(0, "minus").mult(___.drop(1)))));
     }
 
-    @Override
-    public int hashCode() {
-        return this.constant.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        return object instanceof ObjArgument && this.constant.equals(((ObjArgument) object).constant);
-    }
-
-    @Override
-    public String toString() {
-        return this.constant.toString();
-    }
 }

@@ -26,8 +26,8 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
-import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -117,13 +117,13 @@ class ParserTest {
             // args(ints().<Int>label("a").plus(2), "(int => int~a) <= [plus,2]"),
             args(ints().<Int>label("a").plus(2), "int => (int~a <= [plus,2])"),
             // args(ints().<Int>label("a").plus(2), "int => int~a <= [plus,2]"),
-            // args(ints().<Int>label("a").plus(2), "int <= int~a <= [plus,2]"),   // TODO: the meaning of this needs to be thought through
-            // args(ints().<Int>label("a").plus(2), "int <= (int~a <= [plus,2])"), // TODO: the meaning of this needs to be thought through
+            args(ints().<Int>label("a").plus(2), "int <= int~a <= [plus,2]"),   // TODO: the meaning of this needs to be thought through
+            args(ints().<Int>label("a").plus(2), "int <= (int~a <= [plus,2])"), // TODO: the meaning of this needs to be thought through
             // args(ints().<Int>label("a").plus(2), "int => (int => [plus,2]~a)"), // TODO: step labels (like quantifiers) transfer from inst to obj
             args(objs(), "str => 1"),
             args(strs("a"), "str => 'a'"),
             args(objs(), "str => int"),
-            args((Obj) bools().access(___.gt(10)), "bool <= [gt,10]"),
+            args((Obj) bools().access(gt(10)), "bool <= [gt,10]"),
 
 
             // references <=> instances | type | reference
@@ -152,6 +152,16 @@ class ParserTest {
             args(objs(ints(11).access(plus(2))), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
             args(strs().plus("a"), "str <= [plus,'a']"),
             args(strs().plus("a").plus("bc"), "str <= [plus,'a'] => [plus,'bc']"),
+
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////
+
+            args(ints().plus(3), "(int -> (x <= 3)) => [plus,x]"),
+            args(ints().plus(3).plus(10), "int -> (x <= 3) -> (y <= 10) => [plus,x][plus,y]"),
+            args(ints().mult(10).mult(10), "(int -> (z <= 10) -> ([plus,int] <= [mult,z])) => [plus,2][plus,3]"),
+            args(TLst.of("x", "y", "a"), "[;] -> (x <= ['x';'y']) -> (y <= ['a']) => [plus,x][plus,y]")
     };
 
 

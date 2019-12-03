@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.util;
 import org.mmadt.language.Query;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
@@ -69,7 +70,7 @@ public final class ObjectHelper {
     }
 
     public static <O extends Obj> O create(final O obj, final Object object) {
-        return object instanceof Inst ? obj.access((Inst) object) : (O) ObjectHelper.from(object);
+        return object instanceof Inst ? obj.access((Inst) object) : object instanceof TSym ? obj.read(((TSym) object)) : (O) ObjectHelper.from(object);
     }
 
     public static <O extends Obj> O make(final Function<Object, O> constructor, final Object... objects) {

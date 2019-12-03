@@ -26,8 +26,6 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
-import org.mmadt.language.compiler.Instructions;
-import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.ProcessArgs;
 
@@ -96,11 +94,6 @@ final class TIntTest implements TestUtilities {
     @TestFactory
     Stream<DynamicTest> testProcessing() {
         return Stream.of(PROCESSING).map(obj -> DynamicTest.dynamicTest(obj.input.toString(), () -> assertEquals(obj.expected, submit(obj.input))));
-    }
-
-    @Test
-    public void xxx() {
-        System.out.println(Instructions.compile(___.plus(2).mapTo(___.put(0,"minus").mult(___.drop(1)))));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
