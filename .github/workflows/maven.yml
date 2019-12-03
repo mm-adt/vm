@@ -14,4 +14,4 @@ jobs:
       with:
         java-version: 1.11
     - name: Build with Maven
-      run: mvn -B package --file vm/pom.xml
+      run: mvn -B package --file java/pom.xml
