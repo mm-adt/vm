@@ -25,6 +25,7 @@ package org.mmadt.machine.console;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
+import org.jline.reader.impl.DefaultHighlighter;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
@@ -63,12 +64,13 @@ public class Console {
         System.setErr(System.out);
         String engineName = "mmlang";
         final ScriptEngineManager manager = new ScriptEngineManager();
-        final Terminal terminal = TerminalBuilder.terminal();
+        final Terminal terminal = TerminalBuilder.builder().name("mm-ADT Console").build();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
         final LineReader reader = LineReaderBuilder.builder()
                 .appName("mm-ADT Console")
                 .terminal(terminal)
+                .highlighter(new DefaultHighlighter())
                 .variable(LineReader.HISTORY_FILE, HISTORY)
                 //.variable(LineReader.HISTORY_IGNORE, List.of(Q)) TODO: don't want to have :q in the history
                 .history(history)
@@ -79,7 +81,11 @@ public class Console {
         terminal.flush();
         while (true) {
             try {
-                final String line = reader.readLine(engineName + Tokens.RANGLE + Tokens.SPACE);
+                String line = reader.readLine(engineName + Tokens.RANGLE + Tokens.SPACE);
+                while (line.trim().endsWith("/")) {
+                    line = line.trim().substring(0, line.length() - 1) + reader.readLine(Tokens.repeater(engineName.length(), Tokens.PERIOD) + Tokens.RANGLE + Tokens.SPACE);
+                }
+                ///////////////////
                 if (line.equals(Q))
                     break;
                 else if (line.equals(L))
