@@ -44,8 +44,8 @@ import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -88,7 +88,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     private Q quantifier = null;                        // the 'amount' of this object bundle
     Type types;                                         // an object that abstractly defines this object's forms
     private boolean typeSet = false;                    // TODO: this is because we have a distinction of 'type not set' (will remove at of point)
-    private List<Obj> state;                            // random access variable state associated with the computation
+    protected Map<Obj, Obj> state;                         // random access variable state associated with the computation
 
     public TObj(final Object value) {
         this.types = TType.of(TObj.getBaseSymbol(this));
@@ -142,33 +142,34 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public List<Obj> state() {
-        return null == this.state ? new ArrayList<>() : this.state;
+    public Map<Obj, Obj> state() {
+        return null == this.state ? new LinkedHashMap<>() : this.state;
     }
 
     @Override
-    public <O extends Obj> O write(final Obj obj) {
+    public <O extends Obj> O write(final Obj key, final Obj value) {
         final TObj clone = this.clone();
-        clone.state = new ArrayList<>(this.state());
+        clone.state = new LinkedHashMap<>(this.state());
         if (null != this.state) {
-            for (int i = 0; i < this.state.size(); i++) {
-                if (obj.a(this.state.get(i).access(null)).java()) {
-                    clone.state.set(i, obj);
+            for (Map.Entry<Obj, Obj> entry : this.state.entrySet()) {
+                if (key.a(entry.getKey().access(null)).java()) {
+                    clone.state.remove(entry.getKey());
+                    clone.state.put(key, value);
                     return (O) clone;
                 }
             }
         }
-        clone.state.add(obj);
+        clone.state.put(key, value);
         return (O) clone;
     }
 
     @Override
-    public <O extends Obj> O read(final Obj obj) {
+    public <O extends Obj> O read(final Obj key) {
         // System.out.println(this.state() + "!!!");
-        for (final Obj x : this.state()) {
-            // System.out.println("TESTING: " + obj + "--isA--" + x + "----" + obj.a(x.access(null)));
-            if (obj.a(x.access(null)).java())
-                return x instanceof TSym ? (O) ((TSym) x).getObject() : (O) x.access();
+        for (final Map.Entry<Obj, Obj> x : this.state().entrySet()) {
+            // System.out.println("TESTING: " + key + "--isA--" + x.getKey() + "----" + key.a(x.getKey().access(null)));
+            if (key.a(x.getKey().access(null)).java())
+                return (O) x.getValue();
         }
         return null;
     }
@@ -230,7 +231,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
         clone.types = this.types.label(variable);
-        return (O) clone.write(TSym.of(variable, clone));
+        return (O) clone.write(TSym.of(variable), clone);
     }
 
     @Override

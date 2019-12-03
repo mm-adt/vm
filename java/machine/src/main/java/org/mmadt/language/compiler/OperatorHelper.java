@@ -82,7 +82,7 @@ public final class OperatorHelper {
             case (Tokens.MAPSFROM):
                 return lhs.mapFrom(rhs);
             case (Tokens.STEP):
-                return lhs.write(rhs);
+                return lhs.write(lhs, rhs).copy(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

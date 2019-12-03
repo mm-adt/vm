@@ -44,9 +44,9 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
         return obj.get(this.<K>argument(0).mapArg(obj)); // TODO: why can't I quantify the range?
     }
 
-    public V quantifyRange(final V range) {
+    /*public V quantifyRange(final V range) {
         return super.quantifyRange(this.apply((WithProduct<K, V>) TSym.fetch(range)));
-    }
+    }*/
 
     public static <K extends Obj, V extends Obj> GetInst<K, V> create(final Object arg) {
         return new GetInst<>(arg);

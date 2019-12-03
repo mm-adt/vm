@@ -90,15 +90,18 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
                 if (p instanceof Lst) {
                     v = ((Lst<V>) p).get(index);
                     if (!TObj.none().equals(v)) break;
-                } else if (p instanceof TSym) {
+                } /*else if (p instanceof TSym) {
                     final Lst<V> temp = ((TSym<Lst<V>>) p).getObject();
                     if (null != temp) {
                         v = temp.get(index);
                         if (!TObj.none().equals(v)) break;
                     }
-                }
+                }*/
             }
         }
+        v = v.copy(this);
+        if (null != v.label())  // TODO: this is ghetto---need a general solution
+            v = v.write(TSym.of(v.label()),v);
         return v;
     }
 

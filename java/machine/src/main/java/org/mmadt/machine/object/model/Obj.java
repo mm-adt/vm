@@ -56,6 +56,7 @@ import org.mmadt.processor.util.FastProcessor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -119,19 +120,19 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O symbol(final String symbol);
 
-    public default <O extends Obj> O state(final List<Obj> env) {
+    public default <O extends Obj> O state(final Map<Obj, Obj> state) {
         Obj obj = this;
-        for (final Obj x : env) {
-            obj = obj.write(x);
+        for (final Map.Entry<Obj, Obj> x : state.entrySet()) {
+            obj = obj.write(x.getKey(), x.getValue());
         }
         return (O) obj;
     }
 
-    public List<Obj> state();
+    public Map<Obj, Obj> state();
 
-    public <O extends Obj> O write(final Obj obj);
+    public <O extends Obj> O write(final Obj key, final Obj value);
 
-    public <O extends Obj> O read(final Obj obj);
+    public <O extends Obj> O read(final Obj value);
 
     public default <O extends Obj> O copy(final Obj obj) {
         return this.access(obj.access()).state(obj.state()); // removed q() copy -- no failing tests .. !?
@@ -210,7 +211,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (obj instanceof Inst)
             return (O) this.access((Inst) obj);
         else if (this instanceof TSym)
-            return (O) TSym.of(this.symbol(), obj);
+            return (O) this.read(this);
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
 
@@ -227,7 +228,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             }
             return (O) o;
         } else if (obj instanceof TSym) {
-            return this.write(TSym.of(obj.symbol(), this));
+            return this.write(TSym.of(obj.symbol()), this);
         } else if (!obj.access().isOne())
             return this.mapTo(obj.access()).mapTo(obj.access(null));
         else if (this.isInstance())

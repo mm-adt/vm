@@ -23,77 +23,42 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.type.Bindings;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TSym<A extends Obj> extends TObj {
+public final class TSym extends TObj {
 
-    private final AtomicReference<A> object = new AtomicReference<>();
 
-    public static <A extends Obj> TSym<A> of(final String symbol) {
-        return new TSym<>(symbol, null);
+    public static TSym of(final String symbol) {
+        return new TSym(symbol);
     }
 
-    public static <A extends Obj> TSym<A> of(final String symbol, final Object object) {
-        return new TSym<A>(symbol, (A)ObjectHelper.from(object));
-    }
-
-    private TSym(final String symbol, final A object) {
+    private TSym(final String symbol) {
         super(null);
         this.types = TType.of(symbol);
-        this.object.set(object);
     }
 
-    public A getObject() {
-        return this.object.get();
-    }
-
-    public void setObject(final A object) {
-        this.object.set(object);
-    }
-
-    public static Obj fetch(final Obj object) {
-        if (object instanceof TSym) {
-            assert !(((TSym) object).getObject() instanceof TSym);
-            return ((TSym<?>) object).getObject();
-        } else
-            return object;
-    }
 
     @Override
     public boolean test(final Obj obj) {
-        return this.getObject().test(obj);
-    }
-
-    @Override
-    public boolean match(final Bindings bindings, final Obj object) {
-        if (!this.q().test(object))
-            return false;
-        else if (null == this.getObject())
-            return true;
-        else
-            return this.getObject().match(bindings, object);
+        return (null != obj.symbol() && obj.symbol().equals(this.symbol()));
     }
 
     @Override
     public int hashCode() {
-        return this.symbol().hashCode();
+        return Objects.hashCode(this.types.symbol());
     }
 
     @Override
     public boolean equals(final Object object) {
         return object instanceof TSym && Objects.equals(this.symbol(), ((TSym) object).symbol());
-        //&&Objects.equals(this.getObject().symbol(), ((TSym) object).getObject().symbol());
     }
 
     @Override
     public String toString() {
-        return this.symbol() + (null != this.getObject() ? " <= " + this.getObject() : "");
+        return this.symbol();
     }
 }

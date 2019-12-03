@@ -100,7 +100,7 @@ public final class ExplainInst<S extends Obj> extends TInst<S, S> implements Sid
             this.function = normalize(this.function);
             this.domain = normalize(this.domain);
             this.range = normalize(this.range);
-            final boolean doState = this.state.toString().replace("]", "").replace("[", "").replace("state", "").replace(",", "").trim().length() > 0;
+            final boolean doState = this.state.toString().replace("]", "").replace("[", "").replace("{","").replace("}","").replace("state", "").replace(",", "").trim().length() > 0;
             this.state = normalize(this.state);
             final StringBuilder builder = new StringBuilder(Tokens.NEWLINE)
                     .append(this.header)

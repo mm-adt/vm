@@ -55,13 +55,13 @@ final class PAndTest {
 //        assertEquals("'marko'{?}|'stephen'", TStr.of("marko").q(qmark).or(TStr.of("stephen")).toString());
     }
 
-    @Test
+   /* @Test
     void shouldMatchConjunctions() {
         final TSym<Rec<TStr, TObj>> vertex = TSym.of("vertex", TRec.of("id", TInt.of(), "label", TStr.of()));
         final Rec<TStr, TObj> idField = TRec.of("id", TInt.of().label("x"));
         final Bindings bindings = new Bindings();
         assertTrue(vertex.and(idField).match(bindings, vertex.and(TRec.of("id", 2))));
         assertEquals(TInt.of(2), bindings.get("x"));
-    }
+    }*/
 
 }

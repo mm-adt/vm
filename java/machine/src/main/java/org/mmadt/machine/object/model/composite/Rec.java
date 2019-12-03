@@ -88,18 +88,18 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
                 if (p instanceof Rec) {
                     v = ((Rec<K, V>) p).get(key);
                     if (!TObj.none().equals(v)) break;
-                } else if (p instanceof TSym) {
+                } /*else if (p instanceof TSym) {
                     final Rec<K, V> temp = ((TSym<Rec<K, V>>) p).getObject();
                     if (null != temp) {
                         v = temp.get(key);
                         if (!TObj.none().equals(v)) break;
                     }
-                }
+                }*/
             }
         }
         v = v.copy(this);
         if (null != v.label())  // TODO: this is ghetto---need a general solution
-            v = v.write(TSym.of(v.label(), v));
+            v = v.write(TSym.of(v.label()), v);
         return v;
         // return v.isType() ? v.access(TInst.of(List.of(this.access(), GetInst.create(key)))).q(this.q()) : v;
     }

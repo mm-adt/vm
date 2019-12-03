@@ -44,7 +44,7 @@ class ExplainInstTest {
         });
 
 
-        FastProcessor.process(TInt.of().<Int>write(TSym.of("x",55)).plus(TSym.of("x")).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(TSym.of("x")).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
+        FastProcessor.process(TInt.of().<Int>write(TSym.of("x"),TInt.of(55)).plus(TSym.of("x")).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(TSym.of("x")).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
         });
     }
 }
