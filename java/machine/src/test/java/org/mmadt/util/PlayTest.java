@@ -27,7 +27,12 @@ import org.mmadt.language.compiler.Instructions;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.___;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
+
+import java.util.Map;
 
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.is;
@@ -43,6 +48,7 @@ class PlayTest {
     void xxx() {
         System.out.println(TInt.of().<Int>write(TSym.of("x", 43)).<Int>write(plus(TInt.of(is(gt(50)))).mapFrom(mult(10))).state().toString());
         System.out.println(TInt.of().<Int>write(TSym.of("x", 43)).<Int>write(plus(TInt.of(is(gt(50)))).mapFrom(mult(10))).plus(TSym.of("x")).plus(800).toString());
+        System.out.println(TRec.of(Map.of("name","marko","age",29)).as(TRec.of(Map.<String, Obj>of("name", TStr.of(),"age",TInt.of().label("x")))).get("age").toString());
     }
 
     @Test

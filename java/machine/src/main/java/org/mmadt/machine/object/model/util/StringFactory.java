@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.object.model.util;
 
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
@@ -42,13 +41,11 @@ import static org.mmadt.language.compiler.Tokens.ASTERIX;
 import static org.mmadt.language.compiler.Tokens.COLON;
 import static org.mmadt.language.compiler.Tokens.COMMA;
 import static org.mmadt.language.compiler.Tokens.CROSS;
-import static org.mmadt.language.compiler.Tokens.DEFINE;
 import static org.mmadt.language.compiler.Tokens.EMPTY;
 import static org.mmadt.language.compiler.Tokens.LBRACKET;
 import static org.mmadt.language.compiler.Tokens.LCURL;
 import static org.mmadt.language.compiler.Tokens.LPAREN;
 import static org.mmadt.language.compiler.Tokens.MAPSFROM;
-import static org.mmadt.language.compiler.Tokens.MODEL;
 import static org.mmadt.language.compiler.Tokens.QUESTION;
 import static org.mmadt.language.compiler.Tokens.RBRACKET;
 import static org.mmadt.language.compiler.Tokens.RCURL;
@@ -180,39 +177,34 @@ public final class StringFactory {
 
     public static String inst(final Inst inst) {
         final StringBuilder builder = new StringBuilder();
-        if (inst.get() instanceof PAnd)
-            builder.append((PAnd) inst.get());
-        else if (!TInst.some().get().equals(inst.get())) {
+        if (!TInst.some().get().equals(inst.get())) {
+            // boolean head = true;
             for (Inst single : inst.iterable()) {
-                if (!single.isZero()) {
-                    boolean first = true;
-                    // TODO:  this shows the intermediate domain between insts: builder.append(nestedObj(single.domain().access((Inst)null)));
-                    builder.append(LBRACKET);
-                    if (single.opcode().get().equals(DEFINE))
-                        builder.append(DEFINE).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
-                    else if (single.opcode().get().equals(MODEL))
-                        builder.append(MODEL).append(COMMA).append(single.get(TInt.oneInt()).get().toString()).append(COMMA).append(single.get(TInt.twoInt()));
-                    else {
-                        for (Obj object : single.<Iterable<Obj>>get()) {
-                            if (first) {
-                                builder.append(object.get().toString()).append(COMMA);
-                                first = false;
-                            } else
-                                builder.append(object).append(COMMA);
-                        }
-                        builder.deleteCharAt(builder.length() - 1);
+                /*if (head) {
+                    head = false;
+                    if (!single.domain().q().isZero()) {
+                        builder.append(LPAREN).append((Obj)single.domain().access(null)).append(RPAREN); // TODO: do we show domain in toString()?
                     }
-                    builder.append(RBRACKET);
-                    builder.append(quantifier(single.q()));
-                    if (null != single.label())
-                        builder.append(TILDE).append(single.label());
+                }*/
+                builder.append(LBRACKET);
+                boolean opcode = true;
+                for (Obj object : single.<Iterable<Obj>>get()) {
+                    if (opcode) {
+                        builder.append(object.get().toString()).append(COMMA);
+                        opcode = false;
+                    } else
+                        builder.append(object).append(COMMA);
                 }
+                builder.deleteCharAt(builder.length() - 1);
+                builder.append(RBRACKET);
+                builder.append(quantifier(single.q()));
+                if (null != single.label())
+                    builder.append(TILDE).append(single.label());
             }
             if (null != inst.label()) // TODO: this shouldn't happen over the entire stream
                 builder.append(TILDE).append(inst.label());
         } else
             builder.append(inst.symbol());
-        StringFactory.objMetadata(inst,builder);
         return builder.toString();
     }
 

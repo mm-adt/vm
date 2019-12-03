@@ -135,7 +135,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O read(final Obj obj);
 
     public default <O extends Obj> O copy(final Obj obj) {
-        return this.q(obj.q()).access(obj.access()).state(obj.state());
+        return this.access(obj.access()).state(obj.state()); // removed q() copy -- no failing tests .. !?
     }
 
     @Override

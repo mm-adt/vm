@@ -38,7 +38,7 @@ public final class ObjArgument<S extends Obj, E extends Obj> implements Argument
 
     @Override
     public E mapArg(final S object) {
-        return this.constant instanceof TSym ? (E)object.read(this.constant) : this.constant;
+        return this.constant instanceof TSym ? (E) object.read(this.constant) : this.constant;
     }
 
     @Override

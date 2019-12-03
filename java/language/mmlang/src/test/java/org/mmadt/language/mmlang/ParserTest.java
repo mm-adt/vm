@@ -161,7 +161,13 @@ class ParserTest {
             args(ints().plus(3), "(int -> (x <= 3)) => [plus,x]"),
             args(ints().plus(3).plus(10), "int -> (x <= 3) -> (y <= 10) => [plus,x][plus,y]"),
             args(ints().mult(10).mult(10), "(int -> (z <= 10) -> ([plus,int] <= [mult,z])) => [plus,2][plus,3]"),
-            args(TLst.of("x", "y", "a"), "[;] -> (x <= ['x';'y']) -> (y <= ['a']) => [plus,x][plus,y]")
+            args(TLst.of("x", "y", "a"), "[;] -> (x <= ['x';'y']) -> (y <= ['a']) => [plus,x][plus,y]"),
+
+            args(ints(1).<Int>label("x"), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,['name':'a','age':1]][as,person][get,'age']"),
+            args(ints(1).<Int>label("x"), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,[map,[map,['name':'a','age':1]]][as,person]][get,'age']"),
+            args(ints(1).<Int>label("x"), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,['name':'a','age':1]][as,person][get,'age'][is,[eq,x]]"),
+            args(objs(), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,[map,[map,['name':'a','age':1]]][as,person]][get,'age'][is,[gt,x]]"),
+            //args(ints(1).<Int>label("x"), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,person.['name':'a','age':1]][get,'age']"),
     };
 
 

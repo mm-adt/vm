@@ -97,6 +97,9 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
                 }
             }
         }
+        v = v.copy(this);
+        if (null != v.label())  // TODO: this is ghetto---need a general solution
+            v = v.write(TSym.of(v.label(), v));
         return v;
         // return v.isType() ? v.access(TInst.of(List.of(this.access(), GetInst.create(key)))).q(this.q()) : v;
     }
