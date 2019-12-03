@@ -211,7 +211,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (obj instanceof Inst)
             return (O) this.access((Inst) obj);
         else if (this instanceof TSym)
-            return (O) this.read(this);
+            return (O) this.read(obj);
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
 
@@ -282,7 +282,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O count() {
         return this.q().constant() ?
                 this.q().peek().q(q().one()) :
-                this.mapFrom(CountInst.create());
+                (O) CountInst.create().attach(this, this.q().one());
     }
 
     public default <O extends Obj> O is(final Bool bool) {
@@ -334,7 +334,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O is(final Object bool) {
-        return Obj.this.is(ObjectHelper.create(TBool.of(), bool));
+        return Obj.this.is(ObjectHelper.create(TBool.via(this), bool));
     }
 
     public default <O extends Obj> O map(final Inst inst) {
@@ -343,10 +343,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default Int map(final Integer integer) {
         return this.map(TInt.of(integer));
-    }
-
-    public default <O extends Obj> O explain(final Obj obj) {
-        return ExplainInst.<O>create(obj).attach((O) this);
     }
 
     public default <O extends Obj> O explain() {

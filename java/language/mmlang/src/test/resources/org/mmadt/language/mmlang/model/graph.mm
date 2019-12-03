@@ -1,0 +1,11 @@
+obj
+ -> (graph   -> (vertex{*}
+  -> ([is,[get,'id'][eq,int~x]] -> [map,vertex['id':x]]))
+  -> ([count]                   -> [eval,'vertex-count']))
+ -> (element -> (['id':int~y,'label':str]
+  -> ([drop,'id'|'label'] -> [error])))
+ -> (vertex  -> (element['outE':edge{*},'inE':edge{*}]
+  -> ([get,'outE'] -> (edge{*}
+   -> [is,[get,'label'][eq,str~x]] -> [eval,'vertex-idx',y,x]
+   -> [count]                      -> [eval,'vertex-idx-count',y,x]]))))
+ -> (edge    -> element['outV':vertex,'inV':vertex])
