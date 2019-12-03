@@ -27,11 +27,8 @@ import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.TLst;
-import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -46,11 +43,7 @@ import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.language.mmlang.util.ParserArgs.strs;
 import static org.mmadt.machine.object.impl.___.gt;
 import static org.mmadt.machine.object.impl.___.is;
-import static org.mmadt.machine.object.impl.___.minus;
 import static org.mmadt.machine.object.impl.___.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -117,8 +110,8 @@ class ParserTest {
             // args(ints().<Int>label("a").plus(2), "(int => int~a) <= [plus,2]"),
             args(ints().<Int>label("a").plus(2), "int => (int~a <= [plus,2])"),
             // args(ints().<Int>label("a").plus(2), "int => int~a <= [plus,2]"),
-            args(ints().<Int>label("a").plus(2), "int <= int~a <= [plus,2]"),   // TODO: the meaning of this needs to be thought through
-            args(ints().<Int>label("a").plus(2), "int <= (int~a <= [plus,2])"), // TODO: the meaning of this needs to be thought through
+            args(ints().<Int>label("a").plus(2), "int <= int~a <= [plus,2]"),
+            args(ints().<Int>label("a").plus(2), "int <= (int~a <= [plus,2])"),
             // args(ints().<Int>label("a").plus(2), "int => (int => [plus,2]~a)"), // TODO: step labels (like quantifiers) transfer from inst to obj
             args(objs(), "str => 1"),
             args(strs("a"), "str => 'a'"),
@@ -133,41 +126,11 @@ class ParserTest {
             //args(ints(0), "(int <= [plus,1]) => 1"),
             //args(ints(-1), "(int <= [plus,2]) => 1"),
 
-
-            /////////////////// QUANTIFIER TESTING ///////////////////
-            args(ints().<Int>q(1), "int"),
-            args(objs(ints().q(star)), "int{*}"),
-            args(objs(ints().q(qmark)), "int{?}"),
-            args(objs(ints().q(plus)), "int{+}"),
-            args(objs(), "int{0}"),
-            args(objs(TInt.of().q(1, 2)), "int{1,2}"),
-            args(objs(TInt.of().q(2, TInt.of().max())), "int{2,}"),
-            args(objs(TInt.of().q(TInt.of().min(), 2)), "int{,2}"),
-            args(objs(PlusInst.create(11).q(2)), "[plus,11]{2}"),
-            args(objs(plus(11).<Inst>q(2).mult(minus(TInt.of()).q(3, 4))), "[plus,11]{2}[minus,int]{3,4}"), // TODO: type <Int>q()
-            // ParserArgs.of(objs(TInt.of().q(2).mapTo(plus(5).q(3))), "int{2} => [plus,5]{3}"),
-
             /////////////////// MAP FROM <= ///////////////////
             args(objs(11), "9 => (11 <= [plus,2])"),
             args(objs(ints(11).access(plus(2))), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
             args(strs().plus("a"), "str <= [plus,'a']"),
             args(strs().plus("a").plus("bc"), "str <= [plus,'a'] => [plus,'bc']"),
-
-            /////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////
-
-            args(ints().plus(3), "(int -> (x <= 3)) => [plus,x]"),
-            args(ints().plus(3).plus(10), "int -> (x <= 3) -> (y <= 10) => [plus,x][plus,y]"),
-            args(ints().mult(10).mult(10), "(int -> (z <= 10) -> ([plus,int] <= [mult,z])) => [plus,2][plus,3]"),
-            args(TLst.of("x", "y", "a"), "[;] -> (x <= ['x';'y']) -> (y <= ['a']) => [plus,x][plus,y]"),
-
-            args(ints(1).<Int>label("x"), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,['name':'a','age':1]][as,person][get,'age']"),
-            args(ints(1).<Int>label("x"), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,[map,[map,['name':'a','age':1]]][as,person]][get,'age']"),
-            args(ints(1).<Int>label("x"), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,['name':'a','age':1]][as,person][get,'age'][is,[eq,x]]"),
-            args(objs(), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,[map,[map,['name':'a','age':1]]][as,person]][get,'age'][is,[gt,x]]"),
-            //args(ints(1).<Int>label("x"), "(['name':'marko','age':29] -> (person <= ['name':str,'age':int~x])) => [as,person][get,'age'][map,person.['name':'a','age':1]][get,'age']"),
     };
 
 

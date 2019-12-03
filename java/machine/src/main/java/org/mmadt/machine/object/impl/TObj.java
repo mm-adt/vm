@@ -27,7 +27,6 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
-import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -288,7 +287,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public Bool eq(final Obj object) {
-        return  TBool.via(this).set(Objects.equals(this.get(), object.get()));
+        return TBool.via(this).set(Objects.equals(this.get(), object.get()));
 
     }
 
