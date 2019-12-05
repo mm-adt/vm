@@ -36,7 +36,6 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
@@ -45,8 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
-import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -83,24 +80,19 @@ public final class ObjectHelper {
 
     public static Object andValues(final TObj object1, final TObj object2) {
         if (object1 instanceof Rec && object2 instanceof Rec)
-            return (object1.symbol().equals(object2.symbol()) ?
-                    ObjectHelper.mergeMaps(object1.get(), object2.get()) :
-                    PAnd.and(object1.q(one), object2.q(one)));
+            return ObjectHelper.mergeMaps(object1.get(), object2.get());
         else if (object1 instanceof Lst && object2 instanceof Lst)
-            return (object1.symbol().equals(object2.symbol()) ?
-                    ObjectHelper.mergeLists(object1.get(), object2.get()) :
-                    PAnd.and(object1.q(one), object2.q(one)));
+            return ObjectHelper.mergeLists(object1.get(), object2.get());
         else if (object1.constant() && object2.constant()) {
             if (!object1.get().equals(object2.get()))
                 throw new RuntimeException("AND'ing non-equal values: " + object1.get() + "::" + object2.get());
             return object1.get();
-        } else if (object1.getClass().equals(object2.getClass())) {
+        } else {
             if (null == object1.get())
                 return object2.get();
-            else if (null == object2.get())
+            else
                 return object1.get();
         }
-        return PAnd.and(object1.get() instanceof PAnd ? object1.get() : object1.q(one), object2.q(one));
     }
 
     public static String mergeLabels(final Obj object1, final Obj object2) {

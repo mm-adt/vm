@@ -29,14 +29,11 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
-import org.mmadt.machine.object.model.type.Pattern;
 
 import java.util.Map;
 
-import static org.mmadt.language.compiler.Tokens.AMPERSAND;
 import static org.mmadt.language.compiler.Tokens.ASTERIX;
 import static org.mmadt.language.compiler.Tokens.COLON;
 import static org.mmadt.language.compiler.Tokens.COMMA;
@@ -144,24 +141,13 @@ public final class StringFactory {
         return builder.toString();
     }
 
-    public static String conjunction(final PAnd conjunction) {
-        final StringBuilder builder = new StringBuilder();
-
-        for (final Pattern pred : conjunction.predicates()) {
-            builder.append(pred instanceof Obj ? nestedObj((Obj) pred) : pred);
-            builder.append(AMPERSAND);
-        }
-        builder.deleteCharAt(builder.length() - 1);
-        return builder.toString();
-    }
-
     public static String obj(final Obj obj) {
         final StringBuilder builder = new StringBuilder();
         final Object o = obj.get();
         if (null == o)
             builder.append(obj.symbol());
         else {
-            final boolean parentheses = (o instanceof Inst || o instanceof PAnd) && (null != obj.label() || !obj.q().isOne());
+            final boolean parentheses = o instanceof Inst && (null != obj.label() || !obj.q().isOne());
             if (parentheses) builder.append(LPAREN);
             if (o instanceof Inst)
                 builder.append(obj.symbol());
