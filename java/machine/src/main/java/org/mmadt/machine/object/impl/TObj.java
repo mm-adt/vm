@@ -87,7 +87,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     protected Object value;                             // mutually exclusive with pattern (instance data)
     private Q quantifier = null;                        // the 'amount' of this object bundle
     Type types;                                         // an object that abstractly defines this object's forms
-    private boolean typeSet = false;                    // TODO: this is because we have a distinction of 'type not set' (will remove at of point)
     protected Map<Obj, Obj> state;                         // random access variable state associated with the computation
 
     public TObj(final Object value) {
@@ -127,21 +126,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O type(final O type) { // TODO: this might need to clone obj as branches may have different types (variants)
-        if (this == type)
-            throw new RuntimeException("An object is already its own type: " + this + "::" + type);
-        if (null == type)
-            this.typeSet = false;
-        else {
-            if (!type.test(this))
-                throw new RuntimeException("The specified type does not match the object: " + type + "::" + this);
-            this.types = ((TObj) type).types;
-            this.typeSet = true;
-        }
-        return (O) this;
-    }
-
-    @Override
     public Map<Obj, Obj> state() {
         return null == this.state ? new LinkedHashMap<>() : this.state;
     }
@@ -172,16 +156,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 return (O) x.getValue();
         }
         return null;
-    }
-
-    @Override
-    public Obj type() {
-        if (this.typeSet) { // TODO: remove when types are always required
-            final TObj clone = this.clone();
-            clone.value = null;
-            return clone;
-        } else
-            return null;
     }
 
     @Override

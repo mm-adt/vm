@@ -46,7 +46,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.is;
@@ -283,7 +282,7 @@ final class TRecTest implements TestUtilities {
         final Rec<?, ?> aged = TRec.of("age", TInt.of());
         final Rec<?, ?> human = TRec.some().symbol("human");
         final Rec<?, ?> person = named.and(aged).and(human).symbol("person");
-        final Rec<Obj, Obj> marko = TRec.of("name", "marko");
+        Rec<Obj, Obj> marko = TRec.of("name", "marko");
         //
         assertNotNull(named.get());
         assertEquals("named", named.symbol());
@@ -322,32 +321,27 @@ final class TRecTest implements TestUtilities {
         assertFalse(person.test(marko));
         assertTrue(marko.test(marko));
         //
-        marko.type(named);
-        assertEquals(named, marko.type());
-        assertThrows(RuntimeException.class, () -> marko.type(aged));
-        marko.type(human);
-        assertEquals(human, marko.type());
-        assertThrows(RuntimeException.class, () -> marko.type(person));
-        assertThrows(RuntimeException.class, () -> marko.type(marko));
+        marko = marko.symbol(named.symbol());
+        //assertEquals(named, marko.type());
+        //assertThrows(RuntimeException.class, () -> marko.type(aged));
+        marko = marko.symbol(human.symbol());
+        //assertEquals(human, marko.type());
+        //assertThrows(RuntimeException.class, () -> marko.type(person));
+        //assertThrows(RuntimeException.class, () -> marko.type(marko));
         //
         marko.put(TStr.of("age"), TInt.of(29));
-        marko.type(named);
-        marko.type(aged);
-        marko.type(human);
-        marko.type(person);
+        person.test(marko);
+        marko = marko.symbol(person.symbol());
         assertEquals("person", marko.symbol());
-        assertEquals("person", marko.type().symbol());
         //
         Rec<Obj, Obj> marko2 = marko.plus(TRec.of("state", "ca")); // TODO!!
         assertNotEquals(marko, marko2);
         // assertEquals(person, marko2.type());
         assertTrue(person.test(marko2));
         Rec dweller = (Rec) person.and(TRec.of("state", TStr.of("nm").or(TStr.of("az"))));
-        assertThrows(RuntimeException.class, () -> marko.type(dweller));
         // assertEquals(person, marko2.type());
         marko2.put(TStr.of("state"), TStr.of("nm"));
-        marko2.type(dweller);
-        assertEquals(dweller, marko2.type());
+        marko2 = marko2.symbol(dweller.symbol());
         assertNotEquals(marko, marko2);
         //
         /*System.out.println(named);
@@ -372,8 +366,8 @@ final class TRecTest implements TestUtilities {
         marko.put(TStr.of("friend"), kuppitz);
         assertEquals(marko, kuppitz.get(TStr.of("friend")));
         assertEquals(kuppitz, marko.get(TStr.of("friend")));
-        marko.type(person);
-        kuppitz.type(person); // stackoverflow without type breaker
+        person.test(marko);
+        person.test(kuppitz); // stackoverflow without type breaker
         assertTrue(person.test(marko));
         assertTrue(person.test(kuppitz));
     }
@@ -383,18 +377,14 @@ final class TRecTest implements TestUtilities {
         Rec<Obj, Obj> person = TRec.of("name", TStr.of().label("a"), "friend", TRec.some().symbol("person")).symbol("person");
         person.put(TStr.of("friend"), person.label("b").q(qmark));
         assertDoesNotThrow(person::toString); // check for stack overflow
-        final Rec<Obj, Obj> marko = TRec.of("name", "marko");
-        marko.type(person);
-        final Rec<Obj, Obj> kuppitz = TRec.of("name", "kuppitz", "friend", marko);
-        kuppitz.type(person);
+        final Rec<Obj, Obj> marko = TRec.of("name", "marko").symbol(person.symbol());
+        final Rec<Obj, Obj> kuppitz = TRec.of("name", "kuppitz", "friend", marko).symbol(person.symbol());
         assertEquals(marko, kuppitz.get(TStr.of("friend")));
         assertTrue(person.test(marko));
         assertTrue(person.test(kuppitz));
         marko.put(TStr.of("friend"), kuppitz);
         assertEquals(marko, kuppitz.get(TStr.of("friend")));
         assertEquals(kuppitz, marko.get(TStr.of("friend")));
-        assertEquals(person, marko.type());
-        assertEquals(person, kuppitz.type());
         assertTrue(person.test(marko));
         assertTrue(person.test(kuppitz));
         ///

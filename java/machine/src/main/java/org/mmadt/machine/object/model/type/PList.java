@@ -84,7 +84,7 @@ public final class PList<V extends Obj> extends ArrayList<V> implements Pattern 
         for (int i = 0; i < this.size(); i++) {
             final V thisValue = this.get(i);
             final V otherValue = other.get(i);
-            if (null != otherValue.type() && otherValue.type().symbol().equals(thisValue.symbol())) {
+            if (otherValue.named() && otherValue.symbol().equals(thisValue.symbol())) {
                 if (null != thisValue.label())
                     bindings.put(thisValue.label(), otherValue);
             } else if (!thisValue.match(bindings, otherValue)) {

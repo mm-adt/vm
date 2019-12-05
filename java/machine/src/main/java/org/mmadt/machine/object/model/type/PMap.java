@@ -61,7 +61,7 @@ public final class PMap<K extends Obj, V extends Obj> extends LinkedHashMap<K, V
         final Map<K, V> other = object.get();
         for (final Map.Entry<K, V> entry : this.entrySet()) {
             final Obj otherValue = other.getOrDefault(entry.getKey(), (V) TObj.none());
-            if (null != otherValue.type() && otherValue.type().symbol().equals(entry.getValue().symbol()))
+            if (otherValue.named() && otherValue.symbol().equals(entry.getValue().symbol()))
                 continue;
             if (!entry.getValue().test(otherValue))
                 return false;
@@ -76,7 +76,7 @@ public final class PMap<K extends Obj, V extends Obj> extends LinkedHashMap<K, V
         for (final Map.Entry<K, V> entry : this.entrySet()) {
             final V thisValue = entry.getValue();
             final Obj otherValue = other.get(entry.getKey());
-            if (null != otherValue.type() && otherValue.type().symbol().equals(thisValue.symbol())) {
+            if (otherValue.named() && otherValue.symbol().equals(thisValue.symbol())) {
                 if (null != thisValue.label())
                     bindings.put(thisValue.label(), otherValue);
             } else if (!thisValue.match(bindings, otherValue)) {

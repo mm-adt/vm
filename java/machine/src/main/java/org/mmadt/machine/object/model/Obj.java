@@ -102,10 +102,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return o;
     }
 
-    public <O extends Obj> O type(final O type);
-
-    public Obj type();
-
     public default Iterable<? extends Obj> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
