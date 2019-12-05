@@ -75,7 +75,7 @@ public final class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> zero() {
-        return !this.isReference() ? this.set(PList.of()) : this.mapFrom(ZeroInst.create());
+        return !this.isReference() ? this.set(PList.of()) : ZeroInst.<Lst<V>>create().attach(this);
     }
 
     @Override

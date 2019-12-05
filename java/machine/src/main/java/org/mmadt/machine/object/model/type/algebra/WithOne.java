@@ -22,7 +22,9 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 
 /**
  * An {@link org.mmadt.machine.object.model.Obj} with a * unity.
@@ -34,6 +36,6 @@ public interface WithOne<A extends WithOne<A>> extends Obj {
     public A one();
 
     public default boolean isOne() {
-        return this.eq(this.one()).java();
+        return this.isInstance() ? this.eq(this.one()).java() : this.access().<Inst>last().opcode().java().equals(Tokens.ONE); // need a cleaner way to analyze final inst
     }
 }
