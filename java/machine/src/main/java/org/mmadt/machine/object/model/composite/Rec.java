@@ -26,13 +26,10 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.type.PAnd;
 import org.mmadt.machine.object.model.type.PMap;
-import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -74,34 +71,13 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default V get(final K key) {
-        if (null == this.get())
-            return GetInst.<K, V>create(key).attach(this);
-
-        V v = (V) TObj.none();
-        final Object object = this.get();
-        if (object instanceof PMap)
-            v = ((PMap<K, V>) object).getOrDefault(key, (V) TObj.none());
-        else if (object instanceof PAnd) {
-            final List<Pattern> ps = ((PAnd) object).predicates(); // go backwards as recent AND has higher precedence
-            for (int i = ps.size() - 1; i >= 0; i--) {
-                final Pattern p = ps.get(i);
-                if (p instanceof Rec) {
-                    v = ((Rec<K, V>) p).get(key);
-                    if (!TObj.none().equals(v)) break;
-                } /*else if (p instanceof TSym) {
-                    final Rec<K, V> temp = ((TSym<Rec<K, V>>) p).getObject();
-                    if (null != temp) {
-                        v = temp.get(key);
-                        if (!TObj.none().equals(v)) break;
-                    }
-                }*/
-            }
-        }
-        v = v.copy(this);
+        /*if (null == this.get())
+            return GetInst.<K, V>create(key).attach(this);*/ // TODO: decide on what a rec.all pattern match is first
+        final PMap<K, V> object = this.get();
+        V v = object.getOrDefault(key, (V) TObj.none());
         if (null != v.label())  // TODO: this is ghetto---need a general solution
             v = v.write(TSym.of(v.label()), v);
-        return v;
-        // return v.isType() ? v.access(TInst.of(List.of(this.access(), GetInst.create(key)))).q(this.q()) : v;
+        return v.copy(this);
     }
 
     public default V get(final Object index) {
