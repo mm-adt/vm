@@ -41,10 +41,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.impl.___.and;
-import static org.mmadt.machine.object.impl.___.gt;
-import static org.mmadt.machine.object.impl.___.is;
-import static org.mmadt.machine.object.impl.___.lt;
+import static org.mmadt.machine.object.impl.__.and;
+import static org.mmadt.machine.object.impl.__.gt;
+import static org.mmadt.machine.object.impl.__.is;
+import static org.mmadt.machine.object.impl.__.lt;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 

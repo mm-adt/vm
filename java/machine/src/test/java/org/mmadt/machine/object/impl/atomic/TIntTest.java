@@ -34,14 +34,14 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.impl.___.a;
-import static org.mmadt.machine.object.impl.___.gt;
-import static org.mmadt.machine.object.impl.___.gte;
-import static org.mmadt.machine.object.impl.___.is;
-import static org.mmadt.machine.object.impl.___.lt;
-import static org.mmadt.machine.object.impl.___.lte;
-import static org.mmadt.machine.object.impl.___.mult;
-import static org.mmadt.machine.object.impl.___.plus;
+import static org.mmadt.machine.object.impl.__.a;
+import static org.mmadt.machine.object.impl.__.gt;
+import static org.mmadt.machine.object.impl.__.gte;
+import static org.mmadt.machine.object.impl.__.is;
+import static org.mmadt.machine.object.impl.__.lt;
+import static org.mmadt.machine.object.impl.__.lte;
+import static org.mmadt.machine.object.impl.__.mult;
+import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 
 /**

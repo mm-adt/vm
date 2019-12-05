@@ -46,7 +46,7 @@ import org.mmadt.machine.object.model.composite.Inst;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class ___ {
+public class __ {
 
     public static Inst a(final Object object) {
         return AInst.create(object);

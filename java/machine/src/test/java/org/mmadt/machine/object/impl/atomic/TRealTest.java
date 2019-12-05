@@ -34,11 +34,11 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.impl.___.gt;
-import static org.mmadt.machine.object.impl.___.id;
-import static org.mmadt.machine.object.impl.___.mult;
-import static org.mmadt.machine.object.impl.___.plus;
-import static org.mmadt.machine.object.impl.___.zero;
+import static org.mmadt.machine.object.impl.__.gt;
+import static org.mmadt.machine.object.impl.__.id;
+import static org.mmadt.machine.object.impl.__.mult;
+import static org.mmadt.machine.object.impl.__.plus;
+import static org.mmadt.machine.object.impl.__.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

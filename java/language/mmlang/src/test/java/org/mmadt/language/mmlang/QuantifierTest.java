@@ -42,8 +42,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
-import static org.mmadt.machine.object.impl.___.minus;
-import static org.mmadt.machine.object.impl.___.plus;
+import static org.mmadt.machine.object.impl.__.minus;
+import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
 import static org.mmadt.machine.object.model.composite.Q.Tag.star;
 

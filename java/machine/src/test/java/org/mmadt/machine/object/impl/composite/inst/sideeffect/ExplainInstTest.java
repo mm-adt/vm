@@ -29,8 +29,7 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.processor.util.FastProcessor;
 
-import static org.mmadt.machine.object.impl.___.id;
-import static org.mmadt.machine.object.impl.___.plus;
+import static org.mmadt.machine.object.impl.__.id;
 
 
 /**

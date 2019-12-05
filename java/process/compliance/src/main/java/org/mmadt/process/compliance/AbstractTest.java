@@ -22,13 +22,11 @@
 
 package org.mmadt.process.compliance;
 
-import org.mmadt.language.Query;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.util.IteratorUtils;
 
 import java.util.ArrayList;
 import java.util.List;

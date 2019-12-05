@@ -63,6 +63,6 @@
   [branch,
     one  -> ~one,
     zero -> ~zero]
-  [reduce,[;],[plus,lst]]
+  [reduce,[plus,[;]]]
   [put,0,~model]
   [as,inst]

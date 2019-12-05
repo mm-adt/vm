@@ -34,7 +34,6 @@ import org.mmadt.util.IteratorUtils;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.__.start;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,6 +48,6 @@ class StorTest {
         storage.root().put(TStr.of("c"));
         storage.root().put(TStr.of("d"));
         assertEquals(TLst.of("a", "b", "c", "d"), storage.root());
-        assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(FastProcessor.process(TLst.some().mapFrom(start(storage.root()).plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e")).bytecode()))));
+        assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(FastProcessor.process(storage.root().plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e")))));
     }
 }

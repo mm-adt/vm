@@ -25,7 +25,7 @@ package org.mmadt.util;
 import org.junit.jupiter.api.Test;
 import org.mmadt.language.compiler.Instructions;
 import org.mmadt.machine.object.impl.TSym;
-import org.mmadt.machine.object.impl.___;
+import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TRec;
@@ -34,10 +34,10 @@ import org.mmadt.machine.object.model.atomic.Int;
 
 import java.util.Map;
 
-import static org.mmadt.machine.object.impl.___.gt;
-import static org.mmadt.machine.object.impl.___.is;
-import static org.mmadt.machine.object.impl.___.mult;
-import static org.mmadt.machine.object.impl.___.plus;
+import static org.mmadt.machine.object.impl.__.gt;
+import static org.mmadt.machine.object.impl.__.is;
+import static org.mmadt.machine.object.impl.__.mult;
+import static org.mmadt.machine.object.impl.__.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -53,7 +53,7 @@ class PlayTest {
 
     @Test
     void yyy() {
-        System.out.println(Instructions.compile(___.plus(2).mapTo(___.put(0, "minus").mult(___.drop(1)))));
+        System.out.println(Instructions.compile(__.plus(2).mapTo(__.put(0, "minus").mult(__.drop(1)))));
     }
 
 }

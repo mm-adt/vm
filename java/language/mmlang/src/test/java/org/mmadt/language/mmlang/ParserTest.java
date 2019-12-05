@@ -41,9 +41,9 @@ import static org.mmadt.language.mmlang.util.ParserArgs.bools;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.language.mmlang.util.ParserArgs.strs;
-import static org.mmadt.machine.object.impl.___.gt;
-import static org.mmadt.machine.object.impl.___.is;
-import static org.mmadt.machine.object.impl.___.plus;
+import static org.mmadt.machine.object.impl.__.gt;
+import static org.mmadt.machine.object.impl.__.is;
+import static org.mmadt.machine.object.impl.__.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

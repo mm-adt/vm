@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
-import org.mmadt.machine.object.impl.___;
+import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
@@ -38,7 +38,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 public interface WithOr<A extends Obj> {
 
     public default A or(final A obj) {
-        return this instanceof Rec ? (A) ((Obj) this).set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(obj)))) : ObjectHelper.root((Obj) this, obj).set(___.is(___.or(___.a(this), ___.a(obj))));
+        return this instanceof Rec ? (A) ((Obj) this).set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(obj)))) : ObjectHelper.root((Obj) this, obj).set(__.is(__.or(__.a(this), __.a(obj))));
         // (A)((Obj)this).label(null).set(IsInst.create(OrInst.create(this, obj))).q(Q.Tag.one);
     }
 }
