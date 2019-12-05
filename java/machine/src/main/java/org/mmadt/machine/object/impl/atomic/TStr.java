@@ -103,7 +103,7 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Str zero() {
-        return this.q().constant() ? this.set(Tokens.EMPTY) : ZeroInst.<Str>create().attach(this);
+        return !this.isReference() ? this.set(Tokens.EMPTY) : ZeroInst.<Str>create().attach(this);
     }
 
     @Override

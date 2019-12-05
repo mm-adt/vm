@@ -95,9 +95,10 @@ class WithMonoidPlusTest {
     static <A extends WithMonoidPlus<A>> void testReferences(final A monoid) {
         A running = monoid;
         A second = monoid;
-        // assertFalse(monoid.isZero()); // TODO: Why?
+        assertFalse(monoid.isZero());
         for (int i = 0; i < 10; i++) {
-            assertEquals(running.mapTo(ZeroInst.create()), second.zero());
+            assertTrue(monoid.zero().isZero());
+            assertFalse(monoid.isZero());
             assertEquals(running = running.access(running.access().mult(PlusInst.create(monoid))), second = second.plus(monoid));
         }
     }

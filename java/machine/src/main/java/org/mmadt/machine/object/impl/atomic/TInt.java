@@ -89,12 +89,12 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int zero() {
-        return this.q().constant() ? this.set(0).access(null) : ZeroInst.<Int>create().attach(this);
+        return !this.isReference() ? this.set(0) : ZeroInst.<Int>create().attach(this);
     }
 
     @Override
     public Int one() {
-        return this.q().constant() ? this.set(1) : OneInst.<Int>create().attach(this);
+        return !this.isReference() ? this.set(1) : OneInst.<Int>create().attach(this);
     }
 
     @Override
@@ -112,8 +112,8 @@ public final class TInt extends TObj implements Int {
     @Override
     public Int plus(final Int integer) {
         // TODO: MAKE CLEAN AND EASILY ADAPTABLE TO OTHER INSTRUCTIONS
-        if(null != this.read(PlusInst.create(integer)))
-            return (Int)((Function)this.read(PlusInst.create(integer))).apply(this);
+        if (null != this.read(PlusInst.create(integer)))
+            return (Int) ((Function) this.read(PlusInst.create(integer))).apply(this);
         return (this.isInstance() && integer.isInstance()) ?
                 this.set(tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
                 PlusInst.<Int>create(integer).attach(this);

@@ -61,7 +61,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     }
 
     public static Inst none() {
-        return new TInst(null).q(0);
+        return new TInst(TStream.of(List.of())).q(0);
     }
 
     public static Inst of(final String opcode, final Object... args) {

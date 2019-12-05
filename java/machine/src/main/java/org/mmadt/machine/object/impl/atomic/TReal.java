@@ -74,12 +74,12 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real one() {
-        return this.q().constant() ? super.set(1.0f) : OneInst.<Real>create().attach(this); // no need to check -0.0
+        return !this.isReference() ? super.set(1.0f) : OneInst.<Real>create().attach(this); // no need to check -0.0
     }
 
     @Override
     public Real zero() {
-        return this.q().constant() ? super.set(0.0f) : ZeroInst.<Real>create().attach(this); // no need to check -0.0
+        return !this.isReference() ? super.set(0.0f) : ZeroInst.<Real>create().attach(this); // no need to check -0.0
     }
 
     @Override

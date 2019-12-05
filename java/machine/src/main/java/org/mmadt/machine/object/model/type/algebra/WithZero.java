@@ -21,7 +21,9 @@
  */
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 
 /**
  * An {@link org.mmadt.machine.object.model.Obj} with a + unity.
@@ -33,6 +35,8 @@ public interface WithZero<A extends WithZero<A>> extends Obj {
     public A zero();
 
     public default boolean isZero() {
-        return this.eq(this.zero()).java();
+        return this.isInstance() ?
+                this.eq(this.zero()).java() :
+                this.access().<Inst>last().opcode().java().equals(Tokens.ZERO); // need a cleaner way to analyze final inst
     }
 }

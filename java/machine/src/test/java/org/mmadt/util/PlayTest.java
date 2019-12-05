@@ -53,7 +53,7 @@ class PlayTest {
 
     @Test
     void yyy() {
-        System.out.println(Instructions.compile(__.plus(2).mapTo(__.put(0, "minus").mult(__.drop(1)))));
+        // System.out.println(Instructions.compile(__.plus(2).mapTo(__.put(0, "minus").mult(__.drop(1)))));
     }
 
 }

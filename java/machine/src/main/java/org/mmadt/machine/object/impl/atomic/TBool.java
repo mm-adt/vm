@@ -66,12 +66,12 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool one() {
-        return this.q().constant() ? this.set(Boolean.TRUE) : OneInst.<Bool>create().attach(this);
+        return !this.isReference() ? this.set(Boolean.TRUE) : OneInst.<Bool>create().attach(this);
     }
 
     @Override
     public Bool zero() {
-        return this.q().constant() ? this.set(Boolean.FALSE) : ZeroInst.<Bool>create().attach(this);
+        return !this.isReference() ? this.set(Boolean.FALSE) : ZeroInst.<Bool>create().attach(this);
     }
 
     @Override

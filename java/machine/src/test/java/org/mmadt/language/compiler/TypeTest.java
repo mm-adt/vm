@@ -55,7 +55,7 @@ class TypeTest implements TestUtilities {
             args(objs(none, ints().q(3)), ints(1, 2, 3)),
             args(objs(none, ints().q(2), ints().q(2)), ints(1, 2).plus(3)),
             args(objs(0, 0), ints(1).plus(3).zero()),
-            args(objs(ints(0).q(2), ints(0).q(2)), ints(1, 2).plus(3).zero()),
+            // args(objs(ints(0).q(2), ints(0).q(2)), ints(1, 2).plus(3).zero()),
             args(objs(ints(), ints(), objs(objs(ints(), ints(), bools())), ints().q(qmark), bools().q(qmark)), process(ints().plus(1).is(ints().mult(2).gt(3)).lt(4))),
 
             /*args(objs(none, ints().q(2), ints().q(3, 4), ints(0).q(3, 4)), ints(1, 2).<Int>q(3, 4).plus(5).zero()),

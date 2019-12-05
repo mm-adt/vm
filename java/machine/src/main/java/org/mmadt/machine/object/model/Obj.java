@@ -42,7 +42,6 @@ import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
-import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
@@ -58,7 +57,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
 
@@ -217,10 +215,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (obj instanceof Inst) {
             Obj o = this;
             for (final Inst inst : ((Inst) obj).iterable()) {
-                if (inst instanceof BranchInstruction) // TODO: need to unify branches and chains
-                    o = ((TInst) inst).attach(o);
-                else
-                    o = ((Function<Obj, O>) inst).apply(o);
+                o = ((TInst) inst).attach(o);
             }
             return (O) o;
         } else if (obj instanceof TSym) {
@@ -229,7 +224,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             return this.mapTo(obj.access()).mapTo(obj.access(null));
         else if (this.isInstance())
             return this.as((O) obj);
-        else if (obj.isInstance())
+        else if (this.isType() && obj.isInstance())
             return obj.as((O) this);
         else
             return AsInst.<O>create(obj).attach((O) this);
