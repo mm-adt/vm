@@ -84,6 +84,8 @@ public final class OperatorHelper {
                 return lhs.mapFrom(rhs);
             //case (Tokens.STEP):
             //    return lhs.write(lhs, rhs).copy(rhs);
+            case Tokens.STEP:
+                return (A) TRec.of(lhs, rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

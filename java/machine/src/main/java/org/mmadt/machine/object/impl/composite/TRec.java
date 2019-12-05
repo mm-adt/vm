@@ -36,6 +36,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -63,7 +64,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
     }
 
     public static <K extends Obj, V extends Obj> Rec<K, V> of(final Object... objects) {
-        if (objects.length > 0 && objects[0] instanceof Rec) {
+        if (objects.length > 0 && Stream.of(objects).allMatch(x -> x instanceof Rec)) {
             return ObjectHelper.make(TRec::new, objects);
         } else if (objects.length == 1) {
             final PMap<K, V> map = new PMap<>();

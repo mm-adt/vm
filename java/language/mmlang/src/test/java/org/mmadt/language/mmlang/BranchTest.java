@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;
@@ -46,9 +47,10 @@ import static org.mmadt.language.mmlang.util.ParserArgs.strs;
 class BranchTest {
 
     private final static ParserArgs[] BRANCHING = new ParserArgs[]{
-            /////////////////// MAP TO => ///////////////////
+            args(TRec.of(1, "b"), "1->'b'"),
+            args(TRec.of(TRec.of(1, "b"), 2), "1->'b'->2"),
             args(objs(1, 1), "1 => [branch,[id],[id]]"),
-            // args(objs(1, 1), "1 => [branch,1->[id],1->[id]]"),
+            args(objs(1, 1), "1 => [branch,1->[id],int->[id]]"),
             args(objs(1), "1 => [branch,1->[id],2->[id]]"),
             args(objs(3), "1 => [branch,1->[plus,2],3->[id]]"),
             args(objs(), "2 => [branch,1->[plus,2],3->[id]]"),

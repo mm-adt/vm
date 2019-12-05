@@ -118,9 +118,7 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Binary() {
-        return FirstOf(
-                Sequence(STATE, Singles(), swap(), this.push(TRec.of(this.pop(), this.pop()))),
-                Sequence(BinaryOperator(), Singles(), swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop()))))); // always left associative
+        return Sequence(BinaryOperator(), Singles(), swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop())))); // always left associative
     }
 
     Rule Grouping() {
@@ -261,7 +259,7 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(TestNot(STATE), FirstOf(MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(FirstOf(STATE, MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressNode
