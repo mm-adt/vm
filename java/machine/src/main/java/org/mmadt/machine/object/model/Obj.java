@@ -205,7 +205,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (obj instanceof Inst)
             return (O) this.access((Inst) obj);
         else if (this instanceof TSym)
-            return (O) this.read(obj);
+            return this.mapFrom(this.read(obj));                 // loads the variable obj from obj state and then maps from it (variable-based pattern match)
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
 
@@ -219,7 +219,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             }
             return (O) o;
         } else if (obj instanceof TSym) {
-            return this.write(TSym.of(obj.symbol()), this);
+            return this.write(obj, this).mapTo(this.read(obj));  // stores the current obj into the obj state (variable-based history)
         } else if (!obj.access().isOne())
             return this.mapTo(obj.access()).mapTo(obj.access(null));
         else if (this.isInstance())
