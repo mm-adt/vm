@@ -23,9 +23,9 @@
 package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
@@ -36,7 +36,7 @@ import org.mmadt.util.MultiIterator;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -69,10 +69,31 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
             else if ((choose && branch instanceof ChooseInst) || (!choose && branch instanceof BranchInst))
                 branchMap.putAll(((BranchInstruction<?, ?>) branch).<Rec<Obj, Obj>>args().get(0).get());
             else if (branch instanceof Inst)
-                branchMap.put(IdInst.create().label("" + new Random().nextInt()), ObjectHelper.from(branch)); // TODO: is it bad to use ID keys.
+                branchMap.put(KeyToken.mint(), ObjectHelper.from(branch));
             else
                 branchMap.put(ObjectHelper.from(branch), ObjectHelper.from(branch));
         }
         return branchMap;
+    }
+
+    // TODO: this is not a smart idea -- but it will work for now
+    public static class KeyToken<S extends Obj> extends TInst<S, S> implements FilterInstruction<S> {
+
+        private KeyToken() {
+            super(UUID.randomUUID());
+        }
+
+        @Override
+        public String toString() {
+            return "";
+        }
+
+        public S apply(final S obj) {
+            return obj;
+        }
+
+        static KeyToken mint() {
+            return new KeyToken();
+        }
     }
 }
