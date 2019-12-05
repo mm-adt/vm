@@ -22,7 +22,7 @@
 
 package org.mmadt.language.compiler;
 
-import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
@@ -40,6 +40,7 @@ import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithDiv;
 import org.mmadt.machine.object.model.type.algebra.WithMinus;
 import org.mmadt.machine.object.model.type.algebra.WithMult;
+import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
 
@@ -66,7 +67,7 @@ public final class OperatorHelper {
             case (Tokens.AMPERSAND):
                 return (A) ((WithAnd) lhs).and(rhs);
             case (Tokens.BAR):
-                return (A) ChooseInst.create(lhs, rhs); // why lhs.or(rhs) doesn't work for ~label?
+                return (A) ((WithOr) lhs).or(rhs);
             case (Tokens.RANGLE):
                 return (A) ((WithOrder) lhs).gt(rhs);
             case (Tokens.LANGLE):
@@ -81,8 +82,8 @@ public final class OperatorHelper {
                 return lhs.mapTo(rhs);
             case (Tokens.MAPSFROM):
                 return lhs.mapFrom(rhs);
-            case (Tokens.STEP):
-                return lhs.write(lhs, rhs).copy(rhs);
+            //case (Tokens.STEP):
+            //    return lhs.write(lhs, rhs).copy(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

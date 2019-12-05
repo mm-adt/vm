@@ -65,12 +65,6 @@ class ParserTest {
             args(ints(30), "11 => [plus,4][mult,2] => int => [id]"),
             args(ints(30), "11 => ([plus,4] * [mult,2]) => int => [id]"),   // TODO: should we have binary operator precedence with => and <= being lowest?
             args(plus(11), "[plus,11]"),
-            args(objs(1, 2, 3), "1 => ([id] + [plus,1] + [plus,2])"),
-            args(objs(-1, -2, -3), "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
-            args(objs(ints(1).label("a"), TInt.of(2).label("a"), TInt.of(3).label("a")), "1 => ([id] + [plus,1] + [plus,2]) => int~a"),
-            args(objs(ints(10).label("a")), "10 => (int~a | str~b | real~c)"),
-            // ParserArgs.of(objs(TInt.of(20).label("a")), "10 => (int~a | str~b | real~c) => [plus,[id]]"),
-            args(objs(strs("marko rodriguez").label("b")), "'marko' => (int~a | str~b | real~c) => [is,[a,str]][plus,' '][plus,'rodriguez']"),
             args(ints(40), "40 => int[is[gt,20]]"),
             args(objs(), "40 => [mult,2] => int[is[gt,100]]"),
             args(ints(is(gt(100))), "int => int[is[gt,100]]"),

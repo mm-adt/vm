@@ -29,7 +29,6 @@ import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.MultiIterator;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -38,29 +37,20 @@ import java.util.function.Function;
  */
 public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, Function<S, E> {
 
-    public Map<Inst, List<Inst>> getBranches();
+    public Map<Obj, Obj> getBranches();
 
     @Override
     default E apply(final S obj) {
-        boolean found = false;
         final MultiIterator<E> itty = new MultiIterator<>();
-        for (final Map.Entry<Inst, List<Inst>> entry : this.getBranches().entrySet()) {
+        for (final Map.Entry<Obj, Obj> entry : this.getBranches().entrySet()) {
             if (FastProcessor.process(obj.mapTo(entry.getKey())).hasNext()) {
-                found = true;
-                for (final Inst branch : entry.getValue()) {
-                    itty.addIterator(FastProcessor.process(obj.mapTo(branch))); // TODO: make sure this is global
-                }
-            }
-        }
-        if (!found && this.getBranches().containsKey(null)) {
-            for (final Inst defaultBranch : this.getBranches().get(null)) {
-                itty.addIterator(FastProcessor.process(obj.mapTo(defaultBranch)));
+                itty.addIterator(FastProcessor.process(obj.mapTo(entry.getValue()))); // TODO: make sure this is global
             }
         }
         return TObj.none().set(itty);
     } // this should all be done through subscription semantics and then its just a append round-robin
 
     public default E quantifyRange(final S domain) {
-        return domain.q(domain.q().mult(getBranches().values().stream().flatMap(List::stream).map(Obj::q).reduce((Q) domain.q().zero(), Q::plus)));
+        return domain.q(domain.q().mult(getBranches().values().stream().map(Obj::q).reduce((Q) domain.q().zero(), Q::plus)));
     }
 }

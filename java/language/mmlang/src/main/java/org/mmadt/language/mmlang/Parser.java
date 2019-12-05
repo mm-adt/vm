@@ -34,6 +34,8 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
+import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
@@ -116,13 +118,14 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Binary() {
-        return Sequence(BinaryOperator(), Singles(), swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop())))); // always left associative
+        return FirstOf(
+                Sequence(STATE, Singles(), swap(), this.push(TRec.of(this.pop(), this.pop()))),
+                Sequence(BinaryOperator(), Singles(), swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop()))))); // always left associative
     }
 
     Rule Grouping() {
         return Sequence(LPAREN, Expression(), RPAREN);
     }
-
 
     Rule Obj() {
         return Sequence(
@@ -130,9 +133,9 @@ public class Parser extends BaseParser<Object> {
                         Real(),
                         Int(),
                         Str(),
-                        Rec(),
                         Inst(),
                         Lst(),
+                        Rec(),
                         Symbol()),                                                                       // obj
                 Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),         // {quantifier}
                 Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));        // ~label
@@ -201,14 +204,47 @@ public class Parser extends BaseParser<Object> {
                 Sequence(this.push(IdInst.create()), OneOrMore(Single_Inst(), swap(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
     }
 
+    Rule Branch() {
+        return Sequence(Singles(), STATE, Singles(), swap(), this.push(TRec.of(this.pop(), this.pop())));
+    }
+
     @SuppressSubnodes
-    Rule Single_Inst() {
+    Rule Branch_Inst() {
+        final Var<String> operator = new Var<>();
+        return Sequence(
+                LBRACKET,
+                FirstOf(Branch(), Singles()),
+                FirstOf(PLUS, OR), operator.set(match().trim()),
+                FirstOf(Branch(), Singles()),
+                this.swap(), this.push(operator.getAndClear().equals(Tokens.BAR) ?
+                        ChooseInst.create(this.pop(), this.pop()) :
+                        BranchInst.create(this.pop(), this.pop())),
+                ZeroOrMore(
+                        FirstOf(PLUS, OR), operator.set(match().trim()),
+                        FirstOf(Branch(), Singles()),
+                        this.swap(), this.push(operator.getAndClear().equals(Tokens.BAR) ?
+                                castToInst(this.pop()).or(ChooseInst.create(this.pop())) :
+                                castToInst(this.pop()).plus(BranchInst.create(this.pop())))),
+                RBRACKET);
+    }
+
+    @SuppressSubnodes
+    Rule Opcode_Inst() {
         final Var<String> opcode = new Var<>();
         final Var<PList<Obj>> args = new Var<>(new PList<>());
         return Sequence(
                 LBRACKET,
                 Sequence(Word(), opcode.set(match().trim()), ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop())))),    // arguments
-                RBRACKET, this.push(Instructions.compile(TInst.of(opcode.get(), args.get()))),                                                  // compiler grabs the instruction type
+                RBRACKET,
+                this.push(Instructions.compile(TInst.of(opcode.get(), args.get()))));
+    }
+
+    @SuppressSubnodes
+    Rule Single_Inst() {
+        return Sequence(
+                FirstOf(
+                        Opcode_Inst(),
+                        Branch_Inst()),// compiler grabs the instruction type
                 Optional(Quantifier(), swap(), this.push(castToInst(this.pop()).q(this.pop()))));
     }
 
@@ -224,7 +260,7 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(FirstOf(STATE, MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(TestNot(STATE), FirstOf(MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressNode

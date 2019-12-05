@@ -45,7 +45,7 @@ import static org.mmadt.language.mmlang.util.ParserArgs.objs;
  */
 class StateTest {
 
-    private final static ParserArgs[] PARSING = new ParserArgs[]{
+    /*private final static ParserArgs[] PARSING = new ParserArgs[]{
             args(ints().plus(3), "(int -> (x -> 3)) => [plus,x]"),
             args(ints(64).<Int>label("z"), "32 => (int~z -> (x -> 3)) => [plus,z]"),
             // args(ints(64).<Int>label("z"), "32 => int~z -> (x <= 3) => int -> (path <= [z;z]) => [map,path]"),
@@ -67,6 +67,6 @@ class StateTest {
     Stream<DynamicTest> testState() {
         final ScriptEngine engine = new mmLangScriptEngine();
         return Stream.of(PARSING).map(query -> DynamicTest.dynamicTest(query.input, () -> assertEquals(query.expected, IteratorUtils.list((Iterator<Obj>) engine.eval(query.input)))));
-    }
+    }*/
 
 }
