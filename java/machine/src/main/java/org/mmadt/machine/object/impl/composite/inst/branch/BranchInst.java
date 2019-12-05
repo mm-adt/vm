@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.impl.composite.inst.branch;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
@@ -36,20 +35,11 @@ import java.util.Map;
  */
 public final class BranchInst<S extends Obj, E extends Obj> extends TInst<Obj, Obj> implements BranchInstruction<S, E> {
 
-    private Map<Obj, Obj> branches;
-
-    private BranchInst(final Map<Obj, Obj> branches, final Object... args) {
-        super(PList.of(args));
-        this.<PList<Obj>>get().add(0, TStr.of(Tokens.BRANCH));
-        this.branches = branches;
-    }
-
-    @Override
-    public Map<Obj, Obj> getBranches() {
-        return this.branches;
+    private BranchInst(final Map<Obj, Obj> branches) {
+        super(PList.of(Tokens.BRANCH, branches));
     }
 
     public static <S extends Obj, E extends Obj> BranchInst<S, E> create(final Object... branches) {
-        return new BranchInst<>(BranchInstruction.buildBranchMap(false, branches), branches);
+        return new BranchInst<>(BranchInstruction.buildBranchMap(false, branches));
     }
 }

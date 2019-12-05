@@ -40,6 +40,8 @@ import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.language.mmlang.util.ParserArgs.strs;
+import static org.mmadt.machine.object.impl.__.branch;
+import static org.mmadt.machine.object.impl.__.choose;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -56,6 +58,10 @@ class BranchTest {
             args(objs(), "2 => [branch,1->[plus,2],3->[id]]"),
 
 
+            args(branch(1, 2, 3), "[ 1 + 2 + 3 ]"),
+            args(branch(1, 2, 3), "[ + 1 + 2 + 3 ]"),
+            args(choose(1, 2, 3), "[ 1 | 2 | 3 ]"),
+            args(choose(1, 2, 3), "[ | 1 | 2 | 3 ]"),
             args(objs(3), "1 => [ 1->[plus,2] + 3->[plus,4] ]"),
             args(objs(3), "1 => [ + 1->[plus,2] + 3->[plus,4] ]"),
             args(objs(3), "1 => [ 1->[plus,2] | 3->[plus,4] ]"),

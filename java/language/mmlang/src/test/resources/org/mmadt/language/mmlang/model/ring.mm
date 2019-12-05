@@ -30,25 +30,25 @@
  *
  */
 [=m_monoid,
- | one          -> [one]
- | [mult,one]   -> [id]]
+ [ one          -> [one]
+ | [mult,one]   -> [id]]]
 
 [=p_group,
- | zero            -> [zero]
+ [ zero            -> [zero]
  | [plus,zero]     -> [id]
  | [minus,zero]    -> [id]
  | x + y           -> y + x
  | --x             -> x
- | [plus,[neg]]    -> zero]
+ | [plus,[neg]]    -> zero]]
 
 [=mp_ring,
- | m_monoid
+ [ m_monoid
  | p_group
  | -x * -y           ->  x *  y
  | -(x + y)          -> -x + -y
  | x * (y + z)       -> (x * y) + (x * z)
  | (x + y) * (y + z) -> (x * y) + (x * z) +
-                        (y * y) + (y * z)]
+                        (y * y) + (y * z)]]
 
 /*
  * Provide a specific carrier set and get back a custom [=model] instruction.

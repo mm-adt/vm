@@ -22,6 +22,8 @@
 
 package org.mmadt.machine.object.impl;
 
+import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
+import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
@@ -50,6 +52,14 @@ public class __ {
 
     public static Inst a(final Object object) {
         return AInst.create(object);
+    }
+
+    public static Inst branch(final Object... branches) {
+        return BranchInst.create(branches);
+    }
+
+    public static Inst choose(final Object... choices) {
+        return ChooseInst.create(choices);
     }
 
     public static Inst drop(final Object index) {

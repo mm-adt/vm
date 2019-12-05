@@ -121,8 +121,8 @@ final class TInstTest {
         final Inst c = a.plus(b);
         assertEquals(c.q().one(), c.q());
         assertEquals(c, c.peek());
-        assertEquals(a, c.get(TInt.oneInt()));
-        assertEquals(b, c.get(TInt.twoInt()));
+        //assertEquals(a, c.get(TInt.oneInt()));
+        //assertEquals(b, c.get(TInt.twoInt()));
         final Inst d = TInst.of("count");
         final Inst e = a.plus(b).plus(d);
         //       assertEquals(Q.qone, e.quantifier());

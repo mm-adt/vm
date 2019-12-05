@@ -23,6 +23,7 @@
 package org.mmadt.process.mmproc;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.util.EmptyIterator;
 import org.mmadt.util.MultiIterator;
@@ -41,7 +42,7 @@ final class BranchStep<S extends Obj, E extends Obj, M> extends AbstractStep<S, 
 
     BranchStep(final Step<?, S> previousStep, final BranchInstruction<S, E> branchFunction) {
         super(previousStep, branchFunction);
-        this.branches = branchFunction.getBranches();
+        this.branches = branchFunction.<Rec>args().get(0).get();
         this.branches.remove(null);
     }
 
