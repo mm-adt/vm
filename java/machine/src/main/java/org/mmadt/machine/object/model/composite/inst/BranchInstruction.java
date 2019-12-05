@@ -23,12 +23,18 @@
 package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
+import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Q;
+import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.MultiIterator;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -45,6 +51,8 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
         for (final Map.Entry<Obj, Obj> entry : this.getBranches().entrySet()) {
             if (FastProcessor.process(obj.mapTo(entry.getKey())).hasNext()) {
                 itty.addIterator(FastProcessor.process(obj.mapTo(entry.getValue()))); // TODO: make sure this is global
+                if (this instanceof ChooseInst)
+                    break;
             }
         }
         return TObj.none().set(itty);
@@ -52,5 +60,23 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
 
     public default E quantifyRange(final S domain) {
         return domain.q(domain.q().mult(getBranches().values().stream().map(Obj::q).reduce((Q) domain.q().zero(), Q::plus)));
+    }
+
+    public static Map<Obj, Obj> buildBranchMap(final boolean choose, final Object... branches) {
+        final Map<Obj, Obj> branchMap = new LinkedHashMap<>();
+        int counter = 0;
+        for (final Object branch : branches) {
+            if (branch instanceof Rec) {
+                for (final Map.Entry<Obj, Obj> entry : ((Rec) branch).<Map<Obj, Obj>>get().entrySet()) {
+                    branchMap.put(entry.getKey(), entry.getValue());
+                }
+            } else if ((choose && branch instanceof ChooseInst) || (!choose && branch instanceof BranchInst))
+                branchMap.putAll(((BranchInstruction<?, ?>) branch).getBranches());
+            else if (branch instanceof Inst)
+                branchMap.put(IdInst.create().label("" + counter++), ObjectHelper.from(branch)); // TODO: is it bad to use ID keys.
+            else
+                branchMap.put(ObjectHelper.from(branch), ObjectHelper.from(branch));
+        }
+        return branchMap;
     }
 }

@@ -25,14 +25,10 @@ package org.mmadt.machine.object.impl.composite.inst.branch;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
 import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.util.ObjectHelper;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -54,15 +50,6 @@ public final class ChooseInst<S extends Obj, E extends Obj> extends TInst<Obj, O
     }
 
     public static <S extends Obj, E extends Obj> ChooseInst<S, E> create(final Object... branches) {
-        final Map<Obj, Obj> branchMap = new LinkedHashMap<>();
-        for (int i = 0; i < branches.length; i++) {
-            if (branches[i] instanceof Rec) {
-                for (final Map.Entry<Obj, Obj> entry : ((Rec) branches[i]).<Map<Obj, Obj>>get().entrySet()) {
-                    branchMap.put(entry.getKey(), entry.getValue());
-                }
-            } else
-                branchMap.put(IdInst.create().label("" + i), ObjectHelper.from(branches[i])); // TODO: Map might not be the way, but a list of branches
-        }
-        return new ChooseInst<>(branchMap, branches);
+        return new ChooseInst<>(BranchInstruction.buildBranchMap(true, branches), branches);
     }
 }

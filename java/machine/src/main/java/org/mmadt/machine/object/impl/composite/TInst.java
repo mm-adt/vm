@@ -29,7 +29,6 @@ import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
-import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -178,17 +177,16 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     }
 
     private Inst operator(final String opcode, final Obj obj) {
-        final Inst inst = obj instanceof Inst ? (Inst) obj : MapInst.create(obj); // if the object isn't an instruction, make it one
         final Inst last = this.last();
         if (last.opcode().java().equals(opcode)) {
             final PList<Obj> list = new PList<>(last.java());
-            list.add(inst);
+            list.add(obj);
             list.remove(0);
             return Instructions.compile(TInst.of(opcode, list.toArray(new Object[]{})));
         } else
-            return this.get().equals(inst.get()) ?
-                    this.q(this.q().plus(inst.q())) :
-                    Instructions.compile(TInst.of(opcode, this, inst)); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
+            return this.get().equals(obj.get()) ?
+                    this.q(this.q().plus(obj.q())) :
+                    Instructions.compile(TInst.of(opcode, this, obj)); // e.g. [and,prev,curr] [or,prev,curr] [branch,prev,curr]
     }
 
     @Override

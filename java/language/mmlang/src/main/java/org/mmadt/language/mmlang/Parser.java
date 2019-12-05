@@ -213,6 +213,7 @@ public class Parser extends BaseParser<Object> {
         final Var<String> operator = new Var<>();
         return Sequence(
                 LBRACKET,
+                Optional(FirstOf(PLUS, OR)), // for a clean consistent look on multi-line expressions
                 FirstOf(Branch(), Singles()),
                 FirstOf(PLUS, OR), operator.set(match().trim()),
                 FirstOf(Branch(), Singles()),
@@ -223,8 +224,8 @@ public class Parser extends BaseParser<Object> {
                         FirstOf(PLUS, OR), operator.set(match().trim()),
                         FirstOf(Branch(), Singles()),
                         this.swap(), this.push(operator.getAndClear().equals(Tokens.BAR) ?
-                                castToInst(this.pop()).or(ChooseInst.create(this.pop())) :
-                                castToInst(this.pop()).plus(BranchInst.create(this.pop())))),
+                                ChooseInst.create(this.pop(), this.pop()) :
+                                BranchInst.create(this.pop(), this.pop()))),
                 RBRACKET);
     }
 
@@ -307,5 +308,9 @@ public class Parser extends BaseParser<Object> {
 
     Inst castToInst(final Object object) {
         return object instanceof Inst ? (Inst) object : StartInst.create(object); // start or map?
+    }
+
+    Inst inst(final Object object) {
+        return (Inst) object;
     }
 }

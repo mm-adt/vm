@@ -27,6 +27,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -42,7 +43,7 @@ import static org.mmadt.language.mmlang.util.ParserArgs.strs;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class BranchTest {
+class BranchTest {
 
     private final static ParserArgs[] BRANCHING = new ParserArgs[]{
             /////////////////// MAP TO => ///////////////////
@@ -54,11 +55,16 @@ public class BranchTest {
 
 
             args(objs(3), "1 => [ 1->[plus,2] + 3->[plus,4] ]"),
+            args(objs(3), "1 => [ + 1->[plus,2] + 3->[plus,4] ]"),
             args(objs(3), "1 => [ 1->[plus,2] | 3->[plus,4] ]"),
+            args(objs(3), "1 => [ | 1->[plus,2] | 3->[plus,4] ]"),
 
             args(objs(ints(10).label("a")), "10 => [ int~a | str~b | real~c ]"),
+            args(objs(11, 12, 13), "10 => [ int~a->[plus,1] + int~b->[plus,2] + int~c->[plus,3] ]"),
+            args(objs(11, 12, 13), "10 => [branch,[plus,1],[plus,2],[plus,3]]"),
             // args(objs(11, "ba", 3.0f), "(1,'b',2.0) => [ int~a->[plus,10] | str~b->[plus,'a'] | real~c->[plus,1.0] ]"),
-            args(objs(ints(20).label("a")), "10 => [ int~a | str~b | real~c ] => [plus,[id]]"),
+            args(ints(20).<Int>label("a"), "10 => [ int~a | str~b | real~c ] => [plus,[id]]"),
+            args(ints(11), "10 => [ int~a->[plus,1] | int~b->[plus,2] | int~c->[plus,3] ]"),
             args(objs(strs("marko rodriguez").label("b")), "'marko' => [ int~a | str~b | real~c ] => [is,[a,str]][plus,' '][plus,'rodriguez']"),
 
             args(objs(1, 2, 3), "1 => ([id] + [plus,1] + [plus,2])"),
