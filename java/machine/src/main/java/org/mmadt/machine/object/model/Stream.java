@@ -63,8 +63,6 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
         return true;
     }
 
-    public void drop(final A object);
-
     ///////////////////
 
     public static boolean testStream(final Obj tester, final Obj testee) {

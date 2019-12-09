@@ -76,7 +76,8 @@ public final class Tokens {
     public static final String SPACE = " ";
     public static final String MAPSFROM = "<=";
     public static final String MAPSTO = "=>";
-    public static final String STEP = "->";
+    public static final String RPACK = "->";
+    public static final String LPACK = "<-";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
 

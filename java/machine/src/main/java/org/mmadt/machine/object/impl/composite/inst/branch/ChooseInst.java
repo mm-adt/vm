@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.impl.composite.inst.branch;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
@@ -29,15 +30,13 @@ import org.mmadt.machine.object.model.type.PList;
 
 import java.util.Map;
 
-import static org.mmadt.language.compiler.Tokens.CHOOSE;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class ChooseInst<S extends Obj, E extends Obj> extends TInst<Obj, Obj> implements BranchInstruction<S, E> {
 
     private ChooseInst(final Map<Obj, Obj> branches) {
-        super(PList.of(CHOOSE, branches));
+        super(PList.of(Tokens.CHOOSE, branches));
     }
 
     public static <S extends Obj, E extends Obj> ChooseInst<S, E> create(final Object... branches) {

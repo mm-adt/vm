@@ -86,7 +86,8 @@ public class Parser extends BaseParser<Object> {
     final Rule GTE = Terminal(Tokens.REQUALS);
     final Rule LT = Terminal(Tokens.LANGLE);
     final Rule GT = Terminal(Tokens.RANGLE);
-    final Rule STATE = Terminal(Tokens.STEP);
+    final Rule RPACK = Terminal(Tokens.RPACK);
+    final Rule LPACK = Terminal(Tokens.LPACK);
 
     /// built-int type symbols
     final Rule INT = Terminal(Tokens.INT);
@@ -203,7 +204,7 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Branch() {
-        return Sequence(Singles(), STATE, Singles(), swap(), this.push(TRec.of(this.pop(), this.pop())));
+        return Sequence(Singles(), RPACK, Singles(), swap(), this.push(TRec.of(this.pop(), this.pop())));
     }
 
     @SuppressSubnodes
@@ -254,12 +255,12 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule UnaryOperator() {
-        return Sequence(TestNot(STATE), FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(TestNot(LPACK, RPACK), FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(FirstOf(STATE, MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(FirstOf(LPACK, RPACK, MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
     @SuppressNode

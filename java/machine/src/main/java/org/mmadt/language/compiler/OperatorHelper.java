@@ -82,9 +82,9 @@ public final class OperatorHelper {
                 return lhs.mapTo(rhs);
             case (Tokens.MAPSFROM):
                 return lhs.mapFrom(rhs);
-            //case (Tokens.STEP):
-            //    return lhs.write(lhs, rhs).copy(rhs);
-            case Tokens.STEP:
+            case (Tokens.LPACK):
+                return (A) TRec.of(rhs,lhs);
+            case Tokens.RPACK:
                 return (A) TRec.of(lhs, rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);

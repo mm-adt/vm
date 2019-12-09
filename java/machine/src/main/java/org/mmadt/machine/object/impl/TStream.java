@@ -66,12 +66,6 @@ public final class TStream<A extends Obj> implements Stream<A> {
         }
     }
 
-
-    @Override
-    public void drop(final A object) {
-        this.objects.remove(object);
-    }
-
     @Override
     public Iterator<A> iterator() {
         return this.objects.iterator();
