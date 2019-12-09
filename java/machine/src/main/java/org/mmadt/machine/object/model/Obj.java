@@ -55,7 +55,6 @@ import org.mmadt.processor.util.FastProcessor;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
@@ -114,19 +113,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O symbol(final String symbol);
 
-    public default <O extends Obj> O state(final Map<Obj, Obj> state) {
-        Obj obj = this;
-        for (final Map.Entry<Obj, Obj> x : state.entrySet()) {
-            obj = obj.write(x.getKey(), x.getValue());
-        }
-        return (O) obj;
-    }
 
-    public Map<Obj, Obj> state();
+    public State state();
 
-    public <O extends Obj> O write(final Obj key, final Obj value);
-
-    public <O extends Obj> O read(final Obj value);
+    public <O extends Obj> O state(final State state);
 
     public default <O extends Obj> O copy(final Obj obj) {
         return this.access(obj.access()).state(obj.state()); // removed q() copy -- no failing tests .. !?
@@ -205,7 +195,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (obj instanceof Inst)
             return (O) this.access((Inst) obj);
         else if (this instanceof TSym)
-            return this.mapFrom(this.read(obj));                 // loads the variable obj from obj state and then maps from it (variable-based pattern match)
+            return this.mapFrom(this.state().read(obj));                 // loads the variable obj from obj state and then maps from it (variable-based pattern match)
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
 
@@ -219,7 +209,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             }
             return (O) o;
         } else if (obj instanceof TSym) {
-            return this.write(obj, this).mapTo(this.read(obj));  // stores the current obj into the obj state (variable-based history)
+            return this.state().write(this.label(obj.symbol())).mapTo(this.state().read(obj));  // stores the current obj into the obj state (variable-based history)
         } else if (!obj.access().isOne())
             return this.mapTo(obj.access()).mapTo(obj.access(null));
         else if (this.isInstance())

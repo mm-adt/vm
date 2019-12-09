@@ -28,6 +28,7 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.State;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -44,8 +45,6 @@ import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -84,25 +83,36 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     ////////
-    protected Object value;                             // mutually exclusive with pattern (instance data)
-    private Q quantifier = null;                        // the 'amount' of this object bundle
-    Type types;                                         // an object that abstractly defines this object's forms
-    protected Map<Obj, Obj> state;                         // random access variable state associated with the computation
+    protected Object value;                            // mutually exclusive with pattern (instance data)
+    private Q quantifier = null;                       // the 'amount' of this object bundle
+    Type type;                                         // an object that abstractly defines this object's forms
+    State state = new TState();                        // state associated with the computation
 
     public TObj(final Object value) {
-        this.types = TType.of(TObj.getBaseSymbol(this));
+        this.type = TType.of(TObj.getBaseSymbol(this));
         if (null != value) {
             if (!(value instanceof Pattern) || (((Pattern) value).constant() && !(value instanceof Inst)))
                 this.value = value;
             else
-                this.types = this.types.pattern((Pattern) value);
+                this.type = this.type.pattern((Pattern) value);
         }
         assert !(this.value instanceof Obj) && (!(this.value instanceof Pattern) || ((Pattern) this.value).constant()); // TODO: Remove when proved
     }
 
     @Override
+    public State state() {
+        return this.state;
+    }
+
+    @Override
+    public <O extends Obj> O state(final State state) {
+        this.state = state;
+        return (O) this;
+    }
+
+    @Override
     public String symbol() {
-        return this.types.symbol();
+        return this.type.symbol();
     }
 
     @Override
@@ -112,7 +122,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <B> B get() {
-        return this.constant() ? (B) this.value : (B) this.types.pattern();
+        return this.constant() ? (B) this.value : (B) this.type.pattern();
     }
 
     @Override
@@ -122,41 +132,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public String label() {
-        return this.types.label();
+        return this.type.label();
     }
 
-    @Override
-    public Map<Obj, Obj> state() {
-        return null == this.state ? new LinkedHashMap<>() : this.state;
-    }
-
-    @Override
-    public <O extends Obj> O write(final Obj key, final Obj value) {
-        final TObj clone = this.clone();
-        clone.state = new LinkedHashMap<>(this.state());
-        if (null != this.state) {
-            for (Map.Entry<Obj, Obj> entry : this.state.entrySet()) {
-                if (key.a(entry.getKey().access(null)).java()) {
-                    clone.state.remove(entry.getKey());
-                    clone.state.put(key, value);
-                    return (O) clone;
-                }
-            }
-        }
-        clone.state.put(key, value);
-        return (O) clone;
-    }
-
-    @Override
-    public <O extends Obj> O read(final Obj key) {
-        // System.out.println(this.state() + "!!!");
-        for (final Map.Entry<Obj, Obj> x : this.state().entrySet()) {
-            // System.out.println("TESTING: " + key + "--isA--" + x.getKey() + "----" + key.a(x.getKey().access(null)));
-            if (key.a(x.getKey().access(null)).java())
-                return (O) x.getValue();
-        }
-        return null;
-    }
 
     @Override
     public Obj and(final Obj object) {
@@ -172,7 +150,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O symbol(final String symbol) {
         final TObj clone = this.clone();
-        clone.types = this.types.symbol(symbol);
+        clone.type = this.type.symbol(symbol);
         return (O) clone;
     }
 
@@ -181,13 +159,13 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         final TObj clone = this.clone();
         if (null == object) {
             clone.value = null;
-            clone.types = this.types.pattern(null);
+            clone.type = this.type.pattern(null);
         } else if (object instanceof Pattern && (!((Pattern) object).constant()) || object instanceof Inst) {
             clone.value = null;
-            clone.types = this.types.pattern((Pattern) object);
+            clone.type = this.type.pattern((Pattern) object);
         } else {
             clone.value = object;
-            clone.types = this.types.pattern(null);
+            clone.type = this.type.pattern(null);
         }
         assert !(clone.value instanceof Inst); // TODO: Remove when proved
         return (O) clone;
@@ -204,20 +182,20 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
-        clone.types = this.types.label(variable);
-        return (O) clone.write(TSym.of(variable), clone);
+        clone.type = this.type.label(variable);
+        return (O) clone.state().write(clone);
     }
 
     @Override
     public <O extends Obj> O access(final Inst access) {
         final TObj clone = this.clone();
-        clone.types = this.types.access(access);
+        clone.type = this.type.access(access);
         return (O) clone;
     }
 
     @Override
     public Inst access() {
-        final Inst inst = this.types.access();
+        final Inst inst = this.type.access();
         return null == inst ? IdInst.create().domainAndRange(this, this) : inst; // instances require domain/range spec on [id] access
     }
 
@@ -225,7 +203,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.value, this.q(), this.types);
+        return Objects.hash(this.value, this.q(), this.type);
     }
 
     @Override
@@ -234,7 +212,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 ((this.q().isZero() && ((TObj) object).q().isZero()) ||
                         (Objects.equals(this.value, ((TObj) object).value) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
-                                Objects.equals(this.types, ((TObj) object).types)));
+                                Objects.equals(this.type, ((TObj) object).type))); // TODO: state equality
     }
 
     @Override
@@ -246,7 +224,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public TObj clone() {
         try {
             final TObj clone = (TObj) super.clone();
-            // clone.types = clone.types.label(null);
+            // clone.type = clone.type.label(null);
             return clone;
         } catch (final CloneNotSupportedException e) {
             throw new RuntimeException(e.getMessage());
@@ -263,7 +241,6 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public Bool eq(final Obj object) {
         return TBool.via(this).set(Objects.equals(this.get(), object.get()));
-
     }
 
     @Override

@@ -41,7 +41,7 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst<S, S> implement
 
     public S apply(final S obj) {
         // TODO: MAKE CLEAN AND EASILY ADAPTABLE TO OTHER INSTRUCTIONS
-        if (null != obj.read(this)) return ((Function<S, S>) obj.read(this)).apply(obj);
+        //if (null != obj.state().apply(this)) return ((Function<S, S>) obj.state().apply(this)).apply(obj);
         return this.quantifyRange(obj.plus(this.<S>argument(0).mapArg(obj)));
     }
 

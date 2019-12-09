@@ -66,7 +66,7 @@ public final class ObjectHelper {
     }
 
     public static <O extends Obj> O create(final O obj, final Object object) {
-        return object instanceof Inst ? obj.access((Inst) object) : object instanceof TSym ? obj.read(((TSym) object)) : (O) ObjectHelper.from(object);
+        return object instanceof Inst ? obj.access((Inst) object) : object instanceof TSym ? obj.state().read(((TSym) object)) : (O) ObjectHelper.from(object);
     }
 
     public static <O extends Obj> O make(final Function<Object, O> constructor, final Object... objects) {

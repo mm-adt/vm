@@ -20,39 +20,42 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.compiler;
+package org.mmadt.machine.object.impl;
 
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.State;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.processor.util.FastProcessor;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ObjArgument<S extends Obj, E extends Obj> implements Argument<S, E> {
+public class TState implements State {
 
-    private final E constant;
+    private final Map<String, Obj> objs = new LinkedHashMap<>();
+    private final Inst insts = null;
 
-    ObjArgument(final E constant) {
-        this.constant = constant;
+    @Override
+    public Inst apply(final Inst inst) {
+        return null == this.insts ? null : (Inst) FastProcessor.process(inst.access(this.insts)).next();
     }
 
     @Override
-    public E mapArg(final S object) {
-        return this.constant instanceof TSym ? (E) object.state().read(this.constant) : this.constant;
+    public <O extends Obj> O read(final Obj key) {
+        return (O) objs.getOrDefault(key.label(), key);
     }
 
     @Override
-    public int hashCode() {
-        return this.constant.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        return object instanceof ObjArgument && this.constant.equals(((ObjArgument) object).constant);
+    public <O extends Obj> O write(final O value) {
+        this.objs.put(value.label(), value);
+        return value;
     }
 
     @Override
     public String toString() {
-        return this.constant.toString();
+        return this.objs.values().toString();
     }
 }

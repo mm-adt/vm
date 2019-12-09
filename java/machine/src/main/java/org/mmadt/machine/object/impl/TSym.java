@@ -38,7 +38,7 @@ public final class TSym extends TObj {
 
     private TSym(final String symbol) {
         super(null);
-        this.types = TType.of(symbol);
+        this.type = TType.of(symbol).label(symbol);
     }
 
 
@@ -49,7 +49,7 @@ public final class TSym extends TObj {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.types.symbol());
+        return Objects.hashCode(this.type.symbol());
     }
 
     @Override

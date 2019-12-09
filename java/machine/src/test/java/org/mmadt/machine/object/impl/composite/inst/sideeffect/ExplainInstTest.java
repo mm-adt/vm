@@ -26,10 +26,13 @@ import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.processor.util.FastProcessor;
 
+import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.id;
+import static org.mmadt.machine.object.impl.__.plus;
 
 
 /**
@@ -42,8 +45,13 @@ class ExplainInstTest {
         FastProcessor.process(TInt.of().plus(15).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(17).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
         });
 
+        FastProcessor.process(TInt.of().state().<Int>write(TInt.of(55).label("x")).<Int>set(null).plus(TSym.of("x")).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(TSym.of("x")).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
+        });
 
-        FastProcessor.process(TInt.of().<Int>write(TSym.of("x"),TInt.of(55)).plus(TSym.of("x")).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(TSym.of("x")).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
+        FastProcessor.process(TInt.of().state().<Int>write(TInt.of().label("x")).plus(TSym.of("x")).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(TSym.of("x")).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
+        });
+
+        FastProcessor.process(TInt.of().plus(2).mult(3).branch(TRec.of(gt(3), plus(300), gt(100), plus(23))).is(gt(1)).explain()).forEachRemaining(obj -> {
         });
     }
 }

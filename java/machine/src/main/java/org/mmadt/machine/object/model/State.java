@@ -20,39 +20,19 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.compiler;
+package org.mmadt.machine.object.model;
 
-import org.mmadt.machine.object.impl.TSym;
-import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ObjArgument<S extends Obj, E extends Obj> implements Argument<S, E> {
+public interface State {
 
-    private final E constant;
+    Inst apply(final Inst inst);
 
-    ObjArgument(final E constant) {
-        this.constant = constant;
-    }
+    public <O extends Obj> O read(final Obj key);
 
-    @Override
-    public E mapArg(final S object) {
-        return this.constant instanceof TSym ? (E) object.state().read(this.constant) : this.constant;
-    }
+    public <O extends Obj> O write(final O value);
 
-    @Override
-    public int hashCode() {
-        return this.constant.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        return object instanceof ObjArgument && this.constant.equals(((ObjArgument) object).constant);
-    }
-
-    @Override
-    public String toString() {
-        return this.constant.toString();
-    }
 }
