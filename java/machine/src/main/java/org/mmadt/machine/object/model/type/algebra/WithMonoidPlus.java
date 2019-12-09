@@ -22,11 +22,13 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.machine.object.model.Obj;
+
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports + with unity.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithMonoidPlus<A extends WithMonoidPlus<A>> extends WithSemigroupPlus<A>, WithZero<A> {
+public interface WithMonoidPlus<A extends Obj> extends WithSemigroupPlus<A>, WithZero<A> {
 
 }

@@ -105,4 +105,8 @@ public final class TQ<A extends WithOrderedRing<A>> extends TObj implements Q<A>
         return StringFactory.quantifier(this);
     }
 
+    @Override
+    public Q<A> minus(Q<A> object) {
+        return this;
+    }
 }

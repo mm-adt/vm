@@ -42,15 +42,15 @@ public interface Q<A extends WithOrderedRing<A>> extends Obj, WithOrderedRing<Q<
         public Q apply(final Q quantifier) {
             switch (this) {
                 case zero:
-                    return new TQ<>(quantifier.peek().zero(), quantifier.peek().zero());
+                    return new TQ<>((WithOrderedRing) quantifier.peek().zero(), (WithOrderedRing) quantifier.peek().zero());
                 case one:
-                    return new TQ<>(quantifier.peek().one(), quantifier.peek().one());
+                    return new TQ<>((WithOrderedRing) quantifier.peek().one(), (WithOrderedRing) quantifier.peek().one());
                 case star:
-                    return new TQ<>(quantifier.peek().zero(), quantifier.last().max());
+                    return new TQ<>((WithOrderedRing) quantifier.peek().zero(), (WithOrderedRing) quantifier.last().max());
                 case qmark:
-                    return new TQ<>(quantifier.peek().zero(), quantifier.last().one());
+                    return new TQ<>((WithOrderedRing) quantifier.peek().zero(), (WithOrderedRing) quantifier.last().one());
                 case plus:
-                    return new TQ<>(quantifier.peek().one(), quantifier.last().max());
+                    return new TQ<>((WithOrderedRing) quantifier.peek().one(), (WithOrderedRing) quantifier.last().max());
                 default:
                     throw new RuntimeException("Undefined shorthand: " + this);
             }

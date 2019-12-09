@@ -20,13 +20,14 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.type.algebra;
+package org.mmadt.machine.object.model.composite.ext;
 
-import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithMonoidMult<A extends Obj> extends WithSemigroupMult<A>, WithOne<A> {
+public interface Pair<V extends WithOrderedRing<V>> extends WithOrderedRing<Lst<V>> {
 
 }

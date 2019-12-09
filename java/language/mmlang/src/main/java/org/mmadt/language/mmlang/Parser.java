@@ -293,10 +293,10 @@ public class Parser extends BaseParser<Object> {
                 FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                                                // {*}
                         Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                                                // {+}
                         Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                                               // {?}
-                        Sequence(COMMA, Expression(), this.push(new TQ<>((this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),                  // {,10}
+                        Sequence(COMMA, Expression(), this.push(new TQ((WithOrderedRing)(this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),                  // {,10}
                         Sequence(Expression(),
                                 FirstOf(Sequence(COMMA, Expression(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))),           // {1,10}
-                                        Sequence(COMMA, this.push(new TQ<>(type(this.peek()), (this.<WithOrderedRing>type(this.pop())).max()))),  // {10,}
+                                        Sequence(COMMA, this.push(new TQ<>((WithOrderedRing)type(this.peek()), (WithOrderedRing)(this.<WithOrderedRing>type(this.pop())).max()))),  // {10,}
                                         this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                              // {1}
                 RCURL);
     }

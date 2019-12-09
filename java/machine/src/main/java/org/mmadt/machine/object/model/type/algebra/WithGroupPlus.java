@@ -22,18 +22,18 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.machine.object.model.Obj;
+
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports + and -.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithGroupPlus<A extends WithGroupPlus<A>> extends WithMonoidPlus<A>, WithMinus<A> {
+public interface WithGroupPlus<A extends Obj> extends WithMonoidPlus<A>, WithMinus<A> {
 
     @Override
     public A neg();
 
     @Override
-    public default A minus(final A object) {
-        return this.plus(object.neg());
-    }
+    public A minus(final A object);
 }

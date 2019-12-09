@@ -133,6 +133,11 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     }
 
     @Override
+    public Inst minus(final Inst object) {
+        return this.plus(object.neg());
+    }
+
+    @Override
     public Inst mult(final Inst inst) { // TODO: optimize this nest
         return inst.isZero() ?
                 this.zero() :

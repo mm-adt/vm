@@ -30,7 +30,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithMult<A extends WithMult<A>> extends Obj {
+public interface WithMult<A extends Obj> extends Obj {
 
     public A mult(final A object);
 

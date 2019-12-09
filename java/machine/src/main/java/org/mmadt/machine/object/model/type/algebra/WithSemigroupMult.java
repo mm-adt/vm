@@ -22,9 +22,11 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.machine.object.model.Obj;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithSemigroupMult<A extends WithSemigroupMult<A>> extends WithMult<A> {
+public interface WithSemigroupMult<A extends Obj> extends WithMult<A> {
 
 }

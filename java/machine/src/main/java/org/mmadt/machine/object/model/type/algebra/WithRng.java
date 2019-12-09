@@ -22,12 +22,14 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.machine.object.model.Obj;
+
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports a commutative + with unity, -, and *.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithRng<A extends WithRng<A>> extends WithGroupPlus<A>, WithCommutativePlus<A>, WithMonoidMult<A> {
+public interface WithRng<A extends Obj> extends WithGroupPlus<A>, WithCommutativePlus<A>, WithMonoidMult<A> {
 
 
 }

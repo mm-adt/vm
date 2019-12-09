@@ -30,7 +30,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithMinus<A extends WithMinus<A>> extends Obj {
+public interface WithMinus<A extends Obj> extends Obj {
 
     public A minus(final A object);
 

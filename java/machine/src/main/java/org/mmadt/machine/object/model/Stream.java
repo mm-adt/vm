@@ -23,6 +23,7 @@ package org.mmadt.machine.object.model;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
@@ -73,10 +74,10 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
         final boolean match = null != bindings;
         final Iterator<? extends Obj> ittyA = tester.iterable().iterator();
         final Iterator<? extends Obj> ittyB = testee.iterable().iterator();
-        WithRing lowA = TInt.of(0); // TODO: get zero() once Quantifiers are separated from being ints
-        WithRing highA = TInt.of(0);
-        WithRing lowB = TInt.of(0);
-        WithRing highB = TInt.of(0);
+        WithRing<Int> lowA = TInt.of(0); // TODO: get zero() once Quantifiers are separated from being ints
+        WithRing<Int> highA = TInt.of(0);
+        WithRing<Int> lowB = TInt.of(0);
+        WithRing<Int> highB = TInt.of(0);
         while (ittyA.hasNext() || ittyB.hasNext()) {
             final Obj a = ittyA.hasNext() ? ittyA.next() : null;
             final Obj b = ittyB.hasNext() ? ittyB.next() : TObj.none();

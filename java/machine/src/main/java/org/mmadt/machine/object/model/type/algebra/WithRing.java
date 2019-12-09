@@ -22,12 +22,14 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.machine.object.model.Obj;
+
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports a commutative + with unity, -, and * with unity.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithRing<A extends WithRing<A>> extends WithRng<A>, WithOne<A> {
+public interface WithRing<A extends Obj> extends WithRng<A>, WithOne<A> {
 
     @Override
     public A one();
@@ -42,9 +44,7 @@ public interface WithRing<A extends WithRing<A>> extends WithRng<A>, WithOne<A> 
     public A plus(final A object);
 
     @Override
-    public default A minus(final A object) {
-        return this.plus(object.neg());
-    }
+    public A minus(final A object);
 
     @Override
     public A neg();

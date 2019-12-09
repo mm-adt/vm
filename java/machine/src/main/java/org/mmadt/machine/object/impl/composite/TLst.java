@@ -40,9 +40,9 @@ import java.util.List;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TLst<V extends Obj> extends TObj implements Lst<V> {
+public class TLst<V extends Obj> extends TObj implements Lst<V> {
 
-    private TLst(final Object value) {
+    protected TLst(final Object value) {
         super(value);
     }
 

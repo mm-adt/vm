@@ -22,10 +22,12 @@
 
 package org.mmadt.machine.object.model.type.algebra;
 
+import org.mmadt.machine.object.model.Obj;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithOrderedRing<A extends WithOrderedRing<A>> extends WithRing<A>, WithOrder<A> {
+public interface WithOrderedRing<A extends Obj> extends WithRing<A>, WithOrder<A> {
 
     @Override
     public A one();
@@ -40,9 +42,7 @@ public interface WithOrderedRing<A extends WithOrderedRing<A>> extends WithRing<
     public A plus(final A object);
 
     @Override
-    public default A minus(final A object) {
-        return this.plus(object.neg());
-    }
+    public A minus(final A object);
 
     @Override
     public A neg();
