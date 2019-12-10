@@ -31,7 +31,6 @@ import java.util.Objects;
  */
 public final class TSym extends TObj {
 
-
     public static TSym of(final String symbol) {
         return new TSym(symbol);
     }
@@ -40,7 +39,6 @@ public final class TSym extends TObj {
         super(null);
         this.type = TType.of(symbol).label(symbol);
     }
-
 
     @Override
     public boolean test(final Obj obj) {

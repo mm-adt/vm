@@ -25,7 +25,6 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
@@ -33,13 +32,13 @@ import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst<S, Q<E>> implements MapInstruction<S, Q<E>> {
+public final class QInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst<S, WithOrderedRing<E>> implements MapInstruction<S, WithOrderedRing<E>> {
 
     private QInst() {
         super(PList.of(Tokens.Q));
     }
 
-    public Q<E> apply(final S obj) {
+    public WithOrderedRing<E> apply(final S obj) {
         return this.quantifyRange(obj.q());
     }
 

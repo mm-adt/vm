@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;

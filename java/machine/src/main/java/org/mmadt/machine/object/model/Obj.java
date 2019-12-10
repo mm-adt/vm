@@ -28,7 +28,7 @@ import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TQ;
+import org.mmadt.machine.object.impl.composite.ext.TPair;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
@@ -41,15 +41,14 @@ import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
-import org.mmadt.machine.object.model.type.algebra.WithMult;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
 
 /**
  * A Java representation of an mm-ADT {@code obj}.
@@ -79,25 +78,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return !BASE_SYMBOLS.contains(this.symbol());
     }
 
-    public <B extends WithOrderedRing<B>> Q<B> q();
+    public WithOrderedRing q();
 
     public String label();
 
     public Inst access();
-
-
-    public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
-        return (O) this.iterable().iterator().next();
-    }
-
-    public default <O extends Obj> O last() {
-        final Iterator<O> itty = (Iterator<O>) this.iterable().iterator();
-        O o = (O) TObj.none();
-        while (itty.hasNext()) {
-            o = itty.next();
-        }
-        return o;
-    }
 
     public default Iterable<? extends Obj> iterable() {
         return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
@@ -105,7 +90,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O set(final Object object);
 
-    public <O extends Obj> O q(final Q quantifier);
+    public <O extends Obj> O q(final WithOrderedRing quantifier);
 
     public <O extends Obj> O label(final String variable);
 
@@ -126,8 +111,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default boolean test(final Obj obj) {
         boolean root = TRAMPOLINE.isEmpty();
         try {
-            if (this.q().isZero() || obj.q().isZero())
-                return this.q().test(obj);
+            if (!QuantifierHelper.within(this.q(), obj.q()))
+                return false;
+            else if (obj.q().isZero())
+                return true;
 
             if (this.isInstance())                                                              // INSTANCE CHECKING
                 return obj.isInstance() && this.eq(obj).java();
@@ -163,29 +150,32 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public default boolean match(final Bindings bindings, final Obj object) {
+    public default boolean match(final Bindings bindings, final Obj obj) {
         if (bindings.has(this.label()))
-            return bindings.get(this.label()).test(object);
-        else if (TObj.none().equals(this) || TObj.none().equals(object))
-            return this.q().test(object);
+            return bindings.get(this.label()).test(obj);
+        else if (!QuantifierHelper.within(this.q(), obj.q()))
+            return false;
+        else if (obj.q().isZero())
+            return true;
+
         bindings.start();
         final Object current = this.get();
         if (null != current) {
             if (current instanceof Pattern) {
-                if (!((Pattern) current).match(bindings, object)) {
+                if (!((Pattern) current).match(bindings, obj)) {
                     bindings.rollback();
                     return false;
                 }
-            } else if (!this.test(object)) {
+            } else if (!this.test(obj)) {
                 bindings.rollback();
                 return false;
             }
-        } else if (!this.getClass().isAssignableFrom(object.getClass())) {
+        } else if (!this.getClass().isAssignableFrom(obj.getClass())) {
             bindings.rollback();
             return false;
         }
         if (null != this.label())
-            bindings.put(this.label(), object);
+            bindings.put(this.label(), obj);
         if (this instanceof WithProduct)
             bindings.commit();
         return true;
@@ -236,20 +226,16 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.constant();
     }
 
-    public default <O extends Obj> O q(final Q.Tag tag) {
+    public default <O extends Obj> O q(final QuantifierHelper.Tag tag) {
         return this.q(tag.apply(this.q()));
     }
 
     public default <O extends Obj> O q(final Object low, final Object high) {
-        return this.q(new TQ<>((WithOrderedRing) ObjectHelper.from(low), (WithOrderedRing) ObjectHelper.from(high)));
+        return this.q(TPair.of(low, high));
     }
 
     public default <O extends Obj> O q(final Object count) {
         return this.q((WithOrderedRing) ObjectHelper.from(count));
-    }
-
-    public default <O extends Obj> O q(final WithOrderedRing count) {
-        return this.q(new TQ<>(count));
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,7 +248,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O count() {
         return this.q().constant() ?
-                this.q().peek().q(q().one()) :
+                this.q().q(q().one()) :
                 (O) CountInst.create().attach(this, this.q().one());
     }
 
@@ -286,12 +272,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O sum() {
         return this.isInstance() ?
-                this instanceof Q ?
-                        (O) ((WithMult) this).mult(this.q()) :
-                        (O) new TQ((WithOrderedRing) this).mult(this.q()) :
-                this instanceof Q ?
-                        this.mapFrom(SumInst.create()) :
-                        new TQ((WithOrderedRing) this).mapFrom(SumInst.create());
+                (O) ((WithOrderedRing) this).mult(this.q()) :
+                ((WithOrderedRing) this).mapFrom(SumInst.create());
 
     }
 

@@ -28,6 +28,10 @@ import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Pair<V extends WithOrderedRing<V>> extends WithOrderedRing<Lst<V>> {
+public interface Pair<V extends WithOrderedRing<V>> extends WithOrderedRing<Lst<V>>, Lst<V> {
+
+    public V first();
+
+    public V second();
 
 }

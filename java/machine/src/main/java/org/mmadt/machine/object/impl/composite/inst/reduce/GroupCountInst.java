@@ -32,7 +32,7 @@ import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 
-import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

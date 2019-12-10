@@ -45,6 +45,7 @@ public final class Tokens {
         return builder.toString();
     }
 
+    // SYMBOLS
     public static final String BACKSLASH = "/";
     public static final String COLON = ":";
     public static final String COMMA = ",";
@@ -81,17 +82,7 @@ public final class Tokens {
     public static final String TRUE = "true";
     public static final String FALSE = "false";
 
-
-    public static final String OBJ = "obj";
-    public static final String BOOL = "bool";
-    public static final String INT = "int";
-    public static final String REAL = "real";
-    public static final String STR = "str";
-    public static final String LST = "lst";
-    public static final String REC = "rec";
-    public static final String INST = "inst";
-    public static final String Q = "q";
-
+    // OPCODES
     public static final String A = "a";
     public static final String ACCESS = "access";
     public static final String AS = "as";
@@ -133,6 +124,7 @@ public final class Tokens {
     public static final String ORDER = "order";
     public static final String PLUS = "plus";
     public static final String PUT = "put";
+    public static final String Q = "q";
     public static final String RANGE = "range";
     public static final String REDUCE = "reduce";
     public static final String START = "start";
@@ -141,4 +133,16 @@ public final class Tokens {
     public static final String TYPE = "type";
     public static final String UNFOLD = "unfold";
     public static final String ZERO = "zero";
+
+    // TYPES
+    public static final String OBJ = "obj";
+    public static final String BOOL = "bool";
+    public static final String INT = "int";
+    public static final String REAL = "real";
+    public static final String STR = "str";
+    public static final String LST = "lst";
+    public static final String REC = "rec";
+    public static final String INST = "inst";
+    public static final String PAIR = "pair";
+
 }

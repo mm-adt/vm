@@ -42,8 +42,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.id;
 import static org.mmadt.machine.object.impl.__.zero;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
-import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

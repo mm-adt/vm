@@ -30,7 +30,7 @@ import org.mmadt.util.IteratorUtils;
 import java.util.Iterator;
 import java.util.function.BiFunction;
 
-import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,7 +38,7 @@ import static org.mmadt.machine.object.model.composite.Q.Tag.one;
 public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BarrierInstruction<S, E>, BiFunction<E, S, E> {
 
     public default E merge(final E objA, final E objB) {
-        return (E) ((WithPlus) objA).plus((WithPlus) objB);
+        return (E) ((WithPlus) objA).plus(objB);
     }
 
     public default E getInitialValue() {

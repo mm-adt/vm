@@ -32,7 +32,7 @@ import org.mmadt.util.TestArgs;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
 import static org.mmadt.util.TestArgs.args;
 import static org.mmadt.util.TestArgs.bools;
 import static org.mmadt.util.TestArgs.ints;

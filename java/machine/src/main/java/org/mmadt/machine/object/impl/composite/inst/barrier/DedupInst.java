@@ -33,7 +33,7 @@ import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
 
-import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

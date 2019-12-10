@@ -23,18 +23,11 @@
 package org.mmadt.machine.object.impl.util;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TSym;
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
-import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

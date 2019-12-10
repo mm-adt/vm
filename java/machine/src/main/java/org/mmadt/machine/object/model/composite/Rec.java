@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
@@ -49,7 +48,6 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
     public default Map<K, V> java() {
         return this.get();
     }
-
 
     @Override
     public default Rec<K, V> put(final K key, final V value) {

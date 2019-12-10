@@ -25,7 +25,7 @@ package org.mmadt.machine.object.impl;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.TQ;
+import org.mmadt.machine.object.impl.composite.ext.TPair;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.State;
@@ -36,13 +36,14 @@ import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.composite.ext.Pair;
 import org.mmadt.machine.object.model.type.Pattern;
 import org.mmadt.machine.object.model.type.algebra.WithAnd;
 import org.mmadt.machine.object.model.type.algebra.WithOr;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
+import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.Objects;
@@ -84,8 +85,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     ////////
     protected Object value;                            // mutually exclusive with pattern (instance data)
-    private Q quantifier = null;                       // the 'amount' of this object bundle
-    Type type;                                         // an object that abstractly defines this object's forms
+    private WithOrderedRing quantifier = null;         // the 'amount' of this object bundle
+    protected Type type;                               // an object that abstractly defines this object's forms
     State state = new TState();                        // state associated with the computation
 
     public TObj(final Object value) {
@@ -126,15 +127,14 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <B extends WithOrderedRing<B>> Q<B> q() {
-        return null == this.quantifier ? TQ.ONE : this.quantifier;
+    public WithOrderedRing q() {
+        return null == this.quantifier ? QuantifierHelper.ONE : this.quantifier;
     }
 
     @Override
     public String label() {
         return this.type.label();
     }
-
 
     @Override
     public Obj and(final Obj object) {
@@ -172,9 +172,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O q(final Q quantifier) {
+    public <O extends Obj> O q(final WithOrderedRing quantifier) {
         final TObj clone = this.clone();
-        clone.quantifier = quantifier;
+        clone.quantifier = quantifier instanceof Pair ? quantifier : TPair.of(quantifier, quantifier);
         return (O) clone;
 
     }
@@ -203,7 +203,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.value, this.q(), this.type);
+        return Objects.hash(this.value, this.q().toString(), this.type);
     }
 
     @Override

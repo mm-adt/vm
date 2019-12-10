@@ -22,6 +22,8 @@
 
 package org.mmadt.machine.object.impl.composite.ext;
 
+import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TType;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -29,6 +31,9 @@ import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.ext.Pair;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.StringFactory;
+
+import java.util.Objects;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,18 +42,26 @@ public final class TPair<V extends WithOrderedRing<V>> extends TLst<V> implement
 
     private TPair(final Object object) {
         super(object);
+        this.type = TType.of(Tokens.PAIR);
     }
 
-    private V first() {
-        return this.<PList<V>>get().get(0);
-    }
-
-    private V second() {
-        return this.<PList<V>>get().get(1);
-    }
-
-    public static <V extends WithOrderedRing<V>> Pair<V> of(final V first, final V second) {
+    public static <V extends WithOrderedRing<V>> Pair of(final Object first, final Object second) {
         return new TPair<>(PList.of(first, second));
+    }
+
+    @Override
+    public V first() {
+        return this.get(TInt.zeroInt());
+    }
+
+    @Override
+    public V second() {
+        return this.get(TInt.oneInt());
+    }
+
+    @Override
+    public Lst<V> neg() {
+        return this.set(PList.of(this.first().neg(), this.second().neg()));
     }
 
     @Override
@@ -63,6 +76,15 @@ public final class TPair<V extends WithOrderedRing<V>> extends TLst<V> implement
         return this.set(PList.of(zero, zero));
     }
 
+    @Override
+    public boolean isZero() {
+        return first().isZero() && second().isZero();
+    }
+
+    @Override
+    public boolean isOne() {
+        return first().isOne() && second().isOne();
+    }
 
     @Override
     public Lst<V> mult(final Lst<V> object) {
@@ -80,12 +102,12 @@ public final class TPair<V extends WithOrderedRing<V>> extends TLst<V> implement
 
     @Override
     public Bool gt(final Lst<V> object) {
-        return null;
+        return this.first().gte(object.get(0)).and(this.second().gte(object.get(1)));
     }
 
     @Override
     public Bool lt(final Lst<V> object) {
-        return null;
+        return this.first().lte(object.get(0)).and(this.second().lte(object.get(1)));
     }
 
     @Override
@@ -98,5 +120,20 @@ public final class TPair<V extends WithOrderedRing<V>> extends TLst<V> implement
     public Lst<V> min() {
         final V min = first().min();
         return this.set(PList.of(min, min));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.first(), this.second());
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        return other instanceof Pair && this.first().equals(((Pair) other).first()) && this.second().equals(((Pair) other).second());
+    }
+
+    @Override
+    public String toString() {
+        return StringFactory.list(this);
     }
 }

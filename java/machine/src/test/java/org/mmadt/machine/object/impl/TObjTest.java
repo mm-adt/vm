@@ -45,8 +45,8 @@ import static org.mmadt.machine.object.impl.__.and;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.is;
 import static org.mmadt.machine.object.impl.__.lt;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

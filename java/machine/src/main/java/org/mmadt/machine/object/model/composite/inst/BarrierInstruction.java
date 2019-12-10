@@ -38,7 +38,7 @@ public interface BarrierInstruction<S extends Obj, E> extends BiFunction<E, S, E
     public E merge(final E barrierA, final E barrierB);
 
     @Override
-    public E apply(E a, S b);
+    public E apply(final E a, final S b);
 
     public Iterator<E> createIterator(final E barrier);
 

@@ -33,7 +33,6 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
-import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 
 import java.util.List;

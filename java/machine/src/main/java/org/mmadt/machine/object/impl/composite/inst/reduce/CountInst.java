@@ -25,33 +25,34 @@ package org.mmadt.machine.object.impl.composite.inst.reduce;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.QuantifierHelper;
 
-import static org.mmadt.machine.object.model.composite.Q.Tag.one;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst<Obj, Obj> implements ReduceInstruction<S, Q<E>> {
+public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst<Obj, Obj> implements ReduceInstruction<S, E> {
 
     private CountInst() {
         super(PList.of(Tokens.COUNT));
     }
 
     @Override
-    public Q<E> apply(final Q<E> current, final S obj) {
+    public E apply(final E current, final S obj) {
         return current.plus(obj.q());
+    }
+
+    @Override
+    public E quantifyRange(final Obj domain) {
+        return (domain.q().constant() ? QuantifierHelper.trySingle(domain.q()) : domain.q().set(null).access(null)).q(one); // TODO: garbage
     }
 
     public static <S extends Obj, E extends WithOrderedRing<E>> CountInst<S, E> create() {
         return new CountInst<>();
     }
 
-    @Override
-    public E quantifyRange(final Obj domain) {
-        return (domain.q().constant() ? domain.q().peek() : domain.q().object().set(null).access(null)).q(one); // TODO: garbage
-    }
 }

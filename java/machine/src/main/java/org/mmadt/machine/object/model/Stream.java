@@ -22,12 +22,9 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.Pattern;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.machine.object.model.type.algebra.WithRing;
+import org.mmadt.machine.object.model.util.QuantifierHelper;
 
 import java.util.Iterator;
 
@@ -74,27 +71,19 @@ public interface Stream<A extends Obj> extends Iterable<A>, Pattern {
         final boolean match = null != bindings;
         final Iterator<? extends Obj> ittyA = tester.iterable().iterator();
         final Iterator<? extends Obj> ittyB = testee.iterable().iterator();
-        WithRing<Int> lowA = TInt.of(0); // TODO: get zero() once Quantifiers are separated from being ints
-        WithRing<Int> highA = TInt.of(0);
-        WithRing<Int> lowB = TInt.of(0);
-        WithRing<Int> highB = TInt.of(0);
         while (ittyA.hasNext() || ittyB.hasNext()) {
             final Obj a = ittyA.hasNext() ? ittyA.next() : null;
             final Obj b = ittyB.hasNext() ? ittyB.next() : TObj.none();
             //System.out.println(a + "--" + b);
             if (null != a) {
-                if (!a.q().test(b) ||
+                if (!a.q().test(b.q()) ||
                         (!match && !a.test(b)) ||
                         (match && !a.match(bindings, b)))
                     return false;
-                lowA = lowA.plus(a.q().peek());
-                highA = highA.plus(a.q().last());
             }
-            lowB = lowB.plus(b.q().peek());
-            highB = highB.plus(b.q().last());
+
         }
-        return ((WithOrder) ((WithRing) tester.q().peek()).mult(lowA.peek())).lte(((WithRing) testee.q().peek()).mult(lowB)).and(
-                ((WithOrder) ((WithRing) tester.q().last()).mult(highA.peek())).gte(((WithRing) testee.q().last()).mult(highB))).get();
+        return QuantifierHelper.within(tester.q(), testee.q());
 
     }
 }

@@ -26,7 +26,6 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
-import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;

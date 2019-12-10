@@ -32,8 +32,8 @@ import org.mmadt.machine.object.impl.atomic.TReal;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
-import org.mmadt.machine.object.impl.composite.TQ;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.ext.TPair;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
@@ -41,7 +41,6 @@ import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
@@ -135,9 +134,9 @@ public class Parser extends BaseParser<Object> {
                         Inst(),
                         Lst(),
                         Rec(),
-                        Symbol()),                                                                       // obj
-                Optional(Quantifier(), swap(), this.push((type(this.pop())).q((Q) this.pop()))),         // {quantifier}
-                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));        // ~label
+                        Symbol()),                                                                     // obj
+                Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),             // {quantifier}
+                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));      // ~label
 
     }
 
@@ -290,14 +289,14 @@ public class Parser extends BaseParser<Object> {
     Rule Quantifier() {
         return Sequence(
                 LCURL,  // TODO: the *, +, ? shorthands assume Int ring. (this will need to change)
-                FirstOf(Sequence(STAR, this.push(new TQ<>(0, Integer.MAX_VALUE))),                                                                // {*}
-                        Sequence(PLUS, this.push(new TQ<>(1, Integer.MAX_VALUE))),                                                                // {+}
-                        Sequence(QMARK, this.push(new TQ<>(0, 1))),                                                                               // {?}
-                        Sequence(COMMA, Expression(), this.push(new TQ((WithOrderedRing)(this.<WithOrderedRing>type(this.peek())).min(), type(this.pop())))),                  // {,10}
+                FirstOf(Sequence(STAR, this.push(TPair.of(0, Integer.MAX_VALUE))),                                                                // {*}
+                        Sequence(PLUS, this.push(TPair.of(1, Integer.MAX_VALUE))),                                                                // {+}
+                        Sequence(QMARK, this.push(TPair.of(0, 1))),                                                                               // {?}
+                        Sequence(COMMA, Expression(), this.push(TPair.of(this.<WithOrderedRing>type(this.peek()).min(), type(this.pop())))),      // {,10}
                         Sequence(Expression(),
-                                FirstOf(Sequence(COMMA, Expression(), swap(), this.push(new TQ<>(type(this.pop()), type(this.pop())))),           // {1,10}
-                                        Sequence(COMMA, this.push(new TQ<>((WithOrderedRing)type(this.peek()), (WithOrderedRing)(this.<WithOrderedRing>type(this.pop())).max()))),  // {10,}
-                                        this.push(new TQ<>(type(this.peek()), type(this.pop())))))),                                              // {1}
+                                FirstOf(Sequence(COMMA, Expression(), swap(), this.push(TPair.of(type(this.pop()), type(this.pop())))),           // {1,10}
+                                        Sequence(COMMA, this.push(TPair.of(type(this.peek()), this.<WithOrderedRing>type(this.pop()).max()))),  // {10,}
+                                        this.push(TPair.of(type(this.peek()), type(this.pop())))))),                                              // {1}
                 RCURL);
     }
 

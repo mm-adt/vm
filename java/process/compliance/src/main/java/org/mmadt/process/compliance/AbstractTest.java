@@ -22,9 +22,8 @@
 
 package org.mmadt.process.compliance;
 
-import org.mmadt.machine.object.impl.composite.TQ;
+import org.mmadt.machine.object.impl.composite.ext.TPair;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
@@ -49,10 +48,10 @@ abstract class AbstractTest implements TestMachine {
         return objs;
     }
 
-    <E extends WithOrderedRing<E>> List<Q<E>> qs(final Object... objects) {
-        final List<Q<E>> objs = new ArrayList<>();
+    <E extends WithOrderedRing<E>> List<WithOrderedRing<E>> qs(final Object... objects) {
+        final List<WithOrderedRing<E>> objs = new ArrayList<>();
         for (final Object object : objects) {
-            objs.add(new TQ<>((E) ObjectHelper.from(object)));
+            objs.add(TPair.of(object, object));
         }
         return objs;
     }

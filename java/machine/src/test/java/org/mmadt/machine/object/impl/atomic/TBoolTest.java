@@ -38,10 +38,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.__.and;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.id;
-import static org.mmadt.machine.object.model.composite.Q.Tag.one;
-import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.plus;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
 import static org.mmadt.util.ProcessArgs.args;
 
 /**
@@ -138,7 +138,6 @@ final class TBoolTest implements TestUtilities {
         //       assertEquals("true{*}~x|false~y", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).toString());
         //       assertEquals("(true{*}~x|false~y)~z", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).label("z").toString());
         //       assertEquals("(true{*}~x|false~y){?}", TBool.of(true).q(star).label("x").or(TBool.of(false).label("y")).q(qmark).toString());
-        assertTrue(TBool.of(true).q(star).or(TBool.of(false)).isType());
     }
 
 }

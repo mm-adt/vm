@@ -25,7 +25,6 @@ package org.mmadt.machine.object.impl.composite.inst.reduce;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
@@ -33,14 +32,14 @@ import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class SumInst<S extends WithOrderedRing<S>> extends TInst<S, Obj> implements ReduceInstruction<S, Q<S>> {
+public final class SumInst<S extends WithOrderedRing<S>> extends TInst<S, Obj> implements ReduceInstruction<S, S> {
 
     private SumInst() {
         super(PList.of(Tokens.SUM));
     }
 
     @Override
-    public Q<S> apply(final Q<S> current, final S obj) {
+    public S apply(final S current, final S obj) {
         return current.plus(obj.sum());
     }
 

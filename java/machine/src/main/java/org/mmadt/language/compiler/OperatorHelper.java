@@ -83,7 +83,7 @@ public final class OperatorHelper {
             case (Tokens.MAPSFROM):
                 return lhs.mapFrom(rhs);
             case (Tokens.LPACK):
-                return (A) TRec.of(rhs,lhs);
+                return (A) TRec.of(rhs, lhs);
             case Tokens.RPACK:
                 return (A) TRec.of(lhs, rhs);
             default:

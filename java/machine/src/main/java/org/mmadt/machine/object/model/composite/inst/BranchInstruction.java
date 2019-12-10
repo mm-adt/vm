@@ -28,7 +28,6 @@ import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
@@ -57,9 +56,9 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
         return TObj.none().set(itty);
     } // this should all be done through subscription semantics and then its just a append round-robin
 
-    public default E quantifyRange(final S domain) {
-        return domain.q(domain.q().mult(this.<Map<Obj, Obj>>get().values().stream().map(Obj::q).reduce((Q) domain.q().zero(), Q::plus)));
-    }
+   /* public default E quantifyRange(final S domain) {
+        return domain.q(domain.q().mult(this.<Map<Obj, Obj>>get().values().stream().map(Obj::q).reduce((WithOrderedRing) domain.q().zero(), WithOrderedRing::plus)));
+    }*/
 
     public static Map<Obj, Obj> buildBranchMap(final boolean choose, final Object... branches) {
         final Map<Obj, Obj> branchMap = new LinkedHashMap<>();

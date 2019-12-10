@@ -57,6 +57,19 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     public Obj range();
 
+    public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
+        return (O) this.iterable().iterator().next();
+    }
+
+    public default <O extends Obj> O last() {
+        final Iterator<O> itty = (Iterator<O>) this.iterable().iterator();
+        O o = (O) TObj.none();
+        while (itty.hasNext()) {
+            o = itty.next();
+        }
+        return o;
+    }
+
     @Override
     public Inst or(final Obj obj);
 

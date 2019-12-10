@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.ext.Pair;
 
 import java.util.function.Function;
 
@@ -36,7 +37,7 @@ public interface FilterInstruction<S extends Obj> extends Inst, Function<S, S> {
     S apply(final S t);
 
     public default S quantifyRange(final S range) {
-        return range.isInstance() ? range : range.q(range.q().peek().zero(), range.q().last());
+        return range.isInstance() ? range : range.q(((Pair) range.q()).first().zero(), ((Pair) range.q()).second());
     }
 
 }

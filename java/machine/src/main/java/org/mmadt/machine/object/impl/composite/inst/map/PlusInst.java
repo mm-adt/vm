@@ -28,8 +28,6 @@ import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithPlus;
 
-import java.util.function.Function;
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */

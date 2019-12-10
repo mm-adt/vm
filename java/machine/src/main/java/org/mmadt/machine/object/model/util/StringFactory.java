@@ -27,10 +27,11 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.composite.ext.Pair;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public final class StringFactory {
 
     private static void objMetadata(final Obj obj, final StringBuilder builder) {
         if (!obj.q().isOne())
-            builder.append(obj.q());
+            builder.append(quantifier(obj.q()));
         if (null != obj.label())
             builder.append(TILDE)
                     .append(obj.label());
@@ -165,7 +166,7 @@ public final class StringFactory {
         final StringBuilder builder = new StringBuilder();
         if (!TInst.some().get().equals(inst.get())) {
             // boolean head = true;
-            for (Inst single : inst.iterable()) {
+            for (final Inst single : inst.iterable()) {
                 /*if (head) {
                     head = false;
                     if (!single.domain().q().isZero()) {
@@ -175,6 +176,7 @@ public final class StringFactory {
                 builder.append(LBRACKET);
                 boolean opcode = true;
                 for (Obj object : single.<Iterable<Obj>>get()) {
+
                     if (opcode) {
                         builder.append(object.get().toString()).append(COMMA);
                         opcode = false;
@@ -194,20 +196,18 @@ public final class StringFactory {
         return builder.toString();
     }
 
-    public static String quantifier(final Q quantifier) {
+    private static String quantifier(final WithOrderedRing quantifier) {
         if (quantifier.isOne())
             return EMPTY;
-        else if (quantifier.isStar())
+        else if (QuantifierHelper.isStar(quantifier))
             return LCURL + ASTERIX + RCURL;
-        else if (quantifier.isQMark())
+        else if (QuantifierHelper.isQMark(quantifier))
             return LCURL + QUESTION + RCURL;
-        else if (quantifier.isPlus())
+        else if (QuantifierHelper.isPlus(quantifier))
             return LCURL + CROSS + RCURL;
-        else if (quantifier.constant())
-            return LCURL + quantifier.peek() + RCURL;
+        else if (QuantifierHelper.isSingle(quantifier))
+            return LCURL + (quantifier instanceof Pair ? ((Pair) quantifier).first().toString() : quantifier.toString()) + RCURL;
         else
-            return LCURL +
-                    (quantifier.peek().isMin() ? EMPTY : quantifier.object().peek()) + COMMA +
-                    (quantifier.last().isMax() ? EMPTY : quantifier.object().last()) + RCURL;
+            return LCURL + ((Pair) quantifier).first() + COMMA + ((Pair) quantifier).second() + RCURL;
     }
 }

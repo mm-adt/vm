@@ -139,14 +139,14 @@ public final class TReal extends TObj implements Real {
     @Override
     public Bool lt(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.via(this).set(this.java() < real.java()).q(this.q()) :
+                TBool.via(this).set(this.java() < real.java()) :
                 LtInst.<Real>create(real).attach(this, TBool.via(this));
     }
 
     @Override
     public Bool lte(final Real real) {
         return (this.isInstance() && real.isInstance()) ?
-                TBool.via(this).set(this.java() <= real.java()).q(this.q()) :
+                TBool.via(this).set(this.java() <= real.java()) :
                 LteInst.<Real>create(real).attach(this, TBool.via(this));
     }
 

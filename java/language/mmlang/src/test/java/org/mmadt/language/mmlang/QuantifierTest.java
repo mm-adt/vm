@@ -31,7 +31,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Q;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -44,8 +43,9 @@ import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.machine.object.impl.__.minus;
 import static org.mmadt.machine.object.impl.__.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.plus;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -56,7 +56,7 @@ class QuantifierTest {
             args(ints().<Int>q(1), "int"),
             args(objs(ints().q(star)), "int{*}"),
             args(objs(ints().q(qmark)), "int{?}"),
-            args(objs(ints().q(Q.Tag.plus)), "int{+}"),
+            args(objs(ints().q(plus)), "int{+}"),
             args(objs(), "int{0}"),
             args(objs(TInt.of().q(1, 2)), "int{1,2}"),
             args(objs(TInt.of().q(2, TInt.of().max())), "int{2,}"),

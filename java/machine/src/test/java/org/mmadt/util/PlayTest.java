@@ -23,21 +23,12 @@
 package org.mmadt.util;
 
 import org.junit.jupiter.api.Test;
-import org.mmadt.language.compiler.Instructions;
-import org.mmadt.machine.object.impl.TSym;
-import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 
 import java.util.Map;
-
-import static org.mmadt.machine.object.impl.__.gt;
-import static org.mmadt.machine.object.impl.__.is;
-import static org.mmadt.machine.object.impl.__.mult;
-import static org.mmadt.machine.object.impl.__.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,9 +37,9 @@ class PlayTest {
 
     @Test
     void xxx() {
-       // System.out.println(TInt.of().state().<Int>write(TInt.of(43).label("x")).state().<Int>write(plus(TInt.of(is(gt(50)))),mult(10)).state().toString());
+        // System.out.println(TInt.of().state().<Int>write(TInt.of(43).label("x")).state().<Int>write(plus(TInt.of(is(gt(50)))),mult(10)).state().toString());
         //System.out.println(TInt.of().<Int>write(TSym.of("x"),TInt.of(43)).<Int>write(plus(TInt.of()),mult(10)).plus(TSym.of("x")).plus(0).toString());
-        System.out.println(TRec.of(Map.of("name","marko","age",29)).as(TRec.of(Map.<String, Obj>of("name", TStr.of(),"age",TInt.of().label("x")))).get("age").toString());
+        System.out.println(TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.<String, Obj>of("name", TStr.of(), "age", TInt.of().label("x")))).get("age").toString());
     }
 
     @Test

@@ -42,7 +42,7 @@ import static org.mmadt.machine.object.impl.__.lt;
 import static org.mmadt.machine.object.impl.__.lte;
 import static org.mmadt.machine.object.impl.__.mult;
 import static org.mmadt.machine.object.impl.__.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

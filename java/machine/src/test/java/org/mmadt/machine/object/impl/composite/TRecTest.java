@@ -48,11 +48,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.is;
-import static org.mmadt.machine.object.model.composite.Q.Tag.one;
-import static org.mmadt.machine.object.model.composite.Q.Tag.plus;
-import static org.mmadt.machine.object.model.composite.Q.Tag.qmark;
-import static org.mmadt.machine.object.model.composite.Q.Tag.star;
-import static org.mmadt.machine.object.model.composite.Q.Tag.zero;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.plus;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
+import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
