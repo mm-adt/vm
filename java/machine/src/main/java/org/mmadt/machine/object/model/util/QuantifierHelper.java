@@ -22,9 +22,9 @@
 
 package org.mmadt.machine.object.model.util;
 
-import org.mmadt.machine.object.impl.composite.ext.TPair;
-import org.mmadt.machine.object.model.composite.ext.Pair;
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.impl.ext.composite.TPair;
+import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.ext.composite.Pair;
 
 import java.util.function.UnaryOperator;
 
@@ -55,8 +55,12 @@ public final class QuantifierHelper {
         return !(quantifier instanceof Pair) || ((Pair) quantifier).first().equals(((Pair) quantifier).second());
     }
 
-    public static WithOrderedRing trySingle(final WithOrderedRing quantifier) {
-        return isSingle(quantifier) && quantifier instanceof Pair ? ((Pair) quantifier).first() : quantifier;
+    public static <S extends WithOrderedRing<S>> S trySingle(final WithOrderedRing quantifier) {
+        return (S) (isSingle(quantifier) && quantifier instanceof Pair ? ((Pair) quantifier).first() : quantifier);
+    }
+
+    public static WithOrderedRing toPair(final WithOrderedRing quantifier) {
+        return quantifier instanceof Pair ? quantifier : TPair.of(quantifier, quantifier);
     }
 
     public static boolean within(final WithOrderedRing a, final WithOrderedRing b) {

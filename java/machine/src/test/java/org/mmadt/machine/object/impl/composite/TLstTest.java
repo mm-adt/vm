@@ -35,7 +35,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.type.Bindings;
+import org.mmadt.machine.object.model.Bindings;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;

@@ -25,8 +25,8 @@ package org.mmadt.machine.object.model.atomic;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
+import org.mmadt.machine.object.model.ext.algebra.WithMonoidPlus;
+import org.mmadt.machine.object.model.ext.algebra.WithOrder;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**

@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.model.atomic.Str;
@@ -39,11 +38,17 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.machine.object.impl.__.and;
+import static org.mmadt.machine.object.impl.__.eq;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.id;
+import static org.mmadt.machine.object.impl.__.is;
+import static org.mmadt.machine.object.impl.__.neq;
+import static org.mmadt.machine.object.impl.__.or;
 import static org.mmadt.machine.object.impl.__.zero;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
+import static org.mmadt.util.ProcessArgs.args;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -51,13 +56,13 @@ import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
 final class TStrTest implements TestUtilities {
 
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
-            ProcessArgs.args(List.of("marko"), TStr.of("marko")),
-            ProcessArgs.args(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
-            ProcessArgs.args(List.of("abcde"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
-            ProcessArgs.args(List.of("abcdef"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e").is(gt("")).plus("f")),
-            ProcessArgs.args(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
-            ProcessArgs.args(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.of().plus("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
-            // ProcessArgs.of(List.of("a"), TStr.of("a", "a","a").branch(id(),id()).dedup()),
+            args(List.of("marko"), TStr.of("marko")),
+            args(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
+            args(List.of("abcde"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
+            args(List.of("abcdef"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e").is(gt("")).plus("f")),
+            args(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
+            args(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.of().plus("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
+            // ProcessArgs.args(List.of("a"), TStr.of("a", "a","a").branch(id(),id()).dedup()),
     };
 
     @TestFactory
@@ -121,6 +126,9 @@ final class TStrTest implements TestUtilities {
         assertEquals("str[is,[gt,'a']]", TStr.of(IsInst.create(GtInst.create("a"))).toString());
         assertEquals("(str[is,[gt,'a']])~x", TStr.of(IsInst.create(GtInst.create("a"))).label("x").toString()); // TODO: perhaps str([is]){x,y}~a
         assertEquals("(str[is,[gt,'a']]){0,2}", TStr.of(IsInst.create(GtInst.create("a"))).q(0, 2).toString());
+        assertEquals("'marko'", TStr.of("marko").and(TStr.of("marko")).toString());
+        assertEquals("'marko'{*}", TStr.of("marko").q(star).and(TStr.of("marko")).toString());
+        assertEquals("'marko'{0}", TStr.of("marko").q(star).and(TStr.of("marko").q(zero)).toString());
     }
 
     @Test
@@ -130,10 +138,10 @@ final class TStrTest implements TestUtilities {
         assertTrue(TObj.all().test(TStr.of("hello")));
         assertTrue(TStr.of("hello").q(star).test(TStr.of("hello")));
         assertFalse(TStr.of("hello").q(zero).test(TStr.of("hello")));
-        assertTrue(TStr.of(__.is(__.eq("id"))).test(TStr.of("id")));
-        assertTrue(TStr.of(__.is(__.or(__.eq("id"), __.eq("label")))).test(TStr.of("id")));
+        assertTrue(TStr.of(is(eq("id"))).test(TStr.of("id")));
+        assertTrue(TStr.of(is(or(eq("id"), eq("label")))).test(TStr.of("id")));
         assertTrue(TStr.of("id").or(TStr.of("label")).test(TStr.of("id")));
-        // assertFalse(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("id")));
-        // assertTrue(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("hello")));
+        assertFalse(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("id")));
+        assertTrue(TStr.of(is(and(neq("id"), neq("label")))).test(TStr.of("hello")));
     }
 }

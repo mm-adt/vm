@@ -24,9 +24,9 @@ package org.mmadt.machine.object.impl.type;
 
 import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.ext.TPair;
+import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.composite.ext.Pair;
+import org.mmadt.machine.object.model.ext.composite.Pair;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

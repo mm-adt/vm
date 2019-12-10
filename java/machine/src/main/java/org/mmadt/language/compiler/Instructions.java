@@ -59,7 +59,7 @@ import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.composite.util.PList;
 
 import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.ACCESS;

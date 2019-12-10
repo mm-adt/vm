@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.Pattern;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

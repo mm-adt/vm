@@ -31,7 +31,7 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.Bindings;
+import org.mmadt.machine.object.model.Bindings;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;
@@ -53,6 +53,7 @@ import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.plus;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
+import static org.mmadt.util.ProcessArgs.args;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -61,11 +62,11 @@ final class TRecTest implements TestUtilities {
 
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             // instances
-            ProcessArgs.args(List.of(TRec.of(Map.of("a", 1))), TRec.of(Map.of("a", 1))),
-            ProcessArgs.args(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"))).label("c")), TRec.of(Map.of("name", "marko")).as(TRec.of(Map.of("name", TStr.of().label("a"))).label("c"))),
-            ProcessArgs.args(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"))).label("c")), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of("name", TStr.of().label("a"))).label("c"))),
-            ProcessArgs.args(List.of(TRec.of(Map.of()).label("c")), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of()).label("c"))),
-            ProcessArgs.args(List.of(), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of("friend", "bob")).label("c"))),
+            args(List.of(TRec.of(Map.of("a", 1))), TRec.of(Map.of("a", 1))),
+            args(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"))).label("c")), TRec.of(Map.of("name", "marko")).as(TRec.of(Map.of("name", TStr.of().label("a"))).label("c"))),
+            args(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"))).label("c")), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of("name", TStr.of().label("a"))).label("c"))),
+            args(List.of(TRec.of(Map.of()).label("c")), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of()).label("c"))),
+            args(List.of(), TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.of("friend", "bob")).label("c"))),
             // ProcessArgs.of(List.of(TRec.of(Map.of("name", TStr.of("marko").label("a"), "age", TInt.of().label("b")))), TRec.of(Map.of("name", "marko", "age", TInt.of())).as(TRec.of(Map.of("name", TStr.of().label("a"), "age", TInt.of().label("b"))))),
 
     };

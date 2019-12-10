@@ -28,7 +28,7 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.type.Bindings;
+import org.mmadt.machine.object.model.Bindings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

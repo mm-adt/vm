@@ -29,7 +29,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.processor.compiler.Argument;
 
 import java.util.stream.Stream;

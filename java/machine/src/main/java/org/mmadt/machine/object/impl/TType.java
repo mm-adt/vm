@@ -25,7 +25,7 @@ package org.mmadt.machine.object.impl;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.Pattern;
+import org.mmadt.machine.object.model.Pattern;
 
 import java.util.HashMap;
 import java.util.Map;

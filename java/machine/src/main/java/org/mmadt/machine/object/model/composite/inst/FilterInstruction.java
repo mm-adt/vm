@@ -24,7 +24,7 @@ package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.ext.Pair;
+import org.mmadt.machine.object.model.ext.composite.Pair;
 
 import java.util.function.Function;
 

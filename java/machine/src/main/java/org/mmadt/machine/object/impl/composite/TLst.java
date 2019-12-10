@@ -31,7 +31,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 

@@ -25,7 +25,7 @@ package org.mmadt.machine.object.model.atomic;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**

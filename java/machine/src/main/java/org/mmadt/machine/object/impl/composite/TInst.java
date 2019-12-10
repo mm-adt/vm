@@ -31,7 +31,7 @@ import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.util.InstHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;

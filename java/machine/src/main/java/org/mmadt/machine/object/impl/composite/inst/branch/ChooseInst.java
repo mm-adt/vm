@@ -26,7 +26,7 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.BranchInstruction;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.composite.util.PList;
 
 import java.util.Map;
 

@@ -23,7 +23,7 @@
 package org.mmadt.storage.compliance.util;
 
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

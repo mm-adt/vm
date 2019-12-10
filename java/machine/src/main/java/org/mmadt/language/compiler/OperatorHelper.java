@@ -36,13 +36,13 @@ import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.type.algebra.WithAnd;
-import org.mmadt.machine.object.model.type.algebra.WithDiv;
-import org.mmadt.machine.object.model.type.algebra.WithMinus;
-import org.mmadt.machine.object.model.type.algebra.WithMult;
-import org.mmadt.machine.object.model.type.algebra.WithOr;
-import org.mmadt.machine.object.model.type.algebra.WithOrder;
-import org.mmadt.machine.object.model.type.algebra.WithPlus;
+import org.mmadt.machine.object.model.ext.algebra.WithAnd;
+import org.mmadt.machine.object.model.ext.algebra.WithDiv;
+import org.mmadt.machine.object.model.ext.algebra.WithMinus;
+import org.mmadt.machine.object.model.ext.algebra.WithMult;
+import org.mmadt.machine.object.model.ext.algebra.WithOr;
+import org.mmadt.machine.object.model.ext.algebra.WithOrder;
+import org.mmadt.machine.object.model.ext.algebra.WithPlus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

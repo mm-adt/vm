@@ -37,8 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.id;
 import static org.mmadt.machine.object.impl.__.mult;
+import static org.mmadt.machine.object.impl.__.one;
 import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.machine.object.impl.__.zero;
+import static org.mmadt.util.ProcessArgs.args;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,22 +48,22 @@ import static org.mmadt.machine.object.impl.__.zero;
 class TRealTest implements TestUtilities {
 
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
-            ProcessArgs.args(List.of(1.0f, 2.0f, 3.0f, 4.0f), TReal.of(1.0f, 2.0f, 3.0f, 4.0f)),
-            ProcessArgs.args(List.of(1.1f), TReal.of(1.1f)),
-            ProcessArgs.args(List.of(-1.1f), TReal.of(1.1f).neg()),
-            ProcessArgs.args(List.of(0.0f), TReal.of(1.1f).zero()),
-            ProcessArgs.args(List.of(0.0f), TReal.of(1.1f).mult(zero())),
-            ProcessArgs.args(List.of(2.1f, 1.0f), TReal.of(1.1f).<Real>branch(id(), zero()).plus(1.0f)),
-            ProcessArgs.args(List.of(4.2f), TReal.of(1.1f).<Real>branch(id(), zero()).plus(1.0f).is(gt(2.0f)).mult(2.0f)),
-            // ProcessArgs.of(List.of(TReal.of(1.1f).q(2)), TReal.of(1.1f).mult(one()).q(2)), // TODO: quantifier needs to also be appended to access
-            ProcessArgs.args(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f)))),
-            ProcessArgs.args(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f)),
-            ProcessArgs.args(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f)))),
-            ProcessArgs.args(List.of(5.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f))).plus(1.0f)),
-            ProcessArgs.args(List.of(), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f).plus(0.1f)))),
-            ProcessArgs.args(List.of(false), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f))),
-            ProcessArgs.args(List.of(false), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(false)),
-            ProcessArgs.args(List.of(true), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(true)),
+            args(List.of(1.0f, 2.0f, 3.0f, 4.0f), TReal.of(1.0f, 2.0f, 3.0f, 4.0f)),
+            args(List.of(1.1f), TReal.of(1.1f)),
+            args(List.of(-1.1f), TReal.of(1.1f).neg()),
+            args(List.of(0.0f), TReal.of(1.1f).zero()),
+            args(List.of(0.0f), TReal.of(1.1f).mult(zero())),
+            args(List.of(2.1f, 1.0f), TReal.of(1.1f).<Real>branch(id(), zero()).plus(1.0f)),
+            args(List.of(4.2f), TReal.of(1.1f).<Real>branch(id(), zero()).plus(1.0f).is(gt(2.0f)).mult(2.0f)),
+            // args(List.of(TReal.of(1.1f).q(2)), TReal.of(1.1f).mult(one()).q(2)), // TODO: quantifier needs to also be appended to access
+            args(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f)))),
+            args(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f)),
+            args(List.of(4.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f)))),
+            args(List.of(5.2f), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f))).plus(1.0f)),
+            args(List.of(), TReal.of(1.0f).plus(plus(plus(1.2f))).mult(1.0f).is(gt(TReal.of(4.0f).plus(0.1f).plus(0.1f)))),
+            args(List.of(false), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f))),
+            args(List.of(false), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(false)),
+            args(List.of(true), TReal.of(1.0f).plus(1.2f).gt(plus(0.1f)).plus(true)),
     };
 
     @TestFactory

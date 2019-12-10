@@ -28,9 +28,9 @@ import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
-import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.ext.algebra.WithGroupPlus;
+import org.mmadt.machine.object.model.ext.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.List;

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.impl.composite.ext.TPair;
+import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.util.IteratorUtils;
 

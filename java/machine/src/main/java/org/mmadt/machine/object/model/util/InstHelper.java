@@ -25,7 +25,7 @@ package org.mmadt.machine.object.model.util;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.composite.util.PList;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -27,30 +27,33 @@ import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.ext.TPair;
+import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
+import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
+import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
+import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.Bindings;
-import org.mmadt.machine.object.model.type.Pattern;
-import org.mmadt.machine.object.model.type.algebra.WithAnd;
-import org.mmadt.machine.object.model.type.algebra.WithOr;
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
-import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.ext.algebra.WithAnd;
+import org.mmadt.machine.object.model.ext.algebra.WithOr;
+import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.ext.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
@@ -67,13 +70,13 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     final Set<String> BASE_SYMBOLS = Set.of(Tokens.OBJ, Tokens.BOOL, Tokens.INT, Tokens.REAL, Tokens.STR, Tokens.LST, Tokens.REC, Tokens.INST);
 
-    public String symbol();
-
-    public <B> B get();
-
     public default boolean named() {
         return !BASE_SYMBOLS.contains(this.symbol());
     }
+
+    public String symbol();
+
+    public <B> B get();
 
     public WithOrderedRing q();
 
@@ -101,6 +104,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
+    public default Obj or(final Obj object) {
+        return this.set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(object)))); // use choose?
+    }
+
+    @Override
     public default boolean test(final Obj obj) {
         boolean root = TRAMPOLINE.isEmpty();
         try {
@@ -112,7 +120,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             if (this.isInstance())                                                              // INSTANCE CHECKING
                 return obj.isInstance() && this.eq(obj).java();
             else if (this.isReference()) {                                                      // REFERENCE CHECKING
-                return this.get().equals(obj.get()) && this.access().equals(obj.access());
+                return Objects.equals(this.get(), obj.get()) && this.access().equals(obj.access());
             } else {                                                                             // TYPE CHECKING
                 assert this.isType(); // TODO: remove when proved
                 ////////////////////////////////////////////
@@ -233,6 +241,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 (O) CountInst.create().attach(this, this.q().one());
     }
 
+    public default <O extends Obj> O dedup() {
+        return this.isInstance() ?
+                this.q(this.q().one()) :
+                (O) DedupInst.create().attach(this);
+    }
+
     public default <O extends Obj> O is(final Bool bool) {
         return this.isInstance() && bool.isInstance() ?
                 bool.java() ? (O) this : this.q(zero) :
@@ -253,13 +267,17 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends WithOrderedRing<O>> O sum() {
         return this.isInstance() ?
-                (O) TPair.of(this, this).mult(this.q()) :
+                (O) QuantifierHelper.trySingle((O) TPair.of(this, this).mult(this.q())) :
                 (O) SumInst.<O>create().attach((O) this);
 
     }
 
     public default <O extends Obj> O branch(final Object... branches) {
         return (O) BranchInst.create(branches).attach(this);
+    }
+
+    public default <O extends Obj> O choose(final Object... choices) {
+        return (O) ChooseInst.create(choices).attach(this);
     }
 
     public Bool eq(final Obj object);

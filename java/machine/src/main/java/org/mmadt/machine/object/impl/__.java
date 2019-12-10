@@ -37,6 +37,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
@@ -108,6 +109,10 @@ public class __ {
 
     public static Inst neg() {
         return NegInst.create();
+    }
+
+    public static Inst neq(final Object object) {
+        return NeqInst.create(object);
     }
 
     public static Inst one() {

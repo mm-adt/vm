@@ -28,7 +28,7 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.util.IteratorUtils;

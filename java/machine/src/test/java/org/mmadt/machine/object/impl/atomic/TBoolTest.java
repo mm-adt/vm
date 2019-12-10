@@ -131,7 +131,7 @@ final class TBoolTest implements TestUtilities {
     @Test
     void shouldOrCorrectly() {
         assertEquals(TBool.of(true), TBool.of(true).or(TBool.of(true)));
-//       assertEquals("true{+}|true{?}", TBool.of(true).q(plus).or(TBool.of(true).q(qmark)).toString());
+        //      assertEquals("true{+}|true{?}", TBool.of(true).q(plus).or(TBool.of(true).q(qmark)).toString());
 //      assertEquals("bool|false", TBool.of().or(TBool.of(false)).toString());
         assertEquals("true", TBool.of(true).or(TBool.of(false)).toString());
         //        assertEquals("true{*}|false", TBool.of(true).q(star).or(TBool.of(false)).toString());

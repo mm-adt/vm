@@ -29,7 +29,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
-import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.util.InstHelper;
 
 import java.util.Optional;

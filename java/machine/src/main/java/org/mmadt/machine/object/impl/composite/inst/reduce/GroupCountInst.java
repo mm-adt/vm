@@ -28,10 +28,10 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
-import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.PMap;
-import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.composite.util.PMap;
+import org.mmadt.machine.object.model.ext.algebra.WithMonoidPlus;
+import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.util.IteratorUtils;
 

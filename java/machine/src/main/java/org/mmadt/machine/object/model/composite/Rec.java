@@ -28,9 +28,9 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.type.PMap;
-import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
-import org.mmadt.machine.object.model.type.algebra.WithProduct;
+import org.mmadt.machine.object.model.composite.util.PMap;
+import org.mmadt.machine.object.model.ext.algebra.WithGroupPlus;
+import org.mmadt.machine.object.model.ext.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.Map;

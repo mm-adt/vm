@@ -22,9 +22,9 @@
 
 package org.mmadt.process.compliance;
 
-import org.mmadt.machine.object.impl.composite.ext.TPair;
+import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.ArrayList;

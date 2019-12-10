@@ -25,8 +25,8 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
-import org.mmadt.machine.object.model.type.PList;
-import org.mmadt.machine.object.model.type.algebra.WithZero;
+import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.ext.algebra.WithZero;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

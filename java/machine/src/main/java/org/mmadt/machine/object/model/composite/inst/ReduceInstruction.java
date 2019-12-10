@@ -24,7 +24,7 @@ package org.mmadt.machine.object.model.composite.inst;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.type.algebra.WithPlus;
+import org.mmadt.machine.object.model.ext.algebra.WithPlus;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.Iterator;
