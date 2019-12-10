@@ -29,6 +29,7 @@ import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -47,27 +48,44 @@ class ReduceTest {
 
     private final static ParserArgs[] REDUCING = new ParserArgs[]{
             // count
-            args(ints(1), "1 => [count]"),
-            args(ints(3), "1 => [[plus,1] + [plus,2] + [plus,3]][count]"),
-            args(ints(1), "1 => [[plus,1] + [plus,2] + [plus,3]][count][count]"),
-            args(ints(1), "1 => [[plus,1] + [plus,2] + [plus,3]][count][count][count]"),
-            args(objs(1, 1, 1), "1 => [[plus,1][count] + [plus,2][count] + [plus,3][count]]"),
-            args(TPair.of(0, 5), "int{5} => [is,[gt,10]][count]"),
-            // args(ints(0), "obj{0} => [count]"),
+            args(ints(1),
+                    "1 => [count]"),
+            args(ints(3),
+                    "1 => [[plus,1] + [plus,2] + [plus,3]][count]"),
+            args(ints(1),
+                    "1 => [[plus,1] + [plus,2] + [plus,3]][count][count]"),
+            args(ints(1),
+                    "1 => [[plus,1] + [plus,2] + [plus,3]][count][count][count]"),
+            args(objs(1, 1, 1),
+                    "1 => [[plus,1][count] + [plus,2][count] + [plus,3][count]]"),
+            args(TPair.of(0, 5),
+                    "int{5} => [is,[gt,10]][count]"),
             // sum
-            args(ints(2), "2 => [sum]"),
-            args(ints(9), "1 => [[plus,1] + [plus,2] + [plus,3]][sum]"),
-            args(objs(2, 3, 4), "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]]"),
-            args(objs(6), "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][count]][sum]"),
-            args(ints(3), "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count]"),
-            args(ints(3), "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count][sum]"),
+            args(ints(2),
+                    "2 => [sum]"),
+            args(ints(9),
+                    "1 => [[plus,1] + [plus,2] + [plus,3]][sum]"),
+            args(objs(2, 3, 4),
+                    "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]]"),
+            args(objs(6),
+                    "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][count]][sum]"),
+            args(ints(3),
+                    "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count]"),
+            args(ints(3).<Int>label("x"),
+                    "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count][sum]~x"),
             // groupCount
-            args(TRec.of(1, 1), "1 => [groupCount]"),
-            args(ints(1), "1 => [groupCount][count]"),
-            args(TRec.of(1, 2, 2, 3, 3, 4), "1 => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount]"),
-            args(TRec.of(2, 2, 3, 3, 4, 4), "1 => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount,[plus,1]]"),
-            args(TRec.of(0, 9), "1 => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount,[plus,2][zero]]"),
-            args(TRec.of(0, 9), "int => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount,[zero]]"),
+            args(TRec.of(1, 1),
+                    "1 => [groupCount]"),
+            args(ints(1),
+                    "1 => [groupCount][count]"),
+            args(TRec.of(1, 2, 2, 3, 3, 4),
+                    "1 => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount]"),
+            args(TRec.of(2, 2, 3, 3, 4, 4),
+                    "1 => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount,[plus,1]]"),
+            args(TRec.of(0, 9),
+                    "1 => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount,[plus,2][zero]]"),
+            args(TRec.of(0, 9),
+                    "int => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount,[zero]]"),
             // args(TRec.of(), "obj{0} => [groupCount]")
     };
 

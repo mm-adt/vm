@@ -51,15 +51,24 @@ class LabelTest {
 
     private final static ParserArgs[] LABELS = new ParserArgs[]{
             // count
-            args(as(ints()).mult(count()), "int~[count]"),
-            args(ints().<Obj>mapFrom(plus(2).domain(ints())), "int => int~[plus,2]"),
-            args(ints().label("x").<Obj>mapFrom(plus(2).domain(TSym.of("x"))), "int => int~x~[plus,2]"),
-            args(ints().<Int>label("x").plus(2).<Int>as(TInt.of().label("y")).mult(3), "int => int~x~[plus,2]~y~[mult,3]"),
-            args(as(ints().label("x")).mult(count()), "int~x~[count]"),
-            args(as(ints()).mult(plus(10)).mult(as(TSym.of("y"))).mult(mult(20)).mult(as(TInt.of())), "int~[plus,10]~y~[mult,20]~int"),
-            args(as(ints()).mult(plus(10)).mult(as(TInt.of().label("y"))).mult(mult(20)).mult(as(TInt.of())), "int~[plus,10]~int~y~[mult,20]~int"),
-            args(as(ints()).mult(plus(10)).mult(as(TSym.of("y"))).mult(mult(20)).mult(as(TInt.of())), "int~[plus,10]~y~[mult,20]~int"),
-            args(as(ints()).mult(plus(10)).mult(as(TSym.of("y"))).mult(as(TSym.of("z"))).mult(mult(20)).mult(as(TInt.of())), "int~[plus,10]~y~z~[mult,20]~int"),
+            args(as(ints()).mult(count()),
+                    "int~[count]"),
+            args(ints().<Obj>mapFrom(plus(2).domain(ints())),
+                    "int => int~[plus,2]"),
+            args(ints().label("x").<Obj>mapFrom(plus(2).domain(TSym.of("x"))),
+                    "int => int~x~[plus,2]"),
+            args(ints().<Int>label("x").plus(2).<Int>as(TInt.of().label("y")).mult(3),
+                    "int => int~x~[plus,2]~y~[mult,3]"),
+            args(as(ints().label("x")).mult(count()),
+                    "int~x~[count]"),
+            args(as(ints()).mult(plus(10)).mult(as(TSym.of("y"))).mult(mult(20)).mult(as(TInt.of())),
+                    "int~[plus,10]~y~[mult,20]~int"),
+            args(as(ints()).mult(plus(10)).mult(as(TInt.of().label("y"))).mult(mult(20)).mult(as(TInt.of())),
+                    "int~[plus,10]~int~y~[mult,20]~int"),
+            args(as(ints()).mult(plus(10)).mult(as(TSym.of("y"))).mult(mult(20)).mult(as(TInt.of())),
+                    "int~[plus,10]~y~[mult,20]~int"),
+            args(as(ints()).mult(plus(10)).mult(as(TSym.of("y"))).mult(as(TSym.of("z"))).mult(mult(20)).mult(as(TInt.of())),
+                    "int~[plus,10]~y~z~[mult,20]~int"),
     };
 
 

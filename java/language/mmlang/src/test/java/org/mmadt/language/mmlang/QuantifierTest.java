@@ -53,16 +53,26 @@ import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
 class QuantifierTest {
 
     private final static ParserArgs[] PARSING = new ParserArgs[]{
-            args(ints().<Int>q(1), "int"),
-            args(objs(ints().q(star)), "int{*}"),
-            args(objs(ints().q(qmark)), "int{?}"),
-            args(objs(ints().q(plus)), "int{+}"),
-            args(objs(), "int{0}"),
-            args(objs(TInt.of().q(1, 2)), "int{1,2}"),
-            args(objs(TInt.of().q(2, TInt.of().max())), "int{2,}"),
-            args(objs(TInt.of().q(TInt.of().min(), 2)), "int{,2}"),
-            args(objs(PlusInst.create(11).q(2)), "[plus,11]{2}"),
-            args(objs(plus(11).<Inst>q(2).mult(minus(TInt.of()).q(3, 4))), "[plus,11]{2}[minus,int]{3,4}"), // TODO: type <Int>q()
+            args(ints().<Int>q(1),
+                    "int"),
+            args(objs(ints().q(star)),
+                    "int{*}"),
+            args(objs(ints().q(qmark)),
+                    "int{?}"),
+            args(objs(ints().q(plus)),
+                    "int{+}"),
+            args(objs(),
+                    "int{0}"),
+            args(objs(TInt.of().q(1, 2)),
+                    "int{1,2}"),
+            args(objs(TInt.of().q(2, TInt.of().max())),
+                    "int{2,}"),
+            args(objs(TInt.of().q(TInt.of().min(), 2)),
+                    "int{,2}"),
+            args(objs(PlusInst.create(11).q(2)),
+                    "[plus,11]{2}"),
+            args(objs(plus(11).<Inst>q(2).mult(minus(TInt.of()).q(3, 4))),
+                    "[plus,11]{2}[minus,int]{3,4}"), // TODO: type <Int>q()
             // ParserArgs.of(objs(TInt.of().q(2).mapTo(plus(5).q(3))), "int{2} => [plus,5]{3}"),
     };
 

@@ -130,7 +130,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                     TRAMPOLINE.add(List.of(this, obj));
                 ////////////////////////////////////////////
                 // testing pattern or if no pattern, check the raw class type (int/bool/str/list/etc)
-                return null != this.get() ? this.<Pattern>get().test(obj) : this.getClass().isAssignableFrom(obj.getClass());
+                return null != this.get() ?
+                        this.<Pattern>get().test(obj) :
+                        this.getClass().isAssignableFrom(obj.getClass());
             }
         } finally {
             if (root)
@@ -284,13 +286,13 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Bool neq(final Obj object);
 
-    public default <O extends Obj> O as( O obj) {
-        if(obj instanceof TSym)
-           obj = obj.symbol(this.symbol());
+    public default <O extends Obj> O as(O obj) {
+        if (obj instanceof TSym)
+            obj = obj.symbol(this.symbol());
         if (!obj.test(this))
             return obj.q(obj.q().zero());
         else if (this.isType())
-            return this.symbol( obj.symbol()).label(obj.label()).access(obj.access()).set(obj.get());
+            return this.symbol(obj.symbol()).label(obj.label()).access(obj.access()).set(obj.get());
         else if (this.isReference())
             return this.symbol(obj.symbol()).label(obj.label()).set(obj.get());
         else
