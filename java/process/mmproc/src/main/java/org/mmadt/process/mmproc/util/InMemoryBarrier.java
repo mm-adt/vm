@@ -27,24 +27,24 @@ package org.mmadt.process.mmproc.util;
  */
 public final class InMemoryBarrier<S> implements Barrier<S> {
 
-    private S value;
-    private final S initialValue;
+    private S seed;
+    private final S initialSeed;
 
-    public InMemoryBarrier(final S initialValue) {
-        this.initialValue = initialValue;
-        this.value = initialValue;
+    public InMemoryBarrier(final S initialSeed) {
+        this.initialSeed = initialSeed;
+        this.seed = initialSeed;
     }
 
     @Override
     public void reset() {
-        this.value = this.initialValue;
+        this.seed = this.initialSeed;
     }
 
     public S get() {
-        return this.value;
+        return this.seed;
     }
 
     public void update(final S newValue) {
-        this.value = newValue;
+        this.seed = newValue;
     }
 }

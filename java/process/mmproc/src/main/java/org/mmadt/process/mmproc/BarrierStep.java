@@ -51,13 +51,13 @@ final class BarrierStep<S extends Obj, E> extends AbstractStep<S, S, BarrierInst
     public S next() {
         if (!this.done) {
             while (this.previousStep.hasNext()) {
-                this.barrier.update(this.barrierFunction.apply(this.barrier.get(), super.previousStep.next()));
+                this.barrier.update(this.barrierFunction.apply(super.previousStep.next(), this.barrier.get()));
             }
             this.done = true;
             this.output = (Iterator) this.barrierFunction.createIterator(this.barrier.get());
         }
         final Object object = this.output.next();
-        return object instanceof ObjSet ? ((ObjSet<S>) object).remove() : (S) object; // hack for barrier (ObjSet should not exist. TThat is what should back objects
+        return object instanceof ObjSet ? ((ObjSet<S>) object).remove() : (S) object; // hack for barrier (ObjSet should not exist. Use reference obj.
     }
 
     @Override

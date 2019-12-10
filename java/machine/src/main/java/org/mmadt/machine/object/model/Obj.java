@@ -251,10 +251,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                         MapInst.<Obj, O>create(obj).attach(this, obj.copy(this));
     }
 
-    public default <O extends Obj> O sum() {
+    public default <O extends WithOrderedRing<O>> O sum() {
         return this.isInstance() ?
-                (O) ((WithOrderedRing) this).mult(this.q()) :
-                ((WithOrderedRing) this).mapFrom(SumInst.create());
+                (O) TPair.of(this, this).mult(this.q()) :
+                (O) SumInst.<O>create().attach((O) this);
 
     }
 

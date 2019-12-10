@@ -65,8 +65,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
         Stream<S> stream = Stream.of(bytecode.domain().access(null));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof BarrierInstruction)  // two patterns: *-to-* and 1-to-*.
-                stream = IteratorUtils.stream(((BarrierInstruction<S, S>) inst).createIterator(
-                        stream.reduce(((BarrierInstruction<S, S>) inst).getInitialValue(), ((BarrierInstruction<S, S>) inst)::apply)));
+                stream = IteratorUtils.stream(((BarrierInstruction<S, S>) inst).createIterator(stream.reduce(((BarrierInstruction<S, S>) inst).getInitialValue(), (a, b) -> ((BarrierInstruction<S, S>) inst).apply(b, a))));
             else
                 stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());

@@ -147,7 +147,7 @@ public final class Instructions {
             case GTE:
                 return GteInst.create(args.get(0));
             case GROUPCOUNT:
-                return GroupCountInst.create(args.get(0));
+                return GroupCountInst.create(args.isEmpty() ? IdInst.create() : args.get(0));
             case ID:
                 return IdInst.create();
             case INV:

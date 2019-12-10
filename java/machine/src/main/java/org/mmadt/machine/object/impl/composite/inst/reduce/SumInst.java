@@ -28,6 +28,10 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.QuantifierHelper;
+import org.mmadt.util.IteratorUtils;
+
+import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,8 +43,18 @@ public final class SumInst<S extends WithOrderedRing<S>> extends TInst<S, Obj> i
     }
 
     @Override
-    public S apply(final S current, final S obj) {
-        return current.plus(obj.sum());
+    public S apply(final S obj, final S seed) {
+        return seed.plus(obj.sum());
+    }
+
+    @Override
+    public S getInitialValue() {
+        return (S) this.q().zero();
+    }
+
+    @Override
+    public Iterator<S> createIterator(final S reduction) {
+        return IteratorUtils.of((S) QuantifierHelper.trySingle(reduction));
     }
 
     public static <S extends WithOrderedRing<S>> SumInst<S> create() {

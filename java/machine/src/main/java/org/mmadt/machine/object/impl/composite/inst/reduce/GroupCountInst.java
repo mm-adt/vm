@@ -31,6 +31,12 @@ import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.QuantifierHelper;
+import org.mmadt.util.IteratorUtils;
+
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
 
@@ -44,16 +50,23 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
     }
 
     @Override
-    public Rec<E, A> apply(final Rec<E, A> current, final S obj) {
+    public Rec<E, A> apply(final S obj, final Rec<E, A> seed) {
         final E object = this.<E>argument(0).mapArg(obj);
         final E objectOne = object.q(one);
-        current.put(objectOne, ((A) object.q()).plus(current.<PMap<E, A>>get().getOrDefault(objectOne, (A) this.q().zero())));
-        return current;
+        seed.put(objectOne, ((A) object.q()).plus(seed.<PMap<E, A>>get().getOrDefault(objectOne, (A) this.q().zero())));
+        return seed;
     }
 
     @Override
     public Rec<E, A> getInitialValue() {
         return TRec.of().q(this.q().one());
+    }
+
+    @Override
+    public Iterator<Rec<E, A>> createIterator(final Rec<E, A> reduction) {
+        final Map<E, A> temp = new PMap<>();
+        reduction.<PMap<E, A>>get().forEach((k, v) -> temp.put(k, (A) QuantifierHelper.trySingle((WithOrderedRing) v)));
+        return IteratorUtils.of(TRec.of(temp));
     }
 
     public static <S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> GroupCountInst<S, E, A> create(final Object arg) {

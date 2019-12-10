@@ -31,25 +31,25 @@ import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 public final class InMemoryReducer<S extends Obj, E extends Obj> implements Reducer<S, E> {
 
     private final ReduceInstruction<S, E> reduceFunction;
-    private E value;
+    private E seed;
 
     public InMemoryReducer(final ReduceInstruction<S, E> reduceFunction) {
         this.reduceFunction = reduceFunction;
-        this.value = this.reduceFunction.getInitialValue();
+        this.seed = this.reduceFunction.getInitialValue();
     }
 
     @Override
     public E get() {
-        return this.value;
+        return this.seed;
     }
 
     @Override
     public void add(final S obj) {
-        this.value = this.reduceFunction.apply(this.value, obj);
+        this.seed = this.reduceFunction.apply(obj, this.seed);
     }
 
     @Override
     public void reset() {
-        this.value = this.reduceFunction.getInitialValue();
+        this.seed = this.reduceFunction.getInitialValue();
     }
 }

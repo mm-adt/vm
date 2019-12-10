@@ -35,15 +35,13 @@ import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BarrierInstruction<S, E>, BiFunction<E, S, E> {
+public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BarrierInstruction<S, E>, BiFunction<S, E, E> {
 
     public default E merge(final E objA, final E objB) {
         return (E) ((WithPlus) objA).plus(objB);
     }
 
-    public default E getInitialValue() {
-        return (E) this.q().zero();
-    }
+    public E getInitialValue();
 
     public default Iterator<E> createIterator(final E reduction) {
         return IteratorUtils.of(reduction);

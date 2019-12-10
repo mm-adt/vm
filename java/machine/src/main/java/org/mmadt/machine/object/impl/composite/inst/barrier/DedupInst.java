@@ -64,9 +64,9 @@ public final class DedupInst<S extends Obj> extends TInst<S, S> implements Barri
     }
 
     @Override
-    public ObjSet<S> apply(final ObjSet<S> barrier, final S s) {
-        barrier.add(s);
-        return barrier;
+    public ObjSet<S> apply(final S s, final ObjSet<S> seed) {
+        seed.add(s);
+        return seed;
     }
 
     public static <S extends Obj> DedupInst<S> create(final Object... projections) {
