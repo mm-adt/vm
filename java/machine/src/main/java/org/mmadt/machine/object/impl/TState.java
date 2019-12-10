@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class TState implements State {
 
-    private final Map<String, Obj> objs = new LinkedHashMap<>();
+    private Map<String, Obj> objs = new LinkedHashMap<>();
     private final Inst insts = null;
 
     @Override
@@ -45,17 +45,29 @@ public class TState implements State {
 
     @Override
     public <O extends Obj> O read(final Obj key) {
-        return (O) objs.getOrDefault(key.label(), key);
+        return (O) this.objs.getOrDefault(key.label(), TObj.none());
     }
 
     @Override
-    public <O extends Obj> O write(final O value) {
-        this.objs.put(value.label(), value);
-        return value;
+    public State write(final Obj value) {
+        final TState clone = (TState) this.clone();
+        clone.objs.put(value.label(), value);
+        return clone;
     }
 
     @Override
     public String toString() {
         return this.objs.values().toString();
+    }
+
+    @Override
+    public State clone() {
+        try {
+            final TState clone = (TState) super.clone();
+            clone.objs = new LinkedHashMap<>(this.objs);
+            return clone;
+        } catch (final CloneNotSupportedException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 }

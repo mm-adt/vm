@@ -28,6 +28,7 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Pattern;
 import org.mmadt.machine.object.model.State;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
@@ -41,7 +42,6 @@ import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithOr;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.ext.composite.Pair;
-import org.mmadt.machine.object.model.Pattern;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
@@ -87,7 +87,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     protected Object value;                            // mutually exclusive with pattern (instance data)
     private WithOrderedRing quantifier = null;         // the 'amount' of this object bundle
     protected Type type;                               // an object that abstractly defines this object's forms
-    State state = new TState();                        // state associated with the computation
+    private State state = new TState();                // state associated with the computation
 
     public TObj(final Object value) {
         this.type = TType.of(TObj.getBaseSymbol(this));
@@ -183,7 +183,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
         clone.type = this.type.label(variable);
-        return (O) clone.state().write(clone);
+        if (null != variable)
+            clone.state = clone.state.write(clone);
+        return (O) clone;
     }
 
     @Override

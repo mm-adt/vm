@@ -30,7 +30,7 @@ import java.util.function.Function;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface MapInstruction<S extends Obj, E extends Obj> extends Inst, Function<S, E> {
+public interface MapInstruction<S extends Obj, E extends Obj> extends Inst, Function<S, E>, Morphing {
 
     @Override
     E apply(final S obj);

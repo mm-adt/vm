@@ -32,6 +32,8 @@ import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
+import org.mmadt.machine.object.model.composite.inst.Morphing;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.util.InstHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -97,7 +99,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     public E attach(S domainRange) {
         if (domainRange.isInstance())
             domainRange = domainRange.set(null).access(StartInst.create(domainRange));
-        return this.attach(domainRange, (E) domainRange);
+        return this.attach(domainRange, this instanceof Morphing ? (E) domainRange.label(null) : (E)domainRange);
     }
 
     public static Inst of(final List<Inst> insts) {

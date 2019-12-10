@@ -62,7 +62,7 @@ class ParserTest {
             args(ints(30), "11 + 4 * 2"),
             args(ints(30), "11 => [plus,4] => [mult,2]"),
             args(ints(30), "11 => [plus,4][mult,2] => int => [id]"),
-            args(ints(30), "11 => [plus,4]~y~[mult,2] => int => [id]"),
+            args(ints(30), "11 => [plus,4]=>y=>[mult,2] => int => [id]"),
             args(ints(30), "11 => ([plus,4] * [mult,2]) => int => [id]"),   // TODO: should we have binary operator precedence with => and <= being lowest?
             args(plus(11), "[plus,11]"),
             args(ints(40), "40 => int[is[gt,20]]"),
@@ -102,10 +102,10 @@ class ParserTest {
             args(ints().plus(2), "int => (int => [plus,2])"),
             args(ints().<Int>label("a").plus(2), "int => (int~a => [plus,2])"),
             // args(ints().<Int>label("a").plus(2), "(int => int~a) <= [plus,2]"),
-            args(ints().<Int>label("a").plus(2), "int => (int~a <= [plus,2])"),
+            args(ints().<Int>label("a").<Int>access(plus(2)), "int => (int~a <= [plus,2])"),
             args(ints().<Int>label("a").plus(2), "int => int~a => [plus,2]"), // TODO: all mutations should drop label
-            args(ints().<Int>label("a").plus(2), "int <= int~a <= [plus,2]"),
-            args(ints().<Int>label("a").plus(2), "int <= (int~a <= [plus,2])"),
+            args(ints().<Int>label("a").<Int>access(plus(2)), "int <= int~a <= [plus,2]"),
+            args(ints().<Int>label("a").<Int>access(plus(2)), "int <= (int~a <= [plus,2])"),
             // args(ints().<Int>label("a").plus(2), "int => (int => [plus,2]~a)"), // TODO: step labels (like quantifiers) transfer from inst to obj
             args(objs(), "str => 1"),
             args(strs("a"), "str => 'a'"),

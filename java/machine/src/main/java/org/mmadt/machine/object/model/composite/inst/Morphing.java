@@ -20,21 +20,10 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model;
-
-import org.mmadt.machine.object.model.composite.Inst;
+package org.mmadt.machine.object.model.composite.inst;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface State extends Cloneable {
-
-    Inst apply(final Inst inst);
-
-    public <O extends Obj> O read(final Obj key);
-
-    public State write(final Obj value);
-
-    public State clone();
-
+public interface Morphing {
 }

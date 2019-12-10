@@ -190,7 +190,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             }
             return (O) o;
         } else if (obj instanceof TSym) {
-            return this.state().write(this.label(obj.symbol())).mapTo(this.state().read(obj));  // stores the current obj into the obj state (variable-based history)
+            return this.label(obj.label());  // stores the current obj into the obj state (variable-based history)
         } else if (!obj.access().isOne())
             return this.mapTo(obj.access()).mapTo(obj.access(null));
         else if (this.isInstance())

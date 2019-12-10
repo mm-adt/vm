@@ -35,7 +35,7 @@ import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BarrierInstruction<S, E>, BiFunction<S, E, E> {
+public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, BarrierInstruction<S, E>, BiFunction<S, E, E>, Morphing {
 
     public default E merge(final E objA, final E objB) {
         return (E) ((WithPlus) objA).plus(objB);

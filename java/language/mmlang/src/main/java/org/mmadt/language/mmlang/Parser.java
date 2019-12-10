@@ -50,7 +50,6 @@ import org.parboiled.annotations.SuppressNode;
 import org.parboiled.annotations.SuppressSubnodes;
 import org.parboiled.support.Var;
 
-import static org.mmadt.machine.object.impl.__.as;
 import static org.mmadt.machine.object.impl.__.id;
 
 /**
@@ -140,19 +139,9 @@ public class Parser extends BaseParser<Object> {
                 Obj_Metadata());
     }
 
-    Rule DomainRange() {
-        return Sequence(
-                FirstOf(Bool(),
-                        Real(),
-                        Int(),
-                        Str(),
-                        Symbol()),
-                Obj_Metadata());
-    }
-
     Rule Obj_Metadata() {
         return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),                                    // {quantifier}
-                Optional(!(this.peek() instanceof TSym), TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));     // ~label)
+                Optional(!(this.peek() instanceof TSym), TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));     // ~label
     }
 
     Rule Lst() {
@@ -211,18 +200,10 @@ public class Parser extends BaseParser<Object> {
                 Sequence(FALSE, this.push(TBool.of(false))));
     }
 
-    Rule Range() {
-        return Sequence(ZeroOrMore(TILDE, DomainRange(), swap(), this.push(this.inst(this.pop()).mult(as(this.pop())))), Optional(TILDE));
-    }
-
-    Rule Domain() {
-        return ZeroOrMore(DomainRange(), TILDE, swap(), this.push(this.inst(this.pop()).mult(as(this.pop()))));
-    }
-
     Rule Inst() {
         return FirstOf(
                 Sequence(INST, this.push(TInst.some())),
-                Sequence(this.push(id()), Domain(), OneOrMore(Single_Inst(), swap(), this.push(this.inst(this.pop()).mult(inst(this.pop()))), Range())));
+                Sequence(this.push(id()), OneOrMore(Single_Inst(), swap(), this.push(this.inst(this.pop()).mult(inst(this.pop()))))));
     }
 
     Rule Branch() {

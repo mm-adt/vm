@@ -72,7 +72,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
         final PMap<K, V> object = this.get();
         V v = object.getOrDefault(key, (V) TObj.none());
         if (null != v.label())  // TODO: this is ghetto---need a general solution
-            v = v.state().write(v);
+            v = v.label(v.label());
         return v.copy(this);
     }
 

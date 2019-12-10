@@ -78,7 +78,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
         final PList<V> object = this.get();
         V v = object.size() <= index.<Integer>get() ? (V) TObj.none() : object.get(index.get());
         if (null != v.label())  // TODO: this is ghetto---need a general solution
-            v = v.state().write(v);
+            v = v.label(v.label());
         return v.copy(this);
     }
 
