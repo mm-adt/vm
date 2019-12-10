@@ -70,6 +70,8 @@ public final class StringFactory {
             builder.append(SPACE)
                     .append(MAPSFROM)
                     .append(SPACE)
+                    .append(obj.access().domain())
+                    .append(TILDE)
                     .append(obj.access());
         }
     }

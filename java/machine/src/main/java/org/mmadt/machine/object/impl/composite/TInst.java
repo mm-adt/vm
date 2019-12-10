@@ -25,6 +25,7 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;

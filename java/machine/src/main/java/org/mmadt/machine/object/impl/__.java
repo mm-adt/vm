@@ -28,6 +28,7 @@ import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
+import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
@@ -42,6 +43,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
+import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -55,12 +57,20 @@ public class __ {
         return AInst.create(object);
     }
 
+    public static Inst as(final Object object) {
+        return AsInst.create(object);
+    }
+
     public static Inst branch(final Object... branches) {
         return BranchInst.create(branches);
     }
 
     public static Inst choose(final Object... choices) {
         return ChooseInst.create(choices);
+    }
+
+    public static Inst count() {
+        return CountInst.create();
     }
 
     public static Inst drop(final Object index) {

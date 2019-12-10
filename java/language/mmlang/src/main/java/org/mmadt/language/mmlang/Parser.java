@@ -33,11 +33,10 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
+import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
@@ -50,6 +49,9 @@ import org.parboiled.annotations.BuildParseTree;
 import org.parboiled.annotations.SuppressNode;
 import org.parboiled.annotations.SuppressSubnodes;
 import org.parboiled.support.Var;
+
+import static org.mmadt.machine.object.impl.__.as;
+import static org.mmadt.machine.object.impl.__.id;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -127,17 +129,30 @@ public class Parser extends BaseParser<Object> {
 
     Rule Obj() {
         return Sequence(
+                FirstOf(Inst(),
+                        Bool(),
+                        Real(),
+                        Int(),
+                        Str(),
+                        Lst(),
+                        Rec(),
+                        Symbol()),
+                Obj_Metadata());
+    }
+
+    Rule DomainRange() {
+        return Sequence(
                 FirstOf(Bool(),
                         Real(),
                         Int(),
                         Str(),
-                        Inst(),
-                        Lst(),
-                        Rec(),
-                        Symbol()),                                                                     // obj
-                Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),             // {quantifier}
-                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));      // ~label
+                        Symbol()),
+                Obj_Metadata());
+    }
 
+    Rule Obj_Metadata() {
+        return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),                                    // {quantifier}
+                Optional(!(this.peek() instanceof TSym), TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));     // ~label)
     }
 
     Rule Lst() {
@@ -196,10 +211,18 @@ public class Parser extends BaseParser<Object> {
                 Sequence(FALSE, this.push(TBool.of(false))));
     }
 
+    Rule Range() {
+        return Sequence(ZeroOrMore(TILDE, DomainRange(), swap(), this.push(this.inst(this.pop()).mult(as(this.pop())))), Optional(TILDE));
+    }
+
+    Rule Domain() {
+        return ZeroOrMore(DomainRange(), TILDE, swap(), this.push(this.inst(this.pop()).mult(as(this.pop()))));
+    }
+
     Rule Inst() {
         return FirstOf(
                 Sequence(INST, this.push(TInst.some())),
-                Sequence(this.push(IdInst.create()), OneOrMore(Single_Inst(), swap(), this.push(this.<Inst>type(this.pop()).mult(type(this.pop()))))));
+                Sequence(this.push(id()), Domain(), OneOrMore(Single_Inst(), swap(), this.push(this.inst(this.pop()).mult(inst(this.pop()))), Range())));
     }
 
     Rule Branch() {

@@ -42,7 +42,7 @@ public final class TSym extends TObj {
 
     @Override
     public boolean test(final Obj obj) {
-        return (null != obj.symbol() && obj.symbol().equals(this.symbol()));
+        return obj.symbol().equals(this.symbol());
     }
 
     @Override
