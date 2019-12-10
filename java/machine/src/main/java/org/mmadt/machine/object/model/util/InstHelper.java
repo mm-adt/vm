@@ -23,7 +23,9 @@
 package org.mmadt.machine.object.model.util;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.type.PList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,5 +58,37 @@ public final class InstHelper {
             list.add(inst.range().access(null));
         }
         return list;
+    }
+
+    public static Inst first(final Inst inst) {
+        return singleInst(inst) ? inst : inst.<PList<Inst>>get().get(0);
+    }
+
+    public static Inst last(final Inst inst) {
+        return singleInst(inst) ? inst : inst.<PList<Inst>>get().get(inst.<PList<Inst>>get().size() - 1);
+    }
+
+    public static boolean singleInst(final Inst inst) {
+        return inst.<PList>get().get(0) instanceof Str;
+    }
+
+    public static List<Inst> list(final List<Inst> list) {
+        final PList<Inst> temp = new PList<>();
+        temp.addAll(list);
+        return temp;
+    }
+
+    public static List<Inst> chain(final Inst instA, final Inst instB) {
+        final PList<Inst> list = new PList<>();
+        if (singleInst(instA))
+            list.add(instA);
+        else
+            list.addAll(instA.<PList<Inst>>get());
+        if (singleInst(instB))
+            list.add(instB);
+        else
+            list.addAll(instB.<PList<Inst>>get());
+        return list;
+
     }
 }

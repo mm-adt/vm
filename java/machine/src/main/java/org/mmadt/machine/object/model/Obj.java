@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
@@ -49,10 +48,8 @@ import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
-import org.mmadt.processor.util.FastProcessor;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -83,10 +80,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public String label();
 
     public Inst access();
-
-    public default Iterable<? extends Obj> iterable() {
-        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
-    }
 
     public <O extends Obj> O set(final Object object);
 
@@ -119,17 +112,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             if (this.isInstance())                                                              // INSTANCE CHECKING
                 return obj.isInstance() && this.eq(obj).java();
             else if (this.isReference()) {                                                      // REFERENCE CHECKING
-                if (!obj.isReference())
-                    return false;
-                else {
-                    final Iterator<? extends Obj> ittyA = this.iterable().iterator();
-                    final Iterator<? extends Obj> ittyB = obj.iterable().iterator();
-                    while (ittyA.hasNext()) {
-                        if (!ittyB.hasNext() || !(ittyB.next().test(ittyA.next())))
-                            return false;
-                    }
-                    return !ittyB.hasNext();
-                }
+                return this.get().equals(obj.get()) && this.access().equals(obj.access());
             } else {                                                                             // TYPE CHECKING
                 assert this.isType(); // TODO: remove when proved
                 ////////////////////////////////////////////
@@ -138,10 +121,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 else
                     TRAMPOLINE.add(List.of(this, obj));
                 ////////////////////////////////////////////
-                if (obj.get() instanceof Stream && !(this.get() instanceof Inst)) // TODO: only used by inst at this point (when inst is no longer stream-based, gut this)
-                    return Stream.testStream(this, obj);
-                else // testing pattern or if no pattern, check the raw class type (int/bool/str/list/etc)
-                    return null != this.get() ? this.<Pattern>get().test(obj) : this.getClass().isAssignableFrom(obj.getClass());
+                // testing pattern or if no pattern, check the raw class type (int/bool/str/list/etc)
+                return null != this.get() ? this.<Pattern>get().test(obj) : this.getClass().isAssignableFrom(obj.getClass());
             }
         } finally {
             if (root)

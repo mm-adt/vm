@@ -32,9 +32,7 @@ import org.mmadt.machine.object.model.type.PMap;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.util.FastProcessor;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -92,10 +90,5 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
             map.put(entry.getKey(), value);
         }
         return map.symbol(obj.symbol()).access(obj.access()).label(obj.label());
-    }
-
-    @Override
-    public default Iterable<Rec<K, V>> iterable() {
-        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 }

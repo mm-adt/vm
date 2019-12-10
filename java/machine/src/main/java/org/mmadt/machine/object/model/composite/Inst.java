@@ -27,13 +27,13 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.type.Bindings;
 import org.mmadt.machine.object.model.type.PList;
 import org.mmadt.machine.object.model.type.algebra.WithProduct;
 import org.mmadt.machine.object.model.type.algebra.WithRing;
+import org.mmadt.machine.object.model.util.InstHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 
@@ -57,19 +57,6 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     public Obj range();
 
-    public default <O extends Obj> O peek() {          // TODO: only Q and Inst are using these ... it because they are hybrid objs between struct/process :(
-        return (O) this.iterable().iterator().next();
-    }
-
-    public default <O extends Obj> O last() {
-        final Iterator<O> itty = (Iterator<O>) this.iterable().iterator();
-        O o = (O) TObj.none();
-        while (itty.hasNext()) {
-            o = itty.next();
-        }
-        return o;
-    }
-
     @Override
     public Inst or(final Obj obj);
 
@@ -92,7 +79,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     public default <V extends Obj> List<V> args() {
         final List<V> args = new ArrayList<>();
         boolean first = true;
-        for (final Obj arg : this.<Iterable<Obj>>get()) {
+        for (final Obj arg : InstHelper.first(this).<Iterable<Obj>>get()) {
             if (first) first = false;
             else
                 args.add((V) arg);
@@ -101,7 +88,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
     }
 
     public default Str opcode() {
-        return (Str) this.java().get(0);
+        return (Str) InstHelper.first(this).<PList>get().get(0);
     }
 
     @Override
@@ -124,8 +111,11 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
 
     @Override
     public default Obj get(final Int index) {
-        final Object object = this.peek().get();
-        return (object instanceof PList && (((PList<Obj>) object).size() > index.<Integer>get())) ? ((PList<Obj>) object).get(index.get()) : TObj.none();
+        final PList list = this.get();
+        if (list.size() > index.java())
+            return (Obj) list.get(index.java());
+        else
+            return TObj.none();
     }
 
     @Override
@@ -157,9 +147,8 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         }
     }
 
-    @Override
     public default Iterable<Inst> iterable() {
-        return this.get() instanceof Stream ? this.<Stream<Inst>>get() : null == this.get() ? List.of() : List.of(this);
+        return InstHelper.singleInst(this) ? List.of(this) : this.<PList<Inst>>get();
     }
 
 

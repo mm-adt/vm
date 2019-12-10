@@ -24,7 +24,6 @@ package org.mmadt.machine.object.model.util;
 
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Stream;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
@@ -83,16 +82,6 @@ public final class StringFactory {
             builder.append(obj.symbol());
             StringFactory.objMetadata(obj, builder);
         }
-        return builder.toString();
-    }
-
-    public static String stream(final Stream<? extends Obj> stream) {
-        final StringBuilder builder = new StringBuilder();
-        for (Obj object : stream) {
-            builder.append(nestedObj(object)).append(COMMA);
-        }
-        if (builder.length() > 0)
-            builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
     }
 
@@ -176,7 +165,6 @@ public final class StringFactory {
                 builder.append(LBRACKET);
                 boolean opcode = true;
                 for (Obj object : single.<Iterable<Obj>>get()) {
-
                     if (opcode) {
                         builder.append(object.get().toString()).append(COMMA);
                         opcode = false;

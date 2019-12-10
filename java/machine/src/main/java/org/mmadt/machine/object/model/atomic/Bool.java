@@ -27,9 +27,6 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithCommutativeRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.util.FastProcessor;
-
-import java.util.List;
 
 /**
  * A Java representation of the {@code bool} object in mm-ADT.
@@ -49,10 +46,5 @@ public interface Bool extends WithCommutativeRing<Bool> {
 
     public default Bool is(final Inst bool) {
         return this.is(ObjectHelper.create(TBool.of(), bool));
-    }
-
-    @Override
-    public default Iterable<Bool> iterable() {
-        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 }

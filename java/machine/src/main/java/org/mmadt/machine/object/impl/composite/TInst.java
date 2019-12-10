@@ -25,7 +25,6 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TStream;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
@@ -33,6 +32,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.InstHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 import org.mmadt.processor.compiler.Argument;
@@ -60,7 +60,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     }
 
     public static Inst none() {
-        return new TInst(TStream.of(List.of())).q(0);
+        return new TInst(PList.of()).q(0);
     }
 
     public static Inst of(final String opcode, final Object... args) {
@@ -88,7 +88,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     public E attach(final S domain, final E range) {
         this.domain = domain;
         this.range = this.quantifyRange(range);
-        this.<TInst>last().range = this.range;  // TODO: this is dumb (need to store concatenated insts better)
+        ((TInst) InstHelper.last(this)).range = this.range;  // TODO: this is dumb (need to store concatenated insts better)
         this.range = this.range.access(this.range.access().mult(this));
         return (E) this.range;
     }
@@ -100,7 +100,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     }
 
     public static Inst of(final List<Inst> insts) {
-        return insts.isEmpty() ? TInst.none() : new TInst(TStream.of(insts));
+        return insts.isEmpty() ? TInst.none() : 1 == insts.size() ? insts.get(0) : new TInst(InstHelper.list(insts));
     }
 
     public <A extends Obj> Argument<S, A> argument(final int index) {
@@ -109,12 +109,12 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
 
     @Override
     public Obj domain() {
-        return this.<TInst>peek().domain;
+        return ((TInst) InstHelper.first(this)).domain;
     }
 
     @Override
     public Obj range() {
-        return this.<TInst>last().range;
+        return ((TInst) InstHelper.last(this)).range;
     }
 
     @Override
@@ -145,7 +145,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
                         inst.q(inst.q().mult(this.q())) :
                         inst.isOne() ?
                                 this.q(this.q().mult(inst.q())) :
-                                new TInst(TStream.of(List.of(this, inst)));
+                                new TInst(InstHelper.chain(this, inst));
     }
 
     @Override
@@ -182,7 +182,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     }
 
     private Inst operator(final String opcode, final Obj obj) {
-        final Inst last = this.last();
+        final Inst last = InstHelper.last(this);
         if (last.opcode().java().equals(opcode)) {
             final PList<Obj> list = new PList<>(last.java());
             list.add(obj);

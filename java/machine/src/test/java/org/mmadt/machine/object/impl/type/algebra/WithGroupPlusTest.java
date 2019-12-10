@@ -35,6 +35,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.type.algebra.WithGroupPlus;
+import org.mmadt.processor.util.FastProcessor;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -110,7 +111,7 @@ class WithGroupPlusTest {
         A second = group;
         for (int i = 0; i < 10; i++) {
             assertEquals(running.access(running.access().mult(MinusInst.create(group))), second.minus(group));
-            assertEquals(list(running.access(running.access().mult(PlusInst.create(group)).mult(NegInst.create())).iterable()), list(second.plus(group).neg().iterable()));
+            assertEquals(list(FastProcessor.process(running.access(running.access().mult(PlusInst.create(group)).mult(NegInst.create())))), list(FastProcessor.process(second.plus(group).neg())));
             assertEquals(running = running.access(running.access().mult(PlusInst.create(group.neg()))), second = second.plus(group.neg()));
         }
     }

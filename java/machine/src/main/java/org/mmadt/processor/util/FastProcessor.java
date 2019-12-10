@@ -26,6 +26,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
+import org.mmadt.machine.object.model.util.InstHelper;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
 import org.mmadt.util.EmptyIterator;
@@ -59,7 +60,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
         // System.out.println("PROCESSING: " + obj);
         final Inst bytecode = obj.access();
         if (bytecode.isOne() ||
-                (!(bytecode.<Inst>peek() instanceof InitialInstruction) && bytecode.domain().q().isZero()))
+                (!(InstHelper.first(bytecode) instanceof InitialInstruction) && bytecode.domain().q().isZero()))
             return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
         Stream<S> stream = Stream.of(bytecode.domain().access(null));
         for (final Inst inst : bytecode.iterable()) {

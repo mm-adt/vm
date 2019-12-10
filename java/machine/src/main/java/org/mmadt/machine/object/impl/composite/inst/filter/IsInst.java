@@ -30,6 +30,7 @@ import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.util.InstHelper;
 
 import java.util.Optional;
 
@@ -56,7 +57,7 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
 
     private Optional<S> isARange() {
         final Obj arg = this.args().get(0);
-        final Inst inst = arg.access().peek();
+        final Inst inst = InstHelper.first(arg.access());
         return inst instanceof AInst && !(inst.args().get(0).get() instanceof Inst) ? Optional.of((S) inst.args().get(0)) : Optional.empty();
     }
 }

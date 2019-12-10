@@ -27,9 +27,6 @@ import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.util.FastProcessor;
-
-import java.util.List;
 
 /**
  * A Java representation of the {@code int} object in mm-ADT.
@@ -54,11 +51,6 @@ public interface Int extends WithOrderedRing<Int> {
     @Override
     public default Int is(final Bool bool) {
         return WithOrderedRing.super.is(bool);
-    }
-
-    @Override
-    public default Iterable<Int> iterable() {
-        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 
 }

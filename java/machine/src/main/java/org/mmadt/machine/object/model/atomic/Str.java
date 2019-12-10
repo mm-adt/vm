@@ -28,9 +28,6 @@ import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithMonoidPlus;
 import org.mmadt.machine.object.model.type.algebra.WithOrder;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.util.FastProcessor;
-
-import java.util.List;
 
 /**
  * A Java representation of the {@code str} object in mm-ADT.
@@ -53,9 +50,4 @@ public interface Str extends Obj, WithOrder<Str>, WithMonoidPlus<Str> {
     }
 
     public Bool regex(final Str pattern);
-
-    @Override
-    public default Iterable<Str> iterable() {
-        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
-    }
 }

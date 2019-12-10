@@ -26,9 +26,6 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.type.algebra.WithField;
 import org.mmadt.machine.object.model.util.ObjectHelper;
-import org.mmadt.processor.util.FastProcessor;
-
-import java.util.List;
 
 /**
  * A Java representation of the {@code real} object in mm-ADT.
@@ -48,11 +45,6 @@ public interface Real extends WithField<Real> {
 
     public default Real is(final Inst inst) {
         return this.is(ObjectHelper.create(TBool.of(), inst));
-    }
-
-    @Override
-    public default Iterable<Real> iterable() {
-        return this.isInstance() ? List.of(this) : () -> FastProcessor.process(this);
     }
 
 }

@@ -29,6 +29,8 @@ import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.type.PList;
+import org.mmadt.machine.object.model.type.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.MultiIterator;
@@ -56,9 +58,9 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
         return TObj.none().set(itty);
     } // this should all be done through subscription semantics and then its just a append round-robin
 
-   /* public default E quantifyRange(final S domain) {
-        return domain.q(domain.q().mult(this.<Map<Obj, Obj>>get().values().stream().map(Obj::q).reduce((WithOrderedRing) domain.q().zero(), WithOrderedRing::plus)));
-    }*/
+    public default E quantifyRange(final S domain) {
+        return domain.q(domain.q().mult(this.<Map<Obj, Obj>>get().values().stream().map(Obj::q).reduce((WithOrderedRing) domain.q().zero(), (a, b) -> (WithOrderedRing) a.plus(b))));
+    }
 
     public static Map<Obj, Obj> buildBranchMap(final boolean choose, final Object... branches) {
         final Map<Obj, Obj> branchMap = new LinkedHashMap<>();
@@ -76,10 +78,9 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
     }
 
     // TODO: this is not a smart idea -- but it will work for now
-    public static class KeyToken<S extends Obj> extends TInst<S, S> implements FilterInstruction<S> {
-
+    class KeyToken<S extends Obj> extends TInst<S, S> implements FilterInstruction<S> {
         private KeyToken() {
-            super(UUID.randomUUID());
+            super(PList.of(UUID.randomUUID().toString()));
         }
 
         @Override
