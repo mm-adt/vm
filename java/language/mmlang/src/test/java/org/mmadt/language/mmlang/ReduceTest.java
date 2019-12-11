@@ -73,6 +73,8 @@ class ReduceTest {
                     "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count]"),
             args(ints(3).<Int>label("x"),
                     "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count][sum]=>int~x"),
+            args(ints(3).<Int>label("x"),
+                    "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count][sum]=>x"),
             // groupCount
             args(TRec.of(1, 1),
                     "1 => [groupCount]"),

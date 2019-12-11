@@ -157,15 +157,16 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O set(final Object object) {
         final TObj clone = this.clone();
+        clone.type = this.type.label(null);
         if (null == object) {
             clone.value = null;
-            clone.type = this.type.pattern(null);
+            clone.type = clone.type.pattern(null);
         } else if (object instanceof Pattern && (!((Pattern) object).constant()) || object instanceof Inst) {
             clone.value = null;
-            clone.type = this.type.pattern((Pattern) object);
+            clone.type = clone.type.pattern((Pattern) object);
         } else {
             clone.value = object;
-            clone.type = this.type.pattern(null);
+            clone.type = clone.type.pattern(null);
         }
         assert !(clone.value instanceof Inst); // TODO: Remove when proved
         return (O) clone;

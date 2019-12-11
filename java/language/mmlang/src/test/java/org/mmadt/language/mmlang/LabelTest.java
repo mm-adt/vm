@@ -48,6 +48,17 @@ import static org.mmadt.machine.object.impl.__.plus;
 class LabelTest {
 
     private final static ParserArgs[] LABELS = new ParserArgs[]{
+            args(ints(1).<Int>label("x"), "1=>x"),
+            args(ints(1).<Int>label("x").state().<Int>read(TSym.of("x")), "1=>x"),
+            args(ints(1).<Int>label("y"), "1=>x=>y"),
+            args(ints(1).<Int>label("y").state().<Int>read(TSym.of("y")), "1=>x=>y"),
+            args(ints(3), "1=>x=>y=>[plus,2]"),
+            args(ints(3).<Int>label("z"), "1=>x=>y=>[plus,2]=>z"),
+            // args(ints(3).<Int>label("z"), "1=>x=>y=>[plus,2]=>x"), TODO: x must equal 1 (pattern match cause of previous binding)
+
+
+            /////////////////////////////////////////////////////
+
             args(ints().<Obj>mapFrom(plus(2).domain(ints())),
                     "int=>int=>[plus,2]"),
             args(ints().<Obj>mapFrom(plus(2).domain(TSym.of("x"))),

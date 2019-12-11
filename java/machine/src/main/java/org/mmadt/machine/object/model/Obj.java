@@ -190,9 +190,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             }
             return (O) o;
         } else if (obj instanceof TSym) {
-            return this.label(obj.label());  // stores the current obj into the obj state (variable-based history)
+            return this.isReference() ?
+                    AsInst.<O>create(this.access(null).label(obj.label())).attach((O) this) :
+                    this.as((O) obj);  // stores the current obj into the obj state (variable-based history)
         } else if (!obj.access().isOne())
-            return this.mapTo(obj.access()).mapTo(obj.access(null));
+            return this.mapTo(obj.access()).mapTo(obj.access(null)).label(obj.label());
         else if (this.isInstance())
             return this.as((O) obj);
         else if (this.isType() && obj.isInstance())
@@ -286,15 +288,15 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Bool neq(final Obj object);
 
-    public default <O extends Obj> O as(O obj) {
+    public default <O extends Obj> O as(O obj) { // TODO: carefully study this more
         if (obj instanceof TSym)
             obj = obj.symbol(this.symbol());
         if (!obj.test(this))
             return obj.q(obj.q().zero());
         else if (this.isType())
-            return this.symbol(obj.symbol()).label(obj.label()).access(obj.access()).set(obj.get());
+            return this.set(obj.get()).symbol(obj.symbol()).label(obj.label()).access(obj.access());
         else if (this.isReference())
-            return this.symbol(obj.symbol()).label(obj.label()).set(obj.get());
+            return this.set(obj.get()).symbol(obj.symbol()).label(obj.label());
         else
             return this.symbol(obj.symbol()).label(obj.label());
     }
