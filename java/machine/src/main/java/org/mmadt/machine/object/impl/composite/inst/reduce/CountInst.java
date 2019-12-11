@@ -36,7 +36,7 @@ import java.util.Iterator;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst<Obj, Obj> implements ReduceInstruction<S, E> {
+public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extends TInst<S, E> implements ReduceInstruction<S, E> {
 
     private CountInst() {
         super(PList.of(Tokens.COUNT));
@@ -59,6 +59,12 @@ public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extend
 
     public static <S extends Obj, E extends WithOrderedRing<E>> CountInst<S, E> create() {
         return new CountInst<>();
+    }
+
+    public static <S extends Obj, E extends WithOrderedRing<E>> E compute(final S from) {
+        return from.q().constant() ?
+                from.q().q(from.q().one()) :
+                CountInst.<S, E>create().attach(from, (E) from.q().one());
     }
 
 }

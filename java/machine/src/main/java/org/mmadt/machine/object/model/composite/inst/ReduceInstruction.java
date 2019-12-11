@@ -47,7 +47,7 @@ public interface ReduceInstruction<S extends Obj, E extends Obj> extends Inst, B
         return IteratorUtils.of(reduction);
     }
 
-    public default Obj quantifyRange(final Obj domain) {
+    public default E quantifyRange(final E domain) {
         return domain.q(one);
     }
 

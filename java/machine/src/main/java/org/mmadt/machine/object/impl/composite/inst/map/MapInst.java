@@ -45,4 +45,10 @@ public final class MapInst<S extends Obj, E extends Obj> extends TInst<S, E> imp
         return new MapInst<>(arg);
     }
 
+    public static <S extends Obj, E extends Obj> E compute(final S from, final E to) {
+        return from.isInstance() && to.isInstance() ?
+                to.copy(from) :
+                MapInst.<S, E>create(to).attach(from);
+    }
+
 }

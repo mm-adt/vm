@@ -43,7 +43,7 @@ import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> extends TInst<S, E> implements ReduceInstruction<S, Rec<E, A>> {
+public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMonoidPlus<A>> extends TInst<S, Rec<E, A>> implements ReduceInstruction<S, Rec<E, A>> {
 
     private GroupCountInst(final Object arg) {
         super(PList.of(Tokens.GROUPCOUNT, arg));

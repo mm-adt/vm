@@ -60,4 +60,10 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
         final Inst inst = InstHelper.first(arg.access());
         return inst instanceof AInst && !(inst.args().get(0).get() instanceof Inst) ? Optional.of((S) inst.args().get(0)) : Optional.empty();
     }
+
+    public static <S extends Obj> S compute(final S from, final Bool bool) {
+        return from.isInstance() && bool.isInstance() ?
+                bool.java() ? from : from.kill() :
+                IsInst.<S>create(bool).attach(from);
+    }
 }

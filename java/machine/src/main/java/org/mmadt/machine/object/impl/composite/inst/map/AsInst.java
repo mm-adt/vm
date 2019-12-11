@@ -25,6 +25,7 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 
@@ -45,4 +46,16 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
         return new AsInst<>(arg);
     }
 
+    public static <S extends Obj> S compute(final S from, final S to) {
+        if (to instanceof Sym)
+            return from.label(to.label());
+        else if (from.isReference()) {
+            return AsInst.<S>create(to).attach(to.label() == null ?
+                    from :
+                    from.state(from.state().write(to.access(from.access()))));
+        } else if (!to.test(from))
+            return to.kill();
+        else
+            return (from.isType() ? from.set(to.get()) : from).symbol(to.symbol()).access(to.access()).label(to.label());
+    }
 }

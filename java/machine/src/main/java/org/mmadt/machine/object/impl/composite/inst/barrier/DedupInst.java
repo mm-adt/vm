@@ -72,4 +72,10 @@ public final class DedupInst<S extends Obj> extends TInst<S, S> implements Barri
     public static <S extends Obj> DedupInst<S> create(final Object... projections) {
         return new DedupInst<>(projections);
     }
+
+    public static <S extends Obj> S compute(final S from, final Object... projections) {
+        return from.isInstance() ?
+                from.q(from.q().one()) :
+                DedupInst.<S>create().attach(from);
+    }
 }

@@ -56,8 +56,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.zero;
-
 /**
  * A Java representation of an mm-ADT {@code obj}.
  * This is the base structure for all mm-ADT objects.
@@ -94,10 +92,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O symbol(final String symbol);
 
+    public <O extends Obj> O state(final State state);
 
     public State state();
-
-    public <O extends Obj> O state(final State state);
 
     public default <O extends Obj> O copy(final Obj obj) {
         return this.access(obj.access()).state(obj.state()); // removed q() copy -- no failing tests .. !?
@@ -202,7 +199,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Obj clone();
 
-    //////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public default boolean isType() {
         return !this.constant() && this.access().isOne();
@@ -237,21 +236,15 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Bool a(final Obj obj);
 
     public default <O extends Obj> O count() {
-        return this.q().constant() ?
-                this.q().q(q().one()) :
-                (O) CountInst.create().attach(this, this.q().one());
+        return CountInst.compute(this);
     }
 
     public default <O extends Obj> O dedup() {
-        return this.isInstance() ?
-                this.q(this.q().one()) :
-                (O) DedupInst.create().attach(this);
+        return DedupInst.compute((O) this);
     }
 
     public default <O extends Obj> O is(final Bool bool) {
-        return this.isInstance() && bool.isInstance() ?
-                bool.java() ? (O) this : this.q(zero) :
-                (O) IsInst.create(bool).attach(this);
+        return IsInst.compute((O) this, bool);
     }
 
     public default <O extends Obj> O id() {
@@ -259,18 +252,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O map(final O obj) {
-        return this.isInstance() && obj.isInstance() ?
-                obj.copy(this) :
-                this.getClass().equals(obj.getClass()) ?
-                        MapInst.<Obj, O>create(obj).attach(this) :
-                        MapInst.<Obj, O>create(obj).attach(this, obj.copy(this));
+        return MapInst.compute(this, obj);
     }
 
     public default <O extends WithOrderedRing<O>> O sum() {
-        return this.isInstance() ?
-                (O) QuantifierHelper.trySingle((O) TPair.of(this, this).mult(this.q())) :
-                (O) SumInst.<O>create().attach((O) this);
-
+        return SumInst.compute((O) this);
     }
 
     public default <O extends Obj> O branch(final Object... branches) {
@@ -286,20 +272,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Bool neq(final Obj object);
 
     public default <O extends Obj> O as(final O obj) {
-        if (obj instanceof Sym)
-            return this.label(obj.label());
-        else if (this.isReference()) {
-            return (O) AsInst.create(obj).attach(obj.label() == null ?
-                    this :
-                    this.state(this.state().write(obj.access(this.access()))));
-        } else if (!obj.test(this))
-            return this.kill();
-        else {
-            if (this.isType())
-                return this.set(obj.get()).symbol(obj.symbol()).access(obj.access()).label(obj.label());
-            else
-                return this.symbol(obj.symbol()).access(obj.access()).label(obj.label());
-        }
+        return AsInst.compute((O) this, obj);
     }
 
     public default <O extends Obj> O is(final Object bool) {

@@ -23,8 +23,10 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithOrder;
@@ -44,5 +46,11 @@ public final class GtInst<S extends WithOrder<S>> extends TInst<S, Bool> impleme
 
     public static <S extends WithOrder<S>> GtInst<S> create(final Object arg) {
         return new GtInst<>(arg);
+    }
+
+    public static Bool compute(final Int lhs, final Int rhs) {
+        return (lhs.isInstance() && rhs.isInstance()) ?
+                TBool.via(lhs).set(lhs.java() > rhs.java()) :
+                GtInst.<Int>create(rhs).attach(lhs, TBool.via(lhs));
     }
 }

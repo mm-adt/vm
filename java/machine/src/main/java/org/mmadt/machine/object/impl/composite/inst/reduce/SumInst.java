@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.composite.inst.reduce;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
@@ -36,7 +37,7 @@ import java.util.Iterator;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class SumInst<S extends WithOrderedRing<S>> extends TInst<S, Obj> implements ReduceInstruction<S, S> {
+public final class SumInst<S extends WithOrderedRing<S>> extends TInst<S, S> implements ReduceInstruction<S, S> {
 
     private SumInst() {
         super(PList.of(Tokens.SUM));
@@ -59,5 +60,11 @@ public final class SumInst<S extends WithOrderedRing<S>> extends TInst<S, Obj> i
 
     public static <S extends WithOrderedRing<S>> SumInst<S> create() {
         return new SumInst<>();
+    }
+
+    public static <S extends WithOrderedRing<S>> S compute(final S from) {
+        return from.isInstance() ?
+                 QuantifierHelper.trySingle((S)TPair.of(from, from).mult(from.q())) :
+                 SumInst.<S>create().attach(from);
     }
 }
