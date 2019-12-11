@@ -184,8 +184,16 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
         clone.type = this.type.label(variable);
-        if (null != variable)
-            clone.state = clone.state.write(clone);
+        if (null != variable) {
+            final O fetch = clone.state.read(TSym.of(variable));
+            if (null == fetch) {
+                clone.state = clone.state.write(clone);
+                return (O) clone;
+            } else
+                return !fetch.test(clone) ?
+                        clone.q(clone.q().zero()) :
+                        fetch.copy(clone);
+        }
         return (O) clone;
     }
 

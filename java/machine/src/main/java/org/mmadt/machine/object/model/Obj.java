@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;

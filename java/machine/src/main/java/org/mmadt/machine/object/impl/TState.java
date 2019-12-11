@@ -45,7 +45,7 @@ public class TState implements State {
 
     @Override
     public <O extends Obj> O read(final Obj key) {
-        return (O) this.objs.getOrDefault(key.label(), TObj.none());
+        return (O) this.objs.get(key.label());
     }
 
     @Override

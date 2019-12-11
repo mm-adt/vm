@@ -39,6 +39,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
+import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.machine.object.impl.__.mult;
 import static org.mmadt.machine.object.impl.__.plus;
 
@@ -54,7 +55,9 @@ class LabelTest {
             args(ints(1).<Int>label("y").state().<Int>read(TSym.of("y")), "1=>x=>y"),
             args(ints(3), "1=>x=>y=>[plus,2]"),
             args(ints(3).<Int>label("z"), "1=>x=>y=>[plus,2]=>z"),
-            // args(ints(3).<Int>label("z"), "1=>x=>y=>[plus,2]=>x"), TODO: x must equal 1 (pattern match cause of previous binding)
+            args(objs(), "1=>x=>y=>[plus,2]=>x"),
+            args(ints(1).<Int>label("x"), "1=>x=>y=>x"),
+            args(ints(1).<Int>label("y"), "1=>x=>y=>x=>y"),
 
 
             /////////////////////////////////////////////////////
