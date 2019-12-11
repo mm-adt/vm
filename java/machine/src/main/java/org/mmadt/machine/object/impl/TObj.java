@@ -190,8 +190,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 clone.state = clone.state.write(clone);
                 return (O) clone;
             } else
-                return !fetch.test(clone) ?
-                        clone.q(clone.q().zero()) :
+                return !clone.test(fetch) ?
+                        fetch.copy(clone).q(clone.q().zero()) :
                         fetch.copy(clone);
         }
         return (O) clone;

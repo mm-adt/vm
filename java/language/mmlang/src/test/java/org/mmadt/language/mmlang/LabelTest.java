@@ -58,7 +58,9 @@ class LabelTest {
             args(objs(), "1=>x=>y=>[plus,2]=>x"),
             args(ints(1).<Int>label("x"), "1=>x=>y=>x"),
             args(ints(1).<Int>label("y"), "1=>x=>y=>x=>y"),
-
+            args(ints(1).<Int>label("y"), "1=>x=>y=>[plus,0]=>y"),
+            args(ints(1).<Int>label("y"), "1=>x=>y=>[plus,10][minus,2][minus,8]=>y"),
+            args(objs(), "1=>x=>y=>[plus,10][minus,2][minus,9]=>y"),
 
             /////////////////////////////////////////////////////
 
