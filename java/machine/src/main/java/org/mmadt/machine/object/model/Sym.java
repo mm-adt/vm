@@ -20,34 +20,17 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.object.model.atomic;
-
-import org.mmadt.machine.object.impl.atomic.TBool;
-import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.ext.algebra.WithCommutativeRing;
-import org.mmadt.machine.object.model.util.ObjectHelper;
+package org.mmadt.machine.object.model;
 
 /**
- * A Java representation of the {@code bool} object in mm-ADT.
- * A {@code bool} is a commutative ring with unity.
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Bool extends WithCommutativeRing<Bool> {
+public interface Sym extends Obj {
 
-    public default Boolean java() {
-        return this.get();
-    }
+    // TODO: IllegalStateException all Obj methods save label() and (I believe) symbol().
 
-    @Override
-    public Bool label(final String variable);
+    /*
+     * This obj should be used for x and for person. One being a variable and the other being an extended type
+     */
 
-    public default Bool and(final Bool bool) {
-        return this.constant() ? this.set(this.java() && bool.java()) : (Bool) this.and((Obj) bool); // TODO: Bool.Type class with respective overloading
-    }
-
-    public default Bool is(final Inst bool) {
-        return this.is(ObjectHelper.create(TBool.of(), bool));
-    }
 }

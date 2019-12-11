@@ -26,20 +26,18 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
-import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
+import static org.mmadt.machine.object.impl.TSym.sym;
 import static org.mmadt.machine.object.impl.__.mult;
 import static org.mmadt.machine.object.impl.__.plus;
 
@@ -49,34 +47,34 @@ import static org.mmadt.machine.object.impl.__.plus;
 class LabelTest {
 
     private final static ParserArgs[] LABELS = new ParserArgs[]{
-            args(ints(1).<Int>label("x"), "1=>x"),
-            args(ints(1).<Int>label("x").state().<Int>read(TSym.of("x")), "1=>x"),
-            args(ints(1).<Int>label("y"), "1=>x=>y"),
-            args(ints(1).<Int>label("y").state().<Int>read(TSym.of("y")), "1=>x=>y"),
+            args(ints(1).label("x"), "1=>x"),
+            args(ints(1).label("x"), List.of(ints(1).label("x")), "1=>x"),
+            args(ints(1).label("y"), "1=>x=>y"),
+            args(ints(1).label("y"), List.of(ints(1).label("x"), ints(1).label("y")), "1=>x=>y"),
             args(ints(3), "1=>x=>y=>[plus,2]"),
-            args(ints(3).<Int>label("z"), "1=>x=>y=>[plus,2]=>z"),
+            args(ints(3).label("z"), "1=>x=>y=>[plus,2]=>z"),
             args(objs(), "1=>x=>y=>[plus,2]=>x"),
-            args(ints(1).<Int>label("x"), "1=>x=>y=>x"),
-            args(ints(1).<Int>label("y"), "1=>x=>y=>x=>y"),
-            args(ints(1).<Int>label("y"), "1=>x=>y=>[plus,0]=>y"),
-            args(ints(1).<Int>label("y"), "1=>x=>y=>[plus,10][minus,2][minus,8]=>y"),
+            args(ints(1).label("x"), "1=>x=>y=>x"),
+            args(ints(1).label("y"), "1=>x=>y=>x=>y"),
+            args(ints(1).label("y"), "1=>x=>y=>[plus,0]=>y"),
+            args(ints(1).label("y"), "1=>x=>y=>[plus,10][minus,2][minus,8]=>y"),
             args(objs(), "1=>x=>y=>[plus,10][minus,2][minus,9]=>y"),
 
             /////////////////////////////////////////////////////
 
             args(ints().<Obj>mapFrom(plus(2).domain(ints())),
                     "int=>int=>[plus,2]"),
-            args(ints().<Obj>mapFrom(plus(2).domain(TSym.of("x"))),
+            args(ints().<Obj>mapFrom(plus(2).domain(sym("x"))),
                     "int=>int~x=>[plus,2]"),
-            args(ints().<Int>mapFrom(plus(2).range(TSym.of("y")).mult(mult(3))),
+            args(ints().<Int>mapFrom(plus(2).range(sym("y")).mult(mult(3))),
                     "int~x=>[plus,2]=>y=>[mult,3]"),
-            args(ints().<Int>mapFrom(TInt.of().plus(10).<Int>label("y").mult(20)),
+            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").mult(20)),
                     "int=>[plus,10]=>y=>[mult,20]=>int"),
-            args(ints().<Int>mapFrom(TInt.of().plus(10).<Int>label("y").mult(20)),
+            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").mult(20)),
                     "int=>[plus,10]=>int~y=>[mult,20]=>int"),
-            args(ints().<Int>mapFrom(TInt.of().plus(10).<Int>label("y").mult(20)),
+            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").mult(20)),
                     "int=>[plus,10]=>y=>[mult,20]=>int"),
-            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").<Int>label("z").mult(20)),
+            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").label("z").mult(20)),
                     "int=>[plus,10]=>y=>z=>[mult,20]=>int"),
     };
 
@@ -84,6 +82,6 @@ class LabelTest {
     @TestFactory
     Stream<DynamicTest> testLabels() {
         final ScriptEngine engine = new mmLangScriptEngine();
-        return Stream.of(LABELS).map(query -> DynamicTest.dynamicTest(query.input, () -> assertEquals(query.expected, IteratorUtils.list((Iterator<Obj>) engine.eval(query.input)))));
+        return Stream.of(LABELS).map(query -> query.execute(engine));
     }
 }

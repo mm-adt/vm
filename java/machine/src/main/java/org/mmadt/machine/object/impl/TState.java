@@ -33,10 +33,16 @@ import java.util.Map;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class TState implements State {
+public final class TState implements State {
 
     private Map<String, Obj> objs = new LinkedHashMap<>();
     private final Inst insts = null;
+
+    public static State of(final Map<String, Obj> state) {
+        final TState temp = new TState();
+        temp.objs = new LinkedHashMap<>(state);
+        return temp;
+    }
 
     @Override
     public Inst apply(final Inst inst) {
@@ -53,6 +59,16 @@ public class TState implements State {
         final TState clone = (TState) this.clone();
         clone.objs.put(value.label(), value);
         return clone;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        return other instanceof State && ((TState) other).objs.equals(this.objs);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.objs.hashCode();
     }
 
     @Override

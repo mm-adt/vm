@@ -23,16 +23,21 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Sym;
 
 import java.util.Objects;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TSym extends TObj {
+public final class TSym extends TObj implements Sym {
 
     public static TSym of(final String symbol) {
         return new TSym(symbol);
+    }
+
+    public static Sym sym(final String label) {
+        return new TSym(label);
     }
 
     private TSym(final String symbol) {

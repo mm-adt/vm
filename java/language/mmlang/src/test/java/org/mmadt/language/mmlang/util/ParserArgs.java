@@ -22,6 +22,8 @@
 
 package org.mmadt.language.mmlang.util;
 
+import org.junit.jupiter.api.DynamicTest;
+import org.mmadt.machine.object.impl.TState;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
@@ -31,9 +33,16 @@ import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
+import org.mmadt.util.IteratorUtils;
 
+import javax.script.ScriptEngine;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,18 +50,24 @@ import java.util.List;
 public final class ParserArgs<A extends Obj> {
     public final List<A> expected;
     public final String input;
+    public final Map<String, Obj> expectedState;
 
-    private ParserArgs(final List<A> expected, final String input) {
+    private ParserArgs(final List<A> expected, final List<A> expectedState, final String input) {
         this.expected = expected;
+        this.expectedState = expectedState.stream().collect(Collectors.toMap(Obj::label, Obj::clone));
         this.input = input;
     }
 
     public static <A extends Obj> ParserArgs<A> args(final List<A> expected, final String input) {
-        return new ParserArgs<>(expected, input);
+        return new ParserArgs<>(expected, List.of(), input);
     }
 
     public static <A extends Obj> ParserArgs<A> args(final A expected, final String input) {
-        return new ParserArgs<>(List.of(expected), input);
+        return new ParserArgs<>(List.of(expected), List.of(), input);
+    }
+
+    public static <A extends Obj> ParserArgs<A> args(final A expected, final List<A> expectedState, final String input) {
+        return new ParserArgs<>(List.of(expected), expectedState, input);
     }
 
     public static <A extends Obj> List<A> objs(final Object... objects) {
@@ -75,10 +90,21 @@ public final class ParserArgs<A extends Obj> {
         return TStr.of(strings);
     }
 
-
     public static Obj process(final Obj obj) {
         return FastProcessor.process(obj).next();
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public DynamicTest execute(final ScriptEngine engine) {
+        return DynamicTest.dynamicTest(this.input, () -> {
+            final List<A> results = IteratorUtils.list((Iterator<A>) engine.eval(this.input));
+            assertEquals(this.expected, results);
+            if (!this.expectedState.isEmpty()) {
+                final A obj = results.get(0);
+                assertEquals(TState.of(this.expectedState), obj.state());
+            }
+        });
+    }
 
 }

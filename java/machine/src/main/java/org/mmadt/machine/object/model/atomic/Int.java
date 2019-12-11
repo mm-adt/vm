@@ -40,6 +40,9 @@ public interface Int extends WithOrderedRing<Int> {
         return this.get();
     }
 
+    @Override
+    public Int label(final String variable);
+
     public default Int dedup(final Object... branches) {
         return DedupInst.<Int>create(branches).attach(this);
     }

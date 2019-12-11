@@ -75,6 +75,13 @@ public final class TInt extends TObj implements Int {
         return new TInt(2);
     }
 
+    //////////////////////////////////
+
+    @Override
+    public Int label(final String variable) {
+        return super.label(variable);
+    }
+
     /////////////////////////////////
 
     @Override

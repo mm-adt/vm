@@ -60,6 +60,15 @@ public final class TBool extends TObj implements Bool {
         return TBool.of().q(obj.q()).access(obj.access()).state(obj.state());
     }
 
+    //////////////////////////////////
+
+    @Override
+    public Bool label(final String variable) {
+        return super.label(variable);
+    }
+
+    /////////////////////////////////
+
     @Override
     public Obj or(final Obj obj) {
         return this.isInstance() && QuantifierHelper.isSingle(this.q()) ? new TBool(this.java() || obj.<Boolean>get()) : super.or(obj);
