@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
@@ -102,6 +101,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O copy(final Obj obj) {
         return this.access(obj.access()).state(obj.state()); // removed q() copy -- no failing tests .. !?
+    }
+
+    public default <O extends Obj> O kill() {
+        return this.q(this.q().zero());
     }
 
     @Override
@@ -190,18 +193,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 o = ((TInst) inst).attach(o);
             }
             return (O) o;
-        } else if (obj instanceof TSym) {
-            return this.isReference() ?
-                    AsInst.<O>create(this.access(null).label(obj.label())).attach((O) this) :
-                    this.as((O) obj);  // stores the current obj into the obj state (variable-based history)
         } else if (!obj.access().isOne())
-            return this.mapTo(obj.access()).mapTo(obj.access(null)).label(obj.label());
-        else if (this.isInstance())
-            return this.as((O) obj);
-        else if (this.isType() && obj.isInstance())
-            return obj.as((O) this);
+            return this.mapTo(obj.access()).label(obj.label());
         else
-            return AsInst.<O>create(obj).attach((O) this);
+            return this.as((O) obj);
+
     }
 
     public Obj clone();
@@ -289,17 +285,21 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public Bool neq(final Obj object);
 
-    public default <O extends Obj> O as(O obj) { // TODO: carefully study this more
-        if (obj instanceof TSym)
-            obj = obj.symbol(this.symbol());
-        if (!obj.test(this))
-            return obj.q(obj.q().zero());
-        else if (this.isType())
-            return this.set(obj.get()).symbol(obj.symbol()).label(obj.label()).access(obj.access());
-        else if (this.isReference())
-            return this.set(obj.get()).symbol(obj.symbol()).label(obj.label());
-        else
-            return this.symbol(obj.symbol()).label(obj.label());
+    public default <O extends Obj> O as(final O obj) {
+        if (obj instanceof Sym)
+            return this.label(obj.label());
+        else if (this.isReference()) {
+            return (O) AsInst.create(obj).attach(obj.label() == null ?
+                    this :
+                    this.state(this.state().write(obj.access(this.access()))));
+        } else if (!obj.test(this))
+            return this.kill();
+        else {
+            if (this.isType())
+                return this.set(obj.get()).symbol(obj.symbol()).access(obj.access()).label(obj.label());
+            else
+                return this.symbol(obj.symbol()).access(obj.access()).label(obj.label());
+        }
     }
 
     public default <O extends Obj> O is(final Object bool) {

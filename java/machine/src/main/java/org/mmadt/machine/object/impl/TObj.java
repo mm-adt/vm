@@ -107,8 +107,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <O extends Obj> O state(final State state) {
-        this.state = state;
-        return (O) this;
+        final TObj clone = this.clone();
+        clone.state = state;
+        return (O) clone;
     }
 
     @Override
@@ -184,17 +185,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
         clone.type = this.type.label(variable);
-        if (null != variable) {
-            final O fetch = clone.state.read(TSym.of(variable));
-            if (null == fetch) {
-                clone.state = clone.state.write(clone);
-                return (O) clone;
-            } else
-                return !clone.test(fetch) ?
-                        fetch.copy(clone).q(clone.q().zero()) :
-                        fetch.copy(clone);
-        }
-        return (O) clone;
+        return null == variable ? (O) clone : TSym.of(variable).process((O) clone);
     }
 
     @Override

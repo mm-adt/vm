@@ -22,6 +22,8 @@
 
 package org.mmadt.machine.object.model;
 
+import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -32,5 +34,19 @@ public interface Sym extends Obj {
     /*
      * This obj should be used for x and for person. One being a variable and the other being an extended type
      */
+
+    public default <O extends Obj> O process(final O obj) {
+        if (obj.isReference()) {
+            // final O history = obj.state().read(this);
+            final O clone = obj.state(obj.state().write(obj));
+            return AsInst.<O>create(clone.access(null)).attach(clone);
+        } else {
+            final O history = obj.state().read(this);
+            if (null == history)
+                return obj.state(obj.state().write(obj)); // if the variable is unbound, bind it to the current obj
+            else
+                return obj.test(history) ? obj : obj.kill(); // test if the current obj is subsumed by the historic obj (if not, drop the obj's quantity to [zero])
+        }
+    }
 
 }
