@@ -135,7 +135,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Bool gt(final Int integer) {
-        return GtInst.compute(this,integer);
+        return GtInst.compute(this, integer, TBool.via(this));
     }
 
     @Override

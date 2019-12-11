@@ -23,10 +23,11 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.atomic.Real;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithOrder;
@@ -48,9 +49,21 @@ public final class GtInst<S extends WithOrder<S>> extends TInst<S, Bool> impleme
         return new GtInst<>(arg);
     }
 
-    public static Bool compute(final Int lhs, final Int rhs) {
+    public static Bool compute(final Int lhs, final Int rhs, final Bool result) {
         return (lhs.isInstance() && rhs.isInstance()) ?
-                TBool.via(lhs).set(lhs.java() > rhs.java()) :
-                GtInst.<Int>create(rhs).attach(lhs, TBool.via(lhs));
+                result.set(lhs.java() > rhs.java()) :
+                GtInst.<Int>create(rhs).attach(lhs, result);
+    }
+
+    public static Bool compute(final Real lhs, final Real rhs, final Bool result) {
+        return (lhs.isInstance() && rhs.isInstance()) ?
+                result.set(lhs.java() > rhs.java()) :
+                GtInst.<Real>create(rhs).attach(lhs, result);
+    }
+
+    public static Bool compute(final Str lhs, final Str rhs, final Bool result) {
+        return (lhs.isInstance() && rhs.isInstance()) ?
+                result.set(lhs.java().compareTo(rhs.java()) > 0) :
+                GtInst.<Str>create(rhs).attach(lhs, result);
     }
 }

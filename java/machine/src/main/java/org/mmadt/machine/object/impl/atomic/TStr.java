@@ -60,9 +60,7 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Bool gt(final Str str) {
-        return (this.isInstance() && str.isInstance()) ?
-                TBool.via(this).set(this.java().compareTo(str.java()) > 0) :
-                GtInst.<Str>create(str).attach(this, TBool.via(this));
+        return GtInst.compute(this, str, TBool.via(this));
     }
 
     @Override
