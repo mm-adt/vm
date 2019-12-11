@@ -26,9 +26,6 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
-import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 
 import javax.script.ScriptEngine;
 import java.util.List;
@@ -37,7 +34,6 @@ import java.util.stream.Stream;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
-import static org.mmadt.machine.object.impl.TSym.sym;
 import static org.mmadt.machine.object.impl.__.mult;
 import static org.mmadt.machine.object.impl.__.plus;
 
@@ -62,20 +58,13 @@ class LabelTest {
 
             /////////////////////////////////////////////////////
 
-            args(ints().<Obj>mapFrom(plus(2).domain(ints())),
-                    "int=>int=>[plus,2]"),
-            args(ints().<Obj>mapFrom(plus(2).domain(sym("x"))),
-                    "int=>int~x=>[plus,2]"),
-            args(ints().<Int>mapFrom(plus(2).range(sym("y")).mult(mult(3))),
-                    "int~x=>[plus,2]=>y=>[mult,3]"),
-            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").mult(20)),
-                    "int=>[plus,10]=>y=>[mult,20]=>int"),
-            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").mult(20)),
-                    "int=>[plus,10]=>int~y=>[mult,20]=>int"),
-            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").mult(20)),
-                    "int=>[plus,10]=>y=>[mult,20]=>int"),
-            args(ints().<Int>mapFrom(TInt.of().plus(10).label("y").label("z").mult(20)),
-                    "int=>[plus,10]=>y=>z=>[mult,20]=>int"),
+            args(ints().access(plus(2)), List.of(), "int=>int=>[plus,2]"),
+            args(ints().access(plus(2)), List.of(ints().label("x")), "int=>int~x=>[plus,2]"),
+            args(ints().access(plus(2).mult(mult(3))), List.of(ints().label("x"), ints().label("y").access(plus(2))), "int~x=>[plus,2]=>y=>[mult,3]"),
+            args(ints().access(plus(10).mult(mult(20))), List.of(ints().label("y").access(plus(10))), "int=>[plus,10]=>y=>[mult,20]=>int"),
+            args(ints().access(plus(10).mult(mult(20))), List.of(ints().label("y").access(plus(10))), "int=>[plus,10]=>int~y=>[mult,20]=>int"),
+            args(ints().access(plus(10).mult(mult(20))), List.of(ints().label("y").access(plus(10))), "int=>[plus,10]=>y=>[mult,20]=>int"),
+            args(ints().access(plus(10).mult(mult(20))), List.of(ints().label("y").access(plus(10)), ints().label("z").access(plus(10))), "int=>[plus,10]=>y=>z=>[mult,20]=>int"),
     };
 
 

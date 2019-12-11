@@ -50,20 +50,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class ParserArgs<A extends Obj> {
     public final List<A> expected;
     public final String input;
-    public final Map<String, Obj> expectedState;
+    private final Map<String, Obj> expectedState;
 
     private ParserArgs(final List<A> expected, final List<A> expectedState, final String input) {
         this.expected = expected;
-        this.expectedState = expectedState.stream().collect(Collectors.toMap(Obj::label, Obj::clone));
+        this.expectedState = null == expectedState ? null : expectedState.stream().collect(Collectors.toMap(Obj::label, Obj::clone));
         this.input = input;
     }
 
     public static <A extends Obj> ParserArgs<A> args(final List<A> expected, final String input) {
-        return new ParserArgs<>(expected, List.of(), input);
+        return new ParserArgs<>(expected, null, input);
     }
 
     public static <A extends Obj> ParserArgs<A> args(final A expected, final String input) {
-        return new ParserArgs<>(List.of(expected), List.of(), input);
+        return new ParserArgs<>(List.of(expected), null, input);
     }
 
     public static <A extends Obj> ParserArgs<A> args(final A expected, final List<A> expectedState, final String input) {
@@ -100,7 +100,7 @@ public final class ParserArgs<A extends Obj> {
         return DynamicTest.dynamicTest(this.input, () -> {
             final List<A> results = IteratorUtils.list((Iterator<A>) engine.eval(this.input));
             assertEquals(this.expected, results);
-            if (!this.expectedState.isEmpty()) {
+            if (null != this.expectedState) {
                 final A obj = results.get(0);
                 assertEquals(TState.of(this.expectedState), obj.state());
             }
