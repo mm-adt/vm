@@ -27,10 +27,10 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.ext.composite.Pair;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.composite.util.PMap;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.ext.composite.Pair;
 
 import java.util.Map;
 
@@ -43,6 +43,7 @@ import static org.mmadt.language.compiler.Tokens.LBRACKET;
 import static org.mmadt.language.compiler.Tokens.LCURL;
 import static org.mmadt.language.compiler.Tokens.LPAREN;
 import static org.mmadt.language.compiler.Tokens.MAPSFROM;
+import static org.mmadt.language.compiler.Tokens.MAPSTO;
 import static org.mmadt.language.compiler.Tokens.QUESTION;
 import static org.mmadt.language.compiler.Tokens.RBRACKET;
 import static org.mmadt.language.compiler.Tokens.RCURL;
@@ -69,10 +70,13 @@ public final class StringFactory {
         if (!obj.access().isOne()) {
             builder.append(SPACE)
                     .append(MAPSFROM)
-                    .append(SPACE)
-                    .append(obj.access().domain())
-                    .append(TILDE)
-                    .append(obj.access());
+                    .append(SPACE);
+            if (!obj.access().domain().q().isZero())    // no obj{0} displays
+                builder.append(LPAREN)
+                        .append(obj.access().domain())
+                        .append(RPAREN)
+                        .append(MAPSTO);  // TODO: right now we just prepend the type (its not copy/pastable as its not legal syntax
+            builder.append(obj.access());
         }
     }
 
