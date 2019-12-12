@@ -124,6 +124,7 @@ public final class Tokens {
     public static final String ORDER = "order";
     public static final String PLUS = "plus";
     public static final String PUT = "put";
+    public static final String PROBE = "probe";
     public static final String Q = "q";
     public static final String RANGE = "range";
     public static final String REDUCE = "reduce";

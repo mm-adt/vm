@@ -40,6 +40,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.ProbeInst;
 import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -291,6 +292,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default Int map(final Integer integer) {
         return this.map(TInt.of(integer));
+    }
+
+    public default <O extends Obj> O probe(final Object object) {
+        return ProbeInst.<O>create(object).attach((O) this);
     }
 
     public default <O extends Obj> O explain() {

@@ -56,6 +56,7 @@ import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
+import org.mmadt.machine.object.impl.composite.inst.sideeffect.ProbeInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -91,6 +92,7 @@ import static org.mmadt.language.compiler.Tokens.NEQ;
 import static org.mmadt.language.compiler.Tokens.ONE;
 import static org.mmadt.language.compiler.Tokens.OR;
 import static org.mmadt.language.compiler.Tokens.PLUS;
+import static org.mmadt.language.compiler.Tokens.PROBE;
 import static org.mmadt.language.compiler.Tokens.PUT;
 import static org.mmadt.language.compiler.Tokens.Q;
 import static org.mmadt.language.compiler.Tokens.START;
@@ -174,6 +176,8 @@ public final class Instructions {
                 return OrInst.create(args.toArray(new Object[]{}));
             case PLUS:
                 return PlusInst.create(args.get(0));
+            case PROBE:
+                return ProbeInst.create(args.get(0));
             case PUT:
                 return PutInst.create(args.get(0), args.get(1));
             case Q:
