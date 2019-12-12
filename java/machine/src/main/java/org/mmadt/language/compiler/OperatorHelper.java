@@ -62,9 +62,9 @@ public final class OperatorHelper {
         // System.out.println(lhs + " " + operator + " " + rhs);
         switch (operator) {
             case (Tokens.ASTERIX):
-                return (A) ((WithMult) lhs).mult(rhs);
+                return lhs instanceof Sym ? (A) as(lhs).mult(mult(rhs)) : (A) ((WithMult) lhs).mult(rhs);
             case (Tokens.CROSS):
-                return lhs instanceof Sym ? (A) as(lhs).mapTo(plus(rhs)) : (A) ((WithPlus) lhs).plus(rhs);
+                return lhs instanceof Sym ? (A) as(lhs).mult(plus(rhs)) : (A) ((WithPlus) lhs).plus(rhs);
             case (Tokens.BACKSLASH):
                 return (A) ((WithDiv) lhs).div(rhs);
             case (Tokens.DASH):
@@ -99,9 +99,9 @@ public final class OperatorHelper {
     public static Obj applyUnary(final String operator, final Obj rhs) {
         switch (operator) {
             case (Tokens.ASTERIX):
-                return MultInst.create(rhs);
+                return mult(rhs);
             case (Tokens.CROSS):
-                return PlusInst.create(rhs);
+                return plus(rhs);
             case (Tokens.DASH):
                 return rhs instanceof WithMinus ? ((WithMinus) rhs).neg() : MapInst.create(rhs).mult(NegInst.create());
             case (Tokens.BACKSLASH):

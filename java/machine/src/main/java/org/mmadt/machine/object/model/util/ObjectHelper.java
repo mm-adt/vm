@@ -72,7 +72,7 @@ public final class ObjectHelper {
                         (O) object :
                         obj.type().access((Inst) object) :
                 object instanceof Sym ?
-                        (O) Optional.ofNullable(obj.state().read(((Sym) object))).orElse(obj.label(((Sym) object).label())) :
+                        (O) Optional.<O>ofNullable(obj.state().read(((Sym) object))).orElse((O)obj).label(((Sym) object).label()) :
                         (O) ObjectHelper.from(object);
     }
 
