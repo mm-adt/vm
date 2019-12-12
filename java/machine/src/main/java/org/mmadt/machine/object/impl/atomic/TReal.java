@@ -96,9 +96,7 @@ public final class TReal extends TObj implements Real {
 
     @Override
     public Real plus(final Real real) {
-        return (this.isInstance() && real.isInstance()) ?
-                this.set(this.java() + real.java()) :
-                PlusInst.<Real>create(real).attach(this);
+        return PlusInst.compute(this, real);
     }
 
     @Override

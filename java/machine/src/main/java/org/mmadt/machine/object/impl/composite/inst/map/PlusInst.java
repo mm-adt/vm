@@ -24,9 +24,14 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.atomic.Real;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithPlus;
+
+import java.util.function.Supplier;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,13 +43,41 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst<S, S> implement
     }
 
     public S apply(final S obj) {
-        // TODO: MAKE CLEAN AND EASILY ADAPTABLE TO OTHER INSTRUCTIONS
-        //if (null != obj.state().apply(this)) return ((Function<S, S>) obj.state().apply(this)).apply(obj);
         return this.quantifyRange(obj.plus(this.<S>argument(0).mapArg(obj)));
     }
 
     public static <S extends WithPlus<S>> PlusInst<S> create(final Object arg) {
         return new PlusInst<>(arg);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static Int compute(final Int lhs, final Int rhs) {
+        return (lhs.isInstance() && rhs.isInstance()) ?
+                lhs.set(tryCatch(() -> Math.addExact(lhs.java(), rhs.java()), Integer.MAX_VALUE)) :
+                PlusInst.<Int>create(rhs).attach(lhs);
+    }
+
+    public static Real compute(final Real lhs, final Real rhs) {
+        return (lhs.isInstance() && rhs.isInstance()) ?
+                lhs.set(lhs.java() + rhs.java()) :
+                PlusInst.<Real>create(rhs).attach(lhs);
+    }
+
+    public static Str compute(final Str lhs, final Str rhs) {
+        return (lhs.isInstance() && rhs.isInstance()) ?
+                lhs.set(lhs.java().concat(rhs.java())) :
+                PlusInst.<Str>create(rhs).attach(lhs);
+    }
+
+    ///// HELPER METHODS
+
+    private static Object tryCatch(final Supplier<Object> function, final Object failValue) {
+        try {
+            return function.get();
+        } catch (final ArithmeticException e) {
+            return failValue;
+        }
     }
 
 }

@@ -104,6 +104,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.q(this.q().zero());
     }
 
+    public <O extends Obj> O type();
+
     @Override
     public default Obj or(final Obj object) {
         return this.set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(object)))); // use choose?
@@ -213,6 +215,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default boolean isInstance() {
         return this.constant();
+    }
+
+    public default boolean isSym() {
+        return this instanceof Sym;
     }
 
     public default <O extends Obj> O q(final QuantifierHelper.Tag tag) {

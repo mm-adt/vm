@@ -39,7 +39,6 @@ import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -118,12 +117,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int plus(final Int integer) {
-        // TODO: MAKE CLEAN AND EASILY ADAPTABLE TO OTHER INSTRUCTIONS
-        if (null != this.state().apply(PlusInst.create(integer)))
-            return (Int) ((Function) this.state().apply(PlusInst.create(integer))).apply(this);
-        return (this.isInstance() && integer.isInstance()) ?
-                this.set(tryCatch(() -> Math.addExact(this.java(), integer.java()), Integer.MAX_VALUE)) :
-                PlusInst.<Int>create(integer).attach(this);
+        return PlusInst.compute(this, integer);
     }
 
     @Override

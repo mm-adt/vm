@@ -94,9 +94,7 @@ public final class TStr extends TObj implements Str {
 
     @Override
     public Str plus(final Str str) {
-        return (this.isInstance() && str.isInstance()) ?
-                this.set(this.java().concat(str.java())) :
-                PlusInst.<Str>create(str).attach(this);
+        return PlusInst.compute(this, str);
     }
 
     @Override

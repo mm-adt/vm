@@ -26,7 +26,6 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 
@@ -48,7 +47,7 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
     }
 
     public static <S extends Obj> S compute(final S from, final S to) {
-        if (to instanceof Sym)
+        if (to.isSym())
             return from.label(to.label());
         else if (from.isReference()) {
             return AsInst.<S>create(to).attach(from, to.label() == null ?

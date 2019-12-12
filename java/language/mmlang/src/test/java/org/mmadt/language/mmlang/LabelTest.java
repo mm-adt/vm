@@ -73,6 +73,14 @@ class LabelTest {
             args(ints(6), List.of(ints(3).label("x")), "3 => x => x + x"),
             args(ints(-6), List.of(ints(3).label("x")), "3 => x => -x + -x"),
             args(ints(0), List.of(ints(3).label("x")), "3 => x => -x + x"),
+            // args(ints(-36), List.of(ints(3).label("x")), "3 => x => (-x + -x) * (x + x)"),
+
+            /////////////////////////////////////////////////////
+
+            args(ints(3).label("x"), List.of(ints(3).label("x")), "3 => x => [is < (3 + x)]"),
+            args(ints(3).label("x"), List.of(ints(3).label("x")), "3 => x => [is < (3 + (1 + x))]"),
+            args(ints(3).label("x"), List.of(ints(3).label("x")), "3 => x => [is < (3 + (x + 1))]"),
+            args(objs(), "3 => x => [is > (3 + (int~x + 1))]"),
     };
 
 

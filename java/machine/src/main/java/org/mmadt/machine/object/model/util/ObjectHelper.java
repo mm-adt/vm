@@ -43,6 +43,7 @@ import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -69,9 +70,9 @@ public final class ObjectHelper {
         return object instanceof Inst ?
                 obj instanceof Inst ?
                         (O) object :
-                        obj.set(null).access((Inst) object) : // obj.set(null) is bad (need type spec)
+                        obj.type().access((Inst) object) :
                 object instanceof Sym ?
-                        obj.state().read(((Sym) object)) :
+                        (O) Optional.ofNullable(obj.state().read(((Sym) object))).orElse(obj.label(((Sym) object).label())) :
                         (O) ObjectHelper.from(object);
     }
 

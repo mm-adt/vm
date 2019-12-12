@@ -113,6 +113,13 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
+    public <O extends Obj> O type() {
+        final TObj clone = this.clone();
+        clone.value = null;
+        return (O) clone;
+    }
+
+    @Override
     public String symbol() {
         return this.type.symbol();
     }

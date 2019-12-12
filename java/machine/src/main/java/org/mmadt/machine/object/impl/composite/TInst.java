@@ -25,14 +25,13 @@ package org.mmadt.machine.object.impl.composite;
 import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.composite.inst.Morphing;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.util.InstHelper;
@@ -98,8 +97,8 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
 
     public E attach(S domainRange) {
         if (domainRange.isInstance())
-            domainRange = domainRange.set(null).access(StartInst.create(domainRange));
-        return this.attach(domainRange, this instanceof Morphing ? (E) domainRange.label(null) : (E)domainRange);
+            domainRange = domainRange.type().access(StartInst.create(domainRange));
+        return this.attach(domainRange, this instanceof Morphing ? (E) domainRange.label(null) : (E) domainRange);
     }
 
     public static Inst of(final List<Inst> insts) {
@@ -107,7 +106,8 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     }
 
     public <A extends Obj> Argument<S, A> argument(final int index) {
-        return Argument.create(this.<S>args().get(index));
+        final S arg = this.<S>args().get(index); // TODO: very hacky as as() does not resolve types
+        return Argument.create(arg instanceof Sym && this.opcode().java().equals(Tokens.AS) ? this.domain.type().label(arg.label()) : arg);
     }
 
     @Override

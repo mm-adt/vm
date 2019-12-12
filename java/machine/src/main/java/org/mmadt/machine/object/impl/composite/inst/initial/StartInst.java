@@ -55,7 +55,7 @@ public final class StartInst<S extends Obj> extends TInst<Obj, S> implements Ini
 
     public static <S extends Obj> StartInst<S> create(final Object... args) {
         final StartInst<S> inst = new StartInst<>(args);
-        Obj kind = inst.args().isEmpty() ? TObj.none() : inst.args().get(0).set(null); // TODO: for lst and rec, I think this should be .setValue()
+        Obj kind = inst.args().isEmpty() ? TObj.none() : inst.args().get(0).type();
         for (int i = 1; i < inst.args().size(); i++) {
             kind = ObjectHelper.root(kind, inst.args().get(i)).q(kind.q().plus(inst.args().get(i).q()));
         }

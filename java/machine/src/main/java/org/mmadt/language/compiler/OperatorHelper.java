@@ -36,6 +36,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithDiv;
 import org.mmadt.machine.object.model.ext.algebra.WithMinus;
@@ -43,6 +44,10 @@ import org.mmadt.machine.object.model.ext.algebra.WithMult;
 import org.mmadt.machine.object.model.ext.algebra.WithOr;
 import org.mmadt.machine.object.model.ext.algebra.WithOrder;
 import org.mmadt.machine.object.model.ext.algebra.WithPlus;
+
+import static org.mmadt.machine.object.impl.__.as;
+import static org.mmadt.machine.object.impl.__.mult;
+import static org.mmadt.machine.object.impl.__.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -59,7 +64,7 @@ public final class OperatorHelper {
             case (Tokens.ASTERIX):
                 return (A) ((WithMult) lhs).mult(rhs);
             case (Tokens.CROSS):
-                return (A) ((WithPlus) lhs).plus(rhs);
+                return lhs instanceof Sym ? (A) as(lhs).mapTo(plus(rhs)) : (A) ((WithPlus) lhs).plus(rhs);
             case (Tokens.BACKSLASH):
                 return (A) ((WithDiv) lhs).div(rhs);
             case (Tokens.DASH):
@@ -67,7 +72,7 @@ public final class OperatorHelper {
             case (Tokens.AMPERSAND):
                 return (A) ((WithAnd) lhs).and(rhs);
             case (Tokens.BAR):
-                return (A) ((WithOr) lhs).or((A)rhs);
+                return (A) ((WithOr) lhs).or((A) rhs);
             case (Tokens.RANGLE):
                 return (A) ((WithOrder) lhs).gt(rhs);
             case (Tokens.LANGLE):
@@ -79,9 +84,9 @@ public final class OperatorHelper {
             case (Tokens.DEQUALS):
                 return (A) lhs.eq(rhs);
             case (Tokens.MAPSTO):
-                return lhs.mapTo((A)rhs);
+                return lhs.mapTo((A) rhs);
             case (Tokens.MAPSFROM):
-                return lhs.mapFrom((A)rhs);
+                return lhs.mapFrom((A) rhs);
             case (Tokens.LPACK):
                 return (A) TRec.of(rhs, lhs);
             case Tokens.RPACK:
