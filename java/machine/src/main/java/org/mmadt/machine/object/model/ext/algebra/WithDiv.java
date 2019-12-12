@@ -23,15 +23,22 @@
 package org.mmadt.machine.object.model.ext.algebra;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports /.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithDiv<A extends WithDiv<A>> extends Obj {
+public interface WithDiv<A extends Obj> extends Obj {
 
     public A div(final A object);
 
     public A inv();
+
+    public default A div(final Object object) {
+        return this.div(ObjectHelper.create(this, object));
+    }
+
+
 }

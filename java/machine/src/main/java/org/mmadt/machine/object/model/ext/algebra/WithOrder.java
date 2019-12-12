@@ -35,13 +35,9 @@ public interface WithOrder<A extends Obj> extends Obj {
 
     public Bool gt(final A object);
 
-    public default Bool gte(final A object) {
-        return this.eq(object).plus(this.gt(object));
-    }
+    public Bool gte(final A object);
 
-    public default Bool lte(final A object) {
-        return this.eq(object).plus(this.lt(object));
-    }
+    public Bool lte(final A object);
 
     public Bool lt(final A object);
 
@@ -60,18 +56,18 @@ public interface WithOrder<A extends Obj> extends Obj {
     ///////////////////////////////////////
 
     public default Bool gt(final Object object) {
-        return this.gt(ObjectHelper.create(this.set(null), object));
+        return this.gt(ObjectHelper.create(this, object));
     }
 
     public default Bool gte(final Object object) {
-        return this.gte(ObjectHelper.create(this.set(null), object));
+        return this.gte(ObjectHelper.create(this, object));
     }
 
     public default Bool lte(final Object object) {
-        return this.lte(ObjectHelper.create(this.set(null), object));
+        return this.lte(ObjectHelper.create(this, object));
     }
 
     public default Bool lt(final Object object) {
-        return this.lt(ObjectHelper.create(this.set(null), object));
+        return this.lt(ObjectHelper.create(this, object));
     }
 }

@@ -67,6 +67,12 @@ class LabelTest {
             args(ints().access(plus(3).mult(as(ints().label("y"))).mult(mult(20)).mult(as(ints()))), List.of(ints().label("y").access(plus(3))), "int=>[plus,3]=>y=>[mult,20]=>int"),
             args(ints().access(plus(4).mult(as(ints().label("y"))).mult(as(ints().label("z"))).mult(mult(20)).mult(as(ints()))), List.of(ints().label("y").access(plus(4)), ints().label("z").access(plus(4).mult(as(ints().label("y"))))),
                     "int=>[plus,4]=>y=>z=>[mult,20]=>int"),
+
+            /////////////////////////////////////////////////////
+
+            args(ints(6), List.of(ints(3).label("x")), "3 => x => x + x"),
+            args(ints(-6), List.of(ints(3).label("x")), "3 => x => -x + -x"),
+            args(ints(0), List.of(ints(3).label("x")), "3 => x => -x + x"),
     };
 
 

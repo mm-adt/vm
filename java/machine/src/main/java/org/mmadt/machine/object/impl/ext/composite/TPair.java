@@ -106,6 +106,16 @@ public final class TPair<V extends WithOrderedRing<V>> extends TLst<V> implement
     }
 
     @Override
+    public Bool gte(Lst<V> object) {
+        return this.first().gte(object.get(0)).and(this.second().gte(object.get(1)));
+    }
+
+    @Override
+    public Bool lte(Lst<V> object) {
+        return this.first().lte(object.get(0)).and(this.second().lte(object.get(1)));
+    }
+
+    @Override
     public Bool lt(final Lst<V> object) {
         return this.first().lte(object.get(0)).and(this.second().lte(object.get(1)));
     }

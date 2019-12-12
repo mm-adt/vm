@@ -37,6 +37,6 @@ public interface WithMinus<A extends Obj> extends Obj {
     public A neg();
 
     public default A minus(final Object object) {
-        return this.minus(ObjectHelper.create(this.set(null), object));
+        return this.minus(ObjectHelper.create(this, object));
     }
 }

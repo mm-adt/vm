@@ -44,7 +44,7 @@ public interface Real extends WithField<Real> {
     }
 
     public default Real is(final Inst inst) {
-        return this.is(ObjectHelper.create(TBool.of(), inst));
+        return this.is(ObjectHelper.<Bool>create(TBool.of(), inst));
     }
 
 }

@@ -24,7 +24,6 @@ package org.mmadt.language.compiler;
 
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
-import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
@@ -37,7 +36,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithDiv;
 import org.mmadt.machine.object.model.ext.algebra.WithMinus;
@@ -55,21 +53,21 @@ public final class OperatorHelper {
         // static helper class
     }
 
-    public static <A extends Obj> A applyBinary(final String operator, final A lhs, final A rhs) {
+    public static <A extends Obj> A applyBinary(final String operator, final A lhs, final Object rhs) {
         // System.out.println(lhs + " " + operator + " " + rhs);
         switch (operator) {
             case (Tokens.ASTERIX):
-                return (A) ((WithMult) lhs).mult((WithMult) rhs);
+                return (A) ((WithMult) lhs).mult(rhs);
             case (Tokens.CROSS):
-                return (A) ((WithPlus) lhs).plus((WithPlus) rhs);
+                return (A) ((WithPlus) lhs).plus(rhs);
             case (Tokens.BACKSLASH):
-                return (A) ((WithDiv) lhs).div((WithDiv) rhs);
+                return (A) ((WithDiv) lhs).div(rhs);
             case (Tokens.DASH):
-                return (A) ((WithMinus) lhs).minus((WithMinus) rhs);
+                return (A) ((WithMinus) lhs).minus(rhs);
             case (Tokens.AMPERSAND):
                 return (A) ((WithAnd) lhs).and(rhs);
             case (Tokens.BAR):
-                return (A) ((WithOr) lhs).or(rhs);
+                return (A) ((WithOr) lhs).or((A)rhs);
             case (Tokens.RANGLE):
                 return (A) ((WithOrder) lhs).gt(rhs);
             case (Tokens.LANGLE):
@@ -81,9 +79,9 @@ public final class OperatorHelper {
             case (Tokens.DEQUALS):
                 return (A) lhs.eq(rhs);
             case (Tokens.MAPSTO):
-                return lhs.mapTo(rhs);
+                return lhs.mapTo((A)rhs);
             case (Tokens.MAPSFROM):
-                return lhs.mapFrom(rhs);
+                return lhs.mapFrom((A)rhs);
             case (Tokens.LPACK):
                 return (A) TRec.of(rhs, lhs);
             case Tokens.RPACK:

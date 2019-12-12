@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Sym;
@@ -50,12 +51,18 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
         if (to instanceof Sym)
             return from.label(to.label());
         else if (from.isReference()) {
-            return AsInst.<S>create(to).attach(to.label() == null ?
+            return AsInst.<S>create(to).attach(from, to.label() == null ?
                     from :
-                    from.state(from.state().write(to.access(from.access()))));
+                    fakeLabel(to.label(), from.state(from.state().write(to.access(from.access())))));
         } else if (!to.test(from))
             return to.kill();
         else
             return (from.isType() ? from.set(to.get()) : from).symbol(to.symbol()).access(to.access()).label(to.label());
+    }
+
+    private static <S extends Obj> S fakeLabel(final String label, final S obj) { // TODO: this is lame
+        final TObj temp = (TObj) obj.clone();
+        temp.type = temp.type.label(label);
+        return (S) temp;
     }
 }

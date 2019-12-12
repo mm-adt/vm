@@ -86,7 +86,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     ////////
     protected Object value;                            // mutually exclusive with pattern (instance data)
     private WithOrderedRing quantifier = null;         // the 'amount' of this object bundle
-    protected Type type;                               // an object that abstractly defines this object's forms
+    public Type type;                               // an object that abstractly defines this object's forms
     private State state = new TState();                // state associated with the computation
 
     public TObj(final Object value) {

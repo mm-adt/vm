@@ -35,6 +35,6 @@ public interface WithMult<A extends Obj> extends Obj {
     public A mult(final A object);
 
     public default A mult(final Object object) {
-        return this.mult(ObjectHelper.create(this.set(null), object));
+        return this.mult(ObjectHelper.create(this, object));
     }
 }

@@ -77,7 +77,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
     }
 
     public default V get(final Object index) {
-        return this.get((K) ObjectHelper.create(TInt.of(), index));
+        return this.get(ObjectHelper.create(TInt.of(), index));
     }
 
     @Override

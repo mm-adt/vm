@@ -35,6 +35,6 @@ public interface WithPlus<A extends Obj> extends Obj {
     public A plus(final A object);
 
     public default A plus(final Object object) {
-        return this.plus(ObjectHelper.create(this.set(null), object));
+        return this.plus(ObjectHelper.create(this, object));
     }
 }

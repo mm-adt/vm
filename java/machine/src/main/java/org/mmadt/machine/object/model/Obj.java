@@ -280,7 +280,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O map(final Inst inst) {
-        return this.map((O) ObjectHelper.create(this.set(null), inst));
+        return this.map(ObjectHelper.<O>create(this, inst));
     }
 
     public default Int map(final Integer integer) {

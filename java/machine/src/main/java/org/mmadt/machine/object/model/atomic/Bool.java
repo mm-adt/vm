@@ -48,6 +48,6 @@ public interface Bool extends WithCommutativeRing<Bool> {
     }
 
     public default Bool is(final Inst bool) {
-        return this.is(ObjectHelper.create(TBool.of(), bool));
+        return this.is(ObjectHelper.<Bool>create(TBool.of(), bool));
     }
 }

@@ -23,7 +23,6 @@ package org.mmadt.machine.object.model.util;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
@@ -33,6 +32,7 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
@@ -65,8 +65,14 @@ public final class ObjectHelper {
         // static helper class
     }
 
-    public static <O extends Obj> O create(final O obj, final Object object) {
-        return object instanceof Inst ? obj.access((Inst) object) : object instanceof TSym ? obj.state().read(((TSym) object)) : (O) ObjectHelper.from(object);
+    public static <O extends Obj> O create(final Obj obj, final Object object) {
+        return object instanceof Inst ?
+                obj instanceof Inst ?
+                        (O) object :
+                        obj.set(null).access((Inst) object) : // obj.set(null) is bad (need type spec)
+                object instanceof Sym ?
+                        obj.state().read(((Sym) object)) :
+                        (O) ObjectHelper.from(object);
     }
 
     public static <O extends Obj> O make(final Function<Object, O> constructor, final Object... objects) {
