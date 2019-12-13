@@ -49,4 +49,10 @@ public final class IdInst<S extends Obj> extends TInst<S, S> implements FilterIn
         return this.q().isOne() ? domain : domain.q(domain.q().mult(this.q()));
     }
 
+    public static <S extends Obj> S compute(final S obj) {
+        return (!obj.isReference()) ?
+                obj :
+                IdInst.<S>create().attach(obj);
+    }
+
 }

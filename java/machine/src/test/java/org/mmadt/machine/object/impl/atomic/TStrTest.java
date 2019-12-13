@@ -126,6 +126,7 @@ final class TStrTest implements TestUtilities {
         assertEquals("str[is,[gt,'a']]", TStr.of(IsInst.create(GtInst.create("a"))).toString());
         assertEquals("(str[is,[gt,'a']])~x", TStr.of(IsInst.create(GtInst.create("a"))).label("x").toString()); // TODO: perhaps str([is]){x,y}~a
         assertEquals("(str[is,[gt,'a']]){0,2}", TStr.of(IsInst.create(GtInst.create("a"))).q(0, 2).toString());
+        assertEquals("(str[is,[gt,'a']]){0,2}~x", TStr.of(IsInst.create(GtInst.create("a"))).q(0, 2).label("x").toString());
         assertEquals("'marko'", TStr.of("marko").and(TStr.of("marko")).toString());
         assertEquals("'marko'{*}", TStr.of("marko").q(star).and(TStr.of("marko")).toString());
         assertEquals("'marko'{0}", TStr.of("marko").q(star).and(TStr.of("marko").q(zero)).toString());

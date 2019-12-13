@@ -33,8 +33,6 @@ public interface WithGroupMult<A extends WithGroupMult<A>> extends WithMonoidMul
     public A inv();
 
     @Override
-    public default A div(final A object) {
-        return this.mult(object.inv());
-    }
+    public A div(final A object);
 
 }

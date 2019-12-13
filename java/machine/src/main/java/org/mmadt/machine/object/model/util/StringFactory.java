@@ -75,7 +75,7 @@ public final class StringFactory {
                 builder.append(LPAREN)
                         .append(obj.access().domain())
                         .append(RPAREN)
-                        .append(MAPSTO);  // TODO: right now we just prepend the type (its not copy/pastable as its not legal syntax
+                        .append(MAPSTO);  // TODO: the domain of the inst is represented as (obj)=> (cheesy)
             builder.append(obj.access());
         }
     }
@@ -160,14 +160,7 @@ public final class StringFactory {
     public static String inst(final Inst inst) {
         final StringBuilder builder = new StringBuilder();
         if (!TInst.some().get().equals(inst.get())) {
-            // boolean head = true;
             for (final Inst single : inst.iterable()) {
-                /*if (head) {
-                    head = false;
-                    if (!single.domain().q().isZero()) {
-                        builder.append(LPAREN).append((Obj)single.domain().access(null)).append(RPAREN); // TODO: do we show domain in toString()?
-                    }
-                }*/
                 builder.append(LBRACKET);
                 boolean opcode = true;
                 for (Obj object : single.<Iterable<Obj>>get()) {

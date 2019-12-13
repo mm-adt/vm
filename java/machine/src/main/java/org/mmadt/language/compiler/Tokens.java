@@ -103,7 +103,7 @@ public final class Tokens {
     public static final String EVAL = "eval";
     public static final String EXPLAIN = "explain";
     public static final String FILTER = "filter";
-    public static final String FLATMAP = "flatMap";
+    public static final String FLATMAP = "flatmap";
     public static final String FROM = "from";
     public static final String IS = "is";
     public static final String GET = "get";

@@ -22,13 +22,20 @@
 
 package org.mmadt.machine.object.model.ext.algebra;
 
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
+
 /**
  * An {@link org.mmadt.machine.object.model.Obj} that supports &.
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface WithAnd<A> {
+public interface WithAnd<A extends Obj> {
 
     public A and(final A obj);
+
+    public default A and(final Object object) {
+        return this.and(ObjectHelper.create((Obj) this, object));
+    }
 
 }

@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
@@ -179,7 +178,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O mapFrom(final Obj obj) {
         if (obj instanceof Inst)
             return (O) this.access((Inst) obj);
-        else if (this instanceof TSym)
+        else if (this instanceof Sym)
             return this.mapFrom(this.state().read(obj));                 // loads the variable obj from obj state and then maps from it (variable-based pattern match)
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
@@ -255,7 +254,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O id() {
-        return this.isInstance() ? (O) this : (O) IdInst.create().attach(this);
+        return IdInst.compute((O) this);
     }
 
     public default <O extends Obj> O map(final O obj) {

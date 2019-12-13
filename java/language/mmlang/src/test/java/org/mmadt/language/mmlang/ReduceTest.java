@@ -29,7 +29,6 @@ import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -47,7 +46,9 @@ import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 class ReduceTest {
 
     private final static ParserArgs[] REDUCING = new ParserArgs[]{
-            // count
+            ///////////
+            // count //
+            ///////////
             args(ints(1),
                     "1 => [count]"),
             args(ints(3),
@@ -60,7 +61,13 @@ class ReduceTest {
                     "1 => [[plus,1][count] + [plus,2][count] + [plus,3][count]]"),
             args(TPair.of(0, 5),
                     "int{5} => [is,[gt,10]][count]"),
-            // sum
+            args(ints(5),
+                    "int{5} => [id][count]"),
+
+
+            /////////
+            // sum //
+            /////////
             args(ints(2),
                     "2 => [sum]"),
             args(ints(9),
@@ -75,7 +82,11 @@ class ReduceTest {
                     "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count][sum]=>int~x"),
             args(ints(3).label("x"),
                     "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count][sum]=>x"),
-            // groupCount
+
+
+            ////////////////
+            // groupCount //
+            ////////////////
             args(TRec.of(1, 1),
                     "1 => [groupCount]"),
             args(ints(1),

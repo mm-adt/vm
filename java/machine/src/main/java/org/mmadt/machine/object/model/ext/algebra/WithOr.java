@@ -22,12 +22,7 @@
 
 package org.mmadt.machine.object.model.ext.algebra;
 
-import org.mmadt.machine.object.impl.__;
-import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
-import org.mmadt.machine.object.impl.composite.inst.map.AInst;
-import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
@@ -37,5 +32,9 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
  */
 public interface WithOr<A extends Obj> {
 
-    public  A or(final A obj);
+    public A or(final A obj);
+
+    public default A or(final Object object) {
+        return this.or(ObjectHelper.create((Obj) this, object));
+    }
 }

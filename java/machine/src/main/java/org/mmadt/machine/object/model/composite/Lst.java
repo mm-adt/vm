@@ -82,8 +82,8 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
         return v.copy(this);
     }
 
-    public default <A extends Obj> A get(final Object index) {
-        return (A) this.get(ObjectHelper.create(TInt.of(), index));
+    public default V get(final Object index) {
+        return this.get(ObjectHelper.create(TInt.of(), index));
     }
 
     public default Lst<V> put(final Object index, final Object value) {

@@ -42,7 +42,7 @@ import static org.mmadt.machine.object.impl.__.is;
  */
 class BindingsTest {
 
-    // @Test
+    @Test
     void shouldBindAtomics() {
         Obj type1 = TInt.of(is(gt(29))).label("x");
         System.out.println(type1);

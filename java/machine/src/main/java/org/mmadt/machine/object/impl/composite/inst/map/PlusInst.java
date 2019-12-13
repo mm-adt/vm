@@ -24,9 +24,12 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithPlus;
@@ -52,6 +55,12 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst<S, S> implement
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public static Bool compute(final Bool lhs, final Bool rhs) {
+        return (lhs.isInstance() && rhs.isInstance()) ?
+                lhs.set(exclusiveOr(lhs.java(), rhs.java())) :
+                PlusInst.<Bool>create(rhs).attach(lhs);
+    }
+
     public static Int compute(final Int lhs, final Int rhs) {
         return (lhs.isInstance() && rhs.isInstance()) ?
                 lhs.set(tryCatch(() -> Math.addExact(lhs.java(), rhs.java()), Integer.MAX_VALUE)) :
@@ -70,7 +79,13 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst<S, S> implement
                 PlusInst.<Str>create(rhs).attach(lhs);
     }
 
-    ///// HELPER METHODS
+    //////////////////////////////////////////////
+    /////////////// HELPER METHODS ///////////////
+    //////////////////////////////////////////////
+
+    private static boolean exclusiveOr(final boolean a, final boolean b) {
+        return (a && !b) || (!a && b);
+    }
 
     private static Object tryCatch(final Supplier<Object> function, final Object failValue) {
         try {

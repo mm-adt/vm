@@ -105,9 +105,7 @@ public final class TBool extends TObj implements Bool {
 
     @Override
     public Bool plus(final Bool bool) {
-        return (this.isInstance() && bool.isInstance()) ?
-                this.set(exclusiveOr(this.java(), bool.java())) :
-                PlusInst.<Bool>create(bool).attach(this);
+        return PlusInst.compute(this, bool);
     }
 
     @Override

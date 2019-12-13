@@ -31,17 +31,13 @@ import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
-import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
-import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Sym;
-import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithDiv;
 import org.mmadt.machine.object.model.ext.algebra.WithMinus;
 import org.mmadt.machine.object.model.ext.algebra.WithMult;
-import org.mmadt.machine.object.model.ext.algebra.WithOr;
 import org.mmadt.machine.object.model.ext.algebra.WithOrder;
 import org.mmadt.machine.object.model.ext.algebra.WithPlus;
 
@@ -70,9 +66,9 @@ public final class OperatorHelper {
             case (Tokens.DASH):
                 return (A) ((WithMinus) lhs).minus(rhs);
             case (Tokens.AMPERSAND):
-                return (A) ((WithAnd) lhs).and(rhs);
+                return (A) lhs.and(rhs);
             case (Tokens.BAR):
-                return (A) ((WithOr) lhs).or((A) rhs);
+                return (A) lhs.or(rhs);
             case (Tokens.RANGLE):
                 return (A) ((WithOrder) lhs).gt(rhs);
             case (Tokens.LANGLE):
@@ -86,7 +82,7 @@ public final class OperatorHelper {
             case (Tokens.MAPSTO):
                 return lhs.mapTo((A) rhs);
             case (Tokens.MAPSFROM):
-                return lhs.mapFrom((A) rhs);
+                return lhs.mapFrom((Obj) rhs);
             case (Tokens.LPACK):
                 return (A) TRec.of(rhs, lhs);
             case Tokens.RPACK:
