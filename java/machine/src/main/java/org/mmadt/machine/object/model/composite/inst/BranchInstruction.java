@@ -28,6 +28,7 @@ import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
@@ -67,7 +68,11 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
         for (final Object branch : branches) {
             if (branch instanceof Rec)
                 branchMap.putAll(((Rec) branch).get());
-            else if ((choose && branch instanceof ChooseInst) || (!choose && branch instanceof BranchInst))
+            else if (branch instanceof Lst) {
+                for (final Obj obj : ((Lst<Obj>) branch).<PList<Obj>>get()) {
+                    branchMap.put(obj, obj);
+                }
+            } else if ((choose && branch instanceof ChooseInst) || (!choose && branch instanceof BranchInst))
                 branchMap.putAll(((BranchInstruction<?, ?>) branch).<Rec<Obj, Obj>>args().get(0).get());
             else if (branch instanceof Inst)
                 branchMap.put(KeyToken.mint(), ObjectHelper.from(branch));

@@ -77,7 +77,7 @@ class LabelTest {
             args(ints(-9), List.of(ints(3).label("x")), "3 => x => -x + -x + -x"),
             args(ints(18), List.of(ints(3).label("x")), "3 => x => -x + -x * -x"),
             //args(ints(18), List.of(ints(3).label("x")), "3 => x => (-x + -x) * -x"),
-            //args(ints(12), List.of(ints(3).label("x")), "3 => x => y => ((x + x) + (y + y))"),
+            //args(ints(12), List.of(ints(3).label("x"), ints(3).label("y")), "3 => x => y => (x + x + y + y)"),
             args(ints(6), List.of(ints(3).label("x"), ints(3).label("y")), "3 => x => y => x + y"),
             args(ints(-18), List.of(ints(3).label("x"), ints(3).label("y")), "3 => x => y => (y + y) * -x"),
 

@@ -65,6 +65,8 @@ class BranchTest {
                     "2 => [branch,1->[plus,2],3->[id]]"),
 
 
+            /////////////////////////////////////////////////////
+
             args(branch(1, 2, 3),
                     "[ 1 + 2 + 3 ]"),
             args(branch(1, 2, 3),
@@ -104,6 +106,14 @@ class BranchTest {
                     "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
             args(objs(ints(1).label("a"), ints(2).label("a"), ints(3).label("a")),
                     "1 => ([id] + [plus,1] + [plus,2]) => int~a"),
+
+            /////////////////////////////////////////////////////
+
+            // 4 representations of the same compilation
+            args(objs(2, 2, 2), "2 => [branch,[int;2;[is > 1]]] => int"),
+            args(objs(2, 2, 2), "2 => [int + 2 + [is > 1]] => int"),
+            args(objs(2, 2, 2), "2 => [branch,int,2,[is > 1]] => int"),
+            args(objs(2, 2, 2), "2 => [int->int + 2->2 + [is,[gt,1]]->[is > 1]] => int")
 
     };
 

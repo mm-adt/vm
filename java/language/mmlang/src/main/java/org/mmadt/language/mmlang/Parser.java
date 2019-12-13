@@ -246,8 +246,8 @@ public class Parser extends BaseParser<Object> {
     Rule Single_Inst() {
         return Sequence(
                 FirstOf(
-                        Opcode_Inst(),
-                        Branch_Inst()),// compiler grabs the instruction type
+                        Branch_Inst(),
+                        Opcode_Inst()),// compiler grabs the instruction type
                 Optional(Quantifier(), swap(), this.push(castToInst(this.pop()).q(this.pop()))));
     }
 
