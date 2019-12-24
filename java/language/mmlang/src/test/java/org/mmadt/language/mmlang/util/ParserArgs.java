@@ -27,6 +27,7 @@ import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -102,7 +103,7 @@ public final class ParserArgs<A extends Obj> {
             assertEquals(this.expected, results);
             if (null != this.expectedState) {
                 final A obj = results.get(0);
-                assertEquals(TModel.of(this.expectedState), obj.model());
+                assertEquals(TModel.of(this.expectedState, IdInst.create()), obj.model());
             }
         });
     }

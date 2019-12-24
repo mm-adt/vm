@@ -109,7 +109,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O model(final Model model) {
         final TObj clone = this.clone();
         clone.model = model;
-        return (O) clone;
+        return (O) clone; // : (O) ModelInst.create("xxx", TRec.of(), IdInst.create()).attach(clone);
     }
 
     @Override

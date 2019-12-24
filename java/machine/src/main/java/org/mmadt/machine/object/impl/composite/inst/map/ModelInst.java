@@ -25,12 +25,16 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+
+import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,10 +47,24 @@ public final class ModelInst<S extends Obj, E extends Obj> extends TInst<S, E> i
 
     @Override
     public E apply(final S obj) {
-        return obj.model(TModel.of(this.<Rec<Sym, Obj>>args().get(1).get(), this.<Inst>args().get(2)));
+        return (E) obj.model(TModel.of(this.<Rec<Sym, Obj>>args().get(1).get(), this.<Inst>args().get(2))).model().apply(obj);
     }
 
-    public static <S extends Obj, E extends Obj> ModelInst<S, E> create(final String model, final Object symbols, final Object inst) {
-        return new ModelInst<>(model, symbols, inst);
+    public static <S extends Obj, E extends Obj> ModelInst<S, E> create(final Object... objects) {
+        final List<Object> parameters = List.of(objects);
+        final String name = parameters.get(0).toString();
+        final Object bindings;
+        final Object instruction;
+        if (parameters.size() == 3) {
+            bindings = parameters.get(1);
+            instruction = parameters.get(2);
+        } else if (parameters.size() == 2) {
+            bindings = parameters.get(1) instanceof Inst ? TRec.of() : parameters.get(1);
+            instruction = parameters.get(1) instanceof Inst ? parameters.get(1) : IdInst.create();
+        } else {
+            bindings = TRec.of();
+            instruction = IdInst.create();
+        }
+        return new ModelInst<>(name, bindings, instruction);
     }
 }

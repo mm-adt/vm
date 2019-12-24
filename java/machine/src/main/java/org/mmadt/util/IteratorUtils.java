@@ -74,6 +74,10 @@ public final class IteratorUtils {
         return collection;
     }
 
+    public static final <S> S orElse(final Iterator<S> iterator, final S s) {
+        return iterator.hasNext() ? iterator.next() : s;
+    }
+
     public static <S> Iterator<S> onLast(final Iterator<S> iterator, final Runnable onLast) {
         return new Iterator<>() {
             boolean lastExecuted = false;

@@ -44,6 +44,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
+import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -53,7 +54,12 @@ class ModelTest {
     private final static ParserArgs[] MODELS = new ParserArgs[]{
             args(ModelInst.create("cpu", TRec.of(Map.of(TSym.of("a"), 1)), IdInst.create()), "[=cpu,[a:1],[id]]"),
             args(ModelInst.create("cpu", TRec.of(Map.of(TSym.of("weight"), 0.0f, TSym.of("path"), TLst.of())), ChooseInst.create(TRec.of("a", PlusInst.create(2)))), "[=cpu,[weight:0.0,path:[;]],[choose,['a':[plus,2]]]]"),
-            args(ints(10), "10 => [=cpu,[:],[plus,1]]"),
+            args(ints(11), "10 => [=cpu,[:],[plus,1]]"),
+            args(ints(11), "10 => [=cpu,[plus,1]]"),
+            args(objs(), "10 => [=cpu,[[int;int] -> [id] | obj -> obj{0}]]"),
+            args(objs(TLst.of(1, 2)), "[1;2] => [=cpu,[[int;int] -> [id] | obj -> obj{0}]]"),
+
+
             // args(ints(500), "10 => [=cpu,[weight->50|path->20]][mult,weight]"),
             // args(ints(20), "10 => [=cpu,[weight->50|path->20]][mult,weight][map,path]"),
     };

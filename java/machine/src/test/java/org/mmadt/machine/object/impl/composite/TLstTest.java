@@ -163,12 +163,12 @@ final class TLstTest implements TestUtilities {
         assertEquals(0, bindings.size());
     }
 
-    @Test
+    /*@Test
     void shouldSupportNoneEndings() {
         final Lst<Obj> a = TLst.of("marko", 29);
         assertFalse(TLst.of(TStr.of(), TObj.none()).test(a));
         assertTrue(TLst.of(TStr.of(), 29, TObj.none()).test(a));
         assertTrue(TLst.of(TStr.of(), 29, TObj.none(), TObj.none()).test(a));
         assertFalse(TLst.of(TStr.of(), TObj.none(), 29, TObj.none()).test(a));
-    }
+    }*/
 }

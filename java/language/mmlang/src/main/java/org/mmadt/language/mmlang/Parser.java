@@ -25,6 +25,7 @@ package org.mmadt.language.mmlang;
 import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.OperatorHelper;
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
@@ -50,6 +51,7 @@ import org.parboiled.annotations.SuppressNode;
 import org.parboiled.annotations.SuppressSubnodes;
 import org.parboiled.support.Var;
 
+import static org.mmadt.language.compiler.Tokens.OBJ;
 import static org.mmadt.machine.object.impl.__.id;
 
 /**
@@ -128,7 +130,8 @@ public class Parser extends BaseParser<Object> {
 
     Rule Obj() {
         return Sequence(
-                FirstOf(Inst(),
+                FirstOf(Sequence(OBJ, this.push(TObj.single())),
+                        Inst(),
                         Bool(),
                         Real(),
                         Int(),

@@ -89,4 +89,19 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     public default Lst<V> put(final Object index, final Object value) {
         return this.put(ObjectHelper.create(TInt.of(), index), ObjectHelper.create(TObj.single(), value));
     }
+
+    @Override
+    public default boolean test(final Obj obj) {
+        if (obj instanceof Lst && this.get() != null && obj.get() != null) {
+            final Lst list = (Lst) obj;
+            if (list.java().size() < this.java().size())
+                return false;
+            for (int i = 0; i < this.java().size(); i++) {
+                if (!this.get(i).test(list.get(i)))
+                    return false;
+            }
+            return true;
+        }
+        return WithProduct.super.test(obj);
+    }
 }

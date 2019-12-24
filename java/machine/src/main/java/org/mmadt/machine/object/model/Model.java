@@ -29,7 +29,7 @@ import org.mmadt.machine.object.model.composite.Inst;
  */
 public interface Model extends Cloneable {
 
-    Inst apply(final Inst inst);
+    Obj apply(final Obj inst);
 
     public <O extends Obj> O read(final Obj key);
 

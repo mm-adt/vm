@@ -22,11 +22,11 @@
 
 package org.mmadt.machine.object.impl;
 
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
+import org.mmadt.util.IteratorUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,12 +36,9 @@ import java.util.Map;
  */
 public final class TModel implements Model {
 
+    private String name; // TODO =xxx
     private Map<String, Obj> objs = new LinkedHashMap<>();
     private Inst insts = null;
-
-    public static Model of(final Map<String, Obj> state) {
-        return TModel.of(state, IdInst.create());
-    }
 
     public static Model of(final Map<String, Obj> state, final Inst inst) {
         final TModel temp = new TModel();
@@ -51,8 +48,8 @@ public final class TModel implements Model {
     }
 
     @Override
-    public Inst apply(final Inst inst) {
-        return null == this.insts ? null : (Inst) FastProcessor.process(inst.access(this.insts)).next();
+    public Obj apply(final Obj obj) {
+        return null == this.insts ? obj : IteratorUtils.orElse(FastProcessor.process(obj.mapTo(this.insts)), TObj.none());
     }
 
     @Override
