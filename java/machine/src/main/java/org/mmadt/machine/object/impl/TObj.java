@@ -27,9 +27,9 @@ import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.ext.composite.TPair;
+import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Pattern;
-import org.mmadt.machine.object.model.State;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -86,8 +86,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     ////////
     protected Object value;                            // mutually exclusive with pattern (instance data)
     private WithOrderedRing quantifier = null;         // the 'amount' of this object bundle
-    public Type type;                               // an object that abstractly defines this object's forms
-    private State state = new TState();                // state associated with the computation
+    public Type type;                                  // an object that abstractly defines this object's forms
+    private Model model = new TModel();                // the algebraic model that is used to interpret this obj
 
     public TObj(final Object value) {
         this.type = TType.of(TObj.getBaseSymbol(this));
@@ -101,14 +101,14 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public State state() {
-        return this.state;
+    public Model model() {
+        return this.model;
     }
 
     @Override
-    public <O extends Obj> O state(final State state) {
+    public <O extends Obj> O model(final Model model) {
         final TObj clone = this.clone();
-        clone.state = state;
+        clone.model = model;
         return (O) clone;
     }
 
@@ -221,7 +221,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
                 ((this.q().isZero() && ((TObj) object).q().isZero()) ||
                         (Objects.equals(this.value, ((TObj) object).value) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
-                                Objects.equals(this.type, ((TObj) object).type))); // TODO: state equality
+                                Objects.equals(this.type, ((TObj) object).type))); // TODO: model equality
     }
 
     @Override

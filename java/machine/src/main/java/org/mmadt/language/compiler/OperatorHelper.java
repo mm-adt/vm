@@ -26,6 +26,7 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
+import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
@@ -54,39 +55,39 @@ public final class OperatorHelper {
         // static helper class
     }
 
-    public static <A extends Obj> A applyBinary(final String operator, final A lhs, final Object rhs) {
+    public static Obj applyBinary(final String operator, final Obj lhs, final Object rhs) {
         // System.out.println(lhs + " " + operator + " " + rhs);
         switch (operator) {
             case (Tokens.ASTERIX):
-                return lhs instanceof Sym ? (A) as(lhs).mult(mult(rhs)) : (A) ((WithMult) lhs).mult(rhs);
+                return lhs instanceof Sym ? as(lhs).mult(mult(rhs)) : ((WithMult) lhs).mult(rhs);
             case (Tokens.CROSS):
-                return lhs instanceof Sym ? (A) as(lhs).mult(plus(rhs)) : (A) ((WithPlus) lhs).plus(rhs);
+                return lhs instanceof Sym ? as(lhs).mult(plus(rhs)) : ((WithPlus) lhs).plus(rhs);
             case (Tokens.BACKSLASH):
-                return (A) ((WithDiv) lhs).div(rhs);
+                return ((WithDiv) lhs).div(rhs);
             case (Tokens.DASH):
-                return (A) ((WithMinus) lhs).minus(rhs);
+                return ((WithMinus) lhs).minus(rhs);
             case (Tokens.AMPERSAND):
-                return (A) lhs.and(rhs);
+                return lhs.and(rhs);
             case (Tokens.BAR):
-                return (A) lhs.or(rhs);
+                return lhs.or(rhs);
             case (Tokens.RANGLE):
-                return (A) ((WithOrder) lhs).gt(rhs);
+                return ((WithOrder) lhs).gt(rhs);
             case (Tokens.LANGLE):
-                return (A) ((WithOrder) lhs).lt(rhs);
+                return ((WithOrder) lhs).lt(rhs);
             case (Tokens.REQUALS):
-                return (A) ((WithOrder) lhs).gte(rhs);
+                return ((WithOrder) lhs).gte(rhs);
             case (Tokens.LEQUALS):
-                return (A) ((WithOrder) lhs).lte(rhs);
+                return ((WithOrder) lhs).lte(rhs);
             case (Tokens.DEQUALS):
-                return (A) lhs.eq(rhs);
+                return lhs.eq(rhs);
             case (Tokens.MAPSTO):
-                return lhs.mapTo((A) rhs);
+                return lhs.mapTo((Obj) rhs);
             case (Tokens.MAPSFROM):
                 return lhs.mapFrom((Obj) rhs);
             case (Tokens.LPACK):
-                return (A) TRec.of(rhs, lhs);
+                return TRec.of(rhs, lhs);
             case Tokens.RPACK:
-                return (A) TRec.of(lhs, rhs);
+                return TRec.of(lhs, rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }
@@ -116,6 +117,8 @@ public final class OperatorHelper {
                 return LteInst.create(rhs);
             case (Tokens.DEQUALS):
                 return EqInst.create(rhs);
+            case Tokens.PERIOD:
+                return GetInst.create(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

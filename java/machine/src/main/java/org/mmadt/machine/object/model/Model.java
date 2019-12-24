@@ -27,14 +27,14 @@ import org.mmadt.machine.object.model.composite.Inst;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface State extends Cloneable {
+public interface Model extends Cloneable {
 
     Inst apply(final Inst inst);
 
     public <O extends Obj> O read(final Obj key);
 
-    public State write(final Obj value);
+    public Model write(final Obj value);
 
-    public State clone();
+    public Model clone();
 
 }

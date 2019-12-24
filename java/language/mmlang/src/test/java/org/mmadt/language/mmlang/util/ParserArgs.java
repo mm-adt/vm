@@ -23,7 +23,7 @@
 package org.mmadt.language.mmlang.util;
 
 import org.junit.jupiter.api.DynamicTest;
-import org.mmadt.machine.object.impl.TState;
+import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
@@ -102,7 +102,7 @@ public final class ParserArgs<A extends Obj> {
             assertEquals(this.expected, results);
             if (null != this.expectedState) {
                 final A obj = results.get(0);
-                assertEquals(TState.of(this.expectedState), obj.state());
+                assertEquals(TModel.of(this.expectedState), obj.model());
             }
         });
     }

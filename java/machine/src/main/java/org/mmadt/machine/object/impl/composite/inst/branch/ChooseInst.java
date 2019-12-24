@@ -42,4 +42,5 @@ public final class ChooseInst<S extends Obj, E extends Obj> extends TInst<Obj, O
     public static <S extends Obj, E extends Obj> ChooseInst<S, E> create(final Object... branches) {
         return new ChooseInst<>(BranchInstruction.buildBranchMap(true, branches));
     }
+
 }

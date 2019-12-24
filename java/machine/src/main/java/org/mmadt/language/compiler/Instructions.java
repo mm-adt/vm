@@ -42,6 +42,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
+import org.mmadt.machine.object.impl.composite.inst.map.ModelInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
@@ -74,6 +75,7 @@ import static org.mmadt.language.compiler.Tokens.DEDUP;
 import static org.mmadt.language.compiler.Tokens.DIV;
 import static org.mmadt.language.compiler.Tokens.DROP;
 import static org.mmadt.language.compiler.Tokens.EQ;
+import static org.mmadt.language.compiler.Tokens.EQUALS;
 import static org.mmadt.language.compiler.Tokens.EXPLAIN;
 import static org.mmadt.language.compiler.Tokens.GET;
 import static org.mmadt.language.compiler.Tokens.GROUPCOUNT;
@@ -116,6 +118,8 @@ public final class Instructions {
         final String opcode = args.get(0).get();
         args.remove(0); // drop the opcode
         switch (opcode) {
+            case EQUALS:
+                return ModelInst.create(args.get(0).toString(), args.get(1), args.get(2));
             case A:
                 return AInst.create(args.get(0));
             case ACCESS:

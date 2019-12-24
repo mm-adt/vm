@@ -92,12 +92,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O symbol(final String symbol);
 
-    public <O extends Obj> O state(final State state);
+    public <O extends Obj> O model(final Model model);
 
-    public State state();
+    public Model model();
 
     public default <O extends Obj> O copy(final Obj obj) {
-        return this.access(obj.access()).state(obj.state()); // removed q() copy -- no failing tests .. !?
+        return this.access(obj.access()).model(obj.model()); // removed q() copy -- no failing tests .. !?
     }
 
     public default <O extends Obj> O kill() {
@@ -177,9 +177,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O mapFrom(final Obj obj) {
         if (obj instanceof Inst)
-            return (O) this.access((Inst) obj);
+            return (O) this.access(this.access().mult((Inst) obj));
         else if (this instanceof Sym)
-            return this.mapFrom(this.state().read(obj));                 // loads the variable obj from obj state and then maps from it (variable-based pattern match)
+            return this.mapFrom(this.model().read(obj));                 // loads the variable obj from obj state and then maps from it (variable-based pattern match)
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
 

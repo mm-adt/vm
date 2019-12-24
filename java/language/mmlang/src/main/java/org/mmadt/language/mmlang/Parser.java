@@ -135,13 +135,17 @@ public class Parser extends BaseParser<Object> {
                         Str(),
                         Lst(),
                         Rec(),
-                        Symbol()),
+                        Sym()),
                 Obj_Metadata());
     }
 
     Rule Obj_Metadata() {
         return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),                                    // {quantifier}
                 Optional(!(this.peek() instanceof TSym), TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));     // ~label
+    }
+
+    Rule Sym() {
+        return Sequence(Word(), this.push(TSym.of(match().trim()))); //Sequence(Word(), ZeroOrMore(FirstOf(Number(), Word())));
     }
 
     Rule Lst() {
@@ -237,7 +241,7 @@ public class Parser extends BaseParser<Object> {
         final Var<PList<Obj>> args = new Var<>(new PList<>());
         return Sequence(
                 LBRACKET,
-                Sequence(Word(), opcode.set(match().trim()), ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop())))),    // arguments
+                Sequence(Opcode(), opcode.set(match().trim()), ZeroOrMore(Optional(COMMA), Expression(), args.get().add(type(this.pop())))),    // arguments
                 RBRACKET,
                 this.push(Instructions.compile(TInst.of(opcode.get(), args.get()))));
     }
@@ -252,13 +256,8 @@ public class Parser extends BaseParser<Object> {
     }
 
     @SuppressSubnodes
-    Rule Symbol() {
-        return Sequence(Word(), this.push(TSym.of(match().trim()))); //Sequence(Word(), ZeroOrMore(FirstOf(Number(), Word())));
-    }
-
-    @SuppressSubnodes
     Rule UnaryOperator() {
-        return Sequence(TestNot(LPACK, RPACK), FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(TestNot(LPACK, RPACK), FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS, PERIOD), this.push(this.match().trim()));
     }
 
     @SuppressSubnodes
@@ -289,6 +288,11 @@ public class Parser extends BaseParser<Object> {
         return Sequence(OneOrMore(FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'))), Spacing());
     }
 
+    @SuppressNode
+    Rule Opcode() {
+        return FirstOf(EQUALS, Word());
+    }
+
     @SuppressSubnodes
     Rule Quantifier() {
         return Sequence(
@@ -296,10 +300,10 @@ public class Parser extends BaseParser<Object> {
                 FirstOf(Sequence(STAR, this.push(TPair.of(0, Integer.MAX_VALUE))),                                                                // {*}
                         Sequence(PLUS, this.push(TPair.of(1, Integer.MAX_VALUE))),                                                                // {+}
                         Sequence(QMARK, this.push(TPair.of(0, 1))),                                                                               // {?}
-                        Sequence(COMMA, Expression(), this.push(TPair.of(this.<WithOrderedRing>type(this.peek()).min(), type(this.pop())))),      // {,10}
+                        Sequence(COMMA, Expression(), this.push(TPair.of(this.<WithOrderedRing>type(this.peek()).min(), type(this.pop())))),                    // {,10}
                         Sequence(Expression(),
                                 FirstOf(Sequence(COMMA, Expression(), swap(), this.push(TPair.of(type(this.pop()), type(this.pop())))),           // {1,10}
-                                        Sequence(COMMA, this.push(TPair.of(type(this.peek()), this.<WithOrderedRing>type(this.pop()).max()))),  // {10,}
+                                        Sequence(COMMA, this.push(TPair.of(type(this.peek()), this.<WithOrderedRing>type(this.pop()).max()))),                  // {10,}
                                         this.push(TPair.of(type(this.peek()), type(this.pop())))))),                                              // {1}
                 RCURL);
     }

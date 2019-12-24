@@ -40,7 +40,7 @@ public final class StateInst<S extends Obj, E extends Obj> extends TInst<S, E> i
 
     @Override
     public E apply(final S obj) {
-        return this.quantifyRange(obj.state().read(this.<Str>argument(0).mapArg(obj)));
+        return this.quantifyRange(obj.model().read(this.<Str>argument(0).mapArg(obj)));
     }
 
     public static <S extends Obj, E extends Obj> StateInst<S, E> create(final Object arg) {

@@ -23,45 +23,30 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Sym;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstruction<S, S> {
+public final class ModelInst<S extends Obj, E extends Obj> extends TInst<S, E> implements MapInstruction<S, E> {
 
-    private AsInst(final Object arg) {
-        super(PList.of(Tokens.AS, arg));
+    private ModelInst(final String model, final Object symbols, final Object inst) {
+        super(PList.of(Tokens.EQUALS, model, symbols, inst));
     }
 
-    public S apply(final S obj) {
-        return this.quantifyRange(obj.as(this.<S>argument(0).mapArg(obj)));
+    @Override
+    public E apply(final S obj) {
+        return obj.model(TModel.of(this.<Rec<Sym, Obj>>args().get(1).get(), this.<Inst>args().get(2)));
     }
 
-    public static <S extends Obj> AsInst<S> create(final Object arg) {
-        return new AsInst<>(arg);
-    }
-
-    public static <S extends Obj> S compute(final S from, final S to) {
-        if (to.isSym())
-            return from.label(to.symbol());
-        else if (from.isReference()) {
-            return AsInst.<S>create(to).attach(from, to.label() == null ?
-                    from :
-                    fakeLabel(to.label(), from.model(from.model().write(to.access(from.access())))));
-        } else if (!to.test(from))
-            return to.kill();
-        else
-            return (from.isType() ? from.set(to.get()) : from).symbol(to.symbol()).access(to.access()).label(to.label());
-    }
-
-    private static <S extends Obj> S fakeLabel(final String label, final S obj) { // TODO: this is lame
-        final TObj temp = (TObj) obj.clone();
-        temp.type = temp.type.label(label);
-        return (S) temp;
+    public static <S extends Obj, E extends Obj> ModelInst<S, E> create(final String model, final Object symbols, final Object inst) {
+        return new ModelInst<>(model, symbols, inst);
     }
 }

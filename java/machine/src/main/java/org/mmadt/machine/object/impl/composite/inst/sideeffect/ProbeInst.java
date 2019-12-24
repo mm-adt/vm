@@ -77,7 +77,7 @@ public final class ProbeInst<S extends Obj> extends TInst<S, S> implements SideE
             this.length = insts.size();
             Obj obj = start.access(null);
             this.stream.add(obj.toString());
-            this.state.add(obj.state().toString());
+            this.state.add(obj.model().toString());
             for (int i = 0; i < this.length; i++)
                 this.stream.add("");
             for (int i = 0; i < this.length; i++) {
@@ -86,7 +86,7 @@ public final class ProbeInst<S extends Obj> extends TInst<S, S> implements SideE
                     this.function.add(next.toString());
                     if (i == j) {
                         this.stream.add((obj = FastProcessor.process(obj.mapTo(next)).next()).toString());
-                        this.state.add(obj.state().toString());
+                        this.state.add(obj.model().toString());
                     } else
                         this.stream.add("");
 

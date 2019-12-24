@@ -22,8 +22,9 @@
 
 package org.mmadt.machine.object.impl;
 
+import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
+import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.State;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
 
@@ -33,14 +34,19 @@ import java.util.Map;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TState implements State {
+public final class TModel implements Model {
 
     private Map<String, Obj> objs = new LinkedHashMap<>();
-    private final Inst insts = null;
+    private Inst insts = null;
 
-    public static State of(final Map<String, Obj> state) {
-        final TState temp = new TState();
+    public static Model of(final Map<String, Obj> state) {
+        return TModel.of(state, IdInst.create());
+    }
+
+    public static Model of(final Map<String, Obj> state, final Inst inst) {
+        final TModel temp = new TModel();
         temp.objs = new LinkedHashMap<>(state);
+        temp.insts = inst;
         return temp;
     }
 
@@ -55,15 +61,15 @@ public final class TState implements State {
     }
 
     @Override
-    public State write(final Obj value) {
-        final TState clone = (TState) this.clone();
+    public Model write(final Obj value) {
+        final TModel clone = (TModel) this.clone();
         clone.objs.put(value.label(), value);
         return clone;
     }
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof State && ((TState) other).objs.equals(this.objs);
+        return other instanceof Model && ((TModel) other).objs.equals(this.objs);
     }
 
     @Override
@@ -77,9 +83,9 @@ public final class TState implements State {
     }
 
     @Override
-    public State clone() {
+    public Model clone() {
         try {
-            final TState clone = (TState) super.clone();
+            final TModel clone = (TModel) super.clone();
             clone.objs = new LinkedHashMap<>(this.objs);
             return clone;
         } catch (final CloneNotSupportedException e) {

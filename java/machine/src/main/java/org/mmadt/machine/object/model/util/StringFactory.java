@@ -64,7 +64,7 @@ public final class StringFactory {
     private static void objMetadata(final Obj obj, final StringBuilder builder) {
         if (!obj.q().isOne())
             builder.append(quantifier(obj.q()));
-        if (null != obj.label())
+        if (null != obj.label() && !obj.isSym()) // cheesy (we need to get rid of sym labeling)
             builder.append(TILDE)
                     .append(obj.label());
         if (!obj.access().isOne()) {

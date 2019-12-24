@@ -57,7 +57,7 @@ public final class TBool extends TObj implements Bool {
     }
 
     public static Bool via(final Obj obj) {
-        return TBool.of().q(obj.q()).access(obj.access()).state(obj.state());
+        return TBool.of().q(obj.q()).access(obj.access()).model(obj.model());
     }
 
     //////////////////////////////////

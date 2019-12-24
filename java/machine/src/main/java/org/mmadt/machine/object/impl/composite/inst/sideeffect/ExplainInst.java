@@ -82,7 +82,7 @@ public final class ExplainInst<S extends Obj> extends TInst<S, S> implements Sid
                 this.function.add(space + i.toString());
                 this.domain.add(space + i.domain().access(null).toString());
                 this.range.add(space + i.range().access(null).toString());
-                this.state.add(space + i.domain().state().toString());
+                this.state.add(space + i.domain().model().toString());
                 for (final Obj arg : i.args()) {
                     if (arg.isReference())  // instances and types only have [id] access which is not worth displaying
                         build((1 + indent), arg.access());

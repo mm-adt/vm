@@ -38,12 +38,12 @@ public interface Sym extends Obj {
     public default <O extends Obj> O process(final O obj) {
         if (obj.isReference()) {
             // final O history = obj.state().read(this);
-            final O clone = obj.state(obj.state().write(obj));
+            final O clone = obj.model(obj.model().write(obj));
             return AsInst.<O>create(clone.access(null)).attach(clone);
         } else {
-            final O history = obj.state().read(this);
+            final O history = obj.model().read(this);
             if (null == history)
-                return obj.state(obj.state().write(obj)); // if the variable is unbound, bind it to the current obj
+                return obj.model(obj.model().write(obj)); // if the variable is unbound, bind it to the current obj
             else
                 return obj.test(history) ? obj : obj.kill(); // test if the current obj is subsumed by the historic obj (if not, drop the obj's quantity to [zero])
         }
