@@ -25,9 +25,14 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.processor.util.FastProcessor;
+import org.mmadt.util.IteratorUtils;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -53,6 +58,22 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
             return AsInst.<S>create(to).attach(from, to.label() == null ?
                     from :
                     fakeLabel(to.label(), from.model(from.model().write(to.access(from.access())))));
+        } else if (from instanceof Lst && to instanceof Lst) {  // TODO: test()/match()/as() need to all become the same method!
+            final Lst<Obj> fromList = (Lst<Obj>) from;
+            final Lst<Obj> toList = (Lst<Obj>) to;
+            if (toList.java().size() < fromList.java().size())
+                return toList.kill();
+            final PList<Obj> temp = new PList<>();
+            Model model = from.model();
+            for (int i = 0; i < fromList.java().size(); i++) {
+                final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromList.get(i).mapTo(toList.get(i))), TObj.none()); // TODO: keep these references (delayed evalution)
+                if (obj.q().isZero())
+                    return toList.kill();
+                temp.add(obj);
+                model = model.write(obj);
+            }
+            return (S) TLst.of(temp).model(model).label(to.label());
+
         } else if (!to.test(from))
             return to.kill();
         else

@@ -36,6 +36,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.MultiIterator;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -50,8 +51,10 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
     default E apply(final S obj) {
         final MultiIterator<E> itty = new MultiIterator<>();
         for (final Map.Entry<Obj, Obj> entry : this.args().get(0).<Map<Obj, Obj>>get().entrySet()) {
-            if (FastProcessor.process(obj.mapTo(entry.getKey())).hasNext()) {
-                itty.addIterator(FastProcessor.process(obj.mapTo(entry.getValue()))); // TODO: make sure this is global
+            final Iterator<E> key = FastProcessor.process(obj.mapTo(entry.getKey()));
+            if (key.hasNext()) {
+                final E next = key.next();
+                itty.addIterator(FastProcessor.process(obj.model(next.model()).mapTo(entry.getValue()))); // TODO: make sure this is global
                 if (this instanceof ChooseInst) // first pattern match
                     break;
             }
