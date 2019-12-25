@@ -35,6 +35,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
@@ -107,6 +108,10 @@ public class __ {
 
     public static Inst put(final Object index, final Object value) {
         return PutInst.create(index, value);
+    }
+
+    public static Inst map(final Object object) {
+        return MapInst.create(object);
     }
 
     public static Inst minus(final Object object) {

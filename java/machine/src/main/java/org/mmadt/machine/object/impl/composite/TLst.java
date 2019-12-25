@@ -58,6 +58,11 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
         return new TLst<>(null);
     }
 
+    @Override
+    public Lst<V> label(final String variable) {
+        return super.label(variable);
+    }
+
     public static <V extends Obj> Lst<V> of(final Object... objects) {
         if (objects.length > 0 && (objects[0] instanceof Lst || objects[0] instanceof List)) {
             return ObjectHelper.make(TLst::new, objects);

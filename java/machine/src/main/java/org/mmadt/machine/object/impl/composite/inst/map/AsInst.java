@@ -26,13 +26,18 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.composite.util.PMap;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.IteratorUtils;
+
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,20 +57,20 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
     }
 
     public static <S extends Obj> S compute(final S from, final S to) {
-        if (to.isSym())
+        if (to.isSym()) {
             return from.label(to.symbol());
-        else if (from.isReference()) {
+        } else if (from.isReference()) {
             return AsInst.<S>create(to).attach(from, to.label() == null ?
                     from :
                     fakeLabel(to.label(), from.model(from.model().write(to.access(from.access())))));
-        } else if (from instanceof Lst && to instanceof Lst) {  // TODO: test()/match()/as() need to all become the same method!
+        } else if (from instanceof Lst && to instanceof Lst && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
             final Lst<Obj> fromList = (Lst<Obj>) from;
             final Lst<Obj> toList = (Lst<Obj>) to;
             if (toList.java().size() < fromList.java().size())
                 return toList.kill();
             final PList<Obj> temp = new PList<>();
             Model model = from.model();
-            for (int i = 0; i < fromList.java().size(); i++) {
+            for (int i = 0; i < toList.java().size(); i++) {
                 final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromList.get(i).mapTo(toList.get(i))), TObj.none()); // TODO: keep these references (delayed evalution)
                 if (obj.q().isZero())
                     return toList.kill();
@@ -73,7 +78,30 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 model = model.write(obj);
             }
             return (S) TLst.of(temp).model(model).label(to.label());
-
+        } else if (from instanceof Rec && to instanceof Rec && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
+            final Rec<Obj, Obj> fromRec = (Rec<Obj, Obj>) from;
+            final Rec<Obj, Obj> toRec = (Rec<Obj, Obj>) to;
+            final PMap<Obj, Obj> temp = new PMap<>();
+            Model model = from.model();
+            for (final Map.Entry<Obj, Obj> toEntry : toRec.java().entrySet()) {
+                boolean found = false;
+                final Map.Entry<Obj, Obj> fromEntry = fromRec.java().entrySet().stream()
+                        .map(x -> Map.of(IteratorUtils.orElse(FastProcessor.process(x.getKey().mapTo(toEntry.getKey())), TObj.none()), x.getValue()).entrySet().iterator().next())
+                        .filter(x -> !x.getKey().q().isZero())
+                        .findFirst()
+                        .orElse(null);
+                if (null != fromEntry) {
+                    found = true;
+                    final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromEntry.getValue().mapTo(toEntry.getValue())), TObj.none()); // TODO: keep these references (delayed evalution)
+                    if (obj.q().isZero())
+                        return toRec.kill();
+                    temp.put(fromEntry.getKey(), obj);
+                    model = model.write(obj).write(fromEntry.getKey());
+                }
+                if (!found)
+                    return toRec.kill();
+            }
+            return (S) TRec.of(temp).model(model).label(to.label());
         } else if (!to.test(from))
             return to.kill();
         else

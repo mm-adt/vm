@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.impl.composite.inst.reduce;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
@@ -53,7 +54,8 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
     public Rec<E, A> apply(final S obj, final Rec<E, A> seed) {
         final E object = this.<E>argument(0).mapArg(obj);
         final E objectOne = object.q(one);
-        seed.put(objectOne, ((A) object.q()).plus(seed.<PMap<E, A>>get().getOrDefault(objectOne, (A) this.q().zero())));
+        final Obj count = seed.get(objectOne);
+        seed.put(objectOne, ((A) object.q()).plus(TObj.none().equals(count) ? this.q().zero() : count));
         return seed;
     }
 
@@ -65,7 +67,7 @@ public final class GroupCountInst<S extends Obj, E extends Obj, A extends WithMo
     @Override
     public Iterator<Rec<E, A>> createIterator(final Rec<E, A> reduction) {
         final Map<E, A> temp = new PMap<>();
-        reduction.<PMap<E, A>>get().forEach((k, v) -> temp.put(k, (A) QuantifierHelper.trySingle((WithOrderedRing) v)));
+        reduction.<PMap<E, WithOrderedRing<A>>>get().forEach((k, v) -> temp.put(k, (A) QuantifierHelper.trySingle(v)));
         return IteratorUtils.of(TRec.of(temp));
     }
 

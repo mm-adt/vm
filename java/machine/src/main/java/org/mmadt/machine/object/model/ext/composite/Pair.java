@@ -30,6 +30,9 @@ import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
  */
 public interface Pair<V extends WithOrderedRing<V>> extends WithOrderedRing<Lst<V>>, Lst<V> {
 
+    @Override
+    public Pair<V> label(final String variable);
+
     public V first();
 
     public V second();

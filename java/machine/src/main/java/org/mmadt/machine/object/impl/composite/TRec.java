@@ -30,6 +30,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.util.PMap;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -83,6 +84,11 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
             }
             return new TRec<>(map);
         }
+    }
+
+    @Override
+    public Rec<K,V> label(final String variable) {
+        return super.label(variable);
     }
 
     @Override

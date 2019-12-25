@@ -22,6 +22,7 @@
 
 package org.mmadt.language.compiler;
 
+import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
@@ -43,6 +44,7 @@ import org.mmadt.machine.object.model.ext.algebra.WithOrder;
 import org.mmadt.machine.object.model.ext.algebra.WithPlus;
 
 import static org.mmadt.machine.object.impl.__.as;
+import static org.mmadt.machine.object.impl.__.map;
 import static org.mmadt.machine.object.impl.__.mult;
 import static org.mmadt.machine.object.impl.__.plus;
 
@@ -59,9 +61,9 @@ public final class OperatorHelper {
         // System.out.println(lhs + " " + operator + " " + rhs);
         switch (operator) {
             case (Tokens.ASTERIX):
-                return lhs instanceof Sym ? as(lhs).mult(mult(rhs)) : ((WithMult) lhs).mult(rhs);
+                return lhs instanceof Sym ? map(lhs).mult(mult(rhs)) : ((WithMult) lhs).mult(rhs);
             case (Tokens.CROSS):
-                return lhs instanceof Sym ? as(lhs).mult(plus(rhs)) : ((WithPlus) lhs).plus(rhs);
+                return lhs instanceof Sym ? map(lhs).mult(plus(rhs)) : ((WithPlus) lhs).plus(rhs);
             case (Tokens.BACKSLASH):
                 return ((WithDiv) lhs).div(rhs);
             case (Tokens.DASH):

@@ -24,7 +24,6 @@ package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TInt;
-import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -46,6 +45,9 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
     public default Map<K, V> java() {
         return this.get();
     }
+
+    @Override
+    public Rec<K, V> label(final String variable);
 
     @Override
     public default Rec<K, V> put(final K key, final V value) {
@@ -70,25 +72,20 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
         /*if (null == this.get())
             return GetInst.<K, V>create(key).attach(this);*/ // TODO: decide on what a rec.all pattern match is first
         final PMap<K, V> object = this.get();
-        V v = object.getOrDefault(key, (V) TObj.none());
-        if (null != v.label())  // TODO: this is ghetto---need a general solution
-            v = v.label(v.label());
-        return v.copy(this);
+        for (final Map.Entry<K, V> entry : object.entrySet()) {
+            if (key.test(entry.getKey()) || key.equals(entry.getKey())) {
+                V v = entry.getValue();
+                if (null != v.label())  // TODO: this is ghetto---need a general solution
+                    v = v.label(v.label());
+                return v.copy(this);
+            }
+
+        }
+        return (V) TObj.none();
+
     }
 
     public default V get(final Object index) {
         return this.get(ObjectHelper.create(TInt.of(), index));
-    }
-
-    @Override
-    public default <O extends Obj> O as(final O obj) {
-        final Rec<K, V> map = TRec.of(Map.of());
-        for (final Map.Entry<K, V> entry : ((Rec<K, V>) obj).java().entrySet()) {
-            final V value = this.get(entry.getKey()).as(entry.getValue());
-            if (value.q().isZero())
-                return obj.q(obj.q().zero());
-            map.put(entry.getKey(), value);
-        }
-        return map.symbol(obj.symbol()).access(obj.access()).label(obj.label());
     }
 }

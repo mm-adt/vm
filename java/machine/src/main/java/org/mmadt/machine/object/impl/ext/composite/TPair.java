@@ -28,9 +28,9 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.ext.composite.Pair;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.ext.composite.Pair;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.Objects;
@@ -47,6 +47,11 @@ public final class TPair<V extends WithOrderedRing<V>> extends TLst<V> implement
 
     public static <V extends WithOrderedRing<V>> Pair of(final Object first, final Object second) {
         return new TPair<>(PList.of(first, second));
+    }
+
+    @Override
+    public Pair<V> label(final String variable) {
+        return (Pair<V>) super.label(variable);
     }
 
     @Override

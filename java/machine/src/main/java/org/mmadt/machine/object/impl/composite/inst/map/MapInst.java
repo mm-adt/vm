@@ -38,7 +38,8 @@ public final class MapInst<S extends Obj, E extends Obj> extends TInst<S, E> imp
     }
 
     public E apply(final S obj) {
-        return this.quantifyRange(obj.map(this.<E>argument(0).mapArg(obj)));
+        final E mapping = this.<E>argument(0).mapArg(obj);
+        return this.quantifyRange(obj.map(mapping));
     }
 
     public static <S extends Obj, E extends Obj> MapInst<S, E> create(final Object arg) {
@@ -48,7 +49,7 @@ public final class MapInst<S extends Obj, E extends Obj> extends TInst<S, E> imp
     public static <S extends Obj, E extends Obj> E compute(final S from, final E to) {
         return from.isInstance() && to.isInstance() ?
                 to.copy(from) :
-                MapInst.<S, E>create(to).attach(from);
+                !to.isType() ? MapInst.<S, E>create(to).attach(from) : MapInst.<S, E>create(to).attach(from, to.type());
     }
 
 }
