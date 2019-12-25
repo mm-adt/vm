@@ -33,11 +33,13 @@ import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
+import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.language.mmlang.util.ParserArgs.strs;
 
 /**
@@ -54,7 +56,8 @@ class CompositeTest {
             args(TLst.of(ints(1).label("x"), ints(2).label("y")).label("z"), "[1;2] => [x;y] => z"),
             args(TLst.of(ints(1).label("x"), ints(2).label("y")).label("z"), "[1;2] => [x;y] => lst~z"),
             args(ints(6), "[1;2] => [x;y] => (x + (y + (x + y)))"),
-            // args(TRec.of(Map.of(ints(1).label("x"),ints(2).label("y"))), "[1;2] => [x;y] => [map,[x:y]]"),
+            args(objs(), "[1;2] => [x;y] => [x:y]"),
+            args(TRec.of(Map.of(ints(1).label("x"), ints(2).label("y"))), "[1;2] => [x;y] => [map,[x:y]]"),
             // args(ints(12), "[1~x;2~y] => [x;y] => [map,x][plus,y][plus,0] => int~z => [explain]"),
 
             /////////

@@ -31,10 +31,10 @@ public interface Model extends Cloneable {
 
     public <O extends Obj> O read(final Obj key);
 
-    /*public default <O extends Obj> O readOrGet(final Obj key, final O missing) {
+    public default <O extends Obj> O readOrGet(final Obj key, final O missing) {
         final O o = this.read(key);
         return null == o ? missing : o;
-    }*/
+    }
 
     public Model write(final Obj value);
 

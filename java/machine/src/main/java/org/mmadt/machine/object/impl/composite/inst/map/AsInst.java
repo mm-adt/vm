@@ -84,22 +84,17 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
             final PMap<Obj, Obj> temp = new PMap<>();
             Model model = from.model();
             for (final Map.Entry<Obj, Obj> toEntry : toRec.java().entrySet()) {
-                boolean found = false;
                 final Map.Entry<Obj, Obj> fromEntry = fromRec.java().entrySet().stream()
-                        .map(x -> Map.of(IteratorUtils.orElse(FastProcessor.process(x.getKey().mapTo(toEntry.getKey())), TObj.none()), x.getValue()).entrySet().iterator().next())
-                        .filter(x -> !x.getKey().q().isZero())
+                        .map(x -> Map.of(
+                                from.model().<Obj>readOrGet(x.getKey(), IteratorUtils.orElse(FastProcessor.process(x.getKey().mapTo(toEntry.getKey())), TObj.none())),
+                                from.model().<Obj>readOrGet(x.getValue(), IteratorUtils.orElse(FastProcessor.process(x.getValue().mapTo(toEntry.getValue())), TObj.none()))).entrySet().iterator().next())
+                        .filter(x -> null != x.getKey() && !TObj.none().equals(x.getKey()) && null != x.getValue())
                         .findFirst()
                         .orElse(null);
-                if (null != fromEntry) {
-                    found = true;
-                    final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromEntry.getValue().mapTo(toEntry.getValue())), TObj.none()); // TODO: keep these references (delayed evalution)
-                    if (obj.q().isZero())
-                        return toRec.kill();
-                    temp.put(fromEntry.getKey(), obj);
-                    model = model.write(obj).write(fromEntry.getKey());
-                }
-                if (!found)
+                if (null == fromEntry)
                     return toRec.kill();
+                model = model.write(fromEntry.getKey()).write(fromEntry.getValue());
+                temp.put(fromEntry.getKey(), fromEntry.getValue());
             }
             return (S) TRec.of(temp).model(model).label(to.label());
         } else if (!to.test(from))
