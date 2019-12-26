@@ -71,7 +71,8 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
             final PList<Obj> temp = new PList<>();
             Model model = from.model();
             for (int i = 0; i < toList.java().size(); i++) {
-                final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromList.get(i).mapTo(toList.get(i))), TObj.none()); // TODO: keep these references (delayed evalution)
+                final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromList.get(i).mapTo(toList.get(i))), TObj.none()); // TODO: get rid of this (the problem is we have to decide when a variable is bound in a reference
+                //final Obj obj = from.model().readOrGet(fromList.get(i), fromList.get(i).as(toList.get(i)));
                 if (obj.q().isZero())
                     return toList.kill();
                 temp.add(obj);
@@ -86,8 +87,8 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
             for (final Map.Entry<Obj, Obj> toEntry : toRec.java().entrySet()) {
                 final Map.Entry<Obj, Obj> fromEntry = fromRec.java().entrySet().stream()
                         .map(x -> Map.of(
-                                from.model().<Obj>readOrGet(x.getKey(), IteratorUtils.orElse(FastProcessor.process(x.getKey().mapTo(toEntry.getKey())), TObj.none())),
-                                from.model().<Obj>readOrGet(x.getValue(), IteratorUtils.orElse(FastProcessor.process(x.getValue().mapTo(toEntry.getValue())), TObj.none()))).entrySet().iterator().next())
+                                from.model().<Obj>readOrGet(x.getKey(), x.getKey().as(toEntry.getKey())),
+                                from.model().<Obj>readOrGet(x.getValue(), x.getValue().as(toEntry.getValue()))).entrySet().iterator().next())
                         .filter(x -> null != x.getKey() && !TObj.none().equals(x.getKey()) && null != x.getValue())
                         .findFirst()
                         .orElse(null);

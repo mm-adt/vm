@@ -30,14 +30,14 @@ import java.util.Objects;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TSym extends TObj implements Sym {
+public final class TSym<O extends Obj> extends TObj implements Sym<O> {
 
-    public static TSym of(final String symbol) {
-        return new TSym(symbol);
+    public static <O extends Obj> Sym<O> of(final String symbol) {
+        return new TSym<>(symbol);
     }
 
-    public static Sym sym(final String label) {
-        return new TSym(label);
+    public static <O extends Obj> Sym<O> sym(final String label) {
+        return new TSym<>(label);
     }
 
     private TSym(final String symbol) {
@@ -57,7 +57,7 @@ public final class TSym extends TObj implements Sym {
 
     @Override
     public boolean equals(final Object object) {
-        return object instanceof TSym && Objects.equals(this.symbol(), ((TSym) object).symbol());
+        return object instanceof Sym && Objects.equals(this.symbol(), ((Sym) object).symbol());
     }
 
     @Override

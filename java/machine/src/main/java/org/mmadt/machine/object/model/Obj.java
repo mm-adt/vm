@@ -179,7 +179,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         if (obj instanceof Inst)
             return (O) this.access(this.access().mult((Inst) obj));
         else if (this instanceof Sym)
-            return this.mapFrom(this.model().read(obj));                 // loads the variable obj from obj state and then maps from it (variable-based pattern match)
+            return this.mapFrom(this.model().read(obj));   // loads the variable obj from obj state and then maps from it (variable-based pattern match)
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
 
@@ -219,6 +219,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default boolean isSym() {
         return this instanceof Sym;
+    }
+
+    public default boolean isLabeled() {
+        return null != this.label();
     }
 
     public default <O extends Obj> O q(final QuantifierHelper.Tag tag) {

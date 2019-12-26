@@ -22,8 +22,8 @@
 
 package org.mmadt.processor.compiler;
 
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Sym;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,8 +38,7 @@ public final class ObjArgument<S extends Obj, E extends Obj> implements Argument
 
     @Override
     public E mapArg(final S object) {
-        // (E) object.reason(this.constant)
-        return this.constant instanceof TSym ? (E) object.model().read(this.constant) : this.constant;
+        return this.constant instanceof Sym ? ((Sym<E>) this.constant).obj(object) : this.constant;
     }
 
     @Override

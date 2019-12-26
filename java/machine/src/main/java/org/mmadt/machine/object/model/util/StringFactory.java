@@ -43,7 +43,6 @@ import static org.mmadt.language.compiler.Tokens.LBRACKET;
 import static org.mmadt.language.compiler.Tokens.LCURL;
 import static org.mmadt.language.compiler.Tokens.LPAREN;
 import static org.mmadt.language.compiler.Tokens.MAPSFROM;
-import static org.mmadt.language.compiler.Tokens.MAPSTO;
 import static org.mmadt.language.compiler.Tokens.QUESTION;
 import static org.mmadt.language.compiler.Tokens.RBRACKET;
 import static org.mmadt.language.compiler.Tokens.RCURL;
@@ -71,11 +70,11 @@ public final class StringFactory {
             builder.append(SPACE)
                     .append(MAPSFROM)
                     .append(SPACE);
-            if (!obj.access().domain().q().isZero())    // no obj{0} displays
+            /*if (!obj.access().domain().q().isZero())    // no obj{0} displays
                 builder.append(LPAREN)
                         .append(obj.access().domain())
                         .append(RPAREN)
-                        .append(MAPSTO);  // TODO: the domain of the inst is represented as (obj)=> (cheesy)
+                        .append(MAPSTO); */ // TODO: the domain of the inst is represented as (obj)=> (cheesy)
             builder.append(obj.access());
         }
     }
