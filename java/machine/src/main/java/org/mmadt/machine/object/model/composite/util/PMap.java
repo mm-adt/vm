@@ -98,7 +98,7 @@ public final class PMap<K extends Obj, V extends Obj> extends LinkedHashMap<K, V
     @Override
     public final boolean constant() {
         for (final Map.Entry<? extends Obj, ? extends Obj> entry : this.entrySet()) {
-            if (!entry.getValue().constant() || !entry.getKey().constant() || entry.getValue() instanceof Inst || entry.getKey() instanceof Inst)
+            if (!entry.getValue().constant() || !entry.getKey().constant())
                 return false;
         }
         return true;

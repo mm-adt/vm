@@ -45,7 +45,10 @@ public final class StartInst<S extends Obj> extends TInst<Obj, S> implements Ini
 
     @Override
     public S apply(final Obj obj) {
-        return TObj.none().set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> Argument.<Obj, S>create(arg).mapArg(TObj.none())));
+        return TObj.none().set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> {
+            final S start = Argument.<Obj, S>create(arg).mapArg(TObj.none());
+            return start.as(start);
+        }));
     }
 
     @Override

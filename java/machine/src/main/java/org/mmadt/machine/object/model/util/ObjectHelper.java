@@ -173,9 +173,9 @@ public final class ObjectHelper {
         else if (object instanceof String)
             return TStr.of((String) object);
         else if (object instanceof List)
-            return TLst.of(new PList<>((List<Obj>) object));
+            return TLst.of((List<Obj>) object);
         else if (object instanceof Map)
-            return TRec.of(new PMap<>((Map<Obj, Obj>) object));
+            return TRec.of((Map<Obj, Obj>) object);
         else
             throw new IllegalStateException("Unknown type: " + object.getClass());
     }

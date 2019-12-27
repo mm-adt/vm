@@ -27,11 +27,15 @@ import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.IteratorUtils;
@@ -89,6 +93,14 @@ public final class ParserArgs<A extends Obj> {
 
     public static Str strs(final Object... strings) {
         return TStr.of(strings);
+    }
+
+    public static Lst lsts(final Object... lists) {
+        return TLst.of(lists);
+    }
+
+    public static Rec recs(final Object... maps) {
+        return TRec.of(maps);
     }
 
     public static Obj process(final Obj obj) {

@@ -26,10 +26,12 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Bindings;
 import org.mmadt.machine.object.model.Pattern;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -97,6 +99,7 @@ public final class PList<V extends Obj> extends ArrayList<V> implements Pattern 
         bindings.commit();
         return true;
     }
+
 
     @Override
     public final boolean constant() {

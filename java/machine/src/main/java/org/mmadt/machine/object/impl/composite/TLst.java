@@ -36,6 +36,7 @@ import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -64,15 +65,18 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     public static <V extends Obj> Lst<V> of(final Object... objects) {
-        if (objects.length > 0 && (objects[0] instanceof Lst || objects[0] instanceof List)) {
+        if (objects.length > 0 && Stream.of(objects).allMatch(x -> x instanceof Lst)) {
             return ObjectHelper.make(TLst::new, objects);
+        } else if (objects.length == 1 && objects[0] instanceof List) {
+            final PList<V> value = new PList<>();
+            for (final Object object : (List) objects[0]) {
+                value.add((V) ObjectHelper.from(object));
+            }
+            return new TLst<>(value);
         } else {
             final PList<V> value = new PList<>();
             for (final Object object : objects) {
-                if (object instanceof PList)
-                    value.addAll((PList<V>) object);
-                else
-                    value.add((V) ObjectHelper.from(object));
+                value.add((V) ObjectHelper.from(object));
             }
             return new TLst<>(value);
         }

@@ -71,12 +71,12 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
             final PList<Obj> temp = new PList<>();
             Model model = from.model();
             for (int i = 0; i < toList.java().size(); i++) {
-                final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromList.get(i).mapTo(toList.get(i))), TObj.none()); // TODO: get rid of this (the problem is we have to decide when a variable is bound in a reference
-                //final Obj obj = from.model().readOrGet(fromList.get(i), fromList.get(i).as(toList.get(i)));
+                //final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromList.get(i).mapTo(toList.get(i))), TObj.none()); // TODO: get rid of this (the problem is we have to decide when a variable is bound in a reference
+                final Obj obj = from.model().readOrGet(fromList.get(i), fromList.get(i).as(toList.get(i)));
                 if (obj.q().isZero())
                     return toList.kill();
-                temp.add(obj);
                 model = model.write(obj);
+                temp.add(obj);
             }
             return (S) TLst.of(temp).model(model).label(to.label());
         } else if (from instanceof Rec && to instanceof Rec && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
@@ -87,8 +87,8 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
             for (final Map.Entry<Obj, Obj> toEntry : toRec.java().entrySet()) {
                 final Map.Entry<Obj, Obj> fromEntry = fromRec.java().entrySet().stream()
                         .map(x -> Map.of(
-                                from.model().<Obj>readOrGet(x.getKey(), x.getKey().as(toEntry.getKey())),
-                                from.model().<Obj>readOrGet(x.getValue(), x.getValue().as(toEntry.getValue()))).entrySet().iterator().next())
+                                from.model().<Obj>readOrGet(x.getKey(), x.getKey().model(from.model()).as(toEntry.getKey())),
+                                from.model().<Obj>readOrGet(x.getValue(), x.getValue().model(from.model()).as(toEntry.getValue()))).entrySet().iterator().next())
                         .filter(x -> null != x.getKey() && !TObj.none().equals(x.getKey()) && null != x.getValue())
                         .findFirst()
                         .orElse(null);
