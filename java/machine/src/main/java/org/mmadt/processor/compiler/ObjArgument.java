@@ -38,7 +38,10 @@ public final class ObjArgument<S extends Obj, E extends Obj> implements Argument
 
     @Override
     public E mapArg(final S object) {
-        return this.constant instanceof Sym ? ((Sym<E>) this.constant).obj(object) : this.constant;
+        return this.constant instanceof Sym ? ((Sym<E>) this.constant).obj(object) :
+                object.isInstance() && !this.constant.isReference() ?
+                        this.constant.copy(object).as(this.constant) :
+                        this.constant;
     }
 
     @Override

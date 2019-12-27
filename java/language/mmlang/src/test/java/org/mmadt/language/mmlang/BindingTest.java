@@ -59,6 +59,9 @@ class BindingTest {
             args(oneX, "obj{0} => [start,1~x][map,x]"),
             args(lsts(List.of(oneX, oneX)), "obj{0} => [start,1~x][map,[x;x]]"),
             args(recs(Map.of(oneX, oneX)), "obj{0} => [start,1~x][map,[x:x]]"),
+            //////////////
+            args(lsts(List.of(oneX, twoY, twoY, twoY)), "[1~x;2~y] => [plus,[y;y]]"),
+            args(recs(Map.of(oneX, twoY, twoY, List.of(oneX, twoY))), "[1~x:2~y] => [plus,[y:[x;y]]]"),
     };
 
 
