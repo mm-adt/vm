@@ -264,7 +264,7 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressSubnodes
     Rule BinaryOperator() {
-        return Sequence(FirstOf(LPACK, RPACK, MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+        return Sequence(FirstOf(LPACK, RPACK, MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS, PERIOD), this.push(this.match().trim()));
     }
 
     @SuppressNode

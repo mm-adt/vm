@@ -42,6 +42,7 @@ import org.mmadt.machine.object.model.ext.algebra.WithMult;
 import org.mmadt.machine.object.model.ext.algebra.WithOrder;
 import org.mmadt.machine.object.model.ext.algebra.WithPlus;
 
+import static org.mmadt.machine.object.impl.__.get;
 import static org.mmadt.machine.object.impl.__.map;
 import static org.mmadt.machine.object.impl.__.mult;
 import static org.mmadt.machine.object.impl.__.plus;
@@ -106,6 +107,8 @@ public final class OperatorHelper {
                 return TRec.of(rhs, lhs);
             case Tokens.RPACK:
                 return TRec.of(lhs, rhs);
+            case Tokens.PERIOD:
+                return map(lhs).mult(get(rhs));
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }
