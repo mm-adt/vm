@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.model.util;
 
+import org.mmadt.language.compiler.Instructions;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
@@ -29,11 +30,13 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.composite.util.PMap;
+import org.mmadt.processor.util.FastProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,97 +47,68 @@ import java.util.Map;
  */
 public final class ModelHelper {
 
-    public static <O extends Obj> O fromModel(final Obj from, final Obj to) {
-        final Model model = from.model();
-        if (to instanceof Rec) {
-            final Map<Obj, Obj> map = new PMap<>();
-            for (final Map.Entry<Obj, Obj> entry : to.<Map<Obj, Obj>>get().entrySet()) {
-                map.put(fromModel(model, entry.getKey()), fromModel(model, entry.getValue()));
-            }
-            return (O) TRec.of(map).copy(to);
-        } else if (to instanceof Lst) {
-            final List<Obj> list = new PList<>();
-            for (final Obj entry : to.<List<Obj>>get()) {
-                list.add(fromModel(model, entry));
-            }
-            return (O) TLst.of(list).copy(to);
-        } else if (to.isLabeled()) {
-            final O o = (O) model.readOrGet(to, TObj.none()).copy(to);
-            return o.isNone() ? (O) to : to.test(o) ? o : (O) TObj.none();
-        } else
-            return (O) to;
-    }
-
-
-    private static <O extends Obj> O fromModel(final Model model, final Obj obj) {
-        O newObj;
-        if (obj.isSym()) {
-            newObj = (O) model.readOrGet(obj, TObj.none());
-        } else if (obj instanceof Rec) {
-            final Map<Obj, Obj> map = new PMap<>();
-            for (final Map.Entry<Obj, Obj> entry : obj.<Map<Obj, Obj>>get().entrySet()) {
-                map.put(fromModel(model, entry.getKey()), fromModel(model, entry.getValue()));
-            }
-            newObj = (O) TRec.of(map);
-        } else if (obj instanceof Lst) {
-            final List<Obj> list = new PList<>();
-            for (final Obj entry : obj.<List<Obj>>get()) {
-                list.add(fromModel(model, entry));
-            }
-            newObj = (O) TLst.of(list);
-        } else if (obj.isInst()) {
-            if (InstHelper.singleInst((Inst) obj)) {
+    public static <O extends Obj> O via(final Obj from, final Obj to) {
+        O obj;
+        if (to.isAtomic() || to.isInstance())
+            obj = (O) to;
+        else {
+            if (to.isRec()) {
+                final Map<Obj, Obj> map = new PMap<>();
+                for (final Map.Entry<Obj, Obj> entry : to.<Map<Obj, Obj>>get().entrySet()) {
+                    map.put(via(from, entry.getKey()), via(from, entry.getValue()));
+                }
+                obj = (O) TRec.of(map);
+            } else if (to.isLst() && to.get() != null) {
                 final List<Obj> list = new PList<>();
-                for (final Obj entry : obj.<List<Obj>>get()) {
-                    list.add(fromModel(model, entry));
+                for (final Obj entry : to.<List<Obj>>get()) {
+                    list.add(via(from, entry));
                 }
-                newObj = (O) new TInst(list);
-            } else {
-                final List<Inst> insts = new ArrayList<>();
-                for (final Inst entry : obj.<List<Inst>>get()) {
-                    insts.add(fromModel(model, entry));
+                obj = (O) TLst.of(list);
+            } else if (to.isInst()) {
+                if (InstHelper.singleInst((Inst) to)) {
+                    final List<Obj> list = new PList<>();
+                    for (final Obj entry : to.<List<Obj>>get()) {
+                        list.add(via(from, entry));
+                    }
+                    obj = (O) Instructions.compile(TInst.of((Str) list.get(0), list.subList(1, list.size()).toArray(new Object[list.size() - 1])));
+                } else {
+                    final List<Inst> insts = new ArrayList<>();
+                    for (final Inst entry : to.<List<Inst>>get()) {
+                        insts.add(via(from, entry));
+                    }
+                    obj = (O) TInst.of(insts);
                 }
-                newObj = (O) TInst.of(insts);
-            }
-        } else if (obj.isLabeled()) {
-            final O o = (O) model.readOrGet(obj, TObj.none());
-            newObj = o.isNone() ? (O) obj : obj.test(o) ? o : (O) TObj.none();
-        } else
-            newObj = (O) obj;
-        //////////////////////////
-        newObj = newObj.copy(obj);
-        return newObj.isReference() ? newObj.access(fromModel(model, newObj.access())) : newObj;
+            } else
+                obj = (O) to;
+        }
+        if (to.isLabeled()) {
+            final O o = (O) from.model().read(to);
+            obj = null == o ? obj : obj.test(o) ? o : (O) TObj.none();
+        }
+        return to.isReference() ?
+                FastProcessor.<O>process(from.mapTo(obj.access(via(from, to.access())))).next() :
+                obj;
     }
 
-    public static Model fromObj(final Obj obj) {
-        return ModelHelper.fromObj(obj.model(), obj);
+
+    public static Obj model(final Obj obj) {
+        return obj.model(ModelHelper.fromObj(obj.model(), obj));
     }
 
     private static Model fromObj(final Model model, final Obj obj) {
         Model update = model;
+        if (obj.isRec()) {
+            for (final Map.Entry<Obj, Obj> entry : obj.<Map<Obj, Obj>>get().entrySet()) {
+                update = fromObj(update, entry.getKey());
+                update = fromObj(update, entry.getValue());
+            }
+        } else if (obj.isLst()) {
+            for (final Obj v : obj.<List<Obj>>get()) {
+                update = fromObj(update, v);
+            }
+        }
         if (obj.isLabeled())
             update = update.write(obj);
-        else if (obj instanceof Rec)
-            update = fromRec(update, (Rec<?, ?>) obj);
-        else if (obj instanceof Lst)
-            update = fromLst(update, (Lst<?>) obj);
-        return update;
-    }
-
-    private static <K extends Obj, V extends Obj> Model fromRec(final Model model, final Rec<K, V> rec) {
-        Model update = model;
-        for (final Map.Entry<K, V> entry : rec.<Map<K, V>>get().entrySet()) {
-            update = fromObj(update, entry.getKey());
-            update = fromObj(update, entry.getValue());
-        }
-        return update;
-    }
-
-    private static <V extends Obj> Model fromLst(final Model model, final Lst<V> lst) {
-        Model update = model;
-        for (final V v : lst.<List<V>>get()) {
-            update = fromObj(update, v);
-        }
         return update;
     }
 

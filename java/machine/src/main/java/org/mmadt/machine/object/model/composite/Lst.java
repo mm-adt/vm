@@ -24,6 +24,7 @@ package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -50,16 +51,16 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     public Lst<V> label(final String variable);
 
     public default Lst<V> put(final V value) {
-        if (this.isInstance() || this.isType()) {
+        if (!this.isReference() && !value.isReference()) {
             this.java().add(value);
             return this;
         } else
-            return (Lst<V>) PutInst.<Int, V>create(TInt.of(100), value).attach(this); // TODO: should have isolated put(value) (like add(value))
+            return (Lst<V>) PutInst.<Int, V>create(TInt.of(this.<List>get().size()), value).attach(this); // TODO: should have isolated put(value) (like add(value))
     }
 
     @Override
     public default Lst<V> put(final Int index, final V value) {
-        if (this.isInstance() || this.isType()) {
+        if (!this.isReference() && !index.isReference() && !value.isReference()) {
             this.java().set(index.java(), value);
             return this;
         } else
@@ -68,7 +69,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
 
     @Override
     public default Lst<V> drop(final Int index) {
-        if (this.isInstance() || this.isType()) {
+        if (!this.isReference() && !index.isReference()) {
             this.java().remove((int) index.java());
             return this;
         } else
@@ -79,7 +80,10 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     public default V get(final Int index) {
         // TODO: support multi-get if the argument matches multiple keys (returns a ref)
         // TODO: should we have special handling for ref (as it requires a derivaition)
-        return (this.<List<V>>get().size() <= index.<Integer>get() ? (V) TObj.none() : this.<List<V>>get().get(index.get())).copy(this);
+        if (!this.isReference() && index.isInstance())
+            return (this.<List<V>>get().size() <= index.<Integer>get() ? (V) TObj.none() : this.<List<V>>get().get(index.get())).copy(this);
+        else
+            return GetInst.<Int, V>create(index).attach(this);
     }
 
     public default V get(final Object index) {

@@ -23,15 +23,13 @@
 package org.mmadt.machine.object.model.composite.util;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Bindings;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Pattern;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -55,8 +53,7 @@ public final class PList<V extends Obj> extends ArrayList<V> implements Pattern 
     public static <V extends Obj> PList<V> of(final Object... objects) {
         final List<V> list = new ArrayList<>();
         for (final Object object : objects) {
-            if (null != object) // Why is this needed?
-                list.add((V) ObjectHelper.from(object));
+            list.add((V) ObjectHelper.from(object));
         }
         return new PList<>(list);
     }

@@ -25,6 +25,8 @@ package org.mmadt.processor.compiler;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.util.ModelHelper;
 
+import static org.mmadt.machine.object.model.util.ModelHelper.model;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -38,7 +40,7 @@ public final class ObjArgument<S extends Obj, E extends Obj> implements Argument
 
     @Override
     public E mapArg(final S obj) {
-        return ModelHelper.fromModel(obj, this.constant);
+        return ModelHelper.via(ModelHelper.model(obj), this.constant);
     }
 
     @Override

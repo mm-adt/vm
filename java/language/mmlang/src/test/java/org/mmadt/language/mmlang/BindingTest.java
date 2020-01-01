@@ -38,6 +38,7 @@ import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.lsts;
 import static org.mmadt.language.mmlang.util.ParserArgs.recs;
+import static org.mmadt.machine.object.impl.__.map;
 import static org.mmadt.machine.object.impl.__.plus;
 
 /**
@@ -50,7 +51,7 @@ class BindingTest {
 
     private final static ParserArgs[] BINDINGS = new ParserArgs[]{
             args(oneX, "1~x"),
-            args(ints().<Int>access(plus(ints().label("x"))), "int~x => x + x"),
+            args(ints().<Int>access(plus(ints().label("x").access(map(ints().label("x"))))), "int~x => x + x"),
             args(oneX, "1~x => [map,x]"),
             args(ints(2), "1~x => [plus,x]"),
             args(ints(2), "1~x => [plus,int~x]"),

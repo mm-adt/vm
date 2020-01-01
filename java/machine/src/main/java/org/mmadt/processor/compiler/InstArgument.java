@@ -24,6 +24,7 @@ package org.mmadt.processor.compiler;
 
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.util.ModelHelper;
 import org.mmadt.processor.util.FastProcessor;
 
 /**
@@ -38,8 +39,8 @@ public final class InstArgument<S extends Obj, E extends Obj> implements Argumen
     }
 
     @Override
-    public E mapArg(S object) {
-        return FastProcessor.process((E) object.access(null).mapTo(this.bytecode)).next();
+    public E mapArg(final S object) {
+        return FastProcessor.process((E) object.access(null).mapTo(ModelHelper.via(object, this.bytecode))).next();
     }
 
     @Override

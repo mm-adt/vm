@@ -97,7 +97,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> plus(final Rec<K, V> rec) {
-        if ((this.isInstance() || this.isType()) && !rec.isReference()) {
+        if (!this.isReference() && !rec.isReference()) {
             final PMap<K, V> map = new PMap<>(this.java());
             map.putAll(rec.java());
             return this.set(map);
@@ -107,7 +107,7 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
 
     @Override
     public Rec<K, V> minus(final Rec<K, V> rec) {
-        if ((this.isInstance() || this.isType()) && !rec.isReference()) {
+        if (!this.isReference() && !rec.isReference()) {
             final PMap<K, V> map = new PMap<>(this.java());
             rec.java().forEach(map::remove);
             return this.set(map);

@@ -232,6 +232,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.q().isOne();
     }
 
+    public default boolean isAtomic() {
+        return this.isBool() || this.isInt() || this.isReal() || this.isStr() || this.isSym();
+    }
+
     public default boolean isBool() {
         return this instanceof Bool;
     }

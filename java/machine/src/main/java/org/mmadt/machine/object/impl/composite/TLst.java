@@ -65,6 +65,8 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     public static <V extends Obj> Lst<V> of(final Object... objects) {
+        if (null == objects)
+            return new TLst<>(null);
         if (objects.length > 0 && Stream.of(objects).allMatch(x -> x instanceof Lst)) {
             return ObjectHelper.make(TLst::new, objects);
         } else if (objects.length == 1 && objects[0] instanceof List) {
@@ -89,7 +91,7 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> plus(final Lst<V> lst) {
-        if (lst.isInstance()) {
+        if (!this.isReference() && !lst.isReference()) {
             final PList<V> list = new PList<>(this.java());
             list.addAll(lst.java());
             return this.set(list);
@@ -99,7 +101,7 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> minus(final Lst<V> lst) {
-        if (this.isInstance() && lst.isInstance()) {
+        if (!this.isReference() && !lst.isReference()) {
             final PList<V> list = new PList<>(this.java());
             list.removeAll(lst.java());
             return this.set(list);
@@ -115,7 +117,7 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
     @Override
     public Bool eq(final Obj obj) {
         return this.isInstance() ?
-                TBool.via(this).set(obj instanceof Lst && this.java().equals(((Lst) obj).java())) :
+                TBool.via(this).set(obj.isLst() && this.java().equals(((Lst) obj).java())) :
                 EqInst.create(obj).attach(this, TBool.via(this));
     }
 

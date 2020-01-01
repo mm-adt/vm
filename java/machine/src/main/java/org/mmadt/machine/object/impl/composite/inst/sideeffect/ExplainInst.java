@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 public final class ExplainInst<S extends Obj> extends TInst<S, S> implements SideEffectInstruction<S> {
 
     private ExplainInst(final Object obj) {
-        super(PList.of(Tokens.EXPLAIN, obj));
+        super(null == obj ? PList.of(Tokens.EXPLAIN) : PList.of(Tokens.EXPLAIN, obj));
     }
 
     @Override

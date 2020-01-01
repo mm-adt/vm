@@ -66,11 +66,11 @@ public final class ObjectHelper {
 
     public static <O extends Obj> O create(final Obj obj, final Object object) {
         if (object instanceof Obj && ((Obj) object).isSym())
-            return obj.model().readOrGet((Obj) object, obj.label(((Obj) object).label()));
+            return (O) obj.model().readOrGet((Obj) object, obj);
         return object instanceof Inst ?
                 obj instanceof Inst ?
                         (O) object :
-                        obj.type().access((Inst) object) :
+                        obj.mapTo((Inst) object) :
                 (O) ObjectHelper.from(object);
     }
 

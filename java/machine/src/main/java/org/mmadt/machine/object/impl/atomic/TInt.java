@@ -23,11 +23,13 @@
 package org.mmadt.machine.object.impl.atomic;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GteInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LtInst;
 import org.mmadt.machine.object.impl.composite.inst.map.LteInst;
+import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MinusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MultInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NegInst;
@@ -105,7 +107,7 @@ public final class TInt extends TObj implements Int {
 
     @Override
     public Int neg() {
-        return this.isInstance() ? this.set(-this.java()) : NegInst.<Int>create().attach(this);
+        return this.isInstance() ? this.set(-this.java()) : MapInst.<Int,Int>create((MapInst.create(this).mult(NegInst.create()))).attach(this);
     }
 
     @Override

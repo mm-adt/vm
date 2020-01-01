@@ -155,8 +155,8 @@ public class Parser extends BaseParser<Object> {
                 Sequence(LST, this.push(TLst.some())),
                 Sequence(LBRACKET, SEMICOLON, RBRACKET, this.push(TLst.of())),
                 Sequence(
-                        LBRACKET, this.push(TLst.of()), Expression(), swap(), this.push(((Lst) this.pop()).put(type(this.pop()))),
-                        ZeroOrMore(SEMICOLON, Expression(), swap(), this.push(((Lst) this.pop()).put(type(this.pop())))),
+                        LBRACKET, this.push(TLst.of()), Expression(), swap(), this.push(((Lst) this.pop()).plus(type(this.peek()).isLst() ? TLst.of(PList.of(this.pop())) : TLst.of(this.pop()))),
+                        ZeroOrMore(SEMICOLON, Expression(), swap(), this.push(((Lst) this.pop()).plus(type(this.peek()).isLst() ? TLst.of(PList.of(this.pop())) : TLst.of(this.pop())))),
                         RBRACKET));
     }
 

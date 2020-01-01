@@ -59,13 +59,31 @@ public final class OperatorHelper {
         // System.out.println(lhs + " " + operator + " " + rhs);
         switch (operator) {
             case (Tokens.ASTERIX):
-                return lhs.isSym() ? map(lhs).mult(mult(rhs)) : (lhs.isInst() && !(rhs instanceof Inst)) ? ((Inst) lhs).mult(mult(rhs)) : ((WithMult) lhs).mult(rhs);
+                return /*lhs.isInst() ?
+                        rhs instanceof Inst ?
+                                ((Inst) lhs).mult(rhs) :
+                                ((Inst) lhs).mult(mult(rhs)) :*/
+                        lhs instanceof WithMult ?
+                                ((WithMult) lhs).mult(rhs instanceof WithMult ? rhs : map(rhs)) :
+                                map(lhs).mult(mult(rhs));
             case (Tokens.CROSS):
-                return lhs.isSym() ? map(lhs).mult(plus(rhs)) : (lhs.isInst() && !(rhs instanceof Inst)) ? ((Inst) lhs).mult(plus(rhs)) : ((WithPlus) lhs).plus(rhs);
+                return lhs.isInst() ?
+                        rhs instanceof Inst ?
+                                ((Inst) lhs).plus(rhs) :
+                                ((Inst) lhs).mult(plus(rhs)) :
+                        lhs instanceof WithPlus ?
+                                ((WithPlus) lhs).plus(rhs instanceof WithPlus ? rhs : map(rhs)) :
+                                map(lhs).mult(plus(rhs));
             case (Tokens.BACKSLASH):
                 return ((WithDiv) lhs).div(rhs);
             case (Tokens.DASH):
-                return ((WithMinus) lhs).minus(rhs);
+                return /*lhs.isInst() ?
+                        rhs instanceof Inst ?
+                                */((WithMinus) lhs).minus(rhs);/*:
+                                ((Inst) lhs).mult(minus(rhs)) :
+                        lhs instanceof WithMinus ?
+                                ((WithMinus) lhs).minus(rhs instanceof WithMinus ? rhs : map(rhs)) :
+                                map(lhs).mult(minus(rhs));*/
             case (Tokens.AMPERSAND):
                 return lhs.and(rhs);
             case (Tokens.BAR):
@@ -100,7 +118,7 @@ public final class OperatorHelper {
             case (Tokens.CROSS):
                 return plus(rhs);
             case (Tokens.DASH):
-                return rhs instanceof WithMinus ? ((WithMinus) rhs).neg() : MapInst.create(rhs).mult(NegInst.create());
+                return rhs instanceof WithMinus && !rhs.isInst() ? ((WithMinus) rhs).neg() : MapInst.create(MapInst.create(rhs).mult(NegInst.create())).attach(rhs);
             case (Tokens.BACKSLASH):
                 return DivInst.create(rhs);
             case (Tokens.AMPERSAND):

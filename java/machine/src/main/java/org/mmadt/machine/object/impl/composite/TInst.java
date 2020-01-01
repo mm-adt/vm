@@ -48,7 +48,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     protected Obj domain = TObj.none();
     protected Obj range = TObj.none();
 
-    public TInst(final Object value) {
+    protected TInst(final Object value) {
         super(value);
     }
 

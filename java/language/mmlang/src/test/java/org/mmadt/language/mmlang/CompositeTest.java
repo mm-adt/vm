@@ -33,6 +33,7 @@ import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -43,6 +44,8 @@ import static org.mmadt.language.mmlang.util.ParserArgs.lsts;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.language.mmlang.util.ParserArgs.recs;
 import static org.mmadt.language.mmlang.util.ParserArgs.strs;
+import static org.mmadt.machine.object.impl.__.map;
+import static org.mmadt.machine.object.impl.__.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -58,6 +61,9 @@ class CompositeTest {
             /////////
             // LST //
             /////////
+            args(lsts(lsts(1, 2), 3, 4), "[[1;2];3;4]"),
+            args(lsts(1, lsts(2, 3), 4), "[1;[2;3];4]"),
+            args(lsts(List.of(1, lsts(2, 3)), lsts(4)), "[[1;[2;3]];[4]]"),
             args(ints(3), "[1;2] => [x;y] => (x + y)"),
             args(lsts(ints(1).label("x"), ints(2).label("y")).label("z"), "[1;2] => [x;y] => z"),
             args(lsts(ints(1).label("x"), ints(2).label("y")).label("z"), "[1;2] => [x;y] => lst~z"),
@@ -67,12 +73,17 @@ class CompositeTest {
             args(twoY, "[1~x;2~y;3~z] => [get,1]"),
             args(oneX, "[1~x;2~y;3~z] => [get,0]"),
             args(oneX, "[1~x;2~y;3~z] => [map,[x;y]][get,0]"),
+            args(objs(List.of("c", 1), List.of("c", 2)), "obj{0} => [start,['a';1],['b';2]][put,[start,1][plus,2][plus,[neg]],[start,'c'][plus,[zero]]]"),
             // args(ints(12), "[1~x;2~y] => [x;y] => [map,x][plus,y][plus,0] => int~z => [explain]"),
 
             /////////
             // REC //
             /////////
-            // TODO: we should apply instructions to generate instances vs. defaulting to references // args(threeZ, "[1~x:2~y,3~z:4] => [map,[x;int <= [map,y][plus,x]]]"),
+            args(recs(Map.of(recs(Map.of(1, 2)).label("x"), 3, 4, 5)), "obj{0} => [start,[[1:2]~x:3,4:5]][map,[x:3,4:5]]"),
+            args(recs(Map.of(recs(1, 2), 3, 4, 5)), "[[1:2]:3,4:5]"),
+            args(recs(Map.of(1, recs(2, 3))), "[1:[2:3]]"),
+            args(recs(Map.of(1, recs(2, 3)), lsts(4)), "[[1:[2:3]]:[4]]"),
+            args(lsts(List.of(ints().label("x"), ints().label("y"), ints().label("x"), ints().access(map(ints().label("y")).mult(plus(ints().label("x")))))), "[int~x;int~y] => [plus,[x;int <= [map,y][plus,x]]]"),
             args(TRec.of("name", strs("marko").label("x")), "['name':'marko'] => ['name':str~x]"),
             args(TRec.of("name", strs("marko")), "['name':'marko'] => [str:'marko']"),
             args(TRec.of("name", strs("marko").label("x")), "['name':'marko'] => [str:'marko'~x]"),
