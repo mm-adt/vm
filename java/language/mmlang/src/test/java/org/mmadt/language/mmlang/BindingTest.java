@@ -49,6 +49,11 @@ class BindingTest {
     private final static ParserArgs[] BINDINGS = new ParserArgs[]{
             args(oneX, "1~x"),
             args(oneX, "1~x => [map,x]"),
+            args(ints(2), "1~x => [plus,x]"),
+            args(twoY, "1~x => [plus,x][as,y]"),
+            args(ints(3), "1~x => [plus,x+x]"),
+            args(ints(4), "[1~x;2~y] => [map,y*(x+x)]"),
+            //
             args(lsts(List.of(oneX, oneX)), "1~x => [map,[x;x]]"),
             args(recs(Map.of(oneX, oneX)), "1~x => [map,[x:x]]"),
             args(lsts(List.of(oneX, Map.of(oneX, oneX))), "1~x => [map,[x;[x:x]]]"),

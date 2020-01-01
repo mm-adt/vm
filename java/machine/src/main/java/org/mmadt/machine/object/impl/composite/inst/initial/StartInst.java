@@ -29,6 +29,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.util.ModelHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.processor.compiler.Argument;
 import org.mmadt.util.IteratorUtils;
@@ -45,10 +46,8 @@ public final class StartInst<S extends Obj> extends TInst<Obj, S> implements Ini
 
     @Override
     public S apply(final Obj obj) {
-        return TObj.none().set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()), arg -> {
-            final S start = Argument.<Obj, S>create(arg).mapArg(TObj.none());
-            return start.as(start);
-        }));
+        return TObj.none().set(IteratorUtils.<S, S>map(IteratorUtils.asIterator(this.args()),
+                arg -> Argument.<Obj, S>create(arg.model(ModelHelper.fromObj(arg))).mapArg(TObj.none())));
     }
 
     @Override

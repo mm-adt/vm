@@ -28,7 +28,6 @@ import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -90,7 +89,7 @@ class BranchTest {
             args(objs(11, 12, 13),
                     "10 => [branch,[plus,1],[plus,2],[plus,3]]"),
             // args(objs(11, "ba", 3.0f), "(1,'b',2.0) => [ int~a->[plus,10] | str~b->[plus,'a'] | real~c->[plus,1.0] ]"),
-            args(ints(10).<Int>label("a"),
+            args(ints(10).label("a"),
                     "10 => [ int~a | str~b | real~c ] => [is,[and,[gt,9],[eq,[id]]]][id][id]"),
             args(ints(20),
                     "10 => [ int~a | str~b | real~c ] => [plus,[id]]"),
