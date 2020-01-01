@@ -27,7 +27,6 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.util.PMap;
 import org.mmadt.machine.object.model.ext.algebra.WithGroupPlus;
 import org.mmadt.machine.object.model.ext.algebra.WithProduct;
 import org.mmadt.machine.object.model.util.ObjectHelper;
@@ -69,17 +68,11 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default V get(final K key) {
-        /*if (null == this.get())
-            return GetInst.<K, V>create(key).attach(this);*/ // TODO: decide on what a rec.all pattern match is first
-        final PMap<K, V> object = this.get();
-        for (final Map.Entry<K, V> entry : object.entrySet()) {
-            if (key.test(entry.getKey()) || key.equals(entry.getKey())) {
-                V v = entry.getValue();
-                if (null != v.label())  // TODO: this is ghetto---need a general solution
-                    v = v.label(v.label());
-                return v.copy(this);
-            }
-
+        // TODO: support multi-get if the argument matches multiple keys (returns a ref)
+        // TODO: should we have special handling for ref (as it requires a derivaition)
+        for (final Map.Entry<K, V> entry : this.<Map<K, V>>get().entrySet()) {
+            if (key.test(entry.getKey()))
+                return entry.getValue().copy(this);
         }
         return (V) TObj.none();
 

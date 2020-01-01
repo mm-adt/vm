@@ -23,16 +23,19 @@
 package org.mmadt.machine.object.model.util;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.composite.util.PMap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,26 +66,44 @@ public final class ModelHelper {
     }
 
 
-    public static <O extends Obj> O fromModel(final Model model, final Obj obj) {
+    private static <O extends Obj> O fromModel(final Model model, final Obj obj) {
+        O newObj;
         if (obj.isSym()) {
-            return (O) model.readOrGet(obj, TObj.none()).copy(obj);
+            newObj = (O) model.readOrGet(obj, TObj.none());
         } else if (obj instanceof Rec) {
             final Map<Obj, Obj> map = new PMap<>();
             for (final Map.Entry<Obj, Obj> entry : obj.<Map<Obj, Obj>>get().entrySet()) {
                 map.put(fromModel(model, entry.getKey()), fromModel(model, entry.getValue()));
             }
-            return (O) TRec.of(map).copy(obj);
+            newObj = (O) TRec.of(map);
         } else if (obj instanceof Lst) {
             final List<Obj> list = new PList<>();
             for (final Obj entry : obj.<List<Obj>>get()) {
                 list.add(fromModel(model, entry));
             }
-            return (O) TLst.of(list).copy(obj);
+            newObj = (O) TLst.of(list);
+        } else if (obj.isInst()) {
+            if (InstHelper.singleInst((Inst) obj)) {
+                final List<Obj> list = new PList<>();
+                for (final Obj entry : obj.<List<Obj>>get()) {
+                    list.add(fromModel(model, entry));
+                }
+                newObj = (O) new TInst(list);
+            } else {
+                final List<Inst> insts = new ArrayList<>();
+                for (final Inst entry : obj.<List<Inst>>get()) {
+                    insts.add(fromModel(model, entry));
+                }
+                newObj = (O) TInst.of(insts);
+            }
         } else if (obj.isLabeled()) {
-            final O o = (O) model.readOrGet(obj, TObj.none()).copy(obj);
-            return o.isNone() ? (O) obj : obj.test(o) ? o : (O) TObj.none();
+            final O o = (O) model.readOrGet(obj, TObj.none());
+            newObj = o.isNone() ? (O) obj : obj.test(o) ? o : (O) TObj.none();
         } else
-            return (O) obj;
+            newObj = (O) obj;
+        //////////////////////////
+        newObj = newObj.copy(obj);
+        return newObj.isReference() ? newObj.access(fromModel(model, newObj.access())) : newObj;
     }
 
     public static Model fromObj(final Obj obj) {

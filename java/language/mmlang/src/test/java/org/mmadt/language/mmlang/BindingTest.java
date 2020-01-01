@@ -55,11 +55,13 @@ class BindingTest {
             args(ints(2), "1~x => [plus,x]"),
             args(ints(2), "1~x => [plus,int~x]"),
             args(ints().<Int>access(plus(TInt.of().label("x"))), "int~x => [plus,obj~x]"),
+            args(ints().<Int>access(plus(TInt.of().label("x"))), "int~x => [plus,x]"),
             args(twoY, "1~x => [plus,x][as,y]"),
             args(ints(3), "1~x => [plus,x+x]"),
             args(ints(4), "[1~x;2~y] => [map,y*(x+x)]"),
             args(ints(6), "[1~x;2~y] => [map,(y*(x+x))+2]"),
             args(ints(4), "1~x => x*(x+x)+2"),
+            args(ints(4), "1~x => int~x*(x+x)+2"),
             //
             args(lsts(List.of(oneX, oneX)), "1~x => [map,[x;x]]"),
             args(recs(Map.of(oneX, oneX)), "1~x => [map,[x:x]]"),

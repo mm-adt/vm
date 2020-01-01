@@ -61,15 +61,15 @@ public final class InstHelper {
     }
 
     public static Inst first(final Inst inst) {
-        return singleInst(inst) ? inst : inst.<PList<Inst>>get().get(0);
+        return singleInst(inst) ? inst : inst.<List<Inst>>get().get(0);
     }
 
     public static Inst last(final Inst inst) {
-        return singleInst(inst) ? inst : inst.<PList<Inst>>get().get(inst.<PList<Inst>>get().size() - 1);
+        return singleInst(inst) ? inst : inst.<List<Inst>>get().get(inst.<List<Inst>>get().size() - 1);
     }
 
     public static boolean singleInst(final Inst inst) {
-        return inst.<PList>get().get(0) instanceof Str;
+        return inst.<List>get().get(0) instanceof Str;
     }
 
     public static List<Inst> list(final List<Inst> list) {
@@ -83,11 +83,11 @@ public final class InstHelper {
         if (singleInst(instA))
             list.add(instA);
         else
-            list.addAll(instA.<PList<Inst>>get());
+            list.addAll(instA.<List<Inst>>get());
         if (singleInst(instB))
             list.add(instB);
         else
-            list.addAll(instB.<PList<Inst>>get());
+            list.addAll(instB.<List<Inst>>get());
         return list;
 
     }

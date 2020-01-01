@@ -44,6 +44,8 @@ import org.mmadt.machine.object.impl.composite.inst.sideeffect.ProbeInst;
 import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.atomic.Real;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
@@ -226,12 +228,24 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.q().isZero();
     }
 
+    public default boolean isSome() {
+        return this.q().isOne();
+    }
+
     public default boolean isBool() {
         return this instanceof Bool;
     }
 
     public default boolean isInt() {
         return this instanceof Int;
+    }
+
+    public default boolean isReal() {
+        return this instanceof Real;
+    }
+
+    public default boolean isStr() {
+        return this instanceof Str;
     }
 
     public default boolean isRec() {

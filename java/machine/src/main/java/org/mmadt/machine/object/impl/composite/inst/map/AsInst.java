@@ -34,8 +34,6 @@ import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.composite.util.PMap;
-import org.mmadt.processor.util.FastProcessor;
-import org.mmadt.util.IteratorUtils;
 
 import java.util.Map;
 
@@ -71,7 +69,6 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
             final PList<Obj> temp = new PList<>();
             Model model = from.model();
             for (int i = 0; i < toList.java().size(); i++) {
-                //final Obj obj = IteratorUtils.orElse(FastProcessor.process(fromList.get(i).mapTo(toList.get(i))), TObj.none()); // TODO: get rid of this (the problem is we have to decide when a variable is bound in a reference
                 final Obj obj = from.model().readOrGet(fromList.get(i), fromList.get(i).as(toList.get(i)));
                 if (obj.q().isZero())
                     return toList.kill();

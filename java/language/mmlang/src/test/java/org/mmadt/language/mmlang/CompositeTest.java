@@ -26,9 +26,9 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
-import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -49,6 +49,10 @@ import static org.mmadt.language.mmlang.util.ParserArgs.strs;
  */
 class CompositeTest {
 
+    private final static Int oneX = ints(1).label("x");
+    private final static Int twoY = ints(2).label("y");
+    private final static Int threeZ = ints(3).label("z");
+
     private final static ParserArgs[] COMPOSITE = new ParserArgs[]{
 
             /////////
@@ -60,11 +64,15 @@ class CompositeTest {
             args(ints(6), "[1;2] => [x;y] => (x + (y + (x + y)))"),
             args(objs(), "[1;2] => [x;y] => [x:y]"),
             args(recs(Map.of(ints(1).label("x"), ints(2).label("y"))), "[1;2] => [x;y] => [map,[x:y]]"),
+            args(twoY, "[1~x;2~y;3~z] => [get,1]"),
+            args(oneX, "[1~x;2~y;3~z] => [get,0]"),
+            args(oneX, "[1~x;2~y;3~z] => [map,[x;y]][get,0]"),
             // args(ints(12), "[1~x;2~y] => [x;y] => [map,x][plus,y][plus,0] => int~z => [explain]"),
 
             /////////
             // REC //
             /////////
+            // TODO: we should apply instructions to generate instances vs. defaulting to references // args(threeZ, "[1~x:2~y,3~z:4] => [map,[x;int <= [map,y][plus,x]]]"),
             args(TRec.of("name", strs("marko").label("x")), "['name':'marko'] => ['name':str~x]"),
             args(TRec.of("name", strs("marko")), "['name':'marko'] => [str:'marko']"),
             args(TRec.of("name", strs("marko").label("x")), "['name':'marko'] => [str:'marko'~x]"),
