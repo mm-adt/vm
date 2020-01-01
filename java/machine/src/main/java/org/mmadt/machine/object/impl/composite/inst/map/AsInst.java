@@ -54,7 +54,7 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
         return new AsInst<>(arg);
     }
 
-    public static <S extends Obj> S compute(final S from, final S to) {
+    public static <S extends Obj> S compute(final S from, S to) {
         if (to.isSym()) {
             return from.label(to.label());
         } else if (from.isReference()) {
@@ -75,7 +75,7 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 model = model.write(obj);
                 temp.add(obj);
             }
-            return (S) TLst.of(temp).model(model).label(to.label());
+            return (S) TLst.of(temp).model(model).label(to.label()).symbol(to.symbol());
         } else if (from instanceof Rec && to instanceof Rec && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
             final Rec<Obj, Obj> fromRec = (Rec<Obj, Obj>) from;
             final Rec<Obj, Obj> toRec = (Rec<Obj, Obj>) to;
@@ -94,11 +94,11 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 model = model.write(fromEntry.getKey()).write(fromEntry.getValue());
                 temp.put(fromEntry.getKey(), fromEntry.getValue());
             }
-            return (S) TRec.of(temp).model(model).label(to.label());
+            return (S) TRec.of(temp).model(model).label(to.label()).symbol(to.symbol());
         } else if (!to.test(from))
             return to.kill();
         else
-            return (from.isType() ? from.set(to.get()) : from).symbol(to.symbol()).access(to.access()).label(to.label());
+            return (from.isType() ? from.set(to.get()) : from).access(to.access()).label(to.label()).symbol(to.symbol());
     }
 
     private static <S extends Obj> S fakeLabel(final String label, final S obj) { // TODO: this is lame

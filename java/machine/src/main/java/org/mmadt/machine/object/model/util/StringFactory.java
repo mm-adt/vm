@@ -89,13 +89,17 @@ public final class StringFactory {
         return builder.toString();
     }
 
-    public static String record(final Rec<? extends Obj, ? extends Obj> record) {
+    public static String record(final Rec<? extends Obj, ? extends Obj> rec) {
         final StringBuilder builder = new StringBuilder();
-        if (record.isInstance() || record.get() != null)
-            builder.append(record.<PMap>get());
-        else
-            builder.append(record.symbol());
-        StringFactory.objMetadata(record, builder);
+        if (null == rec.get())
+            builder.append(rec.symbol());
+        else {
+            if (rec.named())
+                builder.append(rec.symbol()).append(TILDE);
+            if (rec.isInstance() || rec.get() != null)
+                builder.append(rec.<PMap>get());
+        }
+        StringFactory.objMetadata(rec, builder);
         return builder.toString();
     }
 
@@ -114,24 +118,28 @@ public final class StringFactory {
         return builder.toString();
     }
 
-    public static String list(final Lst<? extends Obj> list) {
+    public static String list(final Lst<? extends Obj> lst) {
         final StringBuilder builder = new StringBuilder();
-        if (list.get() instanceof PList) {
-            builder.append(LBRACKET);
-            if (list.<PList>get().isEmpty())
-                builder.append(SEMICOLON);
-            else {
-                for (Obj object : list.<PList<Obj>>get()) {
-                    builder.append(nestedObj(object)).append(SEMICOLON);
+        if (null == lst.get())
+            builder.append(lst.symbol());
+        else {
+            if (lst.named())
+                builder.append(lst.symbol()).append(TILDE);
+            if (lst.get() instanceof PList) {
+                builder.append(LBRACKET);
+                if (lst.<PList>get().isEmpty())
+                    builder.append(SEMICOLON);
+                else {
+                    for (Obj object : lst.<PList<Obj>>get()) {
+                        builder.append(nestedObj(object)).append(SEMICOLON);
+                    }
+                    builder.deleteCharAt(builder.length() - 1);
                 }
-                builder.deleteCharAt(builder.length() - 1);
-            }
-            builder.append(RBRACKET);
-        } else if (null != list.get())
-            builder.append(list.get().toString());
-        else
-            builder.append(list.symbol());
-        StringFactory.objMetadata(list, builder);
+                builder.append(RBRACKET);
+            } else if (null != lst.get())
+                builder.append(lst.get().toString());
+        }
+        StringFactory.objMetadata(lst, builder);
         return builder.toString();
     }
 
@@ -141,6 +149,8 @@ public final class StringFactory {
         if (null == o)
             builder.append(obj.symbol());
         else {
+            if (obj.named())
+                builder.append(obj.symbol()).append(TILDE);
             final boolean parentheses = o instanceof Inst && (null != obj.label() || !obj.q().isOne());
             if (parentheses) builder.append(LPAREN);
             if (o instanceof Inst)

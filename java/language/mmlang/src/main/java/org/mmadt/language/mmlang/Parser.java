@@ -50,7 +50,6 @@ import org.parboiled.annotations.SuppressNode;
 import org.parboiled.annotations.SuppressSubnodes;
 import org.parboiled.support.Var;
 
-import static org.mmadt.language.compiler.Tokens.OBJ;
 import static org.mmadt.machine.object.impl.__.id;
 
 /**
@@ -91,6 +90,7 @@ public class Parser extends BaseParser<Object> {
     final Rule LPACK = Terminal(Tokens.LPACK);
 
     /// built-int type symbols
+    final Rule OBJ = Terminal(Tokens.OBJ);
     final Rule INT = Terminal(Tokens.INT);
     final Rule REAL = Terminal(Tokens.REAL);
     final Rule STR = Terminal(Tokens.STR);
@@ -128,7 +128,9 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Obj() {
+        final Var<String> symbol = new Var<>();
         return Sequence(
+                Optional(Type(symbol)),
                 FirstOf(Sequence(OBJ, this.push(TObj.single())),
                         Inst(),
                         Bool(),
@@ -138,6 +140,7 @@ public class Parser extends BaseParser<Object> {
                         Lst(),
                         Rec(),
                         Sym()),
+                Optional(symbol.isSet(), ACTION(!Obj.BASE_SYMBOLS.contains(symbol.get())), this.push(type(this.pop()).symbol(symbol.get()))),
                 Obj_Metadata());
     }
 
@@ -288,6 +291,11 @@ public class Parser extends BaseParser<Object> {
     @SuppressNode
     Rule Word() {
         return Sequence(OneOrMore(FirstOf(CharRange('a', 'z'), CharRange('A', 'Z'))), Spacing());
+    }
+
+    @SuppressNode
+    Rule Type(final Var<String> symbol) {
+        return Sequence(Word(), ACTION(!Obj.BASE_SYMBOLS.contains(this.match().trim())), symbol.set(this.match().trim()), TILDE);
     }
 
     @SuppressNode

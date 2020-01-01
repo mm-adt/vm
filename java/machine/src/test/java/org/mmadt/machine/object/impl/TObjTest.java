@@ -132,8 +132,8 @@ class TObjTest {
         // TODO: assertEquals("(gt(1)&lt(20))~x", TInt.of(is(and(gt(1),lt(20)))).as("x").toString());
         assertEquals("rec", TRec.some().toString());
         assertEquals("['name':str,'age':int]", TRec.of("name", TStr.of(), "age", TInt.of()).toString());
-        assertEquals("['name':str,'age':int]", TRec.of("name", TStr.of(), "age", TInt.of()).symbol("person").toString()); // TODO: @person prefix?
-        assertEquals("['name':str~x,'age':int~y]~z", TRec.of("name", TStr.of().label("x"), "age", TInt.of().label("y")).label("z").symbol("person").toString());
+        assertEquals("person~['name':str,'age':int]", TRec.of("name", TStr.of(), "age", TInt.of()).symbol("person").toString()); // TODO: @person prefix?
+        assertEquals("person~['name':str~x,'age':int~y]~z", TRec.of("name", TStr.of().label("x"), "age", TInt.of().label("y")).label("z").symbol("person").toString());
     }
 
     @Test

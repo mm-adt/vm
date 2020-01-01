@@ -52,7 +52,7 @@ public final class ModelHelper {
         if (to.isAtomic() || to.isInstance())
             obj = (O) to;
         else {
-            if (to.isRec()) {
+            if (to.isRec() && null != to.get()) {
                 final Map<Obj, Obj> map = new PMap<>();
                 for (final Map.Entry<Obj, Obj> entry : to.<Map<Obj, Obj>>get().entrySet()) {
                     map.put(via(from, entry.getKey()), via(from, entry.getValue()));
