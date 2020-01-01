@@ -74,11 +74,16 @@ class CompositeTest {
             args(oneX, "[1~x;2~y;3~z] => [get,0]"),
             args(oneX, "[1~x;2~y;3~z] => [map,[x;y]][get,0]"),
             args(objs(List.of("c", 1), List.of("c", 2)), "obj{0} => [start,['a';1],['b';2]][put,[start,1][plus,2][plus,[neg]],[start,'c'][plus,[zero]]]"),
-            // args(ints(12), "[1~x;2~y] => [x;y] => [map,x][plus,y][plus,0] => int~z => [explain]"),
-            args(ints(3),"[1;2]~z => ((int <= (z.0)) + (int <= (z.1)))"),
-            args(ints(3),"[1;2]~z => (z.0) + (z.1)"),
-            args(ints(3),"[1;[2.2:2]]~z => (z.0) + (z.1.(2.2))"),
-            args(ints(3),"[1;[true:2]]~z => (z.0) + (z.1.true + 0)"),
+            args(ints(3).label("z"), "[1~x;2~y] => [x;y] => (int <= [map,x][plus,y][plus,0][as,int~z])"),
+            args(ints(3).label("z"), "[1~x;2~y] => [x;y] => (x + y + 0) => int~z"),
+            args(ints(3), "[1;2]~z => ((int <= (z.0)) + (int <= (z.1)))"),
+            args(ints(3), "[1;2]~z => (z.0) => + (z.1)"),
+            args(ints(3), "[1;2]~z => (z.0) + (z.1)"),
+            args(ints(3), "[1;[2.2:2]]~z => (z.0) + (z.1.(2.2))"),
+            args(ints(3), "[1;[2.2:2]]~z => (z.0) + (z.(z.0).(2.2))"),
+            args(ints(3), "[1;[2.2:2]]~z => (z.0) => [plus,z.(z.0).(2.2)]"),
+            args(ints(3), "[1;[2.2:2]] => z => (z.(z.0).(2.2)) => int~w => (z.0) => [plus,w]"),
+            args(ints(3), "[1;[true:2]]~z => (z.0) + (z.1.true + 0)"),
 
             /////////
             // REC //
