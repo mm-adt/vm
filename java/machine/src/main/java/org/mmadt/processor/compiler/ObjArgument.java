@@ -38,7 +38,7 @@ public final class ObjArgument<S extends Obj, E extends Obj> implements Argument
 
     @Override
     public E mapArg(final S obj) {
-        return ModelHelper.fromModel(obj.model(), this.constant);
+        return ModelHelper.fromModel(obj, this.constant);
     }
 
     @Override

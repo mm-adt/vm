@@ -32,7 +32,6 @@ import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
@@ -43,7 +42,6 @@ import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -67,13 +65,13 @@ public final class ObjectHelper {
     }
 
     public static <O extends Obj> O create(final Obj obj, final Object object) {
+        if (object instanceof Obj && ((Obj) object).isSym())
+            return obj.model().readOrGet((Obj) object, obj.label(((Obj) object).label()));
         return object instanceof Inst ?
                 obj instanceof Inst ?
                         (O) object :
                         obj.type().access((Inst) object) :
-                object instanceof Sym ?
-                        (O) Optional.<O>ofNullable(obj.model().read(((Sym) object))).orElse((O)obj).label(((Sym) object).label()) :
-                        (O) ObjectHelper.from(object);
+                (O) ObjectHelper.from(object);
     }
 
     public static <O extends Obj> O make(final Function<Object, O> constructor, final Object... objects) {

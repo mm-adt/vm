@@ -26,19 +26,11 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
-import org.mmadt.machine.object.impl.TSym;
-import org.mmadt.machine.object.impl.composite.TLst;
-import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
-import org.mmadt.machine.object.impl.composite.inst.map.ModelInst;
-import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,8 +44,8 @@ import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 class ModelTest {
 
     private final static ParserArgs[] MODELS = new ParserArgs[]{
-            args(ModelInst.create("cpu", TRec.of(Map.of(TSym.of("a"), 1)), IdInst.create()), "[=cpu,[a:1],[id]]"),
-            args(ModelInst.create("cpu", TRec.of(Map.of(TSym.of("weight"), 0.0f, TSym.of("path"), TLst.of())), ChooseInst.create(TRec.of("a", PlusInst.create(2)))), "[=cpu,[weight:0.0,path:[;]],[choose,['a':[plus,2]]]]"),
+            //args(ModelInst.create("cpu", TRec.of(Map.of(TObj.sym("a"), 1)), IdInst.create()), "[=cpu,[a:1],[id]]"),
+            //args(ModelInst.create("cpu", TRec.of(Map.of(TObj.sym("weight"), 0.0f, TObj.sym("path"), TLst.of())), ChooseInst.create(TRec.of("a", PlusInst.create(2)))), "[=cpu,[weight:0.0,path:[;]],[choose,['a':[plus,2]]]]"),
             args(ints(11), "10 => [=cpu,[:],[plus,1]]"),
             args(ints(11), "10 => [=cpu,[plus,1]]"),
             args(objs(), "10 => [=cpu,[[int;int] -> [id] | obj -> obj{0}]]"),

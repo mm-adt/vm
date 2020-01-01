@@ -26,7 +26,6 @@ import org.mmadt.language.compiler.Instructions;
 import org.mmadt.language.compiler.OperatorHelper;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.TSym;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
@@ -143,12 +142,12 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Obj_Metadata() {
-        return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),                                    // {quantifier}
-                Optional(!(this.peek() instanceof TSym), TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));     // ~label
+        return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),    // {quantifier}
+                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));     // ~label
     }
 
     Rule Sym() {
-        return Sequence(Word(), this.push(TSym.of(match().trim()))); //Sequence(Word(), ZeroOrMore(FirstOf(Number(), Word())));
+        return Sequence(Word(), this.push(TObj.sym(match().trim()))); //Sequence(Word(), ZeroOrMore(FirstOf(Number(), Word())));
     }
 
     Rule Lst() {

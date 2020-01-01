@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TInst;
@@ -44,6 +45,8 @@ import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithOr;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
@@ -178,8 +181,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O mapFrom(final Obj obj) {
         if (obj instanceof Inst)
             return (O) this.access(this.access().mult((Inst) obj));
-        else if (this instanceof Sym)
-            return this.mapFrom(this.model().read(obj));   // loads the variable obj from obj state and then maps from it (variable-based pattern match)
         else
             return this.as(obj.access(null)).mapFrom(obj.access());
 
@@ -218,7 +219,31 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default boolean isSym() {
-        return this instanceof Sym;
+        return this.getClass().equals(TObj.class) && this.isLabeled();
+    }
+
+    public default boolean isNone() {
+        return this.q().isZero();
+    }
+
+    public default boolean isBool() {
+        return this instanceof Bool;
+    }
+
+    public default boolean isInt() {
+        return this instanceof Int;
+    }
+
+    public default boolean isRec() {
+        return this instanceof Rec;
+    }
+
+    public default boolean isLst() {
+        return this instanceof Lst;
+    }
+
+    public default boolean isInst() {
+        return this instanceof Inst;
     }
 
     public default boolean isLabeled() {

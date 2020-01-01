@@ -28,7 +28,6 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
@@ -47,7 +46,7 @@ public final class ModelInst<S extends Obj, E extends Obj> extends TInst<S, E> i
 
     @Override
     public E apply(final S obj) {
-        return (E) obj.model(TModel.of(this.<Rec<Sym, Obj>>args().get(1).get(), this.<Inst>args().get(2))).model().apply(obj);
+        return (E) obj.model(TModel.of(this.<Rec<Obj, Obj>>args().get(1).get(), this.<Inst>args().get(2))).model().apply(obj);
     }
 
     public static <S extends Obj, E extends Obj> ModelInst<S, E> create(final Object... objects) {

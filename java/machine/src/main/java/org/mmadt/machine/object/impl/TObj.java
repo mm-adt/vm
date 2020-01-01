@@ -42,6 +42,7 @@ import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithOr;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.ext.composite.Pair;
+import org.mmadt.machine.object.model.util.ModelHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.machine.object.model.util.StringFactory;
@@ -55,6 +56,10 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     public static Obj single(final Object... objects) {
         return new TObj(null);
+    }
+
+    public static Obj sym(final String label) {
+        return new TObj(null).label(label);
     }
 
     public static Obj all() {
@@ -192,7 +197,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O label(final String variable) {
         final TObj clone = this.clone();
         clone.type = this.type.label(variable);
-        return null == variable ? (O) clone : TSym.<O>of(variable).match((O) clone);
+        return null == variable ? (O) clone : ModelHelper.match((O) clone);
     }
 
     @Override

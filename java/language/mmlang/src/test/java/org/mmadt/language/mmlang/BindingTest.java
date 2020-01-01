@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.language.mmlang.util.ParserArgs;
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.atomic.Int;
 
 import javax.script.ScriptEngine;
@@ -37,6 +38,7 @@ import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.lsts;
 import static org.mmadt.language.mmlang.util.ParserArgs.recs;
+import static org.mmadt.machine.object.impl.__.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,11 +50,16 @@ class BindingTest {
 
     private final static ParserArgs[] BINDINGS = new ParserArgs[]{
             args(oneX, "1~x"),
+            args(ints().<Int>access(plus(ints().label("x"))), "int~x => x + x"),
             args(oneX, "1~x => [map,x]"),
             args(ints(2), "1~x => [plus,x]"),
+            args(ints(2), "1~x => [plus,int~x]"),
+            args(ints().<Int>access(plus(TInt.of().label("x"))), "int~x => [plus,obj~x]"),
             args(twoY, "1~x => [plus,x][as,y]"),
             args(ints(3), "1~x => [plus,x+x]"),
             args(ints(4), "[1~x;2~y] => [map,y*(x+x)]"),
+            args(ints(6), "[1~x;2~y] => [map,(y*(x+x))+2]"),
+            args(ints(4), "1~x => x*(x+x)+2"),
             //
             args(lsts(List.of(oneX, oneX)), "1~x => [map,[x;x]]"),
             args(recs(Map.of(oneX, oneX)), "1~x => [map,[x:x]]"),

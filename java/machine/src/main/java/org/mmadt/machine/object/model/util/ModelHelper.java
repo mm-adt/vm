@@ -25,6 +25,7 @@ package org.mmadt.machine.object.model.util;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Lst;
@@ -39,6 +40,28 @@ import java.util.Map;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class ModelHelper {
+
+    public static <O extends Obj> O fromModel(final Obj from, final Obj to) {
+        final Model model = from.model();
+        if (to instanceof Rec) {
+            final Map<Obj, Obj> map = new PMap<>();
+            for (final Map.Entry<Obj, Obj> entry : to.<Map<Obj, Obj>>get().entrySet()) {
+                map.put(fromModel(model, entry.getKey()), fromModel(model, entry.getValue()));
+            }
+            return (O) TRec.of(map).copy(to);
+        } else if (to instanceof Lst) {
+            final List<Obj> list = new PList<>();
+            for (final Obj entry : to.<List<Obj>>get()) {
+                list.add(fromModel(model, entry));
+            }
+            return (O) TLst.of(list).copy(to);
+        } else if (to.isLabeled()) {
+            final O o = (O) model.readOrGet(to, TObj.none()).copy(to);
+            return o.isNone() ? (O) to : to.test(o) ? o : (O) TObj.none();
+        } else
+            return (O) to;
+    }
+
 
     public static <O extends Obj> O fromModel(final Model model, final Obj obj) {
         if (obj.isSym()) {
@@ -55,8 +78,11 @@ public final class ModelHelper {
                 list.add(fromModel(model, entry));
             }
             return (O) TLst.of(list).copy(obj);
+        } else if (obj.isLabeled()) {
+            final O o = (O) model.readOrGet(obj, TObj.none()).copy(obj);
+            return o.isNone() ? (O) obj : obj.test(o) ? o : (O) TObj.none();
         } else
-            return (O) obj.copy(obj);
+            return (O) obj;
     }
 
     public static Model fromObj(final Obj obj) {
@@ -89,5 +115,20 @@ public final class ModelHelper {
             update = fromObj(update, v);
         }
         return update;
+    }
+
+    public static <O extends Obj> O match(final O obj) {
+        if (!obj.isLabeled())
+            return obj;
+        else if (obj.isReference()) {
+            final O clone = obj.model(obj.model().write(obj));
+            return AsInst.<O>create(clone.access(null)).attach(clone);
+        } else {
+            final O storedObj = obj.model().read(obj);
+            if (null == storedObj)
+                return obj.model(obj.model().write(obj)); // if the variable is unbound, bind it to the current obj
+            else
+                return obj.test(storedObj) ? obj : obj.kill(); // test if the current obj is subsumed by the historic obj (if not, drop the obj's quantity to [zero])
+        }
     }
 }

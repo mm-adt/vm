@@ -29,7 +29,6 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.Sym;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.Morphing;
@@ -107,7 +106,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
 
     public <A extends Obj> Argument<S, A> argument(final int index) {
         final S arg = this.<S>args().get(index); // TODO: very hacky as as() does not resolve types
-        return Argument.create(arg instanceof Sym && this.opcode().java().equals(Tokens.AS) ? this.domain.type().label(arg.label()) : arg);
+        return Argument.create(arg.isSym() && this.opcode().java().equals(Tokens.AS) ? this.domain.type().label(arg.label()) : arg);
     }
 
     @Override
