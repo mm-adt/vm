@@ -49,16 +49,16 @@ public final class ModelHelper {
 
     public static <O extends Obj> O via(final Obj from, final Obj to) {
         O obj;
-        if (to.isAtomic() || to.isInstance())
+        if (to.isAtomic() || null == to.get())
             obj = (O) to;
         else {
-            if (to.isRec() && null != to.get()) {
+            if (to.isRec()) {
                 final Map<Obj, Obj> map = new PMap<>();
                 for (final Map.Entry<Obj, Obj> entry : to.<Map<Obj, Obj>>get().entrySet()) {
                     map.put(via(from, entry.getKey()), via(from, entry.getValue()));
                 }
                 obj = (O) TRec.of(map);
-            } else if (to.isLst() && to.get() != null) {
+            } else if (to.isLst()) {
                 final List<Obj> list = new PList<>();
                 for (final Obj entry : to.<List<Obj>>get()) {
                     list.add(via(from, entry));
@@ -79,7 +79,7 @@ public final class ModelHelper {
                     obj = (O) TInst.of(insts);
                 }
             } else
-                obj = (O) to;
+                throw new RuntimeException("This state should not have been reached: " + from + "=>" + to);
         }
         if (to.isLabeled()) {
             final O o = (O) from.model().read(to);

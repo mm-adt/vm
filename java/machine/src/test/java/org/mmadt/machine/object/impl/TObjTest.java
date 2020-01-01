@@ -30,9 +30,9 @@ import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.model.Bindings;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.Bindings;
 
 import java.util.List;
 
