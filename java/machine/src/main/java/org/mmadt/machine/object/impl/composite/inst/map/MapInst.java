@@ -51,6 +51,6 @@ public final class MapInst<S extends Obj, E extends Obj> extends TInst<S, E> imp
                 to.copy(from) :
                 !to.isType() ?
                         MapInst.<S, E>create(to).attach(from) :
-                        MapInst.<S, E>create(to).attach(from, to.type());
+                        MapInst.<S, E>create(to).attach(from, to.model(from.model()));
     }
 }

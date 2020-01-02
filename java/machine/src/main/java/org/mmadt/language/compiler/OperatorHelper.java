@@ -60,31 +60,25 @@ public final class OperatorHelper {
         // System.out.println(lhs + " " + operator + " " + rhs);
         switch (operator) {
             case (Tokens.ASTERIX):
-                return /*lhs.isInst() ?
-                        rhs instanceof Inst ?
+                return lhs instanceof WithMult && !lhs.isInst() ?
+                        ((WithMult) lhs).mult(rhs instanceof WithMult ?
+                                rhs :
+                                map(rhs)) :
+                        lhs.isInst() && rhs instanceof Inst ?
                                 ((Inst) lhs).mult(rhs) :
-                                ((Inst) lhs).mult(mult(rhs)) :*/
-                        lhs instanceof WithMult ?
-                                ((WithMult) lhs).mult(rhs instanceof WithMult ? rhs : map(rhs)) :
                                 map(lhs).mult(mult(rhs));
             case (Tokens.CROSS):
-                return lhs.isInst() ?
-                        rhs instanceof Inst ?
+                return lhs instanceof WithPlus && !lhs.isInst() ?
+                        ((WithPlus) lhs).plus(rhs instanceof WithPlus ?
+                                rhs :
+                                map(rhs)) :
+                        lhs.isInst() && rhs instanceof Inst ?
                                 ((Inst) lhs).plus(rhs) :
-                                ((Inst) lhs).mult(plus(rhs)) :
-                        lhs instanceof WithPlus ?
-                                ((WithPlus) lhs).plus(rhs instanceof WithPlus ? rhs : map(rhs)) :
                                 map(lhs).mult(plus(rhs));
             case (Tokens.BACKSLASH):
                 return ((WithDiv) lhs).div(rhs);
             case (Tokens.DASH):
-                return /*lhs.isInst() ?
-                        rhs instanceof Inst ?
-                                */((WithMinus) lhs).minus(rhs);/*:
-                                ((Inst) lhs).mult(minus(rhs)) :
-                        lhs instanceof WithMinus ?
-                                ((WithMinus) lhs).minus(rhs instanceof WithMinus ? rhs : map(rhs)) :
-                                map(lhs).mult(minus(rhs));*/
+                return ((WithMinus) lhs).minus(rhs);
             case (Tokens.AMPERSAND):
                 return lhs.and(rhs);
             case (Tokens.BAR):
@@ -108,7 +102,7 @@ public final class OperatorHelper {
             case Tokens.RPACK:
                 return TRec.of(lhs, rhs);
             case Tokens.PERIOD:
-                return map(lhs).mult(get(rhs));
+                return ((Inst) (lhs.isInst() ? lhs : map(lhs))).mult(get(rhs));
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

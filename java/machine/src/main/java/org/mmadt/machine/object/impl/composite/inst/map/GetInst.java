@@ -23,11 +23,18 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithProduct;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,15 +47,36 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
 
     @Override
     public V apply(final WithProduct<K, V> obj) {
-        return obj.get(this.<K>argument(0).mapArg(obj)); // TODO: why can't I quantify the range?
+        return obj.get(this.<K>argument(0).mapArg(obj));
     }
-
-    /*public V quantifyRange(final V range) {
-        return super.quantifyRange(this.apply((WithProduct<K, V>) TSym.fetch(range)));
-    }*/
 
     public static <K extends Obj, V extends Obj> GetInst<K, V> create(final Object arg) {
         return new GetInst<>(arg);
+    }
+
+    public static <K extends Obj, V extends Obj> V compute(final WithProduct<K, V> product, final K key) {
+        if (!product.isReference() && !key.isReference() &&
+                null != product.get() && null != key.get()) {
+            return product.isLst() ?
+                    lst((Lst<V>) product, (Int) key) :
+                    rec((Rec<K, V>) product, key);
+        } else {
+            return (null == product.get()) ?
+                    GetInst.<K, V>create(key).attach(product) :
+                    GetInst.<K, V>create(key).attach(product, (product.isLst() ? lst((Lst<V>) product, (Int) key) : rec((Rec<K, V>) product, key)));
+        }
+    }
+
+    private static <V extends Obj> V lst(final Lst<V> lst, final Int key) {
+        return (lst.<List<V>>get().size() <= key.<Integer>get() ? (V) TObj.none() : lst.<List<V>>get().get(key.get())).copy(lst);
+    }
+
+    private static <K extends Obj, V extends Obj> V rec(final Rec<K, V> rec, final K key) {
+        for (final Map.Entry<K, V> entry : rec.<Map<K, V>>get().entrySet()) {
+            if (key.test(entry.getKey()))
+                return entry.getValue().copy(rec);
+        }
+        return (V) TObj.none();
     }
 
 }

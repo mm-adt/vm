@@ -23,7 +23,7 @@
 package org.mmadt.machine.object.model.composite;
 
 import org.mmadt.machine.object.impl.TObj;
-import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
 import org.mmadt.machine.object.model.Obj;
@@ -68,17 +68,10 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default V get(final K key) {
-        // TODO: support multi-get if the argument matches multiple keys (returns a ref)
-        // TODO: should we have special handling for ref (as it requires a derivaition)
-        for (final Map.Entry<K, V> entry : this.<Map<K, V>>get().entrySet()) {
-            if (key.test(entry.getKey()))
-                return entry.getValue().copy(this);
-        }
-        return (V) TObj.none();
-
+        return GetInst.compute(this, key);
     }
 
     public default V get(final Object index) {
-        return this.get(ObjectHelper.create(TInt.of(), index));
+        return this.get(ObjectHelper.create(TObj.single(), index));
     }
 }

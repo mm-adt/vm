@@ -29,6 +29,7 @@ import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -39,11 +40,13 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
+import static org.mmadt.language.mmlang.util.ParserArgs.bools;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 import static org.mmadt.language.mmlang.util.ParserArgs.lsts;
 import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.language.mmlang.util.ParserArgs.recs;
 import static org.mmadt.language.mmlang.util.ParserArgs.strs;
+import static org.mmadt.machine.object.impl.__.get;
 import static org.mmadt.machine.object.impl.__.map;
 import static org.mmadt.machine.object.impl.__.plus;
 
@@ -55,6 +58,7 @@ class CompositeTest {
     private final static Int oneX = ints(1).label("x");
     private final static Int twoY = ints(2).label("y");
     private final static Int threeZ = ints(3).label("z");
+    private final static Lst alst = lsts(List.of(ints(), recs(Map.of(bools(), ints())))).label("z");
 
     private final static ParserArgs[] COMPOSITE = new ParserArgs[]{
 
@@ -75,7 +79,7 @@ class CompositeTest {
             args(oneX, "[1~x;2~y;3~z] => [map,[x;y]][get,0]"),
             args(objs(List.of("c", 1), List.of("c", 2)), "obj{0} => [start,['a';1],['b';2]][put,[start,1][plus,2][plus,[neg]],[start,'c'][plus,[zero]]]"),
             args(ints(3).label("z"), "[1~x;2~y] => [x;y] => (int <= [map,x][plus,y][plus,0][as,int~z])"),
-            args(ints(-3).label("z"), "[1~x;2~y] => [x;y] => (x + y + 0 ** -1) => int~z"),
+            args(ints(-3).label("z"), "[1~x;2~y] => [x;y] => (x + y + 0 * -1) => int~z"),
             args(ints(3).label("z"), "[1~x;2~y] => [x;y] => (x + y + 0) => int~z"),
             args(ints(3), "[1;2]~z => ((int <= (z.0)) + (int <= (z.1)))"),
             args(ints(3), "[1;2]~z => (z.0) => + (z.1)"),
@@ -85,6 +89,7 @@ class CompositeTest {
             args(ints(3), "[1;[2.2:2]]~z => (z.0) => [plus,z.(z.0).(2.2)]"),
             args(ints(3), "[1;[2.2:2]] => z => (z.(z.0).(2.2)) => int~w => (z.0) => [plus,w]"),
             args(ints(3), "[1;[true:2]]~z => (z.0) + (z.1.true + 0)"),
+            args(ints().<Int>access(map(alst).mult(get(0)).mult(plus(ints().access(map(alst).mult(get(1)).mult(get(bools())))))), "[int;[bool:int]]~z => (z.0) + (z.1.bool) => [explain]"),
 
             /////////
             // REC //

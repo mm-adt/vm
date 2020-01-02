@@ -78,12 +78,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
 
     @Override
     public default V get(final Int index) {
-        // TODO: support multi-get if the argument matches multiple keys (returns a ref)
-        // TODO: should we have special handling for ref (as it requires a derivaition)
-        if (!this.isReference() && index.isInstance())
-            return (this.<List<V>>get().size() <= index.<Integer>get() ? (V) TObj.none() : this.<List<V>>get().get(index.get())).copy(this);
-        else
-            return GetInst.<Int, V>create(index).attach(this);
+       return GetInst.compute(this,index);
     }
 
     public default V get(final Object index) {

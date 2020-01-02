@@ -132,8 +132,8 @@ public class Parser extends BaseParser<Object> {
         return Sequence(
                 Optional(Type(symbol)),
                 FirstOf(Sequence(OBJ, this.push(TObj.single())),
-                        Inst(),
                         Bool(),
+                        Inst(),
                         Real(),
                         Int(),
                         Str(),
@@ -295,7 +295,9 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressNode
     Rule Type(final Var<String> symbol) {
-        return Sequence(Word(), ACTION(!Obj.BASE_SYMBOLS.contains(this.match().trim())), symbol.set(this.match().trim()), TILDE);
+        return Sequence(Word(),
+                ACTION(!(this.match().trim().equals(Tokens.TRUE) || this.match().trim().equals(Tokens.FALSE))),
+                ACTION(!Obj.BASE_SYMBOLS.contains(this.match().trim())), symbol.set(this.match().trim()), TILDE);
     }
 
     @SuppressNode
