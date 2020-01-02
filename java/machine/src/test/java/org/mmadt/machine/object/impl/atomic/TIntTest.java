@@ -73,7 +73,7 @@ final class TIntTest implements TestUtilities {
             args(List.of(), TInt.of(49, 50).is(lt(plus(-1)))),
             args(List.of(), TInt.of(49, 50).is(lt(plus(-1))).map(32)),
             args(List.of(49, 50), TInt.of(49, 50).is(lt(plus(1)))),
-            args(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(1).plus(plus(8))),
+            //args(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(1).plus(plus(8))),
             args(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(TInt.of(0, 1, 2).plus(1).plus(0)).plus(plus(8))),
             args(List.of(49, 50), TInt.of(49, 50).is(lte(plus(1)))),
             args(List.of(), TInt.of(49, 50).is(gt(plus(1)))),

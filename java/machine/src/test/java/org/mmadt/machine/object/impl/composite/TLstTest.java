@@ -26,7 +26,6 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.TestUtilities;
-import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TReal;
@@ -49,6 +48,7 @@ import static org.mmadt.machine.object.impl.__.id;
 import static org.mmadt.machine.object.impl.__.neg;
 import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.machine.object.impl.__.zero;
+import static org.mmadt.util.ProcessArgs.args;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -57,18 +57,17 @@ final class TLstTest implements TestUtilities {
 
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             // instances
-            ProcessArgs.args(List.of(TLst.of("a", 1)), TLst.of("a", 1)),
-            ProcessArgs.args(List.of("a"), TLst.of("a", 1).get(0)),
-            ProcessArgs.args(List.of(1), TLst.of("a", 1).get(1)),
+            args(List.of(TLst.of("a", 1)), TLst.of("a", 1)),
+            args(List.of("a"), TLst.of("a", 1).get(0)),
+            args(List.of(1), TLst.of("a", 1).get(1)),
             // references
-            ProcessArgs.args(List.of(TLst.of("a", 1), TLst.of("b", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2))),
-            ProcessArgs.args(List.of(TLst.of("a", "acac"), TLst.of("b", "bcbc")), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(1, get(0).mult(plus("c")).mult(plus(zero())).mult(plus(id())))),
-            ProcessArgs.args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(0, "c")),
-            ProcessArgs.args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), "c")),
-            ProcessArgs.args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), TStr.of("").plus("c").id().plus(zero()))),
+            args(List.of(TLst.of("a", 1), TLst.of("b", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2))),
+            args(List.of(TLst.of("a", "acac"), TLst.of("b", "bcbc")), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(1, get(0).mult(plus("c")).mult(plus(zero())).mult(plus(id())))),
+            args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(0, "c")),
+            args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), "c")),
+            args(List.of(TLst.of("c", 1), TLst.of("c", 2)), TLst.of(TLst.of("a", 1), TLst.of("b", 2)).put(TInt.of(1).plus(2).plus(neg()), TStr.of("").plus("c").id().plus(zero()))),
             // types
-            ProcessArgs.args(List.of(TLst.of(TInt.of(), TStr.of(), 1.0f, false)), TLst.of(TInt.of(), TStr.of()).plus(TLst.of(1.0f, false))),
-
+            args(List.of(TLst.of(TInt.of(), TStr.of(), 1.0f, false)), TLst.of(TInt.of(), TStr.of()).plus(TLst.of(1.0f, false))),
     };
 
     @TestFactory
