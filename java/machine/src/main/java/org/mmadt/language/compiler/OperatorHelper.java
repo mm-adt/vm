@@ -61,17 +61,13 @@ public final class OperatorHelper {
         switch (operator) {
             case (Tokens.ASTERIX):
                 return lhs instanceof WithMult && !lhs.isInst() ?
-                        ((WithMult) lhs).mult(rhs instanceof WithMult ?
-                                rhs :
-                                map(rhs)) :
+                        ((WithMult) lhs).mult(rhs) :
                         lhs.isInst() && rhs instanceof Inst ?
                                 ((Inst) lhs).mult(rhs) :
                                 map(lhs).mult(mult(rhs));
             case (Tokens.CROSS):
                 return lhs instanceof WithPlus && !lhs.isInst() ?
-                        ((WithPlus) lhs).plus(rhs instanceof WithPlus ?
-                                rhs :
-                                map(rhs)) :
+                        ((WithPlus) lhs).plus(rhs) :
                         lhs.isInst() && rhs instanceof Inst ?
                                 ((Inst) lhs).plus(rhs) :
                                 map(lhs).mult(plus(rhs));
@@ -102,7 +98,9 @@ public final class OperatorHelper {
             case Tokens.RPACK:
                 return TRec.of(lhs, rhs);
             case Tokens.PERIOD:
-                return ((Inst) (lhs.isInst() ? lhs : map(lhs))).mult(get(rhs));
+                return lhs.isInst() ?
+                        ((Inst) lhs).mult(get(rhs)) :
+                        map(lhs).mult(get(rhs));
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }

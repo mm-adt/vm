@@ -60,7 +60,7 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
             return GetInst.composite(product, key);
         } else {
             return (null == product.get()) ?
-                    GetInst.<K, V>create(key).attach(product) :
+                    GetInst.<K, V>create(key).attach(product,(V)TObj.single()) :
                     GetInst.<K, V>create(key).attach(product, GetInst.composite(product, key));
         }
     }
