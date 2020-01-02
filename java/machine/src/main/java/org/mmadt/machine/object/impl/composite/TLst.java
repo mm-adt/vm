@@ -91,12 +91,7 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
 
     @Override
     public Lst<V> plus(final Lst<V> lst) {
-        if (!this.isReference() && !lst.isReference()) {
-            final PList<V> list = new PList<>(this.java());
-            list.addAll(lst.java());
-            return this.set(list);
-        } else
-            return PlusInst.<Lst<V>>create(lst).attach(this);
+        return PlusInst.compute(this, lst);
     }
 
     @Override

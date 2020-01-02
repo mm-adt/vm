@@ -30,8 +30,10 @@ import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Real;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.composite.util.PMap;
 import org.mmadt.machine.object.model.ext.algebra.WithPlus;
 
 import java.util.function.Supplier;
@@ -77,6 +79,24 @@ public final class PlusInst<S extends WithPlus<S>> extends TInst<S, S> implement
         return (lhs.isInstance() && rhs.isInstance()) ?
                 lhs.set(lhs.java().concat(rhs.java())) :
                 PlusInst.<Str>create(rhs).attach(lhs);
+    }
+
+    public static <V extends Obj> Lst<V> compute(final Lst<V> lhs, final Lst<V> rhs) {
+        if (!lhs.isReference() && !rhs.isReference()) {
+            final PList<V> list = new PList<>(lhs.java());
+            list.addAll(rhs.java());
+            return lhs.set(list);
+        } else
+            return PlusInst.<Lst<V>>create(rhs).attach(lhs);
+    }
+
+    public static <K extends Obj, V extends Obj> Rec<K, V> compute(final Rec<K, V> lhs, final Rec<K, V> rhs) {
+        if (!lhs.isReference() && !rhs.isReference()) {
+            final PMap<K, V> map = new PMap<>(lhs.java());
+            map.putAll(rhs.java());
+            return lhs.set(map);
+        } else
+            return PlusInst.<Rec<K, V>>create(rhs).attach(lhs);
     }
 
     //////////////////////////////////////////////

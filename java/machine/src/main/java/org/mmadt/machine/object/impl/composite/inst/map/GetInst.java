@@ -57,18 +57,26 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
     public static <K extends Obj, V extends Obj> V compute(final WithProduct<K, V> product, final K key) {
         if (!product.isReference() && !key.isReference() &&
                 null != product.get() && null != key.get()) {
-            return product.isLst() ?
-                    lst((Lst<V>) product, (Int) key) :
-                    rec((Rec<K, V>) product, key);
+            return GetInst.composite(product, key);
         } else {
             return (null == product.get()) ?
                     GetInst.<K, V>create(key).attach(product) :
-                    GetInst.<K, V>create(key).attach(product, (product.isLst() ? lst((Lst<V>) product, (Int) key) : rec((Rec<K, V>) product, key)));
+                    GetInst.<K, V>create(key).attach(product, GetInst.composite(product, key));
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static <K extends Obj, V extends Obj> V composite(final WithProduct<K, V> product, final K key) {
+        return product.isLst() ?
+                lst((Lst<V>) product, (Int) key) :
+                rec((Rec<K, V>) product, key);
+    }
+
     private static <V extends Obj> V lst(final Lst<V> lst, final Int key) {
-        return (lst.<List<V>>get().size() <= key.<Integer>get() ? (V) TObj.none() : lst.<List<V>>get().get(key.get())).copy(lst);
+        return (lst.<List<V>>get().size() <= key.<Integer>get() ?
+                (V) TObj.none() :
+                lst.<List<V>>get().get(key.get())).copy(lst);
     }
 
     private static <K extends Obj, V extends Obj> V rec(final Rec<K, V> rec, final K key) {
