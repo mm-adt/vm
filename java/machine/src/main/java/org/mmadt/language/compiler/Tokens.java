@@ -22,6 +22,11 @@
 
 package org.mmadt.language.compiler;
 
+import org.mmadt.machine.object.model.Obj;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * The set of common tokens used by all mm-ADT languages.
  *
@@ -146,4 +151,9 @@ public final class Tokens {
     public static final String INST = "inst";
     public static final String PAIR = "pair";
 
+    // RESERVED
+    public static final Set<String> RESERVED = new HashSet<>(Obj.BASE_SYMBOLS) {{
+        add(TRUE);
+        add(FALSE);
+    }};
 }

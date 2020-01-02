@@ -80,7 +80,7 @@ public final class StringFactory {
 
     private static String nestedObj(final Obj obj) {
         final StringBuilder builder = new StringBuilder();
-        if (obj.constant() || !obj.named())
+        if (obj.constant() || !obj.isNamed())
             builder.append(obj);
         else {
             builder.append(obj.symbol());
@@ -94,7 +94,7 @@ public final class StringFactory {
         if (null == rec.get())
             builder.append(rec.symbol());
         else {
-            if (rec.named())
+            if (rec.isNamed())
                 builder.append(rec.symbol()).append(TILDE);
             if (rec.isInstance() || rec.get() != null)
                 builder.append(rec.<PMap>get());
@@ -123,7 +123,7 @@ public final class StringFactory {
         if (null == lst.get())
             builder.append(lst.symbol());
         else {
-            if (lst.named())
+            if (lst.isNamed())
                 builder.append(lst.symbol()).append(TILDE);
             if (lst.get() instanceof PList) {
                 builder.append(LBRACKET);
@@ -149,7 +149,7 @@ public final class StringFactory {
         if (null == o)
             builder.append(obj.symbol());
         else {
-            if (obj.named())
+            if (obj.isNamed())
                 builder.append(obj.symbol()).append(TILDE);
             final boolean parentheses = o instanceof Inst && (null != obj.label() || !obj.q().isOne());
             if (parentheses) builder.append(LPAREN);

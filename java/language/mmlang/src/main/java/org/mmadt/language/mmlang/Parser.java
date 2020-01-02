@@ -112,19 +112,28 @@ public class Parser extends BaseParser<Object> {
     Rule Expression() {
         return OneOrMore(
                 Singles(),
-                ZeroOrMore(Binary()));
+                ZeroOrMore(BinaryOperator()));
     }
 
     Rule Unary() {
         return Sequence(UnaryOperator(), Singles(), swap(), this.push(OperatorHelper.applyUnary((String) this.pop(), type(this.pop())))); // always left associative
     }
 
-    Rule Binary() {
-        return Sequence(BinaryOperator(), Singles(), swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop())))); // always left associative
-    }
-
     Rule Grouping() {
         return Sequence(LPAREN, Expression(), RPAREN);
+    }
+
+    @SuppressSubnodes
+    Rule UnaryOperator() {
+        return Sequence(TestNot(RPACK), FirstOf(LPACK, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
+    }
+
+    @SuppressSubnodes
+    Rule BinaryOperator() {
+        return Sequence(
+                FirstOf(Sequence(RPACK, this.push(this.match().trim()), Expression()),
+                        Sequence(TestNot(RPACK), FirstOf(MAPSFROM, MAPSTO, LPACK, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()), Singles())),
+                swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop()))));
     }
 
     Rule Obj() {
@@ -140,7 +149,7 @@ public class Parser extends BaseParser<Object> {
                         Lst(),
                         Rec(),
                         Sym()),
-                Optional(symbol.isSet(), ACTION(!Obj.BASE_SYMBOLS.contains(symbol.get())), this.push(type(this.pop()).symbol(symbol.get()))),
+                Optional(symbol.isSet(), ACTION(!Tokens.RESERVED.contains(symbol.get())), this.push(type(this.pop()).symbol(symbol.get()))),
                 Obj_Metadata());
     }
 
@@ -150,7 +159,7 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule Sym() {
-        return Sequence(Word(), this.push(TObj.sym(match().trim()))); //Sequence(Word(), ZeroOrMore(FirstOf(Number(), Word())));
+        return Sequence(Word(), this.push(TObj.sym(match().trim())));
     }
 
     Rule Lst() {
@@ -260,16 +269,6 @@ public class Parser extends BaseParser<Object> {
                 Optional(Quantifier(), swap(), this.push(castToInst(this.pop()).q(this.pop()))));
     }
 
-    @SuppressSubnodes
-    Rule UnaryOperator() {
-        return Sequence(TestNot(LPACK, RPACK), FirstOf(STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS, PERIOD), this.push(this.match().trim()));
-    }
-
-    @SuppressSubnodes
-    Rule BinaryOperator() {
-        return Sequence(FirstOf(LPACK, RPACK, MAPSFROM, MAPSTO, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS, PERIOD), this.push(this.match().trim()));
-    }
-
     @SuppressNode
     Rule Terminal(final String string) {
         return Sequence(Spacing(), string, Spacing());
@@ -295,9 +294,7 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressNode
     Rule Type(final Var<String> symbol) {
-        return Sequence(Word(),
-                ACTION(!(this.match().trim().equals(Tokens.TRUE) || this.match().trim().equals(Tokens.FALSE))),
-                ACTION(!Obj.BASE_SYMBOLS.contains(this.match().trim())), symbol.set(this.match().trim()), TILDE);
+        return Sequence(Word(), symbol.set(this.match().trim()), TILDE, !Tokens.RESERVED.contains(symbol.get()));
     }
 
     @SuppressNode

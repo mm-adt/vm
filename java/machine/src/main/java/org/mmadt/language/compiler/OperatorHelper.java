@@ -41,6 +41,7 @@ import org.mmadt.machine.object.model.ext.algebra.WithMinus;
 import org.mmadt.machine.object.model.ext.algebra.WithMult;
 import org.mmadt.machine.object.model.ext.algebra.WithOrder;
 import org.mmadt.machine.object.model.ext.algebra.WithPlus;
+import org.mmadt.machine.object.model.ext.algebra.WithProduct;
 
 import static org.mmadt.machine.object.impl.__.get;
 import static org.mmadt.machine.object.impl.__.map;
@@ -94,13 +95,15 @@ public final class OperatorHelper {
             case (Tokens.MAPSFROM):
                 return lhs.mapFrom((Obj) rhs);
             case (Tokens.LPACK):
-                return TRec.of(rhs, lhs);
-            case Tokens.RPACK:
-                return TRec.of(lhs, rhs);
-            case Tokens.PERIOD:
                 return lhs.isInst() ?
                         ((Inst) lhs).mult(get(rhs)) :
-                        map(lhs).mult(get(rhs));
+                        lhs.isProduct() ?
+                                ((WithProduct<Obj, Obj>) lhs).get((Obj) rhs) :
+                                lhs.isSym() ?
+                                        map(lhs).mult(get(rhs)) :
+                                        get(lhs).mult(get(rhs));
+            case Tokens.RPACK:
+                return TRec.of(lhs, rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);
         }
@@ -130,7 +133,7 @@ public final class OperatorHelper {
                 return LteInst.create(rhs);
             case (Tokens.DEQUALS):
                 return EqInst.create(rhs);
-            case Tokens.PERIOD:
+            case Tokens.LPACK:
                 return GetInst.create(rhs);
             default:
                 throw new RuntimeException("Unknown operator: " + operator);

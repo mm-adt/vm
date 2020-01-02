@@ -73,10 +73,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     final Set<String> BASE_SYMBOLS = Set.of(Tokens.OBJ, Tokens.BOOL, Tokens.INT, Tokens.REAL, Tokens.STR, Tokens.LST, Tokens.REC, Tokens.INST);
 
-    public default boolean named() {
-        return !BASE_SYMBOLS.contains(this.symbol());
-    }
-
     public String symbol();
 
     public <B> B get();
@@ -208,6 +204,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public default boolean isNamed() {
+        return !BASE_SYMBOLS.contains(this.symbol());
+    }
+
     public default boolean isType() {
         return !this.constant() && this.access().isOne();
     }
@@ -250,6 +250,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default boolean isStr() {
         return this instanceof Str;
+    }
+
+    public default boolean isProduct() {
+        return this.isRec() || this.isLst() || this.isInst();
     }
 
     public default boolean isRec() {

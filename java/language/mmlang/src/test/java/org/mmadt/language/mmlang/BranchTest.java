@@ -49,9 +49,13 @@ class BranchTest {
 
     private final static ParserArgs[] BRANCHING = new ParserArgs[]{
             args(TRec.of(1, "b"),
-                    "1->'b'"),
-            args(TRec.of(TRec.of(1, "b"), 2),
+                    "[:] + (1->'b')"),
+            args(TRec.of(1,TRec.of("b", 2)),
                     "1->'b'->2"),
+            args(strs("c"),
+                    "[1:['b':[2:'c']]] => (1<-'b'<-2)"),
+            args(ints(4),
+                    "(1->2->3->4)<-1<-2<-3"),
             args(objs(1, 1),
                     "1 => [branch,[id],[id]]"),
             args(objs(1, 1),

@@ -149,9 +149,9 @@ public final class ObjectHelper {
             return object1.symbol(Tokens.LST); // necessary for mutability
         else if (object1.getClass().equals(object2.getClass()))
             return SYMBOL_MAP.get(object1.getClass());
-        else if (object1.named() && null == object1.get())
+        else if (object1.isNamed() && null == object1.get())
             return SYMBOL_MAP.get(object2.getClass());
-        else if (object2.named() && null == object2.get())
+        else if (object2.isNamed() && null == object2.get())
             return SYMBOL_MAP.get(object1.getClass());
         else
             return TObj.single();
