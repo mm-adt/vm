@@ -123,12 +123,10 @@ public class Parser extends BaseParser<Object> {
         return Sequence(LPAREN, Expression(), RPAREN);
     }
 
-    @SuppressSubnodes
     Rule UnaryOperator() {
         return Sequence(TestNot(RPACK), FirstOf(LPACK, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()));
     }
 
-    @SuppressSubnodes
     Rule BinaryOperator() {
         return Sequence(
                 FirstOf(Sequence(RPACK, this.push(this.match().trim()), Expression()),
@@ -149,7 +147,7 @@ public class Parser extends BaseParser<Object> {
                         Lst(),
                         Rec(),
                         Sym()),
-                Optional(symbol.isSet(), ACTION(!Tokens.RESERVED.contains(symbol.get())), this.push(type(this.pop()).symbol(symbol.get()))),
+                Optional(symbol.isSet(), this.push(type(this.pop()).symbol(symbol.get()))),
                 Obj_Metadata());
     }
 
@@ -182,26 +180,22 @@ public class Parser extends BaseParser<Object> {
                         RBRACKET));
     }
 
-    @SuppressSubnodes
     Rule Field() {
         return Sequence(Expression(), COLON, Expression(), swap(), this.push(TRec.of(this.pop(), this.pop())));
     }
 
-    @SuppressSubnodes
     Rule Real() {
         return FirstOf(
                 Sequence(REAL, this.push(TReal.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))), // type predicate
                 Sequence(Sequence(Number(), PERIOD, Number()), this.push(TReal.of(Float.valueOf(match().trim())))));
     }
 
-    @SuppressSubnodes
     Rule Int() {
         return FirstOf(
                 Sequence(INT, this.push(TInt.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate
                 Sequence(Number(), this.push(TInt.of(Integer.valueOf(match().trim())))));
     }
 
-    @SuppressSubnodes
     Rule Str() {
         return FirstOf(
                 Sequence(STR, this.push(TStr.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate
@@ -210,7 +204,6 @@ public class Parser extends BaseParser<Object> {
                 Sequence("\"", ZeroOrMore(Sequence(TestNot("\""), ANY)), this.push(TStr.of(match())), "\""));
     }
 
-    @SuppressSubnodes
     Rule Bool() {
         return FirstOf(
                 Sequence(BOOL, this.push(TBool.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate

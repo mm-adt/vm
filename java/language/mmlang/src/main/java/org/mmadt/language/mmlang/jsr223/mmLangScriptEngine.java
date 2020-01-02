@@ -51,6 +51,12 @@ public final class mmLangScriptEngine extends AbstractScriptEngine {
     @Override
     public Iterator<Obj> eval(final String script, final ScriptContext context) throws ScriptException {
         final ParsingResult result = RUNNER.run(script);
+        /*System.out.println(GraphUtils.printTree(result.parseTreeRoot, new Formatter<Node>() {
+            @Override
+            public String format(Node node) {
+                return node.toString();
+            }
+        }));*/
         if (!result.valueStack.isEmpty()) {
             // TODO: context bindings are Obj.state();
             final Obj obj = (Obj) result.valueStack.pop();
