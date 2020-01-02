@@ -119,7 +119,7 @@ public final class Instructions {
         args.remove(0); // drop the opcode
         switch (opcode) {
             case EQUALS:
-                return ModelInst.create(args.toArray(new Object[]{}));
+                return ModelInst.create(args.get(0));
             case A:
                 return AInst.create(args.get(0));
             case ACCESS:

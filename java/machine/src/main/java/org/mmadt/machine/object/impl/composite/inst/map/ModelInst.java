@@ -25,45 +25,25 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
-
-import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ModelInst<S extends Obj, E extends Obj> extends TInst<S, E> implements MapInstruction<S, E> {
+public final class ModelInst<S extends Obj> extends TInst<S, S> implements MapInstruction<S, S> {
 
-    private ModelInst(final String model, final Object symbols, final Object inst) {
-        super(PList.of(Tokens.EQUALS, model, symbols, inst));
+    private ModelInst(final Object machine) {
+        super(PList.of(Tokens.EQUALS, machine));
     }
 
     @Override
-    public E apply(final S obj) {
-        return (E) obj.model(TModel.of(this.<Rec<Obj, Obj>>args().get(1).get(), this.<Inst>args().get(2))).model().apply(obj);
+    public S apply(final S obj) {
+        return obj.model(TModel.of(this.args().get(0).get()));
     }
 
-    public static <S extends Obj, E extends Obj> ModelInst<S, E> create(final Object... objects) {
-        final List<Object> parameters = List.of(objects);
-        final String name = parameters.get(0).toString();
-        final Object bindings;
-        final Object instruction;
-        if (parameters.size() == 3) {
-            bindings = parameters.get(1);
-            instruction = parameters.get(2);
-        } else if (parameters.size() == 2) {
-            bindings = parameters.get(1) instanceof Inst ? TRec.of() : parameters.get(1);
-            instruction = parameters.get(1) instanceof Inst ? parameters.get(1) : IdInst.create();
-        } else {
-            bindings = TRec.of();
-            instruction = IdInst.create();
-        }
-        return new ModelInst<>(name, bindings, instruction);
+    public static <S extends Obj> ModelInst<S> create(final Object machine) {
+        return new ModelInst<>(machine);
     }
 }

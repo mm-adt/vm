@@ -55,11 +55,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public final class ParserArgs<A extends Obj> {
     public final List<A> expected;
     public final String input;
-    private final Map<String, Obj> expectedState;
+    private final Map<Obj, Obj> expectedState;
 
     private ParserArgs(final List<A> expected, final List<A> expectedState, final String input) {
         this.expected = expected;
-        this.expectedState = null == expectedState ? null : expectedState.stream().collect(Collectors.toMap(Obj::label, Obj::clone));
+        this.expectedState = null == expectedState ? null : expectedState.stream().collect(Collectors.toMap(Obj::clone, Obj::clone));
         this.input = input;
     }
 
@@ -115,7 +115,7 @@ public final class ParserArgs<A extends Obj> {
             assertEquals(this.expected, results);
             if (null != this.expectedState) {
                 final A obj = results.get(0);
-                assertEquals(TModel.of(this.expectedState, IdInst.create()), obj.model());
+                assertEquals(TModel.of(this.expectedState), obj.model());
             }
         });
     }

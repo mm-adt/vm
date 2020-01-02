@@ -128,10 +128,17 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule BinaryOperator() {
-        return Sequence(
-                FirstOf(Sequence(RPACK, this.push(this.match().trim()), Expression()),
-                        Sequence(TestNot(RPACK), FirstOf(MAPSFROM, MAPSTO, LPACK, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()), Singles())),
-                swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop()))));
+        return
+                FirstOf(
+                        ModelOperator(),
+                        Sequence(FirstOf(Sequence(RPACK, this.push(this.match().trim()), Expression()),
+                                Sequence(TestNot(RPACK), FirstOf(MAPSFROM, MAPSTO, LPACK, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()), Singles())),
+                                swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop())))));
+    }
+
+    @SuppressNode
+    Rule ModelOperator() {
+        return Sequence(EQUALS, Inst(), swap(), this.push(type(this.pop()).mapTo(inst(this.pop()))), MAPSTO, Singles(), swap(), this.push(type(this.pop()).mapTo(type(this.pop()))));
     }
 
     Rule Obj() {
@@ -153,7 +160,7 @@ public class Parser extends BaseParser<Object> {
 
     Rule Obj_Metadata() {
         return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),    // {quantifier}
-                Optional(TILDE, Word(), this.push(type(this.pop()).label(this.match().trim()))));     // ~label
+                Optional(TILDE, Sequence(Word(), this.push(type(this.pop()).label(this.match().trim())))));     // ~label
     }
 
     Rule Sym() {
@@ -287,7 +294,7 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressNode
     Rule Type(final Var<String> symbol) {
-        return Sequence(Word(), symbol.set(this.match().trim()), TILDE, !Tokens.RESERVED.contains(symbol.get()));
+        return Sequence(Sequence(Word(), TILDE), ACTION(!Tokens.RESERVED.contains(this.match().trim().replace(Tokens.TILDE, ""))), symbol.set(this.match().trim().replace(Tokens.TILDE, "")));
     }
 
     @SuppressNode

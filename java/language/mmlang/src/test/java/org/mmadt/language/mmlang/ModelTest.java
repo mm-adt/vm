@@ -44,19 +44,8 @@ import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 class ModelTest {
 
     private final static ParserArgs[] MODELS = new ParserArgs[]{
-            //args(ModelInst.create("cpu", TRec.of(Map.of(TObj.sym("a"), 1)), IdInst.create()), "[=cpu,[a:1],[id]]"),
-            //args(ModelInst.create("cpu", TRec.of(Map.of(TObj.sym("weight"), 0.0f, TObj.sym("path"), TLst.of())), ChooseInst.create(TRec.of("a", PlusInst.create(2)))), "[=cpu,[weight:0.0,path:[;]],[choose,['a':[plus,2]]]]"),
-            args(ints(11), "10 => [=cpu,[:],[plus,1]]"),
-            args(ints(11), "10 => [=cpu,[plus,1]]"),
-            args(objs(), "10 => [=cpu,[[int;int] -> [id] | obj -> obj{0}]]"),
-            // args(objs(TLst.of(1, 2)), "[1;2] => [=cpu,[[int;int] -> [id] | obj -> obj{0}]]"),
-            // args(objs(TLst.of(ints(1).label("x"), ints(2).label("y"))), "[1;2] => [=cpu,[[int~x;int~y] -> [int~x;int~y] | obj -> obj{0}]]"),
-            // args(objs(), "[1;2] => [=cpu,[[int~x;str~y] -> [id] | obj -> obj{0}]]"),
-            //args(objs(TLst.of(ints(2), ints(1))), "[1;2] => [=cpu,[[int;int]~z -> [[map,z][get,1];[map,z][get,0]] | obj -> obj{0}]]"),
-            //args(objs(TLst.of(ints(2).label("y"), ints(1).label("x"))), "[1;2] => [=cpu,[[int~x;int~y]~z -> [[map,y];[map,x]] | obj -> obj{0}]]"),
-            // args(objs(TLst.of(ints(2).label("y"), ints(1).label("x"))), "[1;2] => [=cpu,[[int~x;int~y]~z -> [y;x] | obj -> obj{0}]]"),
-            // args(ints(500), "10 => [=cpu,[weight->50|path->20]][mult,weight]"),
-            // args(ints(20), "10 => [=cpu,[weight->50|path->20]][mult,weight][map,path]"),
+          args(ints(2000), "10 =[=x->1000]=> [map,x][plus,x]"),
+
     };
 
 

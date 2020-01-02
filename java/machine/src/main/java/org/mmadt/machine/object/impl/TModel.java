@@ -22,8 +22,10 @@
 
 package org.mmadt.machine.object.impl;
 
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.IteratorUtils;
@@ -36,31 +38,28 @@ import java.util.Map;
  */
 public final class TModel implements Model {
 
-    private String name; // TODO =xxx
-    private Map<String, Obj> bindings = new LinkedHashMap<>();
-    private Inst insts = null;
+    private Map<Str, Obj> bindings = new LinkedHashMap<>();
 
-    public static Model of(final Map<String, Obj> state, final Inst inst) {
+    public static Model of(final Map<Obj, Obj> state) {
         final TModel temp = new TModel();
-        temp.bindings = new LinkedHashMap<>(state);
-        temp.insts = inst;
+        state.forEach((x, y) -> temp.bindings.put(TStr.of(x.label()), y));
         return temp;
     }
 
     @Override
     public Obj apply(final Obj obj) {
-        return null == this.insts ? obj : IteratorUtils.orElse(FastProcessor.process(obj.mapTo(this.insts)), TObj.none());
+        return null;
     }
 
     @Override
     public <O extends Obj> O read(final Obj key) {
-        return (O) this.bindings.get(key.label());
+        return (O) this.bindings.get(TStr.of(key.label()));
     }
 
     @Override
     public Model write(final Obj value) {
         final TModel clone = (TModel) this.clone();
-        clone.bindings.put(value.label(), value);
+        clone.bindings.put(TStr.of(value.label()), value);
         return clone;
     }
 

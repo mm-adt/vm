@@ -59,7 +59,9 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public static Obj sym(final String label) {
-        return new TObj(null).label(label);
+        final TObj obj = new TObj(null);
+        obj.type = obj.type.label(label);
+        return obj;
     }
 
     public static Obj all() {
