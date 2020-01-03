@@ -154,12 +154,12 @@ public class Parser extends BaseParser<Object> {
                         Lst(),
                         Rec(),
                         Sym()),
-                Optional(symbol.isSet(), this.push(type(this.pop()).symbol(symbol.get()))),
+                Optional(symbol.isSet(), this.push(type(this.pop()).symbol(symbol.getAndClear()))),
                 Obj_Metadata());
     }
 
     Rule Obj_Metadata() {
-        return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),    // {quantifier}
+        return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),              // {quantifier}
                 Optional(TILDE, Sequence(Word(), this.push(type(this.pop()).label(this.match().trim())))));     // ~label
     }
 
@@ -294,7 +294,7 @@ public class Parser extends BaseParser<Object> {
 
     @SuppressNode
     Rule Type(final Var<String> symbol) {
-        return Sequence(Sequence(Word(), TILDE), ACTION(!Tokens.RESERVED.contains(this.match().trim().replace(Tokens.TILDE, ""))), symbol.set(this.match().trim().replace(Tokens.TILDE, "")));
+        return Sequence(Sequence(Word(), TILDE), symbol.set(this.match().trim().replace(Tokens.TILDE, Tokens.EMPTY)), ACTION(!Tokens.RESERVED.contains(symbol.get())));
     }
 
     @SuppressNode

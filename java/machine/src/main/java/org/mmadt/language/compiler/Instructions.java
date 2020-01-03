@@ -50,7 +50,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.QInst;
-import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
@@ -98,7 +97,6 @@ import static org.mmadt.language.compiler.Tokens.PROBE;
 import static org.mmadt.language.compiler.Tokens.PUT;
 import static org.mmadt.language.compiler.Tokens.Q;
 import static org.mmadt.language.compiler.Tokens.START;
-import static org.mmadt.language.compiler.Tokens.STATE;
 import static org.mmadt.language.compiler.Tokens.SUM;
 import static org.mmadt.language.compiler.Tokens.ZERO;
 
@@ -140,8 +138,6 @@ public final class Instructions {
                 return DivInst.create(args.get(0));
             case DROP:
                 return DropInst.create(args.get(0));
-            case STATE:
-                return StateInst.create(args.get(0));
             case EQ:
                 return EqInst.create(args.get(0));
             case EXPLAIN:
