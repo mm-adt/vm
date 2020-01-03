@@ -23,32 +23,38 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Str;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static org.mmadt.machine.object.impl.__.a;
+import static org.mmadt.machine.object.impl.__.choose;
+import static org.mmadt.machine.object.impl.__.is;
+import static org.mmadt.machine.object.impl.__.map;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class TModel implements Model {
 
-    private Map<Str, Obj> bindings = new LinkedHashMap<>();
+    private Obj machine = null;
+    private Map<Obj, Obj> bindings = new LinkedHashMap<>();
 
     public static Model of(final Map<Obj, Obj> state) {
         final TModel temp = new TModel();
-        state.forEach((x, y) -> temp.bindings.put(TStr.of(x.label()), y));
+        state.forEach((x, y) -> temp.bindings.put(is(a(TStr.of(x.label()))), map(y)));
+        temp.machine = choose(TRec.of(temp.bindings));
         return temp;
     }
 
     @Override
     public Obj apply(final Obj obj) {
-        return null;
+        return null == this.machine ? TObj.none() : IteratorUtils.orElse(FastProcessor.process(TStr.of(obj.label()).mapTo(this.machine)), TObj.none());
     }
 
     @Override
@@ -59,7 +65,8 @@ public final class TModel implements Model {
     @Override
     public Model write(final Obj value) {
         final TModel clone = (TModel) this.clone();
-        clone.bindings.put(TStr.of(value.label()), value);
+        clone.bindings.put(is(a(TStr.of(value.label()))), map(value));
+        clone.machine = choose(TRec.of(clone.bindings));
         return clone;
     }
 

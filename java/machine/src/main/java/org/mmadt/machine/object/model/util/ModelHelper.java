@@ -32,8 +32,6 @@ import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.composite.util.PMap;
 import org.mmadt.processor.util.FastProcessor;
@@ -57,13 +55,13 @@ public final class ModelHelper {
                 for (final Map.Entry<Obj, Obj> entry : to.<Map<Obj, Obj>>get().entrySet()) {
                     map.put(via(from, entry.getKey()), via(from, entry.getValue()));
                 }
-                obj = (O) TRec.of(map);
+                obj = (O) TRec.of(map).label(to.label());
             } else if (to.isLst()) {
                 final List<Obj> list = new PList<>();
                 for (final Obj entry : to.<List<Obj>>get()) {
                     list.add(via(from, entry));
                 }
-                obj = (O) TLst.of(list);
+                obj = (O) TLst.of(list).label(to.label());
             } else if (to.isInst()) {
                 if (InstHelper.singleInst((Inst) to)) {
                     final List<Obj> list = new PList<>();
@@ -82,8 +80,8 @@ public final class ModelHelper {
                 throw new RuntimeException("This state should not have been reached: " + from + "=>" + to);
         }
         if (to.isLabeled()) {
-            final O o = (O) from.model().read(to);
-            obj = null == o ? obj : obj.test(o) ? o : (O) TObj.none();
+            final O o = (O) from.model().apply(to);
+            obj = TObj.none().equals(o) ? obj : obj.test(o) ? o : (O) TObj.none();
         }
         return to.isReference() ?
                 FastProcessor.<O>process(from.mapTo(obj.access(via(from, to.access())))).next() :
@@ -119,8 +117,8 @@ public final class ModelHelper {
             final O clone = obj.model(obj.model().write(obj));
             return AsInst.<O>create(clone.access(null)).attach(clone);
         } else {
-            final O storedObj = obj.model().read(obj);
-            if (null == storedObj)
+            final O storedObj = (O) obj.model().apply(obj);
+            if (TObj.none().equals(storedObj))
                 return obj.model(obj.model().write(obj)); // if the variable is unbound, bind it to the current obj
             else
                 return obj.test(storedObj) ? obj : obj.kill(); // test if the current obj is subsumed by the historic obj (if not, drop the obj's quantity to [zero])

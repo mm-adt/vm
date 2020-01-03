@@ -75,7 +75,7 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 model = model.write(obj);
                 temp.add(obj);
             }
-            return (S) TLst.of(temp).model(model).label(to.label()).symbol(to.symbol());
+            return (S) TLst.of(temp).label(to.label()).model(model).symbol(to.symbol());
         } else if (from instanceof Rec && to instanceof Rec && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
             final Rec<Obj, Obj> fromRec = (Rec<Obj, Obj>) from;
             final Rec<Obj, Obj> toRec = (Rec<Obj, Obj>) to;
@@ -94,7 +94,8 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 model = model.write(fromEntry.getKey()).write(fromEntry.getValue());
                 temp.put(fromEntry.getKey(), fromEntry.getValue());
             }
-            return (S) TRec.of(temp).model(model).label(to.label()).symbol(to.symbol());
+            final S s = (S) TRec.of(temp).label(to.label()).model(model).symbol(to.symbol());
+            return s.model(s.model().write(s));
         } else if (!to.test(from))
             return to.kill();
         else

@@ -22,18 +22,22 @@
 
 package org.mmadt.machine.object.model;
 
+import org.mmadt.machine.object.impl.TObj;
+
+import java.util.function.Function;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Model extends Cloneable {
+public interface Model extends Function<Obj, Obj>, Cloneable {
 
     Obj apply(final Obj inst);
 
     public <O extends Obj> O read(final Obj key);
 
     public default <O extends Obj> O readOrGet(final Obj key, final O missing) {
-        final O o = this.read(key);
-        return null == o ? missing : o;
+        final O o = (O)this.apply(key);
+        return TObj.none().equals(o) ? missing : o;
     }
 
     public Model write(final Obj value);
