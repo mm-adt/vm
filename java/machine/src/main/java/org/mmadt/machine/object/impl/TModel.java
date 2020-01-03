@@ -47,7 +47,7 @@ public final class TModel implements Model {
 
     public static Model of(final Map<Obj, Obj> state) {
         final TModel temp = new TModel();
-        state.forEach((x, y) -> temp.bindings.put(is(a(TStr.of(x.label()))), map(y)));
+        state.forEach((x, y) -> temp.bindings.put(TStr.of(x.label()), map(y)));
         temp.machine = choose(TRec.of(temp.bindings));
         return temp;
     }
@@ -58,14 +58,9 @@ public final class TModel implements Model {
     }
 
     @Override
-    public <O extends Obj> O read(final Obj key) {
-        return (O) this.bindings.get(TStr.of(key.label()));
-    }
-
-    @Override
     public Model write(final Obj value) {
         final TModel clone = (TModel) this.clone();
-        clone.bindings.put(is(a(TStr.of(value.label()))), map(value));
+        clone.bindings.put(TStr.of(value.label()), map(value));
         clone.machine = choose(TRec.of(clone.bindings));
         return clone;
     }

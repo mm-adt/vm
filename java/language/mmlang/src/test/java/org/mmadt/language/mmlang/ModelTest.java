@@ -36,7 +36,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.language.mmlang.util.ParserArgs.args;
 import static org.mmadt.language.mmlang.util.ParserArgs.ints;
-import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,8 +43,11 @@ import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 class ModelTest {
 
     private final static ParserArgs[] MODELS = new ParserArgs[]{
-          args(ints(2000), "10 =[=x->1000]=> [map,x][plus,x]"),
-
+            args(ints(2000), "10 =[=x->1000]=> [map,x][plus,x]"),
+            args(ints(1110), "10 =[=[x:1000,y:100]]=> [plus,x][plus,y]"),
+            args(ints(1110), "10 =[=[x:1000,y:(int<=[map,100])]]=> [plus,x][plus,y]"),
+            args(ints(1110), "10 =[=[x:1000~x,y:(int<=[map,x][plus,100])]]=> [plus,y]"),
+            args(ints(1110), "10 =[=[x:1000~x,y:[map,x][plus,100]]]=> [plus,y]"),
     };
 
 

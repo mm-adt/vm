@@ -40,7 +40,7 @@ public final class ModelInst<S extends Obj> extends TInst<S, S> implements MapIn
 
     @Override
     public S apply(final S obj) {
-        return obj.model(TModel.of(this.args().get(0).get()));
+        return obj.model(TModel.of(this.argument(0).mapArg((S)this.args().get(0)).get()));
     }
 
     public static <S extends Obj> ModelInst<S> create(final Object machine) {

@@ -57,6 +57,8 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
     public static <S extends Obj> S compute(final S from, S to) {
         if (to.isSym()) {
             return from.label(to.label());
+        } else if (!to.access().isOne()) {
+            return from.mapTo(to.access()).label(to.label()).symbol(to.symbol());
         } else if (from.isReference()) {
             return AsInst.<S>create(to).attach(from, to.label() == null ?
                     from :

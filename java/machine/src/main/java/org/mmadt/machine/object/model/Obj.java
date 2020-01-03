@@ -191,9 +191,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
                 o = ((TInst) inst).attach(o);
             }
             return (O) o;
-        } else if (!obj.access().isOne())
-            return this.mapTo(obj.access()).label(obj.label()).symbol(obj.symbol());
-        else
+        } else
             return this.as((O) obj);
 
     }
