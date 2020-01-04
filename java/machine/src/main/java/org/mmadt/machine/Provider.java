@@ -20,17 +20,12 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage;
-
-import org.mmadt.machine.Provider;
-import org.mmadt.machine.object.model.Obj;
+package org.mmadt.machine;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Storage<A extends Obj> extends Provider {
+public interface Provider {
 
-    public boolean alive();
-
-    public A root();
+    public String name();
 }

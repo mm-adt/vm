@@ -23,19 +23,27 @@
 package org.mmadt.storage.mmstor;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TLst;
+import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.storage.Storage;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.machine.object.impl.__.id;
+import static org.mmadt.machine.object.impl.__.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,10 +56,17 @@ class StorTest {
         assertTrue(serviceLoader.stream().count() > 0);
         boolean found = false;
         for (Storage storage : serviceLoader) {
-            if (storage.getClass().equals(Stor.class))
+            if (storage.getClass().equals(Stor.class)) {
+                assertEquals(Stor.MMSTOR, storage.name());
                 found = true;
+            }
         }
         assertTrue(found);
+    }
+
+    @Test
+    void testModelInstruction() {
+        System.out.println(FastProcessor.process(TInt.of().model("mmstor").map(TObj.sym("root")).map(id().mult(plus(TRec.of(Map.of("a","b"))))).explain()).next());
     }
 
     @Test

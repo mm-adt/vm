@@ -27,14 +27,14 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.processor.util.FastProcessor;
+import org.mmadt.storage.Storage;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 
-import static org.mmadt.machine.object.impl.__.a;
 import static org.mmadt.machine.object.impl.__.choose;
-import static org.mmadt.machine.object.impl.__.is;
 import static org.mmadt.machine.object.impl.__.map;
 
 /**
@@ -44,6 +44,7 @@ public final class TModel implements Model {
 
     private Obj machine = null;
     private Map<Obj, Obj> bindings = new LinkedHashMap<>();
+
 
     public static Model of(final Map<Obj, Obj> state) {
         final TModel temp = new TModel();

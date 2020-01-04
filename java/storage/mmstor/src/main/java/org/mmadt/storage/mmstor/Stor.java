@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public final class Stor<A extends Obj> implements Storage<A> {
 
-    private static final String SYMBOL = "mmstor";
+    public static final String MMSTOR = "mmstor";
 
     private final A root;
 
@@ -57,4 +57,8 @@ public final class Stor<A extends Obj> implements Storage<A> {
         return this.root;
     }
 
+    @Override
+    public String name() {
+        return MMSTOR;
+    }
 }
