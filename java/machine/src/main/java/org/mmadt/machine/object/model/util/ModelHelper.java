@@ -77,11 +77,11 @@ public final class ModelHelper {
                     obj = (O) TInst.of(insts);
                 }
             } else
-                throw new RuntimeException("This state should not have been reached: " + from + "=>" + to);
+                throw new RuntimeException("This state should not have been reached: " + from + " => " + to);
         }
         if (to.isLabeled()) {
             final O o = (O) from.model().apply(to);
-            obj = TObj.none().equals(o) ? obj : obj.test(o) ? o : (O) TObj.none();
+            obj = o.isNone() ? obj : obj.test(o) ? o : (O) TObj.none();
         }
         return to.isReference() ?
                 FastProcessor.<O>process(from.mapTo(obj.access(via(from, to.access())))).next() :
@@ -118,7 +118,7 @@ public final class ModelHelper {
             return AsInst.<O>create(clone.access(null)).attach(clone);
         } else {
             final O storedObj = (O) obj.model().apply(obj);
-            if (TObj.none().equals(storedObj))
+            if (storedObj.isNone())
                 return obj.model(obj.model().write(obj)); // if the variable is unbound, bind it to the current obj
             else
                 return obj.test(storedObj) ? obj : obj.kill(); // test if the current obj is subsumed by the historic obj (if not, drop the obj's quantity to [zero])

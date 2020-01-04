@@ -22,8 +22,11 @@
 
 package org.mmadt.storage.mmstor;
 
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.storage.Storage;
+
+import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,6 +36,10 @@ public final class Stor<A extends Obj> implements Storage<A> {
     private static final String SYMBOL = "mmstor";
 
     private final A root;
+
+    public Stor() {
+        this.root = (A) TRec.of(Map.of());
+    }
 
     public Stor(final A root) {
         assert null != root;

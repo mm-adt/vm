@@ -32,13 +32,27 @@ import org.mmadt.storage.Storage;
 import org.mmadt.util.IteratorUtils;
 
 import java.util.List;
+import java.util.ServiceLoader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class StorTest {
+
+    @Test
+    void testServiceProvider() {
+        final ServiceLoader<Storage> serviceLoader = ServiceLoader.load(Storage.class);
+        assertTrue(serviceLoader.stream().count() > 0);
+        boolean found = false;
+        for (Storage storage : serviceLoader) {
+            if (storage.getClass().equals(Stor.class))
+                found = true;
+        }
+        assertTrue(found);
+    }
 
     @Test
     void testRoot() {
