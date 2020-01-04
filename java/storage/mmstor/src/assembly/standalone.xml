@@ -36,32 +36,11 @@
             <directory>target/*.jar</directory>
             <outputDirectory>/lib</outputDirectory>
         </fileSet>
-        <fileSet>
-            <directory>../language/mmlang/target/mmadt-mmlang-${project.version}-standalone/lib</directory>
-            <outputDirectory>/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../process/mmproc/target/mmadt-mmproc-${project.version}-standalone/lib</directory>
-            <outputDirectory>/lib</outputDirectory>
-        </fileSet>
-        <fileSet>
-            <directory>../storage/mmstor/target/mmadt-mmstor-${project.version}-standalone/lib</directory>
-            <outputDirectory>/lib</outputDirectory>
-        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
             <outputDirectory>/lib</outputDirectory>
             <unpack>false</unpack>
-        </dependencySet>
-        <dependencySet>
-            <outputDirectory>/lib</outputDirectory>
-            <unpack>false</unpack>
-            <includes>
-                <include>org.mmadt.language:mmlang</include>
-                <include>org.mmadt.process:mmproc</include>
-                <include>org.mmadt.storage:mmstor</include>
-            </includes>
         </dependencySet>
     </dependencySets>
 </assembly>

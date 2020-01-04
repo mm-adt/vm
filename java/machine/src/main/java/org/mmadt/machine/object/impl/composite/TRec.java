@@ -47,6 +47,10 @@ public final class TRec<K extends Obj, V extends Obj> extends TObj implements Re
         super(value);
     }
 
+    public static Rec<?, ?> sym(final String label) {
+        return TRec.some().label(label);
+    }
+
     public static Rec<?, ?> some() {
         return new TRec<>(null);
     }

@@ -90,6 +90,7 @@ public final class Tokens {
     // OPCODES
     public static final String A = "a";
     public static final String ACCESS = "access";
+    public static final String ADD = "add";
     public static final String AS = "as";
     public static final String AND = "and";
     public static final String ID = "id";
