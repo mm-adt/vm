@@ -96,10 +96,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O model(final Model model);
 
-    public default <O extends Obj> O model(final String name) {
-        return (O)ModelInst.create(name).apply(this);
-    }
-
     public Model model();
 
     public default <O extends Obj> O copy(final Obj obj) {
@@ -341,6 +337,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default <O extends Obj> O map(final Inst inst) {
         return this.map(ObjectHelper.<O>create(this, inst));
+    }
+
+    public default <O extends Obj> O model(final O object) {
+        return ModelInst.compute(this, ObjectHelper.create(this, object));
     }
 
     public default Int map(final Integer integer) {

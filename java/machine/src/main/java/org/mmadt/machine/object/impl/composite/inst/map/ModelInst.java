@@ -23,24 +23,15 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
-import org.mmadt.storage.Storage;
-
-import java.util.LinkedHashMap;
-import java.util.Optional;
-import java.util.ServiceLoader;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public final class ModelInst<S extends Obj> extends TInst<S, S> implements MapInstruction<S, S> {
-
-    private static final ServiceLoader<Storage> STORAGES = ServiceLoader.load(Storage.class);
 
     private ModelInst(final Object machine) {
         super(PList.of(Tokens.EQUALS, machine));
@@ -48,28 +39,15 @@ public final class ModelInst<S extends Obj> extends TInst<S, S> implements MapIn
 
     @Override
     public S apply(final S obj) {
-        if (this.args().get(0).isStr()) {
-            final S next = (S) this.argument(0).mapArg(obj);
-            if (next.isStr()) {
-                final Optional<Storage> storage = STORAGES.stream().filter(s -> s.get().name().equals(next.get())).map(ServiceLoader.Provider::get).findAny();
-                if (storage.isPresent()) {
-                    final Obj root = storage.get().root().label("root");
-                    final Model model = TModel.of(new LinkedHashMap<>()).write(root);
-                    return obj.model(model);
-                }
-            }
-        }
-        return obj.model(TModel.of(this.argument(0).mapArg((S) this.args().get(0)).get()));
+        final S next = obj.model().readOrGet(obj, obj);
+        return next.model(obj.model());
     }
 
     public static <S extends Obj> ModelInst<S> create(final Object machine) {
         return new ModelInst<>(machine);
     }
 
-    /*public static <S extends Obj, E extends Obj> E compute(S lhs, final E rhs) {
-        if (lhs.isInstance()) {
-            return rhs;
-        } else
-            return (E) ModelInst.create(rhs).attach(lhs);
-    }*/
+    public static <S extends Obj, E extends Obj> E compute(final S lhs, final E rhs) {
+        return (E) ModelInst.create(rhs).attach(rhs);
+    }
 }

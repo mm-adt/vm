@@ -61,7 +61,9 @@ class StorTest {
 
     @Test
     void testModelInstruction() {
-        System.out.println(FastProcessor.process(TInt.of().model("mmstor").map(TRec.sym("root")).plus(TRec.of(Map.of("a", "b"))).explain()).next());
+        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).plus(TRec.of(Map.of("a", "b"))).explain()).next());
+        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a","b").put("c","d").map(TRec.sym("mmstor")).explain()).next());
+        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a","b").put("c","d").explain()).next());
     }
 
     @Test

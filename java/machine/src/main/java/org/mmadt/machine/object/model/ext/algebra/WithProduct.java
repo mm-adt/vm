@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.ext.algebra;
 
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,4 +35,10 @@ public interface WithProduct<K extends Obj, V extends Obj> extends Obj {
     public WithProduct<K, V> drop(final K key);
 
     public V get(final K key);
+
+    ///
+
+    public default WithProduct<K, V> put(final Object key, final Object value) {
+        return this.put(ObjectHelper.create(this, key),ObjectHelper.create(this, value));
+    }
 }

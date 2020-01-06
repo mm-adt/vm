@@ -23,13 +23,17 @@
 package org.mmadt.machine.object.model;
 
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.storage.Storage;
 
+import java.util.ServiceLoader;
 import java.util.function.Function;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface Model extends Function<Obj, Obj>, Cloneable {
+
+    static final ServiceLoader<Storage> STORAGES = ServiceLoader.load(Storage.class);
 
     Obj apply(final Obj inst);
 

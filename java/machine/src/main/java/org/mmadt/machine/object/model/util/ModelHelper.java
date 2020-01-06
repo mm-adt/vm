@@ -95,7 +95,7 @@ public final class ModelHelper {
 
     private static Model fromObj(final Model model, final Obj obj) {
         Model update = model;
-        if (obj.isRec()) {
+        if (obj.isRec() && null != obj.get()) {
             for (final Map.Entry<Obj, Obj> entry : obj.<Map<Obj, Obj>>get().entrySet()) {
                 update = fromObj(update, entry.getKey());
                 update = fromObj(update, entry.getValue());
