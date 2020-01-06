@@ -22,33 +22,40 @@
 
 package org.mmadt.processor.compiler;
 
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.util.ModelHelper;
+import org.mmadt.processor.util.FastProcessor;
+import org.mmadt.util.IteratorUtils;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cloneable {
+public final class RefArgument<S extends Obj, E extends Obj> implements Argument<S, E> {
 
-    public E mapArg(final S object);
+    private final Integer count;
+    private final Inst bytecode;
 
-    public static <S extends Obj, E extends Obj> Argument<S, E> create(final S arg) {
-        if (arg instanceof Inst)
-            return new InstArgument<>((Inst) arg);         // TODO: should we do this?
-        else if (!arg.isReference())
-            return new ObjArgument<>((E) arg);
-        else
-            return new RefArgument<>(arg);       // TODO: references are dereferenced by their access instructions
+    RefArgument(final Obj reference) {
+        this.bytecode = reference.access();
+        this.count = (Integer) reference.q().<PList<Obj>>get().get(1).get();
     }
 
-    public static <S extends Obj, E extends Obj> Argument<S, E>[] args(final List<S> args) {
-        final Argument<S, E>[] array = new Argument[args.size()];
-        for (int i = 0; i < args.size(); i++) {
-            array[i] = create(args.get(i));
-        }
-        return array;
+    @Override
+    public E mapArg(final S object) {
+        final List<E> list = IteratorUtils.list(FastProcessor.process((E) object.access(null).mapTo(ModelHelper.via(object, this.bytecode))));
+        if (list.size() == 1)
+            return list.get(0);
+        final E e = list.get(0).type();
+        return e.q(list.size()).access(StartInst.create(list.toArray(new Object[]{})));
+    }
+
+    @Override
+    public String toString() {
+        return this.bytecode.toString();
     }
 }

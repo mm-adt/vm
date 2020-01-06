@@ -50,7 +50,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public default Rec<K, V> put(final K key, final V value) {
-        if (!this.isReference() && !key.isReference() && !value.isReference()) {
+        if ( !this.isReference() && !key.isReference()) {// && !value.isReference()) {
             this.java().put(key, value);
             return this;
         } else
@@ -72,6 +72,6 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
     }
 
     public default V get(final Object index) {
-        return this.get(ObjectHelper.create(TObj.single(), index));
+        return this.get(ObjectHelper.create(this, index));
     }
 }

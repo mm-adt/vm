@@ -99,7 +99,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Model model();
 
     public default <O extends Obj> O copy(final Obj obj) {
-        return this.access(obj.access()).model(obj.model()); // removed q() copy -- no failing tests .. !?
+        return !obj.access().opcode().java().equals(Tokens.ID) && !obj.access().opcode().java().equals(Tokens.START) ?
+                this.access(obj.access()).model(obj.model()) :
+                this.access().opcode().java().equals(Tokens.ID) ?
+                        this.model(obj.model()) :
+                        this.access(obj.access()).model(obj.model());
+        //return this.access().model(obj.model()); // removed q() copy -- no failing tests .. !?
     }
 
     public default <O extends Obj> O kill() {
@@ -339,8 +344,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this.map(ObjectHelper.<O>create(this, inst));
     }
 
-    public default <O extends Obj> O model(final O object) {
-        return ModelInst.compute(this, ObjectHelper.create(this, object));
+    public default <O extends Obj> O model(final O obj) {
+        return ModelInst.compute(this, obj);
     }
 
     public default Int map(final Integer integer) {

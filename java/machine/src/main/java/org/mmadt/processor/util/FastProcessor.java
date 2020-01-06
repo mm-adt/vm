@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.util;
 
+import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.BarrierInstruction;
@@ -29,6 +30,7 @@ import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.util.InstHelper;
 import org.mmadt.processor.Processor;
 import org.mmadt.processor.ProcessorFactory;
+import org.mmadt.storage.Storage;
 import org.mmadt.util.EmptyIterator;
 import org.mmadt.util.IteratorUtils;
 
@@ -70,7 +72,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
                 stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());
         }
-        return stream.iterator();
+        return IteratorUtils.onLast(stream.iterator(), () -> Model.STORAGES.forEach(Storage::close));
     }
 
     @Override

@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.object.impl;
 
-import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 
@@ -38,7 +37,7 @@ public final class TModel implements Model {
     private Map<String, Obj> bindings = new LinkedHashMap<>();
 
     public TModel() {
-        STORAGES.forEach(storage -> this.bindings.put(storage.name(), storage.root()));
+        STORAGES.forEach(storage -> this.bindings.put(storage.name(), storage.open()));
     }
 
     public static Model of(final Map<Obj, Obj> state) {

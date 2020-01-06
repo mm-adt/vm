@@ -24,6 +24,7 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
+import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -60,7 +61,7 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
             return GetInst.composite(product, key);
         } else {
             return (null == product.get()) ?
-                    GetInst.<K, V>create(key).attach(product,(V)TObj.single()) :
+                    product.access(product.access().mult(__.get(key))) : //  GetInst.<K, V>create(key).attach(product,(V)TObj.single()) :
                     GetInst.<K, V>create(key).attach(product, GetInst.composite(product, key));
         }
     }
@@ -82,7 +83,7 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
     private static <K extends Obj, V extends Obj> V rec(final Rec<K, V> rec, final K key) {
         for (final Map.Entry<K, V> entry : rec.<Map<K, V>>get().entrySet()) {
             if (key.test(entry.getKey()))
-                return entry.getValue().copy(rec);
+                return entry.getValue().model(rec.model());
         }
         return (V) TObj.none();
     }

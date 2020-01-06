@@ -23,12 +23,10 @@
 package org.mmadt.storage.mmstor;
 
 import org.junit.jupiter.api.Test;
+import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.model.atomic.Str;
-import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.storage.Storage;
 import org.mmadt.util.IteratorUtils;
@@ -62,18 +60,14 @@ class StorTest {
     @Test
     void testModelInstruction() {
         System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).plus(TRec.of(Map.of("a", "b"))).explain()).next());
-        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a","b").put("c","d").map(TRec.sym("mmstor")).explain()).next());
-        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a","b").put("c","d").explain()).next());
+        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a", "b").put("c", "d").map(TRec.sym("mmstor")).explain()).next());
+        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a", "b").put("c", "d").explain()).next());
     }
 
     @Test
-    void testRoot() {
-        final Storage<Lst<Str>> storage = new Stor<>(TLst.of());
-        storage.root().put(TStr.of("a"));
-        storage.root().put(TStr.of("b"));
-        storage.root().put(TStr.of("c"));
-        storage.root().put(TStr.of("d"));
-        assertEquals(TLst.of("a", "b", "c", "d"), storage.root());
-        assertEquals(List.of(TLst.of("b", "d", "f")), IteratorUtils.list(FastProcessor.process(storage.root().plus(TLst.of("e", "f")).minus(TLst.of("a", "c", "e")))));
+    void testModelInstruction2() {
+        System.out.println(IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("users"), TRec.of(TRec.of(Map.of("name", "marko", "age", 29)), TRec.of(Map.of("name", "kuppitz", "age", 21)))).explain())));
+        assertEquals(List.of(TRec.of("name", "marko", "age", 29)), IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko"))))));
+        assertEquals(List.of(TRec.of("name", "kuppitz", "age", 21)), IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("kuppitz"))))));
     }
 }

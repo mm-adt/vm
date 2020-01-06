@@ -32,5 +32,7 @@ public interface Storage<A extends Obj> extends Provider {
 
     public boolean alive();
 
-    public A root();
+    public A open();
+
+    public void close();
 }

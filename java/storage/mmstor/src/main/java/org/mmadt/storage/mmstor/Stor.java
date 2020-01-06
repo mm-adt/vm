@@ -26,6 +26,11 @@ import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.storage.Storage;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -33,18 +38,18 @@ import java.util.Map;
  */
 public final class Stor<A extends Obj> implements Storage<A> {
 
-    public static final String MMSTOR = "mmstor";
-
-    private final A root;
+    private final String FILE_NAME = "/tmp/mmstor.obj";
+    static final String MMSTOR = "mmstor";
+    private Map<Object, Object> MAP;
+    private A root;
 
     public Stor() {
-        this.root = (A) TRec.of(Map.of());
-    }
-
-    public Stor(final A root) {
-        assert null != root;
-        this.root = root;
-
+        try {
+            MAP = (Map<Object, Object>) new ObjectInputStream(new FileInputStream(FILE_NAME)).readObject();
+        } catch (final Exception e) {
+            MAP = new LinkedHashMap<>();
+        }
+        root = (A) TRec.of(MAP).label(MMSTOR);
     }
 
     @Override
@@ -53,8 +58,17 @@ public final class Stor<A extends Obj> implements Storage<A> {
     }
 
     @Override
-    public A root() {
+    public A open() {
         return this.root;
+    }
+
+    @Override
+    public void close() {
+        try {
+            new ObjectOutputStream(new FileOutputStream(FILE_NAME)).writeObject(MAP);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not save to file: " + e.getMessage());
+        }
     }
 
     @Override

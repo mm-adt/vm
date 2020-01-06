@@ -40,7 +40,7 @@ public final class ModelInst<S extends Obj> extends TInst<S, S> implements MapIn
     @Override
     public S apply(final S obj) {
         final S next = obj.model().readOrGet(obj, obj);
-        return next.model(obj.model());
+        return next;
     }
 
     public static <S extends Obj> ModelInst<S> create(final Object machine) {
@@ -48,6 +48,6 @@ public final class ModelInst<S extends Obj> extends TInst<S, S> implements MapIn
     }
 
     public static <S extends Obj, E extends Obj> E compute(final S lhs, final E rhs) {
-        return (E) ModelInst.create(rhs).attach(rhs);
+        return lhs.model().readOrGet(rhs,rhs);
     }
 }
