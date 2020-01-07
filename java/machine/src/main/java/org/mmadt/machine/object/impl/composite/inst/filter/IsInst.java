@@ -44,7 +44,7 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
     }
 
     public S apply(final S obj) {
-        return FilterInstruction.super.quantifyRange(obj.is(this.<Bool>argument(0).mapArg(obj)));
+        return this.quantifyRange(obj.is(this.<Bool>argument(0).mapArg(obj)));
     }
 
     public static <S extends Obj> IsInst<S> create(final Object arg) {
@@ -52,13 +52,7 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
     }
 
     public S quantifyRange(final S domain) {
-        return FilterInstruction.super.quantifyRange(isARange().orElse(domain));
-    }
-
-    private Optional<S> isARange() {
-        final Obj arg = this.args().get(0);
-        final Inst inst = InstHelper.first(arg.access());
-        return inst instanceof AInst && !(inst.args().get(0).get() instanceof Inst) ? Optional.of((S) inst.args().get(0)) : Optional.empty();
+        return FilterInstruction.super.quantifyRange(domain);
     }
 
     public static <S extends Obj> S compute(final S from, final Bool bool) {

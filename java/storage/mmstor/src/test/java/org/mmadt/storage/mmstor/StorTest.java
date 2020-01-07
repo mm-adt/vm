@@ -22,26 +22,48 @@
 
 package org.mmadt.storage.mmstor;
 
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.processor.util.FastProcessor;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.storage.Storage;
-import org.mmadt.util.IteratorUtils;
+import org.mmadt.storage.compliance.util.TestArgs;
 
-import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.storage.compliance.util.TestArgs.args;
+import static org.mmadt.storage.compliance.util.TestArgs.ints;
+import static org.mmadt.storage.compliance.util.TestArgs.recs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class StorTest {
+
+    private final static Rec<Str, Obj> marko = recs(Map.of("name", "marko", "age", 29));
+    private final static Rec<Str, Obj> kuppitz = recs(Map.of("name", "kuppitz", "age", 21));
+
+    private final static TestArgs[] STORAGE = new TestArgs[]{
+            args(ints(0), TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("users"), TRec.of(TRec.of(Map.of("name", "marko", "age", 29)), TRec.of(Map.of("name", "kuppitz", "age", 21)))).explain().map(0)),
+            args(marko, TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko")))),
+            args(kuppitz, TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("kuppitz")))),
+    };
+
+
+    @TestFactory
+    Stream<DynamicTest> testStorage() {
+        return Stream.of(STORAGE).map(query -> query.execute(query.input));
+    }
 
     @Test
     void testServiceProvider() {
@@ -55,20 +77,5 @@ class StorTest {
             }
         }
         assertTrue(found);
-    }
-
-    @Test
-    void testModelInstruction() {
-        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).plus(TRec.of(Map.of("a", "b"))).explain()).next());
-        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a", "b").put("c", "d").map(TRec.sym("mmstor")).explain()).next());
-        System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a", "b").put("c", "d").explain()).next());
-    }
-
-
-    @Test
-    void testModelInstruction2() {
-        IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("users"), TRec.of(TRec.of(Map.of("name", "marko", "age", 29)), TRec.of(Map.of("name", "kuppitz", "age", 21)))).explain()));
-        assertEquals(List.of(TRec.of("name", "marko", "age", 29)), IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko"))))));
-        assertEquals(List.of(TRec.of("name", "kuppitz", "age", 21)), IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("kuppitz"))))));
     }
 }
