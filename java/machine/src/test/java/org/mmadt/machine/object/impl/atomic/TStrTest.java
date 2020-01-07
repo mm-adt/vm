@@ -58,10 +58,10 @@ final class TStrTest implements TestUtilities {
     private final static ProcessArgs[] PROCESSING = new ProcessArgs[]{
             args(List.of("marko"), TStr.of("marko")),
             args(List.of("marko rodriguez"), TStr.of("marko").plus(zero()).plus(" ").plus("rodriguez").plus(zero())),
-            args(List.of("abcde"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
-            args(List.of("abcdef"), TStr.of("a").plus("b").map(TStr.of().plus("c").plus("d")).plus("e").is(gt("")).plus("f")),
-            args(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").map(TStr.of().plus("c").plus("d")).plus("e")),
-            args(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").branch(id(), id()).map(TStr.of().plus("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
+            args(List.of("abcde"), TStr.of("a").plus("b").plus(TStr.of("c").plus("d")).plus("e")),
+            args(List.of("abcdef"), TStr.of("a").plus("b").plus(TStr.of("c").plus("d")).plus("e").is(gt("")).plus("f")),
+            args(List.of("abcde", "aabcde"), TStr.of("a", "aa").plus("b").plus(TStr.of("c").plus("d")).plus("e")),
+            args(List.of("abcde", "abcde", "aabcde", "aabcde"), TStr.of("a", "aa").plus("b").<Str>branch(id(), id()).plus(TStr.of("c").plus("d")).plus("e")), // TODO: test q() to make sure its {4}
             // ProcessArgs.args(List.of("a"), TStr.of("a", "a","a").branch(id(),id()).dedup()),
     };
 

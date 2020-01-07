@@ -64,9 +64,10 @@ class StorTest {
         System.out.println(FastProcessor.process(TInt.of().model(TRec.sym("mmstor")).put("a", "b").put("c", "d").explain()).next());
     }
 
+
     @Test
     void testModelInstruction2() {
-        System.out.println(IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("users"), TRec.of(TRec.of(Map.of("name", "marko", "age", 29)), TRec.of(Map.of("name", "kuppitz", "age", 21)))).explain())));
+        IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("users"), TRec.of(TRec.of(Map.of("name", "marko", "age", 29)), TRec.of(Map.of("name", "kuppitz", "age", 21)))).explain()));
         assertEquals(List.of(TRec.of("name", "marko", "age", 29)), IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko"))))));
         assertEquals(List.of(TRec.of("name", "kuppitz", "age", 21)), IteratorUtils.list(FastProcessor.process(TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("kuppitz"))))));
     }

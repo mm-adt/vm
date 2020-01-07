@@ -99,12 +99,9 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Model model();
 
     public default <O extends Obj> O copy(final Obj obj) {
-        return !obj.access().opcode().java().equals(Tokens.ID) && !obj.access().opcode().java().equals(Tokens.START) ?
+        return this.access().opcode().java().equals(Tokens.ID) ?
                 this.access(obj.access()).model(obj.model()) :
-                this.access().opcode().java().equals(Tokens.ID) ?
-                        this.model(obj.model()) :
-                        this.access(obj.access()).model(obj.model());
-        //return this.access().model(obj.model()); // removed q() copy -- no failing tests .. !?
+                this.access(obj.access().mult(this.access())).model(obj.model()); // removed q() copy -- no failing tests .. !?
     }
 
     public default <O extends Obj> O kill() {
@@ -337,7 +334,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O is(final Object bool) {
-        return Obj.this.is(ObjectHelper.create(TBool.via(this), bool));
+        return Obj.this.is(ObjectHelper.create(TBool.via(this.access(null)), bool));
     }
 
     public default <O extends Obj> O map(final Inst inst) {
@@ -345,7 +342,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O model(final O obj) {
-        return ModelInst.compute(this, obj);
+        return this.model().readOrGet(obj,obj);
     }
 
     public default Int map(final Integer integer) {

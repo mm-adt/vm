@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.util;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -72,6 +73,8 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
                 stream = stream.map(((Function<S, S>) inst)::apply).flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
             stream = stream.filter(s -> !s.q().isZero());
         }
+        // TODO: I believe that we should not do this. This is forcing another abstract interpretation (this should be left up to the script engine configuration -- "go to fix point?")
+        stream = stream.flatMap(s -> IteratorUtils.stream(s.access().opcode().java().equals(Tokens.START) ? FastProcessor.process(s) : IteratorUtils.of(s)));
         return IteratorUtils.onLast(stream.iterator(), () -> Model.STORAGES.forEach(Storage::close));
     }
 

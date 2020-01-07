@@ -36,13 +36,12 @@ public final class TModel implements Model {
 
     private Map<String, Obj> bindings = new LinkedHashMap<>();
 
-    public TModel() {
+    TModel() {
         STORAGES.forEach(storage -> this.bindings.put(storage.name(), storage.open()));
     }
 
     public static Model of(final Map<Obj, Obj> state) {
         final TModel temp = new TModel();
-        temp.bindings = new LinkedHashMap<>();
         state.forEach((x, y) -> temp.bindings.put(x.label(), y));
         return temp;
     }
