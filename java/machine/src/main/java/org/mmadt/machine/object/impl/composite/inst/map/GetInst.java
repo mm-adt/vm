@@ -55,12 +55,14 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
     }
 
     public static <K extends Obj, V extends Obj> V compute(final WithProduct<K, V> product, final K key) {
-        if (!product.isReference() && !key.isReference() &&
-                null != product.get() && null != key.get()) {
+        if (!product.isReference() &&
+                !key.isReference() &&
+                null != product.get() &&
+                null != key.get()) {
             return GetInst.composite(product, key);
         } else {
             return (null == product.get()) ?
-                    product.access(product.access().mult(GetInst.create(key))) :
+                    GetInst.<K, V>create(key).attach(product, (V) TObj.single()) :
                     GetInst.<K, V>create(key).attach(product, GetInst.composite(product, key));
         }
     }

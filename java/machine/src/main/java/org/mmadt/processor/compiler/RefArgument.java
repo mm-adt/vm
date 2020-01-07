@@ -42,7 +42,7 @@ public final class RefArgument<S extends Obj, E extends Obj> implements Argument
 
     RefArgument(final Obj reference) {
         this.bytecode = reference.access();
-        this.count = (Integer) reference.q().<PList<Obj>>get().get(1).get();
+        this.count = (Integer) reference.q().<PList<Obj>>get().get(1).get(); // TODO: work within quantifier ring
     }
 
     @Override
@@ -51,7 +51,7 @@ public final class RefArgument<S extends Obj, E extends Obj> implements Argument
         if (list.size() == 1)
             return list.get(0);
         final E e = list.get(0).type();
-        return e.q(list.size()).access(StartInst.create(list.toArray(new Object[]{})));
+        return e.q(list.size()).access(StartInst.create(list.subList(0, this.count).toArray(new Object[]{})));
     }
 
     @Override
