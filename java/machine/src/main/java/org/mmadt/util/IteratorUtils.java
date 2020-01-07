@@ -78,6 +78,15 @@ public final class IteratorUtils {
         return iterator.hasNext() ? iterator.next() : s;
     }
 
+    public static final Integer count(final Iterator<?> iterator) {
+        int counter = 0;
+        while (iterator.hasNext()) {
+            iterator.next();
+            counter++;
+        }
+        return counter;
+    }
+
     public static <S> Iterator<S> onLast(final Iterator<S> iterator, final Runnable onLast) {
         return new Iterator<>() {
             boolean lastExecuted = false;

@@ -24,7 +24,10 @@ package org.mmadt.storage.mmstor;
 
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.util.PMap;
+import org.mmadt.processor.util.FastProcessor;
 import org.mmadt.storage.Storage;
+import org.mmadt.util.IteratorUtils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -49,8 +52,9 @@ public final class Stor<A extends Obj> implements Storage<A> {
         } catch (final Exception e) {
             MAP = new LinkedHashMap<>();
         }
-        root = (A) TRec.of(MAP).label(MMSTOR);
+        root = (A) new MRec(MAP).label(MMSTOR);
     }
+
 
     @Override
     public boolean alive() {
@@ -74,5 +78,18 @@ public final class Stor<A extends Obj> implements Storage<A> {
     @Override
     public String name() {
         return MMSTOR;
+    }
+
+    public class MRec extends TRec {
+        MRec(final Map<Object, Object> value) {
+            super(new PMap<Obj, Obj>((Map) value));
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder builder = new StringBuilder("mmstor[");
+            root.<Map<Obj,Obj>>get().forEach((k,v) -> builder.append(k).append(":").append(IteratorUtils.count(FastProcessor.process(v))));
+            return builder.append("]").toString();
+        }
     }
 }

@@ -41,18 +41,18 @@ class GraphLangTest {
 
 
     private final static LanguageArgs[] BINDINGS = new LanguageArgs[]{
-            args(objs(), "obj{0} <=[=mmstor][put,'users',rec{6}<=[start," +
+            args(objs(), "obj{0} <=[=mmstor][put,'V',rec{6}<=[start," +
                     "['id':1,'name':'marko','age':29,'outE':rec{3}<=[start,['id':7,'outV':1,'inV':2,'label':'knows'],['id':8,'outV':1,'inV':4,'label':'knows'],['id':9,'outV':1,'inV':3,'label':'created']]]," +
                     "['id':2,'name':'vadas','age':27]," +
                     "['id':3,'name':'lop','lang':'java']," +
                     "['id':4,'name':'josh','age':32,'outE':rec{2}<=[start,['id':11,'outV':4,'inV':3,'label':'created'],['id':10,'outV':4,'inV':5,'label':'created']]]," +
                     "['id':5,'name':'ripple','lang':'java']," +
                     "['id':6,'name':'peter','age':35,'outE':['id':12,'outV':6,'inV':3,'label':'created']]]][is,false]"), // just want the side-effect of put() -- TODO: use [sideeffect,[put]]
-            args(ints(1), "int <=[=mmstor][get,'users'][is,[get,'name'][eq,'marko']][get,'id']"),
-            args(ints(1), "int <=[=mmstor][get,'users'][is,[get,'id'][eq,1]][get,'id']"),
-            args(objs(4, 6), "int{0,4} <=[=mmstor][get,'users'][is,[get,'age',int][gt,30]][get,'id']"),
-            args(objs(1, 4, 6), "int{0,4} <=[=mmstor][get,'users'][is,[get,'outE'][count][gt,0]][get,'id']"),
-            args(objs(2,4), "int{0,4} <=[=mmstor][get,'users'][is,[get,'name'][eq,'marko']][get,'outE'][is,[get,'label'][eq,'knows']][get,'inV'][as,x][map,mmstor][get,'users'][is,[get,'id'][eq,x]][get,'id'][explain]"),
+            args(ints(1), "int <=[=mmstor][get,'V'][is,[get,'name'][eq,'marko']][get,'id']"),
+            args(ints(1), "int <=[=mmstor][get,'V'][is,[get,'id'][eq,1]][get,'id']"),
+            args(objs(4, 6), "int{0,4} <=[=mmstor][get,'V'][is,[get,'age',int][gt,30]][get,'id']"),
+            args(objs(1, 4, 6), "int{0,4} <=[=mmstor][get,'V'][is,[get,'outE'][count][gt,0]][get,'id']"),
+            args(objs(2,4), "int{0,4} <=[=mmstor][get,'V'][is,[get,'name'][eq,'marko']][get,'outE'][explain][is,[get,'label'][eq,'knows']][get,'inV'][as,x][map,mmstor][get,'V'][is,[get,'id'][eq,x]][get,'id']"),
     };
 
 

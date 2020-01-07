@@ -41,9 +41,9 @@ import java.util.stream.Stream;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TRec<K extends Obj, V extends Obj> extends TObj implements Rec<K, V> {
+public class TRec<K extends Obj, V extends Obj> extends TObj implements Rec<K, V> {
 
-    private TRec(final Object value) {
+    protected TRec(final Object value) {
         super(value);
     }
 
