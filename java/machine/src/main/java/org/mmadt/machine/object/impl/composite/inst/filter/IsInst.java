@@ -23,16 +23,12 @@
 package org.mmadt.machine.object.impl.composite.inst.filter;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.inst.FilterInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
-import org.mmadt.machine.object.model.util.InstHelper;
-
-import java.util.Optional;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,7 +40,7 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
     }
 
     public S apply(final S obj) {
-        return obj.is(this.<Bool>argument(0).mapArg(obj));
+        return obj.is(this.<Bool>argument(0).mapArg(obj, TBool.of(false)));
     }
 
     public static <S extends Obj> IsInst<S> create(final Object arg) {

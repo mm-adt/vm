@@ -35,6 +35,11 @@ public interface Argument<S extends Obj, E extends Obj> extends Serializable, Cl
 
     public E mapArg(final S object);
 
+    public default E mapArg(final S object, E none) {
+        final E e = this.mapArg(object);
+        return e.isNone() ? none : e;
+    }
+
     public static <S extends Obj, E extends Obj> Argument<S, E> create(final S arg) {
         if (arg instanceof Inst)
             return new InstArgument<>((Inst) arg);         // TODO: should we do this?

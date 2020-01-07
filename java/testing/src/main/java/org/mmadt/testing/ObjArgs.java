@@ -50,8 +50,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class ObjArgs<A extends Obj> {
-    public final List<A> expected;
+public final class ObjArgs<A extends Obj> {
+    private final List<A> expected;
     public final Obj input;
     private final Map<Obj, Obj> expectedState;
 

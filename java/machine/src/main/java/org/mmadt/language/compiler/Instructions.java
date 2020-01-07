@@ -143,7 +143,7 @@ public final class Instructions {
             case EXPLAIN:
                 return args.isEmpty() ? ExplainInst.create() : ExplainInst.create(args.get(0));
             case GET:
-                return GetInst.create(args.get(0));
+                return args.size() == 1 ? GetInst.create(args.get(0)) : GetInst.create(args.get(0),args.get(1));
             case GT:
                 return GtInst.create(args.get(0));
             case GTE:
