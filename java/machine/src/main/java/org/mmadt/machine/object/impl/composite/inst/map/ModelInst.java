@@ -25,21 +25,22 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ModelInst<S extends Obj> extends TInst<S, S> implements MapInstruction<S, S> {
+public final class ModelInst<S extends Obj> extends TInst<S, S> implements InitialInstruction<S> {
 
     private ModelInst(final Object machine) {
         super(PList.of(Tokens.EQUALS, machine));
     }
 
     @Override
-    public S apply(final S obj) {
-        return (S)this.argument(0).mapArg(obj);
+    public S apply(final Obj obj) {
+        return (S)this.argument(0).mapArg((S)obj);
     }
 
     public static <S extends Obj> ModelInst<S> create(final Object machine) {
