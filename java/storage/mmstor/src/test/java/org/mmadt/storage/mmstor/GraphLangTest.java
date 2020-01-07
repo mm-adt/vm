@@ -53,6 +53,8 @@ class GraphLangTest {
             // BASIC GRAPH STATISTICS
             args(ints(6), "int <=[=mmstor][get,'V'][count]"),
             args(ints(6), "int <=[=mmstor][get,'V'][get,'outE'][count]"),
+            args(ints(123), "int <=[=mmstor][get,'V'][get,'age'][sum]"),
+            args(ints(1), "int <=[=mmstor][get,'V'][get,'age'][sum][count]"),
             args(ints(2), "int <=[=mmstor][get,'V'][is,[get,'lang'][eq,'java']][count]"),
             args(recs(Map.of("person", 4, "software", 2)), "[('person'|'software'):int] <=[=mmstor][get,'V'][[get,'age']->[map,'person'] | [get,'lang']->[map,'software']][groupCount]"),
             // CONSTRAINED TRAVERSALS
