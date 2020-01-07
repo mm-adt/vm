@@ -50,7 +50,7 @@ class GraphLangTest {
                     "['id':6,'name':'peter','age':35,'outE':['id':12,'outV':6,'inV':3,'label':'created']]]][is,false]"), // just want the side-effect of put() -- TODO: use [sideeffect,[put]]
             args(ints(1), "int <=[=mmstor][get,'V'][is,[get,'name'][eq,'marko']][get,'id']"),
             args(ints(1), "int <=[=mmstor][get,'V'][is,[get,'id'][eq,1]][get,'id']"),
-            args(objs(4, 6), "int{0,4} <=[=mmstor][get,'V'][is,[get,'age',int][gt,30]][get,'id']"),
+            args(objs(4, 6), "int{0,4} <=[=mmstor][get,'V'][is,[get,'age'][gt,30]][get,'id']"),
             args(objs(1, 4, 6), "int{0,4} <=[=mmstor][get,'V'][is,[get,'outE'][count][gt,0]][get,'id']"),
             args(objs(2,4), "int{0,4} <=[=mmstor][get,'V'][is,[get,'name'][eq,'marko']][get,'outE'][explain][is,[get,'label'][eq,'knows']][get,'inV'][as,x][map,mmstor][get,'V'][is,[get,'id'][eq,x]][get,'id']"),
     };
