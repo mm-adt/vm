@@ -33,7 +33,6 @@
     <name>mm-ADT :: Storage</name>
     <artifactId>storage</artifactId>
     <modules>
-        <module>compliance</module>
         <module>mmstor</module>
     </modules>
 </project>

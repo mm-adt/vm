@@ -34,7 +34,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.storage.Storage;
-import org.mmadt.storage.compliance.util.TestArgs;
+import org.mmadt.testing.ObjArgs;
 
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -42,9 +42,9 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mmadt.storage.compliance.util.TestArgs.args;
-import static org.mmadt.storage.compliance.util.TestArgs.ints;
-import static org.mmadt.storage.compliance.util.TestArgs.recs;
+import static org.mmadt.testing.ObjArgs.args;
+import static org.mmadt.testing.ObjArgs.ints;
+import static org.mmadt.testing.ObjArgs.recs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -54,7 +54,7 @@ class StorTest {
     private final static Rec<Str, Obj> marko = recs(Map.of("name", "marko", "age", 29));
     private final static Rec<Str, Obj> kuppitz = recs(Map.of("name", "kuppitz", "age", 21));
 
-    private final static TestArgs[] STORAGE = new TestArgs[]{
+    private final static ObjArgs[] STORAGE = new ObjArgs[]{
             args(ints(0), TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("users"), TRec.of(TRec.of(Map.of("name", "marko", "age", 29)), TRec.of(Map.of("name", "kuppitz", "age", 21)))).explain().map(0)),
             args(marko, TRec.some().q(0, 2).access(TObj.single().model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko"))).access())),
             args(kuppitz, TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("kuppitz")))),

@@ -25,9 +25,9 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
-import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.testing.LanguageArgs;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -35,11 +35,11 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.mmlang.util.ParserArgs.args;
-import static org.mmadt.language.mmlang.util.ParserArgs.bools;
-import static org.mmadt.language.mmlang.util.ParserArgs.ints;
-import static org.mmadt.language.mmlang.util.ParserArgs.objs;
-import static org.mmadt.language.mmlang.util.ParserArgs.strs;
+import static org.mmadt.testing.LanguageArgs.args;
+import static org.mmadt.testing.LanguageArgs.bools;
+import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.objs;
+import static org.mmadt.testing.LanguageArgs.strs;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.is;
 import static org.mmadt.machine.object.impl.__.plus;
@@ -49,7 +49,7 @@ import static org.mmadt.machine.object.impl.__.plus;
  */
 class ParserTest {
 
-    private final static ParserArgs[] PARSING = new ParserArgs[]{
+    private final static LanguageArgs[] PARSING = new LanguageArgs[]{
             /////////////////// MAP TO => ///////////////////
             args(ints(11), "11"),
             args(ints(0), "11 => [zero]"),

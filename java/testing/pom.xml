@@ -26,13 +26,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>storage</artifactId>
+        <artifactId>mmadt</artifactId>
         <groupId>org.mmadt</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <name>mm-ADT :: Storage Compliance</name>
-    <groupId>org.mmadt.storage</groupId>
-    <artifactId>compliance</artifactId>
+    <name>mm-ADT :: Testing</name>
+    <artifactId>testing</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.mmadt</groupId>

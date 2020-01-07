@@ -25,12 +25,12 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
-import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.testing.LanguageArgs;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -38,21 +38,21 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.mmlang.util.ParserArgs.args;
-import static org.mmadt.language.mmlang.util.ParserArgs.ints;
-import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.machine.object.impl.__.minus;
 import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.plus;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.star;
+import static org.mmadt.testing.LanguageArgs.args;
+import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.objs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class QuantifierTest {
 
-    private final static ParserArgs[] PARSING = new ParserArgs[]{
+    private final static LanguageArgs[] PARSING = new LanguageArgs[]{
             args(ints().<Int>q(1),
                     "int"),
             args(objs(ints().q(star)),

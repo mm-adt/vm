@@ -39,6 +39,7 @@
         <module>process</module>
         <module>storage</module>
         <module>machine</module>
+        <module>testing</module>
     </modules>
     <licenses>
         <license>

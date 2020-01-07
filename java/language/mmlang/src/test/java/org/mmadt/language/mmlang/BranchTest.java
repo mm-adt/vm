@@ -25,9 +25,9 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
-import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.testing.LanguageArgs;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -35,22 +35,22 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.mmlang.util.ParserArgs.args;
-import static org.mmadt.language.mmlang.util.ParserArgs.ints;
-import static org.mmadt.language.mmlang.util.ParserArgs.objs;
-import static org.mmadt.language.mmlang.util.ParserArgs.strs;
 import static org.mmadt.machine.object.impl.__.branch;
 import static org.mmadt.machine.object.impl.__.choose;
+import static org.mmadt.testing.LanguageArgs.args;
+import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.objs;
+import static org.mmadt.testing.LanguageArgs.strs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class BranchTest {
 
-    private final static ParserArgs[] BRANCHING = new ParserArgs[]{
+    private final static LanguageArgs[] BRANCHING = new LanguageArgs[]{
             args(TRec.of(1, "b"),
                     "[:] + (1->'b')"),
-            args(TRec.of(1,TRec.of("b", 2)),
+            args(TRec.of(1, TRec.of("b", 2)),
                     "1->'b'->2"),
             args(strs("c"),
                     "[1:['b':[2:'c']]] => (1<-'b'<-2)"),

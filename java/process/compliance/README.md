@@ -1,1 +1,0 @@
-# mm-ADT Process Compliance

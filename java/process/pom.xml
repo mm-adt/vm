@@ -33,7 +33,6 @@
     <name>mm-ADT :: Process</name>
     <artifactId>process</artifactId>
     <modules>
-        <module>compliance</module>
         <module>mmproc</module>
     </modules>
 </project>

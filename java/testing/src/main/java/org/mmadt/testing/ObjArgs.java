@@ -20,7 +20,7 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.compliance.util;
+package org.mmadt.testing;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.mmadt.machine.object.impl.TModel;
@@ -50,27 +50,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class TestArgs<A extends Obj> {
+public class ObjArgs<A extends Obj> {
     public final List<A> expected;
     public final Obj input;
     private final Map<Obj, Obj> expectedState;
 
-    private TestArgs(final List<A> expected, final List<A> expectedState, final Obj input) {
+    private ObjArgs(final List<A> expected, final List<A> expectedState, final Obj input) {
         this.expected = expected;
         this.expectedState = null == expectedState ? null : expectedState.stream().collect(Collectors.toMap(Obj::clone, Obj::clone));
         this.input = input;
     }
 
-    public static <A extends Obj> TestArgs<A> args(final List<A> expected, final Obj input) {
-        return new TestArgs<>(expected, null, input);
+    public static <A extends Obj> ObjArgs<A> args(final List<A> expected, final Obj input) {
+        return new ObjArgs<>(expected, null, input);
     }
 
-    public static <A extends Obj> TestArgs<A> args(final A expected, final Obj input) {
-        return new TestArgs<>(List.of(expected), null, input);
+    public static <A extends Obj> ObjArgs<A> args(final A expected, final Obj input) {
+        return new ObjArgs<>(List.of(expected), null, input);
     }
 
-    public static <A extends Obj> TestArgs<A> args(final A expected, final List<A> expectedState, final Obj input) {
-        return new TestArgs<>(List.of(expected), expectedState, input);
+    public static <A extends Obj> ObjArgs<A> args(final A expected, final List<A> expectedState, final Obj input) {
+        return new ObjArgs<>(List.of(expected), expectedState, input);
     }
 
     public static <A extends Obj> List<A> objs(final Object... objects) {

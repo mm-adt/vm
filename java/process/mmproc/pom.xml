@@ -39,12 +39,6 @@
             <artifactId>machine</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.mmadt.process</groupId>
-            <artifactId>compliance</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <build>
         <resources>

@@ -25,21 +25,20 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
-import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.testing.LanguageArgs;
 
 import javax.script.ScriptEngine;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.mmadt.language.mmlang.util.ParserArgs.args;
-import static org.mmadt.language.mmlang.util.ParserArgs.ints;
-import static org.mmadt.language.mmlang.util.ParserArgs.lsts;
-import static org.mmadt.language.mmlang.util.ParserArgs.recs;
-import static org.mmadt.machine.object.impl.__.map;
 import static org.mmadt.machine.object.impl.__.plus;
+import static org.mmadt.testing.LanguageArgs.args;
+import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.lsts;
+import static org.mmadt.testing.LanguageArgs.recs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,7 +48,7 @@ class BindingTest {
     private final static Int oneX = ints(1).label("x");
     private final static Int twoY = ints(2).label("y");
 
-    private final static ParserArgs[] BINDINGS = new ParserArgs[]{
+    private final static LanguageArgs[] BINDINGS = new LanguageArgs[]{
             args(oneX, "1~x"),
             args(ints().<Int>access(plus(ints().label("x"))), "int~x => x + x"),
             args(oneX, "1~x => [map,x]"),

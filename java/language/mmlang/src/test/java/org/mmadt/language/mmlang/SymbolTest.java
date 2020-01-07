@@ -25,11 +25,11 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
-import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.testing.LanguageArgs;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -38,15 +38,15 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.mmlang.util.ParserArgs.args;
-import static org.mmadt.language.mmlang.util.ParserArgs.recs;
+import static org.mmadt.testing.LanguageArgs.args;
+import static org.mmadt.testing.LanguageArgs.recs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class SymbolTest {
 
-    private final static ParserArgs[] SYMBOLS = new ParserArgs[]{
+    private final static LanguageArgs[] SYMBOLS = new LanguageArgs[]{
             args(recs(Map.of("name", TStr.of(), "age", TInt.of())).<Rec>symbol("person"), "person~['name':str,'age':int]"),
             args(recs(Map.of("name", "marko", "age", 29)).<Rec>symbol("person"), "[['name':'marko','age':29];person~['name':str,'age':int]] => [get,0][as,person~rec][explain]"),
     };

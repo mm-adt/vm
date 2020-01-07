@@ -25,25 +25,25 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
-import org.mmadt.language.mmlang.util.ParserArgs;
+import org.mmadt.testing.LanguageArgs;
 
 import javax.script.ScriptEngine;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.mmadt.language.mmlang.util.ParserArgs.args;
-import static org.mmadt.language.mmlang.util.ParserArgs.ints;
-import static org.mmadt.language.mmlang.util.ParserArgs.objs;
 import static org.mmadt.machine.object.impl.__.as;
 import static org.mmadt.machine.object.impl.__.mult;
 import static org.mmadt.machine.object.impl.__.plus;
+import static org.mmadt.testing.LanguageArgs.args;
+import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.objs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class LabelTest {
 
-    private final static ParserArgs[] LABELS = new ParserArgs[]{
+    private final static LanguageArgs[] LABELS = new LanguageArgs[]{
             args(ints(1).label("x"), "1=>x"),
             args(ints(1).label("x"), List.of(ints(1).label("x")), "1=>x"),
             args(ints(1).label("y"), "1=>x=>y"),

@@ -20,7 +20,7 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.mmlang.util;
+package org.mmadt.testing;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.mmadt.machine.object.impl.TModel;
@@ -29,7 +29,6 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TLst;
 import org.mmadt.machine.object.impl.composite.TRec;
-import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
@@ -52,27 +51,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ParserArgs<A extends Obj> {
+public final class LanguageArgs<A extends Obj> {
     public final List<A> expected;
     public final String input;
     private final Map<Obj, Obj> expectedState;
 
-    private ParserArgs(final List<A> expected, final List<A> expectedState, final String input) {
+    private LanguageArgs(final List<A> expected, final List<A> expectedState, final String input) {
         this.expected = expected;
         this.expectedState = null == expectedState ? null : expectedState.stream().collect(Collectors.toMap(Obj::clone, Obj::clone));
         this.input = input;
     }
 
-    public static <A extends Obj> ParserArgs<A> args(final List<A> expected, final String input) {
-        return new ParserArgs<>(expected, null, input);
+    public static <A extends Obj> LanguageArgs<A> args(final List<A> expected, final String input) {
+        return new LanguageArgs<>(expected, null, input);
     }
 
-    public static <A extends Obj> ParserArgs<A> args(final A expected, final String input) {
-        return new ParserArgs<>(List.of(expected), null, input);
+    public static <A extends Obj> LanguageArgs<A> args(final A expected, final String input) {
+        return new LanguageArgs<>(List.of(expected), null, input);
     }
 
-    public static <A extends Obj> ParserArgs<A> args(final A expected, final List<A> expectedState, final String input) {
-        return new ParserArgs<>(List.of(expected), expectedState, input);
+    public static <A extends Obj> LanguageArgs<A> args(final A expected, final List<A> expectedState, final String input) {
+        return new LanguageArgs<>(List.of(expected), expectedState, input);
     }
 
     public static <A extends Obj> List<A> objs(final Object... objects) {

@@ -29,20 +29,19 @@ import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.storage.compliance.util.TestArgs;
+import org.mmadt.testing.ObjArgs;
 
 import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.mmadt.machine.object.impl.__.eq;
 import static org.mmadt.machine.object.impl.__.get;
-import static org.mmadt.storage.compliance.util.TestArgs.args;
-import static org.mmadt.storage.compliance.util.TestArgs.ints;
-import static org.mmadt.storage.compliance.util.TestArgs.objs;
-import static org.mmadt.storage.compliance.util.TestArgs.recs;
+import static org.mmadt.testing.ObjArgs.args;
+import static org.mmadt.testing.ObjArgs.ints;
+import static org.mmadt.testing.ObjArgs.objs;
+import static org.mmadt.testing.ObjArgs.recs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -64,7 +63,7 @@ class GraphTest {
     private final static Rec<Str, Obj> ripple = recs(Map.of("id", 5, "name", "ripple", "lang", "software"));
     private final static Rec<Str, Obj> peter = recs(Map.of("id", 6, "name", "peter", "age", 35, "outE", recs(peterCreatedLop)));
 
-    private final static TestArgs[] TINKERPOP = new TestArgs[]{
+    private final static ObjArgs[] TINKERPOP = new ObjArgs[]{
             args(ints(0), TInt.of().access(TObj.single().model(TRec.sym("mmstor")).put(TStr.of("V"), TRec.of(marko, vadas, lop, josh, ripple, peter)).explain().map(TInt.of(0)).access())),
             args(marko, TRec.some().access(TObj.single().model(TRec.sym("mmstor")).get("V").<Rec>is(get("id").mult(eq(1))).access())),
             args(marko, TRec.some().access(TObj.single().model(TRec.sym("mmstor")).get("V").<Rec>is(get("name").mult(eq("marko"))).access())),

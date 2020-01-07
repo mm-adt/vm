@@ -25,11 +25,11 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
-import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.testing.LanguageArgs;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -39,16 +39,16 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.mmlang.util.ParserArgs.args;
-import static org.mmadt.language.mmlang.util.ParserArgs.bools;
-import static org.mmadt.language.mmlang.util.ParserArgs.ints;
-import static org.mmadt.language.mmlang.util.ParserArgs.lsts;
-import static org.mmadt.language.mmlang.util.ParserArgs.objs;
-import static org.mmadt.language.mmlang.util.ParserArgs.recs;
-import static org.mmadt.language.mmlang.util.ParserArgs.strs;
 import static org.mmadt.machine.object.impl.__.get;
 import static org.mmadt.machine.object.impl.__.map;
 import static org.mmadt.machine.object.impl.__.plus;
+import static org.mmadt.testing.LanguageArgs.args;
+import static org.mmadt.testing.LanguageArgs.bools;
+import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.lsts;
+import static org.mmadt.testing.LanguageArgs.objs;
+import static org.mmadt.testing.LanguageArgs.recs;
+import static org.mmadt.testing.LanguageArgs.strs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -60,7 +60,7 @@ class CompositeTest {
     private final static Int threeZ = ints(3).label("z");
     private final static Lst alst = lsts(List.of(ints(), recs(Map.of(bools(), ints())))).label("z");
 
-    private final static ParserArgs[] COMPOSITE = new ParserArgs[]{
+    private final static LanguageArgs[] COMPOSITE = new LanguageArgs[]{
 
             /////////
             // LST //

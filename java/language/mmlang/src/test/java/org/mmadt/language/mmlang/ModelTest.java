@@ -25,8 +25,8 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
-import org.mmadt.language.mmlang.util.ParserArgs;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.testing.LanguageArgs;
 import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
@@ -34,20 +34,18 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.language.mmlang.util.ParserArgs.args;
-import static org.mmadt.language.mmlang.util.ParserArgs.ints;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest {
 
-    private final static ParserArgs[] MODELS = new ParserArgs[]{
-           // args(ints(2000), "10 =[=x->1000]=> [map,x][plus,x]"),
-           // args(ints(1110), "10 =[=[x:1000,y:100]]=> [plus,x][plus,y]"),
-           // args(ints(1110), "10 =[=[x:1000,y:(int<=[map,100])]]=> [plus,x][plus,y]"),
-           // args(ints(1110), "10 =[=[x:1000~x,y:(int<=[map,x][plus,100])]]=> [plus,y]"),
-           // args(ints(1110), "10 =[=[x:1000~x,y:[map,x][plus,100]]]=> [plus,y]"),
+    private final static LanguageArgs[] MODELS = new LanguageArgs[]{
+            // args(ints(2000), "10 =[=x->1000]=> [map,x][plus,x]"),
+            // args(ints(1110), "10 =[=[x:1000,y:100]]=> [plus,x][plus,y]"),
+            // args(ints(1110), "10 =[=[x:1000,y:(int<=[map,100])]]=> [plus,x][plus,y]"),
+            // args(ints(1110), "10 =[=[x:1000~x,y:(int<=[map,x][plus,100])]]=> [plus,y]"),
+            // args(ints(1110), "10 =[=[x:1000~x,y:[map,x][plus,100]]]=> [plus,y]"),
     };
 
 
