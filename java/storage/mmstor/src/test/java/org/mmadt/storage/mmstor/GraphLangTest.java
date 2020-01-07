@@ -54,7 +54,7 @@ class GraphLangTest {
             args(ints(6), "int <=[=mmstor][get,'V'][count]"),
             args(ints(6), "int <=[=mmstor][get,'V'][get,'outE'][count]"),
             args(ints(2), "int <=[=mmstor][get,'V'][is,[get,'lang'][eq,'java']][count]"),
-            args(recs(Map.of("person", 4, "software", 2)), "int <=[=mmstor][get,'V'][[get,'age']->[map,'person'] | [get,'lang']->[map,'software']][groupCount]"),
+            args(recs(Map.of("person", 4, "software", 2)), "[('person'|'software'):int] <=[=mmstor][get,'V'][[get,'age']->[map,'person'] | [get,'lang']->[map,'software']][groupCount]"),
             // CONSTRAINED TRAVERSALS
             args(ints(1), "int <=[=mmstor][get,'V'][is,[get,'name'][eq,'marko']][get,'id']"),
             args(ints(1), "int <=[=mmstor][get,'V'][is,[get,'id'][eq,1]][get,'id']"),
