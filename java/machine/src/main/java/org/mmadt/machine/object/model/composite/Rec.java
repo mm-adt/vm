@@ -71,7 +71,9 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
         return GetInst.compute(this, key);
     }
 
-    public default V get(final Object index) {
-        return this.get(ObjectHelper.create(this, index));
+    public default V get(final Object key) {
+        return this.get(ObjectHelper.create(this, key));
     }
+
+
 }

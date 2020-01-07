@@ -89,7 +89,7 @@ class CompositeTest {
             args(ints(3), "[1;[2.2:2]]~z => (z<-0) => [plus,[map,z]<-1<-2.2]"),
             args(ints(3), "[1;[2.2:2]] => z => (1<-2.2) => int~w => ([map,z]<-0) => [plus,w]"),
             args(ints(3), "[1;[true:2]]~z => (z<-0) + (z<-1<-true + 0)"),
-            args(ints().<Int>access(map(alst).mult(get(0)).mult(plus(ints().access(get(bools()))))), "[int;[bool:int]]~z => (z<-0) + (z<-1<-bool) => [explain]"),
+            args(ints().<Int>access(map(alst).mult(get(0)).mult(plus(ints().access(map(alst).mult(get(0)).mult(map(alst)).mult(get(1)).mult(get(bools())))))), "[int;[bool:int]]~z => (z<-0) + (z<-1<-bool) => [explain]"),
 
             /////////
             // REC //

@@ -48,6 +48,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
+import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 
 /**
@@ -82,6 +83,11 @@ public class __ {
     public static Inst get(final Object object) {
         return GetInst.create(object);
     }
+
+    public static Inst get(final Object object, final Obj value) {
+        return GetInst.create(object, value);
+    }
+
 
     public static Inst gt(final Object object) {
         return GtInst.create(object);

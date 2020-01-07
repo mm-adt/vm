@@ -339,7 +339,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O model(final O obj) {
-        return this.model().readOrGet(obj, obj);
+        final O temp = this.model().readOrGet(obj, obj);
+        return temp.model(this.model());
     }
 
     public default Int map(final Integer integer) {

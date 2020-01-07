@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.model.ext.algebra;
 
+import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
@@ -36,9 +37,17 @@ public interface WithProduct<K extends Obj, V extends Obj> extends Obj {
 
     public V get(final K key);
 
+    public default V get(final K key, final V type) {
+        return GetInst.compute(this, key, type);
+    }
+
+    public default V get(final Object key, final V type) {
+        return GetInst.compute(this, ObjectHelper.create(this, key), type);
+    }
+
     ///
 
     public default WithProduct<K, V> put(final Object key, final Object value) {
-        return this.put(ObjectHelper.create(this, key),ObjectHelper.create(this, value));
+        return this.put(ObjectHelper.create(this, key), ObjectHelper.create(this, value));
     }
 }

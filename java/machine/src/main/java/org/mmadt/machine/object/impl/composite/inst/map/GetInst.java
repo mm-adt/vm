@@ -25,6 +25,7 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.Lst;
@@ -41,20 +42,28 @@ import java.util.Map;
  */
 public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProduct<K, V>, V> implements MapInstruction<WithProduct<K, V>, V> {
 
-    private GetInst(final Object key) {
-        super(PList.of(Tokens.GET, key));
+    private GetInst(final Object key, final Object value) {
+        super(PList.of(Tokens.GET, key, value));
     }
 
     @Override
     public V apply(final WithProduct<K, V> obj) {
-        return obj.get(this.<K>argument(0).mapArg(obj));
+        return obj.get(this.<K>argument(0).mapArg(obj), this.<V>args().get(1));
     }
 
     public static <K extends Obj, V extends Obj> GetInst<K, V> create(final Object arg) {
-        return new GetInst<>(arg);
+        return new GetInst<>(arg, TObj.single());
+    }
+
+    public static <K extends Obj, V extends Obj> GetInst<K, V> create(final Object arg, final Object value) {
+        return new GetInst<>(arg, value);
     }
 
     public static <K extends Obj, V extends Obj> V compute(final WithProduct<K, V> product, final K key) {
+        return GetInst.compute(product, key, (V) TRec.some());
+    }
+
+    public static <K extends Obj, V extends Obj> V compute(final WithProduct<K, V> product, final K key, final V value) {
         if (!product.isReference() &&
                 !key.isReference() &&
                 null != product.get() &&
@@ -62,8 +71,8 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
             return GetInst.composite(product, key);
         } else {
             return (null == product.get()) ?
-                    GetInst.<K, V>create(key).attach(product) : //, (V) TObj.single()) :
-                    GetInst.<K, V>create(key).attach(product, GetInst.composite(product, key));
+                    GetInst.<K, V>create(key, value).attach(product, value.copy(product)) : //, (V) TObj.single()) :
+                    GetInst.<K, V>create(key, value).attach(product, GetInst.composite(product, key));
         }
     }
 
@@ -84,7 +93,7 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
     private static <K extends Obj, V extends Obj> V rec(final Rec<K, V> rec, final K key) {
         for (final Map.Entry<K, V> entry : rec.<Map<K, V>>get().entrySet()) {
             if (key.test(entry.getKey()))
-                return entry.getValue().model(rec.model());
+                return entry.getValue().copy(rec);
         }
         return (V) TObj.none();
     }
