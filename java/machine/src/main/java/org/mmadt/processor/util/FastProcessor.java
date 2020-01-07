@@ -75,6 +75,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
         }
         // TODO: I believe that we should not do this. This is forcing another abstract interpretation (this should be left up to the script engine configuration -- "go to fix point?")
         stream = stream.flatMap(s -> IteratorUtils.stream(s.access().opcode().java().equals(Tokens.START) ? FastProcessor.process(s) : IteratorUtils.of(s)));
+        // stream = stream.filter(s -> !s.q().isZero());
         return IteratorUtils.onLast(stream.iterator(), () -> Model.STORAGES.forEach(Storage::close));
     }
 

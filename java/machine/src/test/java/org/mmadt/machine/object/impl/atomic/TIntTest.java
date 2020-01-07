@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mmadt.machine.object.impl.__.a;
+import static org.mmadt.machine.object.impl.__.eq;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.gte;
 import static org.mmadt.machine.object.impl.__.is;
@@ -65,7 +66,8 @@ final class TIntTest implements TestUtilities {
             args(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(-50))),
             args(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60)))),
             args(List.of(true), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(true)),
-            args(List.of(), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(false)),
+            args(List.of(), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(eq(false))),
+            // args(List.of(), TInt.of(1).plus(4).mult(10).gt(plus(plus(-60))).is(false)),
             // references
             args(List.of(50, 51), TInt.of(49, 50).is(gt(plus(-1))).plus(1)),
             args(List.of(49, 50), TInt.of(49, 50).is(gt(plus(-1)))),
@@ -74,7 +76,7 @@ final class TIntTest implements TestUtilities {
             args(List.of(), TInt.of(49, 50).is(lt(plus(-1))).map(32)),
             args(List.of(49, 50), TInt.of(49, 50).is(lt(plus(1)))),
             //args(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(1).plus(plus(8))),
-     //       args(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(TInt.of(0, 1, 2).plus(1).plus(0)).plus(plus(8))),
+            //       args(List.of(10, 10), TInt.of(49, 50).is(lt(plus(1))).map(TInt.of(0, 1, 2).plus(1).plus(0)).plus(plus(8))),
             args(List.of(49, 50), TInt.of(49, 50).is(lte(plus(1)))),
             args(List.of(), TInt.of(49, 50).is(gt(plus(1)))),
             // type

@@ -25,6 +25,7 @@ package org.mmadt.storage.mmstor;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.__;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
@@ -55,10 +56,9 @@ class StorTest {
 
     private final static TestArgs[] STORAGE = new TestArgs[]{
             args(ints(0), TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("users"), TRec.of(TRec.of(Map.of("name", "marko", "age", 29)), TRec.of(Map.of("name", "kuppitz", "age", 21)))).explain().map(0)),
-            args(marko, TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko")))),
+            args(marko, TRec.some().q(0, 2).access(TObj.single().model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko"))).access())),
             args(kuppitz, TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("kuppitz")))),
     };
-
 
     @TestFactory
     Stream<DynamicTest> testStorage() {

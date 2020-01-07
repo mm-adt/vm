@@ -23,11 +23,15 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+
+import java.util.Objects;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,5 +48,11 @@ public final class EqInst<S extends Obj> extends TInst<S, Bool> implements MapIn
 
     public static <S extends Obj> EqInst<S> create(final Object arg) {
         return new EqInst<>(arg);
+    }
+
+    public static Bool compute(final Obj lhs, final Obj rhs, final Bool result) {
+        return lhs.isInstance() && rhs.isInstance() ?
+                result.set(Objects.equals(lhs.get(), rhs.get())) :
+                EqInst.create(rhs).attach(lhs,result);
     }
 }

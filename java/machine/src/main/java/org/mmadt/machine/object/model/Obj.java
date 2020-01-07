@@ -36,7 +36,6 @@ import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
-import org.mmadt.machine.object.impl.composite.inst.map.ModelInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
@@ -325,8 +324,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return (O) ChooseInst.create(choices).attach(this);
     }
 
-    public Bool eq(final Obj object);
-
     public Bool neq(final Obj object);
 
     public default <O extends Obj> O as(final O obj) {
@@ -334,7 +331,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O is(final Object bool) {
-        return Obj.this.is(ObjectHelper.create(TBool.via(this.access(null)), bool));
+        return this.is(ObjectHelper.create(TBool.of(), bool));
     }
 
     public default <O extends Obj> O map(final Inst inst) {
@@ -342,7 +339,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default <O extends Obj> O model(final O obj) {
-        return this.model().readOrGet(obj,obj);
+        return this.model().readOrGet(obj, obj);
     }
 
     public default Int map(final Integer integer) {
@@ -357,7 +354,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return ExplainInst.<O>create().attach((O) this);
     }
 
+    public default Bool eq(final Obj obj) {
+        return EqInst.compute(this, obj, TBool.via(this));
+    }
+
     public default Bool eq(final Object object) {
-        return EqInst.create(object).attach(this);
+        return this.eq(ObjectHelper.create(this, object));
     }
 }

@@ -44,7 +44,7 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
     }
 
     public S apply(final S obj) {
-        return this.quantifyRange(obj.is(this.<Bool>argument(0).mapArg(obj)));
+        return obj.is(this.<Bool>argument(0).mapArg(obj));
     }
 
     public static <S extends Obj> IsInst<S> create(final Object arg) {
@@ -56,7 +56,7 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
     }
 
     public static <S extends Obj> S compute(final S from, final Bool bool) {
-        return from.isInstance() && bool.isInstance() ?
+        return bool.isInstance() ?
                 bool.java() ? from : from.kill() :
                 IsInst.<S>create(bool).attach(from);
     }
