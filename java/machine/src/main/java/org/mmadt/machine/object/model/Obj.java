@@ -49,6 +49,7 @@ import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithOr;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
@@ -214,6 +215,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default boolean isReference() {
         return !this.constant() && !this.access().isOne();
+    }
+
+    public default boolean isInstances() {
+        return this.isReference() && this.access().opcode().java().equals(Tokens.START);
     }
 
     public default boolean isInstance() {

@@ -51,6 +51,8 @@ class GraphLangTest {
             args(ints(1), "int <=[=mmstor][get,'users'][is,[get,'name'][eq,'marko']][get,'id']"),
             args(ints(1), "int <=[=mmstor][get,'users'][is,[get,'id'][eq,1]][get,'id']"),
             args(objs(4, 6), "int{0,4} <=[=mmstor][get,'users'][is,[get,'age',int][gt,30]][get,'id']"),
+            args(objs(1, 4, 6), "int{0,4} <=[=mmstor][get,'users'][is,[get,'outE'][count][gt,0]][get,'id']"),
+            args(objs(2,4), "int{0,4} <=[=mmstor][get,'users'][is,[get,'name'][eq,'marko']][get,'outE'][is,[get,'label'][eq,'knows']][get,'inV'][as,x][map,mmstor][get,'users'][is,[get,'id'][eq,x]][get,'id'][explain]"),
     };
 
 

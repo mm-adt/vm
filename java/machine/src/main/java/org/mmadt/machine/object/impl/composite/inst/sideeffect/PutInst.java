@@ -40,7 +40,7 @@ public final class PutInst<K extends Obj, V extends Obj> extends TInst<WithProdu
 
     @Override
     public void accept(final WithProduct<K, V> obj) {
-        obj.put(this.<K>argument(0).mapArg(obj), this.<V>argument(1).mapArg(obj));
+        obj.put(this.<K>argument(0).mapArg(obj), this.<V>argument(1).mapArgRef(obj,(V)this.args().get(1)));
     }
 
     public static <K extends Obj, V extends Obj> PutInst<K, V> create(final Object key, final Object value) {
