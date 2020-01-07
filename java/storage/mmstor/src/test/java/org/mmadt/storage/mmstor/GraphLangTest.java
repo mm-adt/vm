@@ -28,11 +28,13 @@ import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.testing.LanguageArgs;
 
 import javax.script.ScriptEngine;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.mmadt.testing.LanguageArgs.args;
 import static org.mmadt.testing.LanguageArgs.ints;
 import static org.mmadt.testing.LanguageArgs.objs;
+import static org.mmadt.testing.LanguageArgs.recs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,11 +50,18 @@ class GraphLangTest {
                     "['id':4,'name':'josh','age':32,'outE':rec{2}<=[start,['id':11,'outV':4,'inV':3,'label':'created'],['id':10,'outV':4,'inV':5,'label':'created']]]," +
                     "['id':5,'name':'ripple','lang':'java']," +
                     "['id':6,'name':'peter','age':35,'outE':['id':12,'outV':6,'inV':3,'label':'created']]]][is,false]"), // just want the side-effect of put() -- TODO: use [sideeffect,[put]]
+            // BASIC GRAPH STATISTICS
+            args(ints(6), "int <=[=mmstor][get,'V'][count]"),
+            args(ints(6), "int <=[=mmstor][get,'V'][get,'outE'][count]"),
+            args(ints(2), "int <=[=mmstor][get,'V'][is,[get,'lang'][eq,'java']][count]"),
+            args(recs(Map.of("person", 4, "software", 2)), "int <=[=mmstor][get,'V'][[get,'age']->[map,'person'] | [get,'lang']->[map,'software']][groupCount]"),
+            // CONSTRAINED TRAVERSALS
             args(ints(1), "int <=[=mmstor][get,'V'][is,[get,'name'][eq,'marko']][get,'id']"),
             args(ints(1), "int <=[=mmstor][get,'V'][is,[get,'id'][eq,1]][get,'id']"),
             args(objs(4, 6), "int{0,4} <=[=mmstor][get,'V'][is,[get,'age'][gt,30]][get,'id']"),
             args(objs(1, 4, 6), "int{0,4} <=[=mmstor][get,'V'][is,[get,'outE'][count][gt,0]][get,'id']"),
-            args(objs(2,4), "int{0,4} <=[=mmstor][get,'V'][is,[get,'name'][eq,'marko']][get,'outE'][explain][is,[get,'label'][eq,'knows']][get,'inV'][as,x][map,mmstor][get,'V'][is,[get,'id'][eq,x]][get,'id']"),
+            args(objs(2, 4), "int{0,4} <=[=mmstor][get,'V'][is,[get,'name'][eq,'marko']][get,'outE'][is,[get,'label'][eq,'knows']][get,'inV'][as,x][map,mmstor][get,'V'][is,[get,'id'][eq,x]][get,'id']"),
+
     };
 
 
