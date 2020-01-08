@@ -25,6 +25,7 @@ package org.mmadt.machine.object.model.atomic;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.composite.inst.barrier.DedupInst;
 import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 
@@ -42,6 +43,12 @@ public interface Int extends WithOrderedRing<Int> {
 
     @Override
     public Int label(final String variable);
+
+    @Override
+    public Int symbol(final String symbol);
+
+    @Override
+    public Int q(final Object quantifier);
 
     public default Int dedup(final Object... branches) {
         return DedupInst.<Int>create(branches).attach(this);

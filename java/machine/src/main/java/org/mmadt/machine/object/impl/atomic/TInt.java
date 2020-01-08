@@ -86,6 +86,16 @@ public final class TInt extends TObj implements Int {
         return super.label(variable);
     }
 
+    @Override
+    public Int q(final Object quantifier) {
+        return super.q(quantifier);
+    }
+
+    @Override
+    public Int symbol(final String symbol) {
+        return super.symbol(symbol);
+    }
+
     /////////////////////////////////
 
     @Override

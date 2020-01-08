@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.TRec;
+import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.processor.util.FastProcessor;
 
 import static org.mmadt.machine.object.impl.__.gt;
@@ -40,7 +41,7 @@ class ExplainInstTest {
 
     @Test
     void testVisually() {
-        FastProcessor.process(TInt.of().plus(15).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(17).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
+        FastProcessor.process(TInt.of().q(3).plus(15).is(TInt.of().mult(TInt.of().plus(22).mult(id())).gt(2)).lt(17).is(TBool.of().eq(true)).explain()).forEachRemaining(obj -> {
         });
 
         FastProcessor.process(TInt.of().plus(2).mult(3).branch(TRec.of(gt(3), plus(300), gt(100), plus(23))).is(gt(1)).explain()).forEachRemaining(obj -> {

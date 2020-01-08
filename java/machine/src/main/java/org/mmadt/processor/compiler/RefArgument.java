@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.compiler;
 
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -49,7 +48,7 @@ public final class RefArgument<S extends Obj, E extends Obj> implements Argument
     @Override
     public E mapArg(final S object) {
         final List<E> list = IteratorUtils.list(FastProcessor.process((E) object.access(null).mapTo(ModelHelper.via(object, this.bytecode))));
-        return StartInst.instances(list.subList(0, this.count).iterator());
+        return StartInst.instances(list.subList(0, list.size() >= this.count ? this.count : list.size()).iterator());
     }
 
     @Override

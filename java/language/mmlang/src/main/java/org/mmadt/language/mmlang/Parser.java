@@ -102,7 +102,7 @@ public class Parser extends BaseParser<Object> {
     ///////////////
 
     public Rule Source() {
-        return Sequence(Expression(), EOI);
+        return Sequence(Spacing(), Expression(), EOI);
     }
 
     Rule Singles() {
@@ -145,7 +145,7 @@ public class Parser extends BaseParser<Object> {
         final Var<String> symbol = new Var<>();
         return Sequence(
                 Optional(Type(symbol)),
-                FirstOf(Sequence(OBJ, this.push(TObj.single())),
+                FirstOf(Sequence(OBJ, this.push(TObj.single()), Type_Predicate()),
                         Bool(),
                         Inst(),
                         Real(),
@@ -163,8 +163,12 @@ public class Parser extends BaseParser<Object> {
                 Optional(TILDE, Sequence(Word(), this.push(type(this.pop()).label(this.match().trim())))));     // ~label
     }
 
+    Rule Type_Predicate() {
+        return Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())));
+    }
+
     Rule Sym() {
-        return Sequence(Word(), this.push(TObj.sym(match().trim())));
+        return Sequence(Word(), this.push(TObj.sym(match().trim())), Type_Predicate());
     }
 
     Rule Lst() {
@@ -193,19 +197,19 @@ public class Parser extends BaseParser<Object> {
 
     Rule Real() {
         return FirstOf(
-                Sequence(REAL, this.push(TReal.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))), // type predicate
+                Sequence(REAL, this.push(TReal.of()), Type_Predicate()),
                 Sequence(Sequence(Number(), PERIOD, Number()), this.push(TReal.of(Float.valueOf(match().trim())))));
     }
 
     Rule Int() {
         return FirstOf(
-                Sequence(INT, this.push(TInt.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate
+                Sequence(INT, this.push(TInt.of()), Type_Predicate()),
                 Sequence(Number(), this.push(TInt.of(Integer.valueOf(match().trim())))));
     }
 
     Rule Str() {
         return FirstOf(
-                Sequence(STR, this.push(TStr.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate
+                Sequence(STR, this.push(TStr.of()), Type_Predicate()),
                 Sequence("\"\"\"", ZeroOrMore(Sequence(TestNot("\"\"\""), ANY)), this.push(TStr.of(match())), "\"\"\""),
                 Sequence("\'", ZeroOrMore(Sequence(TestNot("\'"), ANY)), this.push(TStr.of(match())), "\'"),
                 Sequence("\"", ZeroOrMore(Sequence(TestNot("\""), ANY)), this.push(TStr.of(match())), "\""));
@@ -213,7 +217,7 @@ public class Parser extends BaseParser<Object> {
 
     Rule Bool() {
         return FirstOf(
-                Sequence(BOOL, this.push(TBool.of()), Optional(Inst(), swap(), this.push(type(this.pop()).set(this.pop())))),  // type predicate
+                Sequence(BOOL, this.push(TBool.of()), Type_Predicate()),
                 Sequence(TRUE, this.push(TBool.of(true))),
                 Sequence(FALSE, this.push(TBool.of(false))));
     }

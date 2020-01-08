@@ -94,7 +94,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     protected Object value;                            // mutually exclusive with pattern (instance data)
     private WithOrderedRing quantifier = null;         // the 'amount' of this object bundle
     public Type type;                                  // an object that abstractly defines this object's forms
-    private Model model = new TModel();                // the algebraic model that is used to interpret this obj
+    private Model model = new TModel();                // the model that is used to interpret this obj ("the traverser")
 
     public TObj(final Object value) {
         this.type = TType.of(TObj.getBaseSymbol(this));
@@ -249,9 +249,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public TObj clone() {
         try {
-            final TObj clone = (TObj) super.clone();
-            // clone.type = clone.type.label(null);
-            return clone;
+            return (TObj) super.clone();
         } catch (final CloneNotSupportedException e) {
             throw new RuntimeException(e.getMessage());
         }
