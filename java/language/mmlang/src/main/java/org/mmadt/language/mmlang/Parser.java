@@ -128,12 +128,11 @@ public class Parser extends BaseParser<Object> {
     }
 
     Rule BinaryOperator() {
-        return
-                FirstOf(
-                        ModelOperator(),
-                        Sequence(FirstOf(Sequence(RPACK, this.push(this.match().trim()), Expression()),
-                                Sequence(TestNot(RPACK), FirstOf(MAPSFROM, MAPSTO, LPACK, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()), Singles())),
-                                swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop())))));
+        return FirstOf(
+                ModelOperator(),
+                Sequence(FirstOf(Sequence(RPACK, this.push(this.match().trim()), Expression()),
+                        Sequence(TestNot(RPACK), FirstOf(MAPSFROM, MAPSTO, LPACK, STAR, PLUS, DIV, SUB, AND, OR, GTE, LTE, GT, LT, DEQUALS), this.push(this.match().trim()), Singles())),
+                        swap3(), swap(), this.push(OperatorHelper.applyBinary((String) this.pop(), type(this.pop()), type(this.pop())))));
     }
 
     @SuppressNode
