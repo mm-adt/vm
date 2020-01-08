@@ -28,6 +28,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.ModelHelper;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.util.IteratorUtils;
 
@@ -44,7 +45,7 @@ public final class CountInst<S extends Obj, E extends WithOrderedRing<E>> extend
 
     @Override
     public E apply(final S obj, final E seed) {
-        return seed.plus(obj.q());
+        return ModelHelper.mergeModels(obj, seed.plus(obj.q()));
     }
 
     @Override

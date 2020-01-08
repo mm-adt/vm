@@ -34,7 +34,7 @@ import java.util.Objects;
  */
 public final class TModel implements Model {
 
-    private Map<String, Obj> bindings = new LinkedHashMap<>();
+    public Map<String, Obj> bindings = new LinkedHashMap<>();
 
     TModel() {
         STORAGES.forEach(storage -> this.bindings.put(storage.name(), storage.open()));

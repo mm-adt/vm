@@ -33,11 +33,13 @@ import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.testing.LanguageArgs.args;
 import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.lsts;
 import static org.mmadt.testing.LanguageArgs.objs;
 
 /**
@@ -100,6 +102,13 @@ class ReduceTest {
             args(TRec.of(0, 9),
                     "int => [[id] + [id] + [plus,1]{2} + [plus,1] + [plus,2]{2} + [plus,2] + [plus,2]][groupCount,[zero]]"),
             // args(TRec.of(), "obj{0} => [groupCount]")
+
+
+            // updated reduce such that the traverser models are merged into one model (overwrite possible -- order of overwrite not specifiable)
+            args(lsts(List.of(ints(10).label("x"), ints(10).label("y"))), "10 => [int~x + int~y][count][map,[x;y]]"),
+            args(lsts(List.of(ints(10).label("x"), ints(10).label("y"))), "10 => [int~x + int~y][sum][map,[x;y]]"),
+            args(lsts(List.of(ints(10).label("x"), ints(10).label("y"))), "10 => [int~x + int~y][groupCount][map,[x;y]]"),
+
     };
 
 

@@ -32,6 +32,7 @@ import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,6 +40,7 @@ import static org.mmadt.machine.object.impl.__.branch;
 import static org.mmadt.machine.object.impl.__.choose;
 import static org.mmadt.testing.LanguageArgs.args;
 import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.lsts;
 import static org.mmadt.testing.LanguageArgs.objs;
 import static org.mmadt.testing.LanguageArgs.strs;
 
@@ -116,7 +118,9 @@ class BranchTest {
             args(objs(2, 2, 2), "2 => [branch,[int;2;[is > 1]]] => int"),
             args(objs(2, 2, 2), "2 => [int + 2 + [is > 1]] => int"),
             args(objs(2, 2, 2), "2 => [branch,int,2,[is > 1]] => int"),
-            args(objs(2, 2, 2), "2 => [int->int + 2->2 + [is,[gt,1]]->[is > 1]] => int")
+            args(objs(2, 2, 2), "2 => [int->int + 2->2 + [is,[gt,1]]->[is > 1]] => int"),
+
+            /////////////////////////////////////////////////////
 
     };
 

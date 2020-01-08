@@ -23,6 +23,7 @@
 package org.mmadt.machine.object.model.util;
 
 import org.mmadt.language.compiler.Instructions;
+import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
@@ -108,6 +109,14 @@ public final class ModelHelper {
         if (obj.isLabeled())
             update = update.write(obj);
         return update;
+    }
+
+    public static <S extends Obj, E extends Obj> E mergeModels(final S from, final E to) {
+        Model temp = to.model();
+        for (final Map.Entry<String, Obj> entry : ((TModel) from.model()).bindings.entrySet()) {
+            temp = temp.write(entry.getValue());
+        }
+        return to.model(temp);
     }
 
     public static <O extends Obj> O match(final O obj) {

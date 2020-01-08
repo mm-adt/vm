@@ -25,10 +25,10 @@ package org.mmadt.machine.object.impl.composite.inst.reduce;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.ext.composite.TPair;
-import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.ReduceInstruction;
-import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
+import org.mmadt.machine.object.model.util.ModelHelper;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.util.IteratorUtils;
 
@@ -45,7 +45,7 @@ public final class SumInst<S extends WithOrderedRing<S>> extends TInst<S, S> imp
 
     @Override
     public S apply(final S obj, final S seed) {
-        return seed.plus(QuantifierHelper.toPair(obj.<S>sum()));
+        return ModelHelper.mergeModels(obj, seed.plus(QuantifierHelper.toPair(obj.<S>sum())));
     }
 
     @Override
@@ -64,7 +64,7 @@ public final class SumInst<S extends WithOrderedRing<S>> extends TInst<S, S> imp
 
     public static <S extends WithOrderedRing<S>> S compute(final S from) {
         return from.isInstance() ?
-                 QuantifierHelper.trySingle((S)TPair.of(from, from).mult(from.q())) :
-                 SumInst.<S>create().attach(from);
+                QuantifierHelper.trySingle((S) TPair.of(from, from).mult(from.q())) :
+                SumInst.<S>create().attach(from);
     }
 }
