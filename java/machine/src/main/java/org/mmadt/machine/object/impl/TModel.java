@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.impl;
 
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 
@@ -34,53 +35,60 @@ import java.util.Objects;
  */
 public final class TModel implements Model {
 
-    public Map<String, Obj> bindings = new LinkedHashMap<>();
-
-    TModel() {
-        STORAGES.forEach(storage -> this.bindings.put(storage.name(), storage.open()));
-    }
+    public Map<Obj, Obj> bindings = null;
 
     public static Model of(final Map<Obj, Obj> state) {
         final TModel temp = new TModel();
-        state.forEach((x, y) -> temp.bindings.put(x.label(), y));
+        temp.load();
+        state.forEach((x, y) -> temp.load().put(TStr.of(x.label()), y));
         return temp;
     }
 
     @Override
     public Obj apply(final Obj obj) {
-        return this.bindings.getOrDefault(obj.label(), TObj.none());
+        this.load();
+        return this.load().getOrDefault(TStr.of(obj.label()), TObj.none());
     }
 
     @Override
     public Model write(final Obj value) {
+        this.load();
         final TModel clone = (TModel) this.clone();
-        clone.bindings.put(value.label(), value);
+        clone.load().put(TStr.of(value.label()), value);
         return clone;
     }
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof Model && Objects.equals(this.bindings, ((TModel) other).bindings);
+        return other instanceof Model && Objects.equals(this.load(), ((TModel) other).load());
     }
 
     @Override
     public int hashCode() {
-        return this.bindings.hashCode();
+        return this.load().hashCode();
     }
 
     @Override
     public String toString() {
-        return this.bindings.values().toString();
+        return this.load().values().toString();
     }
 
     @Override
     public Model clone() {
         try {
             final TModel clone = (TModel) super.clone();
-            clone.bindings = new LinkedHashMap<>(this.bindings);
+            clone.bindings = new LinkedHashMap<>(this.load());
             return clone;
         } catch (final CloneNotSupportedException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    public Map<Obj, Obj> load() {
+        if (null == this.bindings) {
+            this.bindings = new LinkedHashMap<>();
+            STORAGES.forEach(storage -> this.bindings.put(TStr.of(storage.name()), storage.open()));
+        }
+        return this.bindings;
     }
 }

@@ -35,7 +35,6 @@ import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.composite.util.PMap;
-import org.mmadt.processor.util.FastProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,9 +83,7 @@ public final class ModelHelper {
             final O o = (O) from.model().apply(to);
             obj = o.isNone() ? obj : obj.test(o) ? o : (O) TObj.none();
         }
-        return to.isReference() ?
-                FastProcessor.<O>process(from.mapTo(obj.access(via(from, to.access())))).next() :
-                obj;
+        return obj;
     }
 
 
@@ -113,7 +110,7 @@ public final class ModelHelper {
 
     public static <S extends Obj, E extends Obj> E mergeModels(final S from, final E to) {
         Model temp = to.model();
-        for (final Map.Entry<String, Obj> entry : ((TModel) from.model()).bindings.entrySet()) {
+        for (final Map.Entry<Obj, Obj> entry : ((TModel) from.model()).load().entrySet()) {
             temp = temp.write(entry.getValue());
         }
         return to.model(temp);
