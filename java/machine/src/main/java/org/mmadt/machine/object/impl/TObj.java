@@ -222,7 +222,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public void typeCheck() {
         if (null != this.type.pattern() && !this.type.pattern().test(this))
-            throw new RuntimeException("The type does not subsume the obj: " + this.type.pattern() + "~" + this);
+            throw new RuntimeException("The left obj does not subsume the right obj: " + this.type.pattern() + "~" + this);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////

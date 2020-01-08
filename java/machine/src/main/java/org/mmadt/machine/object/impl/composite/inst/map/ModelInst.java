@@ -23,15 +23,13 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.util.ModelHelper;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -47,7 +45,7 @@ public final class ModelInst<S extends Obj> extends TInst<S, S> implements Initi
         S s = (S) this.argument(0).mapArg((S) obj);
         if (!s.isLabeled() && s.isLst()) {
             for (final Obj x : s.<List<Obj>>get()) {
-                s = s.model(s.model().write(x));
+                s = s.model(s.model().write(ModelHelper.via(s, x)));
             }
         }
         return s;

@@ -48,6 +48,8 @@ class SymbolTest {
             args(recs(Map.of("name", "marko", "age", 29)).symbol("person"), "person <=[=[['name':str,'age':int]~person]][map,['name':'marko','age':29]][as,person~rec]"),
             except(new RuntimeException(), "person <=[=[['name':str,'age':int]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age','29asString']"),
             args(recs(Map.of("name", "marko", "age", 29)).symbol("person"), "person <=[=[['name':str,'age':int]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',29]"),
+            args(recs(Map.of("name", "marko", "age", 29)).symbol("person"), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',29]"),
+            except(new RuntimeException(), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',-4]"),
     };
 
     @TestFactory
