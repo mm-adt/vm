@@ -29,6 +29,8 @@ import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 
+import java.util.Objects;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -44,5 +46,11 @@ public final class NeqInst<S extends Obj> extends TInst<S, Bool> implements MapI
 
     public static <S extends Obj> NeqInst<S> create(final Object arg) {
         return new NeqInst<>(arg);
+    }
+
+    public static Bool compute(final Obj lhs, final Obj rhs, final Bool result) {
+        return lhs.isInstance() && rhs.isInstance() ?
+                result.set(!Objects.equals(lhs.get(), rhs.get())) :
+                NeqInst.create(rhs).attach(lhs, result);
     }
 }

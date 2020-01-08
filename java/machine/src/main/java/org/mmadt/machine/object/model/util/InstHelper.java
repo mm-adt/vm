@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.object.model.util;
 
+import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
@@ -29,6 +30,7 @@ import org.mmadt.machine.object.model.composite.util.PList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -70,6 +72,11 @@ public final class InstHelper {
 
     public static boolean singleInst(final Inst inst) {
         return inst.<List>get().get(0) instanceof Str;
+    }
+
+    public static boolean isInstanceStream(final Inst inst) {
+        final Obj head = inst.<List<Obj>>get().get(0);
+        return head.isStr() && Objects.equals(head.get(), Tokens.START);
     }
 
     public static List<Inst> list(final List<Inst> list) {

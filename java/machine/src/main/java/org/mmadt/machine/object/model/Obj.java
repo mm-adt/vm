@@ -36,6 +36,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
+import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
@@ -49,11 +50,11 @@ import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithOr;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
 import org.mmadt.machine.object.model.ext.algebra.WithProduct;
+import org.mmadt.machine.object.model.util.InstHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 
@@ -219,6 +220,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default boolean isInstances() {
         return this.isReference() && this.access().opcode().java().equals(Tokens.START);
+        //   return this.isReference() && InstHelper.isInstanceStream(this.access());
     }
 
     public default boolean isInstance() {
@@ -329,8 +331,6 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return (O) ChooseInst.create(choices).attach(this);
     }
 
-    public Bool neq(final Obj object);
-
     public default <O extends Obj> O as(final O obj) {
         return AsInst.compute((O) this, obj);
     }
@@ -366,5 +366,13 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default Bool eq(final Object object) {
         return this.eq(ObjectHelper.create(this, object));
+    }
+
+    public default Bool neq(final Obj obj) {
+        return NeqInst.compute(this, obj, TBool.via(this));
+    }
+
+    public default Bool neq(final Object object) {
+        return this.neq(ObjectHelper.create(this, object));
     }
 }

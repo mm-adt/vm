@@ -255,9 +255,4 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return TBool.via(this).set(obj.equals(this) || obj.test(this));
     }
 
-    @Override
-    public Bool neq(final Obj object) {
-        return TBool.via(this).set(!Objects.equals(this.get(), object.get()));
-    }
-
 }

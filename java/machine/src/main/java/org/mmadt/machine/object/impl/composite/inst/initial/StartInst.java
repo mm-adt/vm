@@ -33,6 +33,8 @@ import org.mmadt.machine.object.model.util.ModelHelper;
 import org.mmadt.machine.object.model.util.ObjectHelper;
 import org.mmadt.util.IteratorUtils;
 
+import java.util.Iterator;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -45,7 +47,7 @@ public final class StartInst<S extends Obj> extends TInst<Obj, S> implements Ini
 
     @Override
     public S apply(final Obj obj) { // obj is ignored because [start] is an initial
-        return TObj.none().set(IteratorUtils.<S, S>map(this.<S>args().iterator(), arg -> (S)ModelHelper.model(arg)));
+        return StartInst.instances(IteratorUtils.map(this.<S>args().iterator(), arg -> (S) ModelHelper.model(arg)));
     }
 
     @Override
@@ -62,5 +64,8 @@ public final class StartInst<S extends Obj> extends TInst<Obj, S> implements Ini
         return (StartInst<S>) inst.domainAndRange(TObj.none(), kind);
     }
 
-
+    public static <S extends Obj> S instances(final Iterator<S> iterator) {
+        final StartInst<S> start = StartInst.create(IteratorUtils.list(iterator).toArray(new Object[]{}));
+        return start.quantifyRange(TObj.none()).access(start);
+    }
 }

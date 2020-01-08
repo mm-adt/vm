@@ -61,23 +61,23 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
     public Iterator<S> iterator(final S obj) {
         // System.out.println("PROCESSING: " + obj);
         final Inst bytecode = obj.access();
-        if (bytecode.isOne() ||
-                (!(InstHelper.first(bytecode) instanceof InitialInstruction) && bytecode.domain().q().isZero()))
+        if (bytecode.isOne() || (!(InstHelper.first(bytecode) instanceof InitialInstruction) && bytecode.domain().q().isZero()))
             return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
         Stream<S> stream = Stream.of(bytecode.domain().access(null));
         for (final Inst inst : bytecode.iterable()) {
-            if (inst instanceof BarrierInstruction)  // two patterns: *-to-* and 1-to-*.
-                stream = IteratorUtils.stream(((BarrierInstruction<S, S>) inst).createIterator(stream.reduce(((BarrierInstruction<S, S>) inst).getInitialValue(), (a, b) -> ((BarrierInstruction<S, S>) inst).apply(b, a))));
+            if (inst instanceof BarrierInstruction)
+                stream = IteratorUtils
+                        .stream(((BarrierInstruction<S, S>) inst)
+                                .createIterator(stream.reduce(((BarrierInstruction<S, S>) inst).getInitialValue(),
+                                        (a, b) -> ((BarrierInstruction<S, S>) inst).apply(b, a))));
             else
                 stream = stream
                         .map(((Function<S, S>) inst)::apply)
-                        .flatMap(s -> IteratorUtils.stream(s.isInstances() ? IteratorUtils.map(s.access().args().iterator(), x -> x.model(s.model())) : IteratorUtils.of(s)))
-                        .flatMap(s -> IteratorUtils.stream(s.get() instanceof Iterator ? s.get() : IteratorUtils.of(s)));
-            stream = stream.filter(s -> !s.q().isZero());
+                        .flatMap(s -> IteratorUtils.stream(s.isInstances() ?
+                                IteratorUtils.map(s.access().args().iterator(), x -> x.model(s.model())) :
+                                IteratorUtils.of(s)))
+                        .filter(s -> !s.q().isZero());
         }
-        // TODO: I believe that we should not do this. This is forcing another abstract interpretation (this should be left up to the script engine configuration -- "go to fix point?")
-        //stream = stream.flatMap(s -> IteratorUtils.stream(s.access().opcode().java().equals(Tokens.START) ? FastProcessor.process(s) : IteratorUtils.of(s)));
-        // stream = stream.filter(s -> !s.q().isZero());
         return IteratorUtils.onLast(stream.iterator(), () -> Model.STORAGES.forEach(Storage::close));
     }
 

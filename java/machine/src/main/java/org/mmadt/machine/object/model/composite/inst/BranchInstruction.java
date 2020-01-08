@@ -26,6 +26,7 @@ import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.BranchInst;
 import org.mmadt.machine.object.impl.composite.inst.branch.ChooseInst;
+import org.mmadt.machine.object.impl.composite.inst.initial.StartInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Inst;
 import org.mmadt.machine.object.model.composite.Lst;
@@ -59,7 +60,7 @@ public interface BranchInstruction<S extends Obj, E extends Obj> extends Inst, F
                     break;
             }
         }
-        return TObj.none().set(itty);
+        return StartInst.instances(itty);
     } // this should all be done through subscription semantics and then its just a append round-robin
 
     public default E quantifyRange(final S domain) {
