@@ -65,7 +65,12 @@ public final class StartInst<S extends Obj> extends TInst<Obj, S> implements Ini
     }
 
     public static <S extends Obj> S instances(final Iterator<S> iterator) {
-        final StartInst<S> start = StartInst.create(IteratorUtils.list(iterator).toArray(new Object[]{}));
+        if (!iterator.hasNext())
+            return (S) TObj.none();
+        final Object[] instances = IteratorUtils.list(iterator).toArray(new Object[]{});
+        if (1 == instances.length)
+            return (S) instances[0];
+        final StartInst<S> start = StartInst.create(instances);
         return start.quantifyRange(TObj.none()).access(start);
     }
 }

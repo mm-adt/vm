@@ -49,12 +49,7 @@ public final class RefArgument<S extends Obj, E extends Obj> implements Argument
     @Override
     public E mapArg(final S object) {
         final List<E> list = IteratorUtils.list(FastProcessor.process((E) object.access(null).mapTo(ModelHelper.via(object, this.bytecode))));
-        if (list.size() == 1)
-            return list.get(0);
-        if(list.size() == 0)
-            return (E)TObj.none();
-        final E e = list.get(0).type();
-        return e.q(list.size()).access(StartInst.create(list.subList(0, this.count).toArray(new Object[]{})));
+        return StartInst.instances(list.subList(0, this.count).iterator());
     }
 
     @Override

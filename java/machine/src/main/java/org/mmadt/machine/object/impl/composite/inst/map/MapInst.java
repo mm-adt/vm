@@ -27,6 +27,7 @@ import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.util.ModelHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,8 +47,8 @@ public final class MapInst<S extends Obj, E extends Obj> extends TInst<S, E> imp
     }
 
     public static <S extends Obj, E extends Obj> E compute(final S from, final E to) {
-        return from.isInstance() && !to.isReference() ?
-                to.copy(from).q(from.q()) :
-                MapInst.<S, E>create(to).attach(from, to.copy(from).q(from.q()));
+        return from.isInstance() ?
+                ModelHelper.mergeModels(from, to.q(from.q())) :
+                MapInst.<S, E>create(to).attach(from, to.q(from.q()));
     }
 }

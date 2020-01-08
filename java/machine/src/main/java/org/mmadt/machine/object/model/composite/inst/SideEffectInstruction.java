@@ -38,7 +38,7 @@ public interface SideEffectInstruction<S extends Obj> extends Inst, Consumer<S>,
 
     @Override
     public default S apply(final S obj) {
-        this.accept(obj);
+        this.accept((S)obj.clone());
         return obj;
     }
 }
