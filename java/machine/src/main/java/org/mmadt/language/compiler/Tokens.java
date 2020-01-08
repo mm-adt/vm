@@ -118,6 +118,7 @@ public final class Tokens {
     public static final String INV = "inv";
     public static final String LT = "lt";
     public static final String LTE = "lte";
+    public static final String BIND = "bind";
     public static final String MAP = "map";
     public static final String MINUS = "minus";
     public static final String MODEL = "model";

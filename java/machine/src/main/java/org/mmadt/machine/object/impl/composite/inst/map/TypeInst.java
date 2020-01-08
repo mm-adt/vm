@@ -24,34 +24,32 @@ package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class StateInst<S extends Obj, K extends Obj, V extends Obj> extends TInst<S, Rec<K, V>> implements MapInstruction<S, Rec<K, V>> {
+public final class TypeInst<S extends Obj, E extends Obj> extends TInst<S, E> implements MapInstruction<S, E> {
 
-    private StateInst() {
-        super(PList.of(Tokens.STATE));
+    private TypeInst() {
+        super(PList.of(Tokens.TYPE));
     }
 
-    public Rec<K, V> apply(final S obj) {
-        return this.quantifyRange(obj.state());
+    public E apply(final S obj) {
+        return this.quantifyRange(obj.type());
     }
 
-    public static <S extends Obj, K extends Obj, V extends Obj> StateInst<S, K, V> create() {
-        return new StateInst<>();
+    public static <S extends Obj, E extends Obj> TypeInst<S, E> create() {
+        return new TypeInst<>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static <S extends Obj, K extends Obj, V extends Obj> Rec<K, V> compute(final S obj) {
-        return obj.isInstance() ?
-                TRec.of(obj.model().bindings()).copy(obj) :
-                StateInst.<S, K, V>create().attach(obj);
+    public static <S extends Obj, E extends Obj> E compute(final S obj) {
+        return !obj.isReference() ?
+                obj.type().copy(obj) :
+                TypeInst.<S, E>create().attach(obj);
     }
 }

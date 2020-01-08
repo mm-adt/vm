@@ -32,6 +32,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AccessInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AndInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
+import org.mmadt.machine.object.impl.composite.inst.map.BindInst;
 import org.mmadt.machine.object.impl.composite.inst.map.DivInst;
 import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
@@ -51,6 +52,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.QInst;
 import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
+import org.mmadt.machine.object.impl.composite.inst.map.TypeInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
@@ -67,6 +69,7 @@ import static org.mmadt.language.compiler.Tokens.A;
 import static org.mmadt.language.compiler.Tokens.ACCESS;
 import static org.mmadt.language.compiler.Tokens.AND;
 import static org.mmadt.language.compiler.Tokens.AS;
+import static org.mmadt.language.compiler.Tokens.BIND;
 import static org.mmadt.language.compiler.Tokens.BRANCH;
 import static org.mmadt.language.compiler.Tokens.CHOOSE;
 import static org.mmadt.language.compiler.Tokens.COUNT;
@@ -100,6 +103,7 @@ import static org.mmadt.language.compiler.Tokens.Q;
 import static org.mmadt.language.compiler.Tokens.START;
 import static org.mmadt.language.compiler.Tokens.STATE;
 import static org.mmadt.language.compiler.Tokens.SUM;
+import static org.mmadt.language.compiler.Tokens.TYPE;
 import static org.mmadt.language.compiler.Tokens.ZERO;
 
 /**
@@ -128,6 +132,8 @@ public final class Instructions {
                 return AsInst.create(args.get(0));
             case AND:
                 return AndInst.create(args.toArray(new Object[]{}));
+            case BIND:
+                return BindInst.create();
             case BRANCH:
                 return BranchInst.create(args.toArray(new Object[]{}));
             case COUNT:
@@ -190,6 +196,8 @@ public final class Instructions {
                 return StartInst.create(args.toArray(new Object[]{}));
             case STATE:
                 return StateInst.create();
+            case TYPE:
+                return TypeInst.create();
             case ZERO:
                 return ZeroInst.create();
             case DB:

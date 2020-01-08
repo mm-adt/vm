@@ -121,9 +121,14 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public <O extends Obj> O type() {
-        final TObj clone = this.clone();
-        clone.value = null;
-        return (O) clone;
+        if (null != this.type.pattern() &&
+                this.type.pattern() instanceof Obj)
+            return (O) this.type.pattern();
+        else {
+            final TObj clone = this.clone();
+            clone.value = null;
+            return (O) clone;
+        }
     }
 
     @Override

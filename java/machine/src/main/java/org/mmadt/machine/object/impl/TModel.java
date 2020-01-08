@@ -38,21 +38,18 @@ public final class TModel implements Model {
     public Map<Obj, Obj> bindings = null;
 
     public static Model of(final Map<Obj, Obj> state) {
-        final TModel temp = new TModel();
-        temp.bindings();
-        state.forEach((x, y) -> temp.bindings().put(TStr.of(x.label()), y));
-        return temp;
+        final TModel model = new TModel();
+        state.forEach((x, y) -> model.bindings().put(TStr.of(x.label()), y));
+        return model;
     }
 
     @Override
     public Obj apply(final Obj obj) {
-        this.bindings();
         return this.bindings().getOrDefault(TStr.of(obj.label()), TObj.none());
     }
 
     @Override
     public Model write(final Obj value) {
-        this.bindings();
         final TModel clone = (TModel) this.clone();
         clone.bindings().put(TStr.of(value.label()), value);
         return clone;
@@ -60,7 +57,7 @@ public final class TModel implements Model {
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof Model && Objects.equals(this.bindings(), ((TModel) other).bindings());
+        return other instanceof Model && Objects.equals(this.bindings(), ((Model) other).bindings());
     }
 
     @Override

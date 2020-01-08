@@ -23,35 +23,36 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class StateInst<S extends Obj, K extends Obj, V extends Obj> extends TInst<S, Rec<K, V>> implements MapInstruction<S, Rec<K, V>> {
+public final class BindInst<S extends Obj> extends TInst<S, Str> implements MapInstruction<S, Str> {
 
-    private StateInst() {
-        super(PList.of(Tokens.STATE));
+    private BindInst() {
+        super(PList.of(Tokens.BIND));
     }
 
-    public Rec<K, V> apply(final S obj) {
-        return this.quantifyRange(obj.state());
+    public Str apply(final S obj) {
+        return this.quantifyRange(obj.bind());
     }
 
-    public static <S extends Obj, K extends Obj, V extends Obj> StateInst<S, K, V> create() {
-        return new StateInst<>();
+    public static <S extends Obj> BindInst<S> create() {
+        return new BindInst<>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static <S extends Obj, K extends Obj, V extends Obj> Rec<K, V> compute(final S obj) {
-        return obj.isInstance() ?
-                TRec.of(obj.model().bindings()).copy(obj) :
-                StateInst.<S, K, V>create().attach(obj);
+    public static <S extends Obj> Str compute(final S obj) {
+        return !obj.isReference() ?
+                TStr.of(obj.label()).copy(obj) :
+                BindInst.<S>create().attach(obj, ObjectHelper.create(obj,TStr.of()));
     }
 }

@@ -35,7 +35,9 @@ import java.util.stream.Stream;
 
 import static org.mmadt.testing.LanguageArgs.args;
 import static org.mmadt.testing.LanguageArgs.except;
+import static org.mmadt.testing.LanguageArgs.ints;
 import static org.mmadt.testing.LanguageArgs.recs;
+import static org.mmadt.testing.LanguageArgs.strs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,8 +50,14 @@ class SymbolTest {
             args(recs(Map.of("name", "marko", "age", 29)).symbol("person"), "person <=[=[['name':str,'age':int]~person]][map,['name':'marko','age':29]][as,person~rec]"),
             except(new RuntimeException(), "person <=[=[['name':str,'age':int]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age','29asString']"),
             args(recs(Map.of("name", "marko", "age", 29)).symbol("person"), "person <=[=[['name':str,'age':int]~person]][map,['name':'marko','age':29]][as,person~obj][put,'age',29]"),
-            args(recs(Map.of("name", "marko", "age", 29)).symbol("person"), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',29]"),
+            args(recs(Map.of("name", "marko", "age", 30)).symbol("person"), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',30]"),
             except(new RuntimeException(), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',-4]"),
+
+            /////
+
+            args(ints(), "1 => [plus,2][type]"),
+            args(recs(Map.of("name", TStr.of(), "age", TInt.of())).label("person"), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',30][type]"),
+            args(strs("person"), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',30][type][bind]"),
     };
 
     @TestFactory
