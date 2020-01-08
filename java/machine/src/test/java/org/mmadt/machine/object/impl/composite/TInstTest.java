@@ -98,7 +98,7 @@ final class TInstTest {
                 assertEquals("get", inst.opcode().get());
                 assertEquals(inst.q().one(), inst.get(TInt.oneInt()).q());
             }
-            assertEquals(Tokens.INST, inst.symbol());
+            assertEquals(Tokens.INST, inst.label());
         }
         assertEquals(c, a.mult(b));
         assertEquals(e, c.mult(d));

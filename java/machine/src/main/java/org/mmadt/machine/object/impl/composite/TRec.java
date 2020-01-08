@@ -90,8 +90,8 @@ public class TRec<K extends Obj, V extends Obj> extends TObj implements Rec<K, V
     }
 
     @Override
-    public Rec<K, V> label(final String variable) {
-        return super.label(variable);
+    public Rec<K, V> label(final String label) {
+        return super.label(label);
     }
 
     @Override

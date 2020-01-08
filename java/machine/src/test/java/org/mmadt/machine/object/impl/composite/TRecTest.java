@@ -409,8 +409,8 @@ final class TRecTest implements TestUtilities {
         assertEquals(Tokens.REC, personAndAged.symbol());
         /*final PAnd and = personAndAged.get();
         assertEquals(2, and.predicates().size());
-        assertEquals("person", and.<TRec>get(0).symbol());
-        assertEquals(Tokens.REC, and.<TRec>get(1).symbol());*/
+        assertEquals("person", and.<TRec>get(0).label());
+        assertEquals(Tokens.REC, and.<TRec>get(1).label());*/
 
     }
 }

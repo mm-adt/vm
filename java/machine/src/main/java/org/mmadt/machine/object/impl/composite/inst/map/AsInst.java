@@ -106,7 +106,7 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
 
     private static <S extends Obj> S fakeLabel(final String label, final S obj) { // TODO: this is lame
         final TObj temp = (TObj) obj.clone();
-        temp.type = temp.type.label(label);
+        temp.label = label;
         return (S) temp;
     }
 }

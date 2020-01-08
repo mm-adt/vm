@@ -60,7 +60,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     public static Obj sym(final String label) {
         final TObj obj = new TObj(null);
-        obj.type = obj.type.label(label);
+        obj.label = label;
         return obj;
     }
 
@@ -93,6 +93,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     ////////
     protected Object value;                            // mutually exclusive with pattern (instance data)
     private WithOrderedRing quantifier = null;         // the 'amount' of this object bundle
+    public String label = null;
     public Type type;                                  // an object that abstractly defines this object's forms
     private Model model = new TModel();                // the model that is used to interpret this obj ("the traverser")
 
@@ -132,7 +133,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public String symbol() {
-        return this.type.symbol();
+        return this.type.label();
     }
 
     @Override
@@ -152,7 +153,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public String label() {
-        return this.type.label();
+        return this.label;
     }
 
     @Override
@@ -169,7 +170,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O symbol(final String symbol) {
         final TObj clone = this.clone();
-        clone.type = this.type.symbol(symbol);
+        clone.type = this.type.label(symbol);
         if (!this.model.apply(TObj.sym(symbol)).isNone()) {
             clone.type = clone.type.pattern(this.model.apply(TObj.sym(symbol)));
             clone.typeCheck();
@@ -180,7 +181,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O set(final Object object) {
         final TObj clone = this.clone();
-        clone.type = this.type.label(null);
+        clone.label = null;
         if (null == object) {
             clone.value = null;
             clone.type = clone.type.pattern(null);
@@ -204,10 +205,10 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O label(final String variable) {
+    public <O extends Obj> O label(final String label) {
         final TObj clone = this.clone();
-        clone.type = this.type.label(variable);
-        return null == variable ? (O) clone : ModelHelper.match((O) clone);
+        clone.label = label;
+        return null == label ? (O) clone : ModelHelper.match((O) clone);
     }
 
     @Override
@@ -241,6 +242,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return object instanceof TObj &&
                 ((this.q().isZero() && ((TObj) object).q().isZero()) ||
                         (Objects.equals(this.value, ((TObj) object).value) &&
+                                Objects.equals(this.label, ((TObj) object).label) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
                                 Objects.equals(this.type, ((TObj) object).type))); // TODO: model equality
     }

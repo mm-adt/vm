@@ -60,8 +60,8 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     @Override
-    public Lst<V> label(final String variable) {
-        return super.label(variable);
+    public Lst<V> label(final String label) {
+        return super.label(label);
     }
 
     public static <V extends Obj> Lst<V> of(final Object... objects) {

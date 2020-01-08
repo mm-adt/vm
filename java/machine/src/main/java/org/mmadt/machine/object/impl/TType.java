@@ -23,9 +23,10 @@
 package org.mmadt.machine.object.impl;
 
 import org.mmadt.language.compiler.Tokens;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.Pattern;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.Pattern;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,8 +39,7 @@ public final class TType implements Type {
 
     protected static Map<String, Type> BASE_TYPE_CACHE = new HashMap<>();
 
-    private String symbol;                     // the symbol denoting objects of this type (e.g. bool, int, person, etc.)
-    private String label;                      // the ~bind string (if retrieved via a bind)
+    private String symbol;                     // the label denoting objects of this type (e.g. bool, int, person, etc.)
     private Pattern pattern;                   // a predicate for testing an instance of the type
     private Inst access;                       // access to the manifestations of this form
 
@@ -52,14 +52,17 @@ public final class TType implements Type {
     }
 
     @Override
-    public String symbol() {
+    public String label() {
         return this.symbol;
     }
 
     @Override
-    public Type symbol(final String symbol) {
+    public Type label(final String symbol) {
         final TType clone = this.clone();
-        clone.symbol = symbol;
+        if (this.pattern instanceof Obj && !(((Obj) this.pattern).isInst()))
+            clone.pattern = ((Obj) this.pattern).label(symbol);
+        else
+            clone.symbol = symbol;
         return clone;
     }
 
@@ -72,18 +75,6 @@ public final class TType implements Type {
     public Type pattern(final Pattern pattern) {
         final TType clone = this.clone();
         clone.pattern = pattern;
-        return clone;
-    }
-
-    @Override
-    public String label() {
-        return this.label;
-    }
-
-    @Override
-    public Type label(final String label) {
-        final TType clone = this.clone();
-        clone.label = label;
         return clone;
     }
 
@@ -102,16 +93,15 @@ public final class TType implements Type {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.symbol, this.label, this.access, this.pattern);
+        return Objects.hash(this.label(), this.access, this.pattern);
     }
 
     @Override
     public boolean equals(final Object object) {
         return object instanceof Type &&
-                Objects.equals(this.symbol, ((Type) object).symbol()) &&
-                Objects.equals(this.access(), ((Type) object).access()) &&
-                Objects.equals(this.label, ((Type) object).label());
-                //Objects.equals(this.pattern, ((Type) object).pattern());
+                Objects.equals(this.label(), ((Type) object).label()) &&
+                Objects.equals(this.access(), ((Type) object).access());// &&
+        // Objects.equals(this.pattern, ((Type) object).pattern());
     }
 
     @Override
