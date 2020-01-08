@@ -47,7 +47,7 @@ public final class MapInst<S extends Obj, E extends Obj> extends TInst<S, E> imp
     }
 
     public static <S extends Obj, E extends Obj> E compute(final S from, final E to) {
-        return from.isInstance() ?
+        return !from.isReference() ?
                 ModelHelper.mergeModels(from, to.q(from.q())) :
                 MapInst.<S, E>create(to).attach(from, to.q(from.q()));
     }

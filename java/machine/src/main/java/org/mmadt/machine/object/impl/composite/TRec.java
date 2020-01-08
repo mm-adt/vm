@@ -95,6 +95,11 @@ public class TRec<K extends Obj, V extends Obj> extends TObj implements Rec<K, V
     }
 
     @Override
+    public Rec<K, V> symbol(final String variable) {
+        return super.symbol(variable);
+    }
+
+    @Override
     public Rec<K, V> zero() {
         return !this.isReference() ? this.set(PMap.of()) : ZeroInst.<Rec<K, V>>create().attach(this);
     }

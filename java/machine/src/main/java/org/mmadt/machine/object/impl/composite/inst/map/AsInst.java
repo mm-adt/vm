@@ -58,7 +58,7 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
         if (to.isSym()) {
             return from.label(to.label());
         } else if (!to.access().isOne()) {
-            return from.mapTo(to.access()).label(to.label()).symbol(to.symbol());
+            return from.mapTo(to.access()).label(to.label()).symbol(to.symbol()).model(from.model());
         } else if (from.isReference()) {
             return AsInst.<S>create(to).attach(from, to.label() == null ?
                     from :
@@ -86,8 +86,8 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
             for (final Map.Entry<Obj, Obj> toEntry : toRec.java().entrySet()) {
                 final Map.Entry<Obj, Obj> fromEntry = fromRec.java().entrySet().stream()
                         .map(x -> Map.of(
-                                from.model().<Obj>readOrGet(x.getKey(), x.getKey().model(from.model()).as(toEntry.getKey())),
-                                from.model().<Obj>readOrGet(x.getValue(), x.getValue().model(from.model()).as(toEntry.getValue()))).entrySet().iterator().next())
+                                from.model().readOrGet(x.getKey(), x.getKey().model(from.model()).as(toEntry.getKey())),
+                                from.model().readOrGet(x.getValue(), x.getValue().model(from.model()).as(toEntry.getValue()))).entrySet().iterator().next())
                         .filter(x -> null != x.getKey() && !TObj.none().equals(x.getKey()) && null != x.getValue())
                         .findFirst()
                         .orElse(null);
@@ -101,7 +101,7 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
         } else if (!to.test(from))
             return to.kill();
         else
-            return (from.isType() ? from.set(to.get()) : from).access(to.access()).label(to.label()).symbol(to.symbol());
+            return (from.isType() ? from.set(to.get()) : from).model(from.model()).label(to.label()).symbol(to.symbol());
     }
 
     private static <S extends Obj> S fakeLabel(final String label, final S obj) { // TODO: this is lame

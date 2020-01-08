@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.object.model.composite;
 
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.inst.map.GetInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.DropInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.PutInst;
@@ -47,6 +46,9 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
 
     @Override
     public Rec<K, V> label(final String variable);
+
+    @Override
+    public Rec<K, V> symbol(final String symbol);
 
     @Override
     public default Rec<K, V> put(final K key, final V value) {

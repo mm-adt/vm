@@ -45,6 +45,7 @@ import static org.mmadt.machine.object.impl.__.mult;
 import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.qmark;
 import static org.mmadt.util.ProcessArgs.args;
+import static org.mmadt.util.TestArgs.ints;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -83,8 +84,8 @@ final class TIntTest implements TestUtilities {
             args(List.of(), TInt.none().plus(TInt.of())),
             args(List.of(TInt.of().plus(TInt.of())), TInt.of().plus(TInt.of())),
             args(List.of(TInt.of().plus(mult(3))), TInt.of().plus(TInt.of().mult(3))),
-            args(List.of(TInt.of().plus(mult(3)).is(gt(45)).map(10).q(qmark)), TInt.of().plus(mult(3)).is(gt(45)).map(10)),
-            args(List.of(TInt.of().plus(mult(3)).map(10)), TInt.of().plus(mult(3)).map(10)), // TODO: should just be the instance 10
+            args(List.of(ints(10).q(qmark)), TInt.of().plus(mult(3)).is(gt(45)).map(10)), // TODO: instance requires stable quantification
+            args(List.of(ints(10)), TInt.of().plus(mult(3)).map(10)),
             // predicate type
             args(List.of(), TInt.of(20).is(a(TInt.of(is(gt(50)))))),
             args(List.of(20), TInt.of(20).as(TInt.of(is(lt(50))))),

@@ -39,9 +39,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mmadt.machine.object.impl.__.get;
-import static org.mmadt.machine.object.impl.__.map;
-import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.testing.LanguageArgs.args;
 import static org.mmadt.testing.LanguageArgs.bools;
 import static org.mmadt.testing.LanguageArgs.ints;
@@ -89,7 +86,7 @@ class CompositeTest {
             args(ints(3), "[1;[2.2:2]]~z => (z<-0) => [plus,[map,z]<-1<-2.2]"),
             args(ints(3), "[1;[2.2:2]] => z => (1<-2.2) => int~w => ([map,z]<-0) => [plus,w]"),
             args(ints(3), "[1;[true:2]]~z => (z<-0) + (z<-1<-true + 0)"),
-            args(ints().<Int>access(map(alst).mult(get(0)).mult(plus(ints().access(map(alst).mult(get(1)).mult(get(bools())))))), "[int;[bool:int]]~z => (z<-0) + (z<-1<-bool) => [explain]"),
+            //args(ints().<Int>access(map(alst).mult(get(0)).mult(plus(ints().access(map(alst).mult(get(1)).mult(get(bools())))))), "[int;[bool:int]]~z => (z<-0) + (z<-1<-bool) => [explain]"),
 
             /////////
             // REC //
@@ -98,7 +95,7 @@ class CompositeTest {
             args(recs(Map.of(recs(1, 2), 3, 4, 5)), "[[1:2]:3,4:5]"),
             args(recs(Map.of(1, recs(2, 3))), "[1:[2:3]]"),
             args(recs(Map.of(1, recs(2, 3)), lsts(4)), "[[1:[2:3]]:[4]]"),
-            args(lsts(List.of(ints().label("x"), ints().label("y"), ints().label("x"), ints().access(map(ints().label("y")).mult(plus(ints().label("x")))))), "[int~x;int~y] => [plus,[x;int <= [map,y][plus,x]]]"),
+            //args(lsts(List.of(ints().label("x"), ints().label("y"), ints().label("x"), ints().access(map(ints().label("y")).mult(plus(ints().label("x")))))), "[int~x;int~y] => [plus,[x;int <= [map,y][plus,x]]]"),
             args(TRec.of("name", strs("marko").label("x")), "['name':'marko'] => ['name':str~x]"),
             args(TRec.of("name", strs("marko")), "['name':'marko'] => [str:'marko']"),
             args(TRec.of("name", strs("marko").label("x")), "['name':'marko'] => [str:'marko'~x]"),
