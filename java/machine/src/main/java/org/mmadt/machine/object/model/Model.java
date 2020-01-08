@@ -25,6 +25,7 @@ package org.mmadt.machine.object.model;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.storage.Storage;
 
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.function.Function;
 
@@ -41,6 +42,8 @@ public interface Model extends Function<Obj, Obj>, Cloneable {
         final O o = (O) this.apply(key);
         return TObj.none().equals(o) ? missing : o;
     }
+
+    public Map<Obj, Obj> bindings();
 
     public Model write(final Obj value);
 

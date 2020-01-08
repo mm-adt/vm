@@ -23,37 +23,35 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Model;
+import org.mmadt.machine.object.impl.composite.TRec;
 import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
+import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
-import org.mmadt.machine.object.model.util.ModelHelper;
-
-import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class ModelInst<S extends Obj> extends TInst<S, S> implements InitialInstruction<S> {
+public final class StateInst<S extends Obj, K extends Obj, V extends Obj> extends TInst<S, Rec<K, V>> implements MapInstruction<S, Rec<K, V>> {
 
-    private ModelInst(final Object machine) {
-        super(PList.of(Tokens.EQUALS, machine));
+    private StateInst() {
+        super(PList.of(Tokens.STATE));
     }
 
-    @Override
-    public S apply(final Obj obj) {
-        S s = (S) this.argument(0).mapArg((S) obj);
-        if (!s.isLabeled() && s.isLst() && s.get() != null) {
-            for (final Obj x : s.<List<Obj>>get()) {
-                s = s.model(s.model().write(ModelHelper.via(s, x)));
-            }
-        }
-        return s;
+    public Rec<K, V> apply(final S obj) {
+        return this.quantifyRange(TRec.of(obj.model().bindings()));
     }
 
-    public static <S extends Obj> ModelInst<S> create(final Object machine) {
-        return new ModelInst<>(machine);
+    public static <S extends Obj, K extends Obj, V extends Obj> StateInst<S, K, V> create() {
+        return new StateInst<>();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static <S extends Obj, K extends Obj, V extends Obj> Rec<K, V> compute(final S obj) {
+        return obj.isInstance() ?
+                TRec.of(obj.model().bindings()) :
+                StateInst.<S, K, V>create().attach(obj);
     }
 }

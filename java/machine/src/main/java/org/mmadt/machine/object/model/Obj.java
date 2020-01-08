@@ -38,6 +38,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
+import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.SumInst;
 import org.mmadt.machine.object.impl.composite.inst.sideeffect.ExplainInst;
@@ -347,6 +348,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default <O extends Obj> O model(final O obj) {
         final O temp = this.model().readOrGet(obj, obj);
         return temp.model(this.model());
+    }
+
+    public default <K extends Obj, V extends Obj> Rec<K, V> state() {
+        return StateInst.compute(this);
     }
 
     public default Int map(final Integer integer) {

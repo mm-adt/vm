@@ -39,52 +39,52 @@ public final class TModel implements Model {
 
     public static Model of(final Map<Obj, Obj> state) {
         final TModel temp = new TModel();
-        temp.load();
-        state.forEach((x, y) -> temp.load().put(TStr.of(x.label()), y));
+        temp.bindings();
+        state.forEach((x, y) -> temp.bindings().put(TStr.of(x.label()), y));
         return temp;
     }
 
     @Override
     public Obj apply(final Obj obj) {
-        this.load();
-        return this.load().getOrDefault(TStr.of(obj.label()), TObj.none());
+        this.bindings();
+        return this.bindings().getOrDefault(TStr.of(obj.label()), TObj.none());
     }
 
     @Override
     public Model write(final Obj value) {
-        this.load();
+        this.bindings();
         final TModel clone = (TModel) this.clone();
-        clone.load().put(TStr.of(value.label()), value);
+        clone.bindings().put(TStr.of(value.label()), value);
         return clone;
     }
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof Model && Objects.equals(this.load(), ((TModel) other).load());
+        return other instanceof Model && Objects.equals(this.bindings(), ((TModel) other).bindings());
     }
 
     @Override
     public int hashCode() {
-        return this.load().hashCode();
+        return this.bindings().hashCode();
     }
 
     @Override
     public String toString() {
-        return this.load().values().toString();
+        return this.bindings().values().toString();
     }
 
     @Override
     public Model clone() {
         try {
             final TModel clone = (TModel) super.clone();
-            clone.bindings = new LinkedHashMap<>(this.load());
+            clone.bindings = new LinkedHashMap<>(this.bindings());
             return clone;
         } catch (final CloneNotSupportedException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
 
-    public Map<Obj, Obj> load() {
+    public Map<Obj, Obj> bindings() {
         if (null == this.bindings) {
             this.bindings = new LinkedHashMap<>();
             STORAGES.forEach(storage -> this.bindings.put(TStr.of(storage.name()), storage.open()));

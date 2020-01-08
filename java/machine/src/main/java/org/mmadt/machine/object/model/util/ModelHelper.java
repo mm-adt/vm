@@ -23,7 +23,6 @@
 package org.mmadt.machine.object.model.util;
 
 import org.mmadt.language.compiler.Instructions;
-import org.mmadt.machine.object.impl.TModel;
 import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
 import org.mmadt.machine.object.impl.composite.TLst;
@@ -83,7 +82,9 @@ public final class ModelHelper {
             final O o = (O) from.model().apply(to);
             obj = o.isNone() ? obj : obj.test(o) ? o : (O) TObj.none();
         }
-        return obj;
+        return obj;/*to.isReference() ?
+                FastProcessor.<O>process(from.mapTo(obj.access(via(from, to.access())))).next() :
+                obj;*/
     }
 
 
@@ -110,7 +111,7 @@ public final class ModelHelper {
 
     public static <S extends Obj, E extends Obj> E mergeModels(final S from, final E to) {
         Model temp = to.model();
-        for (final Map.Entry<Obj, Obj> entry : ((TModel) from.model()).load().entrySet()) {
+        for (final Map.Entry<Obj, Obj> entry : from.model().bindings().entrySet()) {
             temp = temp.write(entry.getValue());
         }
         return to.model(temp);

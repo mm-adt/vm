@@ -50,6 +50,7 @@ import org.mmadt.machine.object.impl.composite.inst.map.OneInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
 import org.mmadt.machine.object.impl.composite.inst.map.PlusInst;
 import org.mmadt.machine.object.impl.composite.inst.map.QInst;
+import org.mmadt.machine.object.impl.composite.inst.map.StateInst;
 import org.mmadt.machine.object.impl.composite.inst.map.ZeroInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.CountInst;
 import org.mmadt.machine.object.impl.composite.inst.reduce.GroupCountInst;
@@ -97,6 +98,7 @@ import static org.mmadt.language.compiler.Tokens.PROBE;
 import static org.mmadt.language.compiler.Tokens.PUT;
 import static org.mmadt.language.compiler.Tokens.Q;
 import static org.mmadt.language.compiler.Tokens.START;
+import static org.mmadt.language.compiler.Tokens.STATE;
 import static org.mmadt.language.compiler.Tokens.SUM;
 import static org.mmadt.language.compiler.Tokens.ZERO;
 
@@ -143,7 +145,7 @@ public final class Instructions {
             case EXPLAIN:
                 return args.isEmpty() ? ExplainInst.create() : ExplainInst.create(args.get(0));
             case GET:
-                return args.size() == 1 ? GetInst.create(args.get(0)) : GetInst.create(args.get(0),args.get(1));
+                return args.size() == 1 ? GetInst.create(args.get(0)) : GetInst.create(args.get(0), args.get(1));
             case GT:
                 return GtInst.create(args.get(0));
             case GTE:
@@ -186,6 +188,8 @@ public final class Instructions {
                 return SumInst.create();
             case START:
                 return StartInst.create(args.toArray(new Object[]{}));
+            case STATE:
+                return StateInst.create();
             case ZERO:
                 return ZeroInst.create();
             case DB:

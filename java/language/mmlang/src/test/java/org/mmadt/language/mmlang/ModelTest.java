@@ -25,6 +25,8 @@ package org.mmadt.language.mmlang;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
+import org.mmadt.machine.object.impl.atomic.TInt;
+import org.mmadt.machine.object.impl.atomic.TStr;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.testing.LanguageArgs;
 import org.mmadt.util.IteratorUtils;
@@ -34,6 +36,9 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.testing.LanguageArgs.args;
+import static org.mmadt.testing.LanguageArgs.ints;
+import static org.mmadt.testing.LanguageArgs.recs;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,11 +46,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ModelTest {
 
     private final static LanguageArgs[] MODELS = new LanguageArgs[]{
-            // args(ints(2000), "10 =[=x->1000]=> [map,x][plus,x]"),
-            // args(ints(1110), "10 =[=[x:1000,y:100]]=> [plus,x][plus,y]"),
-            // args(ints(1110), "10 =[=[x:1000,y:(int<=[map,100])]]=> [plus,x][plus,y]"),
-            // args(ints(1110), "10 =[=[x:1000~x,y:(int<=[map,x][plus,100])]]=> [plus,y]"),
-            // args(ints(1110), "10 =[=[x:1000~x,y:[map,x][plus,100]]]=> [plus,y]"),
+            args(ints(2000), "10 =[=[1000~x]]=> [map,x][plus,x]"),
+            args(ints(1110), "10 =[=[1000~x;100~y]]=> [map,10][plus,x][plus,y]"),
+            //args(ints(1110), "10 =[=[1000~x;(int~y<=[map,100])]]=> [map,10][plus,x][plus,y]"),
+            //args(ints(1110), "10 =[=[1000~x;(int~y<=[map,x][plus,100])]]=> [map,10][plus,y]"),
+            //args(ints(1110), "10 =[=[1000~x;[map,x][plus,100]~y]]=> [map,10][plus,y]"),
+            args(recs(TStr.of("x"), TInt.of(1000).label("x"), TStr.of("y"), TInt.of(100).label("y")), "10 =[=[1000~x;100~y]]=> [map,10][plus,x][plus,y][state]"),
     };
 
 
