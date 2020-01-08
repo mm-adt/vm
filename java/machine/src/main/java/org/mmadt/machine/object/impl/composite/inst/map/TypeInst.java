@@ -31,25 +31,25 @@ import org.mmadt.machine.object.model.composite.util.PList;
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public final class TypeInst<S extends Obj, E extends Obj> extends TInst<S, E> implements MapInstruction<S, E> {
+public final class TypeInst<S extends Obj> extends TInst<S, S> implements MapInstruction<S, S> {
 
     private TypeInst() {
         super(PList.of(Tokens.TYPE));
     }
 
-    public E apply(final S obj) {
+    public S apply(final S obj) {
         return this.quantifyRange(obj.type());
     }
 
-    public static <S extends Obj, E extends Obj> TypeInst<S, E> create() {
+    public static <S extends Obj> TypeInst<S> create() {
         return new TypeInst<>();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static <S extends Obj, E extends Obj> E compute(final S obj) {
+    public static <S extends Obj> S compute(final S obj) {
         return !obj.isReference() ?
                 obj.type().copy(obj) :
-                TypeInst.<S, E>create().attach(obj);
+                TypeInst.<S>create().attach(obj, obj.type().copy(obj));
     }
 }

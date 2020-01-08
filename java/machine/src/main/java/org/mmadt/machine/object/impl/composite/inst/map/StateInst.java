@@ -29,6 +29,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
+import org.mmadt.machine.object.model.util.ObjectHelper;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,6 +53,6 @@ public final class StateInst<S extends Obj, K extends Obj, V extends Obj> extend
     public static <S extends Obj, K extends Obj, V extends Obj> Rec<K, V> compute(final S obj) {
         return obj.isInstance() ?
                 TRec.of(obj.model().bindings()).copy(obj) :
-                StateInst.<S, K, V>create().attach(obj);
+                StateInst.<S, K, V>create().attach(obj, ObjectHelper.create(obj, TRec.some()));
     }
 }
