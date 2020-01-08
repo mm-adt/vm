@@ -26,7 +26,6 @@ import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TBool;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
-import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
@@ -167,6 +166,10 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O symbol(final String symbol) {
         final TObj clone = this.clone();
         clone.type = this.type.symbol(symbol);
+        if (!this.model.apply(TObj.sym(symbol)).isNone()) {
+            clone.type = clone.type.pattern(this.model.apply(TObj.sym(symbol)));
+            clone.typeCheck();
+        }
         return (O) clone;
     }
 
@@ -214,6 +217,12 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public Inst access() {
         final Inst inst = this.type.access();
         return null == inst ? IdInst.create().domainAndRange(this, this) : inst; // instances require domain/range spec on [id] access
+    }
+
+    @Override
+    public void typeCheck() {
+        if (null != this.type.pattern() && !this.type.pattern().test(this))
+            throw new RuntimeException("The type does not subsume the obj: " + this.type.pattern() + "~" + this);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////

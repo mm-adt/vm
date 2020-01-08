@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -64,6 +65,10 @@ public final class LanguageArgs<A extends Obj> {
 
     public static <A extends Obj> LanguageArgs<A> args(final List<A> expected, final String input) {
         return new LanguageArgs<>(expected, null, input);
+    }
+
+    public static <A extends Obj> LanguageArgs<A> except(final Exception expected, final String input) {
+        return new LanguageArgs<>(null, null, input);
     }
 
     public static <A extends Obj> LanguageArgs<A> args(final A expected, final String input) {
@@ -110,11 +115,19 @@ public final class LanguageArgs<A extends Obj> {
 
     public DynamicTest execute(final ScriptEngine engine) {
         return DynamicTest.dynamicTest(this.input, () -> {
-            final List<A> results = IteratorUtils.list((Iterator<A>) engine.eval(this.input));
-            assertEquals(this.expected, results);
-            if (null != this.expectedState) {
-                final A obj = results.get(0);
-                assertEquals(TModel.of(this.expectedState), obj.model());
+            if (null == this.expected) {
+                try {
+                    IteratorUtils.list((Iterator<A>) engine.eval(this.input));
+                } catch (Exception e) {
+                    assertTrue(true);
+                }
+            } else {
+                final List<A> results = IteratorUtils.list((Iterator<A>) engine.eval(this.input));
+                assertEquals(this.expected, results);
+                if (null != this.expectedState) {
+                    final A obj = results.get(0);
+                    assertEquals(TModel.of(this.expectedState), obj.model());
+                }
             }
         });
     }

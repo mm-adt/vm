@@ -206,6 +206,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public void typeCheck();
+
     public default boolean isNamed() {
         return !BASE_SYMBOLS.contains(this.symbol());
     }
@@ -219,8 +221,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default boolean isInstances() {
-        return this.isReference() && this.access().opcode().java().equals(Tokens.START);
-        //   return this.isReference() && InstHelper.isInstanceStream(this.access());
+        return this.isReference() && InstHelper.isInstanceStream(this.access());
     }
 
     public default boolean isInstance() {

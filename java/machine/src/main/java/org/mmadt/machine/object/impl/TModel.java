@@ -70,7 +70,7 @@ public final class TModel implements Model {
 
     @Override
     public String toString() {
-        return this.bindings.toString();
+        return this.bindings.values().toString();
     }
 
     @Override

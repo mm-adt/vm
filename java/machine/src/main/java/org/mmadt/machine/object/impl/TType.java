@@ -110,8 +110,8 @@ public final class TType implements Type {
         return object instanceof Type &&
                 Objects.equals(this.symbol, ((Type) object).symbol()) &&
                 Objects.equals(this.access(), ((Type) object).access()) &&
-                Objects.equals(this.label, ((Type) object).label()) &&
-                Objects.equals(this.pattern, ((Type) object).pattern());
+                Objects.equals(this.label, ((Type) object).label());
+                //Objects.equals(this.pattern, ((Type) object).pattern());
     }
 
     @Override
