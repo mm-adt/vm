@@ -63,7 +63,6 @@ import org.mmadt.machine.object.model.util.QuantifierHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A Java representation of an mm-ADT {@code obj}.
@@ -72,8 +71,6 @@ import java.util.Set;
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
-
-    final Set<String> BASE_SYMBOLS = Set.of(Tokens.OBJ, Tokens.BOOL, Tokens.INT, Tokens.REAL, Tokens.STR, Tokens.LST, Tokens.REC, Tokens.INST);
 
     public String symbol();
 
@@ -84,6 +81,11 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public String binding();
 
     public Inst ref();
+
+    /*
+    public Inst constraint();
+    public <O extends Obj> O constraint(final Inst predicate);
+     */
 
     public <O extends Obj> O set(final Object object);
 
@@ -209,7 +211,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public void typeCheck();
 
     public default boolean isNamed() {
-        return !BASE_SYMBOLS.contains(this.symbol());
+        return !Tokens.BASE_SYMBOLS.contains(this.symbol());
     }
 
     public default boolean isType() {
