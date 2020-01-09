@@ -52,10 +52,10 @@ import static org.mmadt.testing.LanguageArgs.strs;
  */
 class CompositeTest {
 
-    private final static Int oneX = ints(1).binding("x");
-    private final static Int twoY = ints(2).binding("y");
-    private final static Int threeZ = ints(3).binding("z");
-    private final static Lst alst = lsts(List.of(ints(), recs(Map.of(bools(), ints())))).binding("z");
+    private final static Int oneX = ints(1).bind("x");
+    private final static Int twoY = ints(2).bind("y");
+    private final static Int threeZ = ints(3).bind("z");
+    private final static Lst alst = lsts(List.of(ints(), recs(Map.of(bools(), ints())))).bind("z");
 
     private final static LanguageArgs[] COMPOSITE = new LanguageArgs[]{
 
@@ -66,18 +66,18 @@ class CompositeTest {
             args(lsts(1, lsts(2, 3), 4), "[1;[2;3];4]"),
             args(lsts(List.of(1, lsts(2, 3)), lsts(4)), "[[1;[2;3]];[4]]"),
             args(ints(3), "[1;2] => [x;y] => (x + y)"),
-            args(lsts(ints(1).binding("x"), ints(2).binding("y")).binding("z"), "[1;2] => [x;y] => z"),
-            args(lsts(ints(1).binding("x"), ints(2).binding("y")).binding("z"), "[1;2] => [x;y] => lst~z"),
+            args(lsts(ints(1).bind("x"), ints(2).bind("y")).bind("z"), "[1;2] => [x;y] => z"),
+            args(lsts(ints(1).bind("x"), ints(2).bind("y")).bind("z"), "[1;2] => [x;y] => lst~z"),
             args(ints(6), "[1;2] => [x;y] => (x + (y + (x + y)))"),
             args(objs(), "[1;2] => [x;y] => [x:y]"),
-            args(recs(Map.of(ints(1).binding("x"), ints(2).binding("y"))), "[1;2] => [x;y] => [map,[x:y]]"),
+            args(recs(Map.of(ints(1).bind("x"), ints(2).bind("y"))), "[1;2] => [x;y] => [map,[x:y]]"),
             args(twoY, "[1~x;2~y;3~z] => [get,1]"),
             args(oneX, "[1~x;2~y;3~z] => [get,0]"),
             args(oneX, "[1~x;2~y;3~z] => [map,[x;y]][get,0]"),
             args(objs(List.of("c", 1), List.of("c", 2)), "obj{0} => [start,['a';1],['b';2]][put,[start,1][plus,2][plus,[neg]],[start,'c'][plus,[zero]]]"),
-            args(ints(3).binding("z"), "[1~x;2~y] => [x;y] => (int <= [map,x][plus,y][plus,0][as,int~z])"),
-            args(ints(-3).binding("z"), "[1~x;2~y] => [x;y] => (x + y + 0 * -1) => int~z"),
-            args(ints(3).binding("z"), "[1~x;2~y] => [x;y] => (x + y + 0) => int~z"),
+            args(ints(3).bind("z"), "[1~x;2~y] => [x;y] => (int <= [map,x][plus,y][plus,0][as,int~z])"),
+            args(ints(-3).bind("z"), "[1~x;2~y] => [x;y] => (x + y + 0 * -1) => int~z"),
+            args(ints(3).bind("z"), "[1~x;2~y] => [x;y] => (x + y + 0) => int~z"),
             args(ints(3), "[1;2]~z => ((int <= (z<-0)) + (int <= (z<-1)))"),
             args(ints(3), "[1;2]~z => (<-0) => + (z<-1)"),
             args(ints(3), "[1;2]~z => (z<-0) + (z<-1)"),
@@ -91,19 +91,19 @@ class CompositeTest {
             /////////
             // REC //
             /////////
-            args(recs(Map.of(recs(Map.of(1, 2)).binding("x"), 3, 4, 5)), "obj{0} => [start,[[1:2]~x:3,4:5]][map,[x:3,4:5]]"),
+            args(recs(Map.of(recs(Map.of(1, 2)).bind("x"), 3, 4, 5)), "obj{0} => [start,[[1:2]~x:3,4:5]][map,[x:3,4:5]]"),
             args(recs(Map.of(recs(1, 2), 3, 4, 5)), "[[1:2]:3,4:5]"),
             args(recs(Map.of(1, recs(2, 3))), "[1:[2:3]]"),
             args(recs(Map.of(1, recs(2, 3)), lsts(4)), "[[1:[2:3]]:[4]]"),
             //args(lsts(List.of(ints().label("x"), ints().label("y"), ints().label("x"), ints().access(map(ints().label("y")).mult(plus(ints().label("x")))))), "[int~x;int~y] => [plus,[x;int <= [map,y][plus,x]]]"),
-            args(TRec.of("name", strs("marko").binding("x")), "['name':'marko'] => ['name':str~x]"),
+            args(TRec.of("name", strs("marko").bind("x")), "['name':'marko'] => ['name':str~x]"),
             args(TRec.of("name", strs("marko")), "['name':'marko'] => [str:'marko']"),
-            args(TRec.of("name", strs("marko").binding("x")), "['name':'marko'] => [str:'marko'~x]"),
-            args(TRec.of("name", strs("marko").binding("x"), "age", ints(29).binding("y")), "['name':'marko','age':29] => ['name':str~x,'age':int~y]"),
-            args(TRec.of("name", strs("marko").binding("x"), "age", ints(29).binding("y")).binding("z"), "['name':'marko','age':29] => ['name':str~x,'age':int~y]~z"),
-            args(TRec.of("name", TRec.of("first", strs("marko").binding("x")), "age", ints(29).binding("y")).binding("z"), "['name':['first':'marko'],'age':29] => ['name':['first':str~x],'age':int~y]~z"),
-            args(TRec.of("name", TRec.of("first", strs("marko")), "age", ints(29).binding("y")).binding("z"), "['name':['first':'marko'],'age':29] => ['name':['first':str],'age':int~y] => z"),
-            args(TRec.of("name", TRec.of("first", strs("marko")), "age", ints(29).binding("y")).binding("z"), "['name':['first':'marko','last':'rodster'~y],'age':29] => ['name':['first':str],'age':int~y] => rec~z"),
+            args(TRec.of("name", strs("marko").bind("x")), "['name':'marko'] => [str:'marko'~x]"),
+            args(TRec.of("name", strs("marko").bind("x"), "age", ints(29).bind("y")), "['name':'marko','age':29] => ['name':str~x,'age':int~y]"),
+            args(TRec.of("name", strs("marko").bind("x"), "age", ints(29).bind("y")).bind("z"), "['name':'marko','age':29] => ['name':str~x,'age':int~y]~z"),
+            args(TRec.of("name", TRec.of("first", strs("marko").bind("x")), "age", ints(29).bind("y")).bind("z"), "['name':['first':'marko'],'age':29] => ['name':['first':str~x],'age':int~y]~z"),
+            args(TRec.of("name", TRec.of("first", strs("marko")), "age", ints(29).bind("y")).bind("z"), "['name':['first':'marko'],'age':29] => ['name':['first':str],'age':int~y] => z"),
+            args(TRec.of("name", TRec.of("first", strs("marko")), "age", ints(29).bind("y")).bind("z"), "['name':['first':'marko','last':'rodster'~y],'age':29] => ['name':['first':str],'age':int~y] => rec~z"),
     };
 
     @TestFactory

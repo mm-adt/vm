@@ -63,8 +63,8 @@ public final class TBool extends TObj implements Bool {
     //////////////////////////////////
 
     @Override
-    public Bool binding(final String label) {
-        return super.binding(label);
+    public Bool bind(final String binding) {
+        return super.bind(binding);
     }
 
     /////////////////////////////////

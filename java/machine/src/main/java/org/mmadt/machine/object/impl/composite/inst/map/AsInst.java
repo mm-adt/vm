@@ -56,9 +56,9 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
 
     public static <S extends Obj> S compute(final S from, S to) {
         if (to.isSym()) {
-            return from.binding(to.binding());
+            return from.bind(to.binding());
         } else if (!to.ref().isOne()) {
-            return from.mapTo(to.ref()).binding(to.binding()).symbol(to.symbol()).model(from.model());
+            return from.mapTo(to.ref()).bind(to.binding()).symbol(to.symbol()).model(from.model());
         } else if (from.isReference()) {
             return AsInst.<S>create(to).attach(from, to.binding() == null ?
                     from :
@@ -77,7 +77,7 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 model = model.write(obj);
                 temp.add(obj);
             }
-            return (S) TLst.of(temp).binding(to.binding()).model(model).symbol(to.symbol());
+            return (S) TLst.of(temp).bind(to.binding()).model(model).symbol(to.symbol());
         } else if (from instanceof Rec && to instanceof Rec && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
             final Rec<Obj, Obj> fromRec = (Rec<Obj, Obj>) from;
             final Rec<Obj, Obj> toRec = (Rec<Obj, Obj>) to;
@@ -96,12 +96,12 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 model = model.write(fromEntry.getKey()).write(fromEntry.getValue());
                 temp.put(fromEntry.getKey(), fromEntry.getValue());
             }
-            final S s = (S) TRec.of(temp).binding(to.binding()).model(model).symbol(to.symbol());
+            final S s = (S) TRec.of(temp).bind(to.binding()).model(model).symbol(to.symbol());
             return s.model(s.model().write(s));
         } else if (!to.test(from))
             return to.halt();
         else
-            return (from.isType() ? from.set(to.get()) : from).model(from.model()).binding(to.binding()).symbol(to.symbol());
+            return (from.isType() ? from.set(to.get()) : from).model(from.model()).bind(to.binding()).symbol(to.symbol());
     }
 
     private static <S extends Obj> S fakeLabel(final String label, final S obj) { // TODO: this is lame

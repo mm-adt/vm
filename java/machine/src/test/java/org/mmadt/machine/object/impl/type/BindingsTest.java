@@ -44,7 +44,7 @@ class BindingsTest {
 
     @Test
     void shouldBindAtomics() {
-        Obj type1 = TInt.of(is(gt(29))).binding("x");
+        Obj type1 = TInt.of(is(gt(29))).bind("x");
         System.out.println(type1);
         final Bindings bindings = new Bindings();
         assertFalse(type1.match(bindings, TInt.of(23)));
@@ -59,9 +59,9 @@ class BindingsTest {
 
     @Test
     void shouldBindRecords() {
-        Rec type1 = TRec.of("name", TStr.of().binding("x")); // [name:@string$x]
-        Rec type2 = TRec.of("name", TStr.of()).binding("x"); // [name:@string]$x
-        Rec type3 = TRec.of("name", TStr.of().binding("x"), "alias", TStr.of().binding("x")); // [name:@string$x,alias:@string$x]
+        Rec type1 = TRec.of("name", TStr.of().bind("x")); // [name:@string$x]
+        Rec type2 = TRec.of("name", TStr.of()).bind("x"); // [name:@string]$x
+        Rec type3 = TRec.of("name", TStr.of().bind("x"), "alias", TStr.of().bind("x")); // [name:@string$x,alias:@string$x]
         Rec rec1 = TRec.of("name", "marko");
         Rec rec2 = TRec.of("name", "kuppitz", "alias", "guru");
         Rec rec3 = TRec.of("name", "marko", "alias", "marko");

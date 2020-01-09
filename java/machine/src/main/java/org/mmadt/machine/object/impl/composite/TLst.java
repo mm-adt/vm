@@ -60,8 +60,8 @@ public class TLst<V extends Obj> extends TObj implements Lst<V> {
     }
 
     @Override
-    public Lst<V> binding(final String label) {
-        return super.binding(label);
+    public Lst<V> bind(final String binding) {
+        return super.bind(binding);
     }
 
     public static <V extends Obj> Lst<V> of(final Object... objects) {

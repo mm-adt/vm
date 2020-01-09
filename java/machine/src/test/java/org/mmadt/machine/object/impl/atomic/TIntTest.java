@@ -91,7 +91,7 @@ final class TIntTest implements TestUtilities {
             args(List.of(20), TInt.of(20).as(TInt.of(is(lt(50))))),
 
             // state
-            args(List.of(TInt.of(1).symbol("age").binding("a")), TInt.of(1).as(TInt.of().symbol("age").binding("a"))),
+            args(List.of(TInt.of(1).symbol("age").bind("a")), TInt.of(1).as(TInt.of().symbol("age").bind("a"))),
     };
 
 

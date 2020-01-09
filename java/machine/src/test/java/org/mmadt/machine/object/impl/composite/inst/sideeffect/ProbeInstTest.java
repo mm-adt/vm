@@ -33,7 +33,7 @@ class ProbeInstTest {
 
     @Test
     void testVisually() {
-        FastProcessor.process(TInt.of().plus(10).mult(2).as(TInt.of().binding("y")).minus(12).probe(TInt.of(2).binding("x"))).forEachRemaining(obj -> {
+        FastProcessor.process(TInt.of().plus(10).mult(2).as(TInt.of().bind("y")).minus(12).probe(TInt.of(2).bind("x"))).forEachRemaining(obj -> {
         });
     }
 }

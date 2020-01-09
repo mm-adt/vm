@@ -139,7 +139,7 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         if (itty.hasNext()) {
             final Obj object = itty.next();
             if (null != object.binding())
-                bindings.put(object.binding(), object.binding(null));
+                bindings.put(object.binding(), object.bind(null));
             return true;
         } else {
             bindings.rollback();

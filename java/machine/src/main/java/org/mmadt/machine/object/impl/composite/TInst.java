@@ -97,7 +97,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
     public E attach(S domainRange) {
         if (domainRange.isInstance())
             domainRange = domainRange.type().ref(StartInst.create(domainRange));
-        return this.attach(domainRange, this instanceof Morphing ? (E) domainRange.binding(null) : (E) domainRange);
+        return this.attach(domainRange, this instanceof Morphing ? (E) domainRange.bind(null) : (E) domainRange);
     }
 
     public static Inst of(final List<Inst> insts) {
@@ -106,7 +106,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
 
     public <A extends Obj> Argument<S, A> argument(final int index) {
         final S arg = this.<S>args().get(index); // TODO: very hacky as as() does not resolve types
-        return Argument.create(arg.isSym() && this.opcode().java().equals(Tokens.AS) ? this.domain.type().binding(arg.binding()) : arg);
+        return Argument.create(arg.isSym() && this.opcode().java().equals(Tokens.AS) ? this.domain.type().bind(arg.binding()) : arg);
     }
 
     @Override

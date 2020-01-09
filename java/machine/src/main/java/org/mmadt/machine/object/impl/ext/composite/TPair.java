@@ -50,8 +50,8 @@ public final class TPair<V extends WithOrderedRing<V>> extends TLst<V> implement
     }
 
     @Override
-    public Pair<V> binding(final String label) {
-        return (Pair<V>) super.binding(label);
+    public Pair<V> bind(final String binding) {
+        return (Pair<V>) super.bind(binding);
     }
 
     @Override

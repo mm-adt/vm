@@ -45,7 +45,7 @@ public interface Rec<K extends Obj, V extends Obj> extends WithGroupPlus<Rec<K, 
     }
 
     @Override
-    public Rec<K, V> binding(final String variable);
+    public Rec<K, V> bind(final String variable);
 
     @Override
     public Rec<K, V> symbol(final String symbol);

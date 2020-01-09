@@ -52,7 +52,7 @@ public final class Stor<A extends Obj> implements Storage<A> {
         } catch (final Exception e) {
             MAP = new LinkedHashMap<>();
         }
-        root = (A) new MRec(MAP).binding(MMSTOR);
+        root = (A) new MRec(MAP).bind(MMSTOR);
     }
 
 

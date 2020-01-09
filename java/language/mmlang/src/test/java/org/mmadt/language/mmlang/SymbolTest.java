@@ -56,7 +56,7 @@ class SymbolTest {
             /////
 
             args(ints(), "1 => [plus,2][type]"),
-            args(recs(Map.of("name", TStr.of(), "age", TInt.of())).binding("person"), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',30][type]"),
+            args(recs(Map.of("name", TStr.of(), "age", TInt.of())).bind("person"), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',30][type]"),
             args(strs("person"), "person <=[=[int[is>0]~age;['name':str,'age':age]~person]][map,['name':'marko','age':29]][as,person~rec][put,'age',30][type][bind]"),
     };
 

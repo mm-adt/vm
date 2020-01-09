@@ -53,6 +53,6 @@ public final class BindInst<S extends Obj> extends TInst<S, Str> implements MapI
     public static <S extends Obj> Str compute(final S obj) {
         return !obj.isReference() ?
                 TStr.of(obj.binding()).copy(obj) :
-                BindInst.<S>create().attach(obj, ObjectHelper.create(obj,TStr.of()));
+                BindInst.<S>create().attach(obj, ObjectHelper.create(obj, TStr.of()));
     }
 }

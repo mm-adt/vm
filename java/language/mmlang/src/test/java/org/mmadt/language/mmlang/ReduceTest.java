@@ -80,9 +80,9 @@ class ReduceTest {
                     "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][count]][sum]"),
             args(ints(3),
                     "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count]"),
-            args(ints(3).binding("x"),
+            args(ints(3).bind("x"),
                     "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count][sum]=>int~x"),
-            args(ints(3).binding("x"),
+            args(ints(3).bind("x"),
                     "1 => [[plus,1][sum] + [plus,2][sum] + [plus,3][sum]][count][sum]=>x"),
 
 
@@ -105,9 +105,9 @@ class ReduceTest {
 
 
             // updated reduce such that the traverser models are merged into one model (overwrite possible -- order of overwrite not specifiable)
-            args(lsts(List.of(ints(10).binding("x"), ints(10).binding("y"))), "10 => [int~x + int~y][count][map,[x;y]]"),
-            args(lsts(List.of(ints(10).binding("x"), ints(10).binding("y"))), "10 => [int~x + int~y][sum][map,[x;y]]"),
-            args(lsts(List.of(ints(10).binding("x"), ints(10).binding("y"))), "10 => [int~x + int~y][groupCount][map,[x;y]]"),
+            args(lsts(List.of(ints(10).bind("x"), ints(10).bind("y"))), "10 => [int~x + int~y][count][map,[x;y]]"),
+            args(lsts(List.of(ints(10).bind("x"), ints(10).bind("y"))), "10 => [int~x + int~y][sum][map,[x;y]]"),
+            args(lsts(List.of(ints(10).bind("x"), ints(10).bind("y"))), "10 => [int~x + int~y][groupCount][map,[x;y]]"),
 
     };
 

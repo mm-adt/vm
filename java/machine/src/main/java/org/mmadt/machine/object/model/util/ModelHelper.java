@@ -54,13 +54,13 @@ public final class ModelHelper {
                 for (final Map.Entry<Obj, Obj> entry : to.<Map<Obj, Obj>>get().entrySet()) {
                     map.put(via(from, entry.getKey()), via(from, entry.getValue()));
                 }
-                obj = (O) TRec.of(map).binding(to.binding());
+                obj = (O) TRec.of(map).bind(to.binding());
             } else if (to.isLst()) {
                 final List<Obj> list = new PList<>();
                 for (final Obj entry : to.<List<Obj>>get()) {
                     list.add(via(from, entry));
                 }
-                obj = (O) TLst.of(list).binding(to.binding());
+                obj = (O) TLst.of(list).bind(to.binding());
             } else if (to.isInst()) {
                 if (InstHelper.singleInst((Inst) to)) {
                     final List<Obj> list = new PList<>();

@@ -124,9 +124,9 @@ final class TStrTest implements TestUtilities {
         assertEquals("str", TStr.of().toString());
         assertEquals("'marko'", TStr.of("marko").toString());
         assertEquals("str[is,[gt,'a']]", TStr.of(IsInst.create(GtInst.create("a"))).toString());
-        assertEquals("(str[is,[gt,'a']])~x", TStr.of(IsInst.create(GtInst.create("a"))).binding("x").toString()); // TODO: perhaps str([is]){x,y}~a
+        assertEquals("(str[is,[gt,'a']])~x", TStr.of(IsInst.create(GtInst.create("a"))).bind("x").toString()); // TODO: perhaps str([is]){x,y}~a
         assertEquals("(str[is,[gt,'a']]){0,2}", TStr.of(IsInst.create(GtInst.create("a"))).q(0, 2).toString());
-        assertEquals("(str[is,[gt,'a']]){0,2}~x", TStr.of(IsInst.create(GtInst.create("a"))).q(0, 2).binding("x").toString());
+        assertEquals("(str[is,[gt,'a']]){0,2}~x", TStr.of(IsInst.create(GtInst.create("a"))).q(0, 2).bind("x").toString());
         assertEquals("'marko'", TStr.of("marko").and(TStr.of("marko")).toString());
         assertEquals("'marko'{*}", TStr.of("marko").q(star).and(TStr.of("marko")).toString());
         assertEquals("'marko'{0}", TStr.of("marko").q(star).and(TStr.of("marko").q(zero)).toString());

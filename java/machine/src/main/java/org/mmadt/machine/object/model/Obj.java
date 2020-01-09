@@ -89,7 +89,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public <O extends Obj> O q(final WithOrderedRing quantifier);
 
-    public <O extends Obj> O binding(final String variable);
+    public <O extends Obj> O bind(final String variable);
 
     public <O extends Obj> O ref(final Inst access);
 

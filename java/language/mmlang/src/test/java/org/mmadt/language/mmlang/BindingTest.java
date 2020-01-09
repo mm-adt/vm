@@ -45,17 +45,17 @@ import static org.mmadt.testing.LanguageArgs.recs;
  */
 class BindingTest {
 
-    private final static Int oneX = ints(1).binding("x");
-    private final static Int twoY = ints(2).binding("y");
+    private final static Int oneX = ints(1).bind("x");
+    private final static Int twoY = ints(2).bind("y");
 
     private final static LanguageArgs[] BINDINGS = new LanguageArgs[]{
             args(oneX, "1~x"),
-            args(ints().<Int>ref(plus(ints().binding("x"))), "int~x => x + x"),
+            args(ints().<Int>ref(plus(ints().bind("x"))), "int~x => x + x"),
             args(oneX, "1~x => [map,x]"),
             args(ints(2), "1~x => [plus,x]"),
             args(ints(2), "1~x => [plus,int~x]"),
-            args(ints().<Int>ref(plus(TInt.of().binding("x"))), "int~x => [plus,obj~x]"),
-            args(ints().<Int>ref(plus(TInt.of().binding("x"))), "int~x => [plus,x]"),
+            args(ints().<Int>ref(plus(TInt.of().bind("x"))), "int~x => [plus,obj~x]"),
+            args(ints().<Int>ref(plus(TInt.of().bind("x"))), "int~x => [plus,x]"),
             args(twoY, "1~x => [plus,x][as,y]"),
             args(ints(3), "1~x => [plus,x+x]"),
             args(ints(4), "[1~x;2~y] => [map,y*(x+x)]"),

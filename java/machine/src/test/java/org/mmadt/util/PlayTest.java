@@ -39,7 +39,7 @@ class PlayTest {
     void xxx() {
         // System.out.println(TInt.of().state().<Int>write(TInt.of(43).label("x")).state().<Int>write(plus(TInt.of(is(gt(50)))),mult(10)).state().toString());
         //System.out.println(TInt.of().<Int>write(TSym.of("x"),TInt.of(43)).<Int>write(plus(TInt.of()),mult(10)).plus(TSym.of("x")).plus(0).toString());
-        System.out.println(TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.<String, Obj>of("name", TStr.of(), "age", TInt.of().binding("x")))).get("age").toString());
+        System.out.println(TRec.of(Map.of("name", "marko", "age", 29)).as(TRec.of(Map.<String, Obj>of("name", TStr.of(), "age", TInt.of().bind("x")))).get("age").toString());
     }
 
     @Test

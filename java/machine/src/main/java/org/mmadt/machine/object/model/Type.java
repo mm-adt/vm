@@ -29,17 +29,17 @@ import org.mmadt.machine.object.model.composite.Inst;
  */
 public interface Type extends Cloneable {
 
-    public String label();
+    public String bind();
 
-    public Type label(final String symbol);
+    public Type bind(final String binding);
 
     public Pattern pattern();
 
     public Type pattern(final Pattern pattern);
 
-    public Type access(final Inst access);
+    public Type ref(final Inst reference);
 
-    public Inst access();
+    public Inst ref();
 
     public Type clone();
 }

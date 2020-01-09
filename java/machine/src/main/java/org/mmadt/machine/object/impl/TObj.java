@@ -133,7 +133,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public String symbol() {
-        return this.type.label();
+        return this.type.bind();
     }
 
     @Override
@@ -164,13 +164,13 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return ObjectHelper.root(this, object).
                     set(ObjectHelper.andValues(this, (TObj) object)).
                     q(this.q().mult(object.q())).
-                    binding(ObjectHelper.mergeLabels(this, object));
+                    bind(ObjectHelper.mergeLabels(this, object));
     }
 
     @Override
     public <O extends Obj> O symbol(final String symbol) {
         final TObj clone = this.clone();
-        clone.type = this.type.label(symbol);
+        clone.type = this.type.bind(symbol);
         if (!this.model.apply(TObj.sym(symbol)).isNone()) {
             clone.type = clone.type.pattern(this.model.apply(TObj.sym(symbol)));
             clone.typeCheck();
@@ -205,22 +205,22 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O binding(final String label) {
+    public <O extends Obj> O bind(final String binding) {
         final TObj clone = this.clone();
-        clone.binding = label;
-        return null == label ? (O) clone : ModelHelper.match((O) clone);
+        clone.binding = binding;
+        return null == binding ? (O) clone : ModelHelper.match((O) clone);
     }
 
     @Override
-    public <O extends Obj> O ref(final Inst access) {
+    public <O extends Obj> O ref(final Inst reference) {
         final TObj clone = this.clone();
-        clone.type = this.type.access(access);
+        clone.type = this.type.ref(reference);
         return (O) clone;
     }
 
     @Override
     public Inst ref() {
-        final Inst inst = this.type.access();
+        final Inst inst = this.type.ref();
         return null == inst ? IdInst.create().domainAndRange(this, this) : inst; // instances require domain/range spec on [id] access
     }
 

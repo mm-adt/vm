@@ -52,17 +52,17 @@ public final class TType implements Type {
     }
 
     @Override
-    public String label() {
+    public String bind() {
         return this.symbol;
     }
 
     @Override
-    public Type label(final String symbol) {
+    public Type bind(final String binding) {
         final TType clone = this.clone();
         if (this.pattern instanceof Obj && !(((Obj) this.pattern).isInst()))
-            clone.pattern = ((Obj) this.pattern).binding(symbol);
+            clone.pattern = ((Obj) this.pattern).bind(binding);
         else
-            clone.symbol = symbol;
+            clone.symbol = binding;
         return clone;
     }
 
@@ -79,28 +79,28 @@ public final class TType implements Type {
     }
 
     @Override
-    public Type access(final Inst access) {
+    public Type ref(final Inst reference) {
         final TType clone = this.clone();
-        clone.access = null == access || access.opcode().java().equals(Tokens.ID) ? null : access;
+        clone.access = null == reference || reference.opcode().java().equals(Tokens.ID) ? null : reference;
         return clone;
     }
 
     @Override
-    public Inst access() {
+    public Inst ref() {
         return this.access;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.label(), this.access, this.pattern);
+        return Objects.hash(this.bind(), this.access, this.pattern);
     }
 
     @Override
     public boolean equals(final Object object) {
         return object instanceof Type &&
-                Objects.equals(this.label(), ((Type) object).label()) &&
-                Objects.equals(this.access(), ((Type) object).access());// &&
+                Objects.equals(this.bind(), ((Type) object).bind()) &&
+                Objects.equals(this.ref(), ((Type) object).ref());// &&
         // Objects.equals(this.pattern, ((Type) object).pattern());
     }
 
