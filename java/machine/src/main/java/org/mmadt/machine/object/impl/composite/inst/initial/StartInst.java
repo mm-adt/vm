@@ -71,6 +71,6 @@ public final class StartInst<S extends Obj> extends TInst<Obj, S> implements Ini
         if (1 == instances.length)
             return (S) instances[0];
         final StartInst<S> start = StartInst.create(instances);
-        return start.quantifyRange(TObj.none()).access(start);
+        return start.quantifyRange(TObj.none()).ref(start);
     }
 }

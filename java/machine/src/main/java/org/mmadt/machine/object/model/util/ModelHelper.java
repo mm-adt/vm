@@ -54,13 +54,13 @@ public final class ModelHelper {
                 for (final Map.Entry<Obj, Obj> entry : to.<Map<Obj, Obj>>get().entrySet()) {
                     map.put(via(from, entry.getKey()), via(from, entry.getValue()));
                 }
-                obj = (O) TRec.of(map).label(to.label());
+                obj = (O) TRec.of(map).binding(to.binding());
             } else if (to.isLst()) {
                 final List<Obj> list = new PList<>();
                 for (final Obj entry : to.<List<Obj>>get()) {
                     list.add(via(from, entry));
                 }
-                obj = (O) TLst.of(list).label(to.label());
+                obj = (O) TLst.of(list).binding(to.binding());
             } else if (to.isInst()) {
                 if (InstHelper.singleInst((Inst) to)) {
                     final List<Obj> list = new PList<>();
@@ -78,7 +78,7 @@ public final class ModelHelper {
             } else
                 throw new RuntimeException("This state should not have been reached: " + from + " => " + to);
         }
-        if (to.isLabeled()) {
+        if (to.isBound()) {
             final O o = (O) from.model().apply(to);
             obj = o.isNone() ? obj : obj.test(o) ? o : (O) TObj.none();
         }
@@ -104,7 +104,7 @@ public final class ModelHelper {
                 update = fromObj(update, v);
             }
         }
-        if (obj.isLabeled())
+        if (obj.isBound())
             update = update.write(obj);
         return update;
     }
@@ -118,17 +118,17 @@ public final class ModelHelper {
     }
 
     public static <O extends Obj> O match(final O obj) {
-        if (!obj.isLabeled())
+        if (!obj.isBound())
             return obj;
         else if (obj.isReference()) {
             final O clone = obj.model(obj.model().write(obj));
-            return AsInst.<O>create(clone.access(null)).attach(clone);
+            return AsInst.<O>create(clone.ref(null)).attach(clone);
         } else {
             final O storedObj = (O) obj.model().apply(obj);
             if (storedObj.isNone())
                 return obj.model(obj.model().write(obj)); // if the variable is unbound, bind it to the current obj
             else
-                return obj.test(storedObj) ? obj : obj.kill(); // test if the current obj is subsumed by the historic obj (if not, drop the obj's quantity to [zero])
+                return obj.test(storedObj) ? obj : obj.halt(); // test if the current obj is subsumed by the historic obj (if not, drop the obj's quantity to [zero])
         }
     }
 }

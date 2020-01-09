@@ -56,28 +56,28 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
 
     public static <S extends Obj> S compute(final S from, S to) {
         if (to.isSym()) {
-            return from.label(to.label());
-        } else if (!to.access().isOne()) {
-            return from.mapTo(to.access()).label(to.label()).symbol(to.symbol()).model(from.model());
+            return from.binding(to.binding());
+        } else if (!to.ref().isOne()) {
+            return from.mapTo(to.ref()).binding(to.binding()).symbol(to.symbol()).model(from.model());
         } else if (from.isReference()) {
-            return AsInst.<S>create(to).attach(from, to.label() == null ?
+            return AsInst.<S>create(to).attach(from, to.binding() == null ?
                     from :
-                    fakeLabel(to.label(), from.model(from.model().write(to.access(from.access())))));
+                    fakeLabel(to.binding(), from.model(from.model().write(to.ref(from.ref())))));
         } else if (from instanceof Lst && to instanceof Lst && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
             final Lst<Obj> fromList = (Lst<Obj>) from;
             final Lst<Obj> toList = (Lst<Obj>) to;
             if (toList.java().size() < fromList.java().size())
-                return toList.kill();
+                return toList.halt();
             final PList<Obj> temp = new PList<>();
             Model model = from.model();
             for (int i = 0; i < toList.java().size(); i++) {
                 final Obj obj = from.model().readOrGet(fromList.get(i), fromList.get(i).as(toList.get(i)));
                 if (obj.q().isZero())
-                    return toList.kill();
+                    return toList.halt();
                 model = model.write(obj);
                 temp.add(obj);
             }
-            return (S) TLst.of(temp).label(to.label()).model(model).symbol(to.symbol());
+            return (S) TLst.of(temp).binding(to.binding()).model(model).symbol(to.symbol());
         } else if (from instanceof Rec && to instanceof Rec && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
             final Rec<Obj, Obj> fromRec = (Rec<Obj, Obj>) from;
             final Rec<Obj, Obj> toRec = (Rec<Obj, Obj>) to;
@@ -92,21 +92,21 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                         .findFirst()
                         .orElse(null);
                 if (null == fromEntry)
-                    return toRec.kill();
+                    return toRec.halt();
                 model = model.write(fromEntry.getKey()).write(fromEntry.getValue());
                 temp.put(fromEntry.getKey(), fromEntry.getValue());
             }
-            final S s = (S) TRec.of(temp).label(to.label()).model(model).symbol(to.symbol());
+            final S s = (S) TRec.of(temp).binding(to.binding()).model(model).symbol(to.symbol());
             return s.model(s.model().write(s));
         } else if (!to.test(from))
-            return to.kill();
+            return to.halt();
         else
-            return (from.isType() ? from.set(to.get()) : from).model(from.model()).label(to.label()).symbol(to.symbol());
+            return (from.isType() ? from.set(to.get()) : from).model(from.model()).binding(to.binding()).symbol(to.symbol());
     }
 
     private static <S extends Obj> S fakeLabel(final String label, final S obj) { // TODO: this is lame
         final TObj temp = (TObj) obj.clone();
-        temp.label = label;
+        temp.binding = label;
         return (S) temp;
     }
 }

@@ -86,8 +86,8 @@ public final class PList<V extends Obj> extends ArrayList<V> implements Pattern 
             final V thisValue = this.get(i);
             final V otherValue = other.get(i);
             if (otherValue.isNamed() && otherValue.symbol().equals(thisValue.symbol())) {
-                if (null != thisValue.label())
-                    bindings.put(thisValue.label(), otherValue);
+                if (null != thisValue.binding())
+                    bindings.put(thisValue.binding(), otherValue);
             } else if (!thisValue.match(bindings, otherValue)) {
                 bindings.rollback();
                 return false;

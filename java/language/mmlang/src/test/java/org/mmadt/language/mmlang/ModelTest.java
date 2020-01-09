@@ -51,7 +51,7 @@ class ModelTest {
             //args(ints(1110), "10 =[=[1000~x;(int~y<=[map,100])]]=> [map,10][plus,x][plus,y]"),
             //args(ints(1110), "10 =[=[1000~x;(int~y<=[map,x][plus,100])]]=> [map,10][plus,y]"),
             //args(ints(1110), "10 =[=[1000~x;[map,x][plus,100]~y]]=> [map,10][plus,y]"),
-            args(recs(TStr.of("x"), TInt.of(1000).label("x"), TStr.of("y"), TInt.of(100).label("y")), "10 =[=[1000~x;100~y]]=> [map,10][plus,x][plus,y][state]"),
+            args(recs(TStr.of("x"), TInt.of(1000).binding("x"), TStr.of("y"), TInt.of(100).binding("y")), "10 =[=[1000~x;100~y]]=> [map,10][plus,x][plus,y][state]"),
     };
 
 

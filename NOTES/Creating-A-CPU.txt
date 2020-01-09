@@ -1,0 +1,95 @@
+['name':'marko','age':int] <[=mongo][get,'users'][is,[get,'name'][eq,'marko']] 
+
+['name':'marko','age':int] <[=mongo][.users.name=?'marko']
+  ~>[22~x;'bob'~y;false~z] 
+  ~>[|[dedup] -> [id]
+     |[count] -> 0 
+     |[drop]  -> [error]]
+
+
+
+obj{*}~t <= // variables 
+            [ x      -> 0
+            | path   -> [;]
+              // schema
+            | person -> ['name':str,'age':int]
+            | nat    -> int[is,[gt,0]]
+              // rewrite
+            | inst -> 
+             [ nat~t: 
+              [ [plus,0] -> [id]
+              | [mult,1] -> [id]
+              | [div,0]  -> [error]] 
+             | person~t:
+              [ [dedup]       -> [id]
+              | [drop,'name'] -> [error]]]
+            | obj -> [id]]
+
+
+obj{*} <= [x->0|path->[;]|obj->[id]]
+
+
+int~x => [plus,x]
+
+['name':str,'age':int] => [as,traverser]
+
+
+
+cpu <= int <= [choose,[person:['name':str,'age':int],people:person{*}]]
+
+int => cpu => [plus,2][mult,3][gt,100]
+
+////////////////////
+// Creating a CPU //
+////////////////////
+
+// this cpu is basic.
+// it knows the schema
+// int:[id] is a hack right now. 
+//    [optional,[choose,[:]]] will allow us to have a default pass through
+mmlang> cpu <= [choose,[int:[id],person:['name':str,'age':int],people:person{*}]]
+==>cpu
+
+// now lets attach it to the int token (sort of like a 'trait' on int)
+mmlang> int => (cpu <= [choose,[int:[id],person:['name':str,'age':int],people:person{*}]])
+==>int~cpu
+
+// now lets compile a query with this "little machine"-int.
+mmlang> int => (cpu <= [choose,[int:[id],person:['name':str,'age':int],people:person{*}]]) => [plus,1][gt,2]
+==>bool <= [plus,1][gt,2]
+
+// now lets evaluate the query with an "instance" token.
+mmlang> 4 => (int => (cpu <= [choose,[int:[id],person:['name':str,'age':int],people:person{*}]]) => [plus,1][gt,2])
+==>true
+// which is the same as...
+mmlang> 4 => [plus,1][gt,2]
+==>true
+
+
+
+
+cpu <= [choose,[int:[id],person:['name':str,'age':int],people:person{*}]]
+int => (cpu <= [choose,[int:[id],person:['name':str,'age':int],people:person{*}]])
+
+
+
+
+
+person <=[=mongo][get,'users'][is,[get,'name'][eq,'marko']]
+cpu    <=[choose,[
+            person -> ['name':str,'age':int] <=[=mongo][get,'users'][is,[get,'name'][eq,'marko']],
+            people -> person{*}              <=[=mongo][get,'users'],
+            weight -> 0.0,
+            path   -> [;],
+            inst   -> [choose,[
+              people~> -> [choose,[
+                [dedup] -> [id],
+                [drop]  -> [error]]]
+              person~> -> [choose,[
+                [drop,'name'] -> [error]]]]]]]
+               
+
+person <=[=mongo][get,'users'][is,[get,'name'][eq,str]] 
+  => 
+cpu    <=[choose,[person:['name':str,'age':int]]]
+

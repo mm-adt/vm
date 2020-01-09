@@ -37,6 +37,6 @@ public interface WithZero<A extends Obj> extends Obj {
     public default boolean isZero() {
         return this.isInstance() ?
                 this.eq(this.zero()).java() :
-                InstHelper.last(this.access()).opcode().java().equals(Tokens.ZERO); // need a cleaner way to analyze final inst
+                InstHelper.last(this.ref()).opcode().java().equals(Tokens.ZERO); // need a cleaner way to analyze final inst
     }
 }

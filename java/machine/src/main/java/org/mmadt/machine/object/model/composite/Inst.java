@@ -132,14 +132,14 @@ public interface Inst extends WithRing<Inst>, WithProduct<Int, Obj> {
         if (obj instanceof Inst)
             return WithProduct.super.match(bindings, (Inst) obj);
 
-        if (bindings.has(this.label()))
-            return bindings.get(this.label()).test(obj);
+        if (bindings.has(this.binding()))
+            return bindings.get(this.binding()).test(obj);
         bindings.start();
         final Iterator<Obj> itty = FastProcessor.process(obj.mapTo(this));
         if (itty.hasNext()) {
             final Obj object = itty.next();
-            if (null != object.label())
-                bindings.put(object.label(), object.label(null));
+            if (null != object.binding())
+                bindings.put(object.binding(), object.binding(null));
             return true;
         } else {
             bindings.rollback();

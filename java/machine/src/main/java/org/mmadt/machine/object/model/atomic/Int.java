@@ -42,7 +42,7 @@ public interface Int extends WithOrderedRing<Int> {
     }
 
     @Override
-    public Int label(final String variable);
+    public Int binding(final String variable);
 
     @Override
     public Int symbol(final String symbol);

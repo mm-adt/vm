@@ -65,9 +65,9 @@ class GraphTest {
 
     private final static ObjArgs[] TINKERPOP = new ObjArgs[]{
             args(ints(0), TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("V"), TRec.of(marko, vadas, lop, josh, ripple, peter)).map(TInt.of(0))),
-            args(marko, TRec.some().access(TInt.of(1).model(TRec.sym("mmstor")).get("V").<Rec>is(get("id").mult(eq(1))).access())),
-            args(marko, TRec.some().access(TInt.of(1).model(TRec.sym("mmstor")).get("V").<Rec>is(get("name").mult(eq("marko"))).access())),
-            args(objs(markoKnowsVadas, markoKnowsJosh, markoCreatedLop), TRec.some().q(0, 2).access(TObj.single().model(TRec.sym("mmstor")).get("V").<Rec>is(get("id").mult(eq(1))).get("outE").access())),
+            args(marko, TRec.some().ref(TInt.of(1).model(TRec.sym("mmstor")).get("V").<Rec>is(get("id").mult(eq(1))).ref())),
+            args(marko, TRec.some().ref(TInt.of(1).model(TRec.sym("mmstor")).get("V").<Rec>is(get("name").mult(eq("marko"))).ref())),
+            args(objs(markoKnowsVadas, markoKnowsJosh, markoCreatedLop), TRec.some().q(0, 2).ref(TObj.single().model(TRec.sym("mmstor")).get("V").<Rec>is(get("id").mult(eq(1))).get("outE").ref())),
             args(objs(2, 4, 3), TObj.single().model(TRec.sym("mmstor")).get("V").<Rec<Obj, Rec>>is(get("id").mult(eq(1))).get("outE").get("inV")),
             args(objs(2, 4), TObj.single().model(TRec.sym("mmstor")).get("V").<Rec<Obj, Rec>>is(TRec.some().get("id").eq(TInt.of(1))).get("outE").<Rec<Obj, Rec>>is(get("label").mult(eq("knows"))).get("inV")),
             /*args(objs(vadas, josh), TObj.single().model(TRec.sym("mmstor"))

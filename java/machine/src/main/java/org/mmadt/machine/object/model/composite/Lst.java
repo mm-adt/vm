@@ -48,7 +48,7 @@ public interface Lst<V extends Obj> extends WithGroupPlus<Lst<V>>, WithProduct<I
     }
 
     @Override
-    public Lst<V> label(final String variable);
+    public Lst<V> binding(final String variable);
 
     public default Lst<V> put(final V value) {
         if (!this.isReference() && !value.isReference()) {

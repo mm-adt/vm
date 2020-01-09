@@ -52,7 +52,7 @@ public final class TInt extends TObj implements Int {
     }
 
     public static Int sym(final String label) {
-        return TInt.of().label(label);
+        return TInt.of().binding(label);
     }
 
     public static Int all() {
@@ -82,8 +82,8 @@ public final class TInt extends TObj implements Int {
     //////////////////////////////////
 
     @Override
-    public Int label(final String label) {
-        return super.label(label);
+    public Int binding(final String label) {
+        return super.binding(label);
     }
 
     @Override

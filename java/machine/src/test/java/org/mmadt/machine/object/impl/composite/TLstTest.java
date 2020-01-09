@@ -130,7 +130,7 @@ final class TLstTest implements TestUtilities {
 
     @Test
     void shouldBindNestedLists() {
-        Lst<Obj> list = TLst.of(TStr.of().label("a"), TInt.of(29).label("b"), TBool.of(true), TLst.of(TReal.of(), TReal.of().label("c"), TLst.of(TReal.of().label("d"))).label("e")).label("f");
+        Lst<Obj> list = TLst.of(TStr.of().binding("a"), TInt.of(29).binding("b"), TBool.of(true), TLst.of(TReal.of(), TReal.of().binding("c"), TLst.of(TReal.of().binding("d"))).binding("e")).binding("f");
         Lst<Obj> good = TLst.of("marko", 29, true, TLst.of(66.6f, 11.1f, TLst.of(1.0f)));
         Lst<Obj> bad1 = TLst.of("marko", 30, true, TLst.of(66.6f, 11.1f, TLst.of(1.0f)));
         Lst<Obj> bad2 = TLst.of(7, 29, true, TLst.of(66.6f, 11.1f, TLst.of(1.0f)));

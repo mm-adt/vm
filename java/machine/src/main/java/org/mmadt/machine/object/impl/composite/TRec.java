@@ -48,7 +48,7 @@ public class TRec<K extends Obj, V extends Obj> extends TObj implements Rec<K, V
     }
 
     public static Rec<Obj,Rec> sym(final String label) {
-        return (Rec)TRec.some().label(label);
+        return (Rec)TRec.some().binding(label);
     }
 
     public static Rec<?, ?> some() {
@@ -90,8 +90,8 @@ public class TRec<K extends Obj, V extends Obj> extends TObj implements Rec<K, V
     }
 
     @Override
-    public Rec<K, V> label(final String label) {
-        return super.label(label);
+    public Rec<K, V> binding(final String label) {
+        return super.binding(label);
     }
 
     @Override

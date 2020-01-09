@@ -56,7 +56,7 @@ class ParserTest {
             args(objs(), "11 => [zero] => 11"),
             args(ints(11), "11 => [zero] => [plus,11]"),
             args(ints(11), "11 => int"),
-            args(objs(ints(11).label("a")), "11 => int~a"),
+            args(objs(ints(11).binding("a")), "11 => int~a"),
             args(ints(11), "11 => [plus,[zero]]"),
             args(ints(11), "11 + 0"),
             args(ints(30), "11 + 4 * 2"),
@@ -73,23 +73,23 @@ class ParserTest {
             // instance <=> instance | type | reference
             args(ints(1), "1 => 1"),
             args(ints(1), "1 <= 1"),
-            args(ints(1).label("a"), "1 => 1~a"),
-            args(ints(1).label("a"), "1 <= 1~a"),
+            args(ints(1).binding("a"), "1 => 1~a"),
+            args(ints(1).binding("a"), "1 <= 1~a"),
             args(objs(), "1 => 2"),
             args(objs(), "1 <= 2"),
             args(ints(1), "1 => int"),
-            args(ints(1).label("a"), "1 => int~a"),
+            args(ints(1).binding("a"), "1 => int~a"),
             args(objs(), "1 => str"),
             args(objs(), "1 => str~a"),
             args(objs(), "1 <= str"),
             args(objs(), "1 <= str~a"),
-            args(objs(ints(1).access(plus(2))), "1 <= [plus,2]"),
+            args(objs(ints(1).ref(plus(2))), "1 <= [plus,2]"),
             args(ints(3), "1 => int => [plus,2]"),
             args(ints(3), "1 => (int => [plus,2])"),
             args(ints(3), "1 => int => [plus,2]"),
             args(ints(3), "(1 => int) => [plus,2]"),
             args(ints(3), "1 => (int <= [plus,2])"),
-            args(ints(1).<Int>access(plus(2)), "1 <= (int <= [plus,2])"),
+            args(ints(1).<Int>ref(plus(2)), "1 <= (int <= [plus,2])"),
             args(ints(1), "1 <= [id]"),
 
             // type <=> instance | type | reference
@@ -97,20 +97,20 @@ class ParserTest {
             args(ints(1), "int => (1 => [id])"),
             // args(ints(1), "int => (1 <= [id])"),
             args(ints(), "int => int"),
-            args(ints().label("a"), "int => int~a"),
+            args(ints().binding("a"), "int => int~a"),
             args(ints().plus(2), "int => (int <= [plus,2])"),
             args(ints().plus(2), "int => (int => [plus,2])"),
-            args(ints().<Int>label("a").plus(2), "int => (int~a => [plus,2])"),
+            args(ints().<Int>binding("a").plus(2), "int => (int~a => [plus,2])"),
             // args(ints().<Int>label("a").plus(2), "(int => int~a) <= [plus,2]"),
             //args(ints().<Int>label("a").<Int>access(plus(2)), "int => (int~a <= [plus,2])"),
-            args(ints().label("a").plus(2), "int => int~a => [plus,2]"), // TODO: all mutations should drop label
-            args(ints().label("a").<Int>access(plus(2)), "int <= int~a <= [plus,2]"),
-            args(ints().label("a").<Int>access(plus(2)), "int <= (int~a <= [plus,2])"),
+            args(ints().binding("a").plus(2), "int => int~a => [plus,2]"), // TODO: all mutations should drop label
+            args(ints().binding("a").<Int>ref(plus(2)), "int <= int~a <= [plus,2]"),
+            args(ints().binding("a").<Int>ref(plus(2)), "int <= (int~a <= [plus,2])"),
             // args(ints().<Int>label("a").plus(2), "int => (int => [plus,2]~a)"), // TODO: step labels (like quantifiers) transfer from inst to obj
             args(objs(), "str => 1"),
             // args(strs("a"), "str => 'a'"),
             args(objs(), "str => int"),
-            args((Obj) bools().access(gt(10)), "bool <= [gt,10]"),
+            args((Obj) bools().ref(gt(10)), "bool <= [gt,10]"),
 
 
             // references <=> instances | type | reference
@@ -122,7 +122,7 @@ class ParserTest {
 
             /////////////////// MAP FROM <= ///////////////////
             args(objs(11), "9 => (11 <= [plus,2])"),
-            args(objs(ints(11).access(plus(2))), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
+            args(objs(ints(11).ref(plus(2))), "11 <= [plus,2]"),                               // TODO: what is the meaning of this? right now, its 11 (the access doesn't matter)
             args(strs().plus("a"), "str <= [plus,'a']"),
             args(strs().plus("a").plus("bc"), "str <= [plus,'a'] => [plus,'bc']"),
     };

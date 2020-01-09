@@ -127,6 +127,6 @@ class TypeTest implements TestUtilities {
 
     @TestFactory
     Stream<DynamicTest> testTypes() {
-        return Stream.of(TEST_PARAMETERS).map(args -> DynamicTest.dynamicTest(args.input.toString(), () -> assertEquals(args.expected, InstHelper.domainRangeNested(((Obj) args.input).access()))));
+        return Stream.of(TEST_PARAMETERS).map(args -> DynamicTest.dynamicTest(args.input.toString(), () -> assertEquals(args.expected, InstHelper.domainRangeNested(((Obj) args.input).ref()))));
     }
 }

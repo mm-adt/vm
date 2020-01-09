@@ -47,17 +47,17 @@ public final class InstHelper {
         for (final Inst inst : bytecode.iterable()) {
             if (first) {
                 first = false;
-                list.add(inst.domain().access(null));
+                list.add(inst.domain().ref(null));
             }
             final List<Object> oneDeep = new ArrayList<>();
             for (final Obj arg : inst.args()) {
-                if (!arg.access().isOne()) {
-                    oneDeep.add(domainRangeNested(arg.access()));
+                if (!arg.ref().isOne()) {
+                    oneDeep.add(domainRangeNested(arg.ref()));
                 }
             }
             if (!oneDeep.isEmpty())
                 list.add(oneDeep);
-            list.add(inst.range().access(null));
+            list.add(inst.range().ref(null));
         }
         return list;
     }

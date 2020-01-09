@@ -60,7 +60,7 @@ public interface TestUtilities {
                 assertNotEquals(o.symbol(), obj.symbol());
             }
         }
-        assertTrue(obj.access().isOne());
+        assertTrue(obj.ref().isOne());
         assertTrue(obj.a(TObj.all()).java());
     }
 

@@ -35,6 +35,6 @@ public interface WithOne<A extends Obj> extends Obj {
     public A one();
 
     public default boolean isOne() {
-        return this.isInstance() ? this.eq(this.one()).java() : this.access().opcode().java().equals(Tokens.ONE); // need a cleaner way to analyze final inst
+        return this.isInstance() ? this.eq(this.one()).java() : this.ref().opcode().java().equals(Tokens.ONE); // need a cleaner way to analyze final inst
     }
 }

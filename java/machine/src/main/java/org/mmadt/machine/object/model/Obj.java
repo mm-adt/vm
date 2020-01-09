@@ -34,8 +34,8 @@ import org.mmadt.machine.object.impl.composite.inst.filter.IdInst;
 import org.mmadt.machine.object.impl.composite.inst.filter.IsInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AInst;
 import org.mmadt.machine.object.impl.composite.inst.map.AsInst;
-import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.BindInst;
+import org.mmadt.machine.object.impl.composite.inst.map.EqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.MapInst;
 import org.mmadt.machine.object.impl.composite.inst.map.NeqInst;
 import org.mmadt.machine.object.impl.composite.inst.map.OrInst;
@@ -73,8 +73,6 @@ import java.util.Set;
  */
 public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
-    List<Object> TRAMPOLINE = new ArrayList<>(); // TODO: isolate this as its own tool (no more static)
-
     final Set<String> BASE_SYMBOLS = Set.of(Tokens.OBJ, Tokens.BOOL, Tokens.INT, Tokens.REAL, Tokens.STR, Tokens.LST, Tokens.REC, Tokens.INST);
 
     public String symbol();
@@ -83,17 +81,17 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public WithOrderedRing q();
 
-    public String label();
+    public String binding();
 
-    public Inst access();
+    public Inst ref();
 
     public <O extends Obj> O set(final Object object);
 
     public <O extends Obj> O q(final WithOrderedRing quantifier);
 
-    public <O extends Obj> O label(final String variable);
+    public <O extends Obj> O binding(final String variable);
 
-    public <O extends Obj> O access(final Inst access);
+    public <O extends Obj> O ref(final Inst access);
 
     public <O extends Obj> O symbol(final String symbol);
 
@@ -102,12 +100,12 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Model model();
 
     public default <O extends Obj> O copy(final Obj obj) {
-        return this.access().opcode().java().equals(Tokens.ID) ?
-                this.access(obj.access()).model(obj.model()) :
-                this.access(obj.access().mult(this.access())).model(obj.model()); // removed q() copy -- no failing tests .. !?
+        return this.ref().opcode().java().equals(Tokens.ID) ?
+                this.ref(obj.ref()).model(obj.model()) :
+                this.ref(obj.ref().mult(this.ref())).model(obj.model()); // removed q() copy -- no failing tests .. !?
     }
 
-    public default <O extends Obj> O kill() {
+    public default <O extends Obj> O halt() {
         return this.q(this.q().zero());
     }
 
@@ -117,6 +115,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public default Obj or(final Obj object) {
         return this.set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(object)))); // use choose?
     }
+
+    List<Object> TRAMPOLINE = new ArrayList<>(); // TODO: isolate this as its own tool (no more static)
 
     @Override
     public default boolean test(final Obj obj) {
@@ -130,7 +130,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             if (this.isInstance())                                                              // INSTANCE CHECKING
                 return obj.isInstance() && this.eq(obj).java();
             else if (this.isReference()) {                                                      // REFERENCE CHECKING
-                return Objects.equals(this.get(), obj.get()) && this.access().equals(obj.access());
+                return Objects.equals(this.get(), obj.get()) && this.ref().equals(obj.ref());
             } else {                                                                             // TYPE CHECKING
                 assert this.isType(); // TODO: remove when proved
                 ////////////////////////////////////////////
@@ -152,8 +152,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public default boolean match(final Bindings bindings, final Obj obj) {
-        if (bindings.has(this.label()))
-            return bindings.get(this.label()).test(obj);
+        if (bindings.has(this.binding()))
+            return bindings.get(this.binding()).test(obj);
         else if (!QuantifierHelper.within(this.q(), obj.q()))
             return false;
         else if (obj.q().isZero())
@@ -175,19 +175,17 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
             bindings.rollback();
             return false;
         }
-        if (null != this.label())
-            bindings.put(this.label(), obj);
+        if (null != this.binding())
+            bindings.put(this.binding(), obj);
         if (this instanceof WithProduct)
             bindings.commit();
         return true;
     }
 
     public default <O extends Obj> O mapFrom(final Obj obj) {
-        if (obj instanceof Inst)
-            return (O) this.access(this.access().mult((Inst) obj));
-        else
-            return this.as(obj.access(null)).mapFrom(obj.access());
-
+        return obj instanceof Inst ?
+                (O) this.ref(this.ref().mult((Inst) obj)) :
+                this.as(obj.ref(null)).mapFrom(obj.ref());
     }
 
     public default <O extends Obj> O mapTo(final Obj obj) {
@@ -215,15 +213,15 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default boolean isType() {
-        return !this.constant() && this.access().isOne();
+        return !this.constant() && this.ref().isOne();
     }
 
     public default boolean isReference() {
-        return !this.constant() && !this.access().isOne();
+        return !this.constant() && !this.ref().isOne();
     }
 
     public default boolean isInstances() {
-        return this.isReference() && InstHelper.isInstanceStream(this.access());
+        return this.isReference() && InstHelper.isInstanceStream(this.ref());
     }
 
     public default boolean isInstance() {
@@ -231,7 +229,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     }
 
     public default boolean isSym() {
-        return this.getClass().equals(TObj.class) && this.isLabeled();
+        return this.getClass().equals(TObj.class) && this.isBound();
     }
 
     public default boolean isNone() {
@@ -278,8 +276,8 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
         return this instanceof Inst;
     }
 
-    public default boolean isLabeled() {
-        return null != this.label();
+    public default boolean isBound() {
+        return null != this.binding();
     }
 
     public default <O extends Obj> O q(final QuantifierHelper.Tag tag) {

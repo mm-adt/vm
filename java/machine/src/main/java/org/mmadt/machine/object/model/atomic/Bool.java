@@ -41,7 +41,7 @@ public interface Bool extends WithCommutativeRing<Bool> {
     }
 
     @Override
-    public Bool label(final String variable);
+    public Bool binding(final String variable);
 
     public default Bool and(final Bool bool) {
         return this.constant() ? this.set(this.java() && bool.java()) : (Bool) this.and((Obj) bool); // TODO: Bool.Type class with respective overloading

@@ -1,0 +1,44 @@
+ 'a' => (['name':'marko','age':int]{1,10} <=[map,['users':['name':'marko','age':29]]][get,'users'][is,[get,'name'][eq,'marko']])
+
+
+  'a' => (['name':'marko','age':int]{1,10} <=[map,['users':rec{*}<=[start,['name':'marko','age':29],['name':'marko','age':10]]]] [get,'users'][is,[get,'name'][eq,'marko']])
+
+
+  1 => [=mmstor][put,'users',rec{2} <= [start,['name':'marko','age':29],['name':'kuppitz','age':10]]]
+
+
+  [str:obj{*}] <=[=mmstor][put,'users',['name':str,'age':int]{2} <= [start,['name':'marko','age':29],['name':'kuppitz','age':10]]]
+
+
+  person~['name':'marko]{?} <=[=social[=mmstor[get,'users'][is,[get,'name'][eq,'marko']]]]
+
+
+  [name:str,age:int]~person->[drop,'age']->[error]
+
+  element <=[=[['id':int,'label':str,str:obj{*}]~element;
+                element~['inE':edge{*},'outE':edge{*}]~vertex;
+                element~['outV':vertex,'inV':vertex]~edge]]
+                [map,['id':1,'label':'person']][as,element~rec]
+
+
+
+[['id':int,'label':str,str:obj{1}]~element    -> [[drop,'label'|'id']    ->[id]   |
+									    	      [put,'label'|'id',obj] ->[id]]  |
+element~['inE':edge{1},'outE':edge{1}]~vertex -> [[dedup,[get,'id']]     ->[id]   |
+    											  [dedup]                ->[id]]  |
+element~['outV':vertex,'inV':vertex]~edge]    -> [[dedup,[get,'id']]     ->[id]]]   	
+
+
+
+[graph   -> [[is,[get,id][eq,int~x]] ->[eval,'vertex_id_index','id',x] |
+ element -> [[drop,'label'|'id']     ->[error]                         |
+			 [put,'label'|'id',obj]  ->[error]]                        |
+ vertex  -> [[dedup,[get,'id']]      ->[id]                            |
+    	     [order]                 ->[id]]                           |
+ edge    -> [[dedup,[get,'id']]      ->[id]]]   				
+
+
+
+ [storage:[ | | | ]
+  language:[ social | pg | mmlang ]
+  processor:[ | | | ]]		

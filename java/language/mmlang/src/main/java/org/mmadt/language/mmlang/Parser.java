@@ -159,7 +159,7 @@ public class Parser extends BaseParser<Object> {
 
     Rule Obj_Metadata() {
         return Sequence(Optional(Quantifier(), swap(), this.push(type(this.pop()).q(this.pop()))),              // {quantifier}
-                Optional(TILDE, Sequence(Word(), this.push(type(this.pop()).label(this.match().trim())))));     // ~label
+                Optional(TILDE, Sequence(Word(), this.push(type(this.pop()).binding(this.match().trim())))));     // ~label
     }
 
     Rule Type_Predicate() {

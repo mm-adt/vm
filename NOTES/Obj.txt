@@ -1,0 +1,5 @@
+
+
+
+
+  type<~obj[constraint]{quant,ifier}~>bind<=[reference]

@@ -90,14 +90,14 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
         this.domain = domain;
         this.range = this.quantifyRange(range);
         ((TInst) InstHelper.last(this)).range = this.range;  // TODO: this is dumb (need to store concatenated insts better)
-        this.range = this.range.access(this.range.access().mult(this));
+        this.range = this.range.ref(this.range.ref().mult(this));
         return (E) this.range;
     }
 
     public E attach(S domainRange) {
         if (domainRange.isInstance())
-            domainRange = domainRange.type().access(StartInst.create(domainRange));
-        return this.attach(domainRange, this instanceof Morphing ? (E) domainRange.label(null) : (E) domainRange);
+            domainRange = domainRange.type().ref(StartInst.create(domainRange));
+        return this.attach(domainRange, this instanceof Morphing ? (E) domainRange.binding(null) : (E) domainRange);
     }
 
     public static Inst of(final List<Inst> insts) {
@@ -106,7 +106,7 @@ public class TInst<S extends Obj, E extends Obj> extends TObj implements Inst {
 
     public <A extends Obj> Argument<S, A> argument(final int index) {
         final S arg = this.<S>args().get(index); // TODO: very hacky as as() does not resolve types
-        return Argument.create(arg.isSym() && this.opcode().java().equals(Tokens.AS) ? this.domain.type().label(arg.label()) : arg);
+        return Argument.create(arg.isSym() && this.opcode().java().equals(Tokens.AS) ? this.domain.type().binding(arg.binding()) : arg);
     }
 
     @Override

@@ -121,10 +121,10 @@ final class TBoolTest implements TestUtilities {
         assertEquals(TBool.of(true).q(one), TBool.of(true).and(TBool.of(true)));
         assertEquals(TBool.of(true).q(star), TBool.of(true).q(plus).and(TBool.of(true).q(qmark)));
         assertEquals("true{*}", TBool.of(true).q(star).and(TBool.of()).toString());
-        assertEquals("false{*}~x", TBool.of(false).q(qmark).label("x").and(TBool.of().q(plus)).toString());
-        assertEquals("false{*}~x", TBool.of(false).q(qmark).label("x").and(TBool.of().label("x").q(plus)).toString());
+        assertEquals("false{*}~x", TBool.of(false).q(qmark).binding("x").and(TBool.of().q(plus)).toString());
+        assertEquals("false{*}~x", TBool.of(false).q(qmark).binding("x").and(TBool.of().binding("x").q(plus)).toString());
         assertEquals(TBool.of(false), TBool.of(true).and(TBool.of(false)));
-        assertThrows(RuntimeException.class, () -> TBool.of(false).q(qmark).label("x").and(TBool.of().q(plus).label("y")));
+        assertThrows(RuntimeException.class, () -> TBool.of(false).q(qmark).binding("x").and(TBool.of().q(plus).binding("y")));
         assertEquals("false", TBool.of().and(TBool.of(false)).toString());
     }
 

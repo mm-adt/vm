@@ -32,7 +32,6 @@ import org.mmadt.util.IteratorUtils;
 
 import javax.script.ScriptEngine;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +39,6 @@ import static org.mmadt.machine.object.impl.__.branch;
 import static org.mmadt.machine.object.impl.__.choose;
 import static org.mmadt.testing.LanguageArgs.args;
 import static org.mmadt.testing.LanguageArgs.ints;
-import static org.mmadt.testing.LanguageArgs.lsts;
 import static org.mmadt.testing.LanguageArgs.objs;
 import static org.mmadt.testing.LanguageArgs.strs;
 
@@ -88,14 +86,14 @@ class BranchTest {
                     "1 => [ 1->[plus,2] | 3->[plus,4] ]"),
             args(objs(3),
                     "1 => [ | 1->[plus,2] | 3->[plus,4] ]"),
-            args(objs(ints(10).label("a")),
+            args(objs(ints(10).binding("a")),
                     "10 => [ int~a | str~b | real~c ]"),
             args(objs(11, 12, 13),
                     "10 => [ int~a->[plus,1] + int~b->[plus,2] + int~c->[plus,3] ]"),
             args(objs(11, 12, 13),
                     "10 => [branch,[plus,1],[plus,2],[plus,3]]"),
             // args(objs(11, "ba", 3.0f), "(1,'b',2.0) => [ int~a->[plus,10] | str~b->[plus,'a'] | real~c->[plus,1.0] ]"),
-            args(ints(10).label("a"),
+            args(ints(10).binding("a"),
                     "10 => [ int~a | str~b | real~c ] => [is,[and,[gt,9],[eq,[id]]]][id][id]"),
             args(ints(20),
                     "10 => [ int~a | str~b | real~c ] => [plus,[id]]"),
@@ -103,13 +101,13 @@ class BranchTest {
                     "10 => [ int~a->[plus,1] | int~b->[plus,2] | int~c->[plus,3] ]"),
             args(objs(strs("marko rodriguez")),
                     "'marko' => [ int~a | str~b | real~c ] => [is,[a,str]][plus,' '][plus,'rodriguez']"),
-            args(objs(strs("marko").label("b")),
+            args(objs(strs("marko").binding("b")),
                     "'marko' => [ int~a | str~b | real~c ] => [is,[a,str]]"),
             args(objs(1, 2, 3),
                     "1 => ([id] + [plus,1] + [plus,2])"),
             args(objs(-1, -2, -3),
                     "1 => (([id] + [plus,1] + [plus,2]) * [neg]) => [plus,[zero]] => int"),
-            args(objs(ints(1).label("a"), ints(2).label("a"), ints(3).label("a")),
+            args(objs(ints(1).binding("a"), ints(2).binding("a"), ints(3).binding("a")),
                     "1 => ([id] + [plus,1] + [plus,2]) => int~a"),
 
             /////////////////////////////////////////////////////

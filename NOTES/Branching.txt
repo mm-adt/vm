@@ -1,0 +1,146 @@
+int~x => [plus,x]
+int[x -> 1, y->2] => [plus,x][mult,y]
+
+(λxyz.x(yz))
+
+int~z
+ -> (x -> [;])
+ -> (inst -> [plus,0])
+
+
+int /
+-> (x -> 2) /
+-> ([plus,int[is > 3]] -> [mult,x]) => [plus,4]
+
+int -> (inst -> ([plus,int] -> [minus,2] | [mult,int] -> [minus,4]))
+
+[branch,[.],[.],[,]]
+
+[branch,
+ [[id] -> [...]
+  [id] -> [...]
+  [id] -> [...]]]
+
+[choose,
+ [a]  -> [...],
+ [b]  -> [...],
+ [id] -> [...]] // default
+
+| a -> b  
+| a -> c
+
+// branch
+  [id] -> [...]
++ [id] -> [...]
++ [id] -> [...]
+
+// choose
+  [a]  -> [...]
+| [b]  -> [...]
+| [id] -> [...] 
+
+
+mmlang> [str->[plus,'a'] + int->[plus,2]]
+==>[branch,[str:[plus,'a']],[int:[plus,2]]]
+mmlang> [str->[plus,'a'] | int->[plus,2]]
+==>[choose,[str:[plus,'a']],[int:[plus,2]]]
+mmlang> 'marko' => [ str->[plus,'a'] | int->[plus,2] ]
+==>'markoa
+
+43 => [plus,2][mult,3][ 
+        
+
+[[gt,2]->[zero]  | [lt,0]->[one] | [id]  ->[plus,3]]
+
+
+element['id',int,'label',str]
+
+element ->
+ & 'id'    -> int
+ & 'label' -> str
+
+
+
+
+
+7=>int->[gt,10]=>bool
+
+7=>int=>[gt,10]=>bool
+
+int{10}->[count]=>10
+
+
+
+
+[choose,
+ [get,'name']   -> 'marko',
+ [get,'age']    -> 29,
+ [plus,[zero]]  -> [id],
+ [minus,[zero]] -> [id]]
+
+
+
+
+
+ int  -------     => [mult,[one]] --- => int
+ | [one]       \  -> 1           /
+ | [mult,[one]] ---> [id] -------
+
+
+person['name':'marko','age':29]
+
+person['name':str,'age':int]
+\
+ | 
+ |
+/
+
+int[is >= 0]{x,y}[ .. -> .. | .. -> .. /
+
+age -> [int -> [is,[gte,0]]]
+ | .. -> ..
+ | .. -> ..
+
+
+
+
+p_group            <= [...] 
+ [ zero            -> [zero]
+ | [plus,zero]     -> [id]
+ | [minus,zero]    -> [id]
+ | x + y           -> y + x
+ | --x             -> x
+ | [plus,[neg]]    -> zero ]
+
+
+[mult,1] + [plus,2] = [[mult,1],[plus,2]]  // this is how branching is structured (but put a "branch" opcode at the start
+[mult,1] * [plus,2] = [mult,1][plus,2]     // this is a theoretically issue for me -- what IS the composition?
+
+[1;2;3]  + [4;5]    = [[1;2;3],[4;5]]      // right now lst +  is union, but would need to be disjoint union.
+[1;2;3]  * [4;5]    = [1;2;3;[4;5]]        // perhaps instruction composition is this sort of nesting?
+
+
+[1;2] => fmap[[get,0] -> [plus,3]
+              [get,1] -> [plus,4]]
+
+
+[=state,
+ [ int~x -> 45
+ | int   ->
+    [ [plus,0] -> [id]
+    | [mult,1] -> [id]
+    | [xx]     -> [yy]]
+ | str   ->
+    [ [plus,0] -> [id]]
+ | [id]  -> [id]]
+ [write,path,[read,path][plus,[O]]]]
+
+
+bool{?} <=[=state][plus,15][is,bool <= [mult,int <= [plus,22][mult,int]][gt,2]][lt,17][is,bool{?} <= [eq,true]]
+ 
+[a]{b}[c]{d}[e]{f}
+
+
+[reduce,[plus,[zero]]]
+
+int~[inst]~x~[inst]~int~x~y~[inst] 

@@ -47,7 +47,7 @@ public final class ProbeInst<S extends Obj> extends TInst<S, S> implements SideE
 
     @Override
     public void accept(final S obj) {
-        final String probe = new Table(this.argument(0).mapArg(obj).access(obj.access())).toString();
+        final String probe = new Table(this.argument(0).mapArg(obj).ref(obj.ref())).toString();
         System.out.println(probe);
     }
 
@@ -65,17 +65,17 @@ public final class ProbeInst<S extends Obj> extends TInst<S, S> implements SideE
         private List<String> state = new ArrayList<>();
 
         Table(final Obj root) {
-            this.header = root.access(null) + " " + Tokens.MAPSTO + " " + root.access();
+            this.header = root.ref(null) + " " + Tokens.MAPSTO + " " + root.ref();
             //this.function.add("instruction");
             //this.stream.add("stream");
             //this.state.add("state");
-            this.build(0, root, root.access());
+            this.build(0, root, root.ref());
         }
 
         private void build(int indent, final Obj start, final Inst inst) {
             final List<Inst> insts = IteratorUtils.list(inst.iterable());
             this.length = insts.size();
-            Obj obj = start.access(null);
+            Obj obj = start.ref(null);
             this.stream.add(obj.toString());
             this.state.add(obj.model().toString());
             for (int i = 0; i < this.length; i++)

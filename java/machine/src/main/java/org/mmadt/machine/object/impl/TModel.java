@@ -39,19 +39,19 @@ public final class TModel implements Model {
 
     public static Model of(final Map<Obj, Obj> state) {
         final TModel model = new TModel();
-        state.forEach((x, y) -> model.bindings().put(TStr.of(x.label()), y));
+        state.forEach((x, y) -> model.bindings().put(TStr.of(x.binding()), y));
         return model;
     }
 
     @Override
     public Obj apply(final Obj obj) {
-        return this.bindings().getOrDefault(TStr.of(obj.label()), TObj.none());
+        return this.bindings().getOrDefault(TStr.of(obj.binding()), TObj.none());
     }
 
     @Override
     public Model write(final Obj value) {
         final TModel clone = (TModel) this.clone();
-        clone.bindings().put(TStr.of(value.label()), value);
+        clone.bindings().put(TStr.of(value.binding()), value);
         return clone;
     }
 

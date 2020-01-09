@@ -39,7 +39,7 @@ public final class AccessInst<S extends Obj> extends TInst<S, Inst> implements M
     }
 
     public Inst apply(final S obj) {
-        return this.quantifyRange(obj.access());
+        return this.quantifyRange(obj.ref());
     }
 
     public static <S extends Obj> AccessInst<S> create() {

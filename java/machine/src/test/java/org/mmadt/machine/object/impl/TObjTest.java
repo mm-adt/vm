@@ -93,8 +93,8 @@ class TObjTest {
         //System.out.println(TObj.of().gt(1).and(TObj.of().lt(2)));
         assertEquals(is(and(gt(1), lt(2))), type9);
         // TODO: NEED OrMap:: assertEquals(is(or(gt(1),lt(2))), type10);
-        assertEquals(TInt.of(is(gt(32))).label("x"), TInt.of().and(TInt.of(is(gt(32))).label("x")));
-        assertThrows(RuntimeException.class, () -> TInt.of().label("x").and(TInt.of().label("y")));
+        assertEquals(TInt.of(is(gt(32))).binding("x"), TInt.of().and(TInt.of(is(gt(32))).binding("x")));
+        assertThrows(RuntimeException.class, () -> TInt.of().binding("x").and(TInt.of().binding("y")));
         //assertThrows(RuntimeException.class, () -> TInt.of().as("x").and(TStr.of().as("x")));
     }
 
@@ -117,7 +117,7 @@ class TObjTest {
     void shouldToString() {
         assertEquals("bool", TBool.of().toString());
         assertEquals("true", TBool.of(true).toString());
-        assertEquals("int~x", TInt.of().label("x").toString());
+        assertEquals("int~x", TInt.of().binding("x").toString());
         assertEquals("3", TInt.of(3).toString());
         assertEquals("real", TReal.of().toString());
         assertEquals("6.6", TReal.of(6.6f).toString());
@@ -133,7 +133,7 @@ class TObjTest {
         assertEquals("rec", TRec.some().toString());
         assertEquals("['name':str,'age':int]", TRec.of("name", TStr.of(), "age", TInt.of()).toString());
         assertEquals("person~['name':str,'age':int]", TRec.of("name", TStr.of(), "age", TInt.of()).symbol("person").toString()); // TODO: @person prefix?
-        assertEquals("person~['name':str~x,'age':int~y]~z", TRec.of("name", TStr.of().label("x"), "age", TInt.of().label("y")).label("z").symbol("person").toString());
+        assertEquals("person~['name':str~x,'age':int~y]~z", TRec.of("name", TStr.of().binding("x"), "age", TInt.of().binding("y")).binding("z").symbol("person").toString());
     }
 
     @Test
@@ -150,44 +150,44 @@ class TObjTest {
     @Test
     void shouldMatchAny() {
         final Bindings bindings = new Bindings();
-        TBool.of(true).label("a").match(bindings, TBool.of(true));
+        TBool.of(true).binding("a").match(bindings, TBool.of(true));
         assertEquals(1, bindings.size());
         assertEquals(TBool.of(true), bindings.get("a"));
         ///
         bindings.clear();
-        TInt.of().label("a").match(bindings, TInt.of(6));
+        TInt.of().binding("a").match(bindings, TInt.of(6));
         assertEquals(1, bindings.size());
         assertEquals(TInt.of(6), bindings.get("a"));
         //
         bindings.clear();
-        TReal.of(6.6f).label("a").match(bindings, TReal.of(6.6f));
+        TReal.of(6.6f).binding("a").match(bindings, TReal.of(6.6f));
         assertEquals(1, bindings.size());
         assertEquals(TReal.of(6.6f), bindings.get("a"));
         ///
         bindings.clear();
-        TStr.of().label("a").match(bindings, TStr.of("marko"));
+        TStr.of().binding("a").match(bindings, TStr.of("marko"));
         assertEquals(1, bindings.size());
         assertEquals(TStr.of("marko"), bindings.get("a"));
         //
         bindings.clear();
         assertTrue(TInst.some().test(TInst.of("get", "outV")));
-        TInst.some().label("a").match(bindings, TInst.of("get", "outV"));
+        TInst.some().binding("a").match(bindings, TInst.of("get", "outV"));
         assertEquals(1, bindings.size());
         assertEquals(TInst.of("get", "outV"), bindings.get("a"));
         //
         bindings.clear();
-        TInst.of("get", "outE").label("a").match(bindings, TInst.of("get", "outE"));
+        TInst.of("get", "outE").binding("a").match(bindings, TInst.of("get", "outE"));
         assertEquals(1, bindings.size());
         assertEquals(TInst.of("get", "outE"), bindings.get("a"));
         //
         bindings.clear();
-        TLst.of("get", TInt.of().label("a"), true, 3.2).label("b").match(bindings, TLst.of("get", 4, true, 3.2));
+        TLst.of("get", TInt.of().binding("a"), true, 3.2).binding("b").match(bindings, TLst.of("get", 4, true, 3.2));
         assertEquals(2, bindings.size());
         assertEquals(TInt.of(4), bindings.get("a"));
         assertEquals(TLst.of("get", 4, true, 3.2), bindings.get("b"));
         //
         bindings.clear();
-        TRec.of("name", TStr.of().label("a"), "age", TInt.of().label("b")).label("c").match(bindings, TRec.of("name", "marko", "age", 29));
+        TRec.of("name", TStr.of().binding("a"), "age", TInt.of().binding("b")).binding("c").match(bindings, TRec.of("name", "marko", "age", 29));
         assertEquals(3, bindings.size());
         assertEquals(TStr.of("marko"), bindings.get("a"));
         assertEquals(TInt.of(29), bindings.get("b"));
@@ -199,7 +199,7 @@ class TObjTest {
         assertTrue(TStr.of().isType());
         assertTrue(TStr.of().q(qmark).isType());
         assertTrue(TStr.of().set("marko").isInstance());
-        assertTrue(TStr.of().symbol("str").label("a").isType());
+        assertTrue(TStr.of().symbol("str").binding("a").isType());
     }
 
     @Test

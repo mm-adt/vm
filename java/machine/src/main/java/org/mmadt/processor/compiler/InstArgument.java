@@ -43,7 +43,7 @@ public final class InstArgument<S extends Obj, E extends Obj> implements Argumen
 
     @Override
     public E mapArg(final S object) {
-        final Iterator<E> itty = FastProcessor.process((E) object.access(null).mapTo(ModelHelper.via(object, this.bytecode)));
+        final Iterator<E> itty = FastProcessor.process((E) object.ref(null).mapTo(ModelHelper.via(object, this.bytecode)));
         return itty.hasNext() ? itty.next() : (E) TObj.none();
     }
 

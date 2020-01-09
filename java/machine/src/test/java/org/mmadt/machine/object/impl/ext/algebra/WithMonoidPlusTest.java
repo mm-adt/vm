@@ -98,7 +98,7 @@ class WithMonoidPlusTest {
         for (int i = 0; i < 10; i++) {
             assertTrue(monoid.zero().isZero());
             assertFalse(monoid.isZero());
-            assertEquals(running = running.access(running.access().mult(PlusInst.create(monoid))), second = second.plus(monoid));
+            assertEquals(running = running.ref(running.ref().mult(PlusInst.create(monoid))), second = second.plus(monoid));
         }
     }
 

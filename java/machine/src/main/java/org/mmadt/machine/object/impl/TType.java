@@ -60,7 +60,7 @@ public final class TType implements Type {
     public Type label(final String symbol) {
         final TType clone = this.clone();
         if (this.pattern instanceof Obj && !(((Obj) this.pattern).isInst()))
-            clone.pattern = ((Obj) this.pattern).label(symbol);
+            clone.pattern = ((Obj) this.pattern).binding(symbol);
         else
             clone.symbol = symbol;
         return clone;

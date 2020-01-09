@@ -61,10 +61,10 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
     @Override
     public Iterator<S> iterator(final S obj) {
         // System.out.println("PROCESSING: " + obj);
-        final Inst bytecode = obj.access();
+        final Inst bytecode = obj.ref();
         if (bytecode.isOne() || (!(InstHelper.first(bytecode) instanceof InitialInstruction) && bytecode.domain().q().isZero()))
             return obj.q().isZero() ? EmptyIterator.instance() : IteratorUtils.of(obj);
-        Stream<S> stream = Stream.of(bytecode.domain().access(null));
+        Stream<S> stream = Stream.of(bytecode.domain().ref(null));
         for (final Inst inst : bytecode.iterable()) {
             if (inst instanceof BarrierInstruction)
                 stream = IteratorUtils
@@ -75,7 +75,7 @@ public final class FastProcessor<S extends Obj> implements Processor<S>, Process
                 stream = stream
                         .map(((Function<S, S>) inst)::apply)
                         .flatMap(s -> IteratorUtils.stream(s.isInstances() ?
-                                IteratorUtils.map(s.access().<S>args().iterator(), x -> ModelHelper.mergeModels(s, x)) :
+                                IteratorUtils.map(s.ref().<S>args().iterator(), x -> ModelHelper.mergeModels(s, x)) :
                                 IteratorUtils.of(s)))
                         .filter(s -> !s.q().isZero());
         }

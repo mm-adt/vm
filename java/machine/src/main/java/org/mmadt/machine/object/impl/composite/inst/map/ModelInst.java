@@ -23,9 +23,7 @@
 package org.mmadt.machine.object.impl.composite.inst.map;
 
 import org.mmadt.language.compiler.Tokens;
-import org.mmadt.machine.object.impl.TObj;
 import org.mmadt.machine.object.impl.composite.TInst;
-import org.mmadt.machine.object.model.Model;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.composite.inst.InitialInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
@@ -45,7 +43,7 @@ public final class ModelInst<S extends Obj> extends TInst<S, S> implements Initi
     @Override
     public S apply(final Obj obj) {
         S s = (S) this.argument(0).mapArg((S) obj);
-        if (!s.isLabeled() && s.isLst() && s.get() != null) {
+        if (!s.isBound() && s.isLst() && s.get() != null) {
             for (final Obj x : s.<List<Obj>>get()) {
                 s = s.model(s.model().write(ModelHelper.via(s, x)));
             }

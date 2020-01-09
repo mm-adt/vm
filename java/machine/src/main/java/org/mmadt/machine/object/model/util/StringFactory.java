@@ -63,9 +63,9 @@ public final class StringFactory {
     private static void objMetadata(final Obj obj, final StringBuilder builder) {
         if (!obj.isSome())
             builder.append(quantifier(obj.q()));
-        if (obj.isLabeled())
-            builder.append(TILDE).append(obj.label());
-        if (!obj.access().isOne()) {
+        if (obj.isBound())
+            builder.append(TILDE).append(obj.binding());
+        if (!obj.ref().isOne()) {
             builder.append(SPACE)
                     .append(MAPSFROM)
                     .append(SPACE);
@@ -74,7 +74,7 @@ public final class StringFactory {
                         .append(obj.access().domain())
                         .append(RPAREN)
                         .append(MAPSTO); */ // TODO: the domain of the inst is represented as (obj)=> (cheesy)
-            builder.append(obj.access());
+            builder.append(obj.ref());
         }
     }
 
@@ -151,7 +151,7 @@ public final class StringFactory {
         else {
             if (obj.isNamed())
                 builder.append(obj.symbol()).append(TILDE);
-            final boolean parentheses = o instanceof Inst && (null != obj.label() || !obj.q().isOne());
+            final boolean parentheses = o instanceof Inst && (null != obj.binding() || !obj.q().isOne());
             if (parentheses) builder.append(LPAREN);
             if (o instanceof Inst)
                 builder.append(obj.symbol());
@@ -181,11 +181,11 @@ public final class StringFactory {
                 builder.deleteCharAt(builder.length() - 1);
                 builder.append(RBRACKET);
                 builder.append(quantifier(single.q()));
-                if (null != single.label())
-                    builder.append(TILDE).append(single.label());
+                if (null != single.binding())
+                    builder.append(TILDE).append(single.binding());
             }
-            if (null != inst.label()) // TODO: this shouldn't happen over the entire stream
-                builder.append(TILDE).append(inst.label());
+            if (null != inst.binding()) // TODO: this shouldn't happen over the entire stream
+                builder.append(TILDE).append(inst.binding());
         } else
             builder.append(inst.symbol());
         return builder.toString();

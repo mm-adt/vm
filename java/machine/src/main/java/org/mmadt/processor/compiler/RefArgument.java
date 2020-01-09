@@ -41,13 +41,13 @@ public final class RefArgument<S extends Obj, E extends Obj> implements Argument
     private final Inst bytecode;
 
     RefArgument(final Obj reference) {
-        this.bytecode = reference.access();
+        this.bytecode = reference.ref();
         this.count = (Integer) reference.q().<PList<Obj>>get().get(1).get(); // TODO: work within quantifier ring
     }
 
     @Override
     public E mapArg(final S object) {
-        final List<E> list = IteratorUtils.list(FastProcessor.process((E) object.access(null).mapTo(ModelHelper.via(object, this.bytecode))));
+        final List<E> list = IteratorUtils.list(FastProcessor.process((E) object.ref(null).mapTo(ModelHelper.via(object, this.bytecode))));
         return StartInst.instances(list.subList(0, list.size() >= this.count ? this.count : list.size()).iterator());
     }
 

@@ -53,7 +53,7 @@ public final class IsInst<S extends Obj> extends TInst<S, S> implements FilterIn
 
     public static <S extends Obj> S compute(final S from, final Bool bool) {
         return bool.isInstance() ?
-                bool.java() ? from : from.kill() :
+                bool.java() ? from : from.halt() :
                 IsInst.<S>create(bool).attach(from);
     }
 }

@@ -56,7 +56,7 @@ class StorTest {
 
     private final static ObjArgs[] STORAGE = new ObjArgs[]{
             args(ints(0), TInt.of(1).model(TRec.sym("mmstor")).put(TStr.of("users"), TRec.of(TRec.of(Map.of("name", "marko", "age", 29)), TRec.of(Map.of("name", "kuppitz", "age", 21)))).map(0)),
-            args(marko, TRec.some().q(0, 2).access(TObj.single().model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko"))).access())),
+            args(marko, TRec.some().q(0, 2).ref(TObj.single().model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("marko"))).ref())),
             args(kuppitz, TInt.of(1).model(TRec.sym("mmstor")).get("users").is(__.get("name").mult(__.eq("kuppitz")))),
     };
 

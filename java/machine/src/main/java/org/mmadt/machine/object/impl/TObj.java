@@ -60,7 +60,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
 
     public static Obj sym(final String label) {
         final TObj obj = new TObj(null);
-        obj.label = label;
+        obj.binding = label;
         return obj;
     }
 
@@ -93,7 +93,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     ////////
     protected Object value;                            // mutually exclusive with pattern (instance data)
     private WithOrderedRing quantifier = null;         // the 'amount' of this object bundle
-    public String label = null;
+    public String binding = null;                      // the variable binding associated with the current obj
     public Type type;                                  // an object that abstractly defines this object's forms
     private Model model = new TModel();                // the model that is used to interpret this obj ("the traverser")
 
@@ -152,8 +152,8 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public String label() {
-        return this.label;
+    public String binding() {
+        return this.binding;
     }
 
     @Override
@@ -164,7 +164,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
             return ObjectHelper.root(this, object).
                     set(ObjectHelper.andValues(this, (TObj) object)).
                     q(this.q().mult(object.q())).
-                    label(ObjectHelper.mergeLabels(this, object));
+                    binding(ObjectHelper.mergeLabels(this, object));
     }
 
     @Override
@@ -181,7 +181,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     @Override
     public <O extends Obj> O set(final Object object) {
         final TObj clone = this.clone();
-        clone.label = null;
+        clone.binding = null;
         if (null == object) {
             clone.value = null;
             clone.type = clone.type.pattern(null);
@@ -205,21 +205,21 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     }
 
     @Override
-    public <O extends Obj> O label(final String label) {
+    public <O extends Obj> O binding(final String label) {
         final TObj clone = this.clone();
-        clone.label = label;
+        clone.binding = label;
         return null == label ? (O) clone : ModelHelper.match((O) clone);
     }
 
     @Override
-    public <O extends Obj> O access(final Inst access) {
+    public <O extends Obj> O ref(final Inst access) {
         final TObj clone = this.clone();
         clone.type = this.type.access(access);
         return (O) clone;
     }
 
     @Override
-    public Inst access() {
+    public Inst ref() {
         final Inst inst = this.type.access();
         return null == inst ? IdInst.create().domainAndRange(this, this) : inst; // instances require domain/range spec on [id] access
     }
@@ -242,7 +242,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return object instanceof TObj &&
                 ((this.q().isZero() && ((TObj) object).q().isZero()) ||
                         (Objects.equals(this.value, ((TObj) object).value) &&
-                                Objects.equals(this.label, ((TObj) object).label) &&
+                                Objects.equals(this.binding, ((TObj) object).binding) &&
                                 Objects.equals(this.q(), ((TObj) object).q()) &&
                                 Objects.equals(this.type, ((TObj) object).type))); // TODO: model equality
     }

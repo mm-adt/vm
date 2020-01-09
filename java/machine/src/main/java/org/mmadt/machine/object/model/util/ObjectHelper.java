@@ -80,7 +80,7 @@ public final class ObjectHelper {
         else if (1 == objects.length)
             return objects[0] instanceof Inst ? constructor.apply(objects[0]) : objects[0] instanceof Obj ? (O) objects[0] : constructor.apply(objects[0]);
         else
-            return constructor.apply(null).q(objects.length).access(StartInst.create(objects));
+            return constructor.apply(null).q(objects.length).ref(StartInst.create(objects));
     }
 
     public static Object andValues(final TObj object1, final TObj object2) {
@@ -101,12 +101,12 @@ public final class ObjectHelper {
     }
 
     public static String mergeLabels(final Obj object1, final Obj object2) {
-        if (null != object1.label() && null != object2.label() && !object1.label().equals(object2.label()))
+        if (null != object1.binding() && null != object2.binding() && !object1.binding().equals(object2.binding()))
             throw new RuntimeException("The two objects have different variables: " + object1 + ":::" + object2);
-        if (null != object1.label())
-            return object1.label();
+        if (null != object1.binding())
+            return object1.binding();
         else
-            return object2.label();
+            return object2.binding();
     }
 
     private static <K extends Obj, V extends Obj> Map<K, V> mergeMaps(final Map<K, V> map1, final Map<K, V> map2) {
