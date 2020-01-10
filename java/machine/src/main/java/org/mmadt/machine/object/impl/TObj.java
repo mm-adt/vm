@@ -32,12 +32,7 @@ import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.Pattern;
 import org.mmadt.machine.object.model.Type;
 import org.mmadt.machine.object.model.atomic.Bool;
-import org.mmadt.machine.object.model.atomic.Int;
-import org.mmadt.machine.object.model.atomic.Real;
-import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Inst;
-import org.mmadt.machine.object.model.composite.Lst;
-import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.ext.algebra.WithAnd;
 import org.mmadt.machine.object.model.ext.algebra.WithOr;
 import org.mmadt.machine.object.model.ext.algebra.WithOrderedRing;
@@ -72,33 +67,17 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
         return new TObj(null).q(TInt.zeroInt());
     }
 
-    private static String getBaseSymbol(final Obj obj) {
-        if (obj instanceof Bool)
-            return Tokens.BOOL;
-        if (obj instanceof Str)
-            return Tokens.STR;
-        if (obj instanceof Int)
-            return Tokens.INT;
-        if (obj instanceof Real)
-            return Tokens.REAL;
-        if (obj instanceof Rec)
-            return Tokens.REC;
-        if (obj instanceof Inst)
-            return Tokens.INST;
-        if (obj instanceof Lst)
-            return Tokens.LST;
-        return Tokens.OBJ;
-    }
-
     ////////
-    protected Object value;                            // mutually exclusive with pattern (instance data)
+    protected Type type;                               // an object that abstractly defines this object's forms
+    protected Object value;                            // the value of the obj
+    private  Inst predicate;                           // the [is,[pred]] further constraining the obj
     private WithOrderedRing quantifier = null;         // the 'amount' of this object bundle
     public String binding = null;                      // the variable binding associated with the current obj
-    public Type type;                                  // an object that abstractly defines this object's forms
+    private Inst ref = null;                           // the instructions necessary to generate the obj ("the reference").
     private Model model = new TModel();                // the model that is used to interpret this obj ("the traverser")
 
     public TObj(final Object value) {
-        this.type = TType.of(TObj.getBaseSymbol(this));
+        this.type = TType.of(Tokens.getBaseSymbol(this));
         if (null != value) {
             if (!(value instanceof Pattern) || (((Pattern) value).constant() && !(value instanceof Inst)))
                 this.value = value;
@@ -208,6 +187,7 @@ public class TObj implements Obj, WithAnd<Obj>, WithOr<Obj> {
     public <O extends Obj> O bind(final String binding) {
         final TObj clone = this.clone();
         clone.binding = binding;
+        // return null == binding ? (O) clone : (O)clone.model(clone.model.write(clone));
         return null == binding ? (O) clone : ModelHelper.match((O) clone);
     }
 

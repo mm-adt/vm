@@ -68,6 +68,8 @@ import java.util.Objects;
  * A Java representation of an mm-ADT {@code obj}.
  * This is the base structure for all mm-ADT objects.
  *
+ * <code>type~obj[pred]{quant,ifier}~bind<=[ref]</code>
+ *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
@@ -102,7 +104,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
     public Model model();
 
     public default <O extends Obj> O copy(final Obj obj) {
-        return this.ref().opcode().java().equals(Tokens.ID) ?
+        return InstHelper.isId(this.ref()) ?
                 this.ref(obj.ref()).model(obj.model()) :
                 this.ref(obj.ref().mult(this.ref())).model(obj.model()); // removed q() copy -- no failing tests .. !?
     }

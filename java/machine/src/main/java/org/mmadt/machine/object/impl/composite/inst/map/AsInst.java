@@ -34,6 +34,7 @@ import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.composite.util.PMap;
+import org.mmadt.machine.object.model.util.QuantifierHelper;
 
 import java.util.Map;
 
@@ -88,13 +89,16 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                         .map(x -> Map.of(
                                 from.model().readOrGet(x.getKey(), x.getKey().model(from.model()).as(toEntry.getKey())),
                                 from.model().readOrGet(x.getValue(), x.getValue().model(from.model()).as(toEntry.getValue()))).entrySet().iterator().next())
-                        .filter(x -> null != x.getKey() && !TObj.none().equals(x.getKey()) && null != x.getValue())
+                        .filter(x ->
+                                null != x.getKey() && QuantifierHelper.within(toEntry.getKey().q(), x.getKey().q()) &&
+                                        null != x.getValue() && QuantifierHelper.within(toEntry.getValue().q(), x.getValue().q()))
                         .findFirst()
                         .orElse(null);
                 if (null == fromEntry)
                     return toRec.halt();
                 model = model.write(fromEntry.getKey()).write(fromEntry.getValue());
-                temp.put(fromEntry.getKey(), fromEntry.getValue());
+                if (!fromEntry.getKey().isNone() && !fromEntry.getValue().isNone())
+                    temp.put(fromEntry.getKey(), fromEntry.getValue());
             }
             final S s = (S) TRec.of(temp).bind(to.binding()).model(model).symbol(to.symbol());
             return s.model(s.model().write(s));

@@ -96,6 +96,9 @@ public final class InstHelper {
         else
             list.addAll(instB.<List<Inst>>get());
         return list;
+    }
 
+    public static boolean isId(final Inst inst) {
+        return null == inst || (singleInst(inst) && inst.opcode().java().equals(Tokens.ID));
     }
 }

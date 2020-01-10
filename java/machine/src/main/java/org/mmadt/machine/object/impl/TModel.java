@@ -50,6 +50,8 @@ public final class TModel implements Model {
 
     @Override
     public Model write(final Obj value) {
+        if (!value.isBound() || value.isNone())
+            return this;
         final TModel clone = (TModel) this.clone();
         clone.bindings().put(TStr.of(value.binding()), value);
         return clone;

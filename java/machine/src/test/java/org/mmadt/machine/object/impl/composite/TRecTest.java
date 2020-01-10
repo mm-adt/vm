@@ -29,9 +29,10 @@ import org.mmadt.TestUtilities;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.model.Obj;
-import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.Bindings;
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;
@@ -82,6 +83,66 @@ final class TRecTest implements TestUtilities {
     @Test
     void testIsA() {
         validateIsA(TRec.some());
+    }
+
+    @Test
+    void shouldMatch1() {
+        final Rec<Str, Obj> person = TRec.of(Map.of("name", TStr.sym("x"), "age", TInt.sym("y")));
+        final Rec<Str, Obj> marko = TRec.of(Map.of("name", "marko", "age", 29));
+        final Rec<Str, Obj> ryan = TRec.of(Map.of("name", "ryan"));
+        final Rec<Str, Obj> kuppitz = TRec.of(Map.of("name", "kuppitz", "age", "10"));
+        final Rec<Str, Obj> stephen = TRec.of(Map.of("name", "stephen", "age", 30, "state", "virginia"));
+
+        final Rec<Str, Obj> markoAsPerson = marko.as(person);
+        assertEquals("marko", markoAsPerson.get("name").get());
+        assertEquals(29, markoAsPerson.get("age").<Integer>get());
+        assertEquals("x", markoAsPerson.get("name").binding());
+        assertEquals("y", markoAsPerson.get("age").binding());
+        ////////////
+        assertTrue(ryan.as(person).isNone());
+        ////////////
+        assertTrue(kuppitz.as(person).isNone());
+        ////////////
+        final Rec<Str, Obj> stephenAsPerson = stephen.as(person);
+        assertEquals("stephen", stephenAsPerson.get("name").get());
+        assertEquals(30, stephenAsPerson.get("age").<Integer>get());
+        assertEquals("x", stephenAsPerson.get("name").binding());
+        assertEquals("y", stephenAsPerson.get("age").binding());
+        assertTrue(stephenAsPerson.get("state").isNone());
+        assertFalse(stephen.get("state").isNone());
+    }
+
+    @Test
+    void shouldMatch2() {
+        final Rec<Str, Obj> person = TRec.of(Map.<String, Obj>of("name", TStr.sym("x"), "age", TInt.sym("y").q(qmark)));
+        final Rec<Str, Obj> marko = TRec.of(Map.of("name", "marko", "age", 29));
+        final Rec<Str, Obj> ryan = TRec.of(Map.of("name", "ryan"));
+        final Rec<Str, Obj> kuppitz = TRec.of(Map.of("name", "kuppitz", "age", "10"));
+        final Rec<Str, Obj> stephen = TRec.of(Map.of("name", "stephen", "age", 30, "state", "virginia"));
+
+        final Rec<Str, Obj> markoAsPerson = marko.as(person);
+        assertEquals("marko", markoAsPerson.get("name").get());
+        assertEquals(29, markoAsPerson.get("age").<Integer>get());
+        assertEquals("x", markoAsPerson.get("name").binding());
+        assertEquals("y", markoAsPerson.get("age").binding());
+        ////////////
+        final Rec<Str, Obj> ryanAsPerson = ryan.as(person);
+        //assertEquals("ryan", ryanAsPerson.get("name").get());
+        //assertTrue(ryanAsPerson.get("age").isNone());
+        assertTrue(ryan.get("age").isNone());
+        ////////////
+        final Rec<Str, Obj> kuppitzAsPerson = kuppitz.as(person);
+        assertFalse(kuppitzAsPerson.isNone());
+        assertEquals("kuppitz", kuppitzAsPerson.get("name").get());
+        assertTrue(kuppitzAsPerson.get("age").isNone());
+        ////////////
+        final Rec<Str, Obj> stephenAsPerson = stephen.as(person);
+        assertEquals("stephen", stephenAsPerson.get("name").get());
+        assertEquals(30, stephenAsPerson.get("age").<Integer>get());
+        assertEquals("x", stephenAsPerson.get("name").binding());
+        assertEquals("y", stephenAsPerson.get("age").binding());
+        assertTrue(stephenAsPerson.get("state").isNone());
+        assertFalse(stephen.get("state").isNone());
     }
 
     /*@Test
@@ -237,16 +298,20 @@ final class TRecTest implements TestUtilities {
 
     @Test
     void shouldMatchNestedRecords1() {
-        final Rec person = TRec.of("name", TStr.of().bind("n1"), "age", TInt.of(),
+        final Rec person = TRec.of(Map.of("name", TStr.sym("n1"), "age", TInt.of(),
                 "phones", TRec.of(
-                        "home", TInt.of().bind("h1").or(TStr.of().bind("h2")),
-                        "work", TInt.of(is(gt(0))).bind("w1").or(TStr.of()))).bind("x");
+                        "home", TInt.sym("h1").or(TStr.sym("h2")),
+                        "work", TInt.of(is(gt(0))).bind("w1").or(TStr.of())))).bind("x");
 
         final Rec marko = TRec.of("name", "marko", "age", 29, "phones", TRec.of("home", 123, "work", 34));
         assertTrue(person.test(marko));
         assertFalse(marko.test(person));
         assertTrue(marko.test(marko));
-        // TODO: assertFalse(person.test(person));
+        assertTrue(person.test(person));
+        System.out.println(marko.as(person).model());
+        final Rec markoMatch = marko.as(person);
+        assertEquals("x", markoMatch.binding());
+        assertEquals("n1", markoMatch.get("name").binding());
         final Bindings bindings = new Bindings();
         assertTrue(person.match(bindings, marko));
         System.out.println(person);

@@ -46,6 +46,10 @@ public final class TStr extends TObj implements Str {
         super(value);
     }
 
+    public static Str sym(final String label) {
+        return TStr.of().bind(label);
+    }
+
     public static Str all() {
         return new TStr(null).q(0, Integer.MAX_VALUE);
     }

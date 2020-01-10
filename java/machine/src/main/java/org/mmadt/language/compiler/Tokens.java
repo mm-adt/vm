@@ -22,6 +22,15 @@
 
 package org.mmadt.language.compiler;
 
+import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
+import org.mmadt.machine.object.model.atomic.Int;
+import org.mmadt.machine.object.model.atomic.Real;
+import org.mmadt.machine.object.model.atomic.Str;
+import org.mmadt.machine.object.model.composite.Inst;
+import org.mmadt.machine.object.model.composite.Lst;
+import org.mmadt.machine.object.model.composite.Rec;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -141,7 +150,6 @@ public final class Tokens {
     public static final String ZERO = "zero";
 
     // TYPES
-
     public static final String OBJ = "obj";
     public static final String BOOL = "bool";
     public static final String INT = "int";
@@ -157,4 +165,22 @@ public final class Tokens {
         add(TRUE);
         add(FALSE);
     }};
+
+    public static String getBaseSymbol(final Obj obj) {
+        if (obj instanceof Bool)
+            return BOOL;
+        if (obj instanceof Str)
+            return STR;
+        if (obj instanceof Int)
+            return INT;
+        if (obj instanceof Real)
+            return REAL;
+        if (obj instanceof Rec)
+            return REC;
+        if (obj instanceof Inst)
+            return INST;
+        if (obj instanceof Lst)
+            return LST;
+        return OBJ;
+    }
 }
