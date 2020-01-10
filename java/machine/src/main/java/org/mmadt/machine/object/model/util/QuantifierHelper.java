@@ -39,6 +39,10 @@ public final class QuantifierHelper {
         // static helper class
     }
 
+    public static boolean withinZero(final WithOrderedRing quantifier) {
+        return ((Pair) quantifier).first().isZero();
+    }
+
     public static boolean isStar(final WithOrderedRing quantifier) {
         return quantifier instanceof Pair && ((Pair) quantifier).first().isZero() && ((Pair) quantifier).second().isMax();
     }

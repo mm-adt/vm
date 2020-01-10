@@ -33,9 +33,9 @@ import org.mmadt.machine.object.model.composite.Lst;
 import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
-import org.mmadt.machine.object.model.composite.util.PMap;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -79,29 +79,20 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 temp.add(obj);
             }
             return (S) TLst.of(temp).bind(to.binding()).model(model).symbol(to.symbol());
-        } else if (from instanceof Rec && to instanceof Rec && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
+        } else if (from.isRec() && to.isRec() && null != from.get() && null != to.get()) {  // TODO: test()/match()/as() need to all become the same method!
             final Rec<Obj, Obj> fromRec = (Rec<Obj, Obj>) from;
             final Rec<Obj, Obj> toRec = (Rec<Obj, Obj>) to;
-            final PMap<Obj, Obj> temp = new PMap<>();
-            Model model = from.model();
+            final Rec<Obj, Obj> asRec = TRec.of();
             for (final Map.Entry<Obj, Obj> toEntry : toRec.java().entrySet()) {
-                final Map.Entry<Obj, Obj> fromEntry = fromRec.java().entrySet().stream()
-                        .map(x -> Map.of(
-                                from.model().readOrGet(x.getKey(), x.getKey().model(from.model()).as(toEntry.getKey())),
-                                from.model().readOrGet(x.getValue(), x.getValue().model(from.model()).as(toEntry.getValue()))).entrySet().iterator().next())
-                        .filter(x ->
-                                null != x.getKey() && QuantifierHelper.within(toEntry.getKey().q(), x.getKey().q()) &&
-                                        null != x.getValue() && QuantifierHelper.within(toEntry.getValue().q(), x.getValue().q()))
-                        .findFirst()
-                        .orElse(null);
-                if (null == fromEntry)
-                    return toRec.halt();
-                model = model.write(fromEntry.getKey()).write(fromEntry.getValue());
-                if (!fromEntry.getKey().isNone() && !fromEntry.getValue().isNone())
-                    temp.put(fromEntry.getKey(), fromEntry.getValue());
+                final List<Obj> asEntry = AsInst.recKV(fromRec, toEntry.getKey());
+                if (toEntry.getValue().test(asEntry.get(1))) {
+                    if (!asEntry.get(1).q().isNone())
+                        asRec.put(asEntry.get(0).as(toEntry.getKey()), asEntry.get(1).as(toEntry.getValue()));
+                } else if (!QuantifierHelper.withinZero(toEntry.getValue().q())) {
+                    return fromRec.halt();
+                }
             }
-            final S s = (S) TRec.of(temp).bind(to.binding()).model(model).symbol(to.symbol());
-            return s.model(s.model().write(s));
+            return (S) asRec.bind(to.binding()).symbol(to.symbol());
         } else if (!to.test(from))
             return to.halt();
         else
@@ -112,5 +103,13 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
         final TObj temp = (TObj) obj.clone();
         temp.binding = label;
         return (S) temp;
+    }
+
+    private static <K extends Obj, V extends Obj> List<Obj> recKV(final Rec<K, V> rec, final K key) {
+        for (final Map.Entry<K, V> entry : rec.<Map<K, V>>get().entrySet()) {
+            if (key.test(entry.getKey()))
+                return List.of(entry.getKey().copy(rec), entry.getValue().copy(rec));
+        }
+        return List.of(key, TObj.none());
     }
 }

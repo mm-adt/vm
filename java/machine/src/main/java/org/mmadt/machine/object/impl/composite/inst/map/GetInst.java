@@ -97,5 +97,4 @@ public final class GetInst<K extends Obj, V extends Obj> extends TInst<WithProdu
         }
         return (V) TObj.none();
     }
-
 }

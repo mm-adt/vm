@@ -29,10 +29,13 @@ import org.mmadt.TestUtilities;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
+import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Bindings;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Rec;
+import org.mmadt.machine.object.model.ext.composite.Pair;
+import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;
@@ -127,8 +130,8 @@ final class TRecTest implements TestUtilities {
         assertEquals("y", markoAsPerson.get("age").binding());
         ////////////
         final Rec<Str, Obj> ryanAsPerson = ryan.as(person);
-        //assertEquals("ryan", ryanAsPerson.get("name").get());
-        //assertTrue(ryanAsPerson.get("age").isNone());
+        assertEquals("ryan", ryanAsPerson.get("name").get());
+        assertTrue(ryanAsPerson.get("age").isNone());
         assertTrue(ryan.get("age").isNone());
         ////////////
         final Rec<Str, Obj> kuppitzAsPerson = kuppitz.as(person);
@@ -308,7 +311,7 @@ final class TRecTest implements TestUtilities {
         assertFalse(marko.test(person));
         assertTrue(marko.test(marko));
         assertTrue(person.test(person));
-        System.out.println(marko.as(person).model());
+        System.out.println(marko.as(person));
         final Rec markoMatch = marko.as(person);
         assertEquals("x", markoMatch.binding());
         assertEquals("n1", markoMatch.get("name").binding());
