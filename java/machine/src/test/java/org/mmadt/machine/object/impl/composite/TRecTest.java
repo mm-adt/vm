@@ -29,13 +29,10 @@ import org.mmadt.TestUtilities;
 import org.mmadt.language.compiler.Tokens;
 import org.mmadt.machine.object.impl.atomic.TInt;
 import org.mmadt.machine.object.impl.atomic.TStr;
-import org.mmadt.machine.object.impl.ext.composite.TPair;
 import org.mmadt.machine.object.model.Bindings;
 import org.mmadt.machine.object.model.Obj;
 import org.mmadt.machine.object.model.atomic.Str;
 import org.mmadt.machine.object.model.composite.Rec;
-import org.mmadt.machine.object.model.ext.composite.Pair;
-import org.mmadt.machine.object.model.util.QuantifierHelper;
 import org.mmadt.util.ProcessArgs;
 
 import java.util.List;
@@ -50,6 +47,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mmadt.machine.object.impl.__.as;
+import static org.mmadt.machine.object.impl.__.choose;
 import static org.mmadt.machine.object.impl.__.gt;
 import static org.mmadt.machine.object.impl.__.is;
 import static org.mmadt.machine.object.model.util.QuantifierHelper.Tag.one;
@@ -146,6 +145,32 @@ final class TRecTest implements TestUtilities {
         assertEquals("y", stephenAsPerson.get("age").binding());
         assertTrue(stephenAsPerson.get("state").isNone());
         assertFalse(stephen.get("state").isNone());
+    }
+
+    @Test
+    void shouldMatch3() {
+        final Rec<Obj, Obj> person = TRec.of(Map.of("name", TStr.sym("n1"), "age", TInt.of(),
+                "phones", TRec.of(
+                        "home", TInt.of(choose(TInt.sym("h1"), TStr.sym("h2"))),
+                        "work", TInt.of(choose(is(gt(0)).mult(as(TInt.sym("w1"))), TStr.of()))))).bind("x");
+
+        final Rec<Obj, Obj> marko = TRec.of("name", "marko", "age", 29, "phones", TRec.of("home", 123, "work", 34));
+        System.out.println(person);
+        assertTrue(person.test(marko));
+        assertFalse(marko.test(person));
+        assertTrue(marko.test(marko));
+        assertTrue(person.test(person));
+        System.out.println(marko.as(person));
+        final Rec markoMatch = marko.as(person);
+        assertEquals("x", markoMatch.binding());
+        assertEquals("marko", markoMatch.get("name").get());
+        assertEquals(29, markoMatch.get("age").<Integer>get());
+        assertEquals(123, ((Rec) markoMatch.get("phones")).get("home").<Integer>get());
+        assertEquals(34, ((Rec) markoMatch.get("phones")).get("work").<Integer>get());
+        // check bindings
+        assertEquals("n1", markoMatch.get("name").binding());
+        assertEquals("h1", ((Rec) markoMatch.get("phones")).get("home").binding());
+        assertEquals("w1", ((Rec) markoMatch.get("phones")).get("work").binding());
     }
 
     /*@Test
@@ -299,32 +324,6 @@ final class TRecTest implements TestUtilities {
         assertFalse(recordType.isInstance());
     }
 
-    @Test
-    void shouldMatchNestedRecords1() {
-        final Rec person = TRec.of(Map.of("name", TStr.sym("n1"), "age", TInt.of(),
-                "phones", TRec.of(
-                        "home", TInt.sym("h1").or(TStr.sym("h2")),
-                        "work", TInt.of(is(gt(0))).bind("w1").or(TStr.of())))).bind("x");
-
-        final Rec marko = TRec.of("name", "marko", "age", 29, "phones", TRec.of("home", 123, "work", 34));
-        assertTrue(person.test(marko));
-        assertFalse(marko.test(person));
-        assertTrue(marko.test(marko));
-        assertTrue(person.test(person));
-        System.out.println(marko.as(person));
-        final Rec markoMatch = marko.as(person);
-        assertEquals("x", markoMatch.binding());
-        assertEquals("n1", markoMatch.get("name").binding());
-        final Bindings bindings = new Bindings();
-        assertTrue(person.match(bindings, marko));
-        System.out.println(person);
-/*        assertEquals(4, bindings.size());
-        assertEquals(TStr.of("marko"), bindings.get("n1"));
-        assertEquals(TInt.of(123), bindings.get("h1"));
-        assertEquals(TInt.of(34), bindings.get("w1"));
-        assertEquals(marko, bindings.get("x"));
-*/
-    }
 
     @Test
     void shouldMatchNestedRecords2() {

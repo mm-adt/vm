@@ -34,6 +34,8 @@ import org.mmadt.machine.object.model.composite.Rec;
 import org.mmadt.machine.object.model.composite.inst.MapInstruction;
 import org.mmadt.machine.object.model.composite.util.PList;
 import org.mmadt.machine.object.model.util.QuantifierHelper;
+import org.mmadt.processor.util.FastProcessor;
+import org.mmadt.util.IteratorUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -93,6 +95,8 @@ public final class AsInst<S extends Obj> extends TInst<S, S> implements MapInstr
                 }
             }
             return (S) asRec.bind(to.binding()).symbol(to.symbol());
+        } else if (to.isPredicate()) {
+            return IteratorUtils.orElse(FastProcessor.process(from.mapTo(to.get())), (S) TObj.none());
         } else if (!to.test(from))
             return to.halt();
         else

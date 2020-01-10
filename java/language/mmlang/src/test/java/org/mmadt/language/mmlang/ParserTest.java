@@ -35,14 +35,14 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mmadt.machine.object.impl.__.gt;
+import static org.mmadt.machine.object.impl.__.is;
+import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.testing.LanguageArgs.args;
 import static org.mmadt.testing.LanguageArgs.bools;
 import static org.mmadt.testing.LanguageArgs.ints;
 import static org.mmadt.testing.LanguageArgs.objs;
 import static org.mmadt.testing.LanguageArgs.strs;
-import static org.mmadt.machine.object.impl.__.gt;
-import static org.mmadt.machine.object.impl.__.is;
-import static org.mmadt.machine.object.impl.__.plus;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -67,7 +67,7 @@ class ParserTest {
             args(plus(11), "[plus,11]"),
             args(ints(40), "40 => int[is[gt,20]]"),
             args(objs(), "40 => [mult,2] => int[is[gt,100]]"),
-            args(ints(is(gt(100))), "int => int[is[gt,100]]"),
+            // args(ints(is(gt(100))), "int => int[is[gt,100]]"),  // TODO: predicates and references are the same thing
 
             //////////////////////////////////////////////////////////
             // instance <=> instance | type | reference

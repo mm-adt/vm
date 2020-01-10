@@ -50,6 +50,10 @@ public final class TReal extends TObj implements Real {
         super(value);
     }
 
+    public static Real sym(final String label) {
+        return TReal.of().bind(label);
+    }
+
     public static Real all() {
         return new TReal(null).q(0, Integer.MAX_VALUE);
     }

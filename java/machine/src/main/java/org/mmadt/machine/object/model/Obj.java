@@ -117,6 +117,7 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     @Override
     public default Obj or(final Obj object) {
+        // return this.set(ChooseInst.create(this,object)); // use choose?
         return this.set(IsInst.create(OrInst.create(AInst.create(this), AInst.create(object)))); // use choose?
     }
 
@@ -230,6 +231,10 @@ public interface Obj extends Pattern, Cloneable, WithAnd<Obj>, WithOr<Obj> {
 
     public default boolean isInstance() {
         return this.constant();
+    }
+
+    public default boolean isPredicate() {
+        return this.get() instanceof Inst;
     }
 
     public default boolean isSym() {
