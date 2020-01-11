@@ -26,6 +26,7 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.mmadt.language.mmlang.jsr223.mmLangScriptEngine;
 import org.mmadt.machine.object.model.Obj;
+import org.mmadt.machine.object.model.atomic.Bool;
 import org.mmadt.machine.object.model.atomic.Int;
 import org.mmadt.testing.LanguageArgs;
 import org.mmadt.util.IteratorUtils;
@@ -36,7 +37,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mmadt.machine.object.impl.__.gt;
-import static org.mmadt.machine.object.impl.__.is;
 import static org.mmadt.machine.object.impl.__.plus;
 import static org.mmadt.testing.LanguageArgs.args;
 import static org.mmadt.testing.LanguageArgs.bools;
@@ -115,6 +115,7 @@ class ParserTest {
 
             // references <=> instances | type | reference
             args(ints().plus(2).mult(3), "(int <= [plus,2]) => [mult,3]"),
+            // args(bools().<Bool>ref(plus(2).mult(gt(10))), "(int <= [plus,2]) => [gt,10]"),
 
             //args(ints(1), "(int <= [plus,0]) => 1"),  // TODO: this requires a new operator ^
             //args(ints(0), "(int <= [plus,1]) => 1"),
