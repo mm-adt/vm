@@ -25,32 +25,32 @@ package org.mmadt.machine.obj.feature
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait And[A <: And[A]] {
+trait And[A] {
   def &(other: A): A
 }
 
-trait Or[A <: Or[A]] {
+trait Or[A] {
   def |(other: A): A
 }
 
-trait Plus[A <: Plus[A]] {
+trait Plus[A] {
   def +(other: A): A
 }
 
-trait Minus[A <: Minus[A]] {
+trait Minus[A] {
   def -(other: A): A
 }
 
-trait Mult[A <: Mult[A]] {
+trait Mult[A] {
   def *(other: A): A
 }
 
-trait Div[A <: Div[A]] {
+trait Div[A] {
   def /(other: A): A
 }
 
 //
 
-trait CommutativePlus[A <: CommutativePlus[A]] extends Plus[A]
+trait CommutativePlus[A] extends Plus[A]
 
-trait CommutativeMult[A <: CommutativeMult[A]] extends Mult[A]
+trait CommutativeMult[A] extends Mult[A]

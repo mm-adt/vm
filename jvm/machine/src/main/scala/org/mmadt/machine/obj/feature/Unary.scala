@@ -25,11 +25,11 @@ package org.mmadt.machine.obj.feature
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Neg[A <: Neg[A]] {
+trait Neg[A] {
   def -(): A
 }
 
-trait Not[A <: Neg[A]] {
+trait Not[A] {
   def !(): A
 }
 

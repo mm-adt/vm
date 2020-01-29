@@ -23,12 +23,11 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.Int
-import org.mmadt.machine.obj.feature.Plus
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OInt(jvm: Long) extends OObj[Long](jvm) with Plus[Int] with Int {
+class OInt(jvm: Long) extends OObj[Long](jvm) with Int {
 
   override def _O(): Int = new OInt(0)
 

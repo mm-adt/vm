@@ -25,10 +25,10 @@ package org.mmadt.machine.obj.feature
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Zero[A <: Zero[A]] {
+trait Zero[A] {
   def _O(): A
 }
 
-trait One[A <: One[A]] {
+trait One[A] {
   def _1(): A
 }
