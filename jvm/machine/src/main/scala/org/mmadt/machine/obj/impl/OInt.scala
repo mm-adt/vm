@@ -22,13 +22,14 @@
 
 package org.mmadt.machine.obj.impl
 
+import org.mmadt.machine.obj.feature.algebra.Commutative
 import org.mmadt.machine.obj.impl.OInt.{i0, i1}
 import org.mmadt.machine.obj.{Bool, Int}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OInt(jvm: Long) extends OObj[Long](jvm) with Int {
+class OInt(jvm: Long) extends OObj[Long](jvm) with Int with Commutative[Int] {
 
   override def _O(): Int = i0
 

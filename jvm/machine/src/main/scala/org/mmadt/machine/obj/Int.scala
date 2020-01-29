@@ -22,7 +22,8 @@
 
 package org.mmadt.machine.obj
 
-import org.mmadt.machine.obj.feature.{Eq, Order, Ring}
+import org.mmadt.machine.obj.feature.algebra.{Order, Ring}
+import org.mmadt.machine.obj.feature.operator.Eq
 
 
 /**

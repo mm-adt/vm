@@ -22,32 +22,68 @@
 
 package org.mmadt.machine.obj.feature
 
+import org.mmadt.machine.obj.Bool
+
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
+package object operator {
 
-trait SemigroupMult[A] extends Mult[A]
+  // binary operators
 
-trait SemigroupPlus[A] extends Plus[A]
+  trait And[A] {
+    def &(other: A): A
+  }
 
-trait MonoidMult[A] extends SemigroupMult[A] with One[A]
+  trait Or[A] {
+    def |(other: A): A
+  }
 
-trait MonoidPlus[A] extends SemigroupPlus[A] with Zero[A]
+  trait Plus[A] {
+    def +(other: A): A
+  }
 
-trait GroupPlus[A] extends MonoidPlus[A] with Neg[A]
+  trait Minus[A] {
+    def -(other: A): A
+  }
 
-trait GroupMult[A] extends MonoidMult[A] with Neg[A]
+  trait Mult[A] {
+    def *(other: A): A
+  }
 
-trait Rng[A] extends GroupPlus[A] with MonoidMult[A] with CommutativePlus[A]
+  trait Div[A] {
+    def /(other: A): A
+  }
 
-trait Ring[A] extends GroupPlus[A] with MonoidMult[A] with CommutativePlus[A] with Minus[A]
+  trait Gt[A] {
+    def >(other: A): Bool
+  }
 
-trait Order[A] extends Gt[A] with Gte[A] with Lt[A] with Lte[A]
+  trait Lt[A] {
+    def <(other: A): Bool
+  }
 
-trait Logical[A] extends And[A] with Or[A]
+  trait Gte[A] {
+    def >=(other: A): Bool
+  }
 
-////
+  trait Lte[A] {
+    def =<(other: A): Bool
+  }
+
+  trait Eq[A] {
+    def ==(other: A): Bool
+  }
+
+  // Unary operators
+
+  trait Neg[A] {
+    def -(): A
+  }
+
+  trait Not[A] {
+    def !(): A
+  }
 
 
-
-
+}
