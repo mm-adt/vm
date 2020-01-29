@@ -20,59 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.feature
+package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.Bool
+import org.mmadt.machine.obj.impl.OBool.{False, True}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait And[A] {
-  def &(other: A): A
+class OBool(jvm: Boolean) extends OObj[Boolean](jvm) with Bool {
+
+  override def |(other: Bool): Bool = new OBool(this.jvm || other._jvm())
+
+  override def &(other: Bool): Bool = new OBool(this.jvm && other._jvm())
+
+  override def _O(): Bool = True
+
+  override def _1(): Bool = False
+
+  override def ==(other: Bool): Bool = new OBool(this.jvm == other._jvm())
 }
 
-trait Or[A] {
-  def |(other: A): A
+object OBool {
+
+  object True extends OBool(true)
+
+  object False extends OBool(false)
+
 }
-
-trait Plus[A] {
-  def +(other: A): A
-}
-
-trait Minus[A] {
-  def -(other: A): A
-}
-
-trait Mult[A] {
-  def *(other: A): A
-}
-
-trait Div[A] {
-  def /(other: A): A
-}
-
-trait Gt[A] {
-  def >(other: A): Bool
-}
-
-trait Lt[A] {
-  def <(other: A): Bool
-}
-
-trait Gte[A] {
-  def >=(other: A): Bool
-}
-
-trait Lte[A] {
-  def =<(other: A): Bool
-}
-
-trait Eq[A] {
-  def ==(other: A): Bool
-}
-
-//
-
-trait CommutativePlus[A] extends Plus[A]
-
-trait CommutativeMult[A] extends Mult[A]

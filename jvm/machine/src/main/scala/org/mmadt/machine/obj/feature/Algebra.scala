@@ -42,6 +42,9 @@ trait Rng[A] extends GroupPlus[A] with MonoidMult[A] with CommutativePlus[A]
 
 trait Ring[A] extends GroupPlus[A] with MonoidMult[A] with CommutativePlus[A] with Minus[A]
 
+trait Order[A] extends Gt[A] with Gte[A] with Lt[A] with Lte[A]
+
+trait Logical[A] extends And[A] with Or[A]
 
 ////
 

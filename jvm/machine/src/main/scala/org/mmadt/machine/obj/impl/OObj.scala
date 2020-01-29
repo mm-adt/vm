@@ -27,7 +27,7 @@ import org.mmadt.machine.obj.Obj
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-abstract class OObj[J](jvm: J) extends Obj[J] {
+class OObj[J](val jvm: J) extends Obj[J] {
 
   def _jvm(): J = jvm
 }

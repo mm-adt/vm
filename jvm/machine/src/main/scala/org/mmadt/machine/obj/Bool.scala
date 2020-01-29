@@ -20,59 +20,13 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.feature
+package org.mmadt.machine.obj
 
-import org.mmadt.machine.obj.Bool
+import org.mmadt.machine.obj.feature._
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait And[A] {
-  def &(other: A): A
+trait Bool extends Obj[Boolean] with Logical[Bool] with One[Bool] with Zero[Bool] with Eq[Bool] {
+
 }
-
-trait Or[A] {
-  def |(other: A): A
-}
-
-trait Plus[A] {
-  def +(other: A): A
-}
-
-trait Minus[A] {
-  def -(other: A): A
-}
-
-trait Mult[A] {
-  def *(other: A): A
-}
-
-trait Div[A] {
-  def /(other: A): A
-}
-
-trait Gt[A] {
-  def >(other: A): Bool
-}
-
-trait Lt[A] {
-  def <(other: A): Bool
-}
-
-trait Gte[A] {
-  def >=(other: A): Bool
-}
-
-trait Lte[A] {
-  def =<(other: A): Bool
-}
-
-trait Eq[A] {
-  def ==(other: A): Bool
-}
-
-//
-
-trait CommutativePlus[A] extends Plus[A]
-
-trait CommutativeMult[A] extends Mult[A]

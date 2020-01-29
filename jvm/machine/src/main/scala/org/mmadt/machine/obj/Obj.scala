@@ -26,6 +26,7 @@ package org.mmadt.machine.obj
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 trait Obj[J] {
+
   def _jvm(): J
 
   override def toString: String = _jvm().toString

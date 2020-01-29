@@ -22,6 +22,7 @@
 
 package org.mmadt
 
+import org.mmadt.machine.obj.impl.OBool.{False, True}
 import org.mmadt.machine.obj.impl.OInt
 
 /**
@@ -30,6 +31,7 @@ import org.mmadt.machine.obj.impl.OInt
 object Play extends App {
   val a = new OInt(34)
   val b = new OInt(4)
-  println("a + b = " + (a+b))
-  println("a * b = " + (a*b))
+  println(a + b)
+  println(a * b)
+  println(True & False)
 }
