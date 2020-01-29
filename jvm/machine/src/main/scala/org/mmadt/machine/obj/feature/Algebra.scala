@@ -20,16 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt
-
-import org.mmadt.machine.obj.impl.OInt
+package org.mmadt.machine.obj.feature
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-object Play extends App {
-  val a = new OInt(34)
-  val b = new OInt(4)
-  println("a + b = " + (a+b))
-  println("a * b = " + (a*b))
-}
+
+trait SemigroupMult[A <: SemigroupMult[A]] extends Mult[A]
+
+trait SemigroupPlus[A <: SemigroupPlus[A]] extends Plus[A]
+
+trait MonoidMult[A <: MonoidMult[A]] extends SemigroupMult[A] with One[A]
+
+trait MonoidPlus[A <: MonoidPlus[A]] extends SemigroupPlus[A] with Zero[A]
+
+trait GroupPlus[A <: GroupPlus[A]] extends MonoidPlus[A] with Neg[A]
+
+trait GroupMult[A <: GroupMult[A]] extends MonoidMult[A] with Neg[A]
+
+trait Rng[A <: Ring[A]] extends GroupPlus[A] with MonoidMult[A] with CommutativePlus[A]
+
+trait Ring[A <: Ring[A]] extends GroupPlus[A] with MonoidMult[A] with CommutativePlus[A] with Minus[A]
+
+
+////
+
+
+
+

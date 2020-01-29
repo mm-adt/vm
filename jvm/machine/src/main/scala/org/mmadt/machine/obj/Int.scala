@@ -20,16 +20,14 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt
+package org.mmadt.machine.obj
 
-import org.mmadt.machine.obj.impl.OInt
+import org.mmadt.machine.obj.feature.Ring
+
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-object Play extends App {
-  val a = new OInt(34)
-  val b = new OInt(4)
-  println("a + b = " + (a+b))
-  println("a * b = " + (a*b))
+trait Int extends Obj[Long] with Ring[Int] {
+
 }

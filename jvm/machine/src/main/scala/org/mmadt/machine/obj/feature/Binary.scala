@@ -20,16 +20,37 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt
-
-import org.mmadt.machine.obj.impl.OInt
+package org.mmadt.machine.obj.feature
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-object Play extends App {
-  val a = new OInt(34)
-  val b = new OInt(4)
-  println("a + b = " + (a+b))
-  println("a * b = " + (a*b))
+trait And[A <: And[A]] {
+  def &(other: A): A
 }
+
+trait Or[A <: Or[A]] {
+  def |(other: A): A
+}
+
+trait Plus[A <: Plus[A]] {
+  def +(other: A): A
+}
+
+trait Minus[A <: Minus[A]] {
+  def -(other: A): A
+}
+
+trait Mult[A <: Mult[A]] {
+  def *(other: A): A
+}
+
+trait Div[A <: Div[A]] {
+  def /(other: A): A
+}
+
+//
+
+trait CommutativePlus[A <: CommutativePlus[A]] extends Plus[A]
+
+trait CommutativeMult[A <: CommutativeMult[A]] extends Mult[A]

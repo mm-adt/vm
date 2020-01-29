@@ -20,16 +20,26 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt
+package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.impl.OInt
+import org.mmadt.machine.obj.Int
+import org.mmadt.machine.obj.feature.Plus
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-object Play extends App {
-  val a = new OInt(34)
-  val b = new OInt(4)
-  println("a + b = " + (a+b))
-  println("a * b = " + (a*b))
+class OInt(jvm: Long) extends OObj[Long](jvm) with Plus[Int] with Int {
+
+  override def _O(): Int = new OInt(0)
+
+  override def _1(): Int = new OInt(1)
+
+  override def +(other: Int): Int = new OInt(this.jvm + other._jvm())
+
+  override def *(other: Int): Int = new OInt(this.jvm * other._jvm())
+
+  override def -(other: Int): Int = new OInt(this.jvm - other._jvm())
+
+  override def -(): Int = new OInt(-this.jvm)
+
 }
