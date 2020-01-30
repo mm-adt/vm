@@ -22,12 +22,16 @@
 
 package org.mmadt.machine.obj
 
+import org.mmadt.machine.obj.impl.OBool.True
+
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 trait Obj[J] {
 
-  def _jvm(): J
+  def _jvm (): J
+
+  def is(bool: Bool): this.type = if (bool.eq(True)._jvm()) this else this
 
   override def toString: String = _jvm().toString
 }

@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.feature.algebra.Commutative
+import org.mmadt.machine.obj.traits.algebra.Commutative
 import org.mmadt.machine.obj.impl.OInt.{i0, i1}
 import org.mmadt.machine.obj.{Bool, Int}
 

@@ -29,5 +29,6 @@ import org.mmadt.machine.obj.Obj
   */
 class OObj[J](val jvm: J) extends Obj[J] {
 
-  def _jvm(): J = jvm
+  override def _jvm(): J = jvm
+
 }

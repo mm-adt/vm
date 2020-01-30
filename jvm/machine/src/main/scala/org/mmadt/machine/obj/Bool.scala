@@ -22,9 +22,8 @@
 
 package org.mmadt.machine.obj
 
-import org.mmadt.machine.obj.feature._
-import org.mmadt.machine.obj.feature.algebra.Logical
-import org.mmadt.machine.obj.feature.operator.Eq
+import org.mmadt.machine.obj.traits.algebra.Logical
+import org.mmadt.machine.obj.traits.operator.{Eq, One, Zero}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

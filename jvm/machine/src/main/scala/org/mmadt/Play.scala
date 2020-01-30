@@ -31,7 +31,8 @@ import org.mmadt.machine.obj.impl.OInt
 object Play extends App {
   val a = new OInt(34)
   val b = new OInt(4)
-  println(a + b)
+  println(a.+(b))
   println(a * b)
   println(True & False)
+  println(a.is(a>b))
 }

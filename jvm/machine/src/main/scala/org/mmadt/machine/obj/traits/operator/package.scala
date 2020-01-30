@@ -20,11 +20,84 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.feature
+package org.mmadt.machine.obj.traits
 
 import org.mmadt.machine.obj.Bool
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
+package object operator {
 
+  // Binary operators
+
+  trait And[A] {
+    def &(other: A): A
+  }
+
+  trait Or[A] {
+    def |(other: A): A
+  }
+
+  trait Plus[A] {
+    def +(other: A): A
+
+    def plus(other: A): A = this + other
+  }
+
+  trait Minus[A] {
+    def -(other: A): A
+  }
+
+  trait Mult[A] {
+    def *(other: A): A
+  }
+
+  trait Div[A] {
+    def /(other: A): A
+  }
+
+  trait Gt[A] {
+    def >(other: A): Bool
+  }
+
+  trait Lt[A] {
+    def <(other: A): Bool
+  }
+
+  trait Gte[A] {
+    def >=(other: A): Bool
+  }
+
+  trait Lte[A] {
+    def =<(other: A): Bool
+  }
+
+  trait Eq[A] {
+    def ==(other: A): Bool
+
+    def eq(other: A): Bool = this == other
+  }
+
+  // Unary operators
+
+  trait Neg[A] {
+    def -(): A
+  }
+
+  trait Not[A] {
+    def !(): A
+  }
+
+  // Singleton operators
+
+  trait Zero[A] {
+    def _O(): A
+  }
+
+  trait One[A] {
+    def _1(): A
+  }
+
+
+}
