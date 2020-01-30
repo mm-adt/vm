@@ -20,17 +20,15 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj
 
-import org.mmadt.machine.obj.{Obj, TQ}
+import org.mmadt.machine.obj.impl.VInst
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-abstract class OObj[J](val jvm: J, val quantifier: TQ) extends Obj {
+trait Type extends Obj {
 
-  override def q(): (VInt, VInt) = quantifier
-
-  override def q(min: VInt, max: VInt): this.type
+   def _jvm(): List[VInst]
 
 }

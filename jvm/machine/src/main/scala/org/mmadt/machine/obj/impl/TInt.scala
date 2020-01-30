@@ -22,38 +22,38 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.impl.VBool.True
-import org.mmadt.machine.obj.impl.VInt.{i0, i1}
-import org.mmadt.machine.obj.{Bool, Inst, Int, JQ, qOne}
+import org.mmadt.machine.obj.impl.VBool.boolT
+import org.mmadt.machine.obj.impl.VInt.{int0, int1}
+import org.mmadt.machine.obj.{Bool, Inst, Int, TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TInt(jvm: List[Inst], quantifier: JQ) extends TObj(jvm, quantifier) with Int {
+class TInt(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with Int {
 
-  def this(quantifier: JQ) = this(List(), quantifier)
+  def this(quantifier: TQ) = this(List(), quantifier)
 
   def this() = this(qOne)
 
-  override def lt(other: Int): Bool = True
+  override def lt(other: Int): Bool = boolT
 
-  override def gte(other: Int): Bool = True
+  override def gte(other: Int): Bool = boolT
 
-  override def lte(other: Int): Bool = True
+  override def lte(other: Int): Bool = boolT
 
   override def gt(other: Int): Bool = new TBool(this.jvm ++ List(VInst.gt(other)), this.q())
 
-  override def one(): Int = i1
+  override def one(): Int = int1
 
   override def plus(other: Int): Int = new TInt(this.jvm ++ List(VInst.plus(other)), this.q())
 
-  override def neg(): Int = i1
+  override def neg(): Int = int1
 
   override def mult(other: Int): Int = new TInt(this.jvm ++ List(VInst.mult(other)), this.q())
 
-  override def zero(): Int = i0
+  override def zero(): Int = int0
 
-  override def minus(other: Int): Int = i1
+  override def minus(other: Int): Int = int1
 
 }
 

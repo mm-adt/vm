@@ -30,7 +30,7 @@ import org.mmadt.machine.obj.impl.VInst._id
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VInst(jvm: JInst, quantifier: JQ) extends OObj(jvm, quantifier) with Inst {
+class VInst(jvm: JInst, quantifier: TQ) extends VObj[JInst](jvm, quantifier) with Inst {
 
   def this(jvm: JInst) = this(jvm, qOne)
 
@@ -42,10 +42,10 @@ object VInst {
 
   object _id extends VInst(JInst.single(Tokens.id))
 
-  def plus(a: Obj): VInst = new VInst((Tokens.plus, List(a)))
+  def plus(a: Obj): VInst = new VInst((Tokens.plus, List(a.asInstanceOf[Value[_]])))
 
-  def mult(a: Obj): VInst = new VInst((Tokens.mult, List(a)))
+  def mult(a: Obj): VInst = new VInst((Tokens.mult, List(a.asInstanceOf[Value[_]])))
 
-  def gt(a: Obj): VInst = new VInst((Tokens.gt, List(a)))
+  def gt(a: Obj): VInst = new VInst((Tokens.gt, List(a.asInstanceOf[Value[_]])))
 
 }

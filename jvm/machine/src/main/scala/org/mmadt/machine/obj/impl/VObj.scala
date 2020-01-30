@@ -22,15 +22,23 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.{Obj, TQ}
+import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.VBool.boolF
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-abstract class OObj[J](val jvm: J, val quantifier: TQ) extends Obj {
+class VObj[J](jvm: J, quantifier: TQ) extends OObj(jvm, quantifier) with Value[J] {
+
+  override def _jvm(): J = jvm
+
+  override def eq(other: Obj): Bool = other match {
+    case _: Type => boolF
+    case x: Value[_] => new VBool(this.jvm == x._jvm())
+  }
 
   override def q(): (VInt, VInt) = quantifier
 
-  override def q(min: VInt, max: VInt): this.type
+  override def q(min: VInt, max: VInt): this.type = new VObj[J](jvm, (min, max)).asInstanceOf[this.type]
 
 }

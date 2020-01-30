@@ -22,29 +22,31 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.impl.VBool.{False, True}
-import org.mmadt.machine.obj.{Bool, JQ, qOne}
+import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.{Bool, TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VBool(jvm: Boolean, quantifier: JQ) extends OObj[Boolean](jvm, quantifier) with Bool {
+class VBool(jvm: Boolean, quantifier: TQ) extends VObj[Boolean](jvm, quantifier) with Bool {
 
   def this(jvm: Boolean) = this(jvm, qOne)
 
-  override def or(other: Bool): Bool = new VBool(this.jvm || other._jvm())
+  override def or(other: Bool): Bool = new VBool(this.jvm || otherBoolean(other))
 
-  override def and(other: Bool): Bool = new VBool(this.jvm && other._jvm())
+  override def and(other: Bool): Bool = new VBool(this.jvm && otherBoolean(other))
 
-  override def zero(): Bool = True
+  override def zero(): Bool = boolT
 
-  override def one(): Bool = False
+  override def one(): Bool = boolF
+
+  private def otherBoolean(other: Bool): Boolean = other.asInstanceOf[VBool]._jvm()
 }
 
 object VBool {
 
-  object True extends VBool(true)
+  object boolT extends VBool(true)
 
-  object False extends VBool(false)
+  object boolF extends VBool(false)
 
 }

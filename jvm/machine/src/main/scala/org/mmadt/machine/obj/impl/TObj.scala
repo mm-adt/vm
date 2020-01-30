@@ -23,19 +23,32 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.language.Stringer
-import org.mmadt.machine.obj.impl.VInst._id
-import org.mmadt.machine.obj.{Inst, JQ, qOne}
+import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.VBool.boolF
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TObj(jvm: List[Inst], quantifier: JQ) extends OObj(jvm, quantifier)  {
+class TObj(jvm: List[VInst], quantifier: TQ) extends OObj(jvm, quantifier) with Type {
 
-  def this(jvm: List[Inst]) = this(jvm, qOne)
+  def this(jvm: List[VInst]) = this(jvm, qOne)
 
-  def this() = this(List(_id))
+  def this() = this(List())
 
   override def toString: String = Stringer.t(this) + Stringer.q(this.q())
+
+  override def _jvm(): List[VInst] = jvm
+
+  override def eq(other: Obj): Bool = other match {
+    case _: Value[_] => boolF
+    case _: Type => new VBool(this.jvm.equals(otherInst(other)))
+  }
+
+  override def q(min: VInt, max: VInt): this.type = new TObj(jvm, (min, max)).asInstanceOf[this.type]
+
+  protected def otherInst(other: Obj): List[VInst] = other.asInstanceOf[TObj].jvm
+
+
 }
 
 object TObj {

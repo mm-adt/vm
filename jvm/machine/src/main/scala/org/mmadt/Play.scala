@@ -23,18 +23,17 @@
 package org.mmadt
 
 import org.mmadt.machine.obj.impl.TInt.int
-import org.mmadt.machine.obj.impl.VBool.{False, True}
-import org.mmadt.machine.obj.impl.VInt
+import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 object Play extends App {
-  val a = new VInt(34)
-  val b = new VInt(4)
+  val a = int(34)
+  val b = int(4)
   println(a.+(b))
   println(a * b)
-  println(True & False)
-  println(a.is(int.gt(b)).map(False).or(True))
+  println(boolT & boolF)
+  println(a.is(int.gt(b)).map(boolF).or(boolT))
   println(int.plus(int(34)).mult(int(4)).gt(int(45)))
 }

@@ -22,8 +22,9 @@
 
 package org.mmadt.machine.obj.traits
 
-import org.mmadt.machine.obj.impl.VBool.True
-import org.mmadt.machine.obj.{Bool, Int}
+import org.mmadt.machine.obj.{Bool, TQ}
+import org.mmadt.machine.obj.impl.VBool.boolT
+import org.mmadt.machine.obj.impl.{VBool, VInt}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,16 +37,16 @@ package object instruction {
 
     def id(): this.type = this
 
-    def is(bool: Bool): this.type = if (bool.eq(True)._jvm()) this else this
+    def is(bool: Bool): this.type = if (bool.eq(boolT)) this else this
   }
 
   trait MapInstructions {
 
     def map[A](obj: A): A = obj
 
-    def q(): (Int, Int)
+    def q(): TQ
 
-    def q(min: Int, max: Int): this.type
+    def q(min: VInt, max: VInt): this.type
 
   }
 

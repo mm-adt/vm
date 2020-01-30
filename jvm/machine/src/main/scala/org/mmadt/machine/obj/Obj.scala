@@ -31,7 +31,5 @@ import org.mmadt.machine.obj.traits.operator.Eq
   */
 trait Obj extends Instructions with Eq {
 
-  def _jvm[J](): J
-
   override def toString: String = Stringer.t(this)
 }

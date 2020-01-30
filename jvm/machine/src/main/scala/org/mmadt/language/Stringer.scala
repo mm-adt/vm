@@ -29,7 +29,7 @@ import org.mmadt.machine.obj._
   */
 object Stringer {
 
-  def q(x: JQ): String = x match {
+  def q(x: TQ): String = x match {
     case `qOne` => ""
     case `qZero` => "{0}"
     case `qMark` => "{?}"
@@ -37,10 +37,12 @@ object Stringer {
   }
 
   def t(x: Obj): String = {
-    x._jvm[Object]() match {
-      case y: List[Inst] => Tokens.symbol(x) +  x._jvm[List[Inst]]().map(i => "[" + i._jvm[JInst]()._1 + "," + instArgs(i._jvm[JInst]()._2) + "]").fold("")((a, b) => a + b)
-      case _ => x._jvm().toString
+    x match {
+      case y: Value[_] => y._jvm().toString
+      case y: Type => Tokens.symbol(x) + y._jvm().map(i => "[" + i.jvm._1 + "," + instArgs(i.jvm._2) + "]").fold("")((a, b) => a + b)
+      case _ => throw new RuntimeException("Error: " + x.getClass);
     }
+
   }
 
   def instArgs(args: List[Obj]): String = {

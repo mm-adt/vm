@@ -22,21 +22,22 @@
 
 package org.mmadt.machine
 
-import org.mmadt.machine.obj.impl.VInt.{i0, i1}
+import org.mmadt.machine.obj.impl.VInt
+import org.mmadt.machine.obj.impl.VInt.{int0, int1}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 package object obj {
-  type JInst = (String, List[Obj])
+  type JInst = (String, List[Value[_]])
 
-  type JQ = (Int, Int)
+  type TQ = (VInt, VInt)
 
-  lazy val qOne: JQ = (i1, i1)
+  lazy val qOne: TQ = (int1, int1)
 
-  lazy val qZero: JQ = (i0, i0)
+  lazy val qZero: TQ = (int0, int0)
 
-  lazy val qMark: JQ = (i0, i1)
+  lazy val qMark: TQ = (int0, int1)
 
   object JInst {
     def single(arg: String): JInst = (arg, List())
