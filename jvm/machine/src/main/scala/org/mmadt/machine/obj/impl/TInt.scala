@@ -22,8 +22,8 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.impl.OBool.True
-import org.mmadt.machine.obj.impl.OInt.{i0, i1}
+import org.mmadt.machine.obj.impl.VBool.True
+import org.mmadt.machine.obj.impl.VInt.{i0, i1}
 import org.mmadt.machine.obj.{Bool, Inst, Int, JQ, qOne}
 
 /**
@@ -41,15 +41,15 @@ class TInt(jvm: List[Inst], quantifier: JQ) extends TObj(jvm, quantifier) with I
 
   override def lte(other: Int): Bool = True
 
-  override def gt(other: Int): Bool = new TBool(this.jvm ++ List(OInst.gt(other)),this.q())
+  override def gt(other: Int): Bool = new TBool(this.jvm ++ List(VInst.gt(other)), this.q())
 
   override def one(): Int = i1
 
-  override def plus(other: Int): Int = new TInt(this.jvm ++ List(OInst.plus(other)), this.q())
+  override def plus(other: Int): Int = new TInt(this.jvm ++ List(VInst.plus(other)), this.q())
 
   override def neg(): Int = i1
 
-  override def mult(other: Int): Int = new TInt(this.jvm ++ List(OInst.mult(other)), this.q())
+  override def mult(other: Int): Int = new TInt(this.jvm ++ List(VInst.mult(other)), this.q())
 
   override def zero(): Int = i0
 
@@ -60,5 +60,7 @@ class TInt(jvm: List[Inst], quantifier: JQ) extends TObj(jvm, quantifier) with I
 object TInt {
 
   object int extends TInt
+
+  def int(jvm: Long): Int = new VInt(jvm)
 
 }

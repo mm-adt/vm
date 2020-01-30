@@ -23,7 +23,7 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.language.Stringer
-import org.mmadt.machine.obj.impl.OInst._id
+import org.mmadt.machine.obj.impl.VInst._id
 import org.mmadt.machine.obj.{Inst, JQ, qOne}
 
 /**

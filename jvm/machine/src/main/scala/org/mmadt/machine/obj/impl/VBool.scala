@@ -22,42 +22,29 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.OInt.{i0, i1}
+import org.mmadt.machine.obj.impl.VBool.{False, True}
+import org.mmadt.machine.obj.{Bool, JQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OInt(jvm: Long, quantifier: JQ) extends OObj[Long](jvm, quantifier) with Int {
+class VBool(jvm: Boolean, quantifier: JQ) extends OObj[Boolean](jvm, quantifier) with Bool {
 
-  def this(jvm: Long) = this(jvm, qOne)
+  def this(jvm: Boolean) = this(jvm, qOne)
 
-  override def zero(): Int = i0
+  override def or(other: Bool): Bool = new VBool(this.jvm || other._jvm())
 
-  override def one(): Int = i1
+  override def and(other: Bool): Bool = new VBool(this.jvm && other._jvm())
 
-  override def plus(other: Int): Int = new OInt(this.jvm + other._jvm[Long]())
+  override def zero(): Bool = True
 
-  override def mult(other: Int): Int = new OInt(this.jvm * other._jvm[Long]())
-
-  override def minus(other: Int): Int = new OInt(this.jvm - other._jvm[Long]())
-
-  override def neg(): Int = new OInt(-this.jvm)
-
-  override def gte(other: Int): Bool = new OBool(this.jvm >= other._jvm[Long]())
-
-  override def lte(other: Int): Bool = new OBool(this.jvm <= other._jvm[Long]())
-
-  override def gt(other: Int): Bool = new OBool(this.jvm < other._jvm[Long]())
-
-  override def lt(other: Int): Bool = new OBool(this.jvm > other._jvm[Long]())
-
+  override def one(): Bool = False
 }
 
-object OInt {
+object VBool {
 
-  object i1 extends OInt(1)
+  object True extends VBool(true)
 
-  object i0 extends OInt(0)
+  object False extends VBool(false)
 
 }

@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.obj.traits
 
-import org.mmadt.machine.obj.impl.OBool.True
+import org.mmadt.machine.obj.impl.VBool.True
 import org.mmadt.machine.obj.{Bool, Int}
 
 /**

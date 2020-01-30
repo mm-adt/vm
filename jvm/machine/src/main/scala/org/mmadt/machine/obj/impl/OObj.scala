@@ -35,7 +35,7 @@ class OObj[J](val jvm: J, val quantifier: JQ) extends Obj {
 
   override def _jvm[J](): J = jvm.asInstanceOf[J]
 
-  override def eq(other: Obj): Bool = new OBool(this.jvm == other._jvm())
+  override def eq(other: Obj): Bool = new VBool(this.jvm == other._jvm())
 
   override def q(): (Int, Int) = quantifier
 

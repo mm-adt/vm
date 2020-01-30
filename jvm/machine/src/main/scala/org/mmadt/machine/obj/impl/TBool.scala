@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.impl.OBool.{False, True}
+import org.mmadt.machine.obj.impl.VBool.{False, True}
 import org.mmadt.machine.obj.{Bool, Inst, JQ, qOne}
 
 /**

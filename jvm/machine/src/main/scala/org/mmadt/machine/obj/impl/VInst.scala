@@ -25,12 +25,12 @@ package org.mmadt.machine.obj.impl
 
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.OInst._id
+import org.mmadt.machine.obj.impl.VInst._id
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OInst(jvm: JInst, quantifier: JQ) extends OObj(jvm, quantifier) with Inst {
+class VInst(jvm: JInst, quantifier: JQ) extends OObj(jvm, quantifier) with Inst {
 
   def this(jvm: JInst) = this(jvm, qOne)
 
@@ -38,14 +38,14 @@ class OInst(jvm: JInst, quantifier: JQ) extends OObj(jvm, quantifier) with Inst 
 
 }
 
-object OInst {
+object VInst {
 
-  object _id extends OInst(JInst.single(Tokens.id))
+  object _id extends VInst(JInst.single(Tokens.id))
 
-  def plus(a: Obj): OInst = new OInst((Tokens.plus, List(a)))
+  def plus(a: Obj): VInst = new VInst((Tokens.plus, List(a)))
 
-  def mult(a: Obj): OInst = new OInst((Tokens.mult, List(a)))
+  def mult(a: Obj): VInst = new VInst((Tokens.mult, List(a)))
 
-  def gt(a: Obj): OInst = new OInst((Tokens.gt, List(a)))
+  def gt(a: Obj): VInst = new VInst((Tokens.gt, List(a)))
 
 }

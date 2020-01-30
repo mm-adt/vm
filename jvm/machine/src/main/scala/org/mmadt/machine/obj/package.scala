@@ -22,7 +22,7 @@
 
 package org.mmadt.machine
 
-import org.mmadt.machine.obj.impl.OInt.{i0, i1}
+import org.mmadt.machine.obj.impl.VInt.{i0, i1}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

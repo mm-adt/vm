@@ -22,19 +22,19 @@
 
 package org.mmadt
 
-import org.mmadt.machine.obj.impl.OBool.{False, True}
-import org.mmadt.machine.obj.impl.OInt
 import org.mmadt.machine.obj.impl.TInt.int
+import org.mmadt.machine.obj.impl.VBool.{False, True}
+import org.mmadt.machine.obj.impl.VInt
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 object Play extends App {
-  val a = new OInt(34)
-  val b = new OInt(4)
+  val a = new VInt(34)
+  val b = new VInt(4)
   println(a.+(b))
   println(a * b)
   println(True & False)
   println(a.is(int.gt(b)).map(False).or(True))
-  println(int.plus(a).mult(b).gt(b))
+  println(int.plus(int(34)).mult(int(4)).gt(int(45)))
 }
