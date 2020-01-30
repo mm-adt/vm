@@ -23,12 +23,12 @@
 package org.mmadt.machine.obj
 
 import org.mmadt.machine.obj.traits.algebra.{Order, Ring}
-import org.mmadt.machine.obj.traits.operator.Eq
 
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Int extends Obj[Long] with Ring[Int] with Order[Int] with Eq[Int] {
+trait Int extends Obj with Ring[Int] with Order[Int] {
+
 
 }

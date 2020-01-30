@@ -24,6 +24,7 @@ package org.mmadt
 
 import org.mmadt.machine.obj.impl.OBool.{False, True}
 import org.mmadt.machine.obj.impl.OInt
+import org.mmadt.machine.obj.impl.TInt.int
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,5 +35,6 @@ object Play extends App {
   println(a.+(b))
   println(a * b)
   println(True & False)
-  println(a.is(a>b).map(False).or(True))
+  println(a.is(int.gt(b)).map(False).or(True))
+  println(int.plus(a).mult(b).gt(b))
 }

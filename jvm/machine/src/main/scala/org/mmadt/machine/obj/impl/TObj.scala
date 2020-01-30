@@ -22,23 +22,24 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.{Bool, Int, JQ, Obj, qOne}
+import org.mmadt.language.Stringer
+import org.mmadt.machine.obj.impl.OInst._id
+import org.mmadt.machine.obj.{Inst, JQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OObj[J](val jvm: J, val quantifier: JQ) extends Obj {
+class TObj(jvm: List[Inst], quantifier: JQ) extends OObj(jvm, quantifier)  {
 
-  def this(jvm: J) = this(jvm, qOne)
+  def this(jvm: List[Inst]) = this(jvm, qOne)
 
-  def this() = this(None.get)
+  def this() = this(List(_id))
 
-  override def _jvm[J](): J = jvm.asInstanceOf[J]
+  override def toString: String = Stringer.t(this) + Stringer.q(this.q())
+}
 
-  override def eq(other: Obj): Bool = new OBool(this.jvm == other._jvm())
+object TObj {
 
-  override def q(): (Int, Int) = quantifier
-
-  override def q(min: Int, max: Int): this.type = new OObj[J](jvm, (min, max)).asInstanceOf[this.type]
+  object obj extends TObj()
 
 }

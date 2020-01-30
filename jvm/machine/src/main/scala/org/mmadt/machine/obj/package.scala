@@ -20,25 +20,26 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine
 
-import org.mmadt.machine.obj.{Bool, Int, JQ, Obj, qOne}
+import org.mmadt.machine.obj.impl.OInt.{i0, i1}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OObj[J](val jvm: J, val quantifier: JQ) extends Obj {
+package object obj {
+  type JInst = (String, List[Obj])
 
-  def this(jvm: J) = this(jvm, qOne)
+  type JQ = (Int, Int)
 
-  def this() = this(None.get)
+  lazy val qOne: JQ = (i1, i1)
 
-  override def _jvm[J](): J = jvm.asInstanceOf[J]
+  lazy val qZero: JQ = (i0, i0)
 
-  override def eq(other: Obj): Bool = new OBool(this.jvm == other._jvm())
+  lazy val qMark: JQ = (i0, i1)
 
-  override def q(): (Int, Int) = quantifier
-
-  override def q(min: Int, max: Int): this.type = new OObj[J](jvm, (min, max)).asInstanceOf[this.type]
+  object JInst {
+    def single(arg: String): JInst = (arg, List())
+  }
 
 }

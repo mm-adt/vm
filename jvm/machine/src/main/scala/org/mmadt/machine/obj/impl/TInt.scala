@@ -22,23 +22,43 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.{Bool, Int, JQ, Obj, qOne}
+import org.mmadt.machine.obj.impl.OBool.True
+import org.mmadt.machine.obj.impl.OInt.{i0, i1}
+import org.mmadt.machine.obj.{Bool, Inst, Int, JQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OObj[J](val jvm: J, val quantifier: JQ) extends Obj {
+class TInt(jvm: List[Inst], quantifier: JQ) extends TObj(jvm, quantifier) with Int {
 
-  def this(jvm: J) = this(jvm, qOne)
+  def this(quantifier: JQ) = this(List(), quantifier)
 
-  def this() = this(None.get)
+  def this() = this(qOne)
 
-  override def _jvm[J](): J = jvm.asInstanceOf[J]
+  override def lt(other: Int): Bool = True
 
-  override def eq(other: Obj): Bool = new OBool(this.jvm == other._jvm())
+  override def gte(other: Int): Bool = True
 
-  override def q(): (Int, Int) = quantifier
+  override def lte(other: Int): Bool = True
 
-  override def q(min: Int, max: Int): this.type = new OObj[J](jvm, (min, max)).asInstanceOf[this.type]
+  override def gt(other: Int): Bool = new TBool(this.jvm ++ List(OInst.gt(other)),this.q())
+
+  override def one(): Int = i1
+
+  override def plus(other: Int): Int = new TInt(this.jvm ++ List(OInst.plus(other)), this.q())
+
+  override def neg(): Int = i1
+
+  override def mult(other: Int): Int = new TInt(this.jvm ++ List(OInst.mult(other)), this.q())
+
+  override def zero(): Int = i0
+
+  override def minus(other: Int): Int = i1
+
+}
+
+object TInt {
+
+  object int extends TInt
 
 }

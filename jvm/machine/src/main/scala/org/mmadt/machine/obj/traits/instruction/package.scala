@@ -22,8 +22,8 @@
 
 package org.mmadt.machine.obj.traits
 
-import org.mmadt.machine.obj.Bool
 import org.mmadt.machine.obj.impl.OBool.True
+import org.mmadt.machine.obj.{Bool, Int}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,7 +41,11 @@ package object instruction {
 
   trait MapInstructions {
 
-    def map[O](obj: O): O = obj
+    def map[A](obj: A): A = obj
+
+    def q(): (Int, Int)
+
+    def q(min: Int, max: Int): this.type
 
   }
 

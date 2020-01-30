@@ -20,25 +20,27 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.language
 
-import org.mmadt.machine.obj.{Bool, Int, JQ, Obj, qOne}
+import org.mmadt.machine.obj.Obj
+import org.mmadt.machine.obj.impl.{TBool, TInt, TObj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OObj[J](val jvm: J, val quantifier: JQ) extends Obj {
+object Tokens {
 
-  def this(jvm: J) = this(jvm, qOne)
+  val as = "as"
+  val id = "id"
+  val plus = "plus"
+  val mult = "mult"
+  val gt = "gt"
 
-  def this() = this(None.get)
-
-  override def _jvm[J](): J = jvm.asInstanceOf[J]
-
-  override def eq(other: Obj): Bool = new OBool(this.jvm == other._jvm())
-
-  override def q(): (Int, Int) = quantifier
-
-  override def q(min: Int, max: Int): this.type = new OObj[J](jvm, (min, max)).asInstanceOf[this.type]
+  def symbol(obj: Obj): String = obj match {
+    case o: TBool => "bool"
+    case o: TInt => "int"
+    case o: TObj => "obj"
+    case _ => throw new Exception("Error: " + obj)
+  }
 
 }

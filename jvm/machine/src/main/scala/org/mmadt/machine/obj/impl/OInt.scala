@@ -22,36 +22,36 @@
 
 package org.mmadt.machine.obj.impl
 
+import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.OInt.{i0, i1}
-import org.mmadt.machine.obj.traits.algebra.Commutative
-import org.mmadt.machine.obj.{Bool, Int}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OInt(jvm: Long) extends OObj[Long](jvm) with Int with Commutative[Int] {
+class OInt(jvm: Long, quantifier: JQ) extends OObj[Long](jvm, quantifier) with Int {
+
+  def this(jvm: Long) = this(jvm, qOne)
 
   override def zero(): Int = i0
 
   override def one(): Int = i1
 
-  override def plus(other: Int): Int = new OInt(this.jvm + other._jvm())
+  override def plus(other: Int): Int = new OInt(this.jvm + other._jvm[Long]())
 
-  override def mult(other: Int): Int = new OInt(this.jvm * other._jvm())
+  override def mult(other: Int): Int = new OInt(this.jvm * other._jvm[Long]())
 
-  override def minus(other: Int): Int = new OInt(this.jvm - other._jvm())
+  override def minus(other: Int): Int = new OInt(this.jvm - other._jvm[Long]())
 
   override def neg(): Int = new OInt(-this.jvm)
 
-  override def gte(other: Int): Bool = new OBool(this.jvm >= other._jvm())
+  override def gte(other: Int): Bool = new OBool(this.jvm >= other._jvm[Long]())
 
-  override def lte(other: Int): Bool = new OBool(this.jvm <= other._jvm())
+  override def lte(other: Int): Bool = new OBool(this.jvm <= other._jvm[Long]())
 
-  override def gt(other: Int): Bool = new OBool(this.jvm < other._jvm())
+  override def gt(other: Int): Bool = new OBool(this.jvm < other._jvm[Long]())
 
-  override def lt(other: Int): Bool = new OBool(this.jvm > other._jvm())
+  override def lt(other: Int): Bool = new OBool(this.jvm > other._jvm[Long]())
 
-  override def eq(other: Int): Bool = new OBool(this.jvm == other._jvm())
 }
 
 object OInt {

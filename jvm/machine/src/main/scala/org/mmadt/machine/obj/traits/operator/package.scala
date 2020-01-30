@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.obj.traits
 
-import org.mmadt.machine.obj.Bool
+import org.mmadt.machine.obj.{Bool, Obj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -91,10 +91,10 @@ package object operator {
     final def =<(other: A): Bool = this.lte(other)
   }
 
-  trait Eq[A] {
-    def eq(other: A): Bool
+  trait Eq {
+    def eq(other: Obj): Bool
 
-    final def ==(other: A): Bool = this == other
+    final def ==(other: Obj): Bool = this == other
   }
 
   // Unary operators
@@ -106,7 +106,9 @@ package object operator {
   }
 
   trait Not[A] {
-    def !(): A
+    def not(): A
+
+    final def !(): A = this.not()
   }
 
   // Singleton operators

@@ -20,25 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.traverser
 
-import org.mmadt.machine.obj.{Bool, Int, JQ, Obj, qOne}
+import org.mmadt.machine.obj.Obj
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OObj[J](val jvm: J, val quantifier: JQ) extends Obj {
+trait Traverser[O <: Obj]  {
 
-  def this(jvm: J) = this(jvm, qOne)
+  def obj(): O
 
-  def this() = this(None.get)
-
-  override def _jvm[J](): J = jvm.asInstanceOf[J]
-
-  override def eq(other: Obj): Bool = new OBool(this.jvm == other._jvm())
-
-  override def q(): (Int, Int) = quantifier
-
-  override def q(min: Int, max: Int): this.type = new OObj[J](jvm, (min, max)).asInstanceOf[this.type]
+  def state(): Map[String, Obj]
 
 }

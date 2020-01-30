@@ -22,13 +22,15 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.Bool
 import org.mmadt.machine.obj.impl.OBool.{False, True}
+import org.mmadt.machine.obj.{Bool, JQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OBool(jvm: Boolean) extends OObj[Boolean](jvm) with Bool {
+class OBool(jvm: Boolean, quantifier: JQ) extends OObj[Boolean](jvm, quantifier) with Bool {
+
+  def this(jvm: Boolean) = this(jvm, qOne)
 
   override def or(other: Bool): Bool = new OBool(this.jvm || other._jvm())
 
@@ -37,8 +39,6 @@ class OBool(jvm: Boolean) extends OObj[Boolean](jvm) with Bool {
   override def zero(): Bool = True
 
   override def one(): Bool = False
-
-  override def eq(other: Bool): Bool = new OBool(this.jvm == other._jvm())
 }
 
 object OBool {

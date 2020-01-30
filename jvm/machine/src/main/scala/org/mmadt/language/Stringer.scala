@@ -20,25 +20,30 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.language
 
-import org.mmadt.machine.obj.{Bool, Int, JQ, Obj, qOne}
+import org.mmadt.machine.obj._
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OObj[J](val jvm: J, val quantifier: JQ) extends Obj {
+object Stringer {
 
-  def this(jvm: J) = this(jvm, qOne)
+  def q(x: JQ): String = x match {
+    case `qOne` => ""
+    case `qZero` => "{0}"
+    case `qMark` => "{?}"
+    case _ => "{" + x._1._jvm() + "," + x._2._jvm() + "}"
+  }
 
-  def this() = this(None.get)
+  def t(x: Obj): String = {
+    x._jvm[Object]() match {
+      case y: List[Inst] => Tokens.symbol(x) +  x._jvm[List[Inst]]().map(i => "[" + i._jvm[JInst]()._1 + "," + instArgs(i._jvm[JInst]()._2) + "]").fold("")((a, b) => a + b)
+      case _ => x._jvm().toString
+    }
+  }
 
-  override def _jvm[J](): J = jvm.asInstanceOf[J]
-
-  override def eq(other: Obj): Bool = new OBool(this.jvm == other._jvm())
-
-  override def q(): (Int, Int) = quantifier
-
-  override def q(min: Int, max: Int): this.type = new OObj[J](jvm, (min, max)).asInstanceOf[this.type]
-
+  def instArgs(args: List[Obj]): String = {
+    args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1)
+  }
 }

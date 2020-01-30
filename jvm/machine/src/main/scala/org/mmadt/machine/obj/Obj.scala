@@ -22,14 +22,16 @@
 
 package org.mmadt.machine.obj
 
+import org.mmadt.language.Stringer
 import org.mmadt.machine.obj.traits.instruction.Instructions
+import org.mmadt.machine.obj.traits.operator.Eq
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Obj[J] extends Instructions {
+trait Obj extends Instructions with Eq {
 
-  def _jvm(): J
+  def _jvm[J](): J
 
-  override def toString: String = _jvm().toString
+  override def toString: String = Stringer.t(this)
 }

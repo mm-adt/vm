@@ -22,23 +22,30 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.{Bool, Int, JQ, Obj, qOne}
+
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.OInst._id
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OObj[J](val jvm: J, val quantifier: JQ) extends Obj {
+class OInst(jvm: JInst, quantifier: JQ) extends OObj(jvm, quantifier) with Inst {
 
-  def this(jvm: J) = this(jvm, qOne)
+  def this(jvm: JInst) = this(jvm, qOne)
 
-  def this() = this(None.get)
+  override def one(): Inst = _id
 
-  override def _jvm[J](): J = jvm.asInstanceOf[J]
+}
 
-  override def eq(other: Obj): Bool = new OBool(this.jvm == other._jvm())
+object OInst {
 
-  override def q(): (Int, Int) = quantifier
+  object _id extends OInst(JInst.single(Tokens.id))
 
-  override def q(min: Int, max: Int): this.type = new OObj[J](jvm, (min, max)).asInstanceOf[this.type]
+  def plus(a: Obj): OInst = new OInst((Tokens.plus, List(a)))
+
+  def mult(a: Obj): OInst = new OInst((Tokens.mult, List(a)))
+
+  def gt(a: Obj): OInst = new OInst((Tokens.gt, List(a)))
 
 }

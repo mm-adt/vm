@@ -23,11 +23,11 @@
 package org.mmadt.machine.obj
 
 import org.mmadt.machine.obj.traits.algebra.Logical
-import org.mmadt.machine.obj.traits.operator.{Eq, One, Zero}
+import org.mmadt.machine.obj.traits.operator.{One, Zero}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Bool extends Obj[Boolean] with Logical[Bool] with One[Bool] with Zero[Bool] with Eq[Bool] {
+trait Bool extends Obj with Logical[Bool] with One[Bool] with Zero[Bool] {
 
 }
