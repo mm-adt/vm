@@ -62,23 +62,33 @@ package object operator {
   }
 
   trait Div[A] {
-    def /(other: A): A
+    def div(other: A): A
+
+    final def /(other: A): A = this.div(other)
   }
 
   trait Gt[A] {
-    def >(other: A): Bool
+    def gt(other: A): Bool
+
+    final def >(other: A): Bool = this.gt(other)
   }
 
   trait Lt[A] {
-    def <(other: A): Bool
+    def lt(other: A): Bool
+
+    final def <(other: A): Bool = this.lt(other)
   }
 
   trait Gte[A] {
-    def >=(other: A): Bool
+    def gte(other: A): Bool
+
+    final def >=(other: A): Bool = this.gte(other)
   }
 
   trait Lte[A] {
-    def =<(other: A): Bool
+    def lte(other: A): Bool
+
+    final def =<(other: A): Bool = this.lte(other)
   }
 
   trait Eq[A] {

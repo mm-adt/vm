@@ -43,13 +43,13 @@ class OInt(jvm: Long) extends OObj[Long](jvm) with Int with Commutative[Int] {
 
   override def neg(): Int = new OInt(-this.jvm)
 
-  override def >=(other: Int): Bool = new OBool(this.jvm >= other._jvm())
+  override def gte(other: Int): Bool = new OBool(this.jvm >= other._jvm())
 
-  override def =<(other: Int): Bool = new OBool(this.jvm <= other._jvm())
+  override def lte(other: Int): Bool = new OBool(this.jvm <= other._jvm())
 
-  override def <(other: Int): Bool = new OBool(this.jvm < other._jvm())
+  override def gt(other: Int): Bool = new OBool(this.jvm < other._jvm())
 
-  override def >(other: Int): Bool = new OBool(this.jvm > other._jvm())
+  override def lt(other: Int): Bool = new OBool(this.jvm > other._jvm())
 
   override def eq(other: Int): Bool = new OBool(this.jvm == other._jvm())
 }
