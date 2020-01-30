@@ -20,31 +20,29 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.traits
 
 import org.mmadt.machine.obj.Bool
-import org.mmadt.machine.obj.impl.OBool.{False, True}
+import org.mmadt.machine.obj.impl.OBool.True
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class OBool(jvm: Boolean) extends OObj[Boolean](jvm) with Bool {
+package object instruction {
 
-  override def or(other: Bool): Bool = new OBool(this.jvm || other._jvm())
+  trait Instructions extends FilterInstructions with MapInstructions
 
-  override def and(other: Bool): Bool = new OBool(this.jvm && other._jvm())
+  trait FilterInstructions {
 
-  override def zero(): Bool = True
+    def id(): this.type = this
 
-  override def one(): Bool = False
+    def is(bool: Bool): this.type = if (bool.eq(True)._jvm()) this else this
+  }
 
-  override def eq(other: Bool): Bool = new OBool(this.jvm == other._jvm())
-}
+  trait MapInstructions {
 
-object OBool {
+    def map[O](obj: O): O = obj
 
-  object True extends OBool(true)
-
-  object False extends OBool(false)
+  }
 
 }

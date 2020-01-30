@@ -34,5 +34,5 @@ object Play extends App {
   println(a.+(b))
   println(a * b)
   println(True & False)
-  println(a.is(a>b))
+  println(a.is(a>b).map(False).or(True))
 }

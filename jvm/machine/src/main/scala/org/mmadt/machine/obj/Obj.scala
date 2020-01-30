@@ -22,16 +22,14 @@
 
 package org.mmadt.machine.obj
 
-import org.mmadt.machine.obj.impl.OBool.True
+import org.mmadt.machine.obj.traits.instruction.Instructions
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Obj[J] {
+trait Obj[J] extends Instructions {
 
-  def _jvm (): J
-
-  def is(bool: Bool): this.type = if (bool.eq(True)._jvm()) this else this
+  def _jvm(): J
 
   override def toString: String = _jvm().toString
 }

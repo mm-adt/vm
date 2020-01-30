@@ -32,25 +32,33 @@ package object operator {
   // Binary operators
 
   trait And[A] {
-    def &(other: A): A
+    def and(other: A): A
+
+    final def &(other: A): A = this.and(other)
   }
 
   trait Or[A] {
-    def |(other: A): A
+    def or(other: A): A
+
+    final def |(other: A): A = this.or(other)
   }
 
   trait Plus[A] {
-    def +(other: A): A
+    def plus(other: A): A
 
-    def plus(other: A): A = this + other
+    final def +(other: A): A = this.plus(other)
   }
 
   trait Minus[A] {
-    def -(other: A): A
+    def minus(other: A): A
+
+    final def -(other: A): A = this.minus(other)
   }
 
   trait Mult[A] {
-    def *(other: A): A
+    def mult(other: A): A
+
+    final def *(other: A): A = this.mult(other)
   }
 
   trait Div[A] {
@@ -74,15 +82,17 @@ package object operator {
   }
 
   trait Eq[A] {
-    def ==(other: A): Bool
+    def eq(other: A): Bool
 
-    def eq(other: A): Bool = this == other
+    final def ==(other: A): Bool = this == other
   }
 
   // Unary operators
 
   trait Neg[A] {
-    def -(): A
+    def neg(): A
+
+    final def -(): A = this.neg()
   }
 
   trait Not[A] {
@@ -92,11 +102,15 @@ package object operator {
   // Singleton operators
 
   trait Zero[A] {
-    def _O(): A
+    def zero(): A
+
+    final def _O(): A = zero()
   }
 
   trait One[A] {
-    def _1(): A
+    def one(): A
+
+    final def _1(): A = one()
   }
 
 

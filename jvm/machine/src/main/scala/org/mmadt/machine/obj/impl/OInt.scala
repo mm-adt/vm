@@ -22,8 +22,8 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.traits.algebra.Commutative
 import org.mmadt.machine.obj.impl.OInt.{i0, i1}
+import org.mmadt.machine.obj.traits.algebra.Commutative
 import org.mmadt.machine.obj.{Bool, Int}
 
 /**
@@ -31,17 +31,17 @@ import org.mmadt.machine.obj.{Bool, Int}
   */
 class OInt(jvm: Long) extends OObj[Long](jvm) with Int with Commutative[Int] {
 
-  override def _O(): Int = i0
+  override def zero(): Int = i0
 
-  override def _1(): Int = i1
+  override def one(): Int = i1
 
-  override def +(other: Int): Int = new OInt(this.jvm + other._jvm())
+  override def plus(other: Int): Int = new OInt(this.jvm + other._jvm())
 
-  override def *(other: Int): Int = new OInt(this.jvm * other._jvm())
+  override def mult(other: Int): Int = new OInt(this.jvm * other._jvm())
 
-  override def -(other: Int): Int = new OInt(this.jvm - other._jvm())
+  override def minus(other: Int): Int = new OInt(this.jvm - other._jvm())
 
-  override def -(): Int = new OInt(-this.jvm)
+  override def neg(): Int = new OInt(-this.jvm)
 
   override def >=(other: Int): Bool = new OBool(this.jvm >= other._jvm())
 
@@ -51,7 +51,7 @@ class OInt(jvm: Long) extends OObj[Long](jvm) with Int with Commutative[Int] {
 
   override def >(other: Int): Bool = new OBool(this.jvm > other._jvm())
 
-  override def ==(other: Int): Bool = new OBool(this.jvm == other._jvm())
+  override def eq(other: Int): Bool = new OBool(this.jvm == other._jvm())
 }
 
 object OInt {
