@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.language.Stringer
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.VBool.boolF
 
@@ -34,9 +33,7 @@ class TObj(jvm: List[VInst], quantifier: TQ) extends OObj(jvm, quantifier) with 
   def this(jvm: List[VInst]) = this(jvm, qOne)
 
   def this() = this(List())
-
-  override def toString: String = Stringer.t(this) + Stringer.q(this.q())
-
+  
   override def _jvm(): List[VInst] = jvm
 
   override def eq(other: Obj): Bool = other match {
