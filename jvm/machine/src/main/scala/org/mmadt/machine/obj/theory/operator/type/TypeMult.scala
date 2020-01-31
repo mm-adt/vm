@@ -33,5 +33,7 @@ trait TypeMult[J, V <: Value[_], T <: Type] {
   def mult(other: V): T //
   def mult(other: T): T //
 
-  // final def +(other: A): A = this.plus(other)
+  final def *(other: J): T = this.mult(other) //
+  final def *(other: V): T = this.mult(other) //
+  final def *(other: T): T = this.mult(other) //
 }

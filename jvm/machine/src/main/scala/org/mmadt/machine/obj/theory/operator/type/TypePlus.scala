@@ -33,5 +33,7 @@ trait TypePlus[J, V <: Value[_], T <: Type] {
   def plus(other: V): T //
   def plus(other: T): T //
 
-  // final def +(other: A): A = this.plus(other)
+  final def +(other: J): T = this.plus(other) //
+  final def +(other: V): T = this.plus(other) //
+  final def +(other: T): T = this.plus(other) //
 }
