@@ -26,6 +26,7 @@ package org.mmadt.machine.obj.impl
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.VInst._id
+import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

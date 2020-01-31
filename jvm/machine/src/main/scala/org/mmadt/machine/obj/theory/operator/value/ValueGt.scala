@@ -20,16 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj
+package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.language.Stringer
-import org.mmadt.machine.obj.traits.instruction.Instructions
-import org.mmadt.machine.obj.traits.operator.Eq
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Obj extends Instructions with Eq {
+trait ValueGt[J, V <: Value[J], T <: Type] {
+  def gt(other: J): BoolValue //
+  def gt(other: V): BoolValue //
+  def gt(other: T): BoolType //
 
-  override def toString: String = Stringer.t(this)
+  final def >(other: J): BoolValue = this.gt(other) //
+  final def >(other: V): BoolValue = this.gt(other) //
+  final def >(other: T): BoolType = this.gt(other) //
 }

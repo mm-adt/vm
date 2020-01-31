@@ -22,18 +22,19 @@
 
 package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.machine.obj.{Type, Value}
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 trait ValueMult[J, V <: Value[_], T <: Type] {
-  def mult(other: J): V
+  def mult(other: J): V //
+  def mult(other: V): V //
+  def mult(other: T): T //
 
-  def mult(other: V): V
-
-  def mult(other: T): T
-
-  // final def +(other: A): A = this.plus(other)
+  final def *(other: J): V = this.mult(other) //
+  final def *(other: V): V = this.mult(other) //
+  final def *(other: T): T = this.mult(other) //
 }
 

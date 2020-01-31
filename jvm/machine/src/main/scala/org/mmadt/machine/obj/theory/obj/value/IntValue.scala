@@ -22,12 +22,11 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.theory.ValueRing
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
-import org.mmadt.machine.obj.Value
 import org.mmadt.machine.obj.theory.obj.Int
+import org.mmadt.machine.obj.theory.obj.`type`.IntType
+import org.mmadt.machine.obj.theory.{ValueOrder, ValueRing}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait IntValue extends Int with Value[Long] with ValueRing[Long, IntValue, IntType]
+trait IntValue extends Int with Value[Long] with ValueRing[Long, IntValue, IntType] with ValueOrder[Long, IntValue, IntType]

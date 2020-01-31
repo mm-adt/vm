@@ -23,12 +23,13 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
 import org.mmadt.machine.obj.{Bool, TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VBool(jvm: Boolean, quantifier: TQ) extends VObj[Boolean](jvm, quantifier) with Bool {
+class VBool(jvm: Boolean, quantifier: TQ) extends VObj[Boolean](jvm, quantifier) with BoolValue {
 
   def this(jvm: Boolean) = this(jvm, qOne)
 

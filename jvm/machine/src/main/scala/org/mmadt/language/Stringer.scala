@@ -23,6 +23,9 @@
 package org.mmadt.language
 
 import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,14 +39,9 @@ object Stringer {
     case _ => "{" + x._1._jvm() + "," + x._2._jvm() + "}"
   }
 
-  def t(x: Obj): String = {
-    x match {
-      case y: Value[_] => y._jvm().toString
-      case y: Type => Tokens.symbol(x) + y._jvm().map(i => "[" + i.jvm._1 + "," + instArgs(i.jvm._2) + "]").fold("")((a, b) => a + b)
-      case _ => throw new RuntimeException("Error: " + x.getClass);
-    }
+  def typeString(t: Type): String = Tokens.symbol(t) + t._jvm().map(i => "[" + i.jvm._1 + "," + instArgs(i.jvm._2) + "]").fold("")((a, b) => a + b)
 
-  }
+  def valueString(v: Value[_]): String = v._jvm().toString
 
   def instArgs(args: List[Obj]): String = {
     args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1)

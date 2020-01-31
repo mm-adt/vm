@@ -22,8 +22,10 @@
 
 package org.mmadt.machine.obj
 
-import org.mmadt.machine.obj.theory.operator.`type`.{TypeMult, TypePlus}
-import org.mmadt.machine.obj.theory.operator.value.{ValueMult, ValuePlus}
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.operator.`type`.{TypeGt, TypeMult, TypePlus}
+import org.mmadt.machine.obj.theory.operator.value.{ValueGt, ValueMult, ValuePlus}
 import org.mmadt.machine.obj.traits.operator._
 
 /**
@@ -44,7 +46,8 @@ package object theory {
   trait TypeRng[J, V <: Value[J], T <: Type] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] //
   trait TypeRing[J, V <: Value[J], T <: Type] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] // with Minus[J, V, T]
   trait TypeField[J, V <: Value[J], T <: Type] extends TypeGroupMult[J, V, T] with TypeGroupPlus[J, V, T] //
-  trait TypeOrder[J, V <: Value[J], T <: Type] // extends Gt[A] with Gte[A] with Lt[A] with Lte[A] //
+  trait TypeOrder[J, V <: Value[J], T <: Type] extends TypeGt[J, V, T]
+
   trait TypeLogical[J, V <: Value[J], T <: Type] // extends And[A] with Or[A]
 
   ////////////////////
@@ -68,13 +71,13 @@ package object theory {
 
   trait Rng[A] extends GroupPlus[A] with MonoidMult[A]
 
-  trait Ring[A] extends GroupPlus[A] with MonoidMult[A] with Minus[A]
+  trait Ring[A] extends GroupPlus[A] with MonoidMult[A] // with Minus[A]
 
   trait ValueRing[J, V <: Value[J], T <: Type] extends ValuePlus[J, V, T] with ValueMult[J, V, T]
 
   trait Field[A] extends GroupMult[A] with GroupPlus[A]
 
-  trait Order[A] extends Gt[A] with Gte[A] with Lt[A] with Lte[A]
+  trait ValueOrder[J, V <: Value[J], T <: Type] extends ValueGt[J, V, T] // with Gte[A] with Lt[A] with Lte[A]
 
   trait Logical[A] extends And[A] with Or[A]
 

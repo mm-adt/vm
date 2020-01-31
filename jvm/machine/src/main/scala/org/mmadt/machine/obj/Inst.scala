@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj
 
+import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.traits.operator.One
 
 /**

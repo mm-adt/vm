@@ -20,34 +20,12 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.theory.obj
 
-import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.mmadt.machine.obj.{Bool, TQ, qOne}
+import org.mmadt.machine.obj.traits.instruction.Instructions
+import org.mmadt.machine.obj.traits.operator.Eq
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TBool(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with BoolType {
-
-  def this(jvm: List[VInst]) = this(jvm, qOne)
-
-  def this() = this(List(), qOne)
-
-  override def or(other: Bool): Bool = new TBool(this.jvm ++ List(VInst.or(other)))
-
-  override def and(other: Bool): Bool = new TBool(this.jvm ++ List(VInst.and(other)))
-
-  override def zero(): Bool = boolT
-
-  override def one(): Bool = boolF
-
-
-}
-
-object TBool {
-
-  object bool extends TBool
-
-}
+trait Obj extends Instructions with Eq

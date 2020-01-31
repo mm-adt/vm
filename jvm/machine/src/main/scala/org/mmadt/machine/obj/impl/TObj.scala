@@ -24,6 +24,9 @@ package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.VBool.boolF
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

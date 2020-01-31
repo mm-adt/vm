@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.traverser
 
-import org.mmadt.machine.obj.Obj
+import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

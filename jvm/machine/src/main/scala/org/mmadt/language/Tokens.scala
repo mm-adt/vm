@@ -22,8 +22,8 @@
 
 package org.mmadt.language
 
-import org.mmadt.machine.obj.Obj
 import org.mmadt.machine.obj.impl.{TBool, TInt, TObj}
+import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,9 +38,9 @@ object Tokens {
   val or = "or"
 
   def symbol(obj: Obj): String = obj match {
-    case o: TBool => "bool"
-    case o: TInt => "int"
-    case o: TObj => "obj"
+    case _: TBool => "bool"
+    case _: TInt => "int"
+    case _: TObj => "obj"
     case _ => throw new Exception("Error: " + obj)
   }
 

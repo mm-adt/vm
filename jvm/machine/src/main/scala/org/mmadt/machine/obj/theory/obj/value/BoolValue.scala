@@ -20,17 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj
+package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.impl.VInst
+import org.mmadt.machine.obj.Bool
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Type extends Obj {
-
-  def _jvm(): List[VInst]
-
-  // def domain(): A  (and Type[A]) where A is the domain and the Type itself is the range.
-
-}
+trait BoolValue extends Bool with Value[Boolean]

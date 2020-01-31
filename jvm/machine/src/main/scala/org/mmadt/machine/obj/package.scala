@@ -24,6 +24,7 @@ package org.mmadt.machine
 
 import org.mmadt.machine.obj.impl.VInt
 import org.mmadt.machine.obj.impl.VInt.{int0, int1}
+import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

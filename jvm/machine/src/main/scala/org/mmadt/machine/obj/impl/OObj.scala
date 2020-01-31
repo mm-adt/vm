@@ -22,7 +22,8 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.{Obj, TQ}
+import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

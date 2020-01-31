@@ -22,7 +22,8 @@
 
 package org.mmadt.machine.obj.traits
 
-import org.mmadt.machine.obj.{Bool, Obj}
+import org.mmadt.machine.obj.Bool
+import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -59,30 +60,6 @@ package object operator {
     def div(other: A): A
 
     final def /(other: A): A = this.div(other)
-  }
-
-  trait Gt[A] {
-    def gt(other: A): Bool
-
-    final def >(other: A): Bool = this.gt(other)
-  }
-
-  trait Lt[A] {
-    def lt(other: A): Bool
-
-    final def <(other: A): Bool = this.lt(other)
-  }
-
-  trait Gte[A] {
-    def gte(other: A): Bool
-
-    final def >=(other: A): Bool = this.gte(other)
-  }
-
-  trait Lte[A] {
-    def lte(other: A): Bool
-
-    final def =<(other: A): Bool = this.lte(other)
   }
 
   trait Eq {

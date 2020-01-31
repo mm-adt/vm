@@ -23,12 +23,11 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.impl.TInt.int
-import org.mmadt.machine.obj.impl.VBool.boolT
 import org.mmadt.machine.obj.impl.VInt.{int0, int1}
 import org.mmadt.machine.obj.theory.obj
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.{Bool, TQ, qOne}
+import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,13 +38,12 @@ class TInt(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with 
 
   def this() = this(qOne)
 
-  override def lt(other: obj.Int): Bool = boolT
 
-  override def gte(other: obj.Int): Bool = boolT
+  override def gt(other: Long): BoolType = new TBool(this.jvm ++ List(VInst.gt(int(other))), this.q())
 
-  override def lte(other: obj.Int): Bool = boolT
+  override def gt(other: IntValue): BoolType = new TBool(this.jvm ++ List(VInst.gt(other)), this.q())
 
-  override def gt(other: obj.Int): Bool = new TBool(this.jvm ++ List(VInst.gt(other)), this.q())
+  override def gt(other: IntType): BoolType = new TBool(this.jvm ++ List(VInst.gt(other)), this.q())
 
   override def one(): obj.Int = int1
 
@@ -65,7 +63,7 @@ class TInt(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with 
 
   override def zero(): obj.Int = int0
 
-  override def minus(other: obj.Int): obj.Int = int1
+  // override def minus(other: Int): obj.Int = int1
 
 }
 

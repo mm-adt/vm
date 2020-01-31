@@ -26,14 +26,14 @@ import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.TInt.int
 import org.mmadt.machine.obj.impl.VInt.{int0, int1}
 import org.mmadt.machine.obj.theory.obj
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
-import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VInt(jvm: Long, quantifier: TQ) extends VObj[Long](jvm, quantifier) with obj.Int with IntValue {
+class VInt(jvm: Long, quantifier: TQ) extends VObj[Long](jvm, quantifier) with IntValue {
 
   def this(jvm: Long) = this(jvm, qOne)
 
@@ -47,25 +47,20 @@ class VInt(jvm: Long, quantifier: TQ) extends VObj[Long](jvm, quantifier) with o
 
   override def plus(other: Long): IntValue = this.plus(int(other))
 
-  override def mult(other: IntValue): IntValue = new VInt(this.jvm * otherLong(other))
+  override def mult(other: IntValue): IntValue = new VInt(this.jvm * other._jvm())
 
   override def mult(other: IntType): IntType = new TInt(List(VInst.plus(other)), qOne) // ??
 
   override def mult(other: Long): IntValue = this.mult(int(other))
 
-  override def minus(other: obj.Int): obj.Int = new VInt(this.jvm - otherLong(other))
-
   override def neg(): obj.Int = new VInt(-this.jvm)
 
-  override def gte(other: obj.Int): Bool = new VBool(this.jvm >= otherLong(other))
+  override def gt(other: Long): BoolValue = new VBool(this.jvm < other)
 
-  override def lte(other: obj.Int): Bool = new VBool(this.jvm <= otherLong(other))
+  override def gt(other: IntValue): BoolValue = new VBool(this.jvm < other._jvm())
 
-  override def gt(other: obj.Int): Bool = new VBool(this.jvm < otherLong(other))
+  override def gt(other: IntType): BoolType = new TBool() //
 
-  override def lt(other: obj.Int): Bool = new VBool(this.jvm > otherLong(other))
-
-  private def otherLong(other: obj.Int): Long = other.asInstanceOf[VInt]._jvm()
 
 }
 

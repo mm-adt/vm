@@ -20,13 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj
+package org.mmadt.machine.obj.theory.operator.`type`
+
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Value[J] extends Obj {
+trait TypeGt[J, V <: Value[_], T <: Type] {
+  def gt(other: J): BoolType //
+  def gt(other: V): BoolType //
+  def gt(other: T): BoolType //
 
-  def _jvm(): J
-
+  final def >(other: J): BoolType = this.gt(other) //
+  final def >(other: V): BoolType = this.gt(other) //
+  final def >(other: T): BoolType = this.gt(other) //
 }
