@@ -20,14 +20,14 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj
+package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.machine.obj.theory.Logical
-import org.mmadt.machine.obj.traits.operator.{One, Zero}
+import org.mmadt.machine.obj.theory.TypeRing
+import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.Type
+import org.mmadt.machine.obj.theory.obj.Int
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Bool extends Obj with Logical[Bool] with One[Bool] with Zero[Bool] {
-
-}
+trait IntType extends Int with Type with TypeRing[Long, IntValue, IntType]

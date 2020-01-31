@@ -20,41 +20,14 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.traits
+package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.traits.operator._
+import org.mmadt.machine.obj.theory.ValueRing
+import org.mmadt.machine.obj.theory.obj.`type`.IntType
+import org.mmadt.machine.obj.Value
+import org.mmadt.machine.obj.theory.obj.Int
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-package object algebra {
-
-  trait SemigroupMult[A] extends Mult[A]
-
-  trait SemigroupPlus[A] extends Plus[A]
-
-  trait MonoidMult[A] extends SemigroupMult[A] with One[A]
-
-  trait MonoidPlus[A] extends SemigroupPlus[A] with Zero[A]
-
-  trait GroupPlus[A] extends MonoidPlus[A] with Neg[A]
-
-  trait GroupMult[A] extends MonoidMult[A] with Neg[A]
-
-  trait Rng[A] extends GroupPlus[A] with MonoidMult[A]
-
-  trait Ring[A] extends GroupPlus[A] with MonoidMult[A] with Minus[A]
-
-  trait Field[A] extends GroupMult[A] with GroupPlus[A]
-
-  trait Order[A] extends Gt[A] with Gte[A] with Lt[A] with Lte[A]
-
-  trait Logical[A] extends And[A] with Or[A]
-
-  trait CommutativePlus[A] extends Plus[A]
-
-  trait CommutativeMult[A] extends Mult[A]
-
-  trait Commutative[A] extends CommutativePlus[A] with CommutativeMult[A]
-
-}
+trait IntValue extends Int with Value[Long] with ValueRing[Long, IntValue, IntType]

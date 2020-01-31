@@ -42,7 +42,7 @@ object VInst {
 
   object _id extends VInst((Tokens.id, List()))
 
-  def and(a: Obj): VInst = new VInst((Tokens.and,List(a)))
+  def and(a: Obj): VInst = new VInst((Tokens.and, List(a)))
 
   def plus(a: Obj): VInst = new VInst((Tokens.plus, List(a)))
 

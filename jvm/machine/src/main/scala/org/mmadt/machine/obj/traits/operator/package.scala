@@ -43,12 +43,6 @@ package object operator {
     final def |(other: A): A = this.or(other)
   }
 
-  trait Plus[A] {
-    def plus(other: A): A
-
-    final def +(other: A): A = this.plus(other)
-  }
-
   trait Minus[A] {
     def minus(other: A): A
 

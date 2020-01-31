@@ -20,14 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj
+package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.machine.obj.theory.Logical
-import org.mmadt.machine.obj.traits.operator.{One, Zero}
+import org.mmadt.machine.obj.{Type, Value}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Bool extends Obj with Logical[Bool] with One[Bool] with Zero[Bool] {
+trait TypePlus[J, V <: Value[_], T <: Type] {
+  def plus(other: J): T
 
+  def plus(other: V): T
+
+  def plus(other: T): T
+
+  // final def +(other: A): A = this.plus(other)
 }

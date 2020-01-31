@@ -20,20 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj
+package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.machine.obj.impl.TInt.int
-import org.mmadt.machine.obj.traits.algebra.{Order, Ring}
-
+import org.mmadt.machine.obj.{Type, Value}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Int extends Obj with Ring[Int] with Order[Int] {
+trait ValueMult[J, V <: Value[_], T <: Type] {
+  def mult(other: J): V
 
-  def plus(other: Long): Int = this.plus(int(other))
+  def mult(other: V): V
 
-  def mult(other: Long): Int = this.mult(int(other))
+  def mult(other: T): T
 
-  def gt(other: Long): Bool = this.gt(int(other))
+  // final def +(other: A): A = this.plus(other)
 }
+

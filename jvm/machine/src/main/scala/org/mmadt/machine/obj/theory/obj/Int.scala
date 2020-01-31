@@ -20,14 +20,12 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj
+package org.mmadt.machine.obj.theory.obj
 
-import org.mmadt.machine.obj.theory.Logical
-import org.mmadt.machine.obj.traits.operator.{One, Zero}
+import org.mmadt.machine.obj.Obj
+import org.mmadt.machine.obj.theory.{Order, Ring}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Bool extends Obj with Logical[Bool] with One[Bool] with Zero[Bool] {
-
-}
+trait Int extends Obj with Ring[Int] with Order[Int]
