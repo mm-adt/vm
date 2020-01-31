@@ -52,7 +52,7 @@ class VInt(jvm: Long, quantifier: TQ) extends VObj[Long](jvm, quantifier) with I
 
   override def lt(other: Int): Bool = new VBool(this.jvm > otherLong(other))
 
-  private def otherLong(other: Int) : Long = other.asInstanceOf[VInt]._jvm()
+  private def otherLong(other: Int): Long = other.asInstanceOf[VInt]._jvm()
 
 }
 

@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj
 
+import org.mmadt.machine.obj.impl.TInt.int
 import org.mmadt.machine.obj.traits.algebra.{Order, Ring}
 
 
@@ -30,5 +31,9 @@ import org.mmadt.machine.obj.traits.algebra.{Order, Ring}
   */
 trait Int extends Obj with Ring[Int] with Order[Int] {
 
+  def plus(other: Long): Int = this.plus(int(other))
 
+  def mult(other: Long): Int = this.mult(int(other))
+
+  def gt(other: Long): Bool = this.gt(int(other))
 }

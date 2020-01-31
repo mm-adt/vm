@@ -24,7 +24,7 @@ package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.impl.VBool.boolT
 import org.mmadt.machine.obj.impl.VInt.{int0, int1}
-import org.mmadt.machine.obj.{Bool, Inst, Int, TQ, qOne}
+import org.mmadt.machine.obj.{Bool, Int, TQ, qOne};
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -59,7 +59,7 @@ class TInt(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with 
 
 object TInt {
 
-  object int extends TInt
+  def int: Int = new TInt()
 
   def int(jvm: Long): Int = new VInt(jvm)
 

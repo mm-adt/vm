@@ -29,6 +29,8 @@ import org.mmadt.machine.obj.impl.VInst
   */
 trait Type extends Obj {
 
-   def _jvm(): List[VInst]
+  def _jvm(): List[VInst]
+
+  // def domain(): A  (and Type[A]) where A is the domain and the Type itself is the range.
 
 }

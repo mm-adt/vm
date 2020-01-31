@@ -29,8 +29,6 @@ import org.mmadt.machine.obj.impl.VInt.{int0, int1}
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 package object obj {
-  type JInst = (String, List[Value[_]])
-
   type TQ = (VInt, VInt)
 
   lazy val qOne: TQ = (int1, int1)
@@ -39,8 +37,6 @@ package object obj {
 
   lazy val qMark: TQ = (int0, int1)
 
-  object JInst {
-    def single(arg: String): JInst = (arg, List())
-  }
+  type JInst = (String, List[Obj])
 
 }

@@ -23,7 +23,7 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
-import org.mmadt.machine.obj.{Bool, Inst, TQ, qOne}
+import org.mmadt.machine.obj.{Bool, TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,9 +34,9 @@ class TBool(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with
 
   def this() = this(List(), qOne)
 
-  override def or(other: Bool): Bool = new TBool(this.jvm ++ otherInst(other))
+  override def or(other: Bool): Bool = new TBool(this.jvm ++ List(VInst.or(other)))
 
-  override def and(other: Bool): Bool = new TBool(this.jvm ++ otherInst(other))
+  override def and(other: Bool): Bool = new TBool(this.jvm ++ List(VInst.and(other)))
 
   override def zero(): Bool = boolT
 

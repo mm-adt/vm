@@ -30,11 +30,12 @@ import org.mmadt.machine.obj.impl.{TBool, TInt, TObj}
   */
 object Tokens {
 
-  val as = "as"
+  val and = "and"
   val id = "id"
   val plus = "plus"
   val mult = "mult"
   val gt = "gt"
+  val or = "or"
 
   def symbol(obj: Obj): String = obj match {
     case o: TBool => "bool"

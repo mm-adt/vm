@@ -40,12 +40,16 @@ class VInst(jvm: JInst, quantifier: TQ) extends VObj[JInst](jvm, quantifier) wit
 
 object VInst {
 
-  object _id extends VInst(JInst.single(Tokens.id))
+  object _id extends VInst((Tokens.id, List()))
 
-  def plus(a: Obj): VInst = new VInst((Tokens.plus, List(a.asInstanceOf[Value[_]])))
+  def and(a: Obj): VInst = new VInst((Tokens.and,List(a)))
 
-  def mult(a: Obj): VInst = new VInst((Tokens.mult, List(a.asInstanceOf[Value[_]])))
+  def plus(a: Obj): VInst = new VInst((Tokens.plus, List(a)))
 
-  def gt(a: Obj): VInst = new VInst((Tokens.gt, List(a.asInstanceOf[Value[_]])))
+  def or(a: Obj): VInst = new VInst((Tokens.or, List(a)))
+
+  def mult(a: Obj): VInst = new VInst((Tokens.mult, List(a)))
+
+  def gt(a: Obj): VInst = new VInst((Tokens.gt, List(a)))
 
 }
