@@ -24,19 +24,19 @@ package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.VBool.boolF
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.{IntValue, Value}
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VObj[J](jvm: J, quantifier: TQ) extends OObj(jvm, quantifier) with Value[J] {
+class VObj[J](jvm: J, quantifier: TQ) extends OObj(quantifier) with Value[J] {
 
   override def _jvm(): J = jvm
 
   override def eq(other: Obj): Bool = other match {
-    case _: Type => boolF
+    case _: Type[_] => boolF
     case x: Value[_] => new VBool(this.jvm == x._jvm())
   }
 

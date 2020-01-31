@@ -22,20 +22,26 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.{Inst, TQ}
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.IntType
 import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.{Inst, TQ}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-abstract class OObj[J](val jvm: J, val quantifier: TQ) extends Obj {
+abstract class OObj(val quantifier: TQ) extends Obj {
 
   override def q(): (IntValue, IntValue) = quantifier
 
   override def int(value: Long): IntValue = new VInt(value)
 
   override def int(inst: List[Inst]): IntType = new TInt(inst)
+
+  override def value[J,V](java: J): V = java match {
+    case x: Long => new VInt(x).asInstanceOf[V]
+    case x: Boolean => new VBool(x).asInstanceOf[V]
+    case _ => throw new RuntimeException("Unknown Java object: " + java)
+  }
 
 }

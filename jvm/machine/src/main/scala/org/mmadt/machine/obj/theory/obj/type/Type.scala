@@ -22,20 +22,29 @@
 
 package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.language.Stringer
-import org.mmadt.machine.obj.Inst
+import org.mmadt.language.{Stringer, Tokens}
+import org.mmadt.machine.obj.impl.VInst
 import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
+import org.mmadt.machine.obj.{Inst, TQ}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Type extends Obj {
+trait Type[A] extends Obj {
 
   def _jvm(): List[Inst]
 
+  def copy(inst: List[Inst], q: TQ): A
+
+  def is(bool: BoolValue): A = if (bool._jvm()) this.asInstanceOf[A] else this.asInstanceOf[A] //.q(int(0), int(0))
+
+  def is(bool: BoolType): A = copy(this._jvm() ++ List(new VInst((Tokens.is, List(bool)))), q())
+
   override def toString: String = Stringer.typeString(this)
 
-  // override def is(bool:BoolType) : this.type
   // def domain(): A  (and Type[A]) where A is the domain and the Type itself is the range.
+  // def ++(inst: Inst): A = copy(this._jvm() ++ List(inst), this.q())
+
 
 }

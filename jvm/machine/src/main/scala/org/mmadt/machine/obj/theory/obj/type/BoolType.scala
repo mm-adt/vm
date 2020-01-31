@@ -27,6 +27,4 @@ import org.mmadt.machine.obj.theory.obj.Bool
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait BoolType extends Bool with Type {
-
-}
+trait BoolType extends Bool with Type[BoolType]

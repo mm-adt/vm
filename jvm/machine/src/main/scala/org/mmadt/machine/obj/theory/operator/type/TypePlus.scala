@@ -22,16 +22,19 @@
 
 package org.mmadt.machine.obj.theory.operator.`type`
 
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.impl.VInst
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait TypePlus[J, V <: Value[_], T <: Type] {
-  def plus(other: J): T //
-  def plus(other: V): T //
-  def plus(other: T): T //
+trait TypePlus[J, V <: Value[_], T <: Type[T]] extends Type[T] {
+
+  def plus(other: J): T = this.plus(value[J,V](other)) //
+  def plus(other: V): T = this.copy(this._jvm() ++ List(new VInst((Tokens.plus, List(other)))), this.q()) //
+  def plus(other: T): T = this.copy(this._jvm() ++ List(new VInst((Tokens.plus, List(other)))), this.q()) //
 
   final def +(other: J): T = this.plus(other) //
   final def +(other: V): T = this.plus(other) //

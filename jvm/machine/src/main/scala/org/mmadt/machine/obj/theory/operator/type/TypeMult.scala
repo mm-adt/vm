@@ -28,7 +28,7 @@ import org.mmadt.machine.obj.theory.obj.value.Value
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait TypeMult[J, V <: Value[_], T <: Type] {
+trait TypeMult[J, V <: Value[_], T <: Type[T]] {
   def mult(other: J): T //
   def mult(other: V): T //
   def mult(other: T): T //

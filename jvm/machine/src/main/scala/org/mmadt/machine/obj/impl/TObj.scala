@@ -24,35 +24,29 @@ package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.VBool.boolF
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TObj(jvm: List[Inst], quantifier: TQ) extends OObj(jvm, quantifier) with Type {
+class TObj(jvm: List[Inst], quantifier: TQ) extends OObj(quantifier) {
 
   def this(jvm: List[Inst]) = this(jvm, qOne)
 
   def this() = this(List())
-  
-  override def _jvm(): List[Inst] = jvm
+
+  def _jvm(): List[Inst] = jvm
 
   override def eq(other: Obj): Bool = other match {
     case _: Value[_] => boolF
-    case _: Type => new VBool(this.jvm.equals(otherInst(other)))
+    case _: Type[_] => new VBool(this.jvm.equals(otherInst(other)))
   }
 
   // override def q(min: VInt, max: VInt): this.type = new TObj(jvm, (min, max)).asInstanceOf[this.type]
 
-  protected def otherInst(other: Obj): List[Inst] = other.asInstanceOf[TObj].jvm
+  protected def otherInst(other: Obj): List[Inst] = other.asInstanceOf[TObj]._jvm()
 
-
-}
-
-object TObj {
-
-  object obj extends TObj()
 
 }

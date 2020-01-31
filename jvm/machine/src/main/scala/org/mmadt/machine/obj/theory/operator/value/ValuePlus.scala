@@ -28,7 +28,7 @@ import org.mmadt.machine.obj.theory.obj.value.Value
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait ValuePlus[J, V <: Value[_], T <: Type] {
+trait ValuePlus[J, V <: Value[_], T <: Type[T]] {
   def plus(other: J): V //
   def plus(other: V): V //
   def plus(other: T): T //

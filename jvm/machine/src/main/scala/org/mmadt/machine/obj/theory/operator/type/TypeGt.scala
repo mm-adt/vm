@@ -28,7 +28,7 @@ import org.mmadt.machine.obj.theory.obj.value.Value
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait TypeGt[J, V <: Value[_], T <: Type] {
+trait TypeGt[J, V <: Value[_], T <: Type[T]] {
   def gt(other: J): BoolType //
   def gt(other: V): BoolType //
   def gt(other: T): BoolType //
