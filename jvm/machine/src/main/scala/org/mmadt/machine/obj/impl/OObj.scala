@@ -22,16 +22,20 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.{Inst, TQ}
 import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.IntType
+import org.mmadt.machine.obj.theory.obj.value.IntValue
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 abstract class OObj[J](val jvm: J, val quantifier: TQ) extends Obj {
 
-  override def q(): (VInt, VInt) = quantifier
+  override def q(): (IntValue, IntValue) = quantifier
 
-  override def q(min: VInt, max: VInt): this.type
+  override def int(value: Long): IntValue = new VInt(value)
+
+  override def int(inst: List[Inst]): IntType = new TInt(inst)
 
 }

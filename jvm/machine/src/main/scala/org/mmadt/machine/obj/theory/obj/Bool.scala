@@ -20,28 +20,14 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.theory.obj
 
-import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.VBool.boolF
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{IntValue, Value}
+import org.mmadt.machine.obj.theory.Logical
+import org.mmadt.machine.obj.traits.operator.{One, Zero}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VObj[J](jvm: J, quantifier: TQ) extends OObj(jvm, quantifier) with Value[J] {
-
-  override def _jvm(): J = jvm
-
-  override def eq(other: Obj): Bool = other match {
-    case _: Type => boolF
-    case x: Value[_] => new VBool(this.jvm == x._jvm())
-  }
-
-  override def q(): (IntValue, IntValue) = quantifier
-
-  // override def q(min: VInt, max: VInt): this.type = new VObj[J](jvm, (min, max)).asInstanceOf[this.type]
+trait Bool extends Obj with Logical[Bool] with One[Bool] with Zero[Bool] {
 
 }

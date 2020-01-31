@@ -23,7 +23,7 @@
 package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.Stringer
-import org.mmadt.machine.obj.impl.VInst
+import org.mmadt.machine.obj.Inst
 import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
@@ -31,10 +31,11 @@ import org.mmadt.machine.obj.theory.obj.Obj
   */
 trait Type extends Obj {
 
-  def _jvm(): List[VInst]
+  def _jvm(): List[Inst]
 
   override def toString: String = Stringer.typeString(this)
 
+  // override def is(bool:BoolType) : this.type
   // def domain(): A  (and Type[A]) where A is the domain and the Type itself is the range.
 
 }

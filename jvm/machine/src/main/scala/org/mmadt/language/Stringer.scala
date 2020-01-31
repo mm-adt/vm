@@ -23,6 +23,7 @@
 package org.mmadt.language
 
 import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.VInst
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
@@ -39,7 +40,7 @@ object Stringer {
     case _ => "{" + x._1._jvm() + "," + x._2._jvm() + "}"
   }
 
-  def typeString(t: Type): String = Tokens.symbol(t) + t._jvm().map(i => "[" + i.jvm._1 + "," + instArgs(i.jvm._2) + "]").fold("")((a, b) => a + b)
+  def typeString(t: Type): String = Tokens.symbol(t) + t._jvm().map(i => "[" + i.asInstanceOf[VInst]._jvm()._1 + "," + instArgs(i.asInstanceOf[VInst]._jvm()._2) + "]").fold("")((a, b) => a + b)
 
   def valueString(v: Value[_]): String = v._jvm().toString
 

@@ -26,7 +26,7 @@ package org.mmadt.machine.obj.impl
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.VInst._id
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,6 +44,8 @@ object VInst {
   object _id extends VInst((Tokens.id, List()))
 
   def and(a: Obj): VInst = new VInst((Tokens.and, List(a)))
+
+  def is(a: Bool): VInst = new VInst((Tokens.is, List(a)))
 
   def plus(a: Obj): VInst = new VInst((Tokens.plus, List(a)))
 

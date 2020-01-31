@@ -22,7 +22,7 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.Bool
+import org.mmadt.machine.obj.theory.obj.Bool
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

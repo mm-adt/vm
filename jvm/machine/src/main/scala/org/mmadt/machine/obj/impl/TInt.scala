@@ -22,17 +22,18 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.impl.TInt.int
 import org.mmadt.machine.obj.impl.VInt.{int0, int1}
 import org.mmadt.machine.obj.theory.obj
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
-import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.{TQ, qOne}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
+import org.mmadt.machine.obj.{Inst, TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TInt(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with IntType {
+class TInt(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with IntType {
+
+  def this(inst: List[Inst]) = this(inst, qOne)
 
   def this(quantifier: TQ) = this(List(), quantifier)
 
@@ -64,6 +65,10 @@ class TInt(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with 
   override def zero(): obj.Int = int0
 
   // override def minus(other: Int): obj.Int = int1
+
+  override def is(bool: BoolValue): IntType = if (bool._jvm()) this else this //.q(int(0), int(0))
+
+  override def is(bool: BoolType): IntType = int(this.jvm ++ List(VInst.is(bool)))
 
 }
 

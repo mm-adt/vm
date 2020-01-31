@@ -22,15 +22,15 @@
 
 package org.mmadt.machine
 
-import org.mmadt.machine.obj.impl.VInt
 import org.mmadt.machine.obj.impl.VInt.{int0, int1}
 import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.value.IntValue
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
 package object obj {
-  type TQ = (VInt, VInt)
+  type TQ = (IntValue, IntValue)
 
   lazy val qOne: TQ = (int1, int1)
 

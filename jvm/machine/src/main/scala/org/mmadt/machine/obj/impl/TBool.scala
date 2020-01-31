@@ -23,15 +23,16 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.theory.obj.Bool
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.mmadt.machine.obj.{Bool, TQ, qOne}
+import org.mmadt.machine.obj.{Inst, TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TBool(jvm: List[VInst], quantifier: TQ) extends TObj(jvm, quantifier) with BoolType {
+class TBool(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with BoolType {
 
-  def this(jvm: List[VInst]) = this(jvm, qOne)
+  def this(jvm: List[Inst]) = this(jvm, qOne)
 
   def this() = this(List(), qOne)
 

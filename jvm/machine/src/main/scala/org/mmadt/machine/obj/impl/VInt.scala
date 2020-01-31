@@ -23,7 +23,6 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.TInt.int
 import org.mmadt.machine.obj.impl.VInt.{int0, int1}
 import org.mmadt.machine.obj.theory.obj
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
@@ -41,19 +40,19 @@ class VInt(jvm: Long, quantifier: TQ) extends VObj[Long](jvm, quantifier) with I
 
   override def one(): obj.Int = int1
 
-  override def plus(other: IntValue): IntValue = new VInt(this.jvm + other._jvm())
+  override def plus(other: IntValue): IntValue = int(this.jvm + other._jvm())
 
-  override def plus(other: IntType): IntType = new TInt(List(VInst.plus(other)), qOne) // ??
+  override def plus(other: IntType): IntType = int(List(VInst.plus(other))) // ??
 
   override def plus(other: Long): IntValue = this.plus(int(other))
 
-  override def mult(other: IntValue): IntValue = new VInt(this.jvm * other._jvm())
+  override def mult(other: IntValue): IntValue = int(this.jvm * other._jvm())
 
-  override def mult(other: IntType): IntType = new TInt(List(VInst.plus(other)), qOne) // ??
+  override def mult(other: IntType): IntType = int(List(VInst.plus(other))) // ??
 
   override def mult(other: Long): IntValue = this.mult(int(other))
 
-  override def neg(): obj.Int = new VInt(-this.jvm)
+  override def neg(): obj.Int = int(-this.jvm)
 
   override def gt(other: Long): BoolValue = new VBool(this.jvm < other)
 

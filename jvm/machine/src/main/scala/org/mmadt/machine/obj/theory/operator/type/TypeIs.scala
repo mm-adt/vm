@@ -20,15 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj
+package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.machine.obj.theory.Logical
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.traits.operator.{One, Zero}
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Bool extends Obj with Logical[Bool] with One[Bool] with Zero[Bool] {
+trait TypeIs[O] {
+
+  def is(bool: BoolType): O
+
+  def is(bool: BoolValue): O
 
 }

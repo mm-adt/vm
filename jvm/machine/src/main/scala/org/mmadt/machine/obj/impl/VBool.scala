@@ -23,8 +23,9 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.theory.obj.Bool
 import org.mmadt.machine.obj.theory.obj.value.BoolValue
-import org.mmadt.machine.obj.{Bool, TQ, qOne}
+import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

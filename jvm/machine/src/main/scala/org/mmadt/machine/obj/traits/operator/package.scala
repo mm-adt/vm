@@ -22,8 +22,7 @@
 
 package org.mmadt.machine.obj.traits
 
-import org.mmadt.machine.obj.Bool
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
