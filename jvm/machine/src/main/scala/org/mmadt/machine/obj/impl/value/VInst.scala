@@ -22,38 +22,18 @@
 
 package org.mmadt.machine.obj.impl.value
 
-import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.value.VInst._id
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
+import org.mmadt.machine.obj.theory.obj.Inst
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 class VInst(jvm: JInst, quantifier: TQ) extends VObj(jvm, quantifier) with Inst {
 
   def this(jvm: JInst) = this(jvm, qOne)
 
   def _jvm(): JInst = jvm
 
-  override def one(): Inst = _id
-
-}
-
-object VInst {
-
-  object _id extends VInst((Tokens.id, List()))
-
-  def and(a: Obj): VInst = new VInst((Tokens.and, List(a)))
-
-  def is(a: Bool): VInst = new VInst((Tokens.is, List(a)))
-
-  def plus(a: Obj): VInst = new VInst((Tokens.plus, List(a)))
-
-  def or(a: Obj): VInst = new VInst((Tokens.or, List(a)))
-
-  def mult(a: Obj): VInst = new VInst((Tokens.mult, List(a)))
-
-  def gt(a: Obj): VInst = new VInst((Tokens.gt, List(a)))
+  // override def one(): Inst = _id
 
 }

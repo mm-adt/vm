@@ -34,10 +34,10 @@ import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
   */
 abstract class VObj(jvm: Any, quantifier: TQ) extends OObj(quantifier) {
 
-  override def eq(other: Obj): Bool = other match {
+  /*override def eq(other: Obj): Bool = other match {
     case _: Type[_] => boolF
     case x: Value[_] => new VBool(this.jvm == x._jvm())
-  }
+  }*/
 
   override def q(): (IntValue, IntValue) = quantifier
 

@@ -24,9 +24,9 @@ package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.machine.obj.impl.value.VInst
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 import org.mmadt.machine.obj.theory.obj.value.BoolValue
-import org.mmadt.machine.obj.{Inst, TQ}
+import org.mmadt.machine.obj.TQ
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)

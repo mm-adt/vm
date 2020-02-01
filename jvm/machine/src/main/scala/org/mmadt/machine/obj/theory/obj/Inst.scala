@@ -20,39 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.traits
-
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
+package org.mmadt.machine.obj.theory.obj
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-package object operator {
-
-  // Binary operators
-
-
-
-  trait Eq {
-    def eq(other: Obj): Bool
-
-    final def ==(other: Obj): Bool = this == other
-  }
-
-
-  // Singleton operators
-
-  trait Zero[A] {
-    def zero(): A
-
-    final def _O(): A = zero()
-  }
-
-  trait One[A] {
-    def one(): A
-
-    final def _1(): A = one()
-  }
-
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+trait Inst extends Obj {
 
 }

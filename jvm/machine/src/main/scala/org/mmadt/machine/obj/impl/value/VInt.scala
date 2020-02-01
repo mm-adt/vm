@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj.impl.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.`type`.TBool
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
@@ -43,11 +44,11 @@ class VInt(jvm: Long, quantifier: TQ) extends VObj(jvm, quantifier) with IntValu
 
   override def plus(other: IntValue): IntValue = int(this.jvm + other._jvm())
 
-  override def plus(other: IntType): IntType = int(List(VInst.plus(other))) // ??
+  override def plus(other: IntType): IntType = int(List(inst(Tokens.plus,other))) // ??
 
   override def mult(other: IntValue): IntValue = int(this.jvm * other._jvm())
 
-  override def mult(other: IntType): IntType = int(List(VInst.plus(other))) // ??
+  override def mult(other: IntType): IntType = int(List(inst(Tokens.plus,other)))// ??
 
   // override def neg(): obj.Int = int(-this.jvm)
 

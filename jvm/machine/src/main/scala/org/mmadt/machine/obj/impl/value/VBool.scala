@@ -23,15 +23,14 @@
 package org.mmadt.machine.obj.impl.value
 
 import org.mmadt.machine.obj.impl.`type`.TBool
-import org.mmadt.machine.obj.impl.value.VBool.{boolF, boolT}
 import org.mmadt.machine.obj.theory.obj.Bool
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.obj.value.BoolValue
 import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 class VBool(jvm: Boolean, quantifier: TQ) extends VObj(jvm, quantifier) with BoolValue {
 
   def this(jvm: Boolean) = this(jvm, qOne)
@@ -46,9 +45,9 @@ class VBool(jvm: Boolean, quantifier: TQ) extends VObj(jvm, quantifier) with Boo
 
   override def and(other: BoolType): BoolType = new TBool() // ??
 
-  override def zero(): Bool = boolT
+  //override def zero(): Bool = boolT
 
-  override def one(): Bool = boolF
+  //override def one(): Bool = boolF
 
   private def otherBoolean(other: Bool): Boolean = other.asInstanceOf[VBool]._jvm()
 }

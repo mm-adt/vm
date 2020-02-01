@@ -22,11 +22,9 @@
 
 package org.mmadt.machine.obj.theory.obj
 
-import org.mmadt.machine.obj.traits.operator.{One, Zero}
-
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-trait Bool extends Obj with One[Bool] with Zero[Bool] {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+trait Bool extends Obj { //with One[Bool] with Zero[Bool] {
 
 }

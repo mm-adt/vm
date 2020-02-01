@@ -22,16 +22,14 @@
 
 package org.mmadt.machine.obj.theory.obj
 
-import org.mmadt.machine.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 import org.mmadt.machine.obj.traits.instruction.Instructions
-import org.mmadt.machine.obj.traits.operator.Eq
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Obj extends Instructions with Eq {
+trait Obj extends Instructions { //with Eq {
 
   def value[J, V](java: J): V = java match {
     case j: Long => int(j).asInstanceOf[V]

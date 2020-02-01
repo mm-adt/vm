@@ -23,9 +23,10 @@
 package org.mmadt.machine.obj.impl.`type`
 
 import org.mmadt.machine.obj.impl.value.VInt
+import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.IntType
 import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.{Inst, TQ, qOne}
+import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
