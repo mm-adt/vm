@@ -34,13 +34,6 @@ abstract class OObj(val quantifier: TQ) extends Obj {
 
   override def q(): (IntValue, IntValue) = quantifier
 
-
-  override def value[J, V](java: J): V = java match {
-    case x: Long => new VInt(x).asInstanceOf[V]
-    case x: Boolean => new VBool(x).asInstanceOf[V]
-    case _ => throw new RuntimeException("Unknown Java object: " + java)
-  }
-
   override def int(inst: List[Inst], q: (IntValue, IntValue)): IntType = new TInt(inst) //
   override def int(value: Long): IntValue = new VInt(value) //
 

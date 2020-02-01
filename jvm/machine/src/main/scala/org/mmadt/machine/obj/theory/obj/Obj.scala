@@ -23,6 +23,7 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.Inst
+import org.mmadt.machine.obj.impl.{VBool, VInt}
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 import org.mmadt.machine.obj.traits.instruction.Instructions
@@ -33,7 +34,11 @@ import org.mmadt.machine.obj.traits.operator.Eq
   */
 trait Obj extends Instructions with Eq {
 
-  def value[J, V](java: J): V //
+  def value[J, V](java: J): V = java match {
+    case j: Long => int(j).asInstanceOf[V]
+    case j: Boolean => bool(j).asInstanceOf[V]
+    case _ => throw new RuntimeException("Unknown Java object: " + java)
+  }
 
   def bool(value: Boolean): BoolValue //
   def bool(): BoolType = bool(List()) //
