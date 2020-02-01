@@ -22,6 +22,8 @@
 
 package org.mmadt.machine.obj.impl
 
+import org.mmadt.machine.obj.impl.`type`.{TBool, TInt}
+import org.mmadt.machine.obj.impl.value.{VBool, VInst, VInt}
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
@@ -40,4 +42,5 @@ abstract class OObj(val quantifier: TQ) extends Obj {
   override def bool(inst: List[Inst], q: (IntValue, IntValue)): BoolType = new TBool(inst, q) //
   override def bool(value: Boolean): BoolValue = new VBool(value) //
 
+  override def inst(op: String, args: List[Obj]): Inst = new VInst((op, args))
 }

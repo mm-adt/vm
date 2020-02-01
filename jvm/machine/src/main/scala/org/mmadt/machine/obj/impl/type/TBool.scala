@@ -20,44 +20,34 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.impl.`type`
 
-import org.mmadt.machine.obj.impl.VInt.{int0, int1}
-import org.mmadt.machine.obj.theory.obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
+import org.mmadt.machine.obj.impl.value.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.theory.obj.Bool
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.mmadt.machine.obj.{Inst, TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TInt(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with IntType {
+class TBool(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with BoolType {
 
-  def this(inst: List[Inst]) = this(inst, qOne)
+  override def copy(inst: List[Inst], q: (IntValue, IntValue)): BoolType = new TBool(inst, q)
 
-  def this(quantifier: TQ) = this(List(), quantifier)
+  def this(jvm: List[Inst]) = this(jvm, qOne)
 
-  def this() = this(qOne)
+  def this() = this(List(), qOne)
 
-  override def one(): obj.Int = int1
+  override def zero(): Bool = boolT
 
-  override def neg(): obj.Int = int1
+  override def one(): Bool = boolF
 
-  override def mult(other: IntValue): IntType = new TInt(this.jvm ++ List(VInst.mult(other)), this.q())
 
-  override def mult(other: IntType): IntType = new TInt(this.jvm ++ List(VInst.mult(other)), this.q())
-
-  override def mult(other: Long): IntType = this.mult(int(other))
-
-  override def zero(): obj.Int = int0
-
-  override def copy(inst: List[Inst], q: (IntValue, IntValue)): IntType = new TInt(inst, q)
 }
 
-object TInt {
+object TBool {
 
-  def int: IntType = new TInt()
-
-  def int(jvm: Long): IntValue = new VInt(jvm)
+  object bool extends TBool
 
 }

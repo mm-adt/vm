@@ -29,4 +29,8 @@ import org.mmadt.machine.obj.theory.{ValueOrder, ValueRing}
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait IntValue extends Int with Value[Long] with ValueRing[Long, IntValue, IntType] with ValueOrder[Long, IntValue, IntType]
+trait IntValue extends Int with Value[IntValue] with ValueRing[Long, IntValue, IntType] with ValueOrder[Long, IntValue, IntType] {
+
+  override def _jvm(): Long
+
+}

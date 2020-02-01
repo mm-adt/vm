@@ -20,35 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
-import org.mmadt.machine.obj.theory.obj.Bool
-import org.mmadt.machine.obj.theory.obj.value.BoolValue
-import org.mmadt.machine.obj.{TQ, qOne}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VBool(jvm: Boolean, quantifier: TQ) extends VObj[Boolean](jvm, quantifier) with BoolValue {
+trait ValueOr[J, V <: Value[V], T <: Type[T]] extends Value[V] {
+  def or(other: J): BoolValue = this.or(value[J, V](other)) //
+  def or(other: V): BoolValue //
+  def or(other: T): BoolType //
 
-  def this(jvm: Boolean) = this(jvm, qOne)
-
-  override def or(other: Bool): Bool = new VBool(this.jvm || otherBoolean(other))
-
-  override def and(other: Bool): Bool = new VBool(this.jvm && otherBoolean(other))
-
-  override def zero(): Bool = boolT
-
-  override def one(): Bool = boolF
-
-  private def otherBoolean(other: Bool): Boolean = other.asInstanceOf[VBool]._jvm()
-}
-
-object VBool {
-
-  object boolT extends VBool(true)
-
-  object boolF extends VBool(false)
-
+  final def |(other: J): BoolValue = this.or(other) //
+  final def |(other: V): BoolValue = this.or(other) //
+  final def |(other: T): BoolType = this.or(other) //
 }

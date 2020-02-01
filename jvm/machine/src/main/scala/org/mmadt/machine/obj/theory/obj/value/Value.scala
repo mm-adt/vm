@@ -28,9 +28,9 @@ import org.mmadt.machine.obj.theory.obj.Obj
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Value[J] extends Obj {
+trait Value[V <: Value[V]] extends Obj {
 
-  def _jvm(): J
+  def _jvm(): Any
 
   override def toString: String = Stringer.valueString(this)
 

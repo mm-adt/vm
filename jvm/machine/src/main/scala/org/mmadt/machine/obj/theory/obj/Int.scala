@@ -22,9 +22,7 @@
 
 package org.mmadt.machine.obj.theory.obj
 
-import org.mmadt.machine.obj.theory.Ring
-
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait Int extends Obj with Ring[Int]
+trait Int extends Obj

@@ -20,20 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
-
+package org.mmadt.machine.obj.impl.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.VInst._id
+import org.mmadt.machine.obj.impl.value.VInst._id
 import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VInst(jvm: JInst, quantifier: TQ) extends VObj[JInst](jvm, quantifier) with Inst {
+class VInst(jvm: JInst, quantifier: TQ) extends VObj(jvm, quantifier) with Inst {
 
   def this(jvm: JInst) = this(jvm, qOne)
+
+  def _jvm(): JInst = jvm
 
   override def one(): Inst = _id
 

@@ -20,11 +20,10 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.impl.value
 
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.VInt.{int0, int1}
-import org.mmadt.machine.obj.theory.obj
+import org.mmadt.machine.obj.impl.`type`.TBool
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 
@@ -32,29 +31,25 @@ import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VInt(jvm: Long, quantifier: TQ) extends VObj[Long](jvm, quantifier) with IntValue {
+class VInt(jvm: Long, quantifier: TQ) extends VObj(jvm, quantifier) with IntValue {
 
   def this(jvm: Long) = this(jvm, qOne)
 
-  override def zero(): obj.Int = int0
+  override def _jvm(): Long = jvm
 
-  override def one(): obj.Int = int1
+  //override def zero(): obj.Int = int0
+
+  //override def one(): obj.Int = int1
 
   override def plus(other: IntValue): IntValue = int(this.jvm + other._jvm())
 
   override def plus(other: IntType): IntType = int(List(VInst.plus(other))) // ??
 
-  override def plus(other: Long): IntValue = this.plus(int(other))
-
   override def mult(other: IntValue): IntValue = int(this.jvm * other._jvm())
 
   override def mult(other: IntType): IntType = int(List(VInst.plus(other))) // ??
 
-  override def mult(other: Long): IntValue = this.mult(int(other))
-
-  override def neg(): obj.Int = int(-this.jvm)
-
-  override def gt(other: Long): BoolValue = new VBool(this.jvm < other)
+  // override def neg(): obj.Int = int(-this.jvm)
 
   override def gt(other: IntValue): BoolValue = new VBool(this.jvm < other._jvm())
 

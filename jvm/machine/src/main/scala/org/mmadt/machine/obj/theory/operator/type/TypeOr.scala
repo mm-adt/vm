@@ -20,24 +20,22 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine
+package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.machine.obj.impl.value.VInt.{int0, int1}
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-package object obj {
-  type TQ = (IntValue, IntValue)
+trait TypeOr[J, V <: Value[V], T <: Type[T]] extends Type[T] {
 
-  lazy val qOne: TQ = (int1, int1)
+  def or(other: J): BoolType = this.or(value[J, V](other)) //
+  def or(other: V): BoolType = this.bool(this._jvm() ++ List(inst(Tokens.or, other)), this.q()) //
+  def or(other: T): BoolType = this.bool(this._jvm() ++ List(inst(Tokens.or, other)), this.q()) //
 
-  lazy val qZero: TQ = (int0, int0)
-
-  lazy val qMark: TQ = (int0, int1)
-
-  type JInst = (String, List[Obj])
-
+  final def |(other: J): BoolType = this.or(other) //
+  final def |(other: V): BoolType = this.or(other) //
+  final def |(other: T): BoolType = this.or(other) //
 }

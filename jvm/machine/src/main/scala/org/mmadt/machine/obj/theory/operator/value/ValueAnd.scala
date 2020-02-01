@@ -20,28 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.VBool.boolF
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{IntValue, Value}
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class VObj[J](jvm: J, quantifier: TQ) extends OObj(quantifier) with Value[J] {
+trait ValueAnd[J, V <: Value[V], T <: Type[T]] extends Value[V] {
+  def and(other: J): BoolValue = this.and(value[J, V](other)) //
+  def and(other: V): BoolValue //
+  def and(other: T): BoolType //
 
-  override def _jvm(): J = jvm
-
-  override def eq(other: Obj): Bool = other match {
-    case _: Type[_] => boolF
-    case x: Value[_] => new VBool(this.jvm == x._jvm())
-  }
-
-  override def q(): (IntValue, IntValue) = quantifier
-
-  // override def q(min: VInt, max: VInt): this.type = new VObj[J](jvm, (min, max)).asInstanceOf[this.type]
-
+  final def &(other: J): BoolValue = this.and(other) //
+  final def &(other: V): BoolValue = this.and(other) //
+  final def &(other: T): BoolType = this.and(other) //
 }

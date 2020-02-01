@@ -20,38 +20,35 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.impl.`type`
 
-import org.mmadt.machine.obj.impl.VBool.{boolF, boolT}
-import org.mmadt.machine.obj.theory.obj.Bool
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.{Inst, TQ, qOne}
+import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.OObj
+import org.mmadt.machine.obj.impl.value.VBool
+import org.mmadt.machine.obj.impl.value.VBool.boolF
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TBool(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with BoolType {
-
-  override def copy(inst: List[Inst], q: (IntValue, IntValue)): BoolType = new TBool(inst, q)
+class TObj(jvm: List[Inst], quantifier: TQ) extends OObj(quantifier) {
 
   def this(jvm: List[Inst]) = this(jvm, qOne)
 
-  def this() = this(List(), qOne)
+  def this() = this(List())
 
-  override def or(other: Bool): Bool = new TBool(this.jvm ++ List(VInst.or(other)))
+  def _jvm(): List[Inst] = jvm
 
-  override def and(other: Bool): Bool = new TBool(this.jvm ++ List(VInst.and(other)))
+  override def eq(other: Obj): Bool = other match {
+    case _: Value[_] => boolF
+    case _: Type[_] => new VBool(this.jvm.equals(otherInst(other)))
+  }
 
-  override def zero(): Bool = boolT
+  // override def q(min: VInt, max: VInt): this.type = new TObj(jvm, (min, max)).asInstanceOf[this.type]
 
-  override def one(): Bool = boolF
+  protected def otherInst(other: Obj): List[Inst] = other.asInstanceOf[TObj]._jvm()
 
-
-}
-
-object TBool {
-
-  object bool extends TBool
 
 }

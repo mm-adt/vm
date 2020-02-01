@@ -20,21 +20,43 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt
+package org.mmadt.machine.obj.impl.value
 
-import org.mmadt.machine.obj.impl.`type`.TInt.int
+import org.mmadt.machine.obj.impl.`type`.TBool
 import org.mmadt.machine.obj.impl.value.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.theory.obj.Bool
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
+import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-object Play extends App {
+class VBool(jvm: Boolean, quantifier: TQ) extends VObj(jvm, quantifier) with BoolValue {
 
-  val a = int(34)
-  val b = int(4)
-  println(a.+(b))
-  println(a * b)
-  println(boolT & boolF)
-  //println(a.is(int.gt(4)).map(boolF).or(boolT))
-  println(int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT))
+  def this(jvm: Boolean) = this(jvm, qOne)
+
+  override def _jvm(): Boolean = jvm
+
+  override def or(other: BoolValue): BoolValue = new VBool(this.jvm || otherBoolean(other))
+
+  override def or(other: BoolType): BoolType = new TBool() // ??
+
+  override def and(other: BoolValue): BoolValue = new VBool(this.jvm && otherBoolean(other))
+
+  override def and(other: BoolType): BoolType = new TBool() // ??
+
+  override def zero(): Bool = boolT
+
+  override def one(): Bool = boolF
+
+  private def otherBoolean(other: Bool): Boolean = other.asInstanceOf[VBool]._jvm()
+}
+
+object VBool {
+
+  object boolT extends VBool(true)
+
+  object boolF extends VBool(false)
+
 }

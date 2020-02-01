@@ -20,24 +20,37 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine
+package org.mmadt.machine.obj.impl.`type`
 
-import org.mmadt.machine.obj.impl.value.VInt.{int0, int1}
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.impl.value.VInt
+import org.mmadt.machine.obj.theory.obj.`type`.IntType
 import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.{Inst, TQ, qOne}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-package object obj {
-  type TQ = (IntValue, IntValue)
+class TInt(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with IntType {
 
-  lazy val qOne: TQ = (int1, int1)
+  def this(inst: List[Inst]) = this(inst, qOne)
 
-  lazy val qZero: TQ = (int0, int0)
+  def this(quantifier: TQ) = this(List(), quantifier)
 
-  lazy val qMark: TQ = (int0, int1)
+  def this() = this(qOne)
 
-  type JInst = (String, List[Obj])
+  // override def one(): obj.Int = int1
+
+  // override def neg(): obj.Int = int1
+
+  // override def zero(): obj.Int = int0
+
+  override def copy(inst: List[Inst], q: (IntValue, IntValue)): IntType = new TInt(inst, q)
+}
+
+object TInt {
+
+  def int: IntType = new TInt()
+
+  def int(jvm: Long): IntValue = new VInt(jvm)
 
 }

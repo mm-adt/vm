@@ -20,33 +20,27 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.impl.value
 
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.VBool.boolF
+import org.mmadt.machine.obj.impl.OObj
+import org.mmadt.machine.obj.impl.value.VBool.boolF
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.value.{IntValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-class TObj(jvm: List[Inst], quantifier: TQ) extends OObj(quantifier) {
-
-  def this(jvm: List[Inst]) = this(jvm, qOne)
-
-  def this() = this(List())
-
-  def _jvm(): List[Inst] = jvm
+abstract class VObj(jvm: Any, quantifier: TQ) extends OObj(quantifier) {
 
   override def eq(other: Obj): Bool = other match {
-    case _: Value[_] => boolF
-    case _: Type[_] => new VBool(this.jvm.equals(otherInst(other)))
+    case _: Type[_] => boolF
+    case x: Value[_] => new VBool(this.jvm == x._jvm())
   }
 
-  // override def q(min: VInt, max: VInt): this.type = new TObj(jvm, (min, max)).asInstanceOf[this.type]
+  override def q(): (IntValue, IntValue) = quantifier
 
-  protected def otherInst(other: Obj): List[Inst] = other.asInstanceOf[TObj]._jvm()
-
+  // override def q(min: VInt, max: VInt): this.type = new VObj[J](jvm, (min, max)).asInstanceOf[this.type]
 
 }

@@ -23,7 +23,6 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.Inst
-import org.mmadt.machine.obj.impl.{VBool, VInt}
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 import org.mmadt.machine.obj.traits.instruction.Instructions
@@ -49,5 +48,11 @@ trait Obj extends Instructions with Eq {
   def int(): IntType = int(List()) //
   def int(inst: List[Inst]): IntType = int(inst, q()) //
   def int(inst: List[Inst], q: (IntValue, IntValue)): IntType //
+
+  def inst(op: String): Inst = inst(op, List()) //
+  def inst(op: String, arg1: Obj): Inst = inst(op, List(arg1)) //
+  def inst(op: String, arg1: Obj, arg2: Obj): Inst = inst(op, List(arg1, arg2)) //
+  def inst(op: String, arg1: Obj, arg2: Obj, arg3: Obj): Inst = inst(op, List(arg1, arg2, arg3)) //
+  def inst(op: String, args: List[Obj]): Inst //
 
 }

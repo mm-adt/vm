@@ -24,9 +24,8 @@ package org.mmadt.machine.obj
 
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
-import org.mmadt.machine.obj.theory.operator.`type`.{TypeGt, TypeMult, TypePlus}
-import org.mmadt.machine.obj.theory.operator.value.{ValueGt, ValueMult, ValuePlus}
-import org.mmadt.machine.obj.traits.operator._
+import org.mmadt.machine.obj.theory.operator.`type`._
+import org.mmadt.machine.obj.theory.operator.value._
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,56 +36,28 @@ package object theory {
   // Type Algebra  //
   ///////////////////
 
-  trait TypeSemigroupMult[J, V <: Value[J], T <: Type[T]] extends TypeMult[J, V, T] //
-  trait TypeSemigroupPlus[J, V <: Value[J], T <: Type[T]] extends TypePlus[J, V, T] //
-  trait TypeMonoidMult[J, V <: Value[J], T <: Type[T]] extends TypeSemigroupMult[J, V, T] // with One[A]
-  trait TypeMonoidPlus[J, V <: Value[J], T <: Type[T]] extends TypeSemigroupPlus[J, V, T] // with Zero[A]
-  trait TypeGroupPlus[J, V <: Value[J], T <: Type[T]] extends TypeMonoidPlus[J, V, T] // with Neg[A]
-  trait TypeGroupMult[J, V <: Value[J], T <: Type[T]] extends TypeMonoidMult[J, V, T] // with Neg[A]
-  trait TypeRng[J, V <: Value[J], T <: Type[T]] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] //
-  trait TypeRing[J, V <: Value[J], T <: Type[T]] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] // with Minus[J, V, T]
-  trait TypeField[J, V <: Value[J], T <: Type[T]] extends TypeGroupMult[J, V, T] with TypeGroupPlus[J, V, T] //
-  trait TypeOrder[J, V <: Value[J], T <: Type[T]] extends TypeGt[J, V, T]
-
-  trait TypeLogical[J, V <: Value[J], T <: Type[T]] // extends And[A] with Or[A]
+  trait TypeSemigroupMult[J, V <: Value[V], T <: Type[T]] extends TypeMult[J, V, T] //
+  trait TypeSemigroupPlus[J, V <: Value[V], T <: Type[T]] extends TypePlus[J, V, T] //
+  trait TypeMonoidMult[J, V <: Value[V], T <: Type[T]] extends TypeSemigroupMult[J, V, T] // with One[A]
+  trait TypeMonoidPlus[J, V <: Value[V], T <: Type[T]] extends TypeSemigroupPlus[J, V, T] // with Zero[A]
+  trait TypeGroupPlus[J, V <: Value[V], T <: Type[T]] extends TypeMonoidPlus[J, V, T] // with Neg[A]
+  trait TypeGroupMult[J, V <: Value[V], T <: Type[T]] extends TypeMonoidMult[J, V, T] // with Neg[A]
+  trait TypeRng[J, V <: Value[V], T <: Type[T]] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] //
+  trait TypeRing[J, V <: Value[V], T <: Type[T]] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] // with Minus[J, V, T]
+  trait TypeField[J, V <: Value[V], T <: Type[T]] extends TypeGroupMult[J, V, T] with TypeGroupPlus[J, V, T] //
+  trait TypeOrder[J, V <: Value[V], T <: Type[T]] extends TypeGt[J, V, T] //
+  trait TypeLogical[J, V <: Value[V], T <: Type[T]] extends TypeAnd[J, V, T] with TypeOr[J, V, T] //
 
   ////////////////////
   // Value Algebra  //
   ////////////////////
 
+  trait ValueRing[J, V <: Value[V], T <: Type[T]] extends ValuePlus[J, V, T] with ValueMult[J, V, T] //
+  trait ValueOrder[J, V <: Value[V], T <: Type[T]] extends ValueGt[J, V, T] // with Gte[A] with Lt[A] with Lte[A]
+  trait ValueLogical[J, V <: Value[V], T <: Type[T]] extends ValueAnd[J, V, T] with ValueOr[J, V, T]
 
-  ////////// OLD -- TO BE CONVERTED
-
-  trait SemigroupMult[A] // extends Mult[A]
-
-  trait SemigroupPlus[A] //extends Plus[A]
-
-  trait MonoidMult[A] extends SemigroupMult[A] with One[A]
-
-  trait MonoidPlus[A] extends SemigroupPlus[A] with Zero[A]
-
-  trait GroupPlus[A] extends MonoidPlus[A] with Neg[A]
-
-  trait GroupMult[A] extends MonoidMult[A] with Neg[A]
-
-  trait Rng[A] extends GroupPlus[A] with MonoidMult[A]
-
-  trait Ring[A] extends GroupPlus[A] with MonoidMult[A] // with Minus[A]
-
-  trait ValueRing[J, V <: Value[J], T <: Type[T]] extends ValuePlus[J, V, T] with ValueMult[J, V, T]
-
-  trait Field[A] extends GroupMult[A] with GroupPlus[A]
-
-  trait ValueOrder[J, V <: Value[J], T <: Type[T]] extends ValueGt[J, V, T] // with Gte[A] with Lt[A] with Lte[A]
-
-  trait Logical[A] extends And[A] with Or[A]
-
-  trait CommutativePlus[A]
-
-  // extends Plus[A]
-
-  trait CommutativeMult[A] extends Mult[A]
-
-  trait Commutative[A] extends CommutativePlus[A] with CommutativeMult[A]
+  // trait CommutativePlus[A]
+  // trait CommutativeMult[A] extends Mult[A]
+  // trait Commutative[A] extends CommutativePlus[A] with CommutativeMult[A]
 
 }
