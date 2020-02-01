@@ -39,12 +39,6 @@ class TInt(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with I
 
   def this() = this(qOne)
 
-  override def gt(other: Long): BoolType = new TBool(this.jvm ++ List(VInst.gt(int(other))), this.q())
-
-  override def gt(other: IntValue): BoolType = new TBool(this.jvm ++ List(VInst.gt(other)), this.q())
-
-  override def gt(other: IntType): BoolType = new TBool(this.jvm ++ List(VInst.gt(other)), this.q())
-
   override def one(): obj.Int = int1
 
   override def neg(): obj.Int = int1

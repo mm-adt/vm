@@ -23,8 +23,8 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
-import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 import org.mmadt.machine.obj.traits.instruction.Instructions
 import org.mmadt.machine.obj.traits.operator.Eq
 
@@ -33,10 +33,16 @@ import org.mmadt.machine.obj.traits.operator.Eq
   */
 trait Obj extends Instructions with Eq {
 
-  def int(value: Long): IntValue
+  def value[J, V](java: J): V //
 
-  def int(inst: List[Inst]): IntType
+  def bool(value: Boolean): BoolValue //
+  def bool(): BoolType = bool(List()) //
+  def bool(inst: List[Inst]): BoolType = bool(inst, q()) //
+  def bool(inst: List[Inst], q: (IntValue, IntValue)): BoolType //
 
-  def value[J, V](java: J): V
+  def int(value: Long): IntValue //
+  def int(): IntType = int(List()) //
+  def int(inst: List[Inst]): IntType = int(inst, q()) //
+  def int(inst: List[Inst], q: (IntValue, IntValue)): IntType //
 
 }
