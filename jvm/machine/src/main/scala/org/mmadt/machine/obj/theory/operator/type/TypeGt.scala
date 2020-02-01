@@ -32,8 +32,8 @@ import org.mmadt.machine.obj.theory.obj.value.Value
 trait TypeGt[J, V <: Value[V], T <: Type[T]] extends Type[T] {
 
   def gt(other: J): BoolType = this.gt(value[J, V](other)) //
-  def gt(other: V): BoolType = bool(this._jvm() ++ List(inst(Tokens.gt, other)), this.q()) //
-  def gt(other: T): BoolType = bool(this._jvm() ++ List(inst(Tokens.gt, other)), this.q()) //
+  def gt(other: V): BoolType = this.bool(this._jvm().::(inst(Tokens.gt, other)), this.q()) //
+  def gt(other: T): BoolType = this.bool(this._jvm().::(inst(Tokens.gt, other)), this.q()) //
 
   final def >(other: J): BoolType = this.gt(other) //
   final def >(other: V): BoolType = this.gt(other) //

@@ -22,18 +22,18 @@
 
 package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
 
 /**
   * @author Marko A. Rodriguez (http://markorodriguez.com)
   */
-trait ValueAnd[J, V <: Value[V], T <: Type[T]] extends Value[V] {
-  def and(other: J): BoolValue = this.and(value[J, V](other)) //
-  def and(other: V): BoolValue //
-  def and(other: T): BoolType //
+trait ValueAnd[V <: Value[V]] extends Value[V] {
+  def and(bool: Boolean): BoolValue = this.and(bool) //
+  def and(bool: BoolValue): BoolValue //
+  def and(bool: BoolType): BoolType //
 
-  final def &(other: J): BoolValue = this.and(other) //
-  final def &(other: V): BoolValue = this.and(other) //
-  final def &(other: T): BoolType = this.and(other) //
+  final def &(bool: Boolean): BoolValue = this.and(bool) //
+  final def &(bool: BoolValue): BoolValue = this.and(bool) //
+  final def &(bool: BoolType): BoolType = this.and(bool) //
 }

@@ -31,35 +31,7 @@ package object operator {
 
   // Binary operators
 
-  trait And[A] {
-    def and(other: A): A
 
-    final def &(other: A): A = this.and(other)
-  }
-
-  trait Or[A] {
-    def or(other: A): A
-
-    final def |(other: A): A = this.or(other)
-  }
-
-  trait Minus[A] {
-    def minus(other: A): A
-
-    final def -(other: A): A = this.minus(other)
-  }
-
-  trait Mult[A] {
-    def mult(other: A): A
-
-    final def *(other: A): A = this.mult(other)
-  }
-
-  trait Div[A] {
-    def div(other: A): A
-
-    final def /(other: A): A = this.div(other)
-  }
 
   trait Eq {
     def eq(other: Obj): Bool
@@ -67,19 +39,6 @@ package object operator {
     final def ==(other: Obj): Bool = this == other
   }
 
-  // Unary operators
-
-  trait Neg[A] {
-    def neg(): A
-
-    final def -(): A = this.neg()
-  }
-
-  trait Not[A] {
-    def not(): A
-
-    final def !(): A = this.not()
-  }
 
   // Singleton operators
 

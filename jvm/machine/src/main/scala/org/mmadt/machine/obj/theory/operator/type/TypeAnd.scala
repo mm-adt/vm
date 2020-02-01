@@ -24,18 +24,18 @@ package org.mmadt.machine.obj.theory.operator.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-trait TypeAnd[J, V <: Value[V], T <: Type[T]] extends Type[T] {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+trait TypeAnd[T <: Type[T]] extends Type[T] {
 
-  def and(other: J): BoolType = this.and(value[J, V](other)) //
-  def and(other: V): BoolType = this.bool(this._jvm() ++ List(inst(Tokens.and, other)), this.q()) //
-  def and(other: T): BoolType = this.bool(this._jvm() ++ List(inst(Tokens.and, other)), this.q()) //
+  def and(bool: Boolean): BoolType = this.and(bool) //
+  def and(bool: BoolValue): BoolType = this.bool(this._jvm().::(inst(Tokens.and, bool)), this.q()) //
+  def and(bool: BoolType): BoolType = this.bool(this._jvm().::(inst(Tokens.and, bool)), this.q()) //
 
-  final def &(other: J): BoolType = this.and(other) //
-  final def &(other: V): BoolType = this.and(other) //
-  final def &(other: T): BoolType = this.and(other) //
+  final def &(bool: Boolean): BoolType = this.and(bool) //
+  final def &(bool: BoolValue): BoolType = this.and(bool) //
+  final def &(bool: BoolType): BoolType = this.and(bool) //
 }

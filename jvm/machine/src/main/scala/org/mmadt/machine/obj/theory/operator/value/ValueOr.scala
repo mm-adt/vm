@@ -22,18 +22,18 @@
 
 package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-trait ValueOr[J, V <: Value[V], T <: Type[T]] extends Value[V] {
-  def or(other: J): BoolValue = this.or(value[J, V](other)) //
-  def or(other: V): BoolValue //
-  def or(other: T): BoolType //
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+trait ValueOr[V <: Value[V]] extends Value[V] {
+  def or(bool: Boolean): BoolValue = this.or(bool) //
+  def or(bool: BoolValue): BoolValue //
+  def or(bool: BoolType): BoolType //
 
-  final def |(other: J): BoolValue = this.or(other) //
-  final def |(other: V): BoolValue = this.or(other) //
-  final def |(other: T): BoolType = this.or(other) //
+  final def |(bool: Boolean): BoolValue = this.or(bool) //
+  final def |(bool: BoolValue): BoolValue = this.or(bool) //
+  final def |(bool: BoolType): BoolType = this.or(bool) //
 }

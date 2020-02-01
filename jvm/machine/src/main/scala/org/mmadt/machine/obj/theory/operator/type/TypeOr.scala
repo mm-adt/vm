@@ -24,18 +24,18 @@ package org.mmadt.machine.obj.theory.operator.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-trait TypeOr[J, V <: Value[V], T <: Type[T]] extends Type[T] {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+trait TypeOr[T <: Type[T]] extends Type[T] {
 
-  def or(other: J): BoolType = this.or(value[J, V](other)) //
-  def or(other: V): BoolType = this.bool(this._jvm() ++ List(inst(Tokens.or, other)), this.q()) //
-  def or(other: T): BoolType = this.bool(this._jvm() ++ List(inst(Tokens.or, other)), this.q()) //
+  def or(bool: Boolean): BoolType = this.or(bool) //
+  def or(bool: BoolValue): BoolType = this.bool(this._jvm().::(inst(Tokens.or, bool)), this.q()) //
+  def or(bool: BoolType): BoolType = this.bool(this._jvm().::(inst(Tokens.or, bool)), this.q()) //
 
-  final def |(other: J): BoolType = this.or(other) //
-  final def |(other: V): BoolType = this.or(other) //
-  final def |(other: T): BoolType = this.or(other) //
+  final def |(bool: Boolean): BoolType = this.or(bool) //
+  final def |(bool: BoolValue): BoolType = this.or(bool) //
+  final def |(bool: BoolType): BoolType = this.or(bool) //
 }

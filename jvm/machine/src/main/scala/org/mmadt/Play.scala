@@ -26,8 +26,8 @@ import org.mmadt.machine.obj.impl.`type`.TInt.int
 import org.mmadt.machine.obj.impl.value.VBool.{boolF, boolT}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 object Play extends App {
 
   val a = int(34)
