@@ -22,23 +22,23 @@
 
 package org.mmadt.machine.obj.impl.traverser
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.theory.obj.value._
+import org.mmadt.machine.obj.theory.obj.value.inst.PlusInst
 import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TTraverser[O <: Obj, T <: Type[T]](obj: O, t: T) extends Traverser[O, T] {
+class TTraverser[V <: Value[V], T <: Type[T]](obj: V, t: T) extends Traverser[V, T] {
 
-  override def obj(): O = obj
+  override def obj(): V = obj
 
-  override def apply(): Traverser[O, T] = {
-    t.inst().op() match {
-      case Tokens.plus => new TTraverser[O, T](this.obj.asInstanceOf[IntValue].plus(t.inst().arg().asInstanceOf[IntValue]).asInstanceOf[O], t)
-      case Tokens.mult => new TTraverser[O, T](this.obj.asInstanceOf[IntValue].mult(t.inst().arg().asInstanceOf[IntValue]).asInstanceOf[O], t)
+  override def apply(): Traverser[V, T] = {
+    t.head().inst() match {
+      case inst: PlusInst[V] => new TTraverser[V, T](inst.apply(this.obj), t)
+      case inst: Inst => new TTraverser[V, T](this.obj.asInstanceOf[IntValue].mult(t.inst().arg().asInstanceOf[IntValue]).asInstanceOf[V], t)
       case _ => throw new RuntimeException("Unknown instruction: " + t);
     }
   }

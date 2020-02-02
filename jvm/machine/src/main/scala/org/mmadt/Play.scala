@@ -43,6 +43,6 @@ object Play extends App {
   println(int.head())
   println(int)
 
-  println(new TTraverser(int(32),int.plus(2)).apply().obj())
+  println(new TTraverser(int(2),int.plus(2).mult(10)).apply().apply().obj())
 
 }

@@ -52,6 +52,7 @@ object Stringer {
       x = x.domain()
     }
     if (domain.equals("")) range else
+    // else if (range.equals(domain)) range + insts.map(i => "[" + i.op() + "," + instArgs(i.value()._2) + "]").fold("")((a, b) => a + b) else
       range + "<=" + domain + insts.map(i => "[" + i.op() + "," + instArgs(i.value()._2) + "]").fold("")((a, b) => a + b)
   }
 
