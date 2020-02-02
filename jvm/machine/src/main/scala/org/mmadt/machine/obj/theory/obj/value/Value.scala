@@ -30,7 +30,7 @@ import org.mmadt.machine.obj.theory.obj.Obj
   */
 trait Value[V <: Value[V]] extends Obj {
 
-  def _jvm(): Any
+  def value(): Any
 
   override def toString: String = Stringer.valueString(this)
 

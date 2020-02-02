@@ -30,6 +30,6 @@ import org.mmadt.machine.obj.theory.obj.Bool
  */
 trait BoolValue extends Bool with Value[BoolValue] with ValueLogical[BoolValue] {
 
-  override def _jvm(): Boolean
+  override def value(): Boolean
 
 }

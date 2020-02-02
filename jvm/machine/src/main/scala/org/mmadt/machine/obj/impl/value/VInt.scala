@@ -32,24 +32,24 @@ import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(jvm: Long, quantifier: TQ) extends VObj(jvm, quantifier) with IntValue {
+class VInt(java: Long, quantifier: TQ) extends VObj(java, quantifier) with IntValue {
 
   def this(jvm: Long) = this(jvm, qOne)
 
-  override def _jvm(): Long = jvm
+  override def value(): Long = java
 
   //override def zero(): obj.Int = int0
   //override def one(): obj.Int = int1
 
-  override def plus(other: IntValue): IntValue = int(this.jvm + other._jvm()) //
+  override def plus(other: IntValue): IntValue = int(this.java + other.value()) //
   override def plus(other: IntType): IntType = int(inst(Tokens.plus, other)) // ??
 
-  override def mult(other: IntValue): IntValue = int(this.jvm * other._jvm()) //
+  override def mult(other: IntValue): IntValue = int(this.java * other.value()) //
   override def mult(other: IntType): IntType = int(inst(Tokens.plus, other)) // ??
 
   // override def neg(): obj.Int = int(-this.jvm)
 
-  override def gt(other: IntValue): BoolValue = new VBool(this.jvm < other._jvm()) //
+  override def gt(other: IntValue): BoolValue = new VBool(this.java < other.value()) //
   override def gt(other: IntType): BoolType = new TBool() //
 
 }

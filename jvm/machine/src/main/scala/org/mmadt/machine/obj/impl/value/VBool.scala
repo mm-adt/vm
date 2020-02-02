@@ -31,17 +31,17 @@ import org.mmadt.machine.obj.{TQ, qOne}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBool(jvm: Boolean, quantifier: TQ) extends VObj(jvm, quantifier) with BoolValue {
+class VBool(java: Boolean, quantifier: TQ) extends VObj(java, quantifier) with BoolValue {
 
   def this(jvm: Boolean) = this(jvm, qOne)
 
-  override def _jvm(): Boolean = jvm
+  override def value(): Boolean = java
 
-  override def or(other: BoolValue): BoolValue = new VBool(this.jvm || otherBoolean(other))
+  override def or(other: BoolValue): BoolValue = new VBool(this.java || otherBoolean(other))
 
   override def or(other: BoolType): BoolType = new TBool() // ??
 
-  override def and(other: BoolValue): BoolValue = new VBool(this.jvm && otherBoolean(other))
+  override def and(other: BoolValue): BoolValue = new VBool(this.java && otherBoolean(other))
 
   override def and(other: BoolType): BoolType = new TBool() // ??
 
@@ -49,7 +49,7 @@ class VBool(jvm: Boolean, quantifier: TQ) extends VObj(jvm, quantifier) with Boo
 
   //override def one(): Bool = boolF
 
-  private def otherBoolean(other: Bool): Boolean = other.asInstanceOf[VBool]._jvm()
+  private def otherBoolean(other: Bool): Boolean = other.asInstanceOf[VBool].value()
 }
 
 object VBool {

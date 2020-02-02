@@ -31,6 +31,6 @@ import org.mmadt.machine.obj.theory.{ValueOrder, ValueRing}
   */
 trait IntValue extends Int with Value[IntValue] with ValueRing[Long, IntValue, IntType] with ValueOrder[Long, IntValue, IntType] {
 
-  override def _jvm(): Long
+  override def value(): Long
 
 }

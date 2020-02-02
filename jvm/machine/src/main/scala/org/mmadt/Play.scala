@@ -35,7 +35,7 @@ object Play extends App {
   println(a.+(b))
   println(a * b)
   println(boolT & boolF)
-  //println(a.is(int.gt(4)).map(boolF).or(boolT))
+  // println(a.is(int.gt(4)).map(boolF).or(boolT))
   println(int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT))
   println(int)
 }

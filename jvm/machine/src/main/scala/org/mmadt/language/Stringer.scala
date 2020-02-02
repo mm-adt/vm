@@ -37,7 +37,7 @@ object Stringer {
     case `qOne` => ""
     case `qZero` => "{0}"
     case `qMark` => "{?}"
-    case _ => "{" + x._1._jvm() + "," + x._2._jvm() + "}"
+    case _ => "{" + x._1.value() + "," + x._2.value() + "}"
   }
 
   // int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT)
@@ -53,10 +53,10 @@ object Stringer {
       x = x.domain()
     }
     if (domain.equals("")) range else
-      range + "<=" + domain + insts.map(i => "[" + i.asInstanceOf[VInst]._jvm()._1 + "," + instArgs(i.asInstanceOf[VInst]._jvm()._2) + "]").fold("")((a, b) => a + b)
+      range + "<=" + domain + insts.map(i => "[" + i.asInstanceOf[VInst].value()._1 + "," + instArgs(i.asInstanceOf[VInst].value()._2) + "]").fold("")((a, b) => a + b)
   }
 
-  def valueString(v: Value[_]): String = v._jvm().toString
+  def valueString(v: Value[_]): String = v.value().toString
 
   def instArgs(args: List[Obj]): String = {
     args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1)

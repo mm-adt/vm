@@ -24,15 +24,12 @@ package org.mmadt.machine.obj.impl.value
 
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.OObj
-import org.mmadt.machine.obj.impl.value.VBool.boolF
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{IntValue, Value}
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
+import org.mmadt.machine.obj.theory.obj.value.IntValue
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-abstract class VObj(jvm: Any, quantifier: TQ) extends OObj(quantifier) {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+abstract class VObj(java: Any, quantifier: TQ) extends OObj(quantifier) {
 
   /*override def eq(other: Obj): Bool = other match {
     case _: Type[_] => boolF
