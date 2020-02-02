@@ -24,7 +24,7 @@ package org.mmadt.machine.obj.impl.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.obj.`type`.TBool
+import org.mmadt.machine.obj.impl.obj.`type`.{TBool, TInt}
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 
@@ -38,17 +38,12 @@ class VInt(java: Long, quantifier: TQ) extends VObj(java, quantifier) with IntVa
 
   override def value(): Long = java
 
-  //override def zero(): obj.Int = int0
-  //override def one(): obj.Int = int1
-
   override def plus(other: IntValue): IntValue = int(this.java + other.value()) //
-  override def plus(other: IntType): IntType = int(inst(Tokens.plus, other)) // ??
+  override def plus(other: IntType): IntType = new TInt() // ??
 
   override def mult(other: IntValue): IntValue = int(this.java * other.value()) //
-  override def mult(other: IntType): IntType = int(inst(Tokens.plus, other)) // ??
-
-  // override def neg(): obj.Int = int(-this.jvm)
-
+  override def mult(other: IntType): IntType = new TInt() // ??
+  
   override def gt(other: IntValue): BoolValue = bool(this.java < other.value()) //
   override def gt(other: IntType): BoolType = new TBool() //
 

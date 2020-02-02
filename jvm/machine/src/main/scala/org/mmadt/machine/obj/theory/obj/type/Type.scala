@@ -39,7 +39,7 @@ trait Type[T <: Type[T]] extends Obj {
   def head[D <: Type[D]](): Type[D] = if (null == this.domain() || null == this.domain().inst()) this.asInstanceOf[D] else this.domain().head() //
 
   def is(bool: BoolValue): T = if (bool.value()) this.asInstanceOf[T] else this.asInstanceOf[T] //.q(int(0), int(0))
-  def is(bool: BoolType): T = copy(inst(Tokens.is, List(bool)), q())
+  def is(bool: BoolType): T = this.copy(inst(Tokens.is, bool), q())
 
   override def toString: String = Stringer.typeString(this)
 

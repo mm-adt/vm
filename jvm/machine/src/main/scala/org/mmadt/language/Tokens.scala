@@ -26,8 +26,8 @@ import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, Type}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 object Tokens {
 
   val and = "and"
