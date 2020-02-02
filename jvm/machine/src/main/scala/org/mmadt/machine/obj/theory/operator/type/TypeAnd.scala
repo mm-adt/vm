@@ -32,8 +32,8 @@ import org.mmadt.machine.obj.theory.obj.value.BoolValue
 trait TypeAnd[T <: Type[T]] extends Type[T] {
 
   def and(bool: Boolean): BoolType = this.and(bool) //
-  def and(bool: BoolValue): BoolType = this.bool(this._jvm() ++ List(inst(Tokens.and, bool)), this.q()) //
-  def and(bool: BoolType): BoolType = this.bool(this._jvm() ++ List(inst(Tokens.and, bool)), this.q()) //
+  def and(bool: BoolValue): BoolType = this.bool(inst(Tokens.and, bool), this.q()) //
+  def and(bool: BoolType): BoolType = this.bool(inst(Tokens.and, bool), this.q()) //
 
   final def &(bool: Boolean): BoolType = this.and(bool) //
   final def &(bool: BoolValue): BoolType = this.and(bool) //

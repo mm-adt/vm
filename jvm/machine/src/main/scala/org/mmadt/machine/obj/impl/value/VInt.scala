@@ -42,10 +42,10 @@ class VInt(jvm: Long, quantifier: TQ) extends VObj(jvm, quantifier) with IntValu
   //override def one(): obj.Int = int1
 
   override def plus(other: IntValue): IntValue = int(this.jvm + other._jvm()) //
-  override def plus(other: IntType): IntType = int(List(inst(Tokens.plus, other))) // ??
+  override def plus(other: IntType): IntType = int(inst(Tokens.plus, other)) // ??
 
   override def mult(other: IntValue): IntValue = int(this.jvm * other._jvm()) //
-  override def mult(other: IntType): IntType = int(List(inst(Tokens.plus, other))) // ??
+  override def mult(other: IntType): IntType = int(inst(Tokens.plus, other)) // ??
 
   // override def neg(): obj.Int = int(-this.jvm)
 

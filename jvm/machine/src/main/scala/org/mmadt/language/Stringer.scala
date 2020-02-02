@@ -24,9 +24,9 @@ package org.mmadt.language
 
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.value.VInst
-import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,7 +40,21 @@ object Stringer {
     case _ => "{" + x._1._jvm() + "," + x._2._jvm() + "}"
   }
 
-  def typeString(t: Type[_]): String = Tokens.symbol(t) + "<=" + Tokens.symbol(t.domain()) + t._jvm().map(i => "[" + i.asInstanceOf[VInst]._jvm()._1 + "," + instArgs(i.asInstanceOf[VInst]._jvm()._2) + "]").fold("")((a, b) => a + b)
+  // int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT)
+  def typeString(t: Type[_]): String = {
+    var domain = ""
+    val range = Tokens.symbol(t)
+    var insts = List[Inst]()
+    var x = t
+    while (x.inst() != null) {
+      insts = insts.::(x.inst())
+      if (null == x.domain().inst())
+        domain = Tokens.symbol(x)
+      x = x.domain()
+    }
+    if (domain.equals("")) range else
+      range + "<=" + domain + insts.map(i => "[" + i.asInstanceOf[VInst]._jvm()._1 + "," + instArgs(i.asInstanceOf[VInst]._jvm()._2) + "]").fold("")((a, b) => a + b)
+  }
 
   def valueString(v: Value[_]): String = v._jvm().toString
 

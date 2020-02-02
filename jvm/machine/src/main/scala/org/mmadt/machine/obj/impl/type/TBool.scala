@@ -30,9 +30,8 @@ import org.mmadt.machine.obj.{TQ, qOne}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(domain: Type[_], jvm: List[Inst], quantifier: TQ) extends TObj(domain, jvm, quantifier) with BoolType {
+class TBool(domain: Type[_], inst: Inst, quantifier: TQ) extends TObj(domain, inst, quantifier) with BoolType {
 
-  def this() = this(null, List(), qOne) //
-  override def copy(inst: List[Inst], q: (IntValue, IntValue)): BoolType = new TBool(domain, inst, q)
-
+  def this() = this(null, null, qOne) //
+  override def copy(inst: Inst, q: (IntValue, IntValue)): BoolType = new TBool(this, inst, q)
 }

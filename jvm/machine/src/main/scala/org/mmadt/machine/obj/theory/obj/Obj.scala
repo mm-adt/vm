@@ -38,14 +38,16 @@ trait Obj extends Instructions { //with Eq {
   }
 
   def bool(value: Boolean): BoolValue //
-  def bool(): BoolType = bool(List()) //
-  def bool(inst: List[Inst]): BoolType = bool(inst, q()) //
-  def bool(inst: List[Inst], q: (IntValue, IntValue)): BoolType //
+  def bool(): BoolType = bool(null) //
+  def bool(inst:Inst): BoolType = bool(inst, q()) //
+  def bool(inst:Inst, q: (IntValue, IntValue)): BoolType //
 
   def int(value: Long): IntValue //
-  def int(): IntType = int(List()) //
-  def int(inst: List[Inst]): IntType = int(inst, q()) //
-  def int(inst: List[Inst], q: (IntValue, IntValue)): IntType //
+  def int(): IntType = int(null) //
+  def int(inst: Inst): IntType = int(inst, q()) //
+  def int(inst: Inst, q: (IntValue, IntValue)): IntType //
+
+
 
   def inst(op: String): Inst = inst(op, List()) //
   def inst(op: String, arg1: Obj): Inst = inst(op, List(arg1)) //

@@ -31,10 +31,10 @@ import org.mmadt.machine.obj.{TQ, qOne}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(domain: Type[_], jvm: List[Inst], quantifier: TQ) extends TObj(domain, jvm, quantifier) with IntType {
+class TInt(domain: Type[_], inst: Inst, quantifier: TQ) extends TObj(domain, inst, quantifier) with IntType {
 
-  def this() = this(null, List(), qOne) //
-  override def copy(inst: List[Inst], q: (IntValue, IntValue)): IntType = new TInt(domain, inst, q)
+  def this() = this(null, null, qOne) //
+  override def copy(inst: Inst, q: (IntValue, IntValue)): IntType = new TInt(this, inst, q)
 }
 
 object TInt {
