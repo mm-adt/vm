@@ -29,7 +29,7 @@ import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Obj { //with Eq {
+trait Obj {
 
   def value[J, V](java: J): V = java match {
     case j: Long => int(j).asInstanceOf[V]

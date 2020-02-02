@@ -23,7 +23,6 @@
 package org.mmadt.language
 
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.obj.value.VInst
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
@@ -53,7 +52,7 @@ object Stringer {
       x = x.domain()
     }
     if (domain.equals("")) range else
-      range + "<=" + domain + insts.map(i => "[" + i.asInstanceOf[VInst].value()._1 + "," + instArgs(i.asInstanceOf[VInst].value()._2) + "]").fold("")((a, b) => a + b)
+      range + "<=" + domain + insts.map(i => "[" + i.op() + "," + instArgs(i.value()._2) + "]").fold("")((a, b) => a + b)
   }
 
   def valueString(v: Value[_]): String = v.value().toString

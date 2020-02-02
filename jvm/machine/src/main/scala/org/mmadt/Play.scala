@@ -24,6 +24,8 @@ package org.mmadt
 
 import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
 import org.mmadt.machine.obj.impl.obj.value.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.impl.traverser.TTraverser
+import org.mmadt.machine.obj.theory.obj.value.IntValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,4 +40,7 @@ object Play extends App {
   // println(a.is(int.gt(4)).map(boolF).or(boolT))
   println(int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT))
   println(int)
+
+  println(new TTraverser[IntValue](int(32)).apply(int.plus(2)).obj())
+
 }

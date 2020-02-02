@@ -22,9 +22,14 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.JInst
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Inst extends Obj {
+  def value(): JInst
 
+  final def op(): String = this.value()._1 //
+  final def arg(): Obj = this.value()._2.head //
 }

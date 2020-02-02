@@ -25,6 +25,4 @@ package org.mmadt.machine.obj.theory.obj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Bool extends Obj { //with One[Bool] with Zero[Bool] {
-
-}
+trait Bool extends Obj
