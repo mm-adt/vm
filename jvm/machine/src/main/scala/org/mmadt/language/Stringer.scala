@@ -29,8 +29,8 @@ import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 object Stringer {
 
   def q(x: TQ): String = x match {
@@ -40,7 +40,7 @@ object Stringer {
     case _ => "{" + x._1._jvm() + "," + x._2._jvm() + "}"
   }
 
-  def typeString(t: Type[_]): String = Tokens.symbol(t) + t._jvm().map(i => "[" + i.asInstanceOf[VInst]._jvm()._1 + "," + instArgs(i.asInstanceOf[VInst]._jvm()._2) + "]").fold("")((a, b) => a + b)
+  def typeString(t: Type[_]): String = Tokens.symbol(t) + "<=" + Tokens.symbol(t.domain()) + t._jvm().map(i => "[" + i.asInstanceOf[VInst]._jvm()._1 + "," + instArgs(i.asInstanceOf[VInst]._jvm()._2) + "]").fold("")((a, b) => a + b)
 
   def valueString(v: Value[_]): String = v._jvm().toString
 

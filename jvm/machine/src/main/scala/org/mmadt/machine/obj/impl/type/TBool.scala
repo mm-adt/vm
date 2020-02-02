@@ -22,32 +22,17 @@
 
 package org.mmadt.machine.obj.impl.`type`
 
-import org.mmadt.machine.obj.impl.value.VBool.{boolF, boolT}
-import org.mmadt.machine.obj.theory.obj.{Bool, Inst}
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
+import org.mmadt.machine.obj.theory.obj.Inst
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
 import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-class TBool(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with BoolType {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+class TBool(domain: Type[_], jvm: List[Inst], quantifier: TQ) extends TObj(domain, jvm, quantifier) with BoolType {
 
-  override def copy(inst: List[Inst], q: (IntValue, IntValue)): BoolType = new TBool(inst, q)
-
-  def this(jvm: List[Inst]) = this(jvm, qOne)
-
-  def this() = this(List(), qOne)
-
-  //override def zero(): Bool = boolT
-
-  //override def one(): Bool = boolF
-
-
-}
-
-object TBool {
-
-  object bool extends TBool
+  def this() = this(null, List(), qOne) //
+  override def copy(inst: List[Inst], q: (IntValue, IntValue)): BoolType = new TBool(domain, inst, q)
 
 }

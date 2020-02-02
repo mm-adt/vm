@@ -25,23 +25,13 @@ package org.mmadt.machine.obj.impl.`type`
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.OObj
 import org.mmadt.machine.obj.theory.obj.Inst
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TObj(jvm: List[Inst], quantifier: TQ) extends OObj(quantifier) {
-
-  def this(jvm: List[Inst]) = this(jvm, qOne)
-
-  def this() = this(List())
-
-  def _jvm(): List[Inst] = jvm
-
-  /*override def eq(other: Obj): Bool = other match {
-    case _: Value[_] => boolF
-    case _: Type[_] => new VBool(this.jvm.equals(otherInst(other)))
-  }*/
-
-  // override def q(min: VInt, max: VInt): this.type = new TObj(jvm, (min, max)).asInstanceOf[this.type]
-
+class TObj(domain: Type[_], jvm: List[Inst], quantifier: TQ) extends OObj(quantifier) {
+  def this() = this(null, List(), qOne) //
+  def domain(): Type[_] = Option[Type[_]](domain).getOrElse(this.asInstanceOf[Type[_]]) //
+  def _jvm(): List[Inst] = jvm //
 }

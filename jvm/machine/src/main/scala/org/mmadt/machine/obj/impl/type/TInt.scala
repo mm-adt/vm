@@ -24,28 +24,17 @@ package org.mmadt.machine.obj.impl.`type`
 
 import org.mmadt.machine.obj.impl.value.VInt
 import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
+import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
 import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-class TInt(jvm: List[Inst], quantifier: TQ) extends TObj(jvm, quantifier) with IntType {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+class TInt(domain: Type[_], jvm: List[Inst], quantifier: TQ) extends TObj(domain, jvm, quantifier) with IntType {
 
-  def this(inst: List[Inst]) = this(inst, qOne)
-
-  def this(quantifier: TQ) = this(List(), quantifier)
-
-  def this() = this(qOne)
-
-  // override def one(): obj.Int = int1
-
-  // override def neg(): obj.Int = int1
-
-  // override def zero(): obj.Int = int0
-
-  override def copy(inst: List[Inst], q: (IntValue, IntValue)): IntType = new TInt(inst, q)
+  def this() = this(null, List(), qOne) //
+  override def copy(inst: List[Inst], q: (IntValue, IntValue)): IntType = new TInt(domain, inst, q)
 }
 
 object TInt {

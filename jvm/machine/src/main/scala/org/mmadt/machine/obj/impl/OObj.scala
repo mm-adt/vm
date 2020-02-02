@@ -22,24 +22,24 @@
 
 package org.mmadt.machine.obj.impl
 
+import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.impl.`type`.{TBool, TInt}
 import org.mmadt.machine.obj.impl.value.{VBool, VInst, VInt}
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, Type}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
-import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 abstract class OObj(val quantifier: TQ) extends Obj {
 
   override def q(): (IntValue, IntValue) = quantifier
 
-  override def int(inst: List[Inst], q: (IntValue, IntValue)): IntType = new TInt(inst) //
+  override def int(inst: List[Inst], q: (IntValue, IntValue)): IntType = new TInt(this.asInstanceOf[Type[_]], inst, q) //
   override def int(value: Long): IntValue = new VInt(value) //
 
-  override def bool(inst: List[Inst], q: (IntValue, IntValue)): BoolType = new TBool(inst, q) //
+  override def bool(inst: List[Inst], q: (IntValue, IntValue)): BoolType = new TBool(this.asInstanceOf[Type[_]],inst, q) //
   override def bool(value: Boolean): BoolValue = new VBool(value) //
 
   override def inst(op: String, args: List[Obj]): Inst = new VInst((op, args))
