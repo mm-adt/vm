@@ -33,7 +33,7 @@ import org.mmadt.machine.obj.{TQ, qOne}
  */
 class VBool(java: Boolean, quantifier: TQ) extends VObj(java, quantifier) with BoolValue {
 
-  def this(jvm: Boolean) = this(jvm, qOne)
+  def this(java: Boolean) = this(java, qOne)
 
   override def value(): Boolean = java
 

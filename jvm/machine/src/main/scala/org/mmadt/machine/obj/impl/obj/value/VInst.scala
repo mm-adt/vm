@@ -30,10 +30,8 @@ import org.mmadt.machine.obj.theory.obj.Inst
  */
 class VInst(java: JInst, quantifier: TQ) extends VObj(java, quantifier) with Inst {
 
-  def this(jvm: JInst) = this(jvm, qOne)
+  def this(java: JInst) = this(java, qOne)
 
-  def value(): JInst = java
-
-  // override def one(): Inst = _id
+  override def value(): JInst = java
 
 }

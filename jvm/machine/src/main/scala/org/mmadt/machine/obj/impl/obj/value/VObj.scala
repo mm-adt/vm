@@ -29,15 +29,8 @@ import org.mmadt.machine.obj.theory.obj.value.IntValue
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VObj(java: Any, quantifier: TQ) extends OObj(quantifier) {
-
-  /*override def eq(other: Obj): Bool = other match {
-    case _: Type[_] => boolF
-    case x: Value[_] => new VBool(this.jvm == x._jvm())
-  }*/
+abstract class VObj(val java: Any, quantifier: TQ) extends OObj(quantifier) {
 
   override def q(): (IntValue, IntValue) = quantifier
-
-  // override def q(min: VInt, max: VInt): this.type = new VObj[J](jvm, (min, max)).asInstanceOf[this.type]
 
 }

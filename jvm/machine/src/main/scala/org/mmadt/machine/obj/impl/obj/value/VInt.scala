@@ -34,7 +34,7 @@ import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
  */
 class VInt(java: Long, quantifier: TQ) extends VObj(java, quantifier) with IntValue {
 
-  def this(jvm: Long) = this(jvm, qOne)
+  def this(java: Long) = this(java, qOne)
 
   override def value(): Long = java
 
@@ -49,7 +49,7 @@ class VInt(java: Long, quantifier: TQ) extends VObj(java, quantifier) with IntVa
 
   // override def neg(): obj.Int = int(-this.jvm)
 
-  override def gt(other: IntValue): BoolValue = new VBool(this.java < other.value()) //
+  override def gt(other: IntValue): BoolValue = bool(this.java < other.value()) //
   override def gt(other: IntType): BoolType = new TBool() //
 
 }
