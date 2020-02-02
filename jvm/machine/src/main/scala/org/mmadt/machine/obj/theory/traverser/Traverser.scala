@@ -20,27 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl
+package org.mmadt.machine.obj.theory.traverser
 
-import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.impl.`type`.{TBool, TInt}
-import org.mmadt.machine.obj.impl.value.{VBool, VInst, VInt}
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, Type}
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class OObj(val quantifier: TQ) extends Obj {
+trait Traverser[O <: Obj] {
 
-  override def q(): (IntValue, IntValue) = quantifier
+  def obj: O
 
-  override def int(inst: Inst, q: (IntValue, IntValue)): IntType = new TInt(this.asInstanceOf[Type[_]], inst, q) //
-  override def int(value: Long): IntValue = new VInt(value) //
+  def apply[T <: Type[T]](t: Type[T]): Traverser[T]
 
-  override def bool(inst: Inst, q: (IntValue, IntValue)): BoolType = new TBool(this.asInstanceOf[Type[_]],inst, q) //
-  override def bool(value: Boolean): BoolValue = new VBool(value) //
-
-  override def inst(op: String, args: List[Obj]): Inst = new VInst((op, args))
 }

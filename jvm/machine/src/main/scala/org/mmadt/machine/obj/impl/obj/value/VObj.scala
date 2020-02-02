@@ -20,27 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.`type`
+package org.mmadt.machine.obj.impl.obj.value
 
-import org.mmadt.machine.obj.impl.value.VInt
-import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
+import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.obj.OObj
 import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(domain: Type[_], inst: Inst, quantifier: TQ) extends TObj(domain, inst, quantifier) with IntType {
+abstract class VObj(java: Any, quantifier: TQ) extends OObj(quantifier) {
 
-  def this() = this(null, null, qOne) //
-  override def copy(inst: Inst, q: (IntValue, IntValue)): IntType = new TInt(this, inst, q)
-}
+  /*override def eq(other: Obj): Bool = other match {
+    case _: Type[_] => boolF
+    case x: Value[_] => new VBool(this.jvm == x._jvm())
+  }*/
 
-object TInt {
+  override def q(): (IntValue, IntValue) = quantifier
 
-  def int: IntType = new TInt()
-
-  def int(jvm: Long): IntValue = new VInt(jvm)
+  // override def q(min: VInt, max: VInt): this.type = new VObj[J](jvm, (min, max)).asInstanceOf[this.type]
 
 }

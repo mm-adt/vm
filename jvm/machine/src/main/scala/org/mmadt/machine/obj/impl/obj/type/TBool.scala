@@ -20,31 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.traits
+package org.mmadt.machine.obj.impl.obj.`type`
 
-import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.theory.obj.Inst
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
 import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-package object instruction {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+class TBool(domain: Type[_], inst: Inst, quantifier: TQ) extends TObj(domain, inst, quantifier) with BoolType {
 
-  trait Instructions extends FilterInstructions with MapInstructions
-
-  trait FilterInstructions {
-
-    def id(): this.type = this
-  }
-
-  trait MapInstructions {
-
-    def map[A](obj: A): A = obj
-
-    def q(): TQ
-
-    //def q(min: IntValue, max: IntValue): this.type
-
-  }
-
+  def this() = this(null, null, qOne) //
+  override def copy(inst: Inst, q: (IntValue, IntValue)): BoolType = new TBool(this, inst, q)
 }

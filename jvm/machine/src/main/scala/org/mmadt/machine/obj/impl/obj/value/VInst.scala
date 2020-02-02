@@ -20,18 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.`type`
+package org.mmadt.machine.obj.impl.obj.value
 
+import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(domain: Type[_], inst: Inst, quantifier: TQ) extends TObj(domain, inst, quantifier) with BoolType {
+class VInst(java: JInst, quantifier: TQ) extends VObj(java, quantifier) with Inst {
 
-  def this() = this(null, null, qOne) //
-  override def copy(inst: Inst, q: (IntValue, IntValue)): BoolType = new TBool(this, inst, q)
+  def this(jvm: JInst) = this(jvm, qOne)
+
+  def value(): JInst = java
+
+  // override def one(): Inst = _id
+
 }

@@ -20,17 +20,27 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.traverser
+package org.mmadt.machine.obj.impl.obj.`type`
 
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.impl.obj.value.VInt
+import org.mmadt.machine.obj.theory.obj.Inst
+import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
+import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-trait Traverser[O <: Obj]  {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+class TInt(domain: Type[_], inst: Inst, quantifier: TQ) extends TObj(domain, inst, quantifier) with IntType {
 
-  def obj(): O
+  def this() = this(null, null, qOne) //
+  override def copy(inst: Inst, q: (IntValue, IntValue)): IntType = new TInt(this, inst, q)
+}
 
-  def state(): Map[String, Obj]
+object TInt {
+
+  def int: IntType = new TInt()
+
+  def int(jvm: Long): IntValue = new VInt(jvm)
 
 }

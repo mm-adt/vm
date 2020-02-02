@@ -20,11 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.value
+package org.mmadt.machine.obj.impl.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.`type`.TBool
+import org.mmadt.machine.obj.impl.obj.`type`.TBool
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 

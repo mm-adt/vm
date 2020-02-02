@@ -20,9 +20,9 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.value
+package org.mmadt.machine.obj.impl.obj.value
 
-import org.mmadt.machine.obj.impl.`type`.TBool
+import org.mmadt.machine.obj.impl.obj.`type`.TBool
 import org.mmadt.machine.obj.theory.obj.Bool
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.obj.value.BoolValue

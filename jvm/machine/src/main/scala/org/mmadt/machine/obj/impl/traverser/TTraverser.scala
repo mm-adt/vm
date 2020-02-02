@@ -20,20 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.value
-
-import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.theory.obj.Inst
+package org.mmadt.machine.obj.impl.traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst(java: JInst, quantifier: TQ) extends VObj(java, quantifier) with Inst {
-
-  def this(jvm: JInst) = this(jvm, qOne)
-
-  def value(): JInst = java
-
-  // override def one(): Inst = _id
+class TTraverser {
 
 }

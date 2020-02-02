@@ -22,8 +22,8 @@
 
 package org.mmadt
 
-import org.mmadt.machine.obj.impl.`type`.TInt.int
-import org.mmadt.machine.obj.impl.value.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
+import org.mmadt.machine.obj.impl.obj.value.VBool.{boolF, boolT}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

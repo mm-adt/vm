@@ -20,24 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.value
+package org.mmadt.machine.obj.impl.obj.`type`
 
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.OObj
-import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.impl.obj.OObj
+import org.mmadt.machine.obj.theory.obj.Inst
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VObj(java: Any, quantifier: TQ) extends OObj(quantifier) {
+class TObj(domain: Type[_], inst: Inst, quantifier: TQ) extends OObj(quantifier) {
 
-  /*override def eq(other: Obj): Bool = other match {
-    case _: Type[_] => boolF
-    case x: Value[_] => new VBool(this.jvm == x._jvm())
-  }*/
-
-  override def q(): (IntValue, IntValue) = quantifier
-
-  // override def q(min: VInt, max: VInt): this.type = new VObj[J](jvm, (min, max)).asInstanceOf[this.type]
+  def this() = this(null, null, qOne) //
+  def domain(): Type[_] = domain //
+  def inst(): Inst = inst //
 
 }

@@ -22,14 +22,14 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
-import org.mmadt.machine.obj.traits.instruction.Instructions
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
-trait Obj extends Instructions { //with Eq {
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+trait Obj { //with Eq {
 
   def value[J, V](java: J): V = java match {
     case j: Long => int(j).asInstanceOf[V]
@@ -39,8 +39,8 @@ trait Obj extends Instructions { //with Eq {
 
   def bool(value: Boolean): BoolValue //
   def bool(): BoolType = bool(null) //
-  def bool(inst:Inst): BoolType = bool(inst, q()) //
-  def bool(inst:Inst, q: (IntValue, IntValue)): BoolType //
+  def bool(inst: Inst): BoolType = bool(inst, q()) //
+  def bool(inst: Inst, q: (IntValue, IntValue)): BoolType //
 
   def int(value: Long): IntValue //
   def int(): IntType = int(null) //
@@ -48,11 +48,12 @@ trait Obj extends Instructions { //with Eq {
   def int(inst: Inst, q: (IntValue, IntValue)): IntType //
 
 
-
   def inst(op: String): Inst = inst(op, List()) //
   def inst(op: String, arg1: Obj): Inst = inst(op, List(arg1)) //
   def inst(op: String, arg1: Obj, arg2: Obj): Inst = inst(op, List(arg1, arg2)) //
   def inst(op: String, arg1: Obj, arg2: Obj, arg3: Obj): Inst = inst(op, List(arg1, arg2, arg3)) //
   def inst(op: String, args: List[Obj]): Inst //
+
+  def q(): TQ
 
 }

@@ -23,7 +23,7 @@
 package org.mmadt.language
 
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.value.VInst
+import org.mmadt.machine.obj.impl.obj.value.VInst
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}

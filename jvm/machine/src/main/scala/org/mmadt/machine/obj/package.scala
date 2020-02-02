@@ -22,7 +22,7 @@
 
 package org.mmadt.machine
 
-import org.mmadt.machine.obj.impl.value.VInt.{int0, int1}
+import org.mmadt.machine.obj.impl.obj.value.VInt.{int0, int1}
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.value.IntValue
 
