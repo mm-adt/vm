@@ -38,7 +38,7 @@ class VBool(java: Boolean, quantifier: TQ) extends VObj(java, quantifier) with B
 
   override def or(other: BoolValue): BoolValue = new VBool(this.java || other.value())
 
-  override def or(other: BoolType): BoolType = new TBool() // ??
+  override def or(other: BoolType): BoolType = new TBool() // ?? [map,this][or,other]
 
   override def and(other: BoolValue): BoolValue = new VBool(this.java && other.value())
 

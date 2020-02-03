@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.obj.impl.obj.value
 
-import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.obj.`type`.{TBool, TInt}
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
@@ -42,8 +41,8 @@ class VInt(java: Long, quantifier: TQ) extends VObj(java, quantifier) with IntVa
   override def plus(other: IntType): IntType = new TInt() // ??
 
   override def mult(other: IntValue): IntValue = int(this.java * other.value()) //
-  override def mult(other: IntType): IntType = new TInt() // ??
-  
+  override def mult(other: IntType): IntType = new TInt() // [map,this][mult,other]
+
   override def gt(other: IntValue): BoolValue = bool(this.java < other.value()) //
   override def gt(other: IntType): BoolType = new TBool() //
 

@@ -22,16 +22,16 @@
 
 package org.mmadt.machine.obj.theory.traverser
 
-import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Traverser[O <: Obj, T <: Type[T]] {
+trait Traverser[V <: Value[V]] {
 
-  def obj(): O
+  def obj(): V
 
-  def apply(): Traverser[_, T]
+  def apply[T <: Type[T]](t: Type[T]): Traverser[V]
 
 }

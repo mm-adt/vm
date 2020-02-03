@@ -39,10 +39,11 @@ object Play extends App {
   // println(a.is(int.gt(4)).map(boolF).or(boolT))
   val c = int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT)
   println(c)
-  println(c.head())
-  println(int.head())
+  // println(c.insts())
   println(int)
-
-  println(new TTraverser(int(2),int.plus(2).mult(10)).apply().apply().obj())
+  println(int + 2 > 4)
+  val t = new TTraverser(int(2))
+  val result = t(int.plus(2).mult(10).plus(60)).obj()
+  println(result)
 
 }

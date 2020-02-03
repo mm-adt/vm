@@ -31,14 +31,16 @@ import org.mmadt.machine.obj.theory.traverser.Traverser
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TTraverser[V <: Value[V], T <: Type[T]](obj: V, t: T) extends Traverser[V, T] {
+class TTraverser[V <: Value[V]](obj: V) extends Traverser[V] {
 
   override def obj(): V = obj
 
-  override def apply(): Traverser[V, T] = {
-    t.head().inst() match {
-      case inst: PlusInst[V] => new TTraverser[V, T](inst.apply(this.obj), t)
-      case inst: Inst => new TTraverser[V, T](this.obj.asInstanceOf[IntValue].mult(t.inst().arg().asInstanceOf[IntValue]).asInstanceOf[V], t)
+  override def apply[T <: Type[T]](t: Type[T]): Traverser[V] = {
+    if (t.insts().isEmpty)
+      return this
+    t.insts().head._2 match {
+      case inst: PlusInst[V] => new TTraverser[V](inst.apply(this.obj)).apply(t.pop())
+      case inst: Inst => new TTraverser[V](this.obj.asInstanceOf[IntValue].mult(inst.arg().asInstanceOf[IntValue]).asInstanceOf[V]).apply(t.pop())
       case _ => throw new RuntimeException("Unknown instruction: " + t);
     }
   }

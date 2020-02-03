@@ -23,9 +23,9 @@
 package org.mmadt.language
 
 import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,19 +41,12 @@ object Stringer {
 
   // int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT)
   def typeString(t: Type[_]): String = {
-    var domain = ""
+
     val range = Tokens.symbol(t)
-    var insts = List[Inst]()
-    var x = t
-    while (x.inst() != null) {
-      insts = insts.::(x.inst())
-      if (null == x.domain().inst())
-        domain = Tokens.symbol(x)
-      x = x.domain()
-    }
+    val domain = if (t.insts().isEmpty) "" else Tokens.symbol(t.insts().head._1)
     if (domain.equals("")) range else
     // else if (range.equals(domain)) range + insts.map(i => "[" + i.op() + "," + instArgs(i.value()._2) + "]").fold("")((a, b) => a + b) else
-      range + "<=" + domain + insts.map(i => "[" + i.op() + "," + instArgs(i.value()._2) + "]").fold("")((a, b) => a + b)
+      range + "<=" + domain + t.insts().map(i => "[" + i._2.op() + "," + instArgs(i._2.value()._2) + "]").fold("")((a, b) => a + b)
   }
 
   def valueString(v: Value[_]): String = v.value().toString
