@@ -23,6 +23,8 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 
 /**
@@ -46,5 +48,7 @@ trait Obj {
   def inst(op: String, args: List[Obj]): Inst //
 
   def q(): TQ
+
+  def ==>[T<:Type[T]](t: T): Obj = new RecursiveTraverser(this).apply(t).obj()
 
 }

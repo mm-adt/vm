@@ -20,22 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine
-
-import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
-import org.mmadt.machine.obj.impl.obj.value.VBool.{boolF, boolT}
-import org.scalatest.FunSuite
+package org.mmadt.language
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class PlayTest extends FunSuite {
+class TypeTest {
 
-  test("value + value") {
-    assert(int(1) + int(2) === int(3))
-    assert(boolT.value())
-    assert((boolT | boolF) === boolT)
-    assert((boolT & boolF) === boolF)
-    println(int ==> int.plus(2).gt(5))
-  }
 }
