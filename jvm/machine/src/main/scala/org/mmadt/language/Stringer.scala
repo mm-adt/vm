@@ -43,10 +43,10 @@ object Stringer {
   def typeString(t: Type[_]): String = {
 
     val range = Tokens.symbol(t)
-    val domain = if (t.insts().isEmpty) "" else Tokens.symbol(t.insts().head._1)
+    val domain = if (t.insts().isEmpty) "" else Tokens.symbol(t.insts().head._1) + q(t.insts().head._1.q())
     if (domain.equals("")) range else
     // else if (range.equals(domain)) range + insts.map(i => "[" + i.op() + "," + instArgs(i.value()._2) + "]").fold("")((a, b) => a + b) else
-      range + "<=" + domain + t.insts().map(i => "[" + i._2.op() + "," + instArgs(i._2.value()._2) + "]").fold("")((a, b) => a + b)
+      range + q(t.q()) + "<=" + domain + t.insts().map(i => "[" + i._2.op() + "," + instArgs(i._2.value()._2) + "]").fold("")((a, b) => a + b)
   }
 
   def valueString(v: Value[_]): String = v.value().toString

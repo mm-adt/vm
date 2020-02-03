@@ -22,6 +22,7 @@
 
 package org.mmadt
 
+import org.mmadt.machine.obj.impl.obj.`type`.TBool
 import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
 import org.mmadt.machine.obj.impl.obj.value.VBool.{boolF, boolT}
 import org.mmadt.machine.obj.impl.traverser.TTraverser
@@ -45,5 +46,8 @@ object Play extends App {
   val t = new TTraverser(int(2))
   val result = t(int.plus(2).mult(10).plus(60)).obj()
   println(result)
+
+  println(int(43).plus(int).gt(57))
+  println(boolT.and(new TBool()))
 
 }

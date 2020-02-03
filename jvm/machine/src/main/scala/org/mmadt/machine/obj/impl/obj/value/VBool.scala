@@ -22,10 +22,11 @@
 
 package org.mmadt.machine.obj.impl.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj.`type`.TBool
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.obj.value.BoolValue
-import org.mmadt.machine.obj.{TQ, qOne}
+import org.mmadt.machine.obj.{TQ, qOne, qZero}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,15 +35,9 @@ class VBool(java: Boolean, quantifier: TQ) extends VObj(java, quantifier) with B
 
   def this(java: Boolean) = this(java, qOne)
 
-  override def value(): Boolean = java
+  override def value(): Boolean = java //
+  override def start(): BoolType = new TBool(List((new TBool(Nil, qZero), inst(Tokens.start, this))), q()) //
 
-  override def or(other: BoolValue): BoolValue = new VBool(this.java || other.value())
-
-  override def or(other: BoolType): BoolType = new TBool() // ?? [map,this][or,other]
-
-  override def and(other: BoolValue): BoolValue = new VBool(this.java && other.value())
-
-  override def and(other: BoolType): BoolType = new TBool() // ??
 }
 
 object VBool {

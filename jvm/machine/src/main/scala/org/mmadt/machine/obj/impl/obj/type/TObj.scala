@@ -30,9 +30,9 @@ import org.mmadt.machine.obj.theory.obj.`type`.Type
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TObj(insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(quantifier) {
+abstract class TObj(insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(quantifier) {
 
   def this() = this(Nil, qOne) //
-  def insts(): List[(Type[_], Inst)] = insts
+  def insts(): List[(Type[_], Inst)] = insts //
 
 }

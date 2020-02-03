@@ -24,14 +24,16 @@ package org.mmadt.machine.obj.theory.operator.value
 
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
+import org.mmadt.machine.obj.theory.operator.`type`.TypeGt
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait ValueGt[J, V <: Value[V], T <: Type[T]] extends Value[V] {
+
   def gt(other: J): BoolValue = this.gt(value[J, V](other)) //
   def gt(other: V): BoolValue //
-  def gt(other: T): BoolType //
+  def gt(other: T): BoolType = this.start().asInstanceOf[TypeGt[J, V, T]].gt(other)
 
   final def >(other: J): BoolValue = this.gt(other) //
   final def >(other: V): BoolValue = this.gt(other) //

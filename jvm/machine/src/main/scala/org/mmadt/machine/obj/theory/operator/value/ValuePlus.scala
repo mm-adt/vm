@@ -24,14 +24,16 @@ package org.mmadt.machine.obj.theory.operator.value
 
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.operator.`type`.TypePlus
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait ValuePlus[J, V <: Value[V], T <: Type[T]] extends Value[V] {
+
   def plus(other: J): V = this.plus(value[J, V](other)) //
   def plus(other: V): V //
-  def plus(other: T): T //
+  def plus(other: T): T = this.start().asInstanceOf[TypePlus[J, V, T]].plus(other)
 
   final def +(other: J): V = this.plus(other) //
   final def +(other: V): V = this.plus(other) //

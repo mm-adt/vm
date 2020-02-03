@@ -24,12 +24,17 @@ package org.mmadt.machine.obj.theory.obj.value
 
 import org.mmadt.machine.obj.theory.ValueLogical
 import org.mmadt.machine.obj.theory.obj.Bool
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolValue extends Bool with Value[BoolValue] with ValueLogical[BoolValue] {
 
-  override def value(): Boolean
+  override def value(): Boolean //
+  override def start(): BoolType //
+
+  override def or(other: BoolValue): BoolValue = bool(this.value() || other.value()) //
+  override def and(other: BoolValue): BoolValue = bool(this.value() && other.value()) //
 
 }

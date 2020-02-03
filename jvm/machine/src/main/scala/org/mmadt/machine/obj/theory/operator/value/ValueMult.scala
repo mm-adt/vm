@@ -24,14 +24,16 @@ package org.mmadt.machine.obj.theory.operator.value
 
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.operator.`type`.TypeMult
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait ValueMult[J, V <: Value[V], T <: Type[T]] extends Value[V] {
+
   def mult(other: J): V = this.mult(value[J, V](other)) //
   def mult(other: V): V //
-  def mult(other: T): T //
+  def mult(other: T): T = this.start().asInstanceOf[TypeMult[J, V, T]].mult(other)
 
   final def *(other: J): V = this.mult(other) //
   final def *(other: V): V = this.mult(other) //

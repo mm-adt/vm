@@ -37,6 +37,7 @@ object Tokens {
   val mult = "mult"
   val gt = "gt"
   val or = "or"
+  val start = "start"
 
   def symbol(obj: Obj): String = obj match {
     case _: BoolType => "bool"

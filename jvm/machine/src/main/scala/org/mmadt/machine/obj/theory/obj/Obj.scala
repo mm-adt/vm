@@ -37,6 +37,8 @@ trait Obj {
     case _ => throw new RuntimeException("Unknown Java object: " + java)
   }
 
+  // def obj(): ObjType //
+
   def bool(value: Boolean): BoolValue //
   def bool(): BoolType = bool(null) //
   def bool(inst: Inst): BoolType = bool(inst, q()) //
@@ -48,7 +50,7 @@ trait Obj {
   def int(inst: Inst, q: (IntValue, IntValue)): IntType //
 
 
-  def inst(op: String): Inst = inst(op, List()) //
+  def inst(op: String): Inst = inst(op, Nil) //
   def inst(op: String, arg1: Obj): Inst = inst(op, List(arg1)) //
   def inst(op: String, arg1: Obj, arg2: Obj): Inst = inst(op, List(arg1, arg2)) //
   def inst(op: String, arg1: Obj, arg2: Obj, arg3: Obj): Inst = inst(op, List(arg1, arg2, arg3)) //

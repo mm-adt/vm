@@ -24,13 +24,15 @@ package org.mmadt.machine.obj.theory.obj.value
 
 import org.mmadt.language.Stringer
 import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait Value[V <: Value[V]] extends Obj {
 
-  def value(): Any
+  def value(): Any //
+  def start(): Type[_]
 
   override def toString: String = Stringer.valueString(this)
 
