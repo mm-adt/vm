@@ -42,6 +42,7 @@ object Play extends App {
   println(c)
   // println(c.insts())
   println(int)
+  println(int.is(int.gt(5)))
   println(int + 2 > 4)
   val t = new TTraverser(int(2))
   val result = t(int.plus(2).mult(10).plus(60)).obj()

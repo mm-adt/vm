@@ -36,10 +36,10 @@ abstract class OObj(val quantifier: TQ) extends Obj {
 
   override def q(): (IntValue, IntValue) = quantifier
 
-  override def int(inst: Inst, q: TQ): IntType = new TInt(this.asInstanceOf[Type[_]].insts() ++ List((null, inst)), q) // null is bad
+  override def int(inst: Inst, q: TQ): IntType = new TInt(this.asInstanceOf[Type[_]].insts() ++ List((new TInt(), inst)), q) // null is bad
   override def int(value: Long): IntValue = new VInt(value) //
 
-  override def bool(inst: Inst, q: TQ): BoolType = new TBool(this.asInstanceOf[Type[_]].insts() ++ List((null, inst)), q) // null is bad
+  override def bool(inst: Inst, q: TQ): BoolType = new TBool(this.asInstanceOf[Type[_]].insts() ++ List((new TInt(), inst)), q) // null is bad
   override def bool(value: Boolean): BoolValue = new VBool(value) //
 
   override def inst(op: String, args: List[Obj]): Inst = new VInst((op, args))

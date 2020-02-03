@@ -24,6 +24,7 @@ package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.impl.obj.value.VInt.int0
 import org.mmadt.machine.obj.theory.obj.value.BoolValue
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
@@ -37,7 +38,7 @@ trait Type[T <: Type[T]] extends Obj {
   def pop(): T //
 
   def is(bool: BoolValue): T = if (bool.value()) this.asInstanceOf[T] else this.asInstanceOf[T] //.q(int(0), int(0))
-  def is(bool: BoolType): T = this.push(inst(Tokens.is, bool), q())
+  def is(bool: BoolType): T = this.push(inst(Tokens.is, bool), (int0, q()._2))
 
   override def toString: String = Stringer.typeString(this)
 
