@@ -36,4 +36,5 @@ trait Value[V <: Value[V]] extends Obj {
 
   override def toString: String = Stringer.valueString(this)
 
+  override def equals(other: Any): Boolean = other.isInstanceOf[V] && other.asInstanceOf[V].value().equals(this.value()) // TODO: replace this with a ValueEq and TypeEq instructions
 }

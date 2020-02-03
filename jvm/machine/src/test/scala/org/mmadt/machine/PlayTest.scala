@@ -20,17 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.value
+package org.mmadt.machine
 
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeIs
+import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
+import org.mmadt.machine.obj.impl.obj.value.VBool.{boolF, boolT}
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueIs[V <: Value[V], T <: Type[T]] extends Value[V] {
-  def is(bool: Boolean): V = this.is(value[Boolean, BoolValue](bool)) //
-  def is(bool: BoolValue): V = if (bool.value()) this.asInstanceOf[V] else this.asInstanceOf[V] //.q(int(0), int(0))
-  def is(bool: BoolType): T = this.start().asInstanceOf[TypeIs[T]].is(bool)
+class PlayTest extends FunSuite {
+
+  test("value + value") {
+    assert(int(1) + int(2) === int(3))
+    assert(boolT.value())
+    assert((boolT | boolF) === boolT)
+    assert((boolT & boolF) === boolF)
+  }
 }

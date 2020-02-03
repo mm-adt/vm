@@ -2,16 +2,13 @@ ThisBuild / organization := "org.mmadt"
 ThisBuild / scalaVersion := "2.12.10"
 ThisBuild / version := "0.1-SNAPSHOT"
 
-lazy val core = (project in file("."))
-  .settings(
-    name := "mmadt",
-    description := "mm-ADT :: JVM VM"
-  )
-
-lazy val machine = (project in file("machine")).dependsOn(core)
+lazy val machine = (project in file("machine"))
   .settings(
     name := "machine",
-    description := "mm-ADT :: Machine"
+    description := "mm-ADT :: JVM Machine",
+    libraryDependencies := List(
+      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+      "org.scalatest" %% "scalatest" % "3.0.8" % "test")
   )
 
-libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+
