@@ -24,6 +24,7 @@ package org.mmadt.machine
 
 import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
 import org.mmadt.machine.obj.impl.obj.value.VBool.{boolF, boolT}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
 import org.scalatest.FunSuite
 
 /**
@@ -36,6 +37,7 @@ class PlayTest extends FunSuite {
     assert(boolT.value())
     assert((boolT | boolF) === boolT)
     assert((boolT & boolF) === boolF)
-    println(int ==> int.plus(2).gt(5))
+    println(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
   }
+
 }

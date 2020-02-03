@@ -40,6 +40,6 @@ trait IntValue extends Int
 
   override def plus(other: IntValue): IntValue = int(this.value() + other.value()) //
   override def mult(other: IntValue): IntValue = int(this.value() * other.value()) //
-  override def gt(other: IntValue): BoolValue = bool(this.value() < other.value()) //
+  override def gt(other: IntValue): BoolValue = bool(this.value() > other.value()) //
 
 }
