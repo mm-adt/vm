@@ -32,8 +32,8 @@ import org.mmadt.machine.obj.theory.obj.value.Value
 trait TypeMult[J, V <: Value[V], T <: Type[T]] extends Type[T] {
 
   def mult(other: J): T = this.mult(value[J, V](other)) //
-  def mult(other: V): T = this.push(new VMultInst[V, V, T](other), this.q()) //
-  def mult(other: T): T = this.push(new VMultInst[T, V, T](other), this.q()) //
+  def mult(other: V): T = this.push(new VMultInst[V, T](other), this.q()) //
+  def mult(other: T): T = this.push(new VMultInst[V, T](other), this.q()) //
 
   final def *(other: J): T = this.mult(other) //
   final def *(other: V): T = this.mult(other) //

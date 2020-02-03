@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj.impl.obj.value
 
+import org.mmadt.language.Stringer
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.theory.obj.Inst
 
@@ -33,5 +34,7 @@ class VInst(java: JInst, quantifier: TQ) extends VObj(java, quantifier) with Ins
   def this(java: JInst) = this(java, qOne)
 
   override def value(): JInst = java
+
+  override def toString: String = Stringer.inst(this)
 
 }

@@ -22,12 +22,13 @@
 
 package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.machine.obj.theory.TypeLogical
 import org.mmadt.machine.obj.theory.obj.Bool
+import org.mmadt.machine.obj.theory.{TypeCommon, TypeLogical}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolType extends Bool
   with Type[BoolType]
+  with TypeCommon[BoolType]
   with TypeLogical[BoolType]

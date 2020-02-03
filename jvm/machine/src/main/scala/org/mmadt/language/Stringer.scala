@@ -23,9 +23,9 @@
 package org.mmadt.language
 
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,9 +39,7 @@ object Stringer {
     case _ => "{" + x._1.value() + "," + x._2.value() + "}"
   }
 
-  // int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT)
   def typeString(t: Type[_]): String = {
-
     val range = Tokens.symbol(t)
     val domain = if (t.insts().isEmpty) "" else Tokens.symbol(t.insts().head._1) + q(t.insts().head._1.q())
     if (domain.equals("")) range else
@@ -51,7 +49,16 @@ object Stringer {
 
   def valueString(v: Value[_]): String = v.value().toString
 
+
+  def inst(inst: Inst): String = {
+    inst.args() match {
+      case Nil => "[" + inst.op() + "]"
+      case _ => "[" + inst.op() + "," + instArgs(inst.args()) + "]"
+    }
+  }
+
   def instArgs(args: List[Obj]): String = {
     args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1)
   }
+
 }

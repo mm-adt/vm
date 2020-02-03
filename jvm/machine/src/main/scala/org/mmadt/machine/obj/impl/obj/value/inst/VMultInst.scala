@@ -33,4 +33,4 @@ import org.mmadt.machine.obj.theory.obj.value.inst.MultInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VMultInst[O <: Obj, V <: Value[V], T <: Type[T]](arg: O) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[O, V, T]
+class VMultInst[V <: Value[V], T <: Type[T]](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[V, T]

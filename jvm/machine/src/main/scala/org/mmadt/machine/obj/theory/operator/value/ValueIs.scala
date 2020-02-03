@@ -20,31 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.obj.`type`
+package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.language.Stringer
-import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
+import org.mmadt.machine.obj.theory.operator.`type`.TypeIs
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[T <: Type[T]] extends Obj {
+trait ValueIs[V <: Value[V], T <: Type[T]] extends Value[V] {
 
-  def insts(): List[(Type[_], Inst)] //
-  def push(inst: Inst, q: TQ): T //
-  def pop(): T //
-
-  def int(): IntType = int(null) //
-  def int(inst: Inst): IntType = int(inst, q()) //
-  def int(inst: Inst, q: (IntValue, IntValue)): IntType //
-
-  def bool(): BoolType = bool(null) //
-  def bool(inst: Inst): BoolType = bool(inst, q()) //
-  def bool(inst: Inst, q: (IntValue, IntValue)): BoolType //
-
-  override def toString: String = Stringer.typeString(this)
-
-
+  def is(bool: Boolean): V = this.is(value[Boolean, BoolValue](bool)) //
+  def is(bool: BoolValue): V = if (bool.value()) this.asInstanceOf[V] else this.asInstanceOf[V] //.q(int(0), int(0))
+  def is(bool: BoolType): T = this.start().asInstanceOf[TypeIs[T]].is(bool)
 }

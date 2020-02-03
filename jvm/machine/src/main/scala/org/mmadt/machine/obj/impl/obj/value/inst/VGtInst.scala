@@ -20,31 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.obj.`type`
+package org.mmadt.machine.obj.impl.obj.value.inst
 
-import org.mmadt.language.Stringer
-import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.impl.obj.value.VInst
+import org.mmadt.machine.obj.qOne
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.value.inst.GtInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[T <: Type[T]] extends Obj {
-
-  def insts(): List[(Type[_], Inst)] //
-  def push(inst: Inst, q: TQ): T //
-  def pop(): T //
-
-  def int(): IntType = int(null) //
-  def int(inst: Inst): IntType = int(inst, q()) //
-  def int(inst: Inst, q: (IntValue, IntValue)): IntType //
-
-  def bool(): BoolType = bool(null) //
-  def bool(inst: Inst): BoolType = bool(inst, q()) //
-  def bool(inst: Inst, q: (IntValue, IntValue)): BoolType //
-
-  override def toString: String = Stringer.typeString(this)
-
-
-}
+class VGtInst[V <: Value[V], T <: Type[T]](arg: Obj) extends VInst((Tokens.gt, List(arg)), qOne) with GtInst[V, T]

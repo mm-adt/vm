@@ -32,6 +32,7 @@ trait Inst extends Obj {
   def value(): JInst
 
   final def op(): String = this.value()._1 //
+  final def args(): List[Obj] = this.value()._2 //
   final def arg[O <: Obj](): O = this.value()._2.head.asInstanceOf[O] //
   def apply(traverser: Traverser): Traverser = throw new UnsupportedOperationException("This is an unsupported instruction: " + this)
 }

@@ -45,7 +45,7 @@ object Play extends App {
   println(int.is(int.gt(5)))
   println(int + 2 > 4)
   val t = new RecursiveTraverser(int(2))
-  println(t(int.plus(2).mult(10).plus(60)).obj())
+  println(t(int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)).obj())
   println(t(int.plus(int.plus(1)).mult(int.plus(1))).obj())
   println(int(43).plus(int).gt(57))
   println(boolT.and(new TBool()))

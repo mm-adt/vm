@@ -22,18 +22,18 @@
 
 package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.impl.obj.value.inst.VGtInst
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
 import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait TypeGt[J, V <: Value[V], T <: Type[T]] extends Type[T] {
 
   def gt(other: J): BoolType = this.gt(value[J, V](other)) //
-  def gt(other: V): BoolType = this.bool(inst(Tokens.gt, other), this.q()) //
-  def gt(other: T): BoolType = this.bool(inst(Tokens.gt, other), this.q()) //
+  def gt(other: V): BoolType = this.bool(new VGtInst(other), this.q()) //
+  def gt(other: T): BoolType = this.bool(new VGtInst(other), this.q()) //
 
   final def >(other: J): BoolType = this.gt(other) //
   final def >(other: V): BoolType = this.gt(other) //

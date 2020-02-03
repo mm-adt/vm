@@ -31,7 +31,7 @@ import org.mmadt.machine.obj.theory.operator.`type`.TypeAnd
  */
 trait ValueAnd[V <: Value[V]] extends Value[V] {
 
-  def and(bool: Boolean): BoolValue = this.and(bool) //
+  def and(bool: Boolean): BoolValue = this.and(value[Boolean,BoolValue](bool)) //
   def and(bool: BoolValue): BoolValue //
   def and(bool: BoolType): BoolType = this.start().asInstanceOf[TypeAnd[BoolType]].and(bool)
 

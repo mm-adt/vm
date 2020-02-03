@@ -22,14 +22,17 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.theory.ValueLogical
 import org.mmadt.machine.obj.theory.obj.Bool
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
+import org.mmadt.machine.obj.theory.{ValueCommon, ValueLogical}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait BoolValue extends Bool with Value[BoolValue] with ValueLogical[BoolValue] {
+trait BoolValue extends Bool
+  with Value[BoolValue]
+  with ValueCommon[BoolValue, BoolType]
+  with ValueLogical[BoolValue] {
 
   override def value(): Boolean //
   override def start(): BoolType //

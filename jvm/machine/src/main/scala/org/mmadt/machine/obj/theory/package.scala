@@ -28,8 +28,8 @@ import org.mmadt.machine.obj.theory.operator.`type`._
 import org.mmadt.machine.obj.theory.operator.value._
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 package object theory {
 
   ///////////////////
@@ -46,7 +46,8 @@ package object theory {
   trait TypeRing[J, V <: Value[V], T <: Type[T]] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] // with Minus[J, V, T]
   trait TypeField[J, V <: Value[V], T <: Type[T]] extends TypeGroupMult[J, V, T] with TypeGroupPlus[J, V, T] //
   trait TypeOrder[J, V <: Value[V], T <: Type[T]] extends TypeGt[J, V, T] //
-  trait TypeLogical[T <: Type[T]] extends TypeAnd[T] with TypeOr[T]  //
+  trait TypeLogical[T <: Type[T]] extends TypeAnd[T] with TypeOr[T] //
+  trait TypeCommon[T <: Type[T]] extends TypeIs[T] //
 
   ////////////////////
   // Value Algebra  //
@@ -54,7 +55,8 @@ package object theory {
 
   trait ValueRing[J, V <: Value[V], T <: Type[T]] extends ValuePlus[J, V, T] with ValueMult[J, V, T] //
   trait ValueOrder[J, V <: Value[V], T <: Type[T]] extends ValueGt[J, V, T] // with Gte[A] with Lt[A] with Lte[A]
-  trait ValueLogical[V <: Value[V]] extends ValueAnd[V] with ValueOr[V]
+  trait ValueLogical[V <: Value[V]] extends ValueAnd[V] with ValueOr[V] //
+  trait ValueCommon[V <: Value[V], T <: Type[T]] extends ValueIs[V, T] //
 
   // trait CommutativePlus[A]
   // trait CommutativeMult[A] extends Mult[A]

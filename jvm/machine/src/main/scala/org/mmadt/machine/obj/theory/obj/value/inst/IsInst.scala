@@ -20,22 +20,29 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.`type`
+package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.BoolValue
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
+import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Obj}
+import org.mmadt.machine.obj.theory.operator.`type`.TypeIs
+import org.mmadt.machine.obj.theory.operator.value.ValueIs
+import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TypeAnd[T <: Type[T]] extends Type[T] {
-
-  def and(bool: Boolean): BoolType = this.and(value[Boolean, BoolValue](bool)) //
-  def and(bool: BoolValue): BoolType = this.bool(inst(Tokens.and, bool), this.q()) //
-  def and(bool: BoolType): BoolType = this.bool(inst(Tokens.and, bool), this.q()) //
-
-  final def &(bool: Boolean): BoolType = this.and(bool) //
-  final def &(bool: BoolValue): BoolType = this.and(bool) //
-  final def &(bool: BoolType): BoolType = this.and(bool) //
+trait IsInst[V <: Value[V], T <: Type[T]] extends Inst {
+  override def apply(traverser: Traverser): Traverser = {
+    traverser.obj[Obj]() match {
+      case v: ValueIs[V, T] => arg[Bool]() match {
+        case argV: BoolValue => traverser.split[V](v.is(argV))
+        case argT: BoolType => traverser.split[V](v.is(traverser.split(v).apply(argT).obj().asInstanceOf[BoolValue]))
+      }
+      case t: TypeIs[T] => arg[Bool]() match {
+        case argV: BoolValue => traverser.split[T](t.is(argV))
+        case argT: BoolType => traverser.split[T](t.is(traverser.split(t).apply(argT).obj().asInstanceOf[BoolType]))
+      }
+    }
+  }
 }

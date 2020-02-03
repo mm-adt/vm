@@ -24,12 +24,13 @@ package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.machine.obj.theory.obj.Int
 import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.theory.{TypeOrder, TypeRing}
+import org.mmadt.machine.obj.theory.{TypeCommon, TypeOrder, TypeRing}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntType extends Int
   with Type[IntType]
+  with TypeCommon[IntType]
   with TypeRing[Long, IntValue, IntType]
   with TypeOrder[Long, IntValue, IntType]

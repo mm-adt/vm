@@ -24,12 +24,16 @@ package org.mmadt.machine.obj.theory.obj.value
 
 import org.mmadt.machine.obj.theory.obj.Int
 import org.mmadt.machine.obj.theory.obj.`type`.IntType
-import org.mmadt.machine.obj.theory.{ValueOrder, ValueRing}
+import org.mmadt.machine.obj.theory.{ValueCommon, ValueOrder, ValueRing}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IntValue extends Int with Value[IntValue] with ValueRing[Long, IntValue, IntType] with ValueOrder[Long, IntValue, IntType] {
+trait IntValue extends Int
+  with Value[IntValue]
+  with ValueCommon[IntValue, IntType]
+  with ValueRing[Long, IntValue, IntType]
+  with ValueOrder[Long, IntValue, IntType] {
 
   override def value(): Long //
   override def start(): IntType //
@@ -37,5 +41,5 @@ trait IntValue extends Int with Value[IntValue] with ValueRing[Long, IntValue, I
   override def plus(other: IntValue): IntValue = int(this.value() + other.value()) //
   override def mult(other: IntValue): IntValue = int(this.value() * other.value()) //
   override def gt(other: IntValue): BoolValue = bool(this.value() < other.value()) //
-  
+
 }
