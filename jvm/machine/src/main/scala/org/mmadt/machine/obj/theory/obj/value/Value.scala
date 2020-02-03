@@ -36,5 +36,4 @@ trait Value[V <: Value[V]] extends Obj {
 
   override def toString: String = Stringer.valueString(this)
 
-
 }

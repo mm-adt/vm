@@ -24,14 +24,13 @@ package org.mmadt.machine.obj.impl.obj.`type`
 
 import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj(insts, quantifier) with BoolType {
+class TBool(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[BoolType](insts, quantifier) with BoolType {
   def this() = this(Nil, qOne) //
-  override def push(inst: Inst, q: (IntValue, IntValue)): BoolType = new TBool(insts ++ List((this, inst)), q) //
+  override def push(inst: Inst, q: TQ): BoolType = bool(inst, q) //
   override def pop(): BoolType = new TBool(insts.tail, q()) //
 }

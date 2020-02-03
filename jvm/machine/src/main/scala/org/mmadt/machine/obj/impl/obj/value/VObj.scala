@@ -24,13 +24,12 @@ package org.mmadt.machine.obj.impl.obj.value
 
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.obj.OObj
-import org.mmadt.machine.obj.theory.obj.value.IntValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 abstract class VObj(val java: Any, quantifier: TQ) extends OObj(quantifier) {
 
-  override def q(): (IntValue, IntValue) = quantifier
+  override def q(): TQ = quantifier
 
 }

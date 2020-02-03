@@ -23,7 +23,6 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
 
 /**
@@ -37,18 +36,8 @@ trait Obj {
     case _ => throw new RuntimeException("Unknown Java object: " + java)
   }
 
-  // def obj(): ObjType //
-
   def bool(value: Boolean): BoolValue //
-  def bool(): BoolType = bool(null) //
-  def bool(inst: Inst): BoolType = bool(inst, q()) //
-  def bool(inst: Inst, q: (IntValue, IntValue)): BoolType //
-
   def int(value: Long): IntValue //
-  def int(): IntType = int(null) //
-  def int(inst: Inst): IntType = int(inst, q()) //
-  def int(inst: Inst, q: (IntValue, IntValue)): IntType //
-
 
   def inst(op: String): Inst = inst(op, Nil) //
   def inst(op: String, arg1: Obj): Inst = inst(op, List(arg1)) //

@@ -25,14 +25,17 @@ package org.mmadt.machine.obj.impl.obj.`type`
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.obj.OObj
 import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, Type}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class TObj(insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(quantifier) {
+abstract class TObj[T <: Type[T]](insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(quantifier) with Type[T] {
 
   def this() = this(Nil, qOne) //
   def insts(): List[(Type[_], Inst)] = insts //
+
+  override def int(inst: Inst, q: TQ): IntType = new TInt(this.insts() ++ List((this, inst)), q) // null inst need to be [id]
+  override def bool(inst: Inst, q: TQ): BoolType = new TBool(this.insts() ++ List((this, inst)), q) // null inst need to be [id]
 
 }
