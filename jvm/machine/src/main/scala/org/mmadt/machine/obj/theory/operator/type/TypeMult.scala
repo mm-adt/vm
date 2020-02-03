@@ -22,18 +22,18 @@
 
 package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.impl.obj.value.inst.VMultInst
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait TypeMult[J, V <: Value[V], T <: Type[T]] extends Type[T] {
 
   def mult(other: J): T = this.mult(value[J, V](other)) //
-  def mult(other: V): T = this.push(inst(Tokens.mult, other), this.q()) //
-  def mult(other: T): T = this.push(inst(Tokens.mult, other), this.q()) //
+  def mult(other: V): T = this.push(new VMultInst[V, V, T](other), this.q()) //
+  def mult(other: T): T = this.push(new VMultInst[T, V, T](other), this.q()) //
 
   final def *(other: J): T = this.mult(other) //
   final def *(other: V): T = this.mult(other) //

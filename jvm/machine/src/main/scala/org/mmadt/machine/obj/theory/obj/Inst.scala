@@ -23,6 +23,7 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.JInst
+import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -31,5 +32,6 @@ trait Inst extends Obj {
   def value(): JInst
 
   final def op(): String = this.value()._1 //
-  final def arg(): Obj = this.value()._2.head //
+  final def arg[O <: Obj](): O = this.value()._2.head.asInstanceOf[O] //
+  def apply(traverser: Traverser): Traverser = throw new UnsupportedOperationException("This is an unsupported instruction: " + this)
 }

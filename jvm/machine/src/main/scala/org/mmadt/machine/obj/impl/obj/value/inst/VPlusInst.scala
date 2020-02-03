@@ -33,6 +33,4 @@ import org.mmadt.machine.obj.theory.obj.value.inst.PlusInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VPlusInst[O <: Obj, V <: Value[V], T <: Type[T]](arg: O) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O, V, T] {
-  override def b(): O = arg
-}
+class VPlusInst[O <: Obj, V <: Value[V], T <: Type[T]](arg: O) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O, V, T]

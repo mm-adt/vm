@@ -33,22 +33,18 @@ import org.mmadt.machine.obj.theory.traverser.Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait PlusInst[O <: Obj, V <: Value[V], T <: Type[T]] extends Inst {
-
-  def b(): O
-
-  def apply(traverser: Traverser[O]): Traverser[_] = {
-    b() match {
+  override def apply(traverser: Traverser): Traverser = {
+    arg[O]() match {
       case ov: V =>
-        traverser.obj() match {
+        traverser.obj[O]() match {
           case v: ValuePlus[_, V, T] => traverser.split[V](v.plus(ov))
           case t: TypePlus[_, V, T] => traverser.split[T](t.plus(ov))
         }
       case ot: T =>
-        traverser.obj() match {
+        traverser.obj[O]() match {
           case v: ValuePlus[_, V, T] => traverser.split[V](v.plus(traverser.split(v).apply(ot).obj().asInstanceOf[V]))
           case t: TypePlus[_, V, T] => traverser.split[T](t.plus(traverser.split(t).apply(ot).obj().asInstanceOf[T]))
         }
     }
   }
-
 }

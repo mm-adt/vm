@@ -20,17 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.traverser
+package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.machine.obj.theory.operator.`type`.TypeMult
+import org.mmadt.machine.obj.theory.operator.value.ValueMult
+import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Traverser {
-
-  def obj[S <: Obj](): S //
-  def split[E <: Obj](obj: E): Traverser //
-  def apply[P <: Type[P]](t: Type[P]): Traverser //
+trait MultInst[O <: Obj, V <: Value[V], T <: Type[T]] extends Inst {
+  override def apply(traverser: Traverser): Traverser = {
+    arg[O]() match {
+      case ov: V =>
+        traverser.obj[O]() match {
+          case v: ValueMult[_, V, T] => traverser.split[V](v.mult(ov))
+          case t: TypeMult[_, V, T] => traverser.split[T](t.mult(ov))
+        }
+      case ot: T =>
+        traverser.obj[O]() match {
+          case v: ValueMult[_, V, T] => traverser.split[V](v.mult(traverser.split(v).apply(ot).obj().asInstanceOf[V]))
+          case t: TypeMult[_, V, T] => traverser.split[T](t.mult(traverser.split(t).apply(ot).obj().asInstanceOf[T]))
+        }
+    }
+  }
 }

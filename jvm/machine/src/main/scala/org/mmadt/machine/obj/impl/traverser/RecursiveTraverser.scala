@@ -22,27 +22,15 @@
 
 package org.mmadt.machine.obj.impl.traverser
 
+import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value._
-import org.mmadt.machine.obj.theory.obj.value.inst.PlusInst
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TTraverser[O <: Obj](obj: O) extends Traverser[O] {
-
-  override def obj(): O = obj
-  override def split[E <: Obj](obj:E) : Traverser[E] = new TTraverser[E](obj)
-
-  override def apply[P <: Type[P]](t: Type[P]): Traverser[_] = {
-    if (t.insts().isEmpty)
-      return this
-    t.insts().head._2 match {
-      case inst: PlusInst[O, _, _] => inst.apply(this).apply(t.pop())
-      case inst: Inst => new TTraverser[O](this.obj.asInstanceOf[IntValue].mult(inst.arg().asInstanceOf[IntValue]).asInstanceOf[O]).apply(t.pop())
-      case _ => throw new RuntimeException("Unknown instruction: " + t);
-    }
-  }
+class RecursiveTraverser(obj: Obj) extends Traverser {
+  override def obj[S <: Obj](): S = obj.asInstanceOf[S] //
+  override def split[E <: Obj](obj: E): Traverser = new RecursiveTraverser(obj) //
+  override def apply[P <: Type[P]](t: Type[P]): Traverser = if (t.insts().isEmpty) this else t.insts().head._2.apply(this).apply(t.pop())
 }

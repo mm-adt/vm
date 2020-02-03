@@ -20,17 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.traverser
+package org.mmadt.machine.obj.impl.obj.value.inst
 
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.impl.obj.value.VInst
+import org.mmadt.machine.obj.qOne
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.value.inst.MultInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Traverser {
-
-  def obj[S <: Obj](): S //
-  def split[E <: Obj](obj: E): Traverser //
-  def apply[P <: Type[P]](t: Type[P]): Traverser //
-}
+class VMultInst[O <: Obj, V <: Value[V], T <: Type[T]](arg: O) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[O, V, T]

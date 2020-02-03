@@ -25,7 +25,7 @@ package org.mmadt
 import org.mmadt.machine.obj.impl.obj.`type`.TBool
 import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
 import org.mmadt.machine.obj.impl.obj.value.VBool.{boolF, boolT}
-import org.mmadt.machine.obj.impl.traverser.TTraverser
+import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,10 +44,9 @@ object Play extends App {
   println(int)
   println(int.is(int.gt(5)))
   println(int + 2 > 4)
-  val t = new TTraverser(int(2))
+  val t = new RecursiveTraverser(int(2))
   println(t(int.plus(2).mult(10).plus(60)).obj())
-  println(t(int.plus(int.plus(3))).obj()) // TODO: inst needs the current traverser so it can decide argument processing
-
+  println(t(int.plus(int.plus(1)).mult(int.plus(1))).obj())
   println(int(43).plus(int).gt(57))
   println(boolT.and(new TBool()))
 
