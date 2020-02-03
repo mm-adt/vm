@@ -45,8 +45,8 @@ object Play extends App {
   println(int.is(int.gt(5)))
   println(int + 2 > 4)
   val t = new TTraverser(int(2))
-  val result = t(int.plus(2).mult(10).plus(60)).obj()
-  println(result)
+  println(t(int.plus(2).mult(10).plus(60)).obj())
+  println(t(int.plus(int.plus(3))).obj()) // TODO: inst needs the current traverser so it can decide argument processing
 
   println(int(43).plus(int).gt(57))
   println(boolT.and(new TBool()))
