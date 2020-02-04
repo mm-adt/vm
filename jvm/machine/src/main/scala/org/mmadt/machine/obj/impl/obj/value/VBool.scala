@@ -37,6 +37,7 @@ class VBool(java: Boolean, quantifier: TQ) extends VObj(java, quantifier) with B
 
   override def value(): Boolean = java //
   override def start(): BoolType = new TBool(List((new TBool(Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def q(quantifier: TQ): this.type = new VBool(java, quantifier).asInstanceOf[this.type] //
 
 }
 

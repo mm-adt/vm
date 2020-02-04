@@ -20,22 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.`type`
+package org.mmadt.machine
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TypeMult[J, V <: Value[V], T <: Type[T]] extends Type[T] {
+class QTest extends FunSuite {
 
-  def mult(other: J): T = this.mult(value[J, V](other)) //
-  def mult(other: V): T = this.push(inst(Tokens.mult, other)) //
-  def mult(other: T): T = this.push(inst(Tokens.mult, other)) //
+  test("value quantifiers strings") {
+    assertResult("3")(int(3).toString)
+    assertResult("3{0}")(int(3).q(0).toString)
+    assertResult("3{1,2}")(int(3).q(int(1), int(2)).toString)
+    assertResult("3{1,2}")(int(3).q(1, 2).toString)
+  }
 
-  final def *(other: J): T = this.mult(other) //
-  final def *(other: V): T = this.mult(other) //
-  final def *(other: T): T = this.mult(other) //
+  test("type quantifiers strings") {
+    assertResult("int")(int.toString)
+    assertResult("int{0}")(int.q(0).toString)
+    assertResult("int{1,2}")(int.q(int(1), int(2)).toString)
+    assertResult("int{1,2}")(int.q(1, 2).toString)
+    assertResult("bool{3}<=int{3}[gt,5]")(int.q(3).gt(5).toString)
+    assertResult("int{?}<=int[is,bool<=int[gt,5]]")(int.is(int.gt(5)).toString)
+    assertResult("int{?}<=int[is,bool<=int[gt,5]][plus,10]")(int.is(int.gt(5)).plus(10).toString)
+  }
+
 }

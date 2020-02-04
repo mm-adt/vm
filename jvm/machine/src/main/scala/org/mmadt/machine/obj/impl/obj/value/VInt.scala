@@ -38,6 +38,7 @@ class VInt(java: Long, quantifier: TQ) extends VObj(java, quantifier) with IntVa
 
   override def value(): Long = java //
   override def start(): IntType = new TInt(List((new TInt(Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def q(quantifier: TQ): this.type = new VInt(java, quantifier).asInstanceOf[this.type] //
 
 }
 

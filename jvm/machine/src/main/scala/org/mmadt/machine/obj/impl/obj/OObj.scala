@@ -22,19 +22,29 @@
 
 package org.mmadt.machine.obj.impl.obj
 
-import org.mmadt.machine.obj.TQ
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.obj.value.inst.{VGtInst, VIsInst, VMultInst, VPlusInst}
 import org.mmadt.machine.obj.impl.obj.value.{VBool, VInst, VInt}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 abstract class OObj(val quantifier: TQ) extends Obj {
 
-  override def q(): (IntValue, IntValue) = quantifier
-
+  override def q(): TQ = quantifier //
   override def int(value: Long): IntValue = new VInt(value) //
   override def bool(value: Boolean): BoolValue = new VBool(value) //
-  override def inst(op: String, args: List[Obj]): Inst = new VInst((op, args))
+  override def inst(op: String, args: List[Obj]): Inst = op match {
+    case Tokens.plus => new VPlusInst(args.head)
+    case Tokens.mult => new VMultInst(args.head)
+    case Tokens.is => new VIsInst(args.head.asInstanceOf[Bool])
+    case Tokens.gt => new VGtInst(args.head)
+    // INSTRUCTION IMPLEMENTATIONS NEEDED
+    case Tokens.and => new VInst((Tokens.and, args))
+    case Tokens.or => new VInst((Tokens.or, args))
+    case Tokens.start => new VInst((Tokens.start, args))
+  }
 }

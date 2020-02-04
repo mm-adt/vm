@@ -31,6 +31,6 @@ import org.mmadt.machine.obj.theory.operator.`type`.TypeIs
  */
 trait ValueIs[V <: Value[V], T <: Type[T]] extends Value[V] {
   def is(bool: Boolean): V = this.is(value[Boolean, BoolValue](bool)) //
-  def is(bool: BoolValue): V = if (bool.value()) this.asInstanceOf[V] else this.asInstanceOf[V] //.q(int(0), int(0))
+  def is(bool: BoolValue): V = if (bool.value()) this.asInstanceOf[V] else this.asInstanceOf[V].q(int(0), int(0))
   def is(bool: BoolType): T = this.start().asInstanceOf[TypeIs[T]].is(bool)
 }

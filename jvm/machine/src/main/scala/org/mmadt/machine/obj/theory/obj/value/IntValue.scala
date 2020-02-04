@@ -22,7 +22,8 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.theory.obj.Int
+import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.theory.obj.{Int, Obj}
 import org.mmadt.machine.obj.theory.obj.`type`.IntType
 import org.mmadt.machine.obj.theory.{ValueCommon, ValueOrder, ValueRing}
 
@@ -41,5 +42,4 @@ trait IntValue extends Int
   override def plus(other: IntValue): IntValue = int(this.value() + other.value()) //
   override def mult(other: IntValue): IntValue = int(this.value() * other.value()) //
   override def gt(other: IntValue): BoolValue = bool(this.value() > other.value()) //
-
 }

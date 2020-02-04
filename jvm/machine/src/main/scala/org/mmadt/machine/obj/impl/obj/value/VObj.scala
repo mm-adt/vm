@@ -28,8 +28,4 @@ import org.mmadt.machine.obj.impl.obj.OObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VObj(val java: Any, quantifier: TQ) extends OObj(quantifier) {
-
-  override def q(): TQ = quantifier
-
-}
+abstract class VObj(val java: Any, quantifier: TQ) extends OObj(quantifier)

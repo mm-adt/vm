@@ -31,6 +31,7 @@ import org.mmadt.machine.obj.{TQ, qOne}
  */
 class TBool(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[BoolType](insts, quantifier) with BoolType {
   def this() = this(Nil, qOne) //
-  override def push(inst: Inst, q: TQ): BoolType = bool(inst, q) //
-  override def pop(): BoolType = new TBool(insts.tail, q()) //
+  override def push(inst: Inst): BoolType = bool(inst) //
+  override def pop(): BoolType = new TBool(insts.tail, quantifier) //
+  override def q(quantifier: TQ): this.type = new TBool(insts, quantifier).asInstanceOf[this.type] //
 }

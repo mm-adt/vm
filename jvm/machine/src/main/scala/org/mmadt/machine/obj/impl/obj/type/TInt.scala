@@ -33,8 +33,9 @@ import org.mmadt.machine.obj.{TQ, qOne}
  */
 class TInt(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[IntType](insts, quantifier) with IntType {
   def this() = this(Nil, qOne) //
-  override def push(inst: Inst, q: TQ): IntType = int(inst, q) //
-  override def pop(): IntType = new TInt(insts.tail, q())
+  override def push(inst: Inst): IntType = int(inst, quantifier)//
+  override def pop(): IntType = new TInt(insts.tail, quantifier) //
+  override def q(quantifier: TQ): this.type = new TInt(insts, quantifier).asInstanceOf[this.type] //
 }
 
 object TInt {

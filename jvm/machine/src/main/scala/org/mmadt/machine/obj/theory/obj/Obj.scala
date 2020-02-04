@@ -47,8 +47,13 @@ trait Obj {
   def inst(op: String, arg1: Obj, arg2: Obj, arg3: Obj): Inst = inst(op, List(arg1, arg2, arg3)) //
   def inst(op: String, args: List[Obj]): Inst //
 
-  def q(): TQ
+  def q(): TQ //
+  def q(value: Long): this.type = this.q((int(value), int(value))).asInstanceOf[this.type] //
+  def q(min: Long, max: Long): this.type = this.q((int(min), int(max))).asInstanceOf[this.type] //
+  def q(single: IntValue): this.type = this.q((single, single)).asInstanceOf[this.type] //
+  def q(min: IntValue, max: IntValue): this.type = this.q((min, max)).asInstanceOf[this.type] //
+  def q(quantifier: TQ): this.type //
 
-  def ==>[T<:Type[T]](t: T): Obj = new RecursiveTraverser(this).apply(t).obj()
+  def ==>[T <: Type[T]](t: T): Obj = new RecursiveTraverser(this).apply(t).obj()
 
 }

@@ -24,7 +24,6 @@ package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.Stringer
 import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
@@ -33,18 +32,16 @@ import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 trait Type[T <: Type[T]] extends Obj {
 
   def insts(): List[(Type[_], Inst)] //
-  def push(inst: Inst, q: TQ): T //
+  def push(inst: Inst): T //
   def pop(): T //
 
   def int(): IntType = int(null) //
   def int(inst: Inst): IntType = int(inst, q()) //
-  def int(inst: Inst, q: (IntValue, IntValue)): IntType //
+  def int(inst: Inst, q: TQ): IntType //
 
   def bool(): BoolType = bool(null) //
   def bool(inst: Inst): BoolType = bool(inst, q()) //
-  def bool(inst: Inst, q: (IntValue, IntValue)): BoolType //
+  def bool(inst: Inst, q: TQ): BoolType //
 
-  override def toString: String = Stringer.typeString(this)
-
-
+  override def toString: String = Stringer.typeString(this) //
 }

@@ -40,4 +40,6 @@ class PlayTest extends FunSuite {
     println(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
   }
 
+
+
 }

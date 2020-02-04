@@ -33,8 +33,8 @@ import org.mmadt.machine.obj.theory.obj.value.Value
 trait TypePlus[J, V <: Value[V], T <: Type[T]] extends Type[T] {
 
   def plus(other: J): T = this.plus(value[J, V](other)) //
-  def plus(other: V): T = this.push(new VPlusInst[V, T](other), this.q()) //
-  def plus(other: T): T = this.push(new VPlusInst[V, T](other), this.q()) //
+  def plus(other: V): T = this.push(inst(Tokens.plus,other)) //
+  def plus(other: T): T = this.push(inst(Tokens.plus,other)) //
 
   final def +(other: J): T = this.plus(other) //
   final def +(other: V): T = this.plus(other) //

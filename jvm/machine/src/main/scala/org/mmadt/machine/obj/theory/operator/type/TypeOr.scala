@@ -32,8 +32,8 @@ import org.mmadt.machine.obj.theory.obj.value.BoolValue
 trait TypeOr[T <: Type[T]] extends Type[T] {
 
   def or(bool: Boolean): BoolType = this.or(value[Boolean,BoolValue](bool)) //
-  def or(bool: BoolValue): BoolType = this.push(inst(Tokens.or, bool), this.q()).asInstanceOf[BoolType] //
-  def or(bool: BoolType): BoolType = this.push(inst(Tokens.or, bool), this.q()).asInstanceOf[BoolType] //
+  def or(bool: BoolValue): BoolType = this.push(inst(Tokens.or, bool)).asInstanceOf[BoolType] //
+  def or(bool: BoolType): BoolType = this.push(inst(Tokens.or, bool)).asInstanceOf[BoolType] //
 
   final def |(bool: Boolean): BoolType = this.or(bool) //
   final def |(bool: BoolValue): BoolType = this.or(bool) //

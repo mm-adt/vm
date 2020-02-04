@@ -22,8 +22,8 @@
 
 package org.mmadt.machine.obj.theory.operator.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj.value.VInt.int0
-import org.mmadt.machine.obj.impl.obj.value.inst.VIsInst
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
 import org.mmadt.machine.obj.theory.obj.value.BoolValue
 
@@ -32,6 +32,6 @@ import org.mmadt.machine.obj.theory.obj.value.BoolValue
  */
 trait TypeIs[T <: Type[T]] extends Type[T] {
   def is(bool: Boolean): T = this.is(value[Boolean, BoolValue](bool)) //
-  def is(bool: BoolValue): T = if (bool.value()) this.asInstanceOf[T] else this.asInstanceOf[T] //.q(int(0), int(0))
-  def is(bool: BoolType): T = this.push(new VIsInst(bool), (int0, q()._2))
+  def is(bool: BoolValue): T = if (bool.value()) this.asInstanceOf[T] else this.asInstanceOf[T].q(int(0), int(0)) //
+  def is(bool: BoolType): T = this.push(inst(Tokens.is, bool)).q(int0, q()._2) //
 }

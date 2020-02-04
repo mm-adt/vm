@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
+import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.theory.obj.Bool
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.{ValueCommon, ValueLogical}
