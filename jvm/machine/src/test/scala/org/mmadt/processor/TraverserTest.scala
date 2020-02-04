@@ -23,6 +23,7 @@
 package org.mmadt.processor
 
 import org.mmadt.machine.obj.impl.obj._
+import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.traverser.Traverser
@@ -56,6 +57,15 @@ class TraverserTest extends FunSuite {
     }
     assertResult(int(5)) {
       trav(int(3))(int.plus(2).to("a").mult(3).to("b").plus(1000).from("a")).obj()
+    }
+  }
+
+  test("traverser chain") {
+    assertResult(int(100)) {
+      trav(int(2))(int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)).obj()
+    }
+    assertResult(int(30)) {
+      trav(int(2))(int.plus(int.plus(1)).mult(int.plus(1))).obj()
     }
   }
 }

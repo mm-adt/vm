@@ -20,34 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt
+package org.mmadt.language
 
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.impl.obj.`type`.TBool
 import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
-import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object Play extends App {
+class IntTypeTest extends FunSuite {
 
-  val a = int(34)
-  val b = int(4)
-  println(a.+(b))
-  println(a * b)
-  println(btrue & bfalse)
-  // println(a.is(int.gt(4)).map(boolF).or(boolT))
-  val c = int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(btrue)
-  println(c)
-  // println(c.insts())
-  println(int)
-  println(int.is(int.gt(5)))
-  println(int + 2 > 4)
-  val t = new RecursiveTraverser(int(2))
-  println(t(int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)).obj())
-  println(t(int.plus(int.plus(1)).mult(int.plus(1))).obj())
-  println(int(43).plus(int).gt(57))
-  println(btrue.and(new TBool()))
-
+  test("int type construction") {
+    assertResult("bool<=int[plus,2][gt,4]")((int + 2 > 4).toString)
+    assertResult("int{?}<=int[plus,2][is,bool<=int[gt,4]]")((int + 2 is int.gt(4)).toString)
+  }
 }

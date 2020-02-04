@@ -43,7 +43,7 @@ package object theory {
   trait TypeGroupPlus[J, V <: Value[V], T <: Type[T]] extends TypeMonoidPlus[J, V, T] // with Neg[A]
   trait TypeGroupMult[J, V <: Value[V], T <: Type[T]] extends TypeMonoidMult[J, V, T] // with Neg[A]
   trait TypeRng[J, V <: Value[V], T <: Type[T]] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] //
-  trait TypeRing[J, V <: Value[V], T <: Type[T]] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] // with Minus[J, V, T]
+  trait TypeRing[J, V <: Value[V], T <: Type[T]] extends TypeGroupPlus[J, V, T] with TypeMonoidMult[J, V, T] with CommutativePlus // with Minus[J, V, T]
   trait TypeField[J, V <: Value[V], T <: Type[T]] extends TypeGroupMult[J, V, T] with TypeGroupPlus[J, V, T] //
   trait TypeOrder[J, V <: Value[V], T <: Type[T]] extends TypeGt[J, V, T] //
   trait TypeLogical[T <: Type[T]] extends TypeAnd[T] with TypeOr[T] //
@@ -58,8 +58,8 @@ package object theory {
   trait ValueLogical[V <: Value[V]] extends ValueAnd[V] with ValueOr[V] //
   trait ValueCommon[V <: Value[V], T <: Type[T]] extends ValueIs[V, T] with ValueTo[V, T] with ValueFrom[V, T] //
 
-  // trait CommutativePlus[A]
-  // trait CommutativeMult[A] extends Mult[A]
-  // trait Commutative[A] extends CommutativePlus[A] with CommutativeMult[A]
+  trait CommutativePlus //
+  trait CommutativeMult //
+  trait Commutative extends CommutativePlus with CommutativeMult //
 
 }
