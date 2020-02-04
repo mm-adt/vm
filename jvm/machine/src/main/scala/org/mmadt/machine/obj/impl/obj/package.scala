@@ -50,5 +50,5 @@ package object obj {
   def bool(value: Boolean): BoolValue = new VBool(value) //
   def str(value: String): StrValue = new VStr(value) //
   def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec[K, V](value) //
-  def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = new VRec[K, V](value.foldRight(Map[K, V]())((field, map) => map ++ Map[K, V](field))) //
+  def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = new VRec[K, V](value.reverse.toMap) //
 }

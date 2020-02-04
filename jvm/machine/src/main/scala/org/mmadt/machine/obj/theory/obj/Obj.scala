@@ -43,12 +43,10 @@ trait Obj {
   def int(value: Long): IntValue //
   def str(value: String): StrValue //
   def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] //
-  def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = this.rec[K, V](value.foldRight(Map[K, V]())((field, map) => map ++ Map[K, V](field))) //
+  def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = this.rec[K, V](value.reverse.toMap)
 
   def inst(op: String): Inst = inst(op, Nil) //
-  def inst(op: String, arg1: Obj): Inst = inst(op, List(arg1)) //
-  def inst(op: String, arg1: Obj, arg2: Obj): Inst = inst(op, List(arg1, arg2)) //
-  def inst(op: String, arg1: Obj, arg2: Obj, arg3: Obj): Inst = inst(op, List(arg1, arg2, arg3)) //
+  def inst(op: String, args: Obj*): Inst = inst(op, args.toList) //
   def inst(op: String, args: List[Obj]): Inst //
 
   def q(): TQ //
