@@ -31,5 +31,6 @@ import org.mmadt.machine.obj.theory.obj.value.StrValue
  */
 trait TypeFrom[T <: Type[T]] extends Type[T] {
   def from(other: String): T = this.from(str(other)) //
+  def from(other: Symbol): T = this.from(other.name) //
   def from(label: StrValue): T = this.push(inst(Tokens.from, label)) //
 }

@@ -40,10 +40,10 @@ class TraverserTest extends FunSuite {
       trav(int(3))(int.to("a")).toString
     }
     assertResult("[8|a->3,b->8]") {
-      trav(int(3))(int.to("a").plus(5).to("b")).toString
+      trav(int(3))(int.to('a).plus(5).to('b)).toString
     }
     assertResult("[11|a->3,b->8]") {
-      trav(int(3))(int.to("a").plus(5).to("b").plus(int.from("a"))).toString
+      trav(int(3))(int.to('a).plus(5).to('b).plus(int.from('a))).toString
     }
   }
 

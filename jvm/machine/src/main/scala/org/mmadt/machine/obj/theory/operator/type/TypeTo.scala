@@ -31,5 +31,6 @@ import org.mmadt.machine.obj.theory.obj.value.StrValue
  */
 trait TypeTo[T <: Type[T]] extends Type[T] {
   def to(other: String): T = this.to(str(other)) //
+  def to(other: Symbol): T = this.to(other.name) //
   def to(label: StrValue): T = this.push(inst(Tokens.to, label)) //
 }

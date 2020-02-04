@@ -34,7 +34,7 @@ class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser 
   def this(obj: Obj) = this(Map[StrValue, Obj](), obj)
 
   override def obj[S <: Obj](): S = obj.asInstanceOf[S] //
-  override def split[E <: Obj](obj: E): Traverser = new RecursiveTraverser(state, obj) //
+  override def split[E <: Obj](obj: E): Traverser = new RecursiveTraverser(this.state, obj) //
   override def apply[P <: Type[P]](t: Type[P]): Traverser = if (t.insts().isEmpty) this else t.insts().head._2.apply(this).apply(t.pop())
 
   override def to(label: StrValue, obj: Obj): Traverser = new RecursiveTraverser(Map[StrValue, Obj](label -> obj) ++ this.state, obj) //
