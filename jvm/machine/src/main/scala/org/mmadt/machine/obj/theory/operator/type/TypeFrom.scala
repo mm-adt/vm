@@ -20,15 +20,16 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.obj.value.inst
+package org.mmadt.machine.obj.theory.operator.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.impl.obj.qOne
-import org.mmadt.machine.obj.impl.obj.value.VInst
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.obj.value.inst.ToInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VToInst(arg: StrValue) extends VInst((Tokens.to, List(arg)), qOne) with ToInst
+trait TypeFrom[T <: Type[T]] extends Type[T] {
+  def from(other: String): T = this.from(str(other)) //
+  def from(label: StrValue): T = this.push(inst(Tokens.from, label)) //
+}

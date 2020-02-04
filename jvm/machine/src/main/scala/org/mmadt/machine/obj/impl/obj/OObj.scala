@@ -45,7 +45,8 @@ abstract class OObj(val quantifier: TQ) extends Obj {
     case Tokens.mult => new VMultInst(args.head)
     case Tokens.is => new VIsInst(args.head.asInstanceOf[Bool])
     case Tokens.gt => new VGtInst(args.head)
-    case Tokens.to => new VToInst(args.head)
+    case Tokens.to => new VToInst(args.head.asInstanceOf[StrValue])
+    case Tokens.from => new VFromInst(args.head.asInstanceOf[StrValue])
     // INSTRUCTION IMPLEMENTATIONS NEEDED
     case Tokens.and => new VInst((Tokens.and, args))
     case Tokens.or => new VInst((Tokens.or, args))

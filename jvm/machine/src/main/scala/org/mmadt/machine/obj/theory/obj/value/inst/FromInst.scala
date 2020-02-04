@@ -20,15 +20,15 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.obj.value.inst
+package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.impl.obj.qOne
-import org.mmadt.machine.obj.impl.obj.value.VInst
+import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.obj.value.inst.ToInst
+import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VToInst(arg: StrValue) extends VInst((Tokens.to, List(arg)), qOne) with ToInst
+trait FromInst extends Inst {
+  override def apply(traverser: Traverser): Traverser = traverser.from(arg[StrValue]())
+}

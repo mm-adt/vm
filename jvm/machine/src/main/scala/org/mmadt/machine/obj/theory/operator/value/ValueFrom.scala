@@ -20,15 +20,16 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.obj.value.inst
+package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.impl.obj.qOne
-import org.mmadt.machine.obj.impl.obj.value.VInst
-import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.obj.value.inst.ToInst
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.{StrValue, Value}
+import org.mmadt.machine.obj.theory.operator.`type`.TypeFrom
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VToInst(arg: StrValue) extends VInst((Tokens.to, List(arg)), qOne) with ToInst
+trait ValueFrom[V <: Value[V], T <: Type[T]] extends Value[V] {
+  def from(other: String): T = this.from(str(other)) //
+  def from(label: StrValue): T = this.start().asInstanceOf[TypeFrom[T]].from(label) //
+}

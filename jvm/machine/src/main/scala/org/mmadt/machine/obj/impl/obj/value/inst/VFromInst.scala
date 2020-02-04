@@ -26,9 +26,9 @@ import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj.qOne
 import org.mmadt.machine.obj.impl.obj.value.VInst
 import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.obj.value.inst.ToInst
+import org.mmadt.machine.obj.theory.obj.value.inst.FromInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VToInst(arg: StrValue) extends VInst((Tokens.to, List(arg)), qOne) with ToInst
+class VFromInst(arg: StrValue) extends VInst((Tokens.from, List(arg)), qOne) with FromInst

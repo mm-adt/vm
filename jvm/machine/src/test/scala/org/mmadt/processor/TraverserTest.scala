@@ -24,6 +24,8 @@ package org.mmadt.processor
 
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.traverser.Traverser
 import org.scalatest.FunSuite
 
 /**
@@ -31,9 +33,17 @@ import org.scalatest.FunSuite
  */
 class TraverserTest extends FunSuite {
 
-  test("traverser state") {
-    assertResult(Map(str("a") -> int(5)))(new RecursiveTraverser(int(3))(int.plus(2).to("a").mult(3)).state())
-    assertResult(Map(str("a") -> int(5), str("b") -> int(15)))(new RecursiveTraverser(int(3))(int.plus(2).to("a").mult(3).to("b")).state())
-  }
+  def trav(obj: Obj): Traverser = new RecursiveTraverser(obj)
 
+  test("traverser state") {
+    assertResult(Map(str("a") -> int(5))) {
+      trav(int(3))(int.plus(2).to("a").mult(3)).state()
+    }
+    assertResult(Map(str("a") -> int(5), str("b") -> int(15))) {
+      trav(int(3))(int.plus(2).to("a").mult(3).to("b")).state()
+    }
+    assertResult(int(5)) {
+      trav(int(3))(int.plus(2).to("a").mult(3).to("b").plus(1000).from("a")).obj()
+    }
+  }
 }
