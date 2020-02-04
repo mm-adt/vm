@@ -20,34 +20,30 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.machine.obj.theory.obj.Inst
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.util.VorT
+import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+import org.mmadt.machine.obj.theory.operator.`type`.TypeChoose
+import org.mmadt.machine.obj.theory.operator.value.ValueChoose
+import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object Tokens {
+trait ChooseInst[V <: Value[V], T <: Type[T], TE <: Type[TE]] extends Inst {
+  type LV = ValueChoose[V]
+  type RT = TypeChoose[T]
+  type LEFT = Left[LV, RT]
+  type RIGHT = Right[LV, RT]
+  private lazy val varg: RecValue[T, TE] = arg[RecValue[T, TE]]()
 
-  val and = "and"
-  val choose = "choose"
-  val id = "id"
-  val is = "is"
-  val plus = "plus"
-  val mult = "mult"
-  val gt = "gt"
-  val or = "or"
-  val to = "to"
-  val from = "from"
-  val start = "start"
-
-  def symbol(obj: Obj): String = obj match {
-    case _: BoolType => "bool"
-    case _: IntType => "int"
-    case _: RecType[_, _] => "rec"
-    case _: Type[_] => "obj"
-    case _ => throw new Exception("Error: " + obj)
+  override def apply(traverser: Traverser): Traverser = {
+    VorT.wrap[LV, RT](traverser.obj()) match {
+      case v: LEFT => traverser.split[V](v.value.choose[T, T, V, TE](varg))
+      case t: RIGHT => traverser.split[TE](t.value.choose[T, T, TE](varg))
+    }
   }
-
 }

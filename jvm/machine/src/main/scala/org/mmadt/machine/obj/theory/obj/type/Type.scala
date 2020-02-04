@@ -33,6 +33,12 @@ trait Type[T <: Type[T]] extends Obj {
 
   def insts(): List[(Type[_], Inst)] //
   def push(inst: Inst): T //
+  def push[T2 <: Type[T2]](t2: T2, inst: Inst): T2 = t2 match {
+    case x: IntType => int(inst).asInstanceOf[T2]
+    case x: BoolType => bool(inst).asInstanceOf[T2]
+    case x: StrType => str(inst).asInstanceOf[T2]
+  }
+
   def pop(): T //
 
   def int(): IntType = int(null) //

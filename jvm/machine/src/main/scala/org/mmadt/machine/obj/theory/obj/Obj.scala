@@ -60,4 +60,6 @@ trait Obj {
 
   def ==>[T <: Type[T]](t: T): Obj = new RecursiveTraverser(this).apply(t).obj()
 
+  def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0
+
 }

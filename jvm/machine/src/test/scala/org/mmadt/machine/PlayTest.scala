@@ -37,6 +37,21 @@ class PlayTest extends FunSuite {
     assert((btrue | bfalse) === btrue)
     assert((btrue & bfalse) === bfalse)
     println(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
+
+    println(int.plus(1).choose(
+      int.is(int.gt(2)) -> int.mult(3),
+      int -> int.mult(4)))
+
+
+    assertResult(int(4))(
+      int(0).plus(1).choose(
+        int.is(int.gt(2)) -> int.mult(3),
+        int -> int.mult(4)))
+
+    assertResult(int(12))(
+      int(0).plus(4).choose(
+        int.is(int.gt(2)) -> int.mult(3),
+        int -> int.mult(4)))
   }
 
 

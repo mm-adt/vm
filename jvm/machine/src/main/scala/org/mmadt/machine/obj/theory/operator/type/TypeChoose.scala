@@ -20,34 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.RecValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object Tokens {
+trait TypeChoose[T <: Type[T]] extends Type[T] {
+  def choose[T1 <: Type[T1], T2 <: Type[T2], TE <: Type[TE]](c1: (T1, TE), c2: (T2, TE)): TE = this.choose[T1, T2, TE](rec(Map(c1, c2).asInstanceOf[Map[T1 with T2, TE]]))
 
-  val and = "and"
-  val choose = "choose"
-  val id = "id"
-  val is = "is"
-  val plus = "plus"
-  val mult = "mult"
-  val gt = "gt"
-  val or = "or"
-  val to = "to"
-  val from = "from"
-  val start = "start"
-
-  def symbol(obj: Obj): String = obj match {
-    case _: BoolType => "bool"
-    case _: IntType => "int"
-    case _: RecType[_, _] => "rec"
-    case _: Type[_] => "obj"
-    case _ => throw new Exception("Error: " + obj)
-  }
+  def choose[T1 <: Type[T1], T2 <: Type[T2], TE <: Type[TE]](branches: RecValue[T1 with T2, TE]): TE = this.push(branches.value().head._2, inst(Tokens.choose, branches))
 
 }
