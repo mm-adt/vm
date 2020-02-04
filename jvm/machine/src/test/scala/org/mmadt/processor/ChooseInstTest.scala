@@ -48,5 +48,7 @@ class ChooseInstTest extends FunSuite {
         int -> int.mult(4)))
   }
 
+  // TODO: test end type quantifier union
+
 
 }

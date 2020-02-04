@@ -23,7 +23,6 @@
 package org.mmadt.processor
 
 import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.traverser.Traverser

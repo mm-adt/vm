@@ -41,11 +41,3 @@ class VBool(java: Boolean, quantifier: TQ) extends VObj(java, quantifier) with B
   override def q(quantifier: TQ): this.type = new VBool(java, quantifier).asInstanceOf[this.type] //
 
 }
-
-object VBool {
-
-  object boolT extends VBool(true)
-
-  object boolF extends VBool(false)
-
-}

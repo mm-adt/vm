@@ -38,11 +38,3 @@ class TInt(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[IntType](i
   override def pop(): IntType = new TInt(insts.tail, quantifier) //
   override def q(quantifier: TQ): this.type = new TInt(insts, quantifier).asInstanceOf[this.type] //
 }
-
-object TInt {
-
-  def int: IntType = new TInt()
-
-  def int(jvm: Long): IntValue = new VInt(jvm)
-
-}

@@ -42,11 +42,3 @@ class VInt(java: Long, quantifier: TQ) extends VObj(java, quantifier) with IntVa
   override def q(quantifier: TQ): this.type = new VInt(java, quantifier).asInstanceOf[this.type] //
 
 }
-
-object VInt {
-
-  object int1 extends VInt(1)
-
-  object int0 extends VInt(0)
-
-}
