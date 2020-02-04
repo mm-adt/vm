@@ -23,17 +23,21 @@
 package org.mmadt.machine.obj.theory.obj.value
 
 import org.mmadt.machine.obj.theory.ValueCommon
-import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
 import org.mmadt.machine.obj.theory.obj.`type`.RecType
+import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
+import org.mmadt.machine.obj.theory.operator.value.ValuePlus
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RecValue[K <: Obj,V<: Obj] extends Rec[K,V]
-  with Value[RecValue[K,V]]
-  with ValueCommon[RecValue[K,V], RecType[K,V]] {
+trait RecValue[K <: Obj, V <: Obj] extends Rec[K, V]
+  with Value[RecValue[K, V]]
+  with ValuePlus[Map[K, V], RecValue[K, V], RecType[K, V]]
+  with ValueCommon[RecValue[K, V], RecType[K, V]] {
 
-  override def value(): Map[K,V] //
-  override def start(): RecType[K,V] //
+  override def value(): Map[K, V] //
+  override def start(): RecType[K, V] //
+
+  override def plus(other: RecValue[K, V]): RecValue[K, V] = rec[K, V](other.value() ++ this.value()) //
 }
 

@@ -34,7 +34,7 @@ class VInst(java: JInst, quantifier: TQ) extends VObj(java, quantifier) with Ins
 
   def this(java: JInst) = this(java, qOne) //
   override def value(): JInst = java //
-  override def toString: String = Stringer.inst(this) //
+  override def toString: String = Stringer.instString(this) //
   override def q(quantifier: TQ): this.type = new VInst(java, quantifier).asInstanceOf[this.type] //
 
 }

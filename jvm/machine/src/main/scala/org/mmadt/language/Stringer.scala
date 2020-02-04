@@ -25,7 +25,7 @@ package org.mmadt.language
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
@@ -33,33 +33,36 @@ import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
  */
 object Stringer {
 
-  def quantifier(x: TQ): String = x match {
+  def qString(x: TQ): String = x match {
     case `qOne` => ""
     case `qZero` => "{0}"
     case `qMark` => "{?}"
+    case `qPlus` => "{+}"
+    case `qStar` => "{*}"
     case (x, y) if (x == y) => "{" + x + "}"
+    case (x, y) if (y == int(Long.MaxValue)) => "{" + x + ",}"
+    case (x, y) if (x == int(Long.MinValue)) => "{," + y + "}"
     case _ => "{" + x._1.value() + "," + x._2.value() + "}"
   }
 
   def typeString(t: Type[_]): String = {
     val range = Tokens.symbol(t)
-    val domain = if (t.insts().isEmpty) "" else Tokens.symbol(t.insts().head._1) + quantifier(t.insts().head._1.q())
-    if (domain.equals("")) range + quantifier(t.q()) else
+    val domain = if (t.insts().isEmpty) "" else Tokens.symbol(t.insts().head._1) + qString(t.insts().head._1.q())
+    if (domain.equals("")) range + qString(t.q()) else
     // else if (range.equals(domain)) range + insts.map(i => "[" + i.op() + "," + instArgs(i.value()._2) + "]").fold("")((a, b) => a + b) else
-      range + quantifier(t.q()) + "<=" + domain + t.insts().map(i => "[" + i._2.op() + "," + instArgs(i._2.value()._2) + "]").fold("")((a, b) => a + b)
+      range + qString(t.q()) + "<=" + domain + t.insts().map(_._2.toString()).fold("")((a, b) => a + b)
   }
 
-  def valueString(v: Value[_]): String = v.value() + quantifier(v.q())
+  def valueString(v: Value[_]): String = v match {
+    case x: RecValue[_, _] => x.value().foldRight("[")((x, string) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]"
+    case _ => v.value() + qString(v.q())
+  }
 
-  def inst(inst: Inst): String = {
+
+  def instString(inst: Inst): String = {
     inst.args() match {
       case Nil => "[" + inst.op() + "]"
-      case _ => "[" + inst.op() + "," + instArgs(inst.args()) + "]"
+      case args: List[Obj] => "[" + inst.op() + "," + args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1) + "]"
     }
   }
-
-  def instArgs(args: List[Obj]): String = {
-    args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1)
-  }
-
 }

@@ -20,24 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.obj.value
+package org.mmadt.storage
 
-import org.mmadt.machine.obj.theory.obj.Bool
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.mmadt.machine.obj.theory.{ValueCommon, ValueLogical}
+import org.mmadt.machine.obj.impl.obj._
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait BoolValue extends Bool
-  with Value[BoolValue]
-  with ValueCommon[BoolValue, BoolType]
-  with ValueLogical[BoolValue] {
+class VRecTest extends FunSuite {
 
-  override def value(): Boolean //
-  override def start(): BoolType //
-
-  override def or(other: BoolValue): BoolValue = bool(this.value() || other.value()) //
-  override def and(other: BoolValue): BoolValue = bool(this.value() && other.value()) //
-
+  test("rec values") {
+    assertResult("[1:true]")(rec(int(1) -> btrue).toString)
+    assertResult("[1:true,2:false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
+    assertResult("[1:true,2:false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
+    println(rec(int(1) -> btrue) ==> rec)
+  }
 }

@@ -25,7 +25,7 @@ package org.mmadt.machine.obj.theory.obj
 import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,6 +40,8 @@ trait Obj {
 
   def bool(value: Boolean): BoolValue //
   def int(value: Long): IntValue //
+  def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] //
+  def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = this.rec[K, V](value.foldRight(Map[K, V]())((field, map) => map ++ Map[K, V](field))) //
 
   def inst(op: String): Inst = inst(op, Nil) //
   def inst(op: String, arg1: Obj): Inst = inst(op, List(arg1)) //
@@ -48,10 +50,10 @@ trait Obj {
   def inst(op: String, args: List[Obj]): Inst //
 
   def q(): TQ //
-  def q(value: Long): this.type = this.q((int(value), int(value))).asInstanceOf[this.type] //
-  def q(min: Long, max: Long): this.type = this.q((int(min), int(max))).asInstanceOf[this.type] //
-  def q(single: IntValue): this.type = this.q((single, single)).asInstanceOf[this.type] //
-  def q(min: IntValue, max: IntValue): this.type = this.q((min, max)).asInstanceOf[this.type] //
+  def q(value: Long): this.type = this.q((int(value), int(value))) //
+  def q(min: Long, max: Long): this.type = this.q((int(min), int(max))) //
+  def q(single: IntValue): this.type = this.q((single, single)) //
+  def q(min: IntValue, max: IntValue): this.type = this.q((min, max)) //
   def q(quantifier: TQ): this.type //
 
   def ==>[T <: Type[T]](t: T): Obj = new RecursiveTraverser(this).apply(t).obj()
