@@ -34,7 +34,10 @@ class VRecTest extends FunSuite {
     assertResult("[1:true]")(rec(int(1) -> btrue).toString)
     assertResult("[1:true,2:false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
     assertResult("[1:true,2:false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
-    println(rec.plus(rec(int(2) -> bfalse)))
-    println(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
+    //println(rec.plus(rec(int(2) -> bfalse)))
+    //println(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
+    assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
+    assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))
+    // assertThrows(()=>new NoSuchElementException(), rec(int(1) -> btrue, int(2) -> bfalse).get(int(3)))
   }
 }

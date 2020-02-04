@@ -34,7 +34,7 @@ trait Traverser {
 
   def obj[S <: Obj](): S //
   def split[E <: Obj](obj: E): Traverser //
-  def apply[P <: Type[P]](t: Type[P]): Traverser //
+  def apply(t: Type[_]): Traverser //
   def to(label: StrValue, obj: Obj): Traverser //
   def from(label: StrValue): Traverser //
   def state(): Map[StrValue, Obj] //

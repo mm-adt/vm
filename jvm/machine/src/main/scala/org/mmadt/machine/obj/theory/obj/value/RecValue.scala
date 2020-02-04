@@ -39,5 +39,6 @@ trait RecValue[K <: Obj, V <: Obj] extends Rec[K, V]
   override def start(): RecType[K, V] //
 
   override def plus(other: RecValue[K, V]): RecValue[K, V] = rec[K, V](other.value() ++ this.value()) //
+  def get(key: K): V = this.value().get(key).get
 }
 
