@@ -35,6 +35,18 @@ class TraverserTest extends FunSuite {
 
   def trav(obj: Obj): Traverser = new RecursiveTraverser(obj)
 
+  test("traverser string") {
+    assertResult("[3|a->3]") {
+      trav(int(3))(int.to("a")).toString
+    }
+    assertResult("[8|a->3,b->8]") {
+      trav(int(3))(int.to("a").plus(5).to("b")).toString
+    }
+    assertResult("[11|a->3,b->8]") {
+      trav(int(3))(int.to("a").plus(5).to("b").plus(int.from("a"))).toString
+    }
+  }
+
   test("traverser state") {
     assertResult(Map(str("a") -> int(5))) {
       trav(int(3))(int.plus(2).to("a").mult(3)).state()

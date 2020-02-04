@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj.theory.traverser
 
+import org.mmadt.language.Stringer
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.StrValue
@@ -37,5 +38,7 @@ trait Traverser {
   def to(label: StrValue, obj: Obj): Traverser //
   def from(label: StrValue): Traverser //
   def state(): Map[StrValue, Obj] //
+
+  override def toString: String = Stringer.traverserString(this)
 
 }
