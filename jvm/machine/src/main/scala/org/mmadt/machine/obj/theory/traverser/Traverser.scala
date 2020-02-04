@@ -24,6 +24,7 @@ package org.mmadt.machine.obj.theory.traverser
 
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.StrValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,4 +34,7 @@ trait Traverser {
   def obj[S <: Obj](): S //
   def split[E <: Obj](obj: E): Traverser //
   def apply[P <: Type[P]](t: Type[P]): Traverser //
+  def to(label: StrValue, obj: Obj): Traverser //
+  def state(): Map[StrValue, Obj] //
+
 }

@@ -37,12 +37,14 @@ object Tokens {
   val mult = "mult"
   val gt = "gt"
   val or = "or"
+  val to = "to"
+  val from = "from"
   val start = "start"
 
   def symbol(obj: Obj): String = obj match {
     case _: BoolType => "bool"
     case _: IntType => "int"
-    case _: RecType[_,_] => "rec"
+    case _: RecType[_, _] => "rec"
     case _: Type[_] => "obj"
     case _ => throw new Exception("Error: " + obj)
   }

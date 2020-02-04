@@ -20,24 +20,30 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.traverser
+package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.StrValue
+import org.mmadt.machine.obj.theory.obj.util.VorT
+import org.mmadt.machine.obj.theory.obj.value.{StrValue, Value}
+import org.mmadt.machine.obj.theory.operator.`type`.TypeTo
+import org.mmadt.machine.obj.theory.operator.value.ValueTo
 import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser {
-  def this(obj: Obj) = this(Map[StrValue, Obj](), obj)
+trait ToInst[V <: Value[V], T <: Type[T]] extends Inst {
 
-  override def obj[S <: Obj](): S = obj.asInstanceOf[S] //
-  override def split[E <: Obj](obj: E): Traverser = new RecursiveTraverser(state,obj) //
-  override def apply[P <: Type[P]](t: Type[P]): Traverser = if (t.insts().isEmpty) this else t.insts().head._2.apply(this).apply(t.pop())
+  type LV = ValueTo[V, T] with V
+  type RT = TypeTo[T] with T
+  type LEFT = Left[LV, RT]
+  type RIGHT = Right[LV, RT]
 
-  override def to(label: StrValue, obj: Obj): Traverser = new RecursiveTraverser(state=(this.state ++ Map[StrValue, Obj](label->obj)), obj=obj)
-
-  override def state(): Map[StrValue, Obj] = state
+  override def apply(traverser: Traverser): Traverser = {
+    VorT.wrap[LV, RT](traverser.obj()) match {
+      case v: LEFT => traverser.to(arg[StrValue](), v.value)
+      case t: RIGHT => traverser.to(arg[StrValue](), t.value)
+    }
+  }
 }

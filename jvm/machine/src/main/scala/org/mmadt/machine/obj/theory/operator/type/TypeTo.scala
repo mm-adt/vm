@@ -20,24 +20,16 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.traverser
+package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser {
-  def this(obj: Obj) = this(Map[StrValue, Obj](), obj)
-
-  override def obj[S <: Obj](): S = obj.asInstanceOf[S] //
-  override def split[E <: Obj](obj: E): Traverser = new RecursiveTraverser(state,obj) //
-  override def apply[P <: Type[P]](t: Type[P]): Traverser = if (t.insts().isEmpty) this else t.insts().head._2.apply(this).apply(t.pop())
-
-  override def to(label: StrValue, obj: Obj): Traverser = new RecursiveTraverser(state=(this.state ++ Map[StrValue, Obj](label->obj)), obj=obj)
-
-  override def state(): Map[StrValue, Obj] = state
+trait TypeTo[T <: Type[T]] extends Type[T] {
+  def to(other: String): T = this.to(str(other)) //
+  def to(label: StrValue): T = this.push(inst(Tokens.to, label)) //
 }

@@ -22,11 +22,11 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.impl.obj.`type`.{TBool, TInt, TRec}
-import org.mmadt.machine.obj.impl.obj.value.{VBool, VInt, VRec}
+import org.mmadt.machine.obj.impl.obj.`type`.{TBool, TInt, TRec, TStr}
+import org.mmadt.machine.obj.impl.obj.value.{VBool, VInt, VRec, VStr}
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType}
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, StrType}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,12 +41,14 @@ package object obj {
 
   val int: IntType = new TInt() //
   val bool: BoolType = new TBool() //
+  val str: StrType = new TStr() //
   def rec[K <: Obj, V <: Obj]: RecType[K, V] = new TRec[K, V]() //
   val btrue: BoolValue = bool(true)
   val bfalse: BoolValue = bool(false)
 
   def int(value: Long): IntValue = new VInt(value) //
   def bool(value: Boolean): BoolValue = new VBool(value) //
+  def str(value: String): StrValue = new VStr(value) //
   def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec[K, V](value) //
   def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = new VRec[K, V](value.foldRight(Map[K, V]())((field, map) => map ++ Map[K, V](field))) //
 }

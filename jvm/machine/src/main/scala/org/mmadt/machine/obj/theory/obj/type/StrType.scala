@@ -20,24 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.traverser
+package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.TypeCommon
+import org.mmadt.machine.obj.theory.obj.Str
 import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.traverser.Traverser
+import org.mmadt.machine.obj.theory.operator.`type`.TypePlus
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser {
-  def this(obj: Obj) = this(Map[StrValue, Obj](), obj)
-
-  override def obj[S <: Obj](): S = obj.asInstanceOf[S] //
-  override def split[E <: Obj](obj: E): Traverser = new RecursiveTraverser(state,obj) //
-  override def apply[P <: Type[P]](t: Type[P]): Traverser = if (t.insts().isEmpty) this else t.insts().head._2.apply(this).apply(t.pop())
-
-  override def to(label: StrValue, obj: Obj): Traverser = new RecursiveTraverser(state=(this.state ++ Map[StrValue, Obj](label->obj)), obj=obj)
-
-  override def state(): Map[StrValue, Obj] = state
-}
+trait StrType extends Str
+  with Type[StrType]
+  with TypeCommon[StrType]
+  with TypePlus[String, StrValue, StrType]

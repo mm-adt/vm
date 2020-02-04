@@ -43,6 +43,10 @@ trait Type[T <: Type[T]] extends Obj {
   def bool(inst: Inst): BoolType = bool(inst, this.q()) //
   def bool(inst: Inst, q: TQ): BoolType //
 
+  def str(): StrType = str(null) //
+  def str(inst: Inst): StrType = str(inst, this.q()) //
+  def str(inst: Inst, q: TQ): StrType //
+
   def rec(): RecType[Obj, Obj] = rec[Obj, Obj](null, null) //
   def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst): RecType[K, V] = rec(tvalue, inst, this.q()) //
   def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] //

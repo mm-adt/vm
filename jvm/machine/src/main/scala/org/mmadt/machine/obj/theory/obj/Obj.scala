@@ -25,7 +25,7 @@ package org.mmadt.machine.obj.theory.obj
 import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,6 +40,7 @@ trait Obj {
 
   def bool(value: Boolean): BoolValue //
   def int(value: Long): IntValue //
+  def str(value: String): StrValue //
   def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] //
   def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = this.rec[K, V](value.foldRight(Map[K, V]())((field, map) => map ++ Map[K, V](field))) //
 
