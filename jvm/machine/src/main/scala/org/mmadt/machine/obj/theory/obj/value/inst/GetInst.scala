@@ -23,7 +23,6 @@
 package org.mmadt.machine.obj.theory.obj.value.inst
 
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.util.VorT
 import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 import org.mmadt.machine.obj.theory.traverser.Traverser
@@ -32,15 +31,10 @@ import org.mmadt.machine.obj.theory.traverser.Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait GetInst[A <: Obj, B <: Obj] extends Inst {
-  type LEFT = Left[Value[_], Type[_]]
-  type RIGHT = Right[Value[_], Type[_]]
-  private lazy val wrappedArg = VorT.wrap[A, A](arg())
-
-
   override def apply(traverser: Traverser): Traverser = {
-    wrappedArg match {
-      case argV: LEFT => traverser.split(traverser.obj[RecValue[A, B]]().get(argV.value.asInstanceOf[A]))
-      case argT: RIGHT => traverser.split(traverser.obj[RecValue[A,B]]().get(traverser.apply(argT.value.asInstanceOf[Type[_]]).obj()))
+    traverser.obj[RecValue[A, B]]().get(arg()) match {
+      case bval: Value[_] => traverser.split(bval)
+      case btype: Type[_] => traverser.split(arg()).apply(btype)
     }
   }
 }

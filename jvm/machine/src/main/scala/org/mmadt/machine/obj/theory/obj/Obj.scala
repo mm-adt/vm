@@ -56,7 +56,7 @@ trait Obj {
   def q(min: IntValue, max: IntValue): this.type = this.q((min, max)) //
   def q(quantifier: TQ): this.type //
 
-  def ==>[T <: Type[T]](t: T): Obj = new RecursiveTraverser(this).apply(t).obj()
+  def ==>(t: Type[_]): Obj = new RecursiveTraverser(this).apply(t).obj()
 
   def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0
 

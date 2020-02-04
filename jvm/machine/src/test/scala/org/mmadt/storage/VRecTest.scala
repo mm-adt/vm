@@ -34,10 +34,16 @@ class VRecTest extends FunSuite {
     assertResult("[1:true]")(rec(int(1) -> btrue).toString)
     assertResult("[1:true,2:false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
     assertResult("[1:true,2:false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
-    //println(rec.plus(rec(int(2) -> bfalse)))
-    //println(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
+    println(rec.plus(rec(int(2) -> bfalse)).get(int(2), bool))
+    assertResult(bfalse)(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)).get(int(2), bool))
+    assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))
-    // assertThrows(()=>new NoSuchElementException(), rec(int(1) -> btrue, int(2) -> bfalse).get(int(3)))
+    assertResult(int(6))(rec(int(1) -> int.plus(5), int(2) -> int.mult(100)).get(int(1)))
+    assertResult(int(200))(rec(int(1) -> int.plus(5), int(2) -> int.mult(100)).get(int(2)))
+    assertResult(int(200))(rec(int(1) -> int.plus(5), int(2) -> int.mult(100)) ==> rec.get(int(2), int))
+    intercept[NoSuchElementException] {
+      rec(int(1) -> btrue, int(2) -> bfalse).get(int(3))
+    }
   }
 }

@@ -20,20 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.obj.`type`
+package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.machine.obj.theory.TypeCommon
-import org.mmadt.machine.obj.theory.obj.value.RecValue
-import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
-import org.mmadt.machine.obj.theory.operator.`type`.{TypeGet, TypePlus}
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.{RecType, Type}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
-  with Type[RecType[A, B]]
-  with TypePlus[Map[A, B], RecValue[A, B], RecType[A, B]]
-  with TypeCommon[RecType[A, B]]
-  with TypeGet[Map[A, B], A, B] {
-  def typeValue(): Map[A, B] //
+trait TypeGet[J, A <: Obj, B <: Obj] extends Type[RecType[A, B]] {
+
+  def get(key: J): B = this.get(value[J, A](key)) //
+  // def get(key: A): B = this.push(inst(Tokens.get, key)).asInstanceOf[B] //
+  def get[BT <: Type[_]](key: A): BT = this.push(this.asInstanceOf[RecType[A, B]].typeValue().get(key).get, inst(Tokens.get, key)).asInstanceOf[BT] //
+  def get[BT <: Type[_]](key: A, btype: BT): BT = this.push(btype, inst(Tokens.get, key)).asInstanceOf[BT]
+
+
 }

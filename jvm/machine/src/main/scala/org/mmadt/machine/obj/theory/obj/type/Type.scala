@@ -24,6 +24,7 @@ package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.Stringer
 import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
@@ -34,10 +35,13 @@ trait Type[T <: Type[T]] extends Obj {
   def insts(): List[(Type[_], Inst)] //
   def pop(): T //
   def push(inst: Inst): T //
-  def push[T2 <: Type[T2]](t2: T2, inst: Inst): T2 = t2 match {
-    case _: IntType => int(inst).asInstanceOf[T2]
-    case _: BoolType => bool(inst).asInstanceOf[T2]
-    case _: StrType => str(inst).asInstanceOf[T2]
+  def push[O<:Obj,T2 <: Type[T2]](t2:O, inst: Inst): Type[T2] = t2 match {
+    case _: IntType => int(inst).asInstanceOf[Type[T2]]
+    case _: IntValue => int(inst).asInstanceOf[Type[T2]]
+    case _: BoolType => bool(inst).asInstanceOf[Type[T2]]
+    case _: BoolValue => bool(inst).asInstanceOf[Type[T2]]
+    case _: StrType => str(inst).asInstanceOf[Type[T2]]
+    case _: StrValue => str(inst).asInstanceOf[Type[T2]]
   }
 
   def int(): IntType = int(null) //
