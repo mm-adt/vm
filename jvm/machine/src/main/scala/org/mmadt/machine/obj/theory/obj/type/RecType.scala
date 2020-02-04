@@ -23,13 +23,16 @@
 package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.machine.obj.theory.TypeCommon
+import org.mmadt.machine.obj.theory.obj.value.RecValue
 import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
+import org.mmadt.machine.obj.theory.operator.`type`.TypePlus
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecType[K <: Obj, V <: Obj] extends Rec[K, V]
   with Type[RecType[K, V]]
+  with TypePlus[Map[K, V], RecValue[K, V], RecType[K, V]]
   with TypeCommon[RecType[K, V]] {
   def typeValue(): Map[K, V] //
 }

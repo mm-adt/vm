@@ -20,32 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.obj.`type`
+package org.mmadt.machine.obj.impl.obj.`type`
 
-import org.mmadt.language.Stringer
 import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.impl.obj.qOne
+import org.mmadt.machine.obj.theory.obj.`type`.{RecType, Type}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[T <: Type[T]] extends Obj {
-
-  def insts(): List[(Type[_], Inst)] //
-  def push(inst: Inst): T //
-  def pop(): T //
-
-  def int(): IntType = int(null) //
-  def int(inst: Inst): IntType = int(inst, this.q()) //
-  def int(inst: Inst, q: TQ): IntType //
-
-  def bool(): BoolType = bool(null) //
-  def bool(inst: Inst): BoolType = bool(inst, this.q()) //
-  def bool(inst: Inst, q: TQ): BoolType //
-
-  def rec(): RecType[Obj, Obj] = rec[Obj, Obj](null, null) //
-  def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst): RecType[K, V] = rec(tvalue, inst, this.q()) //
-  def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] //
-
-  override def toString: String = Stringer.typeString(this) //
+class TRec[K <: Obj, V <: Obj](java: Map[K, V], insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[RecType[K, V]](insts, quantifier) with RecType[K, V] {
+  def this() = this(Map[K, V](), Nil, qOne) //
+  override def push(inst: Inst): RecType[K, V] = rec[K, V](java, inst, quantifier) //
+  override def pop(): RecType[K, V] = new TRec[K, V](java, insts.tail, quantifier) //
+  override def q(quantifier: TQ): this.type = new TRec[K, V](java, insts, quantifier).asInstanceOf[this.type] //
+  override def typeValue(): Map[K, V] = java
 }

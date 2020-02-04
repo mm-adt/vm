@@ -25,6 +25,4 @@ package org.mmadt.machine.obj.theory.obj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Rec[K <: Obj,V <: Obj] {
-
-}
+trait Rec[K <: Obj, V <: Obj] extends Obj

@@ -22,10 +22,10 @@
 
 package org.mmadt.machine.obj.impl
 
-import org.mmadt.machine.obj.impl.obj.`type`.{TBool, TInt}
+import org.mmadt.machine.obj.impl.obj.`type`.{TBool, TInt, TRec}
 import org.mmadt.machine.obj.impl.obj.value.{VBool, VInt, VRec}
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue}
 
 /**
@@ -39,8 +39,9 @@ package object obj {
   val qPlus: (IntValue, IntValue) = (int(1), int(Long.MaxValue))
   val qStar: (IntValue, IntValue) = (int(0), int(Long.MaxValue))
 
-  val int: IntType = new TInt()
-  val bool: BoolType = new TBool()
+  val int: IntType = new TInt() //
+  val bool: BoolType = new TBool() //
+  def rec[K <: Obj, V <: Obj]: RecType[K, V] = new TRec[K, V]() //
   val btrue: BoolValue = bool(true)
   val bfalse: BoolValue = bool(false)
 

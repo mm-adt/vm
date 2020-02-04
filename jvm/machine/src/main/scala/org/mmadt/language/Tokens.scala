@@ -23,7 +23,7 @@
 package org.mmadt.language
 
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, Type}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, Type}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -42,6 +42,7 @@ object Tokens {
   def symbol(obj: Obj): String = obj match {
     case _: BoolType => "bool"
     case _: IntType => "int"
+    case _: RecType[_,_] => "rec"
     case _: Type[_] => "obj"
     case _ => throw new Exception("Error: " + obj)
   }

@@ -24,8 +24,8 @@ package org.mmadt.machine.obj.impl.obj.`type`
 
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.obj.{OObj, _}
-import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, Type}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,5 +37,6 @@ abstract class TObj[T <: Type[T]](insts: List[(Type[_], Inst)], quantifier: TQ) 
 
   override def int(inst: Inst, q: TQ): IntType = new TInt(this.insts() ++ List((this, inst)), q) // null inst need to be [id]
   override def bool(inst: Inst, q: TQ): BoolType = new TBool(this.insts() ++ List((this, inst)), q) // null inst need to be [id]
+  override def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] = new TRec(tvalue, this.insts() ++ List((this, inst)), q) // null inst need to be [id]
 
 }
