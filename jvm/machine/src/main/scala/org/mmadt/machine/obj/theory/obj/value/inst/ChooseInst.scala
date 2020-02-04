@@ -33,17 +33,17 @@ import org.mmadt.machine.obj.theory.traverser.Traverser
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ChooseInst[V <: Value[V], T <: Type[T], TE <: Type[TE]] extends Inst {
-  type LV = ValueChoose[V]
-  type RT = TypeChoose[T]
+trait ChooseInst[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]] extends Inst {
+  type LV = ValueChoose[V,T,VE,TE]
+  type RT = TypeChoose[T,TE]
   type LEFT = Left[LV, RT]
   type RIGHT = Right[LV, RT]
   private lazy val varg: RecValue[T, TE] = arg[RecValue[T, TE]]()
 
   override def apply(traverser: Traverser): Traverser = {
     VorT.wrap[LV, RT](traverser.obj()) match {
-      case v: LEFT => traverser.split[V](v.value.choose[T, T, V, TE](varg))
-      case t: RIGHT => traverser.split[TE](t.value.choose[T, T, TE](varg))
+      case v: LEFT => traverser.split[VE](v.value.choose(varg))
+      case t: RIGHT => traverser.split[TE](t.value.choose(varg))
     }
   }
 }

@@ -29,9 +29,9 @@ import org.mmadt.machine.obj.theory.obj.value.RecValue
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TypeChoose[T <: Type[T]] extends Type[T] {
-  def choose[T1 <: Type[T1], T2 <: Type[T2], TE <: Type[TE]](c1: (T1, TE), c2: (T2, TE)): TE = this.choose[T1, T2, TE](rec(Map(c1, c2).asInstanceOf[Map[T1 with T2, TE]]))
+trait TypeChoose[TS <: Type[TS], TE <: Type[TE]] extends Type[TS] {
+  def choose(branches:(TS, TE)*): TE = this.choose(rec(branches.toMap))
 
-  def choose[T1 <: Type[T1], T2 <: Type[T2], TE <: Type[TE]](branches: RecValue[T1 with T2, TE]): TE = this.push(branches.value().head._2, inst(Tokens.choose, branches))
+  def choose(branches: RecValue[TS, TE]): TE = this.push(branches.value().head._2, inst(Tokens.choose, branches))
 
 }

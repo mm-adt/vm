@@ -46,6 +46,20 @@ class ChooseInstTest extends FunSuite {
       int(0).plus(4).choose(
         int.is(int.gt(2)) -> int.mult(3),
         int -> int.mult(4)))
+
+    assertResult(int(42))(
+      int(0) ==> int.plus(39).choose(
+        int.is(int.gt(40)) -> int.plus(1),
+        int.is(int.gt(30)) -> int.plus(2),
+        int.is(int.gt(20)) -> int.plus(3),
+        int.is(int.gt(10)) -> int.plus(4)).plus(1))
+
+    assertResult(int(33))(
+      int(0) ==> int.plus(29).choose(
+        int.is(int.gt(40)) -> int.plus(1),
+        int.is(int.gt(30)) -> int.plus(2),
+        int.is(int.gt(20)) -> int.plus(3),
+        int.is(int.gt(10)) -> int.plus(4)).plus(1))
   }
 
   // TODO: test end type quantifier union

@@ -28,12 +28,10 @@ import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueChoose[V <: Value[V]] extends Value[V] {
-  def choose[T1 <: Type[T1], T2 <: Type[T2], VE <: Value[VE], TE <: Type[TE]](c1: (T1, TE), c2: (T2, TE)): VE = this match {
-    case _ if (this ==> c1._1).alive() => (this ==> c1._2).asInstanceOf[VE]
-    case _ if (this ==> c2._1).alive() => (this ==> c2._2).asInstanceOf[VE]
-  }
+trait ValueChoose[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]] extends Value[V] {
 
-  def choose[T1 <: Type[T1], T2 <: Type[T2], VE <: Value[VE], TE <: Type[TE]](branches: RecValue[T1 with T2, TE]): VE =
-    (this ==> ((branches.value().filter(p => (this ==> p._1.asInstanceOf[T1]).alive()).head._2))).asInstanceOf[VE]
+  def choose(branches: (T, TE)*): VE = this.choose(rec(branches.toMap))
+
+  def choose(branches: RecValue[T, TE]): VE =
+    (this ==> (branches.value().filter(p => (this ==> p._1.asInstanceOf[T]).alive()).head._2)).asInstanceOf[VE]
 }
