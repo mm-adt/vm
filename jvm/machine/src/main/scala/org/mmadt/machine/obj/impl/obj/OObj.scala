@@ -35,10 +35,11 @@ import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Obj}
 abstract class OObj(val quantifier: TQ) extends Obj {
 
   override def q(): TQ = quantifier //
+
   override def int(value: Long): IntValue = new VInt(value) //
   override def bool(value: Boolean): BoolValue = new VBool(value) //
   override def str(value: String): StrValue = new VStr(value) //
-  override def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec((value)) //
+  override def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec(value) //
 
   override def inst(op: String, args: List[Obj]): Inst = op match {
     case Tokens.plus => new VPlusInst(args.head)
@@ -50,6 +51,6 @@ abstract class OObj(val quantifier: TQ) extends Obj {
     // INSTRUCTION IMPLEMENTATIONS NEEDED
     case Tokens.and => new VInst((Tokens.and, args))
     case Tokens.or => new VInst((Tokens.or, args))
-    case Tokens.start => new VInst((Tokens.start, args))
+    case Tokens.start => new VInst((Tokens.start, args)) // TODO: will be first flatmap
   }
 }

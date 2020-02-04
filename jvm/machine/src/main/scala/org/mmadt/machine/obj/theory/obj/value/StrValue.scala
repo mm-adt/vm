@@ -22,10 +22,10 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.theory.ValueCommon
 import org.mmadt.machine.obj.theory.obj.Str
 import org.mmadt.machine.obj.theory.obj.`type`.StrType
 import org.mmadt.machine.obj.theory.operator.value.ValuePlus
+import org.mmadt.machine.obj.theory.{ValueCommon, ValueOrder}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,10 +33,12 @@ import org.mmadt.machine.obj.theory.operator.value.ValuePlus
 trait StrValue extends Str
   with Value[StrValue]
   with ValueCommon[StrValue, StrType]
-  with ValuePlus[String, StrValue, StrType] {
+  with ValuePlus[String, StrValue, StrType]
+  with ValueOrder[String, StrValue, StrType] {
 
   override def value(): String //
   override def start(): StrType //
 
   override def plus(other: StrValue): StrValue = str(this.value() + other.value()) //
+  override def gt(other: StrValue): BoolValue = bool(this.value() > other.value()) //
 }

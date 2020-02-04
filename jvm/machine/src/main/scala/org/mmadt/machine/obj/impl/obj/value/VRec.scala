@@ -22,8 +22,10 @@
 
 package org.mmadt.machine.obj.impl.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.impl.obj._
+import org.mmadt.machine.obj.impl.obj.`type`.TRec
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.RecType
 import org.mmadt.machine.obj.theory.obj.value.RecValue
@@ -36,7 +38,7 @@ class VRec[K <: Obj, V <: Obj](java: Map[K, V], quantifier: TQ) extends VObj(jav
   def this(java: Map[K, V]) = this(java, qOne)
 
   override def value(): Map[K, V] = java //
-  override def start(): RecType[K, V] = null //new TInt(List((new TInt(Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def start(): RecType[K, V] = new TRec(java, List((new TRec(java, Nil, qZero), inst(Tokens.start, this))), q()) //
   override def q(quantifier: TQ): this.type = new VRec(java, quantifier).asInstanceOf[this.type] //
 
 }

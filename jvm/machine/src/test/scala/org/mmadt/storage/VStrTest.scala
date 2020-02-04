@@ -20,18 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.obj.`type`
+package org.mmadt.storage
 
-import org.mmadt.machine.obj.theory.obj.Str
-import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.operator.`type`.TypePlus
-import org.mmadt.machine.obj.theory.{TypeCommon, TypeOrder}
+import org.mmadt.machine.obj.impl.obj._
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StrType extends Str
-  with Type[StrType]
-  with TypeCommon[StrType]
-  with TypePlus[String, StrValue, StrType]
-  with TypeOrder[String, StrValue, StrType]
+class VStrTest extends FunSuite {
+
+  test("str values") {
+    assertResult(str("mar"))(str("m").plus("a").plus("r"))
+    assertResult(btrue)(str("m").gt(str("a")))
+    assertResult(bfalse)(str("m").gt(str("r")))
+  }
+}

@@ -35,6 +35,7 @@ trait Obj {
   def value[J, V](java: J): V = java match {
     case j: Long => int(j).asInstanceOf[V]
     case j: Boolean => bool(j).asInstanceOf[V]
+    case j: String => str(j).asInstanceOf[V]
     case _ => throw new RuntimeException("Unknown Java object: " + java)
   }
 
