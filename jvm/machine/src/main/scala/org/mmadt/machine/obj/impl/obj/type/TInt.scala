@@ -22,18 +22,19 @@
 
 package org.mmadt.machine.obj.impl.obj.`type`
 
+import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.impl.obj.value.VInt
 import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
 import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.{TQ, qOne}
+import org.mmadt.machine.obj.impl.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TInt(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[IntType](insts, quantifier) with IntType {
   def this() = this(Nil, qOne) //
-  override def push(inst: Inst): IntType = int(inst, quantifier)//
+  override def push(inst: Inst): IntType = int(inst, quantifier) //
   override def pop(): IntType = new TInt(insts.tail, quantifier) //
   override def q(quantifier: TQ): this.type = new TInt(insts, quantifier).asInstanceOf[this.type] //
 }

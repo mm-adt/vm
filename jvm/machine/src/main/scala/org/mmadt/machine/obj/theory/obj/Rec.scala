@@ -20,24 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine
-
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.scalatest.FunSuite
+package org.mmadt.machine.obj.theory.obj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class PlayTest extends FunSuite {
-
-  test("value + value") {
-    assert(int(1) + int(2) === int(3))
-    assert(btrue.value())
-    assert((btrue | bfalse) === btrue)
-    assert((btrue & bfalse) === bfalse)
-    println(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
-  }
-
+trait Rec[K <: Obj,V <: Obj] {
 
 }

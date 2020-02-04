@@ -23,10 +23,11 @@
 package org.mmadt.machine.obj.impl.obj.value
 
 import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.obj.`type`.TBool
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.obj.value.BoolValue
-import org.mmadt.machine.obj.{TQ, qOne, qZero}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

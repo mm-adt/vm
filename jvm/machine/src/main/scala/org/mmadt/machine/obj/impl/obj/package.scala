@@ -20,17 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.obj.value.inst
+package org.mmadt.machine.obj.impl
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.impl.obj.value.VInst
+import org.mmadt.machine.obj.impl.obj.`type`.{TBool, TInt}
+import org.mmadt.machine.obj.impl.obj.value.{VBool, VInt, VRec}
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
-import org.mmadt.machine.obj.theory.obj.value.inst.MultInst
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VMultInst[V <: Value[V], T <: Type[T]](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[V, T]
+package object obj {
+
+  val qZero: (IntValue, IntValue) = (int(0), int(0))
+  val qOne: (IntValue, IntValue) = (int(1), int(1))
+  val qMark: (IntValue, IntValue) = (int(0), int(1))
+  val qPlus: (IntValue, IntValue) = (int(1), int(Long.MaxValue))
+  val qStar: (IntValue, IntValue) = (int(0), int(Long.MaxValue))
+
+  val int: IntType = new TInt()
+  val bool: BoolType = new TBool()
+  val btrue: BoolValue = bool(true)
+  val bfalse: BoolValue = bool(false)
+
+  def int(value: Long): IntValue = new VInt(value) //
+  def bool(value: Boolean): BoolValue = new VBool(value) //
+  def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec[K, V](value) //
+}

@@ -36,11 +36,11 @@ trait Type[T <: Type[T]] extends Obj {
   def pop(): T //
 
   def int(): IntType = int(null) //
-  def int(inst: Inst): IntType = int(inst, q()) //
+  def int(inst: Inst): IntType = int(inst, this.q()) //
   def int(inst: Inst, q: TQ): IntType //
 
   def bool(): BoolType = bool(null) //
-  def bool(inst: Inst): BoolType = bool(inst, q()) //
+  def bool(inst: Inst): BoolType = bool(inst, this.q()) //
   def bool(inst: Inst, q: TQ): BoolType //
 
   override def toString: String = Stringer.typeString(this) //

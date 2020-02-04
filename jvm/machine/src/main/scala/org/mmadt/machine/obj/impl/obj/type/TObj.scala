@@ -23,7 +23,7 @@
 package org.mmadt.machine.obj.impl.obj.`type`
 
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.obj.OObj
+import org.mmadt.machine.obj.impl.obj.{OObj, _}
 import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, Type}
 

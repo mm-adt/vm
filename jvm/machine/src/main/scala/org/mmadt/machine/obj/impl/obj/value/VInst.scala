@@ -24,6 +24,7 @@ package org.mmadt.machine.obj.impl.obj.value
 
 import org.mmadt.language.Stringer
 import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.theory.obj.Inst
 
 /**

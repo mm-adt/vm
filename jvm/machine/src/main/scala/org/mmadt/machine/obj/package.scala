@@ -22,22 +22,13 @@
 
 package org.mmadt.machine
 
-import org.mmadt.machine.obj.impl.obj.value.VInt.{int0, int1}
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.value.IntValue
 
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 package object obj {
   type TQ = (IntValue, IntValue)
-
-  lazy val qOne: TQ = (int1, int1)
-
-  lazy val qZero: TQ = (int0, int0)
-
-  lazy val qMark: TQ = (int0, int1)
-
   type JInst = (String, List[Obj])
-
 }

@@ -24,6 +24,7 @@ package org.mmadt.machine.obj.impl.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
+import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.obj.`type`.TInt
 import org.mmadt.machine.obj.theory.obj.`type`.IntType
 import org.mmadt.machine.obj.theory.obj.value.IntValue

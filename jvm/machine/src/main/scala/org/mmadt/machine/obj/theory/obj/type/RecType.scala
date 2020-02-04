@@ -20,24 +20,16 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine
+package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.scalatest.FunSuite
+import org.mmadt.machine.obj.theory.TypeCommon
+import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class PlayTest extends FunSuite {
-
-  test("value + value") {
-    assert(int(1) + int(2) === int(3))
-    assert(btrue.value())
-    assert((btrue | bfalse) === btrue)
-    assert((btrue & bfalse) === bfalse)
-    println(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
-  }
-
-
+trait RecType[K <: Obj, V <: Obj] extends Rec[K, V]
+  with Type[RecType[K, V]]
+  with TypeCommon[RecType[K, V]] {
+  def typeValue(): Map[K, V] //
 }

@@ -20,24 +20,23 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine
+package org.mmadt.machine.obj.impl.obj.value
 
+import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.scalatest.FunSuite
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.RecType
+import org.mmadt.machine.obj.theory.obj.value.RecValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class PlayTest extends FunSuite {
+class VRec[K <: Obj, V <: Obj](java: Map[K, V], quantifier: TQ) extends VObj(java, quantifier) with RecValue[K, V] {
 
-  test("value + value") {
-    assert(int(1) + int(2) === int(3))
-    assert(btrue.value())
-    assert((btrue | bfalse) === btrue)
-    assert((btrue & bfalse) === bfalse)
-    println(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
-  }
+  def this(java: Map[K, V]) = this(java, qOne)
 
+  override def value(): Map[K, V] = java //
+  override def start(): RecType[K, V] = null //new TInt(List((new TInt(Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def q(quantifier: TQ): this.type = new VRec(java, quantifier).asInstanceOf[this.type] //
 
 }

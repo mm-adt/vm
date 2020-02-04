@@ -22,9 +22,9 @@
 
 package org.mmadt
 
+import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.obj.`type`.TBool
 import org.mmadt.machine.obj.impl.obj.`type`.TInt.int
-import org.mmadt.machine.obj.impl.obj.value.VBool.{boolF, boolT}
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 
 /**
@@ -36,9 +36,9 @@ object Play extends App {
   val b = int(4)
   println(a.+(b))
   println(a * b)
-  println(boolT & boolF)
+  println(btrue & bfalse)
   // println(a.is(int.gt(4)).map(boolF).or(boolT))
-  val c = int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(boolT)
+  val c = int.plus(int.plus(34)).mult(4).is(int.plus(4).gt(20)).gt(45).or(btrue)
   println(c)
   // println(c.insts())
   println(int)
@@ -48,6 +48,6 @@ object Play extends App {
   println(t(int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)).obj())
   println(t(int.plus(int.plus(1)).mult(int.plus(1))).obj())
   println(int(43).plus(int).gt(57))
-  println(boolT.and(new TBool()))
+  println(btrue.and(new TBool()))
 
 }

@@ -22,9 +22,10 @@
 
 package org.mmadt.machine.obj.impl.obj.`type`
 
+import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.{TQ, qOne}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

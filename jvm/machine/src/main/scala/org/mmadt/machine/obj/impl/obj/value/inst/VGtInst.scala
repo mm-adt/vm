@@ -23,8 +23,8 @@
 package org.mmadt.machine.obj.impl.obj.value.inst
 
 import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.obj.value.VInst
-import org.mmadt.machine.obj.qOne
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value

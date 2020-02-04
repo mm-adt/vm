@@ -22,8 +22,7 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.theory.obj.{Int, Obj}
+import org.mmadt.machine.obj.theory.obj.Int
 import org.mmadt.machine.obj.theory.obj.`type`.IntType
 import org.mmadt.machine.obj.theory.{ValueCommon, ValueOrder, ValueRing}
 
