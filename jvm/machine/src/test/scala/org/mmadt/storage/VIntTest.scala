@@ -20,11 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.storage
+
+import org.mmadt.machine.obj.impl.obj.int
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TypeTest {
+class VIntTest extends FunSuite {
 
+  test("int values") {
+    assertResult(int(3))(int(1) + int(2))
+  }
 }

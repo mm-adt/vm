@@ -20,11 +20,33 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage
+package org.mmadt.processor
+
+import org.mmadt.machine.obj.impl.obj.int
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ObjTest {
+class ChooseInstTest extends FunSuite {
+
+  test("[choose] w/ types") {
+    println(int.plus(1).choose(
+      int.is(int.gt(2)) -> int.mult(3),
+      int -> int.mult(4)))
+  }
+
+  test("[choose] w/ values") {
+    assertResult(int(4))(
+      int(0).plus(1).choose(
+        int.is(int.gt(2)) -> int.mult(3),
+        int -> int.mult(4)))
+
+    assertResult(int(12))(
+      int(0).plus(4).choose(
+        int.is(int.gt(2)) -> int.mult(3),
+        int -> int.mult(4)))
+  }
+
 
 }

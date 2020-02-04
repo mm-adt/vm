@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine
+package org.mmadt.storage
 
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
@@ -29,30 +29,13 @@ import org.scalatest.FunSuite
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class PlayTest extends FunSuite {
+class VBoolTest extends FunSuite {
 
-  test("value + value") {
-    assert(int(1) + int(2) === int(3))
+  test("bool values") {
     assert(btrue.value())
-    assert((btrue | bfalse) === btrue)
-    assert((btrue & bfalse) === bfalse)
-    println(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
-
-    println(int.plus(1).choose(
-      int.is(int.gt(2)) -> int.mult(3),
-      int -> int.mult(4)))
-
-
-    assertResult(int(4))(
-      int(0).plus(1).choose(
-        int.is(int.gt(2)) -> int.mult(3),
-        int -> int.mult(4)))
-
-    assertResult(int(12))(
-      int(0).plus(4).choose(
-        int.is(int.gt(2)) -> int.mult(3),
-        int -> int.mult(4)))
+    assertResult(btrue)(btrue | bfalse)
+    assertResult(bfalse)(btrue & bfalse)
+    assertResult(btrue)(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
   }
-
 
 }
