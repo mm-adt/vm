@@ -51,11 +51,11 @@ object Stringer {
   }
 
   def typeString(t: Type[_]): String = {
-    val range = Tokens.symbol(t)
-    val domain = if (t.insts().isEmpty) "" else Tokens.symbol(t.insts().head._1) + qString(t.insts().head._1.q())
-    if (domain.equals("")) range + qString(t.q()) else
-    // else if (range.equals(domain)) range + insts.map(i => "[" + i.op() + "," + instArgs(i.value()._2) + "]").fold("")((a, b) => a + b) else
-      range + qString(t.q()) + "<=" + domain + t.insts().map(_._2.toString()).fold("")((a, b) => a + b)
+    val range = Tokens.symbol(t) + qString(t.q())
+    val domain = if (t.insts().isEmpty) "" else
+      Tokens.symbol(t.insts().head._1) + qString(t.insts().head._1.q())
+    (if (domain.equals("") || range.equals(domain)) range else range + "<=" + domain) +
+      t.insts().map(_._2.toString()).fold("")((a, b) => a + b)
   }
 
   def valueString(v: Value[_]): String = v match {

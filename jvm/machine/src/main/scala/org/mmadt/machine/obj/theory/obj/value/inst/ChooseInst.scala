@@ -38,7 +38,7 @@ trait ChooseInst[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]] e
   type RT = TypeChoose[T, TE]
   type LEFT = Left[LV, RT]
   type RIGHT = Right[LV, RT]
-  private lazy val varg: RecValue[T, TE] = arg[RecValue[T, TE]]()
+  private val varg: RecValue[T, TE] = arg[RecValue[T, TE]]()
 
   override def apply(traverser: Traverser): Traverser = {
     VorT.wrap[LV, RT](traverser.obj()) match {

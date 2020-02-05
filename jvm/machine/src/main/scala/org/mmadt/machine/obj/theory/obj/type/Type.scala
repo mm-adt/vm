@@ -24,8 +24,7 @@ package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.Stringer
 import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, StrValue}
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Int, Obj, Rec, Str}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,12 +35,10 @@ trait Type[T <: Type[T]] extends Obj {
   def pop(): T //
   def push(inst: Inst): T //
   def push[TT <: Type[TT]](t2: Obj, inst: Inst): TT = (t2 match {
-    case _: IntType => int(inst)
-    case _: IntValue => int(inst)
-    case _: BoolType => bool(inst)
-    case _: BoolValue => bool(inst)
-    case _: StrType => str(inst)
-    case _: StrValue => str(inst)
+    case _: Bool => bool(inst)
+    case _: Int => int(inst)
+    case _: Str => str(inst)
+    case _: Rec[_, _] => rec[Obj, Obj](Map.empty[Obj, Obj], inst)
   }).asInstanceOf[TT]
 
   def int(): IntType = int(null) //
@@ -56,12 +53,14 @@ trait Type[T <: Type[T]] extends Obj {
   def str(inst: Inst): StrType = str(inst, this.q()) //
   def str(inst: Inst, q: TQ): StrType //
 
-  def rec(): RecType[Obj, Obj] = rec[Obj, Obj](null, null) //
+  def rec(): RecType[_, _] = rec[Obj, Obj](null, null) //
   def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst): RecType[K, V] = rec(tvalue, inst, this.q()) //
   def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] //
 
   override def toString: String = Stringer.typeString(this) //
 
   final def <=[TT <: Type[TT]](mapFrom: Type[TT]): Type[TT] = mapFrom.q(this.q())
+
+  //def stream[V](values:V*):
 
 }

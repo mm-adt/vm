@@ -41,7 +41,7 @@ class ToFromTest extends FunSuite {
   test("[to][from] w/ types") {
     assertResult(int(5))(int(1) ==> int.plus(1).map(5).to("x").from("x"))
     assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from("x").mult(int.from("y")))))
-    assertResult("int<=int[plus,1][map,int][to,x]")(int.plus(1).map(int).to("x").toString)
+    assertResult("int[plus,1][map,int][to,x]")(int.plus(1).map(int).to("x").toString)
     intercept[NoSuchElementException] {
       assertResult(int(20))(int(1) ==> int.plus(1).map(int.mult(10).to("x")).from("x"))
     }

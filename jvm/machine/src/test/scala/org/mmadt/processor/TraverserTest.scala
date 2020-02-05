@@ -40,10 +40,10 @@ class TraverserTest extends FunSuite {
       trav(int(3))(int.to("a")).toString
     }
     assertResult("[8|a->3,b->8]") {
-      trav(int(3))(int.to('a).plus(5).to('b)).toString
+      trav(int(3))(int.to("a").plus(5).to("b")).toString
     }
     assertResult("[11|a->3,b->8]") {
-      trav(int(3))(int.to('a).plus(5).to('b).plus(int.from('a))).toString
+      trav(int(3))(int.to("a").plus(5).to("b").plus(int.from("a"))).toString
     }
   }
 
@@ -51,11 +51,13 @@ class TraverserTest extends FunSuite {
     assertResult(Map(str("a") -> int(5))) {
       trav(int(3))(int.plus(2).to("a").mult(3)).state()
     }
-    assertResult(Map(str("a") -> int(5), str("b") -> int(15))) {
+    assertResult(Map(
+      str("a") -> int(5),
+      str("b") -> int(15))) {
       trav(int(3))(int.plus(2).to("a").mult(3).to("b")).state()
     }
     assertResult(int(5)) {
-      trav(int(3))(int.plus(2).to("a").mult(3).to("b").plus(1000).from("a")).obj()
+      int(3) ==> int <= int.plus(2).to("a").mult(3).to("b").plus(1000).from("a")
     }
   }
 
@@ -67,4 +69,13 @@ class TraverserTest extends FunSuite {
       int(2) ==> int.plus(int.plus(1)).mult(int.plus(1))
     }
   }
+
+  /*test("multi input") {
+    assertResult(int(100)) {
+      (int(1),int(2),int(3)) ==> int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)
+    }
+    assertResult(int(30)) {
+      int(2) ==> int.plus(int.plus(1)).mult(int.plus(1))
+    }
+  }*/
 }

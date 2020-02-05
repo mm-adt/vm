@@ -37,7 +37,7 @@ class IntTypeTest extends FunSuite {
 
   test("int: refinement types") {
     println(int <= int.is(int.gt(5)))
-    assertResult("int<=int[is,bool<=int[gt,5]]")((int <= int.is(int.gt(5))).toString())
+    assertResult("int[is,bool<=int[gt,5]]")((int <= int.is(int.gt(5))).toString())
     intercept[IllegalArgumentException] {
       println(int <= int.is(int.gt(5)))
       println(int(5) ==> (int <= int.is(int.gt(5))))

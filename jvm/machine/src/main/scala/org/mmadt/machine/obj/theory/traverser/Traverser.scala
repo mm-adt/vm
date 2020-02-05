@@ -32,12 +32,13 @@ import org.mmadt.machine.obj.theory.obj.value.StrValue
  */
 trait Traverser {
 
-  def obj[S <: Obj](): S //
-  def split[E <: Obj](obj: E): Traverser //
-  def apply(t: Type[_]): Traverser //
-  def to(label: StrValue, obj: Obj): Traverser //
-  def from(label: StrValue): Traverser //
-  def state(): Map[StrValue, Obj] //
+  def obj[S <: Obj](): S // the obj location of the traverser
+  def state(): Map[StrValue, Obj] // the local variables of the traverser
+  //
+  def to(label: StrValue, obj: Obj): Traverser // store the obj to the state by label
+  def from(label: StrValue): Traverser // load an obj from the state by label
+  def split[E <: Obj](obj: E): Traverser // clone the traverser with a new obj location
+  def apply(t: Type[_]): Traverser // embed the traverser's obj into the provided type
 
   override def toString: String = Stringer.traverserString(this)
 
