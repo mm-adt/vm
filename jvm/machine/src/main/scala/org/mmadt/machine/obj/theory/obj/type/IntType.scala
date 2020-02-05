@@ -31,6 +31,6 @@ import org.mmadt.machine.obj.theory.{TypeCommon, TypeOrder, TypeRing}
  */
 trait IntType extends Int
   with Type[IntType]
-  with TypeCommon[IntType]
+  with TypeCommon[Long,IntValue,IntType]
   with TypeRing[Long, IntValue, IntType]
   with TypeOrder[Long, IntValue, IntType]

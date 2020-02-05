@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.obj.value._
 import org.mmadt.machine.obj.impl.obj.value.inst._
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value._
 import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Obj}
 
@@ -43,8 +43,9 @@ abstract class OObj(val quantifier: TQ) extends Obj {
   override def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec(value) //
 
   override def inst(op: String, args: List[Obj]): Inst = op match {
-    case Tokens.choose => new VChooseInst(args.head.asInstanceOf[RecValue[IntType, IntType]])
+    case Tokens.choose => new VChooseInst(args.head.asInstanceOf[RecValue[Type[_], Type[_]]])
     case Tokens.plus => new VPlusInst(args.head)
+    case Tokens.map => new VMapInst(args.head)
     case Tokens.mult => new VMultInst(args.head)
     case Tokens.is => new VIsInst(args.head.asInstanceOf[Bool])
     case Tokens.gt => new VGtInst(args.head)

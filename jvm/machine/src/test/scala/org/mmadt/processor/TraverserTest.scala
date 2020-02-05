@@ -35,7 +35,7 @@ class TraverserTest extends FunSuite {
 
   def trav(obj: Obj): Traverser = new RecursiveTraverser(obj)
 
-  test("traverser string") {
+  test("traverser toString") {
     assertResult("[3|a->3]") {
       trav(int(3))(int.to("a")).toString
     }
@@ -61,10 +61,10 @@ class TraverserTest extends FunSuite {
 
   test("traverser chain") {
     assertResult(int(100)) {
-      trav(int(2))(int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)).obj()
+      int(2) ==> int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)
     }
     assertResult(int(30)) {
-      trav(int(2))(int.plus(int.plus(1)).mult(int.plus(1))).obj()
+      int(2) ==> int.plus(int.plus(1)).mult(int.plus(1))
     }
   }
 }

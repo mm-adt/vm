@@ -33,7 +33,7 @@ import org.mmadt.machine.obj.theory.operator.`type`.{TypeGet, TypePlus}
 trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   with Type[RecType[A, B]]
   with TypePlus[Map[A, B], RecValue[A, B], RecType[A, B]]
-  with TypeCommon[RecType[A, B]]
+  with TypeCommon[Map[A, B], RecValue[A, B], RecType[A, B]]
   with TypeGet[Map[A, B], A, B] {
   def typeValue(): Map[A, B] //
 }

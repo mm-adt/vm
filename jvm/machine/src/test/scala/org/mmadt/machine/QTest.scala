@@ -23,7 +23,6 @@
 package org.mmadt.machine
 
 import org.mmadt.machine.obj.impl.obj._
-
 import org.scalatest.FunSuite
 
 /**
@@ -31,14 +30,14 @@ import org.scalatest.FunSuite
  */
 class QTest extends FunSuite {
 
-  test("value quantifiers strings") {
+  test("value quantifiers toString") {
     assertResult("3")(int(3).toString)
     assertResult("3{0}")(int(3).q(0).toString)
     assertResult("3{1,2}")(int(3).q(int(1), int(2)).toString)
     assertResult("3{1,2}")(int(3).q(1, 2).toString)
   }
 
-  test("type quantifiers strings") {
+  test("type quantifiers toString") {
     assertResult("int")(int.toString)
     assertResult("int{0}")(int.q(0).toString)
     assertResult("int{1,2}")(int.q(int(1), int(2)).toString)

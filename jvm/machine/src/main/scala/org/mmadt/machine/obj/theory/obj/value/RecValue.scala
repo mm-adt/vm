@@ -34,7 +34,7 @@ import org.mmadt.machine.obj.theory.operator.value.ValuePlus
 trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
   with Value[RecValue[A, B]]
   with ValuePlus[Map[A, B], RecValue[A, B], RecType[A, B]]
-  with ValueCommon[RecValue[A, B], RecType[A, B]] {
+  with ValueCommon[Map[A, B], RecValue[A, B], RecType[A, B]] {
 
   override def value(): Map[A, B] //
   override def start(): RecType[A, B] //

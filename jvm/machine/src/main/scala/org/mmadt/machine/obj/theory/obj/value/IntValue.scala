@@ -31,7 +31,7 @@ import org.mmadt.machine.obj.theory.{ValueCommon, ValueOrder, ValueRing}
  */
 trait IntValue extends Int
   with Value[IntValue]
-  with ValueCommon[IntValue, IntType]
+  with ValueCommon[Long,IntValue, IntType]
   with ValueRing[Long, IntValue, IntType]
   with ValueOrder[Long, IntValue, IntType] {
 

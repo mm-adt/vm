@@ -30,7 +30,7 @@ import org.scalatest.FunSuite
  */
 class IntTypeTest extends FunSuite {
 
-  test("int type construction") {
+  test("int infix operators") {
     assertResult("bool<=int[plus,2][gt,4]")((int + 2 > 4).toString)
     assertResult("int{?}<=int[plus,2][is,bool<=int[gt,4]]")((int + 2 is int.gt(4)).toString)
   }
@@ -43,5 +43,9 @@ class IntTypeTest extends FunSuite {
       println(int(5) ==> (int <= int.is(int.gt(5))))
     }
     assertResult("5{0}")((int(5) ==> int.is(int.gt(5))).toString)
+    intercept[IllegalArgumentException] {
+      println(int.q(0) <= int.is(int.gt(5)))
+      println(int(6) ==> int.q(0) <= int.is(int.gt(5)))
+    }
   }
 }

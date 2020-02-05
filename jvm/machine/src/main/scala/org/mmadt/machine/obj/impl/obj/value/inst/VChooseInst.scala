@@ -32,4 +32,6 @@ import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VChooseInst[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]](arg: RecValue[T, TE]) extends VInst((Tokens.choose, List(arg)), qOne) with ChooseInst[V, T, VE, TE]
+class VChooseInst[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]](arg: RecValue[Type[_], Type[_]])
+  extends VInst((Tokens.choose, List(arg)), qOne)
+    with ChooseInst[V, T, VE, TE]

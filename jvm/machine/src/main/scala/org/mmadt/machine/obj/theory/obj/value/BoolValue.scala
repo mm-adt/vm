@@ -31,7 +31,7 @@ import org.mmadt.machine.obj.theory.{ValueCommon, ValueLogical}
  */
 trait BoolValue extends Bool
   with Value[BoolValue]
-  with ValueCommon[BoolValue, BoolType]
+  with ValueCommon[Boolean, BoolValue, BoolType]
   with ValueLogical[BoolValue] {
 
   override def value(): Boolean //

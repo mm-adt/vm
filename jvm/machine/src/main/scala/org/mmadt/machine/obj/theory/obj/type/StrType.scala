@@ -32,6 +32,6 @@ import org.mmadt.machine.obj.theory.{TypeCommon, TypeOrder}
  */
 trait StrType extends Str
   with Type[StrType]
-  with TypeCommon[StrType]
+  with TypeCommon[String, StrValue, StrType]
   with TypePlus[String, StrValue, StrType]
   with TypeOrder[String, StrValue, StrType]

@@ -42,7 +42,7 @@ class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser 
   } else t.insts().head._2.apply(this).apply(t.pop().asInstanceOf[Type[_]])
 
   override def to(label: StrValue, obj: Obj): Traverser = new RecursiveTraverser(Map[StrValue, Obj](label -> obj) ++ this.state, obj) //
-  override def from(label: StrValue): Traverser = new RecursiveTraverser(this.state, this.state.get(label).get) //
+  override def from(label: StrValue): Traverser = new RecursiveTraverser(this.state, this.state(label)) //
 
   override def state(): Map[StrValue, Obj] = state
 }

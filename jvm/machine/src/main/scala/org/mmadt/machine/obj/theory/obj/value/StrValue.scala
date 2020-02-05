@@ -32,7 +32,7 @@ import org.mmadt.machine.obj.theory.{ValueCommon, ValueOrder}
  */
 trait StrValue extends Str
   with Value[StrValue]
-  with ValueCommon[StrValue, StrType]
+  with ValueCommon[String, StrValue, StrType]
   with ValuePlus[String, StrValue, StrType]
   with ValueOrder[String, StrValue, StrType] {
 

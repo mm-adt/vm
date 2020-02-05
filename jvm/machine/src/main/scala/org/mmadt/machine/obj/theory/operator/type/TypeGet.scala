@@ -32,9 +32,8 @@ import org.mmadt.machine.obj.theory.obj.`type`.{RecType, Type}
 trait TypeGet[J, A <: Obj, B <: Obj] extends Type[RecType[A, B]] {
 
   def get(key: J): B = this.get(value[J, A](key)) //
-  // def get(key: A): B = this.push(inst(Tokens.get, key)).asInstanceOf[B] //
-  def get[BT <: Type[_]](key: A): BT = this.push(this.asInstanceOf[RecType[A, B]].typeValue().get(key).get, inst(Tokens.get, key)).asInstanceOf[BT] //
-  def get[BT <: Type[_]](key: A, btype: BT): BT = this.push(btype, inst(Tokens.get, key)).asInstanceOf[BT]
+  def get(key: A): B = this.push(this.asInstanceOf[RecType[A, B]].typeValue()(key), inst(Tokens.get, key)) //
+  def get[BT <: Type[BT]](key: A, btype: BT): BT = this.push(btype, inst(Tokens.get, key))
 
 
 }

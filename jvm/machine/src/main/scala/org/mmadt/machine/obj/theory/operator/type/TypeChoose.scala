@@ -32,6 +32,6 @@ import org.mmadt.machine.obj.theory.obj.value.RecValue
 trait TypeChoose[TS <: Type[TS], TE <: Type[TE]] extends Type[TS] {
 
   def choose(branches: (TS, TE)*): TE = this.choose(rec(branches.toMap)) //
-  def choose(branches: RecValue[TS, TE]): TE = this.push(branches.value().head._2, inst(Tokens.choose, branches)).asInstanceOf[TE]
+  def choose(branches: RecValue[TS, TE]): TE = this.push(branches.value().head._2, inst(Tokens.choose, branches))
 
 }

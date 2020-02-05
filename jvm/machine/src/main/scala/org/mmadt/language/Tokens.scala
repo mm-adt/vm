@@ -36,6 +36,7 @@ object Tokens {
   val id = "id"
   val is = "is"
   val plus = "plus"
+  val map = "map"
   val mult = "mult"
   val gt = "gt"
   val or = "or"

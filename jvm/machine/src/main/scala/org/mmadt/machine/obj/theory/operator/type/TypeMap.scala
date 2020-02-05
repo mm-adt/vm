@@ -20,17 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.value
+package org.mmadt.machine.obj.theory.operator.`type`
 
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeIs
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueIs[V <: Value[V], T <: Type[T]] extends Value[V] {
-  def is(bool: Boolean): V = this.is(value[Boolean, BoolValue](bool)) //
-  def is(bool: BoolValue): V = (if (bool.value()) this else this.q(int(0), int(0))).asInstanceOf[V] //
-  def is(bool: BoolType): T = this.start().asInstanceOf[TypeIs[T]].is(bool)
+trait TypeMap[J, V <: Value[V], T <: Type[T]] extends Type[T] {
+
+  def map(other: J): T = this.map(value[J, V](other)) //
+  def map(other: V): T = this.push(other, inst(Tokens.map, other)) //
+  def map(other: T): T = this.push(other, inst(Tokens.map, other)) //
 }

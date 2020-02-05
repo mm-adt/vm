@@ -31,7 +31,7 @@ import org.scalatest.FunSuite
 class ChooseInstTest extends FunSuite {
 
   test("[choose] w/ types") {
-    println(int.plus(1).choose(
+    println(int.choose(
       int.is(int.gt(2)) -> int.mult(3),
       int -> int.mult(4)))
   }

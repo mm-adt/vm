@@ -22,15 +22,15 @@
 
 package org.mmadt.machine.obj.theory.operator.value
 
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeIs
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueIs[V <: Value[V], T <: Type[T]] extends Value[V] {
-  def is(bool: Boolean): V = this.is(value[Boolean, BoolValue](bool)) //
-  def is(bool: BoolValue): V = (if (bool.value()) this else this.q(int(0), int(0))).asInstanceOf[V] //
-  def is(bool: BoolType): T = this.start().asInstanceOf[TypeIs[T]].is(bool)
+trait ValueMap[J, V <: Value[V], T <: Type[T]] extends Value[V] {
+
+  def map(other: J): V = this.map(value[J, V](other)) //
+  def map(other: V): V = other //
+  def map(other: T): V = this.map((this ==> other).asInstanceOf[V])
 }

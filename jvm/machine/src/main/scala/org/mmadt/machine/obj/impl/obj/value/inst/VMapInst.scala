@@ -20,17 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.value
+package org.mmadt.machine.obj.impl.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeIs
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.impl.obj.qOne
+import org.mmadt.machine.obj.impl.obj.value.VInst
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.value.inst.MapInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueIs[V <: Value[V], T <: Type[T]] extends Value[V] {
-  def is(bool: Boolean): V = this.is(value[Boolean, BoolValue](bool)) //
-  def is(bool: BoolValue): V = (if (bool.value()) this else this.q(int(0), int(0))).asInstanceOf[V] //
-  def is(bool: BoolType): T = this.start().asInstanceOf[TypeIs[T]].is(bool)
-}
+class VMapInst[V <: Value[V], T <: Type[T]](arg: Obj) extends VInst((Tokens.map, List(arg)), qOne) with MapInst[V, T]
