@@ -20,28 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.machine.obj.impl.obj._
-import org.scalatest.FunSuite
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class IntTypeTest extends FunSuite {
+object TypeChecker {
 
-  test("int type construction") {
-    assertResult("bool<=int[plus,2][gt,4]")((int + 2 > 4).toString)
-    assertResult("int{?}<=int[plus,2][is,bool<=int[gt,4]]")((int + 2 is int.gt(4)).toString)
-  }
-
-  test("int: refinement types") {
-    println(int <= int.is(int.gt(5)))
-    assertResult("int<=int[is,bool<=int[gt,5]]")((int <= int.is(int.gt(5))).toString())
-    intercept[IllegalArgumentException] {
-      println(int <= int.is(int.gt(5)))
-      println(int(5) ==> (int <= int.is(int.gt(5))))
-    }
-    assertResult("5{0}")((int(5) ==> int.is(int.gt(5))).toString)
+  def checkType[O <: Obj](obj: O, ttype: Type[_]): O = {
+    if ((obj match {
+      case v: Value[_] => v.start().getClass.isAssignableFrom(ttype.getClass)
+      case t: Type[_] => t.getClass.isAssignableFrom(ttype.getClass)
+    }) && obj.q()._1.value() >= ttype.q()._1.value() && obj.q()._2.value() <= ttype.q()._2.value())
+      obj
+    else
+      throw new IllegalArgumentException("The obj " + obj + " does not match the type " + ttype)
   }
 }

@@ -25,6 +25,7 @@ package org.mmadt.machine.obj.impl.traverser
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.StrValue
+import org.mmadt.machine.obj.theory.operator.TypeChecker
 import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
@@ -35,7 +36,10 @@ class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser 
 
   override def obj[S <: Obj](): S = obj.asInstanceOf[S] //
   override def split[E <: Obj](obj: E): Traverser = new RecursiveTraverser(this.state, obj) //
-  override def apply(t: Type[_]): Traverser = if (t.insts().isEmpty) this else t.insts().head._2.apply(this).apply(t.pop().asInstanceOf[Type[_]])
+  override def apply(t: Type[_]): Traverser = if (t.insts().isEmpty) {
+    TypeChecker.checkType(this.obj(), t)
+    this
+  } else t.insts().head._2.apply(this).apply(t.pop().asInstanceOf[Type[_]])
 
   override def to(label: StrValue, obj: Obj): Traverser = new RecursiveTraverser(Map[StrValue, Obj](label -> obj) ++ this.state, obj) //
   override def from(label: StrValue): Traverser = new RecursiveTraverser(this.state, this.state.get(label).get) //

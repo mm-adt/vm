@@ -35,7 +35,7 @@ trait Type[T <: Type[T]] extends Obj {
   def insts(): List[(Type[_], Inst)] //
   def pop(): T //
   def push(inst: Inst): T //
-  def push[O<:Obj,T2 <: Type[T2]](t2:O, inst: Inst): Type[T2] = t2 match {
+  def push[O <: Obj, T2 <: Type[T2]](t2: O, inst: Inst): Type[T2] = t2 match {
     case _: IntType => int(inst).asInstanceOf[Type[T2]]
     case _: IntValue => int(inst).asInstanceOf[Type[T2]]
     case _: BoolType => bool(inst).asInstanceOf[Type[T2]]
@@ -61,5 +61,7 @@ trait Type[T <: Type[T]] extends Obj {
   def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] //
 
   override def toString: String = Stringer.typeString(this) //
+
+  final def <=[TT <: Type[TT]](mapFrom: Type[TT]): Type[TT] = mapFrom.q(this.q())
 
 }
