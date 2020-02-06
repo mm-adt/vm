@@ -39,19 +39,11 @@ trait GtInst[V <: Value[V], T <: Type[T]] extends Inst {
   type RT = TypeGt[_, V, T] with T
   type LEFT = Left[LV, RT]
   type RIGHT = Right[LV, RT]
-  private lazy val wrappedArg = VorT.wrap[LV, RT](arg())
 
   override def apply(traverser: Traverser): Traverser = {
     VorT.wrap[LV, RT](traverser.obj()) match {
-      case v: LEFT => wrappedArg match {
-        case argV: LEFT => traverser.split[BoolValue](v.value.gt(argV.value))
-        case argT: RIGHT => traverser.split[BoolValue](v.value.gt(traverser.split(v.value).apply(argT.value).obj[V]()))
-      }
-      case t: RIGHT => wrappedArg match {
-        case argV: LEFT => traverser.split[BoolType](t.value.gt(argV.value))
-        case argT: RIGHT => traverser.split[BoolType](t.value.gt(traverser.split(t.value).apply(argT.value).obj[T]()))
-      }
+      case v: LEFT => traverser.split[BoolValue](v.value.gt(arg[V]()))
+      case t: RIGHT => traverser.split[BoolType](t.value.gt(arg[V]()))
     }
-
   }
 }

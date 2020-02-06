@@ -22,9 +22,9 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
-import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Obj}
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 import org.mmadt.machine.obj.theory.operator.`type`.TypeIs
 import org.mmadt.machine.obj.theory.operator.value.ValueIs
 import org.mmadt.machine.obj.theory.traverser.Traverser
@@ -35,14 +35,8 @@ import org.mmadt.machine.obj.theory.traverser.Traverser
 trait IsInst[V <: Value[V], T <: Type[T]] extends Inst {
   override def apply(traverser: Traverser): Traverser = {
     traverser.obj[Obj]() match {
-      case v: ValueIs[V, T] => arg[Bool]() match {
-        case argV: BoolValue => traverser.split[V](v.is(argV))
-        case argT: BoolType => traverser.split[V](v.is(traverser.split(v).apply(argT).obj().asInstanceOf[BoolValue]))
-      }
-      case t: TypeIs[T] => arg[Bool]() match {
-        case argV: BoolValue => traverser.split[T](t.is(argV))
-        case argT: BoolType => traverser.split[T](t.is(traverser.split(t).apply(argT).obj().asInstanceOf[BoolType]))
-      }
+      case v: ValueIs[V, T] => traverser.split[V](v.is(arg[BoolValue]()))
+      case t: TypeIs[T] => traverser.split[T](t.is(arg[BoolValue]()))
     }
   }
 }

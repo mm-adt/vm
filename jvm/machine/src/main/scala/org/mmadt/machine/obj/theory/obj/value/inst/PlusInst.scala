@@ -34,23 +34,15 @@ import org.mmadt.machine.obj.theory.traverser.Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait PlusInst[V <: Value[V], T <: Type[T]] extends Inst {
-
   type LV = ValuePlus[_, V, T] with V
   type RT = TypePlus[_, V, T] with T
   type LEFT = Left[LV, RT]
   type RIGHT = Right[LV, RT]
-  private lazy val wrappedArg = VorT.wrap[LV, RT](arg())
 
   override def apply(traverser: Traverser): Traverser = {
     VorT.wrap[LV, RT](traverser.obj()) match {
-      case v: LEFT => wrappedArg match {
-        case argV: LEFT => traverser.split[V](v.value.plus(argV.value))
-        case argT: RIGHT => traverser.split[V](v.value.plus(traverser.split(v.value).apply(argT.value).obj[V]()))
-      }
-      case t: RIGHT => wrappedArg match {
-        case argV: LEFT => traverser.split[T](t.value.plus(argV.value))
-        case argT: RIGHT => traverser.split[T](t.value.plus(traverser.split(t.value).apply(argT.value).obj[T]()))
-      }
+      case v: LEFT => traverser.split[V](v.value.plus(arg[V]()))
+      case t: RIGHT => traverser.split[T](t.value.plus(arg[V]()))
     }
   }
 }

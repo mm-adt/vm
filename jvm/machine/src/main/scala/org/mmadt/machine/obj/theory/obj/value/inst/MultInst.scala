@@ -34,23 +34,15 @@ import org.mmadt.machine.obj.theory.traverser.Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait MultInst[V <: Value[V], T <: Type[T]] extends Inst {
-
   type LV = ValueMult[_, V, T] with V
   type RT = TypeMult[_, V, T] with T
   type LEFT = Left[LV, RT]
   type RIGHT = Right[LV, RT]
-  private lazy val wrappedArg = VorT.wrap[LV, RT](arg())
 
   override def apply(traverser: Traverser): Traverser = {
     VorT.wrap[LV, RT](traverser.obj()) match {
-      case v: LEFT => wrappedArg match {
-        case argV: LEFT => traverser.split[V](v.value.mult(argV.value))
-        case argT: RIGHT => traverser.split[V](v.value.mult(traverser.split(v.value).apply(argT.value).obj[V]()))
-      }
-      case t: RIGHT => wrappedArg match {
-        case argV: LEFT => traverser.split[T](t.value.mult(argV.value))
-        case argT: RIGHT => traverser.split[T](t.value.mult(traverser.split(t.value).apply(argT.value).obj[T]()))
-      }
+      case v: LEFT => traverser.split[V](v.value.mult(arg[V]()))
+      case t: RIGHT => traverser.split[T](t.value.mult(arg[V]()))
     }
   }
 }
