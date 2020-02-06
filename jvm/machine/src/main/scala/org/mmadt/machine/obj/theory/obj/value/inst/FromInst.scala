@@ -23,12 +23,12 @@
 package org.mmadt.machine.obj.theory.obj.value.inst
 
 import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.value.StrValue
 import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait FromInst extends Inst {
-  override def apply(traverser: Traverser): Traverser = traverser.from(arg[StrValue]())
+  @throws[UnsupportedOperationException]
+  override def apply(traverser: Traverser): Traverser = throw new UnsupportedOperationException("Traverser instructions can be evaluated")
 }

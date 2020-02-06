@@ -30,5 +30,6 @@ import org.mmadt.machine.obj.theory.traverser.Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ToInst extends Inst {
-  override def apply(traverser: Traverser): Traverser = traverser.to(arg[StrValue](), traverser.obj())
+  @throws[UnsupportedOperationException]
+  override def apply(traverser: Traverser): Traverser = throw new UnsupportedOperationException("Traverser instructions can be evaluated")
 }

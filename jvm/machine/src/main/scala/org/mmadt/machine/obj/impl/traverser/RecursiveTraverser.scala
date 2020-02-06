@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj.impl.traverser
 
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.{StrValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
@@ -41,16 +42,20 @@ class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser 
       TypeChecker.checkType(this.obj(), t)
       this
     } else {
-      val i: Inst = t.insts().head._2
-      i.inst(i.op(), i.args().map {
-        case typeArg: Type[_] => this.apply(typeArg).obj()
-        case valueArg: Value[_] => valueArg
-      }).apply(this).apply(t.pop().asInstanceOf[Type[_]])
+      (t.insts().head._2 match {
+        case toInst: Inst if toInst.op().equals(Tokens.to) => to(toInst.arg(), this.obj)
+        case fromInst: Inst if fromInst.op().equals(Tokens.from) => from(fromInst.arg())
+        case storeInst: Inst =>
+          storeInst.inst(storeInst.op(), storeInst.args().map {
+            case typeArg: Type[_] => this.apply(typeArg).obj()
+            case valueArg: Value[_] => valueArg
+          }).apply(this)
+      }).apply(t.pop().asInstanceOf[Type[_]])
     }
   }
 
-  override def to(label: StrValue, obj: Obj): Traverser = new RecursiveTraverser(Map[StrValue, Obj](label -> obj) ++ this.state, obj) //
-  override def from(label: StrValue): Traverser = new RecursiveTraverser(this.state, this.state(label)) //
+  override protected def to(label: StrValue, obj: Obj): Traverser = new RecursiveTraverser(Map[StrValue, Obj](label -> obj) ++ this.state, obj) //
+  override protected def from(label: StrValue): Traverser = new RecursiveTraverser(this.state, this.state(label)) //
 
   override def state(): Map[StrValue, Obj] = state
 }
