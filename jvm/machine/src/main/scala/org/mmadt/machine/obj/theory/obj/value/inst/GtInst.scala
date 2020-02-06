@@ -22,13 +22,12 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.util.VorT
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
+import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 import org.mmadt.machine.obj.theory.operator.`type`.TypeGt
 import org.mmadt.machine.obj.theory.operator.value.ValueGt
-import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,10 +39,10 @@ trait GtInst[V <: Value[V], T <: Type[T]] extends Inst {
   type LEFT = Left[LV, RT]
   type RIGHT = Right[LV, RT]
 
-  override def apply(traverser: Traverser): Traverser = {
-    VorT.wrap[LV, RT](traverser.obj()) match {
-      case v: LEFT => traverser.split[BoolValue](v.value.gt(arg[V]()))
-      case t: RIGHT => traverser.split[BoolType](t.value.gt(arg[V]()))
+  override def apply(obj: Obj): Obj = {
+    VorT.wrap[LV, RT](obj) match {
+      case v: LEFT => v.value.gt(arg[V]())
+      case t: RIGHT => t.value.gt(arg[V]())
     }
   }
 }

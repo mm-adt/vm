@@ -22,14 +22,12 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.traverser.Traverser
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ToInst extends Inst {
   @throws[UnsupportedOperationException]
-  override def apply(traverser: Traverser): Traverser = throw new UnsupportedOperationException("Traverser instructions can be evaluated")
+  override def apply(obj: Obj): Obj = throw new UnsupportedOperationException("Traverser instructions can be evaluated")
 }

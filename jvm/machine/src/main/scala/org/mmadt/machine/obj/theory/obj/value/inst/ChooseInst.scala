@@ -22,13 +22,12 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.Inst
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.util.VorT
 import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 import org.mmadt.machine.obj.theory.operator.`type`.TypeChoose
 import org.mmadt.machine.obj.theory.operator.value.ValueChoose
-import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,10 +39,10 @@ trait ChooseInst[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]] e
   type RIGHT = Right[LV, RT]
   private val varg: RecValue[T, TE] = arg[RecValue[T, TE]]()
 
-  override def apply(traverser: Traverser): Traverser = {
-    VorT.wrap[LV, RT](traverser.obj()) match {
-      case v: LEFT => traverser.split[VE](v.value.choose(varg))
-      case t: RIGHT => traverser.split[TE](t.value.choose(varg))
+  override def apply(obj: Obj): Obj = {
+    VorT.wrap[LV, RT](obj) match {
+      case v: LEFT => v.value.choose(varg)
+      case t: RIGHT => t.value.choose(varg)
     }
   }
 }

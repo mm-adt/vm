@@ -22,19 +22,12 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+import org.mmadt.machine.obj.theory.obj.value.RecValue
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait GetInst[A <: Obj, B <: Obj] extends Inst {
-  override def apply(traverser: Traverser): Traverser = {
-    traverser.obj[RecValue[A, B]]().get(arg()) match {
-      case bval: Value[_] => traverser.split(bval)
-      case btype: Type[_] => traverser.split(arg()).apply(btype)
-    }
-  }
+  override def apply(obj: Obj): Obj = obj.asInstanceOf[RecValue[A, B]].get(arg())
 }
