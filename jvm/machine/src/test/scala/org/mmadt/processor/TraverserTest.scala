@@ -24,8 +24,7 @@ package org.mmadt.processor
 
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.machine.obj.theory.obj.{Int, Obj}
 import org.mmadt.machine.obj.theory.traverser.Traverser
 import org.scalatest.FunSuite
 
@@ -44,7 +43,7 @@ class TraverserTest extends FunSuite {
       trav(int(3))(int.to("a").plus(5).to("b")).toString
     }
     assertResult("[11|a->3,b->8]") {
-      trav(int(3))(int.to("a").plus(5).to("b").plus(int.from[IntValue]("a"))).toString
+      trav(int(3))(int.to("a").plus(5).to("b").plus(int.from[Int]("a"))).toString
     }
   }
 

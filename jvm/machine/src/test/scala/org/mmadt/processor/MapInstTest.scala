@@ -31,13 +31,13 @@ import org.scalatest.FunSuite
 class MapInstTest extends FunSuite {
 
   test("[map] w/ values") {
-  //  assertResult(int(5))(int(1).plus(1).map(5))
+    assertResult(int(5))(int(1).plus(1).map(int(5)))
     assertResult(int(2))(int(1).plus(1).map(int))
     assertResult(int(20))(int(1).plus(1).map(int.mult(10)))
   }
 
   test("[map] w/ types") {
-  //  assertResult(int(5))(int(1).plus(1).map(5))
+    assertResult(int(5))(int(1).plus(1).map(int(5)))
     assertResult(int(2))(int(1).plus(1).map(int))
     assertResult(int(20))(int(1).plus(1).map(int.mult(10)))
     assertResult("int[plus,1][map,int]")(int.plus(1).map(int).toString)
