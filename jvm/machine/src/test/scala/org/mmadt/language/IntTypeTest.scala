@@ -29,12 +29,10 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class IntTypeTest extends FunSuite {
-
   test("int infix operators") {
     assertResult("bool<=int[plus,2][gt,4]")((int + 2 > 4).toString)
     assertResult("int{?}<=int[plus,2][is,bool<=int[gt,4]]")((int + 2 is int.gt(4)).toString)
   }
-
   test("int: refinement types") {
     println(int <= int.is(int.gt(5)))
     assertResult("int[is,bool<=int[gt,5]]")((int <= int.is(int.gt(5))).toString())
@@ -47,5 +45,12 @@ class IntTypeTest extends FunSuite {
       println(int.q(0) <= int.is(int.gt(5)))
       println(int(6) ==> int.q(0) <= int.is(int.gt(5)))
     }
+  }
+  test("int: deep nest") {
+    assertResult(int(2))(int(1) ==> int.plus(1))
+    assertResult(int(3))(int(1) ==> int.plus(int.plus(1)))
+    assertResult(int(4))(int(1) ==> int.plus(int.plus(int.plus(1))))
+    assertResult(int(5))(int(1) ==> int.plus(int.plus(int.plus(int.plus(1)))))
+    assertResult(int(6))(int(1) ==> int.plus(int.plus(int.plus(int.plus(int.plus(1))))))
   }
 }
