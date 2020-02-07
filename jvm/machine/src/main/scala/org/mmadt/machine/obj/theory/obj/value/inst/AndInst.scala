@@ -20,16 +20,13 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.obj.value.inst
+package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.impl.obj.value.VInst
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.value.inst.PlusInst
-import org.mmadt.machine.obj.theory.operator.PlusOp
+import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VPlusInst[O <: Obj with PlusOp[_, O]](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O]
+trait AndInst extends Inst {
+  override def apply(obj: Obj): Obj = obj.asInstanceOf[Bool].and(arg[Bool]())
+}

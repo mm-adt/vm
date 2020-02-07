@@ -30,10 +30,10 @@ import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRec[K <: Obj, V <: Obj](java: Map[K, V], insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[RecType[K, V]](insts, quantifier) with RecType[K, V] {
-  def this() = this(Map[K, V](), Nil, qOne) //
-  override def push(inst: Inst): RecType[K, V] = rec[K, V](java, inst, quantifier) //
-  override def pop(): RecType[K, V] = new TRec[K, V](java, insts.tail, quantifier) //
-  override def q(quantifier: TQ): this.type = new TRec[K, V](java, insts, quantifier).asInstanceOf[this.type] //
+class TRec[A <: Obj, B <: Obj](java: Map[A, B], insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[RecType[A, B]](insts, quantifier) with RecType[A, B] {
+  def this() = this(Map[A, B](), Nil, qOne) //
+  override def push(inst: Inst): RecType[A, B] = rec[A, B](java, inst, quantifier) //
+  override def pop(): RecType[A, B] = new TRec[A, B](java, insts.tail, quantifier) //
+  override def q(quantifier: TQ): this.type = new TRec[A, B](java, insts, quantifier).asInstanceOf[this.type] //
   // override def typeValue(): Map[K, V] = java
 }

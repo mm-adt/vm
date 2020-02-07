@@ -43,7 +43,9 @@ abstract class OObj(val quantifier: TQ) extends Obj {
   override def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec(value) //
 
   override def inst(op: String, args: List[Obj]): Inst = op match {
+    case Tokens.and => new VAndInst(args.head.asInstanceOf[Bool])
     case Tokens.choose => new VChooseInst(args.head.asInstanceOf[RecValue[Type[_], Type[_]]])
+    case Tokens.or => new VOrInst(args.head.asInstanceOf[Bool])
     case Tokens.plus => new VPlusInst(args.head)
     case Tokens.map => new VMapInst(args.head)
     case Tokens.mult => new VMultInst(args.head)
@@ -53,8 +55,6 @@ abstract class OObj(val quantifier: TQ) extends Obj {
     case Tokens.to => new VToInst(args.head.asInstanceOf[StrValue])
     case Tokens.from => new VFromInst(args.head.asInstanceOf[StrValue])
     // INSTRUCTION IMPLEMENTATIONS NEEDED
-    case Tokens.and => new VInst((Tokens.and, args))
-    case Tokens.or => new VInst((Tokens.or, args))
     case Tokens.start => new VInst((Tokens.start, args)) // TODO: will be first flatmap
   }
 }

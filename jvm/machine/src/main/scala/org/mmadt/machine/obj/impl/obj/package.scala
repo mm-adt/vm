@@ -32,7 +32,6 @@ import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue, St
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 package object obj {
-
   val qZero: (IntValue, IntValue) = (int(0), int(0))
   val qOne: (IntValue, IntValue) = (int(1), int(1))
   val qMark: (IntValue, IntValue) = (int(0), int(1))

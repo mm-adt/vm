@@ -33,12 +33,12 @@ import org.mmadt.machine.obj.theory.obj.value.RecValue
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[K <: Obj, V <: Obj](java: Map[K, V], quantifier: TQ) extends VObj(java, quantifier) with RecValue[K, V] {
+class VRec[A <: Obj, B <: Obj](java: Map[A, B], quantifier: TQ) extends VObj(java, quantifier) with RecValue[A, B] {
 
-  def this(java: Map[K, V]) = this(java, qOne)
+  def this(java: Map[A, B]) = this(java, qOne)
 
-  override def value(): Map[K, V] = java //
-  override def start(): RecType[K, V] = new TRec(java, List((new TRec(java, Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def value(): Map[A, B] = java //
+  override def start(): RecType[A, B] = new TRec(java, List((new TRec(java, Nil, qZero), inst(Tokens.start, this))), q()) //
   override def q(quantifier: TQ): this.type = new VRec(java, quantifier).asInstanceOf[this.type] //
 
 }
