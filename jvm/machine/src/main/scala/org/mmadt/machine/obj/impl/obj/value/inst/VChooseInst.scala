@@ -25,13 +25,14 @@ package org.mmadt.machine.obj.impl.obj.value.inst
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj.qOne
 import org.mmadt.machine.obj.impl.obj.value.VInst
+import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.RecValue
 import org.mmadt.machine.obj.theory.obj.value.inst.ChooseInst
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+import org.mmadt.machine.obj.theory.operator.ChooseOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VChooseInst[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]](arg: RecValue[Type[_], Type[_]])
-  extends VInst((Tokens.choose, List(arg)), qOne)
-    with ChooseInst[V, T, VE, TE]
+class VChooseInst[O <: Obj with ChooseOp, IO <: Obj, OO <: Obj](arg: RecValue[Type[_], Type[_]]) extends VInst((Tokens.choose, List(arg)), qOne)
+  with ChooseInst[O, IO, OO]

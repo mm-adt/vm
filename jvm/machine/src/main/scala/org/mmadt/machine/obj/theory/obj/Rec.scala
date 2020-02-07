@@ -22,7 +22,17 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.theory.operator.{GetOp, IsOp, PlusOp, ToOp}
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Rec[K <: Obj, V <: Obj] extends Obj
+trait Rec[A <: Obj, B <: Obj] extends Obj
+  with PlusOp[Map[A, B], Rec[A, B]]
+  with IsOp[Rec[A, B]]
+  with ToOp[Rec[A, B]]
+  with GetOp[Map[A, B], A, B] { // TODO: not J=Map
+
+  def value(): Map[A, B] //
+
+}

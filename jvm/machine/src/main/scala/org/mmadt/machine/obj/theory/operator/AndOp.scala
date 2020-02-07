@@ -20,22 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.`type`
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.BoolValue
+import org.mmadt.machine.obj.theory.obj.Bool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TypeAnd[T <: Type[T]] extends Type[T] {
+trait AndOp {
+  this: Bool =>
 
-  def and(bool: Boolean): BoolType = this.and(value[Boolean, BoolValue](bool)) //
-  def and(bool: BoolValue): BoolType = this.bool(inst(Tokens.and, bool), this.q()) //
-  def and(bool: BoolType): BoolType = this.bool(inst(Tokens.and, bool), this.q()) //
+  def and(other: Boolean): Bool = this.and(this.bool(other)) //
+  def and(other: Bool): Bool //
 
-  final def &(bool: Boolean): BoolType = this.and(bool) //
-  final def &(bool: BoolValue): BoolType = this.and(bool) //
-  final def &(bool: BoolType): BoolType = this.and(bool) //
+  final def &&(other: Boolean): Bool = this.and(other) //
+  final def &&(other: Bool): Bool = this.and(other) //
 }

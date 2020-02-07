@@ -22,14 +22,23 @@
 
 package org.mmadt.machine.obj.theory.obj.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.theory.obj.Bool
-import org.mmadt.machine.obj.theory.obj.value.BoolValue
-import org.mmadt.machine.obj.theory.{TypeCommon, TypeLogical}
+import org.mmadt.machine.obj.theory.obj.value.StrValue
+import org.mmadt.machine.obj.theory.operator.ToOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolType extends Bool
   with Type[BoolType]
-  with TypeCommon[Boolean, BoolValue, BoolType]
-  with TypeLogical[BoolType]
+  with ToOp[Bool] {
+
+  @throws[IllegalAccessException]
+  override def value(): Boolean = throw new IllegalAccessException("...")
+
+  override def is(other: Bool): BoolType = this.push(inst(Tokens.is, other)).q(int(0), q()._2) //
+  override def and(other: Bool): BoolType = this.push(inst(Tokens.and, other)) //
+  override def or(other: Bool): BoolType = this.push(inst(Tokens.or, other)) //
+  override def to(label: StrValue): BoolType = this.push(inst(Tokens.to, label)) //
+}

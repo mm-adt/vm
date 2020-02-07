@@ -22,23 +22,38 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.theory.obj.Str
 import org.mmadt.machine.obj.theory.obj.`type`.StrType
-import org.mmadt.machine.obj.theory.operator.value.ValuePlus
-import org.mmadt.machine.obj.theory.{ValueCommon, ValueOrder}
+import org.mmadt.machine.obj.theory.obj.{Bool, Str}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrValue extends Str
-  with Value[StrValue]
-  with ValueCommon[String, StrValue, StrType]
-  with ValuePlus[String, StrValue, StrType]
-  with ValueOrder[String, StrValue, StrType] {
+  with Value[StrValue] {
 
   override def value(): String //
   override def start(): StrType //
 
-  override def plus(other: StrValue): StrValue = str(this.value() + other.value()) //
-  override def gt(other: StrValue): BoolValue = bool(this.value() > other.value()) //
+  override def to(label: StrValue): StrType = this.start().to(label) //
+
+  override def plus(other: Str): Str = {
+    try str(this.value() + other.value())
+    catch {
+      case _: IllegalAccessException => this.start().plus(other)
+    }
+  }
+
+  override def gt(other: Str): Bool = {
+    try bool(this.value() > other.value())
+    catch {
+      case _: IllegalAccessException => this.start().gt(other)
+    }
+  }
+
+  override def is(bool: Bool): Str = {
+    try if (bool.value()) this else this.q(0)
+    catch {
+      case _: IllegalAccessException => this.start().is(bool)
+    }
+  }
 }

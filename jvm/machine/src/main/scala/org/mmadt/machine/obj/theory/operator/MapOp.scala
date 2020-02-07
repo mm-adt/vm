@@ -20,16 +20,16 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.value
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{StrValue, Value}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeFrom
+import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueFrom[V <: Value[V], T <: Type[T]] extends Value[V] {
-  def from(other: String): T = this.from(str(other)) //
-  def from(label: StrValue): T = this.start().asInstanceOf[TypeFrom[T]].from(label) //
+trait MapOp {
+  this: Obj with MapOp =>
+
+  //def map[O<:Obj](other: J): O = this.map(this.value[J, O](other)) //
+  def map[O <: Obj](other: O): O = other // TODO NO IMPL -- INST
 }

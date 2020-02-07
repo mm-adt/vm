@@ -22,18 +22,30 @@
 
 package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.machine.obj.theory.TypeCommon
-import org.mmadt.machine.obj.theory.obj.value.RecValue
-import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
-import org.mmadt.machine.obj.theory.operator.`type`.{TypeGet, TypePlus}
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
+import org.mmadt.machine.obj.theory.obj.value.{StrValue, Value}
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj, Rec}
+import org.mmadt.machine.obj.theory.operator.ToOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   with Type[RecType[A, B]]
-  with TypePlus[Map[A, B], RecValue[A, B], RecType[A, B]]
-  with TypeCommon[Map[A, B], RecValue[A, B], RecType[A, B]]
-  with TypeGet[Map[A, B], A, B] {
-  def typeValue(): Map[A, B] //
+  with ToOp[Rec[A, B]] {
+
+  @throws[IllegalAccessException]
+  override def value(): Map[A, B] = throw new IllegalAccessException("...")
+
+  override def plus(other: Rec[A, B]): RecType[A, B] = this.push(inst(Tokens.plus, other)) //
+  override def is(other: Bool): RecType[A, B] = this.push(inst(Tokens.is, other)).q(int(0), q()._2) //
+  override def to(label: StrValue): RecType[A, B] = this.push(inst(Tokens.to, label)) //
+  override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.push(btype, inst(Tokens.get, key)) //
+  override def get(key: A): B = this.value().get(key) match {
+    case Some(bvalue: Value[_]) => bvalue.asInstanceOf[B]
+    case Some(btype: Type[_]) => new RecursiveTraverser(key).apply(btype).obj()
+    case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
+    case _ => throw new RuntimeException()
+  }
 }

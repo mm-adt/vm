@@ -22,27 +22,13 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.util.VorT
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+import org.mmadt.machine.obj.theory.obj.value.RecValue
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeChoose
-import org.mmadt.machine.obj.theory.operator.value.ValueChoose
+import org.mmadt.machine.obj.theory.operator.ChooseOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ChooseInst[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]] extends Inst {
-  type LV = ValueChoose[V, T, VE, TE]
-  type RT = TypeChoose[T, TE]
-  type LEFT = Left[LV, RT]
-  type RIGHT = Right[LV, RT]
-  private val varg: RecValue[T, TE] = arg[RecValue[T, TE]]()
-
-  override def apply(obj: Obj): Obj = {
-    VorT.wrap[LV, RT](obj) match {
-      case v: LEFT => v.value.choose(varg)
-      case t: RIGHT => t.value.choose(varg)
-    }
-  }
+trait ChooseInst[O <: Obj with ChooseOp, IO <: Obj, OO <: Obj] extends Inst {
+  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].choose(arg[RecValue[IO, OO]]())
 }

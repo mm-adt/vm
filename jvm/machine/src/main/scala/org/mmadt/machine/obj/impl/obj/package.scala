@@ -42,13 +42,13 @@ package object obj {
   val int: IntType = new TInt() //
   val bool: BoolType = new TBool() //
   val str: StrType = new TStr() //
-  def rec[K <: Obj, V <: Obj]: RecType[K, V] = new TRec[K, V]() //
+  def rec[A <: Obj, B <: Obj]: RecType[A, B] = new TRec[A, B]() //
   val btrue: BoolValue = bool(true)
   val bfalse: BoolValue = bool(false)
 
   def int(value: Long): IntValue = new VInt(value) //
   def bool(value: Boolean): BoolValue = new VBool(value) //
   def str(value: String): StrValue = new VStr(value) //
-  def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec[K, V](value) //
-  def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = new VRec[K, V](value.reverse.toMap) //
+  def rec[A <: Obj, B <: Obj](value: Map[A, B]): RecValue[A, B] = new VRec[A, B](value) //
+  def rec[A <: Obj, B <: Obj](value: (A, B)*): RecValue[A, B] = new VRec[A, B](value.reverse.toMap) //
 }

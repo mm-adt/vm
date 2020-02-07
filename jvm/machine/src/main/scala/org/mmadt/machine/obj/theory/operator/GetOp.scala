@@ -20,17 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.`type`
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
-import org.mmadt.machine.obj.theory.obj.value.BoolValue
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TypeIs[T <: Type[T]] extends Type[T] {
-  def is(bool: Boolean): T = this.is(value[Boolean, BoolValue](bool)) //
-  def is(bool: BoolValue): T = (if (bool.value()) this else this.q(0)).asInstanceOf[T] //
-  def is(bool: BoolType): T = this.push(inst(Tokens.is, bool)).q(int(0), q()._2) //
+trait GetOp[J, A <: Obj, B <: Obj] {
+  this: Rec[A, B] =>
+
+  def get(key: J): B = this.get(value[J, A](key)) //
+  def get(key: A): B //
+  def get[BT <: Type[BT]](key: A, btype: BT): BT //
 }

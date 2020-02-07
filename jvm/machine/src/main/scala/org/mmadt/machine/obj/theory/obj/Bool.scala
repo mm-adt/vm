@@ -22,7 +22,16 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.theory.operator.{AndOp, IsOp, OrOp, ToOp}
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Bool extends Obj
+  with IsOp[Bool]
+  with AndOp
+  with OrOp
+  with ToOp[Bool]{
+
+  def value(): Boolean //
+}

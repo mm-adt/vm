@@ -20,18 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.value
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueChoose[V <: Value[V], T <: Type[T], VE <: Value[VE], TE <: Type[TE]] extends Value[V] {
+trait GtOp[J, O <: Obj with GtOp[J, O]] {
+  this: Obj with GtOp[J, O] =>
 
-  def choose(branches: (T, TE)*): VE = this.choose(rec(branches.toMap))
+  def gt(other: J): Bool = this.gt(this.value[J, O](other)) //
+  def gt(other: O): Bool //
 
-  def choose(branches: RecValue[T, TE]): VE =
-    (this ==> (branches.value().filter(p => (this ==> p._1.asInstanceOf[T]).alive()).head._2)).asInstanceOf[VE]
+  final def >(other: J): Bool = this.gt(other) //
+  final def >(other: O): Bool = this.gt(other) //
 }
+

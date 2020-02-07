@@ -20,16 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.`type`
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.value.StrValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TypeTo[T <: Type[T]] extends Type[T] {
-  def to(other: String): T = this.to(str(other)) //
-  def to(label: StrValue): T = this.push(inst(Tokens.to, label)) //
+trait ToOp[O <: Obj with ToOp[O]] {
+  this: O =>
+
+  def to(other: String): O = this.to(str(other)) //
+  def to(label: StrValue): O
 }

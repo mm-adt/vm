@@ -25,12 +25,11 @@ package org.mmadt.machine.obj.impl.obj.value.inst
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.obj.value.VInst
-import org.mmadt.machine.obj.theory.obj.Bool
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.value.inst.IsInst
+import org.mmadt.machine.obj.theory.operator.IsOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VIsInst[V <: Value[V], T <: Type[T]](arg: Bool) extends VInst((Tokens.is, List(arg)), qOne) with IsInst[V, T]
+class VIsInst[O <: Obj with IsOp[O]](arg: Obj) extends VInst((Tokens.is, List(arg)), qOne) with IsInst[O]

@@ -22,26 +22,12 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.util.VorT
-import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.operator.`type`.TypePlus
-import org.mmadt.machine.obj.theory.operator.value.ValuePlus
+import org.mmadt.machine.obj.theory.operator.PlusOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusInst[V <: Value[V], T <: Type[T]] extends Inst {
-  type LV = ValuePlus[_, V, T] with V
-  type RT = TypePlus[_, V, T] with T
-  type LEFT = Left[LV, RT]
-  type RIGHT = Right[LV, RT]
-
-  override def apply(obj: Obj): Obj = {
-    VorT.wrap[LV, RT](obj) match {
-      case v: LEFT => v.value.plus(arg[V]())
-      case t: RIGHT => t.value.plus(arg[V]())
-    }
-  }
+trait PlusInst[O <: Obj with PlusOp[_, O]] extends Inst {
+  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].plus(arg[O]())
 }

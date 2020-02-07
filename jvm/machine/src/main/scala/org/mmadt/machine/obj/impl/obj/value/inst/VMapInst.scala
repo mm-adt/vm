@@ -26,11 +26,10 @@ import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj.qOne
 import org.mmadt.machine.obj.impl.obj.value.VInst
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.value.inst.MapInst
+import org.mmadt.machine.obj.theory.operator.MapOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VMapInst[V <: Value[V], T <: Type[T]](arg: Obj) extends VInst((Tokens.map, List(arg)), qOne) with MapInst[V, T]
+class VMapInst[O <: Obj with MapOp](arg: Obj) extends VInst((Tokens.map, List(arg)), qOne) with MapInst[O]

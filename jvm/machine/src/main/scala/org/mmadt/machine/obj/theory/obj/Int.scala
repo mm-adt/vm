@@ -22,7 +22,17 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.theory.operator._
+
 /**
-  * @author Marko A. Rodriguez (http://markorodriguez.com)
-  */
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait Int extends Obj
+  with PlusOp[Long, Int]
+  with MultOp[Long, Int]
+  with GtOp[Long, Int]
+  with IsOp[Int]
+  with ToOp[Int] {
+
+  def value(): Long //
+}

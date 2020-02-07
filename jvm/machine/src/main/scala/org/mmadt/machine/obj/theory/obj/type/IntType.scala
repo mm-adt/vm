@@ -22,15 +22,25 @@
 
 package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.machine.obj.theory.obj.Int
-import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.theory.{TypeCommon, TypeOrder, TypeRing}
+import org.mmadt.language.Tokens
+import org.mmadt.machine.obj.theory.obj.value.StrValue
+import org.mmadt.machine.obj.theory.obj.{Bool, Int}
+import org.mmadt.machine.obj.theory.operator.ToOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntType extends Int
   with Type[IntType]
-  with TypeCommon[Long,IntValue,IntType]
-  with TypeRing[Long, IntValue, IntType]
-  with TypeOrder[Long, IntValue, IntType]
+  with ToOp[Int] {
+
+  @throws[IllegalAccessException]
+  override def value(): Long = throw new IllegalAccessException("...")
+
+  override def is(other: Bool): IntType = this.push(inst(Tokens.is, other)).q(int(0), q()._2) //
+  override def plus(other: Int): IntType = this.push(inst(Tokens.plus, other)) //
+  override def mult(other: Int): IntType = this.push(inst(Tokens.mult, other)) //
+  override def gt(other: Int): BoolType = this.bool(inst(Tokens.gt, other)) //
+  override def gt(other: Long): BoolType = this.gt(int(other)) //
+  override def to(label: StrValue): IntType = this.push(inst(Tokens.to, label)) //
+}

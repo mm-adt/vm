@@ -22,16 +22,24 @@
 
 package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.machine.obj.theory.obj.Str
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.operator.`type`.TypePlus
-import org.mmadt.machine.obj.theory.{TypeCommon, TypeOrder}
+import org.mmadt.machine.obj.theory.obj.{Bool, Str}
+import org.mmadt.machine.obj.theory.operator.ToOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrType extends Str
   with Type[StrType]
-  with TypeCommon[String, StrValue, StrType]
-  with TypePlus[String, StrValue, StrType]
-  with TypeOrder[String, StrValue, StrType]
+  with ToOp[Str] {
+
+  @throws[IllegalAccessException]
+  override def value(): String = throw new IllegalAccessException("...")
+
+  override def plus(other: Str): StrType = this.push(inst(Tokens.plus, other)) //
+  override def is(other: Bool): StrType = this.push(inst(Tokens.is, other)).q(int(0), q()._2) //
+  override def gt(other: Str): BoolType = this.bool(inst(Tokens.gt, other)) //
+  override def to(label: StrValue): StrType = this.push(inst(Tokens.to, label)) //
+
+}

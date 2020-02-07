@@ -20,22 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.`type`
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.Obj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TypeMult[J, V <: Value[V], T <: Type[T]] extends Type[T] {
+trait MultOp[J, O <: Obj with MultOp[J, O]] {
+  this: Obj with MultOp[J, O] =>
 
-  def mult(other: J): T = this.mult(value[J, V](other)) //
-  def mult(other: V): T = this.push(inst(Tokens.mult, other)) //
-  def mult(other: T): T = this.push(inst(Tokens.mult, other)) //
+  def mult(other: J): O = this.mult(this.value[J, O](other)) //
+  def mult(other: O): O //
 
-  final def *(other: J): T = this.mult(other) //
-  final def *(other: V): T = this.mult(other) //
-  final def *(other: T): T = this.mult(other) //
+  final def *(other: J): O = this.mult(other) //
+  final def *(other: O): O = this.mult(other) //
 }
+

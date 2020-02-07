@@ -20,20 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.`type`
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{RecType, Type}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TypeGet[J, A <: Obj, B <: Obj] extends Type[RecType[A, B]] {
+trait PlusOp[J, O <: Obj with PlusOp[J, O]] {
+  this: Obj with PlusOp[J, O] =>
 
-  def get(key: J): B = this.get(value[J, A](key)) //
-  def get(key: A): B = this.push(this.asInstanceOf[RecType[A, B]].typeValue()(key), inst(Tokens.get, key)) //
-  def get[BT <: Type[BT]](key: A, btype: BT): BT = this.push(btype, inst(Tokens.get, key))
+  def plus(other: J): O = this.plus(this.value[J, O](other)) //
+  def plus(other: O): O //
 
-
+  final def +(other: J): O = this.plus(other) //
+  final def +(other: O): O = this.plus(other) //
 }
+

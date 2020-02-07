@@ -26,11 +26,10 @@ import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.obj.value.VInst
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.value.inst.PlusInst
+import org.mmadt.machine.obj.theory.operator.PlusOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VPlusInst[V <: Value[V], T <: Type[T]](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[V, T]
+class VPlusInst[O <: Obj with PlusOp[_, O]](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O]

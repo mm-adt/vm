@@ -20,18 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.value
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueGet[J, AV <: Value[AV], AT <: Type[AT], B <: Value[B]] extends Value[RecValue[AV, B]] {
+trait IsOp[O <: Obj with IsOp[O]] {
+  this: Obj with IsOp[O] =>
 
-  def get(key: J): B = this.get(value[J, AV](key)) //
-  def get(key: AV): B //
-  def get(key: AT): B = this.get((this ==> key).asInstanceOf[AV])
+  def is(other: Bool): O //
 
 }
+

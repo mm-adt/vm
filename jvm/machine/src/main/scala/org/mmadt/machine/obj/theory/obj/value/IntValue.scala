@@ -22,23 +22,46 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.theory.obj.Int
 import org.mmadt.machine.obj.theory.obj.`type`.IntType
-import org.mmadt.machine.obj.theory.{ValueCommon, ValueOrder, ValueRing}
+import org.mmadt.machine.obj.theory.obj.{Bool, Int}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntValue extends Int
-  with Value[IntValue]
-  with ValueCommon[Long,IntValue, IntType]
-  with ValueRing[Long, IntValue, IntType]
-  with ValueOrder[Long, IntValue, IntType] {
+  with Value[IntValue] {
 
   override def value(): Long //
   override def start(): IntType //
 
-  override def plus(other: IntValue): IntValue = int(this.value() + other.value()) //
-  override def mult(other: IntValue): IntValue = int(this.value() * other.value()) //
-  override def gt(other: IntValue): BoolValue = bool(this.value() > other.value()) //
+  override def to(label: StrValue): IntType = this.start().to(label) //
+
+  override def plus(other: Int): Int = {
+    try int(this.value() + other.value())
+    catch {
+      case _: IllegalAccessException => this.start().plus(other)
+    }
+  }
+
+  override def mult(other: Int): Int = {
+    try int(this.value() * other.value())
+    catch {
+      case _: IllegalAccessException => this.start().mult(other)
+    }
+  }
+
+  override def gt(other: Int): Bool = {
+    try bool(this.value() > other.value())
+    catch {
+      case _: IllegalAccessException => this.start().gt(other)
+    }
+  }
+
+  override def is(bool: Bool): Int = {
+    try if (bool.value()) this else this.q(0)
+    catch {
+      case _: IllegalAccessException => this.start().is(bool)
+    }
+  }
+
 }

@@ -32,8 +32,12 @@ class ChooseInstTest extends FunSuite {
 
   test("[choose] w/ types") {
     println(int.choose(
-      int.is(int.gt(2)) -> int.mult(3),
-      int -> int.mult(4)))
+      int -> int.mult(3),
+      int.mult(1) -> int.mult(4)))
+
+    println(int(4) ==> int.choose(
+      int.mult(2) -> int.mult(3),
+      int.mult(1) -> int.mult(4)))
   }
 
   test("[choose] w/ values") {

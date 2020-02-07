@@ -31,3 +31,4 @@ import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 trait GetInst[A <: Obj, B <: Obj] extends Inst {
   override def apply(obj: Obj): Obj = obj.asInstanceOf[RecValue[A, B]].get(arg())
 }
+

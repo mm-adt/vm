@@ -23,27 +23,40 @@
 package org.mmadt.machine.obj.theory.obj.value
 
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
-import org.mmadt.machine.obj.theory.ValueCommon
 import org.mmadt.machine.obj.theory.obj.`type`.{RecType, Type}
-import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
-import org.mmadt.machine.obj.theory.operator.value.ValuePlus
+import org.mmadt.machine.obj.theory.obj.{Bool, Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
-  with Value[RecValue[A, B]]
-  with ValuePlus[Map[A, B], RecValue[A, B], RecType[A, B]]
-  with ValueCommon[Map[A, B], RecValue[A, B], RecType[A, B]] {
+  with Value[RecValue[A, B]] {
 
   override def value(): Map[A, B] //
   override def start(): RecType[A, B] //
 
-  override def plus(other: RecValue[A, B]): RecValue[A, B] = rec[A, B](other.value() ++ this.value()) //
-  def get(key: A): B = this.value().get(key) match {
+  override def to(label: StrValue): RecType[A, B] = this.start().to(label) //
+
+  override def is(bool: Bool): Rec[A, B] = {
+    try if (bool.value()) this else this.q(0)
+    catch {
+      case _: IllegalAccessException => this.start().is(bool)
+    }
+  }
+
+  override def plus(other: Rec[A, B]): Rec[A, B] = {
+    try rec[A, B](other.value() ++ this.value())
+    catch {
+      case _: IllegalAccessException => this.start().plus(other)
+    }
+  }
+
+  override def get(key: A): B = this.value().get(key) match {
     case Some(bvalue: Value[_]) => bvalue.asInstanceOf[B]
     case Some(btype: Type[_]) => new RecursiveTraverser(key).apply(btype).obj()
     case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
     case _ => throw new RuntimeException()
   }
+
+  override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.get(key).asInstanceOf[BT]
 }

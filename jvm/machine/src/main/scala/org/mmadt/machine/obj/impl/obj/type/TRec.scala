@@ -35,5 +35,5 @@ class TRec[K <: Obj, V <: Obj](java: Map[K, V], insts: List[(Type[_], Inst)], qu
   override def push(inst: Inst): RecType[K, V] = rec[K, V](java, inst, quantifier) //
   override def pop(): RecType[K, V] = new TRec[K, V](java, insts.tail, quantifier) //
   override def q(quantifier: TQ): this.type = new TRec[K, V](java, insts, quantifier).asInstanceOf[this.type] //
-  override def typeValue(): Map[K, V] = java
+  // override def typeValue(): Map[K, V] = java
 }

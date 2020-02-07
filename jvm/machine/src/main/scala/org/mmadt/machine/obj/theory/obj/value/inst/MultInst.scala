@@ -22,26 +22,12 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.util.VorT
-import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeMult
-import org.mmadt.machine.obj.theory.operator.value.ValueMult
+import org.mmadt.machine.obj.theory.operator.MultOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultInst[V <: Value[V], T <: Type[T]] extends Inst {
-  type LV = ValueMult[_, V, T] with V
-  type RT = TypeMult[_, V, T] with T
-  type LEFT = Left[LV, RT]
-  type RIGHT = Right[LV, RT]
-
-  override def apply(obj: Obj): Obj = {
-    VorT.wrap[LV, RT](obj) match {
-      case v: LEFT => v.value.mult(arg[V]())
-      case t: RIGHT => t.value.mult(arg[V]())
-    }
-  }
+trait MultInst[O <: Obj with MultOp[_, O]] extends Inst {
+  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].mult(arg[O]())
 }

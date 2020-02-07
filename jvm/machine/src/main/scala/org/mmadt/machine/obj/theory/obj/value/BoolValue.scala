@@ -24,20 +24,36 @@ package org.mmadt.machine.obj.theory.obj.value
 
 import org.mmadt.machine.obj.theory.obj.Bool
 import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.mmadt.machine.obj.theory.{ValueCommon, ValueLogical}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolValue extends Bool
-  with Value[BoolValue]
-  with ValueCommon[Boolean, BoolValue, BoolType]
-  with ValueLogical[BoolValue] {
+  with Value[BoolValue] {
 
   override def value(): Boolean //
   override def start(): BoolType //
 
-  override def or(other: BoolValue): BoolValue = bool(this.value() || other.value()) //
-  override def and(other: BoolValue): BoolValue = bool(this.value() && other.value()) //
+  override def to(label: StrValue): BoolType = this.start().to(label) //
 
+  override def and(other: Bool): Bool = {
+    try bool(this.value() && other.value())
+    catch {
+      case _: IllegalAccessException => this.start().and(other)
+    }
+  }
+
+  override def or(other: Bool): Bool = {
+    try bool(this.value() || other.value())
+    catch {
+      case _: IllegalAccessException => this.start().or(other)
+    }
+  }
+
+  override def is(bool: Bool): Bool = {
+    try if (bool.value()) this else this.q(0)
+    catch {
+      case _: IllegalAccessException => this.start().is(bool)
+    }
+  }
 }

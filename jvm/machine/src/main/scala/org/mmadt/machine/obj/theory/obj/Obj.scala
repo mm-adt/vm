@@ -26,11 +26,14 @@ import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue, StrValue}
+import org.mmadt.machine.obj.theory.operator.{ChooseOp, FromOp, MapOp}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Obj {
+trait Obj extends ChooseOp
+  with MapOp
+  with FromOp {
 
   def value[J, V](java: J): V = java match {
     case j: Long => int(j).asInstanceOf[V]
@@ -57,6 +60,6 @@ trait Obj {
   def q(quantifier: TQ): this.type //
 
   // utility methods
-  def ==>(t: Type[_]): Obj = new RecursiveTraverser(this).apply(t).obj() //
+  def ==>(t: Obj): Obj = new RecursiveTraverser(this).apply(t.asInstanceOf[Type[_]]).obj() // TODO: FORCE TYPE CHECK ON t:Obj
   def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
 }

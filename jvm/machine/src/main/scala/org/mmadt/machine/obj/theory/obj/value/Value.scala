@@ -32,9 +32,11 @@ import org.mmadt.machine.obj.theory.obj.`type`.Type
 trait Value[V <: Value[V]] extends Obj {
 
   def value(): Any //
-  def start(): Type[_]
+  def start(): Type[_] //
 
   override def toString: String = Stringer.valueString(this) //
   override def equals(other: Any): Boolean = other.isInstanceOf[Value[V]] && other.asInstanceOf[Value[V]].value().equals(this.value()) // TODO: replace this with a ValueEq and TypeEq instructions
 
+  override def map[O <: Obj](other: O): O = (this ==> other).asInstanceOf[O] //
+  override def from[O <: Obj](label: StrValue): O = this.start().from(label) //
 }

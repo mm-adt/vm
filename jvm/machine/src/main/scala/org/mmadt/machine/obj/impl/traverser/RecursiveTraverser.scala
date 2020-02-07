@@ -38,7 +38,9 @@ class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser 
   override def obj[S <: Obj](): S = obj.asInstanceOf[S] //
   override def split[E <: Obj](obj: E): Traverser = new RecursiveTraverser(this.state, obj) //
 
-  override def apply(t: Type[_]): Traverser = {
+  override def apply(t: Obj): Traverser = this.apply(t.asInstanceOf[Type[_]])
+
+  private def apply(t: Type[_]): Traverser = {
     if (t.insts().isEmpty) {
       TypeChecker.checkType(this.obj(), t)
       this
@@ -47,6 +49,7 @@ class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser 
         // traverser instructions
         case toInst: Inst if toInst.op().equals(Tokens.to) => to(toInst.arg(), this.obj)
         case fromInst: Inst if fromInst.op().equals(Tokens.from) => from(fromInst.arg())
+        // branch instructions
         // storage instructions
         case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
           case typeArg: Type[_] => this.apply(typeArg).obj()

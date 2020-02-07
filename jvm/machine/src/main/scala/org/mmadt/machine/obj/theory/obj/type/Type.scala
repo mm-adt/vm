@@ -22,8 +22,9 @@
 
 package org.mmadt.machine.obj.theory.obj.`type`
 
-import org.mmadt.language.Stringer
+import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.machine.obj.TQ
+import org.mmadt.machine.obj.theory.obj.value.StrValue
 import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Int, Obj, Rec, Str}
 
 /**
@@ -62,5 +63,9 @@ trait Type[T <: Type[T]] extends Obj {
   final def <=[TT <: Type[TT]](mapFrom: Type[TT]): Type[TT] = mapFrom.q(this.q())
 
   //def stream[V](values:V*):
+
+  override def map[O <: Obj](other: O): O = this.push(other, inst(Tokens.map, other)) //
+  override def from[O <: Obj](label: StrValue): O = this.push(inst(Tokens.from, label)).asInstanceOf[O] //
+  //override def to(label: StrValue): T = this.push(inst(Tokens.to, label)) //
 
 }

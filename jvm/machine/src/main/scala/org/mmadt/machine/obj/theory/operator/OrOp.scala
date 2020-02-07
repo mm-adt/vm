@@ -20,22 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator.value
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeOr
+import org.mmadt.machine.obj.theory.obj.Bool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ValueOr[V <: Value[V]] extends Value[V] {
+trait OrOp {
+  this: Bool =>
 
-  def or(bool: Boolean): BoolValue = this.or(value[Boolean, BoolValue](bool)) //
-  def or(bool: BoolValue): BoolValue //
-  def or(bool: BoolType): BoolType = this.start().asInstanceOf[TypeOr[BoolType]].or(bool)
+  def or(other: Boolean): Bool = this.or(this.bool(other)) //
+  def or(other: Bool): Bool //
 
-  final def |(bool: Boolean): BoolValue = this.or(bool) //
-  final def |(bool: BoolValue): BoolValue = this.or(bool) //
-  final def |(bool: BoolType): BoolType = this.or(bool) //
+  final def ||(other: Boolean): Bool = this.or(other) //
+  final def ||(other: Bool): Bool = this.or(other) //
 }

@@ -22,7 +22,17 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.theory.operator.{GtOp, IsOp, PlusOp, ToOp}
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Str extends Obj
+  with PlusOp[String, Str]
+  with GtOp[String, Str]
+  with IsOp[Str]
+  with ToOp[Str] {
+
+  def value(): String //
+
+}

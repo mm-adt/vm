@@ -22,27 +22,12 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.util.VorT
-import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.operator.`type`.TypeGt
-import org.mmadt.machine.obj.theory.operator.value.ValueGt
+import org.mmadt.machine.obj.theory.operator.GtOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtInst[V <: Value[V], T <: Type[T]] extends Inst {
-
-  type LV = ValueGt[_, V, T] with V
-  type RT = TypeGt[_, V, T] with T
-  type LEFT = Left[LV, RT]
-  type RIGHT = Right[LV, RT]
-
-  override def apply(obj: Obj): Obj = {
-    VorT.wrap[LV, RT](obj) match {
-      case v: LEFT => v.value.gt(arg[V]())
-      case t: RIGHT => t.value.gt(arg[V]())
-    }
-  }
+trait GtInst[O <: Obj with GtOp[_, O]] extends Inst {
+  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].gt(arg[O]())
 }

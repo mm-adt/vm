@@ -26,11 +26,10 @@ import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.obj.value.VInst
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.value.inst.MultInst
+import org.mmadt.machine.obj.theory.operator.MultOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VMultInst[V <: Value[V], T <: Type[T]](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[V, T]
+class VMultInst[O <: Obj with MultOp[_, O]](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[O]

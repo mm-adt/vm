@@ -26,11 +26,10 @@ import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.impl.obj.value.VInst
 import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.value.inst.GtInst
+import org.mmadt.machine.obj.theory.operator.GtOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VGtInst[V <: Value[V], T <: Type[T]](arg: Obj) extends VInst((Tokens.gt, List(arg)), qOne) with GtInst[V, T]
+class VGtInst[O <: Obj with GtOp[_, O]](arg: Obj) extends VInst((Tokens.gt, List(arg)), qOne) with GtInst[O]
