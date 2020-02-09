@@ -37,7 +37,7 @@ trait IntType extends Int
   @throws[IllegalAccessException]
   override def value(): Long = throw new IllegalAccessException("...")
 
-  override def is(other: Bool): IntType = this.push(inst(Tokens.is, other)).q(int(0), q()._2) //
+  override def is(other: Bool): IntType = this.push(inst(Tokens.is, other)).q(0, q()._2) //
   override def plus(other: Int): IntType = this.push(inst(Tokens.plus, other)) //
   override def mult(other: Int): IntType = this.push(inst(Tokens.mult, other)) //
   override def gt(other: Int): BoolType = this.bool(inst(Tokens.gt, other)) //

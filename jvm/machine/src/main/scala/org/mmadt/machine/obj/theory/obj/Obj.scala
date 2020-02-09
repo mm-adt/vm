@@ -35,26 +35,11 @@ trait Obj extends ChooseOp
   with MapOp
   with FromOp {
 
-  def value[J, V](java: J): V = java match {
-    case j: Long => int(j).asInstanceOf[V]
-    case j: Boolean => bool(j).asInstanceOf[V]
-    case j: String => str(j).asInstanceOf[V]
-    case _ => throw new RuntimeException("Unknown Java object: " + java)
-  }
-
-  def bool(value: Boolean): BoolValue //
-  def int(value: Long): IntValue //
-  def str(value: String): StrValue //
-  def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] //
-  def rec[K <: Obj, V <: Obj](value: (K, V)*): RecValue[K, V] = this.rec[K, V](value.reverse.toMap)
-
   def inst(op: String): Inst = inst(op, Nil) //
   def inst(op: String, args: Obj*): Inst = inst(op, args.toList) //
   def inst(op: String, args: List[Obj]): Inst //
 
   def q(): TQ //
-  def q(value: Long): this.type = this.q((int(value), int(value))) //
-  def q(min: Long, max: Long): this.type = this.q((int(min), int(max))) //
   def q(single: IntValue): this.type = this.q((single, single)) //
   def q(min: IntValue, max: IntValue): this.type = this.q((min, max)) //
   def q(quantifier: TQ): this.type //

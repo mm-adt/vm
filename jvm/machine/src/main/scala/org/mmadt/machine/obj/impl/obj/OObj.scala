@@ -37,11 +37,6 @@ abstract class OObj(val quantifier: TQ) extends Obj {
 
   override def q(): TQ = quantifier //
 
-  override def int(value: Long): IntValue = new VInt(value) //
-  override def bool(value: Boolean): BoolValue = new VBool(value) //
-  override def str(value: String): StrValue = new VStr(value) //
-  override def rec[K <: Obj, V <: Obj](value: Map[K, V]): RecValue[K, V] = new VRec(value) //
-
   override def inst(op: String, args: List[Obj]): Inst = op match {
     case Tokens.and => new VAndInst(args.head.asInstanceOf[Bool])
     case Tokens.choose => new VChooseInst(args.head.asInstanceOf[RecValue[Type[_], Type[_]]])

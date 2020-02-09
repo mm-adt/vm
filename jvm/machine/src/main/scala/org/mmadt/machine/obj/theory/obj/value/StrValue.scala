@@ -37,14 +37,14 @@ trait StrValue extends Str
   override def to(label: StrValue): StrType = this.start().to(label) //
 
   override def plus(other: Str): Str = {
-    try str(this.value() + other.value())
+    try this.value() + other.value()
     catch {
       case _: IllegalAccessException => this.start().plus(other)
     }
   }
 
   override def gt(other: Str): Bool = {
-    try bool(this.value() > other.value())
+    try this.value() > other.value()
     catch {
       case _: IllegalAccessException => this.start().gt(other)
     }

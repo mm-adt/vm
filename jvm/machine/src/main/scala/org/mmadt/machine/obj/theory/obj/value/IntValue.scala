@@ -37,21 +37,21 @@ trait IntValue extends Int
   override def to(label: StrValue): IntType = this.start().to(label) //
 
   override def plus(other: Int): Int = {
-    try int(this.value() + other.value())
+    try this.value() + other.value()
     catch {
       case _: IllegalAccessException => this.start().plus(other)
     }
   }
 
   override def mult(other: Int): Int = {
-    try int(this.value() * other.value())
+    try this.value() * other.value()
     catch {
       case _: IllegalAccessException => this.start().mult(other)
     }
   }
 
   override def gt(other: Int): Bool = {
-    try bool(this.value() > other.value())
+    try this.value() > other.value()
     catch {
       case _: IllegalAccessException => this.start().gt(other)
     }

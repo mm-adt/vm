@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj.theory.operator
 
+import org.mmadt.machine.obj.impl.obj.value.VStr
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.value.StrValue
 
@@ -31,6 +32,6 @@ import org.mmadt.machine.obj.theory.obj.value.StrValue
 trait FromOp {
   this: Obj =>
 
-  def from[O <: Obj](other: String): O = this.from(str(other)) //
+  def from[O <: Obj](other: String): O = this.from(new VStr(other)) //
   def from[O <: Obj](label: StrValue): O = label.asInstanceOf[O] // TODO NO IMPL -- INST
 }

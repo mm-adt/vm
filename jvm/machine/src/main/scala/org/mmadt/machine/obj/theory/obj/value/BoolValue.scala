@@ -37,14 +37,14 @@ trait BoolValue extends Bool
   override def to(label: StrValue): BoolType = this.start().to(label) //
 
   override def and(other: Bool): Bool = {
-    try bool(this.value() && other.value())
+    try this.value() && other.value()
     catch {
       case _: IllegalAccessException => this.start().and(other)
     }
   }
 
   override def or(other: Bool): Bool = {
-    try bool(this.value() || other.value())
+    try this.value() || other.value()
     catch {
       case _: IllegalAccessException => this.start().or(other)
     }

@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj.theory.operator
 
+import org.mmadt.machine.obj.impl.obj.value.VStr
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.value.StrValue
 
@@ -31,6 +32,6 @@ import org.mmadt.machine.obj.theory.obj.value.StrValue
 trait ToOp[O <: Obj with ToOp[O]] {
   this: O =>
 
-  def to(other: String): O = this.to(str(other)) //
+  def to(other: String): O = this.to(new VStr(other)) //
   def to(label: StrValue): O
 }

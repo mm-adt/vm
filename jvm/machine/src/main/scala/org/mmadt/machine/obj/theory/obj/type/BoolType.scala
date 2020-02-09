@@ -37,7 +37,7 @@ trait BoolType extends Bool
   @throws[IllegalAccessException]
   override def value(): Boolean = throw new IllegalAccessException("...")
 
-  override def is(other: Bool): BoolType = this.push(inst(Tokens.is, other)).q(int(0), q()._2) //
+  override def is(other: Bool): BoolType = this.push(inst(Tokens.is, other)).q(0, q()._2) //
   override def and(other: Bool): BoolType = this.push(inst(Tokens.and, other)) //
   override def or(other: Bool): BoolType = this.push(inst(Tokens.or, other)) //
   override def to(label: StrValue): BoolType = this.push(inst(Tokens.to, label)) //

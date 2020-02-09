@@ -45,7 +45,7 @@ trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
   }
 
   override def plus(other: Rec[A, B]): Rec[A, B] = {
-    try rec[A, B](other.value() ++ this.value())
+    try other.value() ++ this.value()
     catch {
       case _: IllegalAccessException => this.start().plus(other)
     }

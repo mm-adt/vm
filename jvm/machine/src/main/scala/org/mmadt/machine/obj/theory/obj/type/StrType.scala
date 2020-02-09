@@ -38,7 +38,7 @@ trait StrType extends Str
   override def value(): String = throw new IllegalAccessException("...")
 
   override def plus(other: Str): StrType = this.push(inst(Tokens.plus, other)) //
-  override def is(other: Bool): StrType = this.push(inst(Tokens.is, other)).q(int(0), q()._2) //
+  override def is(other: Bool): StrType = this.push(inst(Tokens.is, other)).q(0, q()._2) //
   override def gt(other: Str): BoolType = this.bool(inst(Tokens.gt, other)) //
   override def to(label: StrValue): StrType = this.push(inst(Tokens.to, label)) //
 

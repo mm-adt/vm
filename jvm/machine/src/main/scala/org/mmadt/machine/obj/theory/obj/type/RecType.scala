@@ -39,7 +39,7 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   override def value(): Map[A, B] = throw new IllegalAccessException("...")
 
   override def plus(other: Rec[A, B]): RecType[A, B] = this.push(inst(Tokens.plus, other)) //
-  override def is(other: Bool): RecType[A, B] = this.push(inst(Tokens.is, other)).q(int(0), q()._2) //
+  override def is(other: Bool): RecType[A, B] = this.push(inst(Tokens.is, other)).q(0, q()._2) //
   override def to(label: StrValue): RecType[A, B] = this.push(inst(Tokens.to, label)) //
   override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.push(btype, inst(Tokens.get, key)) //
   override def get(key: A): B = this.value().get(key) match {
