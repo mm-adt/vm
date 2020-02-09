@@ -22,17 +22,23 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.impl.obj.value.VRec
+import org.mmadt.machine.obj.theory.obj.value.RecValue
 import org.mmadt.machine.obj.theory.operator.{GetOp, IsOp, PlusOp, ToOp}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj, B <: Obj] extends Obj
-  with PlusOp[Map[A, B], Rec[A, B]]
+  with PlusOp[Rec[A, B]]
   with IsOp[Rec[A, B]]
   with ToOp[Rec[A, B]]
-  with GetOp[Map[A, B], A, B] { // TODO: not J=Map
+  with GetOp[A, B] {
 
   def value(): Map[A, B] //
 
+}
+
+object Rec {
+  implicit def mapToRec[A <: Obj, B <: Obj](java: Map[A, B]): Rec[A, B] with RecValue[A, B] = new VRec(java) //
 }

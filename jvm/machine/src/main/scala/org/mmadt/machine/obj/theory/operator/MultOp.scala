@@ -27,13 +27,10 @@ import org.mmadt.machine.obj.theory.obj.Obj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultOp[J, O <: Obj with MultOp[J, O]] {
-  this: Obj with MultOp[J, O] =>
+trait MultOp[O <: Obj with MultOp[O]] {
+  this: Obj with MultOp[O] =>
 
-  def mult(other: J): O = this.mult(this.value[J, O](other)) //
   def mult(other: O): O //
-
-  final def *(other: J): O = this.mult(other) //
   final def *(other: O): O = this.mult(other) //
 }
 

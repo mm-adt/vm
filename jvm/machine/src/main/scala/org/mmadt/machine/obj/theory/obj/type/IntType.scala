@@ -41,6 +41,5 @@ trait IntType extends Int
   override def plus(other: Int): IntType = this.push(inst(Tokens.plus, other)) //
   override def mult(other: Int): IntType = this.push(inst(Tokens.mult, other)) //
   override def gt(other: Int): BoolType = this.bool(inst(Tokens.gt, other)) //
-  override def gt(other: Long): BoolType = this.gt(int(other)) //
   override def to(label: StrValue): IntType = this.push(inst(Tokens.to, label)) //
 }

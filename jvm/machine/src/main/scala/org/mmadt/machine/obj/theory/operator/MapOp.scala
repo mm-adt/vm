@@ -30,6 +30,5 @@ import org.mmadt.machine.obj.theory.obj.Obj
 trait MapOp {
   this: Obj with MapOp =>
 
-  //def map[O<:Obj](other: J): O = this.map(this.value[J, O](other)) //
   def map[O <: Obj](other: O): O = other // TODO NO IMPL -- INST
 }

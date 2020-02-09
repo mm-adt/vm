@@ -22,17 +22,22 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.impl.obj.value.VStr
+import org.mmadt.machine.obj.theory.obj.value.StrValue
 import org.mmadt.machine.obj.theory.operator.{GtOp, IsOp, PlusOp, ToOp}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Str extends Obj
-  with PlusOp[String, Str]
-  with GtOp[String, Str]
+  with PlusOp[Str]
+  with GtOp[Str]
   with IsOp[Str]
   with ToOp[Str] {
 
   def value(): String //
+}
 
+object Str {
+  implicit def stringToStr(java: String): Str with StrValue = new VStr(java) //
 }

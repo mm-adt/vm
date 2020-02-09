@@ -28,6 +28,6 @@ import org.mmadt.machine.obj.theory.operator.GtOp
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtInst[O <: Obj with GtOp[_, O]] extends Inst {
+trait GtInst[O <: Obj with GtOp[O]] extends Inst {
   override def apply(obj: Obj): Obj = obj.asInstanceOf[O].gt(arg[O]())
 }

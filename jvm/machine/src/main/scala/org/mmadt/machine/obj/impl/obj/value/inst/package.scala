@@ -45,15 +45,15 @@ package object inst {
 
   class VGetInst[A <: Obj, B <: Obj](arg: A) extends VInst((Tokens.get, List(arg)), qOne) with GetInst[A, B]
 
-  class VGtInst[O <: Obj with GtOp[_, O]](arg: Obj) extends VInst((Tokens.gt, List(arg)), qOne) with GtInst[O]
+  class VGtInst[O <: Obj with GtOp[O]](arg: Obj) extends VInst((Tokens.gt, List(arg)), qOne) with GtInst[O]
 
   class VIsInst[O <: Obj with IsOp[O]](arg: Obj) extends VInst((Tokens.is, List(arg)), qOne) with IsInst[O]
 
   class VMapInst[O <: Obj with MapOp](arg: Obj) extends VInst((Tokens.map, List(arg)), qOne) with MapInst[O]
 
-  class VMultInst[O <: Obj with MultOp[_, O]](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[O]
+  class VMultInst[O <: Obj with MultOp[O]](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[O]
 
-  class VPlusInst[O <: Obj with PlusOp[_, O]](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O]
+  class VPlusInst[O <: Obj with PlusOp[O]](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O]
 
   class VToInst(arg: StrValue) extends VInst((Tokens.to, List(arg)), qOne) with ToInst
 

@@ -30,9 +30,6 @@ import org.mmadt.machine.obj.theory.obj.Bool
 trait OrOp {
   this: Bool =>
 
-  def or(other: Boolean): Bool = this.or(this.bool(other)) //
   def or(other: Bool): Bool //
-
-  final def ||(other: Boolean): Bool = this.or(other) //
   final def ||(other: Bool): Bool = this.or(other) //
 }

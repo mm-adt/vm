@@ -27,13 +27,10 @@ import org.mmadt.machine.obj.theory.obj.Obj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusOp[J, O <: Obj with PlusOp[J, O]] {
-  this: Obj with PlusOp[J, O] =>
+trait PlusOp[O <: Obj with PlusOp[O]] {
+  this: Obj with PlusOp[O] =>
 
-  def plus(other: J): O = this.plus(this.value[J, O](other)) //
   def plus(other: O): O //
-
-  final def +(other: J): O = this.plus(other) //
   final def +(other: O): O = this.plus(other) //
 }
 

@@ -22,17 +22,23 @@
 
 package org.mmadt.machine.obj.theory.obj
 
+import org.mmadt.machine.obj.impl.obj.value.VInt
+import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.mmadt.machine.obj.theory.operator._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Int extends Obj
-  with PlusOp[Long, Int]
-  with MultOp[Long, Int]
-  with GtOp[Long, Int]
+  with PlusOp[Int]
+  with MultOp[Int]
+  with GtOp[Int]
   with IsOp[Int]
   with ToOp[Int] {
 
   def value(): Long //
+}
+
+object Int {
+  implicit def longToInt(java: Long): Int with IntValue = new VInt(java) //
 }

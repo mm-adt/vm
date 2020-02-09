@@ -27,13 +27,10 @@ import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtOp[J, O <: Obj with GtOp[J, O]] {
-  this: Obj with GtOp[J, O] =>
+trait GtOp[O <: Obj with GtOp[O]] {
+  this: Obj with GtOp[O] =>
 
-  def gt(other: J): Bool = this.gt(this.value[J, O](other)) //
   def gt(other: O): Bool //
-
-  final def >(other: J): Bool = this.gt(other) //
   final def >(other: O): Bool = this.gt(other) //
 }
 

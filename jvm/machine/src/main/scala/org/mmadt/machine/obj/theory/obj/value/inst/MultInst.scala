@@ -28,6 +28,6 @@ import org.mmadt.machine.obj.theory.operator.MultOp
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultInst[O <: Obj with MultOp[_, O]] extends Inst {
+trait MultInst[O <: Obj with MultOp[O]] extends Inst {
   override def apply(obj: Obj): Obj = obj.asInstanceOf[O].mult(arg[O]())
 }

@@ -28,10 +28,9 @@ import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GetOp[J, A <: Obj, B <: Obj] {
+trait GetOp[A <: Obj, B <: Obj] {
   this: Rec[A, B] =>
 
-  def get(key: J): B = this.get(value[J, A](key)) //
   def get(key: A): B //
   def get[BT <: Type[BT]](key: A, btype: BT): BT //
 }

@@ -24,7 +24,6 @@ package org.mmadt.processor
 
 import org.mmadt.machine.obj.impl.obj.int
 import org.mmadt.machine.obj.theory.obj.Int
-import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.scalatest.FunSuite
 
 /**
@@ -34,9 +33,9 @@ class ToFromTest extends FunSuite {
 
   test("[to][from] w/ values") {
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from("x")))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from("x"))
+    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from[Int]("x"))
     intercept[NoSuchElementException] {
-      assertResult(int(20))(int(1) ==> int.from[IntValue]("x").plus(1).map(int.mult(10)))
+      assertResult(int(20))(int(1) ==> int.from[Int]("x").plus(1).map(int.mult(10)))
     }
   }
 

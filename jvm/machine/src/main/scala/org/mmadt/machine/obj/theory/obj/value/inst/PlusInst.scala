@@ -28,6 +28,6 @@ import org.mmadt.machine.obj.theory.operator.PlusOp
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusInst[O <: Obj with PlusOp[_, O]] extends Inst {
+trait PlusInst[O <: Obj with PlusOp[O]] extends Inst {
   override def apply(obj: Obj): Obj = obj.asInstanceOf[O].plus(arg[O]())
 }

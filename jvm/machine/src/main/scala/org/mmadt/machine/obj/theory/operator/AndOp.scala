@@ -30,9 +30,6 @@ import org.mmadt.machine.obj.theory.obj.Bool
 trait AndOp {
   this: Bool =>
 
-  def and(other: Boolean): Bool = this.and(this.bool(other)) //
   def and(other: Bool): Bool //
-
-  final def &&(other: Boolean): Bool = this.and(other) //
   final def &&(other: Bool): Bool = this.and(other) //
 }
