@@ -22,11 +22,12 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
 import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait OrInst extends Inst {
-  override def apply(obj: Obj): Obj = obj.asInstanceOf[Bool].or(arg[Bool]())
+trait OrInst[O <: Bool] extends Inst {
+  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].or(arg[BoolValue]())
 }

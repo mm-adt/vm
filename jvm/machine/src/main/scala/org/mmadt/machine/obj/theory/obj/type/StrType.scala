@@ -23,23 +23,23 @@
 package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.obj.{Bool, Str}
-import org.mmadt.machine.obj.theory.operator.ToOp
+import org.mmadt.machine.obj.theory.obj.Str
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, StrValue}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrType extends Str
-  with Type[StrType]
-  with ToOp[Str] {
+  with Type[StrType] {
 
   @throws[IllegalAccessException]
   override def value(): String = throw new IllegalAccessException("...")
 
-  override def plus(other: Str): StrType = this.push(inst(Tokens.plus, other)) //
-  override def is(other: Bool): StrType = this.push(inst(Tokens.is, other)).q(0, q()._2) //
-  override def gt(other: Str): BoolType = this.bool(inst(Tokens.gt, other)) //
   override def to(label: StrValue): StrType = this.push(inst(Tokens.to, label)) //
-
+  override def plus(other: StrType): StrType = this.push(inst(Tokens.plus, other)) //
+  override def plus(other: StrValue): StrType = this.push(inst(Tokens.plus, other)) //
+  override def gt(other: StrType): BoolType = this.bool(inst(Tokens.gt, other)) //
+  override def gt(other: StrValue): BoolType = this.bool(inst(Tokens.gt, other)) //
+  override def is(bool: BoolType): StrType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
+  override def is(bool: BoolValue): StrType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
 }

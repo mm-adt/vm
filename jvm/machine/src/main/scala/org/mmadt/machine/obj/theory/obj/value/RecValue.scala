@@ -23,8 +23,8 @@
 package org.mmadt.machine.obj.theory.obj.value
 
 import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
-import org.mmadt.machine.obj.theory.obj.`type`.{RecType, Type}
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj, Rec}
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, RecType, Type}
+import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,19 +37,11 @@ trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
 
   override def to(label: StrValue): RecType[A, B] = this.start().to(label) //
 
-  override def is(bool: Bool): Rec[A, B] = {
-    try if (bool.value()) this else this.q(0)
-    catch {
-      case _: IllegalAccessException => this.start().is(bool)
-    }
-  }
+  override def plus(other: RecType[A, B]): RecType[A, B] = this.start().plus(other) //
+  override def plus(other: RecValue[A, B]): RecValue[A, B] = other.value() ++ this.value() //
+  override def is(bool: BoolType): RecType[A, B] = this.start().is(bool) //
+  override def is(bool: BoolValue): RecValue[A, B] = if (bool.value()) this else this.q(0) //
 
-  override def plus(other: Rec[A, B]): Rec[A, B] = {
-    try other.value() ++ this.value()
-    catch {
-      case _: IllegalAccessException => this.start().plus(other)
-    }
-  }
 
   override def get(key: A): B = this.value().get(key) match {
     case Some(bvalue: Value[_]) => bvalue.asInstanceOf[B]

@@ -22,15 +22,18 @@
 
 package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IsOp[O <: Obj with IsOp[O]] {
-  this: Obj with IsOp[O] =>
+trait IsOp[O <: Obj with IsOp[O, V, T], V <: Value[V], T <: Type[T]] {
+  this: O =>
 
-  def is(other: Bool): O //
+  def is(other: BoolType): T //
+  def is(other: BoolValue): O //
 
 }
 

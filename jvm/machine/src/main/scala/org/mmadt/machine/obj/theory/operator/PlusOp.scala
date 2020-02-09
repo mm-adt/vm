@@ -23,14 +23,17 @@
 package org.mmadt.machine.obj.theory.operator
 
 import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusOp[O <: Obj with PlusOp[O]] {
-  this: Obj with PlusOp[O] =>
-
-  def plus(other: O): O //
-  final def +(other: O): O = this.plus(other) //
+trait PlusOp[O <: Obj with PlusOp[O, V, T], V <: Value[V], T <: Type[T]] {
+  this: O =>
+  def plus(other: T): T //
+  def plus(other: V): O //
+  final def +(other: T): T = this.plus(other) //
+  final def +(other: V): O = this.plus(other) //
 }
 

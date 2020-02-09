@@ -23,6 +23,7 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.impl.obj.value.VBool
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
 import org.mmadt.machine.obj.theory.obj.value.BoolValue
 import org.mmadt.machine.obj.theory.operator.{AndOp, IsOp, OrOp, ToOp}
 
@@ -30,14 +31,14 @@ import org.mmadt.machine.obj.theory.operator.{AndOp, IsOp, OrOp, ToOp}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Bool extends Obj
-  with IsOp[Bool]
+  with IsOp[Bool, BoolValue, BoolType]
   with AndOp
   with OrOp
-  with ToOp[Bool] {
+  with ToOp[BoolType] {
 
   def value(): Boolean //
 }
 
 object Bool {
-  implicit def booleanToBool(java: Boolean): Bool with BoolValue = new VBool(java) //
+  implicit def booleanToBool(java: Boolean): BoolValue with Bool = new VBool(java) //
 }

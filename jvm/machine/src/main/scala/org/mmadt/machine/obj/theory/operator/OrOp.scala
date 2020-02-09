@@ -23,13 +23,16 @@
 package org.mmadt.machine.obj.theory.operator
 
 import org.mmadt.machine.obj.theory.obj.Bool
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OrOp {
   this: Bool =>
-
-  def or(other: Bool): Bool //
-  final def ||(other: Bool): Bool = this.or(other) //
+  def or(bool: BoolType): BoolType //
+  def or(bool: BoolValue): Bool //
+  final def ||(bool: BoolType): BoolType = this.or(bool) //
+  final def ||(bool: BoolValue): Bool = this.or(bool) //
 }

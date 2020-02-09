@@ -22,8 +22,9 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
-import org.mmadt.machine.obj.theory.obj.{Bool, Int}
+import org.mmadt.machine.obj.impl.obj.value.VInt
+import org.mmadt.machine.obj.theory.obj.Int
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,32 +37,16 @@ trait IntValue extends Int
 
   override def to(label: StrValue): IntType = this.start().to(label) //
 
-  override def plus(other: Int): Int = {
-    try this.value() + other.value()
-    catch {
-      case _: IllegalAccessException => this.start().plus(other)
-    }
-  }
+  override def plus(other: IntType): IntType = this.start().plus(other) //
+  override def plus(other: IntValue): IntValue = this.value() + other.value() //
+  override def mult(other: IntType): IntType = this.start().mult(other) //
+  override def mult(other: IntValue): IntValue = this.value() * other.value() //
+  override def gt(other: IntType): BoolType = this.start().gt(other) //
+  override def gt(other: IntValue): BoolValue = this.value() > other.value() //
+  override def is(bool: BoolType): IntType = this.start().is(bool) //
+  override def is(bool: BoolValue): IntValue = if (bool.value()) this else this.q(0) //
+}
 
-  override def mult(other: Int): Int = {
-    try this.value() * other.value()
-    catch {
-      case _: IllegalAccessException => this.start().mult(other)
-    }
-  }
-
-  override def gt(other: Int): Bool = {
-    try this.value() > other.value()
-    catch {
-      case _: IllegalAccessException => this.start().gt(other)
-    }
-  }
-
-  override def is(bool: Bool): Int = {
-    try if (bool.value()) this else this.q(0)
-    catch {
-      case _: IllegalAccessException => this.start().is(bool)
-    }
-  }
-
+object IntValue {
+  implicit def longToInt(java: Long): IntValue with Int = new VInt(java) //
 }

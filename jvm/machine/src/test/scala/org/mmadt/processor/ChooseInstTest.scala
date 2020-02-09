@@ -52,7 +52,7 @@ class ChooseInstTest extends FunSuite {
         int -> int.mult(4)))
 
     assertResult(int(42))(
-      int(0) ==> int.plus(39).choose(
+      int(0) ==> int.plus(int(39)).choose(
         int.is(int.gt(40)) -> int.plus(1),
         int.is(int.gt(30)) -> int.plus(2),
         int.is(int.gt(20)) -> int.plus(3),

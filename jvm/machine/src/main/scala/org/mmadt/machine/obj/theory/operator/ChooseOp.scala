@@ -33,13 +33,12 @@ import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
 trait ChooseOp {
   this: Obj with ChooseOp =>
 
-  def choose[IO <: Obj, OO <: Obj](branches: (IO, OO)*): OO = this.choose(branches.toMap)
+  def choose[IT <: Type[IT], OT <: Obj](branches: (IT, OT)*): OT = this.choose(branches.toMap)
 
-  def choose[IO <: Obj, OO <: Obj](branches: RecValue[IO, OO]): OO = {
+  def choose[IT <: Type[IT], OT <: Obj](branches: RecValue[IT, OT]): OT = {
     this match {
       case ttype: Type[_] => ttype.push(branches.value().head._2, inst(Tokens.choose, branches))
-      case _: Value[_] => (this ==> branches.value().filter(p => (this ==> p._1).alive()).head._2).asInstanceOf[OO]
+      case _: Value[_] => (this ==> branches.value().filter(p => (this ==> p._1).alive()).head._2.asInstanceOf[Type[_]]).asInstanceOf[OT]
     }
   }
-
 }

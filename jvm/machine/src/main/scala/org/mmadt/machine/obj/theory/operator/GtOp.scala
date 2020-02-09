@@ -22,15 +22,17 @@
 
 package org.mmadt.machine.obj.theory.operator
 
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
+import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtOp[O <: Obj with GtOp[O]] {
-  this: Obj with GtOp[O] =>
-
-  def gt(other: O): Bool //
-  final def >(other: O): Bool = this.gt(other) //
+trait GtOp[O <: Obj with GtOp[O, V, T], V <: Value[V], T <: Type[T]] {
+  this: O =>
+  def gt(other: T): BoolType //
+  def gt(other: V): Bool //
+  final def >(other: T): BoolType = this.gt(other) //
+  final def >(other: V): Bool = this.gt(other) //
 }
-

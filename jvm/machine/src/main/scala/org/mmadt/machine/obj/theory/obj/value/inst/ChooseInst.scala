@@ -22,6 +22,7 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.RecValue
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 import org.mmadt.machine.obj.theory.operator.ChooseOp
@@ -29,6 +30,6 @@ import org.mmadt.machine.obj.theory.operator.ChooseOp
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ChooseInst[O <: Obj with ChooseOp, IO <: Obj, OO <: Obj] extends Inst {
-  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].choose(arg[RecValue[IO, OO]]())
+trait ChooseInst[O <: Obj with ChooseOp, IT <: Type[IT], OT <: Obj] extends Inst {
+  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].choose(arg[RecValue[IT, OT]]())
 }

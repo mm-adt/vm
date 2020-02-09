@@ -24,27 +24,27 @@ package org.mmadt.processor
 
 import org.mmadt.machine.obj.impl.obj.int
 import org.mmadt.machine.obj.theory.obj.Int
+import org.mmadt.machine.obj.theory.obj.`type`.IntType
+import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ToFromTest extends FunSuite {
+class MultInstTest extends FunSuite {
 
-  test("[to][from] w/ values") {
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from("x")))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from("x"))
-    intercept[NoSuchElementException] {
-      assertResult(int(20))(int(1) ==> int.from[Int]("x").plus(1).map(int.mult(10)))
-    }
-  }
-
-  test("[to][from] w/ types") {
-    assertResult(int(5))(int(1) ==> int.plus(1).map(int(5)).to("x").from("x"))
-    // assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from("x").mult(int.from("y")))))
-    assertResult("int[plus,1][map,int][to,x]")(int.plus(1).map(int).to("x").toString)
-    intercept[NoSuchElementException] {
-      assertResult(int(20))(int(1) ==> int.plus(1).map(int.mult(10).to("x")).from("x"))
-    }
+  test("[mult] w/ int") {
+    assertResult(int(3))(int(1).mult(int(3))) // value * value = value
+    assert(int(1).mult(int(3)).isInstanceOf[IntValue])
+    assert(int(1).mult(int(3)).isInstanceOf[Int])
+    assertResult(int(1).mult(int))(int(1).mult(int)) // value * type = type
+    assert(int(1).mult(int).isInstanceOf[IntType])
+    assert(int(1).mult(int).isInstanceOf[Int])
+    assertResult(int.mult(int(3)))(int.mult(int(3))) // type * value = type
+    assert(int.mult(int(3)).isInstanceOf[IntType])
+    assert(int.mult(int(3)).isInstanceOf[Int])
+    assertResult(int.mult(int))(int.mult(int)) // type * type = type
+    assert(int.mult(int).isInstanceOf[IntType])
+    assert(int.mult(int).isInstanceOf[Int])
   }
 }

@@ -26,34 +26,34 @@ import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.impl.obj.qOne
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.inst._
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, StrValue}
+import org.mmadt.machine.obj.theory.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
-import org.mmadt.machine.obj.theory.operator._
+import org.mmadt.machine.obj.theory.operator.{MultOp, _}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 package object inst {
 
-  class VAndInst(arg: Bool) extends VInst((Tokens.and, List(arg)), qOne) with AndInst
+  class VAndInst(arg: Bool) extends VInst((Tokens.and, List(arg)), qOne) with AndInst[Bool]
 
-  class VOrInst(arg: Bool) extends VInst((Tokens.or, List(arg)), qOne) with OrInst
+  class VOrInst(arg: Bool) extends VInst((Tokens.or, List(arg)), qOne) with OrInst[Bool]
 
-  class VChooseInst[O <: Obj with ChooseOp, IO <: Obj, OO <: Obj](arg: RecValue[Type[_], Type[_]]) extends VInst((Tokens.choose, List(arg)), qOne) with ChooseInst[O, IO, OO]
+  class VChooseInst[O <: Obj with ChooseOp, IT <: Type[IT], OT <: Obj](arg: RecValue[Type[_], Type[_]]) extends VInst((Tokens.choose, List(arg)), qOne) with ChooseInst[O, IT, OT]
 
   class VFromInst(arg: StrValue) extends VInst((Tokens.from, List(arg)), qOne) with FromInst
 
   class VGetInst[A <: Obj, B <: Obj](arg: A) extends VInst((Tokens.get, List(arg)), qOne) with GetInst[A, B]
 
-  class VGtInst[O <: Obj with GtOp[O]](arg: Obj) extends VInst((Tokens.gt, List(arg)), qOne) with GtInst[O]
+  class VGtInst[O <: Obj with GtOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O](arg: Obj) extends VInst((Tokens.gt, List(arg)), qOne) with GtInst[O, V, T]
 
-  class VIsInst[O <: Obj with IsOp[O]](arg: Obj) extends VInst((Tokens.is, List(arg)), qOne) with IsInst[O]
+  class VIsInst[O <: Obj with IsOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O](arg: Obj) extends VInst((Tokens.is, List(arg)), qOne) with IsInst[O, V, T]
 
   class VMapInst[O <: Obj with MapOp](arg: Obj) extends VInst((Tokens.map, List(arg)), qOne) with MapInst[O]
 
-  class VMultInst[O <: Obj with MultOp[O]](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[O]
+  class VMultInst[O <: Obj with MultOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[O, V, T]
 
-  class VPlusInst[O <: Obj with PlusOp[O]](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O]
+  class VPlusInst[O <: Obj with PlusOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O, V, T]
 
   class VToInst(arg: StrValue) extends VInst((Tokens.to, List(arg)), qOne) with ToInst
 

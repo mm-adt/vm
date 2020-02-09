@@ -22,8 +22,8 @@
 
 package org.mmadt.machine.obj.theory.obj.value
 
-import org.mmadt.machine.obj.theory.obj.`type`.StrType
-import org.mmadt.machine.obj.theory.obj.{Bool, Str}
+import org.mmadt.machine.obj.theory.obj.Str
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, StrType}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,24 +36,10 @@ trait StrValue extends Str
 
   override def to(label: StrValue): StrType = this.start().to(label) //
 
-  override def plus(other: Str): Str = {
-    try this.value() + other.value()
-    catch {
-      case _: IllegalAccessException => this.start().plus(other)
-    }
-  }
-
-  override def gt(other: Str): Bool = {
-    try this.value() > other.value()
-    catch {
-      case _: IllegalAccessException => this.start().gt(other)
-    }
-  }
-
-  override def is(bool: Bool): Str = {
-    try if (bool.value()) this else this.q(0)
-    catch {
-      case _: IllegalAccessException => this.start().is(bool)
-    }
-  }
+  override def plus(other: StrType): StrType = this.start().plus(other) //
+  override def plus(other: StrValue): StrValue = this.value() + other.value() //
+  override def gt(other: StrType): BoolType = this.start().gt(other) //
+  override def gt(other: StrValue): BoolValue = this.value() > other.value() //
+  override def is(bool: BoolType): StrType = this.start().is(bool) //
+  override def is(bool: BoolValue): StrValue = if (bool.value()) this else this.q(0) //
 }

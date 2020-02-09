@@ -68,4 +68,9 @@ trait Type[T <: Type[T]] extends Obj {
   override def from[O <: Obj](label: StrValue): O = this.push(inst(Tokens.from, label)).asInstanceOf[O] //
   //override def to(label: StrValue): T = this.push(inst(Tokens.to, label)) //
 
+
+  override def equals(other: Any): Boolean = other.isInstanceOf[Type[T]] &&
+    other.asInstanceOf[this.type].insts().equals(this.insts()) // TODO: q() check
+
+
 }

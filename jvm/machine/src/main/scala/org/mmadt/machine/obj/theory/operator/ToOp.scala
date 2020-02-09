@@ -23,15 +23,13 @@
 package org.mmadt.machine.obj.theory.operator
 
 import org.mmadt.machine.obj.impl.obj.value.VStr
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.StrValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ToOp[O <: Obj with ToOp[O]] {
-  this: O =>
-
+trait ToOp[O <: Type[O]] {
   def to(other: String): O = this.to(new VStr(other)) //
   def to(label: StrValue): O
 }

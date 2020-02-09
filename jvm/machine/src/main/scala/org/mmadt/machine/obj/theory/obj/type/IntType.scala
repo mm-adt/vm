@@ -23,23 +23,26 @@
 package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.value.StrValue
-import org.mmadt.machine.obj.theory.obj.{Bool, Int}
-import org.mmadt.machine.obj.theory.operator.ToOp
+import org.mmadt.machine.obj.theory.obj.Int
+import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, StrValue}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntType extends Int
-  with Type[IntType]
-  with ToOp[Int] {
+  with Type[IntType] {
 
   @throws[IllegalAccessException]
   override def value(): Long = throw new IllegalAccessException("...")
 
-  override def is(other: Bool): IntType = this.push(inst(Tokens.is, other)).q(0, q()._2) //
-  override def plus(other: Int): IntType = this.push(inst(Tokens.plus, other)) //
-  override def mult(other: Int): IntType = this.push(inst(Tokens.mult, other)) //
-  override def gt(other: Int): BoolType = this.bool(inst(Tokens.gt, other)) //
   override def to(label: StrValue): IntType = this.push(inst(Tokens.to, label)) //
+
+  override def plus(other: IntType): IntType = this.push(inst(Tokens.plus, other)) //
+  override def plus(other: IntValue): IntType = this.push(inst(Tokens.plus, other)) //
+  override def mult(other: IntType): IntType = this.push(inst(Tokens.mult, other)) //
+  override def mult(other: IntValue): IntType = this.push(inst(Tokens.mult, other)) //
+  override def gt(other: IntType): BoolType = this.bool(inst(Tokens.gt, other)) //
+  override def gt(other: IntValue): BoolType = this.bool(inst(Tokens.gt, other)) //
+  override def is(bool: BoolType): IntType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
+  override def is(bool: BoolValue): IntType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
 }

@@ -23,6 +23,7 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.impl.obj.value.VRec
+import org.mmadt.machine.obj.theory.obj.`type`.RecType
 import org.mmadt.machine.obj.theory.obj.value.RecValue
 import org.mmadt.machine.obj.theory.operator.{GetOp, IsOp, PlusOp, ToOp}
 
@@ -30,9 +31,9 @@ import org.mmadt.machine.obj.theory.operator.{GetOp, IsOp, PlusOp, ToOp}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj, B <: Obj] extends Obj
-  with PlusOp[Rec[A, B]]
-  with IsOp[Rec[A, B]]
-  with ToOp[Rec[A, B]]
+  with PlusOp[Rec[A, B], RecValue[A, B], RecType[A, B]]
+  with IsOp[Rec[A, B], RecValue[A, B], RecType[A, B]]
+  with ToOp[RecType[A, B]]
   with GetOp[A, B] {
 
   def value(): Map[A, B] //
@@ -40,5 +41,5 @@ trait Rec[A <: Obj, B <: Obj] extends Obj
 }
 
 object Rec {
-  implicit def mapToRec[A <: Obj, B <: Obj](java: Map[A, B]): Rec[A, B] with RecValue[A, B] = new VRec(java) //
+  implicit def mapToRec[A <: Obj, B <: Obj](java: Map[A, B]): RecValue[A, B] with Rec[A, B] = new VRec(java) //
 }

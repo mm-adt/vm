@@ -34,4 +34,9 @@ trait Inst extends Obj {
   final def args(): List[Obj] = this.value()._2 //
   final def arg[O <: Obj](): O = this.value()._2.head.asInstanceOf[O] //
   def apply(obj: Obj): Obj = throw new UnsupportedOperationException("This is an unsupported instruction: " + this)
+
+  override def equals(other: Any): Boolean = other.isInstanceOf[Inst] &&
+    other.asInstanceOf[this.type].op().equals(this.op()) &&
+    other.asInstanceOf[this.type].args().equals(this.args())
+
 }

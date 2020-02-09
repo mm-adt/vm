@@ -36,24 +36,10 @@ trait BoolValue extends Bool
 
   override def to(label: StrValue): BoolType = this.start().to(label) //
 
-  override def and(other: Bool): Bool = {
-    try this.value() && other.value()
-    catch {
-      case _: IllegalAccessException => this.start().and(other)
-    }
-  }
-
-  override def or(other: Bool): Bool = {
-    try this.value() || other.value()
-    catch {
-      case _: IllegalAccessException => this.start().or(other)
-    }
-  }
-
-  override def is(bool: Bool): Bool = {
-    try if (bool.value()) this else this.q(0)
-    catch {
-      case _: IllegalAccessException => this.start().is(bool)
-    }
-  }
+  override def and(bool: BoolType): BoolType = this.start().and(bool) //
+  override def and(bool: BoolValue): BoolValue = this.value() && bool.value() //
+  override def or(bool: BoolType): BoolType = this.start().or(bool) //
+  override def or(bool: BoolValue): BoolValue = this.value() || bool.value() //
+  override def is(bool: BoolType): BoolType = this.start().is(bool) //
+  override def is(bool: BoolValue): BoolValue = if (bool.value()) this else this.q(0)
 }

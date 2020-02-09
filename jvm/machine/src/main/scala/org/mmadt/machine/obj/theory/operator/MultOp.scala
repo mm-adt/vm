@@ -23,14 +23,17 @@
 package org.mmadt.machine.obj.theory.operator
 
 import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultOp[O <: Obj with MultOp[O]] {
-  this: Obj with MultOp[O] =>
-
-  def mult(other: O): O //
-  final def *(other: O): O = this.mult(other) //
+trait MultOp[O <: Obj with MultOp[O, V, T], V <: Value[V], T <: Type[T]] {
+  this: O =>
+  def mult(other: T): T //
+  def mult(other: V): O //
+  final def *(other: T): T = this.mult(other) //
+  final def *(other: V): O = this.mult(other) //
 }
 
