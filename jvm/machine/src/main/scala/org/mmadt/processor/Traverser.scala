@@ -38,8 +38,6 @@ trait Traverser[S <: Obj] {
   def model(): Model
 
   //
-  protected def to(label: StrValue): Traverser[S] // store the obj to the state by label
-  protected def from[E <: Obj](label: StrValue): Traverser[E] // load an obj from the state by label
   def split[E <: Obj](obj: E): Traverser[E] // clone the traverser with a new obj location
   def apply[E <: Obj](t: E with Type[_]): Traverser[E] // embed the traverser's obj into the provided type
 

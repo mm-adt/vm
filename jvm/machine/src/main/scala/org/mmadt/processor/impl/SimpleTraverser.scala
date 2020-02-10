@@ -37,8 +37,6 @@ class SimpleTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj]) extends Trave
   def this(obj: S) = this(obj, Map()) //
   override def obj(): S = obj //
   override def state(): Map[StrValue, Obj] = state //
-  override protected def to(label: StrValue): Traverser[S] = new SimpleTraverser[S](this.obj, Map[StrValue, Obj](label -> this.obj) ++ this.state) //
-  override protected def from[E <: Obj](label: StrValue): Traverser[E] = new SimpleTraverser[E](this.state(label).asInstanceOf[E], this.state) //
   override def split[E <: Obj](obj: E): Traverser[E] = new SimpleTraverser[E](obj, this.state)
 
   override def apply[E <: Obj](t: E with Type[_]): Traverser[E] = {
@@ -47,8 +45,8 @@ class SimpleTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj]) extends Trave
     else {
       (t.insts().head._2 match {
         // traverser instructions
-        case toInst: Inst if toInst.op().equals(Tokens.to) => to(toInst.arg())
-        case fromInst: Inst if fromInst.op().equals(Tokens.from) => from(fromInst.arg())
+        case toInst: Inst if toInst.op().equals(Tokens.to) => new SimpleTraverser[S](this.obj, Map[StrValue, Obj](toInst.arg[StrValue]() -> this.obj) ++ this.state)
+        case fromInst: Inst if fromInst.op().equals(Tokens.from) => new SimpleTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state) //
         // branch instructions
         // storage instructions
         case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
