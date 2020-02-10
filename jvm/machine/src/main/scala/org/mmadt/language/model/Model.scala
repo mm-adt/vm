@@ -30,6 +30,6 @@ import org.mmadt.language.obj.`type`.Type
 trait Model {
 
   def put(t: Type[_], a: Type[_], b: Type[_]): Model //
-  def get(t: Type[_], a: Type[_]): Type[_] //
+  def get(t: Type[_], a: Type[_]): Option[Type[_]] //
 
 }

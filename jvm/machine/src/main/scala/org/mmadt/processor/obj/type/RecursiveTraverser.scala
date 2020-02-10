@@ -47,7 +47,7 @@ class RecursiveTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], va
       this.asInstanceOf[Traverser[E]]
     } else {
       this.obj match {
-        case tobj: Type[_] if !model.get(tobj.pure(), endType).toString.equals(endType.toString) => this.apply(model.get(tobj.pure(), endType).asInstanceOf[E with Type[_]])
+        case tobj: Type[_] if model.get(tobj.pure(), endType).nonEmpty => this.apply(model.get(tobj.pure(), endType).get.asInstanceOf[E with Type[_]])
         case _ =>
           (endType.insts().head._2 match {
             // traverser instructions
