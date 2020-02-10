@@ -23,9 +23,9 @@
 package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, RecValue, StrValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
+import org.mmadt.processor.impl.RecursiveTraverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,7 +39,7 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.push(btype, inst(Tokens.get, key)) //
   override def get(key: A): B = this.value().get(key) match {
     case Some(bvalue: Value[_]) => bvalue.asInstanceOf[B]
-    case Some(btype: Type[_]) => new RecursiveTraverser(key).apply(btype).obj()
+    case Some(btype: Type[_]) => new RecursiveTraverser(key).apply(btype).obj().asInstanceOf[B]
     case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
     case _ => throw new RuntimeException()
   }

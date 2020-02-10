@@ -27,7 +27,7 @@ import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.traverser.Traverser
+import org.mmadt.processor.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,7 +46,7 @@ object Stringer {
     case _ => "{" + x._1.value() + "," + x._2.value() + "}"
   }
 
-  def traverserString(trav: Traverser): String = {
+  def traverserString(trav: Traverser[_]): String = {
     "[" + trav.obj() + "|" + trav.state().foldRight("")((x, string) => string + x._1 + "->" + x._2 + ",").dropRight(1) + "]"
   }
 

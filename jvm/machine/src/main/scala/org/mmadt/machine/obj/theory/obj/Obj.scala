@@ -23,10 +23,10 @@
 package org.mmadt.machine.obj.theory.obj
 
 import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.mmadt.machine.obj.theory.operator.{ChooseOp, FromOp, MapOp}
+import org.mmadt.processor.impl.RecursiveTraverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -45,6 +45,6 @@ trait Obj extends ChooseOp
   def q(quantifier: TQ): this.type //
 
   // utility methods
-  def ==>(t: Type[_]): Obj = new RecursiveTraverser(this).apply(t).obj() // TODO: FORCE TYPE CHECK ON t:Obj
+  def ==>[E <: Obj](t: E with Type[_]): Obj = new RecursiveTraverser[E](this.asInstanceOf[E]).apply(t).obj() // TODO: FORCE TYPE CHECK ON t:Obj
   def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
 }

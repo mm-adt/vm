@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.traverser
+package org.mmadt.processor
 
 import org.mmadt.language.Stringer
 import org.mmadt.machine.obj.theory.obj.Obj
@@ -30,15 +30,15 @@ import org.mmadt.machine.obj.theory.obj.value.StrValue
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Traverser {
+trait Traverser[S <: Obj] {
 
-  def obj[S <: Obj](): S // the obj location of the traverser
+  def obj(): S // the obj location of the traverser
   def state(): Map[StrValue, Obj] // the local variables of the traverser
   //
-  protected def to(label: StrValue, obj: Obj): Traverser // store the obj to the state by label
-  protected def from(label: StrValue): Traverser // load an obj from the state by label
-  def split[E <: Obj](obj: E): Traverser // clone the traverser with a new obj location
-  def apply(t: Type[_]): Traverser // embed the traverser's obj into the provided type
+  protected def to(label: StrValue): Traverser[S] // store the obj to the state by label
+  protected def from[E <: Obj](label: StrValue): Traverser[E] // load an obj from the state by label
+  def split[E <: Obj](obj: E): Traverser[E] // clone the traverser with a new obj location
+  def apply[E <: Obj](t: E with Type[_]): Traverser[E] // embed the traverser's obj into the provided type
 
   override def toString: String = Stringer.traverserString(this)
 

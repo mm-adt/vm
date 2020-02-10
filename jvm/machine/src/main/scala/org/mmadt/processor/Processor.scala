@@ -24,13 +24,12 @@ package org.mmadt.processor
 
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Processor {
+trait Processor[S <: Obj, E <: Obj] {
 
-  def apply(o: Obj, t: Type[_]): Iterator[Traverser]
+  def apply(o: S, t: E with Type[_]): Iterator[Traverser[E]]
 
 }

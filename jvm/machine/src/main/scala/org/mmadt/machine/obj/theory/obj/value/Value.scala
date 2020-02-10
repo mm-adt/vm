@@ -38,7 +38,7 @@ trait Value[V <: Value[V]] extends Obj {
 
   override def map[O <: Obj](other: O): O = other match {
     case _: Value[_] => other
-    case t: Type[_] => (this ==> t).asInstanceOf[O] //
+    case t: O with Type[_] => (this ==> t).asInstanceOf[O] //
   }
 
   override def from[O <: Obj](label: StrValue): O = this.start().from(label) //

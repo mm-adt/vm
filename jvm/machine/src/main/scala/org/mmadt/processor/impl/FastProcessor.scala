@@ -22,28 +22,26 @@
 
 package org.mmadt.processor.impl
 
-import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.strm.IntStrm
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.traverser.Traverser
-import org.mmadt.processor.Processor
+import org.mmadt.processor.{Processor, Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class FastProcessor extends Processor {
+class FastProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
 
-  override def apply(o: Obj, t: Type[_]): Iterator[Traverser] = {
-    var output: Iterator[Traverser] = o match {
-      case s: IntStrm => s.value().map(x => new RecursiveTraverser(x))
-      case r => Iterator(new RecursiveTraverser(r))
+  override def apply(o: S, t: E with Type[_]): Iterator[Traverser[E]] = {
+    var output: Iterator[Traverser[E]] = o match {
+      case s: IntStrm => s.value().map(x => new SimpleTraverser[E](x.asInstanceOf[E]))
+      case r => Iterator(new SimpleTraverser[E](r.asInstanceOf[E]))
     }
     for (tt <- createInstList(List(), t)) {
       // System.out.println(tt)
       output = output.
-        map(trav => trav.apply(tt._1.push(tt._1, tt._2))).
-        filter(trav => trav.obj[Obj]().alive())
+        map(trav => trav.apply(tt._1.push(tt._1, tt._2)).asInstanceOf[Traverser[E]]).
+        filter(trav => trav.obj().alive())
     }
     output
   }

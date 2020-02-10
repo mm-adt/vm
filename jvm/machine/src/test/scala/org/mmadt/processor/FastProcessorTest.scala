@@ -23,6 +23,8 @@
 package org.mmadt.processor
 
 import org.mmadt.machine.obj.impl.obj.int
+import org.mmadt.machine.obj.theory.obj.`type`.IntType
+import org.mmadt.machine.obj.theory.obj.value.strm.IntStrm
 import org.mmadt.processor.impl.FastProcessor
 import org.scalatest.FunSuite
 
@@ -32,7 +34,7 @@ import org.scalatest.FunSuite
 class FastProcessorTest extends FunSuite {
 
   test("fast processor") {
-    val f = new FastProcessor()
+    val f = new FastProcessor[IntStrm, IntType]()
     println(f.apply(int(1, 2, 2, 4, 3, 6, 7, 8), int.plus(1).mult(5).mult(10).is(int.gt(200))).toList)
   }
 }

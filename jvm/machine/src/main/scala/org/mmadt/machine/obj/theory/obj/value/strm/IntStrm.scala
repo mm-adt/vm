@@ -22,7 +22,6 @@
 
 package org.mmadt.machine.obj.theory.obj.value.strm
 
-import org.mmadt.machine.obj.impl.obj.value.VInt
 import org.mmadt.machine.obj.theory.obj.Int
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, StrValue, Value}
@@ -45,8 +44,4 @@ trait IntStrm extends Int
   override def gt(other: IntValue): BoolValue = throw new IllegalAccessException() //
   override def is(bool: BoolType): IntType = this.start().is(bool) //
   override def is(bool: BoolValue): IntValue = throw new IllegalAccessException() //
-}
-
-object IntStrm {
-  implicit def longToInt(java: Long): IntValue with Int = new VInt(java) //
 }

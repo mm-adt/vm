@@ -20,25 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.operator
-
-import org.mmadt.language.Tokens
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+package org.mmadt.language.model
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ChooseOp {
-  this: Obj with ChooseOp =>
+trait Model {
 
-  def choose[IT <: Type[IT], OT <: Obj](branches: (IT, OT)*): OT = this.choose(branches.toMap)
-
-  def choose[IT <: Type[IT], OT <: Obj](branches: RecValue[IT, OT]): OT = {
-    this match {
-      case ttype: Type[_] => ttype.push(branches.value().head._2, inst(Tokens.choose, branches))
-      case _: Value[_] => (this ==> branches.value().filter(p => (this ==> p._1).alive()).head._2.asInstanceOf[Obj with Type[_]]).asInstanceOf[OT]
-    }
-  }
 }
