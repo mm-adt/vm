@@ -25,7 +25,7 @@ package org.mmadt.machine.obj.theory.obj
 import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.theory.operator.{ChooseOp, FromOp, MapOp}
+import org.mmadt.machine.obj.theory.operator.{ChooseOp, FromOp, MapOp, ModelOp}
 import org.mmadt.processor.impl.RecursiveTraverser
 
 /**

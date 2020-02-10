@@ -22,9 +22,14 @@
 
 package org.mmadt.language.model
 
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
+
+  def put(t: Type[_], a: Type[_], b: Type[_]): Model //
+  def get(t: Type[_], a: Type[_]): Type[_] //
 
 }

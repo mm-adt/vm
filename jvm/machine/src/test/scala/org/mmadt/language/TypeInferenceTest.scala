@@ -22,35 +22,26 @@
 
 package org.mmadt.language
 
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.machine.obj.impl.obj.int
+import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object Tokens {
+class TypeInferenceTest extends FunSuite {
 
-  val and = "and"
-  val choose = "choose"
-  val get = "get"
-  val id = "id"
-  val is = "is"
-  val plus = "plus"
-  val map = "map"
-  val mult = "mult"
-  val gt = "gt"
-  val or = "or"
-  val to = "to"
-  val from = "from"
-  val start = "start"
-  val model = "model"
 
-  def symbol(obj: Obj): String = obj match {
-    case _: BoolType => "bool"
-    case _: IntType => "int"
-    case _: RecType[_, _] => "rec"
-    case _: Type[_] => "obj"
-    case _ => throw new Exception("Error: " + obj)
+  test("type inference") {
+    assertResult("int{0,3}<=int{3}[mult,5][is,bool{3}<=int{3}[gt,int{3}[plus,10]]]")((int.q(3) ==> (int.mult(5).is(int.gt(int.plus(10))))).toString)
   }
+
+  test("model inference") {
+    assertResult(int.plus(int))(int ==> int.model("ex").mult(2))
+    assertResult(int(4))(int(2) ==> (int ==> int.mult(2)).asInstanceOf[IntType])
+    assertResult(int(4))(int(2) ==> (int ==> int.model("ex").mult(2)).asInstanceOf[IntType])
+    //println(model.get(int,int.mult(2)).nonEmpty)
+  }
+
 
 }

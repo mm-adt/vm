@@ -46,6 +46,7 @@ class FastProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
     output
   }
 
+  @scala.annotation.tailrec
   private def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {
     if (t.insts().isEmpty) list else createInstList(List((t.pure(), t.insts().last._2)) ++ list, t.insts().last._1)
   }

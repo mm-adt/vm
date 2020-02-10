@@ -30,6 +30,7 @@ import org.mmadt.machine.obj.theory.obj.`type`.Type
  */
 trait Processor[S <: Obj, E <: Obj] {
 
+  // Processor[traversers] -> Traverser[instruction] -> Instruction[object]
   def apply(o: S, t: E with Type[_]): Iterator[Traverser[E]]
 
 }

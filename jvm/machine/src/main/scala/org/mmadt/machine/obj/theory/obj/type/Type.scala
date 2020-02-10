@@ -26,11 +26,14 @@ import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.machine.obj.TQ
 import org.mmadt.machine.obj.theory.obj.value.StrValue
 import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Int, Obj, Rec, Str}
+import org.mmadt.machine.obj.theory.operator.ModelOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[T <: Type[T]] extends Obj {
+trait Type[T <: Type[T]] extends Obj
+  with ModelOp {
+
   this: Type[T] =>
   def pure(): this.type = this.insts() match {
     case List() => this
@@ -65,7 +68,7 @@ trait Type[T <: Type[T]] extends Obj {
 
   override def toString: String = Stringer.typeString(this) //
 
-  final def <=[TT <: Type[TT]](mapFrom: Type[TT]): Type[TT] = mapFrom.q(this.q())
+  final def <=[TT <: Type[TT]](mapFrom: Type[TT]): TT = mapFrom.q(this.q()).asInstanceOf[TT]
 
   //def stream[V](values:V*):
 
@@ -73,7 +76,11 @@ trait Type[T <: Type[T]] extends Obj {
   override def from[O <: Obj](label: StrValue): O = this.push(inst(Tokens.from, label)).asInstanceOf[O] //
 
   override def equals(other: Any): Boolean = other match {
-    case t: Type[T] => t.insts() == this.insts()
+    case t: Type[T] => t.insts().map(_._2) == this.insts().map(_._2)
     case _ => false
   }
+
+  override def hashCode(): scala.Int = this.pure().toString.hashCode // TODO: using toString()
+
+  override def model(model: StrValue): this.type = this.push(inst(Tokens.model, model)).asInstanceOf[this.type] //
 }

@@ -23,6 +23,7 @@
 package org.mmadt.processor
 
 import org.mmadt.language.Stringer
+import org.mmadt.language.model.Model
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.StrValue
@@ -34,6 +35,8 @@ trait Traverser[S <: Obj] {
 
   def obj(): S // the obj location of the traverser
   def state(): Map[StrValue, Obj] // the local variables of the traverser
+  def model(): Model
+
   //
   protected def to(label: StrValue): Traverser[S] // store the obj to the state by label
   protected def from[E <: Obj](label: StrValue): Traverser[E] // load an obj from the state by label

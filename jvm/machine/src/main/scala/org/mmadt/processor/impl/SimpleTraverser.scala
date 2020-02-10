@@ -23,6 +23,7 @@
 package org.mmadt.processor.impl
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.model.{Model, SimpleModel}
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.{StrValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
@@ -51,10 +52,15 @@ class SimpleTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj]) extends Trave
         // branch instructions
         // storage instructions
         case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
-          case typeArg: Type[_] => this.apply(typeArg).obj()
+          case typeArg: Type[_] => this.split(this.obj() match {
+            case tt: Type[_] => tt.pure()
+            case _ => this.obj()
+          }).apply(typeArg).obj()
           case valueArg: Value[_] => valueArg
         }).apply(this.obj))
       }).asInstanceOf[Traverser[E]]
     }
   }
+
+  override def model(): Model = new SimpleModel()
 }

@@ -51,6 +51,8 @@ package object inst {
 
   class VMapInst[O <: Obj with MapOp](arg: Obj) extends VInst((Tokens.map, List(arg)), qOne) with MapInst[O]
 
+  class VModelInst(arg: Obj) extends VInst((Tokens.model, List(arg)), qOne) with ModelInst
+
   class VMultInst[O <: Obj with MultOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O](arg: Obj) extends VInst((Tokens.mult, List(arg)), qOne) with MultInst[O, V, T]
 
   class VPlusInst[O <: Obj with PlusOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O, V, T]

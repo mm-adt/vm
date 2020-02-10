@@ -23,6 +23,8 @@
 package org.mmadt.processor.impl
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.model.{Model, SimpleModel}
+import org.mmadt.machine.obj.impl.obj.int
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.{StrValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
@@ -32,33 +34,46 @@ import org.mmadt.processor.Traverser
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class RecursiveTraverser[S <: Obj](state: Map[StrValue, Obj], obj: S) extends Traverser[S] {
-  def this(obj: S) = this(Map[StrValue, Obj](), obj)
+class RecursiveTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj], model: Model) extends Traverser[S] {
+
+  def this(obj: S) = this(obj, Map[StrValue, Obj](), new SimpleModel())
+
+  def this(obj: S, state: Map[StrValue, Obj]) = this(obj, state, new SimpleModel())
 
   override def obj(): S = obj //
-  override def split[E <: Obj](obj: E): Traverser[E] = new RecursiveTraverser(this.state, obj) //
+  override def split[E <: Obj](obj: E): Traverser[E] = new RecursiveTraverser(obj, this.state, model) //
 
   override def apply[E <: Obj](t: E with Type[_]): Traverser[E] = {
     if (t.insts().isEmpty) {
       TypeChecker.checkType(this.obj(), t)
       this.asInstanceOf[Traverser[E]]
     } else {
-      (t.insts().head._2 match {
-        // traverser instructions
-        case toInst: Inst if toInst.op().equals(Tokens.to) => to(toInst.arg())
-        case fromInst: Inst if fromInst.op().equals(Tokens.from) => from(fromInst.arg())
-        // branch instructions
-        // storage instructions
-        case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
-          case typeArg: Type[_] => this.apply(typeArg).obj()
-          case valueArg: Value[_] => valueArg
-        }).apply(this.obj))
-      }).apply(t.pop().asInstanceOf[E with Type[_]])
+
+      this.obj match {
+        case tobj: Type[_] if !model.get(tobj.pure(), t).toString.equals(t.toString) => this.apply(model.get(tobj.pure(), t).asInstanceOf[E with Type[_]])
+        case _ =>
+          (t.insts().head._2 match {
+            // traverser instructions
+            case toInst: Inst if toInst.op().equals(Tokens.to) => to(toInst.arg())
+            case fromInst: Inst if fromInst.op().equals(Tokens.from) => from(fromInst.arg())
+            case modelInst: Inst if modelInst.op().equals(Tokens.model) => new RecursiveTraverser[E](obj.asInstanceOf[E], this.state, new SimpleModel().put(int, int.mult(2), int.plus(int)))
+            // branch instructions
+            // storage instructions
+            case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
+              case typeArg: Type[_] => this.split(this.obj() match {
+                case tt: Type[_] => tt.pure()
+                case _ => this.obj()
+              }).apply(typeArg).obj()
+              case valueArg: Value[_] => valueArg
+            }).apply(this.obj))
+          }).apply(t.pop().asInstanceOf[E with Type[_]])
+      }
     }
   }
 
-  override protected def to(label: StrValue): Traverser[S] = new RecursiveTraverser[S](Map[StrValue, Obj](label -> obj) ++ this.state, obj) //
-  override protected def from[E <: Obj](label: StrValue): Traverser[E] = new RecursiveTraverser[E](this.state, this.state(label).asInstanceOf[E]) //
+  override protected def to(label: StrValue): Traverser[S] = new RecursiveTraverser[S](obj, Map[StrValue, Obj](label -> obj) ++ this.state, model) //
+  override protected def from[E <: Obj](label: StrValue): Traverser[E] = new RecursiveTraverser[E](this.state(label).asInstanceOf[E], this.state, model) //
 
-  override def state(): Map[StrValue, Obj] = state
+  override def state(): Map[StrValue, Obj] = state //
+  override def model(): Model = model
 }

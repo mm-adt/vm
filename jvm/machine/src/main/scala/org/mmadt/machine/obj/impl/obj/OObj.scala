@@ -44,6 +44,7 @@ abstract class OObj(val quantifier: TQ) extends Obj {
     case Tokens.plus => new VPlusInst(args.head)
     case Tokens.map => new VMapInst(args.head)
     case Tokens.mult => new VMultInst(args.head)
+    case Tokens.model => new VModelInst(args.head)
     case Tokens.is => new VIsInst(args.head.asInstanceOf[Bool])
     case Tokens.gt => new VGtInst(args.head)
     case Tokens.get => new VGetInst(args.head)

@@ -20,37 +20,13 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.machine.obj.theory.operator
 
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.machine.obj.theory.obj.value.StrValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object Tokens {
-
-  val and = "and"
-  val choose = "choose"
-  val get = "get"
-  val id = "id"
-  val is = "is"
-  val plus = "plus"
-  val map = "map"
-  val mult = "mult"
-  val gt = "gt"
-  val or = "or"
-  val to = "to"
-  val from = "from"
-  val start = "start"
-  val model = "model"
-
-  def symbol(obj: Obj): String = obj match {
-    case _: BoolType => "bool"
-    case _: IntType => "int"
-    case _: RecType[_, _] => "rec"
-    case _: Type[_] => "obj"
-    case _ => throw new Exception("Error: " + obj)
-  }
-
+trait ModelOp {
+  def model(model: StrValue): this.type = this
 }
