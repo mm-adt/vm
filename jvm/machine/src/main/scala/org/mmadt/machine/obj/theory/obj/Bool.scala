@@ -35,8 +35,6 @@ trait Bool extends Obj
   with AndOp
   with OrOp
   with ToOp[BoolType] {
-
-  def value(): Boolean //
 }
 
 object Bool {

@@ -31,6 +31,7 @@ import org.mmadt.machine.obj.theory.obj.{Bool, Obj}
  */
 trait GtOp[O <: Obj with GtOp[O, V, T], V <: Value[V], T <: Type[T]] {
   this: O =>
+
   def gt(other: T): BoolType //
   def gt(other: V): Bool //
   final def >(other: T): BoolType = this.gt(other) //

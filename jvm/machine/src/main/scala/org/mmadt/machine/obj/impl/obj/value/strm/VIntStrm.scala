@@ -20,21 +20,22 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.obj.`type`
+package org.mmadt.machine.obj.impl.obj.value.strm
 
+import org.mmadt.language.Tokens
 import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.impl.obj.value.VInt
-import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
+import org.mmadt.machine.obj.impl.obj.`type`.TInt
+import org.mmadt.machine.obj.impl.obj.{OObj, qZero}
+import org.mmadt.machine.obj.theory.obj.`type`.IntType
 import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.impl.obj._
+import org.mmadt.machine.obj.theory.obj.value.strm.IntStrm
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[IntType](insts, quantifier) with IntType {
-  def this() = this(Nil, qOne) //
-  override def push(inst: Inst): IntType = int(inst, quantifier) //
-  override def pop(): this.type = new TInt(insts.tail, quantifier).asInstanceOf[this.type] //
-  override def q(quantifier: TQ): this.type = new TInt(insts, quantifier).asInstanceOf[this.type] //
+class VIntStrm(java: Seq[IntValue]) extends OObj(quantifier = (java.length, java.length))
+  with IntStrm {
+  override def value(): Iterator[IntValue] = java.iterator //
+  override def start(): IntType = new TInt(List((new TInt(Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def q(quantifier: TQ): this.type = new VIntStrm(java).asInstanceOf[this.type] //
 }

@@ -22,29 +22,15 @@
 
 package org.mmadt.processor
 
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.theory.obj.Bool
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.mmadt.machine.obj.theory.obj.value.BoolValue
-import org.scalatest.FunSuite
+import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.traverser.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class AndOrTest extends FunSuite {
+trait Processor {
 
-  test("[and] w/ bool") {
-    assertResult(btrue)(btrue.and(btrue)) // value * value = value
-    assert(btrue.and(btrue).isInstanceOf[BoolValue])
-    assert(btrue.and(btrue).isInstanceOf[Bool])
-    assertResult(btrue.and(bool))(btrue.and(bool)) // value * type = type
-    assert(btrue.and(bool).isInstanceOf[BoolType])
-    assert(btrue.and(bool).isInstanceOf[Bool])
-    assertResult(bool.and(btrue))(bool.and(btrue)) // type * value = type
-    assert(bool.and(btrue).isInstanceOf[BoolType])
-    assert(bool.and(btrue).isInstanceOf[Bool])
-    assertResult(bool.and(bool))(bool.and(bool)) // type * type = type
-    assert(bool.and(bool).isInstanceOf[BoolType])
-    assert(bool.and(bool).isInstanceOf[Bool])
-  }
+  def apply(o: Obj, t: Type[_]): Iterator[Traverser]
+
 }

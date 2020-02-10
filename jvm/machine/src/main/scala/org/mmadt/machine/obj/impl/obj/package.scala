@@ -23,9 +23,11 @@
 package org.mmadt.machine.obj.impl
 
 import org.mmadt.machine.obj.impl.obj.`type`.{TBool, TInt, TRec, TStr}
+import org.mmadt.machine.obj.impl.obj.value.strm.VIntStrm
 import org.mmadt.machine.obj.impl.obj.value.{VBool, VInt, VRec, VStr}
 import org.mmadt.machine.obj.theory.obj.Obj
 import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, StrType}
+import org.mmadt.machine.obj.theory.obj.value.strm.IntStrm
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 
 /**
@@ -46,6 +48,7 @@ package object obj {
   val bfalse: BoolValue = bool(false)
 
   def int(value: Long): IntValue = new VInt(value) //
+  def int(values: Long*): IntStrm = new VIntStrm(values.map(i => int(i))) //
   def bool(value: Boolean): BoolValue = new VBool(value) //
   def str(value: String): StrValue = new VStr(value) //
   def rec[A <: Obj, B <: Obj](value: Map[A, B]): RecValue[A, B] = new VRec[A, B](value) //

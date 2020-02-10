@@ -31,6 +31,7 @@ import org.mmadt.machine.obj.theory.obj.value.Value
  */
 trait MultOp[O <: Obj with MultOp[O, V, T], V <: Value[V], T <: Type[T]] {
   this: O =>
+
   def mult(other: T): T //
   def mult(other: V): O //
   final def *(other: T): T = this.mult(other) //

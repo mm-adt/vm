@@ -25,11 +25,14 @@ package org.mmadt.machine.obj.theory.obj.value.inst
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value.Value
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.operator.{GtOp, PlusOp}
+import org.mmadt.machine.obj.theory.operator.GtOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait GtInst[O <: Obj with GtOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O] extends Inst {
-  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].gt(arg[V]())
+  override def apply(obj: Obj): Obj = arg[O]() match {
+    case v: Value[V] with V => obj.asInstanceOf[O].gt(v)
+    case t: Type[T] with T => obj.asInstanceOf[O].gt(t)
+  }
 }

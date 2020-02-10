@@ -31,9 +31,14 @@ import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Int, Obj, Rec, Str}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Type[T <: Type[T]] extends Obj {
+  this: Type[T] =>
+  def pure(): this.type = this.insts() match {
+    case List() => this
+    case _ => this.pop().pure()
+  }
 
   def insts(): List[(Type[_], Inst)] //
-  def pop(): T //
+  def pop(): this.type //
   def push(inst: Inst): T //
   def push[TT <: Type[TT]](t2: Obj, inst: Inst): TT = (t2 match {
     case _: Bool => bool(inst)
@@ -66,11 +71,9 @@ trait Type[T <: Type[T]] extends Obj {
 
   override def map[O <: Obj](other: O): O = this.push(other, inst(Tokens.map, other)) //
   override def from[O <: Obj](label: StrValue): O = this.push(inst(Tokens.from, label)).asInstanceOf[O] //
-  //override def to(label: StrValue): T = this.push(inst(Tokens.to, label)) //
 
-
-  override def equals(other: Any): Boolean = other.isInstanceOf[Type[T]] &&
-    other.asInstanceOf[this.type].insts().equals(this.insts()) // TODO: q() check
-
-
+  override def equals(other: Any): Boolean = other match {
+    case t: Type[T] => t.insts() == this.insts()
+    case _ => false
+  }
 }

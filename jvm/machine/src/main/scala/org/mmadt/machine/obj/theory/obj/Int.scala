@@ -36,8 +36,6 @@ trait Int extends Obj
   with GtOp[Int, IntValue, IntType]
   with IsOp[Int, IntValue, IntType]
   with ToOp[IntType] {
-
-  def value(): Long //
 }
 
 object Int {

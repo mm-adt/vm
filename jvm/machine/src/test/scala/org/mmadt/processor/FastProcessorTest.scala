@@ -20,21 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.obj.`type`
+package org.mmadt.processor
 
-import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.impl.obj.value.VInt
-import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
-import org.mmadt.machine.obj.theory.obj.value.IntValue
-import org.mmadt.machine.obj.impl.obj._
+import org.mmadt.machine.obj.impl.obj.int
+import org.mmadt.processor.impl.FastProcessor
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[IntType](insts, quantifier) with IntType {
-  def this() = this(Nil, qOne) //
-  override def push(inst: Inst): IntType = int(inst, quantifier) //
-  override def pop(): this.type = new TInt(insts.tail, quantifier).asInstanceOf[this.type] //
-  override def q(quantifier: TQ): this.type = new TInt(insts, quantifier).asInstanceOf[this.type] //
+class FastProcessorTest extends FunSuite {
+
+  test("fast processor") {
+    val f = new FastProcessor()
+    println(f.apply(int(1, 2, 2, 4, 3, 6, 7, 8), int.plus(1).mult(5).mult(10).is(int.gt(200))).toList)
+  }
 }

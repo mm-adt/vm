@@ -31,5 +31,8 @@ import org.mmadt.machine.obj.theory.operator.PlusOp
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait PlusInst[O <: Obj with PlusOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O] extends Inst {
-  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].plus(arg[V]())
+  override def apply(obj: Obj): Obj = arg[O]() match {
+    case v: Value[V] with V => obj.asInstanceOf[O].plus(v)
+    case t: Type[T] with T => obj.asInstanceOf[O].plus(t)
+  }
 }

@@ -35,8 +35,6 @@ trait Str extends Obj
   with GtOp[Str, StrValue, StrType]
   with IsOp[Str, StrValue, StrType]
   with ToOp[StrType] {
-
-  def value(): String //
 }
 
 object Str {

@@ -32,16 +32,11 @@ import org.mmadt.machine.obj.theory.obj.value.{BoolValue, StrValue}
 trait BoolType extends Bool
   with Type[BoolType] {
 
-  @throws[IllegalAccessException]
-  override def value(): Boolean = throw new IllegalAccessException("...")
-
   override def and(bool: BoolType): BoolType = this.push(inst(Tokens.and, bool)) //
   override def and(bool: BoolValue): BoolType = this.push(inst(Tokens.and, bool)) //
   override def or(bool: BoolType): BoolType = this.push(inst(Tokens.or, bool)) //
   override def or(bool: BoolValue): BoolType = this.push(inst(Tokens.or, bool)) //
-
   override def to(label: StrValue): BoolType = this.push(inst(Tokens.to, label)) //
-
   override def is(bool: BoolType): BoolType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
   override def is(bool: BoolValue): BoolType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
 }

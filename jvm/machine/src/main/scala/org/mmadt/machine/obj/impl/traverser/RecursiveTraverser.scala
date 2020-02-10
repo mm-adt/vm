@@ -50,7 +50,7 @@ class RecursiveTraverser(state: Map[StrValue, Obj], obj: Obj) extends Traverser 
         // branch instructions
         // storage instructions
         case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
-          case typeArg: Type[_] => this.apply(typeArg).obj()
+          case typeArg: Type[_] => this.apply(typeArg).obj[Obj]()
           case valueArg: Value[_] => valueArg
         }).apply(this.obj))
       }).apply(t.pop().asInstanceOf[Type[_]])

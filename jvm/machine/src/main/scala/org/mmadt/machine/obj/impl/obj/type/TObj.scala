@@ -35,9 +35,9 @@ abstract class TObj[T <: Type[T]](insts: List[(Type[_], Inst)], quantifier: TQ) 
   def this() = this(Nil, qOne) //
   def insts(): List[(Type[_], Inst)] = insts //
 
-  override def int(inst: Inst, q: TQ): IntType = new TInt(this.insts() ++ List((this, inst)), q) // null inst need to be [id]
-  override def bool(inst: Inst, q: TQ): BoolType = new TBool(this.insts() ++ List((this, inst)), q) // null inst need to be [id]
-  override def str(inst: Inst, q: TQ): StrType = new TStr(this.insts() ++ List((this, inst)), q) // null inst need to be [id]
-  override def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] = new TRec(tvalue, this.insts() ++ List((this, inst)), q) // null inst need to be [id]
+  override def int(inst: Inst, q: TQ): IntType = new TInt(this.insts() ::: List((this, inst)), q) // null inst need to be [id]
+  override def bool(inst: Inst, q: TQ): BoolType = new TBool(this.insts() ::: List((this, inst)), q) // null inst need to be [id]
+  override def str(inst: Inst, q: TQ): StrType = new TStr(this.insts() ::: List((this, inst)), q) // null inst need to be [id]
+  override def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] = new TRec(tvalue, this.insts() ::: List((this, inst)), q) // null inst need to be [id]
 
 }

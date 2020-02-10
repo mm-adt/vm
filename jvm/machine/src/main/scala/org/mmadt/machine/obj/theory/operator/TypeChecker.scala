@@ -32,12 +32,12 @@ import org.mmadt.machine.obj.theory.obj.value.Value
 object TypeChecker {
 
   def checkType[O <: Obj](obj: O, ttype: Type[_]): O = {
-    if ((obj match {
+    if (obj.isInstanceOf[Type[_]] || ((obj match {
       case v: Value[_] => v.start().getClass.isAssignableFrom(ttype.getClass)
       case t: Type[_] => t.getClass.isAssignableFrom(ttype.getClass)
     })
       && obj.q()._1.value() >= ttype.q()._1.value()
-      && obj.q()._2.value() <= ttype.q()._2.value())
+      && obj.q()._2.value() <= ttype.q()._2.value()))
       obj
     else
       throw new IllegalArgumentException("The obj " + obj + " does not match the type " + ttype)

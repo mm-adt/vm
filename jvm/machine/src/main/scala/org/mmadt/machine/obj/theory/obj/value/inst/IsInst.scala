@@ -22,14 +22,17 @@
 
 package org.mmadt.machine.obj.theory.obj.value.inst
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, Type}
 import org.mmadt.machine.obj.theory.obj.value.{BoolValue, Value}
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Obj}
 import org.mmadt.machine.obj.theory.operator.IsOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IsInst[O <: Obj with IsOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O] extends Inst {
-  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].is(arg[BoolValue]())
+  override def apply(obj: Obj): Obj = arg[Bool]() match {
+    case v: BoolValue => obj.asInstanceOf[O].is(v)
+    case t: BoolType => obj.asInstanceOf[O].is(t)
+  }
 }

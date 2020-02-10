@@ -32,11 +32,7 @@ import org.mmadt.machine.obj.theory.obj.value.{BoolValue, IntValue, StrValue}
 trait IntType extends Int
   with Type[IntType] {
 
-  @throws[IllegalAccessException]
-  override def value(): Long = throw new IllegalAccessException("...")
-
   override def to(label: StrValue): IntType = this.push(inst(Tokens.to, label)) //
-
   override def plus(other: IntType): IntType = this.push(inst(Tokens.plus, other)) //
   override def plus(other: IntValue): IntType = this.push(inst(Tokens.plus, other)) //
   override def mult(other: IntType): IntType = this.push(inst(Tokens.mult, other)) //

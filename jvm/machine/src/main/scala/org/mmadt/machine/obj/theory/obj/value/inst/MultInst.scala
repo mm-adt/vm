@@ -31,5 +31,8 @@ import org.mmadt.machine.obj.theory.operator.MultOp
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait MultInst[O <: Obj with MultOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O] extends Inst {
-  override def apply(obj: Obj): Obj = obj.asInstanceOf[O].mult(arg[V]())
+  override def apply(obj: Obj): Obj = arg[O]() match {
+    case v: Value[V] with V => obj.asInstanceOf[O].mult(v)
+    case t: Type[T] with T => obj.asInstanceOf[O].mult(t)
+  }
 }

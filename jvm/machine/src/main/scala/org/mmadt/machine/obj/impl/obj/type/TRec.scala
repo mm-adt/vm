@@ -33,7 +33,7 @@ import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 class TRec[A <: Obj, B <: Obj](java: Map[A, B], insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[RecType[A, B]](insts, quantifier) with RecType[A, B] {
   def this() = this(Map[A, B](), Nil, qOne) //
   override def push(inst: Inst): RecType[A, B] = rec[A, B](java, inst, quantifier) //
-  override def pop(): RecType[A, B] = new TRec[A, B](java, insts.tail, quantifier) //
+  override def pop(): this.type = new TRec[A, B](java, insts.tail, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TRec[A, B](java, insts, quantifier).asInstanceOf[this.type] //
   // override def typeValue(): Map[K, V] = java
 }

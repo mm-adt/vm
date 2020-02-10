@@ -35,8 +35,6 @@ trait Value[V <: Value[V]] extends Obj {
   def start(): Type[_] //
 
   override def toString: String = Stringer.valueString(this) //
-  override def equals(other: Any): Boolean = other.isInstanceOf[Value[V]] &&
-    other.asInstanceOf[this.type].value().equals(this.value()) // TODO: replace this with a ValueEq and TypeEq instructions
 
   override def map[O <: Obj](other: O): O = other match {
     case _: Value[_] => other
@@ -44,4 +42,10 @@ trait Value[V <: Value[V]] extends Obj {
   }
 
   override def from[O <: Obj](label: StrValue): O = this.start().from(label) //
+
+  override def equals(other: Any): Boolean = other match {
+    case v: Value[V] => v.value() == this.value()
+    case _ => false
+  }
+
 }

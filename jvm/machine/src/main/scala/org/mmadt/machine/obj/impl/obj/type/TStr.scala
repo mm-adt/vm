@@ -33,6 +33,6 @@ import org.mmadt.machine.obj.theory.obj.`type`.{StrType, Type}
 class TStr(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[StrType](insts, quantifier) with StrType {
   def this() = this(Nil, qOne) //
   override def push(inst: Inst): StrType = str(inst, quantifier) //
-  override def pop(): StrType = new TStr(insts.tail, quantifier) //
+  override def pop(): this.type = new TStr(insts.tail, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TStr(insts, quantifier).asInstanceOf[this.type] //
 }

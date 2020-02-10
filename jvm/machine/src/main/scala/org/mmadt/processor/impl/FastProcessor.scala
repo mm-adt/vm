@@ -20,18 +20,35 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.theory.obj.util
+package org.mmadt.processor.impl
 
-import org.mmadt.machine.obj.theory.obj.Obj
+import org.mmadt.machine.obj.impl.traverser.RecursiveTraverser
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.Value
+import org.mmadt.machine.obj.theory.obj.value.strm.IntStrm
+import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.machine.obj.theory.traverser.Traverser
+import org.mmadt.processor.Processor
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object VorT {
-  def wrap[V, T](obj: Obj): Either[V, T] = obj match {
-    case x: Value[_] => Left.apply(x.asInstanceOf[V])
-    case x: Type[_] => Right.apply(x.asInstanceOf[T])
+class FastProcessor extends Processor {
+
+  override def apply(o: Obj, t: Type[_]): Iterator[Traverser] = {
+    var output: Iterator[Traverser] = o match {
+      case s: IntStrm => s.value().map(x => new RecursiveTraverser(x))
+      case r => Iterator(new RecursiveTraverser(r))
+    }
+    for (tt <- createInstList(List(), t)) {
+      // System.out.println(tt)
+      output = output.
+        map(trav => trav.apply(tt._1.push(tt._1, tt._2))).
+        filter(trav => trav.obj[Obj]().alive())
+    }
+    output
+  }
+
+  private def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {
+    if (t.insts().isEmpty) list else createInstList(List((t.pure(), t.insts().last._2)) ++ list, t.insts().last._1)
   }
 }

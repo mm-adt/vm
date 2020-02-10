@@ -32,9 +32,6 @@ import org.mmadt.machine.obj.theory.obj.value.{BoolValue, StrValue}
 trait StrType extends Str
   with Type[StrType] {
 
-  @throws[IllegalAccessException]
-  override def value(): String = throw new IllegalAccessException("...")
-
   override def to(label: StrValue): StrType = this.push(inst(Tokens.to, label)) //
   override def plus(other: StrType): StrType = this.push(inst(Tokens.plus, other)) //
   override def plus(other: StrValue): StrType = this.push(inst(Tokens.plus, other)) //

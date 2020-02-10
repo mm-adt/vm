@@ -33,8 +33,7 @@ import org.mmadt.machine.obj.theory.obj.{Obj, Rec}
 trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   with Type[RecType[A, B]] {
 
-  @throws[IllegalAccessException]
-  override def value(): Map[A, B] = throw new IllegalAccessException("...")
+  def value(): Map[A, B] = throw new IllegalAccessException("...")
 
   override def to(label: StrValue): RecType[A, B] = this.push(inst(Tokens.to, label)) //
   override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.push(btype, inst(Tokens.get, key)) //

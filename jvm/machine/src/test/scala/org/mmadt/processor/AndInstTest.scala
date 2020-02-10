@@ -20,21 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.machine.obj.impl.obj.`type`
+package org.mmadt.processor
 
-import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.impl.obj.value.VInt
-import org.mmadt.machine.obj.theory.obj.Inst
-import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
-import org.mmadt.machine.obj.theory.obj.value.IntValue
 import org.mmadt.machine.obj.impl.obj._
+import org.mmadt.machine.obj.theory.obj.Bool
+import org.mmadt.machine.obj.theory.obj.`type`.BoolType
+import org.mmadt.machine.obj.theory.obj.value.BoolValue
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[IntType](insts, quantifier) with IntType {
-  def this() = this(Nil, qOne) //
-  override def push(inst: Inst): IntType = int(inst, quantifier) //
-  override def pop(): this.type = new TInt(insts.tail, quantifier).asInstanceOf[this.type] //
-  override def q(quantifier: TQ): this.type = new TInt(insts, quantifier).asInstanceOf[this.type] //
+class AndInstTest extends FunSuite {
+
+  test("[and] w/ bool") {
+    assertResult(btrue)(btrue.and(btrue)) // value * value = value
+    assert(btrue.and(btrue).isInstanceOf[BoolValue])
+    assert(btrue.and(btrue).isInstanceOf[Bool])
+    assertResult(btrue.and(bool))(btrue.and(bool)) // value * type = type
+    assert(btrue.and(bool).isInstanceOf[BoolType])
+    assert(btrue.and(bool).isInstanceOf[Bool])
+    assertResult(bool.and(btrue))(bool.and(btrue)) // type * value = type
+    assert(bool.and(btrue).isInstanceOf[BoolType])
+    assert(bool.and(btrue).isInstanceOf[Bool])
+    assertResult(bool.and(bool))(bool.and(bool)) // type * type = type
+    assert(bool.and(bool).isInstanceOf[BoolType])
+    assert(bool.and(bool).isInstanceOf[Bool])
+  }
 }
