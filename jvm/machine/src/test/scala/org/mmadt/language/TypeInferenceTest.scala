@@ -23,7 +23,6 @@
 package org.mmadt.language
 
 import org.mmadt.machine.obj.impl.obj.int
-import org.mmadt.machine.obj.theory.obj.`type`.{IntType, Type}
 import org.scalatest.FunSuite
 
 /**
@@ -38,8 +37,8 @@ class TypeInferenceTest extends FunSuite {
 
   test("model inference") {
     assertResult(int.plus(int))(int ==> int.model("ex").mult(2))
-    assertResult(int(4))(int(2) ==> (int ==> int.mult(2)).asInstanceOf[IntType])
-    assertResult(int(4))(int(2) ==> (int ==> int.model("ex").mult(2)).asInstanceOf[IntType])
+    assertResult(int(4))(int(2) ==> (int ==> int.mult(2)))
+    assertResult(int(4))(int(2) ==> (int ==> int.model("ex").mult(int(2))))
     //println(model.get(int,int.mult(2)).nonEmpty)
   }
 

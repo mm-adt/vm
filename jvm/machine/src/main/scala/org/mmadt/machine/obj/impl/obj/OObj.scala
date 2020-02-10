@@ -24,7 +24,6 @@ package org.mmadt.machine.obj.impl.obj
 
 import org.mmadt.language.Tokens
 import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.obj.value._
 import org.mmadt.machine.obj.impl.obj.value.inst._
 import org.mmadt.machine.obj.theory.obj.`type`.Type
 import org.mmadt.machine.obj.theory.obj.value._
@@ -50,7 +49,6 @@ abstract class OObj(val quantifier: TQ) extends Obj {
     case Tokens.get => new VGetInst(args.head)
     case Tokens.to => new VToInst(args.head.asInstanceOf[StrValue])
     case Tokens.from => new VFromInst(args.head.asInstanceOf[StrValue])
-    // INSTRUCTION IMPLEMENTATIONS NEEDED
-    case Tokens.start => new VInst((Tokens.start, args)) // TODO: will be first flatmap
+    case Tokens.start => new VStartInst(args.head) // TODO: will be first flatmap (get strm working generally)
   }
 }

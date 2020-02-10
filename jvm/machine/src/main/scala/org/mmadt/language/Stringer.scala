@@ -25,7 +25,7 @@ package org.mmadt.language
 import org.mmadt.machine.obj._
 import org.mmadt.machine.obj.impl.obj._
 import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, Value}
+import org.mmadt.machine.obj.theory.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 
@@ -51,6 +51,9 @@ object Stringer {
   }
 
   def typeString(t: Type[_]): String = {
+    if (t.insts().nonEmpty && t.insts().head._2.op().equals(Tokens.choose)) // TODO: ghetto union type specification
+      return t.insts().head._2.arg[RecValue[_, _]]().value().foldRight("[")((x, string) => string + (if (x._1.equals(x._2)) x._1 else x._1 + ":" + x._2) + "|").dropRight(1) + "]"
+
     val range = Tokens.symbol(t) + qString(t.q())
     val domain = if (t.insts().isEmpty) "" else
       Tokens.symbol(t.insts().head._1) + qString(t.insts().head._1.q())
@@ -65,9 +68,12 @@ object Stringer {
 
 
   def instString(inst: Inst): String = {
-    inst.args() match {
-      case Nil => "[" + inst.op() + "]"
-      case args: List[Obj] => "[" + inst.op() + "," + args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1) + "]"
+    inst.op() match {
+      // case Tokens.to => "~" + inst.arg[StrValue]()
+      case _ => inst.args() match {
+        case Nil => "[" + inst.op() + "]"
+        case args: List[Obj] => "[" + inst.op() + "," + args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1) + "]"
+      }
     }
   }
 }

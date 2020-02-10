@@ -57,6 +57,8 @@ package object inst {
 
   class VPlusInst[O <: Obj with PlusOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O](arg: Obj) extends VInst((Tokens.plus, List(arg)), qOne) with PlusInst[O, V, T]
 
+  class VStartInst[O <: Obj](arg: Obj) extends VInst((Tokens.start, List(arg)), qOne) with StartInst[O]
+
   class VToInst(arg: StrValue) extends VInst((Tokens.to, List(arg)), qOne) with ToInst
 
 }

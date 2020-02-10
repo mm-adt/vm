@@ -24,9 +24,10 @@ package org.mmadt.machine.obj.theory.obj.`type`
 
 import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.machine.obj.TQ
-import org.mmadt.machine.obj.theory.obj.value.StrValue
+import org.mmadt.machine.obj.theory.obj.value.{RecValue, StrValue}
 import org.mmadt.machine.obj.theory.obj.{Bool, Inst, Int, Obj, Rec, Str}
 import org.mmadt.machine.obj.theory.operator.ModelOp
+import org.mmadt.processor.impl.RecursiveTraverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -70,14 +71,21 @@ trait Type[T <: Type[T]] extends Obj
 
   final def <=[TT <: Type[TT]](mapFrom: Type[TT]): TT = mapFrom.q(this.q()).asInstanceOf[TT]
 
-  //def stream[V](values:V*):
+  def ==>[TT <: Type[TT]](t: Type[TT]): TT = new RecursiveTraverser[this.type](this).apply(t).obj().asInstanceOf[TT] // TODO: USE COMPILATION TRAVERSER
 
   override def map[O <: Obj](other: O): O = this.push(other, inst(Tokens.map, other)) //
   override def from[O <: Obj](label: StrValue): O = this.push(inst(Tokens.from, label)).asInstanceOf[O] //
 
   override def equals(other: Any): Boolean = other match {
-    case t: Type[T] => t.insts().map(_._2) == this.insts().map(_._2)
+    case t: Type[T] => t.insts().map(_._2) == this.insts().map(_._2) && this.pure().toString == t.pure().toString
     case _ => false
+  }
+
+  def |[O <: Type[O]](other: O): O = { // TODO: ghetto union type construction
+    if (this.insts().nonEmpty && this.insts().head._2.op().equals(Tokens.choose))
+      this.pop().choose(Map(other -> other) ++ this.insts().head._2.arg[RecValue[O, O]]().value())
+    else
+      this.choose(other -> other, this.asInstanceOf[O] -> this.asInstanceOf[O])
   }
 
   override def hashCode(): scala.Int = this.pure().toString.hashCode // TODO: using toString()
