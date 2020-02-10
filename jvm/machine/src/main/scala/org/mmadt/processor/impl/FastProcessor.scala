@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.impl
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.strm.IntStrm
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.strm.IntStrm
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.{Processor, Traverser}
 
 /**

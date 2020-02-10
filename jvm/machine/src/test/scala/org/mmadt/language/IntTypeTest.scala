@@ -22,7 +22,7 @@
 
 package org.mmadt.language
 
-import org.mmadt.machine.obj.impl.obj._
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**

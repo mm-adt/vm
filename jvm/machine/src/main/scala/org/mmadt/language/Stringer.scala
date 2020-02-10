@@ -22,11 +22,10 @@
 
 package org.mmadt.language
 
-import org.mmadt.machine.obj._
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{RecValue, StrValue, Value}
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, TQ}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.{RecValue, Value}
+import org.mmadt.storage.obj._
 import org.mmadt.processor.Traverser
 
 /**

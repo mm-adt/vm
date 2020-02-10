@@ -22,10 +22,10 @@
 
 package org.mmadt.processor
 
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.theory.obj.Bool
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
-import org.mmadt.machine.obj.theory.obj.value.BoolValue
+import org.mmadt.language.obj.Bool
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**

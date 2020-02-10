@@ -22,10 +22,10 @@
 
 package org.mmadt.processor
 
-import org.mmadt.machine.obj.impl.obj.int
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
-import org.mmadt.machine.obj.theory.obj.value.strm.IntStrm
+import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.value.strm.IntStrm
 import org.mmadt.processor.impl.FastProcessor
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**

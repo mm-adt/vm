@@ -22,7 +22,7 @@
 
 package org.mmadt.storage
 
-import org.mmadt.machine.obj.impl.obj._
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**
@@ -35,7 +35,7 @@ class VRecTest extends FunSuite {
     assertResult("[1:true,2:false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
     assertResult("[1:true,2:false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
     println(rec.plus(rec(int(2) -> bfalse)).get(int(2), bool))
-    assertResult(bfalse)(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)).get(int(2),bool))
+    assertResult(bfalse)(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)).get(int(2), bool))
     assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))

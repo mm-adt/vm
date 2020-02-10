@@ -22,11 +22,10 @@
 
 package org.mmadt.processor
 
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.IntType
-import org.mmadt.machine.obj.theory.obj.value.IntValue
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.processor.impl.RecursiveTraverser
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**

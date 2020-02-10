@@ -24,12 +24,11 @@ package org.mmadt.processor.impl
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.{Model, SimpleModel}
-import org.mmadt.machine.obj.impl.obj.int
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.{StrValue, Value}
-import org.mmadt.machine.obj.theory.obj.{Inst, Obj}
-import org.mmadt.machine.obj.theory.operator.TypeChecker
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

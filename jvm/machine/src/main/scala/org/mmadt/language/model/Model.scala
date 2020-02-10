@@ -22,7 +22,7 @@
 
 package org.mmadt.language.model
 
-import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.language.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

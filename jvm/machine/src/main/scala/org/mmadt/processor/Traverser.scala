@@ -24,9 +24,9 @@ package org.mmadt.processor
 
 import org.mmadt.language.Stringer
 import org.mmadt.language.model.Model
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
-import org.mmadt.machine.obj.theory.obj.value.StrValue
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.StrValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

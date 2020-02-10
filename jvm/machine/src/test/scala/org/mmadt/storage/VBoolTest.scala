@@ -22,8 +22,8 @@
 
 package org.mmadt.storage
 
-import org.mmadt.machine.obj.impl.obj._
-import org.mmadt.machine.obj.theory.obj.`type`.BoolType
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**

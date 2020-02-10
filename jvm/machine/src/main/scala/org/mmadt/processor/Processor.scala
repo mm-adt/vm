@@ -22,8 +22,8 @@
 
 package org.mmadt.processor
 
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.Type
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

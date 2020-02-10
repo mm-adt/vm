@@ -22,8 +22,8 @@
 
 package org.mmadt.language
 
-import org.mmadt.machine.obj.theory.obj.Obj
-import org.mmadt.machine.obj.theory.obj.`type`.{BoolType, IntType, RecType, StrType, Type}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
