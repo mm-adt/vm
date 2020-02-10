@@ -79,5 +79,20 @@ class CompilingProcessorTest extends FunSuite {
     result = processor.apply(int, int.plus(1).plus(-1)).map(_.obj()).toList
     assertResult(1)(result.length)
     assertResult(int)(result.head)
+    /////
+    // result = processor.apply(int.q(3), int.plus(1).plus(-1)).map(_.obj()).toList
+    // assertResult(1)(result.length)
+    // ==assertResult(int.q(3))(result.head)
+    /////
+    //result = processor.apply(int, int.plus(1).plus(-1).plus(0)).map(_.obj()).toList
+    //assertResult(1)(result.length)
+    //assertResult(int)(result.head)
+  }
+
+  test("compiler w/ [choose]") {
+    processor = new CompilingProcessor()
+    var result: List[IntType] = processor.apply(int, int.mult(1).choose(int -> int.plus(1), int.is(int.gt(5)) -> int.plus(2)).is(int.gt(3))).map(_.obj()).toList
+    assertResult(1)(result.length)
+    assertResult("int{?}<=int[mult,1][choose,[int{?}<=int[is,bool<=int[gt,5]]:int[plus,2],int:int[plus,1]]][is,bool<=int[gt,3]]")(result.head.toString)
   }
 }

@@ -25,10 +25,11 @@ package org.mmadt.processor.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.{Model, SimpleModel}
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.value.{RecValue, StrValue}
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
+import org.mmadt.storage.obj.rec
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,8 +44,11 @@ class C1Traverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], val model
       case Some(inst) => inst match {
         case toInst: Inst if toInst.op().equals(Tokens.to) => new C1Traverser[E](obj.asInstanceOf[E], Map[StrValue, Obj](toInst.arg[StrValue]() -> obj) ++ this.state, model) //
         case fromInst: Inst if fromInst.op().equals(Tokens.from) => this.split(this.state(fromInst.arg[StrValue]()).asInstanceOf[E]) //
-        case modelInst: Inst if modelInst.op().equals(Tokens.model) => this.split(obj.asInstanceOf[E])
-        case storeInst: Inst => this.split(storeInst.apply(this.obj).asInstanceOf[E])
+        case modelInst: Inst if modelInst.op().equals(Tokens.model) => this.split(obj.asInstanceOf[E]) //
+        case chooseInst: Inst if chooseInst.op().equals(Tokens.choose) => this.split(this.obj.asInstanceOf[E with Type[_]].pop().push(this.obj.inst(Tokens.choose,
+          rec[E with Type[_], E with Type[_]](chooseInst.arg[RecValue[E with Type[_], E with Type[_]]]().value().
+            map(a => this.apply(a._1).obj() -> this.apply(a._2).obj())))).asInstanceOf[E])
+        case defaultInst: Inst => this.split(defaultInst.apply(this.obj).asInstanceOf[E])
       }
     }
   }
