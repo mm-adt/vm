@@ -44,7 +44,7 @@ class C1Traverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], val model
         case toInst: Inst if toInst.op().equals(Tokens.to) => new C1Traverser[E](obj.asInstanceOf[E], Map[StrValue, Obj](toInst.arg[StrValue]() -> obj) ++ this.state, model) //
         case fromInst: Inst if fromInst.op().equals(Tokens.from) => this.split(this.state(fromInst.arg[StrValue]()).asInstanceOf[E]) //
         case modelInst: Inst if modelInst.op().equals(Tokens.model) => this.split(obj.asInstanceOf[E])
-        case storeInst: Inst => this.split(storeInst.apply(this.obj).asInstanceOf[E with Type[_]])
+        case storeInst: Inst => this.split(storeInst.apply(this.obj).asInstanceOf[E])
       }
     }
   }

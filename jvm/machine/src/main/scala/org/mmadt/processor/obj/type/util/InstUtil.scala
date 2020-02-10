@@ -22,8 +22,10 @@
 
 package org.mmadt.processor.obj.`type`.util
 
-import org.mmadt.language.obj.Inst
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -31,4 +33,17 @@ import org.mmadt.language.obj.`type`.Type
 object InstUtil {
 
   def nextInst(insts: List[(Type[_], Inst)]): Option[Inst] = if (insts == Nil) None else Some(insts.head._2)
+
+  /**
+   * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
+   */
+  def valueInst[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): Inst = {
+    traverser.obj().inst(inst.op(), inst.args().map {
+      case typeArg: Type[_] => traverser.split(traverser.obj() match {
+        case tt: Type[_] => tt.pure()
+        case vv: Value[_] => vv
+      }).apply(typeArg).obj()
+      case valueArg: Value[_] => valueArg
+    })
+  }
 }
