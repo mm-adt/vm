@@ -20,21 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.obj.`type`
 
-import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.processor.obj.value.FastProcessor
-import org.mmadt.storage.obj._
-import org.scalatest.FunSuite
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
+import org.mmadt.processor.{Processor, Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class FastProcessorTest extends FunSuite {
-
-  test("fast processor") {
-    val f = new FastProcessor[IntStrm, IntType]()
-    println(f.apply(int(1, 2, 2, 4, 3, 6, 7, 8), int.plus(1).mult(5).mult(10).is(int.gt(200))).toList)
+class CompilingProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
+  override def apply(startObj: S, endType: E with Type[_]): Iterator[Traverser[E]] = {
+    startObj match {
+      case valueObj: Value[_] => throw new IllegalArgumentException("The compiling processor only accepts types: " + valueObj)
+      case _: Type[_] => Iterator(new C1Traverser[S](startObj).apply(endType))
+    }
   }
 }

@@ -39,11 +39,11 @@ class SimpleTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj]) extends Trave
   override def state(): Map[StrValue, Obj] = state //
   override def split[E <: Obj](obj: E): Traverser[E] = new SimpleTraverser[E](obj, this.state)
 
-  override def apply[E <: Obj](t: E with Type[_]): Traverser[E] = {
-    if (t.insts().isEmpty)
+  override def apply[E <: Obj](endType: E with Type[_]): Traverser[E] = {
+    if (endType.insts().isEmpty)
       this.asInstanceOf[Traverser[E]]
     else {
-      (t.insts().head._2 match {
+      (endType.insts().head._2 match {
         // traverser instructions
         case toInst: Inst if toInst.op().equals(Tokens.to) => new SimpleTraverser[S](this.obj, Map[StrValue, Obj](toInst.arg[StrValue]() -> this.obj) ++ this.state)
         case fromInst: Inst if fromInst.op().equals(Tokens.from) => new SimpleTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state) //

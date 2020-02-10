@@ -20,34 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.obj.value
+package org.mmadt.processor
 
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.processor.obj.value.IteratorChainProcessor
+import org.mmadt.storage.obj._
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class FastProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
+class IteratorChainProcessorTest extends FunSuite {
 
-  override def apply(o: S, t: E with Type[_]): Iterator[Traverser[E]] = {
-    var output: Iterator[Traverser[E]] = o match {
-      case s: IntStrm => s.value().map(x => new SimpleTraverser[E](x.asInstanceOf[E]))
-      case r => Iterator(new SimpleTraverser[E](r.asInstanceOf[E]))
-    }
-    for (tt <- createInstList(List(), t)) {
-      // System.out.println(tt)
-      output = output.
-        map(trav => trav.apply(tt._1.push(tt._1, tt._2)).asInstanceOf[Traverser[E]]).
-        filter(trav => trav.obj().alive())
-    }
-    output
-  }
-
-  @scala.annotation.tailrec
-  private def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {
-    if (t.insts().isEmpty) list else createInstList(List((t.pure(), t.insts().last._2)) ++ list, t.insts().last._1)
+  test("fast processor") {
+    val f = new IteratorChainProcessor[IntStrm, IntType]()
+    println(f.apply(int(1, 2, 2, 4, 3, 6, 7, 8), int.plus(1).mult(5).mult(10).is(int.gt(200))).toList)
   }
 }

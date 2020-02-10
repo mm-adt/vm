@@ -20,16 +20,15 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.obj.`type`.util
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.Inst
 import org.mmadt.language.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Processor[S <: Obj, E <: Obj] {
+object InstUtil {
 
-  def apply(startObj: S, endType: E with Type[_]): Iterator[Traverser[E]]
-
+  def nextInst(insts: List[(Type[_], Inst)]): Option[Inst] = if (insts == Nil) None else Some(insts.head._2)
 }
