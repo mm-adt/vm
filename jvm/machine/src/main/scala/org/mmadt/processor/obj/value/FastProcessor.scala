@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.impl
+package org.mmadt.processor.obj.value
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.strm.IntStrm

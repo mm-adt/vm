@@ -24,7 +24,7 @@ package org.mmadt.processor
 
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.processor.impl.RecursiveTraverser
+import org.mmadt.processor.obj.`type`.RecursiveTraverser
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 

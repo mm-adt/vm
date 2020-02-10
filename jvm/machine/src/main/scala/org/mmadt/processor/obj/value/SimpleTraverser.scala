@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.impl
+package org.mmadt.processor.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.{Model, SimpleModel}

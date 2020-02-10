@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.model.kvstore
+package org.mmadt.storage.model
 
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.storage.obj._

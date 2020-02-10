@@ -26,7 +26,7 @@ import org.mmadt.language.obj.op.ModelOp
 import org.mmadt.language.obj.value.{RecValue, StrValue}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
-import org.mmadt.processor.impl.RecursiveTraverser
+import org.mmadt.processor.obj.`type`.RecursiveTraverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

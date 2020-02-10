@@ -24,7 +24,7 @@ package org.mmadt.processor
 
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.processor.impl.FastProcessor
+import org.mmadt.processor.obj.value.FastProcessor
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
