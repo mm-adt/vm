@@ -22,16 +22,17 @@
 
 package org.mmadt.processor.obj.`type`
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.model.{Model, SimpleModel}
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class CompilingProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
+class CompilingProcessor[S <: Obj, E <: Obj](val model: Model = new SimpleModel) extends Processor[S, E] {
   override def apply(startObj: S, endType: E with Type[_]): Iterator[Traverser[E]] = {
     if (startObj.isInstanceOf[Value[_]]) throw new IllegalArgumentException("The compiling processor only accepts types: " + startObj)
     var mutatingType: E with Type[_] = endType
@@ -39,8 +40,14 @@ class CompilingProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
     /////
     while (mutatingType.insts() != Nil) {
       TypeChecker.checkType(mutatingTraverser.obj(), mutatingType)
-      mutatingTraverser = mutatingTraverser.split(InstUtil.valueInst(mutatingTraverser, mutatingType.insts().head._2).apply(mutatingTraverser.obj()))
-      mutatingType = mutatingType.pop()
+      if (!model.get(mutatingTraverser.obj().asInstanceOf[Type[_]].pure(), mutatingType).toString.equals(mutatingType.toString)) {
+        mutatingTraverser = mutatingTraverser.apply(model.get(mutatingTraverser.obj().asInstanceOf[Type[_]].pure(), mutatingType).asInstanceOf[E with Type[_]])
+        mutatingType = mutatingType.pop()
+      } else {
+        val inst: Inst = mutatingType.insts().head._2
+        mutatingTraverser = mutatingTraverser.split(InstUtil.valueInst(mutatingTraverser, inst).apply(mutatingTraverser.obj()))
+        mutatingType = mutatingType.pop()
+      }
     }
     Iterator(mutatingTraverser.asInstanceOf[Traverser[E]])
   }

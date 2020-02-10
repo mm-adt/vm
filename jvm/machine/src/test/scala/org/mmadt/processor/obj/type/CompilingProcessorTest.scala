@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.obj.`type`
 
+import org.mmadt.language.model.SimpleModel
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.processor.Processor
 import org.mmadt.storage.obj._
@@ -31,7 +32,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CompilingProcessorTest extends FunSuite {
-  final val processor: Processor[IntType, IntType] = new CompilingProcessor()
+  final var processor: Processor[IntType, IntType] = new CompilingProcessor()
 
   test("compiler w/ linear singleton type") {
     var result: List[IntType] = processor.apply(int, int.mult(int(2))).map(_.obj()).toList
@@ -49,7 +50,7 @@ class CompilingProcessorTest extends FunSuite {
     assertResult(int.q(int(2)).mult(int(2)))(result.head)
     assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)))(result.head)
     /////
-    result = processor.apply(int.q(int(2)), int.mult(int(2)).plus(int(3))).map(_.obj()).toList
+    result = processor.apply(int.q(2), int.mult(int(2)).plus(int(3))).map(_.obj()).toList
     assertResult(1)(result.length)
     assertResult(int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
     assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
@@ -57,6 +58,13 @@ class CompilingProcessorTest extends FunSuite {
     result = processor.apply(int.q(int(2)), int.mult(int(2)).is(int.gt(int(2)))).map(_.obj()).toList
     assertResult(1)(result.length)
     // int{0,2}<=int{2}[mult,2][is,bool{2}<=int{2}[gt,2]]
-    assertResult(int.q(int(0), int(2)) <= int.q(int(2)).mult(int(2)).is(bool.q(int(2)) <= int.q(int(2)).gt(int(2))))(result.head)
+    assertResult(int.q(0, 2) <= int.q(2).mult(2).is(bool.q(2) <= int.q(2).gt(2)))(result.head)
+  }
+
+  test("compiler w/ linear quantified type and model") {
+    processor = new CompilingProcessor(new SimpleModel().put(int, int.mult(2), int.plus(int)))
+    var result: List[IntType] = processor.apply(int, int.mult(int(2))).map(_.obj()).toList
+    assertResult(1)(result.length)
+    assertResult(int.plus(int))(result.head)
   }
 }
