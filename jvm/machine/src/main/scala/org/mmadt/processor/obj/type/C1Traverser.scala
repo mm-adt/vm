@@ -33,15 +33,10 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class C1Traverser[S <: Obj](obj: S, state: Map[StrValue, Obj], model: Model) extends Traverser[S] {
-  def this(obj: S) = this(obj, Map[StrValue, Obj](), new SimpleModel()) //
-  def this(obj: S, state: Map[StrValue, Obj]) = this(obj, state, new SimpleModel()) //
+class C1Traverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], val model: Model = new SimpleModel) extends Traverser[S] {
+  def this(obj: S) = this(obj, Map[StrValue, Obj]()) //
 
-  override def obj(): S = obj //
-  override def state(): Map[StrValue, Obj] = state //
-  override def model(): Model = model //
   override def split[E <: Obj](obj: E): Traverser[E] = new C1Traverser[E](obj, state, model) //
-
   override def apply[E <: Obj](endType: E with Type[_]): Traverser[E] = {
     if (endType.insts() == Nil) return this.asInstanceOf[Traverser[E]]
     InstUtil.nextInst(endType.insts()).get match {
@@ -51,9 +46,9 @@ class C1Traverser[S <: Obj](obj: S, state: Map[StrValue, Obj], model: Model) ext
       // branch instructions
       // storage instructions
       case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
-        case typeArg: Type[_] => this.split(this.obj() match {
+        case typeArg: Type[_] => this.split(this.obj match {
           case tt: Type[_] => tt.pure()
-          case _ => this.obj()
+          case _ => this.obj
         }).apply(typeArg).obj()
         case valueArg: Value[_] => valueArg
       }).apply(this.obj)).apply(endType.pop().asInstanceOf[E with Type[_]])

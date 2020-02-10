@@ -33,18 +33,17 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class RecursiveTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj], model: Model) extends Traverser[S] {
+class RecursiveTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], val model: Model) extends Traverser[S] {
 
   def this(obj: S) = this(obj, Map[StrValue, Obj](), new SimpleModel())
 
   def this(obj: S, state: Map[StrValue, Obj]) = this(obj, state, new SimpleModel())
 
-  override def obj(): S = obj //
   override def split[E <: Obj](obj: E): Traverser[E] = new RecursiveTraverser(obj, this.state, model) //
 
   override def apply[E <: Obj](endType: E with Type[_]): Traverser[E] = {
     if (endType.insts().isEmpty) {
-      TypeChecker.checkType(this.obj(), endType)
+      TypeChecker.checkType(this.obj, endType)
       this.asInstanceOf[Traverser[E]]
     } else {
       this.obj match {
@@ -58,17 +57,14 @@ class RecursiveTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj], model: Mod
             // branch instructions
             // storage instructions
             case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
-              case typeArg: Type[_] => this.split(this.obj() match {
+              case typeArg: Type[_] => this.split(this.obj match {
                 case tt: Type[_] => tt.pure()
-                case _ => this.obj()
-              }).apply(typeArg).obj()
+                case _ => this.obj
+              }).apply(typeArg).obj
               case valueArg: Value[_] => valueArg
             }).apply(this.obj))
           }).apply(endType.pop().asInstanceOf[E with Type[_]])
       }
     }
   }
-
-  override def state(): Map[StrValue, Obj] = state //
-  override def model(): Model = model
 }

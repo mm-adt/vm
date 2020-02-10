@@ -32,13 +32,11 @@ import org.mmadt.processor.Traverser
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class SimpleTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj]) extends Traverser[S] {
+class SimpleTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj]) extends Traverser[S] {
 
   def this(obj: S) = this(obj, Map()) //
-  override def obj(): S = obj //
-  override def state(): Map[StrValue, Obj] = state //
-  override def split[E <: Obj](obj: E): Traverser[E] = new SimpleTraverser[E](obj, this.state)
 
+  override def split[E <: Obj](obj: E): Traverser[E] = new SimpleTraverser[E](obj, this.state) //
   override def apply[E <: Obj](endType: E with Type[_]): Traverser[E] = {
     if (endType.insts().isEmpty)
       this.asInstanceOf[Traverser[E]]
@@ -50,15 +48,15 @@ class SimpleTraverser[S <: Obj](obj: S, state: Map[StrValue, Obj]) extends Trave
         // branch instructions
         // storage instructions
         case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
-          case typeArg: Type[_] => this.split(this.obj() match {
+          case typeArg: Type[_] => this.split(this.obj match {
             case tt: Type[_] => tt.pure()
-            case _ => this.obj()
-          }).apply(typeArg).obj()
+            case _ => this.obj
+          }).apply(typeArg).obj
           case valueArg: Value[_] => valueArg
         }).apply(this.obj))
       }).asInstanceOf[Traverser[E]]
     }
   }
 
-  override def model(): Model = new SimpleModel()
+  override val model: Model = new SimpleModel()
 }

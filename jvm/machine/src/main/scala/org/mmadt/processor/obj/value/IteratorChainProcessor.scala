@@ -41,7 +41,7 @@ class IteratorChainProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
       // System.out.println(tt)
       output = output.
         map(trav => trav.apply(tt._1.push(tt._1, tt._2)).asInstanceOf[Traverser[E]]).
-        filter(trav => trav.obj().alive())
+        filter(trav => trav.obj.alive())
     }
     output
   }

@@ -35,7 +35,7 @@ trait Traverser[S <: Obj] {
 
   def obj(): S // the obj location of the traverser
   def state(): Map[StrValue, Obj] // the local variables of the traverser
-  def model(): Model
+  def model(): Model // the model containing type embeddings
 
   //
   def split[E <: Obj](obj: E): Traverser[E] // clone the traverser with a new obj location
