@@ -62,12 +62,21 @@ class CompilingProcessorTest extends FunSuite {
   }
 
   test("compiler w/ linear quantified type and model") {
-    processor = new CompilingProcessor(new SimpleModel().put(int, int.mult(2), int.plus(int)).put(int,int.plus(0),int))
+    processor = new CompilingProcessor(
+      new SimpleModel().
+        put(int, int.mult(2), int.plus(int)).
+        put(int, int.plus(0), int).
+        put(int, int.plus(1).plus(-1), int))
+
     var result: List[IntType] = processor.apply(int, int.mult(int(2))).map(_.obj()).toList
     assertResult(1)(result.length)
     assertResult(int.plus(int))(result.head)
     /////
-    result = processor.apply(int,int.plus(0)).map(_.obj()).toList
+    result = processor.apply(int, int.plus(0)).map(_.obj()).toList
+    assertResult(1)(result.length)
+    assertResult(int)(result.head)
+    /////
+    result = processor.apply(int, int.plus(1).plus(-1)).map(_.obj()).toList
     assertResult(1)(result.length)
     assertResult(int)(result.head)
   }

@@ -40,11 +40,15 @@ class CompilingProcessor[S <: Obj, E <: Obj](val model: Model = new SimpleModel)
     /////
     while (mutatingType.insts() != Nil) {
       TypeChecker.checkType(mutatingTraverser.obj(), mutatingType)
+      var length: scala.Int = 1
       mutatingTraverser = model.get(mutatingTraverser.obj().asInstanceOf[Type[_]].pure(), mutatingType) match {
-        case Some(rewrite) => mutatingTraverser.apply(rewrite.asInstanceOf[E with Type[_]])
+        case Some(rewrite) =>
+          length = mutatingType.insts().length
+          mutatingTraverser.apply(rewrite.asInstanceOf[E with Type[_]])
         case None => mutatingTraverser.split(InstUtil.valueInst(mutatingTraverser, mutatingType.insts().head._2).apply(mutatingTraverser.obj()))
       }
       mutatingType = mutatingType.pop()
+      for (i <- 1 until length) mutatingType = mutatingType.pop()
       TypeChecker.checkType(mutatingTraverser.obj(), mutatingType)
     }
     Iterator(mutatingTraverser.asInstanceOf[Traverser[E]])
