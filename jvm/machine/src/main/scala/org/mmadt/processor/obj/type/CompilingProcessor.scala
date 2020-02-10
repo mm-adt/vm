@@ -22,9 +22,10 @@
 
 package org.mmadt.processor.obj.`type`
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
 
 /**
@@ -32,9 +33,22 @@ import org.mmadt.processor.{Processor, Traverser}
  */
 class CompilingProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
   override def apply(startObj: S, endType: E with Type[_]): Iterator[Traverser[E]] = {
-    startObj match {
-      case valueObj: Value[_] => throw new IllegalArgumentException("The compiling processor only accepts types: " + valueObj)
-      case _: Type[_] => Iterator(new C1Traverser[S](startObj).apply(endType))
+    if (startObj.isInstanceOf[Value[_]]) throw new IllegalArgumentException("The compiling processor only accepts types: " + startObj)
+    var mutatingType: E with Type[_] = endType
+    var mutatingTraverser: Traverser[E] = new C1Traverser[E](startObj.asInstanceOf[E])
+    /////
+    while (mutatingType.insts() != Nil) {
+      TypeChecker.checkType(mutatingTraverser.obj(), mutatingType)
+      val inst: Inst = InstUtil.nextInst(mutatingType.insts()).get
+      mutatingTraverser = mutatingTraverser.split(mutatingTraverser.obj().inst(inst.op(), inst.args().map {
+        case typeArg: Type[_] => mutatingTraverser.split(mutatingTraverser.obj() match {
+          case tt: Type[_] => tt.pure()
+          case vv: Value[_] => vv
+        }).apply(typeArg).obj()
+        case valueArg: Value[_] => valueArg
+      }).apply(mutatingTraverser.obj()).asInstanceOf[E with Type[_]])
+      mutatingType = mutatingType.pop()
     }
+    Iterator(mutatingTraverser)
   }
 }

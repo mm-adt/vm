@@ -25,7 +25,7 @@ package org.mmadt.processor.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.{Model, SimpleModel}
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
@@ -38,20 +38,14 @@ class C1Traverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], val model
 
   override def split[E <: Obj](obj: E): Traverser[E] = new C1Traverser[E](obj, state, model) //
   override def apply[E <: Obj](endType: E with Type[_]): Traverser[E] = {
-    if (endType.insts() == Nil) return this.asInstanceOf[Traverser[E]]
-    InstUtil.nextInst(endType.insts()).get match {
-      case toInst: Inst if toInst.op().equals(Tokens.to) => new C1Traverser[E](obj.asInstanceOf[E], Map[StrValue, Obj](toInst.arg[StrValue]() -> obj) ++ this.state, model) //
-      case fromInst: Inst if fromInst.op().equals(Tokens.from) => new C1Traverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state, model) //
-      case modelInst: Inst if modelInst.op().equals(Tokens.model) => new C1Traverser[E](obj.asInstanceOf[E], this.state, model)
-      // branch instructions
-      // storage instructions
-      case storeInst: Inst => this.split(storeInst.inst(storeInst.op(), storeInst.args().map {
-        case typeArg: Type[_] => this.split(this.obj match {
-          case tt: Type[_] => tt.pure()
-          case _ => this.obj
-        }).apply(typeArg).obj()
-        case valueArg: Value[_] => valueArg
-      }).apply(this.obj)).apply(endType.pop().asInstanceOf[E with Type[_]])
+    InstUtil.nextInst(endType.insts()) match {
+      case None => this.asInstanceOf[Traverser[E]]
+      case Some(inst) => inst match {
+        case toInst: Inst if toInst.op().equals(Tokens.to) => new C1Traverser[E](obj.asInstanceOf[E], Map[StrValue, Obj](toInst.arg[StrValue]() -> obj) ++ this.state, model) //
+        case fromInst: Inst if fromInst.op().equals(Tokens.from) => this.split(this.state(fromInst.arg[StrValue]()).asInstanceOf[E]) //
+        case modelInst: Inst if modelInst.op().equals(Tokens.model) => this.split(obj.asInstanceOf[E])
+        case storeInst: Inst => this.split(storeInst.apply(this.obj).asInstanceOf[E with Type[_]])
+      }
     }
   }
 }
