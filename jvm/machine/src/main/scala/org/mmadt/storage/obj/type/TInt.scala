@@ -35,4 +35,5 @@ class TInt(name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends T
   override def push(inst: Inst): IntType = int(inst, quantifier) //
   override def pop(): this.type = new TInt(name, insts.tail, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TInt(name, insts, quantifier).asInstanceOf[this.type] //
+  override def as(name: String): this.type = new TInt(name, insts, quantifier).asInstanceOf[this.type] //
 }

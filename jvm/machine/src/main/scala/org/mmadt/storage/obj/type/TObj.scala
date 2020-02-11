@@ -30,11 +30,10 @@ import org.mmadt.storage.obj.{OObj, _}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class TObj[T <: Type[T]](name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(name,quantifier) with Type[T] {
+abstract class TObj[T <: Type[T]](name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(name, quantifier) with Type[T] {
 
   def this() = this(Tokens.obj, Nil, qOne) //
   def insts(): List[(Type[_], Inst)] = insts //
-  override def as(name: String): this.type = this
 
   override def int(inst: Inst, q: TQ): IntType = new TInt(Tokens.int, this.insts() ::: List((this, inst)), q)
 

@@ -35,4 +35,5 @@ class TBool(name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends 
   override def push(inst: Inst): BoolType = bool(inst) //
   override def pop(): this.type = new TBool(name, insts.tail, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TBool(name, insts, quantifier).asInstanceOf[this.type] //
+  override def as(name: String): this.type = new TBool(name, insts, quantifier).asInstanceOf[this.type] //
 }

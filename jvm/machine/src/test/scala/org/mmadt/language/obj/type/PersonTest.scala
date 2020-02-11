@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.SimpleModel
-import org.mmadt.language.obj.Str
 import org.mmadt.processor.obj.value.IteratorChainProcessor
 import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
