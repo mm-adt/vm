@@ -41,8 +41,8 @@ trait AndOp {
 }
 
 object AndOp {
-  def apply(other: BoolValue): Inst = new VInst((Tokens.and, List(other)), qOne, ((a: Bool, b: List[Obj]) => a.and(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
-  def apply(other: BoolType): Inst = new VInst((Tokens.and, List(other)), qOne, ((a: Bool, b: List[Obj]) => b.head match {
+  def apply(bool: BoolValue): Inst = new VInst((Tokens.and, List(bool)), qOne, ((a: Bool, b: List[Obj]) => a.and(bool)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply(bool: BoolType): Inst = new VInst((Tokens.and, List(bool)), qOne, ((a: Bool, b: List[Obj]) => b.head match {
     case v: BoolValue => a.and(v)
     case t: BoolType => a.and(t)
   }).asInstanceOf[(Obj, List[Obj]) => Obj])

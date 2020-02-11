@@ -33,10 +33,10 @@ import org.mmadt.storage.obj.value.{VInst, VStr}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ToOp[O <: Type[O]] {
-  def to(other: String): O = this.to(new VStr(other)) //
+  def to(label: String): O = this.to(new VStr(label)) //
   def to(label: StrValue): O
 }
 
 object ToOp {
-  def apply[O <: Type[O]](other: StrValue): Inst = new VInst((Tokens.to, List(other)), qOne, ((a: ToOp[O], b: List[Obj]) => a.to(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply[O <: Type[O]](label: StrValue): Inst = new VInst((Tokens.to, List(label)), qOne, ((a: ToOp[O], b: List[Obj]) => a.to(label)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

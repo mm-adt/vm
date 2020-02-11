@@ -35,8 +35,8 @@ import org.mmadt.storage.obj.value.VInst
 trait IsOp[O <: Obj with IsOp[O, V, T], V <: Value[V], T <: Type[T]] {
   this: O =>
 
-  def is(other: BoolType): T //
-  def is(other: BoolValue): O //
+  def is(bool: BoolType): T //
+  def is(bool: BoolValue): O //
 
 }
 object IsOp {

@@ -34,10 +34,10 @@ import org.mmadt.storage.obj.value.{VInst, VStr}
 trait FromOp {
   this: Obj =>
 
-  def from[O <: Obj](other: String): O = this.from(new VStr(other)) //
+  def from[O <: Obj](label: String): O = this.from(new VStr(label)) //
   def from[O <: Obj](label: StrValue): O = label.asInstanceOf[O] // TODO NO IMPL -- INST
 }
 
 object FromOp {
-  def apply(other: StrValue): Inst = new VInst((Tokens.from, List(other)), qOne, (a: Obj, b: List[Obj]) => a.from(other)) //
+  def apply(label: StrValue): Inst = new VInst((Tokens.from, List(label)), qOne, (a: Obj, b: List[Obj]) => a.from(label)) //
 }
