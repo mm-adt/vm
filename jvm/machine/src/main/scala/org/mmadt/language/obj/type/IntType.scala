@@ -40,6 +40,7 @@ trait IntType extends Int
   override def neg(): IntType = this.push(NegOp()) //
   override def gt(other: IntType): BoolType = this.bool(GtOp(other)) //
   override def gt(other: IntValue): BoolType = this.bool(GtOp(other)) //
+  override def gt(): BoolType = this.bool(GtOp(this)) //
   override def is(bool: BoolType): IntType = this.push(IsOp(bool)).q(0, q()._2) //
   override def is(bool: BoolValue): IntType = this.push(IsOp(bool)).q(0, q()._2) //
 }

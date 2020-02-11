@@ -24,6 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.`type`.{BoolType, StrType}
+import org.mmadt.storage.obj.`type`.TStr
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,6 +41,7 @@ trait StrValue extends Str
   override def plus(other: StrValue): StrValue = this.value() + other.value() //
   override def gt(other: StrType): BoolType = this.start().gt(other) //
   override def gt(other: StrValue): BoolValue = this.value() > other.value() //
+  override def gt(): BoolType = new TStr().gt(this) //
   override def is(bool: BoolType): StrType = this.start().is(bool) //
   override def is(bool: BoolValue): StrValue = if (bool.value()) this else this.q(0) //
 }

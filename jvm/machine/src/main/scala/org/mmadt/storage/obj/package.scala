@@ -40,6 +40,9 @@ package object obj {
   val qPlus: (IntValue, IntValue) = (int(1), int(Long.MaxValue))
   val qStar: (IntValue, IntValue) = (int(0), int(Long.MaxValue))
 
+  def gt(obj: IntValue): BoolType = obj.gt() //
+  def gt(obj: StrValue): BoolType = obj.gt() //
+
   val int: IntType = new TInt() //
   val bool: BoolType = new TBool() //
   val str: StrType = new TStr() //

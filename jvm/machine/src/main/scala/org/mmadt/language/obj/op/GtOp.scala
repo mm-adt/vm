@@ -37,6 +37,7 @@ trait GtOp[O <: Obj with GtOp[O, V, T], V <: Value[V], T <: Type[T]] {
 
   def gt(other: T): BoolType //
   def gt(other: V): Bool //
+  def gt(): BoolType //
   final def >(other: T): BoolType = this.gt(other) //
   final def >(other: V): Bool = this.gt(other) //
 }

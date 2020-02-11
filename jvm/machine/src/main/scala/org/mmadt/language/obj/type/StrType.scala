@@ -39,6 +39,7 @@ trait StrType extends Str
   override def plus(other: StrValue): StrType = this.push(PlusOp(other)) //
   override def gt(other: StrType): BoolType = this.bool(GtOp(other)) //
   override def gt(other: StrValue): BoolType = this.bool(GtOp(other)) //
+  override def gt(): BoolType = this.bool(GtOp(this)) //
   override def is(bool: BoolType): StrType = this.push(IsOp(bool)).q(0, q()._2) //
   override def is(bool: BoolValue): StrType = this.push(IsOp(bool)).q(0, q()._2) //
 }

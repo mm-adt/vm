@@ -24,6 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.VInt
 
 /**
@@ -44,6 +45,7 @@ trait IntValue extends Int
   override def neg(): IntValue = -this.value() //
   override def gt(other: IntType): BoolType = this.start().gt(other) //
   override def gt(other: IntValue): BoolValue = this.value() > other.value() //
+  override def gt(): BoolType = new TInt().gt(this) //
   override def is(bool: BoolType): IntType = this.start().is(bool) //
   override def is(bool: BoolValue): IntValue = if (bool.value()) this else this.q(0) //
 }
