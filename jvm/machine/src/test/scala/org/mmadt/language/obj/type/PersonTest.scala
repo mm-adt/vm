@@ -40,10 +40,10 @@ class PersonTest extends FunSuite {
     ///
     assertResult("rec")(marko.name)
     assertResult("person")(marko.as("person").name)
-    assertResult(str("marko"))(IteratorChainProcessor(marko, rec[Str, Str].get[StrType]("name", str)).next().obj())
-    assertResult(int(29))(IteratorChainProcessor(marko, rec[Str, Str].get[StrType]("age", str)).next().obj())
-    assertResult(str("marko"))(IteratorChainProcessor(marko.as("person"), rec[Str, Str].get[StrType]("name", str)).next().obj())
-    assertResult(int(29))(IteratorChainProcessor(marko.as("person"), rec[Str, Str].get[StrType]("age", str)).next().obj())
+    assertResult(str("marko"))(IteratorChainProcessor(marko, rec.get(str("name"), str)).next().obj())
+    assertResult(int(29))(IteratorChainProcessor(marko, rec.get(str("age"), str)).next().obj())
+    assertResult(str("marko"))(IteratorChainProcessor(marko.as("person"), rec.get(str("name"), str)).next().obj())
+    assertResult(int(29))(IteratorChainProcessor(marko.as("person"), rec.get(str("age"), str)).next().obj())
   }
 
   /*test("person compilation") {
