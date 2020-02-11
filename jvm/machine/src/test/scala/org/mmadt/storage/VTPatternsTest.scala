@@ -30,11 +30,25 @@ import org.scalatest.FunSuite
  */
 class VTPatternsTest extends FunSuite {
 
-  test("value/type patterns on atomic types") {
+  test("type/type patterns on atomic objs") {
+    assert(int.test(int))
+    assert(bool.test(bool))
+    assert(str.test(str))
+    //
+    assert(!int.plus(2).test(int))
+    assert(!bool.test(bool.is(btrue)))
+    assert(!str.test(str.plus("a")))
+    //
+    assert(int.plus(2).test(int.plus(2)))
+    assert(str.plus("a").test(str.plus("a")))
+  }
+
+  test("value/type patterns on atomic objs") {
     assert(str("m").test(str("m")))
     assert(!str("m").test(int(2)))
     assert(str("m").test(str))
     assert(int.test(int(3)))
+    assert(int(3).test(int))
   }
 
   test("value/type patterns on refinement types") {

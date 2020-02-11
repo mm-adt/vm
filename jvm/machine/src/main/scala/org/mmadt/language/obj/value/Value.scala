@@ -24,7 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.Stringer
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,6 +46,12 @@ trait Value[V <: Value[V]] extends Obj {
   override def equals(other: Any): Boolean = other match {
     case v: Value[V] => v.value() == this.value()
     case _ => false
+  }
+
+  // pattern matching methods
+  override def test(other: Obj): Boolean = other match {
+    case argValue: Value[_] => TypeChecker.matchesVV(this, argValue)
+    case argType: Type[_] => TypeChecker.matchesVT(this, argType)
   }
 
 }

@@ -23,7 +23,9 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Stringer
-import org.mmadt.language.obj.{Inst, JInst, TQ}
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, JInst, Obj, TQ}
 import org.mmadt.storage.obj._
 
 /**
@@ -35,5 +37,17 @@ class VInst(java: JInst, quantifier: TQ) extends VObj(java, quantifier) with Ins
   override def value(): JInst = java //
   override def toString: String = Stringer.instString(this) //
   override def q(quantifier: TQ): this.type = new VInst(java, quantifier).asInstanceOf[this.type] //
+
+  // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
+  def test(other: Obj): Boolean = this match {
+    case startValue: Value[_] => other match {
+      case argValue: Value[_] => TypeChecker.matchesVV(startValue, argValue)
+      case argType: Type[_] => TypeChecker.matchesVT(startValue, argType)
+    }
+    case startType: Type[_] => other match {
+      case argValue: Value[_] => TypeChecker.matchesTV(startType, argValue)
+      case argType: Type[_] => TypeChecker.matchesTT(startType, argType)
+    }
+  }
 
 }

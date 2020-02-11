@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.ModelOp
-import org.mmadt.language.obj.value.{RecValue, StrValue}
+import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
 import org.mmadt.processor.obj.`type`.RecursiveTraverser
@@ -90,4 +90,10 @@ trait Type[T <: Type[T]] extends Obj
   override def hashCode(): scala.Int = this.pure().toString.hashCode // TODO: using toString()
 
   override def model(model: StrValue): this.type = this.push(inst(Tokens.model, model)).asInstanceOf[this.type] //
+
+  // pattern matching methods
+  override def test(other: Obj): Boolean = other match {
+    case argValue: Value[_] => TypeChecker.matchesTV(this, argValue)
+    case argType: Type[_] => TypeChecker.matchesTT(this, argType)
+  }
 }

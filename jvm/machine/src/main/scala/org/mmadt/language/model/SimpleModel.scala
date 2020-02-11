@@ -40,7 +40,11 @@ class SimpleModel extends Model {
   }
 
   override def get(t: Type[_], a: Type[_]): Option[Type[_]] = {
-    if (map.get(t).isEmpty) None else map(t).get(a)
+    if (map.get(t).isEmpty) return None
+    if (map(t).get(a).isEmpty)
+      if (a.insts() != Nil) get(t, a.insts().reverse.head._1) else None
+    else
+      map(t).get(a)
   }
 
   override def toString: String = "model" + this.map

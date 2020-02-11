@@ -52,4 +52,8 @@ class IntTypeTest extends FunSuite {
     assertResult(int(5))(int(1) ==> int.plus(int.plus(int.plus(int.plus(1)))))
     assertResult(int(6))(int(1) ==> int.plus(int.plus(int.plus(int.plus(int.plus(1))))))
   }
+
+  test("int: type structure") {
+    println(int.plus(int(2)).mult(int(5)).insts())
+  }
 }

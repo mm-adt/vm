@@ -26,12 +26,13 @@ import org.mmadt.language.model.SimpleModel
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.processor.Processor
 import org.mmadt.storage.obj._
-import org.scalatest.FunSuite
+import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.{FunSuite, Matchers}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class CompilingProcessorTest extends FunSuite {
+class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks with Matchers {
   final var processor: Processor[IntType, IntType] = new CompilingProcessor()
 
   test("compiler w/ linear singleton type") {
@@ -72,21 +73,32 @@ class CompilingProcessorTest extends FunSuite {
     assertResult(1)(result.length)
     assertResult(int.plus(int))(result.head)
     /////
-    result = processor.apply(int, int.plus(0)).map(_.obj()).toList
-    assertResult(1)(result.length)
-    assertResult(int)(result.head)
-    /////
-    result = processor.apply(int, int.plus(1).plus(-1)).map(_.obj()).toList
-    assertResult(1)(result.length)
-    assertResult(int)(result.head)
+    forAll(Table(
+      "int reductions",
+      int,
+      int.plus(0),
+      int.plus(0).plus(0),
+      int.plus(1).plus(-1),
+      int.plus(1).plus(-1).plus(0),
+      int.plus(0).plus(1).plus(-1).plus(0),
+      int.plus(1).plus(-1).plus(0).plus(1).plus(-1),
+      int.plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1),
+      int.plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
+      int.plus(0).plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
+      int.plus(0).plus(1).plus(0).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
+      int.plus(0).plus(1).plus(0).plus(0).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0))) {
+      i =>
+        result = processor.apply(int, i).map(_.obj()).toList
+        assertResult(1)(result.length)
+        assertResult(int)(result.head)
+    }
+
+    // int.plus(1).plus(0).plus(-1) TODO: with an extra instruction prefixed it passes
     /////
     // result = processor.apply(int.q(3), int.plus(1).plus(-1)).map(_.obj()).toList
     // assertResult(1)(result.length)
     // ==assertResult(int.q(3))(result.head)
     /////
-    //result = processor.apply(int, int.plus(1).plus(-1).plus(0)).map(_.obj()).toList
-    //assertResult(1)(result.length)
-    //assertResult(int)(result.head)
   }
 
   test("compiler w/ [choose]") {
