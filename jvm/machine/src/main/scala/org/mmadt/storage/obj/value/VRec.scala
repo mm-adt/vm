@@ -33,12 +33,12 @@ import org.mmadt.storage.obj.`type`.TRec
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Obj, B <: Obj](java: Map[A, B], quantifier: TQ) extends VObj(java, quantifier) with RecValue[A, B] {
+class VRec[A <: Obj, B <: Obj](objType: String = Tokens.rec, java: Map[A, B], quantifier: TQ) extends VObj(objType, java, quantifier) with RecValue[A, B] {
 
-  def this(java: Map[A, B]) = this(java, qOne)
+  def this(java: Map[A, B]) = this(objType = Tokens.rec, java, qOne)
 
   override def value(): Map[A, B] = java //
-  override def start(): RecType[A, B] = new TRec(java, List((new TRec(java, Nil, qZero),  StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VRec(java, quantifier).asInstanceOf[this.type] //
+  override def start(): RecType[A, B] = new TRec(java, List((new TRec(java, Nil, qZero), StartOp(this))), q()) //
+  override def q(quantifier: TQ): this.type = new VRec(objType, java, quantifier).asInstanceOf[this.type] //
 
 }

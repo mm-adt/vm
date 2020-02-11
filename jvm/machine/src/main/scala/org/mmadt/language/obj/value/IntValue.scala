@@ -25,7 +25,7 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.{BoolType, IntType}
 import org.mmadt.storage.obj.`type`.TInt
-import org.mmadt.storage.obj.value.VInt
+import org.mmadt.storage.obj.value.{VBool, VInt}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,8 +36,8 @@ trait IntValue extends Int
   override def value(): Long //
   override def start(): IntType //
 
+  override def as(objType:String): this.type = new VInt(objType,this.value(),this.q()).asInstanceOf[this.type]  //
   override def to(label: StrValue): IntType = this.start().to(label) //
-
   override def plus(other: IntType): IntType = this.start().plus(other) //
   override def plus(other: IntValue): IntValue = this.value() + other.value() //
   override def mult(other: IntType): IntType = this.start().mult(other) //

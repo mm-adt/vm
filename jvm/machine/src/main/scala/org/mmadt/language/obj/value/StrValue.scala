@@ -25,6 +25,7 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.`type`.{BoolType, StrType}
 import org.mmadt.storage.obj.`type`.TStr
+import org.mmadt.storage.obj.value.VStr
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,8 +36,8 @@ trait StrValue extends Str
   override def value(): String //
   override def start(): StrType //
 
+  override def as(objType: String): this.type = new VStr(objType, this.value(), this.q()).asInstanceOf[this.type] //
   override def to(label: StrValue): StrType = this.start().to(label) //
-
   override def plus(other: StrType): StrType = this.start().plus(other) //
   override def plus(other: StrValue): StrValue = this.value() + other.value() //
   override def gt(other: StrType): BoolType = this.start().gt(other) //

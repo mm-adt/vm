@@ -30,6 +30,7 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class SimpleModel extends Model {
+  val typeMap: mutable.Map[String, mutable.Map[Type[_], Type[_]]] = mutable.Map()
   val map: mutable.Map[Type[_], mutable.Map[Type[_], Type[_]]] = mutable.Map()
 
 
@@ -47,5 +48,19 @@ class SimpleModel extends Model {
       map(t).get(a)
   }
 
-  override def toString: String = "model" + this.map
+  override def toString: String = "model" + (Map[Any, Any]() ++ typeMap ++ map).toString()
+
+  override def typePut(t: String, a: Type[_], b: Type[_]): Model = {
+    if (typeMap.get(t).isEmpty) typeMap.put(t, mutable.Map())
+    typeMap(t).put(a, b)
+    this
+  }
+
+  override def typeGet(t: String, a: Type[_]): Option[Type[_]] = {
+    if (typeMap.get(t).isEmpty) return None
+    if (typeMap(t).get(a).isEmpty)
+      if (a.insts() != Nil) typeGet(t, a.insts().reverse.head._1) else None // TODO this is both ugly and expensive (reverse)
+    else
+      typeMap(t).get(a)
+  }
 }

@@ -24,6 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.storage.obj.value.VBool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,8 +35,8 @@ trait BoolValue extends Bool
   override def value(): Boolean //
   override def start(): BoolType //
 
+  override def as(objType:String): this.type = new VBool(objType,this.value(),this.q()).asInstanceOf[this.type] //
   override def to(label: StrValue): BoolType = this.start().to(label) //
-
   override def and(bool: BoolType): BoolType = this.start().and(bool) //
   override def and(bool: BoolValue): BoolValue = this.value() && bool.value() //
   override def or(bool: BoolType): BoolType = this.start().or(bool) //

@@ -22,16 +22,16 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.Stringer
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, JInst, Obj, TQ}
+import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst(java: JInst, quantifier: TQ, function: (Obj, List[Obj]) => Obj) extends VObj(java, quantifier) with Inst {
+class VInst(java: JInst, quantifier: TQ, function: (Obj, List[Obj]) => Obj) extends VObj(Tokens.inst, java, quantifier) with Inst {
 
   def this(java: JInst) = this(java, qOne, null) //
   override def value(): JInst = java //

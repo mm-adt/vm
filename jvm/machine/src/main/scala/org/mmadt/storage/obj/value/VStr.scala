@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.TQ
 import org.mmadt.language.obj.`type`.StrType
 import org.mmadt.language.obj.op.StartOp
@@ -32,12 +33,12 @@ import org.mmadt.storage.obj.`type`.TStr
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VStr(java: String, quantifier: TQ) extends VObj(java, quantifier) with StrValue {
+class VStr(objType: String = Tokens.str, java: String, quantifier: TQ) extends VObj(objType, java, quantifier) with StrValue {
 
-  def this(java: String) = this(java, qOne)
+  def this(java: String) = this(objType = Tokens.str, java, qOne)
 
   override def value(): String = java //
   override def start(): StrType = new TStr(List((new TStr(Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VStr(java, quantifier).asInstanceOf[this.type] //
+  override def q(quantifier: TQ): this.type = new VStr(objType, java, quantifier).asInstanceOf[this.type] //
 
 }

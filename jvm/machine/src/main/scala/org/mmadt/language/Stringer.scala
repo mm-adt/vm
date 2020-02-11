@@ -22,11 +22,11 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.{Inst, Obj, TQ}
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.storage.obj._
+import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Inst, Obj, TQ}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,7 +46,7 @@ object Stringer {
   }
 
   def traverserString(trav: Traverser[_]): String = {
-    "[" + trav.obj() + "|" + trav.state().foldRight("")((x, string) => string + x._1 + "->" + x._2 + ",").dropRight(1) + "]"
+    "[" + trav.obj() + "|" + trav.state().foldRight("")((x, string) => string + x._1.toString.replace("'", "") + "->" + x._2 + ",").dropRight(1) + "]"
   }
 
   def typeString(t: Type[_]): String = {
@@ -61,10 +61,10 @@ object Stringer {
   }
 
   def valueString(v: Value[_]): String = v match {
-    case x: RecValue[_, _] => x.value().foldRight("[")((x, string) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]"
+    case x: RecValue[_, _] => (if (Tokens.named(v.objType())) v.objType() else "") + x.value().foldRight("[")((x, string) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]"
+    case x: StrValue => "'" + v.value() + "'" + qString(x.q())
     case _ => v.value() + qString(v.q())
   }
-
 
   def instString(inst: Inst): String = {
     inst.op() match {
