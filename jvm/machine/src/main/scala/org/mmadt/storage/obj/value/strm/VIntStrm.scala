@@ -35,11 +35,11 @@ import org.mmadt.storage.obj.value.VObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VIntStrm(objType: String = Tokens.int, java: Seq[IntValue]) extends VObj(objType, java, quantifier = (java.length, java.length))
+class VIntStrm(name: String = Tokens.int, java: Seq[IntValue]) extends VObj(name, java, quantifier = (java.length, java.length))
   with IntStrm {
-  def this(java: Seq[IntValue]) = this(objType = Tokens.bool, java)
+  def this(java: Seq[IntValue]) = this(name = Tokens.int, java)
 
   override def value(): Iterator[IntValue] = java.iterator //
-  override def start(): IntType = new TInt(List((new TInt(Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VIntStrm(objType, java).asInstanceOf[this.type] //
+  override def start(): IntType = new TInt(name, List((new TInt(name, Nil, qZero), StartOp(this))), q()) //
+  override def q(quantifier: TQ): this.type = new VIntStrm(name, java).asInstanceOf[this.type] //
 }

@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.{Inst, Obj, TQ}
 import org.mmadt.storage.obj.{OObj, _}
@@ -29,17 +30,18 @@ import org.mmadt.storage.obj.{OObj, _}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class TObj[T <: Type[T]](insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(quantifier) with Type[T] {
+abstract class TObj[T <: Type[T]](name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(name,quantifier) with Type[T] {
 
-  def this() = this(Nil, qOne) //
+  def this() = this(Tokens.obj, Nil, qOne) //
   def insts(): List[(Type[_], Inst)] = insts //
+  override def as(name: String): this.type = this
 
-  override def int(inst: Inst, q: TQ): IntType = new TInt(this.insts() ::: List((this, inst)), q)
+  override def int(inst: Inst, q: TQ): IntType = new TInt(Tokens.int, this.insts() ::: List((this, inst)), q)
 
-  override def bool(inst: Inst, q: TQ): BoolType = new TBool(this.insts() ::: List((this, inst)), q)
+  override def bool(inst: Inst, q: TQ): BoolType = new TBool(Tokens.bool, this.insts() ::: List((this, inst)), q)
 
-  override def str(inst: Inst, q: TQ): StrType = new TStr(this.insts() ::: List((this, inst)), q)
+  override def str(inst: Inst, q: TQ): StrType = new TStr(Tokens.str, this.insts() ::: List((this, inst)), q)
 
-  override def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] = new TRec(tvalue, this.insts() ::: List((this, inst)), q)
+  override def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] = new TRec(Tokens.rec, tvalue, this.insts() ::: List((this, inst)), q)
 
 }

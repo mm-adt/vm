@@ -35,6 +35,7 @@ trait Str extends Obj
   with GtOp[Str, StrValue, StrType]
   with IsOp[Str, StrType]
   with ToOp[StrType] {
+
 }
 
 object Str {

@@ -22,12 +22,16 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.Tokens
+
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Inst extends Obj {
   def value(): JInst
+
+  override def name: String = Tokens.inst
 
   final def op(): String = this.value()._1 //
   final def args(): List[Obj] = this.value()._2 //

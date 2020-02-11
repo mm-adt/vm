@@ -22,16 +22,17 @@
 
 package org.mmadt.storage.obj.`type`
 
-import org.mmadt.language.obj.{Inst, TQ}
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{StrType, Type}
+import org.mmadt.language.obj.{Inst, TQ}
 import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TStr(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[StrType](insts, quantifier) with StrType {
-  def this() = this(Nil, qOne) //
+class TStr(name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[StrType](name, insts, quantifier) with StrType {
+  def this() = this(Tokens.str, Nil, qOne) //
   override def push(inst: Inst): StrType = str(inst, quantifier) //
-  override def pop(): this.type = new TStr(insts.tail, quantifier).asInstanceOf[this.type] //
-  override def q(quantifier: TQ): this.type = new TStr(insts, quantifier).asInstanceOf[this.type] //
+  override def pop(): this.type = new TStr(name, insts.tail, quantifier).asInstanceOf[this.type] //
+  override def q(quantifier: TQ): this.type = new TStr(name, insts, quantifier).asInstanceOf[this.type] //
 }

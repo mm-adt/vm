@@ -61,10 +61,11 @@ object Stringer {
   }
 
   def valueString(v: Value[_]): String = v match {
-    case x: RecValue[_, _] => (if (Tokens.named(v.objType())) v.objType() else "") + x.value().foldRight("[")((x, string) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]"
+    case x: RecValue[_, _] => (if (Tokens.named(x.name)) x.name else "") + x.value().foldRight("[")((x, string) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]"
     case x: StrValue => "'" + v.value() + "'" + qString(x.q())
     case _ => v.value() + qString(v.q())
   }
+
 
   def instString(inst: Inst): String = {
     inst.op() match {

@@ -28,9 +28,11 @@ import org.mmadt.language.obj.{Inst, Obj, TQ}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class OObj(val quantifier: TQ) extends Obj {
+abstract class OObj(val _name: String, val quantifier: TQ) extends Obj {
 
   override def q(): TQ = quantifier //
+  override def name: String = _name //
+  def as(name: String): this.type //
 
   override def inst(op: String, args: List[Obj]): Inst = throw new UnsupportedOperationException("This shouldn't happen: " + op)
 }

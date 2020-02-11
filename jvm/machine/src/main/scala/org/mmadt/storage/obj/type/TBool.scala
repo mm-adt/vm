@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.{Inst, TQ}
 import org.mmadt.storage.obj._
@@ -29,9 +30,9 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[BoolType](insts, quantifier) with BoolType {
-  def this() = this(Nil, qOne) //
+class TBool(name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[BoolType](name, insts, quantifier) with BoolType {
+  def this() = this(Tokens.bool, Nil, qOne) //
   override def push(inst: Inst): BoolType = bool(inst) //
-  override def pop(): this.type = new TBool(insts.tail, quantifier).asInstanceOf[this.type] //
-  override def q(quantifier: TQ): this.type = new TBool(insts, quantifier).asInstanceOf[this.type] //
+  override def pop(): this.type = new TBool(name, insts.tail, quantifier).asInstanceOf[this.type] //
+  override def q(quantifier: TQ): this.type = new TBool(name, insts, quantifier).asInstanceOf[this.type] //
 }

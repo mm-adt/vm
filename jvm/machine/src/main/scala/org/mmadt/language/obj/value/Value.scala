@@ -33,7 +33,6 @@ trait Value[V <: Value[V]] extends Obj {
 
   def value(): Any //
   def start(): Type[_] //
-  def objType(): String //
 
   override def toString: String = Stringer.valueString(this) //
 
@@ -41,8 +40,6 @@ trait Value[V <: Value[V]] extends Obj {
     case _: Value[_] => other
     case t: O with Type[_] => (this ==> t).asInstanceOf[O] //
   }
-
-  def as(objType:String): this.type
 
   override def from[O <: Obj](label: StrValue): O = this.start().from(label) //
 

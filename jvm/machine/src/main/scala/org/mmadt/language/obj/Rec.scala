@@ -35,6 +35,7 @@ trait Rec[A <: Obj, B <: Obj] extends Obj
   with IsOp[Rec[A, B], RecType[A, B]]
   with ToOp[RecType[A, B]]
   with GetOp[A, B] {
+
 }
 
 object Rec {

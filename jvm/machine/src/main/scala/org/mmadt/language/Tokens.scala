@@ -30,6 +30,7 @@ import org.mmadt.language.obj.`type`._
  */
 object Tokens {
 
+  val obj = "obj"
   val bool = "bool"
   val str = "str"
   val rec = "rec"
@@ -52,7 +53,7 @@ object Tokens {
   val start = "start"
   val model = "model"
 
-  def named(objType: String): Boolean = !Set(bool, str, rec, int, inst).contains(objType) // TODO: global immutable set
+  def named(name: String): Boolean = !Set(bool, str, rec, int, inst).contains(name) // TODO: global immutable set
 
   def symbol(obj: Obj): String = obj match {
     case _: BoolType => "bool"

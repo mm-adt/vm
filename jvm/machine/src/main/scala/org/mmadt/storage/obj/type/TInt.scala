@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.language.obj.{Inst, TQ}
 import org.mmadt.storage.obj._
@@ -29,9 +30,9 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[IntType](insts, quantifier) with IntType {
-  def this() = this(Nil, qOne) //
+class TInt(name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[IntType](name, insts, quantifier) with IntType {
+  def this() = this(Tokens.int, Nil, qOne) //
   override def push(inst: Inst): IntType = int(inst, quantifier) //
-  override def pop(): this.type = new TInt(insts.tail, quantifier).asInstanceOf[this.type] //
-  override def q(quantifier: TQ): this.type = new TInt(insts, quantifier).asInstanceOf[this.type] //
+  override def pop(): this.type = new TInt(name, insts.tail, quantifier).asInstanceOf[this.type] //
+  override def q(quantifier: TQ): this.type = new TInt(name, insts, quantifier).asInstanceOf[this.type] //
 }

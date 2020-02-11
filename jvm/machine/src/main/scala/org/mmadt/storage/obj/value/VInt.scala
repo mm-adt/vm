@@ -34,12 +34,12 @@ import org.mmadt.storage.obj.`type`.TInt
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(objType: String = Tokens.int, java: Long, quantifier: TQ) extends VObj(objType, java, quantifier) with IntValue {
+class VInt(name: String, java: Long, quantifier: TQ) extends VObj(name, java, quantifier) with IntValue {
 
-  def this(java: Long) = this(objType = Tokens.int, java, qOne)
+  def this(java: Long) = this(Tokens.int, java, qOne)
 
   override def value(): Long = java //
-  override def start(): IntType = new TInt(List((new TInt(Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VInt(objType, java, quantifier).asInstanceOf[this.type] //
+  override def start(): IntType = new TInt(name, List((new TInt(name, Nil, qZero), StartOp(this))), q()) //
+  override def q(quantifier: TQ): this.type = new VInt(name, java, quantifier).asInstanceOf[this.type] //
 
 }

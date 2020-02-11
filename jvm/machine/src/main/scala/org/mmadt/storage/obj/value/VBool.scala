@@ -33,12 +33,12 @@ import org.mmadt.storage.obj.`type`.TBool
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBool(objType: String = Tokens.bool, java: Boolean, quantifier: TQ) extends VObj(objType, java, quantifier) with BoolValue {
+class VBool(name: String, java: Boolean, quantifier: TQ) extends VObj(name, java, quantifier) with BoolValue {
 
-  def this(java: Boolean) = this(objType = Tokens.bool, java, qOne)
+  def this(java: Boolean) = this(Tokens.bool, java, qOne)
 
   override def value(): Boolean = java //
-  override def start(): BoolType = new TBool(List((new TBool(Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VBool(objType, java, quantifier).asInstanceOf[this.type] //
+  override def start(): BoolType = new TBool(name, List((new TBool(name, Nil, qZero), StartOp(this))), q()) //
+  override def q(quantifier: TQ): this.type = new VBool(name, java, quantifier).asInstanceOf[this.type] //
 
 }
