@@ -37,8 +37,13 @@ class PersonTest extends FunSuite {
     val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
     assertResult("['name':'marko','age':29]")(marko.toString)
     assertResult("person['name':'marko','age':29]")(marko.as("person").toString)
+    ///
+    assertResult("rec")(marko.name)
+    assertResult("person")(marko.as("person").name)
     assertResult(str("marko"))(IteratorChainProcessor(marko, rec[Str, Str].get[StrType]("name", str)).next().obj())
     assertResult(int(29))(IteratorChainProcessor(marko, rec[Str, Str].get[StrType]("age", str)).next().obj())
+    assertResult(str("marko"))(IteratorChainProcessor(marko.as("person"), rec[Str, Str].get[StrType]("name", str)).next().obj())
+    assertResult(int(29))(IteratorChainProcessor(marko.as("person"), rec[Str, Str].get[StrType]("age", str)).next().obj())
   }
 
   /*test("person compilation") {
