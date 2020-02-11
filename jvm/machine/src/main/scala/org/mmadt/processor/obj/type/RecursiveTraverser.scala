@@ -51,13 +51,10 @@ class RecursiveTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], va
         case tobj: Type[_] if model.get(tobj.pure(), endType).nonEmpty => this.apply(model.get(tobj.pure(), endType).get.asInstanceOf[E with Type[_]])
         case _ =>
           (endType.insts().head._2 match {
-            // traverser instructions
             case toInst: Inst if toInst.op().equals(Tokens.to) => new RecursiveTraverser[S](obj, Map[StrValue, Obj](toInst.arg[StrValue]() -> obj) ++ this.state, model) //
             case fromInst: Inst if fromInst.op().equals(Tokens.from) => new RecursiveTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state, model) //
             case modelInst: Inst if modelInst.op().equals(Tokens.model) => new RecursiveTraverser[E](obj.asInstanceOf[E], this.state, new SimpleModel().put(int, int.mult(2), int.plus(int)))
-            // branch instructions
-            // storage instructions
-            case storageInst: Inst => this.split(storageInst.apply(this.obj,InstUtil.valueArgs(this,storageInst)).asInstanceOf[E])
+            case storageInst: Inst => InstUtil.instEval(this, storageInst)
           }).apply(endType.pop().asInstanceOf[E with Type[_]])
       }
     }

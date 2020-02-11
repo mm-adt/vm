@@ -31,7 +31,7 @@ import org.mmadt.storage.obj.value.VBool
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Bool extends Obj
-  with IsOp[Bool, BoolValue, BoolType]
+  with IsOp[Bool, BoolType]
   with AndOp
   with OrOp
   with ToOp[BoolType] {

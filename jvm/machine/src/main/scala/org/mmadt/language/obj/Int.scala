@@ -34,7 +34,7 @@ trait Int extends Obj
   with PlusOp[Int, IntValue, IntType]
   with MultOp[Int, IntValue, IntType]
   with GtOp[Int, IntValue, IntType]
-  with IsOp[Int, IntValue, IntType]
+  with IsOp[Int, IntType]
   with ToOp[IntType] {
 }
 

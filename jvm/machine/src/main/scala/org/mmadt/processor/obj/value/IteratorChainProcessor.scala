@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.strm.IntStrm
@@ -40,9 +41,8 @@ class IteratorChainProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
     }
     for (tt <- InstUtil.createInstList(Nil, endType)) {
       // System.out.println(tt)
-      output = output.
-        map(_.apply(tt._1.push(tt._1, tt._2)).asInstanceOf[Traverser[E]]).
-        filter(_.obj().alive())
+      output = output.map(_.apply(tt._1.push(tt._1, tt._2)).asInstanceOf[Traverser[E]])
+      if (tt._2.op().equals(Tokens.is)) output = output.filter(_.obj().alive())
     }
     output
   }

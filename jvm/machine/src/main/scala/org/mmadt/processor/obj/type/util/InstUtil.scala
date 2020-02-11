@@ -34,10 +34,7 @@ object InstUtil {
 
   def nextInst(insts: List[(Type[_], Inst)]): Option[Inst] = if (insts == Nil) None else Some(insts.head._2)
 
-  /**
-   * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
-   */
-  def valueArgs[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): List[Obj] = {
+  private def valueArgs[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): List[Obj] = {
     inst.args().map {
       case typeArg: Type[_] => traverser.split(traverser.obj() match {
         case tt: Type[_] => tt.pure()
@@ -46,6 +43,12 @@ object InstUtil {
       case valueArg: Value[_] => valueArg
     }
   }
+
+  /**
+   * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
+   */
+  def instEval[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): Traverser[E] =
+    traverser.split(inst.apply(traverser.obj(), InstUtil.valueArgs(traverser, inst)).asInstanceOf[E])
 
   @scala.annotation.tailrec
   def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {

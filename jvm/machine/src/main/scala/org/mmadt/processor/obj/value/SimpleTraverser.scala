@@ -25,7 +25,7 @@ package org.mmadt.processor.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.{Model, SimpleModel}
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
@@ -43,12 +43,9 @@ class SimpleTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj]) exten
       this.asInstanceOf[Traverser[E]]
     else {
       (endType.insts().head._2 match {
-        // traverser instructions
         case toInst: Inst if toInst.op().equals(Tokens.to) => new SimpleTraverser[S](this.obj, Map[StrValue, Obj](toInst.arg[StrValue]() -> this.obj) ++ this.state)
         case fromInst: Inst if fromInst.op().equals(Tokens.from) => new SimpleTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state) //
-        // branch instructions
-        // storage instructions
-        case storageInst: Inst => this.split(storageInst.apply(this.obj,InstUtil.valueArgs(this,storageInst)).asInstanceOf[E])
+        case storageInst: Inst => InstUtil.instEval(this, storageInst)
       }).asInstanceOf[Traverser[E]]
     }
   }
