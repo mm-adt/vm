@@ -40,8 +40,8 @@ class IteratorChainProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
     for (tt <- createInstList(List(), endType)) {
       // System.out.println(tt)
       output = output.
-        map(trav => trav.apply(tt._1.push(tt._1, tt._2)).asInstanceOf[Traverser[E]]).
-        filter(trav => trav.obj.alive())
+        map(_.apply(tt._1.push(tt._1, tt._2)).asInstanceOf[Traverser[E]]).
+        filter(_.obj().alive())
     }
     output
   }

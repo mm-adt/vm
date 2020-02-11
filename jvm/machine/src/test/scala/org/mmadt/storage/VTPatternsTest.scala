@@ -20,27 +20,26 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.storage
 
-import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.{str, _}
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TypeInferenceTest extends FunSuite {
+class VTPatternsTest extends FunSuite {
 
-
-  test("type inference") {
-    assertResult("int{0,3}<=int{3}[mult,5][is,bool{3}<=int{3}[gt,int{3}[plus,10]]]")((int.q(3) ==> (int.mult(5).is(int.gt(int.plus(10))))).toString)
+  test("value/type patterns on atomic types") {
+    assert(str("m").test(str("m")))
+    assert(!str("m").test(int(2)))
+    assert(str("m").test(str))
+    assert(int.test(int(3)))
   }
 
-  test("model inference") {
-    assertResult(int.plus(int))(int ==> int.model("ex").mult(2))
-    assertResult(int(4))(int(2) ==> (int ==> int.mult(2)))
-    assertResult(int(4))(int(2) ==> (int ==> int.model("ex").mult(int(2))))
-    // println(int{3} ==> int<=int.is(int.gt(4)))
+  test("value/type patterns on refinement types") {
+    assert(int(6).test(int))
+    assert(int.plus(2).test(int.plus(2)))
+    assert(!int.plus(2).test(int.plus(3)))
   }
-
-
 }

@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.op.{ChooseOp, FromOp, MapOp}
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.processor.obj.`type`.RecursiveTraverser
 
 /**
@@ -46,4 +46,16 @@ trait Obj extends ChooseOp
   // utility methods
   def ==>[E <: Obj](t: E with Type[_]): Obj = new RecursiveTraverser[E](this.asInstanceOf[E]).apply(t).obj() // TODO: FORCE TYPE CHECK ON t:Obj
   def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
+
+  // pattern matching methods
+  def test(other: Obj): Boolean = this match {
+    case startValue: Value[_] => other match {
+      case argValue: Value[_] => TypeChecker.matchesVV(startValue, argValue)
+      case argType: Type[_] => TypeChecker.matchesVT(startValue, argType)
+    }
+    case startType: Type[_] => other match {
+      case argValue: Value[_] => TypeChecker.matchesTV(startType, argValue)
+      case argType: Type[_] => TypeChecker.matchesTT(startType, argType)
+    }
+  }
 }
