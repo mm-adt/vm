@@ -20,26 +20,22 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.`type`
+package org.mmadt.language.obj.op
 
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IntType extends Int
-  with Type[IntType] {
+trait NegOp[O <: Obj with NegOp[O]] {
+  this: O =>
+  def neg(): O //
+  final def unary_-(): O = this.neg() //
+}
 
-  override def to(label: StrValue): IntType = this.push(ToOp(label)) //
-  override def plus(other: IntType): IntType = this.push(PlusOp(other)) //
-  override def plus(other: IntValue): IntType = this.push(PlusOp(other)) //
-  override def mult(other: IntType): IntType = this.push(MultOp(other)) //
-  override def mult(other: IntValue): IntType = this.push(MultOp(other)) //
-  override def neg(): IntType = this.push(NegOp()) //
-  override def gt(other: IntType): BoolType = this.bool(GtOp(other)) //
-  override def gt(other: IntValue): BoolType = this.bool(GtOp(other)) //
-  override def is(bool: BoolType): IntType = this.push(IsOp(bool)).q(0, q()._2) //
-  override def is(bool: BoolValue): IntType = this.push(IsOp(bool)).q(0, q()._2) //
+object NegOp {
+  def apply[O <: Obj with NegOp[O]](): Inst = new VInst((Tokens.neg, Nil), qOne, ((a: O, b: List[Obj]) => a.neg()).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

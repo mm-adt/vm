@@ -32,5 +32,8 @@ class VIntTest extends FunSuite {
 
   test("int values") {
     assertResult(int(3))(int(1) + int(2))
+    assertResult(int(-4))(-int(4))
+    assertResult(int(-4))(int(3) ==> int.plus(1).neg())
   }
+
 }

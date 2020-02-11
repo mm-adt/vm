@@ -40,6 +40,7 @@ trait IntStrm extends Int
   override def plus(other: IntValue): IntValue = throw new IllegalAccessException() //
   override def mult(other: IntType): IntType = this.start().mult(other) //
   override def mult(other: IntValue): IntValue = throw new IllegalAccessException() //
+  override def neg(): IntValue = throw new IllegalAccessException() //
   override def gt(other: IntType): BoolType = this.start().gt(other) //
   override def gt(other: IntValue): BoolValue = throw new IllegalAccessException() //
   override def is(bool: BoolType): IntType = this.start().is(bool) //

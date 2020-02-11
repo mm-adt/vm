@@ -33,6 +33,7 @@ import org.mmadt.storage.obj.value.VInt
 trait Int extends Obj
   with PlusOp[Int, IntValue, IntType]
   with MultOp[Int, IntValue, IntType]
+  with NegOp[Int]
   with GtOp[Int, IntValue, IntType]
   with IsOp[Int, IntType]
   with ToOp[IntType] {
