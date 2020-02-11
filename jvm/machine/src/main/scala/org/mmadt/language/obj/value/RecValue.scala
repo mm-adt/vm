@@ -24,7 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
 import org.mmadt.language.obj.{Obj, Rec}
-import org.mmadt.processor.obj.`type`.RecursiveTraverser
+import org.mmadt.processor.obj.value.IteratorChainProcessor
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,8 +44,8 @@ trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
 
 
   override def get(key: A): B = this.value().get(key) match {
-    case Some(bvalue: Value[B]) => bvalue.asInstanceOf[B]
-    case Some(btype: B with Type[_]) => new RecursiveTraverser(key).apply(btype).obj()
+    case Some(bvalue: B with Value[_]) => bvalue
+    case Some(btype: B with Type[_]) => IteratorChainProcessor(key, btype).next().obj()
     case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
     case _ => throw new RuntimeException()
   }

@@ -22,9 +22,10 @@
 
 package org.mmadt.processor.obj.value
 
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
 
 /**
@@ -37,7 +38,7 @@ class IteratorChainProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
       case s: IntStrm => s.value().map(x => new SimpleTraverser[E](x.asInstanceOf[E]))
       case r => Iterator(new SimpleTraverser[E](r.asInstanceOf[E]))
     }
-    for (tt <- createInstList(List(), endType)) {
+    for (tt <- InstUtil.createInstList(Nil, endType)) {
       // System.out.println(tt)
       output = output.
         map(_.apply(tt._1.push(tt._1, tt._2)).asInstanceOf[Traverser[E]]).
@@ -45,9 +46,8 @@ class IteratorChainProcessor[S <: Obj, E <: Obj] extends Processor[S, E] {
     }
     output
   }
+}
 
-  @scala.annotation.tailrec
-  private def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {
-    if (t.insts().isEmpty) list else createInstList(List((t.pure(), t.insts().last._2)) ++ list, t.insts().last._1)
-  }
+object IteratorChainProcessor {
+  def apply[S <: Obj, E <: Obj](startObj: S, endType: E with Type[_]): Iterator[Traverser[E]] = new IteratorChainProcessor[S, E].apply(startObj, endType)
 }

@@ -68,9 +68,9 @@ trait Type[T <: Type[T]] extends Obj
 
   override def toString: String = Stringer.typeString(this) //
 
-  final def <=[TT <: Type[TT]](mapFrom: Type[TT]): TT = mapFrom.q(this.q()).asInstanceOf[TT]
+  final def <=[TT <: Type[TT]](mapFrom: TT with Type[TT]): TT = mapFrom.q(this.q())
 
-  def ==>[TT <: Type[TT]](t: Type[TT]): TT = new RecursiveTraverser[this.type](this).apply(t).obj().asInstanceOf[TT] // TODO: USE COMPILATION TRAVERSER
+  def ==>[TT <: Type[TT]](t: TT with Type[TT]): TT = new RecursiveTraverser[this.type](this).apply(t).obj() // TODO: USE COMPILATION TRAVERSER
 
   override def map[O <: Obj](other: O): O = this.push(other, inst(Tokens.map, other)) //
   override def from[O <: Obj](label: StrValue): O = this.push(inst(Tokens.from, label)).asInstanceOf[O] //

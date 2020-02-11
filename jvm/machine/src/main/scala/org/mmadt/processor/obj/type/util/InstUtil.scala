@@ -46,4 +46,9 @@ object InstUtil {
       case valueArg: Value[_] => valueArg
     })
   }
+
+  @scala.annotation.tailrec
+  def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {
+    if (t.insts().isEmpty) list else createInstList(List((t.pure(), t.insts().last._2)) ++ list, t.insts().last._1)
+  }
 }
