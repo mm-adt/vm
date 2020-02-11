@@ -38,5 +38,5 @@ trait ToOp[O <: Type[O]] {
 }
 
 object ToOp {
-  def apply[O <: ToOp[O] with Type[O]](other: StrValue): Inst = new VInst((Tokens.to, List(other)), qOne, ((a: O, b: List[Obj]) => a.to(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply[O <: Type[O]](other: StrValue): Inst = new VInst((Tokens.to, List(other)), qOne, ((a: ToOp[O], b: List[Obj]) => a.to(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

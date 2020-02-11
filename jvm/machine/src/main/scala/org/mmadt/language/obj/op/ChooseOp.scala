@@ -46,5 +46,5 @@ trait ChooseOp {
 }
 
 object ChooseOp {
-  def apply[IT <: Type[IT], OT <: Obj](branches: RecValue[IT, OT]): Inst = new VInst((Tokens.choose, List(branches)), qOne, ((a: ChooseOp, b: List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT, OT]])).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply[IT <: Type[IT], OT <: Obj](branches: RecValue[IT, OT]): Inst = new VInst((Tokens.choose, List(branches)), qOne, ((a: Obj, b: List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT, OT]]))) //
 }

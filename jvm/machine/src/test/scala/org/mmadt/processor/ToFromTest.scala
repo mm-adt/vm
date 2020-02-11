@@ -23,6 +23,7 @@
 package org.mmadt.processor
 
 import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
@@ -41,7 +42,7 @@ class ToFromTest extends FunSuite {
 
   test("[to][from] w/ types") {
     assertResult(int(5))(int(1) ==> int.plus(1).map(int(5)).to("x").from("x"))
-    // assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from("x").mult(int.from("y")))))
+    assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from[IntType]("x").mult(int.from[IntType]("y")))))
     assertResult("int[plus,1][map,int][to,x]")(int.plus(1).map(int).to("x").toString)
     intercept[NoSuchElementException] {
       assertResult(int(20))(int(1) ==> int.plus(1).map(int.mult(10).to("x")).from("x"))

@@ -39,5 +39,5 @@ trait FromOp {
 }
 
 object FromOp {
-  def apply(other: StrValue): Inst = new VInst((Tokens.from, List(other)), qOne, ((a: FromOp, b: List[Obj]) => a.from(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply(other: StrValue): Inst = new VInst((Tokens.from, List(other)), qOne, (a: Obj, b: List[Obj]) => a.from(other)) //
 }

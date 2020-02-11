@@ -37,5 +37,5 @@ trait MapOp {
 }
 
 object MapOp {
-  def apply[O <: Obj](other: O): Inst = new VInst((Tokens.map, List(other)), qOne, ((a: O, b: List[Obj]) => a.map(b.head)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply[O <: Obj](other: O): Inst = new VInst((Tokens.map, List(other)), qOne, (a: Obj, b: List[Obj]) => a.map(b.head)) //
 }
