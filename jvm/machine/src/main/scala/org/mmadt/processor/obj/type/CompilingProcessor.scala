@@ -22,12 +22,14 @@
 
 package org.mmadt.processor.obj.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.model.{Model, SimpleModel}
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.storage.obj.int
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,11 +43,15 @@ class CompilingProcessor[S <: Obj, E <: Obj](val model: Model = new SimpleModel)
     while (mutatingType.insts() != Nil) {
       TypeChecker.checkType(mutatingTraverser.obj(), mutatingType)
       var length: scala.Int = 1
-      mutatingTraverser = model.get(mutatingTraverser.obj().asInstanceOf[Type[_]].pure(), mutatingType) match {
-        case Some(rewrite) =>
-          length = mutatingType.insts().length
-          mutatingTraverser.apply(rewrite.asInstanceOf[E with Type[_]])
-        case None => InstUtil.instEval(mutatingTraverser,mutatingType.insts().head._2)
+      if (mutatingType.insts().head._2.op().equals(Tokens.model)) // HANDLE MODEL PROCESSING
+        model.put(int, int.mult(2), int.plus(int))
+      else {
+        mutatingTraverser = model.get(mutatingTraverser.obj().asInstanceOf[Type[_]].pure(), mutatingType) match {
+          case Some(rewrite) =>
+            length = mutatingType.insts().length
+            mutatingTraverser.apply(rewrite.asInstanceOf[E with Type[_]])
+          case None => InstUtil.instEval(mutatingTraverser, mutatingType.insts().head._2)
+        }
       }
       for (_ <- 0 until length) mutatingType = mutatingType.pop()
       TypeChecker.checkType(mutatingTraverser.obj(), mutatingType)

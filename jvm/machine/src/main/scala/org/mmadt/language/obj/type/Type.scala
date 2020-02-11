@@ -26,7 +26,7 @@ import org.mmadt.language.obj.op.{FromOp, MapOp, ModelOp}
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
-import org.mmadt.processor.obj.`type`.RecursiveTraverser
+import org.mmadt.processor.obj.`type`.CompilingProcessor
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -70,7 +70,7 @@ trait Type[T <: Type[T]] extends Obj
 
   final def <=[TT <: Type[TT]](mapFrom: TT with Type[TT]): TT = mapFrom.q(this.q())
 
-  def ==>[TT <: Type[TT]](t: TT with Type[TT]): TT = new RecursiveTraverser[this.type](this).apply(t).obj() // TODO: USE COMPILATION TRAVERSER
+  def ==>[TT <: Type[TT]](t: TT with Type[TT]): TT = new CompilingProcessor().apply(this, t).next().obj()
 
   override def map[O <: Obj](other: O): O = this.push(other, MapOp(other)) //
   override def from[O <: Obj](label: StrValue): O = this.push(FromOp(label)).asInstanceOf[O] //
