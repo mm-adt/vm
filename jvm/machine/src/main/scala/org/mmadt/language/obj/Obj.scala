@@ -48,7 +48,7 @@ trait Obj extends ChooseOp
   def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
 
   // pattern matching methods
-  def as(objType: String): this.type //
+  def as(name: String): this.type //
   def name: String //
   def test(other: Obj): Boolean //
 }

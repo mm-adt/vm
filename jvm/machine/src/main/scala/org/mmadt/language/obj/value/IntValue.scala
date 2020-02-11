@@ -36,7 +36,6 @@ trait IntValue extends Int
   override def value(): Long //
   override def start(): IntType //
 
-  override def as(objType:String): this.type = new VInt(objType,this.value(),this.q()).asInstanceOf[this.type]  //
   override def to(label: StrValue): IntType = this.start().to(label) //
   override def plus(other: IntType): IntType = this.start().plus(other) //
   override def plus(other: IntValue): IntValue = this.value() + other.value() //

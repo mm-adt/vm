@@ -42,4 +42,6 @@ class VIntStrm(name: String = Tokens.int, java: Seq[IntValue]) extends VObj(name
   override def value(): Iterator[IntValue] = java.iterator //
   override def start(): IntType = new TInt(name, List((new TInt(name, Nil, qZero), StartOp(this))), q()) //
   override def q(quantifier: TQ): this.type = new VIntStrm(name, java).asInstanceOf[this.type] //
+  override def as(name:String): this.type = new VIntStrm(name,this.value().toSeq).asInstanceOf[this.type]  //
+
 }

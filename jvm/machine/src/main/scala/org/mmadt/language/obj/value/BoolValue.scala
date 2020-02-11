@@ -35,7 +35,6 @@ trait BoolValue extends Bool
   override def value(): Boolean //
   override def start(): BoolType //
 
-  override def as(objType:String): this.type = new VBool(objType,this.value(),this.q()).asInstanceOf[this.type] //
   override def to(label: StrValue): BoolType = this.start().to(label) //
   override def and(bool: BoolType): BoolType = this.start().and(bool) //
   override def and(bool: BoolValue): BoolValue = this.value() && bool.value() //
