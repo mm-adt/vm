@@ -24,6 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Str
+import org.mmadt.language.obj.op.{GtOp, IsOp, PlusOp, ToOp}
 import org.mmadt.language.obj.value.{BoolValue, StrValue}
 
 
@@ -33,11 +34,11 @@ import org.mmadt.language.obj.value.{BoolValue, StrValue}
 trait StrType extends Str
   with Type[StrType] {
 
-  override def to(label: StrValue): StrType = this.push(inst(Tokens.to, label)) //
-  override def plus(other: StrType): StrType = this.push(inst(Tokens.plus, other)) //
-  override def plus(other: StrValue): StrType = this.push(inst(Tokens.plus, other)) //
-  override def gt(other: StrType): BoolType = this.bool(inst(Tokens.gt, other)) //
-  override def gt(other: StrValue): BoolType = this.bool(inst(Tokens.gt, other)) //
-  override def is(bool: BoolType): StrType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
-  override def is(bool: BoolValue): StrType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
+  override def to(label: StrValue): StrType = this.push(ToOp(label)) //
+  override def plus(other: StrType): StrType = this.push(PlusOp(other)) //
+  override def plus(other: StrValue): StrType = this.push(PlusOp(other)) //
+  override def gt(other: StrType): BoolType = this.bool(GtOp(other)) //
+  override def gt(other: StrValue): BoolType = this.bool(GtOp(other)) //
+  override def is(bool: BoolType): StrType = this.push(IsOp(bool)).q(0, q()._2) //
+  override def is(bool: BoolValue): StrType = this.push(IsOp(bool)).q(0, q()._2) //
 }

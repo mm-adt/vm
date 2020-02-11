@@ -22,11 +22,19 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ModelOp {
   def model(model: StrValue): this.type = this
+}
+
+object ModelOp {
+  def apply(model: StrValue): Inst = new VInst((Tokens.model, List(model)), qOne, ((a: ModelOp, b: List[Obj]) => a.model(model)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

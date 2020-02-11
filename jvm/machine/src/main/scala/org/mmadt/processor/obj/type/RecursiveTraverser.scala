@@ -28,6 +28,7 @@ import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
+import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.obj._
 
 /**
@@ -56,13 +57,7 @@ class RecursiveTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], va
             case modelInst: Inst if modelInst.op().equals(Tokens.model) => new RecursiveTraverser[E](obj.asInstanceOf[E], this.state, new SimpleModel().put(int, int.mult(2), int.plus(int)))
             // branch instructions
             // storage instructions
-            case storeInst: Inst => this.split(this.obj.inst(storeInst.op(), storeInst.args().map {
-              case typeArg: Type[_] => this.split(this.obj match {
-                case tt: Type[_] => tt.pure()
-                case _ => this.obj
-              }).apply(typeArg).obj()
-              case valueArg: Value[_] => valueArg
-            }).apply(this.obj))
+            case storageInst: Inst => this.split(storageInst.apply(this.obj,InstUtil.valueArgs(this,storageInst)).asInstanceOf[E])
           }).apply(endType.pop().asInstanceOf[E with Type[_]])
       }
     }

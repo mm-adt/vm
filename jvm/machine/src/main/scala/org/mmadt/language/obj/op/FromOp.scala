@@ -22,9 +22,11 @@
 
 package org.mmadt.language.obj.op
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.storage.obj.value.VStr
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.{VInst, VStr}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,4 +36,8 @@ trait FromOp {
 
   def from[O <: Obj](other: String): O = this.from(new VStr(other)) //
   def from[O <: Obj](label: StrValue): O = label.asInstanceOf[O] // TODO NO IMPL -- INST
+}
+
+object FromOp {
+  def apply(other: StrValue): Inst = new VInst((Tokens.from, List(other)), qOne, ((a: FromOp, b: List[Obj]) => a.from(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

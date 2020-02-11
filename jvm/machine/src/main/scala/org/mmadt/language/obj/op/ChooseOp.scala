@@ -23,9 +23,11 @@
 package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.{RecValue, Value}
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,8 +39,12 @@ trait ChooseOp {
 
   def choose[IT <: Type[IT], OT <: Obj](branches: RecValue[IT, OT]): OT = {
     this match {
-      case ttype: Type[_] => ttype.push(branches.value().head._2, inst(Tokens.choose, branches))
+      case ttype: Type[_] => ttype.push(branches.value().head._2, ChooseOp(branches))
       case _: Value[_] => (this ==> branches.value().filter(p => (this ==> p._1).alive()).head._2.asInstanceOf[Obj with Type[_]]).asInstanceOf[OT]
     }
   }
+}
+
+object ChooseOp {
+  def apply[IT <: Type[IT], OT <: Obj](branches: RecValue[IT, OT]): Inst = new VInst((Tokens.choose, List(branches)), qOne, ((a: ChooseOp, b: List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT, OT]])).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

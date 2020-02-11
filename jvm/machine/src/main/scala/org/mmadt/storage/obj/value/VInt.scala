@@ -25,6 +25,7 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.TQ
 import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.op.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
@@ -38,7 +39,7 @@ class VInt(java: Long, quantifier: TQ) extends VObj(java, quantifier) with IntVa
   def this(java: Long) = this(java, qOne)
 
   override def value(): Long = java //
-  override def start(): IntType = new TInt(List((new TInt(Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def start(): IntType = new TInt(List((new TInt(Nil, qZero), StartOp(this))), q()) //
   override def q(quantifier: TQ): this.type = new VInt(java, quantifier).asInstanceOf[this.type] //
 
 }

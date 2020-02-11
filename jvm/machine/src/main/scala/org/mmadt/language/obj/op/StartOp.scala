@@ -20,19 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.value.inst
+package org.mmadt.language.obj.op
 
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.MultOp
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultInst[O <: Obj with MultOp[O, V, T], V <: Value[V] with O, T <: Type[T] with O] extends Inst {
-  override def apply(obj: Obj): Obj = arg[O]() match {
-    case v: Value[V] with V => obj.asInstanceOf[O].mult(v)
-    case t: Type[T] with T => obj.asInstanceOf[O].mult(t)
-  }
+trait StartOp {
+
+}
+
+object StartOp {
+  def apply(starts: Obj): Inst = new VInst((Tokens.start, List(starts)), qOne, (a: Obj, b: List[Obj]) => b.head) //
 }

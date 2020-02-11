@@ -25,6 +25,7 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.op.StartOp
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TBool
@@ -37,7 +38,7 @@ class VBool(java: Boolean, quantifier: TQ) extends VObj(java, quantifier) with B
   def this(java: Boolean) = this(java, qOne)
 
   override def value(): Boolean = java //
-  override def start(): BoolType = new TBool(List((new TBool(Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def start(): BoolType = new TBool(List((new TBool(Nil, qZero), StartOp(this))), q()) //
   override def q(quantifier: TQ): this.type = new VBool(java, quantifier).asInstanceOf[this.type] //
 
 }

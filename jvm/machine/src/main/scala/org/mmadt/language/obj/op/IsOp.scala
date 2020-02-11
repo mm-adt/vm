@@ -22,9 +22,12 @@
 
 package org.mmadt.language.obj.op
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.value.{BoolValue, Value}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,5 +38,12 @@ trait IsOp[O <: Obj with IsOp[O, V, T], V <: Value[V], T <: Type[T]] {
   def is(other: BoolType): T //
   def is(other: BoolValue): O //
 
+}
+object IsOp {
+  def apply[O <: Obj with IsOp[O, V, T], V <: Value[V], T <: Type[T]](bool: BoolValue): Inst = new VInst((Tokens.is, List(bool)), qOne, ((a: O, b: List[Obj]) => a.is(bool)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply[O <: Obj with IsOp[O, V, T], V <: Value[V], T <: Type[T]](bool: BoolType): Inst = new VInst((Tokens.is, List(bool)), qOne, ((a: O, b: List[Obj]) => b.head match {
+    case v: BoolValue with V => a.is(v)
+    case t: BoolType with T => a.is(t)
+  }).asInstanceOf[(Obj, List[Obj]) => Obj])
 }
 

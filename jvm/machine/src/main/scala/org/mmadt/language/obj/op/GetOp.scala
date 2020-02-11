@@ -22,8 +22,11 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.{Inst, Obj, Rec}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,4 +36,8 @@ trait GetOp[A <: Obj, B <: Obj] {
 
   def get(key: A): B //
   def get[BT <: Type[BT]](key: A, btype: BT): BT //
+}
+
+object GetOp {
+  def apply[A <: Obj, B <: Obj](key: A): Inst = new VInst((Tokens.get, List(key)), qOne, ((a: Rec[A, B], b: List[Obj]) => a.get(key)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

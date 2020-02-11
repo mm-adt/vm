@@ -22,11 +22,7 @@
 
 package org.mmadt.storage.obj
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{RecValue, StrValue}
-import org.mmadt.language.obj.{Bool, Inst, Obj, TQ}
-import org.mmadt.storage.obj.value.inst._
+import org.mmadt.language.obj.{Inst, Obj, TQ}
 
 
 /**
@@ -36,19 +32,5 @@ abstract class OObj(val quantifier: TQ) extends Obj {
 
   override def q(): TQ = quantifier //
 
-  override def inst(op: String, args: List[Obj]): Inst = op match {
-    case Tokens.and => new VAndInst(args.head.asInstanceOf[Bool])
-    case Tokens.choose => new VChooseInst(args.head.asInstanceOf[RecValue[Type[_], Type[_]]])
-    case Tokens.or => new VOrInst(args.head.asInstanceOf[Bool])
-    case Tokens.plus => new VPlusInst(args.head)
-    case Tokens.map => new VMapInst(args.head)
-    case Tokens.mult => new VMultInst(args.head)
-    case Tokens.model => new VModelInst(args.head)
-    case Tokens.is => new VIsInst(args.head.asInstanceOf[Bool])
-    case Tokens.gt => new VGtInst(args.head)
-    case Tokens.get => new VGetInst(args.head)
-    case Tokens.to => new VToInst(args.head.asInstanceOf[StrValue])
-    case Tokens.from => new VFromInst(args.head.asInstanceOf[StrValue])
-    case Tokens.start => new VStartInst(args.head) // TODO: will be first flatmap (get strm working generally)
-  }
+  override def inst(op: String, args: List[Obj]): Inst = throw new UnsupportedOperationException("This shouldn't happen: " + op)
 }

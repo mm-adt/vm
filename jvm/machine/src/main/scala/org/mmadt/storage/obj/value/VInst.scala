@@ -31,12 +31,13 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst(java: JInst, quantifier: TQ) extends VObj(java, quantifier) with Inst {
+class VInst(java: JInst, quantifier: TQ, function: (Obj, List[Obj]) => Obj) extends VObj(java, quantifier) with Inst {
 
-  def this(java: JInst) = this(java, qOne) //
+  def this(java: JInst) = this(java, qOne, null) //
   override def value(): JInst = java //
   override def toString: String = Stringer.instString(this) //
-  override def q(quantifier: TQ): this.type = new VInst(java, quantifier).asInstanceOf[this.type] //
+  override def q(quantifier: TQ): this.type = new VInst(java, quantifier, function).asInstanceOf[this.type] //
+  override def apply(obj: Obj, args: List[Obj]): Obj = function.apply(obj, args) //
 
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
   def test(other: Obj): Boolean = this match {

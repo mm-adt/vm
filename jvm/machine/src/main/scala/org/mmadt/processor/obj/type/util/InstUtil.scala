@@ -37,14 +37,14 @@ object InstUtil {
   /**
    * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
    */
-  def valueInst[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): Inst = {
-    traverser.obj().inst(inst.op(), inst.args().map {
+  def valueArgs[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): List[Obj] = {
+    inst.args().map {
       case typeArg: Type[_] => traverser.split(traverser.obj() match {
         case tt: Type[_] => tt.pure()
         case vv: Value[_] => vv
       }).apply(typeArg).obj()
       case valueArg: Value[_] => valueArg
-    })
+    }
   }
 
   @scala.annotation.tailrec

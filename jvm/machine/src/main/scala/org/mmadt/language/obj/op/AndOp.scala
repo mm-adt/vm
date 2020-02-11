@@ -22,9 +22,12 @@
 
 package org.mmadt.language.obj.op
 
-import org.mmadt.language.obj.Bool
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.language.obj.{Bool, Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,4 +38,12 @@ trait AndOp {
   def and(bool: BoolValue): Bool //
   final def &&(bool: BoolType): BoolType = this.and(bool) //
   final def &&(bool: BoolValue): Bool = this.and(bool) //
+}
+
+object AndOp {
+  def apply(other: BoolValue): Inst = new VInst((Tokens.and, List(other)), qOne, ((a: Bool, b: List[Obj]) => a.and(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply(other: BoolType): Inst = new VInst((Tokens.and, List(other)), qOne, ((a: Bool, b: List[Obj]) => b.head match {
+    case v: BoolValue => a.and(v)
+    case t: BoolType => a.and(t)
+  }).asInstanceOf[(Obj, List[Obj]) => Obj])
 }

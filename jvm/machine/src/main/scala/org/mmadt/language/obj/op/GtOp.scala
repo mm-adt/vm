@@ -22,9 +22,12 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Bool, Obj}
+import org.mmadt.language.obj.{Bool, Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,4 +39,12 @@ trait GtOp[O <: Obj with GtOp[O, V, T], V <: Value[V], T <: Type[T]] {
   def gt(other: V): Bool //
   final def >(other: T): BoolType = this.gt(other) //
   final def >(other: V): Bool = this.gt(other) //
+}
+
+object GtOp {
+  def apply[O <: Obj with GtOp[O, V, T], V <: Value[V], T <: Type[T]](other: V): Inst = new VInst((Tokens.gt, List(other)), qOne, ((a: O, b: List[Obj]) => a.gt(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply[O <: Obj with GtOp[O, V, T], V <: Value[V], T <: Type[T]](other: T): Inst = new VInst((Tokens.gt, List(other)), qOne, ((a: O, b: List[Obj]) => b.head match {
+    case v: Value[V] with V => a.gt(v)
+    case t: Type[T] with T => a.gt(t)
+  }).asInstanceOf[(Obj, List[Obj]) => Obj])
 }

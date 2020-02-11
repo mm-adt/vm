@@ -22,9 +22,12 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.storage.obj.value.VStr
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.{VInst, VStr}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,4 +35,8 @@ import org.mmadt.storage.obj.value.VStr
 trait ToOp[O <: Type[O]] {
   def to(other: String): O = this.to(new VStr(other)) //
   def to(label: StrValue): O
+}
+
+object ToOp {
+  def apply[O <: ToOp[O] with Type[O]](other: StrValue): Inst = new VInst((Tokens.to, List(other)), qOne, ((a: O, b: List[Obj]) => a.to(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

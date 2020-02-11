@@ -24,6 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Bool
+import org.mmadt.language.obj.op.{AndOp, IsOp, OrOp, ToOp}
 import org.mmadt.language.obj.value.{BoolValue, StrValue}
 
 /**
@@ -32,11 +33,11 @@ import org.mmadt.language.obj.value.{BoolValue, StrValue}
 trait BoolType extends Bool
   with Type[BoolType] {
 
-  override def and(bool: BoolType): BoolType = this.push(inst(Tokens.and, bool)) //
-  override def and(bool: BoolValue): BoolType = this.push(inst(Tokens.and, bool)) //
-  override def or(bool: BoolType): BoolType = this.push(inst(Tokens.or, bool)) //
-  override def or(bool: BoolValue): BoolType = this.push(inst(Tokens.or, bool)) //
-  override def to(label: StrValue): BoolType = this.push(inst(Tokens.to, label)) //
-  override def is(bool: BoolType): BoolType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
-  override def is(bool: BoolValue): BoolType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
+  override def and(bool: BoolType): BoolType = this.push(AndOp(bool)) //
+  override def and(bool: BoolValue): BoolType = this.push(AndOp(bool)) //
+  override def or(bool: BoolType): BoolType = this.push(OrOp(bool)) //
+  override def or(bool: BoolValue): BoolType = this.push(OrOp(bool)) //
+  override def to(label: StrValue): BoolType = this.push(ToOp(label)) //
+  override def is(bool: BoolType): BoolType = this.push(IsOp(bool)).q(0, q()._2) //
+  override def is(bool: BoolValue): BoolType = this.push(IsOp(bool)).q(0, q()._2) //
 }

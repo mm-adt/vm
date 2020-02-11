@@ -22,13 +22,13 @@
 
 package org.mmadt.storage.obj.value.strm
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.TQ
 import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.op.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.storage.obj.{OObj, _}
 import org.mmadt.storage.obj.`type`.TInt
+import org.mmadt.storage.obj.{OObj, _}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,6 +36,6 @@ import org.mmadt.storage.obj.`type`.TInt
 class VIntStrm(java: Seq[IntValue]) extends OObj(quantifier = (java.length, java.length))
   with IntStrm {
   override def value(): Iterator[IntValue] = java.iterator //
-  override def start(): IntType = new TInt(List((new TInt(Nil, qZero), inst(Tokens.start, this))), q()) //
+  override def start(): IntType = new TInt(List((new TInt(Nil, qZero), StartOp(this))), q()) //
   override def q(quantifier: TQ): this.type = new VIntStrm(java).asInstanceOf[this.type] //
 }

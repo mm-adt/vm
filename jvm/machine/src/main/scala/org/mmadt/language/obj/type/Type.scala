@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.ModelOp
+import org.mmadt.language.obj.op.{FromOp, MapOp, ModelOp}
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
@@ -72,8 +72,8 @@ trait Type[T <: Type[T]] extends Obj
 
   def ==>[TT <: Type[TT]](t: TT with Type[TT]): TT = new RecursiveTraverser[this.type](this).apply(t).obj() // TODO: USE COMPILATION TRAVERSER
 
-  override def map[O <: Obj](other: O): O = this.push(other, inst(Tokens.map, other)) //
-  override def from[O <: Obj](label: StrValue): O = this.push(inst(Tokens.from, label)).asInstanceOf[O] //
+  override def map[O <: Obj](other: O): O = this.push(other, MapOp(other)) //
+  override def from[O <: Obj](label: StrValue): O = this.push(FromOp(label)).asInstanceOf[O] //
 
   override def equals(other: Any): Boolean = other match {
     case t: Type[T] => t.insts().map(_._2) == this.insts().map(_._2) && this.pure().toString == t.pure().toString
@@ -89,7 +89,7 @@ trait Type[T <: Type[T]] extends Obj
 
   override def hashCode(): scala.Int = this.pure().toString.hashCode // TODO: using toString()
 
-  override def model(model: StrValue): this.type = this.push(inst(Tokens.model, model)).asInstanceOf[this.type] //
+  override def model(model: StrValue): this.type = this.push(ModelOp(model)).asInstanceOf[this.type] //
 
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {

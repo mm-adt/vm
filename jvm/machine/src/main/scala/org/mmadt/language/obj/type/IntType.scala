@@ -24,6 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.op.{GtOp, IsOp, MultOp, PlusOp, ToOp}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 
 /**
@@ -32,13 +33,13 @@ import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 trait IntType extends Int
   with Type[IntType] {
 
-  override def to(label: StrValue): IntType = this.push(inst(Tokens.to, label)) //
-  override def plus(other: IntType): IntType = this.push(inst(Tokens.plus, other)) //
-  override def plus(other: IntValue): IntType = this.push(inst(Tokens.plus, other)) //
-  override def mult(other: IntType): IntType = this.push(inst(Tokens.mult, other)) //
-  override def mult(other: IntValue): IntType = this.push(inst(Tokens.mult, other)) //
-  override def gt(other: IntType): BoolType = this.bool(inst(Tokens.gt, other)) //
-  override def gt(other: IntValue): BoolType = this.bool(inst(Tokens.gt, other)) //
-  override def is(bool: BoolType): IntType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
-  override def is(bool: BoolValue): IntType = this.push(inst(Tokens.is, bool)).q(0, q()._2) //
+  override def to(label: StrValue): IntType = this.push(ToOp(label)) //
+  override def plus(other: IntType): IntType = this.push(PlusOp(other)) //
+  override def plus(other: IntValue): IntType = this.push(PlusOp(other)) //
+  override def mult(other: IntType): IntType = this.push(MultOp(other)) //
+  override def mult(other: IntValue): IntType = this.push(MultOp(other)) //
+  override def gt(other: IntType): BoolType = this.bool(GtOp(other)) //
+  override def gt(other: IntValue): BoolType = this.bool(GtOp(other)) //
+  override def is(bool: BoolType): IntType = this.push(IsOp(bool)).q(0, q()._2) //
+  override def is(bool: BoolValue): IntType = this.push(IsOp(bool)).q(0, q()._2) //
 }
