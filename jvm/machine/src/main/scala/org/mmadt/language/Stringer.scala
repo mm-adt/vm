@@ -53,19 +53,22 @@ object Stringer {
     if (t.insts().nonEmpty && t.insts().head._2.op().equals(Tokens.choose)) // TODO: ghetto union type specification
       return t.insts().head._2.arg[RecValue[_, _]]().value().foldRight("[")((x, string) => string + (if (x._1.equals(x._2)) x._1 else x._1 + ":" + x._2) + "|").dropRight(1) + "]"
 
-    val range = Tokens.symbol(t) + qString(t.q())
+    val range = t.name + qString(t.q())
     val domain = if (t.insts().isEmpty) "" else
-      Tokens.symbol(t.insts().head._1) + qString(t.insts().head._1.q())
+      t.insts().head._1.name + qString(t.insts().head._1.q())
     (if (domain.equals("") || range.equals(domain)) range else range + "<=" + domain) +
       t.insts().map(_._2.toString()).fold("")((a, b) => a + b)
   }
 
-  def valueString(v: Value[_]): String = v match {
-    case x: RecValue[_, _] => (if (Tokens.named(x.name)) x.name else "") + x.value().foldRight("[")((x, string) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]"
-    case x: StrValue => "'" + v.value() + "'" + qString(x.q())
-    case _ => v.value() + qString(v.q())
+  def valueString(v: Value[_]): String = {
+    val named = Tokens.named(v.name)
+    (if (named) v.name else "") + (
+      v match {
+        case x: RecValue[_, _] => x.value().foldRight("[")((x, string) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]" + qString(x.q())
+        case x: StrValue => (if (named) "[" else "") + "'" + v.value() + "'" + (if (named) "]" else "") + qString(x.q())
+        case _ => (if (named) "[" else "") + v.value() + (if (named) "]" else "") + qString(v.q())
+      })
   }
-
 
   def instString(inst: Inst): String = {
     inst.op() match {

@@ -29,9 +29,10 @@ import org.mmadt.language.obj.`type`.Type
  */
 trait Model {
 
-  def put(t: Type[_], a: Type[_], b: Type[_]): Model //
-  def get(t: Type[_], a: Type[_]): Option[Type[_]] //
-  def typePut(t: String, a: Type[_], b: Type[_]): Model //
-  def typeGet(t: String, a: Type[_]): Option[Type[_]] //
+  def put(t: Type[_], a: Type[_], b: Type[_]): Model = this.put(t.name, a, b) //
+  def get(t: Type[_], a: Type[_]): Option[Type[_]] = this.get(t.name, a) //
+
+  def put(t: String, a: Type[_], b: Type[_]): Model //
+  def get(t: String, a: Type[_]): Option[Type[_]] //
 
 }

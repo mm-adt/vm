@@ -39,7 +39,7 @@ abstract class TObj[T <: Type[T]](name: String, insts: List[(Type[_], Inst)], qu
 
   override def bool(inst: Inst, q: TQ): BoolType = new TBool(Tokens.bool, this.insts() ::: List((this, inst)), q)
 
-  override def str(inst: Inst, q: TQ): StrType = new TStr(Tokens.str, this.insts() ::: List((this, inst)), q)
+  override def str(inst: Inst, q: TQ): StrType = new TStr(name, this.insts() ::: List((this, inst)), q)
 
   override def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] = new TRec(Tokens.rec, tvalue, this.insts() ::: List((this, inst)), q)
 

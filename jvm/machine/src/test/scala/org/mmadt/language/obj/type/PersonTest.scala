@@ -61,8 +61,10 @@ class PersonTest extends FunSuite {
     val model = new SimpleModel().
       put(int, int.mult(2), int.plus(int)).
       put(int, int.plus(0), int).
-      typePut("person", rec.get(str("firstname"), str), rec.get(str("name"), str))
+      put("person", rec.get(str("firstname"), str), rec.get(str("name"), str))
     println(model)
+    println(model.get("person", rec.get(str("firstname"), str)))
+    // println(IteratorChainProcessor(marko, rec.get(str("firstname"), str)).toList)
   }
 
 
