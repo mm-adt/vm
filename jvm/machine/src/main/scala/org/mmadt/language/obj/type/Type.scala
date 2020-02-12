@@ -34,25 +34,24 @@ import org.mmadt.processor.obj.`type`.CompilingProcessor
 trait Type[T <: Type[T]] extends Obj
   with ModelOp {
 
-  this: Type[T] =>
+  def canonical(): this.type = this.pure().q(1) //
   def pure(): this.type = this.insts() match {
     case List() => this
-    case _ => this.pop().pure()
+    case _ => this.linvert().pure()
   }
 
-  def canonical(): this.type = this.pure().q(1)
 
   def insts(): List[(Type[_], Inst)] //
-  def pop(): this.type //
-  def revert[TT <: Type[TT]](): TT = {
+  def linvert(): this.type //
+  def rinvert[TT <: Type[TT]](): TT = {
     this.insts().dropRight(1).lastOption match {
       case Some(prev) => prev._2.apply(prev._1, prev._2.args()).asInstanceOf[TT]
       case None => this.insts().head._1.asInstanceOf[TT]
     }
   }
 
-  def push(inst: Inst): T //
-  def push[TT <: Type[TT]](t2: Obj, inst: Inst): TT = (t2 match {
+  def compose(inst: Inst): T //
+  def compose[TT <: Type[TT]](t2: Obj, inst: Inst): TT = (t2 match {
     case _: Bool => bool(inst)
     case _: obj.Int => int(inst)
     case _: Str => str(inst)
@@ -67,10 +66,10 @@ trait Type[T <: Type[T]] extends Obj
   final def <=[TT <: Type[TT]](mapFrom: TT with Type[TT]): TT = mapFrom.q(this.q()) //
   def ==>[TT <: Type[TT]](t: TT with Type[TT]): TT = new CompilingProcessor().apply(this, t).next().obj()
 
-  override def map[O <: Obj](other: O): O = this.push(other, MapOp(other)) //
-  override def model(model: StrValue): this.type = this.push(ModelOp(model)).asInstanceOf[this.type] //
-  override def from[O <: Obj](label: StrValue): O = this.push(FromOp(label)).asInstanceOf[O] //
-  override def as[O <: Obj](name: String): O = this.push(AsOp(name)).asInstanceOf[O] //
+  override def map[O <: Obj](other: O): O = this.compose(other, MapOp(other)) //
+  override def model(model: StrValue): this.type = this.compose(ModelOp(model)).asInstanceOf[this.type] //
+  override def from[O <: Obj](label: StrValue): O = this.compose(FromOp(label)).asInstanceOf[O] //
+  override def as[O <: Obj](name: String): O = this.compose(AsOp(name)).asInstanceOf[O] //
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case argValue: Value[_] => TypeChecker.matchesTV(this, argValue)
@@ -88,7 +87,7 @@ trait Type[T <: Type[T]] extends Obj
 
   def |[O <: Type[O]](other: O): O = { // TODO: ghetto union type construction
     if (this.insts().nonEmpty && this.insts().head._2.op().equals(Tokens.choose))
-      this.pop().choose(Map(other -> other) ++ this.insts().head._2.arg[RecValue[O, O]]().value())
+      this.linvert().choose(Map(other -> other) ++ this.insts().head._2.arg[RecValue[O, O]]().value())
     else
       this.choose(other -> other, this.asInstanceOf[O] -> this.asInstanceOf[O])
   }

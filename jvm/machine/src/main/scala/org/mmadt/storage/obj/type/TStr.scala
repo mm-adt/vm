@@ -32,7 +32,7 @@ import org.mmadt.storage.obj._
  */
 class TStr(name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[StrType](name, insts, quantifier) with StrType {
   def this() = this(Tokens.str, Nil, qOne) //
-  override def push(inst: Inst): StrType = str(inst, quantifier) //
-  override def pop(): this.type = new TStr(name, insts.tail, quantifier).asInstanceOf[this.type] //
+  override def compose(inst: Inst): StrType = str(inst, quantifier) //
+  override def linvert(): this.type  = new TStr(name, insts.tail, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TStr(name, insts, quantifier).asInstanceOf[this.type] //
 }

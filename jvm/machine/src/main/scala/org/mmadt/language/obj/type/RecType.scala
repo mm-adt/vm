@@ -36,8 +36,8 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
 
   def value(): Map[A, B] = throw new IllegalAccessException("...")
 
-  override def to(label: StrValue): RecType[A, B] = this.push(ToOp(label)) //
-  override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.push(btype, GetOp(key)) //
+  override def to(label: StrValue): RecType[A, B] = this.compose(ToOp(label)) //
+  override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.compose(btype, GetOp(key)) //
   override def get(key: A): B = this.value().get(key) match {
     case Some(bvalue: B with Value[_]) => bvalue
     case Some(btype: B with Type[_]) => IteratorChainProcessor(key, btype).next().obj()
@@ -45,8 +45,8 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
     case _ => throw new RuntimeException()
   }
 
-  override def plus(other: RecType[A, B]): RecType[A, B] = this.push(PlusOp(other)) //
-  override def plus(other: RecValue[A, B]): RecType[A, B] = this.push(PlusOp(other)) //
-  override def is(bool: BoolType): RecType[A, B] = this.push(IsOp(bool)).q(0, q()._2) //
-  override def is(bool: BoolValue): RecType[A, B] = this.push(IsOp(bool)).q(0, q()._2) //
+  override def plus(other: RecType[A, B]): RecType[A, B] = this.compose(PlusOp(other)) //
+  override def plus(other: RecValue[A, B]): RecType[A, B] = this.compose(PlusOp(other)) //
+  override def is(bool: BoolType): RecType[A, B] = this.compose(IsOp(bool)).q(0, q()._2) //
+  override def is(bool: BoolValue): RecType[A, B] = this.compose(IsOp(bool)).q(0, q()._2) //
 }

@@ -55,7 +55,7 @@ class RecursiveTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], va
             case fromInst: Inst if fromInst.op().equals(Tokens.from) => new RecursiveTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state, model) //
             case modelInst: Inst if modelInst.op().equals(Tokens.model) => new RecursiveTraverser[E](obj.asInstanceOf[E], this.state, new SimpleModel().put(int, int.mult(2), int.plus(int)))
             case storageInst: Inst => InstUtil.instEval(this, storageInst)
-          }).apply(endType.pop().asInstanceOf[E with Type[_]])
+          }).apply(endType.linvert().asInstanceOf[E with Type[_]])
       }
     }
   }
