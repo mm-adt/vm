@@ -27,7 +27,6 @@ import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
-import org.mmadt.storage.obj.value.VStr
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -51,51 +50,37 @@ trait Type[T <: Type[T]] extends Obj
     case _: Rec[_, _] => rec[Obj, Obj](Map.empty[Obj, Obj], inst)
   }).asInstanceOf[TT]
 
-  def int(): IntType = int(null) //
-  def int(inst: Inst): IntType = int(inst, this.q()) //
-  def int(inst: Inst, q: TQ): IntType //
+  def int(inst: Inst, q: TQ = this.q()): IntType //
+  def bool(inst: Inst, q: TQ = this.q()): BoolType //
+  def str(inst: Inst, q: TQ = this.q()): StrType //
+  def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ = this.q()): RecType[K, V] //
 
-  def bool(): BoolType = bool(null) //
-  def bool(inst: Inst): BoolType = bool(inst, this.q()) //
-  def bool(inst: Inst, q: TQ): BoolType //
-
-  def str(): StrType = str(null) //
-  def str(inst: Inst): StrType = str(inst, this.q()) //
-  def str(inst: Inst, q: TQ): StrType //
-
-  def rec(): RecType[_, _] = rec[Obj, Obj](null, null) //
-  def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst): RecType[K, V] = rec(tvalue, inst, this.q()) //
-  def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] //
-
-  override def toString: String = Stringer.typeString(this) //
-
-  final def <=[TT <: Type[TT]](mapFrom: TT with Type[TT]): TT = mapFrom.q(this.q())
-
+  final def <=[TT <: Type[TT]](mapFrom: TT with Type[TT]): TT = mapFrom.q(this.q()) //
   def ==>[TT <: Type[TT]](t: TT with Type[TT]): TT = new CompilingProcessor().apply(this, t).next().obj()
 
   override def map[O <: Obj](other: O): O = this.push(other, MapOp(other)) //
+  override def model(model: StrValue): this.type = this.push(ModelOp(model)).asInstanceOf[this.type] //
   override def from[O <: Obj](label: StrValue): O = this.push(FromOp(label)).asInstanceOf[O] //
-  override def as[O<:Obj](name: String): O = this.push(AsOp(new VStr(name))).asInstanceOf[O] //
-  // override def as(name: String): this.type = this.push(AsOp(name)).asInstanceOf[this.type] //
+  override def as[O <: Obj](name: String): O = this.push(AsOp(name)).asInstanceOf[O] //
+  // pattern matching methods
+  override def test(other: Obj): Boolean = other match {
+    case argValue: Value[_] => TypeChecker.matchesTV(this, argValue)
+    case argType: Type[_] => TypeChecker.matchesTT(this, argType)
+  }
 
   override def equals(other: Any): Boolean = other match {
     case t: Type[T] => t.insts().map(_._2) == this.insts().map(_._2) && this.pure().toString == t.pure().toString
     case _ => false
   }
 
+  // standard Java implementations
+  override def hashCode(): scala.Int = this.pure().toString.hashCode // TODO: using toString()
+  override def toString: String = Stringer.typeString(this) //
+
   def |[O <: Type[O]](other: O): O = { // TODO: ghetto union type construction
     if (this.insts().nonEmpty && this.insts().head._2.op().equals(Tokens.choose))
       this.pop().choose(Map(other -> other) ++ this.insts().head._2.arg[RecValue[O, O]]().value())
     else
       this.choose(other -> other, this.asInstanceOf[O] -> this.asInstanceOf[O])
-  }
-
-  override def hashCode(): scala.Int = this.pure().toString.hashCode // TODO: using toString()
-  override def model(model: StrValue): this.type = this.push(ModelOp(model)).asInstanceOf[this.type] //
-
-  // pattern matching methods
-  override def test(other: Obj): Boolean = other match {
-    case argValue: Value[_] => TypeChecker.matchesTV(this, argValue)
-    case argType: Type[_] => TypeChecker.matchesTT(this, argType)
   }
 }

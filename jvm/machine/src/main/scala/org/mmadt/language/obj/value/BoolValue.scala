@@ -24,7 +24,6 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.storage.obj.value.VBool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

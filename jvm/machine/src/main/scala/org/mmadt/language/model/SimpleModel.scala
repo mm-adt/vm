@@ -32,7 +32,7 @@ import scala.collection.mutable
 class SimpleModel extends Model {
   val typeMap: mutable.Map[String, mutable.Map[Type[_], Type[_]]] = mutable.Map()
 
-  override def toString: String = "model" + (Map[Any, Any]() ++ typeMap).toString()
+  override def toString: String = "model" + (Map.empty ++ typeMap).toString()
 
   override def put(t: String, a: Type[_], b: Type[_]): Model = {
     if (typeMap.get(t).isEmpty) typeMap.put(t, mutable.Map())
@@ -43,7 +43,7 @@ class SimpleModel extends Model {
   override def get(t: String, a: Type[_]): Option[Type[_]] = {
     if (typeMap.get(t).isEmpty) return None
     if (typeMap(t).get(a).isEmpty)
-      if (a.insts() != Nil) get(t, a.insts().reverse.head._1) else None // TODO this is both ugly and expensive (reverse)
+      if (a.insts() != Nil) get(t, a.insts().last._1) else None // TODO this is both ugly and expensive (reverse)
     else
       typeMap(t).get(a)
   }

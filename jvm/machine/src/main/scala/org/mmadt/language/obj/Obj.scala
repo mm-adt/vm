@@ -30,14 +30,11 @@ import org.mmadt.processor.obj.`type`.RecursiveTraverser
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Obj extends AsOp
-  with ChooseOp
-  with MapOp
-  with FromOp {
-
-  def inst(op: String): Inst = inst(op, Nil) //
-  def inst(op: String, args: Obj*): Inst = inst(op, args.toList) //
-  def inst(op: String, args: List[Obj]): Inst //
+trait Obj
+  extends AsOp
+    with ChooseOp
+    with MapOp
+    with FromOp {
 
   def q(): TQ //
   def q(single: IntValue): this.type = this.q((single, single)) //

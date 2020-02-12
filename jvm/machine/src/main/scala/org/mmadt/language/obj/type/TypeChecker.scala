@@ -46,5 +46,5 @@ object TypeChecker {
   def matchesVT[O <: Obj](obj: O with Value[_], pattern: Obj with Type[_]): Boolean = (obj ==> pattern).alive() //
   def matchesVV[O <: Obj](obj: O with Value[_], pattern: Obj with Value[_]): Boolean = obj.value().equals(pattern.value()) //
   def matchesTT[O <: Obj](obj: O with Type[_], pattern: Obj with Type[_]): Boolean = obj.insts().toString().equals(pattern.insts().toString()) //
-  def matchesTV[O <: Obj](obj: O with Type[_], pattern: O with Value[_]): Boolean = this.matchesVT(pattern, obj) //
+  def matchesTV[O <: Obj](obj: O with Type[_], pattern: O with Value[_]): Boolean = false //
 }

@@ -47,7 +47,7 @@ class VTPatternsTest extends FunSuite {
     assert(str("m").test(str("m")))
     assert(!str("m").test(int(2)))
     assert(str("m").test(str))
-    assert(int.test(int(3)))
+    assert(!int.test(int(3)))
     assert(int(3).test(int))
   }
 

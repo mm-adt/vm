@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.obj
 
-import org.mmadt.language.obj.{Inst, Obj, TQ}
+import org.mmadt.language.obj.{Obj, TQ}
 
 
 /**
@@ -33,5 +33,4 @@ abstract class OObj(val _name: String, val quantifier: TQ) extends Obj {
   override def q(): TQ = quantifier //
   override def name: String = _name //
 
-  override def inst(op: String, args: List[Obj]): Inst = throw new UnsupportedOperationException("This shouldn't happen: " + op)
 }
