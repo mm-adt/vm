@@ -40,8 +40,17 @@ trait Type[T <: Type[T]] extends Obj
     case _ => this.pop().pure()
   }
 
+  def canonical(): this.type = this.pure().q(1)
+
   def insts(): List[(Type[_], Inst)] //
   def pop(): this.type //
+  def revert[TT <: Type[TT]](): TT = {
+    this.insts().dropRight(1).lastOption match {
+      case Some(prev) => prev._2.apply(prev._1, prev._2.args()).asInstanceOf[TT]
+      case None => this.insts().head._1.asInstanceOf[TT]
+    }
+  }
+
   def push(inst: Inst): T //
   def push[TT <: Type[TT]](t2: Obj, inst: Inst): TT = (t2 match {
     case _: Bool => bool(inst)

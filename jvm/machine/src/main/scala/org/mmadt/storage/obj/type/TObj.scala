@@ -36,14 +36,17 @@ abstract class TObj[T <: Type[T]](name: String, insts: List[(Type[_], Inst)], qu
   def this() = this(Tokens.obj, Nil, qOne) //
   def insts(): List[(Type[_], Inst)] = insts //
 
-  override def int(inst: Inst, q: TQ): IntType = new TInt(typeName(inst.op(), name, inst.args()), this.insts() ::: List((this, inst)), q) // TODO: propagating the type name
+  override def int(inst: Inst, q: TQ): IntType = new TInt(typeName(inst.op(), (Tokens.int, inst.args())), this.insts() ::: List((this, inst)), q) // TODO: propagating the type name
 
   override def bool(inst: Inst, q: TQ): BoolType = new TBool(Tokens.bool, this.insts() ::: List((this, inst)), q)
 
-  override def str(inst: Inst, q: TQ): StrType = new TStr(typeName(inst.op(), name, inst.args()), this.insts() ::: List((this, inst)), q) // TODO: propagating the type name
+  override def str(inst: Inst, q: TQ): StrType = new TStr(typeName(inst.op(), (Tokens.str, inst.args())), this.insts() ::: List((this, inst)), q) // TODO: propagating the type name
 
   override def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] = new TRec(Tokens.rec, tvalue, this.insts() ::: List((this, inst)), q)
 
   // utility method
-  private def typeName(op: String, lhs: String, rhs: List[Obj]): String = if (op.equals(Tokens.as)) rhs.head.asInstanceOf[StrValue].value() else lhs
+  private def typeName(op: String, nextType: (String, List[Obj])): String =
+    if (op.equals(Tokens.as))
+      nextType._2.head.asInstanceOf[StrValue].value()
+    else if (Tokens.named(name)) name else nextType._1
 }
