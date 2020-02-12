@@ -75,6 +75,7 @@ object Stringer {
       // case Tokens.to => "~" + inst.arg[StrValue]()
       case _ => inst.args() match {
         case Nil => "[" + inst.op() + "]"
+        case args: List[StrValue] if inst.op().equals(Tokens.as) => "[" + inst.op() + "," + args.head.value() + "]"
         case args: List[Obj] => "[" + inst.op() + "," + args.map(x => x.toString + ",").fold("")((a, b) => a + b).dropRight(1) + "]"
       }
     }

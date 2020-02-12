@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.SimpleModel
+import org.mmadt.language.obj.{Rec, Str}
 import org.mmadt.processor.obj.value.IteratorChainProcessor
 import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
@@ -38,7 +39,7 @@ class PersonTest extends FunSuite {
     assertResult("person['name':'marko','age':29]")(marko.as("person").toString)
     ///
     assertResult("rec")(marko.name)
-    assertResult("person")(marko.as("person").name)
+    assertResult("person")(marko.as[Str]("person").name)
     assertResult(str("marko"))(IteratorChainProcessor(marko, rec.get(str("name"), str)).next().obj())
     assertResult(int(29))(IteratorChainProcessor(marko, rec.get(str("age"), str)).next().obj())
     assertResult(str("marko"))(IteratorChainProcessor(marko.as("person"), rec.get(str("name"), str)).next().obj())
@@ -57,7 +58,7 @@ class PersonTest extends FunSuite {
   }*/
 
   test("person evaluation") {
-    val marko = rec(str("name") -> str("marko"), str("age") -> int(29)).as("person")
+    val marko = rec(str("name") -> str("marko"), str("age") -> int(29)).as[Rec[_,_]]("person")
     val model = new SimpleModel().
       put(int, int.mult(2), int.plus(int)).
       put(int, int.plus(0), int).

@@ -35,5 +35,4 @@ class TStr(name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends T
   override def push(inst: Inst): StrType = str(inst, quantifier) //
   override def pop(): this.type = new TStr(name, insts.tail, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TStr(name, insts, quantifier).asInstanceOf[this.type] //
-  override def as(name: String): this.type = new TStr(name, insts, quantifier).asInstanceOf[this.type] //
 }

@@ -38,6 +38,7 @@ object Tokens {
   val inst = "inst"
 
   val and = "and"
+  val as = "as"
   val choose = "choose"
   val get = "get"
   val id = "id"

@@ -45,9 +45,10 @@ class VStrTest extends FunSuite {
 
   test("type names on model") {
     val model = new SimpleModel().
+      put("address", str.as("address"), str.gt("a")).
       put("address", str.plus(str("a")), str.plus(str("b")))
     val processor = new CompilingProcessor[Obj, Obj](model)
     // println(str ==> str.plus("a").is(str.gt("bb")))
-    assertResult("address{?}<=address[plus,'ed'][is,bool<=address[gt,'xx']]")(processor.apply(str.as("address"), str.plus("ed").is(str.gt("xx"))).next().obj().toString)
+    assertResult("address{?}<=str[as,address][plus,'ed'][is,bool<=address[gt,'xx']]")(processor.apply(str.as("address"), str.plus("ed").is(str.gt("xx"))).next().obj().toString)
   }
 }

@@ -40,7 +40,7 @@ class VBool(name: String, java: Boolean, quantifier: TQ) extends VObj(name, java
   override def value(): Boolean = java //
   override def start(): BoolType = new TBool(name, List((new TBool(name, Nil, qZero), StartOp(this))), q()) //
   override def q(quantifier: TQ): this.type = new VBool(name, java, quantifier).asInstanceOf[this.type] //
-  override def as(name: String): this.type = new VBool(name, java, quantifier).asInstanceOf[this.type] //
+  override def as[O<:Obj](name: String): O = new VBool(name, java, quantifier).asInstanceOf[O] //
 
 
 }

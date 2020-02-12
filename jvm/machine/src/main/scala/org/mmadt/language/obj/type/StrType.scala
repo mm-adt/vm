@@ -22,9 +22,8 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.op.{GtOp, IsOp, PlusOp, ToOp}
+import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{BoolValue, StrValue}
 
 

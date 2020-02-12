@@ -22,11 +22,12 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.{FromOp, MapOp, ModelOp}
+import org.mmadt.language.obj.op.{AsOp, FromOp, MapOp, ModelOp}
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
+import org.mmadt.storage.obj.value.VStr
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -74,6 +75,8 @@ trait Type[T <: Type[T]] extends Obj
 
   override def map[O <: Obj](other: O): O = this.push(other, MapOp(other)) //
   override def from[O <: Obj](label: StrValue): O = this.push(FromOp(label)).asInstanceOf[O] //
+  override def as[O<:Obj](name: String): O = this.push(AsOp(new VStr(name))).asInstanceOf[O] //
+  // override def as(name: String): this.type = this.push(AsOp(name)).asInstanceOf[this.type] //
 
   override def equals(other: Any): Boolean = other match {
     case t: Type[T] => t.insts().map(_._2) == this.insts().map(_._2) && this.pure().toString == t.pure().toString
@@ -88,7 +91,6 @@ trait Type[T <: Type[T]] extends Obj
   }
 
   override def hashCode(): scala.Int = this.pure().toString.hashCode // TODO: using toString()
-
   override def model(model: StrValue): this.type = this.push(ModelOp(model)).asInstanceOf[this.type] //
 
   // pattern matching methods

@@ -37,7 +37,7 @@ trait StrValue extends Str
 
   override def to(label: StrValue): StrType = this.start().to(label) //
   override def plus(other: StrType): StrType = this.start().plus(other) //
-  override def plus(other: StrValue): StrValue = this.value() + other.value() //
+  override def plus(other: StrValue): StrValue = Str.stringToStr(this.value() + other.value()).as(name) //
   override def gt(other: StrType): BoolType = this.start().gt(other) //
   override def gt(other: StrValue): BoolValue = this.value() > other.value() //
   override def gt(): BoolType = new TStr().gt(this) //

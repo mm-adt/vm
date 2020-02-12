@@ -20,26 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.value
+package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.op.StartOp
-import org.mmadt.language.obj.value.RecValue
-import org.mmadt.language.obj.{Obj, TQ}
-import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.`type`.TRec
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Obj, B <: Obj](name: String, java: Map[A, B], quantifier: TQ) extends VObj(name, java, quantifier) with RecValue[A, B] {
+trait AsOp {
+  this: Obj =>
 
-  def this(java: Map[A, B]) = this(Tokens.rec, java, qOne)
+  def as[O <: Obj](name: String): O // TODO: spec to StrValue
 
-  override def value(): Map[A, B] = java //
-  override def start(): RecType[A, B] = new TRec(name, java, List((new TRec(name, java, Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VRec(name, java, quantifier).asInstanceOf[this.type] //
-  override def as[O<:Obj](name: String): O = new VRec(name, java, quantifier).asInstanceOf[O] //
+}
 
+object AsOp {
+  def apply(name: StrValue): Inst = new VInst((Tokens.as, List(name)), qOne, ((a: Obj, b: List[Obj]) => a.as[Obj](name.value()))) //
 }

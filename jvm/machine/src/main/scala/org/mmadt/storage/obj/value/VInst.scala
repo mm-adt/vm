@@ -33,7 +33,7 @@ import org.mmadt.storage.obj._
  */
 class VInst(java: JInst, quantifier: TQ, function: (Obj, List[Obj]) => Obj) extends VObj(Tokens.inst, java, quantifier) with Inst {
 
-  override def as(name: String): this.type = this //
+  override def as[O <:Obj](name: String): O = this.asInstanceOf[O] //
 
   def this(java: JInst) = this(java, qOne, null) //
   override def value(): JInst = java //

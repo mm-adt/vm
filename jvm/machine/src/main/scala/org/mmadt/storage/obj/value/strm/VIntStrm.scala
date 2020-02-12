@@ -23,7 +23,7 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.TQ
+import org.mmadt.language.obj.{Obj, TQ}
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.StartOp
 import org.mmadt.language.obj.value.IntValue
@@ -42,6 +42,6 @@ class VIntStrm(name: String = Tokens.int, java: Seq[IntValue]) extends VObj(name
   override def value(): Iterator[IntValue] = java.iterator //
   override def start(): IntType = new TInt(name, List((new TInt(name, Nil, qZero), StartOp(this))), q()) //
   override def q(quantifier: TQ): this.type = new VIntStrm(name, java).asInstanceOf[this.type] //
-  override def as(name:String): this.type = new VIntStrm(name,this.value().toSeq).asInstanceOf[this.type]  //
-
+  override def as[O <: Obj](name:String): O = new VIntStrm(name,this.value().toSeq).asInstanceOf[O]  //
 }
+
