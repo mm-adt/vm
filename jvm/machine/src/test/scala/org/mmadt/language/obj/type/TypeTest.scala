@@ -22,6 +22,8 @@
 
 package org.mmadt.language.obj.`type`
 
+import java.util.NoSuchElementException
+
 import org.mmadt.storage.obj.{bool, int, str}
 import org.scalatest.FunSuite
 
@@ -58,6 +60,14 @@ class TypeTest extends FunSuite {
     assertResult(int)(tobj.range())
     assertResult(int)(tobj.canonical())
     assertResult(0)(tobj.insts().length)
+
+    assertThrows[NoSuchElementException] {
+      tobj.rinvert[IntType]()
+    }
+    //
+    assertThrows[UnsupportedOperationException] {
+      tobj.linvert()
+    }
   }
 
   test("type structure w/ two canonical types") {
@@ -95,6 +105,14 @@ class TypeTest extends FunSuite {
     assertResult(int)(intType.range())
     assertResult(int)(intType.canonical())
     assertResult(0)(intType.insts().length)
+    //
+    assertThrows[NoSuchElementException] {
+      intType.rinvert[IntType]()
+    }
+    //
+    assertThrows[UnsupportedOperationException] {
+      intType.linvert()
+    }
   }
 
   test("type structure w/ three canonical types") {
@@ -140,6 +158,14 @@ class TypeTest extends FunSuite {
     assertResult(int)(intType.range())
     assertResult(int)(intType.canonical())
     assertResult(0)(intType.insts().length)
+    //
+    assertThrows[NoSuchElementException] {
+      intType.rinvert[IntType]()
+    }
+    //
+    assertThrows[UnsupportedOperationException] {
+      intType.linvert()
+    }
   }
 
 }
