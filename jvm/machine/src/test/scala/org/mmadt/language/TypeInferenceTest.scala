@@ -29,18 +29,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TypeInferenceTest extends FunSuite {
-
-
   test("type inference") {
     assertResult("int{0,3}<=int{3}[mult,5][is,bool{3}<=int{3}[gt,int{3}[plus,10]]]")((int.q(3) ==> (int.mult(5).is(int.gt(int.plus(10))))).toString)
   }
-
-  test("model inference") {
-    assertResult(int.plus(int))(int ==> int.model("ex").mult(2))
-    assertResult(int(4))(int(2) ==> (int ==> int.mult(2)))
-    assertResult(int(4))(int(2) ==> (int ==> int.model("ex").mult(int(2))))
-    // println(int{3} ==> int<=int.is(int.gt(4)))
-  }
-
-
 }

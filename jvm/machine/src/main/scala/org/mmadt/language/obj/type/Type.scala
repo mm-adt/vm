@@ -34,20 +34,32 @@ import org.mmadt.processor.obj.`type`.CompilingProcessor
 trait Type[T <: Type[T]] extends Obj
   with ModelOp {
 
-  def canonical(): this.type = this.pure().q(1) //
-  def pure(): this.type = this.insts() match {
+  def canonical(): this.type = this.range().q(1) //
+  def range(): this.type = this.insts() match {
     case List() => this
-    case _ => this.linvert().pure()
+    case _ => this.linvert().range()
   }
 
+  def domain[TT <: Type[TT]](): TT = (this.insts() match {
+    case Nil => this
+    case i: List[(Type[_], Inst)] => i.head._1
+  }).asInstanceOf[TT]
 
   def insts(): List[(Type[_], Inst)] //
   def linvert(): this.type //
-  def rinvert[TT <: Type[TT]](): TT = {
-    this.insts().dropRight(1).lastOption match {
-      case Some(prev) => prev._2.apply(prev._1, prev._2.args()).asInstanceOf[TT]
-      case None => this.insts().head._1.asInstanceOf[TT]
+  def rinvert[TT <: Type[TT]](): TT =
+    (this.insts().dropRight(1).lastOption match {
+      case Some(prev) => prev._2.apply(prev._1, prev._2.args())
+      case None => this.insts().head._1
+    }).asInstanceOf[TT]
+
+  def compose[TT <: Type[TT]](btype: TT): TT = {
+    var b: TT = btype
+    var a: this.type = this
+    for (i <- b.insts()) {
+      a = a.compose(i._1, i._2)
     }
+    a.asInstanceOf[TT]
   }
 
   def compose(inst: Inst): T //
@@ -77,12 +89,12 @@ trait Type[T <: Type[T]] extends Obj
   }
 
   override def equals(other: Any): Boolean = other match {
-    case t: Type[T] => t.insts().map(_._2) == this.insts().map(_._2) && this.pure().toString == t.pure().toString
+    case t: Type[T] => t.insts().map(_._2) == this.insts().map(_._2) && this.range().toString == t.range().toString
     case _ => false
   }
 
   // standard Java implementations
-  override def hashCode(): scala.Int = this.pure().toString.hashCode // TODO: using toString()
+  override def hashCode(): scala.Int = this.range().toString.hashCode // TODO: using toString()
   override def toString: String = Stringer.typeString(this) //
 
   def |[O <: Type[O]](other: O): O = { // TODO: ghetto union type construction

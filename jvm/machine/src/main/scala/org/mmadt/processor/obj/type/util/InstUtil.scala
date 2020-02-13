@@ -37,7 +37,7 @@ object InstUtil {
   private def valueArgs[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): List[Obj] = {
     inst.args().map {
       case typeArg: Type[_] => traverser.split(traverser.obj() match {
-        case tt: Type[_] => tt.pure()
+        case tt: Type[_] => tt.range()
         case vv: Value[_] => vv
       }).apply(typeArg).obj()
       case valueArg: Value[_] => valueArg
@@ -52,6 +52,6 @@ object InstUtil {
 
   @scala.annotation.tailrec
   def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {
-    if (t.insts().isEmpty) list else createInstList(List((t.pure(), t.insts().last._2)) ++ list, t.insts().last._1)
+    if (t.insts().isEmpty) list else createInstList(List((t.range(), t.insts().last._2)) ++ list, t.insts().last._1)
   }
 }

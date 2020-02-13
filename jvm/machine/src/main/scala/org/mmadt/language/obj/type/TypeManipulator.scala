@@ -20,26 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.Tokens
-
+import org.mmadt.language.model.Model
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Inst extends Obj {
-  def value(): JInst
-
-  override val name: String = Tokens.inst
-
-  final def op(): String = this.value()._1 //
-  final def args(): List[Obj] = this.value()._2 //
-  final def arg[O <: Obj](): O = this.value()._2.head.asInstanceOf[O] //
-  def apply(obj: Obj, args: List[Obj]): Obj
-
-  override def equals(other: Any): Boolean = other.isInstanceOf[Inst] &&
-    other.asInstanceOf[this.type].op().equals(this.op()) &&
-    other.asInstanceOf[this.type].args().equals(this.args())
-
+object TypeManipulator {
+  def rewrite[T <: Type[T]](model: Model, atype: Type[_]): T = {
+    var btype: T = atype.asInstanceOf[T]
+    var xtype: T = atype.domain()
+    for (_ <- btype.insts().indices) {
+      while (btype.insts() != Nil) {
+        model.get(btype.domain[T]().name, btype) match {
+          case Some(rewrite) =>
+            xtype = xtype.compose(rewrite.asInstanceOf[T])
+            btype = rewrite.asInstanceOf[T]
+          case None =>
+            xtype = xtype.compose(btype.insts().head._2)
+            btype = btype.linvert()
+        }
+      }
+      btype = xtype
+      xtype = btype.domain()
+    }
+    btype
+  }
 }

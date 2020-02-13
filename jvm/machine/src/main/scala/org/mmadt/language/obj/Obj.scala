@@ -46,6 +46,6 @@ trait Obj
   def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
 
   // pattern matching methods
-  def name: String //
+  val name: String //
   def test(other: Obj): Boolean //
 }

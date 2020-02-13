@@ -31,6 +31,6 @@ import org.mmadt.language.obj.{Obj, TQ}
 abstract class OObj(val _name: String, val quantifier: TQ) extends Obj {
 
   override def q(): TQ = quantifier //
-  override def name: String = _name //
+  override val name: String = _name //
 
 }

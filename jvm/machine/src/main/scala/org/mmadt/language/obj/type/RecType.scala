@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.{GetOp, IsOp, PlusOp, ToOp}
 import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Obj, Rec}
@@ -38,12 +37,12 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
 
   override def to(label: StrValue): RecType[A, B] = this.compose(ToOp(label)) //
   override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.compose(btype, GetOp(key)) //
-  override def get(key: A): B = this.value().get(key) match {
-    case Some(bvalue: B with Value[_]) => bvalue
-    case Some(btype: B with Type[_]) => IteratorChainProcessor(key, btype).next().obj()
+  override def get(key: A): B = (this.value().get(key) match {
+    case Some(bvalue: Value[_]) => bvalue
+    case Some(btype: Type[_]) => IteratorChainProcessor(key, btype).next().obj()
     case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
     case _ => throw new RuntimeException()
-  }
+  }).asInstanceOf[B]
 
   override def plus(other: RecType[A, B]): RecType[A, B] = this.compose(PlusOp(other)) //
   override def plus(other: RecValue[A, B]): RecType[A, B] = this.compose(PlusOp(other)) //

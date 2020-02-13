@@ -40,11 +40,5 @@ class SimpleModel extends Model {
     this
   }
 
-  override def get(t: String, a: Type[_]): Option[Type[_]] = {
-    if (typeMap.get(t).isEmpty) return None
-    if (typeMap(t).get(a).isEmpty)
-      if (a.insts() != Nil) get(t, a.insts().last._1) else None // TODO this is both ugly and expensive (reverse)
-    else
-      typeMap(t).get(a)
-  }
+  override def get(t: String, a: Type[_]): Option[Type[_]] = if (typeMap.get(t).isEmpty) None else typeMap(t).get(a)
 }
