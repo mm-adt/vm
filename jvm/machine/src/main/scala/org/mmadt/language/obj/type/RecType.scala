@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.{GetOp, IsOp, PlusOp, ToOp}
+import org.mmadt.language.obj.op.{GetOp, IsOp, ToOp}
 import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.processor.obj.value.IteratorChainProcessor
@@ -33,7 +33,7 @@ import org.mmadt.processor.obj.value.IteratorChainProcessor
 trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   with Type[RecType[A, B]] {
 
-  def value(): Map[A, B] = throw new IllegalAccessException("...")
+  def value(): Map[A, B]
 
   override def to(label: StrValue): RecType[A, B] = this.compose(ToOp(label)) //
   override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.compose(btype, GetOp(key)) //
@@ -44,8 +44,8 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
     case _ => throw new RuntimeException()
   }).asInstanceOf[B]
 
-  override def plus(other: RecType[A, B]): RecType[A, B] = this.compose(PlusOp(other)) //
-  override def plus(other: RecValue[A, B]): RecType[A, B] = this.compose(PlusOp(other)) //
+  override def plus(other: RecType[A, B]): RecType[A, B] //
+  override def plus(other: RecValue[A, B]): RecType[A, B] //
   override def is(bool: BoolType): RecType[A, B] = this.compose(IsOp(bool)).q(0, q()._2) //
   override def is(bool: BoolValue): RecType[A, B] = this.compose(IsOp(bool)).q(0, q()._2) //
 }

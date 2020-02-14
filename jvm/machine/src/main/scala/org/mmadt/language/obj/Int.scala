@@ -41,4 +41,5 @@ trait Int extends Obj
 
 object Int {
   implicit def longToInt(java: Long): IntValue with Int = new VInt(java) //
+  def apply(java: Long): IntValue = longToInt(java) //
 }

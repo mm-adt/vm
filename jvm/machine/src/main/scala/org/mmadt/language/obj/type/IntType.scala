@@ -33,6 +33,7 @@ trait IntType extends Int
   with Type[IntType] {
 
   override def to(label: StrValue): IntType = this.compose(ToOp(label)) //
+  def plus(other: Long): IntType = this.compose(PlusOp(Int(other))) //
   override def plus(other: IntType): IntType = this.compose(PlusOp(other)) //
   override def plus(other: IntValue): IntType = this.compose(PlusOp(other)) //
   override def mult(other: IntType): IntType = this.compose(MultOp(other)) //

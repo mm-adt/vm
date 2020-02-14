@@ -31,6 +31,7 @@ import org.mmadt.language.obj.value.Value
 object TypeChecker {
 
   def checkType[O <: Obj](obj: O, ttype: Type[_]): O = {
+    println(obj + "---" + ttype)
     if (obj.isInstanceOf[Type[_]] || ((obj match {
       case v: Value[_] => v.start().getClass.isAssignableFrom(ttype.getClass)
       case t: Type[_] => t.getClass.isAssignableFrom(ttype.getClass)

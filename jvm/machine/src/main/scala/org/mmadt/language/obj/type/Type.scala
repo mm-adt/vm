@@ -35,18 +35,25 @@ trait Type[T <: Type[T]] extends Obj
   with ModelOp {
 
   def canonical(): this.type = this.range().q(1) //
-  def range(): this.type = this.insts() match {
-    case List() => this
-    case _ => this.linvert().range()
-  }
+  def range(): this.type //
 
   def domain[TT <: Type[TT]](): TT = (this.insts() match {
     case Nil => this
-    case i: List[(Type[_], Inst)] => i.head._1
+    case i: List[(Type[_], Inst)] => i.head._1.range()
   }).asInstanceOf[TT]
 
   def insts(): List[(Type[_], Inst)] //
-  def linvert(): this.type //
+
+  def linvert(): this.type = {
+    ((this.insts().tail match {
+      case Nil => this.range()
+      case i => i.foldLeft[Obj](i.head._1.range())((btype, inst) => inst._2.apply(btype, inst._2.args()))
+    }).q(this.q()) match {
+      case vv: Value[_] => vv.start()
+      case x => x
+    }).asInstanceOf[this.type]
+  }
+
   def rinvert[TT <: Type[TT]](): TT =
     (this.insts().dropRight(1).lastOption match {
       case Some(prev) => prev._2.apply(prev._1, prev._2.args())
@@ -54,11 +61,8 @@ trait Type[T <: Type[T]] extends Obj
     }).asInstanceOf[TT]
 
   def compose[TT <: Type[TT]](btype: TT): TT = {
-    var b: TT = btype
     var a: this.type = this
-    for (i <- b.insts()) {
-      a = a.compose(i._1, i._2)
-    }
+    for (i <- btype.insts()) a = a.compose(i._1, i._2)
     a.asInstanceOf[TT]
   }
 
