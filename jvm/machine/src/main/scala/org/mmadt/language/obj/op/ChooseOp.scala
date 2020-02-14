@@ -35,9 +35,9 @@ import org.mmadt.storage.obj.value.VInst
 trait ChooseOp {
   this: Obj with ChooseOp =>
 
-  def choose[IT <: Type[IT], OT <: Obj](branches: (IT, OT)*): OT = this.choose(branches.toMap)
+  def choose[IT <: Type[_], OT <: Obj](branches: (IT, OT)*): OT = this.choose(branches.toMap)
 
-  def choose[IT <: Type[IT], OT <: Obj](branches: RecValue[IT, OT]): OT = {
+  def choose[IT <: Type[_], OT <: Obj](branches: RecValue[IT, OT]): OT = {
     this match {
       case ttype: Type[_] => ttype.compose(branches.value().head._2, ChooseOp[IT, OT](branches))
       case _: Value[_] => (this ==> branches.value().filter(p => (this ==> p._1).alive()).head._2.asInstanceOf[Obj with Type[_]]).asInstanceOf[OT]
@@ -46,5 +46,5 @@ trait ChooseOp {
 }
 
 object ChooseOp {
-  def apply[IT <: Type[IT], OT <: Obj](branches: RecValue[IT, OT]): Inst = new VInst((Tokens.choose, List(branches)), qOne, ((a: Obj, b: List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT, OT]]))) //
+  def apply[IT <: Type[_], OT <: Obj](branches: RecValue[IT, OT]): Inst = new VInst((Tokens.choose, List(branches)), qOne, (a: Obj, b: List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT, OT]])) //
 }

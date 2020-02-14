@@ -37,7 +37,7 @@ trait Type[T <: Type[T]] extends Obj
   def canonical(): this.type = this.range().q(1) //
   def range(): this.type //
 
-  def domain[TT <: Type[TT]](): TT = (this.insts() match {
+  def domain[TT <: Type[_]](): TT = (this.insts() match {
     case Nil => this
     case i: List[(Type[_], Inst)] => i.head._1.range()
   }).asInstanceOf[TT]
@@ -54,20 +54,20 @@ trait Type[T <: Type[T]] extends Obj
     }).asInstanceOf[this.type]
   }
 
-  def rinvert[TT <: Type[TT]](): TT =
+  def rinvert[TT <: Type[_]](): TT =
     (this.insts().dropRight(1).lastOption match {
       case Some(prev) => prev._2.apply(prev._1, prev._2.args())
       case None => this.insts().head._1
     }).asInstanceOf[TT]
 
-  def compose[TT <: Type[TT]](btype: TT): TT = {
+  def compose[TT <: Type[_]](btype: TT): TT = {
     var a: this.type = this
     for (i <- btype.insts()) a = a.compose(i._1, i._2)
     a.asInstanceOf[TT]
   }
 
   def compose(inst: Inst): T //
-  def compose[TT <: Type[TT]](t2: Obj, inst: Inst): TT = (t2 match {
+  def compose[TT <: Type[_]](t2: Obj, inst: Inst): TT = (t2 match {
     case _: Bool => bool(inst)
     case _: obj.Int => int(inst)
     case _: Str => str(inst)

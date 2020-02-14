@@ -31,7 +31,6 @@ import org.mmadt.language.obj.value.Value
 object TypeChecker {
 
   def checkType[O <: Obj](obj: O, ttype: Type[_]): O = {
-    println(obj + "---" + ttype)
     if (obj.isInstanceOf[Type[_]] || ((obj match {
       case v: Value[_] => v.start().getClass.isAssignableFrom(ttype.getClass)
       case t: Type[_] => t.getClass.isAssignableFrom(ttype.getClass)
@@ -42,7 +41,6 @@ object TypeChecker {
     else
       throw new IllegalArgumentException("The obj " + obj + " does not match the type " + ttype)
   }
-
 
   def matchesVT[O <: Obj](obj: O with Value[_], pattern: Obj with Type[_]): Boolean = (obj ==> pattern).alive() //
   def matchesVV[O <: Obj](obj: O with Value[_], pattern: Obj with Value[_]): Boolean = obj.value().equals(pattern.value()) //

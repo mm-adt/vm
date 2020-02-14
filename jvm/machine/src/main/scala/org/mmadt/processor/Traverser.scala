@@ -43,4 +43,9 @@ trait Traverser[S <: Obj] {
 
   override def toString: String = Stringer.traverserString(this)
 
+  override def equals(other: Any): Boolean = other match {
+    case x: Traverser[S] => x.obj().equals(this.obj())
+    case _ => false
+  }
+
 }

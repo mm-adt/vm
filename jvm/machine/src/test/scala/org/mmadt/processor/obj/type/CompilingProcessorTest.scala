@@ -81,9 +81,10 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
       int.plus(0).plus(1).plus(-1).plus(0),
       int.plus(1).plus(-1).plus(0).plus(1).plus(-1),
       int.plus(1).plus(-1).plus(0).plus(0).plus(1).plus(-1),
-      //int.plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
-      //int.plus(0).plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
-      int.plus(0).plus(1).plus(-1).plus(0).plus(0).plus(1).plus(-1).plus(0).plus(0))) {
+      int.plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
+      int.plus(0).plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
+      int.plus(0).plus(1).plus(-1).plus(0).plus(0).plus(1).plus(-1).plus(0).plus(0),
+      int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(0))) {
       i =>
         var result: List[IntType] = processor.apply(int, i).map(_.obj()).toList
         assertResult(1)(result.length)

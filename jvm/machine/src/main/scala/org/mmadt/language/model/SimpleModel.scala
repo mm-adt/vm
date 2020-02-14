@@ -34,11 +34,11 @@ class SimpleModel extends Model {
 
   override def toString: String = "model" + (Map.empty ++ typeMap).toString()
 
-  override def put(t: String, a: Type[_], b: Type[_]): Model = {
-    if (typeMap.get(t).isEmpty) typeMap.put(t, mutable.Map())
-    typeMap(t).put(a, b)
+  override def put(typeName: String, left: Type[_], right: Type[_]): Model = {
+    if (typeMap.get(typeName).isEmpty) typeMap.put(typeName, mutable.Map())
+    typeMap(typeName).put(left, right)
     this
   }
 
-  override def get(t: String, a: Type[_]): Option[Type[_]] = if (typeMap.get(t).isEmpty) None else typeMap(t).get(a)
+  override def get(typeName: String, left: Type[_]): Option[Type[_]] = if (typeMap.get(typeName).isEmpty) None else typeMap(typeName).get(left)
 }
