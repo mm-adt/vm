@@ -36,6 +36,7 @@ trait IntType extends Int
   def plus(other: Long): IntType = this.compose(PlusOp(Int(other))) //
   override def plus(other: IntType): IntType = this.compose(PlusOp(other)) //
   override def plus(other: IntValue): IntType = this.compose(PlusOp(other)) //
+  def mult(other: Long): IntType = this.compose(MultOp(Int(other))) //
   override def mult(other: IntType): IntType = this.compose(MultOp(other)) //
   override def mult(other: IntValue): IntType = this.compose(MultOp(other)) //
   override def neg(): IntType = this.compose(NegOp()) //

@@ -69,7 +69,6 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
         put(int, int.plus(0), int).
         put(int, int.plus(1).plus(-1), int))
 
-
     /////
     forAll(Table(
       "int reductions",
@@ -84,12 +83,23 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
       int.plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
       int.plus(0).plus(1).plus(-1).plus(0).plus(1).plus(0).plus(-1).plus(0),
       int.plus(0).plus(1).plus(-1).plus(0).plus(0).plus(1).plus(-1).plus(0).plus(0),
-      int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(0))) {
+      int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(0),
+      int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(1).plus(-1))) {
       i =>
-        var result: List[IntType] = processor.apply(int, i).map(_.obj()).toList
+        val result = processor.apply(int, i).map(_.obj()).toList
         assertResult(1)(result.length)
         assertResult(int)(result.head)
     }
+  }
+  test("compiler w/ model") {
+    processor = new CompilingProcessor(
+      new SimpleModel().
+        put(int.plus(int), int.mult(2)).
+        put(int.mult(2).mult(2), int.mult(4)). // TODO: mult(x).mult(x) -> mult(x.mult(2))   (variables in patterns)
+        put(int.plus(1).plus(-1), int)) // TODO: plus(x).plus(-1) -> id
+    /////
+    assertResult(int.mult(2))(processor.apply(int, int.plus(int)).next().obj())
+    assertResult(int.mult(4))(processor.apply(int, int.plus(int).mult(2)).next().obj())
   }
 
   test("compiler w/ [choose]") {

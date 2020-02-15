@@ -20,17 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.`type`
+package org.mmadt.language.model.rewrite
 
 import org.mmadt.language.model.Model
+import org.mmadt.language.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object TypeManipulator {
-  def rewrite[T <: Type[T]](model: Model, atype: Type[_]): T = {
-    var btype: T = atype.asInstanceOf[T]
-    var xtype: T = atype.domain()
+object SinglePassRewrite {
+  def rewrite[T <: Type[T]](model: Model, startType: Type[_], endType: Type[_]): T = {
+    var btype: T = endType.asInstanceOf[T]
+    var xtype: T = btype
     for (_ <- btype.insts().indices) {
       while (btype.insts() != Nil) {
         model.get(btype.domain[T]().name, btype) match {

@@ -30,6 +30,7 @@ import org.mmadt.language.obj.`type`.Type
 trait Model {
 
   def put(atype: Type[_], left: Type[_], right: Type[_]): Model = this.put(atype.name, left, right) //
+  def put(left: Type[_], right: Type[_]): Model = this.put(left.domain[Type[_]]().name, left, right) //
   def get(atype: Type[_], left: Type[_]): Option[Type[_]] = this.get(atype.name, left) //
   def get(atype: Type[_]): Option[Type[_]] = this.get(atype.name, atype) //
 

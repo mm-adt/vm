@@ -22,6 +22,10 @@
 
 package org.mmadt.storage
 
+import org.mmadt.language.model.SimpleModel
+import org.mmadt.language.obj.`type`.{IntType, Type}
+import org.mmadt.language.obj.{Int, Obj}
+import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
@@ -36,9 +40,9 @@ class VIntTest extends FunSuite {
     assertResult(int(-4))(int(3) ==> int.plus(1).neg())
   }
 
-  /*test("int types") {
-    val model = new SimpleModel().
-      put("nat", int.as[IntType]("nat"), int.is(int.gt(0)))
+  test("int types") {
+    val model = new SimpleModel()
+    //put("nat", int.as[IntType]("nat"), int.is(int.gt(0))) // TODO: structure representation in model
     val processor = new CompilingProcessor[Obj, Obj with Type[_]](model)
     val compiled = processor.apply(int.as("nat"), int.plus(10)).next().obj()
     assertResult("nat<=int[as,nat][plus,10]")(compiled.toString)
@@ -46,7 +50,7 @@ class VIntTest extends FunSuite {
     assertResult("nat[60]")((int(50) ==> int.as[IntType]("nat").plus(10)).toString)
     assertResult("nat[60]")((int(50).as[Int]("nat") ==> compiled).toString)
     assertResult("nat[60]")((int(50) ==> compiled).toString)
-  }*/
+  }
 
 }
 

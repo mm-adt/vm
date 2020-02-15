@@ -27,6 +27,7 @@ import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
+import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -85,7 +86,10 @@ trait Type[T <: Type[T]] extends Obj
   override def map[O <: Obj](other: O): O = this.compose(other, MapOp(other)) //
   override def model(model: StrValue): this.type = this.compose(ModelOp(model)).asInstanceOf[this.type] //
   override def from[O <: Obj](label: StrValue): O = this.compose(FromOp(label)).asInstanceOf[O] //
-  override def as[O <: Obj](name: String): O = this.compose(AsOp(name)).asInstanceOf[O] //
+  override def as[O <: Obj](name: String): O = (InstUtil.lastInst(this) match {
+    case Some(x) if x == AsOp(name) => this
+    case _ => this.compose(AsOp(name))
+  }).asInstanceOf[O] //
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case argValue: Value[_] => TypeChecker.matchesTV(this, argValue)

@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.obj.`type`
 
+import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
 import org.mmadt.language.model.{Model, SimpleModel}
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
@@ -32,33 +33,8 @@ import org.mmadt.processor.{Processor, Traverser}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CompilingProcessor[S <: Obj, E <: Obj](val model: Model = new SimpleModel) extends Processor[S, E] {
-  private type EType = E with Type[_]
-
   override def apply(startObj: S, endType: E with Type[_]): Iterator[Traverser[E]] = {
     if (startObj.isInstanceOf[Value[_]]) throw new IllegalArgumentException("The compiling processor only accepts types: " + startObj)
-    var mutatingType: EType = endType
-    var mutatingTraverser: Traverser[E] = new C1Traverser[E](startObj.asInstanceOf[E])
-    var bundle: (EType, Traverser[E]) = (endType, new C1Traverser(endType.asInstanceOf[E]))
-    /////
-    while (bundle._2 != mutatingTraverser) {
-      mutatingType = bundle._1
-      mutatingTraverser = bundle._2
-      bundle = rewrite(bundle._2.obj().asInstanceOf[EType], endType.domain(), new C1Traverser(startObj.asInstanceOf[E]))
-    }
-    Iterator(bundle._2)
-  }
-
-  @scala.annotation.tailrec
-  private def rewrite(atype: EType, btype: EType, traverser: Traverser[E]): (EType, Traverser[E]) = {
-    if (atype.insts().nonEmpty) {
-      model.get(atype) match {
-        case Some(right: EType) => rewrite(right, btype, traverser)
-        case None => rewrite(
-          atype.rinvert(),
-          atype.insts().last._2.apply(atype.range(), atype.insts().last._2.args()).asInstanceOf[EType].compose(btype),
-          traverser)
-      }
-    } else if (btype.insts().nonEmpty) rewrite(btype.linvert(), btype.linvert().domain(), traverser.apply(btype))
-    else (atype, traverser)
+    Iterator(LeftRightSweepRewrite.rewrite(model, startObj.asInstanceOf[Type[_]], endType).asInstanceOf[Traverser[E]])
   }
 }

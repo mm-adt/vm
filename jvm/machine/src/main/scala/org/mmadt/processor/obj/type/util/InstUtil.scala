@@ -54,4 +54,9 @@ object InstUtil {
   def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {
     if (t.insts().isEmpty) list else createInstList(List((t.range(), t.insts().last._2)) ++ list, t.insts().last._1)
   }
+
+  def lastInst(atype: Type[_]): Option[Inst] = atype.insts() match {
+    case Nil => None
+    case x => Some(x.head._2)
+  }
 }
