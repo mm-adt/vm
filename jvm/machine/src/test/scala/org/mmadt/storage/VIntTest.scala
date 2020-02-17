@@ -22,7 +22,7 @@
 
 package org.mmadt.storage
 
-import org.mmadt.language.model.SimpleModel
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
@@ -41,7 +41,7 @@ class VIntTest extends FunSuite {
   }
 
   test("int types") {
-    val model = new SimpleModel()
+    val model = Model.simple()
     //put("nat", int.as[IntType]("nat"), int.is(int.gt(0))) // TODO: structure representation in model
     val processor = new CompilingProcessor[Obj, Obj with Type[_]](model)
     val compiled = processor.apply(int.as("nat"), int.plus(10)).next().obj()

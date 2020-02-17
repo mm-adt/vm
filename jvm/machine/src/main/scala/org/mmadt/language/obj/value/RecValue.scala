@@ -43,8 +43,8 @@ trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
 
 
   override def get(key: A): B = this.value().get(key) match {
-    case Some(bvalue: B with Value[_]) => bvalue
-    case Some(btype: B with Type[_]) => IteratorChainProcessor(key, btype).next().obj()
+    case Some(bvalue: Value[_] with B) => bvalue
+    case Some(btype: Type[_] with B) => IteratorChainProcessor(key, btype).next().obj()
     case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
     case _ => throw new RuntimeException()
   }

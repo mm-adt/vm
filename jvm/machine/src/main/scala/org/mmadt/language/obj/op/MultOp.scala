@@ -44,8 +44,8 @@ trait MultOp[O <: Obj with MultOp[O, V, T], V <: Value[V], T <: Type[T]] {
 object MultOp {
   def apply[O <: Obj with MultOp[O, V, T], V <: Value[V], T <: Type[T]](other: V): Inst = new VInst((Tokens.mult, List(other)), qOne, ((a: O, b: List[Obj]) => a.mult(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
   def apply[O <: Obj with MultOp[O, V, T], V <: Value[V], T <: Type[T]](other: T): Inst = new VInst((Tokens.mult, List(other)), qOne, ((a: O, b: List[Obj]) => b.head match {
-    case v: Value[V] with V => a.mult(v)
-    case t: Type[T] with T => a.mult(t)
+    case v: Value[_] with V => a.mult(v)
+    case t: Type[_] with T => a.mult(t)
   }).asInstanceOf[(Obj, List[Obj]) => Obj])
 }
 

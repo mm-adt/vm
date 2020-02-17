@@ -23,7 +23,7 @@
 package org.mmadt.processor.obj.value
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.model.{Model, SimpleModel}
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
@@ -50,5 +50,5 @@ class SimpleTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj]) exten
     }
   }
 
-  override val model: Model = new SimpleModel()
+  override val model: Model = Model.id
 }

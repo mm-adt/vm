@@ -24,6 +24,8 @@ package org.mmadt.language.model
 
 import org.mmadt.language.obj.`type`.Type
 
+import scala.collection.mutable
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -37,4 +39,25 @@ trait Model {
   def put(typeName: String, left: Type[_], right: Type[_]): Model //
   def get(typeName: String, left: Type[_]): Option[Type[_]] //
 
+}
+
+object Model {
+  val id: Model = new Model {
+    override def put(typeName: String, left: Type[_], right: Type[_]): Model = this //
+    override def get(typeName: String, left: Type[_]): Option[Type[_]] = None //
+  }
+
+  def simple(): Model = new Model {
+    val typeMap: mutable.Map[String, mutable.Map[Type[_], Type[_]]] = mutable.Map()
+
+    override def toString: String = "model" + (Map.empty ++ typeMap).toString()
+
+    override def put(typeName: String, left: Type[_], right: Type[_]): Model = {
+      if (typeMap.get(typeName).isEmpty) typeMap.put(typeName, mutable.Map())
+      typeMap(typeName).put(left, right)
+      this
+    }
+
+    override def get(typeName: String, left: Type[_]): Option[Type[_]] = if (typeMap.get(typeName).isEmpty) None else typeMap(typeName).get(left)
+  }
 }

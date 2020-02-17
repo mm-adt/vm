@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.obj.`type`
 
-import org.mmadt.language.model.SimpleModel
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.processor.Processor
 import org.mmadt.storage.obj._
@@ -64,7 +64,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
 
   test("compiler w/ linear quantified type and model") {
     processor = new CompilingProcessor(
-      new SimpleModel().
+      Model.simple().
         put(int, int.mult(2), int.plus(int)).
         put(int, int.plus(0), int).
         put(int, int.plus(1).plus(-1), int))
@@ -93,7 +93,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
   test("compiler w/ model") {
     processor = new CompilingProcessor(
-      new SimpleModel().
+      Model.simple().
         put(int.plus(int), int.mult(2)).
         put(int.mult(2).mult(2), int.mult(4)). // TODO: mult(x).mult(x) -> mult(x.mult(2))   (variables in patterns)
         put(int.plus(1).plus(-1), int)) // TODO: plus(x).plus(-1) -> id

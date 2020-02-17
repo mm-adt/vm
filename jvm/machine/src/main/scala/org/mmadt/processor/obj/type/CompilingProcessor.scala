@@ -22,8 +22,8 @@
 
 package org.mmadt.processor.obj.`type`
 
+import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
-import org.mmadt.language.model.{Model, SimpleModel}
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
@@ -32,7 +32,7 @@ import org.mmadt.processor.{Processor, Traverser}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class CompilingProcessor[S <: Obj, E <: Obj](val model: Model = new SimpleModel) extends Processor[S, E] {
+class CompilingProcessor[S <: Obj, E <: Obj](val model: Model = Model.id) extends Processor[S, E] {
   override def apply(startObj: S, endType: E with Type[_]): Iterator[Traverser[E]] = {
     if (startObj.isInstanceOf[Value[_]]) throw new IllegalArgumentException("The compiling processor only accepts types: " + startObj)
     Iterator(LeftRightSweepRewrite.rewrite(model, startObj.asInstanceOf[Type[_]], endType).asInstanceOf[Traverser[E]])

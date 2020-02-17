@@ -49,7 +49,7 @@ trait Type[T <: Type[T]] extends Obj
     ((this.insts().tail match {
       case Nil => this.range()
       case i => i.foldLeft[Obj](i.head._1.range())((btype, inst) => inst._2.apply(btype, inst._2.args()))
-    }).q(this.q()) match {
+    }) match {
       case vv: Value[_] => vv.start()
       case x => x
     }).asInstanceOf[this.type]

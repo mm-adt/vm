@@ -22,7 +22,7 @@
 
 package org.mmadt.storage
 
-import org.mmadt.language.model.SimpleModel
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.Obj
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.storage.obj._
@@ -44,7 +44,7 @@ class VStrTest extends FunSuite {
   }
 
   test("type names on model") {
-    val model = new SimpleModel().
+    val model = Model.simple().
       put("address", str.plus(str("a")), str.plus(str("b")))
     val processor = new CompilingProcessor[Obj, Obj](model)
     // println(str ==> str.plus("a").is(str.gt("bb")))

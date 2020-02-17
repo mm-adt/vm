@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.model.SimpleModel
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.{Rec, Str}
 import org.mmadt.processor.obj.value.IteratorChainProcessor
 import org.mmadt.storage.obj.{int, rec, str}
@@ -59,7 +59,7 @@ class PersonTest extends FunSuite {
 
   test("person evaluation") {
     val marko = rec(str("name") -> str("marko"), str("age") -> int(29)).as[Rec[_,_]]("person")
-    val model = new SimpleModel().
+    val model = Model.simple().
       put(int, int.mult(2), int.plus(int)).
       put(int, int.plus(0), int).
       put("person", rec.get(str("firstname"), str), rec.get(str("name"), str))

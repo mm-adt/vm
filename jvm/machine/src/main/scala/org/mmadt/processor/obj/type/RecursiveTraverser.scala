@@ -23,7 +23,7 @@
 package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.model.{Model, SimpleModel}
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
@@ -35,9 +35,9 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
  */
 class RecursiveTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], val model: Model) extends Traverser[S] {
 
-  def this(obj: S) = this(obj, Map[StrValue, Obj](), new SimpleModel())
+  def this(obj: S) = this(obj, Map[StrValue, Obj](), Model.id)
 
-  def this(obj: S, state: Map[StrValue, Obj]) = this(obj, state, new SimpleModel())
+  def this(obj: S, state: Map[StrValue, Obj]) = this(obj, state, Model.id)
 
   override def split[E <: Obj](obj: E): Traverser[E] = new RecursiveTraverser(obj, this.state, model) //
 
@@ -52,7 +52,7 @@ class RecursiveTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], va
           (endType.insts().head._2 match {
             case toInst: Inst if toInst.op().equals(Tokens.to) => new RecursiveTraverser[S](obj, Map[StrValue, Obj](toInst.arg[StrValue]() -> obj) ++ this.state, model) //
             case fromInst: Inst if fromInst.op().equals(Tokens.from) => new RecursiveTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state, model) //
-            case storageInst: Inst => InstUtil.instEval(this, storageInst)
+            case defaultInst: Inst => InstUtil.instEval(this, defaultInst)
           }).apply(endType.linvert().asInstanceOf[E with Type[_]])
       }
     }

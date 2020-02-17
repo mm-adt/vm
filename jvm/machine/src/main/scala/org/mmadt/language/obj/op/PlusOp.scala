@@ -43,8 +43,8 @@ trait PlusOp[O <: Obj with PlusOp[O, V, T], V <: Value[V], T <: Type[T]] {
 object PlusOp {
   def apply[O <: Obj with PlusOp[O, V, T], V <: Value[V], T <: Type[T]](other: V): Inst = new VInst((Tokens.plus, List(other)), qOne, ((a: O, b: List[Obj]) => a.plus(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
   def apply[O <: Obj with PlusOp[O, V, T], V <: Value[V], T <: Type[T]](other: T): Inst = new VInst((Tokens.plus, List(other)), qOne, ((a: O, b: List[Obj]) => b.head match {
-    case v: Value[V] with V => a.plus(v)
-    case t: Type[T] with T => a.plus(t)
+    case v: Value[_] with V => a.plus(v)
+    case t: Type[_] with T => a.plus(t)
   }).asInstanceOf[(Obj, List[Obj]) => Obj])
 }
 

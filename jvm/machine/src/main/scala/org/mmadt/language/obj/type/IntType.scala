@@ -33,10 +33,8 @@ trait IntType extends Int
   with Type[IntType] {
 
   override def to(label: StrValue): IntType = this.compose(ToOp(label)) //
-  def plus(other: Long): IntType = this.compose(PlusOp(Int(other))) //
   override def plus(other: IntType): IntType = this.compose(PlusOp(other)) //
   override def plus(other: IntValue): IntType = this.compose(PlusOp(other)) //
-  def mult(other: Long): IntType = this.compose(MultOp(Int(other))) //
   override def mult(other: IntType): IntType = this.compose(MultOp(other)) //
   override def mult(other: IntValue): IntType = this.compose(MultOp(other)) //
   override def neg(): IntType = this.compose(NegOp()) //
@@ -45,4 +43,8 @@ trait IntType extends Int
   override def gt(): BoolType = this.bool(GtOp(this)) //
   override def is(bool: BoolType): IntType = this.compose(IsOp(bool)).q(0, q()._2) //
   override def is(bool: BoolValue): IntType = this.compose(IsOp(bool)).q(0, q()._2) //
+
+  /// provided by implicits
+  def plus(other: Long): IntType = this.compose(PlusOp(Int(other))) //
+  def mult(other: Long): IntType = this.compose(MultOp(Int(other))) //
 }

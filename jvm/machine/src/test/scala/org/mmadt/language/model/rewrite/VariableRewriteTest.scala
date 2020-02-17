@@ -20,25 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.model
+package org.mmadt.language.model.rewrite
 
-import org.mmadt.language.obj.`type`.Type
-
-import scala.collection.mutable
+import org.mmadt.language.model.Model
+import org.mmadt.processor.obj.`type`.CompilingProcessor
+import org.mmadt.storage.obj.int
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class SimpleModel extends Model {
-  val typeMap: mutable.Map[String, mutable.Map[Type[_], Type[_]]] = mutable.Map()
+class VariableRewriteTest extends FunSuite {
 
-  override def toString: String = "model" + (Map.empty ++ typeMap).toString()
-
-  override def put(typeName: String, left: Type[_], right: Type[_]): Model = {
-    if (typeMap.get(typeName).isEmpty) typeMap.put(typeName, mutable.Map())
-    typeMap(typeName).put(left, right)
-    this
+  test("variable rewrites") {
+    val processor = new CompilingProcessor(
+      Model.simple().
+        put(int, int.mult(2), int.plus(int)).
+        put(int, int.plus(0), int).
+        put(int, int.plus(1).plus(-1), int))
   }
 
-  override def get(typeName: String, left: Type[_]): Option[Type[_]] = if (typeMap.get(typeName).isEmpty) None else typeMap(typeName).get(left)
 }
