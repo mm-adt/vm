@@ -44,7 +44,7 @@ class GraphModelTest extends FunSuite {
     vertex -> vertex(str("id") -> int ~ "i", str("outE") -> edge.q(*), str("inE") -> edge.q(*)),
     vertex.put(str("id"), int) -> vertex,
     graph -> vertex.q(*))
-    //graph.is(graph.get(str("id"), int).eqs(int(0))) -> graph.model("db"))
+  //graph.is(graph.get(str("id"), int).eqs(int(0))) -> graph.model("db"))
 
   /*val model: Model = Model.simple().
     put(edge, edge(str("inV") -> vertex, str("outV") -> vertex, str("label") -> str)).

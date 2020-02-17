@@ -23,11 +23,11 @@
 package org.mmadt.storage
 
 import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, StrType}
-import org.mmadt.language.obj.value.strm.IntStrm
+import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 import org.mmadt.language.obj.{Obj, TQ}
 import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec, TStr}
-import org.mmadt.storage.obj.value.strm.VIntStrm
+import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
 import org.mmadt.storage.obj.value.{VBool, VInt, VRec, VStr}
 
 /**
@@ -60,8 +60,8 @@ package object obj {
   def str(value: String): StrValue = new VStr(value) //
   def rec[A <: Obj, B <: Obj](name: String, value: Map[A, B], quantifier: TQ): RecValue[A, B] = new VRec[A, B](name, value, quantifier) //
   def rec[A <: Obj, B <: Obj](value: Map[A, B]): RecValue[A, B] = new VRec[A, B](value) //
+  def rec[A <: Obj, B <: Obj](name: String, value: RecValue[A, B], values: RecValue[A, B]*): RecStrm[A, B] = new VRecStrm[A, B](name, Seq(value) ++ values: _*) //
   def rec[A <: Obj, B <: Obj](value: (A, B)*): RecValue[A, B] = new VRec[A, B](value.reverse.toMap) //
   def rec[A <: Obj, B <: Obj](name: String)(value: (A, B)*): RecValue[A, B] = new VRec[A, B](name, value.reverse.toMap, qOne) //
-  def trec[A <: Obj, B <: Obj](name: String)(value: (A, B)*): RecType[A, B] = new TRec[A, B](name, value.reverse.toMap, Nil, qOne) //
   def trec[A <: Obj, B <: Obj](name: String): RecType[A, B] = new TRec[A, B](name, Map.empty, Nil, qOne) //
 }
