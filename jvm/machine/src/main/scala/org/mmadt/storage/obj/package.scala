@@ -39,6 +39,9 @@ package object obj {
   val qMark: (IntValue, IntValue) = (int(0), int(1))
   val qPlus: (IntValue, IntValue) = (int(1), int(Long.MaxValue))
   val qStar: (IntValue, IntValue) = (int(0), int(Long.MaxValue))
+  val * : (IntValue, IntValue) = qStar
+  val ? : (IntValue, IntValue) = qMark
+  val + : (IntValue, IntValue) = qPlus
 
   def gt(obj: IntValue): BoolType = obj.gt() //
   def gt(obj: StrValue): BoolType = obj.gt() //
@@ -52,11 +55,12 @@ package object obj {
   val bfalse: BoolValue = bool(false)
 
   def int(value: Long): IntValue = new VInt(value) //
-  def int(name: String,value: Long): IntValue = new VInt(name, value, qOne) //
+  def int(name: String, value: Long): IntValue = new VInt(name, value, qOne) //
   def int(values: Long*): IntStrm = new VIntStrm(values.map(i => int(i))) //
   def bool(value: Boolean): BoolValue = new VBool(value) //
   def str(value: String): StrValue = new VStr(value) //
   def rec[A <: Obj, B <: Obj](value: Map[A, B]): RecValue[A, B] = new VRec[A, B](value) //
   def rec[A <: Obj, B <: Obj](value: (A, B)*): RecValue[A, B] = new VRec[A, B](value.reverse.toMap) //
   def rec[A <: Obj, B <: Obj](name: String)(value: (A, B)*): RecValue[A, B] = new VRec[A, B](name, value.reverse.toMap, qOne) //
+  def trec[A <: Obj, B <: Obj](name: String)(value: (A, B)*): RecType[A, B] = new TRec[A, B](name, value.reverse.toMap, Nil, qOne) //
 }

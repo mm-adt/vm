@@ -22,10 +22,11 @@
 
 package org.mmadt.language.model.examples
 
-import org.mmadt.language.obj.value.{IntValue, RecValue}
+import org.mmadt.language.model.Model
+import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
-import org.mmadt.storage.obj.{int, rec, str}
+import org.mmadt.storage.obj.{*, int, str, trec}
 import org.scalatest.FunSuite
 
 /**
@@ -33,17 +34,26 @@ import org.scalatest.FunSuite
  */
 class GraphModelTest extends FunSuite {
 
-  val * : (IntValue, IntValue) = (int(0), int(Long.MaxValue))
-  val edge: RecValue[Str, Obj] = rec("edge")(str("inV") -> vertex, str("outV") -> vertex, str("label") -> str) //
-  val vertex: RecValue[Str, Obj] = rec("vertex")(str("id") -> int, str("outE") -> edge.q(*), str("inE") -> edge.q(*)) //
-  val graph: RecValue[Str, Obj] = vertex.q(*) //
+  val _vertex: RecType[Str, Obj] = trec("vertex")()
+  val _edge: RecType[Str, Obj] = trec("edge")() //
+  val edge: RecType[Str, Obj] = trec("edge")(str("inV") -> _vertex, str("outV") -> _vertex, str("label") -> str) //
+  val vertex: RecType[Str, Obj] = trec("vertex")(str("id") -> int ~ "i", str("outE") -> _edge.q(*), str("inE") -> _edge.q(*)) //
+  val graph: RecType[Str, Obj] = trec("graph")() //
 
+  val model: Model = Model.simple().
+    put(_vertex, trec("vertex")(str("id") -> int ~ "i", str("outE") -> _edge.q(*), str("inE") -> _edge.q(*))).
+    put(_vertex.put(str("id"),int), _vertex).
+    put(_edge, trec("edge")(str("inV") -> _vertex, str("outV") -> _vertex, str("label") -> str)).
+    put(_edge.get(str("label"),str),str("friend").start()).
+    put(graph, _vertex.q(*)).
+    put(graph.is(graph.get(str("id"),int).gt(int(0))),graph.model("db"))
 
   test("variable rewrites") {
+    println(model)
     val processor = new CompilingProcessor()
     println(graph)
     println(vertex)
     println(edge)
-    //println(vertex.is(vertex.get(str("id"),int).gt(int(0))).get(str("outE")))
+    println(vertex.is(vertex.get(str("id"), int).gt(int(0))).get(str("outE")))
   }
 }

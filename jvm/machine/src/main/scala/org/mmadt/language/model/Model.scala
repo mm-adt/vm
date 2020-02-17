@@ -45,7 +45,7 @@ object Model {
   def simple(): Model = new Model {
     val typeMap: mutable.Map[String, mutable.Map[Type[_], Type[_]]] = mutable.Map()
 
-    override def toString: String = "model" + (Map.empty ++ typeMap).toString()
+    override def toString: String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold("")((x,y) => x + y + "\n\t")).fold("")((x,y) => x + y + "\n")
 
     override def put(left: Type[_], right: Type[_]): Model = {
       if (typeMap.get(left.name).isEmpty) typeMap.put(left.name, mutable.Map())
