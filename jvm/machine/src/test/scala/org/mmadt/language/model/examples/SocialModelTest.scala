@@ -25,8 +25,9 @@ package org.mmadt.language.model.examples
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.{Obj, Rec, Str}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
-import org.mmadt.storage.obj.int
+import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
 
 /**
@@ -35,25 +36,21 @@ import org.scalatest.FunSuite
 class SocialModelTest extends FunSuite {
 
   val nat: IntType = int("nat") //
-  def nat(value: IntValue): IntValue = int("nat", value.value()) //
+  def nat(java: Long): IntValue = int("nat")(java)
 
-  /*test("variable rewrites") {
+  test("variable rewrites") {
     val processor = new CompilingProcessor(
-      Model.simple().
-        put(nat, int.is(int.gt(int(0)))).
-        put(int.plus(0), int).
-        put(int.plus(1).plus(-1), int))
+      Model(nat -> int.is(int.gt(int(0)))))
 
     val marko: Rec[Str, Obj] = rec("person")(str("name") -> str("marko"), str("age") -> nat(29))
     val kuppitz: Rec[Str, Obj] = rec("person")(str("name") -> str("kuppitz"), str("age") -> nat(25))
     assertResult("person['name':'marko','age':nat[29]]")(marko.toString)
-    println(marko.put(str("friend"), kuppitz))
-  }*/
+    assertResult("person")(marko.put(str("friend"), kuppitz).name)
+  }
 
   test("nat rewrite") {
     val processor = new CompilingProcessor[IntType, IntType](
-      Model.simple().
-        put(nat, int <= int.is(int.gt(int(0)))))
+      Model(nat -> (int <= int.is(int.gt(int(0))))))
 
     assertResult(int.is(int.gt(0)).plus(34).is(int.gt(45)))(processor.apply(nat, nat.plus(34).is(nat.gt(45))).next().obj())
   }

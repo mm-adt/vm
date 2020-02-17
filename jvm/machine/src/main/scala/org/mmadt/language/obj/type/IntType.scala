@@ -25,12 +25,15 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.storage.obj.value.VInt
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntType extends Int
   with Type[IntType] {
+
+  def apply(value: IntValue): IntValue = new VInt(this.name, value.value(), this.q()) //
 
   override def to(label: StrValue): IntType = this.compose(ToOp(label)) //
   override def plus(other: IntType): IntType = this.compose(PlusOp(other)) //

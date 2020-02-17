@@ -22,9 +22,10 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.processor.obj.value.IteratorChainProcessor
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -51,7 +52,7 @@ trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
     case _ => throw new RuntimeException()
   }
 
-  override def put(key: A, value: B): RecValue[A, B] = Map(key -> value) ++ this.value()
+  override def put(key: A, value: B): RecValue[A, B] = rec(this.name, Map(key -> value) ++ this.value(), this.q())
 
   override def get[BT <: Type[_]](key: A, btype: BT): BT = this.get(key).asInstanceOf[BT]
 }
