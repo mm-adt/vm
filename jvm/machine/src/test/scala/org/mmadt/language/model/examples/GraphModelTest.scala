@@ -34,26 +34,24 @@ import org.scalatest.FunSuite
  */
 class GraphModelTest extends FunSuite {
 
-  val _vertex: RecType[Str, Obj] = trec("vertex")()
-  val _edge: RecType[Str, Obj] = trec("edge")() //
-  val edge: RecType[Str, Obj] = trec("edge")(str("inV") -> _vertex, str("outV") -> _vertex, str("label") -> str) //
-  val vertex: RecType[Str, Obj] = trec("vertex")(str("id") -> int ~ "i", str("outE") -> _edge.q(*), str("inE") -> _edge.q(*)) //
-  val graph: RecType[Str, Obj] = trec("graph")() //
+  val vertex: RecType[Str, Obj] = trec("vertex") //
+  val edge: RecType[Str, Obj] = trec("edge") //
+  val graph: RecType[Str, Obj] = trec("graph") //
 
   val model: Model = Model.simple().
-    put(_vertex, trec("vertex")(str("id") -> int ~ "i", str("outE") -> _edge.q(*), str("inE") -> _edge.q(*))).
-    put(_vertex.put(str("id"),int), _vertex).
-    put(_edge, trec("edge")(str("inV") -> _vertex, str("outV") -> _vertex, str("label") -> str)).
-    put(_edge.get(str("label"),str),str("friend").start()).
-    put(graph, _vertex.q(*)).
-    put(graph.is(graph.get(str("id"),int).gt(int(0))),graph.model("db"))
+    put(edge, edge(str("inV") -> vertex, str("outV") -> vertex, str("label") -> str)).
+    put(edge.get(str("label"), str), str("friend").start()).
+    put(vertex, vertex(str("id") -> int ~ "i", str("outE") -> edge.q(*), str("inE") -> edge.q(*))).
+    put(vertex.put(str("id"), int), vertex).
+    put(graph, vertex.q(*)).
+    put(graph.is(graph.get(str("id"), int).gt(int(0))), graph.model("db"))
 
   test("variable rewrites") {
     println(model)
-    val processor = new CompilingProcessor()
+    val processor = new CompilingProcessor[Obj, Obj](model)
     println(graph)
-    println(vertex)
+    println(model[RecType[Str, Obj]](vertex).get("outE"))
     println(edge)
-    println(vertex.is(vertex.get(str("id"), int).gt(int(0))).get(str("outE")))
+    println(model[RecType[Str, Obj]](vertex).is(vertex.get(str("id"), int).gt(int(0))).get(str("outE")))
   }
 }

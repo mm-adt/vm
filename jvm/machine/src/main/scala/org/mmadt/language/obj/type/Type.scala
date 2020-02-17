@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
+import org.mmadt.language.obj.{Bool, Inst, Obj, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.processor.obj.`type`.util.InstUtil
@@ -72,13 +72,13 @@ trait Type[T <: Type[T]] extends Obj
     case _: Bool => bool(inst)
     case _: obj.Int => int(inst)
     case _: Str => str(inst)
-    case _: Rec[_, _] => rec[Obj, Obj](Map.empty[Obj, Obj], inst)
+    case _: RecType[Obj, Obj] => rec(t2.asInstanceOf[RecType[Obj, Obj]], inst)
   }).asInstanceOf[TT]
 
   def int(inst: Inst, q: TQ = this.q()): IntType //
   def bool(inst: Inst, q: TQ = this.q()): BoolType //
   def str(inst: Inst, q: TQ = this.q()): StrType //
-  def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ = this.q()): RecType[K, V] //
+  def rec[A <: Obj, B <: Obj](tvalue: RecType[A, B], inst: Inst, q: TQ = this.q()): RecType[A, B] //
 
   final def <=[TT <: Type[TT]](mapFrom: TT with Type[TT]): TT = mapFrom.q(this.q()) //
   def ==>[TT <: Type[TT]](t: TT with Type[TT]): TT = new CompilingProcessor().apply(this, t).next().obj()

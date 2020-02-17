@@ -63,4 +63,5 @@ package object obj {
   def rec[A <: Obj, B <: Obj](value: (A, B)*): RecValue[A, B] = new VRec[A, B](value.reverse.toMap) //
   def rec[A <: Obj, B <: Obj](name: String)(value: (A, B)*): RecValue[A, B] = new VRec[A, B](name, value.reverse.toMap, qOne) //
   def trec[A <: Obj, B <: Obj](name: String)(value: (A, B)*): RecType[A, B] = new TRec[A, B](name, value.reverse.toMap, Nil, qOne) //
+  def trec[A <: Obj, B <: Obj](name: String): RecType[A, B] = new TRec[A, B](name, Map.empty, Nil, qOne) //
 }

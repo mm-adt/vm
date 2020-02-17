@@ -51,5 +51,5 @@ trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
 
   override def put(key: A, value: B): RecValue[A, B] = Map(key -> value) ++ this.value()
 
-  override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.get(key).asInstanceOf[BT]
+  override def get[BT <: Type[_]](key: A, btype: BT): BT = this.get(key).asInstanceOf[BT]
 }

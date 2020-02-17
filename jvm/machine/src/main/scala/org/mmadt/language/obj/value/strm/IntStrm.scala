@@ -25,6 +25,7 @@ package org.mmadt.language.obj.value.strm
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.{BoolType, IntType}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.storage.obj.value.strm.VIntStrm
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,7 +38,7 @@ trait IntStrm extends Int
 
   override def to(label: StrValue): IntType = this.start().to(label) //
   override def plus(other: IntType): IntType = this.start().plus(other) //
-  override def plus(other: IntValue): IntValue = throw new IllegalAccessException() //
+  override def plus(other: IntValue): IntStrm = new VIntStrm(this.name, this.value().map(i => i.plus(other)).toSeq) //
   override def mult(other: IntType): IntType = this.start().mult(other) //
   override def mult(other: IntValue): IntValue = throw new IllegalAccessException() //
   override def neg(): IntValue = throw new IllegalAccessException() //

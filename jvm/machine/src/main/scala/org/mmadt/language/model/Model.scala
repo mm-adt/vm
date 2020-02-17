@@ -31,6 +31,7 @@ import scala.collection.mutable
  */
 trait Model {
 
+  final def apply[T <: Type[T]](left: Type[_]): T = this.get(left).get.asInstanceOf[T] //
   def put(left: Type[_], right: Type[_]): Model //
   def get(left: Type[_]): Option[Type[_]] //
 
@@ -45,7 +46,7 @@ object Model {
   def simple(): Model = new Model {
     val typeMap: mutable.Map[String, mutable.Map[Type[_], Type[_]]] = mutable.Map()
 
-    override def toString: String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold("")((x,y) => x + y + "\n\t")).fold("")((x,y) => x + y + "\n")
+    override def toString: String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold("")((x, y) => x + y + "\n\t")).fold("")((x, y) => x + y + "\n")
 
     override def put(left: Type[_], right: Type[_]): Model = {
       if (typeMap.get(left.name).isEmpty) typeMap.put(left.name, mutable.Map())

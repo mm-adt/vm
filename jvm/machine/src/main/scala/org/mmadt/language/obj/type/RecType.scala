@@ -33,11 +33,12 @@ import org.mmadt.storage.obj.`type`.TRec
 trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   with Type[RecType[A, B]] {
 
-  def value(): Map[A, B]
+  def value(): Map[A, B] //
+  def apply(values: (A, B)*): RecType[A, B] = new TRec[A, B](this.name, Map[A, B](values: _*), this.insts(), this.q()) //
 
   override def to(label: StrValue): RecType[A, B] = this.compose(ToOp(label)) //
-  override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.compose(btype, GetOp(key)) //
-  override def get(key: A): B = this.compose(this.value()(key), GetOp(key)) //
+  override def get[BT <: Type[_]](key: A, btype: BT): BT = this.compose(btype, GetOp(key)) //
+  override def get(key: A): B =  this.compose(this.value()(key), GetOp(key)) //
   override def put(key: A, value: B): RecType[A, B] = new TRec[A, B](this.name, Map[A, B](key -> value), this.insts(), this.q()).compose(PutOp(key, value)) //
 
   override def plus(other: RecType[A, B]): RecType[A, B] //

@@ -34,7 +34,7 @@ import org.mmadt.storage.obj._
  */
 class TRec[A <: Obj, B <: Obj](name: String, java: Map[A, B], insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[RecType[A, B]](name, insts, quantifier) with RecType[A, B] {
   def this() = this(Tokens.rec, Map[A, B](), Nil, qOne) //
-  override def compose(inst: Inst): RecType[A, B] = rec[A, B](java, inst, quantifier) //
+  override def compose(inst: Inst): RecType[A, B] = rec[A, B](this, inst, quantifier) //
   override def range(): this.type = new TRec[A, B](name, java, Nil, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TRec[A, B](name, java, insts, quantifier).asInstanceOf[this.type] //
   override def value(): Map[A, B] = java

@@ -42,7 +42,7 @@ abstract class TObj[T <: Type[T]](name: String, insts: List[(Type[_], Inst)], qu
 
   override def str(inst: Inst, q: TQ): StrType = new TStr(typeName(inst.op(), (Tokens.str, inst.args())), this.insts() ::: List((this, inst)), q) // TODO: propagating the type name
 
-  override def rec[K <: Obj, V <: Obj](tvalue: Map[K, V], inst: Inst, q: TQ): RecType[K, V] = new TRec(typeName(inst.op(), (Tokens.rec, inst.args())), tvalue, this.insts() ::: List((this, inst)), q)
+  override def rec[A <: Obj, B <: Obj](rtype: RecType[A, B], inst: Inst, q: TQ): RecType[A, B] = new TRec(rtype.name, rtype.value(), this.insts() ::: List((this, inst)), (rtype.q()._1.mult(q._1), rtype.q()._2.mult(q._2)))
 
   // utility method
   private def typeName(op: String, nextType: (String, List[Obj])): String =
