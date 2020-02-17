@@ -20,25 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.`type`
+package org.mmadt.language
 
-import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue, StrValue}
+import org.mmadt.language.obj.Obj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait BoolType extends Bool
-  with Type[BoolType] {
+trait Printable[O <: Obj] {
+  def format(value: O): String
+}
 
-  override def and(bool: BoolType): BoolType = this.compose(AndOp(bool)) //
-  override def and(bool: BoolValue): BoolType = this.compose(AndOp(bool)) //
-  //override def eqs(other: BoolType): BoolType = this.compose(EqOp(other)) //
-  //override def eqs(other: BoolValue): BoolType = this.compose(EqOp(other)) //
-  override def or(bool: BoolType): BoolType = this.compose(OrOp(bool)) //
-  override def or(bool: BoolValue): BoolType = this.compose(OrOp(bool)) //
-  override def to(label: StrValue): BoolType = this.compose(ToOp(label)) //
-  override def is(bool: BoolType): BoolType = this.compose(IsOp(bool)).q(0, q()._2) //
-  override def is(bool: BoolValue): BoolType = this.compose(IsOp(bool)).q(0, q()._2) //
+object Printable {
+  def format[O <: Obj](input: O)(implicit p: Printable[O]): String =
+    p.format(input)
+
+  def print[O <: Obj](input: O)(implicit p: Printable[O]): Unit =
+    println(format(input))
 }

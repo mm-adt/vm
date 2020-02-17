@@ -41,10 +41,13 @@ trait IntType extends Int
   override def gt(other: IntType): BoolType = this.bool(GtOp(other)) //
   override def gt(other: IntValue): BoolType = this.bool(GtOp(other)) //
   override def gt(): BoolType = this.bool(GtOp(this)) //
+  //override def eqs(other: IntType): BoolType = this.bool(EqOp(other)) //
+  //override def eqs(other: IntValue): BoolType = this.bool(EqOp(other)) //
   override def is(bool: BoolType): IntType = this.compose(IsOp(bool)).q(0, q()._2) //
   override def is(bool: BoolValue): IntType = this.compose(IsOp(bool)).q(0, q()._2) //
 
   /// provided by implicits
-  def plus(other: Long): IntType = this.compose(PlusOp(Int(other))) //
-  def mult(other: Long): IntType = this.compose(MultOp(Int(other))) //
+  //def plus(other: Long): IntType = this.compose(PlusOp(Int(other))) //
+  //def mult(other: Long): IntType = this.compose(MultOp(Int(other))) //
+
 }

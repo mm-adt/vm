@@ -36,6 +36,8 @@ trait IntValue extends Int
   override def start(): IntType //
 
   override def to(label: StrValue): IntType = this.start().to(label) //
+  //override def eqs(other: IntType): BoolType = this.start().eqs(other) //
+  //override def eqs(other: IntValue): BoolValue = this.value() == other.value() //
   override def plus(other: IntType): IntType = this.start().plus(other) //
   override def plus(other: IntValue): IntValue = Int.longToInt(this.value() + other.value()).as(name) // TODO: as() propagation
   override def mult(other: IntType): IntType = this.start().mult(other) //

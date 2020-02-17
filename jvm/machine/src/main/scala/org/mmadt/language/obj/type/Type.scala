@@ -25,7 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Str, TQ}
-import org.mmadt.language.{Stringer, Tokens, obj}
+import org.mmadt.language.{Tokens, obj}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
@@ -104,7 +104,6 @@ trait Type[T <: Type[T]] extends Obj
 
   // standard Java implementations
   override def hashCode(): scala.Int = this.range().toString.hashCode // TODO: using toString()
-  override def toString: String = Stringer.typeString(this) //
 
   def |[O <: Type[O]](other: O): O = { // TODO: ghetto union type construction
     if (this.insts().nonEmpty && this.insts().head._2.op().equals(Tokens.choose))

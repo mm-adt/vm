@@ -40,6 +40,7 @@ object Tokens {
   val and = "and"
   val as = "as"
   val choose = "choose"
+  val eq = "eq"
   val get = "get"
   val id = "id"
   val is = "is"

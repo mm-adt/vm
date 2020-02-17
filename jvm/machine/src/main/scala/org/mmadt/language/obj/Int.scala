@@ -31,6 +31,7 @@ import org.mmadt.storage.obj.value.VInt
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Int extends Obj
+  // with EqOp[Int, IntValue, IntType]
   with PlusOp[Int, IntValue, IntType]
   with MultOp[Int, IntValue, IntType]
   with NegOp[Int]

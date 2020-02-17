@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.StrType
-import org.mmadt.language.obj.op.{GtOp, IsOp, PlusOp, ToOp}
+import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.storage.obj.value.VStr
 
@@ -31,6 +31,7 @@ import org.mmadt.storage.obj.value.VStr
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Str extends Obj
+  //with EqOp[Str, StrValue, StrType]
   with PlusOp[Str, StrValue, StrType]
   with GtOp[Str, StrValue, StrType]
   with IsOp[Str, StrType]

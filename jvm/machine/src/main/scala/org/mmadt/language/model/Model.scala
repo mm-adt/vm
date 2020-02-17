@@ -38,9 +38,13 @@ trait Model {
 }
 
 object Model {
+
+  def apply(args: (Type[_], Type[_])*): Model = args.foldRight(this.simple())((a, b) => b.put(a._1, a._2)) //
+
   val id: Model = new Model {
     override def put(left: Type[_], right: Type[_]): Model = this //
     override def get(left: Type[_]): Option[Type[_]] = None //
+
   }
 
   def simple(): Model = new Model {

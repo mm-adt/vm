@@ -34,6 +34,8 @@ trait StrType extends Str
   with Type[StrType] {
 
   override def to(label: StrValue): StrType = this.compose(ToOp(label)) //
+  //override def eqs(other: StrType): BoolType = this.bool(EqOp(other)) //
+  //override def eqs(other: StrValue): BoolType = this.bool(EqOp(other)) //
   override def plus(other: StrType): StrType = this.compose(PlusOp(other)) //
   override def plus(other: StrValue): StrType = this.compose(PlusOp(other)) //
   override def gt(other: StrType): BoolType = this.bool(GtOp(other)) //

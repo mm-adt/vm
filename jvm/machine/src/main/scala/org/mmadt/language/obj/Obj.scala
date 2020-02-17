@@ -22,6 +22,8 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.Printable
+import org.mmadt.language.PrintableInstances._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.IntValue
@@ -50,4 +52,5 @@ trait Obj
   // pattern matching methods
   val name: String //
   def test(other: Obj): Boolean //
+  override def toString: String = Printable.format(this)
 }

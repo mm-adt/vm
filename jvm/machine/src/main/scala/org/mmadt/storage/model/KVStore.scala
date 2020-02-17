@@ -29,5 +29,5 @@ import org.mmadt.storage.obj._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait KVStore {
-  val model: RecValue[_, _] = rec(str("kvstore") -> rec.q(0, Long.MaxValue), str("kv") -> rec(str("k") -> int, str("v") -> (int | str | bool)))
+  //val model: RecValue[_, _] = rec(str("kvstore") -> rec.q(0, Long.MaxValue), str("kv") -> rec(str("k") -> int, str("v") -> (int | str | bool)))
 }

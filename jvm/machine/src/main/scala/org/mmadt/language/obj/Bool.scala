@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.op.{AndOp, IsOp, OrOp, ToOp}
+import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.obj.value.VBool
 
@@ -31,6 +31,7 @@ import org.mmadt.storage.obj.value.VBool
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Bool extends Obj
+  //with EqOp[Bool, BoolValue, BoolType]
   with IsOp[Bool, BoolType]
   with AndOp
   with OrOp

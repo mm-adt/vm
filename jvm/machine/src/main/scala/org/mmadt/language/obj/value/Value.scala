@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.Stringer
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 
@@ -34,15 +33,13 @@ trait Value[V <: Value[V]] extends Obj {
   def value(): Any //
   def start(): Type[_] //
 
-  override def toString: String = Stringer.valueString(this) //
 
   override def map[O <: Obj](other: O): O = other match {
     case _: Value[_] => other
     case t: O with Type[_] => (this ==> t).asInstanceOf[O] //
   }
 
-  override def id(): this.type = this
-
+  override def id(): this.type = this //
   override def from[O <: Obj](label: StrValue): O = this.start().from(label) //
 
   override def equals(other: Any): Boolean = other match {

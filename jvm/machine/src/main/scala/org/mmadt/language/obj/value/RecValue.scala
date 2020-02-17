@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
+import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.processor.obj.value.IteratorChainProcessor
 
@@ -36,6 +36,8 @@ trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
   override def start(): RecType[A, B] //
 
   override def to(label: StrValue): RecType[A, B] = this.start().to(label) //
+  //override def eqs(other: RecType[A,B]): BoolType = this.start().eqs(other) //
+  //override def eqs(other: RecValue[A,B]): BoolValue = this.value() == other.value() //
   override def plus(other: RecType[A, B]): RecType[A, B] = this.start().plus(other) //
   override def plus(other: RecValue[A, B]): RecValue[A, B] = other.value() ++ this.value() //
   override def is(bool: BoolType): RecType[A, B] = this.start().is(bool) //
