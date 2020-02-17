@@ -20,16 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.processor
 
-import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.int
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TypeInferenceTest extends FunSuite {
-  test("type inference") {
-    assertResult("int{0,3}<=int{3}[mult,5][is,bool{3}<=int{3}[gt,int{3}[plus,10]]]")((int.q(3) ==> int.mult(5).is(int.gt(int.plus(10)))).toString)
+class IdInstTest extends FunSuite {
+
+  test("[id] w/ int") {
+    assertResult("int[id]")(int.id().toString)
+    assertResult("int[id][id]")(int.id().id().toString)
+    assertResult(int(2))(int(2).id())
+    assertResult(int(2))(int(2) ==> int.id().id())
   }
+
 }

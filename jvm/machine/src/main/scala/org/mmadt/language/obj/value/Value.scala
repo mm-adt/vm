@@ -41,6 +41,8 @@ trait Value[V <: Value[V]] extends Obj {
     case t: O with Type[_] => (this ==> t).asInstanceOf[O] //
   }
 
+  override def id(): this.type = this
+
   override def from[O <: Obj](label: StrValue): O = this.start().from(label) //
 
   override def equals(other: Any): Boolean = other match {

@@ -39,13 +39,13 @@ object LeftRightSweepRewrite {
     var previousTraverser: Traverser[T] = new C1Traverser[T](endType)
     while (previousTraverser != mutatingTraverser) {
       mutatingTraverser = previousTraverser
-      previousTraverser = recursiveRewrite(model, mutatingTraverser.obj().asInstanceOf[EType], startType, new C1Traverser(startType.asInstanceOf[T]))._2
+      previousTraverser = recursiveRewrite(model, mutatingTraverser.obj().asInstanceOf[EType], startType, new C1Traverser(startType.asInstanceOf[T]))
     }
     mutatingTraverser
   }
 
   @scala.annotation.tailrec
-  private def recursiveRewrite[T <: Obj](model: Model, atype: EType, btype: EType, traverser: Traverser[T]): (EType, Traverser[T]) = {
+  private def recursiveRewrite[T <: Obj](model: Model, atype: EType, btype: EType, traverser: Traverser[T]): Traverser[T] = {
     if (atype.insts().nonEmpty) {
       model.get(atype) match {
         case Some(right: EType) => recursiveRewrite(model, right, btype, traverser)
@@ -55,6 +55,6 @@ object LeftRightSweepRewrite {
           traverser)
       }
     } else if (btype.insts().nonEmpty) recursiveRewrite(model, btype.linvert(), btype.linvert().domain(), traverser.apply(btype).asInstanceOf[Traverser[T]])
-    else (atype, traverser)
+    else traverser
   }
 }

@@ -65,9 +65,9 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   test("compiler w/ linear quantified type and model") {
     processor = new CompilingProcessor(
       Model.simple().
-        put(int, int.mult(2), int.plus(int)).
-        put(int, int.plus(0), int).
-        put(int, int.plus(1).plus(-1), int))
+        put(int.mult(2), int.plus(int)).
+        put(int.plus(0), int).
+        put(int.plus(1).plus(-1), int))
 
     /////
     forAll(Table(

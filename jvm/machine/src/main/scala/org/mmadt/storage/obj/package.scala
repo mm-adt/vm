@@ -44,6 +44,7 @@ package object obj {
   def gt(obj: StrValue): BoolType = obj.gt() //
 
   val int: IntType = new TInt() //
+  def int(name: String): IntType = new TInt(name, Nil, qOne) //
   val bool: BoolType = new TBool() //
   val str: StrType = new TStr() //
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = new TRec[A, B]() //
@@ -51,9 +52,11 @@ package object obj {
   val bfalse: BoolValue = bool(false)
 
   def int(value: Long): IntValue = new VInt(value) //
+  def int(name: String,value: Long): IntValue = new VInt(name, value, qOne) //
   def int(values: Long*): IntStrm = new VIntStrm(values.map(i => int(i))) //
   def bool(value: Boolean): BoolValue = new VBool(value) //
   def str(value: String): StrValue = new VStr(value) //
   def rec[A <: Obj, B <: Obj](value: Map[A, B]): RecValue[A, B] = new VRec[A, B](value) //
   def rec[A <: Obj, B <: Obj](value: (A, B)*): RecValue[A, B] = new VRec[A, B](value.reverse.toMap) //
+  def rec[A <: Obj, B <: Obj](name: String)(value: (A, B)*): RecValue[A, B] = new VRec[A, B](name, value.reverse.toMap, qOne) //
 }

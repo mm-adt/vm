@@ -49,5 +49,7 @@ trait RecValue[A <: Obj, B <: Obj] extends Rec[A, B]
     case _ => throw new RuntimeException()
   }
 
+  override def put(key: A, value: B): RecValue[A, B] = Map(key -> value) ++ this.value()
+
   override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.get(key).asInstanceOf[BT]
 }

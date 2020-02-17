@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.{AsOp, FromOp, MapOp, ModelOp}
+import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj, Rec, Str, TQ}
 import org.mmadt.language.{Stringer, Tokens, obj}
@@ -83,6 +83,7 @@ trait Type[T <: Type[T]] extends Obj
   final def <=[TT <: Type[TT]](mapFrom: TT with Type[TT]): TT = mapFrom.q(this.q()) //
   def ==>[TT <: Type[TT]](t: TT with Type[TT]): TT = new CompilingProcessor().apply(this, t).next().obj()
 
+  override def id(): this.type = this.compose(IdOp()).asInstanceOf[this.type] //
   override def map[O <: Obj](other: O): O = this.compose(other, MapOp(other)) //
   override def model(model: StrValue): this.type = this.compose(ModelOp(model)).asInstanceOf[this.type] //
   override def from[O <: Obj](label: StrValue): O = this.compose(FromOp(label)).asInstanceOf[O] //

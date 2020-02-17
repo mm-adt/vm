@@ -35,6 +35,7 @@ import org.mmadt.processor.{Processor, Traverser}
 class CompilingProcessor[S <: Obj, E <: Obj](val model: Model = Model.id) extends Processor[S, E] {
   override def apply(startObj: S, endType: E with Type[_]): Iterator[Traverser[E]] = {
     if (startObj.isInstanceOf[Value[_]]) throw new IllegalArgumentException("The compiling processor only accepts types: " + startObj)
-    Iterator(LeftRightSweepRewrite.rewrite(model, startObj.asInstanceOf[Type[_]], endType).asInstanceOf[Traverser[E]])
+    val traverser: Traverser[E] = (LeftRightSweepRewrite.rewrite(model, startObj.asInstanceOf[Type[_]], endType).asInstanceOf[Traverser[E]])
+    Iterator(if (model == Model.id) traverser else new C2Traverser[E](startObj.asInstanceOf[E], Map.empty, model).apply(traverser.obj().asInstanceOf[E with Type[_]]))
   }
 }

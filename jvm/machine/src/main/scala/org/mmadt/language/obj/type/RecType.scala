@@ -22,10 +22,9 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.{GetOp, IsOp, ToOp}
-import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.op.{GetOp, IsOp, PutOp, ToOp}
+import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue}
 import org.mmadt.language.obj.{Obj, Rec}
-import org.mmadt.processor.obj.value.IteratorChainProcessor
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,12 +36,11 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
 
   override def to(label: StrValue): RecType[A, B] = this.compose(ToOp(label)) //
   override def get[BT <: Type[BT]](key: A, btype: BT): BT = this.compose(btype, GetOp(key)) //
-  override def get(key: A): B = (this.value().get(key) match {
-    case Some(bvalue: Value[_]) => bvalue
-    case Some(btype: Type[_]) => IteratorChainProcessor(key, btype).next().obj()
-    case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
-    case _ => throw new RuntimeException()
-  }).asInstanceOf[B]
+  override def get(key: A): B = this.compose(this.value()(key), GetOp(key)) //
+  override def put(key: A, value: B): Rec[A, B] = {
+    Map(key -> value) ++ this.value()
+    this.compose(PutOp(key, value))
+  } //
 
   override def plus(other: RecType[A, B]): RecType[A, B] //
   override def plus(other: RecValue[A, B]): RecType[A, B] //

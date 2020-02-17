@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.{AsOp, ChooseOp, FromOp, MapOp}
+import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.obj.`type`.RecursiveTraverser
 
@@ -33,17 +33,19 @@ import org.mmadt.processor.obj.`type`.RecursiveTraverser
 trait Obj
   extends AsOp
     with ChooseOp
+    with IdOp
     with MapOp
     with FromOp {
 
+  // quantifier methods
   def q(): TQ //
+  def q(quantifier: TQ): this.type //
   def q(single: IntValue): this.type = this.q((single, single)) //
   def q(min: IntValue, max: IntValue): this.type = this.q((min, max)) //
-  def q(quantifier: TQ): this.type //
+  def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
 
   // utility methods
   def ==>[E <: Obj](t: E with Type[_]): Obj = new RecursiveTraverser[E](this.asInstanceOf[E]).apply(t).obj() // TODO: FORCE TYPE CHECK ON t:Obj
-  def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
 
   // pattern matching methods
   val name: String //

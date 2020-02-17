@@ -20,16 +20,30 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.language.model.examples
 
-import org.mmadt.storage.obj._
+import org.mmadt.language.obj.value.{IntValue, RecValue}
+import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.processor.obj.`type`.CompilingProcessor
+import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TypeInferenceTest extends FunSuite {
-  test("type inference") {
-    assertResult("int{0,3}<=int{3}[mult,5][is,bool{3}<=int{3}[gt,int{3}[plus,10]]]")((int.q(3) ==> int.mult(5).is(int.gt(int.plus(10)))).toString)
+class GraphModelTest extends FunSuite {
+
+  val * : (IntValue, IntValue) = (int(0), int(Long.MaxValue))
+  val edge: RecValue[Str, Obj] = rec("edge")(str("inV") -> vertex, str("outV") -> vertex, str("label") -> str) //
+  val vertex: RecValue[Str, Obj] = rec("vertex")(str("id") -> int, str("outE") -> edge.q(*), str("inE") -> edge.q(*)) //
+  val graph: RecValue[Str, Obj] = vertex.q(*) //
+
+
+  test("variable rewrites") {
+    val processor = new CompilingProcessor()
+    println(graph)
+    println(vertex)
+    println(edge)
+    //println(vertex.is(vertex.get(str("id"),int).gt(int(0))).get(str("outE")))
   }
 }

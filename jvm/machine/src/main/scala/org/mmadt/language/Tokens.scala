@@ -49,6 +49,7 @@ object Tokens {
   val neg = "neg"
   val gt = "gt"
   val or = "or"
+  val put = "put"
   val to = "to"
   val from = "from"
   val start = "start"
@@ -57,11 +58,11 @@ object Tokens {
   def named(name: String): Boolean = !Set(bool, str, rec, int, inst).contains(name) // TODO: global immutable set
 
   def symbol(obj: Obj): String = obj match {
-    case _: BoolType => "bool"
-    case _: IntType => "int"
-    case _: StrType => "str"
-    case _: RecType[_, _] => "rec"
-    case _: Type[_] => "obj"
+    case _: BoolType => Tokens.bool
+    case _: IntType => Tokens.int
+    case _: StrType => Tokens.str
+    case _: RecType[_, _] => Tokens.rec
+    case _: Type[_] => Tokens.obj
     case _ => throw new Exception("Error: " + obj)
   }
 

@@ -20,16 +20,22 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.language.obj.op
 
-import org.mmadt.storage.obj._
-import org.scalatest.FunSuite
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{Inst, Obj, Rec}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TypeInferenceTest extends FunSuite {
-  test("type inference") {
-    assertResult("int{0,3}<=int{3}[mult,5][is,bool{3}<=int{3}[gt,int{3}[plus,10]]]")((int.q(3) ==> int.mult(5).is(int.gt(int.plus(10)))).toString)
-  }
+trait PutOp[A <: Obj, B <: Obj] {
+  this: Rec[A, B] =>
+
+  def put(key: A, value: B): Rec[A, B] //
+}
+
+object PutOp {
+  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst = new VInst((Tokens.put, List(key, value)), qOne, ((a: Rec[A, B], b: List[Obj]) => a.put(key, value)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

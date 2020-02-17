@@ -37,6 +37,7 @@ class VInst(java: JInst, quantifier: TQ, function: (Obj, List[Obj]) => Obj) exte
   override def value(): JInst = java //
   override def toString: String = Stringer.instString(this) //
   override def q(quantifier: TQ): this.type = new VInst(java, quantifier, function).asInstanceOf[this.type] //
+  override def id(): this.type = this //
   override def apply(obj: Obj, args: List[Obj]): Obj = function.apply(obj, args) //
 
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY

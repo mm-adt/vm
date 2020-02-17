@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.op.{GetOp, IsOp, PlusOp, ToOp}
+import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.storage.obj.value.VRec
 
@@ -34,9 +34,8 @@ trait Rec[A <: Obj, B <: Obj] extends Obj
   with PlusOp[Rec[A, B], RecValue[A, B], RecType[A, B]]
   with IsOp[Rec[A, B], RecType[A, B]]
   with ToOp[RecType[A, B]]
-  with GetOp[A, B] {
-
-}
+  with GetOp[A, B]
+  with PutOp[A, B]
 
 object Rec {
   implicit def mapToRec[A <: Obj, B <: Obj](java: Map[A, B]): RecValue[A, B] with Rec[A, B] = new VRec(java) //

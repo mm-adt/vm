@@ -31,20 +31,15 @@ import scala.collection.mutable
  */
 trait Model {
 
-  def put(atype: Type[_], left: Type[_], right: Type[_]): Model = this.put(atype.name, left, right) //
-  def put(left: Type[_], right: Type[_]): Model = this.put(left.domain[Type[_]]().name, left, right) //
-  def get(atype: Type[_], left: Type[_]): Option[Type[_]] = this.get(atype.name, left) //
-  def get(atype: Type[_]): Option[Type[_]] = this.get(atype.name, atype) //
-
-  def put(typeName: String, left: Type[_], right: Type[_]): Model //
-  def get(typeName: String, left: Type[_]): Option[Type[_]] //
+  def put(left: Type[_], right: Type[_]): Model //
+  def get(left: Type[_]): Option[Type[_]] //
 
 }
 
 object Model {
   val id: Model = new Model {
-    override def put(typeName: String, left: Type[_], right: Type[_]): Model = this //
-    override def get(typeName: String, left: Type[_]): Option[Type[_]] = None //
+    override def put(left: Type[_], right: Type[_]): Model = this //
+    override def get(left: Type[_]): Option[Type[_]] = None //
   }
 
   def simple(): Model = new Model {
@@ -52,12 +47,12 @@ object Model {
 
     override def toString: String = "model" + (Map.empty ++ typeMap).toString()
 
-    override def put(typeName: String, left: Type[_], right: Type[_]): Model = {
-      if (typeMap.get(typeName).isEmpty) typeMap.put(typeName, mutable.Map())
-      typeMap(typeName).put(left, right)
+    override def put(left: Type[_], right: Type[_]): Model = {
+      if (typeMap.get(left.name).isEmpty) typeMap.put(left.name, mutable.Map())
+      typeMap(left.name).put(left, right)
       this
     }
 
-    override def get(typeName: String, left: Type[_]): Option[Type[_]] = if (typeMap.get(typeName).isEmpty) None else typeMap(typeName).get(left)
+    override def get(left: Type[_]): Option[Type[_]] = if (typeMap.get(left.name).isEmpty) None else typeMap(left.name).get(left)
   }
 }

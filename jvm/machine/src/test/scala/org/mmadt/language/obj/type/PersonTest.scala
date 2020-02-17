@@ -60,11 +60,11 @@ class PersonTest extends FunSuite {
   test("person evaluation") {
     val marko = rec(str("name") -> str("marko"), str("age") -> int(29)).as[Rec[_,_]]("person")
     val model = Model.simple().
-      put(int, int.mult(2), int.plus(int)).
-      put(int, int.plus(0), int).
-      put("person", rec.get(str("firstname"), str), rec.get(str("name"), str))
+      put(int.mult(2), int.plus(int)).
+      put(int.plus(0), int).
+      put(rec.get(str("firstname"), str), rec.get(str("name"), str))
     println(model)
-    println(model.get("person", rec.get(str("firstname"), str)))
+    println(model.get(rec.get(str("firstname"), str)))
     // println(IteratorChainProcessor(marko, rec.get(str("firstname"), str)).toList)
   }
 
