@@ -58,7 +58,7 @@ class PersonTest extends FunSuite {
   }*/
 
   test("person evaluation"){
-    val marko = rec(str("name") -> str("marko"),str("age") -> int(29)).as[Rec[_,_]]("person")
+    //val marko:Rec[Obj,Obj] = rec(str("name") -> str("marko"),str("age") -> int(29)).as[Rec[_,_]]("person")
     val model = Model.simple().
       put(int.mult(2),int.plus(int)).
       put(int.plus(0),int).

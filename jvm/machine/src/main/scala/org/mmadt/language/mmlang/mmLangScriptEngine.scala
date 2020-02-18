@@ -20,30 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.mmlang
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.RecValue
-import org.mmadt.language.obj.{Inst,OType,OValue,Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
+import java.io.Reader
+
+import javax.script.{AbstractScriptEngine, Bindings, ScriptContext, ScriptEngineFactory}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ChooseOp {
-  this:Obj with ChooseOp =>
-
-  def choose[IT <: OType,OT <: Obj](branches:(IT,OT)*):OT = this.choose(branches.toMap)
-
-  def choose[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):OT ={
-    this match {
-      case atype:OType => atype.compose(branches.value().head._2,ChooseOp[IT,OT](branches))
-      case avalue:OValue => (avalue ==> branches.value().filter(p => (avalue ===> p._1).hasNext).head._2.asInstanceOf[OType]).asInstanceOf[OT] // TODO: return Iterator[Traverser[E]]
-    }
-  }
-}
-
-object ChooseOp {
-  def apply[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT,OT]])) //
-}
+class mmLangScriptEngine /*extends AbstractScriptEngine {
+  override def eval(script:String,context:ScriptContext):AnyRef = ???
+  override def eval(reader:Reader,context:ScriptContext):AnyRef = ???
+  override def createBindings():Bindings = ???
+  override def getFactory:ScriptEngineFactory = ???
+}*/

@@ -20,30 +20,26 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.mmlang
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.RecValue
-import org.mmadt.language.obj.{Inst,OType,OValue,Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
+import java.util
+
+import javax.script.{ScriptEngine, ScriptEngineFactory}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ChooseOp {
-  this:Obj with ChooseOp =>
-
-  def choose[IT <: OType,OT <: Obj](branches:(IT,OT)*):OT = this.choose(branches.toMap)
-
-  def choose[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):OT ={
-    this match {
-      case atype:OType => atype.compose(branches.value().head._2,ChooseOp[IT,OT](branches))
-      case avalue:OValue => (avalue ==> branches.value().filter(p => (avalue ===> p._1).hasNext).head._2.asInstanceOf[OType]).asInstanceOf[OT] // TODO: return Iterator[Traverser[E]]
-    }
-  }
-}
-
-object ChooseOp {
-  def apply[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT,OT]])) //
-}
+class mmLangScriptEngineFactory /*extends ScriptEngineFactory {
+  override def getEngineName:String = ???
+  override def getEngineVersion:String = ???
+  override def getExtensions:util.List[String] = ???
+  override def getMimeTypes:util.List[String] = ???
+  override def getNames:util.List[String] = ???
+  override def getLanguageName:String = ???
+  override def getLanguageVersion:String = ???
+  override def getParameter(key:String):AnyRef = ???
+  override def getMethodCallSyntax(obj:String,m:String,args:String*):String = ???
+  override def getOutputStatement(toDisplay:String):String = ???
+  override def getProgram(statements:String*):String = ???
+  override def getScriptEngine:ScriptEngine = ???
+}*/

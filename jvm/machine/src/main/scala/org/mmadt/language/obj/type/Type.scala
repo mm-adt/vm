@@ -32,7 +32,7 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[T <: Type[T]] extends Obj
+trait Type[+T <: Type[T]] extends Obj
   with ModelOp {
 
   def canonical():this.type = this.range().q(1) //
