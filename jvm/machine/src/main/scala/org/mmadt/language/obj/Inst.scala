@@ -29,17 +29,18 @@ import org.mmadt.language.Tokens
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Inst extends Obj {
-  def value(): JInst
+  def value():JInst
 
-  override val name: String = Tokens.inst
+  override val name:String = Tokens.inst
 
-  final def op(): String = this.value()._1 //
-  final def args(): List[Obj] = this.value()._2 //
-  final def arg[O <: Obj](): O = this.value()._2.head.asInstanceOf[O] //
-  def apply(obj: Obj, args: List[Obj]): Obj
+  final def op():String = this.value()._1 //
+  final def args():List[Obj] = this.value()._2 //
+  final def arg[O <: Obj]():O = this.value()._2.head.asInstanceOf[O] //
+  def apply(obj:Obj,args:List[Obj]):Obj
+  def apply(obj:Obj):Obj = this.apply(obj,this.args())
 
-  override def equals(other: Any): Boolean = other.isInstanceOf[Inst] &&
-    other.asInstanceOf[this.type].op().equals(this.op()) &&
-    other.asInstanceOf[this.type].args().equals(this.args())
+  override def equals(other:Any):Boolean = other.isInstanceOf[Inst] &&
+                                           other.asInstanceOf[this.type].op().equals(this.op()) &&
+                                           other.asInstanceOf[this.type].args().equals(this.args())
 
 }

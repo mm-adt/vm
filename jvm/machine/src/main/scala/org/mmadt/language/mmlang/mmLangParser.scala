@@ -23,9 +23,9 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.{GtOp, MultOp, PlusOp}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
-import org.mmadt.language.obj.{Inst, OType, OValue}
+import org.mmadt.language.obj.op.{GtOp,MultOp,PlusOp}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
+import org.mmadt.language.obj.{Inst,OType,OValue}
 import org.mmadt.storage.obj._
 
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -34,13 +34,10 @@ import scala.util.parsing.combinator.JavaTokenParsers
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object mmLangParser extends JavaTokenParsers {
-
-
   def expr:Parser[OType] = ((canonicalType <~ "<=") ?) ~ canonicalType ~ rep[Inst](inst) ^^ {
-    case Some(a) ~ b ~ c => a <= c.foldLeft(b)((x,y) => y.apply(x,y.args()).asInstanceOf[OType])
-    case None ~ b ~ c => c.foldLeft(b)((x,y) => y.apply(x,y.args()).asInstanceOf[OType])
+    case Some(a) ~ b ~ c => a <= c.foldLeft(b)((x,y) => y.apply(x).asInstanceOf[OType])
+    case None ~ b ~ c => c.foldLeft(b)((x,y) => y.apply(x).asInstanceOf[OType])
   }
-
 
   def canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str) ^^ {
     case Tokens.int => int
@@ -56,18 +53,27 @@ object mmLangParser extends JavaTokenParsers {
   def op:Parser[String] = """[a-z]+""".r
   def inst:Parser[Inst] = "[" ~> (op <~ ",") ~ objValue <~ "]" ^^ {
     case a ~ b => a match {
-      case Tokens.plus => PlusOp(b.asInstanceOf[IntValue])
-      case Tokens.mult => MultOp(b.asInstanceOf[IntValue])
-      case Tokens.gt => GtOp(b.asInstanceOf[IntValue])
+      case Tokens.plus => b match {
+        case b:IntValue => PlusOp(b)
+        case b:StrValue => PlusOp(b)
+      }
+      case Tokens.mult => b match {
+        case b:IntValue => MultOp(b)
+        case b:StrValue => MultOp(b)
+      }
+      case Tokens.gt => b match {
+        case b:IntValue => GtOp(b)
+        case b:StrValue => GtOp(b)
+      }
     }
   }
 }
 
-object LocalApp extends App {
+/*object LocalApp extends App {
   override def main(args:Array[String]):Unit ={
     mmLangParser.parseAll(mmLangParser.expr,"bool<=int[plus,4][mult,2][gt,15]") match {
       case mmLangParser.Success(result,_) => println(result + ":" + result.getClass)
       case _ => println("Could not parse the input string.")
     }
   }
-}
+}*/
