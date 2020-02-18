@@ -22,38 +22,36 @@
 
 package org.mmadt.language.mmlang
 
-import scala.util.matching.Regex
-import scala.util.parsing.combinator.RegexParsers
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.op.PlusOp
+import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.{Inst, OType}
+import org.mmadt.storage.obj._
+
+import scala.util.parsing.combinator.JavaTokenParsers
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object mmLangParser extends RegexParsers {
-  private val spaceRegex  = new Regex("[ \\n]+");
-  private val numberRegex = new Regex("[0-9]+");
-  private val wordRegex   = new Regex("[a-zA-Z][a-zA-Z0-9-]*");
+object mmLangParser extends JavaTokenParsers {
 
-  private def space:Parser[String] = regex(spaceRegex)
-  private def regexAndSpace(re:Regex):Parser[String] = regex(re) <~ space
-
-  override def skipWhitespace:Boolean = false
-
-  def number:Parser[String] = regexAndSpace(numberRegex)
-  def word:Parser[String] = regexAndSpace(wordRegex)
-  def string:Parser[String] = regex(numberRegex) >> {len => ":" ~> regexAndSpace(new Regex(".{" + len + "}"))}
-  def list:Parser[List[java.io.Serializable]] = "(" ~> space ~> (item +) <~ ")" <~ space
-
-  def item:Parser[java.io.Serializable] = (number | word | string | list)
-
-  def parseItem(str:String):ParseResult[java.io.Serializable] = parse(item,str)
+  def op:Parser[String] = """[a-z]+""".r
+  def expr:Parser[OType] = canonicalType ~ inst ^^ (x => x._1.asInstanceOf[IntType].plus(x._2.arg[IntValue]()))
+  def intValue:Parser[IntValue] = """[0-9]+""".r ^^ (x => int(x.toLong))
+  def canonicalType:Parser[OType] = (Tokens.int | Tokens.str) ^^ ({
+    case Tokens.int => int
+    case Tokens.str => str
+  })
+  def inst:Parser[Inst] = "[" ~ op ~ "," ~ intValue ~ "]" ^^ (x => PlusOp(x._1._2))
 
 }
 
-/*object Appd extends App {
+object LocalApp extends App {
   override def main(args:Array[String]):Unit ={
-    parseItem("( 5:abcde 3:abc  \n   20:three separate words     (  abc def     \n\n\n   123 ) ) ") match {
-      case mmLangParser.Success(result,_) => println(result.toString)
+    mmLangParser.parseAll(mmLangParser.expr,"int[plus,2]") match {
+      case mmLangParser.Success(result,_) => println(result)
       case _ => println("Could not parse the input string.")
     }
   }
-}*/
+}
