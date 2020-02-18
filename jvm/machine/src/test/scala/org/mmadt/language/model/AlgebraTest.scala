@@ -35,12 +35,12 @@ class AlgebraTest extends FunSuite {
   test("int ring rewrites"){
     val compiler = Processor.compiler[Obj,Obj](Algebra.ring)
     println(Algebra.ring)
-    assertResult(int)(compiler(int.plus(int(0))))
-    assertResult(int)(compiler(int.neg().plus(int(0)).neg()))
+    assertResult(int)(compiler(int + 0))
+    assertResult(int)(compiler(-(-int + 0)))
+    assertResult(-int)(compiler(int * -1))
+    assertResult(int * 0)(compiler(int + -int))
     // assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
     // assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
-    assertResult(int.neg())(compiler(int.mult(int(-1))))
-    assertResult(int.mult(int(0)))(compiler(int.plus(int.neg())))
   }
 
 }
