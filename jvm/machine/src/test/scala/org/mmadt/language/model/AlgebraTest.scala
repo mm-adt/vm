@@ -20,23 +20,27 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.language.model
 
-import org.mmadt.language.model.Model
-import org.mmadt.language.obj.{Obj, TType}
-import org.mmadt.processor.obj.`type`.CompilingProcessor
-import org.mmadt.processor.obj.value.IteratorProcessor
+import org.mmadt.language.obj.Obj
+import org.mmadt.processor.Processor
+import org.mmadt.storage.obj.int
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Processor[S <: Obj,E <: Obj] {
-  def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]]
-  def apply(rangeType:TType[E]):E = this.apply(rangeType.domain(),rangeType).next().obj()
-}
+class AlgebraTest extends FunSuite {
 
-object Processor {
-  def compiler[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new CompilingProcessor[S,E](model)
-  def iterator[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new IteratorProcessor[S,E]
-  // def recursive[S<:Obj,E<:Obj](model:Model = Model.id):Processor[S,E] = new RecursiveTraverser[E]()
+  test("int ring rewrites"){
+    val compiler = Processor.compiler[Obj,Obj](Algebra.ring)
+    println(Algebra.ring)
+    assertResult(int)(compiler(int.plus(int(0))))
+    assertResult(int)(compiler(int.neg().plus(int(0)).neg()))
+    // assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
+    // assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
+    assertResult(int.neg())(compiler(int.mult(int(-1))))
+    assertResult(int.mult(int(0)))(compiler(int.plus(int.neg())))
+  }
+
 }

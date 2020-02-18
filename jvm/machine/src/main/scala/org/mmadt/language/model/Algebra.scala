@@ -36,6 +36,8 @@ object Algebra {
     (int ~ "x").mult((int ~ "y").plus(int ~ "z")) -> (int ~ "x").mult(int ~ "y").plus((int ~ "x").mult(int ~ "z")))*/
 
   val ring:Model = Model(
+    int + -int -> int * int(0),
+    int ~ "x" * int(-1) -> -(int ~ "x"),
     (int * int(1)) -> int,
     (int + int(0)) -> int,
     -(-int) -> int,

@@ -54,6 +54,15 @@ object Model {
       typeMap(left.name).put(left,right)
       this
     }
-    override def get(left:OType):Option[OType] = if (typeMap.get(left.name).isEmpty) None else typeMap(left.name).get(left)
+    override def get(left:OType):Option[OType] ={
+      val x = typeMap.get(left.name) match {
+        case None => return None
+        case Some(m) => m
+      }
+      x.get(left) match {
+        case Some(m) => return Some(m)
+        case None => x.iterator.find(a => left.test(a._1)).map(_._2)
+      }
+    }
   }
 }
