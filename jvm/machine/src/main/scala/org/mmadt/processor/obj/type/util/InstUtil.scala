@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.obj.`type`.util
 
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst,OType,OValue,Obj}
 import org.mmadt.processor.Traverser
 
@@ -35,11 +34,11 @@ object InstUtil {
 
   private def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
     inst.args().map{
+      case valueArg:OValue => valueArg
       case typeArg:OType => traverser.split(traverser.obj() match {
         case atype:OType => atype.range()
         case avalue:OValue => avalue
       }).apply(typeArg).obj()
-      case valueArg:Value[_] => valueArg
     }
   }
 

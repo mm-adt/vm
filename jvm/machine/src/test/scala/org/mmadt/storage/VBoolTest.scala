@@ -30,7 +30,7 @@ import org.scalatest.FunSuite
  */
 class VBoolTest extends FunSuite {
 
-  test("bool values") {
+  test("bool values"){
     assert(btrue.value())
     assertResult(btrue)(btrue || bfalse)
     assertResult(bfalse)(btrue && bfalse)

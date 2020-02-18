@@ -24,7 +24,6 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Printable
 import org.mmadt.language.PrintableInstances._
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.obj.`type`.RecursiveTraverser
@@ -47,7 +46,7 @@ trait Obj
   def alive():Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0
 
   // utility methods
-  def ==>[E <: Obj](t:E with Type[_]):Obj = new RecursiveTraverser[E](this.asInstanceOf[E]).apply(t).obj() // TODO: FORCE TYPE CHECK ON t:Obj
+  def ==>[E <: Obj](rangeType:E with TType[E]):E = new RecursiveTraverser[E](this.asInstanceOf[E]).apply(rangeType).obj()
 
   // pattern matching methods
   val name:String //

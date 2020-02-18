@@ -36,7 +36,7 @@ class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
   override def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]] ={
     var output:Iterator[Traverser[E]] = domainObj match {
       case s:IntStrm => s.value().map(x => new SimpleTraverser[E](x.asInstanceOf[E]))
-      case r => Iterator(new SimpleTraverser[E](r.asInstanceOf[E]))
+      case r:E => Iterator(new SimpleTraverser[E](r))
     }
     for (tt <- InstUtil.createInstList(Nil,rangeType)) {
       // System.out.println(tt)
@@ -48,5 +48,5 @@ class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
 }
 
 object IteratorProcessor {
-  def apply[S <: Obj,E <: Obj](startObj:S,endType:TType[E]):Iterator[Traverser[E]] = new IteratorProcessor[S,E].apply(startObj,endType)
+  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]] = new IteratorProcessor[S,E].apply(domainObj,rangeType)
 }
