@@ -34,7 +34,7 @@ import org.mmadt.storage.obj._
  */
 class TRec[A <: Obj, B <: Obj](name: String, java: Map[A, B], insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[RecType[A, B]](name, insts, quantifier) with RecType[A, B] {
   def this() = this(Tokens.rec, Map[A, B](), Nil, qOne) //
-  override def compose(inst: Inst): RecType[A, B] = rec[A, B](this, inst, quantifier) //
+  override def compose(inst: Inst): this.type = rec[A, B](this, inst, quantifier).asInstanceOf[this.type] //
   override def range(): this.type = new TRec[A, B](name, java, Nil, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TRec[A, B](name, java, insts, quantifier).asInstanceOf[this.type] //
   override def value(): Map[A, B] = java
@@ -42,7 +42,7 @@ class TRec[A <: Obj, B <: Obj](name: String, java: Map[A, B], insts: List[(Type[
   override def plus(other: RecType[A, B]): RecType[A, B] = {
     new TRec[A, B](name, other.value() ++ this.value(), insts, quantifier).compose(PlusOp(other))
   } //
-  override def plus(other: RecValue[A, B]): RecType[A, B] = {
-    new TRec[A, B](name, other.value() ++ this.value(), insts, quantifier).compose(PlusOp(other))
+  override def plus(other: RecValue[A, B]): this.type = {
+    new TRec[A, B](name, other.value() ++ this.value(), insts, quantifier).compose(PlusOp(other)).asInstanceOf[this.type]
   } //
 }

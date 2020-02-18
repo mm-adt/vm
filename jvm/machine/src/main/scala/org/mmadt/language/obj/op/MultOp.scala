@@ -32,20 +32,20 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultOp[O <: Obj with MultOp[O, V, T], V <: Value[V], T <: Type[T]] {
-  this: O =>
+trait MultOp[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]] {
+  this:O =>
 
-  def mult(other: T): T //
-  def mult(other: V): O //
-  final def *(other: T): T = this.mult(other) //
-  final def *(other: V): O = this.mult(other) //
+  def mult(other:T):T
+  def mult(other:V):this.type
+  final def *(other:T):T = this.mult(other)
+  final def *(other:V):this.type = this.mult(other)
 }
 
 object MultOp {
-  def apply[O <: Obj with MultOp[O, V, T], V <: Value[V], T <: Type[T]](other: V): Inst = new VInst((Tokens.mult, List(other)), qOne, ((a: O, b: List[Obj]) => a.mult(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
-  def apply[O <: Obj with MultOp[O, V, T], V <: Value[V], T <: Type[T]](other: T): Inst = new VInst((Tokens.mult, List(other)), qOne, ((a: O, b: List[Obj]) => b.head match {
-    case v: Value[_] with V => a.mult(v)
-    case t: Type[_] with T => a.mult(t)
-  }).asInstanceOf[(Obj, List[Obj]) => Obj])
+  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.mult,List(other)),qOne,((a:O,b:List[Obj]) => a.mult(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.mult,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
+    case v:Value[_] with V => a.mult(v)
+    case t:Type[_] with T => a.mult(t)
+  }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
 

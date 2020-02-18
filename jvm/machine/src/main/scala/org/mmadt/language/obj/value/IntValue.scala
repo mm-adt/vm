@@ -31,21 +31,21 @@ import org.mmadt.storage.obj.`type`.TInt
  */
 trait IntValue extends Int
   with Value[IntValue] {
-  this: IntValue =>
-  override def value(): Long //
-  override def start(): IntType //
+  this:IntValue =>
+  override def value():Long //
+  override def start():IntType //
 
-  override def to(label: StrValue): IntType = this.start().to(label) //
-  //override def eqs(other: IntType): BoolType = this.start().eqs(other) //
-  //override def eqs(other: IntValue): BoolValue = this.value() == other.value() //
-  override def plus(other: IntType): IntType = this.start().plus(other) //
-  override def plus(other: IntValue): IntValue = Int.longToInt(this.value() + other.value()).as(name) // TODO: as() propagation
-  override def mult(other: IntType): IntType = this.start().mult(other) //
-  override def mult(other: IntValue): IntValue = this.value() * other.value() //
-  override def neg(): IntValue = -this.value() //
-  override def gt(other: IntType): BoolType = this.start().gt(other) //
-  override def gt(other: IntValue): BoolValue = this.value() > other.value() //
-  override def gt(): BoolType = new TInt().gt(this) //
-  override def is(bool: BoolType): IntType = this.start().is(bool) //
-  override def is(bool: BoolValue): IntValue = if (bool.value()) this else this.q(0) //
+  override def to(label:StrValue):IntType = this.start().to(label)
+  //override def eqs(other: IntType): BoolType = this.start().eqs(other)
+  //override def eqs(other: IntValue): BoolValue = this.value() == other.value()
+  override def plus(other:IntType):IntType = this.start().plus(other)
+  override def plus(other:IntValue):this.type = Int.longToInt(this.value() + other.value()).as(name) // TODO: as() propagation
+  override def mult(other:IntType):IntType = this.start().mult(other)
+  override def mult(other:IntValue):this.type = Int.longToInt(this.value() * other.value()).as(name)
+  override def neg():this.type = Int.longToInt(-this.value()).as(name)
+  override def gt(other:IntType):BoolType = this.start().gt(other)
+  override def gt(other:IntValue):BoolValue = this.value() > other.value()
+  override def gt():BoolType = new TInt().gt(this)
+  override def is(bool:BoolType):IntType = this.start().is(bool)
+  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
 }

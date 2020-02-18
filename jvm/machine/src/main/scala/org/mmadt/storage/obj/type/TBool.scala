@@ -32,7 +32,7 @@ import org.mmadt.storage.obj._
  */
 class TBool(name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends TObj[BoolType](name, insts, quantifier) with BoolType {
   def this() = this(Tokens.bool, Nil, qOne) //
-  override def compose(inst: Inst): BoolType = bool(inst) //
+  override def compose(inst: Inst): this.type = bool(inst).asInstanceOf[this.type] //
   override def range(): this.type = new TBool(name, Nil, quantifier).asInstanceOf[this.type] //
   override def q(quantifier: TQ): this.type = new TBool(name, insts, quantifier).asInstanceOf[this.type] //
 }

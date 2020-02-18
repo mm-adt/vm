@@ -33,14 +33,14 @@ import org.mmadt.language.obj.value.{BoolValue, StrValue}
 trait StrType extends Str
   with Type[StrType] {
 
-  override def to(label: StrValue): StrType = this.compose(ToOp(label)) //
+  override def to(label: StrValue): this.type = this.compose(ToOp(label)) //
   //override def eqs(other: StrType): BoolType = this.bool(EqOp(other)) //
   //override def eqs(other: StrValue): BoolType = this.bool(EqOp(other)) //
   override def plus(other: StrType): StrType = this.compose(PlusOp(other)) //
-  override def plus(other: StrValue): StrType = this.compose(PlusOp(other)) //
+  override def plus(other: StrValue): this.type = this.compose(PlusOp(other)) //
   override def gt(other: StrType): BoolType = this.bool(GtOp(other)) //
   override def gt(other: StrValue): BoolType = this.bool(GtOp(other)) //
   override def gt(): BoolType = this.bool(GtOp(this)) //
   override def is(bool: BoolType): StrType = this.compose(IsOp(bool)).q(0, q()._2) //
-  override def is(bool: BoolValue): StrType = this.compose(IsOp(bool)).q(0, q()._2) //
+  override def is(bool: BoolValue): this.type = this.compose(IsOp(bool)).q(0, q()._2) //
 }

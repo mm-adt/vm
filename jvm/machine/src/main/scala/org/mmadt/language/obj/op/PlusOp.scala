@@ -32,19 +32,20 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusOp[O <: Obj with PlusOp[O, V, T], V <: Value[V], T <: Type[T]] {
-  this: O =>
-  def plus(other: T): T //
-  def plus(other: V): O //
-  final def +(other: T): T = this.plus(other) //
-  final def +(other: V): O = this.plus(other) //
+trait PlusOp[O <: Obj with PlusOp[O,V,T],V <: Value[V],T <: Type[T]] {
+  this:O =>
+
+  def plus(other:T):T
+  def plus(other:V):this.type
+  final def +(other:T):T = this.plus(other)
+  final def +(other:V):this.type = this.plus(other)
 }
 
 object PlusOp {
-  def apply[O <: Obj with PlusOp[O, V, T], V <: Value[V], T <: Type[T]](other: V): Inst = new VInst((Tokens.plus, List(other)), qOne, ((a: O, b: List[Obj]) => a.plus(other)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
-  def apply[O <: Obj with PlusOp[O, V, T], V <: Value[V], T <: Type[T]](other: T): Inst = new VInst((Tokens.plus, List(other)), qOne, ((a: O, b: List[Obj]) => b.head match {
-    case v: Value[_] with V => a.plus(v)
-    case t: Type[_] with T => a.plus(t)
-  }).asInstanceOf[(Obj, List[Obj]) => Obj])
+  def apply[O <: Obj with PlusOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.plus,List(other)),qOne,((a:O,b:List[Obj]) => a.plus(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with PlusOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.plus,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
+    case v:Value[_] with V => a.plus(v)
+    case t:Type[_] with T => a.plus(t)
+  }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
 

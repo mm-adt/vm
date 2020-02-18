@@ -40,13 +40,13 @@ trait IntStrm extends Int
   //override def eqs(other: IntType): BoolType = this.start().eqs(other) //
   //override def eqs(other: IntValue): BoolValue = throw new IllegalAccessException() //
   override def plus(other: IntType): IntType = this.start().plus(other) //
-  override def plus(other: IntValue): IntStrm = new VIntStrm(this.name, this.value().map(i => i.plus(other)).toSeq) //
+  override def plus(other: IntValue): this.type = new VIntStrm(this.name, this.value().map(i => i.plus(other)).toSeq).asInstanceOf[this.type] //
   override def mult(other: IntType): IntType = this.start().mult(other) //
-  override def mult(other: IntValue): IntValue = throw new IllegalAccessException() //
-  override def neg(): IntValue = throw new IllegalAccessException() //
+  override def mult(other: IntValue): this.type = throw new IllegalAccessException() //
+  override def neg(): this.type = throw new IllegalAccessException() //
   override def gt(other: IntType): BoolType = this.start().gt(other) //
   override def gt(other: IntValue): BoolValue = throw new IllegalAccessException() //
   override def gt(): BoolType = throw new IllegalAccessException() //
   override def is(bool: BoolType): IntType = this.start().is(bool) //
-  override def is(bool: BoolValue): IntValue = throw new IllegalAccessException() //
+  override def is(bool: BoolValue): this.type = throw new IllegalAccessException() //
 }

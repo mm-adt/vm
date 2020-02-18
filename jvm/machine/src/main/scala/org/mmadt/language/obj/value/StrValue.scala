@@ -39,10 +39,10 @@ trait StrValue extends Str
   //override def eqs(other: StrType): BoolType = this.start().eqs(other) //
   //override def eqs(other: StrValue): BoolValue = this.value() == other.value() //
   override def plus(other: StrType): StrType = this.start().plus(other) //
-  override def plus(other: StrValue): StrValue = Str.stringToStr(this.value() + other.value()).as(name) //
+  override def plus(other: StrValue): this.type = Str.stringToStr(this.value() + other.value()).as(name) //
   override def gt(other: StrType): BoolType = this.start().gt(other) //
   override def gt(other: StrValue): BoolValue = this.value() > other.value() //
   override def gt(): BoolType = new TStr().gt(this) //
   override def is(bool: BoolType): StrType = this.start().is(bool) //
-  override def is(bool: BoolValue): StrValue = if (bool.value()) this else this.q(0) //
+  override def is(bool: BoolValue): this.type = if (bool.value()) this else this.q(0) //
 }

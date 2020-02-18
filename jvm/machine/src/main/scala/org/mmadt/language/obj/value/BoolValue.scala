@@ -23,7 +23,8 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -31,16 +32,16 @@ import org.mmadt.language.obj.`type`.{BoolType, IntType}
 trait BoolValue extends Bool
   with Value[BoolValue] {
 
-  override def value(): Boolean //
-  override def start(): BoolType //
+  override def value():Boolean //
+  override def start():BoolType //
 
-  override def to(label: StrValue): BoolType = this.start().to(label) //
+  override def to(label:StrValue):BoolType = this.start().to(label)
   //override def eqs(other: BoolType): BoolType = this.start().eqs(other) //
   //override def eqs(other: BoolValue): BoolValue = this.value() == other.value() //
-  override def and(bool: BoolType): BoolType = this.start().and(bool) //
-  override def and(bool: BoolValue): BoolValue = this.value() && bool.value() //
-  override def or(bool: BoolType): BoolType = this.start().or(bool) //
-  override def or(bool: BoolValue): BoolValue = this.value() || bool.value() //
-  override def is(bool: BoolType): BoolType = this.start().is(bool) //
-  override def is(bool: BoolValue): BoolValue = if (bool.value()) this else this.q(0)
+  override def and(bool:BoolType):BoolType = this.start().and(bool) //
+  override def and(other:BoolValue):this.type = bool(this.value() && other.value()).asInstanceOf[this.type] //
+  override def or(bool:BoolType):BoolType = this.start().or(bool) //
+  override def or(other:BoolValue):this.type = bool(this.value() || other.value()).asInstanceOf[this.type] //
+  override def is(bool:BoolType):BoolType = this.start().is(bool) //
+  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
 }

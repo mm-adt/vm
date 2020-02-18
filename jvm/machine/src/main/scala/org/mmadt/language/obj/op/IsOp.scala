@@ -36,7 +36,7 @@ trait IsOp[O <: Obj with IsOp[O, T], T <: Type[T]] {
   this: O =>
 
   def is(bool: BoolType): T //
-  def is(bool: BoolValue): O //
+  def is(bool: BoolValue): this.type //
 
 }
 

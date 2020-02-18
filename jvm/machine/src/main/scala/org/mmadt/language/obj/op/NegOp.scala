@@ -31,11 +31,12 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait NegOp[O <: Obj with NegOp[O]] {
-  this: O =>
-  def neg(): O //
-  final def unary_-(): O = this.neg() //
+  this:O =>
+
+  def neg():this.type //
+  final def unary_-():this.type = this.neg() //
 }
 
 object NegOp {
-  def apply[O <: Obj with NegOp[O]](): Inst = new VInst((Tokens.neg, Nil), qOne, ((a: O, b: List[Obj]) => a.neg()).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply[O <: Obj with NegOp[O]]():Inst = new VInst((Tokens.neg,Nil),qOne,((a:O,b:List[Obj]) => a.neg()).asInstanceOf[(Obj,List[Obj]) => Obj]) //
 }

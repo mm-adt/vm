@@ -33,17 +33,16 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OrOp {
-  this: Bool =>
-  def or(bool: BoolType): BoolType //
-  def or(bool: BoolValue): Bool //
-  final def ||(bool: BoolType): BoolType = this.or(bool) //
-  final def ||(bool: BoolValue): Bool = this.or(bool) //
+  def or(bool:BoolType):BoolType //
+  def or(bool:BoolValue):this.type //
+  final def ||(bool:BoolType):BoolType = this.or(bool) //
+  final def ||(bool:BoolValue):this.type = this.or(bool) //
 }
 
 object OrOp {
-  def apply(bool: BoolValue): Inst = new VInst((Tokens.or, List(bool)), qOne, ((a: Bool, b: List[Obj]) => a.or(bool)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
-  def apply(bool: BoolType): Inst = new VInst((Tokens.or, List(bool)), qOne, ((a: Bool, b: List[Obj]) => b.head match {
-    case v: BoolValue => a.or(v)
-    case t: BoolType => a.or(t)
-  }).asInstanceOf[(Obj, List[Obj]) => Obj])
+  def apply(bool:BoolValue):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.or(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply(bool:BoolType):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => b.head match {
+    case v:BoolValue => a.or(v)
+    case t:BoolType => a.or(t)
+  }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

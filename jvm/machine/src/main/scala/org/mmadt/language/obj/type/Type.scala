@@ -67,7 +67,7 @@ trait Type[T <: Type[T]] extends Obj
     a.asInstanceOf[TT]
   }
 
-  def compose(inst: Inst): T //
+  def compose(inst: Inst): this.type //
   def compose[TT <: Type[_]](t2: Obj, inst: Inst): TT = (t2 match {
     case _: Bool => bool(inst)
     case _: obj.Int => int(inst)
