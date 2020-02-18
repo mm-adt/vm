@@ -23,7 +23,7 @@
 package org.mmadt.language.model.rewrite
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.{OType, Obj}
+import org.mmadt.language.obj.{OType, Obj, TType}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.C1Traverser
 
@@ -31,18 +31,18 @@ import org.mmadt.processor.obj.`type`.C1Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object LeftRightSweepRewrite {
-  def rewrite[T <: OType](model:Model,startType:OType,endType:T):Traverser[T] ={
-    var mutatingTraverser:Traverser[T] = new C1Traverser[T](startType.asInstanceOf[T])
-    var previousTraverser:Traverser[T] = new C1Traverser[T](endType)
+  def rewrite[E <: Obj](model:Model,startType:OType,endType:TType[E]):Traverser[E] ={
+    var mutatingTraverser:Traverser[E] = new C1Traverser[E](startType.asInstanceOf[E])
+    var previousTraverser:Traverser[E] = new C1Traverser[E](endType)
     while (previousTraverser != mutatingTraverser) {
       mutatingTraverser = previousTraverser
-      previousTraverser = recursiveRewrite(model,mutatingTraverser.obj().asInstanceOf[OType],startType,new C1Traverser(startType.asInstanceOf[T]))
+      previousTraverser = recursiveRewrite(model,mutatingTraverser.obj().asInstanceOf[OType],startType,new C1Traverser(startType.asInstanceOf[E]))
     }
     mutatingTraverser
   }
 
   @scala.annotation.tailrec
-  private def recursiveRewrite[T <: Obj](model:Model,atype:OType,btype:OType,traverser:Traverser[T]):Traverser[T] ={
+  private def recursiveRewrite[E <: Obj](model:Model,atype:OType,btype:OType,traverser:Traverser[E]):Traverser[E] ={
     if (atype.insts().nonEmpty) {
       model.get(atype) match {
         case Some(right:OType) => recursiveRewrite(model,right,btype,traverser)
@@ -51,7 +51,7 @@ object LeftRightSweepRewrite {
           atype.insts().last._2.apply(atype.range(),atype.insts().last._2.args()).asInstanceOf[OType].compose(btype),
           traverser)
       }
-    } else if (btype.insts().nonEmpty) recursiveRewrite(model,btype.linvert(),btype.linvert().domain(),traverser.apply(btype).asInstanceOf[Traverser[T]])
+    } else if (btype.insts().nonEmpty) recursiveRewrite(model,btype.linvert(),btype.linvert().domain(),traverser.apply(btype).asInstanceOf[Traverser[E]])
     else traverser
   }
 }

@@ -41,19 +41,19 @@ class RecursiveTraverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj],val mod
 
   override def split[E <: Obj](obj:E):Traverser[E] = new RecursiveTraverser(obj,this.state,model) //
 
-  override def apply[E <: Obj](endType:TType[E]):Traverser[E] ={
-    if (endType.insts().isEmpty) {
-      TypeChecker.checkType(this.obj,endType)
+  override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
+    if (rangeType.insts().isEmpty) {
+      TypeChecker.checkType(this.obj,rangeType)
       this.asInstanceOf[Traverser[E]]
     } else {
       this.obj match {
-        case _:TType[E] if model.get(endType).nonEmpty => this.apply(model.get(endType).get.asInstanceOf[TType[E]])
+        case _:TType[E] if model.get(rangeType).nonEmpty => this.apply(model.get(rangeType).get.asInstanceOf[TType[E]])
         case _ =>
-          (endType.insts().head._2 match {
+          (rangeType.insts().head._2 match {
             case toInst:Inst if toInst.op().equals(Tokens.to) => new RecursiveTraverser[S](obj,Map[StrValue,Obj](toInst.arg[StrValue]() -> obj) ++ this.state,model) //
             case fromInst:Inst if fromInst.op().equals(Tokens.from) => new RecursiveTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E],this.state,model) //
             case defaultInst:Inst => InstUtil.instEval(this,defaultInst)
-          }).apply(endType.linvert().asInstanceOf[TType[E]])
+          }).apply(rangeType.linvert().asInstanceOf[TType[E]])
       }
     }
   }

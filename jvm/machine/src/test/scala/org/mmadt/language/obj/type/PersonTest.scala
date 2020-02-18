@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.{Rec, Str}
-import org.mmadt.processor.obj.value.IteratorChainProcessor
+import org.mmadt.processor.obj.value.IteratorProcessor
 import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
 
@@ -40,10 +40,10 @@ class PersonTest extends FunSuite {
     ///
     assertResult("rec")(marko.name)
     assertResult("person")(marko.as[Str]("person").name)
-    assertResult(str("marko"))(IteratorChainProcessor(marko, rec.get(str("name"), str)).next().obj())
-    assertResult(int(29))(IteratorChainProcessor(marko, rec.get(str("age"), str)).next().obj())
-    assertResult(str("marko"))(IteratorChainProcessor(marko.as("person"), rec.get(str("name"), str)).next().obj())
-    assertResult(int(29))(IteratorChainProcessor(marko.as("person"), rec.get(str("age"), str)).next().obj())
+    assertResult(str("marko"))(IteratorProcessor(marko, rec.get(str("name"), str)).next().obj())
+    assertResult(int(29))(IteratorProcessor(marko, rec.get(str("age"), str)).next().obj())
+    assertResult(str("marko"))(IteratorProcessor(marko.as("person"), rec.get(str("name"), str)).next().obj())
+    assertResult(int(29))(IteratorProcessor(marko.as("person"), rec.get(str("age"), str)).next().obj())
   }
 
   /*test("person compilation") {

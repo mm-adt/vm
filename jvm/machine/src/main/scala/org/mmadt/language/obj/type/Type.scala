@@ -26,7 +26,7 @@ import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{RecValue,StrValue,Value}
 import org.mmadt.language.obj.{Bool,Inst,OType,OValue,Obj,Str,TQ}
 import org.mmadt.language.{Tokens,obj}
-import org.mmadt.processor.obj.`type`.CompilingProcessor
+import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
@@ -78,10 +78,10 @@ trait Type[T <: Type[T]] extends Obj
   def int(inst:Inst,q:TQ = this.q()):IntType //
   def bool(inst:Inst,q:TQ = this.q()):BoolType //
   def str(inst:Inst,q:TQ = this.q()):StrType //
-  def rec[A <: Obj,B <: Obj](tvalue:RecType[A,B],inst:Inst,q:TQ = this.q()):RecType[A,B] //
+  def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ = this.q()):RecType[A,B] //
 
-  final def <=[D <: Type[D]](domain:D with Type[D]):this.type = domain.compose(this).q(this.q()).asInstanceOf[this.type] //
-  def ==>[TT <: Type[TT]](atype:TT with Type[TT]):TT = new CompilingProcessor().apply(this,atype).next().obj()
+  final def <=[D <: Type[D]](domainType:D with Type[D]):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type] //
+  def ==>[R <: Type[R]](rangeType:R with Type[R]):R = Processor.compiler[Type[T],R]()(this,rangeType).next().obj()
 
   override def id():this.type = this.compose(IdOp()) //
   override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other)) //
@@ -98,7 +98,7 @@ trait Type[T <: Type[T]] extends Obj
   }
 
   override def equals(other:Any):Boolean = other match {
-    case t:Type[T] => t.insts().map(_._2) == this.insts().map(_._2) && this.range().toString == t.range().toString
+    case atype:Type[T] => atype.insts().map(_._2) == this.insts().map(_._2) && this.range().toString == atype.range().toString
     case _ => false
   }
 

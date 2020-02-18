@@ -31,14 +31,14 @@ import org.mmadt.processor.{Processor, Traverser}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class IteratorChainProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
+class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
 
-  override def apply(startObj:S,endType:TType[E]):Iterator[Traverser[E]] ={
-    var output:Iterator[Traverser[E]] = startObj match {
+  override def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]] ={
+    var output:Iterator[Traverser[E]] = domainObj match {
       case s:IntStrm => s.value().map(x => new SimpleTraverser[E](x.asInstanceOf[E]))
       case r => Iterator(new SimpleTraverser[E](r.asInstanceOf[E]))
     }
-    for (tt <- InstUtil.createInstList(Nil,endType)) {
+    for (tt <- InstUtil.createInstList(Nil,rangeType)) {
       // System.out.println(tt)
       output = output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
       if (tt._2.op().equals(Tokens.is)) output = output.filter(_.obj().alive())
@@ -47,6 +47,6 @@ class IteratorChainProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
   }
 }
 
-object IteratorChainProcessor {
-  def apply[S <: Obj,E <: Obj](startObj:S,endType:TType[E]):Iterator[Traverser[E]] = new IteratorChainProcessor[S,E].apply(startObj,endType)
+object IteratorProcessor {
+  def apply[S <: Obj,E <: Obj](startObj:S,endType:TType[E]):Iterator[Traverser[E]] = new IteratorProcessor[S,E].apply(startObj,endType)
 }

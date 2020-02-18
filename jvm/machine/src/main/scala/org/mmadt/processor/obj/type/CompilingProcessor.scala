@@ -24,18 +24,23 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{OType, Obj, TType}
+import org.mmadt.language.obj.{OValue, Obj, TType}
 import org.mmadt.processor.{Processor, Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CompilingProcessor[S <: Obj,E <: Obj](val model:Model = Model.id) extends Processor[S,E] {
-  override def apply(startObj:S,endType:TType[E]):Iterator[Traverser[E]] ={
-    if (startObj.isInstanceOf[Value[_]]) throw new IllegalArgumentException("The compiling processor only accepts types: " + startObj)
-    val traverser:Traverser[E] = (LeftRightSweepRewrite.rewrite(model,startObj.asInstanceOf[OType],endType).asInstanceOf[Traverser[E]])
-    Iterator(if (model == Model.id) traverser else new C2Traverser[E](startObj.asInstanceOf[E],Map.empty,model).apply(traverser.obj().asInstanceOf[E with Type[_]]))
+  override def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]] ={
+    // C1Traverser applies rewrite rules until a steady state is reached
+    val traverser:Traverser[E] = domainObj match {
+      case domainValue:OValue => throw new IllegalArgumentException("The compiling processor only accepts types: " + domainValue)
+      case domainType:TType[E] => LeftRightSweepRewrite.rewrite[E](model,domainType,rangeType)
+    }
+    // C2Traverser performs type erasure, representing all types in terms of mm-ADT
+    Iterator(model match {
+      case Model.id => traverser
+      case _ => new C2Traverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(traverser.obj().asInstanceOf[TType[E]])
+    })
   }
 }

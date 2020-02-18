@@ -39,7 +39,7 @@ abstract class TObj[T <: Type[T]](name:String,insts:List[(OType,Inst)],quantifie
   override def int(inst:Inst,q:TQ):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
   override def bool(inst:Inst,q:TQ):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),q)
   override def str(inst:Inst,q:TQ):StrType = new TStr(typeName(inst.op(),(Tokens.str,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
-  override def rec[A <: Obj,B <: Obj](rtype:RecType[A,B],inst:Inst,q:TQ):RecType[A,B] = new TRec(rtype.name,rtype.value(),this.insts() ::: List((this,inst)),(rtype.q()._1.mult(q._1),rtype.q()._2.mult(q._2)))
+  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ):RecType[A,B] = new TRec(atype.name,atype.value(),this.insts() ::: List((this,inst)),(atype.q()._1.mult(q._1),atype.q()._2.mult(q._2)))
 
   // utility method
   private def typeName(op:String,nextType:(String,List[Obj])):String =

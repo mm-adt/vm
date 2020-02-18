@@ -35,16 +35,15 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
 class C2Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj],val model:Model = Model.id) extends Traverser[S] {
   def this(obj:S) = this(obj,Map[StrValue,Obj]()) //
 
-  override def split[E <: Obj](obj:E):Traverser[E] = new C1Traverser[E](obj,state,model) //
-  override def apply[E <: Obj](endType:TType[E]):Traverser[E] ={
-    val next:Traverser[E] = (model.get(obj.asInstanceOf[Type[_]].domain()) match {
-      case Some(atype) => new C2Traverser[E](atype.asInstanceOf[E].q(obj.q()),state,model)
-      case None => this
-    }).asInstanceOf[Traverser[E]]
-
-    (InstUtil.nextInst(endType.insts()) match {
-      case None => return next.asInstanceOf[Traverser[E]]
+  override def split[E <: Obj](obj:E):Traverser[E] = new C2Traverser[E](obj,state,model) //
+  override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
+    val next:Traverser[E] = model.get(obj.asInstanceOf[Type[_]].domain()) match {
+      case Some(atype) => this.split[E](atype.asInstanceOf[E].q(obj.q()))
+      case None => this.asInstanceOf[Traverser[E]]
+    }
+    (InstUtil.nextInst(rangeType.insts()) match {
+      case None => return next
       case Some(inst) => InstUtil.instEval(next,inst)
-    }).apply(endType.linvert().asInstanceOf[E with Type[_]])
+    }).apply(rangeType.linvert().asInstanceOf[E with Type[_]])
   }
 }

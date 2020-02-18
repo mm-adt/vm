@@ -22,13 +22,20 @@
 
 package org.mmadt.processor
 
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.{Obj, TType}
+import org.mmadt.processor.obj.`type`.CompilingProcessor
+import org.mmadt.processor.obj.value.IteratorProcessor
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Processor[S <: Obj,E <: Obj] {
+  def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]]
+}
 
-  def apply(startObj:S,endType:TType[E]):Iterator[Traverser[E]]
-
+object Processor {
+  def compiler[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new CompilingProcessor[S,E](model)
+  def iterator[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new IteratorProcessor[S,E]
+  // def recursive[S<:Obj,E<:Obj](model:Model = Model.id):Processor[S,E] = new RecursiveTraverser[E]()
 }

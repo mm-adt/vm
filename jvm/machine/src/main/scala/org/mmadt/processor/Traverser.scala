@@ -38,7 +38,7 @@ trait Traverser[S <: Obj] {
 
   //
   def split[E <: Obj](obj:E):Traverser[E] // clone the traverser with a new obj location
-  def apply[E <: Obj](endType:TType[E]):Traverser[E] // embed the traverser's obj into the provided type
+  def apply[E <: Obj](rangeType:TType[E]):Traverser[E] // embed the traverser's obj into the provided type
 
   override def toString:String = Stringer.traverserString(this)
 

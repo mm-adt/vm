@@ -32,7 +32,6 @@ object PrintableInstances {
     def format(input:Obj):String = input match {
       case avalue:OValue => Stringer.valueString(avalue)
       case atype:OType => Stringer.typeString(atype)
-
     }
   }
 }

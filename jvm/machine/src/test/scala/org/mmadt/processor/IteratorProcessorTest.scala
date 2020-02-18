@@ -24,17 +24,17 @@ package org.mmadt.processor
 
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.processor.obj.value.IteratorChainProcessor
+import org.mmadt.processor.obj.value.IteratorProcessor
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class IteratorChainProcessorTest extends FunSuite {
+class IteratorProcessorTest extends FunSuite {
 
   test("fast processor") {
-    val f = new IteratorChainProcessor[IntStrm, IntType]()
+    val f = new IteratorProcessor[IntStrm, IntType]()
     println(f.apply(int(1, 2, 2, 4, 3, 6, 7, 8), int.plus(1).mult(5).mult(10).is(int.gt(200))).toList)
   }
 }
