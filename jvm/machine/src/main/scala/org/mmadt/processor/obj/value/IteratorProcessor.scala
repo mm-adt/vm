@@ -46,7 +46,3 @@ class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
     output
   }
 }
-
-object IteratorProcessor {
-  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]] = new IteratorProcessor[S,E].apply(domainObj,rangeType)
-}

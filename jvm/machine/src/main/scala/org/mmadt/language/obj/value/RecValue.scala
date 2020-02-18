@@ -24,7 +24,6 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{BoolType,RecType,Type}
 import org.mmadt.language.obj.{OType,Obj,Rec}
-import org.mmadt.processor.obj.value.IteratorProcessor
 import org.mmadt.storage.obj._
 
 /**
@@ -47,7 +46,7 @@ trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
 
   override def get(key:A):B = this.value().get(key) match {
     case Some(bvalue:Value[_] with B) => bvalue
-    case Some(btype:Type[_] with B) => IteratorProcessor(key,btype).next().obj()
+    case Some(btype:Type[_] with B) => key ==> btype
     case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
     case _ => throw new RuntimeException()
   }

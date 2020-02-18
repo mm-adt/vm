@@ -23,9 +23,8 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.value.{IntValue, RecValue, StrValue}
+import org.mmadt.language.obj.value.{RecValue, StrValue}
 import org.mmadt.language.obj.{Obj, Rec, Str}
-import org.mmadt.processor.obj.value.IteratorProcessor
 import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
 
@@ -41,10 +40,10 @@ class PersonTest extends FunSuite {
     ///
     assertResult("rec")(marko.name)
     assertResult("person")(marko.as[Str]("person").name)
-    assertResult(str("marko"))(IteratorProcessor(marko,rec.get(str("name"),str)).next().obj())
+    assertResult(str("marko"))(marko ==> rec.get(str("name"),str))
     assertResult(int(29))(marko ==> rec.get(str("age"),int))
-    assertResult(str("marko"))(IteratorProcessor(marko.as("person"),rec.get(str("name"),str)).next().obj())
-    assertResult(int(29))(marko.as[Rec[Obj,Obj]]("person") ==> rec.get(str("age"),int))
+    assertResult(str("marko"))(marko.as[Obj]("person") ==> rec.get(str("name"),str))
+    assertResult(int(29))(marko.as[Obj]("person") ==> rec.get(str("age"),int))
   }
 
   /*test("person compilation") {
