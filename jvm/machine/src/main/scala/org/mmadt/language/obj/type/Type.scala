@@ -32,7 +32,7 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[+T <: Type[T]] extends Obj
+trait Type[T <: Type[T]] extends Obj
   with ModelOp {
 
   def canonical():this.type = this.range().q(1) //
@@ -80,7 +80,7 @@ trait Type[+T <: Type[T]] extends Obj
   def str(inst:Inst,q:TQ = this.q()):StrType //
   def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ = this.q()):RecType[A,B] //
 
-  final def <=[D <: Type[D]](domainType:D with Type[D]):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type] //
+  final def <=[D <: OType](domainType:D):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type] //
   def ==>[R <: Type[R]](rangeType:R with Type[R]):R = Processor.compiler[Type[T],R]()(this,rangeType).next().obj()
 
   override def id():this.type = this.compose(IdOp()) //

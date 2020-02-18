@@ -28,7 +28,7 @@ import org.mmadt.language.obj.{OType, OValue, Obj}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Value[+V <: Value[V]] extends Obj {
+trait Value[V <: Value[V]] extends Obj {
 
   def value():Any
   def start():OType
