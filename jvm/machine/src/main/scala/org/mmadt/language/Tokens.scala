@@ -22,48 +22,48 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.{OType, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object Tokens {
 
-  val obj = "obj"
+  val obj  = "obj"
   val bool = "bool"
-  val str = "str"
-  val rec = "rec"
-  val int = "int"
+  val str  = "str"
+  val rec  = "rec"
+  val int  = "int"
   val inst = "inst"
 
-  val and = "and"
-  val as = "as"
+  val and    = "and"
+  val as     = "as"
   val choose = "choose"
-  val eq = "eq"
-  val get = "get"
-  val id = "id"
-  val is = "is"
-  val plus = "plus"
-  val map = "map"
-  val mult = "mult"
-  val neg = "neg"
-  val gt = "gt"
-  val or = "or"
-  val put = "put"
-  val to = "to"
-  val from = "from"
-  val start = "start"
-  val model = "model"
+  val eq     = "eq"
+  val get    = "get"
+  val id     = "id"
+  val is     = "is"
+  val plus   = "plus"
+  val map    = "map"
+  val mult   = "mult"
+  val neg    = "neg"
+  val gt     = "gt"
+  val or     = "or"
+  val put    = "put"
+  val to     = "to"
+  val from   = "from"
+  val start  = "start"
+  val model  = "model"
 
-  def named(name: String): Boolean = !Set(bool, str, rec, int, inst).contains(name) // TODO: global immutable set
+  def named(name:String):Boolean = !Set(bool,str,rec,int,inst).contains(name) // TODO: global immutable set
 
-  def symbol(obj: Obj): String = obj match {
-    case _: BoolType => Tokens.bool
-    case _: IntType => Tokens.int
-    case _: StrType => Tokens.str
-    case _: RecType[_, _] => Tokens.rec
-    case _: Type[_] => Tokens.obj
+  def symbol(obj:Obj):String = obj match {
+    case _:BoolType => Tokens.bool
+    case _:IntType => Tokens.int
+    case _:StrType => Tokens.str
+    case _:RecType[_,_] => Tokens.rec
+    case _:OType => Tokens.obj
     case _ => throw new Exception("Error: " + obj)
   }
 

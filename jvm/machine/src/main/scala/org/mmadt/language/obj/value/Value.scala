@@ -22,35 +22,35 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.`type`.TypeChecker
+import org.mmadt.language.obj.{OType, OValue, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Value[V <: Value[V]] extends Obj {
 
-  def value(): Any //
-  def start(): Type[_] //
+  def value():Any //
+  def start():OType //
 
 
-  override def map[O <: Obj](other: O): O = other match {
-    case _: Value[_] => other
-    case t: O with Type[_] => (this ==> t).asInstanceOf[O] //
+  override def map[O <: Obj](other:O):O = other match {
+    case _:OValue => other
+    case atype:OType with O => (this ==> atype).asInstanceOf[O] //
   }
 
-  override def id(): this.type = this //
-  override def from[O <: Obj](label: StrValue): O = this.start().from(label) //
+  override def id():this.type = this //
+  override def from[O <: Obj](label:StrValue):O = this.start().from(label) //
 
-  override def equals(other: Any): Boolean = other match {
-    case v: Value[V] => v.value() == this.value()
+  override def equals(other:Any):Boolean = other match {
+    case avalue:OValue => avalue.value() == this.value()
     case _ => false
   }
 
   // pattern matching methods
-  override def test(other: Obj): Boolean = other match {
-    case argValue: Value[_] => TypeChecker.matchesVV(this, argValue)
-    case argType: Type[_] => TypeChecker.matchesVT(this, argType)
+  override def test(other:Obj):Boolean = other match {
+    case argValue:OValue => TypeChecker.matchesVV(this,argValue)
+    case argType:OType => TypeChecker.matchesVT(this,argType)
   }
 
 }

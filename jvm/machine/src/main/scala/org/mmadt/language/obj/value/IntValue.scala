@@ -31,7 +31,7 @@ import org.mmadt.storage.obj.`type`.TInt
  */
 trait IntValue extends Int
   with Value[IntValue] {
-  this:IntValue =>
+
   override def value():Long //
   override def start():IntType //
 

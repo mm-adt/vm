@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{RecValue,StrValue,Value}
-import org.mmadt.language.obj.{Bool,Inst,Obj,Str,TQ}
+import org.mmadt.language.obj.{Bool,Inst,OType,OValue,Obj,Str,TQ}
 import org.mmadt.language.{Tokens,obj}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.processor.obj.`type`.util.InstUtil
@@ -38,12 +38,12 @@ trait Type[T <: Type[T]] extends Obj
   def canonical():this.type = this.range().q(1) //
   def range():this.type //
 
-  def domain[D <: Type[_]]():D = (this.insts() match {
+  def domain[D <: OType]():D = (this.insts() match {
     case Nil => this
-    case i:List[(Type[_],Inst)] => i.head._1.range()
+    case i:List[(OType,Inst)] => i.head._1.range()
   }).asInstanceOf[D]
 
-  def insts():List[(Type[_],Inst)] //
+  def insts():List[(OType,Inst)] //
 
   def linvert():this.type ={
     ((this.insts().tail match {
@@ -55,20 +55,20 @@ trait Type[T <: Type[T]] extends Obj
     }).asInstanceOf[this.type]
   }
 
-  def rinvert[TT <: Type[_]]():TT =
+  def rinvert[TT <: OType]():TT =
     (this.insts().dropRight(1).lastOption match {
       case Some(prev) => prev._2.apply(prev._1,prev._2.args())
       case None => this.insts().head._1
     }).asInstanceOf[TT]
 
-  def compose[TT <: Type[_]](btype:TT):TT ={
+  def compose[TT <: OType](btype:TT):TT ={
     var a:this.type = this
     for (i <- btype.insts()) a = a.compose(i._1,i._2)
     a.asInstanceOf[TT]
   }
 
   def compose(inst:Inst):this.type //
-  def compose[TT <: Type[_]](t2:Obj,inst:Inst):TT = (t2 match {
+  def compose[TT <: OType](t2:Obj,inst:Inst):TT = (t2 match {
     case _:Bool => bool(inst)
     case _:obj.Int => int(inst)
     case _:Str => str(inst)
@@ -93,8 +93,8 @@ trait Type[T <: Type[T]] extends Obj
   }).asInstanceOf[O] //
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
-    case argValue:Value[_] => TypeChecker.matchesTV(this,argValue)
-    case argType:Type[_] => TypeChecker.matchesTT(this,argType)
+    case argValue:OValue => TypeChecker.matchesTV(this,argValue)
+    case argType:OType => TypeChecker.matchesTT(this,argType)
   }
 
   override def equals(other:Any):Boolean = other match {

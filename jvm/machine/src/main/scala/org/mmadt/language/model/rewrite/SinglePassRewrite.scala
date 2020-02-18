@@ -23,13 +23,14 @@
 package org.mmadt.language.model.rewrite
 
 import org.mmadt.language.model.Model
+import org.mmadt.language.obj.OType
 import org.mmadt.language.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object SinglePassRewrite {
-  def rewrite[T <: Type[T]](model: Model, startType: Type[_], endType: Type[_]): T = {
+  def rewrite[T <: Type[T]](model: Model, startType: OType, endType: OType): T = {
     var btype: T = endType.asInstanceOf[T]
     var xtype: T = btype
     for (_ <- btype.insts().indices) {

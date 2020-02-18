@@ -22,14 +22,17 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.{IntValue, Value}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 package object obj {
-  type TQ = (IntValue, IntValue)
-  type JInst = (String, List[Obj])
+  type TQ = (IntValue,IntValue)
+  type JInst = (String,List[Obj])
+  type OType = Type[_]
+  type OValue = Value[_]
 }
 
 

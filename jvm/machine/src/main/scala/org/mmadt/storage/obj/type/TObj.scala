@@ -25,27 +25,24 @@ package org.mmadt.storage.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj, TQ}
+import org.mmadt.language.obj.{Inst, OType, Obj, TQ}
 import org.mmadt.storage.obj.{OObj, _}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class TObj[T <: Type[T]](name: String, insts: List[(Type[_], Inst)], quantifier: TQ) extends OObj(name, quantifier) with Type[T] {
+abstract class TObj[T <: Type[T]](name:String,insts:List[(OType,Inst)],quantifier:TQ) extends OObj(name,quantifier) with Type[T] {
 
-  def this() = this(Tokens.obj, Nil, qOne) //
-  def insts(): List[(Type[_], Inst)] = insts //
+  def this() = this(Tokens.obj,Nil,qOne) //
+  def insts():List[(OType,Inst)] = insts //
 
-  override def int(inst: Inst, q: TQ): IntType = new TInt(typeName(inst.op(), (Tokens.int, inst.args())), this.insts() ::: List((this, inst)), q) // TODO: propagating the type name
-
-  override def bool(inst: Inst, q: TQ): BoolType = new TBool(Tokens.bool, this.insts() ::: List((this, inst)), q)
-
-  override def str(inst: Inst, q: TQ): StrType = new TStr(typeName(inst.op(), (Tokens.str, inst.args())), this.insts() ::: List((this, inst)), q) // TODO: propagating the type name
-
-  override def rec[A <: Obj, B <: Obj](rtype: RecType[A, B], inst: Inst, q: TQ): RecType[A, B] = new TRec(rtype.name, rtype.value(), this.insts() ::: List((this, inst)), (rtype.q()._1.mult(q._1), rtype.q()._2.mult(q._2)))
+  override def int(inst:Inst,q:TQ):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
+  override def bool(inst:Inst,q:TQ):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),q)
+  override def str(inst:Inst,q:TQ):StrType = new TStr(typeName(inst.op(),(Tokens.str,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
+  override def rec[A <: Obj,B <: Obj](rtype:RecType[A,B],inst:Inst,q:TQ):RecType[A,B] = new TRec(rtype.name,rtype.value(),this.insts() ::: List((this,inst)),(rtype.q()._1.mult(q._1),rtype.q()._2.mult(q._2)))
 
   // utility method
-  private def typeName(op: String, nextType: (String, List[Obj])): String =
+  private def typeName(op:String,nextType:(String,List[Obj])):String =
     if (op.equals(Tokens.as))
       nextType._2.head.asInstanceOf[StrValue].value()
     else if (Tokens.named(name)) name else nextType._1

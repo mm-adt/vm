@@ -26,7 +26,7 @@ import org.mmadt.language.Printable
 import org.mmadt.language.PrintableInstances._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.processor.obj.`type`.RecursiveTraverser
 
 /**
@@ -40,17 +40,17 @@ trait Obj
     with FromOp {
 
   // quantifier methods
-  def q(): TQ //
-  def q(quantifier: TQ): this.type //
-  def q(single: IntValue): this.type = this.q((single, single)) //
-  def q(min: IntValue, max: IntValue): this.type = this.q((min, max)) //
-  def alive(): Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
+  def q():TQ //
+  def q(quantifier:TQ):this.type //
+  def q(single:IntValue):this.type = this.q((single,single)) //
+  def q(min:IntValue,max:IntValue):this.type = this.q((min,max)) //
+  def alive():Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0 //
 
   // utility methods
-  def ==>[E <: Obj](t: E with Type[_]): Obj = new RecursiveTraverser[E](this.asInstanceOf[E]).apply(t).obj() // TODO: FORCE TYPE CHECK ON t:Obj
+  def ==>[E <: Obj](t:E with Type[_]):Obj = new RecursiveTraverser[E](this.asInstanceOf[E]).apply(t).obj() // TODO: FORCE TYPE CHECK ON t:Obj
 
   // pattern matching methods
-  val name: String //
-  def test(other: Obj): Boolean //
-  override def toString: String = Printable.format(this)
+  val name:String //
+  def test(other:Obj):Boolean //
+  override def toString:String = Printable.format(this)
 }

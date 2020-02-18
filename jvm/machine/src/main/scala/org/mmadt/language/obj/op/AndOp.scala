@@ -42,7 +42,7 @@ trait AndOp {
 object AndOp {
   def apply(bool:BoolValue):Inst = new VInst((Tokens.and,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.and(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
   def apply(bool:BoolType):Inst = new VInst((Tokens.and,List(bool)),qOne,((a:Bool,b:List[Obj]) => b.head match {
-    case v:BoolValue => a.and(v)
-    case t:BoolType => a.and(t)
+    case avalue:BoolValue => a.and(avalue)
+    case atype:BoolType => a.and(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

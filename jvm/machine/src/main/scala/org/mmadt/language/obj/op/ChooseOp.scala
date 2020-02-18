@@ -24,8 +24,8 @@ package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.value.RecValue
+import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -33,18 +33,18 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ChooseOp {
-  this: Obj with ChooseOp =>
+  this:Obj with ChooseOp =>
 
-  def choose[IT <: Type[_], OT <: Obj](branches: (IT, OT)*): OT = this.choose(branches.toMap)
+  def choose[IT <: Type[_],OT <: Obj](branches:(IT,OT)*):OT = this.choose(branches.toMap)
 
-  def choose[IT <: Type[_], OT <: Obj](branches: RecValue[IT, OT]): OT = {
+  def choose[IT <: Type[_],OT <: Obj](branches:RecValue[IT,OT]):OT ={
     this match {
-      case atype: Type[_] => atype.compose(branches.value().head._2, ChooseOp[IT, OT](branches))
-      case avalue: Value[_] => (avalue ==> branches.value().filter(p => (avalue ==> p._1).alive()).head._2.asInstanceOf[Obj with Type[_]]).asInstanceOf[OT]
+      case atype:OType => atype.compose(branches.value().head._2,ChooseOp[IT,OT](branches))
+      case avalue:OValue => (avalue ==> branches.value().filter(p => (avalue ==> p._1).alive()).head._2.asInstanceOf[Obj with Type[_]]).asInstanceOf[OT]
     }
   }
 }
 
 object ChooseOp {
-  def apply[IT <: Type[_], OT <: Obj](branches: RecValue[IT, OT]): Inst = new VInst((Tokens.choose, List(branches)), qOne, (a: Obj, b: List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT, OT]])) //
+  def apply[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT,OT]])) //
 }

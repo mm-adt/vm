@@ -22,33 +22,32 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, JInst, Obj, TQ}
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.TypeChecker
 import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst(java: JInst, quantifier: TQ, function: (Obj, List[Obj]) => Obj) extends VObj(Tokens.inst, java, quantifier) with Inst {
-  override def as[O <: Obj](name: String): O = this.asInstanceOf[O] //
-  def this(java: JInst) = this(java, qOne, null) //
-  override def value(): JInst = java //
-  override def toString: String = Stringer.instString(this) //
-  override def q(quantifier: TQ): this.type = new VInst(java, quantifier, function).asInstanceOf[this.type] //
-  override def id(): this.type = this //
-  override def apply(obj: Obj, args: List[Obj]): Obj = function.apply(obj, args) //
+class VInst(java:JInst,quantifier:TQ,function:(Obj,List[Obj]) => Obj) extends VObj(Tokens.inst,java,quantifier) with Inst {
+  override def as[O <: Obj](name:String):O = this.asInstanceOf[O] //
+  def this(java:JInst) = this(java,qOne,null) //
+  override def value():JInst = java //
+  override def toString:String = Stringer.instString(this) //
+  override def q(quantifier:TQ):this.type = new VInst(java,quantifier,function).asInstanceOf[this.type] //
+  override def id():this.type = this //
+  override def apply(obj:Obj,args:List[Obj]):Obj = function.apply(obj,args) //
 
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
-  def test(other: Obj): Boolean = this match {
-    case startValue: Value[_] => other match {
-      case argValue: Value[_] => TypeChecker.matchesVV(startValue, argValue)
-      case argType: Type[_] => TypeChecker.matchesVT(startValue, argType)
+  def test(other:Obj):Boolean = this match {
+    case startValue:OValue => other match {
+      case argValue:OValue => TypeChecker.matchesVV(startValue,argValue)
+      case argType:OType => TypeChecker.matchesVT(startValue,argType)
     }
-    case startType: Type[_] => other match {
-      case argValue: Value[_] => TypeChecker.matchesTV(startType, argValue)
-      case argType: Type[_] => TypeChecker.matchesTT(startType, argType)
+    case startType:OType => other match {
+      case argValue:OValue => TypeChecker.matchesTV(startType,argValue)
+      case argType:OType => TypeChecker.matchesTT(startType,argType)
     }
   }
 

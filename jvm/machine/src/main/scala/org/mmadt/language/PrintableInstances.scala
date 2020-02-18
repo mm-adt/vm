@@ -22,18 +22,16 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{OType, OValue, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object PrintableInstances {
-  implicit val objPrintable: Printable[Obj] = new Printable[Obj] {
-    def format(input: Obj): String = input match {
-      case v: Value[_] => Stringer.valueString(v)
-      case t: Type[_] => Stringer.typeString(t)
+  implicit val objPrintable:Printable[Obj] = new Printable[Obj] {
+    def format(input:Obj):String = input match {
+      case avalue:OValue => Stringer.valueString(avalue)
+      case atype:OType => Stringer.typeString(atype)
 
     }
   }

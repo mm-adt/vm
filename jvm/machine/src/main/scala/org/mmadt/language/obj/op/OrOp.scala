@@ -42,7 +42,7 @@ trait OrOp {
 object OrOp {
   def apply(bool:BoolValue):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.or(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
   def apply(bool:BoolType):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => b.head match {
-    case v:BoolValue => a.or(v)
-    case t:BoolType => a.or(t)
+    case avalue:BoolValue => a.or(avalue)
+    case atype:BoolType => a.or(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
