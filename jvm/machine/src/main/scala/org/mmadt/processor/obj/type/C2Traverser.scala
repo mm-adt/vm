@@ -41,7 +41,7 @@ class C2Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj],val model:Mode
       case Some(atype) => this.split[E](atype.asInstanceOf[E].q(obj.q()))
       case None => this.asInstanceOf[Traverser[E]]
     }
-    (InstUtil.nextInst(rangeType.insts()) match {
+    (InstUtil.nextInst(rangeType) match {
       case None => return next
       case Some(inst) => InstUtil.instEval(next,inst)
     }).apply(rangeType.linvert().asInstanceOf[E with Type[_]])

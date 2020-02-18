@@ -87,7 +87,7 @@ trait Type[T <: Type[T]] extends Obj
   override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other)) //
   override def model(model:StrValue):this.type = this.compose(ModelOp(model)) //
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O] //
-  override def as[O <: Obj](name:String):O = (InstUtil.lastInst(this) match {
+  override def as[O <: Obj](name:String):O = (InstUtil.nextInst(this) match {
     case Some(x) if x == AsOp(name) => this
     case _ => this.compose(AsOp(name))
   }).asInstanceOf[O] //

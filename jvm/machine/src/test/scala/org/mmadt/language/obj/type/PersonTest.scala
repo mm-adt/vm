@@ -23,7 +23,8 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.{Rec, Str}
+import org.mmadt.language.obj.value.{IntValue, RecValue, StrValue}
+import org.mmadt.language.obj.{Obj, Rec, Str}
 import org.mmadt.processor.obj.value.IteratorProcessor
 import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
@@ -33,17 +34,17 @@ import org.scalatest.FunSuite
  */
 class PersonTest extends FunSuite {
 
-  test("person rec") {
-    val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
+  test("person rec"){
+    val marko:RecValue[StrValue,Obj] = rec(str("name") -> str("marko"),str("age") -> int(29))
     assertResult("['name':'marko','age':29]")(marko.toString)
     assertResult("person['name':'marko','age':29]")(marko.as("person").toString)
     ///
     assertResult("rec")(marko.name)
     assertResult("person")(marko.as[Str]("person").name)
-    assertResult(str("marko"))(IteratorProcessor(marko, rec.get(str("name"), str)).next().obj())
-    assertResult(int(29))(IteratorProcessor(marko, rec.get(str("age"), str)).next().obj())
-    assertResult(str("marko"))(IteratorProcessor(marko.as("person"), rec.get(str("name"), str)).next().obj())
-    assertResult(int(29))(IteratorProcessor(marko.as("person"), rec.get(str("age"), str)).next().obj())
+    assertResult(str("marko"))(IteratorProcessor(marko,rec.get(str("name"),str)).next().obj())
+    assertResult(int(29))(marko ==> rec.get(str("age"),int))
+    assertResult(str("marko"))(IteratorProcessor(marko.as("person"),rec.get(str("name"),str)).next().obj())
+    assertResult(int(29))(marko.as[Rec[Obj,Obj]]("person") ==> rec.get(str("age"),int))
   }
 
   /*test("person compilation") {
@@ -57,14 +58,14 @@ class PersonTest extends FunSuite {
     println(processor.apply(marko, rec[Str, Str].get[StrType]("firstname", str)).toList)
   }*/
 
-  test("person evaluation") {
-    val marko = rec(str("name") -> str("marko"), str("age") -> int(29)).as[Rec[_,_]]("person")
+  test("person evaluation"){
+    val marko = rec(str("name") -> str("marko"),str("age") -> int(29)).as[Rec[_,_]]("person")
     val model = Model.simple().
-      put(int.mult(2), int.plus(int)).
-      put(int.plus(0), int).
-      put(rec.get(str("firstname"), str), rec.get(str("name"), str))
+      put(int.mult(2),int.plus(int)).
+      put(int.plus(0),int).
+      put(rec.get(str("firstname"),str),rec.get(str("name"),str))
     println(model)
-    println(model.get(rec.get(str("firstname"), str)))
+    println(model.get(rec.get(str("firstname"),str)))
     // println(IteratorChainProcessor(marko, rec.get(str("firstname"), str)).toList)
   }
 

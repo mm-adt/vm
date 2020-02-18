@@ -60,7 +60,7 @@ object Model {
         case Some(m) => m
       }
       x.get(left) match {
-        case Some(m) => return Some(m)
+        case Some(m) => Some(m)
         case None => x.iterator.find(a => left.test(a._1)).map(_._2)
       }
     }

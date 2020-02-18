@@ -39,7 +39,7 @@ class IntTypeTest extends FunSuite {
       println(int <= int.is(int.gt(5)))
       println(int(5) ==> (int <= int.is(int.gt(5))))
     }
-    assertResult("5{0}")((int(5) ==> int.is(int.gt(5))).toString)
+    //assertResult("5{0}")((int(5) ==> int.is(int.gt(5))).toString)
     intercept[IllegalArgumentException] {
       println(int.q(0) <= int.is(int.gt(5)))
       println(int(6) ==> int.q(0) <= int.is(int.gt(5)))

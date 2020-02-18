@@ -37,6 +37,6 @@ trait Processor[S <: Obj,E <: Obj] {
 
 object Processor {
   def compiler[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new CompilingProcessor[S,E](model)
-  def iterator[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new IteratorProcessor[S,E]
+  def iterator[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new IteratorProcessor[S,E]()
   // def recursive[S<:Obj,E<:Obj](model:Model = Model.id):Processor[S,E] = new RecursiveTraverser[E]()
 }

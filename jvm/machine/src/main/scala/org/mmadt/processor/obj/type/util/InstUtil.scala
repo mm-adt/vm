@@ -22,15 +22,14 @@
 
 package org.mmadt.processor.obj.`type`.util
 
-import org.mmadt.language.obj.{Inst,OType,OValue,Obj}
+import org.mmadt.language.obj._
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.obj.int
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object InstUtil {
-
-  def nextInst(insts:List[(OType,Inst)]):Option[Inst] = if (insts == Nil) None else Some(insts.head._2)
 
   private def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
     inst.args().map{
@@ -53,8 +52,13 @@ object InstUtil {
     if (atype.insts().isEmpty) list else createInstList(List((atype.range(),atype.insts().last._2)) ++ list,atype.insts().last._1)
   }
 
-  def lastInst(atype:OType):Option[Inst] = atype.insts() match {
+  def nextInst(atype:OType):Option[Inst] = atype.insts() match {
     case Nil => None
     case x => Some(x.head._2)
+  }
+
+  def updateQ[O <: Obj](obj:Obj,atype:OType):O = atype.q() match {
+    case _ if ==(int(1),int(1)) => obj.asInstanceOf[O]
+    case tq:TQ => obj.q(obj.q()._1 * tq._1,obj.q()._2 * tq._2).asInstanceOf[O]
   }
 }

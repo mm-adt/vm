@@ -24,7 +24,7 @@ package org.mmadt.processor
 
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.processor.obj.`type`.RecursiveTraverser
+import org.mmadt.processor.obj.value.I1Traverser
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
@@ -33,48 +33,48 @@ import org.scalatest.FunSuite
  */
 class TraverserTest extends FunSuite {
 
-  def trav(obj: Obj): Traverser[Obj] = new RecursiveTraverser(obj)
+  def trav(obj:Obj):Traverser[Obj] = new I1Traverser[Obj](obj)
 
-  test("traverser toString") {
-    assertResult("[3|a->3]") {
+  test("traverser toString"){
+    assertResult("[3|a->3]"){
       trav(int(3))(int.to("a")).toString
     }
-    assertResult("[8|a->3,b->8]") {
+    assertResult("[8|a->3,b->8]"){
       trav(int(3))(int.to("a").plus(5).to("b")).toString
     }
-    assertResult("[11|a->3]") {
+    assertResult("[11|a->3]"){
       trav(int(3))(int.to("a").plus(int(5).to("b").plus(int.from[IntType]("a")))).toString
     }
   }
 
-  test("traverser state") {
-    assertResult(Map(str("a") -> int(5))) {
+  test("traverser state"){
+    assertResult(Map(str("a") -> int(5))){
       trav(int(3))(int.plus(int(2)).to("a").mult(3)).state()
     }
     assertResult(Map(
       str("a") -> int(5),
-      str("b") -> int(15))) {
+      str("b") -> int(15))){
       trav(int(3))(int.plus(2).to("a").mult(3).to("b")).state()
     }
-    assertResult(int(5)) {
+    assertResult(int(5)){
       int(3) ==> int <= int.plus(2).to("a").mult(3).to("b").plus(1000).from("a")
     }
   }
 
-  test("traverser chain") {
-    assertResult(int(100)) {
+  test("traverser chain"){
+    assertResult(int(100)){
       int(2) ==> int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)
     }
-    assertResult(int(30)) {
+    assertResult(int(30)){
       int(2) ==> int.plus(int.plus(1)).mult(int.plus(1))
     }
   }
 
-  test("multi input") {
+  test("multi input"){
     /*assertResult(int(100)) {
       int(1,2,3) ==> int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)
     }*/
-    assertResult(int(30)) {
+    assertResult(int(30)){
       int(2) ==> int.plus(int.plus(1)).mult(int.plus(1))
     }
   }

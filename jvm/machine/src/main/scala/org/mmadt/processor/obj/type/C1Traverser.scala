@@ -37,7 +37,7 @@ class C1Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj],val model:Mode
 
   override def split[E <: Obj](obj:E):Traverser[E] = new C1Traverser[E](obj,state,model) //
   override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
-    InstUtil.nextInst(rangeType.insts()) match {
+    InstUtil.nextInst(rangeType) match {
       case None => this.asInstanceOf[Traverser[E]]
       case Some(inst) => inst match {
         case toInst:Inst if toInst.op().equals(Tokens.to) => new C1Traverser[E](obj.asInstanceOf[E],Map[StrValue,Obj](toInst.arg[StrValue]() -> obj) ++ this.state,model) //

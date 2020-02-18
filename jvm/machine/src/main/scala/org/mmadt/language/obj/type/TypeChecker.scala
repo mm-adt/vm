@@ -30,7 +30,7 @@ import org.mmadt.language.obj.{OType, OValue, Obj}
 object TypeChecker {
 
   def checkType[O <: Obj](obj:O,atype:OType):O ={
-    if (obj.isInstanceOf[Type[_]] || ((obj match {
+    if (obj.isInstanceOf[OType] || ((obj match {
       case avalue:OValue => avalue.start().getClass.isAssignableFrom(atype.getClass)
       case atype:OType => atype.getClass.isAssignableFrom(atype.getClass)
     }) && obj.q()._1.value() >= atype.q()._1.value() && obj.q()._2.value() <= atype.q()._2.value()))
@@ -43,7 +43,7 @@ object TypeChecker {
   def matchesVV[O <: Obj](obj:O with OValue,pattern:Obj with OValue):Boolean = obj.value().equals(pattern.value())
   def matchesTT[O <: Obj](obj:O with OType,pattern:Obj with OType):Boolean ={
     obj.insts().toString().equals(pattern.insts().toString()) ||
-    (obj.domain().equals(pattern.domain()) && (obj.domain[OType]() ==> pattern).equals(obj))
+    (obj.domain().equals(pattern.domain()) && (obj.domain[OType]() ===> pattern).filter(x => x.equals(obj)).hasNext)
   }
   def matchesTV[O <: Obj](obj:O with OType,pattern:O with OValue):Boolean = false
 }

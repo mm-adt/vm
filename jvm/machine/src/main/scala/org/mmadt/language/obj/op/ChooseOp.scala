@@ -39,7 +39,7 @@ trait ChooseOp {
   def choose[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):OT ={
     this match {
       case atype:OType => atype.compose(branches.value().head._2,ChooseOp[IT,OT](branches))
-      case avalue:OValue => (avalue ==> branches.value().filter(p => (avalue ==> p._1).alive()).head._2.asInstanceOf[OType]).asInstanceOf[OT]
+      case avalue:OValue => (avalue ==> branches.value().filter(p => ((avalue ===> p._1).hasNext)).head._2.asInstanceOf[OType]).asInstanceOf[OT]
     }
   }
 }
