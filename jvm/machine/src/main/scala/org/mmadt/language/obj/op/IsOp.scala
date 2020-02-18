@@ -32,19 +32,19 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IsOp[O <: Obj with IsOp[O, T], T <: Type[T]] {
-  this: O =>
+trait IsOp[O <: Obj with IsOp[O,T],T <: Type[T]] {
+  this:O =>
 
-  def is(bool: BoolType): T //
-  def is(bool: BoolValue): this.type //
+  def is(bool:BoolType):T //
+  def is(bool:BoolValue):this.type //
 
 }
 
 object IsOp {
-  def apply[O <: Obj with IsOp[O, T], T <: Type[T]](bool: BoolValue): Inst = new VInst((Tokens.is, List(bool)), qOne, ((a: O, b: List[Obj]) => a.is(bool)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
-  def apply[O <: Obj with IsOp[O, T], T <: Type[T]](bool: BoolType): Inst = new VInst((Tokens.is, List(bool)), qOne, ((a: O, b: List[Obj]) => b.head match {
-    case v: BoolValue => a.is(v)
-    case t: BoolType => a.is(t)
-  }).asInstanceOf[(Obj, List[Obj]) => Obj])
+  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:BoolValue):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:BoolType):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => b.head match {
+    case avalue:BoolValue => a.is(avalue)
+    case atype:BoolType => a.is(atype)
+  }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
 

@@ -22,6 +22,7 @@
 
 package org.mmadt.language.model
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.OType
 import org.mmadt.language.obj.`type`.Type
 
@@ -31,34 +32,28 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
-
-  final def apply[T <: Type[T]](left:OType):T = this.get(left).get.asInstanceOf[T] //
-  def put(left:OType,right:OType):Model //
-  def get(left:OType):Option[OType] //
+  final def apply[T <: Type[T]](left:OType):T = this.get(left).get.asInstanceOf[T]
+  def put(left:OType,right:OType):Model
+  def get(left:OType):Option[OType]
 
 }
 
 object Model {
-
-  def apply(args:(OType,OType)*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2)) //
+  def apply(args:(OType,OType)*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
 
   val id:Model = new Model {
-    override def put(left:OType,right:OType):Model = this //
-    override def get(left:OType):Option[OType] = None //
-
+    override def put(left:OType,right:OType):Model = this
+    override def get(left:OType):Option[OType] = None
   }
 
   def simple():Model = new Model {
     val typeMap:mutable.Map[String,mutable.Map[OType,OType]] = mutable.Map()
-
-    override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold("")((x,y) => x + y + "\n\t")).fold("")((x,y) => x + y + "\n")
-
+    override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).fold(Tokens.empty)((x,y) => x + y + "\n")
     override def put(left:OType,right:OType):Model ={
       if (typeMap.get(left.name).isEmpty) typeMap.put(left.name,mutable.Map())
       typeMap(left.name).put(left,right)
       this
     }
-
     override def get(left:OType):Option[OType] = if (typeMap.get(left.name).isEmpty) None else typeMap(left.name).get(left)
   }
 }

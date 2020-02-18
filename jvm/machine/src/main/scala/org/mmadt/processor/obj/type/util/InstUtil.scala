@@ -22,9 +22,8 @@
 
 package org.mmadt.processor.obj.`type`.util
 
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst,OType,OValue,Obj}
 import org.mmadt.processor.Traverser
 
 /**
@@ -32,30 +31,30 @@ import org.mmadt.processor.Traverser
  */
 object InstUtil {
 
-  def nextInst(insts: List[(Type[_], Inst)]): Option[Inst] = if (insts == Nil) None else Some(insts.head._2)
+  def nextInst(insts:List[(OType,Inst)]):Option[Inst] = if (insts == Nil) None else Some(insts.head._2)
 
-  private def valueArgs[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): List[Obj] = {
-    inst.args().map {
-      case typeArg: Type[_] => traverser.split(traverser.obj() match {
-        case tt: Type[_] => tt.range()
-        case vv: Value[_] => vv
+  private def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
+    inst.args().map{
+      case typeArg:OType => traverser.split(traverser.obj() match {
+        case atype:OType => atype.range()
+        case avalue:OValue => avalue
       }).apply(typeArg).obj()
-      case valueArg: Value[_] => valueArg
+      case valueArg:Value[_] => valueArg
     }
   }
 
   /**
    * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
    */
-  def instEval[S <: Obj, E <: Obj](traverser: Traverser[S], inst: Inst): Traverser[E] =
-    traverser.split(inst.apply(traverser.obj(), InstUtil.valueArgs(traverser, inst)).asInstanceOf[E])
+  def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):Traverser[E] =
+    traverser.split(inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E])
 
   @scala.annotation.tailrec
-  def createInstList(list: List[(Type[_], Inst)], t: Type[_]): List[(Type[_], Inst)] = {
-    if (t.insts().isEmpty) list else createInstList(List((t.range(), t.insts().last._2)) ++ list, t.insts().last._1)
+  def createInstList(list:List[(OType,Inst)],atype:OType):List[(OType,Inst)] ={
+    if (atype.insts().isEmpty) list else createInstList(List((atype.range(),atype.insts().last._2)) ++ list,atype.insts().last._1)
   }
 
-  def lastInst(atype: Type[_]): Option[Inst] = atype.insts() match {
+  def lastInst(atype:OType):Option[Inst] = atype.insts() match {
     case Nil => None
     case x => Some(x.head._2)
   }

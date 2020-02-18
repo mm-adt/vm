@@ -22,14 +22,13 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.{Obj, TType}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Processor[S <: Obj, E <: Obj] {
+trait Processor[S <: Obj,E <: Obj] {
 
-  def apply(startObj: S, endType: E with Type[_]): Iterator[Traverser[E]]
+  def apply(startObj:S,endType:TType[E]):Iterator[Traverser[E]]
 
 }

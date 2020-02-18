@@ -31,26 +31,24 @@ import org.mmadt.processor.obj.`type`.C1Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object LeftRightSweepRewrite {
-  private type EType = Obj with OType
-
   def rewrite[T <: OType](model:Model,startType:OType,endType:T):Traverser[T] ={
     var mutatingTraverser:Traverser[T] = new C1Traverser[T](startType.asInstanceOf[T])
     var previousTraverser:Traverser[T] = new C1Traverser[T](endType)
     while (previousTraverser != mutatingTraverser) {
       mutatingTraverser = previousTraverser
-      previousTraverser = recursiveRewrite(model,mutatingTraverser.obj().asInstanceOf[EType],startType,new C1Traverser(startType.asInstanceOf[T]))
+      previousTraverser = recursiveRewrite(model,mutatingTraverser.obj().asInstanceOf[OType],startType,new C1Traverser(startType.asInstanceOf[T]))
     }
     mutatingTraverser
   }
 
   @scala.annotation.tailrec
-  private def recursiveRewrite[T <: Obj](model:Model,atype:EType,btype:EType,traverser:Traverser[T]):Traverser[T] ={
+  private def recursiveRewrite[T <: Obj](model:Model,atype:OType,btype:OType,traverser:Traverser[T]):Traverser[T] ={
     if (atype.insts().nonEmpty) {
       model.get(atype) match {
-        case Some(right:EType) => recursiveRewrite(model,right,btype,traverser)
+        case Some(right:OType) => recursiveRewrite(model,right,btype,traverser)
         case None => recursiveRewrite(model,
           atype.rinvert(),
-          atype.insts().last._2.apply(atype.range(),atype.insts().last._2.args()).asInstanceOf[EType].compose(btype),
+          atype.insts().last._2.apply(atype.range(),atype.insts().last._2.args()).asInstanceOf[OType].compose(btype),
           traverser)
       }
     } else if (btype.insts().nonEmpty) recursiveRewrite(model,btype.linvert(),btype.linvert().domain(),traverser.apply(btype).asInstanceOf[Traverser[T]])

@@ -33,14 +33,14 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OrOp {
-  def or(bool:BoolType):BoolType //
-  def or(bool:BoolValue):this.type //
-  final def ||(bool:BoolType):BoolType = this.or(bool) //
-  final def ||(bool:BoolValue):this.type = this.or(bool) //
+  def or(bool:BoolType):BoolType
+  def or(bool:BoolValue):this.type
+  final def ||(bool:BoolType):BoolType = this.or(bool)
+  final def ||(bool:BoolValue):this.type = this.or(bool)
 }
 
 object OrOp {
-  def apply(bool:BoolValue):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.or(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply(bool:BoolValue):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.or(bool)).asInstanceOf[(Obj,List[Obj]) => Obj])
   def apply(bool:BoolType):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => b.head match {
     case avalue:BoolValue => a.or(avalue)
     case atype:BoolType => a.or(atype)

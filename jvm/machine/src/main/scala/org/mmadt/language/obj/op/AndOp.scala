@@ -33,14 +33,14 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AndOp {
-  def and(bool:BoolType):BoolType //
-  def and(bool:BoolValue):this.type //
-  final def &&(bool:BoolType):BoolType = this.and(bool) //
-  final def &&(bool:BoolValue):this.type = this.and(bool) //
+  def and(bool:BoolType):BoolType
+  def and(bool:BoolValue):this.type
+  final def &&(bool:BoolType):BoolType = this.and(bool)
+  final def &&(bool:BoolValue):this.type = this.and(bool)
 }
 
 object AndOp {
-  def apply(bool:BoolValue):Inst = new VInst((Tokens.and,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.and(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply(bool:BoolValue):Inst = new VInst((Tokens.and,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.and(bool)).asInstanceOf[(Obj,List[Obj]) => Obj])
   def apply(bool:BoolType):Inst = new VInst((Tokens.and,List(bool)),qOne,((a:Bool,b:List[Obj]) => b.head match {
     case avalue:BoolValue => a.and(avalue)
     case atype:BoolType => a.and(atype)

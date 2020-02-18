@@ -28,9 +28,7 @@ import org.mmadt.language.obj.{Obj, TQ}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class OObj(val _name: String, val quantifier: TQ) extends Obj {
-
-  override def q(): TQ = quantifier //
-  override val name: String = _name //
-
+abstract class OObj(val _name:String,val quantifier:TQ) extends Obj {
+  override def q():TQ = quantifier
+  override val name:String = _name
 }

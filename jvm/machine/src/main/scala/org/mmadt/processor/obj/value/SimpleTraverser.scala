@@ -24,31 +24,30 @@ package org.mmadt.processor.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, TType}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class SimpleTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj]) extends Traverser[S] {
+class SimpleTraverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj]) extends Traverser[S] {
 
-  def this(obj: S) = this(obj, Map()) //
+  def this(obj:S) = this(obj,Map())
 
-  override def split[E <: Obj](obj: E): Traverser[E] = new SimpleTraverser[E](obj, this.state) //
-  override def apply[E <: Obj](endType: E with Type[_]): Traverser[E] = {
+  override def split[E <: Obj](obj:E):Traverser[E] = new SimpleTraverser[E](obj,this.state)
+  override def apply[E <: Obj](endType:TType[E]):Traverser[E] ={
     if (endType.insts().isEmpty)
       this.asInstanceOf[Traverser[E]]
     else {
       (endType.insts().head._2 match {
-        case toInst: Inst if toInst.op().equals(Tokens.to) => new SimpleTraverser[S](this.obj, Map[StrValue, Obj](toInst.arg[StrValue]() -> this.obj) ++ this.state)
-        case fromInst: Inst if fromInst.op().equals(Tokens.from) => new SimpleTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state) //
-        case storageInst: Inst => InstUtil.instEval(this, storageInst)
+        case toInst:Inst if toInst.op().equals(Tokens.to) => new SimpleTraverser[S](this.obj,Map[StrValue,Obj](toInst.arg[StrValue]() -> this.obj) ++ this.state)
+        case fromInst:Inst if fromInst.op().equals(Tokens.from) => new SimpleTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E],this.state) //
+        case storageInst:Inst => InstUtil.instEval(this,storageInst)
       }).asInstanceOf[Traverser[E]]
     }
   }
 
-  override val model: Model = Model.id
+  override val model:Model = Model.id
 }

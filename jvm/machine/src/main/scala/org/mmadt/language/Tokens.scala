@@ -56,6 +56,8 @@ object Tokens {
   val start  = "start"
   val model  = "model"
 
+  val empty = ""
+
   def named(name:String):Boolean = !Set(bool,str,rec,int,inst).contains(name) // TODO: global immutable set
 
   def symbol(obj:Obj):String = obj match {

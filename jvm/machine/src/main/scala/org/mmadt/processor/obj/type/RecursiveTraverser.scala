@@ -24,36 +24,36 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.`type`.TypeChecker
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, TType}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class RecursiveTraverser[S <: Obj](val obj: S, val state: Map[StrValue, Obj], val model: Model) extends Traverser[S] {
+class RecursiveTraverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj],val model:Model) extends Traverser[S] {
 
-  def this(obj: S) = this(obj, Map[StrValue, Obj](), Model.id)
+  def this(obj:S) = this(obj,Map[StrValue,Obj](),Model.id)
 
-  def this(obj: S, state: Map[StrValue, Obj]) = this(obj, state, Model.id)
+  def this(obj:S,state:Map[StrValue,Obj]) = this(obj,state,Model.id)
 
-  override def split[E <: Obj](obj: E): Traverser[E] = new RecursiveTraverser(obj, this.state, model) //
+  override def split[E <: Obj](obj:E):Traverser[E] = new RecursiveTraverser(obj,this.state,model) //
 
-  override def apply[E <: Obj](endType: E with Type[_]): Traverser[E] = {
+  override def apply[E <: Obj](endType:TType[E]):Traverser[E] ={
     if (endType.insts().isEmpty) {
-      TypeChecker.checkType(this.obj, endType)
+      TypeChecker.checkType(this.obj,endType)
       this.asInstanceOf[Traverser[E]]
     } else {
       this.obj match {
-        case _: Type[_] if model.get(endType).nonEmpty => this.apply(model.get(endType).get.asInstanceOf[E with Type[_]])
+        case _:TType[E] if model.get(endType).nonEmpty => this.apply(model.get(endType).get.asInstanceOf[TType[E]])
         case _ =>
           (endType.insts().head._2 match {
-            case toInst: Inst if toInst.op().equals(Tokens.to) => new RecursiveTraverser[S](obj, Map[StrValue, Obj](toInst.arg[StrValue]() -> obj) ++ this.state, model) //
-            case fromInst: Inst if fromInst.op().equals(Tokens.from) => new RecursiveTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E], this.state, model) //
-            case defaultInst: Inst => InstUtil.instEval(this, defaultInst)
-          }).apply(endType.linvert().asInstanceOf[E with Type[_]])
+            case toInst:Inst if toInst.op().equals(Tokens.to) => new RecursiveTraverser[S](obj,Map[StrValue,Obj](toInst.arg[StrValue]() -> obj) ++ this.state,model) //
+            case fromInst:Inst if fromInst.op().equals(Tokens.from) => new RecursiveTraverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E],this.state,model) //
+            case defaultInst:Inst => InstUtil.instEval(this,defaultInst)
+          }).apply(endType.linvert().asInstanceOf[TType[E]])
       }
     }
   }

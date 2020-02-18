@@ -24,27 +24,26 @@ package org.mmadt.processor
 
 import org.mmadt.language.Stringer
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Obj, TType}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Traverser[S <: Obj] {
 
-  def obj(): S // the obj location of the traverser
-  def state(): Map[StrValue, Obj] // the local variables of the traverser
-  def model(): Model // the model containing type embeddings
+  def obj():S // the obj location of the traverser
+  def state():Map[StrValue,Obj] // the local variables of the traverser
+  def model():Model // the model containing type embeddings
 
   //
-  def split[E <: Obj](obj: E): Traverser[E] // clone the traverser with a new obj location
-  def apply[E <: Obj](endType: E with Type[_]): Traverser[E] // embed the traverser's obj into the provided type
+  def split[E <: Obj](obj:E):Traverser[E] // clone the traverser with a new obj location
+  def apply[E <: Obj](endType:TType[E]):Traverser[E] // embed the traverser's obj into the provided type
 
-  override def toString: String = Stringer.traverserString(this)
+  override def toString:String = Stringer.traverserString(this)
 
-  override def equals(other: Any): Boolean = other match {
-    case x: Traverser[S] => x.obj().equals(this.obj())
+  override def equals(other:Any):Boolean = other match {
+    case traverser:Traverser[S] => traverser.obj().equals(this.obj())
     case _ => false
   }
 

@@ -22,28 +22,25 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{OType, OValue, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object TypeChecker {
 
-  def checkType[O <: Obj](obj: O, ttype: Type[_]): O = {
+  def checkType[O <: Obj](obj:O,atype:OType):O ={
     if (obj.isInstanceOf[Type[_]] || ((obj match {
-      case v: Value[_] => v.start().getClass.isAssignableFrom(ttype.getClass)
-      case t: Type[_] => t.getClass.isAssignableFrom(ttype.getClass)
-    })
-      && obj.q()._1.value() >= ttype.q()._1.value()
-      && obj.q()._2.value() <= ttype.q()._2.value()))
+      case avalue:OValue => avalue.start().getClass.isAssignableFrom(atype.getClass)
+      case atype:OType => atype.getClass.isAssignableFrom(atype.getClass)
+    }) && obj.q()._1.value() >= atype.q()._1.value() && obj.q()._2.value() <= atype.q()._2.value()))
       obj
     else
-      throw new IllegalArgumentException("The obj " + obj + " does not match the type " + ttype)
+      throw new IllegalArgumentException("The obj " + obj + " does not match the type " + atype)
   }
 
-  def matchesVT[O <: Obj](obj: O with Value[_], pattern: Obj with Type[_]): Boolean = (obj ==> pattern).alive() //
-  def matchesVV[O <: Obj](obj: O with Value[_], pattern: Obj with Value[_]): Boolean = obj.value().equals(pattern.value()) //
-  def matchesTT[O <: Obj](obj: O with Type[_], pattern: Obj with Type[_]): Boolean = obj.insts().toString().equals(pattern.insts().toString()) //
-  def matchesTV[O <: Obj](obj: O with Type[_], pattern: O with Value[_]): Boolean = false //
+  def matchesVT[O <: Obj](obj:O with OValue,pattern:Obj with OType):Boolean = (obj ==> pattern).alive()
+  def matchesVV[O <: Obj](obj:O with OValue,pattern:Obj with OValue):Boolean = obj.value().equals(pattern.value())
+  def matchesTT[O <: Obj](obj:O with OType,pattern:Obj with OType):Boolean = obj.insts().toString().equals(pattern.insts().toString())
+  def matchesTV[O <: Obj](obj:O with OType,pattern:O with OValue):Boolean = false
 }

@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
 import org.mmadt.storage.obj.qOne
@@ -35,12 +34,12 @@ import org.mmadt.storage.obj.value.VInst
 trait ChooseOp {
   this:Obj with ChooseOp =>
 
-  def choose[IT <: Type[_],OT <: Obj](branches:(IT,OT)*):OT = this.choose(branches.toMap)
+  def choose[IT <: OType,OT <: Obj](branches:(IT,OT)*):OT = this.choose(branches.toMap)
 
-  def choose[IT <: Type[_],OT <: Obj](branches:RecValue[IT,OT]):OT ={
+  def choose[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):OT ={
     this match {
       case atype:OType => atype.compose(branches.value().head._2,ChooseOp[IT,OT](branches))
-      case avalue:OValue => (avalue ==> branches.value().filter(p => (avalue ==> p._1).alive()).head._2.asInstanceOf[Obj with Type[_]]).asInstanceOf[OT]
+      case avalue:OValue => (avalue ==> branches.value().filter(p => (avalue ==> p._1).alive()).head._2.asInstanceOf[OType]).asInstanceOf[OT]
     }
   }
 }

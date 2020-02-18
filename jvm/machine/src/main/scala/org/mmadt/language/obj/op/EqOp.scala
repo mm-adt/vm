@@ -35,16 +35,16 @@ import org.mmadt.storage.obj.value.VInst
 trait EqOp[O <: Obj with EqOp[O,V,T],V <: Value[V],T <: Type[T]] {
   this:O =>
 
-  def eqs(other:T):BoolType //
-  def eqs(other:V):Bool //
+  def eqs(other:T):BoolType
+  def eqs(other:V):Bool
   // final def ===(other: T): BoolType = this.eq(other) //
   // final def ===(other: V): Bool = this.eq(other) //
 }
 
 object EqOp {
-  def apply[O <: Obj with EqOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.eq,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with EqOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.eq,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other)).asInstanceOf[(Obj,List[Obj]) => Obj])
   def apply[O <: Obj with EqOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.eq,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case v:OValue with V => a.eqs(v)
-    case t:OType with T => a.eqs(t)
+    case avalue:OValue with V => a.eqs(avalue)
+    case atype:OType with T => a.eqs(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

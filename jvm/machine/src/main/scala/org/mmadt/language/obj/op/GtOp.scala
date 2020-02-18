@@ -45,7 +45,7 @@ trait GtOp[O <: Obj with GtOp[O,V,T],V <: Value[V],T <: Type[T]] {
 object GtOp {
   def apply[O <: Obj with GtOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
   def apply[O <: Obj with GtOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case v:OValue with V => a.gt(v)
-    case t:OType with T => a.gt(t)
+    case avalue:OValue with V => a.gt(avalue)
+    case atype:OType with T => a.gt(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
