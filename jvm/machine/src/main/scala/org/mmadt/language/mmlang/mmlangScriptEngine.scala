@@ -22,26 +22,26 @@
 
 package org.mmadt.language.mmlang
 
-import java.util
+import java.io.{BufferedReader, Reader}
 
-import javax.script.{ScriptEngine, ScriptEngineFactory}
+import javax.script._
+import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.obj.Obj
 
 import scala.collection.JavaConverters._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class mmLangScriptEngineFactory extends ScriptEngineFactory {
-  override def getEngineName:String = "mmlang"
-  override def getEngineVersion:String = "0.1-alpha"
-  override def getExtensions:util.List[String] = seqAsJavaList(List("mm"))
-  override def getMimeTypes:util.List[String] = seqAsJavaList(List("mm"))
-  override def getNames:util.List[String] = seqAsJavaList(List("mmlang"))
-  override def getLanguageName:String = "mmlang"
-  override def getLanguageVersion:String = "0.1-alpha"
-  override def getParameter(key:String):AnyRef = null
-  override def getMethodCallSyntax(obj:String,m:String,args:String*):String = obj + " => " + " [" + m + "," + args + "]";
-  override def getOutputStatement(toDisplay:String):String = toDisplay
-  override def getProgram(statements:String*):String = statements.foldLeft("")((a,b) => a + " " + b).trim();
-  override def getScriptEngine:ScriptEngine = new mmLangScriptEngine
+class mmlangScriptEngine extends AbstractScriptEngine with mmADTScriptEngine {
+  override def eval(script:String,context:ScriptContext):java.util.Iterator[Obj] ={
+    mmlangParser.parse[Any](script) match {
+      case objs:Iterator[Obj] => asJavaIterator(objs)
+      case obj:Obj => asJavaIterator(Iterator(obj))
+    }
+  }
+  override def eval(reader:Reader,context:ScriptContext):java.util.Iterator[Obj] = eval(new BufferedReader(reader).readLine(),context)
+  override def createBindings():Bindings = new SimpleBindings
+  override def getFactory:ScriptEngineFactory = new mmlangScriptEngineFactory
 }
+

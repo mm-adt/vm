@@ -34,7 +34,7 @@ import scala.util.parsing.combinator.JavaTokenParsers
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object mmLangParser extends JavaTokenParsers {
+object mmlangParser extends JavaTokenParsers {
 
   def parse[T](expression:String):T = this.parseAll(expr,expression).get.asInstanceOf[T]
 

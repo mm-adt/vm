@@ -31,9 +31,9 @@ import org.scalatest.FunSuite
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class mmLangParserTest extends FunSuite {
+class mmlangParserTest extends FunSuite {
 
-  val parser:mmLangParser.type = mmLangParser
+  val parser:mmlangParser.type = mmlangParser
 
   test("canonical type parsing"){
     assertResult(bool)(parser.parse[BoolType]("bool"))
