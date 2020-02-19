@@ -41,12 +41,12 @@ object mmlangParser extends JavaTokenParsers {
 
   def parse[T](expression:String):T = this.parseAll(expr,expression).get.asInstanceOf[T]
 
-  def expr:Parser[Any] = single | multiple | obj
+  lazy val expr:Parser[Any] = single | multiple | obj
 
-  def single:Parser[O] = (obj <~ "=>") ~ objType ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
-  def multiple:Parser[Iterator[O]] = (obj <~ "==>") ~ objType ^^ (x => x._1 ===> x._2)
+  lazy val single:Parser[O] = (obj <~ "=>") ~ objType ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
+  lazy val multiple:Parser[Iterator[O]] = (obj <~ "==>") ~ objType ^^ (x => x._1 ===> x._2)
 
-  def canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ (quantifier ?) ^^ {
+  lazy val canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ (quantifier ?) ^^ {
     case atype ~ q => q.foldLeft(atype match {
       case Tokens.bool => bool
       case Tokens.int => int
@@ -55,29 +55,30 @@ object mmlangParser extends JavaTokenParsers {
     })((t,q) => t.q(q))
   }
 
-  def objType:Parser[OType] = ((canonicalType <~ "<=") ?) ~ canonicalType ~ rep[Inst](inst) ^^ {
+  lazy val objType:Parser[OType] = ((canonicalType <~ "<=") ?) ~ canonicalType ~ rep[Inst](inst) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
   }
 
-  def quantifier:Parser[TQ] = ("{" ~> quantifierType <~ "}") | ("{" ~> intValue ~ (("," ~> intValue) ?) <~ "}") ^^ (x => (x._1,x._2.getOrElse(x._1)))
-  def quantifierType:Parser[TQ] = ("\\*".r | "\\?".r | "\\+".r) ^^ {
+  lazy val quantifier:Parser[TQ] = ("{" ~> quantifierType <~ "}") | ("{" ~> intValue ~ (("," ~> intValue) ?) <~ "}") ^^ (x => (x._1,x._2.getOrElse(x._1)))
+  lazy val quantifierType:Parser[TQ] = ("\\*".r | "\\?".r | "\\+".r) ^^ {
     case "*" => qStar
     case "?" => qMark
     case "+" => qPlus
   }
 
-  def obj:Parser[O] = objValue | objType
-  def boolValue:Parser[BoolValue] = "true|false".r ^^ (x => bool(x.toBoolean))
-  def intValue:Parser[IntValue] = wholeNumber ^^ (x => int(x.toLong))
-  def strValue:Parser[StrValue] = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  def recValue:Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ (":" | "->")) ~ obj,("," | "|")) <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
-  def objValue:Parser[OValue] = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._1.q(x._2.getOrElse(qOne)))
+  lazy val obj:Parser[O] = objValue | objType
+  lazy val boolValue:Parser[BoolValue] = "true|false".r ^^ (x => bool(x.toBoolean))
+  lazy val intValue:Parser[IntValue] = wholeNumber ^^ (x => int(x.toLong))
+  lazy val strValue:Parser[StrValue] = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
+  lazy val recValue:Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ (":" | "->")) ~ obj,("," | "|")) <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
+  lazy val objValue:Parser[OValue] = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._1.q(x._2.getOrElse(qOne)))
 
-  def inst:Parser[Inst] = sugarlessInst | operatorSugar | chooseSugar
-  def operatorSugar:Parser[Inst] = ("+" | "*" | ">") ~ obj ^^ (x => instMatrix(x._1,x._2))
-  def chooseSugar:Parser[Inst] = recValue ^^ (x => ChooseOp(x.asInstanceOf[RecValue[OType,O]]))
-  def sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ obj <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
+  lazy val inst:Parser[Inst] = sugarlessInst | operatorSugar | chooseSugar
+  lazy val operatorSugar:Parser[Inst] = ("+" | "*" | ">") ~ obj ^^ (x => instMatrix(x._1,x._2))
+  lazy val chooseSugar:Parser[Inst] = recValue ^^ (x => ChooseOp(x.asInstanceOf[RecValue[OType,O]]))
+  lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ obj <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
+
   private def instMatrix(op:String,arg:Obj):Inst ={
     op match {
       case Tokens.plus | "+" => arg match {
