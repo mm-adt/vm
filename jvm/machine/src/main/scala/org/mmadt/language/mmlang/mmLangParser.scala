@@ -25,8 +25,8 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.op.{GtOp, IsOp, MultOp, PlusOp}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
+import org.mmadt.language.obj.op.{GtOp,IsOp,MultOp,PlusOp}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
 import org.mmadt.storage.obj._
 
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -68,10 +68,10 @@ object mmLangParser extends JavaTokenParsers {
   def boolValue:Parser[BoolValue] = "true|false".r ^^ (x => bool(x.toBoolean))
   def intValue:Parser[IntValue] = """[0-9]+""".r ^^ (x => int(x.toLong))
   def strValue:Parser[StrValue] = "'[[a-z]|\\s]*'".r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  def recValue:Parser[RecValue[O,O]] = "[" ~> rep((obj <~ ":") ~ obj <~ ("," ?)) <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
+  def recValue:Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ ":") ~ obj,",") <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
   def objValue:Parser[OValue] = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._1.q(x._2.getOrElse(qOne)))
 
-  def inst:Parser[Inst] = "[" ~> ("""[a-z]+""".r <~ ",") ~ obj <~ "]" ^^ {
+  def inst:Parser[Inst] = "[" ~> ("""[a-z]+""".r <~ ",") ~ obj <~ "]" ^^ { // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
     case op ~ arg => op match {
       case Tokens.plus => arg match {
         case arg:IntValue => PlusOp(arg)

@@ -54,6 +54,9 @@ class mmLangParserTest extends FunSuite {
     assertResult(bfalse)(parser.parse[BoolValue]("false"))
     assertResult(int(5))(parser.parse[IntValue]("5"))
     assertResult(str("marko"))(parser.parse[StrValue]("'marko'"))
+    assertResult(rec(str("name") -> str("marko")))(parser.parse[StrValue]("['name':'marko']"))
+    assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(parser.parse[StrValue]("['name':'marko','age':29]"))
+    assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(parser.parse[StrValue]("['name':  'marko' , 'age' :29]"))
   }
 
   test("quantified value parsing"){
@@ -65,11 +68,17 @@ class mmLangParserTest extends FunSuite {
     assertResult(str("marko").q(int(10),int(100)))(parser.parse[StrValue]("'marko'{10,100}"))
   }
 
+  test("refinement type parsing"){
+    assertResult(int.q(qMark) <= int.is(int.gt(int(10))))(parser.parse[IntType]("int[is,int[gt,10]]"))
+    assertResult(int <= int.is(int.gt(int(10))))(parser.parse[IntType]("int<=int[is,int[gt,10]]"))
+  }
+
   test("expression parsing"){
     assertResult(btrue)(parser.parse[BoolValue]("true => bool[is,bool]"))
     assertResult(int(7))(parser.parse[IntValue]("5 => int[plus,2]"))
     assertResult(str("marko rodriguez"))(parser.parse[IntValue]("'marko' => str[plus,' '][plus,'rodriguez']"))
     assertResult(int(10))(parser.parse[IntValue]("10=>int[is,bool<=int[gt,5]]"))
     assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(parser.parse[IntType]("int => int[plus,10][is,bool<=int[gt,5]]"))
+    assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(parser.parse[IntType]("int => int[plus,10][is,int[gt,5]]"))
   }
 }
