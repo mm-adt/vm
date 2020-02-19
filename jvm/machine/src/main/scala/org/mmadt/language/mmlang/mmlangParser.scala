@@ -24,9 +24,9 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.`type`.{BoolType,IntType}
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
 import org.mmadt.storage.obj._
 
 import scala.util.matching.Regex
@@ -74,21 +74,23 @@ object mmlangParser extends JavaTokenParsers {
   def recValue:Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ (":" | "->")) ~ obj,("," | "|")) <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
   def objValue:Parser[OValue] = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._1.q(x._2.getOrElse(qOne)))
 
-  def inst:Parser[Inst] = chooseSugar | sugarlessInst
+  def inst:Parser[Inst] = sugarlessInst | operatorSugar | chooseSugar
+  def operatorSugar:Parser[Inst] = ("+" | "*" | ">") ~ obj ^^ (x => instMatrix(x._1,x._2))
   def chooseSugar:Parser[Inst] = recValue ^^ (x => ChooseOp(x.asInstanceOf[RecValue[OType,O]]))
-  def sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ obj <~ "]" ^^ { // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
-    case op ~ arg => op match {
-      case Tokens.plus => arg match {
+  def sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ obj <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
+  private def instMatrix(op:String,arg:Obj):Inst ={
+    op match {
+      case Tokens.plus | "+" => arg match {
         case arg:IntValue => PlusOp(arg)
         case arg:IntType => PlusOp(arg)
         case arg:StrValue => PlusOp(arg)
       }
-      case Tokens.mult => arg match {
+      case Tokens.mult | "*" => arg match {
         case arg:IntValue => MultOp(arg)
         case arg:IntType => MultOp(arg)
         case arg:StrValue => MultOp(arg)
       }
-      case Tokens.gt => arg match {
+      case Tokens.gt | ">" => arg match {
         case arg:IntValue => GtOp(arg)
         case arg:StrValue => GtOp(arg)
       }
