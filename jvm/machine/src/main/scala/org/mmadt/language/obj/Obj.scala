@@ -46,8 +46,8 @@ trait Obj
   def alive():Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0
 
   // utility methods
-  def ==>[E <: Obj](rangeType:E with TType[E]):E = Processor.iterator[Obj,E]().apply(this,rangeType).map(_.obj()).next()
-  def ===>[E <: Obj](rangeType:E with TType[E]):Iterator[E] = Processor.iterator[Obj,E]().apply(this,rangeType).map(_.obj())
+  def ==>[E <: Obj](rangeType:TType[E]):E = Processor.iterator[this.type,E]().apply(this,rangeType).map(_.obj()).next()
+  def ===>[E <: Obj](rangeType:TType[E]):Iterator[E] = Processor.iterator[this.type,E]().apply(this,rangeType).map(_.obj())
 
   // pattern matching methods
   val name:String //

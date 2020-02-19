@@ -46,10 +46,10 @@ package object obj {
   def gt(obj: IntValue): BoolType = obj.gt() //
   def gt(obj: StrValue): BoolType = obj.gt() //
 
-  val int: IntType = new TInt() //
+  def int: IntType = new TInt() //
   def int(name: String): IntType = new TInt(name, Nil, qOne) //
-  val bool: BoolType = new TBool() //
-  val str: StrType = new TStr() //
+  def bool: BoolType = new TBool() //
+  def str: StrType = new TStr() //
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = new TRec[A, B]() //
   val btrue: BoolValue = bool(true)
   val bfalse: BoolValue = bool(false)
