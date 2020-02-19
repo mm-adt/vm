@@ -39,11 +39,12 @@ object mmlangParser extends JavaTokenParsers {
 
   override val whiteSpace:Regex = """[\s\n]+""".r
 
-  def parse[T](expression:String):Iterator[T] = this.parseAll(expr,expression).map({
+  def parse[T](expression:String):Iterator[T] = this.parseAll(expr | emptySpace,expression).map({
     case itty:Iterator[T] => itty
     case obj:T => Iterator(obj)
   }).get
 
+  def emptySpace[T]:Parser[Iterator[T]] = ("" | whiteSpace) ^^ (_ => Iterator.empty)
   lazy val expr:Parser[Any] = single | multiple | obj
 
   lazy val single  :Parser[O]           = (obj <~ "=>") ~ objType ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)

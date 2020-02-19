@@ -27,13 +27,23 @@ import org.mmadt.language.obj.Obj
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
+import scala.collection.JavaConverters._
+
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class mmlangScriptEngineTest extends FunSuite {
 
-  val parser:mmlangParser.type = mmlangParser
   val engine:mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+
+  test("empty space parsing"){
+    val empty:java.util.Iterator[Obj] = asJavaIterator(Iterator.empty)
+    assertResult(empty)(engine.eval(""))
+    assertResult(empty)(engine.eval("    "))
+    assertResult(empty)(engine.eval("  \n  "))
+    assertResult(empty)(engine.eval("\t  \n  "))
+  }
 
   test("canonical type parsing"){
     assertResult(bool)(engine.eval("bool").next)
