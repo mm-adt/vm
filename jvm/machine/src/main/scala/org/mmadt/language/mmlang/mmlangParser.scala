@@ -66,12 +66,12 @@ object mmlangParser extends JavaTokenParsers {
 
   def obj:Parser[O] = objValue | objType
   def boolValue:Parser[BoolValue] = "true|false".r ^^ (x => bool(x.toBoolean))
-  def intValue:Parser[IntValue] = """[0-9]+""".r ^^ (x => int(x.toLong))
-  def strValue:Parser[StrValue] = "'[[a-z]|\\s]*'".r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
+  def intValue:Parser[IntValue] = wholeNumber ^^ (x => int(x.toLong))
+  def strValue:Parser[StrValue] = ("\'" + """([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*""" + "\'").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
   def recValue:Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ ":") ~ obj,",") <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
   def objValue:Parser[OValue] = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._1.q(x._2.getOrElse(qOne)))
 
-  def inst:Parser[Inst] = "[" ~> ("""[a-z]+""".r <~ ",") ~ obj <~ "]" ^^ { // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
+  def inst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ obj <~ "]" ^^ { // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
     case op ~ arg => op match {
       case Tokens.plus => arg match {
         case arg:IntValue => PlusOp(arg)
@@ -95,8 +95,8 @@ object mmlangParser extends JavaTokenParsers {
 
 /*object LocalApp extends App {
   override def main(args:Array[String]):Unit ={
-    mmLangParser.parseAll(mmLangParser.expr,"int{2} => int<=int[is,bool<=int[gt,3]]") match {
-      case mmLangParser.Success(result,_) => println(result + ":" + result.getClass)
+    mmlangParser.parseAll(mmlangParser.expr,"['marko':'44']") match {
+      case mmlangParser.Success(result,_) => println(result + ":" + result.getClass)
       case _ => println("Could not parse the input string.")
     }
   }

@@ -40,10 +40,6 @@ import java.util.Iterator;
  */
 public class Console {
 
-    static {
-        System.err.close(); // this is only to get around the parboiled illegal access issues. TODO: write a wrapper to intercept
-    }
-
     private static final String HEADER = "" +
             "                                _____ _______ \n" +
             "                           /\\  |  __ |__   __|\n" +
@@ -60,7 +56,6 @@ public class Console {
     private static final String L = ":l";
 
     public static void main(final String[] args) throws Exception {
-        System.setErr(System.out);
         String engineName = "mmlang";
         final ScriptEngineManager manager = new ScriptEngineManager();
         final Terminal terminal = TerminalBuilder.builder().name("mm-ADT Console").build();
