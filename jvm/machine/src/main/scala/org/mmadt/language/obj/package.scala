@@ -23,7 +23,7 @@
 package org.mmadt.language
 
 import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,6 +36,7 @@ package object obj {
   type TType[T] = T with OType
   type OValue = O with Value[_]
   type ORecType = RecType[O,O]
+  type ORecValue = RecValue[O,O]
 }
 
 

@@ -86,20 +86,12 @@ public class Console {
                     manager.getEngineFactories().forEach(factory -> terminal.writer().println(RESULT + factory.getEngineName()));
                 else if (line.startsWith(L))
                     engineName = line.replace(L, "").trim();
-                else {
-                    try {
-                        ((Iterator<Object>) manager.getEngineByName(engineName).eval(line)).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
-                    } catch (final Exception e) {
-                        terminal.writer().println(e.getMessage());
-                        if (null == e.getCause())
-                            throw e;
-                        throw e.getCause();
-                    }
-                }
+                else
+                    ((Iterator<Object>) manager.getEngineByName(engineName).eval(line)).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {
                 break;
             } catch (final Throwable e) {
-                terminal.writer().println(e.getMessage());
+                terminal.writer().println(e);
             }
             terminal.flush();
         }

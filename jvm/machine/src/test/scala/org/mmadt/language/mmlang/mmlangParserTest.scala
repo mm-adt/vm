@@ -22,9 +22,9 @@
 
 package org.mmadt.language.mmlang
 
-import org.mmadt.language.obj.ORecType
-import org.mmadt.language.obj.`type`.{BoolType,IntType,StrType}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
+import org.mmadt.language.obj.{ORecType, Obj}
+import org.mmadt.language.obj.`type`.{BoolType, IntType, StrType}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
@@ -75,9 +75,27 @@ class mmlangParserTest extends FunSuite {
     assertResult(int <= int.is(int.gt(int(10))))(parser.parse[IntType]("int<=int[is,int[gt,10]]"))
   }
 
+  test("endomorphic type parsing"){
+    assertResult(int.plus(int.mult(int(6))))(parser.parse[IntType]("int[plus,int[mult,6]]"))
+  }
+
+  test("[choose] parsing"){
+    val chooseInst:Obj = int.plus(int(2)).choose(rec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10))))
+    assertResult(chooseInst)(parser.parse[IntType]("int[plus,2][choose,[int[is,int[gt,10]]:int[gt,20],int:int[plus,10]]]"))
+    assertResult(chooseInst)(parser.parse[IntType]("int[plus,2][choose,[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]"))
+    assertResult(chooseInst)(parser.parse[IntType]("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]"))
+    assertResult(chooseInst)(parser.parse[IntType](
+      """
+        | int[plus,2]
+        |    [int[is,int[gt,10]] -> int[gt,20]
+        |    |int                -> int[plus,10]]""".stripMargin))
+  }
+
   test("expression parsing"){
     assertResult(btrue)(parser.parse[BoolValue]("true => bool[is,bool]"))
     assertResult(int(7))(parser.parse[IntValue]("5 => int[plus,2]"))
+    assertResult(int(70))(parser.parse[IntType]("10 => int[plus,int[mult,6]]"))
+    assertResult(int(55))(parser.parse[IntType]("5 => int[plus,int[mult,int[plus,5]]]"))
     assertResult(str("marko rodriguez"))(parser.parse[IntValue]("'marko' => str[plus,' '][plus,'rodriguez']"))
     assertResult(int(10))(parser.parse[IntValue]("10=>int[is,bool<=int[gt,5]]"))
     assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(parser.parse[IntType]("int => int[plus,10][is,bool<=int[gt,5]]"))

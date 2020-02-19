@@ -24,17 +24,20 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.op.{GtOp,IsOp,MultOp,PlusOp}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
+import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.op._
+import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 import org.mmadt.storage.obj._
 
+import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object mmlangParser extends JavaTokenParsers {
+
+  override val whiteSpace:Regex = """[\s\n]+""".r
 
   def parse[T](expression:String):T = this.parseAll(expr,expression).get.asInstanceOf[T]
 
@@ -67,18 +70,22 @@ object mmlangParser extends JavaTokenParsers {
   def obj:Parser[O] = objValue | objType
   def boolValue:Parser[BoolValue] = "true|false".r ^^ (x => bool(x.toBoolean))
   def intValue:Parser[IntValue] = wholeNumber ^^ (x => int(x.toLong))
-  def strValue:Parser[StrValue] = ("\'" + """([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*""" + "\'").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  def recValue:Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ ":") ~ obj,",") <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
+  def strValue:Parser[StrValue] = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
+  def recValue:Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ (":" | "->")) ~ obj,("," | "|")) <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
   def objValue:Parser[OValue] = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._1.q(x._2.getOrElse(qOne)))
 
-  def inst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ obj <~ "]" ^^ { // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
+  def inst:Parser[Inst] = chooseSugar | sugarlessInst
+  def chooseSugar:Parser[Inst] = recValue ^^ (x => ChooseOp(x.asInstanceOf[RecValue[OType,O]]))
+  def sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ obj <~ "]" ^^ { // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
     case op ~ arg => op match {
       case Tokens.plus => arg match {
         case arg:IntValue => PlusOp(arg)
+        case arg:IntType => PlusOp(arg)
         case arg:StrValue => PlusOp(arg)
       }
       case Tokens.mult => arg match {
         case arg:IntValue => MultOp(arg)
+        case arg:IntType => MultOp(arg)
         case arg:StrValue => MultOp(arg)
       }
       case Tokens.gt => arg match {
@@ -89,6 +96,7 @@ object mmlangParser extends JavaTokenParsers {
         case arg:BoolValue => IsOp(arg)
         case arg:BoolType => IsOp(arg)
       }
+      case Tokens.choose => ChooseOp(arg.asInstanceOf[RecValue[OType,O]])
     }
   }
 }
