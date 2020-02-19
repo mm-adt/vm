@@ -20,4 +20,4 @@
 # You can be released from the requirements of the license by purchasing
 # a commercial license from RReduX,Inc. at [info@rredux.com].
 
-java -cp "${CLASSPATH}:${SCALA_HOME}/lib/scala-library.jar:machine/target/mmadt-vm.jar" org.mmadt.language.console.Console
+machine/target/mmadt-vm-0.1-SNAPSHOT.jar
