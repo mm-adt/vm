@@ -43,20 +43,20 @@ object mmLangParser extends JavaTokenParsers {
   def multiple:Parser[Iterator[O]] = (obj <~ "==>") ~ objType ^^ (x => x._1 ===> x._2)
 
   def canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ (quantifier ?) ^^ {
-    case a ~ b => a match {
-      case Tokens.bool => bool.q(b.getOrElse(qOne))
-      case Tokens.int => int.q(b.getOrElse(qOne))
-      case Tokens.str => str.q(b.getOrElse(qOne))
-      case Tokens.rec => rec.q(b.getOrElse(qOne))
-    }
+    case atype ~ q => q.foldLeft(atype match {
+      case Tokens.bool => bool
+      case Tokens.int => int
+      case Tokens.str => str
+      case Tokens.rec => rec
+    })((t,q) => t.q(q))
   }
 
   def objType:Parser[OType] = ((canonicalType <~ "<=") ?) ~ canonicalType ~ rep[Inst](inst) ^^ {
-    case Some(a) ~ b ~ c => a <= c.foldLeft(b)((x,y) => y(x).asInstanceOf[OType])
-    case None ~ b ~ c => c.foldLeft(b)((x,y) => y(x).asInstanceOf[OType])
+    case Some(range) ~ domain ~ insts => range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
+    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
   }
 
-  def quantifier:Parser[TQ] = ("{" ~> quantifierType <~ "}") | ("{" ~> (intValue <~ ("," ?)) ~ (intValue ?) <~ "}") ^^ (x => (x._1,x._2.getOrElse(x._1)))
+  def quantifier:Parser[TQ] = ("{" ~> quantifierType <~ "}") | ("{" ~> intValue ~ (("," ~> intValue) ?) <~ "}") ^^ (x => (x._1,x._2.getOrElse(x._1)))
   def quantifierType:Parser[TQ] = ("\\*".r | "\\?".r | "\\+".r) ^^ {
     case "*" => qStar
     case "?" => qMark
@@ -72,18 +72,18 @@ object mmLangParser extends JavaTokenParsers {
   def obj:Parser[O] = objValue | objType
 
   def inst:Parser[Inst] = "[" ~> ("""[a-z]+""".r <~ ",") ~ objValue <~ "]" ^^ {
-    case a ~ b => a match {
-      case Tokens.plus => b match {
-        case b:IntValue => PlusOp(b)
-        case b:StrValue => PlusOp(b)
+    case op ~ arg => op match {
+      case Tokens.plus => arg match {
+        case arg:IntValue => PlusOp(arg)
+        case arg:StrValue => PlusOp(arg)
       }
-      case Tokens.mult => b match {
-        case b:IntValue => MultOp(b)
-        case b:StrValue => MultOp(b)
+      case Tokens.mult => arg match {
+        case arg:IntValue => MultOp(arg)
+        case arg:StrValue => MultOp(arg)
       }
-      case Tokens.gt => b match {
-        case b:IntValue => GtOp(b)
-        case b:StrValue => GtOp(b)
+      case Tokens.gt => arg match {
+        case arg:IntValue => GtOp(arg)
+        case arg:StrValue => GtOp(arg)
       }
     }
   }
