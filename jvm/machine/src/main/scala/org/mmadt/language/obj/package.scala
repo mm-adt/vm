@@ -31,9 +31,10 @@ import org.mmadt.language.obj.value.{IntValue, Value}
 package object obj {
   type TQ = (IntValue,IntValue)
   type JInst = (String,List[Obj])
-  type OType = Obj with Type[_]
+  type O = Obj
+  type OType = O with Type[_]
   type TType[T] = T with OType
-  type OValue = Obj with Value[_]
+  type OValue = O with Value[_]
 }
 
 

@@ -23,9 +23,9 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.{GtOp,MultOp,PlusOp}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
-import org.mmadt.language.obj.{Inst,OType,OValue}
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.op.{GtOp, MultOp, PlusOp}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 import org.mmadt.storage.obj._
 
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -34,24 +34,27 @@ import scala.util.parsing.combinator.JavaTokenParsers
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object mmLangParser extends JavaTokenParsers {
-  def expr:Parser[OType] = ((canonicalType <~ "<=") ?) ~ canonicalType ~ rep[Inst](inst) ^^ {
-    case Some(a) ~ b ~ c => a <= c.foldLeft(b)((x,y) => y.apply(x).asInstanceOf[OType])
-    case None ~ b ~ c => c.foldLeft(b)((x,y) => y.apply(x).asInstanceOf[OType])
-  }
 
-  def canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str) ^^ {
+  def canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ^^ {
+    case Tokens.bool => bool
     case Tokens.int => int
     case Tokens.str => str
-    case Tokens.bool => bool
+    case Tokens.rec => rec
+  }
+  def objType:Parser[OType] = ((canonicalType <~ "<=") ?) ~ canonicalType ~ rep[Inst](inst) ^^ {
+    case Some(a) ~ b ~ c => a <= c.foldLeft(b)((x,y) => y(x).asInstanceOf[OType])
+    case None ~ b ~ c => c.foldLeft(b)((x,y) => y(x).asInstanceOf[OType])
   }
 
-  def intValue:Parser[IntValue] = """[0-9]+""".r ^^ (x => int(x.toLong))
-  def strValue:Parser[StrValue] = "'[a-z]+'".r ^^ (x => str(x))
   def boolValue:Parser[BoolValue] = "true|false".r ^^ (x => bool(x.toBoolean))
-  def objValue:Parser[OValue] = boolValue | intValue | strValue
+  def intValue:Parser[IntValue] = """[0-9]+""".r ^^ (x => int(x.toLong))
+  def strValue:Parser[StrValue] = "'[a-z]+'".r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
+  def recValue:Parser[RecValue[O,O]] = "[" ~> rep((obj <~ ":") ~ obj <~ (","?)) <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
+  def objValue:Parser[OValue] = boolValue | intValue | strValue | recValue
 
-  def op:Parser[String] = """[a-z]+""".r
-  def inst:Parser[Inst] = "[" ~> (op <~ ",") ~ objValue <~ "]" ^^ {
+  def obj:Parser[O] = objValue | objType
+
+  def inst:Parser[Inst] = "[" ~> ("""[a-z]+""".r <~ ",") ~ objValue <~ "]" ^^ {
     case a ~ b => a match {
       case Tokens.plus => b match {
         case b:IntValue => PlusOp(b)
@@ -71,7 +74,7 @@ object mmLangParser extends JavaTokenParsers {
 
 /*object LocalApp extends App {
   override def main(args:Array[String]):Unit ={
-    mmLangParser.parseAll(mmLangParser.expr,"bool<=int[plus,4][mult,2][gt,15]") match {
+    mmLangParser.parseAll(mmLangParser.obj,"['name':'marko','age':29]") match {
       case mmLangParser.Success(result,_) => println(result + ":" + result.getClass)
       case _ => println("Could not parse the input string.")
     }
