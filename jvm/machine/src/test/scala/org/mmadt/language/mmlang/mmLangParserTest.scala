@@ -23,8 +23,8 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.obj.ORecType
-import org.mmadt.language.obj.`type`.{BoolType, IntType, StrType}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.language.obj.`type`.{BoolType,IntType,StrType}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
@@ -66,8 +66,10 @@ class mmLangParserTest extends FunSuite {
   }
 
   test("expression parsing"){
-    // assertResult(btrue)(parser.parse[BoolValue]("true => bool[is,bool]"))
+    assertResult(btrue)(parser.parse[BoolValue]("true => bool[is,bool]"))
     assertResult(int(7))(parser.parse[IntValue]("5 => int[plus,2]"))
     assertResult(str("marko rodriguez"))(parser.parse[IntValue]("'marko' => str[plus,' '][plus,'rodriguez']"))
+    assertResult(int(10))(parser.parse[IntValue]("10=>int[is,bool<=int[gt,5]]"))
+    assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(parser.parse[IntType]("int => int[plus,10][is,bool<=int[gt,5]]"))
   }
 }
