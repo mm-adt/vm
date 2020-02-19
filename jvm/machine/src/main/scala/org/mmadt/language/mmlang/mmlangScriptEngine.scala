@@ -34,12 +34,8 @@ import scala.collection.JavaConverters._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class mmlangScriptEngine extends AbstractScriptEngine with mmADTScriptEngine {
-  override def eval(script:String,context:ScriptContext):java.util.Iterator[Obj] ={
-    mmlangParser.parse[Any](script) match {
-      case objs:Iterator[Obj] => asJavaIterator(objs)
-      case obj:Obj => asJavaIterator(Iterator(obj))
-    }
-  }
+  override def eval(script:String):java.util.Iterator[Obj] = mmlangScriptEngine.super.eval(script)
+  override def eval(script:String,context:ScriptContext):java.util.Iterator[Obj] = asJavaIterator(mmlangParser.parse[Obj](script))
   override def eval(reader:Reader,context:ScriptContext):java.util.Iterator[Obj] = eval(new BufferedReader(reader).readLine(),context)
   override def createBindings():Bindings = new SimpleBindings
   override def getFactory:ScriptEngineFactory = new mmlangScriptEngineFactory

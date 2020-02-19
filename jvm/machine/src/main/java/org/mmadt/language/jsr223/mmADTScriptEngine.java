@@ -36,6 +36,11 @@ import java.util.Iterator;
 public interface mmADTScriptEngine extends ScriptEngine {
 
     @Override
+    public default Iterator<Obj> eval(String script) throws ScriptException {
+        return this.eval(script, this.getContext());
+    }
+
+    @Override
     public Iterator<Obj> eval(String script, ScriptContext context) throws ScriptException;
 
     @Override
