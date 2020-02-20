@@ -24,6 +24,7 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
@@ -59,16 +60,21 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec.q(int(5),int(10)))(engine.eval("rec{5,10}").next)
   }
 
-  test("value parsing"){
+  test("atomic value parsing"){
     assertResult(btrue)(engine.eval("true").next)
     assertResult(bfalse)(engine.eval("false").next)
     assertResult(int(5))(engine.eval("5").next)
     assertResult(int(-51))(engine.eval("-51").next)
     assertResult(str("marko"))(engine.eval("'marko'").next)
     assertResult(str("marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("'marko comp3 45AHA\"\"\\'-%^&'").next)
+  }
+
+  test("composite value parsing"){
     assertResult(rec(str("name") -> str("marko")))(engine.eval("['name':'marko']").next)
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name':'marko','age':29]").next)
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name':  'marko' , 'age' :29]").next)
+    assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->'marko' , 'age' ->29]").next)
+    assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->'marko'|'age'->29]").next)
   }
 
   test("quantified value parsing"){
@@ -101,11 +107,20 @@ class mmlangScriptEngineTest extends FunSuite {
         |    |int                -> int[plus,10]]""".stripMargin).next)
   }
 
+  test("traverser read/write state parsing"){
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int(20)))(engine.eval("int<a>[plus,10]<b>[mult,20]").next)
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,<a>]").next)
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<a>]").next)
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]int<b>[mult,int<a>]").next)
+  }
+
   test("infix operator instruction parsing"){
     assertResult(int.plus(int(6)))(engine.eval("int+6").next)
     assertResult(int.plus(int(6)).gt(int(10)))(engine.eval("int+6>10").next)
     assertResult(int.plus(int(1)).mult(int(2)).gt(int(10)))(engine.eval("int+1*2>10").next)
     assertResult(str.plus(str("hello")))(engine.eval("str+'hello'").next)
+    // assertResult(int.is(int.gt(int(5))))(engine.eval("int[is>5]")) // TODO
+    // assertResult()(engine.eval(".friend.name") // TODO: . for [get]
   }
 
   test("expression parsing"){

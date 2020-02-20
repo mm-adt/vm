@@ -56,7 +56,20 @@ object Tokens {
   val start  = "start"
   val model  = "model"
 
-  val empty = ""
+  val empty  = ""
+  val btrue  = "true"
+  val bfalse = "false"
+
+  val q_mark         = "?"
+  val plus_op,q_plus = "+"
+  val mult_op,q_star = "*"
+  val gt_op          = ">"
+
+  val kv_sep   = ":"
+  val kv_arrow = "->"
+  val or_op    = "|"
+  val map_to   = "=>"
+  val map_from = "<="
 
   def named(name:String):Boolean = !Set(bool,str,rec,int,inst).contains(name) // TODO: global immutable set
 
@@ -68,5 +81,5 @@ object Tokens {
     case _:OType => Tokens.obj
     case _ => throw new Exception("Error: " + obj)
   }
-
+  // def inst(op:String,args:Obj*):String = "[" + op + args.foldRight(Tokens.empty)((a,b) => (a + "," + b)).dropRight(1) + "]"
 }
