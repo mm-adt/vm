@@ -68,7 +68,7 @@ object Tokens {
   val kv_sep   = ":"
   val kv_arrow = "->"
   val or_op    = "|"
-  val map_to   = "=>"
+  val :=>   = "=>"
   val map_from = "<="
 
   def named(name:String):Boolean = !Set(bool,str,rec,int,inst).contains(name) // TODO: global immutable set

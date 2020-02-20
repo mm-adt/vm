@@ -123,6 +123,13 @@ class mmlangScriptEngineTest extends FunSuite {
     // assertResult()(engine.eval(".friend.name") // TODO: . for [get]
   }
 
+  test("strm input parsing"){
+    assertResult(Set(int(1),int(2),int(3)))(asScalaIterator(engine.eval("0,1,2 ==> int[plus,1]")).toSet)
+    assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> int[plus,1][is,int[gt,2]][mult,10]")).toSet)
+    // assertResult(Set(int(300),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> int[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]")).toSet)
+    // assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> (int{3}=>int[plus,1][is,int[gt,2]][mult,10])")).toSet)
+  }
+
   test("expression parsing"){
     assertResult(btrue)(engine.eval("true => bool[is,bool]").next)
     assertResult(int(7))(engine.eval("5 => int[plus,2]").next)

@@ -28,6 +28,7 @@ import org.mmadt.language.obj.`type`.{BoolType,IntType}
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
 import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.value.strm.VIntStrm
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -45,10 +46,11 @@ object mmlangParser extends JavaTokenParsers {
   }.get
 
   def emptySpace[T]:Parser[Iterator[T]] = ("" | whiteSpace) ^^ (_ => Iterator.empty)
-  lazy val expr:Parser[Any] = single | multiple | obj
+  lazy val expr:Parser[Any] = single | multiple | multipleInt | obj
 
-  lazy val single  :Parser[O]           = (obj <~ Tokens.map_to) ~ objType ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
-  lazy val multiple:Parser[Iterator[O]] = (obj <~ "==>") ~ objType ^^ (x => x._1 ===> x._2)
+  lazy val single     :Parser[O]           = (obj <~ Tokens.:=>) ~ objType ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
+  lazy val multiple   :Parser[Iterator[O]] = (obj <~ "==>") ~ objType ^^ (x => x._1 ===> x._2)
+  lazy val multipleInt:Parser[Iterator[O]] = (rep1sep(intValue,",") <~ "==>") ~ objType ^^ (x => new VIntStrm(x._1) ===> x._2) // TODO: a demo around int as we figure out the strm structure
 
   lazy val canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ (quantifier ?) ^^ {
     case atype ~ q => q.foldLeft(atype match {
