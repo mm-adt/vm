@@ -48,7 +48,7 @@ trait Type[T <: Type[T]] extends Obj
   def linvert():this.type ={
     ((this.insts().tail match {
       case Nil => this.range()
-      case i => i.foldLeft[Obj](i.head._1.range())((btype,inst) => inst._2.apply(btype,inst._2.args()))
+      case i => i.foldLeft[Obj](i.head._1.range())((btype,inst) => inst._2.apply(btype))
     }) match {
       case vv:Value[_] => vv.start()
       case x => x
@@ -57,7 +57,7 @@ trait Type[T <: Type[T]] extends Obj
 
   def rinvert[TT <: OType]():TT =
     (this.insts().dropRight(1).lastOption match {
-      case Some(prev) => prev._2.apply(prev._1,prev._2.args())
+      case Some(prev) => prev._2.apply(prev._1)
       case None => this.insts().head._1
     }).asInstanceOf[TT]
 

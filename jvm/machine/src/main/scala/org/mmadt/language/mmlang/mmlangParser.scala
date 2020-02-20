@@ -24,9 +24,9 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.`type`.{BoolType,IntType}
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
 import org.mmadt.storage.obj._
 
 import scala.util.matching.Regex
@@ -67,7 +67,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val stateAccess:Parser[Option[OType] ~ String] = ((canonicalType ?) <~ "<") ~ "[a-zA-z]*".r <~ ">"
 
   lazy val quantifier    :Parser[TQ] = ("{" ~> quantifierType <~ "}") | ("{" ~> intValue ~ (("," ~> intValue) ?) <~ "}") ^^ (x => (x._1,x._2.getOrElse(x._1)))
-  lazy val quantifierType:Parser[TQ] = ("\\*".r | "\\?".r | "\\+".r) ^^ {
+  lazy val quantifierType:Parser[TQ] = (Tokens.q_star | Tokens.q_mark | Tokens.q_plus) ^^ {
     case Tokens.q_star => qStar
     case Tokens.q_mark => qMark
     case Tokens.q_plus => qPlus
