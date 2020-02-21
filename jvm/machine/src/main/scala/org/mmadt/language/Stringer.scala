@@ -22,9 +22,9 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.`type`.{RecType,Type}
-import org.mmadt.language.obj.value.{RecValue,StrValue,Value}
-import org.mmadt.language.obj.{Inst,Obj,TQ}
+import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Inst, Obj, TQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj._
 
@@ -50,11 +50,11 @@ object Stringer {
   }
 
   def typeString(t:Type[_]):String ={
-    if (t.insts().nonEmpty && t.insts().head._2.op().equals(Tokens.choose)) // TODO: ghetto union type specification
-      return t.insts().head._2.arg[RecValue[_,_]]().value().foldRight("[")((x,string) => string + (if (x._1.equals(x._2)) x._1 else x._1 + ":" + x._2) + "|").dropRight(1) + "]"
+    //  if (t.insts().nonEmpty && t.insts().head._2.op().equals(Tokens.choose)) // TODO: ghetto union type specification
+    //    return t.insts().head._2.arg[RecValue[_,_]]().value().foldRight("[")((x,string) => string + (if (x._1.equals(x._2)) x._1 else x._1 + ":" + x._2) + "|").dropRight(1) + "]"
 
     val range  = t.name + (t match {
-      case r:RecType[_,_] => if (r.value().isEmpty) "" else r.value().foldRight("[")((r,string) => string + r._1 + ":" + r._2 + ",").dropRight(1) + "]"
+      case r:RecType[_,_] => if (r.value().isEmpty) "" else r.value().foldLeft("[")((string,r) => string + r._1 + ":" + r._2 + ",").dropRight(1) + "]"
       case _ => ""
     }) + qString(t.q())
     val domain = if (t.insts().isEmpty) "" else
@@ -67,7 +67,7 @@ object Stringer {
     val named = Tokens.named(v.name)
     (if (named) v.name else "") + (
       v match {
-        case x:RecValue[_,_] => (if (x.value().isEmpty) "" else x.value().foldRight("[")((x,string) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]") + qString(x.q())
+        case x:RecValue[_,_] => (if (x.value().isEmpty) "" else x.value().foldLeft("[")((string,x) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]") + qString(x.q())
         case x:StrValue => (if (named) "[" else "") + "'" + v.value() + "'" + (if (named) "]" else "") + qString(x.q())
         case _ => (if (named) "[" else "") + v.value() + (if (named) "]" else "") + qString(v.q())
       })

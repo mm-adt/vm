@@ -22,10 +22,10 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.obj
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Bool, Inst, OType, OValue, Obj, Str, TQ, TType}
-import org.mmadt.language.{Tokens, obj}
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
@@ -105,10 +105,10 @@ trait Type[T <: Type[T]] extends Obj
   // standard Java implementations
   override def hashCode():scala.Int = this.range().toString.hashCode // TODO: using toString()
 
-  def |[O <: Type[O]](other:O):O ={ // TODO: ghetto union type construction
+  /*def |[O <: Type[O]](other:O):O ={ // TODO: ghetto union type construction
     if (this.insts().nonEmpty && this.insts().head._2.op().equals(Tokens.choose))
       this.linvert().choose(Map(other -> other) ++ this.insts().head._2.arg[RecValue[O,O]]().value())
     else
       this.choose(other -> other,this.asInstanceOf[O] -> this.asInstanceOf[O])
-  }
+  }*/
 }

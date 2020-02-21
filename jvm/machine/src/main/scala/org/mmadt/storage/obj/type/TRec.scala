@@ -41,9 +41,9 @@ class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(OType,Inst)]
   override def value():Map[A,B] = java
 
   override def plus(other:RecType[A,B]):RecType[A,B] ={
-    new TRec[A,B](name,other.value() ++ this.value(),insts,quantifier).compose(PlusOp(other))
+    new TRec[A,B](name,this.value() ++ other.value(),this.insts,this.quantifier).compose(PlusOp(other))
   } //
   override def plus(other:RecValue[A,B]):this.type ={
-    new TRec[A,B](name,other.value() ++ this.value(),insts,quantifier).compose(PlusOp(other)).asInstanceOf[this.type]
+    new TRec[A,B](name,this.value() ++ other.value(),this.insts,this.quantifier).compose(PlusOp(other)).asInstanceOf[this.type]
   } //
 }

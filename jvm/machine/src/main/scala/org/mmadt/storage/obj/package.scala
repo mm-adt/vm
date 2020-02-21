@@ -60,8 +60,8 @@ package object obj {
   def str(value:String):StrValue = new VStr(value) //
   def rec[A <: Obj,B <: Obj](name:String,value:Map[A,B],quantifier:TQ):RecValue[A,B] = new VRec[A,B](name,value,quantifier) //
   def rec[A <: Obj,B <: Obj](value:Map[A,B]):RecValue[A,B] = new VRec[A,B](value) //
-  def rec[A <: Obj,B <: Obj](name:String,value:RecValue[A,B],values:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm[A,B](name,Seq(value) ++ values:_*) //
-  def rec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((Seq(value) ++ values).reverse.toMap) //
-  def rec[A <: Obj,B <: Obj](name:String)(value:(A,B)*):RecValue[A,B] = new VRec[A,B](name,value.reverse.toMap,qOne) //
+  def rec[A <: Obj,B <: Obj](name:String,value:RecValue[A,B],values:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm[A,B](name,value +: values:_*) //
+  def rec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap) //
+  def rec[A <: Obj,B <: Obj](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne) //
   def trec[A <: Obj,B <: Obj](name:String):RecType[A,B] = new TRec[A,B](name,Map.empty,Nil,qOne) //
 }

@@ -24,10 +24,11 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType,IntType}
+import org.mmadt.language.obj.`type`.{BoolType, IntType}
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.value.VRec
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
 import scala.util.matching.Regex
@@ -79,7 +80,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val boolValue:Parser[BoolValue]     = (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x.toBoolean))
   lazy val intValue :Parser[IntValue]      = wholeNumber ^^ (x => int(x.toLong))
   lazy val strValue :Parser[StrValue]      = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  lazy val recValue :Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ (Tokens.kv_sep | Tokens.kv_arrow)) ~ obj,("," | Tokens.or_op)) <~ "]" ^^ (x => rec(x.reverse.map(o => (o._1,o._2)).toMap))
+  lazy val recValue :Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ (Tokens.kv_sep | Tokens.kv_arrow)) ~ obj,("," | Tokens.or_op)) <~ "]" ^^ (x => new VRec[O,O](x.map(o => (o._1,o._2)).toMap))
   lazy val objValue :Parser[OValue]        = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
 
   lazy val instArg      :Parser[O]    = stateAccess ^^ (x => x._1.getOrElse(int).from[OType](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
@@ -94,6 +95,7 @@ object mmlangParser extends JavaTokenParsers {
         case arg:IntValue => PlusOp(arg)
         case arg:IntType => PlusOp(arg)
         case arg:StrValue => PlusOp(arg)
+        case arg:ORecValue => PlusOp(arg)
       }
       case Tokens.mult | Tokens.mult_op => arg match {
         case arg:IntValue => MultOp(arg)
