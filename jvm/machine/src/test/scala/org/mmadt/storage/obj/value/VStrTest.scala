@@ -20,11 +20,10 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage
+package org.mmadt.storage.obj.value
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType, Type}
-import org.mmadt.language.obj.{Int, Obj}
+import org.mmadt.language.obj.Obj
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
@@ -32,26 +31,23 @@ import org.scalatest.FunSuite
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VIntTest extends FunSuite {
+class VStrTest extends FunSuite {
 
-  test("int values") {
-    assertResult(int(3))(int(1) + int(2))
-    assertResult(int(-4))(-int(4))
-    assertResult(int(-4))(int(3) ==> int.plus(1).neg())
+  test("str values") {
+    assertResult(str("mar"))(str("m").plus("a").plus("r"))
+    assertResult(btrue)(str("m").gt(str("a")))
+    assertResult(bfalse)(str("m").gt(str("r")))
   }
 
-  test("int types") {
-    val model = Model.simple()
-    //put("nat", int.as[IntType]("nat"), int.is(int.gt(0))) // TODO: structure representation in model
-    val processor = new CompilingProcessor[Obj, Obj with Type[_]](model)
-    val compiled = processor.apply(int.as("nat"), int.plus(10)).next().obj()
-    assertResult("nat<=int[as,nat][plus,10]")(compiled.toString)
-    assertResult("nat[60]")((int(50).as[Int]("nat") ==> int.plus(10)).toString)
-    assertResult("nat[60]")((int(50) ==> int.as[IntType]("nat").plus(10)).toString)
-    assertResult("nat[60]")((int(50).as[Int]("nat") ==> compiled).toString)
-    assertResult("nat[60]")((int(50) ==> compiled).toString)
+  test("type names on str") {
+    assertResult("address['103 P.V.']")(str("103 P.V.").as("address").toString)
   }
 
+  test("type names on model") {
+    val model = Model.simple().
+      put(str.plus(str("a")), str.plus(str("b")))
+    val processor = new CompilingProcessor[Obj, Obj]()
+    // println(str ==> str.plus("a").is(str.gt("bb")))
+    assertResult("address{?}<=str[as,address][plus,'ed'][is,bool<=address[gt,'xx']]")(processor.apply(str.as("address"), str.plus("ed").is(str.gt("xx"))).next().obj().toString)
+  }
 }
-
-

@@ -20,34 +20,22 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage
+package org.mmadt.processor
 
-import org.mmadt.language.model.Model
-import org.mmadt.language.obj.Obj
-import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VStrTest extends FunSuite {
+class GetInstTest extends FunSuite {
 
-  test("str values") {
-    assertResult(str("mar"))(str("m").plus("a").plus("r"))
-    assertResult(btrue)(str("m").gt(str("a")))
-    assertResult(bfalse)(str("m").gt(str("r")))
-  }
-
-  test("type names on str") {
-    assertResult("address['103 P.V.']")(str("103 P.V.").as("address").toString)
-  }
-
-  test("type names on model") {
-    val model = Model.simple().
-      put(str.plus(str("a")), str.plus(str("b")))
-    val processor = new CompilingProcessor[Obj, Obj]()
-    // println(str ==> str.plus("a").is(str.gt("bb")))
-    assertResult("address{?}<=str[as,address][plus,'ed'][is,bool<=address[gt,'xx']]")(processor.apply(str.as("address"), str.plus("ed").is(str.gt("xx"))).next().obj().toString)
+  test("[get] w/ rec value"){
+    val marko = rec(str("name") -> str("marko"),str("age") -> int(29))
+    assertResult(str("marko"))(marko.get(str("name")))
+    assertResult(int(29))(marko.get(str("age")))
+    assertThrows[NoSuchElementException]{
+      marko.get(str("bad-key"))
+    }
   }
 }

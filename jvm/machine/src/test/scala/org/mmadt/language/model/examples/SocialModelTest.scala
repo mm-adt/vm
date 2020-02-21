@@ -68,7 +68,7 @@ class SocialModelTest extends FunSuite {
   test("rec stream w/ rewrites") {
     val processor = new CompilingProcessor[IntType, IntType](model)
 
-    val ppl: RecStrm[Str, Obj] = rec("people",
+    val ppl = rec("people",
       rec(str("name") -> str("marko")),
       rec(str("name") -> str("kuppitz")),
       rec(str("name") -> str("ryan")),

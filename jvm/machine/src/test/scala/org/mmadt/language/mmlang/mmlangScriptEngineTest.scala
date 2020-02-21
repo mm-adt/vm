@@ -77,6 +77,11 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->'marko'|'age'->29]").next)
   }
 
+  test("composite type get/put"){
+    assertResult(rec.get(str("name"),str))(engine.eval("str<=rec[get,'name',str]").next)
+    assertResult(int <= rec.get(str("age"),int))(engine.eval("rec[get,'age',int]").next)
+  }
+
   test("quantified value parsing"){
     assertResult(btrue.q(int(2)))(engine.eval("true{2}").next)
     assertResult(bfalse)(engine.eval("false{1}").next)
@@ -98,7 +103,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("choose instruction parsing"){
     List(
       int.plus(int(2)).choose(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10))),
-      int.plus(int(2)).choose(rec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))),
+      // int.plus(int(2)).choose(rec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))), //  TODO: is RecType any rec that has a type in it?
       int.plus(int(2)).choose(rec(Map(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))).
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,[int[is,int[gt,10]]:int[gt,20],int:int[plus,10]]]").next)
@@ -145,5 +150,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(10))(engine.eval("10=>int[is,bool<=int[gt,5]]").next)
     assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(engine.eval("int => int[plus,10][is,bool<=int[gt,5]]").next)
     assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(engine.eval("int => int[plus,10][is,int[gt,5]]").next)
+  }
+
+  test("composite expression parsing"){
+    assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval("['age':29] ==> rec[rec[is,rec[get,'age',int][gt,30]] -> rec[put,'name','bill'] | rec -> rec[put,'name','marko']]").next())
   }
 }

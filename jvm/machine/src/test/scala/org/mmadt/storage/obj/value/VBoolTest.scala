@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage
+package org.mmadt.storage.obj.value
 
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite

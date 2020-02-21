@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage
+package org.mmadt.storage.obj.value
 
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
@@ -49,7 +49,7 @@ class VRecTest extends FunSuite {
     }
   }
 
-  test("rec value via sequence construction"){
+  test("rec value via varargs construction"){
     val X = int(1) -> str("a")
     val Y = int(2) -> str("b")
     val Z = int(3) -> str("c")
@@ -89,7 +89,5 @@ class VRecTest extends FunSuite {
     assertResult(ListMap(Z,Y,X))(rec(Map(Z,Y)).plus(rec(Map(X))).value)
     // overwrite orderings
     assertResult(ListMap(X,Y,Z))(rec(Map(X,Y)).plus(rec(Map(X,Z))).value) // TODO: determine overwrite order
-
   }
-
 }

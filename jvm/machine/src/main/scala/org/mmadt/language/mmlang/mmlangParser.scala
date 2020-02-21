@@ -85,34 +85,39 @@ object mmlangParser extends JavaTokenParsers {
 
   lazy val instArg      :Parser[O]    = stateAccess ^^ (x => x._1.getOrElse(int).from[OType](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
   lazy val inst         :Parser[Inst] = sugarlessInst | operatorSugar | chooseSugar
-  lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op) ~ instArg ^^ (x => instMatrix(x._1,x._2))
+  lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = recValue ^^ (x => ChooseOp(x.asInstanceOf[RecValue[OType,O]]))
-  lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ instArg <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
+  lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
 
-  private def instMatrix(op:String,arg:Obj):Inst ={
+  private def instMatrix(op:String,arg:List[O]):Inst ={
     op match {
-      case Tokens.plus | Tokens.plus_op => arg match {
+      case Tokens.plus | Tokens.plus_op => arg.head match {
         case arg:IntValue => PlusOp(arg)
         case arg:IntType => PlusOp(arg)
         case arg:StrValue => PlusOp(arg)
         case arg:ORecValue => PlusOp(arg)
       }
-      case Tokens.mult | Tokens.mult_op => arg match {
+      case Tokens.mult | Tokens.mult_op => arg.head match {
         case arg:IntValue => MultOp(arg)
         case arg:IntType => MultOp(arg)
         case arg:StrValue => MultOp(arg)
       }
-      case Tokens.gt | Tokens.gt_op => arg match {
+      case Tokens.gt | Tokens.gt_op => arg.head match {
         case arg:IntValue => GtOp(arg)
         case arg:StrValue => GtOp(arg)
       }
-      case Tokens.is => arg match {
+      case Tokens.is => arg.head match {
         case arg:BoolValue => IsOp(arg)
         case arg:BoolType => IsOp(arg)
       }
-      case Tokens.from => FromOp(arg.asInstanceOf[StrValue])
-      case Tokens.to => ToOp(arg.asInstanceOf[StrValue])
-      case Tokens.choose => ChooseOp(arg.asInstanceOf[RecValue[OType,O]])
+      case Tokens.get => arg match {
+        case List(key:O,typeHint:TType[O]) => GetOp(key,typeHint)
+        case List(key:O) => GetOp(key)
+      }
+      case Tokens.put => PutOp(arg.head,arg.tail.head)
+      case Tokens.from => FromOp(arg.head.asInstanceOf[StrValue])
+      case Tokens.to => ToOp(arg.head.asInstanceOf[StrValue])
+      case Tokens.choose => ChooseOp(arg.head.asInstanceOf[RecValue[OType,O]])
     }
   }
 }
