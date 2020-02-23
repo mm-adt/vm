@@ -23,6 +23,7 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
@@ -37,13 +38,13 @@ class mmlangScriptEngineTest extends FunSuite {
 
   val engine:mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
 
-  /*test("empty space parsing"){
+  test("empty space parsing"){
     val empty:java.util.Iterator[Obj] = asJavaIterator(Iterator.empty)
     assertResult(empty)(engine.eval(""))
     assertResult(empty)(engine.eval("    "))
     assertResult(empty)(engine.eval("  \n  "))
     assertResult(empty)(engine.eval("\t  \n  "))
-  }*/
+  }
 
   test("canonical type parsing"){
     assertResult(bool)(engine.eval("bool").next)
@@ -128,7 +129,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.plus(int(6)).gt(int(10)))(engine.eval("int+6>10").next)
     assertResult(int.plus(int(1)).mult(int(2)).gt(int(10)))(engine.eval("int+1*2>10").next)
     assertResult(str.plus(str("hello")))(engine.eval("str+'hello'").next)
-    // assertResult(int.is(int.gt(int(5))))(engine.eval("int[is>5]")) // TODO
+    assertResult(int.is(int.gt(int(5))))(engine.eval("int[is>5]").next)
+    assertResult(int.is(int.gt(int(5))))(engine.eval("int[is > 5]").next)
     // assertResult()(engine.eval(".friend.name") // TODO: . for [get]
   }
 

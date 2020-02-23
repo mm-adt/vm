@@ -63,11 +63,10 @@ object mmlangParser extends JavaTokenParsers {
     })((t,q) => t.q(q))
   }
 
-  lazy val objType:Parser[OType] = ((canonicalType <~ Tokens.map_from) ?) ~ opt(canonicalType) ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
-    case Some(range) ~ Some(domain) ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
-    case None ~ Some(domain) ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
-    case None ~ None ~ insts => new __(insts)
-  }
+  lazy val objType:Parser[OType] = ((canonicalType <~ Tokens.map_from) ?) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
+    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
+  } | rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
 
   lazy val stateAccess:Parser[Option[OType] ~ String] = ((canonicalType ?) <~ "<") ~ "[a-zA-z]*".r <~ ">"
 
@@ -89,7 +88,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val inst         :Parser[Inst] = sugarlessInst | operatorSugar | chooseSugar
   lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = "[" ~> repsep((objType <~ Tokens.kv_arrow) ~ obj,Tokens.or_op) <~ "]" ^^ (x => ChooseOp(new VRec[OType,O](x.map(o => (o._1,o._2)).toMap)))
-  lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
+  lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
 
   private def instMatrix(op:String,arg:List[O]):Inst ={
     op match {
