@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
+import org.mmadt.storage.obj.`type`.__
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -47,5 +48,8 @@ object MultOp {
     case avalue:OValue with V => a.mult(avalue)
     case atype:OType with T => a.mult(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
+
+  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:__):Inst = new VInst((Tokens.plus,List(other)),qOne,
+    ((a:O,b:List[Obj]) => a.mult(other[T](a.asInstanceOf[T].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
 

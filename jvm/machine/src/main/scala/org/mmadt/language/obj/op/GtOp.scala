@@ -24,8 +24,9 @@ package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, Type}
+import org.mmadt.language.obj.`type`.{BoolType,Type}
 import org.mmadt.language.obj.value.Value
+import org.mmadt.storage.obj.`type`.__
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -48,4 +49,6 @@ object GtOp {
     case avalue:OValue with V => a.gt(avalue)
     case atype:OType with T => a.gt(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
+
+  def apply[O <: Obj with GtOp[O,V,T],V <: Value[V],T <: Type[T]](other:__):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other[T](a.asInstanceOf[T].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

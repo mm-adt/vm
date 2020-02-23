@@ -28,6 +28,7 @@ import org.mmadt.language.obj.`type`.{BoolType, IntType}
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.`type`.__
 import org.mmadt.storage.obj.value.VRec
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
@@ -62,9 +63,10 @@ object mmlangParser extends JavaTokenParsers {
     })((t,q) => t.q(q))
   }
 
-  lazy val objType:Parser[OType] = ((canonicalType <~ Tokens.map_from) ?) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
-    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
-    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
+  lazy val objType:Parser[OType] = ((canonicalType <~ Tokens.map_from) ?) ~ opt(canonicalType) ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+    case Some(range) ~ Some(domain) ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
+    case None ~ Some(domain) ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
+    case None ~ None ~ insts => new __(insts)
   }
 
   lazy val stateAccess:Parser[Option[OType] ~ String] = ((canonicalType ?) <~ "<") ~ "[a-zA-z]*".r <~ ">"
@@ -80,13 +82,13 @@ object mmlangParser extends JavaTokenParsers {
   lazy val boolValue:Parser[BoolValue]     = (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x.toBoolean))
   lazy val intValue :Parser[IntValue]      = wholeNumber ^^ (x => int(x.toLong))
   lazy val strValue :Parser[StrValue]      = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  lazy val recValue :Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ (Tokens.kv_sep | Tokens.kv_arrow)) ~ obj,("," | Tokens.or_op)) <~ "]" ^^ (x => new VRec[O,O](x.map(o => (o._1,o._2)).toMap))
+  lazy val recValue :Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ Tokens.kv_sep) ~ obj,",") <~ "]" ^^ (x => new VRec[O,O](x.map(o => (o._1,o._2)).toMap))
   lazy val objValue :Parser[OValue]        = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
 
   lazy val instArg      :Parser[O]    = stateAccess ^^ (x => x._1.getOrElse(int).from[OType](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
   lazy val inst         :Parser[Inst] = sugarlessInst | operatorSugar | chooseSugar
   lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
-  lazy val chooseSugar  :Parser[Inst] = recValue ^^ (x => ChooseOp(x.asInstanceOf[RecValue[OType,O]]))
+  lazy val chooseSugar  :Parser[Inst] = "[" ~> repsep((objType <~ Tokens.kv_arrow) ~ obj,Tokens.or_op) <~ "]" ^^ (x => ChooseOp(new VRec[OType,O](x.map(o => (o._1,o._2)).toMap)))
   lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ ",") ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
 
   private def instMatrix(op:String,arg:List[O]):Inst ={
@@ -96,19 +98,23 @@ object mmlangParser extends JavaTokenParsers {
         case arg:IntType => PlusOp(arg)
         case arg:StrValue => PlusOp(arg)
         case arg:ORecValue => PlusOp(arg)
+        case arg:__ => PlusOp(arg)
       }
       case Tokens.mult | Tokens.mult_op => arg.head match {
         case arg:IntValue => MultOp(arg)
         case arg:IntType => MultOp(arg)
         case arg:StrValue => MultOp(arg)
+        case arg:__ => MultOp(arg)
       }
       case Tokens.gt | Tokens.gt_op => arg.head match {
         case arg:IntValue => GtOp(arg)
         case arg:StrValue => GtOp(arg)
+        case arg:__ => GtOp(arg)
       }
       case Tokens.is => arg.head match {
         case arg:BoolValue => IsOp(arg)
         case arg:BoolType => IsOp(arg)
+        case arg:__ => IsOp(arg)
       }
       case Tokens.get => arg match {
         case List(key:O,typeHint:TType[O]) => GetOp(key,typeHint)

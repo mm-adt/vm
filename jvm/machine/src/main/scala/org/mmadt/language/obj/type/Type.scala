@@ -25,9 +25,10 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.{StrValue,Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
+import org.mmadt.storage.obj.`type`.__
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -81,7 +82,10 @@ trait Type[T <: Type[T]] extends Obj
   def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ = this.q()):RecType[A,B] //
 
   final def <=[D <: OType](domainType:D):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type] //
-  override def ==>[R <: Obj](rangeType:TType[R]):R = Processor.compiler[Type[T],R]()(this,rangeType).next().obj()
+  override def ==>[R <: Obj](rangeType:TType[R]):R = Processor.compiler[Type[T],R]()(this,rangeType match {
+    case x:__ => x(this)
+    case x:R => x
+  }).next().obj()
 
   override def id():this.type = this.compose(IdOp()) //
   override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other)) //
