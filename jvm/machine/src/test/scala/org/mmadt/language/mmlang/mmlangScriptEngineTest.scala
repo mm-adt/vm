@@ -140,10 +140,12 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("anonymous parsing"){
-    assertResult(int.plus(int(1)).plus(int.plus(int(5))))(engine.eval("int => [plus,1][plus,[plus,5]]").next())
-    assertResult(int.plus(int(1)).is(int.gt(int(5))))(engine.eval("int => [plus,1][is,[gt,5]]").next())
-    assertResult(int.q(?) <= int.is(int.gt(int(5))))(engine.eval("int => [is,[gt,5]]").next())
-    assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int => [is,[gt,[mult,[plus,5]]]]").next())
+    assertResult(int.plus(int(1)).plus(int.plus(int(5))))(engine.eval("int => [plus,1][plus,[plus,5]]").next)
+    assertResult(int.plus(int(1)).is(int.gt(int(5))))(engine.eval("int => [plus,1][is,[gt,5]]").next)
+    assertResult(int.q(?) <= int.is(int.gt(int(5))))(engine.eval("int => [is,[gt,5]]").next)
+    assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int => [is,[gt,[mult,[plus,5]]]]").next)
+    assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)
+    assertResult(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)(engine.eval("int => [is,[gt,[mult,[plus,5]]]]").next)
   }
 
   test("expression parsing"){

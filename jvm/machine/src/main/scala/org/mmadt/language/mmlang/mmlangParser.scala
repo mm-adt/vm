@@ -24,9 +24,9 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.`type`.{BoolType,IntType,StrType}
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.__
 import org.mmadt.storage.obj.value.VRec
@@ -97,6 +97,7 @@ object mmlangParser extends JavaTokenParsers {
         case arg:IntValue => PlusOp(arg)
         case arg:IntType => PlusOp(arg)
         case arg:StrValue => PlusOp(arg)
+        case arg:StrType => PlusOp(arg)
         case arg:ORecValue => PlusOp(arg)
         case arg:__ => PlusOp(arg)
       }
@@ -104,11 +105,14 @@ object mmlangParser extends JavaTokenParsers {
         case arg:IntValue => MultOp(arg)
         case arg:IntType => MultOp(arg)
         case arg:StrValue => MultOp(arg)
+        case arg:StrType => MultOp(arg)
         case arg:__ => MultOp(arg)
       }
       case Tokens.gt | Tokens.gt_op => arg.head match {
         case arg:IntValue => GtOp(arg)
+        case arg:IntType => GtOp(arg)
         case arg:StrValue => GtOp(arg)
+        case arg:StrType => GtOp(arg)
         case arg:__ => GtOp(arg)
       }
       case Tokens.is => arg.head match {
