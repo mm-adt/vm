@@ -148,6 +148,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int => [is,[gt,[mult,[plus,5]]]]").next)
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)
     assertResult(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)(engine.eval("int => [is,[gt,[mult,[plus,5]]]]").next)
+    assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int => [[is>5] -> 1 | int -> 2]").next)
+    assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int => [plus,10][[is>5] -> 1 | int -> 2]").next)
+    assertResult(bfalse)(engine.eval("4 => [plus,1][[is>5] -> true | int -> false]").next)
+    assertResult(btrue)(engine.eval("5 => [plus,1][[is>5] -> true | int -> false]").next)
   }
 
   test("expression parsing"){

@@ -22,7 +22,7 @@
 
 package org.mmadt.storage
 
-import org.mmadt.language.obj.`type`.{BoolType,IntType,RecType,StrType}
+import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.strm.{IntStrm,RecStrm}
 import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
 import org.mmadt.language.obj.{O,ORecValue,Obj,TQ}
@@ -64,4 +64,12 @@ package object obj {
   def rec(value:(O,O),values:(O,O)*):ORecValue = new VRec[O,O]((value +: values).toMap) //
   def rec[A <: Obj,B <: Obj](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne) //
   def trec[A <: Obj,B <: Obj](name:String):RecType[A,B] = new TRec[A,B](name,Map.empty,Nil,qOne) //
+
+  def asType(obj:Obj):Type[_] = obj match {
+    case atype:Type[_] => atype
+    case _:IntValue => int
+    case _:StrValue => str
+    case _:BoolValue => bool
+    case _:ORecValue => rec
+  }
 }

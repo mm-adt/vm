@@ -23,16 +23,19 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, OType, Obj}
-import org.mmadt.storage.obj.qOne
+import org.mmadt.language.obj.op.ChooseOp
+import org.mmadt.language.obj.value.{IntValue, RecValue}
+import org.mmadt.language.obj.{Inst, O, OType, Obj}
+import org.mmadt.language.{Stringer, Tokens}
+import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.value.VRec
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __(insts:List[Inst] = Nil) extends Type[__] {
 
-  override def toString:String = "[" + insts.toString().replace("List(","").dropRight(1) + "]"
+  override def toString:String = insts.foldLeft("")((a,i) => a + Stringer.instString(i))
   override def q():(IntValue,IntValue) = qOne
   override def q(quantifier:(IntValue,IntValue)):__.this.type = this
   override val name:String = "xxx"
@@ -47,7 +50,20 @@ class __(insts:List[Inst] = Nil) extends Type[__] {
   override def str(inst:Inst,q:(IntValue,IntValue)):StrType = null
   override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:(IntValue,IntValue)):RecType[A,B] = null
 
-  def apply[T <: Type[T]](obj:Obj):T = insts.foldLeft(obj)((a,i) => i(a)).asInstanceOf[T]
+  def apply[T <: Type[T]](obj:Obj):T = insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i match {
+    case x:Inst if x.op() == Tokens.choose => applyChoose(a.asInstanceOf[OType],x.arg())(a)
+    case _ => i(a)
+  }).asInstanceOf[T]
+
+  private def applyChoose(a:OType,branches:RecValue[OType,O]):Inst ={ // [choose] branches need to be resolved (thus, a new rec is constructed)
+    ChooseOp(new VRec[OType,O](branches.value().map(entry => (entry._1 match {
+      case y:__ => y(a.range())
+      case y => y
+    },entry._2 match {
+      case y:__ => y(a.range())
+      case y => y
+    }))))
+  }
 }
 
 object __ extends __(Nil) {
