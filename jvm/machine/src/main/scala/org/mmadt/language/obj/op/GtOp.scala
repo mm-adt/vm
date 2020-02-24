@@ -24,9 +24,8 @@ package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType,Type}
+import org.mmadt.language.obj.`type`.{BoolType, Type, __}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.obj.`type`.__
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 

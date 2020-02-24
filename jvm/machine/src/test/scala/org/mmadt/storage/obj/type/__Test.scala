@@ -22,7 +22,8 @@
 
 package org.mmadt.storage.obj.`type`
 
-import org.mmadt.language.obj.op.{GtOp,PlusOp}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.{GtOp, PlusOp}
 import org.mmadt.storage.obj.int
 import org.scalatest.FunSuite
 
@@ -34,9 +35,6 @@ class __Test extends FunSuite {
   test("__ type"){
     val x = __(PlusOp(int(4)),PlusOp(int.plus(int)),GtOp(__(PlusOp(int(2)))))
     assertResult(int.plus(int(4)).plus(int.plus(int)).gt(int.plus(int(2))))(x(int))
-    //println(x)
-    //println(int(5) ==> x(int))
-    //println(int(5) ==> int.plus(int(4)).plus(int.plus(int)).plus(int.plus(int(2))))
   }
 
 }

@@ -24,10 +24,10 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Printable
 import org.mmadt.language.PrintableInstances._
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.Processor
-import org.mmadt.storage.obj.`type`.__
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -57,7 +57,7 @@ trait Obj
   }).map(_.obj())
 
   // pattern matching methods
-  val name:String //
-  def test(other:Obj):Boolean //
+  val name:String
+  def test(other:Obj):Boolean
   override def toString:String = Printable.format(this)
 }

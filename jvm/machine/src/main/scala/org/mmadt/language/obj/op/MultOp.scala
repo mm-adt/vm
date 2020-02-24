@@ -23,10 +23,9 @@
 package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
-import org.mmadt.storage.obj.`type`.__
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 

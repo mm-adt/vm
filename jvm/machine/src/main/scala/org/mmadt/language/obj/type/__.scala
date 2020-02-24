@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.`type`
+package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.ChooseOp

@@ -59,4 +59,17 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
     assertResult(List(int(2)))((int(1) ===> int.mult(int(2)).is(int.gt(int(1)))).toList)
     assertResult(List(int(2)))((int(1) ===> int.mult(int(2)).is(int.plus(int(10)).gt(int(1)))).toList)
   }
+
+  /*test("process canonical type"){
+    int(10) ===> int
+    assertThrows[IllegalArgumentException]{
+      int(10) ===> bool
+    }
+    assertThrows[IllegalArgumentException]{
+      int(10) ===> str
+    }
+    assertThrows[IllegalArgumentException]{
+      str("hello") ===> bool
+    }
+  }*/
 }

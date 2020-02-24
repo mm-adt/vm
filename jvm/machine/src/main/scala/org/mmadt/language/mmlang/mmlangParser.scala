@@ -24,11 +24,10 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType,IntType,StrType}
+import org.mmadt.language.obj.`type`.{BoolType, IntType, StrType, __}
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.`type`.__
 import org.mmadt.storage.obj.value.VRec
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
@@ -127,6 +126,7 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.from => FromOp(arg.head.asInstanceOf[StrValue])
       case Tokens.to => ToOp(arg.head.asInstanceOf[StrValue])
       case Tokens.choose => ChooseOp(arg.head.asInstanceOf[RecValue[OType,O]])
+      case Tokens.id => IdOp()
     }
   }
 }

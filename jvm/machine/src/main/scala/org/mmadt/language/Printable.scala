@@ -28,13 +28,10 @@ import org.mmadt.language.obj.Obj
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Printable[O <: Obj] {
-  def format(value: O): String
+  def format(value:O):String
 }
 
 object Printable {
-  def format[O <: Obj](input: O)(implicit p: Printable[O]): String =
+  def format[O <: Obj](input:O)(implicit p:Printable[O]):String =
     p.format(input)
-
-  def print[O <: Obj](input: O)(implicit p: Printable[O]): Unit =
-    println(format(input))
 }

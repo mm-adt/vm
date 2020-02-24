@@ -142,6 +142,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("anonymous parsing"){
+    assertResult(int.is(int.gt(int.id())))(engine.eval("int => [is,[gt,[id]]]").next)
     assertResult(int.plus(int(1)).plus(int.plus(int(5))))(engine.eval("int => [plus,1][plus,[plus,5]]").next)
     assertResult(int.plus(int(1)).is(int.gt(int(5))))(engine.eval("int => [plus,1][is,[gt,5]]").next)
     assertResult(int.q(?) <= int.is(int.gt(int(5))))(engine.eval("int => [is,[gt,5]]").next)
@@ -152,6 +153,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int => [plus,10][[is>5] -> 1 | int -> 2]").next)
     assertResult(bfalse)(engine.eval("4 => [plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("5 => [plus,1][[is>5] -> true | int -> false]").next)
+    assertResult(btrue)(engine.eval("true => [bool -> bool | int -> int]").next)
+    // TODO: assertResult(int(10))(engine.eval("10 => [bool -> bool | int -> int]").next)
   }
 
   test("expression parsing"){

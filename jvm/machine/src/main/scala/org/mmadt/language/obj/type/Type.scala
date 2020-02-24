@@ -25,10 +25,9 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{StrValue,Value}
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
-import org.mmadt.storage.obj.`type`.__
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
