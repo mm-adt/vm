@@ -93,16 +93,16 @@ class mmlangScriptEngineTest extends FunSuite {
   test("quantified value parsing"){
     assertResult(btrue.q(int(2)))(engine.eval("true{2}").next)
     assertResult(bfalse)(engine.eval("false{1}").next)
-    assertResult(int(5).q(qPlus))(engine.eval("5{+}").next)
+    assertResult(int(5).q(+))(engine.eval("5{+}").next)
     assertResult(int(6).q(qZero))(engine.eval("6{0}").next)
     assertResult(int(7).q(qZero))(engine.eval("7{0,0}").next)
     assertResult(str("marko").q(int(10),int(100)))(engine.eval("'marko'{10,100}").next)
   }
 
   test("refinement type parsing"){
-    assertResult(int.q(qMark) <= int.is(int.gt(int(10))))(engine.eval("int[is,int[gt,10]]").next)
+    assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is,int[gt,10]]").next)
     assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]").next)
-    assertResult(int.q(qMark) <= int.is(int.gt(int(10))))(engine.eval("int[is>10]").next)
+    assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is>10]").next)
   }
 
   test("endomorphic type parsing"){
