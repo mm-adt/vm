@@ -33,21 +33,29 @@ import org.scalatest.FunSuite
  */
 class VStrTest extends FunSuite {
 
-  test("str values") {
+  test("str values"){
     assertResult(str("mar"))(str("m").plus("a").plus("r"))
     assertResult(btrue)(str("m").gt(str("a")))
     assertResult(bfalse)(str("m").gt(str("r")))
   }
 
-  test("type names on str") {
+  test("type names on str"){
     assertResult("address['103 P.V.']")(str("103 P.V.").as("address").toString)
   }
 
-  test("type names on model") {
-    val model = Model.simple().
-      put(str.plus(str("a")), str.plus(str("b")))
-    val processor = new CompilingProcessor[Obj, Obj]()
+  test("type names on model"){
+    val model     = Model.simple().
+      put(str.plus(str("a")),str.plus(str("b")))
+    val processor = new CompilingProcessor[Obj,Obj]()
     // println(str ==> str.plus("a").is(str.gt("bb")))
-    assertResult("address{?}<=str[as,address][plus,'ed'][is,bool<=address[gt,'xx']]")(processor.apply(str.as("address"), str.plus("ed").is(str.gt("xx"))).next().obj().toString)
+    assertResult("address{?}<=str[as,address][plus,'ed'][is,bool<=address[gt,'xx']]")(processor.apply(str.as("address"),str.plus("ed").is(str.gt("xx"))).next().obj().toString)
+  }
+
+  test("str value quantifiers"){
+    assertResult(str("marko").q(int(2)))(str("marko").q(int(2)) ==> str.q(int(2)))
+    assertResult(str("marko").q(int(2)))(str("mar").q(int(2)) ==> str.q(int(2)).plus(str("ko")))
+    assertResult(str("marko").q(int(2)))(str("mar").q(int(2)) ==> str.q(int(2)).plus(str("k")).plus(str("o").q(int(34))))
+    assertResult(str("marko").q(int(4)))(str("mar").q(int(2)) ==> str.q(int(2)).plus(str("k")).plus(str("o").q(int(34))).q(int(2)))
+    //assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
   }
 }

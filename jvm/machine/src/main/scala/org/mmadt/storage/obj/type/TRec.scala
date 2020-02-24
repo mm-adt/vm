@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.op.PlusOp
 import org.mmadt.language.obj.value.RecValue
-import org.mmadt.language.obj.{Inst, OType, Obj, TQ}
+import org.mmadt.language.obj.{Inst,OType,Obj,TQ}
 import org.mmadt.storage.obj._
 
 /**
@@ -41,9 +41,9 @@ class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(OType,Inst)]
   override def value():Map[A,B] = java
 
   override def plus(other:RecType[A,B]):RecType[A,B] ={
-    new TRec[A,B](name,this.value() ++ other.value(),this.insts,this.quantifier).compose(PlusOp(other))
+    new TRec[A,B](name,this.value() ++ other.value(),this.insts :+ (this,PlusOp(other)),this.q())
   } //
   override def plus(other:RecValue[A,B]):this.type ={
-    new TRec[A,B](name,this.value() ++ other.value(),this.insts,this.quantifier).compose(PlusOp(other)).asInstanceOf[this.type]
+    new TRec[A,B](name,this.value() ++ other.value(),this.insts :+ (this,PlusOp(other)),this.q()).asInstanceOf[this.type]
   } //
 }

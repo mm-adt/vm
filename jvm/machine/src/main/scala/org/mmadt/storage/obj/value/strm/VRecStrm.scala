@@ -27,21 +27,21 @@ import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.op.StartOp
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.{Obj, TQ}
+import org.mmadt.language.obj.{Obj,TQ}
+import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TRec
-import org.mmadt.storage.obj.qZero
 import org.mmadt.storage.obj.value.VObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRecStrm[A <: Obj, B <: Obj](name: String, java: RecValue[A, B]*) extends VObj(name, java, quantifier = (java.length, java.length))
-  with RecStrm[A, B] {
-  def this(java: RecValue[A, B]*) = this(name = Tokens.rec, java: _*)
+class VRecStrm[A <: Obj,B <: Obj](name:String,java:RecValue[A,B]*) extends VObj(name,java,quantifier = (int(java.length),int(java.length)))
+  with RecStrm[A,B] {
+  def this(java:RecValue[A,B]*) = this(name = Tokens.rec,java:_*)
 
-  override def value(): Iterator[RecValue[A, B]] = java.iterator //
-  override def start(): RecType[A, B] = new TRec[A, B](name, Map.empty, List((new TRec[A, B](name, Map.empty, Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VRecStrm[A, B](name, java: _*).asInstanceOf[this.type] //
-  override def as[O <: Obj](name: String): O = new VRecStrm[A, B](name, java: _*).asInstanceOf[O] //
+  override def value():Iterator[RecValue[A,B]] = java.iterator //
+  override def start():RecType[A,B] = new TRec[A,B](name,Map.empty,List((new TRec[A,B](name,Map.empty,Nil,qZero),StartOp(this))),q()) //
+  override def q(quantifier:TQ):this.type = new VRecStrm[A,B](name,java:_*).asInstanceOf[this.type] //
+  override def as[O <: Obj](name:String):O = new VRecStrm[A,B](name,java:_*).asInstanceOf[O] //
 }
 

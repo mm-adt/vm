@@ -24,7 +24,6 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
 import org.mmadt.language.obj.{OType, Obj, Rec}
-import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.value.VRec
 
 /**
@@ -33,19 +32,20 @@ import org.mmadt.storage.obj.value.VRec
 trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
   with Value[RecValue[A,B]] {
 
-  override def value():Map[A,B] //
-  override def start():RecType[A,B] //
+  override def value():Map[A,B]
+  override def start():RecType[A,B]
+  def value(java:Map[A,B]):this.type
 
   override def to(label:StrValue):RecType[A,B] = this.start().to(label)
-  //override def eqs(other: RecType[A,B]): BoolType = this.start().eqs(other) //
-  //override def eqs(other: RecValue[A,B]): BoolValue = this.value() == other.value() //
-  override def plus(other:RecType[A,B]):RecType[A,B] = this.start().plus(other) //
-  override def plus(other:RecValue[A,B]):this.type = rec(name,this.value ++ other.value(),this.q()).asInstanceOf[this.type] //
-  override def is(bool:BoolType):RecType[A,B] = this.start().is(bool) //
-  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0) //
+  //override def eqs(other: RecType[A,B]): BoolType = this.start().eqs(other)
+  //override def eqs(other: RecValue[A,B]): BoolValue = this.value() == other.value()
+  override def plus(other:RecType[A,B]):RecType[A,B] = this.start().plus(other)
+  override def plus(other:RecValue[A,B]):this.type = this.value(this.value() ++ other.value())
+  override def is(bool:BoolType):RecType[A,B] = this.start().is(bool)
+  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
 
 
-  override def get(key:A):B = this.value.get(key) match {
+  override def get(key:A):B = this.value().get(key) match {
     case Some(bvalue:Value[_] with B) => bvalue
     case Some(btype:Type[_] with B) => key ==> btype
     case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)

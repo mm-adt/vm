@@ -36,7 +36,7 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
   test("process single value w/ quantifiers"){
     assertResult(List(int(110)))(Processor.iterator[Int,Int]().apply(int(5),int.mult(int(2)).plus(int(100))).map(_.obj()).toList)
     assertResult(List(int(110)))(Processor.iterator[Int,Int]()(int(5),int * 2 + 100).map(_.obj()).toList)
-    assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.mult(int(2)).plus(int(100))).map(_.obj()).toList)
+    assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
     /*    assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
         assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
         assertResult(List(int(110).q(100)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)*/

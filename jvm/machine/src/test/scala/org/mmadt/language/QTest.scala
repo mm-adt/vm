@@ -30,18 +30,18 @@ import org.scalatest.FunSuite
  */
 class QTest extends FunSuite {
 
-  test("value quantifiers toString") {
+  test("value quantifiers toString"){
     assertResult("3")(int(3).toString)
     assertResult("3{0}")(int(3).q(0).toString)
-    assertResult("3{1,2}")(int(3).q(int(1), int(2)).toString)
-    assertResult("3{1,2}")(int(3).q(1, 2).toString)
+    assertResult("3{1,2}")(int(3).q(int(1),int(2)).toString)
+    assertResult("3{1,2}")(int(3).q(1,2).toString)
   }
 
-  test("type quantifiers toString") {
+  test("type quantifiers toString"){
     assertResult("int")(int.toString)
     assertResult("int{0}")(int.q(0).toString)
-    assertResult("int{1,2}")(int.q(int(1), int(2)).toString)
-    assertResult("int{1,2}")(int.q(1, 2).toString)
+    assertResult("int{1,2}")(int.q(int(1),int(2)).toString)
+    assertResult("int{1,2}")(int.q(1,2).toString)
     assertResult("bool{3}<=int{3}[gt,5]")(int.q(3).gt(5).toString)
     assertResult("int{?}<=int[is,bool<=int[gt,5]]")(int.is(int.gt(5)).toString)
     assertResult("int{?}<=int[is,bool<=int[gt,5]][plus,10]")(int.is(int.gt(5)).plus(10).toString)

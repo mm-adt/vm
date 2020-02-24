@@ -23,8 +23,9 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.{BoolType, StrType}
+import org.mmadt.language.obj.`type`.{BoolType,StrType}
 import org.mmadt.storage.obj.`type`.TStr
+import org.mmadt.storage.obj.bool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,17 +33,18 @@ import org.mmadt.storage.obj.`type`.TStr
 trait StrValue extends Str
   with Value[StrValue] {
 
-  override def value(): String //
-  override def start(): StrType //
+  override def value():String
+  override def start():StrType
+  def value(java:String):this.type
 
-  override def to(label: StrValue): StrType = this.start().to(label) //
-  //override def eqs(other: StrType): BoolType = this.start().eqs(other) //
-  //override def eqs(other: StrValue): BoolValue = this.value() == other.value() //
-  override def plus(other: StrType): StrType = this.start().plus(other) //
-  override def plus(other: StrValue): this.type = Str.stringToStr(this.value() + other.value()).as(name) //
-  override def gt(other: StrType): BoolType = this.start().gt(other) //
-  override def gt(other: StrValue): BoolValue = this.value() > other.value() //
-  override def gt(): BoolType = new TStr().gt(this) //
-  override def is(bool: BoolType): StrType = this.start().is(bool) //
-  override def is(bool: BoolValue): this.type = if (bool.value()) this else this.q(0) //
+  override def to(label:StrValue):StrType = this.start().to(label)
+  //override def eqs(other: StrType): BoolType = this.start().eqs(other)
+  //override def eqs(other: StrValue): BoolValue = this.value() == other.value()
+  override def plus(other:StrType):StrType = this.start().plus(other)
+  override def plus(other:StrValue):this.type = this.value(this.value() + other.value())
+  override def gt(other:StrType):BoolType = this.start().gt(other)
+  override def gt(other:StrValue):BoolValue = bool(this.value() > other.value()).q(this.q())
+  override def gt():BoolType = new TStr().gt(this)
+  override def is(bool:BoolType):StrType = this.start().is(bool)
+  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
 }

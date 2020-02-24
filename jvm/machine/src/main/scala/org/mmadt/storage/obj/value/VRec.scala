@@ -33,13 +33,14 @@ import org.mmadt.storage.obj.`type`.TRec
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Obj, B <: Obj](name: String, java: Map[A, B], quantifier: TQ) extends VObj(name, java, quantifier) with RecValue[A, B] {
+class VRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:TQ) extends VObj(name,java,quantifier) with RecValue[A,B] {
 
-  def this(java: Map[A, B]) = this(Tokens.rec, java, qOne)
+  def this(java:Map[A,B]) = this(Tokens.rec,java,qOne)
 
-  override def value(): Map[A, B] = java //
-  override def start(): RecType[A, B] = new TRec(name, java, List((new TRec(name, java, Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VRec(name, java, quantifier).asInstanceOf[this.type] //
-  override def as[O<:Obj](name: String): O = new VRec(name, java, quantifier).asInstanceOf[O] //
+  override def value():Map[A,B] = java
+  override def value(java:Map[A,B]):this.type = new VRec(this.name,java,this.q()).asInstanceOf[this.type]
+  override def start():RecType[A,B] = new TRec(name,java,List((new TRec(name,java,Nil,qZero),StartOp(this))),this.q())
+  override def q(quantifier:TQ):this.type = new VRec(name,java,quantifier).asInstanceOf[this.type]
+  override def as[O <: Obj](name:String):O = new VRec(name,java,quantifier).asInstanceOf[O]
 
 }

@@ -23,10 +23,10 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Obj, TQ}
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.StartOp
 import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.{Obj, TQ}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
 
@@ -34,14 +34,14 @@ import org.mmadt.storage.obj.`type`.TInt
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(name: String, java: Long, quantifier: TQ) extends VObj(name, java, quantifier) with IntValue {
+class VInt(name:String,java:Long,quantifier:TQ) extends VObj(name,java,quantifier) with IntValue {
 
-  def this(java: Long) = this(Tokens.int, java, qOne)
+  def this(java:Long) = this(Tokens.int,java,qOne)
 
-  override def value(): Long = java //
-  override def start(): IntType = new TInt(name, List((new TInt(name, Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VInt(name, java, quantifier).asInstanceOf[this.type] //
-  override def as[O<:Obj](name: String): O = new VInt(name, java, quantifier).asInstanceOf[O] //
-
+  override def value():Long = java
+  override def value(java:Long):this.type = new VInt(this.name,java,this.q()).asInstanceOf[this.type]
+  override def start():IntType = new TInt(name,List((new TInt(name,Nil,qZero),StartOp(this))),q())
+  override def q(quantifier:TQ):this.type = new VInt(name,java,quantifier).asInstanceOf[this.type]
+  override def as[O <: Obj](name:String):O = new VInt(name,java,quantifier).asInstanceOf[O]
 
 }

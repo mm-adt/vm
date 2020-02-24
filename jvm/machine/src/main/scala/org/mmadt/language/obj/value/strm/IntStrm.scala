@@ -33,20 +33,20 @@ import org.mmadt.storage.obj.value.strm.VIntStrm
 trait IntStrm extends Int
   with Value[IntStrm] {
 
-  override def value(): Iterator[IntValue] //
-  override def start(): IntType //
+  override def value():Iterator[IntValue] //
+  override def start():IntType //
 
-  override def to(label: StrValue): IntType = this.start().to(label) //
+  override def to(label:StrValue):IntType = this.start().to(label) //
   //override def eqs(other: IntType): BoolType = this.start().eqs(other) //
   //override def eqs(other: IntValue): BoolValue = throw new IllegalAccessException() //
-  override def plus(other: IntType): IntType = this.start().plus(other) //
-  override def plus(other: IntValue): this.type = new VIntStrm(this.name, this.value().map(i => i.plus(other)).toSeq).asInstanceOf[this.type] //
-  override def mult(other: IntType): IntType = this.start().mult(other) //
-  override def mult(other: IntValue): this.type = throw new IllegalAccessException() //
-  override def neg(): this.type = throw new IllegalAccessException() //
-  override def gt(other: IntType): BoolType = this.start().gt(other) //
-  override def gt(other: IntValue): BoolValue = throw new IllegalAccessException() //
-  override def gt(): BoolType = throw new IllegalAccessException() //
-  override def is(bool: BoolType): IntType = this.start().is(bool) //
-  override def is(bool: BoolValue): this.type = throw new IllegalAccessException() //
+  override def plus(other:IntType):IntType = this.start().plus(other) //
+  override def plus(other:IntValue):this.type = new VIntStrm(this.name,this.value().map(i => i.plus(other)).toSeq).asInstanceOf[this.type] //
+  override def mult(other:IntType):IntType = this.start().mult(other) //
+  override def mult(other:IntValue):this.type = throw new IllegalAccessException() //
+  override def neg():this.type = throw new IllegalAccessException() //
+  override def gt(other:IntType):BoolType = this.start().gt(other) //
+  override def gt(other:IntValue):BoolValue = throw new IllegalAccessException() //
+  override def gt():BoolType = throw new IllegalAccessException() //
+  override def is(bool:BoolType):IntType = this.start().is(bool) //
+  override def is(bool:BoolValue):this.type = throw new IllegalAccessException() //
 }

@@ -23,12 +23,12 @@
 package org.mmadt.storage
 
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
-import org.mmadt.language.obj.{O, ORecValue, Obj, TQ}
-import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec, TStr}
-import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
-import org.mmadt.storage.obj.value.{VBool, VInt, VRec, VStr}
+import org.mmadt.language.obj.value.strm.{IntStrm,RecStrm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
+import org.mmadt.language.obj.{O,ORecValue,Obj,TQ}
+import org.mmadt.storage.obj.`type`.{TBool,TInt,TRec,TStr}
+import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm}
+import org.mmadt.storage.obj.value.{VBool,VInt,VRec,VStr}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

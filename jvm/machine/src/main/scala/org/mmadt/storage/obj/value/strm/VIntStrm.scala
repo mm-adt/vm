@@ -23,11 +23,11 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Obj, TQ}
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.IntStrm
+import org.mmadt.language.obj.{Obj, TQ}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.VObj
@@ -35,13 +35,13 @@ import org.mmadt.storage.obj.value.VObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VIntStrm(name: String = Tokens.int, java: Seq[IntValue]) extends VObj(name, java, quantifier = (java.length, java.length))
+class VIntStrm(name:String = Tokens.int,java:Seq[IntValue]) extends VObj(name,java,quantifier = (int(java.length),int(java.length)))
   with IntStrm {
-  def this(java: Seq[IntValue]) = this(name = Tokens.int, java)
+  def this(java:Seq[IntValue]) = this(name = Tokens.int,java)
 
-  override def value(): Iterator[IntValue] = java.iterator //
-  override def start(): IntType = new TInt(name, List((new TInt(name, Nil, qZero), StartOp(this))), q()) //
-  override def q(quantifier: TQ): this.type = new VIntStrm(name, java).asInstanceOf[this.type] //
-  override def as[O <: Obj](name:String): O = new VIntStrm(name,this.value().toSeq).asInstanceOf[O]  //
+  override def value():Iterator[IntValue] = java.iterator //
+  override def start():IntType = new TInt(name,List((new TInt(name,Nil,qZero),StartOp(this))),q()) //
+  override def q(quantifier:TQ):this.type = new VIntStrm(name,java).asInstanceOf[this.type] //
+  override def as[O <: Obj](name:String):O = new VIntStrm(name,this.value().toSeq).asInstanceOf[O] //
 }
 

@@ -34,22 +34,32 @@ import org.scalatest.FunSuite
  */
 class VIntTest extends FunSuite {
 
-  test("int values") {
+  test("int values"){
     assertResult(int(3))(int(1) + int(2))
     assertResult(int(-4))(-int(4))
     assertResult(int(-4))(int(3) ==> int.plus(1).neg())
   }
 
-  test("int types") {
-    val model = Model.simple()
+  test("int types"){
+    val model     = Model.simple()
     //put("nat", int.as[IntType]("nat"), int.is(int.gt(0))) // TODO: structure representation in model
-    val processor = new CompilingProcessor[Obj, Obj with Type[_]](model)
-    val compiled = processor.apply(int.as("nat"), int.plus(10)).next().obj()
+    val processor = new CompilingProcessor[Obj,Obj with Type[_]](model)
+    val compiled  = processor.apply(int.as("nat"),int.plus(10)).next().obj()
     assertResult("nat<=int[as,nat][plus,10]")(compiled.toString)
     assertResult("nat[60]")((int(50).as[Int]("nat") ==> int.plus(10)).toString)
     assertResult("nat[60]")((int(50) ==> int.as[IntType]("nat").plus(10)).toString)
     assertResult("nat[60]")((int(50).as[Int]("nat") ==> compiled).toString)
     assertResult("nat[60]")((int(50) ==> compiled).toString)
+  }
+
+  test("int value quantifiers"){
+    assertResult(int(3).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)))
+    assertResult(int(7).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)))
+    assertResult(int(14).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).mult(int(2).q(int(34))))
+    assertResult(int(14).q(int(4)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).mult(int(2).q(int(34))).q(int(2)))
+    //assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
+    assertResult(bfalse.q(int(3)))(int(5).q(int(3)) ==> int.q(int(3)).plus(int(4)).gt(int(10)))
+    assertResult(btrue.q(int(3)))(int(5).q(int(3)) ==> int.q(int(3)).plus(int(4)).gt(int(2)))
   }
 
 }
