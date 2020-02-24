@@ -24,8 +24,9 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
+import org.mmadt.language.obj.`type`.TypeChecker
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst,Obj,TType}
+import org.mmadt.language.obj.{Inst, Obj, TType}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
@@ -37,13 +38,18 @@ class C1Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj],val model:Mode
 
   override def split[E <: Obj](obj:E):Traverser[E] = new C1Traverser[E](obj,state,model) //
   override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
-    InstUtil.nextInst(rangeType) match {
-      case None => this.asInstanceOf[Traverser[E]]
-      case Some(inst) => inst match {
-        case toInst:Inst if toInst.op().equals(Tokens.to) => new C1Traverser[E](obj.asInstanceOf[E],Map[StrValue,Obj](toInst.arg[StrValue]() -> obj) ++ this.state,model) //
-        case fromInst:Inst if fromInst.op().equals(Tokens.from) => this.split(this.state(fromInst.arg[StrValue]()).asInstanceOf[E]) //
-        case defaultInst:Inst => InstUtil.instEval(this,defaultInst)
-      }
+    if (rangeType.insts().isEmpty) {
+      TypeChecker.checkType(this.obj,rangeType)
+      this.asInstanceOf[Traverser[E]]
+    } else {
+      (InstUtil.nextInst(rangeType) match {
+        case None => this.asInstanceOf[Traverser[E]]
+        case Some(inst) => inst match {
+          case toInst:Inst if toInst.op().equals(Tokens.to) => new C1Traverser[E](obj.asInstanceOf[E],Map[StrValue,Obj](toInst.arg[StrValue]() -> obj) ++ this.state,model) //
+          case fromInst:Inst if fromInst.op().equals(Tokens.from) => this.split(this.state(fromInst.arg[StrValue]()).asInstanceOf[E]) //
+          case defaultInst:Inst => InstUtil.instEval(this,defaultInst)
+        }
+      }).apply(rangeType.linvert()).asInstanceOf[Traverser[E]]
     }
   }
 }

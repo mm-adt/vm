@@ -37,6 +37,7 @@ class CompilingProcessor[S <: Obj,E <: Obj](val model:Model = Model.id) extends 
       case domainValue:OValue => throw new IllegalArgumentException("The compiling processor only accepts types: " + domainValue)
       case domainType:TType[E] => LeftRightSweepRewrite.rewrite[E](model,domainType,rangeType)
     }
+
     // C2Traverser performs type erasure, representing all types in terms of mm-ADT
     Iterator(model match {
       case Model.id => traverser

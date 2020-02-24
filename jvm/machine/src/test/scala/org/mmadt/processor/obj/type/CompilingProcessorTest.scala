@@ -23,7 +23,7 @@
 package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.`type`.{BoolType, IntType}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.obj._
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -109,7 +109,20 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     assertResult("int{?}<=int[mult,1][choose,[int{?}<=int[is,bool<=int[gt,5]]:int[plus,2],int:int[plus,1]]][is,bool<=int[gt,3]]")(result.head.toString)
   }
 
-  /*test("nested instruction rewrite"){
+  test("compiler w/ multi-types"){
+    val processor:Processor[IntType,BoolType] = new CompilingProcessor(
+      Model.simple().
+        put(int.plus(int(0)),int).
+        put(int.gt(int(0)),int.eqs(int(0))))
+
+    assertResult(int.eqs(int(0)))(processor.apply(int.plus(int(0)).gt(int(0))))
+    assertResult(int.gt(int(20)))(processor.apply(int.plus(int(0)).gt(int(20))))
+    assertResult(int.plus(int(10)).gt(int(20)))(processor.apply(int.plus(int(10)).gt(int(20))))
+    assertResult(int.plus(int(10)).gt(int(20)).and(bool))(processor.apply(int.plus(int(10)).gt(int(20)).and(bool)))
+    assertResult(int.plus(int(10)).gt(int(20)).and(bool))(processor.apply(int.plus(int(0)).plus(int(10)).plus(int(0)).gt(int(20)).and(bool)))
+  }
+
+  test("compiler w/ nested instructions"){
     processor = new CompilingProcessor(
       Model.simple().
         put(int.mult(2),int.plus(int)).
@@ -119,5 +132,5 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     assertResult(int.plus(int.plus(2).plus(3).plus(4)))(processor.apply(int.plus(0).plus(int.plus(2).plus(3).plus(4))))
     assertResult(int.plus(int))(processor.apply(int.plus(0).plus(int.plus(0))))
     assertResult(int.plus(int))(processor.apply(int.plus(0).plus(int.plus(1).plus(-1).plus(0))))
-  }*/
+  }
 }

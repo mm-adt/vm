@@ -23,7 +23,7 @@
 package org.mmadt.language.model.rewrite
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.{OType, Obj, TType}
+import org.mmadt.language.obj._
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.C1Traverser
 
@@ -48,10 +48,25 @@ object LeftRightSweepRewrite {
         case Some(right:OType) => recursiveRewrite(model,right,btype,traverser)
         case None => recursiveRewrite(model,
           atype.rinvert(),
-          atype.insts().last._2.apply(atype.range(),atype.insts().last._2.args()).asInstanceOf[OType].compose(btype),
+          atype.insts().last._2.apply(
+            atype.rinvert[OType]().range(),
+            rewriteArgs(model,atype.rinvert[OType]().range(),atype.insts().last._2)).asInstanceOf[OType].compose(btype),
           traverser)
       }
-    } else if (btype.insts().nonEmpty) recursiveRewrite(model,btype.linvert(),btype.linvert().domain(),traverser.apply(btype).asInstanceOf[Traverser[E]])
+    } else if (btype.insts().nonEmpty) {
+      recursiveRewrite(model,
+        btype.linvert(),
+        btype.linvert().domain(),
+        traverser.apply(btype.insts().head._2.apply(btype.insts().head._1).asInstanceOf[OType]).asInstanceOf[Traverser[E]])
+    }
     else traverser
+  }
+
+  // if no match, then apply the instruction after rewriting its arguments
+  private def rewriteArgs[E <: Obj](model:Model,start:OType,inst:Inst):List[Obj] ={
+    inst.args().map{
+      case atype:OType => LeftRightSweepRewrite.rewrite(model,start,atype.asInstanceOf[TType[E]]).obj()
+      case avalue:O => avalue
+    }
   }
 }
