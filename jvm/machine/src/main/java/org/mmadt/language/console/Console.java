@@ -77,7 +77,7 @@ public class Console {
             try {
                 String line = reader.readLine(engineName + "> ");
                 while (line.trim().endsWith("/")) {
-                    line = line.trim().substring(0, line.length() - 1) + reader.readLine(engineName.length() + "> ");
+                    line = line.trim().substring(0, line.length() - 1) + reader.readLine(".".repeat(engineName.length()) + "> ");
                 }
                 ///////////////////
                 if (line.equals(Q))
