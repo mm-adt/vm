@@ -28,7 +28,6 @@ import org.mmadt.language.obj.`type`.{BoolType, IntType, StrType, __}
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.VRec
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
 import scala.util.matching.Regex
@@ -85,7 +84,7 @@ object mmlangParser extends JavaTokenParsers {
 
   lazy val instArg      :Parser[O]    = stateAccess ^^ (x => x._1.getOrElse(int).from[OType](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
   lazy val inst         :Parser[Inst] = sugarlessInst | operatorSugar | chooseSugar
-  lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
+  lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = "[" ~> repsep((objType <~ Tokens.:->) ~ obj,Tokens.:|) <~ "]" ^^ (x => ChooseOp(rec(x.map(o => (o._1,o._2)).toMap)))
   lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
 
@@ -112,6 +111,17 @@ object mmlangParser extends JavaTokenParsers {
         case arg:StrValue => GtOp(arg)
         case arg:StrType => GtOp(arg)
         case arg:__ => GtOp(arg)
+      }
+      case Tokens.eqs | Tokens.eqs_op => arg.head match {
+        case arg:BoolValue => EqsOp(arg)
+        case arg:BoolType => EqsOp(arg)
+        case arg:IntValue => EqsOp(arg)
+        case arg:IntType => EqsOp(arg)
+        case arg:StrValue => EqsOp(arg)
+        case arg:StrType => EqsOp(arg)
+        case arg:ORecValue => EqsOp(arg)
+        case arg:ORecType => EqsOp(arg)
+        case arg:__ => EqsOp(arg)
       }
       case Tokens.is => arg.head match {
         case arg:BoolValue => IsOp(arg)

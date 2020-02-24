@@ -31,13 +31,13 @@ import org.mmadt.storage.obj.value.VBool
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Bool extends Obj
-  //with EqOp[Bool, BoolValue, BoolType]
-  with IsOp[Bool, BoolType]
+  with EqsOp[Bool,BoolValue,BoolType]
+  with IsOp[Bool,BoolType]
   with AndOp
   with OrOp
   with ToOp[BoolType] {
 }
 
 object Bool {
-  implicit def booleanToBool(java: Boolean): BoolValue with Bool = new VBool(java) //
+  implicit def booleanToBool(java:Boolean):BoolValue with Bool = new VBool(java) //
 }

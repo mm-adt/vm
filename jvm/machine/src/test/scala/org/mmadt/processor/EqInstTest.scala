@@ -20,28 +20,32 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.value
+package org.mmadt.processor
 
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.storage.obj.{bool,int}
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait BoolValue extends Bool
-  with Value[BoolValue] {
+class EqInstTest extends FunSuite {
 
-  override def value():Boolean
-  override def start():BoolType
-  def value(java:Boolean):this.type
-
-  override def to(label:StrValue):BoolType = this.start().to(label)
-  override def eqs(other:BoolType):BoolType = this.start().eqs(other)
-  override def eqs(other:BoolValue):BoolValue = this.value(this.value().equals(other.value()))
-  override def and(bool:BoolType):BoolType = this.start().and(bool)
-  override def and(other:BoolValue):this.type = this.value(this.value() && other.value())
-  override def or(bool:BoolType):BoolType = this.start().or(bool)
-  override def or(other:BoolValue):this.type = this.value(this.value() || other.value())
-  override def is(bool:BoolType):BoolType = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
+  test("[eq] w/ int"){
+    assertResult(bool(false))(int(1).eqs(int(3))) // value * value = value
+    assertResult(bool(true))(int(1).eqs(int(1)))
+    assert(int(1).eqs(int(3)).isInstanceOf[BoolValue])
+    assert(int(1).eqs(int(3)).isInstanceOf[Bool])
+    assertResult(int(1).eqs(int))(int(1).eqs(int)) // value * type = type
+    assert(int(1).eqs(int).isInstanceOf[BoolType])
+    assert(int(1).eqs(int).isInstanceOf[Bool])
+    assertResult(int.eqs(int(3)))(int.eqs(int(3))) // type * value = type
+    assert(int.eqs(int(3)).isInstanceOf[BoolType])
+    assert(int.eqs(int(3)).isInstanceOf[Bool])
+    assertResult(int.eqs(int))(int.eqs(int)) // type * type = type
+    assert(int.eqs(int).isInstanceOf[BoolType])
+    assert(int.eqs(int).isInstanceOf[Bool])
+  }
 }

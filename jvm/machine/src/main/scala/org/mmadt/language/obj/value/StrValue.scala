@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.{BoolType,StrType}
+import org.mmadt.language.obj.`type`.{BoolType, StrType}
 import org.mmadt.storage.obj.`type`.TStr
 import org.mmadt.storage.obj.bool
 
@@ -38,8 +38,8 @@ trait StrValue extends Str
   def value(java:String):this.type
 
   override def to(label:StrValue):StrType = this.start().to(label)
-  //override def eqs(other: StrType): BoolType = this.start().eqs(other)
-  //override def eqs(other: StrValue): BoolValue = this.value() == other.value()
+  override def eqs(other:StrType):BoolType = this.start().eqs(other)
+  override def eqs(other:StrValue):BoolValue = bool(this.value().equals(other.value())).q(this.q())
   override def plus(other:StrType):StrType = this.start().plus(other)
   override def plus(other:StrValue):this.type = this.value(this.value() + other.value())
   override def gt(other:StrType):BoolType = this.start().gt(other)

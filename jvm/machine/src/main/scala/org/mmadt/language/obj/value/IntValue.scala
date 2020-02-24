@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.{BoolType,IntType}
+import org.mmadt.language.obj.`type`.{BoolType, IntType}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
 
@@ -33,13 +33,13 @@ import org.mmadt.storage.obj.`type`.TInt
 trait IntValue extends Int
   with Value[IntValue] {
 
-  override def value():Long //
-  override def start():IntType //
-  def value(java:Long):this.type //
+  override def value():Long
+  override def start():IntType
+  def value(java:Long):this.type
 
   override def to(label:StrValue):IntType = this.start().to(label)
-  //override def eqs(other: IntType): BoolType = this.start().eqs(other)
-  //override def eqs(other: IntValue): BoolValue = this.value() == other.value()
+  override def eqs(other:IntType):BoolType = this.start().eqs(other)
+  override def eqs(other:IntValue):BoolValue = bool(this.value().equals(other.value())).q(this.q())
   override def plus(other:IntType):IntType = this.start().plus(other)
   override def plus(other:IntValue):this.type = this.value(this.value() + other.value())
   override def mult(other:IntType):IntType = this.start().mult(other)

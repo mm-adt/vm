@@ -31,14 +31,14 @@ import org.mmadt.storage.obj.value.VStr
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Str extends Obj
-  //with EqOp[Str, StrValue, StrType]
-  with PlusOp[Str, StrValue, StrType]
-  with GtOp[Str, StrValue, StrType]
-  with IsOp[Str, StrType]
+  with EqsOp[Str,StrValue,StrType]
+  with PlusOp[Str,StrValue,StrType]
+  with GtOp[Str,StrValue,StrType]
+  with IsOp[Str,StrType]
   with ToOp[StrType] {
 
 }
 
 object Str {
-  implicit def stringToStr(java: String): StrValue with Str = new VStr(java) //
+  implicit def stringToStr(java:String):StrValue with Str = new VStr(java) //
 }

@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.{StrValue, Value}

@@ -24,6 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
 import org.mmadt.language.obj.{OType, Obj, Rec}
+import org.mmadt.storage.obj.bool
 import org.mmadt.storage.obj.value.VRec
 
 /**
@@ -37,8 +38,8 @@ trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
   def value(java:Map[A,B]):this.type
 
   override def to(label:StrValue):RecType[A,B] = this.start().to(label)
-  //override def eqs(other: RecType[A,B]): BoolType = this.start().eqs(other)
-  //override def eqs(other: RecValue[A,B]): BoolValue = this.value() == other.value()
+  override def eqs(other:RecType[A,B]):BoolType = this.start().eqs(other)
+  override def eqs(other:RecValue[A,B]):BoolValue = bool(this.value().equals(other.value())).q(this.q())
   override def plus(other:RecType[A,B]):RecType[A,B] = this.start().plus(other)
   override def plus(other:RecValue[A,B]):this.type = this.value(this.value() ++ other.value())
   override def is(bool:BoolType):RecType[A,B] = this.start().is(bool)
