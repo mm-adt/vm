@@ -40,4 +40,9 @@ trait Rec[A <: Obj,B <: Obj] extends Obj
 
 object Rec {
   implicit def mapToRec[A <: Obj,B <: Obj](java:Map[A,B]):RecValue[A,B] with Rec[A,B] = new VRec(java) //
+
+  /*implicit final class ColonAssoc[A](private val self:A) extends AnyVal {
+    @inline
+    def -:[B](y:B):Tuple2[A,B] = Tuple2(self,y)
+  }*/
 }

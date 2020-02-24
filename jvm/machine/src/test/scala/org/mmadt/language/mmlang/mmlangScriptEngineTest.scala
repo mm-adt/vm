@@ -69,10 +69,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str("marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("'marko comp3 45AHA\"\"\\'-%^&'").next)
   }
 
-  test("composite value parsing"){
+  test("rec value parsing"){
     assertResult(rec(str("name") -> str("marko")))(engine.eval("['name':'marko']").next)
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name':'marko','age':29]").next)
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name':  'marko' , 'age' :29]").next)
+  }
+
+  test("rec type parsing"){
     assertResult(trec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("[   'name'   ->'marko' |   'age' ->29]").next)
     assertResult(trec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->'marko'|'age'->29]").next)
   }
@@ -80,6 +83,11 @@ class mmlangScriptEngineTest extends FunSuite {
   test("composite type get/put"){
     assertResult(rec.get(str("name"),str))(engine.eval("str<=rec[get,'name',str]").next)
     assertResult(int <= rec.get(str("age"),int))(engine.eval("rec[get,'age',int]").next)
+    assertResult(int <= rec.put(str("age"),int).get(str("age")))(engine.eval("rec[put,'age',int][get,'age']").next)
+    assertResult(int <= rec.put(str("age"),int).get(str("age")).plus(int(10)))(engine.eval("rec[put,'age',int][get,'age'][plus,10]").next)
+    assertResult(int(20))(engine.eval("['name':'marko'] => rec[put,'age',10][get,'age'][plus,10]").next)
+    assertResult(rec(str("name") -> str("marko"),str("age") -> int(20)))(engine.eval("['name':'marko'] => rec[put,'age',10][put,'age',rec[get,'age',int][plus,10]]").next)
+    assertResult(rec(str("name") -> str("marko"),str("age") -> int(25)))(engine.eval("['name':'marko'] => [put,'age',10][put,'age',[get,'age',int][plus,15]]").next)
   }
 
   test("quantified value parsing"){
@@ -94,6 +102,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("refinement type parsing"){
     assertResult(int.q(qMark) <= int.is(int.gt(int(10))))(engine.eval("int[is,int[gt,10]]").next)
     assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]").next)
+    assertResult(int.q(qMark) <= int.is(int.gt(int(10))))(engine.eval("int[is>10]").next)
   }
 
   test("endomorphic type parsing"){
@@ -108,6 +117,7 @@ class mmlangScriptEngineTest extends FunSuite {
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
+        assertResult(chooseInst)(engine.eval("int => [plus,2][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
         assertResult(chooseInst)(engine.eval(
           """
             | int[plus,2]
@@ -148,7 +158,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int => [is,[gt,[mult,[plus,5]]]]").next)
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)
     assertResult(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)(engine.eval("int => [is,[gt,[mult,[plus,5]]]]").next)
-    assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int => [choose,[[is>5] -> 1 | int -> 2]]").next)
+    assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int => [[is>5] -> 1 | int -> 2]").next)
+    assertResult(int.plus(int(10)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval("int => [plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
     assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int => [plus,10][[is>5] -> 1 | int -> 2]").next)
     assertResult(Set(int(302),int(42)))(asScalaIterator(engine.eval(
       """ 0,1,2,3 ==>

@@ -40,7 +40,6 @@ class I1Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj]) extends Trave
   override def split[E <: Obj](obj:E):Traverser[E] = new I1Traverser[E](obj,this.state)
   override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
     if (rangeType.insts().isEmpty) {
-      //TypeChecker.checkType(InstUtil.updateQ(this.obj,rangeType),rangeType)
       TypeChecker.checkType(this.obj,rangeType)
       this.asInstanceOf[Traverser[E]]
     } else {

@@ -48,7 +48,7 @@ object mmlangParser extends JavaTokenParsers {
   def emptySpace[T]:Parser[Iterator[T]] = ("" | whiteSpace) ^^ (_ => Iterator.empty)
   lazy val expr:Parser[Any] = single | multiple | multipleInt | obj
 
-  lazy val single     :Parser[O]           = (obj <~ Tokens.:=>) ~ objType ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
+  lazy val single     :Parser[O]           = (obj <~ Tokens.:=>) ~ (aType | anonType) ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
   lazy val multiple   :Parser[Iterator[O]] = (obj <~ "==>") ~ objType ^^ (x => x._1 ===> x._2)
   lazy val multipleInt:Parser[Iterator[O]] = (rep1sep(intValue,",") <~ "==>") ~ objType ^^ (x => new VIntStrm(x._1) ===> x._2) // TODO: a demo around int as we figure out the strm structure
 
@@ -61,14 +61,14 @@ object mmlangParser extends JavaTokenParsers {
     })((t,q) => t.q(q))
   }
 
-  lazy val objType:Parser[OType] =  aType | recType | anonType
+  lazy val objType:Parser[OType] = aType | recType | anonType
 
-  lazy val aType   :Parser[OType]    = ((canonicalType <~ Tokens.:<=) ?) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+  lazy val aType   :Parser[OType]        = ((canonicalType <~ Tokens.:<=) ?) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
   }
   lazy val recType :Parser[RecType[O,O]] = "[" ~> repsep((obj <~ Tokens.:->) ~ obj,Tokens.:|) <~ "]" ^^ (x => trec(x.map(o => (o._1,o._2)).toMap))
-  lazy val anonType:Parser[__]       = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
+  lazy val anonType:Parser[__]           = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
 
 
   lazy val stateAccess:Parser[Option[OType] ~ String] = ((canonicalType ?) <~ "<") ~ "[a-zA-z]*".r <~ ">"
@@ -88,10 +88,10 @@ object mmlangParser extends JavaTokenParsers {
   lazy val objValue :Parser[OValue]    = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
 
   lazy val instArg      :Parser[O]    = stateAccess ^^ (x => x._1.getOrElse(int).from[OType](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
-  lazy val inst         :Parser[Inst] = chooseSugar| sugarlessInst | operatorSugar
+  lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | operatorSugar
   lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[OType,O]]))
-  lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
+  lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2))
 
   private def instMatrix(op:String,arg:List[O]):Inst ={
     op match {
