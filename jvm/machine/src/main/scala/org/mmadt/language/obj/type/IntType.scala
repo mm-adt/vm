@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.storage.obj.value.VInt
 
 /**
@@ -48,9 +48,4 @@ trait IntType extends Int
   override def eqs(other:IntValue):BoolType = this.bool(EqsOp(other))
   override def is(bool:BoolType):IntType = this.compose(IsOp(bool)).q(0,q()._2)
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2)
-
-  /// provided by implicits
-  //def plus(other: Long): IntType = this.compose(PlusOp(Int(other))) //
-  //def mult(other: Long): IntType = this.compose(MultOp(Int(other))) //
-
 }

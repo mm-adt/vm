@@ -26,6 +26,7 @@ import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.{BoolType, IntType}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
+import org.mmadt.storage.obj.value.VInt
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -50,4 +51,8 @@ trait IntValue extends Int
   override def gt():BoolType = new TInt().gt(this)
   override def is(bool:BoolType):IntType = this.start().is(bool)
   override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
+}
+
+object IntValue {
+  implicit def longToInt(java:Long):IntValue = new VInt(java)
 }

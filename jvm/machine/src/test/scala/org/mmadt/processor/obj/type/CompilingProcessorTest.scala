@@ -125,9 +125,9 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   test("compiler w/ nested instructions"){
     processor = new CompilingProcessor(
       Model.simple().
-        put(int.mult(2),int.plus(int)).
-        put(int.plus(0),int).
-        put(int.plus(1).plus(-1),int))
+        put(int.mult(int(2)),int.plus(int)).
+        put(int.plus(int(0)),int).
+        put(int.plus(int(1)).plus(-1),int))
 
     assertResult(int.plus(int.plus(2).plus(3).plus(4)))(processor.apply(int.plus(0).plus(int.plus(2).plus(3).plus(4))))
     assertResult(int.plus(int))(processor.apply(int.plus(0).plus(int.plus(0))))

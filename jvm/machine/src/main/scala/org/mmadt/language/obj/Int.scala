@@ -39,8 +39,3 @@ trait Int extends Obj
   with IsOp[Int, IntType]
   with ToOp[IntType] {
 }
-
-object Int {
-  implicit def longToInt(java: Long): IntValue with Int = new VInt(java) //
-  def apply(java: Long): IntValue = longToInt(java) //
-}
