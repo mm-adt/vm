@@ -23,8 +23,8 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue,RecValue,StrValue}
-import org.mmadt.language.obj.{OType,Obj,Rec}
+import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{OType, Obj, Rec}
 import org.mmadt.storage.obj.`type`.TRec
 
 /**
@@ -46,4 +46,11 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   override def plus(other:RecValue[A,B]):this.type
   override def is(bool:BoolType):RecType[A,B] = this.compose(IsOp(bool)).q(0,q()._2)
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2)
+
+  /*override def get(key:A):B = this.value().get(key) match {
+    case Some(bvalue:Value[_] with B) => bvalue
+    case Some(btype:Type[_] with B) => key ==> btype
+    case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
+    case _ => throw new RuntimeException()
+  }*/
 }

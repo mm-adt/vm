@@ -28,6 +28,7 @@ import org.mmadt.language.obj.value.{IntValue, RecValue}
 import org.mmadt.language.obj.{Inst, O, OType, Obj}
 import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.`type`.TRec
 import org.mmadt.storage.obj.value.VRec
 
 /**
@@ -55,8 +56,8 @@ class __(insts:List[Inst] = Nil) extends Type[__] {
     case _ => i(a)
   }).asInstanceOf[T]
 
-  private def applyChoose(a:OType,branches:RecValue[OType,O]):Inst ={ // [choose] branches need to be resolved (thus, a new rec is constructed)
-    ChooseOp(new VRec[OType,O](branches.value().map(entry => (entry._1 match {
+  private def applyChoose(a:OType,branches:RecType[OType,O]):Inst ={ // [choose] branches need to be resolved (thus, a new rec is constructed)
+    ChooseOp(new TRec[OType,O](branches.value().map(entry => (entry._1 match {
       case y:__ => y(a.range())
       case y => y
     },entry._2 match {

@@ -22,13 +22,13 @@
 
 package org.mmadt.storage
 
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
-import org.mmadt.language.obj.{O, ORecValue, Obj, TQ}
-import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec, TStr}
-import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
-import org.mmadt.storage.obj.value.{VBool, VInt, VRec, VStr}
+import org.mmadt.language.obj.value.strm.{IntStrm,RecStrm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
+import org.mmadt.storage.obj.`type`.{TBool,TInt,TRec,TStr}
+import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm}
+import org.mmadt.storage.obj.value.{VBool,VInt,VRec,VStr}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -50,7 +50,6 @@ package object obj {
   def int(name:String):IntType = new TInt(name,Nil,qOne) //
   def bool:BoolType = new TBool() //
   def str:StrType = new TStr() //
-  def rec[A <: Obj,B <: Obj]:RecType[A,B] = new TRec[A,B]() //
   val btrue :BoolValue = bool(true)
   val bfalse:BoolValue = bool(false)
 
@@ -63,7 +62,8 @@ package object obj {
   def rec(name:String,value:ORecValue,values:ORecValue*):RecStrm[O,O] = new VRecStrm[O,O](name,value +: values:_*) //
   def rec(value:(O,O),values:(O,O)*):ORecValue = new VRec[O,O]((value +: values).toMap) //
   def rec[A <: Obj,B <: Obj](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne) //
-  
+
+  def rec[A <: Obj,B <: Obj]:RecType[A,B] = new TRec[A,B]() //
   def trec[A <: Obj,B <: Obj](name:String):RecType[A,B] = new TRec[A,B](name,Map.empty,Nil,qOne)
   def trec[A <: Obj,B <: Obj](name:String,value:Map[A,B],quantifier:TQ):RecType[A,B] = new TRec(name,value,Nil,quantifier)
   def trec[A <: Obj,B <: Obj](value:Map[A,B]):RecType[A,B] = new TRec[A,B](value)
@@ -77,5 +77,6 @@ package object obj {
     case _:StrValue => str
     case _:BoolValue => bool
     case _:ORecValue => rec
+    case _:ORecType => rec
   }
 }

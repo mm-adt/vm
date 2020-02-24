@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{OType, OValue, Obj}
+import org.mmadt.language.obj.{ORecType, OType, OValue, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -30,10 +30,10 @@ import org.mmadt.language.obj.{OType, OValue, Obj}
 object TypeChecker {
 
   def checkType[O <: Obj](obj:O,atype:OType):O ={
-    if (obj.isInstanceOf[OType] || ((obj match {
+    if (atype.isInstanceOf[ORecType] || (obj.isInstanceOf[OType] || ((obj match {
       case avalue:OValue => avalue.start().getClass.isAssignableFrom(atype.getClass)
       case atype:OType => atype.getClass.isAssignableFrom(atype.getClass)
-    }) && obj.q()._1.value() >= atype.q()._1.value() && obj.q()._2.value() <= atype.q()._2.value()))
+    }) && obj.q()._1.value() >= atype.q()._1.value() && obj.q()._2.value() <= atype.q()._2.value())))
       obj
     else
       throw new IllegalArgumentException("The obj " + obj + " does not match the type " + atype)

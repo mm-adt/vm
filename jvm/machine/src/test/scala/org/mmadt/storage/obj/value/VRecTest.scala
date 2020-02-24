@@ -41,14 +41,13 @@ class VRecTest extends FunSuite {
     assertResult("[1:true]")(rec(int(1) -> btrue).toString)
     assertResult("[1:true,2:false]")(rec(int(1) -> btrue,int(2) -> bfalse).toString)
     assertResult("[1:true,2:false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
-    //println(rec.plus(rec(int(2) -> bfalse)).get(int(2), bool))
     assertResult(bfalse)(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)).get(int(2),bool))
     assertResult(rec(int(1) -> btrue,int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue,int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)(rec(int(1) -> btrue,int(2) -> bfalse).get(int(2)))
-    assertResult(int(6))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(1)))
-    assertResult(int(200))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(2)))
-    assertResult(int(200))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)) ==> rec.get(int(2),int))
+    assertResult(int.plus(5))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(1)))
+    assertResult(int.mult(100))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(2)))
+    assertResult(int.mult(100))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)) ==> rec.get(int(2),int))
     intercept[NoSuchElementException]{
       rec(int(1) -> btrue,int(2) -> bfalse).get(int(3))
     }
@@ -90,9 +89,9 @@ class VRecTest extends FunSuite {
 
   test("rec value quantifiers"){
     assertResult(rec(X,Y).q(int(2)))(rec(X,Y).q(int(2)) ==> rec.q(int(2)))
-    // assertResult(rec(X,Y,Z).q(2))(rec(X,Y).q(int(2)) ==> rec.q(int(2)).plus(rec(Z)))
-    // assertResult(rec(X,Y,Z).q(2))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)))
-    // assertResult(rec(X,Y,Z).q(4))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)).q(2))
-    //assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
+    assertResult(rec(X,Y,Z).q(2))(rec(X,Y).q(int(2)) ==> rec.q(int(2)).plus(rec(Z)))
+    assertResult(rec(X,Y,Z).q(2))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)))
+    assertResult(rec(X,Y,Z).q(4))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)).q(2))
+    // assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
   }
 }

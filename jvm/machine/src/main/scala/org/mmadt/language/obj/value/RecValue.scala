@@ -46,12 +46,7 @@ trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
   override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
 
 
-  override def get(key:A):B = this.value().get(key) match {
-    case Some(bvalue:Value[_] with B) => bvalue
-    case Some(btype:Type[_] with B) => key ==> btype
-    case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
-    case _ => throw new RuntimeException()
-  }
+  override def get(key:A):B = this.value().get(key).get
 
   override def put(key:A,value:B):RecValue[A,B] = new VRec(this.name,this.value + (key -> value),this.q())
 

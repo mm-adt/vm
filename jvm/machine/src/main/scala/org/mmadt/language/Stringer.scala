@@ -53,9 +53,9 @@ object Stringer {
     //  if (t.insts().nonEmpty && t.insts().head._2.op().equals(Tokens.choose)) // TODO: ghetto union type specification
     //    return t.insts().head._2.arg[RecValue[_,_]]().value().foldRight("[")((x,string) => string + (if (x._1.equals(x._2)) x._1 else x._1 + ":" + x._2) + "|").dropRight(1) + "]"
 
-    val range  = t.name + (t match {
-      case r:RecType[_,_] => if (r.value().isEmpty) "" else r.value().foldLeft("[")((string,r) => string + r._1 + ":" + r._2 + ",").dropRight(1) + "]"
-      case _ => ""
+    val range  =  (t match {
+      case r:RecType[_,_] => return if (r.value().isEmpty) "" else r.value().foldLeft("[")((string,r) => string + r._1 + "->" + r._2 + "|").dropRight(1) + "]"
+      case _ => t.name
     }) + qString(t.q())
     val domain = if (t.insts().isEmpty) "" else
       t.insts().head._1.name + qString(t.insts().head._1.q())

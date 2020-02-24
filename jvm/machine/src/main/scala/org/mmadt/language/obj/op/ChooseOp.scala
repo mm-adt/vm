@@ -23,9 +23,9 @@
 package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.RecValue
+import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.{Inst,OType,OValue,Obj}
-import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -34,9 +34,9 @@ import org.mmadt.storage.obj.value.VInst
 trait ChooseOp {
   this:Obj with ChooseOp =>
 
-  def choose[IT <: OType,OT <: Obj](branches:(IT,OT)*):OT = this.choose(branches.toMap)
+  def choose[IT <: OType,OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(branches.toMap))
 
-  def choose[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):OT ={
+  def choose[IT <: OType,OT <: Obj](branches:RecType[IT,OT]):OT ={
     this match {
       case atype:OType => atype.compose(branches.value().head._2,ChooseOp[IT,OT](branches))
       case avalue:OValue =>
@@ -49,5 +49,5 @@ trait ChooseOp {
 }
 
 object ChooseOp {
-  def apply[IT <: OType,OT <: Obj](branches:RecValue[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(b.head.asInstanceOf[RecValue[IT,OT]])) //
+  def apply[IT <: OType,OT <: Obj](branches:RecType[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(branches))
 }
