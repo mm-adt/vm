@@ -61,10 +61,12 @@ object mmlangParser extends JavaTokenParsers {
     })((t,q) => t.q(q))
   }
 
-  lazy val objType:Parser[OType] = ((canonicalType <~ Tokens.:<=) ?) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+  lazy val recType:Parser[ORecType] = "[" ~> repsep((obj <~ Tokens.:->) ~ obj,Tokens.:|) <~ "]" ^^ (x => trec(x.map(o => (o._1,o._2)).toMap))
+  lazy val objType:Parser[OType]    = ((canonicalType <~ Tokens.:<=) ?) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
   } | rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
+
 
   lazy val stateAccess:Parser[Option[OType] ~ String] = ((canonicalType ?) <~ "<") ~ "[a-zA-z]*".r <~ ">"
 
