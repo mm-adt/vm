@@ -151,6 +151,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)(engine.eval("int => [is,[gt,[mult,[plus,5]]]]").next)
     assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int => [[is>5] -> 1 | int -> 2]").next)
     assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int => [plus,10][[is>5] -> 1 | int -> 2]").next)
+    assertResult(Set(int(300),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> int[plus,1][is,[gt,2]][[is,[gt,3]] -> [mult,10] | int -> [mult,100]]")).toSet)
     assertResult(bfalse)(engine.eval("4 => [plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("5 => [plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("true => [bool -> bool | int -> int]").next)

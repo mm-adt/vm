@@ -70,9 +70,10 @@ trait Type[T <: Type[T]] extends Obj
   def compose(inst:Inst):this.type //
   def compose[TT <: OType](t2:Obj,inst:Inst):TT = (t2 match {
     case _:Bool => bool(inst)
-    case _:obj.Int => int(inst)
+    case _:Int => int(inst)
     case _:Str => str(inst)
     case _:RecType[Obj,Obj] => rec(t2.asInstanceOf[RecType[Obj,Obj]],inst)
+    case _:__ => __(this.insts().map(e => e._2) :+ inst:_*)
   }).asInstanceOf[TT]
 
   def int(inst:Inst,q:TQ = this.q()):IntType //

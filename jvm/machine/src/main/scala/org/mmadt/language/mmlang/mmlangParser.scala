@@ -80,13 +80,13 @@ object mmlangParser extends JavaTokenParsers {
   lazy val boolValue:Parser[BoolValue]     = (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x.toBoolean))
   lazy val intValue :Parser[IntValue]      = wholeNumber ^^ (x => int(x.toLong))
   lazy val strValue :Parser[StrValue]      = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  lazy val recValue :Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ Tokens.::) ~ obj,",") <~ "]" ^^ (x => new VRec[O,O](x.map(o => (o._1,o._2)).toMap))
+  lazy val recValue :Parser[RecValue[O,O]] = "[" ~> repsep((obj <~ Tokens.::) ~ obj,",") <~ "]" ^^ (x => rec(x.map(o => (o._1,o._2)).toMap))
   lazy val objValue :Parser[OValue]        = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
 
   lazy val instArg      :Parser[O]    = stateAccess ^^ (x => x._1.getOrElse(int).from[OType](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
   lazy val inst         :Parser[Inst] = sugarlessInst | operatorSugar | chooseSugar
   lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
-  lazy val chooseSugar  :Parser[Inst] = "[" ~> repsep((objType <~ Tokens.:->) ~ obj,Tokens.:|) <~ "]" ^^ (x => ChooseOp(new VRec[OType,O](x.map(o => (o._1,o._2)).toMap)))
+  lazy val chooseSugar  :Parser[Inst] = "[" ~> repsep((objType <~ Tokens.:->) ~ obj,Tokens.:|) <~ "]" ^^ (x => ChooseOp(rec(x.map(o => (o._1,o._2)).toMap)))
   lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2)) // TODO: (hint:Option[OType] = None) (so users don't have to prefix their instruction compositions with a domain)
 
   private def instMatrix(op:String,arg:List[O]):Inst ={
