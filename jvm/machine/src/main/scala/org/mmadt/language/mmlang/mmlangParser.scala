@@ -88,9 +88,9 @@ object mmlangParser extends JavaTokenParsers {
   lazy val objValue :Parser[OValue]    = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
 
   lazy val instArg      :Parser[O]    = stateAccess ^^ (x => x._1.getOrElse(int).from[OType](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
-  lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | operatorSugar
-  lazy val operatorSugar:Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
-  lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[OType,O]]))
+  lazy val inst       :Parser[Inst] = chooseSugar | sugarlessInst | infixSugar
+  lazy val infixSugar :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
+  lazy val chooseSugar:Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[OType,O]]))
   lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2))
 
   private def instMatrix(op:String,arg:List[O]):Inst ={

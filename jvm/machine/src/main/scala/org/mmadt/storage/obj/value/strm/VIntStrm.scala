@@ -35,7 +35,7 @@ import org.mmadt.storage.obj.value.VVObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VIntStrm(name:String = Tokens.int,java:Seq[IntValue]) extends VVObj(name,java,quantifier = (int(java.length),int(java.length)))
+class VIntStrm(name:String,java:Seq[IntValue]) extends VVObj(name,java,quantifier = (int(java.length),int(java.length)))
   with IntStrm {
   def this(java:Seq[IntValue]) = this(name = Tokens.int,java)
 

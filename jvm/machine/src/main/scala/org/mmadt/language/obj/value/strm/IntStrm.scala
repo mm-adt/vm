@@ -23,15 +23,15 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.{BoolType,IntType}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
+import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntStrm extends Int
-  with Value[IntStrm] {
+  with Strm[IntValue] {
 
   override def value():Iterator[IntValue]
   override def start():IntType
@@ -42,8 +42,8 @@ trait IntStrm extends Int
   override def plus(other:IntType):IntType = this.start().plus(other)
   override def plus(other:IntValue):this.type = new VIntStrm(this.name,this.value().map(i => i.plus(other)).toSeq).asInstanceOf[this.type]
   override def mult(other:IntType):IntType = this.start().mult(other)
-  override def mult(other:IntValue):this.type = throw new IllegalAccessException()
-  override def neg():this.type = throw new IllegalAccessException()
+  override def mult(other:IntValue):this.type = new VIntStrm(this.name,this.value().map(i => i.mult(other)).toSeq).asInstanceOf[this.type]
+  override def neg():this.type = new VIntStrm(this.name,this.value().map(i => i.neg()).toSeq).asInstanceOf[this.type]
   override def gt(other:IntType):BoolType = this.start().gt(other)
   override def gt(other:IntValue):BoolValue = throw new IllegalAccessException()
   override def gt():BoolType = throw new IllegalAccessException()

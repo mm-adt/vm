@@ -20,22 +20,23 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StartOp[T <: Type[T]] {
+trait Strm[V <: Value[V]] extends Obj
+  with Value[Strm[V]] {
 
-  def start():T
-}
+  override def value():Iterator[V]
 
-object StartOp {
-  def apply(starts:Obj):Inst = new VInst((Tokens.start,List(starts)),qOne,(_:Obj,b:List[Obj]) => b.head)
+  override def equals(other:Any):Boolean = other match {
+    case strm:Strm[V] => this.value().sameElements(strm.value())
+    case _ => false
+  }
+  override def toString:String = value().foldLeft(Tokens.empty)((a,b) => a + b + ",").dropRight(1)
 }

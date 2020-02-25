@@ -20,22 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.storage.obj.value.strm
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.language.obj.op.StartOp
+import org.mmadt.storage.obj._
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StartOp[T <: Type[T]] {
+class VIntStrmTest extends FunSuite {
 
-  def start():T
-}
-
-object StartOp {
-  def apply(starts:Obj):Inst = new VInst((Tokens.start,List(starts)),qOne,(_:Obj,b:List[Obj]) => b.head)
+  test("int strm"){
+    assertResult(int(3,5,7,9))(int(2,4,6,8).plus(int(1)))
+    assertResult(int.q(int(4)) <= int.q(qZero).compose(StartOp(int(2,4,6,8))).plus(int))(int(2,4,6,8).plus(int)) // TODO: [start] should be fluent and redefines the domain
+  }
 }

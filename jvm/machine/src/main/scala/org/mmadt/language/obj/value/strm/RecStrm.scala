@@ -23,14 +23,14 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.obj.`type`.{BoolType, RecType}
-import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue}
 import org.mmadt.language.obj.{OType, Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecStrm[A <: Obj,B <: Obj] extends Rec[A,B]
-  with Value[RecStrm[A,B]] {
+  with Strm[RecValue[A,B]] {
 
   override def value():Iterator[RecValue[A,B]] //
   override def start():RecType[A,B] //

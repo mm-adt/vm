@@ -24,12 +24,14 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.op.StartOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolValue extends Bool
-  with Value[BoolValue] {
+  with Value[BoolValue]
+  with StartOp[BoolType] {
 
   override def value():Boolean
   override def start():BoolType

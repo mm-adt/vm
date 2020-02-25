@@ -24,6 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.`type`.{BoolType, StrType}
+import org.mmadt.language.obj.op.StartOp
 import org.mmadt.storage.obj.`type`.TStr
 import org.mmadt.storage.obj.bool
 
@@ -31,7 +32,8 @@ import org.mmadt.storage.obj.bool
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrValue extends Str
-  with Value[StrValue] {
+  with Value[StrValue]
+  with StartOp[StrType] {
 
   override def value():String
   override def start():StrType

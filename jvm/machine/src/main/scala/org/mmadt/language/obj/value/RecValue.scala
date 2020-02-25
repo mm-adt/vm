@@ -22,8 +22,9 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.`type`.{BoolType,RecType}
-import org.mmadt.language.obj.{Obj,Rec,TType}
+import org.mmadt.language.obj.`type`.{BoolType, RecType}
+import org.mmadt.language.obj.op.StartOp
+import org.mmadt.language.obj.{Obj, Rec, TType}
 import org.mmadt.storage.obj.bool
 import org.mmadt.storage.obj.value.VRec
 
@@ -31,7 +32,8 @@ import org.mmadt.storage.obj.value.VRec
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
-  with Value[RecValue[A,B]] {
+  with Value[RecValue[A,B]]
+  with StartOp[RecType[A,B]]{
 
   override def value():Map[A,B]
   override def start():RecType[A,B]
