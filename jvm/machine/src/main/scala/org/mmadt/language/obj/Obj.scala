@@ -34,6 +34,7 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
  */
 trait Obj
   extends AsOp
+    with CountOp[Int]
     with ChooseOp
     with IdOp
     with MapOp

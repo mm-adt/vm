@@ -23,7 +23,7 @@
 package org.mmadt.language
 
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.{OType,Obj}
+import org.mmadt.language.obj.{OType, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,6 +40,7 @@ object Tokens {
   val and    = "and"
   val as     = "as"
   val choose = "choose"
+  val count  = "count"
   val eqs    = "eq"
   val get    = "get"
   val id     = "id"

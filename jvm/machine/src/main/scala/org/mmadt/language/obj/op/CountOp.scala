@@ -20,38 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.value
+package org.mmadt.language.obj.op
 
-import org.mmadt.language.obj.`type`.TypeChecker
-import org.mmadt.language.obj.{OType, OValue, Obj}
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{Inst, Int, O, Obj}
 import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Value[V <: Value[V]] extends Obj {
+trait CountOp[O >: Int] {
+  this:Obj =>
+  def count():O
+}
 
-  def value():Any
-  def start():OType
-
-  override def map[O <: Obj](other:O):O = other match {
-    case _:OValue => other
-    case atype:OType with O => (this ==> atype).asInstanceOf[O]
-  }
-
-  override def count():IntValue = this.q()._1.q(qOne)
-  override def id():this.type = this
-  override def from[O <: Obj](label:StrValue):O = this.start().from(label)
-
-  override def equals(other:Any):Boolean = other match {
-    case avalue:OValue => avalue.value() == this.value()
-    case _ => false
-  }
-
-  // pattern matching methods
-  override def test(other:Obj):Boolean = other match {
-    case argValue:OValue => TypeChecker.matchesVV(this,argValue)
-    case argType:OType => TypeChecker.matchesVT(this,argType)
-  }
-
+object CountOp {
+  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) //
 }

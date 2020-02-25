@@ -23,10 +23,12 @@
 package org.mmadt.processor.obj.value
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.IntStrm
 import org.mmadt.language.obj.{Obj, TType}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,8 +41,11 @@ class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
       case single:E => Iterator(new I1Traverser[E](single))
     }
     for (tt <- InstUtil.createInstList(Nil,rangeType)) {
-      // System.out.println(tt)
-      output = output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
+      output = tt._2.op() match {
+        case Tokens.count => Iterator(output.map(_.obj()).foldLeft(int(0))((a,b) => a.plus(b.count().asInstanceOf[IntValue])).asInstanceOf[E]).map(x => new I1Traverser[E](x)) // REDUCE INSTRUCTIONS FOLD THEN SPLIT THE TRAVERSER TO ONE
+        case _ => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
+      }
+
       if (tt._2.op().equals(Tokens.is)) output = output.filter(_.obj().alive())
     }
     output

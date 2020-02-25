@@ -37,9 +37,9 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
     assertResult(List(int(110)))(Processor.iterator[Int,Int]().apply(int(5),int.mult(int(2)).plus(int(100))).map(_.obj()).toList)
     assertResult(List(int(110)))(Processor.iterator[Int,Int]()(int(5),int * 2 + 100).map(_.obj()).toList)
     assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
-    /*    assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
-        assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
-        assertResult(List(int(110).q(100)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)*/
+    //   assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
+    //   assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
+    //   assertResult(List(int(110).q(100)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
   }
 
   test("process multiple values w/ quantifiers"){
@@ -49,10 +49,16 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
       int.is(int.gt(int(20))) -> int.plus(int(3)),
       int.is(int.gt(int(10))) -> int.plus(int(2)),
       int -> int.plus(int(1))).plus(int(0))).toList)
+    assertResult(int(50))((int(10).q(int(50)) ===> int.q(50).plus(int(2)).count()).next)
+    assertResult(int(3))((int(10,20,30) ===> int.plus(int(2)).count()).next)
+    assertResult(int(4))((int(10,20,30,40) ===> int.plus(int(2)).mult(int(100)).count()).next)
+    assertResult(int(2))((int(10,20,30,40) ===> int.is(int.gt(int(20))).count()).next)
+    assertResult(int(12))((int(10,20,30,40) ===> int.is(int.gt(int(20))).count().plus(int(10))).next)
+    assertResult(int(1))((int(10,20,30,40) ===> int.is(int.gt(int(20))).count().plus(int(10)).count()).next)
     /*    assertResult(List(int(11).q(100),int(22).q(200),int(33).q(300)))((int(10,20,30) ===> int.choose(
-          int.is(int.gt(int(20))) -> int.plus(int(3)).q(300),
-          int.is(int.gt(int(10))) -> int.plus(int(2)).q(200),
-          int -> int.q(10).plus(int(1)).q(10)).plus(int(0))).toList)*/
+      int.is(int.gt(int(20))) -> int.plus(int(3)).q(300),
+      int.is(int.gt(int(10))) -> int.plus(int(2)).q(200),
+      int -> int.q(10).plus(int(1)).q(10)).plus(int(0))).toList)*/
   }
 
   test("process nested single values w/ quantifiers"){

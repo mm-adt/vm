@@ -24,12 +24,11 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.ChooseOp
-import org.mmadt.language.obj.value.{IntValue, RecValue}
-import org.mmadt.language.obj.{Inst, O, OType, Obj}
+import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.{Inst, Int, O, OType, Obj}
 import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.`type`.TRec
-import org.mmadt.storage.obj.value.VRec
+import org.mmadt.storage.obj.`type`.{TInt, TRec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -65,6 +64,7 @@ class __(insts:List[Inst] = Nil) extends Type[__] {
       case y => y
     }))))
   }
+  override def count():IntType = new TInt()
 }
 
 object __ extends __(Nil) {
