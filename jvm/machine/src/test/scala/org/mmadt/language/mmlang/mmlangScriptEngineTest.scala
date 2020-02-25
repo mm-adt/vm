@@ -26,6 +26,7 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.`type`.TObj
 import org.scalatest.FunSuite
 
 import scala.collection.JavaConverters._
@@ -126,6 +127,18 @@ class mmlangScriptEngineTest extends FunSuite {
             |    [int[is,int[gt,10]] -> int[gt,20]
             |    |int                -> int[plus,10]]""".stripMargin).next)
       })
+  }
+
+  test("choose with mixed end types"){
+    assertResult(btrue)(engine.eval("  5 => [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
+    assertResult(int(3))(engine.eval("-1 => [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
+    assertResult(int(20))(engine.eval("1 => [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
+    assertResult(obj)(engine.eval("int[plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next.asInstanceOf[TObj].range())
+    //
+    assertResult(btrue.q(int(3)))(engine.eval("             5{3} => [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
+    assertResult(int(3).q(int(5)))(engine.eval("           -1{5} => [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
+    assertResult(int(20).q(int(8),int(10)))(engine.eval("1{8,10} => [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
+    assertResult(obj.q(+))(engine.eval("int{+}[plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next.asInstanceOf[TObj].range())
   }
 
   test("traverser read/write state parsing"){

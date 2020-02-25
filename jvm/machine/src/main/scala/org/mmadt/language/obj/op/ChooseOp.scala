@@ -46,7 +46,7 @@ trait ChooseOp {
           map(_._2).getOrElse(avalue.q(qZero))
         match {
           case btype:OType => (avalue ==> btype).asInstanceOf[OT]
-          case bvalue:OT => bvalue
+          case bvalue:OT => bvalue.q(avalue.q())
         }
     }
   }
