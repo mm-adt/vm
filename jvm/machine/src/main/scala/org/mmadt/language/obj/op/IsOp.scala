@@ -41,12 +41,12 @@ trait IsOp[O <: Obj with IsOp[O,T],T <: Type[T]] {
 }
 
 object IsOp {
-  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:BoolValue):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:BoolValue):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction //
   def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:BoolType):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => b.head match {
     case avalue:BoolValue => a.is(avalue)
     case atype:BoolType => a.is(atype)
-  }).asInstanceOf[(Obj,List[Obj]) => Obj])
+  }).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction
 
-  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:__):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool[T](a.asInstanceOf[T].range()).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:__):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool[T](a.asInstanceOf[T].range()).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction
 }
 

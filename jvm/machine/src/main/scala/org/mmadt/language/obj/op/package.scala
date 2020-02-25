@@ -20,21 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
-
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Int, O, Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
+package org.mmadt.language.obj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait CountOp[O >: Int] {
-  this:Obj =>
-  def count():O
-}
+package object op {
 
-object CountOp {
-  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) with ReduceInstruction //
+  trait MapInstruction
+
+  trait FilterInstruction
+
+  trait ReduceInstruction
+
 }
