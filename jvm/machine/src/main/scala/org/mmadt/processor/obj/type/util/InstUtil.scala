@@ -23,6 +23,7 @@
 package org.mmadt.processor.obj.`type`.util
 
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.int
 
@@ -60,5 +61,10 @@ object InstUtil {
   def updateQ[O <: Obj](obj:Obj,atype:OType):O = atype.q() match {
     case _ if ==(int(1),int(1)) => obj.asInstanceOf[O]
     case tq:TQ => obj.q(obj.q()._1 * tq._1,obj.q()._2 * tq._2).asInstanceOf[O]
+  }
+
+  def resolveAnonymous[R <: Obj](obj:Obj,rangeType:TType[R]):TType[R] = rangeType match {
+    case x:__ => x(obj)
+    case x:R => x
   }
 }

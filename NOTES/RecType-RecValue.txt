@@ -1,0 +1,60 @@
+I realized the difference between a `RecType` and a `RecValue`.
+
+A `RecType` is written:
+
+	`[a->b|c->d]`
+
+A `RecValue` is written:
+
+	`[a:b,c:d]`
+
+`RecTypes` key/values are computed (types).
+`RecValues` key/values are retrieved (values).
+
+------
+
+Assume following two `recs`:
+
+```
+[[is>5]  : 'big' , int  : 'small']  // value
+[[is>5] -> 'big' | int -> 'small']  // type
+``
+
+#RECTYPE#
+
+```
+33 => [[is>5]  -> 'big' , int  -> 'small']
+33 => str<=int[int{?}<=int[is,bool<=int[gt,5]]->'big'|int->'small']
+           33         
+                        33          
+                                     33
+                               true
+                33  
+                                              33
+                                                'big'
+     'big'
+```
+
+Thus,
+
+```
+mmlang> 33 => [[is>5]  -> 'big' , int  -> 'small']
+==>'big'
+mmlang> [[is>5]  -> 'big' , int  -> 'small'][get,33]
+==>'big'
+mmlang> [[is>5]  -> 'big' , int  -> 'small'][get,1]
+==>'small'
+mmlang> [[is>5]  -> 'big' , int  -> 'small'][get,'hello']
+==>Error: No key has a domain of 'hello'
+
+```
+
+#RECVALUE#
+
+
+```
+[[is>5]  : 'big' , int  : 'small'] => [get,33]
+==>Error: No key has a value 33
+[[is>5]  : 'big' , int  : 'small'] => [get,int]
+==>'small'
+```

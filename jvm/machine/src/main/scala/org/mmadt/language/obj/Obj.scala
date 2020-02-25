@@ -24,10 +24,10 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Printable
 import org.mmadt.language.PrintableInstances._
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.Processor
+import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -47,14 +47,8 @@ trait Obj
   def alive():Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0
 
   // utility methods
-  def ==>[R <: Obj](rangeType:TType[R]):R = Processor.iterator[this.type,R]().apply(this,rangeType match {
-    case x:__ => x(this)
-    case x:R => x
-  }).map(_.obj()).next()
-  def ===>[R <: Obj](rangeType:TType[R]):Iterator[R] = Processor.iterator[this.type,R]().apply(this,rangeType match {
-    case x:__ => x(this)
-    case x:R => x
-  }).map(_.obj())
+  def ==>[R <: Obj](rangeType:TType[R]):R = Processor.iterator[this.type,R]().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj()).next()
+  def ===>[R <: Obj](rangeType:TType[R]):Iterator[R] = Processor.iterator[this.type,R]().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj())
 
   // pattern matching methods
   val name:String

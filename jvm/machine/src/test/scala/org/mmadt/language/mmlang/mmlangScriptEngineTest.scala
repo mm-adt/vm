@@ -97,6 +97,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(6).q(qZero))(engine.eval("6{0}").next)
     assertResult(int(7).q(qZero))(engine.eval("7{0,0}").next)
     assertResult(str("marko").q(int(10),int(100)))(engine.eval("'marko'{10,100}").next)
+    assertResult(int(20).q(int(10)))(engine.eval("13{10} ==> [plus,7]").next())
+    assertResult(int(13).q(int(10)))(engine.eval("13{10} ==> [is>5]").next())
   }
 
   test("refinement type parsing"){
