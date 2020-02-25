@@ -23,6 +23,7 @@
 package org.mmadt.language
 
 import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 
 /**
@@ -37,6 +38,7 @@ package object obj {
   type OValue = O with Value[_]
   type ORecType = RecType[O,O]
   type ORecValue = RecValue[O,O]
+  type ORecStrm = RecStrm[O,O]
 }
 
 
