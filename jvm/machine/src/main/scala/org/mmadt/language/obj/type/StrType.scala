@@ -23,7 +23,9 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.op._
+import org.mmadt.language.obj.op.filter.IsOp
+import org.mmadt.language.obj.op.map.{EqsOp, GtOp, PlusOp}
+import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.{BoolValue, StrValue}
 
 
@@ -44,3 +46,5 @@ trait StrType extends Str
   override def is(bool:BoolType):StrType = this.compose(IsOp(bool)).q(0,q()._2)
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2)
 }
+
+

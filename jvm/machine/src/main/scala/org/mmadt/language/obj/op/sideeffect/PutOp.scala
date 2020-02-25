@@ -20,24 +20,22 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, Rec}
 import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.{VInst, VStr}
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ToOp[O <: Type[O]] {
-  def to(label: String): O = this.to(new VStr(label)) //
-  def to(label: StrValue): O //
-  final def ~(label: String): O = this.to(label) //
+trait PutOp[A <: Obj, B <: Obj] {
+  this: Rec[A, B] =>
+
+  def put(key: A, value: B): Rec[A, B] //
 }
 
-object ToOp {
-  def apply[O <: Type[O]](label: StrValue): Inst = new VInst((Tokens.to, List(label)), qOne, ((a: ToOp[O], b: List[Obj]) => a.to(label)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+object PutOp {
+  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst = new VInst((Tokens.put, List(key, value)), qOne, ((a: Rec[A, B], b: List[Obj]) => a.put(key, value)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
 }

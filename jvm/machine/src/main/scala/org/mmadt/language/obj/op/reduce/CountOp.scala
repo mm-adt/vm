@@ -20,29 +20,22 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.{Bool, Inst, Obj}
+import org.mmadt.language.obj.op.ReduceInstruction
+import org.mmadt.language.obj.{Inst, Int, O, Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait OrOp {
-  def or(bool:BoolType):BoolType
-  def or(bool:BoolValue):this.type
-  final def ||(bool:BoolType):BoolType = this.or(bool)
-  final def ||(bool:BoolValue):this.type = this.or(bool)
+trait CountOp[O >: Int] {
+  this:Obj =>
+  def count():O
 }
 
-object OrOp {
-  def apply(bool:BoolValue):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.or(bool)).asInstanceOf[(Obj,List[Obj]) => Obj])
-  def apply(bool:BoolType):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => b.head match {
-    case avalue:BoolValue => a.or(avalue)
-    case atype:BoolType => a.or(atype)
-  }).asInstanceOf[(Obj,List[Obj]) => Obj])
+object CountOp {
+  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) with ReduceInstruction //
 }

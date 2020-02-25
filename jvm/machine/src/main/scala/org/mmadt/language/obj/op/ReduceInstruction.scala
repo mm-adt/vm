@@ -20,17 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.language.obj.op
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-package object op {
-
-  trait MapInstruction
-
-  trait FilterInstruction
-
-  trait ReduceInstruction
+trait ReduceInstruction {
 
 }

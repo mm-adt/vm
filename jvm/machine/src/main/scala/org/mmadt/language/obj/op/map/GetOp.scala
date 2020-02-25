@@ -20,23 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, Rec, TType}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait NegOp[O <: Obj with NegOp[O]] {
-  this:O =>
+trait GetOp[A <: Obj,B <: Obj] {
+  this:Rec[A,B] =>
 
-  def neg():this.type //
-  final def unary_-():this.type = this.neg() //
+  def get(key:A):B //
+  def get[BT <: TType[B]](key:A,btype:BT):BT //
 }
 
-object NegOp {
-  def apply[O <: Obj with NegOp[O]]():Inst = new VInst((Tokens.neg,Nil),qOne,((a:O,b:List[Obj]) => a.neg()).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+object GetOp {
+  def apply[A <: Obj,B <: Obj](key:A):Inst = new VInst((Tokens.get,List(key)),qOne,((a:Rec[A,B],b:List[Obj]) => a.get(key)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[A <: Obj,B <: Obj](key:A,typeHint:TType[B]):Inst = new VInst((Tokens.get,List(key,typeHint)),qOne,((a:Rec[A,B],b:List[Obj]) => a.get(key,typeHint)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
 }

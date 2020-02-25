@@ -24,7 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.{BoolType, IntType}
-import org.mmadt.language.obj.op.StartOp
+import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.VInt

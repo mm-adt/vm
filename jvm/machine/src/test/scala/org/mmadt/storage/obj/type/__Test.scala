@@ -23,7 +23,7 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.{GtOp, PlusOp}
+import org.mmadt.language.obj.op.map.{GtOp, PlusOp}
 import org.mmadt.storage.obj.int
 import org.scalatest.FunSuite
 
@@ -38,3 +38,4 @@ class __Test extends FunSuite {
   }
 
 }
+

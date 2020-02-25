@@ -25,6 +25,7 @@ package org.mmadt.processor.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.TypeChecker
+import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst,Obj,TType}
 import org.mmadt.processor.Traverser
@@ -44,8 +45,10 @@ class I1Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj]) extends Trave
       this.asInstanceOf[Traverser[E]]
     } else {
       (InstUtil.nextInst(rangeType).get match {
-        case toInst:Inst if toInst.op().equals(Tokens.to) => new I1Traverser[S](this.obj,Map[StrValue,Obj](toInst.arg[StrValue]() -> this.obj) ++ this.state)
-        case fromInst:Inst if fromInst.op().equals(Tokens.from) => new I1Traverser[E](this.state(fromInst.arg[StrValue]()).asInstanceOf[E],this.state) //
+        case tinst:TraverserInstruction => tinst.op() match {
+          case Tokens.to => new I1Traverser[S](this.obj,Map[StrValue,Obj](tinst.arg[StrValue]() -> this.obj) ++ this.state)
+          case Tokens.from => new I1Traverser[E](this.state(tinst.arg[StrValue]()).asInstanceOf[E],this.state)
+        }
         case storageInst:Inst => InstUtil.instEval(this,storageInst)
       }).apply(rangeType.linvert()).asInstanceOf[Traverser[E]]
     }

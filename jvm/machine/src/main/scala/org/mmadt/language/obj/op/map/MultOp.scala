@@ -20,33 +20,35 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, Type, __}
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait EqsOp[O <: Obj with EqsOp[O,V,T],V <: Value[V],T <: Type[T]] {
+trait MultOp[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]] {
   this:O =>
 
-  def eqs(other:T):BoolType
-  def eqs(other:V):Bool
-  // final def ===(other: T): BoolType = this.eq(other) //
-  // final def ===(other: V): Bool = this.eq(other) //
+  def mult(other:T):T
+  def mult(other:V):this.type
+  final def *(other:T):T = this.mult(other)
+  final def *(other:V):this.type = this.mult(other)
 }
 
-object EqsOp {
-  def apply[O <: Obj with EqsOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
-  def apply[O <: Obj with EqsOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case avalue:OValue with V => a.eqs(avalue)
-    case atype:OType with T => a.eqs(atype)
+object MultOp {
+  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.mult,List(other)),qOne,((a:O,b:List[Obj]) => a.mult(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.mult,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
+    case avalue:OValue with V => a.mult(avalue)
+    case atype:OType with T => a.mult(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
-  def apply[O <: Obj with EqsOp[O,V,T],V <: Value[V],T <: Type[T]](other:__):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other[T](a.asInstanceOf[T].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:__):Inst = new VInst((Tokens.plus,List(other)),qOne,
+    ((a:O,b:List[Obj]) => a.mult(other[T](a.asInstanceOf[T].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
+

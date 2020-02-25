@@ -20,24 +20,29 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj, Rec, TType}
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.language.obj.{Bool, Inst, Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GetOp[A <: Obj,B <: Obj] {
-  this:Rec[A,B] =>
-
-  def get(key:A):B //
-  def get[BT <: TType[B]](key:A,btype:BT):BT //
+trait AndOp {
+  def and(bool:BoolType):BoolType
+  def and(bool:BoolValue):this.type
+  final def &&(bool:BoolType):BoolType = this.and(bool)
+  final def &&(bool:BoolValue):this.type = this.and(bool)
 }
 
-object GetOp {
-  def apply[A <: Obj,B <: Obj](key:A):Inst = new VInst((Tokens.get,List(key)),qOne,((a:Rec[A,B],b:List[Obj]) => a.get(key)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
-  def apply[A <: Obj,B <: Obj](key:A,typeHint:TType[B]):Inst = new VInst((Tokens.get,List(key,typeHint)),qOne,((a:Rec[A,B],b:List[Obj]) => a.get(key,typeHint)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+object AndOp {
+  def apply(bool:BoolValue):Inst = new VInst((Tokens.and,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.and(bool)).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply(bool:BoolType):Inst = new VInst((Tokens.and,List(bool)),qOne,((a:Bool,b:List[Obj]) => b.head match {
+    case avalue:BoolValue => a.and(avalue)
+    case atype:BoolType => a.and(atype)
+  }).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

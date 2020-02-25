@@ -22,19 +22,9 @@
 
 package org.mmadt.language.obj.op
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Int, O, Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait CountOp[O >: Int] {
-  this:Obj =>
-  def count():O
-}
+trait TerminalInstruction {
 
-object CountOp {
-  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) with ReduceInstruction //
 }

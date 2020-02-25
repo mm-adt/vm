@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.obj.value.strm
 
-import org.mmadt.language.obj.op.StartOp
+import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 

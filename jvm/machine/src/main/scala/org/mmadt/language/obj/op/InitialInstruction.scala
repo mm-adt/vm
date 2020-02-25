@@ -22,22 +22,9 @@
 
 package org.mmadt.language.obj.op
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait AsOp {
-  this: Obj =>
+trait InitialInstruction {
 
-  def as[O <: Obj](name: String): O // TODO: spec to StrValue
-
-}
-
-object AsOp {
-  def apply(name: StrValue): Inst = new VInst((Tokens.as, List(name)), qOne, ((a: Obj, b: List[Obj]) => a.as[Obj](name.value()))) //
 }

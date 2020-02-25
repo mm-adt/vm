@@ -20,11 +20,10 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{BoolType, Type, __}
-import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
@@ -32,21 +31,13 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IsOp[O <: Obj with IsOp[O,T],T <: Type[T]] {
-  this:O =>
+trait AsOp {
+  this: Obj =>
 
-  def is(bool:BoolType):T //
-  def is(bool:BoolValue):this.type //
+  def as[O <: Obj](name: String): O // TODO: spec to StrValue
 
 }
 
-object IsOp {
-  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:BoolValue):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool)).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction //
-  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:BoolType):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case avalue:BoolValue => a.is(avalue)
-    case atype:BoolType => a.is(atype)
-  }).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction
-
-  def apply[O <: Obj with IsOp[O,T],T <: Type[T]](bool:__):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool[T](a.asInstanceOf[T].range()).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction
+object AsOp {
+  def apply(name: StrValue): Inst = new VInst((Tokens.as, List(name)), qOne, ((a: Obj, b: List[Obj]) => a.as[Obj](name.value()))) //
 }
-

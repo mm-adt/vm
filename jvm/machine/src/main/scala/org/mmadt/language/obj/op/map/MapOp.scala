@@ -20,35 +20,25 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultOp[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]] {
-  this:O =>
+trait MapOp {
+  this:Obj with MapOp =>
 
-  def mult(other:T):T
-  def mult(other:V):this.type
-  final def *(other:T):T = this.mult(other)
-  final def *(other:V):this.type = this.mult(other)
+  def map[O <: Obj](other:O):O = other // TODO NO IMPL -- INST
 }
 
-object MultOp {
-  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.mult,List(other)),qOne,((a:O,b:List[Obj]) => a.mult(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
-  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.mult,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case avalue:OValue with V => a.mult(avalue)
-    case atype:OType with T => a.mult(atype)
-  }).asInstanceOf[(Obj,List[Obj]) => Obj])
+object MapOp {
+  def apply[O <: Obj](other:O):Inst = new VInst((Tokens.map,List(other)),qOne,(a:Obj,b:List[Obj]) => a.map(b.head))
 
-  def apply[O <: Obj with MultOp[O,V,T],V <: Value[V],T <: Type[T]](other:__):Inst = new VInst((Tokens.plus,List(other)),qOne,
-    ((a:O,b:List[Obj]) => a.mult(other[T](a.asInstanceOf[T].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj](other:__):Inst = new VInst((Tokens.is,List(other)),qOne,(a:Obj,b:List[Obj]) => a.map(other(a.asInstanceOf[Type[_]].range()).asInstanceOf[O]))
 }
-

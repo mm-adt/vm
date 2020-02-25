@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
 
-import org.mmadt.language.obj.op.PlusOp
+import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.storage.obj.int
 import org.scalatest.FunSuite
 

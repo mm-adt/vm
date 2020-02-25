@@ -24,7 +24,10 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue,StrValue}
+import org.mmadt.language.obj.op.filter.IsOp
+import org.mmadt.language.obj.op.map.{AndOp, EqsOp, OrOp}
+import org.mmadt.language.obj.op.traverser.ToOp
+import org.mmadt.language.obj.value.{BoolValue, StrValue}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -42,3 +45,5 @@ trait BoolType extends Bool
   override def is(bool:BoolType):BoolType = this.compose(IsOp(bool)).q(0,q()._2) //
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2) //
 }
+
+

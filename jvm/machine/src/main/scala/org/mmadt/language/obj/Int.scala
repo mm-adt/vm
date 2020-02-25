@@ -24,6 +24,9 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op._
+import org.mmadt.language.obj.op.filter.IsOp
+import org.mmadt.language.obj.op.map.{EqsOp, GtOp, MultOp, NegOp, PlusOp}
+import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.obj.value.VInt
 

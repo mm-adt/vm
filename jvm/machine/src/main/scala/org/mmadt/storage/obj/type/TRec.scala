@@ -24,9 +24,9 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.op.PlusOp
+import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.RecValue
-import org.mmadt.language.obj.{Inst,OType,Obj,TQ}
+import org.mmadt.language.obj.{Inst, OType, Obj, TQ}
 import org.mmadt.storage.obj._
 
 /**

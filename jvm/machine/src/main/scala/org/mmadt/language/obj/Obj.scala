@@ -25,6 +25,11 @@ package org.mmadt.language.obj
 import org.mmadt.language.Printable
 import org.mmadt.language.PrintableInstances._
 import org.mmadt.language.obj.op._
+import org.mmadt.language.obj.op.branch.ChooseOp
+import org.mmadt.language.obj.op.map.{IdOp, MapOp}
+import org.mmadt.language.obj.op.model.AsOp
+import org.mmadt.language.obj.op.reduce.CountOp
+import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil

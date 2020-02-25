@@ -24,6 +24,9 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.op._
+import org.mmadt.language.obj.op.filter.IsOp
+import org.mmadt.language.obj.op.map.{AndOp, EqsOp, OrOp}
+import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.obj.value.VBool
 

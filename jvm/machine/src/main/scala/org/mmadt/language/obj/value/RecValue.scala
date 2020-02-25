@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{BoolType, RecType}
-import org.mmadt.language.obj.op.StartOp
+import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.{Obj, Rec, TType}
 import org.mmadt.storage.obj.bool
 import org.mmadt.storage.obj.value.VRec

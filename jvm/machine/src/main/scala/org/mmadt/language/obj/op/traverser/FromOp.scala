@@ -20,22 +20,25 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj, Rec}
+import org.mmadt.language.obj.op.TraverserInstruction
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.obj.value.{VInst, VStr}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PutOp[A <: Obj, B <: Obj] {
-  this: Rec[A, B] =>
+trait FromOp {
+  this:Obj =>
 
-  def put(key: A, value: B): Rec[A, B] //
+  def from[O <: Obj](label:String):O = this.from(new VStr(label)) //
+  def from[O <: Obj](label:StrValue):O = label.asInstanceOf[O] // TODO NO IMPL -- INST
 }
 
-object PutOp {
-  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst = new VInst((Tokens.put, List(key, value)), qOne, ((a: Rec[A, B], b: List[Obj]) => a.put(key, value)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+object FromOp {
+  def apply(label:StrValue):Inst = new VInst((Tokens.from,List(label)),qOne,(a:Obj,b:List[Obj]) => a.from[Obj](label)) with TraverserInstruction
 }

@@ -24,7 +24,11 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{StrValue,Value}
+import org.mmadt.language.obj.op.map.{IdOp, MapOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.reduce.CountOp
+import org.mmadt.language.obj.op.traverser.FromOp
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.obj._

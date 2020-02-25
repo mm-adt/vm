@@ -20,21 +20,25 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.obj.value.{VInst, VStr}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ModelOp {
-  def model(model: StrValue): this.type = this
+trait ToOp[O <: Type[O]] {
+  def to(label:String):O = this.to(new VStr(label)) //
+  def to(label:StrValue):O //
+  final def ~(label:String):O = this.to(label) //
 }
 
-object ModelOp {
-  def apply(model: StrValue): Inst = new VInst((Tokens.model, List(model)), qOne, ((a: ModelOp, b: List[Obj]) => a.model(model)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+object ToOp {
+  def apply[O <: Type[O]](label:StrValue):Inst = new VInst((Tokens.to,List(label)),qOne,((a:ToOp[O],b:List[Obj]) => a.to(label)).asInstanceOf[(Obj,List[Obj]) => Obj]) with TraverserInstruction
 }

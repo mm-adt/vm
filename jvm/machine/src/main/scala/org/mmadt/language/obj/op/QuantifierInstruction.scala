@@ -20,33 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
-
-import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
-import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.RecValue
-import org.mmadt.storage.obj.value.VRec
+package org.mmadt.language.obj.op
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Rec[A <: Obj,B <: Obj] extends Obj
-  with EqsOp[Rec[A,B],RecValue[A,B],RecType[A,B]]
-  with PlusOp[Rec[A,B],RecValue[A,B],RecType[A,B]]
-  with IsOp[Rec[A,B],RecType[A,B]]
-  with ToOp[RecType[A,B]]
-  with GetOp[A,B]
-  with PutOp[A,B]
+trait QuantifierInstruction {
 
-object Rec {
-  implicit def mapToRec[A <: Obj,B <: Obj](java:Map[A,B]):RecValue[A,B] with Rec[A,B] = new VRec(java) //
-
-  /*implicit final class ColonAssoc[A](private val self:A) extends AnyVal {
-    @inline
-    def -:[B](y:B):Tuple2[A,B] = Tuple2(self,y)
-  }*/
 }

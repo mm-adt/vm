@@ -23,6 +23,10 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op._
+import org.mmadt.language.obj.op.filter.IsOp
+import org.mmadt.language.obj.op.map.{EqsOp, GetOp}
+import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{OType, Obj, Rec}
 import org.mmadt.storage.obj.`type`.TRec

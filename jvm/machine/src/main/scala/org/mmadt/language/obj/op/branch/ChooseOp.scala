@@ -20,11 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.{Inst,OType,OValue,Obj}
+import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TObj
 import org.mmadt.storage.obj.value.VInst

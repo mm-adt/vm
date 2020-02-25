@@ -22,20 +22,9 @@
 
 package org.mmadt.language.obj.op
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.VInst
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StartOp[T <: Type[T]] {
+trait TraverserInstruction {
 
-  def start():T
-}
-
-object StartOp {
-  def apply(starts:Obj):Inst = new VInst((Tokens.start,List(starts)),qOne,(_:Obj,b:List[Obj]) => b.head)
 }

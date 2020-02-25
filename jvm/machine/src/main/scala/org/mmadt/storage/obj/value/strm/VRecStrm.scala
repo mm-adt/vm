@@ -24,7 +24,7 @@ package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.op.StartOp
+import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.{Obj, TQ}

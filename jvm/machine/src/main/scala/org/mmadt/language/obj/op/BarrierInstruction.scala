@@ -22,22 +22,9 @@
 
 package org.mmadt.language.obj.op
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.{VInst, VStr}
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait FromOp {
-  this: Obj =>
+trait BarrierInstruction {
 
-  def from[O <: Obj](label: String): O = this.from(new VStr(label)) //
-  def from[O <: Obj](label: StrValue): O = label.asInstanceOf[O] // TODO NO IMPL -- INST
-}
-
-object FromOp {
-  def apply(label: StrValue): Inst = new VInst((Tokens.from, List(label)), qOne, (a: Obj, b: List[Obj]) => a.from[Obj](label)) //
 }
