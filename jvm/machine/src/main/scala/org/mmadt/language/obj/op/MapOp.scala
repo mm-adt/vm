@@ -23,7 +23,8 @@
 package org.mmadt.language.obj.op
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.`type`.{Type,__}
+import org.mmadt.language.obj.{Inst,Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -31,11 +32,13 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait MapOp {
-  this: Obj with MapOp =>
+  this:Obj with MapOp =>
 
-  def map[O <: Obj](other: O): O = other // TODO NO IMPL -- INST
+  def map[O <: Obj](other:O):O = other // TODO NO IMPL -- INST
 }
 
 object MapOp {
-  def apply[O <: Obj](other: O): Inst = new VInst((Tokens.map, List(other)), qOne, (a: Obj, b: List[Obj]) => a.map(b.head)) //
+  def apply[O <: Obj](other:O):Inst = new VInst((Tokens.map,List(other)),qOne,(a:Obj,b:List[Obj]) => a.map(b.head))
+
+  def apply[O <: Obj](other:__):Inst = new VInst((Tokens.is,List(other)),qOne,(a:Obj,b:List[Obj]) => a.map(other(a.asInstanceOf[Type[_]].range()).asInstanceOf[O]))
 }
