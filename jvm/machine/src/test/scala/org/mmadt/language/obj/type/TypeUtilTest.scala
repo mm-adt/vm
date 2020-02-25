@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.`type`.util.TypeUtil
+import org.mmadt.language.obj.op.traverser.ExplainOp
 import org.mmadt.storage.obj.int
 import org.scalatest.FunSuite
 
@@ -32,8 +32,8 @@ import org.scalatest.FunSuite
 class TypeUtilTest extends FunSuite {
 
   test("report printing"){
-    val atype = int.q(int(10)).plus(int(2)).mult(int.plus(int(4))).is(int.gt(int(20)))
-    println(TypeUtil.printTable(atype,TypeUtil.explain(atype)))
+    val atype = int.q(int(10)).to("x").plus(int(2)).mult(int.plus(int(4))).is(int.gt(int(20)))
+    println(ExplainOp.printableTable(atype))
   }
 
 }

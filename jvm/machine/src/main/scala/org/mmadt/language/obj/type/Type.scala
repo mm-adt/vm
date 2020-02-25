@@ -23,12 +23,11 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.op.map.{IdOp, MapOp}
-import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.map.{IdOp,MapOp}
+import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
 import org.mmadt.language.obj.op.reduce.CountOp
-import org.mmadt.language.obj.op.traverser.FromOp
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
+import org.mmadt.language.obj.value.{StrValue,Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.obj._
@@ -37,9 +36,10 @@ import org.mmadt.storage.obj._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Type[T <: Type[T]] extends Obj
+  with ExplainOp
   with ModelOp {
 
-  def canonical():this.type = this.range().q(1) //
+  def canonical():this.type = this.range().q(qOne) //
   def range():this.type //
 
   def domain[D <: OType]():D = (this.insts() match {
@@ -112,11 +112,5 @@ trait Type[T <: Type[T]] extends Obj
 
   // standard Java implementations
   override def hashCode():scala.Int = this.range().toString.hashCode // TODO: using toString()
-
-  /*def |[O <: Type[O]](other:O):O ={ // TODO: ghetto union type construction
-    if (this.insts().nonEmpty && this.insts().head._2.op().equals(Tokens.choose))
-      this.linvert().choose(Map(other -> other) ++ this.insts().head._2.arg[RecValue[O,O]]().value())
-    else
-      this.choose(other -> other,this.asInstanceOf[O] -> this.asInstanceOf[O])
-  }*/
+  
 }

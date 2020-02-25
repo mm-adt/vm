@@ -24,7 +24,6 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Printable
 import org.mmadt.language.PrintableInstances._
-import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.{IdOp, MapOp}
 import org.mmadt.language.obj.op.model.AsOp
@@ -55,7 +54,6 @@ trait Obj
   // utility methods
   def ==>[R <: Obj](rangeType:TType[R]):R = Processor.iterator[this.type,R]().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj()).next()
   def ===>[R <: Obj](rangeType:TType[R]):Iterator[R] = Processor.iterator[this.type,R]().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj())
-
   // pattern matching methods
   val name:String
   def test(other:Obj):Boolean

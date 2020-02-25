@@ -27,14 +27,14 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GetOp, GtOp, IdOp, MapOp, MultOp, PlusOp}
+import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.CountOp
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
+import org.mmadt.language.obj.value.strm.{IntStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
+import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -150,6 +150,7 @@ object mmlangParser extends JavaTokenParsers {
         case arg:Obj => MapOp(arg)
       }
       case Tokens.count => CountOp()
+      case Tokens.explain => ExplainOp()
       case Tokens.put => PutOp(arg.head,arg.tail.head)
       case Tokens.from => FromOp(arg.head.asInstanceOf[StrValue])
       case Tokens.to => ToOp(arg.head.asInstanceOf[StrValue])
