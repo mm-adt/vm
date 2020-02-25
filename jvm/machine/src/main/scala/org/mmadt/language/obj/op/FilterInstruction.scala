@@ -22,9 +22,11 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.obj.Obj
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait FilterInstruction {
-
+  def keep(obj:Obj):Boolean = !(obj.q()._1.value() == 0 || obj.q()._2.value() == 0)
 }

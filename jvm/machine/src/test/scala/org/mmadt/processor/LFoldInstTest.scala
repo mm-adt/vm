@@ -20,26 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.reduce
+package org.mmadt.processor
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.ReduceInstruction
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, Int, O, Obj}
-import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.obj.int
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait CountOp[O >: Int] {
-  this:Obj =>
-  def count():O
-}
+class LFoldInstTest extends FunSuite {
 
-object CountOp {
-  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) with ReduceInstruction[IntValue,O] {
-    override val seed     :IntValue                 = int(0)
-    override val reduction:(IntValue,O) => IntValue = (a,b) => a.plus(b.count().asInstanceOf[IntValue])
+  test("[lfold] w/ int"){
+    //assertResult("int[lfold,0,int[plus,int]]")(int.lfold(int(0))(int.plus(int)).toString)
+    //assertResult(int(1))(int(2).lfold(int(1))(int.id()))
+    ///assertResult(int(7))((int(1,2,3) ===> int.lfold(int(1))(int.plus(int)).asInstanceOf[OType]).next)
   }
+
 }

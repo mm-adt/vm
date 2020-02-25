@@ -22,9 +22,12 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.obj.Obj
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ReduceInstruction {
-
+trait ReduceInstruction[A <: Obj,B <: Obj] {
+  val seed:A
+  val reduction:(A,B) => A
 }

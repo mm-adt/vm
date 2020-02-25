@@ -24,22 +24,21 @@ package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.ReduceInstruction
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, Int, O, Obj}
-import org.mmadt.storage.obj._
+import org.mmadt.language.obj.{Inst,O,OType,Obj}
+import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait CountOp[O >: Int] {
-  this:Obj =>
-  def count():O
+trait LFoldOp[A <: Obj,B <: OType] {
+  this:LFoldOp[A,B] =>
+  def lfold(seed:A)(atype:B):A = seed
 }
 
-object CountOp {
-  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) with ReduceInstruction[IntValue,O] {
-    override val seed     :IntValue                 = int(0)
-    override val reduction:(IntValue,O) => IntValue = (a,b) => a.plus(b.count().asInstanceOf[IntValue])
+/*object LFoldOp {
+  def apply[A <: Obj,B <: OType](_seed:A,atype:B):Inst = new VInst((Tokens.lfold,List(_seed,atype)),qOne,(a:O,b:List[Obj]) => a.asInstanceOf[LFoldOp[A,B]].lfold(_seed)(atype)) with ReduceInstruction[A,B] {
+    override val seed     :A          = _seed
+    override val reduction:(A,B) => A = (a,b) => (a ==> b).asInstanceOf[A]
   }
-}
+}*/

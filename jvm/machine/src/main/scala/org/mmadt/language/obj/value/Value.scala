@@ -23,7 +23,8 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.TypeChecker
-import org.mmadt.language.obj.{OType, OValue, Obj}
+import org.mmadt.language.obj.op.reduce.LFoldOp
+import org.mmadt.language.obj.{OType,OValue,Obj}
 import org.mmadt.storage.obj.qOne
 
 /**
@@ -42,7 +43,6 @@ trait Value[V <: Value[V]] extends Obj {
   override def count():IntValue = this.q()._1.q(qOne)
   override def id():this.type = this
   override def from[O <: Obj](label:StrValue):O = this.start().from(label)
-
   override def equals(other:Any):Boolean = other match {
     case avalue:OValue => avalue.value() == this.value()
     case _ => false

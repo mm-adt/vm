@@ -46,6 +46,7 @@ object Tokens {
   val get     = "get"
   val id      = "id"
   val is      = "is"
+  val lfold   = "lfold"
   val plus    = "plus"
   val map     = "map"
   val mult    = "mult"

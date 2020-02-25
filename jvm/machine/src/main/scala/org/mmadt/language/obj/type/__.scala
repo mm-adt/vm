@@ -25,7 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, Int, O, OType, Obj}
+import org.mmadt.language.obj.{Inst, O, OType, Obj}
 import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.{TInt, TRec}
@@ -66,7 +66,6 @@ class __(insts:List[Inst] = Nil) extends Type[__] {
     }))))
   }
   override def count():IntType = new TInt()
-
 }
 
 object __ extends __(Nil) {

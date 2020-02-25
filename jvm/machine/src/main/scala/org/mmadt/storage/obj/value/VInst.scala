@@ -35,6 +35,7 @@ class VInst(java:JInst,quantifier:TQ,function:(Obj,List[Obj]) => Obj) extends VV
   override def as[O <: Obj](name:String):O = this.asInstanceOf[O] //
   def this(java:JInst) = this(java,qOne,null) //
   override def value():JInst = java //
+  //override  def lfold(seed:O)(atype:OType):O = seed ==> atype
   override def toString:String = Stringer.instString(this) //
   override def q(quantifier:TQ):this.type = new VInst(java,quantifier,function).asInstanceOf[this.type] //
   override def id():this.type = this //

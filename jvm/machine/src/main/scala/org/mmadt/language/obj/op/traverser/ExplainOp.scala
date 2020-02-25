@@ -77,7 +77,7 @@ object ExplainOp {
     builder.append("-".repeat(builder.length)).append("\n")
     report.foldLeft(builder)((a,b) => a
       .append(" ".repeat(b._1))
-      .append(instStr(b._2,b._2.toString.length)).append(" ".repeat(Math.abs(c1 - (b._2.toString.length))))
+      .append(b._2).append(" ".repeat(Math.abs(c1 - (b._2.toString.length))))
       .append(b._3).append(" ".repeat(Math.abs(c2 - (b._3.toString.length) - (b._1))))
       .append("=>").append(" ".repeat(3)).append(" ".repeat(b._1))
       .append(b._4).append(" ".repeat(Math.abs(c3 - (b._4.toString.length) - (b._1))))
