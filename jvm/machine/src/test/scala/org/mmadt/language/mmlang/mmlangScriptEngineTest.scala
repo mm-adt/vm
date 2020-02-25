@@ -186,6 +186,14 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(engine.eval("int => int[plus,10][is,int[gt,5]]").next)
   }
 
+  test("reducing expressions"){
+    assertResult(int(7))(engine.eval("5{7} => int{7}[plus,2][count]").next)
+    assertResult(int(7))(engine.eval("5{7} => [plus,2][count]").next)
+    assertResult(int(5))(engine.eval("1,3,7,2,1 ==> int[plus,2][count]").next)
+    assertResult(int(6))(engine.eval("1,3,7,2,1,10 ==> [plus,2][count]").next)
+    assertResult(int(2))(engine.eval("1,3,7,2,1,10 ==> +2[is>5][count]").next)
+  }
+
   test("composite expression parsing"){
     assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval("['age':29] ==> rec[rec[is,rec[get,'age',int][gt,30]] -> rec[put,'name','bill'] | rec -> rec[put,'name','marko']]").next())
   }

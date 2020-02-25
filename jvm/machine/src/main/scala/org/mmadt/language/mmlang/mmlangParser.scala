@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
@@ -138,6 +138,7 @@ object mmlangParser extends JavaTokenParsers {
         case List(key:O,typeHint:TType[O]) => GetOp(key,typeHint)
         case List(key:O) => GetOp(key)
       }
+      case Tokens.count => CountOp()
       case Tokens.put => PutOp(arg.head,arg.tail.head)
       case Tokens.from => FromOp(arg.head.asInstanceOf[StrValue])
       case Tokens.to => ToOp(arg.head.asInstanceOf[StrValue])
