@@ -24,10 +24,10 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op._
-import org.mmadt.storage.obj._
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.{StrValue,Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -74,8 +74,10 @@ trait Type[T <: Type[T]] extends Obj
     case _:Str => str(inst)
     case _:RecType[Obj,Obj] => rec(t2.asInstanceOf[RecType[Obj,Obj]],inst)
     case _:__ => __(this.insts().map(e => e._2) :+ inst:_*)
+    case _:ObjType => obj(inst)
   }).asInstanceOf[TT]
 
+  def obj(inst:Inst,q:TQ = this.q()):ObjType //
   def int(inst:Inst,q:TQ = this.q()):IntType //
   def bool(inst:Inst,q:TQ = this.q()):BoolType //
   def str(inst:Inst,q:TQ = this.q()):StrType //

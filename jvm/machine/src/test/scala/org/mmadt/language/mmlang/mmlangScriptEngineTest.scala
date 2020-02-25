@@ -171,7 +171,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("4 => [plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("5 => [plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("true => [bool -> bool | int -> int]").next)
-    // TODO: assertResult(int(10))(engine.eval("10 => [bool -> bool | int -> int]").next)
+    assertResult(int(10))(engine.eval("10 => [bool -> bool | int -> int]").next)
+    assertResult(int(10))(engine.eval("10 => [bool -> true | int -> int]").next)
+    assertResult(int(11))(engine.eval("10 => [bool -> true | int -> int[plus,1]]").next)
   }
 
   test("expression parsing"){

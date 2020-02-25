@@ -28,6 +28,6 @@ import org.mmadt.storage.obj.OObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VObj(name:String,val java:Any,quantifier:TQ) extends OObj(name,quantifier)
+abstract class VVObj(name:String,val java:Any,quantifier:TQ) extends OObj(name,quantifier)
 
 

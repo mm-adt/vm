@@ -33,7 +33,7 @@ import org.mmadt.storage.obj.`type`.TBool
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBool(name:String,java:Boolean,quantifier:TQ) extends VObj(name,java,quantifier) with BoolValue {
+class VBool(name:String,java:Boolean,quantifier:TQ) extends VVObj(name,java,quantifier) with BoolValue {
 
   def this(java:Boolean) = this(Tokens.bool,java,qOne)
 

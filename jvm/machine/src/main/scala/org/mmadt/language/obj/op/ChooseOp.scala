@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.{Inst,OType,OValue,Obj}
 import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.`type`.TObj
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -38,12 +39,26 @@ trait ChooseOp {
 
   def choose[IT <: OType,OT <: Obj](branches:RecType[IT,OT]):OT ={
     this match {
-      case atype:OType => atype.compose(branches.value().head._2,ChooseOp[IT,OT](branches))
+      case atype:OType => atype.compose(generalType(branches.value().values),ChooseOp[IT,OT](branches))
       case avalue:OValue =>
-        branches.value().find(p => (avalue ===> p._1).hasNext).map(_._2).getOrElse(avalue.q(0)) match {
+        branches.value().find(p => asType(avalue).canonical().equals(p._1.canonical()) &&
+                                   (avalue ===> p._1).hasNext).
+          map(_._2).getOrElse(avalue.q(qZero))
+        match {
           case btype:OType => (avalue ==> btype).asInstanceOf[OT]
           case bvalue:OT => bvalue
         }
+    }
+  }
+
+  private def generalType[OT <: Obj](outs:Iterable[OT]):OT ={
+    val types = outs.map{
+      case atype:OType => atype.range().asInstanceOf[OT]
+      case avalue:OT => avalue
+    }.toSet
+    types.size match {
+      case 1 => types.head
+      case _ => new TObj().asInstanceOf[OT]
     }
   }
 }

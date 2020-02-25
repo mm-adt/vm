@@ -26,7 +26,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
-import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec, TStr}
+import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec, TStr, TObj}
 import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
 import org.mmadt.storage.obj.value.{VBool, VInt, VRec, VStr}
 
@@ -46,6 +46,8 @@ package object obj {
   def gt(obj:IntValue):BoolType = obj.gt() //
   def gt(obj:StrValue):BoolType = obj.gt() //
 
+
+  def obj:ObjType = new TObj() //
   def int:IntType = new TInt() //
   def int(name:String):IntType = new TInt(name,Nil,qOne) //
   def bool:BoolType = new TBool() //

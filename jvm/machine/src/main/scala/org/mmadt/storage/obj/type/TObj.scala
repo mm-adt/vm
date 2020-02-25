@@ -23,27 +23,16 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, OType, Obj, TQ}
-import org.mmadt.storage.obj.{OObj, _}
+import org.mmadt.language.obj.`type`.ObjType
+import org.mmadt.language.obj.{Inst, OType, TQ}
+import org.mmadt.storage.obj.qOne
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class TObj[T <: Type[T]](name:String,insts:List[(OType,Inst)],quantifier:TQ) extends OObj(name,quantifier) with Type[T] {
-
+class TObj(name:String,insts:List[(OType,Inst)],quantifier:TQ) extends TTObj[ObjType](name,insts,quantifier) with ObjType {
   def this() = this(Tokens.obj,Nil,qOne) //
-  def insts():List[(OType,Inst)] = insts //
-
-  override def int(inst:Inst,q:TQ):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
-  override def bool(inst:Inst,q:TQ):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),q)
-  override def str(inst:Inst,q:TQ):StrType = new TStr(typeName(inst.op(),(Tokens.str,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
-  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ):RecType[A,B] = new TRec(atype.name,atype.value(),this.insts() ::: List((this,inst)),(atype.q()._1.mult(q._1),atype.q()._2.mult(q._2)))
-
-  // utility method
-  private def typeName(op:String,nextType:(String,List[Obj])):String =
-    if (op.equals(Tokens.as))
-      nextType._2.head.asInstanceOf[StrValue].value()
-    else if (Tokens.named(name)) name else nextType._1
+  override def compose(inst:Inst):this.type = obj(inst,quantifier).asInstanceOf[this.type] //
+  override def range():this.type = new TObj(name,Nil,quantifier).asInstanceOf[this.type] //
+  override def q(quantifier:TQ):this.type = new TObj(name,insts,quantifier).asInstanceOf[this.type] //
 }

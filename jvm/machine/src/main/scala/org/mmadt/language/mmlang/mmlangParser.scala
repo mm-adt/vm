@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op._
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
@@ -147,12 +147,3 @@ object mmlangParser extends JavaTokenParsers {
     }
   }
 }
-
-/*object LocalApp extends App {
-  override def main(args:Array[String]):Unit ={
-    mmlangParser.parseAll(mmlangParser.expr,"['marko':'44']") match {
-      case mmlangParser.Success(result,_) => println(result + ":" + result.getClass)
-      case _ => println("Could not parse the input string.")
-    }
-  }
-}*/

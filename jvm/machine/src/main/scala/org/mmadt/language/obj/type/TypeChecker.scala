@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 
 /**
@@ -31,8 +32,8 @@ object TypeChecker {
 
   def checkType[O <: Obj](obj:O,atype:OType):O ={
     if (obj.isInstanceOf[Rec[O,O]] || atype.isInstanceOf[ORecType] || (obj.isInstanceOf[OType] || ((obj match {
-      case avalue:OValue => avalue.start().getClass.isAssignableFrom(atype.getClass)
-      case atype:OType => atype.getClass.isAssignableFrom(atype.getClass)
+      case avalue:OValue => avalue.start().getClass.isAssignableFrom(atype.getClass) || atype.name.equals(Tokens.obj)
+      case atype:OType => atype.getClass.isAssignableFrom(atype.getClass) || atype.name.equals(Tokens.obj)
     }) && obj.q()._1.value() >= atype.q()._1.value() && obj.q()._2.value() <= atype.q()._2.value())))
       obj
     else

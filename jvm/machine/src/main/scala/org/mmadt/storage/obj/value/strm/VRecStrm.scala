@@ -30,12 +30,12 @@ import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.{Obj,TQ}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TRec
-import org.mmadt.storage.obj.value.VObj
+import org.mmadt.storage.obj.value.VVObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRecStrm[A <: Obj,B <: Obj](name:String,java:RecValue[A,B]*) extends VObj(name,java,quantifier = (int(java.length),int(java.length)))
+class VRecStrm[A <: Obj,B <: Obj](name:String,java:RecValue[A,B]*) extends VVObj(name,java,quantifier = (int(java.length),int(java.length)))
   with RecStrm[A,B] {
   def this(java:RecValue[A,B]*) = this(name = Tokens.rec,java:_*)
 

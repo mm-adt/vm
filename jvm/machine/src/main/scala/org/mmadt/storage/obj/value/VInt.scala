@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.`type`.TInt
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(name:String,java:Long,quantifier:TQ) extends VObj(name,java,quantifier) with IntValue {
+class VInt(name:String,java:Long,quantifier:TQ) extends VVObj(name,java,quantifier) with IntValue {
 
   def this(java:Long) = this(Tokens.int,java,qOne)
 

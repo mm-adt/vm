@@ -31,7 +31,7 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst(java:JInst,quantifier:TQ,function:(Obj,List[Obj]) => Obj) extends VObj(Tokens.inst,java,quantifier) with Inst {
+class VInst(java:JInst,quantifier:TQ,function:(Obj,List[Obj]) => Obj) extends VVObj(Tokens.inst,java,quantifier) with Inst {
   override def as[O <: Obj](name:String):O = this.asInstanceOf[O] //
   def this(java:JInst) = this(java,qOne,null) //
   override def value():JInst = java //

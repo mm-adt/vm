@@ -49,6 +49,7 @@ class __(insts:List[Inst] = Nil) extends Type[__] {
   override def bool(inst:Inst,q:(IntValue,IntValue)):BoolType = null
   override def str(inst:Inst,q:(IntValue,IntValue)):StrType = null
   override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:(IntValue,IntValue)):RecType[A,B] = null
+  override def obj(inst:Inst,q:(IntValue,IntValue)):ObjType = null
 
   def apply[T <: Type[T]](obj:Obj):T = insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i match {
     case x:Inst if x.op() == Tokens.choose => applyChoose(a.asInstanceOf[OType],x.arg())(a)
@@ -65,6 +66,7 @@ class __(insts:List[Inst] = Nil) extends Type[__] {
     }))))
   }
   override def count():IntType = new TInt()
+
 }
 
 object __ extends __(Nil) {
