@@ -26,28 +26,28 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.TypeChecker
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj, TType}
+import org.mmadt.language.obj.{Obj, State, TType}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class C1Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj],val model:Model = Model.id) extends Traverser[S] {
-  def this(obj:S) = this(obj,Map[StrValue,Obj]()) //
+class C1Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id) extends Traverser[S] {
+  def this(obj:S) = this(obj,Map.empty) //
 
-  override def split[E <: Obj](obj:E):Traverser[E] = new C1Traverser[E](obj,state,model) //
+  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new C1Traverser[E](obj,state,this.model) //
   override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
     if (rangeType.insts().isEmpty) {
       TypeChecker.checkType(this.obj,rangeType)
       this.asInstanceOf[Traverser[E]]
     } else {
       (InstUtil.nextInst(rangeType) match {
-        case None => this.asInstanceOf[Traverser[E]]
-        case Some(inst) => inst match {
-          case toInst:Inst if toInst.op().equals(Tokens.to) => new C1Traverser[E](obj.asInstanceOf[E],Map[StrValue,Obj](toInst.arg[StrValue]() -> obj) ++ this.state,model) //
-          case fromInst:Inst if fromInst.op().equals(Tokens.from) => this.split(this.state(fromInst.arg[StrValue]()).asInstanceOf[E]) //
-          case defaultInst:Inst => InstUtil.instEval(this,defaultInst)
+        case None => this
+        case Some(inst) => inst.op() match {
+          case Tokens.to => this.split[E](obj.asInstanceOf[E],this.state + (inst.arg[StrValue]().value() -> obj)) //
+          case Tokens.from => this.split[E](this.state(inst.arg[StrValue]().value()).asInstanceOf[E]) //
+          case _ => InstUtil.instEval(this,inst)
         }
       }).apply(rangeType.linvert()).asInstanceOf[Traverser[E]]
     }

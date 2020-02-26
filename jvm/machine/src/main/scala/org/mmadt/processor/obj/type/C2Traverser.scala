@@ -23,27 +23,25 @@
 package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, TType}
+import org.mmadt.language.obj._
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class C2Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj],val model:Model = Model.id) extends Traverser[S] {
-  def this(obj:S) = this(obj,Map[StrValue,Obj]()) //
+class C2Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id) extends Traverser[S] {
+  def this(obj:S) = this(obj,Map.empty) //
 
-  override def split[E <: Obj](obj:E):Traverser[E] = new C2Traverser[E](obj,state,model) //
+  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new C2Traverser[E](obj,state,this.model) //
   override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
-    val next:Traverser[E] = model.get(obj.asInstanceOf[Type[_]].domain()) match {
+    val next:Traverser[E] = model.get(obj.asInstanceOf[OType].domain()) match {
       case Some(atype) => this.split[E](atype.asInstanceOf[E].q(obj.q()))
       case None => this.asInstanceOf[Traverser[E]]
     }
     (InstUtil.nextInst(rangeType) match {
       case None => return next
       case Some(inst) => InstUtil.instEval(next,inst)
-    }).apply(rangeType.linvert().asInstanceOf[E with Type[_]])
+    }).apply(rangeType.linvert())
   }
 }

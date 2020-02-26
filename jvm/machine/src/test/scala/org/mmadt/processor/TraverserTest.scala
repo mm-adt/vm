@@ -48,13 +48,13 @@ class TraverserTest extends FunSuite {
   }
 
   test("traverser state"){
-    assertResult(Map(str("a") -> int(5))){
-      trav(int(3))(int.plus(int(2)).to("a").mult(3)).state()
+    assertResult(Map("a" -> int(5))){
+      trav(int(3))(int.plus(int(2)).to("a").mult(3)).state
     }
     assertResult(Map(
-      str("a") -> int(5),
-      str("b") -> int(15))){
-      trav(int(3))(int.plus(2).to("a").mult(3).to("b")).state()
+      "a" -> int(5),
+      "b" -> int(15))){
+      trav(int(3))(int.plus(2).to("a").mult(3).to("b")).state
     }
     assertResult(int(5)){
       int(3) ==> int <= int.plus(2).to("a").mult(3).to("b").plus(1000).from("a")

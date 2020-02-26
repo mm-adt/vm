@@ -22,10 +22,11 @@
 
 package org.mmadt.processor
 
+import java.util.Objects
+
 import org.mmadt.language.Stringer
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, TType}
+import org.mmadt.language.obj.{Obj, State, TType}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,17 +34,18 @@ import org.mmadt.language.obj.{Obj, TType}
 trait Traverser[S <: Obj] {
 
   def obj():S // the obj location of the traverser
-  def state():Map[StrValue,Obj] // the local variables of the traverser
-  def model():Model // the model containing type embeddings
+  val state:State // the local variables of the traverser
+  val model:Model // the model containing model-ADTs
 
-  //
-  def split[E <: Obj](obj:E):Traverser[E] // clone the traverser with a new obj location
+  def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] // clone the traverser with a new obj location
   def apply[E <: Obj](rangeType:TType[E]):Traverser[E] // embed the traverser's obj into the provided type
 
+  // core JVM methods
   override def toString:String = Stringer.traverserString(this)
-
+  override def hashCode():Int = obj().hashCode() ^ state.hashCode()
   override def equals(other:Any):Boolean = other match {
-    case traverser:Traverser[S] => traverser.obj().equals(this.obj())
+    case traverser:Traverser[S] => Objects.equals(traverser.obj(),this.obj()) &&
+                                   Objects.equals(traverser.state,this.state)
     case _ => false
   }
 

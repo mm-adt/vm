@@ -46,7 +46,7 @@ object Stringer {
   }
 
   def traverserString(trav:Traverser[_]):String ={
-    "[" + trav.obj() + "|" + trav.state().foldRight("")((x,string) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
+    "[" + trav.obj() + "|" + trav.state.foldLeft("")((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
   }
 
   def typeString(t:OType):String ={

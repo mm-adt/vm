@@ -27,32 +27,31 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.TypeChecker
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst,Obj,TType}
+import org.mmadt.language.obj.{Inst, Obj, State, TType}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class I1Traverser[S <: Obj](val obj:S,val state:Map[StrValue,Obj]) extends Traverser[S] {
+class I1Traverser[S <: Obj](val obj:S,val state:State) extends Traverser[S] {
 
-  def this(obj:S) = this(obj,Map())
+  def this(obj:S) = this(obj,Map.empty)
+  override val model:Model = Model.id
 
-  override def split[E <: Obj](obj:E):Traverser[E] = new I1Traverser[E](obj,this.state)
+  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new I1Traverser[E](obj,state)
   override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
     if (rangeType.insts().isEmpty) {
       TypeChecker.checkType(this.obj,rangeType)
       this.asInstanceOf[Traverser[E]]
     } else {
       (InstUtil.nextInst(rangeType).get match {
-        case tinst:TraverserInstruction => tinst.op() match {
-          case Tokens.to => new I1Traverser[S](this.obj,Map[StrValue,Obj](tinst.arg[StrValue]() -> this.obj) ++ this.state)
-          case Tokens.from => new I1Traverser[E](this.state(tinst.arg[StrValue]()).asInstanceOf[E],this.state)
+        case traverserInst:TraverserInstruction => traverserInst.op() match {
+          case Tokens.to => this.split[S](this.obj,this.state + (traverserInst.arg[StrValue]().value() -> this.obj))
+          case Tokens.from => this.split[E](this.state(traverserInst.arg[StrValue]().value()).asInstanceOf[E])
         }
-        case storageInst:Inst => InstUtil.instEval(this,storageInst)
-      }).apply(rangeType.linvert()).asInstanceOf[Traverser[E]]
+        case objInst:Inst => InstUtil.instEval(this,objInst)
+      }).apply(rangeType.linvert())
     }
   }
-
-  override val model:Model = Model.id
 }

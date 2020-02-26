@@ -26,6 +26,8 @@ import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 
+import scala.collection.MapLike
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -39,6 +41,7 @@ package object obj {
   type ORecType = RecType[O,O]
   type ORecValue = RecValue[O,O]
   type ORecStrm = RecStrm[O,O]
+  type State = Map[String,O]
 }
 
 
