@@ -25,36 +25,26 @@ package org.mmadt.language.model.rewrite
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.processor.Traverser
-import org.mmadt.processor.obj.`type`.C1Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object LeftRightSweepRewrite {
-  def rewrite[E <: Obj](model:Model,startType:OType,endType:TType[E]):Traverser[E] ={
-    var mutatingTraverser:Traverser[E] = new C1Traverser[E](startType.asInstanceOf[E])
-    var previousTraverser:Traverser[E] = new C1Traverser[E](endType)
-    while (previousTraverser != mutatingTraverser) {
-      mutatingTraverser = previousTraverser
-      previousTraverser = recursiveRewrite(model,mutatingTraverser.obj().asInstanceOf[OType],startType,new C1Traverser(startType.asInstanceOf[E]))
-    }
-    mutatingTraverser
-  }
 
   @scala.annotation.tailrec
-  private def recursiveRewrite[E <: Obj](model:Model,atype:OType,btype:OType,traverser:Traverser[E]):Traverser[E] ={
+  def rewrite[E <: Obj](model:Model,atype:OType,btype:OType,traverser:Traverser[E]):Traverser[E] ={
     if (atype.insts().nonEmpty) {
       model.get(atype) match {
-        case Some(right:OType) => recursiveRewrite(model,right,btype,traverser)
-        case None => recursiveRewrite(model,
+        case Some(right:OType) => rewrite(model,right,btype,traverser)
+        case None => rewrite(model,
           atype.rinvert(),
           atype.insts().last._2.apply(
             atype.rinvert[OType]().range(),
-            rewriteArgs(model,atype.rinvert[OType]().range(),atype.insts().last._2)).asInstanceOf[OType].compose(btype),
+            rewriteArgs(model,atype.rinvert[OType]().range(),atype.insts().last._2,traverser)).asInstanceOf[OType].compose(btype),
           traverser)
       }
     } else if (btype.insts().nonEmpty) {
-      recursiveRewrite(model,
+      rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),
         traverser.apply(btype.insts().head._2.apply(btype.insts().head._1).asInstanceOf[OType]).asInstanceOf[Traverser[E]])
@@ -63,9 +53,9 @@ object LeftRightSweepRewrite {
   }
 
   // if no match, then apply the instruction after rewriting its arguments
-  private def rewriteArgs[E <: Obj](model:Model,start:OType,inst:Inst):List[Obj] ={
+  private def rewriteArgs[E <: Obj](model:Model,start:OType,inst:Inst,traverser:Traverser[E]):List[Obj] ={
     inst.args().map{
-      case atype:OType => LeftRightSweepRewrite.rewrite(model,start,atype.asInstanceOf[TType[E]]).obj()
+      case atype:OType => rewrite(model,atype,start,traverser.split(start)).obj()
       case avalue:O => avalue
     }
   }

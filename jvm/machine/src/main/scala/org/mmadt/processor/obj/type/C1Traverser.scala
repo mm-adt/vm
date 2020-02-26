@@ -36,7 +36,7 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
 class C1Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id) extends Traverser[S] {
   def this(obj:S) = this(obj,Map.empty) //
 
-  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new C1Traverser[E](obj,state,this.model) //
+  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new C1Traverser[E](obj,state,this.model)
   override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
     if (rangeType.insts().isEmpty) {
       TypeChecker.checkType(this.obj,rangeType)
@@ -45,8 +45,8 @@ class C1Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id
       (InstUtil.nextInst(rangeType) match {
         case None => this
         case Some(inst) => inst.op() match {
-          case Tokens.to => this.split[E](obj.asInstanceOf[E],this.state + (inst.arg[StrValue]().value() -> obj)) //
-          case Tokens.from => this.split[E](this.state(inst.arg[StrValue]().value()).asInstanceOf[E]) //
+          case Tokens.to => this.split[E](obj.asInstanceOf[E],this.state + (inst.arg[StrValue]().value() -> obj))
+          case Tokens.from => this.split[E](this.state(inst.arg[StrValue]().value()).asInstanceOf[E])
           case _ => this.split[E](InstUtil.instEval(this,inst))
         }
       }).apply(rangeType.linvert()).asInstanceOf[Traverser[E]]

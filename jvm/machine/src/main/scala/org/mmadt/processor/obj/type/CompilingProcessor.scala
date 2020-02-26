@@ -24,7 +24,7 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
-import org.mmadt.language.obj.{OValue, Obj, TType}
+import org.mmadt.language.obj.{OType, OValue, Obj, TType}
 import org.mmadt.processor.{Processor, Traverser}
 
 /**
@@ -32,16 +32,21 @@ import org.mmadt.processor.{Processor, Traverser}
  */
 class CompilingProcessor[S <: Obj,E <: Obj](val model:Model = Model.id) extends Processor[S,E] {
   override def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]] ={
+    assert(!domainObj.isInstanceOf[OValue],"The compiling processor only accepts types: " + domainObj)
+
     // C1Traverser applies rewrite rules until a steady state is reached
-    val traverser:Traverser[E] = domainObj match {
-      case domainValue:OValue => throw new IllegalArgumentException("The compiling processor only accepts types: " + domainValue)
-      case domainType:TType[E] => LeftRightSweepRewrite.rewrite[E](model,domainType,rangeType)
+    val domainType       :TType[E]     = domainObj.asInstanceOf[TType[E]]
+    var mutatingTraverser:Traverser[E] = new C1Traverser[E](domainType)
+    var previousTraverser:Traverser[E] = new C1Traverser[E](rangeType)
+    while (previousTraverser != mutatingTraverser) {
+      mutatingTraverser = previousTraverser
+      previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[OType],domainType,new C1Traverser(domainType))
     }
 
     // C2Traverser performs type erasure, representing all types in terms of mm-ADT
     Iterator(model match {
-      case Model.id => traverser
-      case _ => new C2Traverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(traverser.obj().asInstanceOf[TType[E]])
+      case Model.id => mutatingTraverser
+      case _ => new C2Traverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(mutatingTraverser.obj().asInstanceOf[TType[E]])
     })
   }
 }
