@@ -46,7 +46,6 @@ trait StrValue extends Str
   override def plus(other:StrValue):this.type = this.value(this.value() + other.value())
   override def gt(other:StrType):BoolType = this.start().gt(other)
   override def gt(other:StrValue):BoolValue = bool(this.value() > other.value()).q(this.q())
-  override def gt():BoolType = new TStr().gt(this)
   override def is(bool:BoolType):StrType = this.start().is(bool)
   override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
 }

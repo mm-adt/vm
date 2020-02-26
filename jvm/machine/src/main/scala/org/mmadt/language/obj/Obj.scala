@@ -23,7 +23,6 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.Printable
-import org.mmadt.language.PrintableInstances._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.{IdOp, MapOp}
 import org.mmadt.language.obj.op.model.AsOp
@@ -57,5 +56,4 @@ trait Obj
   // pattern matching methods
   val name:String
   def test(other:Obj):Boolean
-  override def toString:String = Printable.format(this)
 }

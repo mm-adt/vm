@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.value
 
+import org.mmadt.language.Printable
 import org.mmadt.language.obj.`type`.TypeChecker
-import org.mmadt.language.obj.op.reduce.LFoldOp
-import org.mmadt.language.obj.{OType,OValue,Obj}
+import org.mmadt.language.obj.{OType, OValue, Obj}
 import org.mmadt.storage.obj.qOne
 
 /**
@@ -47,6 +47,7 @@ trait Value[V <: Value[V]] extends Obj {
     case avalue:OValue => avalue.value() == this.value()
     case _ => false
   }
+  override def toString:String = Printable.format[OValue](this)
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {

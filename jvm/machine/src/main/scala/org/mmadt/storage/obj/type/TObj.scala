@@ -30,7 +30,7 @@ import org.mmadt.storage.obj.qOne
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TObj(name:String,insts:List[(OType,Inst)],quantifier:TQ) extends TTObj[ObjType](name,insts,quantifier) with ObjType {
+class TObj(name:String,insts:List[(OType,Inst)],quantifier:TQ) extends AbstractTObj[ObjType](name,insts,quantifier) with ObjType {
   def this() = this(Tokens.obj,Nil,qOne) //
   override def compose(inst:Inst):this.type = obj(inst,quantifier).asInstanceOf[this.type] //
   override def range():this.type = new TObj(name,Nil,quantifier).asInstanceOf[this.type] //

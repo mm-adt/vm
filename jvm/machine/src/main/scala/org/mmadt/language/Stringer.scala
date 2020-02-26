@@ -22,9 +22,9 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Inst, Obj, TQ}
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.RecType
+import org.mmadt.language.obj.value.{RecValue, StrValue}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj._
 
@@ -49,11 +49,8 @@ object Stringer {
     "[" + trav.obj() + "|" + trav.state().foldRight("")((x,string) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
   }
 
-  def typeString(t:Type[_]):String ={
-    //  if (t.insts().nonEmpty && t.insts().head._2.op().equals(Tokens.choose)) // TODO: ghetto union type specification
-    //    return t.insts().head._2.arg[RecValue[_,_]]().value().foldRight("[")((x,string) => string + (if (x._1.equals(x._2)) x._1 else x._1 + ":" + x._2) + "|").dropRight(1) + "]"
-
-    val range  =  (t match {
+  def typeString(t:OType):String ={
+    val range  = (t match {
       case r:RecType[_,_] => return if (r.value().isEmpty) "" else r.value().foldLeft("[")((string,r) => string + r._1 + "->" + r._2 + "|").dropRight(1) + "]"
       case _ => t.name
     }) + qString(t.q())
@@ -63,7 +60,7 @@ object Stringer {
     t.insts().map(_._2.toString()).fold("")((a,b) => a + b)
   }
 
-  def valueString(v:Value[_]):String ={
+  def valueString(v:OValue):String ={
     val named = Tokens.named(v.name)
     (if (named) v.name else "") + (
       v match {

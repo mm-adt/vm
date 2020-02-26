@@ -33,7 +33,7 @@ import org.mmadt.storage.obj.`type`.TStr
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VStr(name:String,java:String,quantifier:TQ) extends VVObj(name,java,quantifier) with StrValue {
+class VStr(name:String,java:String,quantifier:TQ) extends AbstractVObj(name,java,quantifier) with StrValue {
 
   def this(java:String) = this(Tokens.str,java,qOne)
 

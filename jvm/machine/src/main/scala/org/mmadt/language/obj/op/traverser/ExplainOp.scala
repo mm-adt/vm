@@ -60,7 +60,6 @@ object ExplainOp {
   }
 
   private def lastRange(atype:OType):OType = if (atype.insts().isEmpty) atype else atype.linvert().range()
-  private def instStr(inst:Inst,length:scala.Int):String = if (inst.isInstanceOf[TraverserInstruction]) " ".repeat(length) else inst.toString
 
   def printableTable(atype:OType):String ={
     val report                = explain(atype,mutable.LinkedHashMap.empty[String,Obj])

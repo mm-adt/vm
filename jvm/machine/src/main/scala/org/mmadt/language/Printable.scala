@@ -22,7 +22,7 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.{OType, OValue, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,4 +34,14 @@ trait Printable[O <: Obj] {
 object Printable {
   def format[O <: Obj](input:O)(implicit p:Printable[O]):String =
     p.format(input)
+
+
+  implicit val valuePrintable:Printable[OValue] = new Printable[OValue] {
+    def format(input:OValue):String = Stringer.valueString(input)
+  }
+
+  implicit val typePrintable:Printable[OType] = new Printable[OType] {
+    def format(input:OType):String = Stringer.typeString(input)
+  }
+
 }

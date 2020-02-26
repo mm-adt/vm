@@ -20,18 +20,14 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.storage.obj.value
 
-import org.mmadt.language.obj.{OType, OValue, Obj}
+import org.mmadt.language.obj.TQ
+import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object PrintableInstances {
-  implicit val objPrintable:Printable[Obj] = new Printable[Obj] {
-    def format(input:Obj):String = input match {
-      case avalue:OValue => Stringer.valueString(avalue)
-      case atype:OType => Stringer.typeString(atype)
-    }
-  }
-}
+abstract class AbstractVObj(name:String,val java:Any,quantifier:TQ) extends OObj(name,quantifier)
+
+

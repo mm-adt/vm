@@ -47,10 +47,4 @@ class GtInstTest extends FunSuite {
     assert(int.gt(int).isInstanceOf[BoolType])
     assert(int.gt(int).isInstanceOf[Bool])
   }
-
-  test("unary [gt] w/ int") {
-    assertResult(int.gt(5))(int(5).gt())
-    assertResult(int.gt(5))(int.gt(int(5)))
-    assertResult(int.is(int.gt(int(4))))(int.is(gt(4)))
-  }
 }

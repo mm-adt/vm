@@ -30,11 +30,11 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.CountOp
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm,Strm}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
-import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm}
+import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
+import org.mmadt.language.obj.value.strm.{IntStrm, Strm}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
+import org.mmadt.storage.obj.{obj => tobj, _}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -59,6 +59,7 @@ object mmlangParser extends JavaTokenParsers {
 
   lazy val canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ (quantifier ?) ^^ {
     case atype ~ q => q.foldLeft(atype match {
+      //case Tokens.obj => tobj
       case Tokens.bool => bool
       case Tokens.int => int
       case Tokens.str => str

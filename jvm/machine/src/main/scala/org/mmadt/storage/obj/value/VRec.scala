@@ -33,7 +33,7 @@ import org.mmadt.storage.obj.`type`.TRec
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:TQ) extends VVObj(name,java,quantifier) with RecValue[A,B] {
+class VRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:TQ) extends AbstractVObj(name,java,quantifier) with RecValue[A,B] {
 
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne)
 

@@ -23,10 +23,9 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.`type`.{BoolType,IntType}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.VInt
 
 /**
@@ -34,7 +33,7 @@ import org.mmadt.storage.obj.value.VInt
  */
 trait IntValue extends Int
   with Value[IntValue]
-  with StartOp[IntType]{
+  with StartOp[IntType] {
 
   override def value():Long
   override def start():IntType
@@ -50,7 +49,6 @@ trait IntValue extends Int
   override def neg():this.type = this.value(-this.value())
   override def gt(other:IntType):BoolType = this.start().gt(other)
   override def gt(other:IntValue):BoolValue = bool(this.value() > other.value()).q(this.q())
-  override def gt():BoolType = new TInt().gt(this)
   override def is(bool:BoolType):IntType = this.start().is(bool)
   override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(qZero)
 }

@@ -46,7 +46,6 @@ trait IntStrm extends Int
   override def neg():this.type = new VIntStrm(this.name,this.value().map(i => i.neg()).toSeq).asInstanceOf[this.type]
   override def gt(other:IntType):BoolType = this.start().gt(other)
   override def gt(other:IntValue):BoolValue = throw new IllegalAccessException()
-  override def gt():BoolType = throw new IllegalAccessException()
   override def is(bool:BoolType):IntType = this.start().is(bool)
   override def is(bool:BoolValue):this.type = throw new IllegalAccessException()
 }

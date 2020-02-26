@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.Printable
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.{IdOp, MapOp}
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
@@ -105,6 +106,7 @@ trait Type[T <: Type[T]] extends Obj
     case argType:OType => TypeChecker.matchesTT(this,argType)
   }
 
+  override def toString:String = Printable.format[OType](this)
   override def equals(other:Any):Boolean = other match {
     case atype:Type[T] => atype.insts().map(_._2) == this.insts().map(_._2) && this.range().toString == atype.range().toString
     case _ => false
