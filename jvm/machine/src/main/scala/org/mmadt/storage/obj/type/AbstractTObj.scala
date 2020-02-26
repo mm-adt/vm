@@ -33,8 +33,8 @@ import org.mmadt.storage.obj.{OObj,_}
  */
 abstract class AbstractTObj[T <: Type[T]](name:String,insts:List[(OType,Inst)],quantifier:TQ) extends OObj(name,quantifier) with Type[T] {
 
-  def this() = this(Tokens.obj,Nil,qOne) //
-  def insts():List[(OType,Inst)] = insts //
+  def this() = this(Tokens.obj,Nil,qOne)
+  def insts():List[(OType,Inst)] = insts
 
   override def int(inst:Inst,q:TQ):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
   override def bool(inst:Inst,q:TQ):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),q)

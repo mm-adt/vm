@@ -20,19 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.`type`
+package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.{Inst, OType, TQ}
-import org.mmadt.storage.obj._
+import org.mmadt.language.obj.{O, ORecType}
+import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec, TStr}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(name:String,insts:List[(OType,Inst)],quantifier:TQ) extends AbstractTObj[BoolType](name,insts,quantifier) with BoolType {
-  def this() = this(Tokens.bool,Nil,qOne) //
-  override def compose(inst:Inst):this.type = bool(inst).asInstanceOf[this.type] //
-  override def range():this.type = new TBool(name,Nil,quantifier).asInstanceOf[this.type] //
-  override def q(quantifier:TQ):this.type = new TBool(name,insts,quantifier).asInstanceOf[this.type] //
+trait TypeFactory {
+  def tbool():BoolType
+  def tint():IntType
+  def tstr():StrType
+  def trec():ORecType
+}
+
+object TypeFactory {
+  def tbool()(implicit f:TypeFactory):BoolType = f.tbool()
+  def tint()(implicit f:TypeFactory):IntType = f.tint()
+  def tstr()(implicit f:TypeFactory):StrType = f.tstr()
+  def trec()(implicit f:TypeFactory):ORecType = f.trec()
+
+  implicit val tTypeFactory:TypeFactory = new TypeFactory {
+    override def tbool():BoolType = new TBool()
+    override def tint():IntType = new TInt()
+    override def tstr():StrType = new TStr()
+    override def trec():ORecType = new TRec[O,O]()
+  }
 }
