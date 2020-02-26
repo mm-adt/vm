@@ -22,11 +22,11 @@
 
 package org.mmadt.processor.obj.value
 
-import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
+import org.mmadt.language.obj.op.{FilterInstruction,ReduceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, O, Obj, TType}
+import org.mmadt.language.obj.{Inst,Obj,TType}
 import org.mmadt.processor.obj.`type`.util.InstUtil
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.processor.{Processor,Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,8 +40,13 @@ class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
     }
     for (tt <- InstUtil.createInstList(Nil,rangeType)) {
       output = tt._2 match {
-        case reducer:ReduceInstruction[O,O] => Iterator(output.map(_.obj()).foldLeft(reducer.seed)((a,b) => reducer.reduction.apply(a,b)).asInstanceOf[E]).map(e => new I1Traverser[E](e))
+        case reducer:ReduceInstruction[E,E] => Iterator(output.
+          map(_.obj()). // unwrap
+          foldRight(reducer.seed)((obj,mutatingSeed) => reducer.reduction.apply(obj,mutatingSeed))). // reduce
+          map(e => new I1Traverser[E](e)) // rewrap
+        ///////////////////////////////////////////
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
+        ///////////////////////////////////////////
         case _:Inst => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
       }
     }
