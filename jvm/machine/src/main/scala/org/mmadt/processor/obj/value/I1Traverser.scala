@@ -50,7 +50,7 @@ class I1Traverser[S <: Obj](val obj:S,val state:State) extends Traverser[S] {
           case Tokens.to => this.split[S](this.obj,this.state + (traverserInst.arg[StrValue]().value() -> this.obj))
           case Tokens.from => this.split[E](this.state(traverserInst.arg[StrValue]().value()).asInstanceOf[E])
         }
-        case objInst:Inst => InstUtil.instEval(this,objInst)
+        case objInst:Inst => this.split[E](InstUtil.instEval(this,objInst))
       }).apply(rangeType.linvert())
     }
   }

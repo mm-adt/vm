@@ -45,8 +45,7 @@ object InstUtil {
   /**
    * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
    */
-  def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):Traverser[E] =
-    traverser.split(inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E])
+  def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E = inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
 
   @scala.annotation.tailrec
   def createInstList(list:List[(OType,Inst)],atype:OType):List[(OType,Inst)] ={

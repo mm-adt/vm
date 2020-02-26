@@ -41,7 +41,7 @@ class C2Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id
     }
     (InstUtil.nextInst(rangeType) match {
       case None => return next
-      case Some(inst) => InstUtil.instEval(next,inst)
+      case Some(inst) => this.split[E](InstUtil.instEval(next,inst))
     }).apply(rangeType.linvert())
   }
 }
