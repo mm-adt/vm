@@ -28,13 +28,13 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
+import org.mmadt.language.obj.value.strm.{IntStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
+import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -57,28 +57,28 @@ object mmlangParser extends JavaTokenParsers {
   lazy val single  :Parser[O]           = ((strm | obj) <~ Tokens.:=>) ~ (aType | anonType) ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
   lazy val multiple:Parser[Iterator[O]] = ((strm | obj) <~ "==>") ~ objType ^^ (x => x._1 ===> x._2)
 
-  lazy val canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ (quantifier ?) ^^ {
-    case atype ~ q => q.foldLeft(atype match {
+  lazy val canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ opt(quantifier) ^^ {
+    case atype ~ q => q.foldRight(atype match {
       //case Tokens.obj => tobj
       case Tokens.bool => bool
       case Tokens.int => int
       case Tokens.str => str
       case Tokens.rec => rec
-    })((t,q) => t.q(q))
+    })((q,t) => t.q(q))
   }
 
   lazy val objType:Parser[OType] = aType | recType | anonType
 
-  lazy val aType   :Parser[OType]    = ((canonicalType <~ Tokens.:<=) ?) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+  lazy val aType   :Parser[OType]    = (opt(canonicalType <~ Tokens.:<=)) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
   }
   lazy val recType :Parser[ORecType] = "[" ~> repsep((obj <~ Tokens.:->) ~ obj,Tokens.:|) <~ "]" ^^ (x => trec(x.map(o => (o._1,o._2)).toMap))
   lazy val anonType:Parser[__]       = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
 
-  lazy val stateAccess:Parser[Option[OType] ~ String] = ((canonicalType ?) <~ "<") ~ "[a-zA-z]*".r <~ ">"
+  lazy val stateAccess:Parser[Option[OType] ~ String] = (opt(canonicalType) <~ "<") ~ "[a-zA-z]*".r <~ ">"
 
-  lazy val quantifier    :Parser[TQ] = ("{" ~> quantifierType <~ "}") | ("{" ~> intValue ~ (("," ~> intValue) ?) <~ "}") ^^ (x => (x._1,x._2.getOrElse(x._1)))
+  lazy val quantifier    :Parser[TQ] = ("{" ~> quantifierType <~ "}") | ("{" ~> intValue ~ opt("," ~> intValue) <~ "}") ^^ (x => (x._1,x._2.getOrElse(x._1)))
   lazy val quantifierType:Parser[TQ] = (Tokens.q_star | Tokens.q_mark | Tokens.q_plus) ^^ {
     case Tokens.q_star => qStar
     case Tokens.q_mark => qMark
@@ -90,7 +90,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val intValue :Parser[IntValue]  = wholeNumber ^^ (x => int(x.toLong))
   lazy val strValue :Parser[StrValue]  = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
   lazy val recValue :Parser[ORecValue] = "[" ~> repsep((obj <~ Tokens.::) ~ obj,",") <~ "]" ^^ (x => rec(x.map(o => (o._1,o._2)).toMap))
-  lazy val objValue :Parser[OValue]    = (boolValue | intValue | strValue | recValue) ~ (quantifier ?) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val objValue :Parser[OValue]    = (boolValue | intValue | strValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val strm     :Parser[Strm[_]]   = intStrm | recStrm
   lazy val intStrm  :Parser[IntStrm]   = (intValue <~ ",") ~ rep1sep(intValue,",") ^^ (x => new VIntStrm(x._1 +: x._2))
   lazy val recStrm  :Parser[ORecStrm]  = (recValue <~ ",") ~ rep1sep(recValue,",") ^^ (x => new VRecStrm[O,O](x._1 +: x._2:_*))

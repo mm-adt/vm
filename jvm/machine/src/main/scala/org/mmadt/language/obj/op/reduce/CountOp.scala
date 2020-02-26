@@ -38,8 +38,9 @@ trait CountOp[O >: Int] {
 }
 
 object CountOp {
+  lazy val zero:IntValue = int(0)
   def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) with ReduceInstruction[O,IntValue] {
-    override val seed     :IntValue                 = int(0)
+    override val seed     :IntValue                 = zero
     override val reduction:(O,IntValue) => IntValue = (a,b) => a.count().plus(b).asInstanceOf[IntValue]
   }
 }
