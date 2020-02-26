@@ -22,11 +22,11 @@
 
 package org.mmadt.processor.obj.value
 
-import org.mmadt.language.obj.op.{FilterInstruction,ReduceInstruction}
+import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst,Obj,TType}
+import org.mmadt.language.obj.{Inst, Obj, TType}
 import org.mmadt.processor.obj.`type`.util.InstUtil
-import org.mmadt.processor.{Processor,Traverser}
+import org.mmadt.processor.{Processor, Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,6 +40,7 @@ class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
     }
     for (tt <- InstUtil.createInstList(Nil,rangeType)) {
       output = tt._2 match {
+        ///////////////////////////////////////////
         case reducer:ReduceInstruction[E,E] => Iterator(output.
           map(_.obj()). // unwrap
           foldRight(reducer.seed)((obj,mutatingSeed) => reducer.reduction.apply(obj,mutatingSeed))). // reduce

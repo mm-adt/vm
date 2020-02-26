@@ -25,6 +25,7 @@ package org.mmadt.processor.obj.`type`.util
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.processor.Traverser
+import org.mmadt.processor.obj.value.I1Traverser
 import org.mmadt.storage.obj.int
 
 /**
@@ -32,7 +33,7 @@ import org.mmadt.storage.obj.int
  */
 object InstUtil {
 
-  private def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
+   def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
     inst.args().map{
       case valueArg:OValue => valueArg
       case typeArg:OType => traverser.split(traverser.obj() match {
@@ -46,6 +47,8 @@ object InstUtil {
    * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
    */
   def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E = inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
+
+  def instEval[S <: Obj,E <: Obj](start:S,arg:S,inst:Inst):E = inst.apply(start,InstUtil.valueArgs(new I1Traverser[O](arg),inst)).asInstanceOf[E]
 
   @scala.annotation.tailrec
   def createInstList(list:List[(OType,Inst)],atype:OType):List[(OType,Inst)] ={

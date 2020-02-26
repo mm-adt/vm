@@ -28,6 +28,6 @@ import org.mmadt.language.obj.Obj
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ReduceInstruction[A <: Obj,B <: Obj] {
-  val seed:A
+  val seed:B
   val reduction:(A,B) => B
 }

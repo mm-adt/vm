@@ -26,7 +26,7 @@ import org.mmadt.language.Printable
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.{IdOp, MapOp}
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp, LFoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.processor.Processor
@@ -114,5 +114,5 @@ trait Type[T <: Type[T]] extends Obj
 
   // standard Java implementations
   override def hashCode():scala.Int = this.range().toString.hashCode // TODO: using toString()
-  //override def lfold(seed:Obj)(atype:OType):Obj  = this.compose(asType(seed),LFoldOp(seed,atype))
+  override def fold[O <: Obj](seed:O)(atype:TType[O]):O = this.compose(asType(seed),FoldOp(seed,atype.asInstanceOf[OType]))
 }

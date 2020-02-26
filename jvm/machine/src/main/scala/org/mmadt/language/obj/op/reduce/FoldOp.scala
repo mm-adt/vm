@@ -20,20 +20,27 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.language.obj.op.reduce
 
-import org.mmadt.storage.obj.int
-import org.scalatest.FunSuite
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.ReduceInstruction
+import org.mmadt.language.obj.{Inst, O, OType, Obj, TType}
+import org.mmadt.processor.obj.`type`.util.InstUtil
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class LFoldInstTest extends FunSuite {
+trait FoldOp {
+  this:Obj =>
+  def fold[O <: Obj](seed:O)(atype:TType[O]):O = seed
+}
 
-  test("[lfold] w/ int"){
-    //assertResult("int[lfold,0,int[plus,int]]")(int.lfold(int(0))(int.plus(int)).toString)
-    //assertResult(int(1))(int(2).lfold(int(1))(int.id()))
-    ///assertResult(int(7))((int(1,2,3) ===> int.lfold(int(1))(int.plus(int)).asInstanceOf[OType]).next)
+object FoldOp {
+  def apply[A <: Obj,B <: Obj](_seed:B,atype:TType[B]):Inst = new VInst((Tokens.fold,List(_seed,atype)),qOne,(a:O,b:List[Obj]) => a.fold(_seed)(atype)) with ReduceInstruction[A,B] {
+    override val seed     :B          = _seed
+    override val reduction:(A,B) => B = (a,b) => InstUtil.instEval[O,B](a,b,atype.insts().head._2)
   }
-
 }

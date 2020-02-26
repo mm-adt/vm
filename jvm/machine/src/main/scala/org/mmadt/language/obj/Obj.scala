@@ -22,11 +22,10 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.Printable
 import org.mmadt.language.obj.op.branch.ChooseOp
-import org.mmadt.language.obj.op.map.{IdOp, MapOp}
+import org.mmadt.language.obj.op.map.{IdOp,MapOp}
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.reduce.CountOp
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.Processor
@@ -40,6 +39,7 @@ trait Obj
     with CountOp[Int]
     with ChooseOp
     with IdOp
+    with FoldOp
     with MapOp
     with FromOp {
 

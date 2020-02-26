@@ -24,7 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.Printable
 import org.mmadt.language.obj.`type`.TypeChecker
-import org.mmadt.language.obj.{OType, OValue, Obj}
+import org.mmadt.language.obj.{OType, OValue, Obj, TType}
 import org.mmadt.storage.obj.qOne
 
 /**
@@ -55,4 +55,5 @@ trait Value[V <: Value[V]] extends Obj {
     case argType:OType => TypeChecker.matchesVT(this,argType)
   }
 
+  override def fold[O <: Obj](seed:O)(atype:TType[O]):O = seed
 }
