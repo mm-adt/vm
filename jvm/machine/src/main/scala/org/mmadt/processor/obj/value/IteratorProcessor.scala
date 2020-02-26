@@ -42,8 +42,8 @@ class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
       output = tt._2 match {
         ///////////////////////////////////////////
         case reducer:ReduceInstruction[E,E] => Iterator(output.
-          map(_.obj()). // unwrap
-          foldRight(reducer.seed)((obj,mutatingSeed) => reducer.reduction.apply(obj,mutatingSeed))). // reduce
+          //map(_.obj()). // unwrap
+          foldRight(reducer.seed)((obj,mutatingSeed) => reducer.reduction.apply(obj.obj(),mutatingSeed))). // reduce
           map(e => new I1Traverser[E](e)) // rewrap
         ///////////////////////////////////////////
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))

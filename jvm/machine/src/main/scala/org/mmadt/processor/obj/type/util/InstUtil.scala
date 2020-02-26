@@ -26,7 +26,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.value.I1Traverser
-import org.mmadt.storage.obj.int
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -61,7 +61,7 @@ object InstUtil {
   }
 
   def updateQ[O <: Obj](obj:Obj,atype:OType):O = atype.q() match {
-    case _ if ==(int(1),int(1)) => obj.asInstanceOf[O]
+    case _ if equals(qOne) => obj.asInstanceOf[O]
     case tq:TQ => obj.q(obj.q()._1 * tq._1,obj.q()._2 * tq._2).asInstanceOf[O]
   }
 

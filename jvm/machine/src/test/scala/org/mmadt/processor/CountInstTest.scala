@@ -20,27 +20,23 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.reduce
+package org.mmadt.processor
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.ReduceInstruction
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, Int, O, Obj}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.VInst
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait CountOp[O <: Int] {
-  this:Obj =>
-  def count():O
-}
+class CountInstTest extends FunSuite {
 
-object CountOp {
-  lazy val zero:IntValue = int(0)
-  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) with ReduceInstruction[O,IntValue] {
-    override val seed     :IntValue                 = zero
-    override val reduction:(O,IntValue) => IntValue = (start,seed) => start.count().plus(seed).asInstanceOf[IntValue]
+  test("[count] w/ int"){
+    assertResult(int(1))(int(2).count())
+    assertResult(int(3))((int(1,2,3) ===> int.count()).next)
+    assertResult(int(3))((int(1,2,3) ===> int.plus(int(10)).count()).next)
+    assertResult(int(2))((int(0,1) ===> int.choose(int.is(int.gt(int(0))) -> int,int -> int).count()).next)
+    assertResult(int(17))((int(int(0).q(int(10)),int(1).q(int(7))) ===> int.q(*).choose(int.q(*).is(int.q(*).gt(int(0))) -> int,int -> int).count()).next) // TODO: need smarter handling of strm compilations with quantifiers
+    assertResult(int(13))((int(int(0).q(int(10)),int(1).q(int(3))) ===> int.q(*).plus(int(10)).count()).next)
   }
+
 }

@@ -55,5 +55,5 @@ trait Value[V <: Value[V]] extends Obj {
     case argType:OType => TypeChecker.matchesVT(this,argType)
   }
 
-  override def fold[O <: Obj](seed:O)(atype:TType[O]):O = seed
+  override def fold[O <: Obj](seed:O)(atype:TType[O]):O = this ==> atype
 }

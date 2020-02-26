@@ -24,11 +24,11 @@ package org.mmadt.storage
 
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
+import org.mmadt.language.obj.value.strm.{IntStrm,RecStrm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,RecValue,StrValue}
 import org.mmadt.storage.obj.`type`._
-import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
-import org.mmadt.storage.obj.value.{VBool, VInt, VRec, VStr}
+import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm}
+import org.mmadt.storage.obj.value.{VBool,VInt,VRec,VStr}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,7 +52,7 @@ package object obj {
   val bfalse:BoolValue = bool(false)
 
   def int(value:Long):IntValue = new VInt(value)
-  def int(values:Long*):IntStrm = new VIntStrm(values.map(i => int(i)))
+  def int(values:IntValue*):IntStrm = new VIntStrm(values)
   def bool(value:Boolean):BoolValue = new VBool(value)
   def str(value:String):StrValue = new VStr(value)
   def rec[A <: Obj,B <: Obj](name:String,value:Map[A,B],quantifier:TQ):RecValue[A,B] = new VRec[A,B](name,value,quantifier)
