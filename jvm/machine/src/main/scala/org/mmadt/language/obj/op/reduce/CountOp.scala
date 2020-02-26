@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.reduce
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst,Int,O,Obj}
+import org.mmadt.language.obj.{Inst, Int, O, Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.value.VInst
 

@@ -22,7 +22,7 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.obj.{OType,Int}
+import org.mmadt.language.obj.{Int,OType}
 import org.mmadt.storage.obj.int
 import org.scalatest.FunSuite
 
@@ -35,6 +35,9 @@ class FoldInstTest extends FunSuite {
     assertResult("int[fold,0,int[plus,int]]")(int.fold[Int](int(0))(int.plus(int)).toString)
     assertResult(int(1))(int(2).fold[Int](int(1))(int.id()))
     assertResult(int(7))((int(1,2,3) ===> int.fold[Int](int(1))(int.plus(int)).asInstanceOf[OType]).next)
+    assertResult(int(7))((int(1,2,3) ===> int.fold[Int](int(1))(int.plus(int).mult(int(1))).asInstanceOf[OType]).next)
+    assertResult(int(8))((int(0,1) ===> int.fold[Int](int(1))(int.plus(int).mult(int(2))).asInstanceOf[OType]).next)
+    assertResult(int(0))((int(1,2,3) ===> int.fold[Int](int(1))(int.plus(int).mult(int(1)).mult(int(0))).asInstanceOf[OType]).next)
   }
 
 }

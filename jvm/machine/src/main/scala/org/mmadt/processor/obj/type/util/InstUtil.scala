@@ -33,7 +33,7 @@ import org.mmadt.storage.obj.int
  */
 object InstUtil {
 
-   def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
+  def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
     inst.args().map{
       case valueArg:OValue => valueArg
       case typeArg:OType => traverser.split(traverser.obj() match {
@@ -48,7 +48,7 @@ object InstUtil {
    */
   def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E = inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
 
-  def instEval[S <: Obj,E <: Obj](start:S,arg:S,inst:Inst):E = inst.apply(start,InstUtil.valueArgs(new I1Traverser[O](arg),inst)).asInstanceOf[E]
+  def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:TType[E]):E = (atype.insts().head._2.apply(start,InstUtil.valueArgs(new I1Traverser[O](arg),atype.insts().head._2)) ==> atype.linvert()).asInstanceOf[E]
 
   @scala.annotation.tailrec
   def createInstList(list:List[(OType,Inst)],atype:OType):List[(OType,Inst)] ={
