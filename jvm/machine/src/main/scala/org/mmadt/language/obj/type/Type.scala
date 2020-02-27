@@ -40,16 +40,16 @@ trait Type[T <: Type[T]] extends Obj
   with ExplainOp
   with ModelOp {
 
-  def canonical():this.type = this.range().q(qOne) //
-  def range():this.type //
-
+  // type properties
+  def insts():List[(OType,Inst)]
+  def canonical():this.type = this.range().q(qOne)
+  def range():this.type
   def domain[D <: OType]():D = (this.insts() match {
     case Nil => this
     case i:List[(OType,Inst)] => i.head._1.range()
   }).asInstanceOf[D]
 
-  def insts():List[(OType,Inst)] //
-
+  // type manipulation functions
   def linvert():this.type ={
     ((this.insts().tail match {
       case Nil => this.range()
@@ -59,20 +59,23 @@ trait Type[T <: Type[T]] extends Obj
       case x => x
     }).asInstanceOf[this.type]
   }
-
   def rinvert[TT <: OType]():TT =
     (this.insts().dropRight(1).lastOption match {
       case Some(prev) => prev._2.apply(prev._1)
       case None => this.insts().head._1
     }).asInstanceOf[TT]
 
+  // type specification and compilation
+  final def <=[D <: OType](domainType:D):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
+  override def ==>[R <: Obj](rangeType:TType[R]):R = Processor.compiler[Type[T],R]()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
+
+  // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[TT <: OType](btype:TT):TT ={
     var a:this.type = this
     for (i <- btype.insts()) a = a.compose(i._1,i._2)
     a.asInstanceOf[TT]
   }
-
-  def compose(inst:Inst):this.type //
+  def compose(inst:Inst):this.type
   def compose[TT <: OType](t2:Obj,inst:Inst):TT = (t2 match {
     case _:Bool => bool(inst)
     case _:Int => int(inst)
@@ -82,39 +85,39 @@ trait Type[T <: Type[T]] extends Obj
     case _:ObjType => obj(inst)
   }).asInstanceOf[TT]
 
+  // type change during fluency // TODO: get rid of this
   def obj(inst:Inst,q:TQ = this.q()):ObjType
   def int(inst:Inst,q:TQ = this.q()):IntType
   def bool(inst:Inst,q:TQ = this.q()):BoolType
   def str(inst:Inst,q:TQ = this.q()):StrType
   def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ = this.q()):RecType[A,B]
 
-  final def <=[D <: OType](domainType:D):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
-  override def ==>[R <: Obj](rangeType:TType[R]):R = Processor.compiler[Type[T],R]()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
-
-  override def quant():IntType = int(QOp())
-  override def count():IntType = int(CountOp(),qOne)
-  override def id():this.type = this.compose(IdOp())
-  override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other))
-  override def model(model:StrValue):this.type = this.compose(ModelOp(model))
-  override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
-  override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
+  // obj-level operations
   override def as[O <: Obj](name:String):O = (InstUtil.nextInst(this) match {
     case Some(x) if x == AsOp(name) => this
     case _ => this.compose(AsOp(name))
   }).asInstanceOf[O]
+  override def count():IntType = int(CountOp(),qOne)
+  override def id():this.type = this.compose(IdOp())
+  override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other))
+  override def model(model:StrValue):this.type = this.compose(ModelOp(model))
+  override def fold[O <: Obj](seed:(String,O))(atype:TType[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype.asInstanceOf[OType]))
+  override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
+  override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
+  override def quant():IntType = int(QOp())
+
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
     case argValue:OValue => TypeChecker.matchesTV(this,argValue)
     case argType:OType => TypeChecker.matchesTT(this,argType)
   }
 
+  // standard Java implementations
   override def toString:String = Printable.format[OType](this)
+  override def hashCode():scala.Int = this.name.hashCode ^ this.q().hashCode()
   override def equals(other:Any):Boolean = other match {
-    case atype:Type[T] => atype.insts().map(_._2) == this.insts().map(_._2) && this.range().toString == atype.range().toString
+    case atype:__ => atype.toString.equals(this.toString) // TODO: get __ better aligned with Type
+    case atype:Type[T] => atype.insts().map(_._2) == this.insts().map(_._2) && this.name == atype.name && this.q() == atype.q()
     case _ => false
   }
-
-  // standard Java implementations
-  override def hashCode():scala.Int = this.range().toString.hashCode // TODO: using toString()
-  override def fold[O <: Obj](seed:(String,O))(atype:TType[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype.asInstanceOf[OType]))
 }

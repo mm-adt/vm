@@ -24,7 +24,8 @@ package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
 
-import org.mmadt.storage.obj.{bool, int, str}
+import org.mmadt.language.obj.OType
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**
@@ -32,11 +33,34 @@ import org.scalatest.FunSuite
  */
 class TypeTest extends FunSuite {
 
-  test("type structure w/ one canonical type") {
-    var tobj: IntType = int.plus(10).mult(1).is(int.gt(20))
+  test("type hashCode and equals"){
+    val types:List[OType] = List(obj,bool,int,str,rec) // TODO: add __
+    var sameCounter       = 0
+    var diffCounter       = 0
+    for (a <- types) {
+      for (b <- types) {
+        if (a.name == b.name) {
+          sameCounter = sameCounter + 1
+          assert(a == b)
+          assert(a.hashCode() == b.hashCode())
+          assert(a.toString == b.toString)
+        } else {
+          diffCounter = diffCounter + 1
+          assert(a != b)
+          assert(a.hashCode() != b.hashCode())
+          assert(a.toString != b.toString)
+        }
+      }
+    }
+    assertResult(types.length)(sameCounter)
+    assertResult(types.length * (types.length - 1))(diffCounter)
+  }
+
+  test("type structure w/ one canonical type"){
+    var tobj:IntType = int.plus(10).mult(1).is(int.gt(20))
     assertResult(int)(tobj.domain())
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(tobj.toString)
-    assertResult(int.q(0, 1))(tobj.range())
+    assertResult(int.q(0,1))(tobj.range())
     assertResult(int)(tobj.canonical())
     assertResult(3)(tobj.insts().length)
     //
@@ -61,28 +85,28 @@ class TypeTest extends FunSuite {
     assertResult(int)(tobj.canonical())
     assertResult(0)(tobj.insts().length)
 
-    assertThrows[NoSuchElementException] {
+    assertThrows[NoSuchElementException]{
       tobj.rinvert[IntType]()
     }
     //
-    assertThrows[UnsupportedOperationException] {
+    assertThrows[UnsupportedOperationException]{
       tobj.linvert()
     }
   }
 
-  test("type structure w/ two canonical types") {
-    val boolType: BoolType = int.plus(10).mult(1).is(int.gt(20)).gt(100)
+  test("type structure w/ two canonical types"){
+    val boolType:BoolType = int.plus(10).mult(1).is(int.gt(20)).gt(100)
     assertResult(int)(boolType.domain())
     assertResult(Nil)(boolType.domain[IntType]().insts())
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][gt,100]")(boolType.toString)
-    assertResult(bool.q(0, 1))(boolType.range())
+    assertResult(bool.q(0,1))(boolType.range())
     assertResult(bool)(boolType.canonical())
     assertResult(4)(boolType.insts().length)
     //
     var intType = boolType.rinvert[IntType]()
     assertResult(int)(intType.domain())
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(intType.toString)
-    assertResult(int.q(0, 1))(intType.range())
+    assertResult(int.q(0,1))(intType.range())
     assertResult(int)(intType.canonical())
     assertResult(3)(intType.insts().length)
     //
@@ -107,30 +131,30 @@ class TypeTest extends FunSuite {
     assertResult(int)(intType.canonical())
     assertResult(0)(intType.insts().length)
     //
-    assertThrows[NoSuchElementException] {
+    assertThrows[NoSuchElementException]{
       intType.rinvert[IntType]()
     }
     //
-    assertThrows[UnsupportedOperationException] {
+    assertThrows[UnsupportedOperationException]{
       intType.linvert()
     }
   }
 
-  def domainTest(atype: Type[_]): Unit = {
+  def domainTest(atype:Type[_]):Unit ={
     assertResult(int)(atype.domain())
-    assertThrows[NoSuchElementException] {
+    assertThrows[NoSuchElementException]{
       atype.domain[IntType]().rinvert()
     }
-    assertThrows[UnsupportedOperationException] {
+    assertThrows[UnsupportedOperationException]{
       atype.domain[IntType]().linvert()
     }
 
   }
 
-  test("type structure w/ three canonical types") {
-    val boolType: BoolType = int.plus(int(10)).mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a")
+  test("type structure w/ three canonical types"){
+    val boolType:BoolType = int.plus(int(10)).mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a")
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=str{0}[start,'hello'][plus,str]][gt,'a']")(boolType.toString)
-    assertResult(bool.q(0, 1))(boolType.range())
+    assertResult(bool.q(0,1))(boolType.range())
     assertResult(bool)(boolType.canonical())
     assertResult(5)(boolType.insts().length)
     assertResult(int.mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a"))(boolType.linvert())
@@ -138,10 +162,10 @@ class TypeTest extends FunSuite {
     assertResult(int.mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)))(boolType.linvert().rinvert())
     domainTest(boolType)
     //
-    val strType: StrType = boolType.rinvert[StrType]()
+    val strType:StrType = boolType.rinvert[StrType]()
     assertResult(int)(strType.domain())
     assertResult("str{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=str{0}[start,'hello'][plus,str]]")(strType.toString)
-    assertResult(str.q(0, 1))(strType.range())
+    assertResult(str.q(0,1))(strType.range())
     assertResult(str)(strType.canonical())
     assertResult(4)(strType.insts().length)
     domainTest(strType)
@@ -149,7 +173,7 @@ class TypeTest extends FunSuite {
     var intType = strType.rinvert[IntType]()
     assertResult(int)(intType.domain())
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(intType.toString)
-    assertResult(int.q(0, 1))(intType.range())
+    assertResult(int.q(0,1))(intType.range())
     assertResult(int)(intType.canonical())
     assertResult(3)(intType.insts().length)
     domainTest(intType)

@@ -22,7 +22,8 @@
 
 package org.mmadt.storage.obj.`type`
 
-import org.mmadt.storage.obj.int
+
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**
@@ -34,5 +35,6 @@ class TIntTest extends FunSuite {
     assertResult(int.plus(int))(int + int)
     assertResult(int.plus(int(-4)))(int + -4)
   }
+
 
 }
