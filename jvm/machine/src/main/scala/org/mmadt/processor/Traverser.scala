@@ -26,7 +26,9 @@ import java.util.Objects
 
 import org.mmadt.language.Stringer
 import org.mmadt.language.model.Model
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Obj, State, TType}
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,4 +51,9 @@ trait Traverser[S <: Obj] {
     case _ => false
   }
 
+}
+
+object Traverser {
+  def stateSplit[S <: Obj](label:String,obj:Obj)(traverser:Traverser[S]):Traverser[S] = traverser.split(traverser.obj(),traverser.state + (label -> obj))
+  def qSplit[S <: Obj](traverser:Traverser[S]):Traverser[IntValue] = traverser.split(int(traverser.obj().q()._1))
 }

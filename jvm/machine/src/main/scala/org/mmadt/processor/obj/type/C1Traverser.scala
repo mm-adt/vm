@@ -45,8 +45,8 @@ class C1Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id
       (InstUtil.nextInst(rangeType) match {
         case None => this
         case Some(inst) => inst.op() match {
-          case Tokens.to => this.split[E](obj.asInstanceOf[E],this.state + (inst.arg[StrValue]().value() -> obj))
-          case Tokens.from => this.split[E](this.state(inst.arg[StrValue]().value()).asInstanceOf[E])
+          case Tokens.to => this.split[E](obj.asInstanceOf[E],this.state + (inst.arg0[StrValue]().value() -> obj))
+          case Tokens.from => this.split[E](this.state(inst.arg0[StrValue]().value()).asInstanceOf[E])
           case _ => this.split[E](InstUtil.instEval(this,inst))
         }
       }).apply(rangeType.linvert()).asInstanceOf[Traverser[E]]

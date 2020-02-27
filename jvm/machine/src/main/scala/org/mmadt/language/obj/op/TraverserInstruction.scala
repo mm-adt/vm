@@ -22,9 +22,16 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.Traverser
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TraverserInstruction {
+trait TraverserInstruction extends Inst {
+
+  def doFrom[S <: Obj,E <: Obj](traverser:Traverser[S]):Traverser[E] =
+    traverser.split((if (args().length > 1) traverser.state.getOrElse(arg0[StrValue]().value(),arg1[E]()) else traverser.state.get(arg0[StrValue]().value()).get).asInstanceOf[E])
 
 }

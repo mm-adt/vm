@@ -26,8 +26,8 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.qOne
-import org.mmadt.storage.obj.value.{VInst, VStr}
+import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,10 +35,13 @@ import org.mmadt.storage.obj.value.{VInst, VStr}
 trait FromOp {
   this:Obj =>
 
-  def from[O <: Obj](label:String):O = this.from(new VStr(label)) //
+  def from[O <: Obj](label:String):O = this.from(str(label))
+  def from[O <: Obj](label:String,default:Obj):O = this.from(str(label),default)
   def from[O <: Obj](label:StrValue):O = label.asInstanceOf[O] // TODO NO IMPL -- INST
+  def from[O <: Obj](label:StrValue,default:Obj):O = default.asInstanceOf[O]
 }
 
 object FromOp {
   def apply(label:StrValue):Inst = new VInst((Tokens.from,List(label)),qOne,(a:Obj,b:List[Obj]) => a.from[Obj](label)) with TraverserInstruction
+  def apply[O <: Obj](label:StrValue,default:Obj):Inst = new VInst((Tokens.from,List(label,default)),qOne,(a:Obj,b:List[Obj]) => a.from[Obj](label,default)) with TraverserInstruction
 }

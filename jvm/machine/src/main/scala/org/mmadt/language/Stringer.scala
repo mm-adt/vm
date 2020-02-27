@@ -72,7 +72,7 @@ object Stringer {
 
   def instString(inst:Inst):String ={
     inst.op() match {
-      case Tokens.to | Tokens.from => "<" + inst.arg[StrValue]().value() + ">"
+      case Tokens.to | Tokens.from => "<" + inst.arg0[StrValue]().value() + ">"
       case _ => inst.args() match {
         case Nil => "[" + inst.op() + "]"
         case args:List[StrValue] if inst.op().equals(Tokens.as) => "[" + inst.op() + "," + args.head.value() + "]"

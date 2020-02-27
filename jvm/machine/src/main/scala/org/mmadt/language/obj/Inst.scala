@@ -33,9 +33,11 @@ trait Inst extends Obj {
 
   override val name:String = Tokens.inst
 
-  final def op():String = this.value()._1 //
-  final def args():List[Obj] = this.value()._2 //
-  final def arg[O <: Obj]():O = this.value()._2.head.asInstanceOf[O] //
+  final def op():String = this.value()._1
+  final def args():List[Obj] = this.value()._2
+  final def arg0[O <: Obj]():O = this.value()._2.head.asInstanceOf[O]
+  final def arg1[O <: Obj]():O = this.value()._2.tail.head.asInstanceOf[O]
+  final def arg2[O <: Obj]():O = this.value()._2.tail.tail.head.asInstanceOf[O]
   def apply(obj:Obj,args:List[Obj]):Obj
   def apply(obj:Obj):Obj = this.apply(obj,this.args())
 

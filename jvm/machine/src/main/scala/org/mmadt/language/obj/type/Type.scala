@@ -24,11 +24,11 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Printable
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.{IdOp, MapOp}
-import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.op.map.{IdOp,MapOp}
+import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
+import org.mmadt.language.obj.value.{StrValue,Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.obj._
@@ -95,7 +95,8 @@ trait Type[T <: Type[T]] extends Obj
   override def id():this.type = this.compose(IdOp()) //
   override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other)) //
   override def model(model:StrValue):this.type = this.compose(ModelOp(model)) //
-  override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O] //
+  override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
+  override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
   override def as[O <: Obj](name:String):O = (InstUtil.nextInst(this) match {
     case Some(x) if x == AsOp(name) => this
     case _ => this.compose(AsOp(name))
@@ -114,5 +115,5 @@ trait Type[T <: Type[T]] extends Obj
 
   // standard Java implementations
   override def hashCode():scala.Int = this.range().toString.hashCode // TODO: using toString()
-  override def fold[O <: Obj](seed:O)(atype:TType[O]):O = this.compose(asType(seed),FoldOp(seed,atype.asInstanceOf[OType]))
+  override def fold[O <: Obj](seed:(String,O))(atype:TType[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype.asInstanceOf[OType]))
 }

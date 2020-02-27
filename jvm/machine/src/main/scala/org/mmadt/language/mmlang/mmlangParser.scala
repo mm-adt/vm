@@ -154,7 +154,10 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.explain => ExplainOp()
       case Tokens.put => PutOp(arg.head,arg.tail.head)
       case Tokens.from => FromOp(arg.head.asInstanceOf[StrValue])
-      case Tokens.fold => FoldOp(arg.head,arg.tail.head.asInstanceOf[TType[O]])
+      case Tokens.fold => arg.tail.tail.head match{
+        case x:__ => FoldOp(("seed",arg.tail.head),x)
+        case x:TType[O] => FoldOp(("seed",arg.tail.head),x)
+      }
       case Tokens.to => ToOp(arg.head.asInstanceOf[StrValue])
       case Tokens.choose => ChooseOp(arg.head.asInstanceOf[RecType[OType,O]])
       case Tokens.id => IdOp()

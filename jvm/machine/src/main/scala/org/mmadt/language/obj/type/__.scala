@@ -52,7 +52,7 @@ class __(insts:List[Inst] = Nil) extends Type[__] {
   override def obj(inst:Inst,q:(IntValue,IntValue)):ObjType = null
 
   def apply[T <: Type[T]](obj:Obj):T = insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i match {
-    case x:Inst if x.op() == Tokens.choose => applyChoose(a.asInstanceOf[OType],x.arg())(a)
+    case x:Inst if x.op() == Tokens.choose => applyChoose(a.asInstanceOf[OType],x.arg0())(a)
     case _ => i(a)
   }).asInstanceOf[T]
 

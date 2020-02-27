@@ -212,7 +212,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(6))(engine.eval("1,3,7,2,1,10 ==> [plus,2][count]").next)
     assertResult(int(2))(engine.eval("1,3,7,2,1,10 ==> +2[is>5][count]").next)
     ///
-    assertResult(int(7))(engine.eval("1,2,3 ==> int[fold,1,int[plus,int]]").next)
+    assertResult(int(7))(engine.eval("1,2,3 ==> int[fold,'seed',1,[plus,<seed>]]").next)
   }
 
   test("composite expression parsing"){

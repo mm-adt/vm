@@ -23,9 +23,10 @@
 package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, Int, O, Obj}
+import org.mmadt.language.obj.{Inst,Int,O,Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,8 +40,8 @@ trait CountOp[O <: Int] {
 
 object CountOp {
   lazy val zero:IntValue = int(0)
-  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,_:List[Obj]) => a.count()) with ReduceInstruction[O,IntValue] {
-    override val seed     :IntValue                 = zero
-    override val reduction:(O,IntValue) => IntValue = (start,seed) => start.count().plus(seed).asInstanceOf[IntValue]
+  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:O,b:List[Obj]) => a.count()) with ReduceInstruction[Int] {
+    override val seed     :(String,IntValue) = ("seed",zero)
+    override val reduction:IntType           = int.plus(int.from[IntType](seed._1))
   }
 }

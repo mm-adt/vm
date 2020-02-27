@@ -43,6 +43,7 @@ trait Value[V <: Value[V]] extends Obj {
   override def count():IntValue = this.q()._1.q(qOne)
   override def id():this.type = this
   override def from[O <: Obj](label:StrValue):O = this.start().from(label)
+  override def from[O <: Obj](label:StrValue,default:Obj):O = this.start().from(label,default)
   override def equals(other:Any):Boolean = other match {
     case avalue:OValue => avalue.value() == this.value()
     case _ => false
@@ -55,5 +56,5 @@ trait Value[V <: Value[V]] extends Obj {
     case argType:OType => TypeChecker.matchesVT(this,argType)
   }
 
-  override def fold[O <: Obj](seed:O)(atype:TType[O]):O = this ==> atype
+  override def fold[O <: Obj](seed:(String,O))(atype:TType[O]):O = this ==> atype
 }

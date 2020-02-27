@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.ReduceInstruction
-import org.mmadt.language.obj.{Inst, O, Obj, TType}
-import org.mmadt.processor.obj.`type`.util.InstUtil
-import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -34,12 +34,15 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FoldOp {
   this:Obj =>
-  def fold[O <: Obj](seed:O)(atype:TType[O]):O = seed
+  def fold[O <: Obj](seed:(String,O))(atype:TType[O]):O = seed._2
+  def fold[O <: Obj](seed:O)(atype:TType[O]):O = fold("seed" -> seed)(atype)
 }
 
 object FoldOp {
-  def apply[A <: Obj,B <: Obj](_seed:B,atype:TType[B]):Inst = new VInst((Tokens.fold,List(_seed,atype)),qOne,(a:O,b:List[Obj]) => a.fold(_seed)(atype)) with ReduceInstruction[A,B] {
-    override val seed     :B          = _seed
-    override val reduction:(A,B) => B = (a,b) => InstUtil.typeEval[O,B](a,b,atype) // TODO: put the seed in the traverser state (thus, lift the reduction)
+  def apply[A <: Obj](_seed:(String,A),atype:TType[A]):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,(a:O,b:List[Obj]) => a.fold(_seed)(atype)) with ReduceInstruction[A] {
+    override val seed     :(String,A) = _seed
+    override val reduction:TType[A]   = atype
   }
+
+  def apply[A <: Obj](_seed:(String,A),atype:__):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,((a:O,b:List[Obj]) => a.fold(_seed)(atype(a.asInstanceOf[OType].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

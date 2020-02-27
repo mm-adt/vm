@@ -26,8 +26,6 @@ import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 
-import scala.collection.MapLike
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
