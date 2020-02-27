@@ -41,6 +41,7 @@ class VInst(java:JInst,quantifier:TQ,function:(Obj,List[Obj]) => Obj) extends Ab
   override def id():this.type = this //
   override def apply(obj:Obj,args:List[Obj]):Obj = function.apply(obj,args) //
   override def count():IntValue = this.q()._2
+  override def quant():IntValue = this.q()._2
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
   def test(other:Obj):Boolean = this match {
     case startValue:OValue => other match {

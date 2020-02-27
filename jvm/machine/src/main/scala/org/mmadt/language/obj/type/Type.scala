@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Printable
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.{IdOp,MapOp}
+import org.mmadt.language.obj.op.map.{IdOp,MapOp,QOp}
 import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
@@ -82,25 +82,26 @@ trait Type[T <: Type[T]] extends Obj
     case _:ObjType => obj(inst)
   }).asInstanceOf[TT]
 
-  def obj(inst:Inst,q:TQ = this.q()):ObjType //
-  def int(inst:Inst,q:TQ = this.q()):IntType //
-  def bool(inst:Inst,q:TQ = this.q()):BoolType //
-  def str(inst:Inst,q:TQ = this.q()):StrType //
-  def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ = this.q()):RecType[A,B] //
+  def obj(inst:Inst,q:TQ = this.q()):ObjType
+  def int(inst:Inst,q:TQ = this.q()):IntType
+  def bool(inst:Inst,q:TQ = this.q()):BoolType
+  def str(inst:Inst,q:TQ = this.q()):StrType
+  def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ = this.q()):RecType[A,B]
 
-  final def <=[D <: OType](domainType:D):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type] //
+  final def <=[D <: OType](domainType:D):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
   override def ==>[R <: Obj](rangeType:TType[R]):R = Processor.compiler[Type[T],R]()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
 
+  override def quant():IntType = int(QOp())
   override def count():IntType = int(CountOp(),qOne)
-  override def id():this.type = this.compose(IdOp()) //
-  override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other)) //
-  override def model(model:StrValue):this.type = this.compose(ModelOp(model)) //
+  override def id():this.type = this.compose(IdOp())
+  override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other))
+  override def model(model:StrValue):this.type = this.compose(ModelOp(model))
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
   override def as[O <: Obj](name:String):O = (InstUtil.nextInst(this) match {
     case Some(x) if x == AsOp(name) => this
     case _ => this.compose(AsOp(name))
-  }).asInstanceOf[O] //
+  }).asInstanceOf[O]
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
     case argValue:OValue => TypeChecker.matchesTV(this,argValue)

@@ -58,6 +58,7 @@ object Tokens {
   val from    = "from"
   val start   = "start"
   val model   = "model"
+  val q       = "q"
 
   val empty  = ""
   val btrue  = "true"

@@ -20,25 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.language.obj.op.map
 
-import org.mmadt.storage.obj._
-import org.scalatest.FunSuite
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{Inst, Int, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class CountInstTest extends FunSuite {
+trait QOp {
+  this:Obj =>
+  def quant():Int
+}
 
-  test("[count] w/ int"){
-    assertResult(int(1))(int(2).count())
-    assertResult(int(0))((int(1) ===> int.is(int.gt(int(10))).count()).next)
-    assertResult(int(0))((int(1,2,3) ===> int.is(int.gt(int(10))).count()).next)
-    assertResult(int(3))((int(1,2,3) ===> int.count()).next)
-    assertResult(int(3))((int(1,2,3) ===> int.plus(int(10)).count()).next)
-    assertResult(int(2))((int(0,1) ===> int.choose(int.is(int.gt(int(0))) -> int,int -> int).count()).next)
-    assertResult(int(17))((int(int(0).q(int(10)),int(1).q(int(7))) ===> int.q(*).choose(int.q(*).is(int.q(*).gt(int(0))) -> int,int -> int).count()).next) // TODO: need smarter handling of strm compilations with quantifiers
-    assertResult(int(13))((int(int(0).q(int(10)),int(1).q(int(3))) ===> int.q(*).plus(int(10)).count()).next)
-  }
-
+object QOp {
+  def apply():Inst = new VInst((Tokens.q,Nil),qOne,(a:Obj,_:List[Obj]) => a.quant())
 }
