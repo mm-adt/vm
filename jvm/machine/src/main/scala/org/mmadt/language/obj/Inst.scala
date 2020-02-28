@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.{Printable, Tokens}
+import org.mmadt.language.{LanguageFactory, Tokens}
 
 
 /**
@@ -43,7 +43,7 @@ trait Inst extends Obj {
   def apply(obj:Obj):Obj = this.apply(obj,this.args())
 
   // standard Java implementations
-  override def toString:String = Printable.format[Inst](this)
+  override def toString:String = LanguageFactory.printInst(this)
   override def hashCode:scala.Int = this.value().hashCode()
   override def equals(other:Any):Boolean = other.isInstanceOf[Inst] &&
                                            other.asInstanceOf[this.type].op().equals(this.op()) &&

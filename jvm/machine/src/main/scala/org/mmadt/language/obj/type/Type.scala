@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.Printable
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
@@ -39,7 +39,7 @@ import org.mmadt.storage.obj._
 trait Type[+T <: Obj] extends Obj
   with ExplainOp
   with ModelOp {
-this:T =>
+  this:T =>
   // type properties
   def insts():List[(Type[Obj],Inst)]
   def canonical():this.type = this.range().q(qOne)
@@ -113,7 +113,7 @@ this:T =>
   }
 
   // standard Java implementations
-  override def toString:String = Printable.format[Type[Obj]](this)
+  override def toString:String = LanguageFactory.printType(this)
   override def hashCode():scala.Int = this.name.hashCode ^ this.q().hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:__ => atype.toString.equals(this.toString) // TODO: get __ better aligned with Type

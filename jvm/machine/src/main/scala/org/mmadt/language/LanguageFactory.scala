@@ -31,28 +31,23 @@ import org.mmadt.processor.Traverser
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Printable[O] {
-  def format(value:O):String
+trait LanguageFactory {
+  def printValue(value:Value[Obj]):String
+  def printType(atype:Type[Obj]):String
+  def printInst(inst:Inst):String
+  def printTraverser(traverser:Traverser[Obj]):String
 }
 
-object Printable {
-  def format[O](input:O)(implicit p:Printable[O]):String =
-    p.format(input)
+object LanguageFactory {
+  def printValue(value:Value[Obj])(implicit f:LanguageFactory):String = f.printValue(value)
+  def printType(atype:Type[Obj])(implicit f:LanguageFactory):String = f.printType(atype)
+  def printInst(inst:Inst)(implicit f:LanguageFactory):String = f.printInst(inst)
+  def printTraverser(traverser:Traverser[Obj])(implicit f:LanguageFactory):String = f.printTraverser(traverser)
 
-  implicit val valuePrintable:Printable[Value[Obj]] = new Printable[Value[Obj]] {
-    def format(input:Value[Obj]):String = mmlangPrinter.valueString(input)
+  implicit val mmlangFactory:LanguageFactory = new LanguageFactory {
+    override def printValue(value:Value[Obj]):String = mmlangPrinter.valueString(value)
+    override def printType(atype:Type[Obj]):String = mmlangPrinter.typeString(atype)
+    override def printInst(inst:Inst):String = mmlangPrinter.instString(inst)
+    override def printTraverser(traverser:Traverser[Obj]):String = mmlangPrinter.traverserString(traverser)
   }
-
-  implicit val typePrintable:Printable[Type[Obj]] = new Printable[Type[Obj]] {
-    def format(input:Type[Obj]):String = mmlangPrinter.typeString(input)
-  }
-
-  implicit val instPrintable:Printable[Inst] = new Printable[Inst] {
-    def format(input:Inst):String = mmlangPrinter.instString(input)
-  }
-
-  implicit val traverserPrintable:Printable[Traverser[Obj]] = new Printable[Traverser[Obj]] {
-    def format(input:Traverser[Obj]):String = mmlangPrinter.traverserString(input)
-  }
-
 }

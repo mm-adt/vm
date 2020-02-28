@@ -24,7 +24,7 @@ package org.mmadt.processor
 
 import java.util.Objects
 
-import org.mmadt.language.Printable
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.IntValue
@@ -45,7 +45,7 @@ trait Traverser[+S <: Obj] {
   def apply[E <: Obj](rangeType:Type[E]):Traverser[E] // embed the traverser's obj into the provided type
 
   // standard Java implementations
-  override def toString:String = Printable.format[Traverser[Obj]](this)
+  override def toString:String = LanguageFactory.printTraverser(this)
   override def hashCode():Int = obj().hashCode() ^ state.hashCode()
   override def equals(other:Any):Boolean = other match {
     case traverser:Traverser[S] => Objects.equals(traverser.obj(),this.obj()) &&
