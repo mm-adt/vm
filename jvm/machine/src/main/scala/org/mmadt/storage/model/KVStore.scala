@@ -22,9 +22,6 @@
 
 package org.mmadt.storage.model
 
-import org.mmadt.language.obj.value.RecValue
-import org.mmadt.storage.obj._
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */

@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.language.obj.{Obj, IntQ}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.AbstractVObj

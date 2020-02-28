@@ -24,7 +24,7 @@ package org.mmadt.processor
 
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.value.RecValue
-import org.mmadt.storage.obj.{int,rec,str}
+import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
 
 import scala.collection.immutable.ListMap

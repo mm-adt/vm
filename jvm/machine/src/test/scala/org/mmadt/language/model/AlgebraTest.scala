@@ -22,9 +22,6 @@
 
 package org.mmadt.language.model
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.processor.Processor
-import org.mmadt.storage.obj.int
 import org.scalatest.FunSuite
 
 /**
@@ -34,11 +31,11 @@ class AlgebraTest extends FunSuite {
 
   test("int ring rewrites"){
     //val compiler = Processor.compiler[Obj,Obj](Algebra.ring)
-   // println(Algebra.ring)
-   // assertResult(int)(compiler(int + 0))
-  //  assertResult(int)(compiler(-(-int + 0)))
-  //  assertResult(-int)(compiler(int * -1))
-  //  assertResult(int * 0)(compiler(int + -int))
+    // println(Algebra.ring)
+    // assertResult(int)(compiler(int + 0))
+    //  assertResult(int)(compiler(-(-int + 0)))
+    //  assertResult(-int)(compiler(int * -1))
+    //  assertResult(int * 0)(compiler(int + -int))
     // assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
     // assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
   }

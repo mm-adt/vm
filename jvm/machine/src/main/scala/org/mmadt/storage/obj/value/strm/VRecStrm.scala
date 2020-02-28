@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.{Obj, IntQ}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TRec
 import org.mmadt.storage.obj.value.AbstractVObj

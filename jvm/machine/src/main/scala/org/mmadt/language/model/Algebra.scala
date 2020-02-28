@@ -22,8 +22,6 @@
 
 package org.mmadt.language.model
 
-import org.mmadt.storage.obj.int
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */

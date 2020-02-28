@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.obj
 
-import org.mmadt.language.obj.{Obj, IntQ}
+import org.mmadt.language.obj.{IntQ, Obj}
 
 
 /**

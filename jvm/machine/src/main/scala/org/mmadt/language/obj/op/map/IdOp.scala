@@ -31,9 +31,9 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IdOp {
-  def id(): this.type //
+  def id():this.type //
 }
 
 object IdOp {
-  def apply(): Inst = new VInst((Tokens.id, Nil), qOne, (a: Obj, b: List[Obj]) => a.id()) //
+  def apply():Inst = new VInst((Tokens.id,Nil),qOne,(a:Obj,b:List[Obj]) => a.id()) //
 }

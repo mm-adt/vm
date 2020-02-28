@@ -24,7 +24,7 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{IntType, Type}
-import org.mmadt.language.obj.{Inst, Int, Obj, IntQ}
+import org.mmadt.language.obj.{Inst, Int, IntQ, Obj}
 import org.mmadt.storage.obj._
 
 /**

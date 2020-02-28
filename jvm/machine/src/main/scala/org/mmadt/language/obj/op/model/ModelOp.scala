@@ -32,9 +32,9 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ModelOp {
-  def model(model: StrValue): this.type = this
+  def model(model:StrValue):this.type = this
 }
 
 object ModelOp {
-  def apply(model: StrValue): Inst = new VInst((Tokens.model, List(model)), qOne, ((a: ModelOp, b: List[Obj]) => a.model(model)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply(model:StrValue):Inst = new VInst((Tokens.model,List(model)),qOne,((a:ModelOp,b:List[Obj]) => a.model(model)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
 }

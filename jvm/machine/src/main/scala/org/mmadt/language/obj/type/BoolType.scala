@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map.{AndOp, EqsOp, OrOp}
 import org.mmadt.language.obj.op.traverser.ToOp

@@ -32,12 +32,12 @@ import org.scalatest.FunSuite
  */
 class VariableRewriteTest extends FunSuite {
 
-  test("variable rewrites") {
+  test("variable rewrites"){
     val processor = new CompilingProcessor(
       Model.simple().
-        put(int.mult(2), int.plus(int)).
-        put(int.plus(0), int).
-        put(int.plus(1).plus(-1), int))
+        put(int.mult(2),int.plus(int)).
+        put(int.plus(0),int).
+        put(int.plus(1).plus(-1),int))
   }
 
 }

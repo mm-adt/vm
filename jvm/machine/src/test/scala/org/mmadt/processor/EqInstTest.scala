@@ -25,7 +25,7 @@ package org.mmadt.processor
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.storage.obj.{bool,int}
+import org.mmadt.storage.obj.{bool, int}
 import org.scalatest.FunSuite
 
 /**

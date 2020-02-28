@@ -23,8 +23,8 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.Printable
-import org.mmadt.language.obj.`type`.{Type,TypeChecker}
-import org.mmadt.language.obj.{Int,Obj}
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.storage.obj.qOne
 
 /**

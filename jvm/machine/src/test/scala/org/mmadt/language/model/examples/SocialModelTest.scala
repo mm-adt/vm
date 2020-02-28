@@ -23,10 +23,9 @@
 package org.mmadt.language.model.examples
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType, RecType, Type}
+import org.mmadt.language.obj.`type`.{IntType, RecType}
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.{Obj, Rec, Str}
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
@@ -36,15 +35,15 @@ import org.scalatest.FunSuite
  */
 class SocialModelTest extends FunSuite {
 
-  val nat: IntType = int("nat") //
-  def nat(java: Long): IntValue = int("nat")(java) //
-  val people: RecType[Str, Obj] = trec("people") //
-  val person: RecType[Str, Obj] = trec("person") //
+  val nat:IntType = int("nat") //
+  def nat(java:Long):IntValue = int("nat")(java) //
+  val people:RecType[Str,Obj] = trec("people") //
+  val person:RecType[Str,Obj] = trec("person") //
 
-  val model: Model = Model(
+  val model:Model = Model(
     nat -> (int <= int.is(int.gt(int(0)))),
     people -> person.q(*),
-    people.is(person.get("name", str).gt(str ~ "x")) -> person(str("name") -> str ~ "x"))
+    people.is(person.get("name",str).gt(str ~ "x")) -> person(str("name") -> str ~ "x"))
 
   ///////////////////////////////////////////////////////////
 
@@ -58,14 +57,14 @@ class SocialModelTest extends FunSuite {
     assertResult("person")(marko.put(str("friend"), kuppitz).name)
   }*/
 
-  test("nat rewrite") {
+  test("nat rewrite"){
     val processor = new CompilingProcessor(
       Model(nat -> (int <= int.is(int.gt(int(0))))))
 
-   // assertResult(int.is(int.gt(0)).plus(34).is(int.gt(45)))(processor.apply(nat, nat.plus(int(34)).is(nat.gt(45))).next().obj())
+    // assertResult(int.is(int.gt(0)).plus(34).is(int.gt(45)))(processor.apply(nat, nat.plus(int(34)).is(nat.gt(45))).next().obj())
   }
 
-  test("rec stream w/ rewrites") {
+  test("rec stream w/ rewrites"){
     val processor = new CompilingProcessor(model)
 
     val ppl = rec("people",

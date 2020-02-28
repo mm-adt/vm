@@ -24,7 +24,7 @@ package org.mmadt.language.model.examples
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.{Obj, Rec, Str}
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.storage.obj.{*, int, str, trec}
 import org.scalatest.FunSuite
@@ -34,15 +34,15 @@ import org.scalatest.FunSuite
  */
 class GraphModelTest extends FunSuite {
 
-  val vertex: RecType[Str, Obj] = trec("vertex") //
-  val edge: RecType[Str, Obj] = trec("edge") //
-  val graph: RecType[Str, Obj] = trec("graph") //
+  val vertex:RecType[Str,Obj] = trec("vertex") //
+  val edge  :RecType[Str,Obj] = trec("edge") //
+  val graph :RecType[Str,Obj] = trec("graph") //
 
-  val model: Model = Model(
-    edge -> edge(str("inV") -> vertex, str("outV") -> vertex, str("label") -> str),
-    edge.get(str("label"), str) -> str("friend").start(),
-    vertex -> vertex(str("id") -> int ~ "i", str("outE") -> edge.q(*), str("inE") -> edge.q(*)),
-    vertex.put(str("id"), int) -> vertex,
+  val model:Model = Model(
+    edge -> edge(str("inV") -> vertex,str("outV") -> vertex,str("label") -> str),
+    edge.get(str("label"),str) -> str("friend").start(),
+    vertex -> vertex(str("id") -> int ~ "i",str("outE") -> edge.q(*),str("inE") -> edge.q(*)),
+    vertex.put(str("id"),int) -> vertex,
     graph -> vertex.q(*))
   //graph.is(graph.get(str("id"), int).eqs(int(0))) -> graph.model("db"))
 
@@ -54,12 +54,12 @@ class GraphModelTest extends FunSuite {
     put(graph, vertex.q(*)).
     put(graph.is(graph.get(str("id"), int).gt(int(0))), graph.model("db"))*/
 
-  test("variable rewrites") {
+  test("variable rewrites"){
     println(model)
     val processor = new CompilingProcessor(model)
     println(graph)
     //println(model[RecType[Str, Obj]](vertex).get("outE"))
     println(edge)
-   // println(model[RecType[Str, Obj]](vertex).is(vertex.get(str("id"), int).gt(int(0))).get(str("outE")))
+    // println(model[RecType[Str, Obj]](vertex).is(vertex.get(str("id"), int).gt(int(0))).get(str("outE")))
   }
 }

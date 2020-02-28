@@ -22,8 +22,6 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.StrType
-import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map.{EqsOp, GtOp, PlusOp}
 import org.mmadt.language.obj.op.traverser.ToOp

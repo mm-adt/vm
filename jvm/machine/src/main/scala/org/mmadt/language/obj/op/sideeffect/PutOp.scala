@@ -30,12 +30,12 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PutOp[A <: Obj, B <: Obj] {
-  this: Rec[A, B] =>
+trait PutOp[A <: Obj,B <: Obj] {
+  this:Rec[A,B] =>
 
-  def put(key: A, value: B): Rec[A, B] //
+  def put(key:A,value:B):Rec[A,B] //
 }
 
 object PutOp {
-  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst = new VInst((Tokens.put, List(key, value)), qOne, ((a: Rec[A, B], b: List[Obj]) => a.put(key, value)).asInstanceOf[(Obj, List[Obj]) => Obj]) //
+  def apply[A <: Obj,B <: Obj](key:A,value:B):Inst = new VInst((Tokens.put,List(key,value)),qOne,((a:Rec[A,B],b:List[Obj]) => a.put(key,value)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
 }

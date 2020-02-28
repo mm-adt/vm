@@ -22,8 +22,6 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp

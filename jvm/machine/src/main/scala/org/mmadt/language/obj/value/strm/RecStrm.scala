@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.obj.`type`.{BoolType,RecType,Type}
-import org.mmadt.language.obj.value.{BoolValue,RecValue,StrValue,Value}
-import org.mmadt.language.obj.{Obj,Rec}
+import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
+import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

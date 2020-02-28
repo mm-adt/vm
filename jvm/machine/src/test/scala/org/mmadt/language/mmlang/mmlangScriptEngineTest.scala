@@ -24,7 +24,7 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{IntType, Type}
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TObj
 import org.scalatest.FunSuite
