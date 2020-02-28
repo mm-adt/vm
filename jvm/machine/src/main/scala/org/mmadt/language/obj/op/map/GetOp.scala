@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj, Rec, TType}
+import org.mmadt.language.obj.{Inst, Obj, Rec}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -31,13 +31,12 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait GetOp[A <: Obj,B <: Obj] {
-  this:Rec[A,B] =>
 
-  def get(key:A):B //
-  def get[BT <: TType[B]](key:A,btype:BT):BT //
+  def get(key:A):B
+  def get[BB <: Obj](key:A,btype:BB):BB
 }
 
 object GetOp {
-  def apply[A <: Obj,B <: Obj](key:A):Inst = new VInst((Tokens.get,List(key)),qOne,((a:Rec[A,B],b:List[Obj]) => a.get(key)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
-  def apply[A <: Obj,B <: Obj](key:A,typeHint:TType[B]):Inst = new VInst((Tokens.get,List(key,typeHint)),qOne,((a:Rec[A,B],b:List[Obj]) => a.get(key,typeHint)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[A <: Obj,B <: Obj](key:A):Inst = new VInst((Tokens.get,List(key)),qOne,((a:Rec[A,B],_:List[Obj]) => a.get(key)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst = new VInst((Tokens.get,List(key,typeHint)),qOne,((a:Rec[A,B],_:List[Obj]) => a.get(key,typeHint)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
 }

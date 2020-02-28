@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.{Obj, TType}
 
 /**
@@ -29,5 +30,5 @@ import org.mmadt.language.obj.{Obj, TType}
  */
 trait ReduceInstruction[A <: Obj] {
   val seed     :(String,A)
-  val reduction:TType[A]
+  val reduction:Type[A]
 }

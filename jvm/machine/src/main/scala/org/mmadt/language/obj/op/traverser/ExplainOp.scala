@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.StrType
+import org.mmadt.language.obj.`type`.{StrType, Type}
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, OType, Obj}
+import org.mmadt.language.obj.{Inst, O, OType, Obj}
 import org.mmadt.storage.obj.value.VInst
 import org.mmadt.storage.obj.{asType, qOne, str => vstr}
 
@@ -61,7 +61,7 @@ object ExplainOp {
 
   private def lastRange(atype:OType):OType = if (atype.insts().isEmpty) atype else atype.linvert().range()
 
-  def printableTable(atype:OType):String ={
+  def printableTable(atype:Type[Obj]):String ={
     val report                = explain(atype,mutable.LinkedHashMap.empty[String,Obj])
     val c1                    = report.map(x => x._2.toString.length).max + 4
     val c2                    = report.map(x => x._3.toString.length).max + 4

@@ -24,14 +24,14 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.{IntValue,StrValue}
-import org.mmadt.language.obj.{Inst,OType,Obj,TQ}
-import org.mmadt.storage.obj.{OObj,_}
+import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.obj.{Inst, OType, Obj, TQ, TypeObj}
+import org.mmadt.storage.obj.{OObj, _}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTObj[T <: Type[T]](name:String,insts:List[(OType,Inst)],quantifier:TQ) extends OObj(name,quantifier) with Type[T] {
+abstract class AbstractTObj[+O <: Obj](name:String,insts:List[(OType,Inst)],quantifier:TQ) extends OObj(name,quantifier) with Type[Obj]  {
 
   def this() = this(Tokens.obj,Nil,qOne)
   def insts():List[(OType,Inst)] = insts

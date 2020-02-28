@@ -24,6 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,11 +41,11 @@ object TypeChecker {
       throw new IllegalArgumentException("The obj " + obj + " does not match the type " + atype)
   }
 
-  def matchesVT[O <: Obj](obj:O with OValue,pattern:Obj with OType):Boolean = (obj ==> pattern).alive()
-  def matchesVV[O <: Obj](obj:O with OValue,pattern:Obj with OValue):Boolean = obj.value().equals(pattern.value())
-  def matchesTT[O <: Obj](obj:O with OType,pattern:Obj with OType):Boolean ={
+  def matchesVT[O <: Obj](obj:Value[O],pattern:Type[O]):Boolean = (obj ==> pattern).alive()
+  def matchesVV[O <: Obj](obj:Value[O],pattern:Value[O]):Boolean = obj.value().equals(pattern.value())
+  def matchesTT[O <: Obj](obj:Type[O],pattern:Type[O]):Boolean ={
     obj.insts().toString().equals(pattern.insts().toString()) ||
-    (obj.domain().equals(pattern.domain()) && (obj.domain[OType]() ===> pattern).filter(x => x.equals(obj)).hasNext)
+    (obj.domain().equals(pattern.domain()) && (obj.domain[Type[O]]() ===> pattern).filter(x => x.equals(obj)).hasNext)
   }
-  def matchesTV[O <: Obj](obj:O with OType,pattern:O with OValue):Boolean = false
+  def matchesTV[O <: Obj](obj:Type[O],pattern:Value[O]):Boolean = false
 }

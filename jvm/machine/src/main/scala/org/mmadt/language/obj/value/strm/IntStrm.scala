@@ -22,8 +22,8 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.{Int, TypeObj}
+import org.mmadt.language.obj.`type`.{BoolType, IntType, Type}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
@@ -37,15 +37,15 @@ trait IntStrm extends Int
   override def start():IntType
 
   override def to(label:StrValue):IntType = this.start().to(label)
-  override def eqs(other:IntType):BoolType = this.start().eqs(other)
-  override def eqs(other:IntValue):BoolValue = throw new IllegalAccessException()
-  override def plus(other:IntType):IntType = this.start().plus(other)
-  override def plus(other:IntValue):this.type = new VIntStrm(this.name,this.value().map(i => i.plus(other)).toSeq).asInstanceOf[this.type]
-  override def mult(other:IntType):IntType = this.start().mult(other)
-  override def mult(other:IntValue):this.type = new VIntStrm(this.name,this.value().map(i => i.mult(other)).toSeq).asInstanceOf[this.type]
+  override def eqs(other:Type[Int]):BoolType = this.start().eqs(other)
+  override def eqs(other:Value[Int]):BoolValue = throw new IllegalAccessException()
+  override def plus(other:Type[Int]):IntType = this.start().plus(other)
+  override def plus(other:Value[Int]):this.type = new VIntStrm(this.name,this.value().map(i => i.plus(other)).toSeq).asInstanceOf[this.type]
+  override def mult(other:Type[Int]):IntType = this.start().mult(other)
+  override def mult(other:Value[Int]):this.type = new VIntStrm(this.name,this.value().map(i => i.mult(other)).toSeq).asInstanceOf[this.type]
   override def neg():this.type = new VIntStrm(this.name,this.value().map(i => i.neg()).toSeq).asInstanceOf[this.type]
-  override def gt(other:IntType):BoolType = this.start().gt(other)
-  override def gt(other:IntValue):BoolValue = throw new IllegalAccessException()
+  override def gt(other:Type[Int]):BoolType = this.start().gt(other)
+  override def gt(other:Value[Int]):BoolValue = throw new IllegalAccessException()
   override def is(bool:BoolType):IntType = this.start().is(bool)
   override def is(bool:BoolValue):this.type = throw new IllegalAccessException()
 }

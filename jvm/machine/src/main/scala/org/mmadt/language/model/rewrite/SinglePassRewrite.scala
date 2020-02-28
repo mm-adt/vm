@@ -23,22 +23,21 @@
 package org.mmadt.language.model.rewrite
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.OType
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.{Obj,TypeObj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object SinglePassRewrite {
-  def rewrite[T <: Type[T]](model: Model, startType: OType, endType: OType): T = {
-    var btype: T = endType.asInstanceOf[T]
-    var xtype: T = btype
+  def rewrite[D <: Obj,R <: Obj](model:Model,startType:TypeObj[D],endType:TypeObj[R]):TypeObj[R] ={
+    var btype:TypeObj[R] = endType
+    var xtype:TypeObj[R] = btype
     for (_ <- btype.insts().indices) {
       while (btype.insts() != Nil) {
         model.get(btype) match {
           case Some(rewrite) =>
-            xtype = xtype.compose(rewrite.asInstanceOf[T])
-            btype = rewrite.asInstanceOf[T]
+            xtype = xtype.compose(rewrite.asInstanceOf[TypeObj[R]])
+            btype = rewrite.asInstanceOf[TypeObj[R]]
           case None =>
             xtype = xtype.compose(btype.insts().head._2)
             btype = btype.linvert()

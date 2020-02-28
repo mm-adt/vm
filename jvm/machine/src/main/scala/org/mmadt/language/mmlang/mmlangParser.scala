@@ -54,8 +54,8 @@ object mmlangParser extends JavaTokenParsers {
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
   lazy val expr:Parser[Any] = multiple | single | obj
 
-  lazy val single  :Parser[O]           = ((strm | obj) <~ Tokens.:=>) ~ (aType | anonType) ^^ (x => (x._1 ==> x._2).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
-  lazy val multiple:Parser[Iterator[O]] = ((strm | obj) <~ "==>") ~ objType ^^ (x => x._1 ===> x._2)
+  lazy val single  :Parser[O]           = ((strm | obj) <~ Tokens.:=>) ~ (aType | anonType) ^^ (x => (x._1.asInstanceOf[Obj] ==> x._2.asInstanceOf[Type[Obj]]).asInstanceOf[O]) // TODO: I'm improperly typing to Type (why?)
+  lazy val multiple:Parser[Iterator[O]] = ((strm | obj) <~ "==>") ~ objType ^^ (x => x._1.asInstanceOf[Obj] ===> x._2.asInstanceOf[Type[Obj]])
 
   lazy val canonicalType:Parser[OType] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ opt(quantifier) ^^ {
     case atype ~ q => q.foldRight(atype match {
@@ -70,7 +70,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val objType:Parser[OType] = aType | recType | anonType
 
   lazy val aType   :Parser[OType]    = (opt(canonicalType <~ Tokens.:<=)) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
-    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType]))
+    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[OType])
   }
   lazy val recType :Parser[ORecType] = "[" ~> repsep((obj <~ Tokens.:->) ~ obj,Tokens.:|) <~ "]" ^^ (x => trec(x.map(o => (o._1,o._2)).toMap))
@@ -98,7 +98,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val instArg      :Parser[O]    = stateAccess ^^ (x => x._1.getOrElse(int).from[OType](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
   lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | infixSugar
   lazy val infixSugar   :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
-  lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[OType,O]]))
+  lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[TypeObj[Obj],O]]))
   lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2))
 
   private def instMatrix(op:String,arg:List[O]):Inst ={
@@ -115,8 +115,6 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.mult | Tokens.mult_op => arg.head match {
         case arg:IntValue => MultOp(arg)
         case arg:IntType => MultOp(arg)
-        case arg:StrValue => MultOp(arg)
-        case arg:StrType => MultOp(arg)
         case arg:__ => MultOp(arg)
       }
       case Tokens.gt | Tokens.gt_op => arg.head match {
@@ -143,7 +141,7 @@ object mmlangParser extends JavaTokenParsers {
         case arg:__ => IsOp(arg)
       }
       case Tokens.get => arg match {
-        case List(key:O,typeHint:TType[O]) => GetOp(key,typeHint)
+        case List(key:O,typeHint:Type[_]) => GetOp(key,typeHint)
         case List(key:O) => GetOp(key)
       }
       case Tokens.map => arg.head match {
@@ -156,10 +154,10 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.from => FromOp(arg.head.asInstanceOf[StrValue])
       case Tokens.fold => arg.tail.tail.head match {
         case x:__ => FoldOp(("seed",arg.tail.head),x)
-        case x:TType[O] => FoldOp(("seed",arg.tail.head),x)
+        case x:Type[O] => FoldOp(("seed",arg.tail.head),x)
       }
       case Tokens.to => ToOp(arg.head.asInstanceOf[StrValue])
-      case Tokens.choose => ChooseOp(arg.head.asInstanceOf[RecType[OType,O]])
+      case Tokens.choose => ChooseOp(arg.head.asInstanceOf[RecType[Type[O],O]])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()
     }

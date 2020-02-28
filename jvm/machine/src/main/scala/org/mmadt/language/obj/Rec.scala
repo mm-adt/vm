@@ -35,10 +35,10 @@ import org.mmadt.storage.obj.value.VRec
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj,B <: Obj] extends Obj
-  with EqsOp[Rec[A,B],RecValue[A,B],RecType[A,B]]
-  with PlusOp[Rec[A,B],RecValue[A,B],RecType[A,B]]
-  with IsOp[Rec[A,B],RecType[A,B]]
-  with ToOp[RecType[A,B]]
+  with EqsOp[Rec[A,B]]
+  with PlusOp[Rec[A,B]]
+  with IsOp[Rec[A,B]]
+  with ToOp[Rec[A,B]]
   with GetOp[A,B]
   with PutOp[A,B]
 

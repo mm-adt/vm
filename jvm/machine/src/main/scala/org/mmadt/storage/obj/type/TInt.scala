@@ -24,13 +24,13 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.{Inst, OType, TQ}
+import org.mmadt.language.obj.{Inst, Int, OType, TQ}
 import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(name:String,insts:List[(OType,Inst)],quantifier:TQ) extends AbstractTObj[IntType](name,insts,quantifier) with IntType {
+class TInt(name:String,insts:List[(OType,Inst)],quantifier:TQ) extends AbstractTObj[Int](name,insts,quantifier) with IntType {
   def this() = this(Tokens.int,Nil,qOne) //
   override def compose(inst:Inst):this.type = int(inst,quantifier).asInstanceOf[this.type] //
   override def range():this.type = new TInt(name,Nil,quantifier).asInstanceOf[this.type] //

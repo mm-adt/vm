@@ -24,29 +24,30 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
-import org.mmadt.language.obj.{OType, OValue, Obj, TType}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.{OValue, Obj}
 import org.mmadt.processor.{Processor, Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class CompilingProcessor[S <: Obj,E <: Obj](val model:Model = Model.id) extends Processor[S,E] {
-  override def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]] ={
+class CompilingProcessor(val model:Model = Model.id) extends Processor {
+  override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
     assert(!domainObj.isInstanceOf[OValue],"The compiling processor only accepts types: " + domainObj)
 
     // C1Traverser applies rewrite rules until a steady state is reached
-    val domainType       :TType[E]     = domainObj.asInstanceOf[TType[E]]
-    var mutatingTraverser:Traverser[E] = new C1Traverser[E](domainType)
-    var previousTraverser:Traverser[E] = new C1Traverser[E](rangeType)
+    val domainType       :E with Type[E] = domainObj.asInstanceOf[E with Type[E]]
+    var mutatingTraverser:Traverser[E]   = new C1Traverser[E](domainType)
+    var previousTraverser:Traverser[E]   = new C1Traverser[E](rangeType.asInstanceOf[E])
     while (previousTraverser != mutatingTraverser) {
       mutatingTraverser = previousTraverser
-      previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[OType],domainType,new C1Traverser(domainType))
+      previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[Type[E]],domainType.asInstanceOf[Type[E]],new C1Traverser(domainType))
     }
 
     // C2Traverser performs type erasure, representing all types in terms of mm-ADT
     Iterator(model match {
       case Model.id => mutatingTraverser
-      case _ => new C2Traverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(mutatingTraverser.obj().asInstanceOf[TType[E]])
+      case _ => new C2Traverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(mutatingTraverser.obj().asInstanceOf[Type[E]])
     })
   }
 }

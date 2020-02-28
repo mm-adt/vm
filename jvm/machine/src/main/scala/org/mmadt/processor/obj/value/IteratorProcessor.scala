@@ -22,18 +22,19 @@
 
 package org.mmadt.processor.obj.value
 
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Obj, TType}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class IteratorProcessor[S <: Obj,E <: Obj] extends Processor[S,E] {
+class IteratorProcessor extends Processor {
 
-  override def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]] ={
+  override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
     var output:Iterator[Traverser[E]] = domainObj match {
       case strm:Strm[_] => strm.value().map(x => new I1Traverser[E](x.asInstanceOf[E]))
       case single:E => Iterator(new I1Traverser[E](single))

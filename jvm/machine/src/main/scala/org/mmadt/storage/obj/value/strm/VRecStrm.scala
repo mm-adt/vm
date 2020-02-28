@@ -23,7 +23,7 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.RecType
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.value.strm.RecStrm
@@ -40,7 +40,7 @@ class VRecStrm[A <: Obj,B <: Obj](name:String,java:RecValue[A,B]*) extends Abstr
   def this(java:RecValue[A,B]*) = this(name = Tokens.rec,java:_*)
 
   override def value():Iterator[RecValue[A,B]] = java.iterator //
-  override def start():RecType[A,B] = new TRec[A,B](name,Map.empty,List((new TRec[A,B](name,Map.empty,Nil,qZero),StartOp(this))),q()) //
+  override def start():RecType[A,B] = new TRec[A,B](name,Map.empty,List((new TRec[A,B](name,Map.empty,Nil,qZero).asInstanceOf[Type[Obj]],StartOp(this))),q()) //
   override def q(quantifier:TQ):this.type = new VRecStrm[A,B](name,java:_*).asInstanceOf[this.type] //
   override def as[O <: Obj](name:String):O = new VRecStrm[A,B](name,java:_*).asInstanceOf[O] //
 }

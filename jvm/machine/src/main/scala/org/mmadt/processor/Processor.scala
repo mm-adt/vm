@@ -23,20 +23,22 @@
 package org.mmadt.processor
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.{Obj, TType}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.processor.obj.value.IteratorProcessor
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Processor[S <: Obj,E <: Obj] {
-  def apply(domainObj:S,rangeType:TType[E]):Iterator[Traverser[E]]
-  def apply(rangeType:TType[E]):E = this.apply(rangeType.domain(),rangeType).next().obj()
+trait Processor {
+  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]]
+  def apply[S <: Obj,E <: Obj](rangeType:Type[E]):E = this.apply(rangeType.domain[S](),rangeType).next().obj()
 }
 
+
 object Processor {
-  def compiler[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new CompilingProcessor[S,E](model)
-  def iterator[S <: Obj,E <: Obj](model:Model = Model.id):Processor[S,E] = new IteratorProcessor[S,E]()
+  def compiler[S <: Obj,E <: Obj](model:Model = Model.id):Processor = new CompilingProcessor(model)
+  def iterator[S <: Obj,E <: Obj](model:Model = Model.id):Processor = new IteratorProcessor()
   // def recursive[S<:Obj,E<:Obj](model:Model = Model.id):Processor[S,E] = new RecursiveTraverser[E]()
 }

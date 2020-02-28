@@ -23,8 +23,9 @@
 package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
+import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TObj
 import org.mmadt.storage.obj.value.VInst
@@ -33,19 +34,17 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ChooseOp {
-  this:Obj with ChooseOp =>
+  def choose[IT <: Type[Obj],OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(branches.toMap))
 
-  def choose[IT <: OType,OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(branches.toMap))
-
-  def choose[IT <: OType,OT <: Obj](branches:RecType[IT,OT]):OT ={
+  def choose[IT <: Type[Obj],OT <: Obj](branches:RecType[IT,OT]):OT ={
     this match {
-      case atype:OType => atype.compose(generalType(branches.value().values),ChooseOp[IT,OT](branches))
-      case avalue:OValue =>
+      case atype:IT => atype.compose[OT](generalType(branches.value().values),ChooseOp[IT,OT](branches))
+      case avalue:Value[Obj] =>
         branches.value().find(p => asType(avalue).canonical().equals(p._1.canonical()) &&
                                    (avalue ===> p._1).hasNext).
           map(_._2).getOrElse(avalue.q(qZero))
         match {
-          case btype:OType => (avalue ==> btype).asInstanceOf[OT]
+          case btype:Type[Obj] => (avalue ==> btype).asInstanceOf[OT]
           case bvalue:OT => bvalue.q(avalue.q())
         }
     }
@@ -53,7 +52,7 @@ trait ChooseOp {
 
   private def generalType[OT <: Obj](outs:Iterable[OT]):OT ={
     val types = outs.map{
-      case atype:OType => atype.range().asInstanceOf[OT]
+      case atype:Type[Obj] => atype.range().asInstanceOf[OT]
       case avalue:OT => avalue
     }.toSet
     types.size match {
@@ -64,5 +63,5 @@ trait ChooseOp {
 }
 
 object ChooseOp {
-  def apply[IT <: OType,OT <: Obj](branches:RecType[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(branches))
+  def apply[IT <: Type[Obj],OT <: Obj](branches:RecType[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(branches))
 }

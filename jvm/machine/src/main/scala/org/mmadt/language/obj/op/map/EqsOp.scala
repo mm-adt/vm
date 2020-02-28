@@ -32,21 +32,21 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait EqsOp[O <: Obj with EqsOp[O,V,T],V <: Value[V],T <: Type[T]] {
+trait EqsOp[O <: Obj with EqsOp[O]] {
   this:O =>
 
-  def eqs(other:T):BoolType
-  def eqs(other:V):Bool
+  def eqs(other:Type[O]):BoolType
+  def eqs(other:Value[O]):Bool
   // final def ===(other: T): BoolType = this.eq(other) //
   // final def ===(other: V): Bool = this.eq(other) //
 }
 
 object EqsOp {
-  def apply[O <: Obj with EqsOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
-  def apply[O <: Obj with EqsOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case avalue:OValue with V => a.eqs(avalue)
-    case atype:OType with T => a.eqs(atype)
+  def apply[O <: Obj with EqsOp[O]](other:Value[O]):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with EqsOp[O]](other:Type[O]):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
+    case avalue:Value[O] => a.eqs(avalue)
+    case atype:Type[O] => a.eqs(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
-  def apply[O <: Obj with EqsOp[O,V,T],V <: Value[V],T <: Type[T]](other:__):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other[T](a.asInstanceOf[T].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with EqsOp[O]](other:__):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other(a.asInstanceOf[Type[O]].range()).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

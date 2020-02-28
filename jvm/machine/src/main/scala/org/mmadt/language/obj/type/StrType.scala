@@ -22,26 +22,26 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.Str
+import org.mmadt.language.obj.{Str, TypeObj}
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp,GtOp,PlusOp}
+import org.mmadt.language.obj.op.map.{EqsOp, GtOp, PlusOp}
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue,StrValue}
+import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
 
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrType extends Str
-  with Type[StrType] {
+  with Type[Str] {
 
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
-  override def eqs(other:StrType):BoolType = this.bool(EqsOp(other))
-  override def eqs(other:StrValue):BoolType = this.bool(EqsOp(other))
-  override def plus(other:StrType):StrType = this.compose(PlusOp(other))
-  override def plus(other:StrValue):this.type = this.compose(PlusOp(other))
-  override def gt(other:StrType):BoolType = this.bool(GtOp(other))
-  override def gt(other:StrValue):BoolType = this.bool(GtOp(other))
+  override def eqs(other:Type[Str]):BoolType = this.bool(EqsOp(other))
+  override def eqs(other:Value[Str]):BoolType = this.bool(EqsOp(other))
+  override def plus(other:Type[Str]):StrType = this.compose(PlusOp(other))
+  override def plus(other:Value[Str]):this.type = this.compose(PlusOp(other))
+  override def gt(other:Type[Str]):BoolType = this.bool(GtOp(other))
+  override def gt(other:Value[Str]):BoolType = this.bool(GtOp(other))
   override def is(bool:BoolType):StrType = this.compose(IsOp(bool)).q(0,q()._2)
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2)
 }

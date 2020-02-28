@@ -23,7 +23,7 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.StrType
+import org.mmadt.language.obj.`type`.{StrType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Obj, TQ}

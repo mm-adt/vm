@@ -40,6 +40,8 @@ package object obj {
   type ORecValue = RecValue[O,O]
   type ORecStrm = RecStrm[O,O]
   type State = Map[String,O]
+
+  type TypeObj[+T <: Obj] = T with Type[T]
 }
 
 

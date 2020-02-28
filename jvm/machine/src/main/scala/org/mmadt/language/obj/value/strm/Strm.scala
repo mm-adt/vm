@@ -29,13 +29,13 @@ import org.mmadt.language.obj.value.Value
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Strm[V <: Value[V]] extends Obj
-  with Value[Strm[V]] {
+trait Strm[O <: Obj] extends Obj
+  with Value[Strm[O]] {
 
-  override def value():Iterator[V]
+  override def value():Iterator[O]
 
   override def equals(other:Any):Boolean = other match {
-    case strm:Strm[V] => this.value().sameElements(strm.value())
+    case strm:Strm[O] => this.value().sameElements(strm.value())
     case _ => false
   }
   override def toString:String = value().foldLeft(Tokens.empty)((a,b) => a + b + ",").dropRight(1)

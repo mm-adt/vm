@@ -69,12 +69,12 @@ package object obj {
   def trec[A <: Obj,B <: Obj](name:String)(values:(A,B)*):RecType[A,B] = new TRec[A,B](name,values.toMap,Nil,qOne)
 
 
-  def asType(obj:Obj):Type[_] = (obj match {
-    case strm:IntStrm => return int.q(int(0),strm.q()._2)
+  def asType[O <:Obj](obj:O):TypeObj[O] = (obj match {
+    case strm:IntStrm => return int.q(int(0),strm.q()._2).asInstanceOf[TypeObj[O]]
     case atype:Type[_] => atype
     case _:IntValue => int
     case _:StrValue => str
     case _:BoolValue => bool
     case _:ORecValue => rec
-  }).q(obj.q())
+  }).asInstanceOf[TypeObj[O]].q(obj.q())
 }

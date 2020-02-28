@@ -24,11 +24,11 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Printable
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.{IdOp,MapOp,QOp}
-import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
-import org.mmadt.language.obj.value.{StrValue,Value}
+import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.obj._
@@ -36,18 +36,19 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[T <: Type[T]] extends Obj
+trait Type[+T <: Obj] extends Obj
   with ExplainOp
   with ModelOp {
+  this:T with Type[T] =>
 
   // type properties
   def insts():List[(OType,Inst)]
   def canonical():this.type = this.range().q(qOne)
   def range():this.type
-  def domain[D <: OType]():D = (this.insts() match {
+  def domain[D <: Obj]():TypeObj[D] = (this.insts() match {
     case Nil => this
     case i:List[(OType,Inst)] => i.head._1.range()
-  }).asInstanceOf[D]
+  }).asInstanceOf[TypeObj[D]]
 
   // type manipulation functions
   def linvert():this.type ={
@@ -66,24 +67,24 @@ trait Type[T <: Type[T]] extends Obj
     }).asInstanceOf[TT]
 
   // type specification and compilation
-  final def <=[D <: OType](domainType:D):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
-  override def ==>[R <: Obj](rangeType:TType[R]):R = Processor.compiler[Type[T],R]()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
+  final def <=[D <: Obj](domainType:Type[D]):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
+  override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler[Type[T],R]()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
-  def compose[TT <: OType](btype:TT):TT ={
-    var a:this.type = this
-    for (i <- btype.insts()) a = a.compose(i._1,i._2)
-    a.asInstanceOf[TT]
+  def compose[P <: Obj](btype:TypeObj[P]):TypeObj[P] ={
+    var a:Type[T] = this
+    for (i <- btype.insts()) a = a.compose(i._1.asInstanceOf[TypeObj[T]],i._2)
+    a.asInstanceOf[TypeObj[P]]
   }
   def compose(inst:Inst):this.type
-  def compose[TT <: OType](t2:Obj,inst:Inst):TT = (t2 match {
+  def compose[O <: Obj](t2:O,inst:Inst):TypeObj[O] = (t2 match {
     case _:Bool => bool(inst)
     case _:Int => int(inst)
     case _:Str => str(inst)
     case _:RecType[Obj,Obj] => rec(t2.asInstanceOf[RecType[Obj,Obj]],inst)
     case _:__ => __(this.insts().map(e => e._2) :+ inst:_*)
     case _:ObjType => obj(inst)
-  }).asInstanceOf[TT]
+  }).asInstanceOf[TypeObj[O]]
 
   // type change during fluency // TODO: get rid of this
   def obj(inst:Inst,q:TQ = this.q()):ObjType
@@ -99,17 +100,17 @@ trait Type[T <: Type[T]] extends Obj
   }).asInstanceOf[O]
   override def count():IntType = int(CountOp(),qOne)
   override def id():this.type = this.compose(IdOp())
-  override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other))
+  override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other)).asInstanceOf[O]
   override def model(model:StrValue):this.type = this.compose(ModelOp(model))
-  override def fold[O <: Obj](seed:(String,O))(atype:TType[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype.asInstanceOf[OType]))
+  override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
   override def quant():IntType = int(QOp())
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
-    case argValue:OValue => TypeChecker.matchesTV(this,argValue)
-    case argType:OType => TypeChecker.matchesTT(this,argType)
+    case argValue:Value[_] => TypeChecker.matchesTV(this,argValue)
+    case argType:Type[_] => TypeChecker.matchesTT(this,argType)
   }
 
   // standard Java implementations

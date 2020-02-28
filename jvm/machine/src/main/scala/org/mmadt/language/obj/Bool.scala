@@ -34,11 +34,11 @@ import org.mmadt.storage.obj.value.VBool
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Bool extends Obj
-  with EqsOp[Bool,BoolValue,BoolType]
-  with IsOp[Bool,BoolType]
+  with EqsOp[Bool]
+  with IsOp[Bool]
   with AndOp
   with OrOp
-  with ToOp[BoolType] {
+  with ToOp[Bool] {
 }
 
 object Bool {

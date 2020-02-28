@@ -23,7 +23,8 @@
 package org.mmadt.processor.obj.`type`.util
 
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.value.I1Traverser
 import org.mmadt.storage.obj._
@@ -35,10 +36,10 @@ object InstUtil {
 
   def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
     inst.args().map{
-      case valueArg:OValue => valueArg
-      case typeArg:OType => traverser.split(traverser.obj() match {
-        case atype:OType => atype.range()
-        case avalue:OValue => avalue
+      case valueArg:Value[_] => valueArg
+      case typeArg:Type[_] => traverser.split(traverser.obj() match {
+        case atype:Type[_] => atype.range()
+        case avalue:Value[_] => avalue
       }).apply(typeArg).obj()
     }
   }
@@ -48,24 +49,24 @@ object InstUtil {
    */
   def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E = inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
 
-  def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:TType[E]):E = (atype.insts().head._2.apply(start,InstUtil.valueArgs(new I1Traverser[O](arg),atype.insts().head._2)) ==> atype.linvert()).asInstanceOf[E]
+  def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:Type[E]):E = (atype.insts().head._2.apply(start,InstUtil.valueArgs(new I1Traverser[O](arg),atype.insts().head._2)) ==> atype.linvert()).asInstanceOf[E]
 
   @scala.annotation.tailrec
   def createInstList(list:List[(OType,Inst)],atype:OType):List[(OType,Inst)] ={
     if (atype.insts().isEmpty) list else createInstList(List((atype.range(),atype.insts().last._2)) ::: list,atype.insts().last._1)
   }
 
-  def nextInst(atype:OType):Option[Inst] = atype.insts() match {
+  def nextInst(atype:Type[_]):Option[Inst] = atype.insts() match {
     case Nil => None
     case x => Some(x.head._2)
   }
 
-  def updateQ[O <: Obj](obj:Obj,atype:OType):O = atype.q() match {
+  def updateQ[O <: Obj](obj:Obj,atype:Type[_]):O = atype.q() match {
     case _ if equals(qOne) => obj.asInstanceOf[O]
     case tq:TQ => obj.q(obj.q()._1 * tq._1,obj.q()._2 * tq._2).asInstanceOf[O]
   }
 
-  def resolveAnonymous[R <: Obj](obj:Obj,rangeType:TType[R]):TType[R] = rangeType match {
+  def resolveAnonymous[R <: Obj](obj:Obj,rangeType:Type[R]):Type[R] = rangeType match {
     case x:__ => x(obj)
     case x:R => x
   }

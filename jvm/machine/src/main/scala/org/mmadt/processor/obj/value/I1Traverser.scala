@@ -24,7 +24,7 @@ package org.mmadt.processor.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.TypeChecker
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj, State, TType}
@@ -40,7 +40,7 @@ class I1Traverser[S <: Obj](val obj:S,val state:State) extends Traverser[S] {
   override val model:Model = Model.id
 
   override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new I1Traverser[E](obj,state)
-  override def apply[E <: Obj](rangeType:TType[E]):Traverser[E] ={
+  override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
     if (rangeType.insts().isEmpty) {
       TypeChecker.checkType(this.obj,rangeType)
       this.asInstanceOf[Traverser[E]]

@@ -22,23 +22,25 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GtOp, MultOp, NegOp, PlusOp}
+import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.obj.value.VInt
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Int extends Obj
-  with EqsOp[Int, IntValue, IntType]
-  with PlusOp[Int, IntValue, IntType]
-  with MultOp[Int, IntValue, IntType]
+  with EqsOp[Int]
+  with PlusOp[Int]
+  with MultOp[Int]
   with NegOp[Int]
-  with GtOp[Int, IntValue, IntType]
-  with IsOp[Int, IntType]
-  with ToOp[IntType] {
+  with GtOp[Int]
+  with IsOp[Int]
+  with ToOp[Int] {
+}
+
+object Int {
+  implicit def longToInt(java:Long):Value[Int] = new VInt(java)
 }

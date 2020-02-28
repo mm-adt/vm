@@ -23,7 +23,7 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.OType
+import org.mmadt.language.obj.{OType, Obj}
 import org.mmadt.language.obj.`type`.Type
 
 import scala.collection.mutable
@@ -32,9 +32,9 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
-  final def apply[T <: Type[T]](left:OType):T = this.get(left).get.asInstanceOf[T]
+  final def apply(left:Type[_]):Type[_] = this.get(left).get
   def put(left:OType,right:OType):Model
-  def get(left:OType):Option[OType]
+  def get(left:Type[_]):Option[Type[_]]
 
 }
 
@@ -43,7 +43,7 @@ object Model {
 
   val id:Model = new Model {
     override def put(left:OType,right:OType):Model = this
-    override def get(left:OType):Option[OType] = None
+    override def get(left:Type[_]):Option[Type[_]] = None
   }
 
   def simple():Model = new Model {
@@ -54,7 +54,7 @@ object Model {
       typeMap(left.name).put(left,right)
       this
     }
-    override def get(left:OType):Option[OType] ={
+    override def get(left:Type[_]):Option[Type[_]] ={
       val x = typeMap.get(left.name) match {
         case None => return None
         case Some(m) => m

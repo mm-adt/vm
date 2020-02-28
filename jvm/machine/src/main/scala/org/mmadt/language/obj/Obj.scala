@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.AsOp
@@ -52,8 +53,8 @@ trait Obj
   def alive():Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0
 
   // utility methods
-  def ==>[R <: Obj](rangeType:TType[R]):R = Processor.iterator[this.type,R]().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj()).next()
-  def ===>[R <: Obj](rangeType:TType[R]):Iterator[R] = Processor.iterator[this.type,R]().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj())
+  def ==>[R <: Obj](rangeType:Type[R]):R = Processor.iterator[this.type,R]().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj()).next()
+  def ===>[R <: Obj](rangeType:Type[R]):Iterator[R] = Processor.iterator[this.type,R]().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj())
   // pattern matching methods
   val name:String
   def test(other:Obj):Boolean

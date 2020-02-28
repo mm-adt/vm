@@ -26,6 +26,7 @@ import java.util.Objects
 
 import org.mmadt.language.Stringer
 import org.mmadt.language.model.Model
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Obj, State, TType}
 import org.mmadt.storage.obj._
@@ -40,7 +41,7 @@ trait Traverser[S <: Obj] {
   val model:Model // the model containing model-ADTs
 
   def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] // clone the traverser with a new obj location
-  def apply[E <: Obj](rangeType:TType[E]):Traverser[E] // embed the traverser's obj into the provided type
+  def apply[E <: Obj](rangeType:Type[E]):Traverser[E] // embed the traverser's obj into the provided type
 
   // core JVM methods
   override def toString:String = Stringer.traverserString(this)
@@ -55,5 +56,5 @@ trait Traverser[S <: Obj] {
 
 object Traverser {
   def stateSplit[S <: Obj](label:String,obj:Obj)(traverser:Traverser[S]):Traverser[S] = traverser.split(traverser.obj(),traverser.state + (label -> obj))
-  def qSplit[S <: Obj](traverser:Traverser[S]):Traverser[IntValue] = traverser.split(int(traverser.obj().q()._1))
+  def qSplit[S <: Obj](traverser:Traverser[S]):Traverser[IntValue] = traverser.split(int(traverser.obj().q()._1.value()))
 }

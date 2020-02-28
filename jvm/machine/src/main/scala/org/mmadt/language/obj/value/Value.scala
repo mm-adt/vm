@@ -23,21 +23,22 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.Printable
-import org.mmadt.language.obj.`type`.TypeChecker
-import org.mmadt.language.obj.{Int,OType,OValue,Obj,TType}
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.{Int, OType, OValue, Obj}
 import org.mmadt.storage.obj.qOne
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Value[V <: Value[V]] extends Obj {
+trait Value[+V <: Obj] extends Obj {
+  this:V =>
 
   def value():Any
   def start():OType
 
   override def map[O <: Obj](other:O):O = other match {
-    case _:OValue => other
-    case atype:OType with O => (this ==> atype).asInstanceOf[O]
+    case _:Value[O] => other
+    case atype:Type[O] => (this ==> atype)
   }
 
   override def quant():Int = this.q()._1.q(qOne)
@@ -46,16 +47,16 @@ trait Value[V <: Value[V]] extends Obj {
   override def from[O <: Obj](label:StrValue):O = this.start().from(label)
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.start().from(label,default)
   override def equals(other:Any):Boolean = other match {
-    case avalue:OValue => avalue.value() == this.value()
+    case avalue:Value[V] => avalue.value() == this.value()
     case _ => false
   }
   override def toString:String = Printable.format[OValue](this)
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
-    case argValue:OValue => TypeChecker.matchesVV(this,argValue)
-    case argType:OType => TypeChecker.matchesVT(this,argType)
+    case argValue:Value[_] => TypeChecker.matchesVV(this,argValue)
+    case argType:Type[_] => TypeChecker.matchesVT(this,argType)
   }
 
-  override def fold[O <: Obj](seed:(String,O))(atype:TType[O]):O = this ==> atype
+  override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this ==> atype
 }

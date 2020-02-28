@@ -23,8 +23,8 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.TypeChecker
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.storage.obj._
 
@@ -44,13 +44,13 @@ class VInst(java:JInst,quantifier:TQ,function:(Obj,List[Obj]) => Obj) extends Ab
   override def quant():IntValue = this.q()._2
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
   def test(other:Obj):Boolean = this match {
-    case startValue:OValue => other match {
-      case argValue:OValue => TypeChecker.matchesVV(startValue,argValue)
-      case argType:OType => TypeChecker.matchesVT(startValue,argType)
+    case startValue:Value[O] => other match {
+      case argValue:Value[O] => TypeChecker.matchesVV(startValue,argValue)
+      case argType:Type[O] => TypeChecker.matchesVT(startValue,argType)
     }
-    case startType:OType => other match {
-      case argValue:OValue => TypeChecker.matchesTV(startType,argValue)
-      case argType:OType => TypeChecker.matchesTT(startType,argType)
+    case startType:Type[O] => other match {
+      case argValue:Value[O] => TypeChecker.matchesTV(startType,argValue)
+      case argType:Type[O] => TypeChecker.matchesTT(startType,argType)
     }
   }
 

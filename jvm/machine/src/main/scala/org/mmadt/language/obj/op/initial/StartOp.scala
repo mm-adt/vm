@@ -31,7 +31,7 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StartOp[T <: Type[T]] {
+trait StartOp[T] {
 
   def start():T
 }

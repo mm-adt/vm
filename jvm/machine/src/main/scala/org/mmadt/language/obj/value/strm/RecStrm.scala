@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.obj.`type`.{BoolType, RecType}
-import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue}
-import org.mmadt.language.obj.{OType, Obj, Rec}
+import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
+import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Obj, Rec, TypeObj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,13 +36,14 @@ trait RecStrm[A <: Obj,B <: Obj] extends Rec[A,B]
   override def start():RecType[A,B] //
 
   override def to(label:StrValue):RecType[A,B] = this.start().to(label)
-  override def eqs(other:RecType[A,B]):BoolType = this.start().eqs(other)
-  override def eqs(other:RecValue[A,B]):BoolValue = throw new IllegalAccessException()
-  override def plus(other:RecType[A,B]):RecType[A,B] = this.start().plus(other)
-  override def plus(other:RecValue[A,B]):this.type = throw new IllegalAccessException()
+  override def eqs(other:Type[Rec[A,B]]):BoolType = this.start().eqs(other)
+  override def eqs(other:Value[Rec[A,B]]):BoolValue = throw new IllegalAccessException()
+  override def plus(other:Type[Rec[A,B]]):TypeObj[Rec[A,B]] = this.start().plus(other)
+  override def plus(other:Value[Rec[A,B]]):this.type = throw new IllegalAccessException()
   override def is(bool:BoolType):RecType[A,B] = this.start().is(bool)
   override def is(bool:BoolValue):this.type = throw new IllegalAccessException()
   override def get(key:A):B = throw new IllegalAccessException()
   override def put(key:A,value:B):RecValue[A,B] = throw new IllegalAccessException()
-  override def get[BT <: OType](key:A,btype:BT):BT = throw new IllegalAccessException()
+  override def get[BB<:Obj](key:A,btype:BB):BB = throw new IllegalAccessException()
 }
+

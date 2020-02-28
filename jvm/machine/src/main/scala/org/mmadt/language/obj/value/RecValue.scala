@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.`type`.{BoolType, RecType}
+import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.language.obj.{Obj, Rec, TType}
+import org.mmadt.language.obj.{Obj, Rec, TypeObj}
 import org.mmadt.storage.obj.bool
 import org.mmadt.storage.obj.value.VRec
 
@@ -32,18 +32,18 @@ import org.mmadt.storage.obj.value.VRec
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
-  with Value[RecValue[A,B]]
-  with StartOp[RecType[A,B]]{
+  with Value[Rec[A,B]]
+  with StartOp[RecType[A,B]] {
 
   override def value():Map[A,B]
   override def start():RecType[A,B]
   def value(java:Map[A,B]):this.type
 
   override def to(label:StrValue):RecType[A,B] = this.start().to(label)
-  override def eqs(other:RecType[A,B]):BoolType = this.start().eqs(other)
-  override def eqs(other:RecValue[A,B]):BoolValue = bool(this.value().equals(other.value())).q(this.q())
-  override def plus(other:RecType[A,B]):RecType[A,B] = this.start().plus(other)
-  override def plus(other:RecValue[A,B]):this.type = this.value(this.value() ++ other.value())
+  override def eqs(other:Type[Rec[A,B]]):BoolType = this.start().eqs(other)
+  override def eqs(other:Value[Rec[A,B]]):BoolValue = bool(this.value().equals(other.value())).q(this.q())
+  override def plus(other:Type[Rec[A,B]]):TypeObj[Rec[A,B]] = this.start().plus(other)
+  override def plus(other:Value[Rec[A,B]]):this.type = this.value(this.value() ++ other.asInstanceOf[RecValue[A,B]].value())
   override def is(bool:BoolType):RecType[A,B] = this.start().is(bool)
   override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
 
@@ -51,9 +51,10 @@ trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
   override def get(key:A):B = this.value()(key)
 
   override def put(key:A,value:B):RecValue[A,B] = new VRec(this.name,this.value + (key -> (value match {
-    case atype:TType[B] => this ==> atype
+    case atype:Type[B] => this ==> atype
     case avalue:B => avalue
   })),this.q())
 
-  override def get[O](key:A,btype:O):O = this.value()(key).asInstanceOf[O]
+  override def get[BB<:Obj](key:A,btype:BB):BB = this.value()(key).asInstanceOf[BB]
+
 }

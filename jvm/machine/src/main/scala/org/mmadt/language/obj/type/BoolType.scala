@@ -27,18 +27,18 @@ import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map.{AndOp, EqsOp, OrOp}
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, StrValue}
+import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolType extends Bool
-  with Type[BoolType] {
+  with Type[Bool] {
 
   override def and(bool:BoolType):BoolType = this.compose(AndOp(bool)) //
   override def and(bool:BoolValue):this.type = this.compose(AndOp(bool)) //
-  override def eqs(other:BoolType):BoolType = this.compose(EqsOp(other)) //
-  override def eqs(other:BoolValue):BoolType = this.compose(EqsOp(other)) //
+  override def eqs(other:Type[Bool]):BoolType = this.compose(EqsOp(other)) //
+  override def eqs(other:Value[Bool]):BoolType = this.compose(EqsOp(other)) //
   override def or(bool:BoolType):BoolType = this.compose(OrOp(bool)) //
   override def or(bool:BoolValue):this.type = this.compose(OrOp(bool)) //
   override def to(label:StrValue):this.type = this.compose(ToOp(label)) //

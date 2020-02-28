@@ -23,31 +23,28 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.op._
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GtOp, MultOp, NegOp, PlusOp}
+import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.storage.obj.value.VInt
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IntType extends Int
-  with Type[IntType] {
-
+trait IntType extends Type[Int] with Int {
   def apply(value:IntValue):IntValue = new VInt(this.name,value.value(),this.q())
 
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
-  override def plus(other:IntType):IntType = this.compose(PlusOp(other))
-  override def plus(other:IntValue):this.type = this.compose(PlusOp(other))
-  override def mult(other:IntType):IntType = this.compose(MultOp(other))
-  override def mult(other:IntValue):this.type = this.compose(MultOp(other))
+  override def plus(other:Type[Int]):IntType = this.compose(PlusOp(other))
+  override def plus(other:Value[Int]):this.type = this.compose(PlusOp(other))
+  override def mult(other:Type[Int]):IntType = this.compose(MultOp(other))
+  override def mult(other:Value[Int]):this.type = this.compose(MultOp(other))
   override def neg():this.type = this.compose(NegOp())
-  override def gt(other:IntType):BoolType = this.bool(GtOp(other))
-  override def gt(other:IntValue):BoolType = this.bool(GtOp(other))
-  override def eqs(other:IntType):BoolType = this.bool(EqsOp(other))
-  override def eqs(other:IntValue):BoolType = this.bool(EqsOp(other))
+  override def gt(other:Type[Int]):BoolType = this.bool(GtOp(other))
+  override def gt(other:Value[Int]):BoolType = this.bool(GtOp(other))
+  override def eqs(other:Type[Int]):BoolType = this.bool(EqsOp(other))
+  override def eqs(other:Value[Int]):BoolType = this.bool(EqsOp(other))
   override def is(bool:BoolType):IntType = this.compose(IsOp(bool)).q(0,q()._2)
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2)
 }

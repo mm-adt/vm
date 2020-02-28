@@ -32,21 +32,21 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtOp[O <: Obj with GtOp[O,V,T],V <: Value[V],T <: Type[T]] {
+trait GtOp[O <: Obj with GtOp[O]] {
   this:O =>
 
-  def gt(other:T):BoolType //
-  def gt(other:V):Bool //
-  final def >(other:T):BoolType = this.gt(other) //
-  final def >(other:V):Bool = this.gt(other) //
+  def gt(other:Type[O]):BoolType //
+  def gt(other:Value[O]):Bool //
+  final def >(other:Type[O]):BoolType = this.gt(other)
+  final def >(other:Value[O]):Bool = this.gt(other)
 }
 
 object GtOp {
-  def apply[O <: Obj with GtOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
-  def apply[O <: Obj with GtOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case avalue:OValue with V => a.gt(avalue)
-    case atype:OType with T => a.gt(atype)
+  def apply[O <: Obj with GtOp[O]](other:Value[O]):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with GtOp[O]](other:Type[O]):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
+    case avalue:Value[O] => a.gt(avalue)
+    case atype:Type[O] => a.gt(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
-  def apply[O <: Obj with GtOp[O,V,T],V <: Value[V],T <: Type[T]](other:__):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other[T](a.asInstanceOf[T].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with GtOp[O]](other:__):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other(a.asInstanceOf[Type[O]].range()).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

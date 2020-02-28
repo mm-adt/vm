@@ -23,16 +23,16 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.RecType
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.{RecType,Type}
 import org.mmadt.language.obj.op.map.PlusOp
-import org.mmadt.language.obj.value.RecValue
-import org.mmadt.language.obj.{Inst, OType, Obj, TQ}
+import org.mmadt.language.obj.value.{RecValue,Value}
 import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(OType,Inst)],quantifier:TQ) extends AbstractTObj[RecType[A,B]](name,insts,quantifier) with RecType[A,B] {
+class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(OType,Inst)],quantifier:TQ) extends AbstractTObj[Rec[A,B]](name,insts,quantifier) with RecType[A,B] {
 
   def this() = this(Tokens.rec,Map[A,B](),Nil,qOne) //
   def this(java:Map[A,B]) = this(Tokens.rec,java,Nil,qOne) //
@@ -42,10 +42,10 @@ class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(OType,Inst)]
   override def q(quantifier:TQ):this.type = new TRec[A,B](name,java,insts,quantifier).asInstanceOf[this.type] //
   override def value():Map[A,B] = java
 
-  override def plus(other:RecType[A,B]):RecType[A,B] ={
-    new TRec[A,B](name,this.value() ++ other.value(),this.insts :+ (this,PlusOp(other)),this.q())
-  } //
-  override def plus(other:RecValue[A,B]):this.type ={
-    new TRec[A,B](name,this.value() ++ other.value(),this.insts :+ (this,PlusOp(other)),this.q()).asInstanceOf[this.type]
-  } //
+  override def plus(other:Type[Rec[A,B]]):RecType[A,B] ={
+    new TRec[A,B](name,this.value() ++ other.asInstanceOf[RecType[A,B]].value(),this.insts :+ (this,PlusOp(other.asInstanceOf[RecType[A,B]])),this.q())
+  }
+  override def plus(other:Value[Rec[A,B]]):this.type ={
+    new TRec[A,B](name,this.value() ++ other.asInstanceOf[RecValue[A,B]].value(),this.insts :+ (this,PlusOp(other.asInstanceOf[RecValue[A,B]])),this.q()).asInstanceOf[this.type]
+  }
 }

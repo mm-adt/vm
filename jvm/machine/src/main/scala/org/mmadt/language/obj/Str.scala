@@ -34,11 +34,11 @@ import org.mmadt.storage.obj.value.VStr
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Str extends Obj
-  with EqsOp[Str,StrValue,StrType]
-  with PlusOp[Str,StrValue,StrType]
-  with GtOp[Str,StrValue,StrType]
-  with IsOp[Str,StrType]
-  with ToOp[StrType] {
+  with EqsOp[Str]
+  with PlusOp[Str]
+  with GtOp[Str]
+  with IsOp[Str]
+  with ToOp[Str] {
 
 }
 

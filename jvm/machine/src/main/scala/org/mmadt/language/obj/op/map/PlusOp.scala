@@ -25,30 +25,30 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, OType, OValue, Obj}
+import org.mmadt.language.obj.{Inst, Obj, TypeObj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusOp[O <: Obj with PlusOp[O,V,T],V <: Value[V],T <: Type[T]] {
+trait PlusOp[O <: Obj] {
   this:O =>
 
-  def plus(other:T):T
-  def plus(other:V):this.type
-  final def +(other:T):T = this.plus(other)
-  final def +(other:V):this.type = this.plus(other)
+  def plus(other:Type[O]):TypeObj[O]
+  def plus(other:Value[O]):this.type
+  final def +(other:Type[O]):TypeObj[O] = this.plus(other)
+  final def +(other:Value[O]):this.type = this.plus(other)
 }
 
 object PlusOp {
-  def apply[O <: Obj with PlusOp[O,V,T],V <: Value[V],T <: Type[T]](other:V):Inst = new VInst((Tokens.plus,List(other)),qOne,((a:O,b:List[Obj]) => a.plus(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
-  def apply[O <: Obj with PlusOp[O,V,T],V <: Value[V],T <: Type[T]](other:T):Inst = new VInst((Tokens.plus,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case avalue:OValue with V => a.plus(avalue)
-    case atype:OType with T => a.plus(atype)
+  def apply[O <: Obj with PlusOp[O]](other:Value[O]):Inst = new VInst((Tokens.plus,List(other)),qOne,((a:O,b:List[Obj]) => a.plus(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with PlusOp[O]](other:Type[O]):Inst = new VInst((Tokens.plus,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
+    case avalue:Value[O] => a.plus(avalue)
+    case atype:Type[O] => a.plus(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
-  def apply[O <: Obj with PlusOp[O,V,T],V <: Value[V],T <: Type[T]](other:__):Inst = new VInst((Tokens.plus,List(other)),qOne,
-    ((a:O,b:List[Obj]) => a.plus(other[T](a.asInstanceOf[T].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with PlusOp[O]](other:__):Inst = new VInst((Tokens.plus,List(other)),qOne,
+   ((a:O,b:List[Obj]) => a.plus(other(a.asInstanceOf[TypeObj[O]].range()).asInstanceOf[TypeObj[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
 

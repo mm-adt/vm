@@ -40,7 +40,7 @@ class TraverserTest extends FunSuite {
       trav(int(3))(int.to("a")).toString
     }
     assertResult("[8|a->3,b->8]"){
-      trav(int(3))(int.to("a").plus(5).to("b")).toString
+      trav(int(3))(int.to("a").plus(int(5)).to("b")).toString
     }
     assertResult("[11|a->3]"){
       trav(int(3))(int.to("a").plus(int(5).to("b").plus(int.from[IntType]("a")))).toString
@@ -57,7 +57,7 @@ class TraverserTest extends FunSuite {
       trav(int(3))(int.plus(2).to("a").mult(3).to("b")).state
     }
     assertResult(int(5)){
-      int(3) ==> int <= int.plus(2).to("a").mult(3).to("b").plus(1000).from("a")
+      int(3) ==> int <= int.plus(int(2)).to("a").mult(3).to("b").plus(1000).from("a")
     }
   }
 
