@@ -23,8 +23,8 @@
 package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.{Bool, TypeObj,Int}
-import org.mmadt.language.obj.`type`.{BoolType, IntType, Type}
+import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.processor.Processor
 import org.mmadt.storage.obj._
 import org.scalatest.prop.TableDrivenPropertyChecks

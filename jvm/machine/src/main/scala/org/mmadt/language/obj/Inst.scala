@@ -29,7 +29,7 @@ import org.mmadt.language.Tokens
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Inst extends Obj {
-  def value():JInst
+  def value():InstTuple
 
   override val name:String = Tokens.inst
 

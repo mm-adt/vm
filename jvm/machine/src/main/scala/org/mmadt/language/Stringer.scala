@@ -23,8 +23,8 @@
 package org.mmadt.language
 
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.value.{RecValue, StrValue}
+import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj._
 
@@ -33,7 +33,7 @@ import org.mmadt.storage.obj._
  */
 object Stringer {
 
-  def qString(x:TQ):String = x match {
+  def qString(x:IntQ):String = x match {
     case `qOne` => ""
     case `qZero` => "{0}"
     case `qMark` => "{?}"
@@ -49,7 +49,7 @@ object Stringer {
     "[" + trav.obj() + "|" + trav.state.foldLeft("")((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
   }
 
-  def typeString(t:OType):String ={
+  def typeString(t:Type[Obj]):String ={
     val range  = (t match {
       case r:RecType[_,_] => return if (r.value().isEmpty) "" else r.value().foldLeft("[")((string,r) => string + r._1 + "->" + r._2 + "|").dropRight(1) + "]"
       case _ => t.name
@@ -60,7 +60,7 @@ object Stringer {
     t.insts().map(_._2.toString()).fold("")((a,b) => a + b)
   }
 
-  def valueString(v:OValue):String ={
+  def valueString(v:Value[Obj]):String ={
     val named = Tokens.named(v.name)
     (if (named) v.name else "") + (
       v match {

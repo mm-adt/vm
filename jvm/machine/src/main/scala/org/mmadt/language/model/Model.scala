@@ -23,7 +23,7 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{OType, Obj}
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 
 import scala.collection.mutable
@@ -32,29 +32,29 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
-  final def apply(left:Type[_]):Type[_] = this.get(left).get
-  def put(left:OType,right:OType):Model
-  def get(left:Type[_]):Option[Type[_]]
+  final def apply(left:Type[Obj]):Type[Obj] = this.get(left).get
+  def put(left:Type[Obj],right:Type[Obj]):Model
+  def get(left:Type[Obj]):Option[Type[Obj]]
 
 }
 
 object Model {
-  def apply(args:(OType,OType)*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
+  def apply(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
 
   val id:Model = new Model {
-    override def put(left:OType,right:OType):Model = this
-    override def get(left:Type[_]):Option[Type[_]] = None
+    override def put(left:Type[Obj],right:Type[Obj]):Model = this
+    override def get(left:Type[Obj]):Option[Type[Obj]] = None
   }
 
   def simple():Model = new Model {
-    val typeMap:mutable.Map[String,mutable.Map[OType,OType]] = mutable.Map()
+    val typeMap:mutable.Map[String,mutable.Map[Type[Obj],Type[Obj]]] = mutable.Map()
     override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).fold(Tokens.empty)((x,y) => x + y + "\n")
-    override def put(left:OType,right:OType):Model ={
+    override def put(left:Type[Obj],right:Type[Obj]):Model ={
       if (typeMap.get(left.name).isEmpty) typeMap.put(left.name,mutable.Map())
       typeMap(left.name).put(left,right)
       this
     }
-    override def get(left:Type[_]):Option[Type[_]] ={
+    override def get(left:Type[Obj]):Option[Type[Obj]] ={
       val x = typeMap.get(left.name) match {
         case None => return None
         case Some(m) => m

@@ -31,26 +31,26 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst(java:JInst,quantifier:TQ,function:(Obj,List[Obj]) => Obj) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst {
+class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst {
   override def as[O <: Obj](name:String):O = this.asInstanceOf[O] //
-  def this(java:JInst) = this(java,qOne,null) //
-  override def value():JInst = java //
+  def this(java:InstTuple) = this(java,qOne,null) //
+  override def value():InstTuple = java //
   //override  def lfold(seed:O)(atype:OType):O = seed ==> atype
   override def toString:String = Stringer.instString(this) //
-  override def q(quantifier:TQ):this.type = new VInst(java,quantifier,function).asInstanceOf[this.type] //
+  override def q(quantifier:IntQ):this.type = new VInst(java,quantifier,function).asInstanceOf[this.type] //
   override def id():this.type = this //
   override def apply(obj:Obj,args:List[Obj]):Obj = function.apply(obj,args) //
   override def count():IntValue = this.q()._2
   override def quant():IntValue = this.q()._2
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
   def test(other:Obj):Boolean = this match {
-    case startValue:Value[O] => other match {
-      case argValue:Value[O] => TypeChecker.matchesVV(startValue,argValue)
-      case argType:Type[O] => TypeChecker.matchesVT(startValue,argType)
+    case startValue:Value[Obj] => other match {
+      case argValue:Value[Obj] => TypeChecker.matchesVV(startValue,argValue)
+      case argType:Type[Obj] => TypeChecker.matchesVT(startValue,argType)
     }
-    case startType:Type[O] => other match {
-      case argValue:Value[O] => TypeChecker.matchesTV(startType,argValue)
-      case argType:Type[O] => TypeChecker.matchesTT(startType,argType)
+    case startType:Type[Obj] => other match {
+      case argValue:Value[Obj] => TypeChecker.matchesTV(startType,argValue)
+      case argType:Type[Obj] => TypeChecker.matchesTT(startType,argType)
     }
   }
 

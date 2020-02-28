@@ -46,8 +46,8 @@ trait Obj
     with QOp {
 
   // quantifier methods
-  def q():TQ
-  def q(quantifier:TQ):this.type
+  def q():IntQ
+  def q(quantifier:IntQ):this.type
   def q(single:IntValue):this.type = this.q((single,single))
   def q(min:IntValue,max:IntValue):this.type = this.q((min,max))
   def alive():Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0

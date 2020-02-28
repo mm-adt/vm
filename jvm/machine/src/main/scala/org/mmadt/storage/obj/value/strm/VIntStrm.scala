@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.language.obj.{Obj, TQ}
+import org.mmadt.language.obj.{Obj, IntQ}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.AbstractVObj
@@ -41,7 +41,7 @@ class VIntStrm(name:String,java:Seq[IntValue]) extends AbstractVObj(name,java,qu
 
   override def value():Iterator[IntValue] = java.iterator //
   override def start():IntType = new TInt(name,List((new TInt(name,Nil,qZero).asInstanceOf[Type[Obj]],StartOp(this))),q()) //
-  override def q(quantifier:TQ):this.type = new VIntStrm(name,java).asInstanceOf[this.type] //
+  override def q(quantifier:IntQ):this.type = new VIntStrm(name,java).asInstanceOf[this.type] //
   override def as[O <: Obj](name:String):O = new VIntStrm(name,this.value().toSeq).asInstanceOf[O] //
 }
 

@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{StrType, Type}
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, O, OType, Obj}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 import org.mmadt.storage.obj.{asType, qOne, str => vstr}
 
@@ -36,22 +36,22 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ExplainOp {
-  this:OType =>
+  this:Type[Obj] =>
 
   def explain():StrType = vstr(ExplainOp.printableTable(asType(this))).start()
 }
 
 object ExplainOp {
-  def apply():Inst = new VInst((Tokens.explain,Nil),qOne,((a:OType,b:List[Obj]) => a.explain()).asInstanceOf[(Obj,List[Obj]) => Obj]) with TraverserInstruction
+  def apply():Inst = new VInst((Tokens.explain,Nil),qOne,((a:Type[Obj],b:List[Obj]) => a.explain()).asInstanceOf[(Obj,List[Obj]) => Obj]) with TraverserInstruction
 
-  private type Row = (Int,Inst,OType,OType,mutable.LinkedHashMap[String,Obj])
+  private type Row = (Int,Inst,Type[Obj],Type[Obj],mutable.LinkedHashMap[String,Obj])
 
-  private def explain(atype:OType,state:mutable.LinkedHashMap[String,Obj],depth:Int = 0):List[Row] ={
+  private def explain(atype:Type[Obj],state:mutable.LinkedHashMap[String,Obj],depth:Int = 0):List[Row] ={
     val report = atype.insts().foldLeft(List[Row]())((a,b) => {
-      if (b._2.isInstanceOf[TraverserInstruction]) state += (b._2.arg0().asInstanceOf[StrValue].value() -> b._2.apply(b._1).asInstanceOf[OType].range())
-      val temp  = if (b._2.isInstanceOf[TraverserInstruction]) a else a :+ (depth,b._2,lastRange(b._1),b._2.apply(b._1).asInstanceOf[OType].range(),mutable.LinkedHashMap(state.toSeq:_*))
+      if (b._2.isInstanceOf[TraverserInstruction]) state += (b._2.arg0().asInstanceOf[StrValue].value() -> b._2.apply(b._1).asInstanceOf[Type[Obj]].range())
+      val temp  = if (b._2.isInstanceOf[TraverserInstruction]) a else a :+ (depth,b._2,lastRange(b._1),b._2.apply(b._1).asInstanceOf[Type[Obj]].range(),mutable.LinkedHashMap(state.toSeq:_*))
       val inner = b._2.args().foldLeft(List[Row]())((x,y) => x ++ (y match {
-        case btype:OType => explain(btype,mutable.LinkedHashMap(state.toSeq:_*),depth + 1)
+        case btype:Type[Obj] => explain(btype,mutable.LinkedHashMap(state.toSeq:_*),depth + 1)
         case _ => Nil
       }))
       temp ++ inner
@@ -59,7 +59,7 @@ object ExplainOp {
     report
   }
 
-  private def lastRange(atype:OType):OType = if (atype.insts().isEmpty) atype else atype.linvert().range()
+  private def lastRange(atype:Type[Obj]):Type[Obj] = if (atype.insts().isEmpty) atype else atype.linvert().range()
 
   def printableTable(atype:Type[Obj]):String ={
     val report                = explain(atype,mutable.LinkedHashMap.empty[String,Obj])

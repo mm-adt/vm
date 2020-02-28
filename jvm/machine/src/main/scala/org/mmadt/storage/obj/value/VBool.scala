@@ -24,7 +24,7 @@ package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, Type}
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.obj._
@@ -33,14 +33,14 @@ import org.mmadt.storage.obj.`type`.TBool
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBool(name:String,java:Boolean,quantifier:TQ) extends AbstractVObj(name,java,quantifier) with BoolValue {
+class VBool(name:String,java:Boolean,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with BoolValue {
 
   def this(java:Boolean) = this(Tokens.bool,java,qOne)
 
   override def value():Boolean = java
   override def value(java:Boolean):this.type = new VBool(this.name,java,this.q()).asInstanceOf[this.type]
   override def start():BoolType = new TBool(name,List((new TBool(name,Nil,qZero),StartOp(this))),this.q())
-  override def q(quantifier:TQ):this.type = new VBool(name,java,quantifier).asInstanceOf[this.type]
+  override def q(quantifier:IntQ):this.type = new VBool(name,java,quantifier).asInstanceOf[this.type]
   override def as[O <: Obj](name:String):O = new VBool(name,java,quantifier).asInstanceOf[O]
 
 

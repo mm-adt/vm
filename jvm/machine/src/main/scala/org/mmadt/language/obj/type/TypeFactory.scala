@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{O, ORecType}
+import org.mmadt.language.obj.{ORecType, Obj}
 import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec, TStr}
 
 /**
@@ -45,6 +45,6 @@ object TypeFactory {
     override def tbool():BoolType = new TBool()
     override def tint():IntType = new TInt()
     override def tstr():StrType = new TStr()
-    override def trec():ORecType = new TRec[O,O]()
+    override def trec():ORecType = new TRec[Obj,Obj]()
   }
 }

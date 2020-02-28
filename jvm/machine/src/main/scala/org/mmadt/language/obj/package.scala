@@ -22,26 +22,22 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
+import org.mmadt.language.obj.value.{IntValue, RecValue}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 package object obj {
-  type TQ = (IntValue,IntValue)
-  type JInst = (String,List[Obj])
-  type O = Obj
-  type OType = O with Type[_]
-  type TType[T] = T with OType
-  type OValue = O with Value[_]
-  type ORecType = RecType[O,O]
-  type ORecValue = RecValue[O,O]
-  type ORecStrm = RecStrm[O,O]
-  type State = Map[String,O]
+  type IntQ = (IntValue,IntValue)
+  type InstTuple = (String,List[Obj])
+  type State = Map[String,Obj]
 
-  type TypeObj[+T <: Obj] = T with Type[T]
+  // less typing
+  type ORecType = RecType[Obj,Obj]
+  type ORecValue = RecValue[Obj,Obj]
+  type ORecStrm = RecStrm[Obj,Obj]
 }
 
 

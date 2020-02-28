@@ -25,10 +25,10 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, O, OType, Obj, TypeObj}
-import org.mmadt.language.{Stringer, Tokens}
+import org.mmadt.language.obj.{Inst,Obj}
+import org.mmadt.language.{Stringer,Tokens}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.`type`.{TInt, TRec}
+import org.mmadt.storage.obj.`type`.{TInt,TRec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,7 +43,7 @@ class __(insts:List[Inst] = Nil) extends Type[__] with Obj {
   override def id():__.this.type = this
   override def as[O <: Obj](name:String):O = throw new IllegalArgumentException()
   override def range():__.this.type = this
-  override def insts():List[(OType,Inst)] = Nil
+  override def insts():List[(Type[Obj],Inst)] = Nil
   override def compose(inst:Inst):__.this.type = this
   override def int(inst:Inst,q:(IntValue,IntValue)):IntType = null
   override def bool(inst:Inst,q:(IntValue,IntValue)):BoolType = null
@@ -52,12 +52,12 @@ class __(insts:List[Inst] = Nil) extends Type[__] with Obj {
   override def obj(inst:Inst,q:(IntValue,IntValue)):ObjType = null
 
   def apply[T <: Type[T]](obj:Obj):T = insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i match {
-    case x:Inst if x.op() == Tokens.choose => applyChoose(a.asInstanceOf[OType],x.arg0())(a)
+    case x:Inst if x.op() == Tokens.choose => applyChoose(a.asInstanceOf[Type[Obj]],x.arg0())(a)
     case _ => i(a)
   }).asInstanceOf[T]
 
-  private def applyChoose(a:OType,branches:RecType[TypeObj[Obj],Obj]):Inst ={ // [choose] branches need to be resolved (thus, a new rec is constructed)
-    ChooseOp(new TRec[TypeObj[Obj],Obj](branches.value().map(entry => (entry._1 match {
+  private def applyChoose(a:Type[Obj],branches:RecType[Type[Obj],Obj]):Inst ={ // [choose] branches need to be resolved (thus, a new rec is constructed)
+    ChooseOp(new TRec[Type[Obj],Obj](branches.value().map(entry => (entry._1 match {
       case y:__ => y(a.range())
       case y => y
     },entry._2 match {

@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.{Obj, TQ}
+import org.mmadt.language.obj.{Obj, IntQ}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TRec
 import org.mmadt.storage.obj.value.AbstractVObj
@@ -41,7 +41,7 @@ class VRecStrm[A <: Obj,B <: Obj](name:String,java:RecValue[A,B]*) extends Abstr
 
   override def value():Iterator[RecValue[A,B]] = java.iterator //
   override def start():RecType[A,B] = new TRec[A,B](name,Map.empty,List((new TRec[A,B](name,Map.empty,Nil,qZero).asInstanceOf[Type[Obj]],StartOp(this))),q()) //
-  override def q(quantifier:TQ):this.type = new VRecStrm[A,B](name,java:_*).asInstanceOf[this.type] //
+  override def q(quantifier:IntQ):this.type = new VRecStrm[A,B](name,java:_*).asInstanceOf[this.type] //
   override def as[O <: Obj](name:String):O = new VRecStrm[A,B](name,java:_*).asInstanceOf[O] //
 }
 

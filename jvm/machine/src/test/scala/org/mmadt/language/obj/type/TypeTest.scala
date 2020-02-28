@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
 
-import org.mmadt.language.obj.OType
+import org.mmadt.language.obj.Obj
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
@@ -34,9 +34,9 @@ import org.scalatest.FunSuite
 class TypeTest extends FunSuite {
 
   test("type hashCode and equals"){
-    val types:List[OType] = List(obj,bool,int,str,rec) // TODO: add __
-    var sameCounter       = 0
-    var diffCounter       = 0
+    val types:List[Type[Obj]] = List(obj,bool,int,str,rec) // TODO: add __
+    var sameCounter           = 0
+    var diffCounter           = 0
     for (a <- types) {
       for (b <- types) {
         if (a.name == b.name) {

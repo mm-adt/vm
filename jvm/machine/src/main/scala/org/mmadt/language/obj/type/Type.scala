@@ -42,13 +42,13 @@ trait Type[+T <: Obj] extends Obj
   this:T with Type[T] =>
 
   // type properties
-  def insts():List[(OType,Inst)]
+  def insts():List[(Type[Obj],Inst)]
   def canonical():this.type = this.range().q(qOne)
   def range():this.type
-  def domain[D <: Obj]():TypeObj[D] = (this.insts() match {
+  def domain[D <: Obj]():Type[D] = (this.insts() match {
     case Nil => this
-    case i:List[(OType,Inst)] => i.head._1.range()
-  }).asInstanceOf[TypeObj[D]]
+    case i:List[(Type[Obj],Inst)] => i.head._1.range()
+  }).asInstanceOf[Type[D]]
 
   // type manipulation functions
   def linvert():this.type ={
@@ -60,7 +60,7 @@ trait Type[+T <: Obj] extends Obj
       case x => x
     }).asInstanceOf[this.type]
   }
-  def rinvert[TT <: OType]():TT =
+  def rinvert[TT <: Type[Obj]]():TT =
     (this.insts().dropRight(1).lastOption match {
       case Some(prev) => prev._2.apply(prev._1)
       case None => this.insts().head._1
@@ -71,27 +71,27 @@ trait Type[+T <: Obj] extends Obj
   override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler[Type[T],R]()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
-  def compose[P <: Obj](btype:TypeObj[P]):TypeObj[P] ={
+  def compose[P <: Obj](btype:Type[P]):Type[P] ={
     var a:Type[T] = this
-    for (i <- btype.insts()) a = a.compose(i._1.asInstanceOf[TypeObj[T]],i._2)
-    a.asInstanceOf[TypeObj[P]]
+    for (i <- btype.insts()) a = a.compose(i._1.asInstanceOf[T],i._2)
+    a.asInstanceOf[Type[P]]
   }
   def compose(inst:Inst):this.type
-  def compose[O <: Obj](t2:O,inst:Inst):TypeObj[O] = (t2 match {
+  def compose[O <: Obj](t2:O,inst:Inst):Type[O] = (t2 match {
     case _:Bool => bool(inst)
     case _:Int => int(inst)
     case _:Str => str(inst)
     case _:RecType[Obj,Obj] => rec(t2.asInstanceOf[RecType[Obj,Obj]],inst)
     case _:__ => __(this.insts().map(e => e._2) :+ inst:_*)
     case _:ObjType => obj(inst)
-  }).asInstanceOf[TypeObj[O]]
+  }).asInstanceOf[Type[O]]
 
   // type change during fluency // TODO: get rid of this
-  def obj(inst:Inst,q:TQ = this.q()):ObjType
-  def int(inst:Inst,q:TQ = this.q()):IntType
-  def bool(inst:Inst,q:TQ = this.q()):BoolType
-  def str(inst:Inst,q:TQ = this.q()):StrType
-  def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ = this.q()):RecType[A,B]
+  def obj(inst:Inst,q:IntQ = this.q()):ObjType
+  def int(inst:Inst,q:IntQ = this.q()):IntType
+  def bool(inst:Inst,q:IntQ = this.q()):BoolType
+  def str(inst:Inst,q:IntQ = this.q()):StrType
+  def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:IntQ = this.q()):RecType[A,B]
 
   // obj-level operations
   override def as[O <: Obj](name:String):O = (InstUtil.nextInst(this) match {
@@ -114,7 +114,7 @@ trait Type[+T <: Obj] extends Obj
   }
 
   // standard Java implementations
-  override def toString:String = Printable.format[OType](this)
+  override def toString:String = Printable.format[Type[Obj]](this)
   override def hashCode():scala.Int = this.name.hashCode ^ this.q().hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:__ => atype.toString.equals(this.toString) // TODO: get __ better aligned with Type

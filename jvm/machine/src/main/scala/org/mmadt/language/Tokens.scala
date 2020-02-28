@@ -22,8 +22,8 @@
 
 package org.mmadt.language
 
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.{OType, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -83,7 +83,7 @@ object Tokens {
     case _:IntType => Tokens.int
     case _:StrType => Tokens.str
     case _:RecType[_,_] => Tokens.rec
-    case _:OType => Tokens.obj
+    case _:Type[Obj] => Tokens.obj
     case _ => throw new Exception("Error: " + obj)
   }
 }

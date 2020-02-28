@@ -25,6 +25,7 @@ package org.mmadt.language.model.rewrite
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 
 /**
@@ -57,7 +58,7 @@ object LeftRightSweepRewrite {
   private def rewriteArgs[E <: Obj](model:Model,start:Type[E],inst:Inst,traverser:Traverser[E]):List[Obj] ={
     inst.args().map{
       case atype:Type[_] => rewrite(model,atype,start,traverser.split(start.asInstanceOf[Obj])).obj()
-      case avalue:O => avalue
+      case avalue:Value[_] => avalue
     }
   }
 }

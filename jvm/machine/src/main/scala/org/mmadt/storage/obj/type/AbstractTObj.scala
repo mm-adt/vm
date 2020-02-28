@@ -25,21 +25,21 @@ package org.mmadt.storage.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.{IntValue, StrValue}
-import org.mmadt.language.obj.{Inst, OType, Obj, TQ, TypeObj}
+import org.mmadt.language.obj.{Inst, Obj, IntQ}
 import org.mmadt.storage.obj.{OObj, _}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTObj[+O <: Obj](name:String,insts:List[(OType,Inst)],quantifier:TQ) extends OObj(name,quantifier) with Type[Obj]  {
+abstract class AbstractTObj[+O <: Obj](name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends OObj(name,quantifier) with Type[Obj]  {
 
   def this() = this(Tokens.obj,Nil,qOne)
-  def insts():List[(OType,Inst)] = insts
+  def insts():List[(Type[Obj],Inst)] = insts
 
-  override def int(inst:Inst,q:TQ):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
-  override def bool(inst:Inst,q:TQ):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),q)
-  override def str(inst:Inst,q:TQ):StrType = new TStr(typeName(inst.op(),(Tokens.str,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
-  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:TQ):RecType[A,B] = new TRec(atype.name,atype.value(),this.insts() ::: List((this,inst)),(atype.q()._1.mult(q._1),atype.q()._2.mult(q._2)))
+  override def int(inst:Inst,q:IntQ):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
+  override def bool(inst:Inst,q:IntQ):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),q)
+  override def str(inst:Inst,q:IntQ):StrType = new TStr(typeName(inst.op(),(Tokens.str,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
+  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:IntQ):RecType[A,B] = new TRec(atype.name,atype.value(),this.insts() ::: List((this,inst)),(atype.q()._1.mult(q._1),atype.q()._2.mult(q._2)))
   override def obj(inst:Inst,q:(IntValue,IntValue)):ObjType = new TObj(Tokens.obj,this.insts() ::: List((this,inst)),q)
 
   // utility method

@@ -22,8 +22,8 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{Obj, TType}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

@@ -22,7 +22,9 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.{OType, OValue, Obj}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,12 +38,12 @@ object Printable {
     p.format(input)
 
 
-  implicit val valuePrintable:Printable[OValue] = new Printable[OValue] {
-    def format(input:OValue):String = Stringer.valueString(input)
+  implicit val valuePrintable:Printable[Value[Obj]] = new Printable[Value[Obj]] {
+    def format(input:Value[Obj]):String = Stringer.valueString(input)
   }
 
-  implicit val typePrintable:Printable[OType] = new Printable[OType] {
-    def format(input:OType):String = Stringer.typeString(input)
+  implicit val typePrintable:Printable[Type[Obj]] = new Printable[Type[Obj]] {
+    def format(input:Type[Obj]):String = Stringer.typeString(input)
   }
 
 }

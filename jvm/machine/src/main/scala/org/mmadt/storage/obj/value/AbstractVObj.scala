@@ -22,12 +22,12 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.obj.TQ
+import org.mmadt.language.obj.IntQ
 import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractVObj(name:String,val java:Any,quantifier:TQ) extends OObj(name,quantifier)
+abstract class AbstractVObj(name:String,val java:Any,quantifier:IntQ) extends OObj(name,quantifier)
 
 

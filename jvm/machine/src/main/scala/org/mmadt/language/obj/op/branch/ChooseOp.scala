@@ -38,7 +38,7 @@ trait ChooseOp {
 
   def choose[IT <: Type[Obj],OT <: Obj](branches:RecType[IT,OT]):OT ={
     this match {
-      case atype:IT => atype.compose[OT](generalType(branches.value().values),ChooseOp[IT,OT](branches))
+      case atype:IT => atype.compose[OT](generalType(branches.value().values),ChooseOp[IT,OT](branches)).asInstanceOf[OT]
       case avalue:Value[Obj] =>
         branches.value().find(p => asType(avalue).canonical().equals(p._1.canonical()) &&
                                    (avalue ===> p._1).hasNext).

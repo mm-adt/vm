@@ -49,10 +49,10 @@ object InstUtil {
    */
   def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E = inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
 
-  def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:Type[E]):E = (atype.insts().head._2.apply(start,InstUtil.valueArgs(new I1Traverser[O](arg),atype.insts().head._2)) ==> atype.linvert()).asInstanceOf[E]
+  def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:Type[E]):E = (atype.insts().head._2.apply(start,InstUtil.valueArgs(new I1Traverser[Obj](arg),atype.insts().head._2)) ==> atype.linvert())
 
   @scala.annotation.tailrec
-  def createInstList(list:List[(OType,Inst)],atype:OType):List[(OType,Inst)] ={
+  def createInstList(list:List[(Type[Obj],Inst)],atype:Type[Obj]):List[(Type[Obj],Inst)] ={
     if (atype.insts().isEmpty) list else createInstList(List((atype.range(),atype.insts().last._2)) ::: list,atype.insts().last._1)
   }
 
@@ -63,7 +63,7 @@ object InstUtil {
 
   def updateQ[O <: Obj](obj:Obj,atype:Type[_]):O = atype.q() match {
     case _ if equals(qOne) => obj.asInstanceOf[O]
-    case tq:TQ => obj.q(obj.q()._1 * tq._1,obj.q()._2 * tq._2).asInstanceOf[O]
+    case tq:IntQ => obj.q(obj.q()._1 * tq._1,obj.q()._2 * tq._2).asInstanceOf[O]
   }
 
   def resolveAnonymous[R <: Obj](obj:Obj,rangeType:Type[R]):Type[R] = rangeType match {

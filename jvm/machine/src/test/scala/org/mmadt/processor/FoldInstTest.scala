@@ -22,8 +22,8 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.obj.`type`.{IntType, Type}
-import org.mmadt.language.obj.{Int, OType}
+import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.`type`.{IntType,Type}
 import org.mmadt.storage.obj.int
 import org.scalatest.FunSuite
 

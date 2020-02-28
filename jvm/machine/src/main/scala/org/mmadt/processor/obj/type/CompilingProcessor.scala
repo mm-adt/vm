@@ -24,8 +24,9 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{OValue, Obj}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.{Processor, Traverser}
 
 /**
@@ -33,7 +34,7 @@ import org.mmadt.processor.{Processor, Traverser}
  */
 class CompilingProcessor(val model:Model = Model.id) extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
-    assert(!domainObj.isInstanceOf[OValue],"The compiling processor only accepts types: " + domainObj)
+    assert(!domainObj.isInstanceOf[Value[Obj]],"The compiling processor only accepts types: " + domainObj)
 
     // C1Traverser applies rewrite rules until a steady state is reached
     val domainType       :E with Type[E] = domainObj.asInstanceOf[E with Type[E]]

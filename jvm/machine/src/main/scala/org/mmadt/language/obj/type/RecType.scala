@@ -27,7 +27,7 @@ import org.mmadt.language.obj.op.map.{EqsOp, GetOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
-import org.mmadt.language.obj.{Obj, Rec, TypeObj}
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.obj.`type`.TRec
 
 /**
@@ -42,7 +42,7 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   override def eqs(other:Type[Rec[A,B]]):BoolType = this.bool(EqsOp(other))
   override def eqs(other:Value[Rec[A,B]]):BoolType = this.bool(EqsOp(other))
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
-  override def get[BB<:Obj](key:A,btype:BB):BB = this.compose(btype,GetOp(key,btype.asInstanceOf[Type[BB]])).asInstanceOf[BB]
+  override def get[BB <: Obj](key:A,btype:BB):BB = this.compose(btype,GetOp(key,btype.asInstanceOf[Type[BB]])).asInstanceOf[BB]
   override def get(key:A):B = this.compose(this.value()(key),GetOp[A,B](key)).asInstanceOf[B]
   override def put(key:A,value:B):RecType[A,B] = new TRec[A,B](this.name,this.value() + (key -> value),this.insts() :+ (this,PutOp(key,value)),this.q())
   override def plus(other:Type[Rec[A,B]]):RecType[A,B]

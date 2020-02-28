@@ -22,13 +22,13 @@
 
 package org.mmadt.storage.obj
 
-import org.mmadt.language.obj.{Obj, TQ}
+import org.mmadt.language.obj.{Obj, IntQ}
 
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class OObj(val _name:String,val quantifier:TQ) extends Obj {
-  override def q():TQ = quantifier
+abstract class OObj(val _name:String,val quantifier:IntQ) extends Obj {
+  override def q():IntQ = quantifier
   override val name:String = _name
 }
