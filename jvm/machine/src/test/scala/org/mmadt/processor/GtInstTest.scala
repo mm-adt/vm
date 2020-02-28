@@ -33,7 +33,7 @@ import org.scalatest.FunSuite
  */
 class GtInstTest extends FunSuite {
 
-  test("[gt] w/ int") {
+  test("[gt] w/ int"){
     assertResult(bool(false))(int(1).gt(int(3))) // value * value = value
     assert(int(1).gt(int(3)).isInstanceOf[BoolValue])
     assert(int(1).gt(int(3)).isInstanceOf[Bool])

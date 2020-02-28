@@ -23,9 +23,9 @@
 package org.mmadt.language.model.examples
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType, RecType}
+import org.mmadt.language.obj.`type`.{IntType,RecType}
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.obj.{Obj,Str}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
@@ -58,10 +58,8 @@ class SocialModelTest extends FunSuite {
   }*/
 
   test("nat rewrite"){
-    val processor = new CompilingProcessor(
-      Model(nat -> (int <= int.is(int.gt(int(0))))))
-
-    // assertResult(int.is(int.gt(0)).plus(34).is(int.gt(45)))(processor.apply(nat, nat.plus(int(34)).is(nat.gt(45))).next().obj())
+    val processor = new CompilingProcessor(Model(nat -> (int <= int.is(int.gt(int(0))))))
+    assertResult(int.is(int.gt(0)).plus(34).is(int.gt(45)))(processor.apply(nat,nat.plus(int(34)).is(nat.gt(45))).next().obj())
   }
 
   test("rec stream w/ rewrites"){

@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.`type`
 
+import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**
@@ -30,8 +31,8 @@ import org.scalatest.FunSuite
 class TRecTest extends FunSuite {
 
   test("rec type"){
-    // assertResult(int(6))(trec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(1)))
-    // assertResult(int(200))(trec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(2)))
-    // assertResult(int(200))((trec(int(1) -> int.plus(5),int(2) -> int.mult(100)) ===> rec.get(int(2),int)).next)
+    //assertResult(int(6))(trec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(1)))
+    //assertResult(int(200))(trec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(2)))
+    //assertResult(int(200))((trec(int(1) -> int.plus(5),int(2) -> int.mult(100)) ===> rec.get(int(2),int)).next)
   }
 }

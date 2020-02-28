@@ -51,7 +51,7 @@ trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
   override def get(key:A):B = this.value()(key)
 
   override def put(key:A,value:B):RecValue[A,B] = new VRec(this.name,this.value + (key -> (value match {
-    case atype:Type[B] => this ==> atype
+    case atype:B with Type[B] => this ==> atype
     case avalue:B => avalue
   })),this.q())
 

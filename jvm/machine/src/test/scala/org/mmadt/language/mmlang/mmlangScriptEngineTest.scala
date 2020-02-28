@@ -83,7 +83,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("composite type get/put"){
     assertResult(rec.get(str("name"),str))(engine.eval("str<=rec[get,'name',str]").next)
-    //assertResult(int <= rec.get(str("age"),int))(engine.eval("rec[get,'age',int]").next)
+    assertResult(int <= rec.get(str("age"),int))(engine.eval("rec[get,'age',int]").next)
     assertResult(int <= rec.put(str("age"),int).get(str("age")))(engine.eval("rec[put,'age',int][get,'age']").next)
     assertResult(int <= rec.put(str("age"),int).get(str("age")).plus(int(10)))(engine.eval("rec[put,'age',int][get,'age'][plus,10]").next)
     assertResult(int(20))(engine.eval("['name':'marko'] => rec[put,'age',10][get,'age'][plus,10]").next)

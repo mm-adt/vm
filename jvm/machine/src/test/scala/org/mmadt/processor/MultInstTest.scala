@@ -33,7 +33,7 @@ import org.scalatest.FunSuite
  */
 class MultInstTest extends FunSuite {
 
-  test("[mult] w/ int") {
+  test("[mult] w/ int"){
     assertResult(int(3))(int(1).mult(int(3))) // value * value = value
     assert(int(1).mult(int(3)).isInstanceOf[IntValue])
     assert(int(1).mult(int(3)).isInstanceOf[Int])

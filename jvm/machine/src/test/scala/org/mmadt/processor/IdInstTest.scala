@@ -30,7 +30,7 @@ import org.scalatest.FunSuite
  */
 class IdInstTest extends FunSuite {
 
-  test("[id] w/ int") {
+  test("[id] w/ int"){
     assertResult("int[id]")(int.id().toString)
     assertResult("int[id][id]")(int.id().id().toString)
     assertResult(int(2))(int(2).id())

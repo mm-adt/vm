@@ -30,7 +30,7 @@ import org.scalatest.FunSuite
 class UnionTypeTest extends FunSuite {
 
 
-  test("type inference") {
+  test("type inference"){
     //println(int | bool | str)
     //println(int | bool | str.to("s"))
     //println(rec(str("kvstore") -> rec.q(0, Long.MaxValue), str("kv") -> rec(str("k") -> int, str("v") -> (int | str | bool))))

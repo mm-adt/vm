@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{Type,__}
 import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.value.VInst
@@ -33,7 +33,6 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait FoldOp {
-  this:Obj =>
   def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = seed._2
   def fold[O <: Obj](seed:O)(atype:Type[O]):O = fold("seed" -> seed)(atype)
 }

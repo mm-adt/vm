@@ -54,12 +54,4 @@ class GraphModelTest extends FunSuite {
     put(graph, vertex.q(*)).
     put(graph.is(graph.get(str("id"), int).gt(int(0))), graph.model("db"))*/
 
-  test("variable rewrites"){
-    println(model)
-    val processor = new CompilingProcessor(model)
-    println(graph)
-    //println(model[RecType[Str, Obj]](vertex).get("outE"))
-    println(edge)
-    // println(model[RecType[Str, Obj]](vertex).is(vertex.get(str("id"), int).gt(int(0))).get(str("outE")))
-  }
 }

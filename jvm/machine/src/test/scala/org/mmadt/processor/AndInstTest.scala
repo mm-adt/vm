@@ -33,7 +33,7 @@ import org.scalatest.FunSuite
  */
 class AndInstTest extends FunSuite {
 
-  test("[and] w/ bool") {
+  test("[and] w/ bool"){
     assertResult(btrue)(btrue.and(btrue)) // value * value = value
     assert(btrue.and(btrue).isInstanceOf[BoolValue])
     assert(btrue.and(btrue).isInstanceOf[Bool])
