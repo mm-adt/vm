@@ -22,21 +22,26 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.Str
+import org.mmadt.language.obj.`type`.{BoolType, StrType, Type}
+import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Strm[+O <: Obj] extends Obj
-  with Value[Strm[O]] {
+trait StrStrm extends Str
+  with Strm[Str] {
 
-  override def value():Iterator[O]
+  override def value():Iterator[StrValue]
+  override def start():StrType
 
-  override def equals(other:Any):Boolean = other match {
-    case strm:Strm[O] => this.value().sameElements(strm.value())
-    case _ => false
-  }
-  override def toString:String = value().foldLeft(Tokens.empty)((a,b) => a + b + ",").dropRight(1)
+  override def to(label:StrValue):StrType = this.start().to(label)
+  override def eqs(other:Type[Str]):BoolType = this.start().eqs(other)
+  override def eqs(other:Value[Str]):BoolValue = throw new IllegalAccessException()
+  override def plus(other:Type[Str]):StrType = this.start().plus(other)
+  override def plus(other:Value[Str]):this.type = throw new IllegalAccessException()
+  override def gt(other:Type[Str]):BoolType = this.start().gt(other)
+  override def gt(other:Value[Str]):BoolValue = throw new IllegalAccessException()
+  override def is(bool:BoolType):StrType = this.start().is(bool)
+  override def is(bool:BoolValue):this.type = throw new IllegalAccessException()
 }

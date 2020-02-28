@@ -28,13 +28,13 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
+import org.mmadt.language.obj.value.strm.{IntStrm,StrStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
+import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm,VStrStrm}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -46,7 +46,7 @@ object mmlangParser extends JavaTokenParsers {
 
   override val whiteSpace:Regex = """[\s\n]+""".r
 
-  def parse[T](input:String):Iterator[T] = this.parseAll(expr | emptySpace,input).map{
+  def parse[T <: Obj](input:String):Iterator[T] = this.parseAll(expr | emptySpace,input).map{
     case itty:Iterator[T] => itty
     case obj:T => Iterator(obj)
   }.get
@@ -91,11 +91,12 @@ object mmlangParser extends JavaTokenParsers {
   lazy val strValue :Parser[StrValue]   = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
   lazy val recValue :Parser[ORecValue]  = "[" ~> repsep((obj <~ Tokens.::) ~ obj,",") <~ "]" ^^ (x => rec(x.map(o => (o._1,o._2)).toMap))
   lazy val objValue :Parser[Value[Obj]] = (boolValue | intValue | strValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val strm     :Parser[Strm[_]]    = intStrm | recStrm
-  lazy val intStrm  :Parser[IntStrm]    = (intValue <~ ",") ~ rep1sep(intValue,",") ^^ (x => new VIntStrm(x._1 +: x._2))
+  lazy val strm     :Parser[Strm[Obj]]  = intStrm | strStrm | recStrm
+  lazy val intStrm  :Parser[IntStrm]    = (intValue <~ ",") ~ rep1sep(intValue,",") ^^ (x => new VIntStrm(x._1 +: x._2)) // TODO: go through an implicit channel for all streams
+  lazy val strStrm  :Parser[StrStrm]    = (strValue <~ ",") ~ rep1sep(strValue,",") ^^ (x => new VStrStrm(x._1 +: x._2))
   lazy val recStrm  :Parser[ORecStrm]   = (recValue <~ ",") ~ rep1sep(recValue,",") ^^ (x => new VRecStrm[Obj,Obj](x._1 +: x._2:_*))
 
-  lazy val instArg      :Parser[Obj]  = stateAccess ^^ (x => x._1.getOrElse(int).from[Type[Obj]](str(x._2))) | obj // TODO: need to have an instantiable obj type as the general type (see hardcoded use of int here)
+  lazy val instArg      :Parser[Obj]  = stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2))) | obj // TODO: hardcoded int for unspecified state type
   lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | infixSugar
   lazy val infixSugar   :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[Type[Obj],Obj]]))
@@ -141,7 +142,7 @@ object mmlangParser extends JavaTokenParsers {
         case arg:__ => IsOp(arg)
       }
       case Tokens.get => arg match {
-        case List(key:Obj,typeHint:Type[_]) => GetOp(key,typeHint)
+        case List(key:Obj,typeHint:Type[Obj]) => GetOp(key,typeHint)
         case List(key:Obj) => GetOp(key)
       }
       case Tokens.map => arg.head match {
@@ -151,7 +152,12 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.count => CountOp()
       case Tokens.explain => ExplainOp()
       case Tokens.put => PutOp(arg.head,arg.tail.head)
-      case Tokens.from => FromOp(arg.head.asInstanceOf[StrValue])
+      case Tokens.from =>
+        val label = arg.head.asInstanceOf[StrValue]
+        arg.tail match {
+          case Nil => FromOp(label)
+          case obj:Obj => FromOp(label,obj)
+        }
       case Tokens.fold => arg.tail.tail.head match {
         case x:__ => FoldOp(("seed",arg.tail.head),x)
         case x:Type[Obj] => FoldOp(("seed",arg.tail.head),x)

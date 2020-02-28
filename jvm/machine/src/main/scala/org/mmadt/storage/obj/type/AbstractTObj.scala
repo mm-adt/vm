@@ -31,7 +31,7 @@ import org.mmadt.storage.obj.{OObj, _}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTObj[+O <: Obj](name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends OObj(name,quantifier) with Type[Obj] {
+abstract class AbstractTObj(name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends OObj(name,quantifier) with Type[Obj] {
 
   def this() = this(Tokens.obj,Nil,qOne)
   def insts():List[(Type[Obj],Inst)] = insts

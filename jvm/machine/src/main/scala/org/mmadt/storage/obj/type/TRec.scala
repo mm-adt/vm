@@ -32,7 +32,7 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends AbstractTObj[Rec[A,B]](name,insts,quantifier) with RecType[A,B] {
+class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends AbstractTObj(name,insts,quantifier) with RecType[A,B] {
 
   def this() = this(Tokens.rec,Map[A,B](),Nil,qOne) //
   def this(java:Map[A,B]) = this(Tokens.rec,java,Nil,qOne) //

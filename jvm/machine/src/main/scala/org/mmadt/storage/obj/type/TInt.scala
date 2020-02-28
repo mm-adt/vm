@@ -30,7 +30,7 @@ import org.mmadt.storage.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends AbstractTObj[Int](name,insts,quantifier) with IntType {
+class TInt(name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends AbstractTObj(name,insts,quantifier) with IntType {
   def this() = this(Tokens.int,Nil,qOne) //
   override def compose(inst:Inst):this.type = int(inst,quantifier).asInstanceOf[this.type] //
   override def range():this.type = new TInt(name,Nil,quantifier).asInstanceOf[this.type] //

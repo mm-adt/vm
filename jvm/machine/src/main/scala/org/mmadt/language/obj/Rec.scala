@@ -41,7 +41,7 @@ trait Rec[A <: Obj,B <: Obj] extends Obj
   with PutOp[A,B]
 
 object Rec {
-  implicit def mapToRec[A <: Obj,B <: Obj](java:Map[A,B]):RecValue[A,B] with Rec[A,B] = new VRec(java) //
+  implicit def mapToRec[A <: Obj,B <: Obj](java:Map[A,B]):RecValue[A,B] = new VRec(java) //
 
   /*implicit final class ColonAssoc[A](private val self:A) extends AnyVal {
     @inline

@@ -40,5 +40,5 @@ trait Bool extends Obj
 }
 
 object Bool {
-  implicit def booleanToBool(java:Boolean):BoolValue with Bool = new VBool(java) //
+  implicit def booleanToBool(java:Boolean):BoolValue = new VBool(java) //
 }

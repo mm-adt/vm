@@ -163,10 +163,13 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("strm input parsing"){
+    // int strm
     assertResult(Set(int(1),int(2),int(3)))(asScalaIterator(engine.eval("0,1,2 ==> int[plus,1]")).toSet)
     assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> int[plus,1][is,int[gt,2]][mult,10]")).toSet)
     assertResult(Set(int(300),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> int[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]")).toSet)
     // assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> (int{3}=>int[plus,1][is,int[gt,2]][mult,10])")).toSet)
+    // str strm
+    assertResult(str("marko"))(engine.eval("""'m','a','r','k','o' ==> str[fold,'seed','',str[plus,str<seed>]]""").next)
   }
 
   test("anonymous expression parsing"){
@@ -212,7 +215,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(6))(engine.eval("1,3,7,2,1,10 ==> [plus,2][count]").next)
     assertResult(int(2))(engine.eval("1,3,7,2,1,10 ==> +2[is>5][count]").next)
     ///
-    assertResult(int(7))(engine.eval("1,2,3 ==> int[fold,'seed',1,[plus,<seed>]]").next)
+    assertResult(int(7))(engine.eval("1,2,3 ==> int[fold,'seed',1,[plus,int<seed>]]").next)
   }
 
   test("composite expression parsing"){

@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
@@ -43,5 +44,6 @@ trait FromOp {
 
 object FromOp {
   def apply(label:StrValue):Inst = new VInst((Tokens.from,List(label)),qOne,(a:Obj,b:List[Obj]) => a.from[Obj](label)) with TraverserInstruction
-  def apply[O <: Obj](label:StrValue,default:Obj):Inst = new VInst((Tokens.from,List(label,default)),qOne,(a:Obj,b:List[Obj]) => a.from[Obj](label,default)) with TraverserInstruction
+  def apply[O <: Obj](label:StrValue,default:Obj):Inst = new VInst((Tokens.from,List(label,default)),qOne,(a:Obj,b:List[Obj]) => a.from[O](label,default)) with TraverserInstruction
+  // def apply[O <: Obj](label:StrValue,default:__):Inst = new VInst((Tokens.from,List(label,default)),qOne,(a:Obj,b:List[Obj]) => a.from[O](label,default(a.asInstanceOf[Type[_]].range()))) with TraverserInstruction
 }

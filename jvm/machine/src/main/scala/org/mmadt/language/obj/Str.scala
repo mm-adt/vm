@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GtOp, PlusOp}
+import org.mmadt.language.obj.op.map.{EqsOp,GtOp,PlusOp}
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.storage.obj.value.VStr
@@ -41,5 +41,5 @@ trait Str extends Obj
 }
 
 object Str {
-  implicit def stringToStr(java:String):StrValue with Str = new VStr(java) //
+  implicit def stringToStr(java:String):StrValue = new VStr(java) //
 }

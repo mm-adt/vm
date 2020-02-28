@@ -24,7 +24,7 @@ package org.mmadt.storage
 
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm}
+import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm, StrStrm}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm}
@@ -71,6 +71,7 @@ package object obj {
 
   def asType[O <: Obj](obj:O):Type[O] = (obj match {
     case strm:IntStrm => return int.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
+    case strm:StrStrm => return str.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
     case atype:Type[_] => atype
     case _:IntValue => int
     case _:StrValue => str

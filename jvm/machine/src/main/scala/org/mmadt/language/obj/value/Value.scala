@@ -31,7 +31,6 @@ import org.mmadt.storage.obj.qOne
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Value[+V <: Obj] extends Obj {
-  this:V =>
 
   def value():Any
   def start():Type[Obj]

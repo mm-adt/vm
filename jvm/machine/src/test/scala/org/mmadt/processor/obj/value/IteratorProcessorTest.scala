@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.obj.value
 
-import org.mmadt.language.obj.Int
 import org.mmadt.processor.Processor
 import org.mmadt.storage.obj._
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -34,16 +33,16 @@ import org.scalatest.{FunSuite, Matchers}
 class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with Matchers {
 
   test("process single value w/ quantifiers"){
-    assertResult(List(int(110)))(Processor.iterator[Int,Int]().apply(int(5),int.mult(int(2)).plus(int(100))).map(_.obj()).toList)
-    assertResult(List(int(110)))(Processor.iterator[Int,Int]()(int(5),int * 2 + 100).map(_.obj()).toList)
-    assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
+    assertResult(List(int(110)))(Processor.iterator().apply(int(5),int.mult(int(2)).plus(int(100))).map(_.obj()).toList)
+    assertResult(List(int(110)))(Processor.iterator()(int(5),int * 2 + 100).map(_.obj()).toList)
+    assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5).q(10),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
     //   assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
     //   assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
     //   assertResult(List(int(110).q(100)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
   }
 
   test("process multiple values w/ quantifiers"){
-    assertResult(List(int(102),int(104),int(106)))(Processor.iterator[Int,Int]().apply(int(1,2,3),int.mult(int(2)).plus(int(100))).map(_.obj()).toList)
+    assertResult(List(int(102),int(104),int(106)))(Processor.iterator().apply(int(1,2,3),int.mult(int(2)).plus(int(100))).map(_.obj()).toList)
     assertResult(List(int(102),int(104),int(106)))((int(1,2,3) ===> int.mult(int(2)).plus(int(100))).toList)
     assertResult(List(int(11),int(22),int(33)))((int(10,20,30) ===> int.choose(
       int.is(int.gt(int(20))) -> int.plus(int(3)),

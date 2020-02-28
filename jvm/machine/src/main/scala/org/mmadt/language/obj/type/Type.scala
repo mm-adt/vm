@@ -39,7 +39,6 @@ import org.mmadt.storage.obj._
 trait Type[+T <: Obj] extends Obj
   with ExplainOp
   with ModelOp {
-  this:T with Type[T] =>
 
   // type properties
   def insts():List[(Type[Obj],Inst)]
@@ -60,21 +59,21 @@ trait Type[+T <: Obj] extends Obj
       case x => x
     }).asInstanceOf[this.type]
   }
-  def rinvert[TT <: Type[Obj]]():TT =
+  def rinvert[R <: Type[Obj]]():R =
     (this.insts().dropRight(1).lastOption match {
       case Some(prev) => prev._2.apply(prev._1)
       case None => this.insts().head._1
-    }).asInstanceOf[TT]
+    }).asInstanceOf[R]
 
   // type specification and compilation
   final def <=[D <: Obj](domainType:Type[D]):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
-  override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler[Type[T],R]()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
+  override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
-  def compose[P <: Obj](btype:Type[P]):Type[P] ={
+  def compose[R <: Type[Obj]](btype:R):R ={
     var a:Type[T] = this
     for (i <- btype.insts()) a = a.compose(i._1.asInstanceOf[T],i._2)
-    a.asInstanceOf[Type[P]]
+    a.asInstanceOf[R]
   }
   def compose(inst:Inst):this.type
   def compose[O <: Obj](t2:O,inst:Inst):Type[O] = (t2 match {
@@ -109,8 +108,8 @@ trait Type[+T <: Obj] extends Obj
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
-    case argValue:Value[_] => TypeChecker.matchesTV(this,argValue)
-    case argType:Type[_] => TypeChecker.matchesTT(this,argType)
+    case argValue:Value[Obj] => TypeChecker.matchesTV(this,argValue)
+    case argType:Type[Obj] => TypeChecker.matchesTT(this,argType)
   }
 
   // standard Java implementations
@@ -118,7 +117,7 @@ trait Type[+T <: Obj] extends Obj
   override def hashCode():scala.Int = this.name.hashCode ^ this.q().hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:__ => atype.toString.equals(this.toString) // TODO: get __ better aligned with Type
-    case atype:Type[T] => atype.insts().map(_._2) == this.insts().map(_._2) && this.name == atype.name && this.q() == atype.q()
+    case atype:Type[Obj] => atype.insts().map(_._2) == this.insts().map(_._2) && this.name == atype.name && this.q() == atype.q()
     case _ => false
   }
 }
