@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.initial
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.op.InitialInstruction
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
@@ -30,11 +31,10 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StartOp[T] {
-
-  def start():T
+trait StartOp[O <: Obj] {
+  def start():O
 }
 
 object StartOp {
-  def apply(starts:Obj):Inst = new VInst((Tokens.start,List(starts)),qOne,(_:Obj,b:List[Obj]) => b.head)
+  def apply(starts:Obj):Inst = new VInst((Tokens.start,List(starts)),qOne,(_:Obj,b:List[Obj]) => b.head) with InitialInstruction
 }

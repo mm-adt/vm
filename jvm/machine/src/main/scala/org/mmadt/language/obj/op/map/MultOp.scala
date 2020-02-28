@@ -34,7 +34,6 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait MultOp[O <: Obj] {
   this:O =>
-
   def mult(other:Type[O]):O with Type[O]
   def mult(other:Value[O]):this.type
   final def *(other:Type[O]):O with Type[O] = this.mult(other)

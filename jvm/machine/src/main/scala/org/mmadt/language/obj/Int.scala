@@ -35,7 +35,7 @@ trait Int extends Obj
   with EqsOp[Int]
   with PlusOp[Int]
   with MultOp[Int]
-  with NegOp[Int]
+  with NegOp
   with GtOp[Int]
   with IsOp[Int]
   with ToOp[Int] {

@@ -32,13 +32,12 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait EqsOp[O <: Obj with EqsOp[O]] {
+trait EqsOp[O <: Obj] {
   this:O =>
-
   def eqs(other:Type[O]):BoolType
   def eqs(other:Value[O]):Bool
-  // final def ===(other: T): BoolType = this.eq(other) //
-  // final def ===(other: V): Bool = this.eq(other) //
+  // final def ===(other: T): BoolType = this.eq(other)
+  // final def ===(other: V): Bool = this.eq(other)
 }
 
 object EqsOp {

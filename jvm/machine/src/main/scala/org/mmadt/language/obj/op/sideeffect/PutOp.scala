@@ -32,8 +32,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait PutOp[A <: Obj,B <: Obj] {
   this:Rec[A,B] =>
-
-  def put(key:A,value:B):Rec[A,B] //
+  def put(key:A,value:B):Rec[A,B]
 }
 
 object PutOp {

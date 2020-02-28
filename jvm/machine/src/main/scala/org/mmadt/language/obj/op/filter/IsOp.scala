@@ -33,12 +33,10 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IsOp[O <: Obj with IsOp[O]] {
+trait IsOp[O <: Obj] {
   this:O =>
-
-  def is(bool:BoolType):O with Type[O] //
-  def is(bool:BoolValue):this.type //
-
+  def is(bool:BoolType):O with Type[O]
+  def is(bool:BoolValue):this.type
 }
 
 object IsOp {

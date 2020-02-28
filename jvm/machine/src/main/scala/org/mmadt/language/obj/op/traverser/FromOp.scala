@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
@@ -35,7 +34,6 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FromOp {
   this:Obj =>
-
   def from[O <: Obj](label:String):O = this.from(str(label))
   def from[O <: Obj](label:String,default:Obj):O = this.from(str(label),default)
   def from[O <: Obj](label:StrValue):O = label.asInstanceOf[O] // TODO NO IMPL -- INST

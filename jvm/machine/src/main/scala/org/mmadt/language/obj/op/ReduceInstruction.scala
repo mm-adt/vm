@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.Type
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ReduceInstruction[A <: Obj] {
-  val seed     :(String,A)
-  val reduction:Type[A]
+trait ReduceInstruction[O <: Obj] {
+  val seed     :(String,O)
+  val reduction:Type[O]
 }

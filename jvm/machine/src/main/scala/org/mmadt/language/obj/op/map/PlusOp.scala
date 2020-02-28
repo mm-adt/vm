@@ -34,7 +34,6 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait PlusOp[O <: Obj] {
   this:O =>
-
   def plus(other:Type[O]):Type[O]
   def plus(other:Value[O]):this.type
   final def +(other:Type[O]):Type[O] = this.plus(other)

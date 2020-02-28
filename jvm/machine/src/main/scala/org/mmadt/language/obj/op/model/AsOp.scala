@@ -32,12 +32,9 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AsOp {
-  this:Obj =>
-
   def as[O <: Obj](name:String):O // TODO: spec to StrValue
-
 }
 
 object AsOp {
-  def apply(name:StrValue):Inst = new VInst((Tokens.as,List(name)),qOne,((a:Obj,b:List[Obj]) => a.as[Obj](name.value()))) //
+  def apply(name:StrValue):Inst = new VInst((Tokens.as,List(name)),qOne,((a:Obj,b:List[Obj]) => a.as[Obj](name.value())))
 }

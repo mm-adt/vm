@@ -32,11 +32,10 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtOp[O <: Obj with GtOp[O]] {
+trait GtOp[O <: Obj] {
   this:O =>
-
-  def gt(other:Type[O]):BoolType //
-  def gt(other:Value[O]):Bool //
+  def gt(other:Type[O]):BoolType
+  def gt(other:Value[O]):Bool
   final def >(other:Type[O]):BoolType = this.gt(other)
   final def >(other:Value[O]):Bool = this.gt(other)
 }

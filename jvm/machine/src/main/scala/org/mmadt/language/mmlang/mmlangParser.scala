@@ -28,13 +28,13 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm,StrStrm,Strm}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
+import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
+import org.mmadt.language.obj.value.strm.{IntStrm, StrStrm, Strm}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm,VStrStrm}
+import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm, VStrStrm}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -102,9 +102,9 @@ object mmlangParser extends JavaTokenParsers {
   lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[Type[Obj],Obj]]))
   lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2))
 
-  private def instMatrix(op:String,arg:List[Obj]):Inst ={
+  private def instMatrix(op:String,args:List[Obj]):Inst ={ // TODO: move to language.obj.op.InstUtil (should be reused by all JVM-based mm-ADT languages)
     op match {
-      case Tokens.plus | Tokens.plus_op => arg.head match {
+      case Tokens.plus | Tokens.plus_op => args.head match {
         case arg:IntValue => PlusOp(arg)
         case arg:IntType => PlusOp(arg)
         case arg:StrValue => PlusOp(arg)
@@ -113,19 +113,19 @@ object mmlangParser extends JavaTokenParsers {
         case arg:ORecType => PlusOp(arg)
         case arg:__ => PlusOp(arg)
       }
-      case Tokens.mult | Tokens.mult_op => arg.head match {
+      case Tokens.mult | Tokens.mult_op => args.head match {
         case arg:IntValue => MultOp(arg)
         case arg:IntType => MultOp(arg)
         case arg:__ => MultOp(arg)
       }
-      case Tokens.gt | Tokens.gt_op => arg.head match {
+      case Tokens.gt | Tokens.gt_op => args.head match {
         case arg:IntValue => GtOp(arg)
         case arg:IntType => GtOp(arg)
         case arg:StrValue => GtOp(arg)
         case arg:StrType => GtOp(arg)
         case arg:__ => GtOp(arg)
       }
-      case Tokens.eqs | Tokens.eqs_op => arg.head match {
+      case Tokens.eqs | Tokens.eqs_op => args.head match {
         case arg:BoolValue => EqsOp(arg)
         case arg:BoolType => EqsOp(arg)
         case arg:IntValue => EqsOp(arg)
@@ -136,34 +136,35 @@ object mmlangParser extends JavaTokenParsers {
         case arg:ORecType => EqsOp(arg)
         case arg:__ => EqsOp(arg)
       }
-      case Tokens.is => arg.head match {
+      case Tokens.is => args.head match {
         case arg:BoolValue => IsOp(arg)
         case arg:BoolType => IsOp(arg)
         case arg:__ => IsOp(arg)
       }
-      case Tokens.get => arg match {
+      case Tokens.get => args match {
         case List(key:Obj,typeHint:Type[Obj]) => GetOp(key,typeHint)
         case List(key:Obj) => GetOp(key)
       }
-      case Tokens.map => arg.head match {
+      case Tokens.map => args.head match {
         case arg:__ => MapOp(arg)
         case arg:Obj => MapOp(arg)
       }
+      case Tokens.neg => NegOp()
       case Tokens.count => CountOp()
       case Tokens.explain => ExplainOp()
-      case Tokens.put => PutOp(arg.head,arg.tail.head)
+      case Tokens.put => PutOp(args.head,args.tail.head)
       case Tokens.from =>
-        val label = arg.head.asInstanceOf[StrValue]
-        arg.tail match {
+        val label = args.head.asInstanceOf[StrValue]
+        args.tail match {
           case Nil => FromOp(label)
           case obj:Obj => FromOp(label,obj)
         }
-      case Tokens.fold => arg.tail.tail.head match {
-        case x:__ => FoldOp(("seed",arg.tail.head),x)
-        case x:Type[Obj] => FoldOp(("seed",arg.tail.head),x)
+      case Tokens.fold => args.tail.tail.head match {
+        case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x)
+        case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x)
       }
-      case Tokens.to => ToOp(arg.head.asInstanceOf[StrValue])
-      case Tokens.choose => ChooseOp(arg.head.asInstanceOf[RecType[Type[Obj],Obj]])
+      case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
+      case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[Type[Obj],Obj]])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()
     }

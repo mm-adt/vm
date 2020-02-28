@@ -31,7 +31,8 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IdOp {
-  def id():this.type //
+  this:Obj =>
+  def id():this.type
 }
 
 object IdOp {

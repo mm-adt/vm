@@ -34,9 +34,10 @@ import org.mmadt.storage.obj.value.{VInst, VStr}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ToOp[O <: Obj] {
-  def to(label:String):O with Type[O] = this.to(new VStr(label)) //
-  def to(label:StrValue):O with Type[O] //
-  final def ~(label:String):O with Type[O] = this.to(label) //
+  this:O =>
+  def to(label:String):O with Type[O] = this.to(new VStr(label))
+  def to(label:StrValue):O with Type[O]
+  final def ~(label:String):O with Type[O] = this.to(label)
 }
 
 object ToOp {
