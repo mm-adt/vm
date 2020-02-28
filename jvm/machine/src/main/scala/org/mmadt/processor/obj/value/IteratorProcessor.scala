@@ -41,12 +41,12 @@ class IteratorProcessor extends Processor {
     }
     for (tt <- InstUtil.createInstList(Nil,rangeType)) {
       output = tt._2 match {
-        ///////////////////////////////////////////
+        //////////////REDUCE//////////////
         case reducer:ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)(
           (traverser,mutatingSeed) => Traverser.stateSplit(reducer.seed._1,mutatingSeed)(traverser).apply(reducer.reduction).obj())).map(e => new I1Traverser[E](e))
-        ///////////////////////////////////////////
+        //////////////FILTER//////////////
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
-        ///////////////////////////////////////////
+        //////////////OTHER//////////////
         case _:Inst => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
       }
     }

@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.language.obj.{IntQ,Obj}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.AbstractVObj
@@ -38,9 +38,9 @@ import org.mmadt.storage.obj.value.AbstractVObj
 class VIntStrm(name:String,java:Seq[IntValue]) extends AbstractVObj(name,java,quantifier = (int(java.length),int(java.length))) with IntStrm {
   def this(java:Seq[IntValue]) = this(name = Tokens.int,java)
 
-  override def value():Iterator[IntValue] = java.iterator //
-  override def start():IntType = new TInt(name,List((new TInt(name,Nil,qZero),StartOp(this))),q()) //
-  override def q(quantifier:IntQ):this.type = new VIntStrm(name,java).asInstanceOf[this.type] //
-  override def as[O <: Obj](name:String):O = new VIntStrm(name,this.value().toSeq).asInstanceOf[O] //
+  override def value():Iterator[IntValue] = java.iterator
+  override def start():IntType = new TInt(name,List((new TInt(name,Nil,qZero),StartOp(this))),quantifier)
+  override def q(quantifier:IntQ):this.type = new VIntStrm(name,java).asInstanceOf[this.type]
+  override def as[O <: Obj](name:String):O = new VIntStrm(name,java).asInstanceOf[O]
 }
 

@@ -38,9 +38,9 @@ import org.mmadt.storage.obj.{int, qZero}
 class VStrStrm(name:String,java:Seq[StrValue]) extends AbstractVObj(name,java,quantifier = (int(java.length),int(java.length))) with StrStrm {
   def this(java:Seq[StrValue]) = this(name = Tokens.int,java)
 
-  override def value():Iterator[StrValue] = java.iterator //
-  override def start():StrType = new TStr(name,List((new TStr(name,Nil,qZero),StartOp(this))),q()) //
-  override def q(quantifier:IntQ):this.type = new VStrStrm(name,java).asInstanceOf[this.type] //
-  override def as[O <: Obj](name:String):O = new VStrStrm(name,this.value().toSeq).asInstanceOf[O] //
+  override def value():Iterator[StrValue] = java.iterator
+  override def start():StrType = new TStr(name,List((new TStr(name,Nil,qZero),StartOp(this))),quantifier)
+  override def q(quantifier:IntQ):this.type = new VStrStrm(name,java).asInstanceOf[this.type]
+  override def as[O <: Obj](name:String):O = new VStrStrm(name,this.value().toSeq).asInstanceOf[O]
 }
 

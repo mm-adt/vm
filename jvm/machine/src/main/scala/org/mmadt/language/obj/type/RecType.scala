@@ -23,11 +23,11 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GetOp}
+import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Obj, Rec, minZero}
 import org.mmadt.storage.obj.`type`.TRec
 
 /**
@@ -36,7 +36,7 @@ import org.mmadt.storage.obj.`type`.TRec
 trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   with Type[Rec[A,B]] {
 
-  def value():Map[A,B] //
+  def value():Map[A,B]
   def apply(values:(A,B)*):RecType[A,B] = new TRec[A,B](this.name,values.toMap,this.insts(),this.q())
 
   override def eqs(other:Type[Rec[A,B]]):BoolType = this.bool(EqsOp(other))
@@ -45,10 +45,11 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   override def get[BB <: Obj](key:A,btype:BB):BB = this.compose(btype,GetOp(key,btype.asInstanceOf[Type[BB]])).asInstanceOf[BB]
   override def get(key:A):B = this.compose(this.value()(key),GetOp[A,B](key)).asInstanceOf[B]
   override def put(key:A,value:B):RecType[A,B] = new TRec[A,B](this.name,this.value() + (key -> value),this.insts() :+ (this,PutOp(key,value)),this.q())
-  override def plus(other:Type[Rec[A,B]]):RecType[A,B]
-  override def plus(other:Value[Rec[A,B]]):this.type
-  override def is(bool:BoolType):RecType[A,B] = this.compose(IsOp(bool)).q(0,q()._2)
-  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2)
+  override def plus(other:Type[Rec[A,B]]):RecType[A,B] = new TRec[A,B](name,this.value() ++ other.asInstanceOf[RecType[A,B]].value(),this.insts :+ (this,PlusOp(other.asInstanceOf[RecType[A,B]])),this.q())
+  override def plus(other:Value[Rec[A,B]]):this.type = new TRec[A,B](name,this.value() ++ other.asInstanceOf[RecValue[A,B]].value(),this.insts :+ (this,PlusOp(other.asInstanceOf[RecValue[A,B]])),this.q()).asInstanceOf[this.type]
+  override def is(bool:BoolType):RecType[A,B] = this.compose(IsOp(bool)).q(minZero(this.q()))
+  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q()))
+
 
   /*override def get(key:A):B = this.value().get(key) match {
     case Some(bvalue:Value[_] with B) => bvalue

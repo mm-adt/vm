@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.Str
+import org.mmadt.language.obj.{Str, minZero}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map.{EqsOp, GtOp, PlusOp}
 import org.mmadt.language.obj.op.traverser.ToOp
@@ -42,8 +42,8 @@ trait StrType extends Str
   override def plus(other:Value[Str]):this.type = this.compose(PlusOp(other))
   override def gt(other:Type[Str]):BoolType = this.bool(GtOp(other))
   override def gt(other:Value[Str]):BoolType = this.bool(GtOp(other))
-  override def is(bool:BoolType):StrType = this.compose(IsOp(bool)).q(0,q()._2)
-  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2)
+  override def is(bool:BoolType):StrType = this.compose(IsOp(bool)).q(minZero(this.q()))
+  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q()))
 }
 
 

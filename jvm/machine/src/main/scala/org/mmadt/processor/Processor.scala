@@ -32,7 +32,7 @@ import org.mmadt.processor.obj.value.IteratorProcessor
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Processor {
-  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]]
+  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] // TODO: this should be a Strm[E] or just E (with Strm inspected)
   def apply[S <: Obj,E <: Obj](rangeType:Type[E]):E = this.apply(rangeType.domain[S](),rangeType).next().obj()
 }
 

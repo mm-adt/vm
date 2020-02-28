@@ -38,8 +38,8 @@ class VStr(name:String,java:String,quantifier:IntQ) extends AbstractVObj(name,ja
   def this(java:String) = this(Tokens.str,java,qOne)
 
   override def value():String = java //
-  override def value(java:String):this.type = new VStr(this.name,java,this.q()).asInstanceOf[this.type]
-  override def start():StrType = new TStr(name,List((new TStr(name,Nil,qZero),StartOp(this))),q()) //
-  override def q(quantifier:IntQ):this.type = new VStr(name,java,quantifier).asInstanceOf[this.type] //
-  override def as[O <: Obj](name:String):O = new VStr(name,java,quantifier).asInstanceOf[O] //
+  override def value(java:String):this.type = new VStr(this.name,java,quantifier).asInstanceOf[this.type]
+  override def start():StrType = new TStr(name,List((new TStr(name,Nil,qZero),StartOp(this))),quantifier)
+  override def q(quantifier:IntQ):this.type = new VStr(name,java,quantifier).asInstanceOf[this.type]
+  override def as[O <: Obj](name:String):O = new VStr(name,java,quantifier).asInstanceOf[O]
 }

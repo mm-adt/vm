@@ -25,7 +25,7 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.`type`.{BoolType, StrType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.storage.obj.bool
+import org.mmadt.storage.obj.{bool, qZero}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,5 +46,5 @@ trait StrValue extends Str
   override def gt(other:Type[Str]):BoolType = this.start().gt(other)
   override def gt(other:Value[Str]):BoolValue = bool(this.value() > other.asInstanceOf[StrValue].value()).q(this.q())
   override def is(bool:BoolType):StrType = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
+  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(qZero)
 }

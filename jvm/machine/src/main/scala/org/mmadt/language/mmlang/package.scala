@@ -22,31 +22,23 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{IntValue, RecValue}
-import org.mmadt.storage.obj._
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-package object obj {
-  type IntQ = (IntValue,IntValue)
-  type InstTuple = (String,List[Obj])
-  type State = Map[String,Obj]
+package object mmlang {
 
-  // less typing
-  type ORecType = RecType[Obj,Obj]
-  type ORecValue = RecValue[Obj,Obj]
-  type ORecStrm = RecStrm[Obj,Obj]
-
-  // quantifier utilities
-  private lazy val zero:IntValue = int(0)
-  def minZero(quantifier:IntQ):IntQ = (zero,quantifier._2)
-  def multQ(obj:Obj,atype:Type[_]):IntQ = atype.q() match {
-    case _ if equals(qOne) => obj.q()
-    case typeQuantifier:IntQ => (obj.q()._1 * typeQuantifier._1,obj.q()._2 * typeQuantifier._2)
-  }
+  lazy val LANGLE   = "<"
+  lazy val RANGLE   = ">"
+  lazy val LCURL    = "{"
+  lazy val RCURL    = "}"
+  lazy val QZERO    = "{0}"
+  lazy val COMMA    = ","
+  lazy val LBRACKET = "["
+  lazy val RBRACKET = "]"
+  lazy val PIPE     = "|"
+  lazy val EMPTY    = ""
+  lazy val LDARROW  = "<="
+  lazy val RDARROW  = "=>"
+  lazy val RRDARROW = "==>"
+  lazy val RSARROW  = "->"
 }
-
-

@@ -34,30 +34,30 @@ import org.mmadt.processor.Traverser
 object LeftRightSweepRewrite {
 
   @scala.annotation.tailrec
-  def rewrite[E <: Obj](model:Model,atype:Type[E],btype:Type[E],traverser:Traverser[E]):Traverser[E] ={
+  def rewrite[S <: Obj](model:Model,atype:Type[S],btype:Type[S],traverser:Traverser[S]):Traverser[S] ={
     if (atype.insts().nonEmpty) {
       model.get(atype) match {
-        case Some(right:Type[E]) => rewrite(model,right,btype,traverser)
+        case Some(right:Type[S]) => rewrite(model,right,btype,traverser)
         case None => rewrite(model,
           atype.rinvert(),
           atype.insts().last._2.apply(
-            atype.rinvert[Type[E]]().range(),
-            rewriteArgs(model,atype.rinvert[Type[E]]().range(),atype.insts().last._2,traverser)).asInstanceOf[Type[E]].compose(btype.asInstanceOf[Type[E]]).asInstanceOf[Type[E]],
+            atype.rinvert[Type[S]]().range(),
+            rewriteArgs(model,atype.rinvert[Type[S]]().range(),atype.insts().last._2,traverser)).asInstanceOf[Type[S]].compose(btype),
           traverser)
       }
     } else if (btype.insts().nonEmpty) {
-      rewrite(model,
+      rewrite[S](model,
         btype.linvert(),
         btype.linvert().domain(),
-        traverser.apply(btype.insts().head._2.apply(btype.insts().head._1).asInstanceOf[Type[E]]).asInstanceOf[Traverser[E]])
+        traverser.apply(btype.insts().head._2.apply(btype.insts().head._1).asInstanceOf[Type[S]]))
     }
     else traverser
   }
 
   // if no match, then apply the instruction after rewriting its arguments
-  private def rewriteArgs[E <: Obj](model:Model,start:Type[E],inst:Inst,traverser:Traverser[E]):List[Obj] ={
+  private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst,traverser:Traverser[S]):List[Obj] ={
     inst.args().map{
-      case atype:Type[_] => rewrite(model,atype,start,traverser.split(start.asInstanceOf[Obj])).obj()
+      case atype:Type[_] => rewrite(model,atype,start,traverser.split(start)).obj()
       case avalue:Value[_] => avalue
     }
   }

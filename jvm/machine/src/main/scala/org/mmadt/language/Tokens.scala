@@ -84,6 +84,6 @@ object Tokens {
     case _:StrType => Tokens.str
     case _:RecType[_,_] => Tokens.rec
     case _:Type[Obj] => Tokens.obj
-    case _ => throw new Exception("Error: " + obj)
+    case _ => throw new Exception("error: " + obj)
   }
 }

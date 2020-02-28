@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj, State}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
@@ -47,7 +46,7 @@ class I1Traverser[S <: Obj](val obj:S,val state:State) extends Traverser[S] {
     } else {
       (InstUtil.nextInst(rangeType).get match {
         case traverserInst:TraverserInstruction => traverserInst.op() match {
-          case Tokens.to => this.split[S](this.obj,this.state + (traverserInst.arg0[StrValue]().value() -> this.obj))
+          case Tokens.to => traverserInst.doTo(this)
           case Tokens.from => traverserInst.doFrom(this)
         }
         case objInst:Inst => this.split[E](InstUtil.instEval(this,objInst))

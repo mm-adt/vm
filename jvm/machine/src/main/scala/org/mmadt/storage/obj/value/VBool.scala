@@ -38,8 +38,8 @@ class VBool(name:String,java:Boolean,quantifier:IntQ) extends AbstractVObj(name,
   def this(java:Boolean) = this(Tokens.bool,java,qOne)
 
   override def value():Boolean = java
-  override def value(java:Boolean):this.type = new VBool(this.name,java,this.q()).asInstanceOf[this.type]
-  override def start():BoolType = new TBool(name,List((new TBool(name,Nil,qZero),StartOp(this))),this.q())
+  override def value(java:Boolean):this.type = new VBool(this.name,java,quantifier).asInstanceOf[this.type]
+  override def start():BoolType = new TBool(name,List((new TBool(name,Nil,qZero),StartOp(this))),quantifier)
   override def q(quantifier:IntQ):this.type = new VBool(name,java,quantifier).asInstanceOf[this.type]
   override def as[O <: Obj](name:String):O = new VBool(name,java,quantifier).asInstanceOf[O]
 

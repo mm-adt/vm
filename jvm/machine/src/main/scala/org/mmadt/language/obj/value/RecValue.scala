@@ -25,7 +25,8 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.{Obj, Rec}
-import org.mmadt.storage.obj.bool
+import org.mmadt.storage.obj._
+import org.mmadt.language.obj._
 import org.mmadt.storage.obj.value.VRec
 
 /**
@@ -45,7 +46,7 @@ trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
   override def plus(other:Type[Rec[A,B]]):RecType[A,B] = this.start().plus(other)
   override def plus(other:Value[Rec[A,B]]):this.type = this.value(this.value() ++ other.asInstanceOf[RecValue[A,B]].value())
   override def is(bool:BoolType):RecType[A,B] = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(0)
+  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(qZero)
 
 
   override def get(key:A):B = this.value()(key)

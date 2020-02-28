@@ -38,8 +38,8 @@ class VRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:IntQ) extends
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne)
 
   override def value():Map[A,B] = java
-  override def value(java:Map[A,B]):this.type = new VRec(this.name,java,this.q()).asInstanceOf[this.type]
-  override def start():RecType[A,B] = new TRec(name,java,List((new TRec(name,java,Nil,qZero),StartOp(this))),this.q())
+  override def value(java:Map[A,B]):this.type = new VRec(this.name,java,quantifier).asInstanceOf[this.type]
+  override def start():RecType[A,B] = new TRec(name,java,List((new TRec(name,java,Nil,qZero),StartOp(this))),quantifier)
   override def q(quantifier:IntQ):this.type = new VRec(name,java,quantifier).asInstanceOf[this.type]
   override def as[O <: Obj](name:String):O = new VRec(name,java,quantifier).asInstanceOf[O]
 

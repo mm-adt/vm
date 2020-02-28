@@ -22,11 +22,11 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
+import org.mmadt.language.obj.{Int,minZero}
 import org.mmadt.storage.obj.value.VInt
 
 /**
@@ -45,7 +45,7 @@ trait IntType extends Type[Int] with Int {
   override def gt(other:Value[Int]):BoolType = this.bool(GtOp(other))
   override def eqs(other:Type[Int]):BoolType = this.bool(EqsOp(other))
   override def eqs(other:Value[Int]):BoolType = this.bool(EqsOp(other))
-  override def is(bool:BoolType):IntType = this.compose(IsOp(bool)).q(0,q()._2)
-  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(0,q()._2)
+  override def is(bool:BoolType):IntType = this.compose(IsOp(bool)).q(minZero(this.q()))
+  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q()))
 }
 

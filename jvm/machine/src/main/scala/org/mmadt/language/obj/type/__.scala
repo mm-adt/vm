@@ -22,11 +22,11 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.language.{Stringer, Tokens}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.{TInt, TRec}
 
@@ -35,7 +35,7 @@ import org.mmadt.storage.obj.`type`.{TInt, TRec}
  */
 class __(insts:List[Inst] = Nil) extends Type[__] with Obj {
 
-  override def toString:String = insts.foldLeft("")((a,i) => a + Stringer.instString(i))
+  override def toString:String = insts.foldLeft("")((a,i) => a + i)
   override def q():(IntValue,IntValue) = qOne
   override def q(quantifier:(IntValue,IntValue)):__.this.type = this
   override val name:String = "xxx"

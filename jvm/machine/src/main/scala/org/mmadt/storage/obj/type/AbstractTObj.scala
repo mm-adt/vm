@@ -24,8 +24,9 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj._
 import org.mmadt.storage.obj.{OObj, _}
 
 /**
@@ -36,11 +37,11 @@ abstract class AbstractTObj(name:String,insts:List[(Type[Obj],Inst)],quantifier:
   def this() = this(Tokens.obj,Nil,qOne)
   def insts():List[(Type[Obj],Inst)] = insts
 
-  override def int(inst:Inst,q:IntQ):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
-  override def bool(inst:Inst,q:IntQ):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),q)
-  override def str(inst:Inst,q:IntQ):StrType = new TStr(typeName(inst.op(),(Tokens.str,inst.args())),this.insts() ::: List((this,inst)),q) // TODO: propagating the type name
-  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:IntQ):RecType[A,B] = new TRec(atype.name,atype.value(),this.insts() ::: List((this,inst)),(atype.q()._1.mult(q._1),atype.q()._2.mult(q._2)))
-  override def obj(inst:Inst,q:(IntValue,IntValue)):ObjType = new TObj(Tokens.obj,this.insts() ::: List((this,inst)),q)
+  override def int(inst:Inst,quantifier:IntQ = quantifier):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),quantifier) // TODO: propagating the type name
+  override def bool(inst:Inst,quantifier:IntQ = quantifier):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),quantifier)
+  override def str(inst:Inst,quantifier:IntQ = quantifier):StrType = new TStr(typeName(inst.op(),(Tokens.str,inst.args())),this.insts() ::: List((this,inst)),quantifier) // TODO: propagating the type name
+  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,quantifier:IntQ = quantifier):RecType[A,B] = new TRec[A,B](atype.name,atype.value(),this.insts() ::: List((this,inst)),multQ(this,atype))
+  override def obj(inst:Inst,quantifier:IntQ = quantifier):ObjType = new TObj(Tokens.obj,this.insts() ::: List((this,inst)),quantifier)
 
   // utility method
   private def typeName(op:String,nextType:(String,List[Obj])):String =

@@ -22,28 +22,37 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.mmlang.mmlangPrinter
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Printable[O <: Obj] {
+trait Printable[O] {
   def format(value:O):String
 }
 
 object Printable {
-  def format[O <: Obj](input:O)(implicit p:Printable[O]):String =
+  def format[O](input:O)(implicit p:Printable[O]):String =
     p.format(input)
 
-
   implicit val valuePrintable:Printable[Value[Obj]] = new Printable[Value[Obj]] {
-    def format(input:Value[Obj]):String = Stringer.valueString(input)
+    def format(input:Value[Obj]):String = mmlangPrinter.valueString(input)
   }
 
   implicit val typePrintable:Printable[Type[Obj]] = new Printable[Type[Obj]] {
-    def format(input:Type[Obj]):String = Stringer.typeString(input)
+    def format(input:Type[Obj]):String = mmlangPrinter.typeString(input)
+  }
+
+  implicit val instPrintable:Printable[Inst] = new Printable[Inst] {
+    def format(input:Inst):String = mmlangPrinter.instString(input)
+  }
+
+  implicit val traverserPrintable:Printable[Traverser[Obj]] = new Printable[Traverser[Obj]] {
+    def format(input:Traverser[Obj]):String = mmlangPrinter.traverserString(input)
   }
 
 }

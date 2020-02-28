@@ -32,6 +32,8 @@ import org.mmadt.processor.Traverser
 trait TraverserInstruction extends Inst {
 
   def doFrom[S <: Obj,E <: Obj](traverser:Traverser[S]):Traverser[E] =
-    traverser.split((if (args().length > 1) traverser.state.getOrElse(arg0[StrValue]().value(),arg1[E]()) else traverser.state.get(arg0[StrValue]().value()).get).asInstanceOf[E])
+    traverser.split((if (args().length > 1) traverser.state.getOrElse(arg0[StrValue]().value(),arg1[E]()) else traverser.state(arg0[StrValue]().value())).asInstanceOf[E])
 
+  def doTo[S <: Obj,E <: Obj](traverser:Traverser[S]):Traverser[E] =
+    traverser.split[E](traverser.obj().asInstanceOf[E],traverser.state + (this.arg0[StrValue]().value() -> traverser.obj()))
 }

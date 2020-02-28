@@ -39,7 +39,7 @@ import org.mmadt.storage.obj._
 trait Type[+T <: Obj] extends Obj
   with ExplainOp
   with ModelOp {
-
+this:T =>
   // type properties
   def insts():List[(Type[Obj],Inst)]
   def canonical():this.type = this.range().q(qOne)

@@ -20,33 +20,34 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.language.mmlang
 
-import org.mmadt.language.obj._
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.obj._
+import org.mmadt.storage.obj.{int, _}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object Stringer {
+object mmlangPrinter {
 
   def qString(x:IntQ):String = x match {
-    case `qOne` => ""
-    case `qZero` => "{0}"
-    case `qMark` => "{?}"
-    case `qPlus` => "{+}"
-    case `qStar` => "{*}"
-    case (x,y) if (x == y) => "{" + x + "}"
-    case (x,y) if (y == int(Long.MaxValue)) => "{" + x + ",}"
-    case (x,y) if (x == int(Long.MinValue)) => "{," + y + "}"
+    case `qOne` => Tokens.empty
+    case `qZero` => QZERO
+    case `qMark` => s"${LCURL}${Tokens.q_mark}${RCURL}"
+    case `qPlus` => s"${LCURL}${Tokens.q_plus}${RCURL}"
+    case `qStar` => s"${LCURL}${Tokens.q_star}${RCURL}"
+    case (x,y) if x == y => s"${LCURL}${x}${RCURL}"
+    case (x,y) if y == int(Long.MaxValue) => "{" + x + ",}"
+    case (x,y) if x == int(Long.MinValue) => "{," + y + "}"
     case _ => "{" + x._1.value() + "," + x._2.value() + "}"
   }
 
   def traverserString(trav:Traverser[_]):String ={
-    "[" + trav.obj() + "|" + trav.state.foldLeft("")((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
+    "[" + trav.obj() + "|" + trav.state.foldLeft(EMPTY)((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
   }
 
   def typeString(t:Type[Obj]):String ={

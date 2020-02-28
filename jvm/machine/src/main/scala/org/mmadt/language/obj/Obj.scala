@@ -31,6 +31,7 @@ import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -50,7 +51,7 @@ trait Obj
   def q(quantifier:IntQ):this.type
   def q(single:IntValue):this.type = this.q((single,single))
   def q(min:IntValue,max:IntValue):this.type = this.q((min,max))
-  def alive():Boolean = this.q()._1.value() != 0 && this.q()._2.value() != 0
+  def alive():Boolean = this.q() != qZero
 
   // utility methods
   def ==>[R <: Obj](rangeType:Type[R]):R = Processor.iterator().apply(this,InstUtil.resolveAnonymous(this,rangeType)).map(_.obj()).next()

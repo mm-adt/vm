@@ -61,11 +61,6 @@ object InstUtil {
     case x => Some(x.head._2)
   }
 
-  def updateQ[O <: Obj](obj:Obj,atype:Type[_]):O = atype.q() match {
-    case _ if equals(qOne) => obj.asInstanceOf[O]
-    case tq:IntQ => obj.q(obj.q()._1 * tq._1,obj.q()._2 * tq._2).asInstanceOf[O]
-  }
-
   def resolveAnonymous[R <: Obj](obj:Obj,rangeType:Type[R]):Type[R] = rangeType match {
     case x:__ => x(obj)
     case x:R => x

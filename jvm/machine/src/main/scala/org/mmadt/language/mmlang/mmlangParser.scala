@@ -34,7 +34,6 @@ import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.strm.{IntStrm, StrStrm, Strm}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm, VStrStrm}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -54,8 +53,8 @@ object mmlangParser extends JavaTokenParsers {
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
   lazy val expr:Parser[Any] = multiple | single | obj
 
-  lazy val single  :Parser[Obj]           = ((strm | obj) <~ Tokens.:=>) ~ (aType | anonType) ^^ (x => (x._1.asInstanceOf[Obj] ==> x._2.asInstanceOf[Type[Obj]])) // TODO: I'm improperly typing to Type (why?)
-  lazy val multiple:Parser[Iterator[Obj]] = ((strm | obj) <~ "==>") ~ objType ^^ (x => x._1.asInstanceOf[Obj] ===> x._2.asInstanceOf[Type[Obj]])
+  lazy val single  :Parser[Obj]           = ((strm | obj) <~ RDARROW) ~ (aType | anonType) ^^ (x => x._1 ==> x._2)
+  lazy val multiple:Parser[Iterator[Obj]] = ((strm | obj) <~ RRDARROW) ~ objType ^^ (x => x._1 ===> x._2)
 
   lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ opt(quantifier) ^^ {
     case atype ~ q => q.foldRight(atype match {
@@ -70,15 +69,15 @@ object mmlangParser extends JavaTokenParsers {
   lazy val objType:Parser[Type[Obj]] = aType | recType | anonType
 
   lazy val aType   :Parser[Type[Obj]] = (opt(canonicalType <~ Tokens.:<=)) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
-    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])
+    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]])
   }
-  lazy val recType :Parser[ORecType]  = "[" ~> repsep((obj <~ Tokens.:->) ~ obj,Tokens.:|) <~ "]" ^^ (x => trec(x.map(o => (o._1,o._2)).toMap))
+  lazy val recType :Parser[ORecType]  = LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,Tokens.:|) <~ RBRACKET ^^ (x => trec(x.map(o => (o._1,o._2)).toMap))
   lazy val anonType:Parser[__]        = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
 
-  lazy val stateAccess:Parser[Option[Type[Obj]] ~ String] = (opt(canonicalType) <~ "<") ~ "[a-zA-z]*".r <~ ">"
+  lazy val stateAccess:Parser[Option[Type[Obj]] ~ String] = (opt(canonicalType) <~ LANGLE) ~ "[a-zA-z]*".r <~ RANGLE
 
-  lazy val quantifier    :Parser[IntQ] = ("{" ~> quantifierType <~ "}") | ("{" ~> intValue ~ opt("," ~> intValue) <~ "}") ^^ (x => (x._1,x._2.getOrElse(x._1)))
+  lazy val quantifier    :Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1,x._2.getOrElse(x._1)))
   lazy val quantifierType:Parser[IntQ] = (Tokens.q_star | Tokens.q_mark | Tokens.q_plus) ^^ {
     case Tokens.q_star => qStar
     case Tokens.q_mark => qMark
@@ -89,18 +88,18 @@ object mmlangParser extends JavaTokenParsers {
   lazy val boolValue:Parser[BoolValue]  = (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x.toBoolean))
   lazy val intValue :Parser[IntValue]   = wholeNumber ^^ (x => int(x.toLong))
   lazy val strValue :Parser[StrValue]   = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  lazy val recValue :Parser[ORecValue]  = "[" ~> repsep((obj <~ Tokens.::) ~ obj,",") <~ "]" ^^ (x => rec(x.map(o => (o._1,o._2)).toMap))
+  lazy val recValue :Parser[ORecValue]  = LBRACKET ~> repsep((obj <~ Tokens.::) ~ obj,",") <~ RBRACKET ^^ (x => rec(x.map(o => (o._1,o._2)).toMap))
   lazy val objValue :Parser[Value[Obj]] = (boolValue | intValue | strValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val strm     :Parser[Strm[Obj]]  = intStrm | strStrm | recStrm
-  lazy val intStrm  :Parser[IntStrm]    = (intValue <~ ",") ~ rep1sep(intValue,",") ^^ (x => new VIntStrm(x._1 +: x._2)) // TODO: go through an implicit channel for all streams
-  lazy val strStrm  :Parser[StrStrm]    = (strValue <~ ",") ~ rep1sep(strValue,",") ^^ (x => new VStrStrm(x._1 +: x._2))
-  lazy val recStrm  :Parser[ORecStrm]   = (recValue <~ ",") ~ rep1sep(recValue,",") ^^ (x => new VRecStrm[Obj,Obj](x._1 +: x._2:_*))
+  lazy val intStrm  :Parser[IntStrm]    = (intValue <~ COMMA) ~ rep1sep(intValue,COMMA) ^^ (x => int(x._1 +: x._2:_*)) // TODO: go through an implicit channel for all streams
+  lazy val strStrm  :Parser[StrStrm]    = (strValue <~ COMMA) ~ rep1sep(strValue,COMMA) ^^ (x => str(x._1 +: x._2))
+  lazy val recStrm  :Parser[ORecStrm]   = (recValue <~ COMMA) ~ rep1sep(recValue,COMMA) ^^ (x => rec(x._1 +: x._2))
 
   lazy val instArg      :Parser[Obj]  = stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2))) | obj // TODO: hardcoded int for unspecified state type
   lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | infixSugar
   lazy val infixSugar   :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[Type[Obj],Obj]]))
-  lazy val sugarlessInst:Parser[Inst] = "[" ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(",")) ~ repsep(instArg,",") <~ "]" ^^ (x => instMatrix(x._1,x._2))
+  lazy val sugarlessInst:Parser[Inst] = LBRACKET ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(COMMA)) ~ repsep(instArg,COMMA) <~ RBRACKET ^^ (x => instMatrix(x._1,x._2))
 
   private def instMatrix(op:String,args:List[Obj]):Inst ={ // TODO: move to language.obj.op.InstUtil (should be reused by all JVM-based mm-ADT languages)
     op match {
