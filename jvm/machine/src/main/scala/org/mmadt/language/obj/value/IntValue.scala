@@ -31,6 +31,7 @@ import org.mmadt.storage.obj._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntValue extends Int
+  with ObjValue
   with Value[Int]
   with StartOp[IntType] {
 

@@ -25,7 +25,7 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.language.obj.value.RecValue
+import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TRec
@@ -33,7 +33,7 @@ import org.mmadt.storage.obj.`type`.TRec
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with RecValue[A,B] {
+class VRec[A <: Value[Obj],B <: Value[Obj]](name:String,java:Map[A,B],quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with RecValue[A,B] {
 
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne)
 

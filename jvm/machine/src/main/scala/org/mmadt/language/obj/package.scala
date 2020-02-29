@@ -24,7 +24,7 @@ package org.mmadt.language
 
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{IntValue, RecValue}
+import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 import org.mmadt.storage.obj._
 
 /**
@@ -36,9 +36,10 @@ package object obj {
   type State = Map[String,Obj]
 
   // less typing
+  type OValue = Value[Obj]
   type ORecType = RecType[Obj,Obj]
-  type ORecValue = RecValue[Obj,Obj]
-  type ORecStrm = RecStrm[Obj,Obj]
+  type ORecValue = RecValue[OValue,OValue]
+  type ORecStrm = RecStrm[OValue,OValue]
 
   // quantifier utilities
   private lazy val zero:IntValue = int(0)

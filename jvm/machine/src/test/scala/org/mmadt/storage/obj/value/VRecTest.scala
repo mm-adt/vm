@@ -45,9 +45,10 @@ class VRecTest extends FunSuite {
     assertResult(rec(int(1) -> btrue,int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue,int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)(rec(int(1) -> btrue,int(2) -> bfalse).get(int(2)))
-    assertResult(int.plus(5))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(1)))
-    assertResult(int.mult(100))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(2)))
-    assertResult(int.mult(100))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)) ==> rec.get(int(2),int))
+    // TODO: MOVE THESE TO A RECTYPE TEST AS RECVALUES CAN'T HAVE TYPES
+    //  assertResult(int.plus(5))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(1)))
+    //  assertResult(int.mult(100))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(2)))
+    //  assertResult(int.mult(100))(rec(int(1) -> int.plus(5),int(2) -> int.mult(100)) ==> rec.get(int(2),int))
     intercept[NoSuchElementException]{
       rec(int(1) -> btrue,int(2) -> bfalse).get(int(3))
     }

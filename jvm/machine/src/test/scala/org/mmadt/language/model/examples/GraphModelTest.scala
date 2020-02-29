@@ -39,9 +39,9 @@ class GraphModelTest extends FunSuite {
   val graph :RecType[Str,Obj] = trec("graph") //
 
   val model:Model = Model(
-    edge -> edge(str("inV") -> vertex,str("outV") -> vertex,str("label") -> str),
+    edge -> edge.apply2(str("inV") -> vertex,str("outV") -> vertex,str("label") -> str),
     edge.get(str("label"),str) -> str("friend").start(),
-    vertex -> vertex(str("id") -> int ~ "i",str("outE") -> edge.q(*),str("inE") -> edge.q(*)),
+    vertex -> vertex.apply2(str("id") -> int ~ "i",str("outE") -> edge.q(*),str("inE") -> edge.q(*)),
     vertex.put(str("id"),int) -> vertex,
     graph -> vertex.q(*))
   //graph.is(graph.get(str("id"), int).eqs(int(0))) -> graph.model("db"))

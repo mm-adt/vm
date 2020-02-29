@@ -26,13 +26,12 @@ import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.obj._
-import org.mmadt.language.obj._
 import org.mmadt.storage.obj.value.VRec
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
+trait RecValue[A <: Value[Obj],B <: Value[Obj]] extends Rec[A,B]
   with Value[Rec[A,B]]
   with StartOp[RecType[A,B]] {
 
@@ -47,15 +46,10 @@ trait RecValue[A <: Obj,B <: Obj] extends Rec[A,B]
   override def plus(other:Value[Rec[A,B]]):this.type = this.value(this.value() ++ other.asInstanceOf[RecValue[A,B]].value())
   override def is(bool:BoolType):RecType[A,B] = this.start().is(bool)
   override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(qZero)
-
-
   override def get(key:A):B = this.value()(key)
-
+  override def get[BB <: Obj](key:A,btype:BB):BB = this.value()(key).asInstanceOf[BB]
   override def put(key:A,value:B):RecValue[A,B] = new VRec(this.name,this.value + (key -> (value match {
     case atype:B with Type[B] => this ==> atype
     case avalue:B => avalue
   })),this.q())
-
-  override def get[BB <: Obj](key:A,btype:BB):BB = this.value()(key).asInstanceOf[BB]
-
 }

@@ -88,7 +88,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val boolValue:Parser[BoolValue]  = (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x.toBoolean))
   lazy val intValue :Parser[IntValue]   = wholeNumber ^^ (x => int(x.toLong))
   lazy val strValue :Parser[StrValue]   = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  lazy val recValue :Parser[ORecValue]  = LBRACKET ~> repsep((obj <~ Tokens.::) ~ obj,",") <~ RBRACKET ^^ (x => rec(x.map(o => (o._1,o._2)).toMap))
+  lazy val recValue :Parser[ORecValue]  = LBRACKET ~> repsep((objValue <~ Tokens.::) ~ objValue,",") <~ RBRACKET ^^ (x => rec(x.map(o => (o._1,o._2)).toMap))
   lazy val objValue :Parser[Value[Obj]] = (boolValue | intValue | strValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val strm     :Parser[Strm[Obj]]  = intStrm | strStrm | recStrm
   lazy val intStrm  :Parser[IntStrm]    = (intValue <~ COMMA) ~ rep1sep(intValue,COMMA) ^^ (x => int(x._1 +: x._2:_*)) // TODO: go through an implicit channel for all streams

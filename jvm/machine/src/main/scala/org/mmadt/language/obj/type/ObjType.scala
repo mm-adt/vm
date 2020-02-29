@@ -28,4 +28,4 @@ import org.mmadt.language.obj.Obj
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ObjType extends Obj
-  with Type[ObjType]
+  with Type[Obj]

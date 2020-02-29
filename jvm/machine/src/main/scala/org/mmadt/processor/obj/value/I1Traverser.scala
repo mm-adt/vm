@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.{Inst, Obj, State}
+import org.mmadt.language.obj.{Obj, State}
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
@@ -40,17 +40,17 @@ class I1Traverser[S <: Obj](val obj:S,val state:State) extends Traverser[S] {
 
   override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new I1Traverser[E](obj,state)
   override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
-    if (rangeType.insts().isEmpty) {
-      TypeChecker.checkType(this.obj,rangeType)
-      this.asInstanceOf[Traverser[E]]
-    } else {
-      (InstUtil.nextInst(rangeType).get match {
+    (InstUtil.nextInst(rangeType) match {
+      case None =>
+        TypeChecker.checkType(this.obj,rangeType)
+        return this.asInstanceOf[Traverser[E]]
+      case Some(inst) => inst match {
         case traverserInst:TraverserInstruction => traverserInst.op() match {
           case Tokens.to => traverserInst.doTo(this)
           case Tokens.from => traverserInst.doFrom(this)
         }
-        case objInst:Inst => this.split[E](InstUtil.instEval(this,objInst))
-      }).apply(rangeType.linvert())
-    }
+        case _ => this.split[E](InstUtil.instEval(this,inst))
+      }
+    }).apply(rangeType.linvert())
   }
 }

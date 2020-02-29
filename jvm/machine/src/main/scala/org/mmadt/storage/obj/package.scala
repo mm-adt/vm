@@ -25,7 +25,7 @@ package org.mmadt.storage
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm, StrStrm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue, Value}
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm, VStrStrm}
 import org.mmadt.storage.obj.value.{VBool, VInt, VRec, VStr}
@@ -57,14 +57,14 @@ package object obj {
   def bool(value:Boolean):BoolValue = new VBool(value)
   def str(value:String):StrValue = new VStr(value)
   def str(values:Seq[StrValue]):StrStrm = new VStrStrm(values)
-  def rec[A <: Obj,B <: Obj](name:String,value:Map[A,B],quantifier:IntQ):RecValue[A,B] = new VRec[A,B](name,value,quantifier)
-  def rec[A <: Obj,B <: Obj](value:Map[A,B]):RecValue[A,B] = new VRec[A,B](value)
-  def rec(name:String,value:ORecValue,values:ORecValue*):RecStrm[Obj,Obj] = new VRecStrm[Obj,Obj](name,value +: values)
-  def rec(values:Seq[ORecValue]):RecStrm[Obj,Obj] = new VRecStrm[Obj,Obj](values)
-  def rec(value:(Obj,Obj),values:(Obj,Obj)*):ORecValue = new VRec[Obj,Obj]((value +: values).toMap)
-  def rec[A <: Obj,B <: Obj](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne)
+  def rec[A <: OValue,B <: OValue](name:String,value:Map[A,B],quantifier:IntQ):RecValue[A,B] = new VRec[A,B](name,value,quantifier)
+  def rec[A <: OValue,B <: OValue](value:Map[A,B]):RecValue[A,B] = new VRec[A,B](value)
+  def rec[A <: OValue,B <: OValue](name:String,value:RecValue[A,B],values:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm[A,B](name,value +: values)
+  def rec(values:Seq[ORecValue]):RecStrm[OValue,OValue] = new VRecStrm[OValue,OValue](values)
+  def rec[A <: OValue,B <: OValue](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap)
+  def rec[A <: OValue,B <: OValue](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne)
 
-  def rec[A <: Obj,B <: Obj]:RecType[A,B] = new TRec[A,B]()
+  def rec[A <: Obj,B <: Obj]:RecType[A,B] = new TRec[A,B]
   def trec[A <: Obj,B <: Obj](name:String):RecType[A,B] = new TRec[A,B](name,Map.empty,Nil,qOne)
   def trec[A <: Obj,B <: Obj](name:String,value:Map[A,B],quantifier:IntQ):RecType[A,B] = new TRec[A,B](name,value,Nil,quantifier)
   def trec[A <: Obj,B <: Obj](value:Map[A,B]):RecType[A,B] = new TRec[A,B](value)

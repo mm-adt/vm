@@ -31,6 +31,7 @@ import org.mmadt.storage.obj.{bool, qZero}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrValue extends Str
+  with ObjValue
   with Value[Str]
   with StartOp[StrType] {
 

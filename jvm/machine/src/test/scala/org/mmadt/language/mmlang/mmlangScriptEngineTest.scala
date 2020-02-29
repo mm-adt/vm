@@ -87,8 +87,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int <= rec.put(str("age"),int).get(str("age")))(engine.eval("rec[put,'age',int][get,'age']").next)
     assertResult(int <= rec.put(str("age"),int).get(str("age")).plus(int(10)))(engine.eval("rec[put,'age',int][get,'age'][plus,10]").next)
     assertResult(int(20))(engine.eval("['name':'marko'] => rec[put,'age',10][get,'age'][plus,10]").next)
-    assertResult(rec(str("name") -> str("marko"),str("age") -> int(20)))(engine.eval("['name':'marko'] => rec[put,'age',10][put,'age',rec[get,'age',int][plus,10]]").next)
-    assertResult(rec(str("name") -> str("marko"),str("age") -> int(25)))(engine.eval("['name':'marko'] => [put,'age',10][put,'age',[get,'age',int][plus,15]]").next)
+    // TODO: these are rec types being used as rec values
+    // assertResult(rec(str("name") -> str("marko"),str("age") -> int(20)))(engine.eval("['name':'marko'] => rec[put,'age',10][put,'age',rec[get,'age',int][plus,10]]").next)
+    // assertResult(rec(str("name") -> str("marko"),str("age") -> int(25)))(engine.eval("['name':'marko'] => [put,'age',10][put,'age',[get,'age',int][plus,15]]").next)
   }
 
   test("quantified value parsing"){

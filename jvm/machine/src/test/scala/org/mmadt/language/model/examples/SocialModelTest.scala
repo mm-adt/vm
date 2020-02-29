@@ -43,7 +43,7 @@ class SocialModelTest extends FunSuite {
   val model:Model = Model(
     nat -> (int <= int.is(int.gt(int(0)))),
     people -> person.q(*),
-    people.is(person.get("name",str).gt(str ~ "x")) -> person(str("name") -> str ~ "x"))
+    people.is(person.get("name",str).gt(str ~ "x")) -> person.apply2(str("name") -> str ~ "x"))
 
   ///////////////////////////////////////////////////////////
 

@@ -29,7 +29,7 @@ import org.mmadt.language.obj.{Obj, Rec}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RecStrm[A <: Obj,B <: Obj] extends Rec[A,B]
+trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Rec[A,B]
   with Strm[RecValue[A,B]] {
 
   override def value():Iterator[RecValue[A,B]] //

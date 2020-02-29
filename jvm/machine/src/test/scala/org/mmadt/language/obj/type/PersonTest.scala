@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.value.RecValue
+import org.mmadt.language.obj.value.{IntValue, ObjValue, RecValue, StrValue}
 import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
@@ -36,7 +36,7 @@ import scala.collection.immutable.ListMap
 class PersonTest extends FunSuite {
 
   test("person rec"){
-    val marko:RecValue[Obj,Obj] = rec(Map[Obj,Obj](str("name") -> str("marko"),str("age") -> int(29)))
+    val marko:RecValue[StrValue,ObjValue] = rec(Map(str("name") -> str("marko"),str("age") -> int(29)))
     assertResult(ListMap(str("name") -> str("marko"),str("age") -> int(29)))(marko.value())
     assertResult("['name':'marko','age':29]")(marko.toString)
     assertResult("person['name':'marko','age':29]")(marko.as("person").toString)
