@@ -26,7 +26,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map.{AndOp, EqsOp, OrOp}
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.storage.obj.value.VBool
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,5 +40,5 @@ trait Bool extends Obj
 }
 
 object Bool {
-  implicit def booleanToBool(java:Boolean):BoolValue = new VBool(java)
+  @inline implicit def booleanToBool(java:Boolean):BoolValue = bool(java)
 }

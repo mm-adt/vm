@@ -22,30 +22,28 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VIntTest extends FunSuite {
-
-  test("int values"){
+  test("int value"){
     assertResult(int(3))(int(1) + int(2))
+    assertResult(int(3))(int(1) + 2)
     assertResult(int(-4))(-int(4))
     assertResult(int(-4))(int(3) ==> int.plus(1).neg())
   }
-
   test("int value quantifiers"){
     assertResult(int(3).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)))
     assertResult(int(7).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)))
     assertResult(int(14).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).mult(int(2).q(int(34))))
     assertResult(int(14).q(int(4)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).mult(int(2).q(int(34))).q(int(2)))
-    //assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
     assertResult(bfalse.q(int(3)))(int(5).q(int(3)) ==> int.q(int(3)).plus(int(4)).gt(int(10)))
     assertResult(btrue.q(int(3)))(int(5).q(int(3)) ==> int.q(int(3)).plus(int(4)).gt(int(2)))
+    //assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
   }
-
 }
 
 

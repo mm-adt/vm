@@ -22,21 +22,19 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VBoolTest extends FunSuite {
-
-  test("bool values"){
+  test("bool value"){
     assert(btrue.value())
     assertResult(btrue)(btrue || bfalse)
     assertResult(bfalse)(btrue && bfalse)
     // assertResult(btrue)(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
   }
-
   test("bool value quantifiers"){
     assertResult(btrue.q(int(2)))(btrue.q(int(2)) ==> bool.q(int(2)))
     assertResult(btrue.q(int(2)))(btrue.q(int(2)) ==> bool.q(int(2)).and(btrue))

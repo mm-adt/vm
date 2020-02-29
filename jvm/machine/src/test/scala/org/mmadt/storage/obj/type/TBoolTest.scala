@@ -20,28 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.storage.obj.`type`
 
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Int extends Obj
-  with EqsOp[Int]
-  with PlusOp[Int]
-  with MultOp[Int]
-  with NegOp
-  with GtOp[Int]
-  with IsOp[Int]
-  with ToOp[Int] {
-}
-
-object Int {
-  @inline implicit def longToInt(java:Long):IntValue = int(java)
-  @inline implicit def intToInt(java:scala.Int):IntValue = int(java.longValue())
+class TBoolTest extends FunSuite {
+  test("bool typeo"){
+    assertResult("bool")(bool.name)
+    assertResult(bool.and(bool))(bool && bool)
+    assertResult(bool.and(true))(bool && true)
+    assertResult(bool.or(false))(bool || false)
+    assertResult(bool.and(bool.and(bool)))(bool && (bool && bool))
+    assertResult(bool.and(bool.and(bool.or(bool))))(bool && (bool && (bool || bool)))
+  }
 }

@@ -41,5 +41,5 @@ trait Str extends Obj
 }
 
 object Str {
-  implicit def stringToStr(java:String):StrValue = new VStr(java) //
+  @inline implicit def stringToStr(java:String):StrValue = new VStr(java) //
 }

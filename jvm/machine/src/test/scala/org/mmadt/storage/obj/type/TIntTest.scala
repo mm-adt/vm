@@ -22,19 +22,19 @@
 
 package org.mmadt.storage.obj.`type`
 
-
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TIntTest extends FunSuite {
-
   test("int type"){
+    assertResult("int")(int.name)
     assertResult(int.plus(int))(int + int)
     assertResult(int.plus(int(-4)))(int + -4)
+    assertResult(int.mult(int(10)))(int * 10)
+    assertResult(int.plus(int.plus(int)))(int + (int + int))
+    assertResult(int.plus(int.plus(int.mult(int))))(int + (int + (int * int)))
   }
-
-
 }

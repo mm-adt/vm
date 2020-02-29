@@ -22,34 +22,22 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.model.Model
-import org.mmadt.processor.obj.`type`.CompilingProcessor
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VStrTest extends FunSuite {
-
-  test("str values"){
+  test("str value"){
     assertResult(str("mar"))(str("m").plus("a").plus("r"))
+    assertResult(str("mar"))(str("m") + "a" + "r")
+    assertResult(btrue)(str("marko").eqs(str("marko")))
+    assertResult(btrue)(str("marko").eqs("marko"))
     assertResult(btrue)(str("m").gt(str("a")))
-    assertResult(bfalse)(str("m").gt(str("r")))
+    assertResult(btrue)(str("m").gt("a"))
+    assertResult(bfalse)(str("m").gt("r"))
   }
-
-  test("type names on str"){
-    assertResult("address['103 P.V.']")(str("103 P.V.").as("address").toString)
-  }
-
-  test("type names on model"){
-    val model     = Model.simple().
-      put(str.plus(str("a")),str.plus(str("b")))
-    val processor = new CompilingProcessor()
-    // println(str ==> str.plus("a").is(str.gt("bb")))
-    assertResult("address{?}<=str[as,address][plus,'ed'][is,bool<=address[gt,'xx']]")(processor.apply(str.as("address"),str.plus("ed").is(str.gt("xx"))).next().obj().toString)
-  }
-
   test("str value quantifiers"){
     assertResult(str("marko").q(int(2)))(str("marko").q(int(2)) ==> str.q(int(2)))
     assertResult(str("marko").q(int(2)))(str("mar").q(int(2)) ==> str.q(int(2)).plus(str("ko")))
