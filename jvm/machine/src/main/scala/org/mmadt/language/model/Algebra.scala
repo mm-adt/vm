@@ -31,6 +31,8 @@ import org.mmadt.language.obj.op.map._
  */
 object Algebra {
 
+  def universal(atype:Type[Obj]):Model = Model(atype.id() -> atype)
+
   type MultOne[T <: Obj] = Type[T] with MultOp[T] with OneOp[T]
   type PlusZero[T <: Obj] = Type[T] with PlusOp[T] with ZeroOp[T]
   def monoid[O <: Type[O]](monoid:Obj)(op:String):Model ={

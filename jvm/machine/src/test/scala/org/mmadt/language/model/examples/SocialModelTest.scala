@@ -41,8 +41,11 @@ class SocialModelTest extends FunSuite {
   val nat   :IntType          = social.define("nat")(int <= int.is(int.gt(0)))
   val person:RecType[Str,Obj] = social.define("person")(trec(str("name") -> str,str("age") -> nat))
   val people:RecType[Str,Obj] = social.define("people")(person.q(*))
+  social.put(Algebra.universal(person)) // TODO: make obj a type variable in a model
+  social.put(Algebra.universal(str))
   social.put(Algebra.group(nat)("+"))
   social.put(Algebra.group(nat)("*"))
+  social.put(person.get(str("firstname"),str),person.get(str("name"),str))
   println(social)
 
   test("model types"){
@@ -54,6 +57,15 @@ class SocialModelTest extends FunSuite {
   test("model values"){
     assertResult(nat(1))(nat(1))
     assertResult("person")(person(str("name") -> str("marko"),str("age") -> int(29)).name)
+  }
+
+  test("model compilations"){
+    assertResult(social.get(nat).get)(compiler(nat.plus(nat.zero())))
+    assertResult(social.get(nat).get)(compiler(nat.plus(nat.zero()).plus(nat.plus(nat.neg())).plus(nat.zero()).plus(nat.plus(nat.neg())).plus(nat.zero())))
+    assertResult(rec.get(str("name"),str))(compiler(person.id().get("firstname",str)))
+    assertResult(rec.get(str("name"),str))(compiler(person.id().get("firstname",str).id()))
+    // assertResult(rec.get(str("name"),str).plus(" rodriguez"))(compiler(person.id().get("firstname",str).id().plus(" rodriguez")))
+    // assertResult(int <= rec.get(str("age"),int).is(int.gt(0)))(compiler(person.id().get(str("age"),nat)))
   }
 
   test("rec stream w/ rewrites"){
