@@ -22,24 +22,26 @@
 
 package org.mmadt.storage
 
-import org.mmadt.language.obj.`type`.{BoolType,IntType,RecType,StrType}
+import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value._
-import org.mmadt.language.obj.value.strm.{IntStrm,StrStrm}
-import org.mmadt.language.obj.{ORecType,Obj}
-import org.mmadt.storage.obj.`type`.{TBool,TInt,TRec,TStr}
-import org.mmadt.storage.obj.value.strm.{VIntStrm,VStrStrm}
-import org.mmadt.storage.obj.value.{VBool,VInt,VRec,VStr}
+import org.mmadt.language.obj.value.strm.{IntStrm, StrStrm}
+import org.mmadt.language.obj.{ORecType, Obj}
+import org.mmadt.storage.obj.`type`._
+import org.mmadt.storage.obj.value._
+import org.mmadt.storage.obj.value.strm.{VIntStrm, VStrStrm}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StorageFactory {
   /////////TYPES/////////
+  def obj():ObjType
   def bool():BoolType
   def int():IntType
   def str():StrType
   def trec[A <: Obj,B <: Obj]():RecType[A,B]
   /////////VALUES/////////
+  def obj(value:Any):ObjValue
   def bool(value:Boolean):BoolValue
   def int(value:Long):IntValue
   def int(value:IntValue,values:IntValue*):IntStrm
@@ -50,11 +52,13 @@ trait StorageFactory {
 
 object StorageFactory {
   /////////TYPES/////////
+  def obj()(implicit f:StorageFactory):ObjType = f.obj()
   def bool()(implicit f:StorageFactory):BoolType = f.bool()
   def int()(implicit f:StorageFactory):IntType = f.int()
   def str()(implicit f:StorageFactory):StrType = f.str()
   def trec()(implicit f:StorageFactory):ORecType = f.trec()
   /////////VALUES/////////
+  def obj(value:Any)(implicit f:StorageFactory):ObjValue = f.obj(value)
   def bool(value:Boolean)(implicit f:StorageFactory):BoolValue = f.bool(value)
   def int(value:Long)(implicit f:StorageFactory):IntValue = f.int(value)
   def int(value:IntValue,values:IntValue*)(implicit f:StorageFactory):IntStrm = f.int(value,values:_*)
@@ -76,11 +80,13 @@ object StorageFactory {
 
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {
     /////////TYPES/////////
+    override def obj():ObjType = new TObj()
     override def bool():BoolType = new TBool()
     override def int():IntType = new TInt()
     override def str():StrType = new TStr()
     override def trec[A <: Obj,B <: Obj]():RecType[A,B] = new TRec[A,B]()
     /////////VALUES/////////
+    override def obj(value:Any):ObjValue = new VObj(value)
     override def bool(value:Boolean):BoolValue = new VBool(value)
     override def int(value:Long):IntValue = new VInt(value)
     override def int(value:IntValue,values:IntValue*):IntStrm = new VIntStrm(value +: values)

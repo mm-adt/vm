@@ -23,9 +23,17 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.ObjType
+import org.mmadt.language.obj.op.initial.StartOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ObjValue extends Obj
   with Value[Obj]
+  with StartOp[ObjType] {
+
+  override def start():ObjType
+  //def value(java:Any):this.type
+  override def value():Any
+}
