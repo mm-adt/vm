@@ -38,8 +38,7 @@ trait Int extends Obj
   with NegOp
   with GtOp[Int]
   with IsOp[Int]
-  with ToOp[Int] {
-}
+  with ToOp[Int]
 
 object Int {
   @inline implicit def longToInt(java:Long):IntValue = int(java)

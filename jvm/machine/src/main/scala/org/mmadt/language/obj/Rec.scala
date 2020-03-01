@@ -23,11 +23,11 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp,GetOp,PlusOp}
+import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{RecValue,Value}
-import org.mmadt.storage.obj.value.VRec
+import org.mmadt.language.obj.value.{RecValue, Value}
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,10 +41,5 @@ trait Rec[A <: Obj,B <: Obj] extends Obj
   with PutOp[A,B]
 
 object Rec {
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = new VRec[A,B](java) //
-
-  /*implicit final class ColonAssoc[A](private val self:A) extends AnyVal {
-    @inline
-    def -:[B](y:B):Tuple2[A,B] = Tuple2(self,y)
-  }*/
+  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
 }

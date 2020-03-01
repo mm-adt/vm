@@ -23,10 +23,10 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp,GtOp,PlusOp}
+import org.mmadt.language.obj.op.map.{EqsOp, GtOp, PlusOp}
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.storage.obj.value.VStr
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,10 +36,8 @@ trait Str extends Obj
   with PlusOp[Str]
   with GtOp[Str]
   with IsOp[Str]
-  with ToOp[Str] {
-
-}
+  with ToOp[Str]
 
 object Str {
-  @inline implicit def stringToStr(java:String):StrValue = new VStr(java) //
+  @inline implicit def stringToStr(java:String):StrValue = str(java)
 }

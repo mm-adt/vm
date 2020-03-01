@@ -36,5 +36,5 @@ trait IdOp {
 }
 
 object IdOp {
-  def apply():Inst = new VInst((Tokens.id,Nil),qOne,(a:Obj,b:List[Obj]) => a.id()) //
+  def apply():Inst = new VInst((Tokens.id,Nil),qOne,(a:Obj,b:List[Obj]) => a.id())
 }

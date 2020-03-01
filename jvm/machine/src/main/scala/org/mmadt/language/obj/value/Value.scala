@@ -25,7 +25,7 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.{Int, Obj}
-import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,21 +35,16 @@ trait Value[+V <: Obj] extends Obj {
   def value():Any
   def start():Type[Obj]
 
-  override def map[O <: Obj](other:O):O = other match {
-    case _:Value[O] => other
-    case atype:Type[O] => (this ==> atype)
-  }
-
   override def quant():Int = this.q()._1.q(qOne)
   override def count():IntValue = this.q()._1.q(qOne)
   override def id():this.type = this
+  override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this ==> atype
   override def from[O <: Obj](label:StrValue):O = this.start().from(label)
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.start().from(label,default)
-  override def equals(other:Any):Boolean = other match {
-    case avalue:Value[V] => avalue.value() == this.value()
-    case _ => false
+  override def map[O <: Obj](other:O):O = other match {
+    case _:Value[_] => other
+    case atype:Type[O] => this ==> atype
   }
-  override def toString:String = LanguageFactory.printValue(this)
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
@@ -57,5 +52,11 @@ trait Value[+V <: Obj] extends Obj {
     case argType:Type[_] => TypeChecker.matchesVT(this,argType)
   }
 
-  override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this ==> atype
+  // standard Java implementations
+  override def toString:String = LanguageFactory.printValue(this)
+  override def hashCode():scala.Int = this.name.hashCode ^ this.value().hashCode()
+  override def equals(other:Any):Boolean = other match {
+    case avalue:Value[V] => avalue.value() == this.value()
+    case _ => false
+  }
 }

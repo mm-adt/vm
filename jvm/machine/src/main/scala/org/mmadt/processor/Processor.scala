@@ -36,7 +36,6 @@ trait Processor {
   def apply[S <: Obj,E <: Obj](rangeType:Type[E]):E = this.apply(rangeType.domain[S](),rangeType).next().obj()
 }
 
-
 object Processor {
   def compiler(model:Model = Model.id):Processor = new CompilingProcessor(model)
   def iterator(model:Model = Model.id):Processor = new IteratorProcessor()

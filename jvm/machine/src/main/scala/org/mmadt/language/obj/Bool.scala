@@ -36,8 +36,7 @@ trait Bool extends Obj
   with IsOp[Bool]
   with AndOp
   with OrOp
-  with ToOp[Bool] {
-}
+  with ToOp[Bool]
 
 object Bool {
   @inline implicit def booleanToBool(java:Boolean):BoolValue = bool(java)

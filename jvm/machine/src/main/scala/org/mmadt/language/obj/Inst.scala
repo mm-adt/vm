@@ -45,8 +45,8 @@ trait Inst extends Obj {
   // standard Java implementations
   override def toString:String = LanguageFactory.printInst(this)
   override def hashCode:scala.Int = this.value().hashCode()
-  override def equals(other:Any):Boolean = other.isInstanceOf[Inst] &&
-                                           other.asInstanceOf[this.type].op().equals(this.op()) &&
-                                           other.asInstanceOf[this.type].args().equals(this.args())
-
+  override def equals(other:Any):Boolean = other match {
+    case inst:Inst => inst.op() == this.op() && inst.args() == this.args()
+    case _ => false
+  }
 }

@@ -25,7 +25,7 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

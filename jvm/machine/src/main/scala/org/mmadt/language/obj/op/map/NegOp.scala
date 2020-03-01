@@ -36,5 +36,5 @@ trait NegOp {
 }
 
 object NegOp {
-  def apply[O <: Obj with NegOp]():Inst = new VInst((Tokens.neg,Nil),qOne,((a:O,b:List[Obj]) => a.neg()).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[O <: Obj with NegOp]():Inst = new VInst((Tokens.neg,Nil),qOne,((a:O,b:List[Obj]) => a.neg()).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
