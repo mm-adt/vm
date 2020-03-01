@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.storage.obj.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -34,9 +34,9 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait MultOp[O <: Obj] {
   this:O =>
-  def mult(other:Type[O]):O with Type[O]
+  def mult(other:Type[O]):OType[O]
   def mult(other:Value[O]):this.type
-  final def *(other:Type[O]):O with Type[O] = this.mult(other)
+  final def *(other:Type[O]):OType[O] = this.mult(other)
   final def *(other:Value[O]):this.type = this.mult(other)
 }
 

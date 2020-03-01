@@ -57,12 +57,12 @@ package object obj {
   def bool(value:Boolean):BoolValue = new VBool(value)
   def str(value:String):StrValue = new VStr(value)
   def str(values:Seq[StrValue]):StrStrm = new VStrStrm(values)
-  def rec[A <: OValue,B <: OValue](name:String,value:Map[A,B],quantifier:IntQ):RecValue[A,B] = new VRec[A,B](name,value,quantifier)
-  def rec[A <: OValue,B <: OValue](value:Map[A,B]):RecValue[A,B] = new VRec[A,B](value)
-  def rec[A <: OValue,B <: OValue](name:String,value:RecValue[A,B],values:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm[A,B](name,value +: values)
-  def rec(values:Seq[ORecValue]):RecStrm[OValue,OValue] = new VRecStrm[OValue,OValue](values)
-  def rec[A <: OValue,B <: OValue](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap)
-  def rec[A <: OValue,B <: OValue](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne)
+  def rec[A <: ObjValue,B <: ObjValue](name:String,value:Map[A,B],quantifier:IntQ):RecValue[A,B] = new VRec[A,B](name,value,quantifier)
+  def rec[A <: ObjValue,B <: ObjValue](value:Map[A,B]):RecValue[A,B] = new VRec[A,B](value)
+  def rec[A <: ObjValue,B <: ObjValue](name:String,value:RecValue[A,B],values:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm[A,B](name,value +: values)
+  def rec(values:Seq[ORecValue]):RecStrm[ObjValue,ObjValue] = new VRecStrm[ObjValue,ObjValue](values)
+  def rec[A <: ObjValue,B <: ObjValue](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap)
+  def rec[A <: ObjValue,B <: ObjValue](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne)
 
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = new TRec[A,B]
   def trec[A <: Obj,B <: Obj](name:String):RecType[A,B] = new TRec[A,B](name,Map.empty,Nil,qOne)

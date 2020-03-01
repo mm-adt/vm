@@ -36,10 +36,12 @@ package object obj {
   type State = Map[String,Obj]
 
   // less typing
-  type OValue = Value[Obj]
+  type OType[+O <: Obj] = O with Type[O]
+  type OValue[+O <: Obj] = O with Value[O]
+  type ObjValue = Value[Obj]
   type ORecType = RecType[Obj,Obj]
-  type ORecValue = RecValue[OValue,OValue]
-  type ORecStrm = RecStrm[OValue,OValue]
+  type ORecValue = RecValue[ObjValue,ObjValue]
+  type ORecStrm = RecStrm[ObjValue,ObjValue]
 
   // quantifier utilities
   private lazy val zero:IntValue = int(0)
