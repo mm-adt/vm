@@ -25,17 +25,17 @@ package org.mmadt.processor
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.storage.obj.{bool, int}
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class EqInstTest extends FunSuite {
-
   test("[eq] w/ int"){
-    assertResult(bool(false))(int(1).eqs(int(3))) // value * value = value
-    assertResult(bool(true))(int(1).eqs(int(1)))
+    assertResult(bfalse)(int(1).eqs(int(3))) // value * value = value
+    assertResult(btrue)(int(1).eqs(int(1)))
+    assertResult(btrue)(int(1).eqs(1))
     assert(int(1).eqs(int(3)).isInstanceOf[BoolValue])
     assert(int(1).eqs(int(3)).isInstanceOf[Bool])
     assertResult(int(1).eqs(int))(int(1).eqs(int)) // value * type = type

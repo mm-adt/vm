@@ -22,14 +22,13 @@
 
 package org.mmadt.processor
 
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CountInstTest extends FunSuite {
-
   test("[count] w/ int"){
     assertResult(int(1))(int(2).count())
     assertResult(int(0))((int(1) ===> int.is(int.gt(int(10))).count()).next)
@@ -40,5 +39,4 @@ class CountInstTest extends FunSuite {
     assertResult(int(17))((int(int(0).q(int(10)),int(1).q(int(7))) ===> int.q(*).choose(int.q(*).is(int.q(*).gt(int(0))) -> int,int -> int).count()).next) // TODO: need smarter handling of strm compilations with quantifiers
     assertResult(int(13))((int(int(0).q(int(10)),int(1).q(int(3))) ===> int.q(*).plus(int(10)).count()).next)
   }
-
 }

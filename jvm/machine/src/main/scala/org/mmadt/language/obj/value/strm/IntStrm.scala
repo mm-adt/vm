@@ -25,7 +25,6 @@ package org.mmadt.language.obj.value.strm
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.{BoolType, IntType, Type}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.VIntStrm
 
 /**
@@ -45,8 +44,10 @@ trait IntStrm extends Int
   override def mult(other:Type[Int]):IntType = this.start().mult(other)
   override def mult(other:Value[Int]):this.type = new VIntStrm(this.name,this.value().map(i => i.mult(other)).toSeq).asInstanceOf[this.type]
   override def neg():this.type = new VIntStrm(this.name,this.value().map(i => i.neg()).toSeq).asInstanceOf[this.type]
+  override def one():IntType = this.start().one()
   override def gt(other:Type[Int]):BoolType = this.start().gt(other)
   override def gt(other:Value[Int]):BoolValue = throw new IllegalAccessException()
   override def is(bool:BoolType):IntType = this.start().is(bool)
   override def is(bool:BoolValue):this.type = throw new IllegalAccessException()
+  override def zero():IntType = this.start().zero()
 }

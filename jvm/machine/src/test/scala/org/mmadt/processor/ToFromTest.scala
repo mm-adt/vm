@@ -24,14 +24,13 @@ package org.mmadt.processor
 
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ToFromTest extends FunSuite {
-
   test("[to][from] w/ values"){
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from("x")))
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from("x"))
@@ -39,7 +38,6 @@ class ToFromTest extends FunSuite {
       assertResult(int(20))(int(1) ==> int.from[Int]("x").plus(1).map(int.mult(10)))
     }
   }
-
   test("[to][from] w/ types"){
     assertResult(int(5))(int(1) ==> int.plus(1).map(int(5)).to("x").from("x"))
     assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from[IntType]("x").mult(int.from[IntType]("y")))))

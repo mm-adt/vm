@@ -22,28 +22,21 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.StorageFactory.int
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class GtInstTest extends FunSuite {
-  test("[gt] w/ int"){
-    assertResult(bfalse)(int(1).gt(int(3))) // value * value = value
-    assert(int(1).gt(int(3)).isInstanceOf[BoolValue])
-    assert(int(1).gt(int(3)).isInstanceOf[Bool])
-    assertResult(int(1).gt(int))(int(1).gt(int)) // value * type = type
-    assert(int(1).gt(int).isInstanceOf[BoolType])
-    assert(int(1).gt(int).isInstanceOf[Bool])
-    assertResult(int.gt(int(3)))(int.gt(int(3))) // type * value = type
-    assert(int.gt(int(3)).isInstanceOf[BoolType])
-    assert(int.gt(int(3)).isInstanceOf[Bool])
-    assertResult(int.gt(int))(int.gt(int)) // type * type = type
-    assert(int.gt(int).isInstanceOf[BoolType])
-    assert(int.gt(int).isInstanceOf[Bool])
+class OneInstTest extends FunSuite {
+  test("[one] w/ int value"){
+    assertResult(int(1))(int(0).one())
+    assertResult(int(1))(int(1).one())
+    assertResult(int(1))(int(1).plus(100).one())
+    assertResult(int(1).q(10))(int(1).q(10).plus(100).one())
+  }
+  test("[one] w/ int type"){
+    assertResult("int[one]")(int.one().toString)
+    assertResult("int{10}[one]")(int.q(10).one().toString)
   }
 }

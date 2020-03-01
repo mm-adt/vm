@@ -23,7 +23,7 @@
 package org.mmadt.language.model
 
 import org.mmadt.processor.Processor
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
@@ -35,11 +35,13 @@ class AlgebraTest extends FunSuite {
     val compiler = Processor.compiler(Algebra.ring)
     println(Algebra.ring)
     assertResult(int)(compiler(int + 0))
+    assertResult(int)(compiler(int + 0 + 0 + 0))
+    assertResult(int)(compiler(int + int.zero()))
     assertResult(int)(compiler(-(-int + 0)))
     assertResult(-int)(compiler(int * -1))
-    assertResult(int * 0)(compiler(int + -int))
-//    assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
-//    assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
+    assertResult(int.zero())(compiler(int + -int))
+    //    assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
+    //    assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
   }
 
 }

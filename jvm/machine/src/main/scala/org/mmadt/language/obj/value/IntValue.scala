@@ -47,8 +47,10 @@ trait IntValue extends Int
   override def mult(other:Type[Int]):IntType = this.start().mult(other)
   override def mult(other:Value[Int]):this.type = this.value(this.value() * other.value().asInstanceOf[Long])
   override def neg():this.type = this.value(-this.value())
+  override def one():IntValue = this.value(1L)
   override def gt(other:Type[Int]):BoolType = this.start().gt(other)
   override def gt(other:Value[Int]):BoolValue = bool(this.value() > other.value().asInstanceOf[Long]).q(this.q())
   override def is(bool:BoolType):IntType = this.start().is(bool)
   override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(qZero)
+  override def zero():IntValue = this.value(0L)
 }

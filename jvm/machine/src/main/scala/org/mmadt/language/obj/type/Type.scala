@@ -100,7 +100,7 @@ trait Type[+T <: Obj] extends Obj
   }).asInstanceOf[O]
   override def count():IntType = int(CountOp(),qOne)
   override def id():this.type = this.compose(IdOp())
-  override def map[O <: Obj](other:O):O = this.compose(other,MapOp(other)).asInstanceOf[O]
+  override def map[O <: Obj](other:O):O = this.compose(asType(other),MapOp(other)).asInstanceOf[O]
   override def model(model:StrValue):this.type = this.compose(ModelOp(model))
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]

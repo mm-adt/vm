@@ -20,30 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class GtInstTest extends FunSuite {
-  test("[gt] w/ int"){
-    assertResult(bfalse)(int(1).gt(int(3))) // value * value = value
-    assert(int(1).gt(int(3)).isInstanceOf[BoolValue])
-    assert(int(1).gt(int(3)).isInstanceOf[Bool])
-    assertResult(int(1).gt(int))(int(1).gt(int)) // value * type = type
-    assert(int(1).gt(int).isInstanceOf[BoolType])
-    assert(int(1).gt(int).isInstanceOf[Bool])
-    assertResult(int.gt(int(3)))(int.gt(int(3))) // type * value = type
-    assert(int.gt(int(3)).isInstanceOf[BoolType])
-    assert(int.gt(int(3)).isInstanceOf[Bool])
-    assertResult(int.gt(int))(int.gt(int)) // type * type = type
-    assert(int.gt(int).isInstanceOf[BoolType])
-    assert(int.gt(int).isInstanceOf[Bool])
-  }
+trait OneOp[O <: Obj] {
+  def one():O
+}
+
+object OneOp {
+  def apply[O <: Obj with OneOp[O]]():Inst = new VInst((Tokens.one,Nil),qOne,((a:O,b:List[Obj]) => a.one()).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

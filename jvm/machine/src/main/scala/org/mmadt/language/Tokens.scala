@@ -51,6 +51,7 @@ object Tokens {
   val map     = "map"
   val mult    = "mult"
   val neg     = "neg"
+  val one     = "one"
   val gt      = "gt"
   val or      = "or"
   val put     = "put"
@@ -59,6 +60,7 @@ object Tokens {
   val start   = "start"
   val model   = "model"
   val q       = "q"
+  val zero    = "zero"
 
   val empty  = ""
   val btrue  = "true"

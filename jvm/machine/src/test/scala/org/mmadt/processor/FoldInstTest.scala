@@ -23,15 +23,14 @@
 package org.mmadt.processor
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.{IntType, Type}
-import org.mmadt.storage.obj.int
+import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class FoldInstTest extends FunSuite {
-
   test("[fold] w/ int"){
     assertResult("int[fold,'seed',0,int[plus,int<seed>]]")(int.fold[Int](int(0))(int.plus(int.from[IntType]("seed"))).toString)
     assertResult(int(2))(int(2).fold[Int](int(1))(int.id()))

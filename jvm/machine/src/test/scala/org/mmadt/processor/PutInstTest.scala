@@ -22,7 +22,6 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue}
 import org.mmadt.storage.obj.{int, rec, str}
 import org.scalatest.FunSuite
@@ -33,7 +32,6 @@ import scala.collection.immutable.ListMap
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class PutInstTest extends FunSuite {
-
   test("[put] w/ rec value"){
     val marko:RecValue[StrValue,ObjValue] = rec(str("name") -> str("marko"))
     val markoFull                         = marko.put(str("age"),int(29))

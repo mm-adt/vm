@@ -25,14 +25,13 @@ package org.mmadt.processor
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class AndInstTest extends FunSuite {
-
   test("[and] w/ bool"){
     assertResult(btrue)(btrue.and(btrue)) // value * value = value
     assert(btrue.and(btrue).isInstanceOf[BoolValue])
