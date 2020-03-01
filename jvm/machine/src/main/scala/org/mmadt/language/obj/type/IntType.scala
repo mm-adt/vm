@@ -32,8 +32,12 @@ import org.mmadt.storage.obj.value.VInt
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IntType extends Type[Int] with Int {
+trait IntType extends Int
+  with Type[Int]
+  with ObjType {
+
   def apply(value:IntValue):IntValue = new VInt(this.name,value.value(),this.q())
+
 
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
   override def plus(other:Type[Int]):IntType = this.compose(PlusOp(other))

@@ -22,6 +22,8 @@
 
 package org.mmadt.language.model
 
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.storage.obj._
 
 /**
@@ -36,4 +38,15 @@ object Algebra {
     (int + int.zero()) -> int,
     -(-int) -> int,
     (int ~ "x" * (int ~ "y" + int ~ "z")) -> ((int ~ "x" * int ~ "y") + (int ~ "x" * int ~ "z")))
+
+  def ring(atype:Type[Obj]):Model ={
+    val t:IntType = atype.asInstanceOf[IntType] // TODO: create a ring type
+    Model(
+      t + -t -> t.zero(),
+      t * t(-1) -> -t,
+      (t * t(1)) -> t,
+      (t + t(0)) -> (t + t.zero),
+      (t + t.zero()) -> t,
+      -(-t) -> t)
+  }
 }

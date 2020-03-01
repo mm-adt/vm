@@ -22,18 +22,22 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{Str, minZero}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map.{EqsOp, GtOp, PlusOp}
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
+import org.mmadt.language.obj.{Str, minZero}
+import org.mmadt.storage.obj.value.VStr
 
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrType extends Str
-  with Type[Str] {
+  with Type[Str]
+  with ObjType {
+
+  def apply(value:StrValue):StrValue = new VStr(this.name,value.value(),this.q())
 
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
   override def eqs(other:Type[Str]):BoolType = this.bool(EqsOp(other))

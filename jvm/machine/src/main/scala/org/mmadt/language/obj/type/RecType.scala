@@ -23,21 +23,24 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
+import org.mmadt.language.obj.op.map.{EqsOp,GetOp,PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Obj, Rec, minZero}
+import org.mmadt.language.obj.value.{BoolValue,RecValue,StrValue,Value}
+import org.mmadt.language.obj.{Obj,Rec,minZero}
 import org.mmadt.storage.obj.`type`.TRec
+import org.mmadt.storage.obj.value.VRec
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
-  with Type[Rec[A,B]] {
+  with Type[Rec[A,B]]
+  with ObjType {
 
+  def apply(value:(Value[A],Value[B])*):RecValue[Value[A],Value[B]] = new VRec[Value[A],Value[B]](this.name,value.toMap,this.q())
+  def apply(value:RecValue[Value[A],Value[B]]):RecValue[Value[A],Value[B]] = new VRec[Value[A],Value[B]](this.name,value.value(),this.q())
   def value():Map[A,B]
-  def apply2(values:(A,B)*):RecType[A,B] = new TRec[A,B](this.name,values.toMap,this.insts(),this.q())
 
   override def eqs(other:Type[Rec[A,B]]):BoolType = this.bool(EqsOp(other))
   override def eqs(other:Value[Rec[A,B]]):BoolType = this.bool(EqsOp(other))

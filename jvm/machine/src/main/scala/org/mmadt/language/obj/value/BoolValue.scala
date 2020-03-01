@@ -31,6 +31,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolValue extends Bool
+  with ObjValue
   with Value[Bool]
   with StartOp[BoolType] {
 

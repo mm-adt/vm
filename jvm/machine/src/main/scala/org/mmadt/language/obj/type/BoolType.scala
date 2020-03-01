@@ -23,16 +23,20 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{AndOp, EqsOp, OrOp}
+import org.mmadt.language.obj.op.map.{AndOp,EqsOp,OrOp}
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
-import org.mmadt.language.obj.{Bool, minZero}
+import org.mmadt.language.obj.value.{BoolValue,StrValue,Value}
+import org.mmadt.language.obj.{Bool,minZero}
+import org.mmadt.storage.obj.value.VBool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolType extends Bool
-  with Type[Bool] {
+  with Type[Bool]
+  with ObjType {
+
+  def apply(value:BoolValue):BoolValue = new VBool(this.name,value.value(),this.q())
 
   override def and(bool:BoolType):BoolType = this.compose(AndOp(bool))
   override def and(bool:BoolValue):this.type = this.compose(AndOp(bool))

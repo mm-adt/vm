@@ -25,10 +25,10 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.value.{IntValue,ObjValue,Value}
+import org.mmadt.language.obj.{Inst,Obj}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.`type`.{TInt, TRec}
+import org.mmadt.storage.obj.`type`.{TInt,TRec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

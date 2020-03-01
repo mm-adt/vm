@@ -35,5 +35,5 @@ trait OneOp[O <: Obj] {
 }
 
 object OneOp {
-  def apply[O <: Obj with OneOp[O]]():Inst = new VInst((Tokens.one,Nil),qOne,((a:O,b:List[Obj]) => a.one()).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with OneOp[O]]():Inst = new VInst((Tokens.one,Nil),qOne,((a:O,_:List[Obj]) => a.one()).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

@@ -27,7 +27,6 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.value.I1Traverser
-import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,7 +39,7 @@ object InstUtil {
       case typeArg:Type[_] => traverser.split(traverser.obj() match {
         case atype:Type[_] => atype.range()
         case avalue:Value[_] => avalue
-      }).apply(typeArg).obj()
+      }).apply(traverser.model.get(typeArg).getOrElse(typeArg)).obj()
     }
   }
 

@@ -51,8 +51,9 @@ object mmlangPrinter {
   }
 
   def typeString(t:Type[Obj]):String ={
+    val named = Tokens.named(t.name)
     val range  = (t match {
-      case r:RecType[_,_] => return if (r.value().isEmpty) "" else r.value().foldLeft("[")((string,r) => string + r._1 + "->" + r._2 + "|").dropRight(1) + "]"
+      case r:RecType[_,_] => (if (named) t.name else "") + (if (r.value().isEmpty) "" else r.value().foldLeft("[")((string,r) => string + r._1 + "->" + r._2 + ",").dropRight(1) + "]")
       case _ => t.name
     }) + qString(t.q())
     val domain = if (t.insts().isEmpty) "" else

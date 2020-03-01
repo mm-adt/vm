@@ -22,11 +22,9 @@
 
 package org.mmadt.language.model.examples
 
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.{Obj, Str}
-import org.mmadt.processor.obj.`type`.CompilingProcessor
-import org.mmadt.storage.obj.{*, int, str, trec}
+import org.mmadt.language.obj.{Obj,Str}
+import org.mmadt.storage.obj.trec
 import org.scalatest.FunSuite
 
 /**
@@ -34,24 +32,8 @@ import org.scalatest.FunSuite
  */
 class GraphModelTest extends FunSuite {
 
-  val vertex:RecType[Str,Obj] = trec("vertex") //
-  val edge  :RecType[Str,Obj] = trec("edge") //
-  val graph :RecType[Str,Obj] = trec("graph") //
-
-  val model:Model = Model(
-    edge -> edge.apply2(str("inV") -> vertex,str("outV") -> vertex,str("label") -> str),
-    edge.get(str("label"),str) -> str("friend").start(),
-    vertex -> vertex.apply2(str("id") -> int ~ "i",str("outE") -> edge.q(*),str("inE") -> edge.q(*)),
-    vertex.put(str("id"),int) -> vertex,
-    graph -> vertex.q(*))
-  //graph.is(graph.get(str("id"), int).eqs(int(0))) -> graph.model("db"))
-
-  /*val model: Model = Model.simple().
-    put(edge, edge(str("inV") -> vertex, str("outV") -> vertex, str("label") -> str)).
-    put(edge.get(str("label"), str), str("friend").start()).
-    put(vertex, vertex(str("id") -> int ~ "i", str("outE") -> edge.q(*), str("inE") -> edge.q(*))).
-    put(vertex.put(str("id"), int), vertex).
-    put(graph, vertex.q(*)).
-    put(graph.is(graph.get(str("id"), int).gt(int(0))), graph.model("db"))*/
+  val vertex:RecType[Str,Obj] = trec("vertex")
+  val edge  :RecType[Str,Obj] = trec("edge")
+  val graph :RecType[Str,Obj] = trec("graph")
 
 }

@@ -24,7 +24,8 @@ package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec}
 
 import scala.collection.mutable
 
@@ -32,10 +33,19 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
-  final def apply(left:Type[Obj]):Type[Obj] = this.get(left).get
+  def put(model:Model):Model
   def put(left:Type[Obj],right:Type[Obj]):Model
   def get(left:Type[Obj]):Option[Type[Obj]]
 
+  def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
+    val namedType:O = (definition match {
+      case _:BoolType => new TBool(name,Nil,definition.q())
+      case _:IntType => new TInt(name,Nil,definition.q())
+      case rec:RecType[Obj,Obj] => new TRec[Obj,Obj](name,rec.value(),Nil,definition.q())
+    }).asInstanceOf[O]
+    this.put(namedType.asInstanceOf[Type[Obj]],definition)
+    namedType
+  }
 }
 
 object Model {
@@ -43,12 +53,18 @@ object Model {
 
   val id:Model = new Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this
+    override def put(model:Model):Model = this
     override def get(left:Type[Obj]):Option[Type[Obj]] = None
   }
 
   def simple():Model = new Model {
     val typeMap:mutable.Map[String,mutable.Map[Type[Obj],Type[Obj]]] = mutable.Map()
     override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).fold(Tokens.empty)((x,y) => x + y + "\n")
+
+    override def put(model:Model):Model ={
+      model.asInstanceOf[this.type].typeMap.foreach(x => x._2.foreach(y => this.put(y._1,y._2)))
+      this
+    }
     override def put(left:Type[Obj],right:Type[Obj]):Model ={
       if (typeMap.get(left.name).isEmpty) typeMap.put(left.name,mutable.Map())
       typeMap(left.name).put(left,right)

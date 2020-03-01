@@ -40,8 +40,8 @@ class AlgebraTest extends FunSuite {
     assertResult(int)(compiler(-(-int + 0)))
     assertResult(-int)(compiler(int * -1))
     assertResult(int.zero())(compiler(int + -int))
-    //    assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
-    //    assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
+    // assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
+    // assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
   }
 
 }

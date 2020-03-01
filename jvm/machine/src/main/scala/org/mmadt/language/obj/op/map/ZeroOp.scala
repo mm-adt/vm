@@ -35,5 +35,5 @@ trait ZeroOp[O <: Obj] {
 }
 
 object ZeroOp {
-  def apply[O <: Obj with ZeroOp[O]]():Inst = new VInst((Tokens.zero,Nil),qOne,((a:O,b:List[Obj]) => a.zero()).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with ZeroOp[O]]():Inst = new VInst((Tokens.zero,Nil),qOne,((a:O,_:List[Obj]) => a.zero()).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
