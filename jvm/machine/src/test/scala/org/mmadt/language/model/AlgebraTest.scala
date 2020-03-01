@@ -31,15 +31,16 @@ import org.scalatest.FunSuite
  */
 class AlgebraTest extends FunSuite {
 
-  test("int ring rewrites"){
-    val compiler = Processor.compiler(Algebra.ring)
-    println(Algebra.ring)
-    assertResult(int)(compiler(int + 0))
-    assertResult(int)(compiler(int + 0 + 0 + 0))
+  test("int group */+ rewrites"){
+    val model    = Algebra.group(int)("*").put(Algebra.group(int)("+"))
+    val compiler = Processor.compiler(model)
+    println(model)
     assertResult(int)(compiler(int + int.zero()))
-    assertResult(int)(compiler(-(-int + 0)))
-    assertResult(-int)(compiler(int * -1))
+    assertResult(int)(compiler(int.plus(int.zero()) + int.zero()))
+    assertResult(int)(compiler(int + int.zero()))
+    assertResult(int)(compiler(-(-int) + int.zero()))
     assertResult(int.zero())(compiler(int + -int))
+    //  assertResult(-int)(compiler(int * -int.one()))
     // assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
     // assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
   }

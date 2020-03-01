@@ -31,6 +31,7 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OneOp[O <: Obj] {
+  this:O =>
   def one():O
 }
 

@@ -23,30 +23,40 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{IntType, Type}
-import org.mmadt.storage.obj._
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.map._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object Algebra {
-  val ring:Model = Model(
-    int + -int -> int.zero(),
-    int * int(-1) -> -int,
-    (int * int(1)) -> int,
-    (int + int(0)) -> (int + int.zero),
-    (int + int.zero()) -> int,
-    -(-int) -> int,
-    (int ~ "x" * (int ~ "y" + int ~ "z")) -> ((int ~ "x" * int ~ "y") + (int ~ "x" * int ~ "z")))
 
-  def ring(atype:Type[Obj]):Model ={
-    val t:IntType = atype.asInstanceOf[IntType] // TODO: create a ring type
-    Model(
-      t + -t -> t.zero(),
-      t * t(-1) -> -t,
-      (t * t(1)) -> t,
-      (t + t(0)) -> (t + t.zero),
-      (t + t.zero()) -> t,
-      -(-t) -> t)
+  type MultOne[T <: Obj] = Type[T] with MultOp[T] with OneOp[T]
+  type PlusZero[T <: Obj] = Type[T] with PlusOp[T] with ZeroOp[T]
+  def monoid[O <: Type[O]](monoid:Obj)(op:String):Model ={
+    op match {
+      case "*" =>
+        val m = monoid.asInstanceOf[MultOne[O]]
+        Model(m.mult(m.one()) -> m)
+      case "+" =>
+        val p = monoid.asInstanceOf[PlusZero[O]]
+        Model(p.plus(p.zero()) -> p)
+    }
+  }
+
+  type MultDivOne[T <: Obj] = MultOne[T] // with InverseOp with DivOp
+  type PlusMinusZero[T <: Obj] = PlusZero[T] with NegOp // with MinusOp
+  def group[O <: Type[O]](group:Obj)(op:String):Model ={
+    op match {
+      case "*" =>
+        val m = group.asInstanceOf[MultOne[O]]
+        Model(m.mult(m.one()) -> m)
+      case "+" =>
+        val p = group.asInstanceOf[PlusMinusZero[O]]
+        Model(
+          p + p.zero() -> p,
+          p + -p -> p.zero(),
+          -(-p) -> p)
+    }
   }
 }

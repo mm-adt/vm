@@ -22,7 +22,7 @@
 
 package org.mmadt.language.model.examples
 
-import org.mmadt.language.model.Model
+import org.mmadt.language.model.{Algebra, Model}
 import org.mmadt.language.obj.`type`.{IntType, RecType}
 import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.processor.Processor
@@ -41,8 +41,9 @@ class SocialModelTest extends FunSuite {
   val nat   :IntType          = social.define("nat")(int <= int.is(int.gt(0)))
   val person:RecType[Str,Obj] = social.define("person")(trec(str("name") -> str,str("age") -> nat))
   val people:RecType[Str,Obj] = social.define("people")(person.q(*))
-  // println(social)
-  //social.put(Algebra.ring(nat))
+  social.put(Algebra.group(nat)("+"))
+  social.put(Algebra.group(nat)("*"))
+  println(social)
 
   test("model types"){
     assertResult(int <= int.is(int.gt(0)))(social.get(nat).get)
