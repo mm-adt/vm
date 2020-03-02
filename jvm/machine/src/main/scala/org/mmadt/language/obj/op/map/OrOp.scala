@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.`type`.{BoolType, __}
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Bool, Inst, Obj}
 import org.mmadt.storage.obj.qOne
@@ -45,4 +45,7 @@ object OrOp {
     case avalue:BoolValue => a.or(avalue)
     case atype:BoolType => a.or(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
+
+  def apply[O <: Obj with OrOp](other:__):Inst = new VInst((Tokens.or,List(other)),qOne,((a:O,b:List[Obj]) => a.or(other(a.asInstanceOf[BoolType].range()).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj])
+
 }

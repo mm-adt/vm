@@ -42,7 +42,7 @@ trait ChooseOp {
   def choose[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):OT ={
     this match {
       case atype:Type[IT] with IT =>
-        val newBranches:RecType[IT,OT] = applyRec(atype.range(),branches)
+        val newBranches:RecType[IT,OT] = applyRec(atype.range(),branches) // composed branches given the incoming type
         atype.compose[OT](generalType[OT](newBranches.value().values),ChooseOp[IT,OT](newBranches))
       case avalue:Value[IT] with IT =>
         branches.value().find(p => p._1 match {

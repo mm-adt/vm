@@ -24,9 +24,8 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{IntType, Type}
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.`type`.TObj
 import org.scalatest.FunSuite
 
 import scala.collection.JavaConverters._
@@ -238,6 +237,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(2))(engine.eval("1,3,7,2,1,10 ==> +2[is>5][count]").next)
     ///
     assertResult(int(7))(engine.eval("1,2,3 ==> int[fold,'seed',1,[plus,int<seed>]]").next)
+  }
+
+  test("logical expressions"){
+    assertResult(btrue)(engine.eval("true => [and,true]").next)
+    assertResult(btrue.q(3))(engine.eval("true{3} => [and,true][or,false]").next)
+    assertResult(btrue.q(3))(engine.eval("true{3} => [and,true][or,[and,bool]]").next)
+    assertResult(bfalse.q(3,30))(engine.eval("true{3,30} => [and,false][or,[and,bool]]").next)
   }
 
   test("composite expression parsing"){

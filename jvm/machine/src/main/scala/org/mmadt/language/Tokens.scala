@@ -71,6 +71,8 @@ object Tokens {
   val mult_op,q_star = "*"
   val gt_op          = ">"
   val eqs_op         = "=="
+  val and_op         = "&&"
+  val or_op          = "||"
 
   val ::  = ":"
   val :-> = "->"

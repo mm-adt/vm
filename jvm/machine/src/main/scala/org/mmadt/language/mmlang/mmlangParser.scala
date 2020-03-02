@@ -29,11 +29,11 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm, StrStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
+import org.mmadt.language.obj.value.strm.{IntStrm,StrStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.storage.obj._
 
 import scala.util.matching.Regex
@@ -108,11 +108,21 @@ object mmlangParser extends JavaTokenParsers {
   lazy val instArg      :Parser[Obj]  = (stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2)))) | obj // TODO: hardcoded int for unspecified state type
   lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | infixSugar
   lazy val infixSugar   :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
-  lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[Type[Obj],Obj]]))
+  lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x))
   lazy val sugarlessInst:Parser[Inst] = LBRACKET ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(COMMA)) ~ repsep(instArg,COMMA) <~ RBRACKET ^^ (x => instMatrix(x._1,x._2))
 
   private def instMatrix(op:String,args:List[Obj]):Inst ={ // TODO: move to language.obj.op.InstUtil (should be reused by all JVM-based mm-ADT languages)
     op match {
+      case Tokens.and | Tokens.and_op => args.head match {
+        case arg:BoolType => AndOp(arg)
+        case arg:BoolValue => AndOp(arg)
+        case arg:__ => AndOp(arg)
+      }
+      case Tokens.or | Tokens.or_op => args.head match {
+        case arg:BoolType => OrOp(arg)
+        case arg:BoolValue => OrOp(arg)
+        case arg:__ => OrOp(arg)
+      }
       case Tokens.plus | Tokens.plus_op => args.head match {
         case arg:IntValue => PlusOp(arg)
         case arg:IntType => PlusOp(arg)

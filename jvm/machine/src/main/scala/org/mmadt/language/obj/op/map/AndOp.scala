@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.`type`.{BoolType, __}
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Bool, Inst, Obj}
 import org.mmadt.storage.obj.qOne
@@ -45,4 +45,7 @@ object AndOp {
     case avalue:BoolValue => a.and(avalue)
     case atype:BoolType => a.and(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
+
+  def apply[O <: Obj with AndOp](other:__):Inst = new VInst((Tokens.and,List(other)),qOne,((a:O,b:List[Obj]) => a.and(other(a.asInstanceOf[BoolType].range()).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj])
+
 }
