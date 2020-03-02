@@ -61,7 +61,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ (aType | anonType) ^^ (x => x._1 ===> x._2)
   lazy val compilation:Parser[Obj]           = objType ~ opt(objType) ^^ (x => x._2 match {
     case Some(atype) => (x._1 ==> this.model) (atype)
-    case None => x._1
+    case None => x._1 // TODO: clip domain and send domain through
   })
 
   lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | name) ~ opt(quantifier) ^^ {

@@ -39,7 +39,7 @@ import org.mmadt.language.obj.type.Type;
 
 import javax.script.ScriptEngineManager;
 import java.io.File;
-import java.io.FileReader;
+import java.nio.file.Files;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -131,9 +131,10 @@ public class Console {
         } else {
             try {
                 assert model != null;
-                return model.put(Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(new FileReader(file)).next()));
+                return model.put(Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(Files.lines(file.toPath()).map(x -> x.trim()).reduce((a, b) -> a + " " + b).orElse("")).next()));
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
+
             }
         }
     }
