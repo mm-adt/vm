@@ -56,13 +56,13 @@ object mmlangParser extends JavaTokenParsers {
   }
 
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
-  lazy val expr:Parser[Any] = multiple | single | obj
+  lazy val expr:Parser[Any] = evaluation | compilation | obj
 
-  lazy val single  :Parser[Obj]           = ((strm | obj) <~ RDARROW) ~ (aType | anonType) ^^ (x => x._1 match {
-    case atype:Type[_] => (atype ==> this.model) (x._2)
-    case avalue:Value[_] => avalue ==> x._2
+  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ (aType | anonType) ^^ (x => x._1 ===> x._2)
+  lazy val compilation:Parser[Obj]           = objType ~ opt(objType) ^^ (x => x._2 match {
+    case Some(atype) => (x._1 ==> this.model) (atype)
+    case None => x._1
   })
-  lazy val multiple:Parser[Iterator[Obj]] = ((strm | obj) <~ RRDARROW) ~ objType ^^ (x => x._1 ===> x._2)
 
   lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | name) ~ opt(quantifier) ^^ {
     case atype ~ q => q.foldRight(atype match {
