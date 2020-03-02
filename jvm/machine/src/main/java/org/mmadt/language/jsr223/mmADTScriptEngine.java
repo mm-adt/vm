@@ -41,6 +41,9 @@ public interface mmADTScriptEngine extends ScriptEngine {
     }
 
     @Override
+    public Iterator<Obj> eval(Reader reader) throws ScriptException;
+
+    @Override
     public Iterator<Obj> eval(String script, ScriptContext context) throws ScriptException;
 
     @Override

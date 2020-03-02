@@ -38,6 +38,10 @@ import org.mmadt.language.obj.type.RecType;
 import org.mmadt.language.obj.type.Type;
 
 import javax.script.ScriptEngineManager;
+import java.io.File;
+import java.io.FileReader;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -56,9 +60,10 @@ public class Console {
 
     private static final String HISTORY = ".mmadt_history";
     private static final String RESULT = "==>";
-    private static final String Q = ":q";
-    private static final String L = ":l";
-    private static final String MODEL = ":model";
+    private static final String QUIT_OP = ":q";
+    private static final String LANG_OP = ":lang";
+    private static final String MODEL_OP = ":model";
+    private static final String MODEL = "model";
 
     public static void main(final String[] args) throws Exception {
         String engineName = "mmlang";
@@ -87,17 +92,19 @@ public class Console {
                     line = line.trim().substring(0, line.length() - 1) + reader.readLine(".".repeat(engineName.length()) + "> ");
                 }
                 ///////////////////
-                if (line.equals(Q))
+                if (line.equals(QUIT_OP))
                     break;
-                else if (line.equals(L))
+                else if (line.equals(LANG_OP))
                     manager.getEngineFactories().forEach(factory -> terminal.writer().println(RESULT + factory.getEngineName()));
-                else if (line.startsWith(L))
-                    engineName = line.replace(L, "").trim();
-                else if (line.equals(MODEL)) {
-                    final Model model = (Model) engine.get("model");
+                else if (line.startsWith(LANG_OP))
+                    engineName = line.replace(LANG_OP, "").trim();
+                else if (line.equals(MODEL_OP)) {
+                    final Model model = (Model) engine.get(MODEL);
                     if (null != model) terminal.writer().println(model);
-                } else if (line.startsWith(MODEL))
-                    engine.put("model", Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(line.substring(6)).next()));
+                } else if (line.startsWith(MODEL_OP) && new File(line.substring(6).trim()).exists())
+                    engine.put(MODEL, loadFiles(terminal, engine, line.substring(6).trim()));
+                else if (line.startsWith(MODEL_OP))
+                    engine.put(MODEL, Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(line.substring(6)).next()));
                 else
                     engine.eval(line).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {
@@ -106,6 +113,28 @@ public class Console {
                 terminal.writer().println(e);
             }
             terminal.flush();
+        }
+    }
+
+    private static Model loadFiles(final Terminal terminal, final mmADTScriptEngine engine, final String location) {
+        if (null == engine.get(MODEL))
+            engine.put(MODEL, Model.simple());
+        final Model model = (Model) engine.get(MODEL);
+        File file = new File(location);
+        if (file.isDirectory()) {
+            return Stream.of(Objects.requireNonNull(file.listFiles())).
+                    filter(File::isFile).
+                    filter(x -> x.getName().endsWith(engine.getFactory().getExtensions().get(0))).
+                    peek(x -> terminal.writer().println(RESULT + "Loaded " + x)).
+                    map(x -> loadFiles(terminal, engine, x.getAbsolutePath())).
+                    reduce(Model::put).orElse(model);
+        } else {
+            try {
+                assert model != null;
+                return model.put(Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(new FileReader(file)).next()));
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
         }
     }
 }

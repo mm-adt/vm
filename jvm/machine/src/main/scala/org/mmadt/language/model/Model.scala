@@ -60,7 +60,7 @@ object Model {
 
   def simple():Model = new Model {
     val typeMap:mutable.Map[String,mutable.Map[Type[Obj],Type[Obj]]] = mutable.Map()
-    override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).fold(Tokens.empty)((x,y) => x + y + "\n").trim()
+    override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).map(x => x.trim).fold(Tokens.empty)((x,y) => x + y + "\n").trim
 
     override def put(model:Model):Model ={
       model.asInstanceOf[this.type].typeMap.foreach(x => x._2.foreach(y => this.put(y._1,y._2)))
