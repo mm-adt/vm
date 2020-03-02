@@ -49,8 +49,7 @@ trait Obj
   // quantifier methods
   def q():IntQ
   def q(quantifier:IntQ):this.type
-  def q(single:IntValue):this.type = this.q((single,single))
-  def q(min:IntValue,max:IntValue):this.type = this.q((min,max))
+  def q(single:IntValue):this.type = this.q(single,single)
   def alive():Boolean = this.q() != qZero
 
   // utility methods

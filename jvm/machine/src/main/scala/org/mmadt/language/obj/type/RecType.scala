@@ -23,11 +23,11 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp,GetOp,PlusOp}
+import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue,RecValue,StrValue,Value}
-import org.mmadt.language.obj.{Obj,Rec,minZero}
+import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Obj, Rec, minZero}
 import org.mmadt.storage.obj.`type`.TRec
 import org.mmadt.storage.obj.value.VRec
 
@@ -61,7 +61,7 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
 
   override def hashCode():scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.insts().hashCode() ^ this.q().hashCode()
   override def equals(other:Any):Boolean = other match {
-    case atype:RecType[A,B] => this.insts().map(_._2) == atype.insts().map(_._2) && this.name == atype.name && this.q() == atype.q() && this.value() == atype.value()
+    case atype:RecType[A,B] => this.name == atype.name && this.q() == atype.q() && this.value() == atype.value() && this.insts().map(_._2) == atype.insts().map(_._2)
     case _ => false
   }
 }

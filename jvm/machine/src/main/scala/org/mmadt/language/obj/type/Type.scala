@@ -123,7 +123,7 @@ trait Type[+T <: Obj] extends Obj
   override def hashCode():scala.Int = this.name.hashCode ^ this.insts().hashCode() ^ this.q().hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:__ => atype.toString.equals(this.toString) // TODO: get __ better aligned with Type
-    case atype:Type[Obj] => atype.insts().map(_._2) == this.insts().map(_._2) && this.name == atype.name && this.q() == atype.q()
+    case atype:Type[Obj] => this.name == atype.name && this.q() == atype.q() && atype.insts().map(_._2) == this.insts().map(_._2)
     case _ => false
   }
 }
