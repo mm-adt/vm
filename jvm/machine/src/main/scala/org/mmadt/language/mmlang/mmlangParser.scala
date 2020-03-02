@@ -49,7 +49,7 @@ object mmlangParser extends JavaTokenParsers {
 
   def parse[T <: Obj](input:String,_model:Model = Model.id):Iterator[T] ={
     if (null != _model) this.model = _model
-    this.parseAll(expr | emptySpace,input).map{
+    this.parseAll(expr | emptySpace,input.trim).map{
       case itty:Iterator[T] => itty
       case obj:T => Iterator(obj)
     }.get

@@ -61,4 +61,7 @@ object Algebra {
           -(-p) -> p)
     }
   }
+
+  def ring[O <: Obj](ring:Type[O]):Model = group(ring)("+").put(group(ring)("*"))
+
 }

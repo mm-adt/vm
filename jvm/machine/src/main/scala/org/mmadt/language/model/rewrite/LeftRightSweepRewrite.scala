@@ -22,11 +22,13 @@
 
 package org.mmadt.language.model.rewrite
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.obj._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,7 +48,7 @@ object LeftRightSweepRewrite {
           traverser)
       }
     } else if (btype.insts().nonEmpty) {
-      rewrite[S](model,
+      rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),
         traverser.apply(btype.insts().head._2.apply(btype.insts().head._1).asInstanceOf[Type[S]]))
@@ -56,9 +58,19 @@ object LeftRightSweepRewrite {
 
   // if no match, then apply the instruction after rewriting its arguments
   private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst,traverser:Traverser[S]):List[Obj] ={
-    inst.args().map{
-      case atype:Type[_] => rewrite(model,atype,start,traverser.split(start)).obj()
-      case avalue:Value[_] => avalue
+    inst.op() match {
+      case Tokens.choose =>
+        List(trec(inst.arg0[ORecType]().value().map(x => (x._1 match { // TODO: merge the two identical key/value pair branches into one
+          case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
+          case branchValue:Value[_] => branchValue
+        },x._2 match {
+          case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
+          case branchValue:Value[_] => branchValue
+        }))))
+      case _ => inst.args().map{
+        case atype:Type[_] => rewrite(model,atype,start,traverser.split(start)).obj()
+        case avalue:Value[_] => avalue
+      }
     }
   }
 }

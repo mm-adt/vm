@@ -59,10 +59,9 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   override def is(bool:BoolType):RecType[A,B] = this.compose(IsOp(bool)).q(minZero(this.q()))
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q()))
 
-  /*override def get(key:A):B = this.value().get(key) match {
-    case Some(bvalue:Value[_] with B) => bvalue
-    case Some(btype:Type[_] with B) => key ==> btype
-    case None => throw new NoSuchElementException("The rec does not have a value for the key: " + key)
-    case _ => throw new RuntimeException()
-  }*/
+  override def hashCode():scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.insts().hashCode() ^ this.q().hashCode()
+  override def equals(other:Any):Boolean = other match {
+    case atype:RecType[A,B] => this.insts().map(_._2) == atype.insts().map(_._2) && this.name == atype.name && this.q() == atype.q() && this.value() == atype.value()
+    case _ => false
+  }
 }

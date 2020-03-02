@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.obj.`type`.util
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
@@ -34,6 +35,7 @@ import org.mmadt.processor.obj.value.I1Traverser
 object InstUtil {
 
   def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
+    if(inst.op() == Tokens.choose) return inst.args()
     inst.args().map{
       case valueArg:Value[_] => valueArg
       case typeArg:Type[_] => traverser.split(traverser.obj() match {
