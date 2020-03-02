@@ -24,7 +24,7 @@ package org.mmadt.language
 
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
+import org.mmadt.language.obj.value.{IntValue, ObjValue, RecValue, Value}
 import org.mmadt.storage.obj._
 
 /**
@@ -38,10 +38,9 @@ package object obj {
   // less typing
   type OType[+O <: Obj] = O with Type[O]
   type OValue[+O <: Obj] = O with Value[O]
-  type ObjValue = Value[Obj]
   type ORecType = RecType[Obj,Obj]
-  type ORecValue = RecValue[ObjValue,ObjValue]
-  type ORecStrm = RecStrm[ObjValue,ObjValue]
+  type ORecValue = RecValue[Value[Obj],Value[Obj]]
+  type ORecStrm = RecStrm[Value[Obj],Value[Obj]]
 
   // quantifier utilities
   private lazy val zero:IntValue = int(0)

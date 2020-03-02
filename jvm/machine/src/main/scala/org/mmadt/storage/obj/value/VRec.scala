@@ -36,6 +36,7 @@ import org.mmadt.storage.obj.`type`.TRec
 class VRec[A <: Value[Obj],B <: Value[Obj]](name:String,java:Map[A,B],quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with RecValue[A,B] {
 
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne)
+  def this(name:String,java:Map[A,B]) = this(name,java,qOne)
 
   override def value():Map[A,B] = java
   override def value(java:Map[A,B]):this.type = new VRec(this.name,java,quantifier).asInstanceOf[this.type]

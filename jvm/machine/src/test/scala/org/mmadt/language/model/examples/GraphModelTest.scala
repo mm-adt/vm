@@ -32,8 +32,8 @@ import org.scalatest.FunSuite
  */
 class GraphModelTest extends FunSuite {
 
-  val vertex:RecType[Str,Obj] = trec("vertex")
-  val edge  :RecType[Str,Obj] = trec("edge")
-  val graph :RecType[Str,Obj] = trec("graph")
+ // val vertex:RecType[Str,Obj] = trec("vertex")
+ // val edge  :RecType[Str,Obj] = trec("edge")
+ // val graph :RecType[Str,Obj] = trec("graph")
 
 }

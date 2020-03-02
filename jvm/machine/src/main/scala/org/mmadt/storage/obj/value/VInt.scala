@@ -37,6 +37,7 @@ import org.mmadt.storage.obj.`type`.TInt
 class VInt(name:String,java:Long,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with IntValue {
 
   def this(java:Long) = this(Tokens.int,java,qOne)
+  def this(name:String,java:Long) = this(name,java,qOne)
 
   override def value():Long = java
   override def value(java:Long):this.type = new VInt(this.name,java,quantifier).asInstanceOf[this.type]

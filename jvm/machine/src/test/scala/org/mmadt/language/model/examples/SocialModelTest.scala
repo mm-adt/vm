@@ -45,8 +45,7 @@ class SocialModelTest extends FunSuite {
   social.put(Algebra.universal(str))
   social.put(Algebra.group(nat)("+"))
   social.put(Algebra.group(nat)("*"))
-  social.put(person.get(str("firstname"),str),person.get(str("name"),str))
-  println(social)
+  //println(social)
 
   test("model types"){
     assertResult(int <= int.is(int.gt(0)))(social.get(nat).get)
@@ -62,8 +61,9 @@ class SocialModelTest extends FunSuite {
   test("model compilations"){
     assertResult(social.get(nat).get)(compiler(nat.plus(nat.zero())))
     assertResult(social.get(nat).get)(compiler(nat.plus(nat.zero()).plus(nat.plus(nat.neg())).plus(nat.zero()).plus(nat.plus(nat.neg())).plus(nat.zero())))
-    assertResult(rec.get(str("name"),str))(compiler(person.id().get("firstname",str)))
-    assertResult(rec.get(str("name"),str))(compiler(person.id().get("firstname",str).id()))
+    assertResult(rec.get(str("name"),str))(compiler(person.id().get("name",str)))
+    println(compiler(person.id().get("name",str).plus(" rodriguez")))
+    assertResult(rec.get(str("name"),str).plus(" rodriguez"))(compiler(person.id().get("name",str).plus(" rodriguez")))
     // assertResult(rec.get(str("name"),str).plus(" rodriguez"))(compiler(person.id().get("firstname",str).id().plus(" rodriguez")))
     // assertResult(int <= rec.get(str("age"),int).is(int.gt(0)))(compiler(person.id().get(str("age"),nat)))
   }

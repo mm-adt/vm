@@ -24,7 +24,7 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
+import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.{int, _}
@@ -50,35 +50,35 @@ object mmlangPrinter {
     "[" + trav.obj() + "|" + trav.state.foldLeft(EMPTY)((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
   }
 
-  def typeString(t:Type[Obj]):String ={
-    val named = Tokens.named(t.name)
-    val range  = (t match {
-      case r:RecType[_,_] => (if (named) t.name else "") + (if (r.value().isEmpty) "" else r.value().foldLeft("[")((string,r) => string + r._1 + "->" + r._2 + ",").dropRight(1) + "]")
-      case _ => t.name
-    }) + qString(t.q())
-    val domain = if (t.insts().isEmpty) "" else
-      t.insts().head._1.name + qString(t.insts().head._1.q())
-    (if (domain.equals("") || range.equals(domain)) range else range + "<=" + domain) +
-    t.insts().map(_._2.toString()).fold("")((a,b) => a + b)
+  private def mapString(map:Map[_,_],sep:String = COMMA):String = if (map.isEmpty) EMPTYREC else map.foldLeft(LBRACKET)((string,kv) => string + (kv._1 + RSARROW + kv._2 + sep)).dropRight(1) + RBRACKET
+
+  def typeString(atype:Type[Obj]):String ={
+    val range  = (atype match {
+      case arec:RecType[Obj,Obj] => (if (Tokens.named(atype.name)) (atype.name + COLON) else EMPTY) + mapString(arec.value())
+      case _ => atype.name
+    }) + qString(atype.q())
+    val domain = if (atype.insts().isEmpty) Tokens.empty else (atype.insts().head._1.name + qString(atype.insts().head._1.q()))
+    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + domain)) + atype.insts().map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
   }
 
-  def valueString(v:Value[Obj]):String ={
-    val named = Tokens.named(v.name)
-    (if (named) v.name else "") + (
-      v match {
-        case x:RecValue[_,_] => (if (x.value().isEmpty) "" else x.value().foldLeft("[")((string,x) => string + x._1 + ":" + x._2 + ",").dropRight(1) + "]") + qString(x.q())
-        case x:StrValue => (if (named) "[" else "") + "'" + v.value() + "'" + (if (named) "]" else "") + qString(x.q())
-        case _ => (if (named) "[" else "") + v.value() + (if (named) "]" else "") + qString(v.q())
-      })
+  def valueString(avalue:Value[Obj]):String ={
+    val named = Tokens.named(avalue.name)
+    (if (named) avalue.name + COLON else EMPTY) + (
+      avalue match {
+        case arec:RecValue[ObjValue,ObjValue] => mapString(arec.value())
+        case astr:StrValue => SQUOTE + astr.value() + SQUOTE
+        case _ => avalue.value()
+      }) + qString(avalue.q())
   }
 
   def instString(inst:Inst):String ={
     inst.op() match {
-      case Tokens.to | Tokens.from => "<" + inst.arg0[StrValue]().value() + ">"
+      case Tokens.to | Tokens.from => LANGLE + inst.arg0[StrValue]().value() + RANGLE
+      case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj,Obj]]().value(),PIPE) + RBRACKET
       case _ => inst.args() match {
-        case Nil => "[" + inst.op() + "]"
-        case args:List[StrValue] if inst.op().equals(Tokens.as) => "[" + inst.op() + "," + args.head.value() + "]"
-        case args:List[Obj] => "[" + inst.op() + "," + args.map(x => x.toString + ",").fold("")((a,b) => a + b).dropRight(1) + "]"
+        case Nil => LBRACKET + inst.op() + RBRACKET
+        // case args:List[StrValue] if inst.op().equals(Tokens.as) => LBRACKET + inst.op() + "," + args.head.value() + RBRACKET
+        case args:List[Obj] => LBRACKET + inst.op() + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a,b) => a + b).dropRight(1) + RBRACKET
       }
     }
   }

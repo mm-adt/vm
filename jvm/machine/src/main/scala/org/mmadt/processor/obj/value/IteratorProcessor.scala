@@ -28,6 +28,7 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.storage.obj.asType
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,6 +36,7 @@ import org.mmadt.processor.{Processor, Traverser}
 class IteratorProcessor extends Processor {
 
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
+    if (!(asType(domainObj).canonical().equals(rangeType.domain().canonical()))) return Iterator.empty
     var output:Iterator[Traverser[E]] = domainObj match {
       case strm:Strm[_] => strm.value().map(x => new I1Traverser[E](x.asInstanceOf[E]))
       case single:E => Iterator(new I1Traverser[E](single))

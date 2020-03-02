@@ -28,11 +28,11 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm, StrStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
+import org.mmadt.language.obj.value.strm.{IntStrm,StrStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.storage.obj._
 
 import scala.util.matching.Regex
@@ -56,23 +56,26 @@ object mmlangParser extends JavaTokenParsers {
   lazy val single  :Parser[Obj]           = ((strm | obj) <~ RDARROW) ~ (aType | anonType) ^^ (x => x._1 ==> x._2)
   lazy val multiple:Parser[Iterator[Obj]] = ((strm | obj) <~ RRDARROW) ~ objType ^^ (x => x._1 ===> x._2)
 
-  lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec) ~ opt(quantifier) ^^ {
+  lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | name) ~ opt(quantifier) ^^ {
     case atype ~ q => q.foldRight(atype match {
       //case Tokens.obj => tobj
       case Tokens.bool => bool
       case Tokens.int => int
       case Tokens.str => str
       case Tokens.rec => rec
+      case name:String => int(name)
     })((q,t) => t.q(q))
   }
 
-  lazy val objType:Parser[Type[Obj]] = aType | recType | anonType
+  lazy val name   :Parser[String]    = "[a-zA-Z]*".r <~ ":"
+  lazy val obj    :Parser[Obj]       = objValue | objType
+  lazy val objType:Parser[Type[Obj]] = recType | aType | anonType
 
   lazy val aType   :Parser[Type[Obj]] = (opt(canonicalType <~ Tokens.:<=)) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]])
   }
-  lazy val recType :Parser[ORecType]  = LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,Tokens.:|) <~ RBRACKET ^^ (x => trec(x.map(o => (o._1,o._2)).toMap))
+  lazy val recType :Parser[ORecType]  = opt(name) ~ (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE))) <~ RBRACKET ^^ (x => trec(x._1.getOrElse(Tokens.rec))(x._2.map(o => (o._1,o._2)):_*))
   lazy val anonType:Parser[__]        = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
 
   lazy val stateAccess:Parser[Option[Type[Obj]] ~ String] = (opt(canonicalType) <~ LANGLE) ~ "[a-zA-z]*".r <~ RANGLE
@@ -84,18 +87,17 @@ object mmlangParser extends JavaTokenParsers {
     case Tokens.q_plus => qPlus
   }
 
-  lazy val obj      :Parser[Obj]        = objValue | objType
-  lazy val boolValue:Parser[BoolValue]  = (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x.toBoolean))
-  lazy val intValue :Parser[IntValue]   = wholeNumber ^^ (x => int(x.toLong))
-  lazy val strValue :Parser[StrValue]   = ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x.subSequence(1,x.length - 1).toString))
-  lazy val recValue :Parser[ORecValue]  = LBRACKET ~> repsep((objValue <~ Tokens.::) ~ objValue,",") <~ RBRACKET ^^ (x => rec(x.map(o => (o._1,o._2)).toMap))
   lazy val objValue :Parser[Value[Obj]] = (boolValue | intValue | strValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val boolValue:Parser[BoolValue]  = opt(name) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x._1.getOrElse(Tokens.bool),x._2.toBoolean))
+  lazy val intValue :Parser[IntValue]   = opt(name) ~ wholeNumber ^^ (x => int(x._1.getOrElse(Tokens.int),x._2.toLong))
+  lazy val strValue :Parser[StrValue]   = opt(name) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => str(x._1.getOrElse(Tokens.str),x._2.subSequence(1,x._2.length - 1).toString))
+  lazy val recValue :Parser[ORecValue]  = opt(name) ~ (LBRACKET ~> repsep((objValue <~ Tokens.:->) ~ objValue,COMMA) <~ RBRACKET) ^^ (x => rec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap))
   lazy val strm     :Parser[Strm[Obj]]  = intStrm | strStrm | recStrm
   lazy val intStrm  :Parser[IntStrm]    = (intValue <~ COMMA) ~ rep1sep(intValue,COMMA) ^^ (x => int(x._1 +: x._2:_*)) // TODO: go through an implicit channel for all streams
   lazy val strStrm  :Parser[StrStrm]    = (strValue <~ COMMA) ~ rep1sep(strValue,COMMA) ^^ (x => str(x._1 +: x._2))
   lazy val recStrm  :Parser[ORecStrm]   = (recValue <~ COMMA) ~ rep1sep(recValue,COMMA) ^^ (x => rec(x._1 +: x._2))
 
-  lazy val instArg      :Parser[Obj]  = stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2))) | obj // TODO: hardcoded int for unspecified state type
+  lazy val instArg      :Parser[Obj]  = (stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2)))) | obj // TODO: hardcoded int for unspecified state type
   lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | infixSugar
   lazy val infixSugar   :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x.asInstanceOf[RecType[Type[Obj],Obj]]))
@@ -163,9 +165,11 @@ object mmlangParser extends JavaTokenParsers {
         case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x)
       }
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
-      case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[Type[Obj],Obj]])
+      case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[Obj,Obj]])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()
+      case Tokens.zero => ZeroOp()
+      case Tokens.one => OneOp()
     }
   }
 }

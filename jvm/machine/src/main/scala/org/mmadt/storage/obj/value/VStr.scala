@@ -36,6 +36,7 @@ import org.mmadt.storage.obj.`type`.TStr
 class VStr(name:String,java:String,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with StrValue {
 
   def this(java:String) = this(Tokens.str,java,qOne)
+  def this(name:String,java:String) = this(name,java,qOne)
 
   override def value():String = java
   override def value(java:String):this.type = new VStr(this.name,java,quantifier).asInstanceOf[this.type]

@@ -24,8 +24,8 @@ package org.mmadt.storage
 
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm, StrStrm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RecValue, StrValue, Value}
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm, VStrStrm}
 import org.mmadt.storage.obj.value.{VBool, VInt, VRec, VStr}
@@ -45,27 +45,33 @@ package object obj {
 
   def obj:ObjType = new TObj()
   def int:IntType = new TInt()
-  def int(name:String):IntType = new TInt(name,Nil,qOne)
+  def int(name:String):IntType = new TInt(name)
   def bool:BoolType = new TBool()
+  def bool(name:String):BoolType = new TBool(name)
   def str:StrType = new TStr()
+  def tstr(name:String):StrType = new TStr(name)
   val btrue :BoolValue = bool(true)
   val bfalse:BoolValue = bool(false)
 
   def int(value:Long):IntValue = new VInt(value)
+  def int(name:String,value:Long):IntValue = new VInt(name,value)
   def int(value:Long,values:Long*):IntStrm = new VIntStrm((value +: values).map(int))
   def int(values:IntValue*):IntStrm = new VIntStrm(values)
   def bool(value:Boolean):BoolValue = new VBool(value)
+  def bool(name:String,value:Boolean):BoolValue = new VBool(name,value)
   def str(value:String):StrValue = new VStr(value)
+  def str(name:String,value:String):StrValue = new VStr(name,value)
   def str(values:Seq[StrValue]):StrStrm = new VStrStrm(values)
-  def rec[A <: ObjValue,B <: ObjValue](name:String,value:Map[A,B],quantifier:IntQ):RecValue[A,B] = new VRec[A,B](name,value,quantifier)
-  def rec[A <: ObjValue,B <: ObjValue](value:Map[A,B]):RecValue[A,B] = new VRec[A,B](value)
-  def rec[A <: ObjValue,B <: ObjValue](name:String,value:RecValue[A,B],values:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm[A,B](name,value +: values)
-  def rec(values:Seq[ORecValue]):RecStrm[ObjValue,ObjValue] = new VRecStrm[ObjValue,ObjValue](values)
-  def rec[A <: ObjValue,B <: ObjValue](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap)
-  def rec[A <: ObjValue,B <: ObjValue](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne)
+  def rec[A <: Value[Obj],B <: Value[Obj]](name:String,value:Map[A,B],quantifier:IntQ):RecValue[A,B] = new VRec[A,B](name,value,quantifier)
+  def rec[A <: Value[Obj],B <: Value[Obj]](name:String,value:Map[A,B]):RecValue[A,B] = new VRec[A,B](name,value)
+  def rec[A <: Value[Obj],B <: Value[Obj]](value:Map[A,B]):RecValue[A,B] = new VRec[A,B](value)
+  def rec[A <: Value[Obj],B <: Value[Obj]](name:String,value:RecValue[A,B],values:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm[A,B](name,value +: values)
+  def rec(values:Seq[ORecValue]):RecStrm[Value[Obj],Value[Obj]] = new VRecStrm[Value[Obj],Value[Obj]](values)
+  def rec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap)
+  def rec[A <: Value[Obj],B <: Value[Obj]](name:String)(values:(A,B)*):RecValue[A,B] = new VRec[A,B](name,values.toMap,qOne)
 
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = new TRec[A,B]
-  def trec[A <: Obj,B <: Obj](name:String):RecType[A,B] = new TRec[A,B](name,Map.empty,Nil,qOne)
+  //def trec[A <: Obj,B <: Obj](name:String):RecType[A,B] = new TRec[A,B](name,Map.empty,Nil,qOne)
   def trec[A <: Obj,B <: Obj](name:String,value:Map[A,B],quantifier:IntQ):RecType[A,B] = new TRec[A,B](name,value,Nil,quantifier)
   def trec[A <: Obj,B <: Obj](value:Map[A,B]):RecType[A,B] = new TRec[A,B](value)
   def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B]((value +: values).toMap)

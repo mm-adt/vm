@@ -36,6 +36,7 @@ import org.mmadt.storage.obj.`type`.TBool
 class VBool(name:String,java:Boolean,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with BoolValue {
 
   def this(java:Boolean) = this(Tokens.bool,java,qOne)
+  def this(name:String,java:Boolean) = this(name,java,qOne)
 
   override def value():Boolean = java
   override def value(java:Boolean):this.type = new VBool(this.name,java,quantifier).asInstanceOf[this.type]

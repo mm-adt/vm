@@ -35,21 +35,21 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ChooseOp {
-  def choose[IT <: Type[Obj],OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(branches.toMap))
+  def choose[IT <: Obj,OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(branches.toMap))
 
-  def choose[IT <: Type[Obj],OT <: Obj](branches:RecType[IT,OT]):OT ={
+  def choose[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):OT =
     this match {
-      case atype:IT => atype.compose[OT](generalType(branches.value().values),ChooseOp[IT,OT](branches)).asInstanceOf[OT]
+      case atype:Type[Obj] => atype.compose[OT](generalType(branches.value().values),ChooseOp[IT,OT](branches)).asInstanceOf[OT]
       case avalue:Value[Obj] =>
-        branches.value().find(p => asType(avalue).canonical().equals(p._1.canonical()) &&
-                                   (avalue ===> p._1).hasNext).
-          map(_._2).getOrElse(avalue.q(qZero))
+        branches.value().find(p => p._1 match {
+          case btype:Type[IT] => (avalue ===> btype).hasNext
+          case bvalue:Value[IT] => avalue.test(bvalue)
+        }).map(_._2).getOrElse(avalue.q(qZero))
         match {
-          case btype:Type[Obj] => (avalue ==> btype).asInstanceOf[OT]
+          case btype:Type[OT] => avalue ==> btype
           case bvalue:OT => bvalue.q(avalue.q())
         }
     }
-  }
 
   private def generalType[OT <: Obj](outs:Iterable[OT]):OT ={
     val types = outs.map{
@@ -64,5 +64,5 @@ trait ChooseOp {
 }
 
 object ChooseOp {
-  def apply[IT <: Type[Obj],OT <: Obj](branches:RecType[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(branches)) with BranchInstruction
+  def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(branches)) with BranchInstruction
 }

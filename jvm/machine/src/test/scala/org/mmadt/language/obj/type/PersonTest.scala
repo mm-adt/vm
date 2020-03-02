@@ -38,8 +38,8 @@ class PersonTest extends FunSuite {
   test("person rec"){
     val marko:RecValue[StrValue,ObjValue] = rec(Map(str("name") -> str("marko"),str("age") -> int(29)))
     assertResult(ListMap(str("name") -> str("marko"),str("age") -> int(29)))(marko.value())
-    assertResult("['name':'marko','age':29]")(marko.toString)
-    assertResult("person['name':'marko','age':29]")(marko.as("person").toString)
+    assertResult("['name'->'marko','age'->29]")(marko.toString)
+    assertResult("person:['name'->'marko','age'->29]")(marko.as("person").toString)
     ///
     assertResult("rec")(marko.name)
     assertResult("person")(marko.as[Str]("person").name)
