@@ -25,39 +25,40 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
-import org.mmadt.language.obj.value.{IntValue,ObjValue,Value}
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Inst,Obj}
 import org.mmadt.storage.obj._
-import org.mmadt.storage.obj.`type`.{TInt,TRec}
+import org.mmadt.storage.obj.`type`.TRec
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __(insts:List[Inst] = Nil) extends Type[__] with Obj {
 
-  override def toString:String = insts.foldLeft("")((a,i) => a + i)
+  override def toString:String = insts.foldLeft(Tokens.empty)((a,i) => a + i)
   override def q():(IntValue,IntValue) = qOne
-  override def q(quantifier:(IntValue,IntValue)):__.this.type = this
-  override val name:String = "xxx"
-  override def test(other:Obj):Boolean = false
-  override def id():__.this.type = this
+  override def q(quantifier:(IntValue,IntValue)):__.this.type = throw new IllegalArgumentException()
+  override val name:String = Tokens.empty
+  override def test(other:Obj):Boolean = throw new IllegalArgumentException()
+  override def id():__.this.type = throw new IllegalArgumentException()
   override def as[O <: Obj](name:String):O = throw new IllegalArgumentException()
   override def range():__.this.type = this
-  override def insts():List[(Type[Obj],Inst)] = Nil
-  override def compose(inst:Inst):__.this.type = this
-  override def int(inst:Inst,q:(IntValue,IntValue)):IntType = null
-  override def bool(inst:Inst,q:(IntValue,IntValue)):BoolType = null
-  override def str(inst:Inst,q:(IntValue,IntValue)):StrType = null
-  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:(IntValue,IntValue)):RecType[A,B] = null
-  override def obj(inst:Inst,q:(IntValue,IntValue)):ObjType = null
+  override def insts():List[(Type[Obj],Inst)] = Nil // TODO: how to propagate inner anonymous type when outer is defined
+  override def compose(inst:Inst):__.this.type = throw new IllegalArgumentException()
+  override def int(inst:Inst,q:(IntValue,IntValue)):IntType = throw new IllegalArgumentException()
+  override def bool(inst:Inst,q:(IntValue,IntValue)):BoolType = throw new IllegalArgumentException()
+  override def str(inst:Inst,q:(IntValue,IntValue)):StrType = throw new IllegalArgumentException()
+  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:(IntValue,IntValue)):RecType[A,B] = throw new IllegalArgumentException()
+  override def obj(inst:Inst,q:(IntValue,IntValue)):ObjType = throw new IllegalArgumentException()
+  override def count():IntType = throw new IllegalArgumentException()
 
   def apply[T <: Type[T]](obj:Obj):T = insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i match {
     case x:Inst if x.op() == Tokens.choose => applyChoose(a.asInstanceOf[Type[Obj]],x.arg0())(a)
     case _ => i(a)
   }).asInstanceOf[T]
 
-  private def applyChoose(a:Type[Obj],branches:RecType[Type[Obj],Obj]):Inst ={ // [choose] branches need to be resolved (thus, a new rec is constructed)
-    ChooseOp(new TRec[Type[Obj],Obj](branches.value().map(entry => (entry._1 match {
+  private def applyChoose(a:Type[Obj],branches:RecType[Obj,Obj]):Inst ={ // [choose] branches need to be resolved (thus, a new rec is constructed)
+    ChooseOp(new TRec[Obj,Obj](branches.value().map(entry => (entry._1 match {
       case y:__ => y(a.range())
       case y => y
     },entry._2 match {
@@ -65,7 +66,6 @@ class __(insts:List[Inst] = Nil) extends Type[__] with Obj {
       case y => y
     }))))
   }
-  override def count():IntType = new TInt()
 }
 
 object __ extends __(Nil) {
