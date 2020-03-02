@@ -24,8 +24,8 @@ package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type,TypeChecker}
-import org.mmadt.language.obj.value.{IntValue,Value}
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.storage.obj._
 
 /**
@@ -35,7 +35,6 @@ class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) exte
   override def as[O <: Obj](name:String):O = this.asInstanceOf[O] //
   def this(java:InstTuple) = this(java,qOne,null) //
   override def value():InstTuple = java //
-  //override  def lfold(seed:O)(atype:OType):O = seed ==> atype
   override def q(quantifier:IntQ):this.type = new VInst(java,quantifier,function).asInstanceOf[this.type] //
   override def id():this.type = this //
   override def apply(obj:Obj,args:List[Obj]):Obj = function.apply(obj,args) //

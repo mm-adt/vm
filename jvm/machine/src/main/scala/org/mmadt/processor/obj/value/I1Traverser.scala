@@ -42,7 +42,7 @@ class I1Traverser[S <: Obj](val obj:S,val state:State) extends Traverser[S] {
   override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
     (InstUtil.nextInst(rangeType) match {
       case None =>
-        TypeChecker.checkType(this.obj,rangeType)
+        //TypeChecker.checkType(this.obj,rangeType)
         return this.asInstanceOf[Traverser[E]]
       case Some(inst) => inst match {
         case traverserInst:TraverserInstruction => traverserInst.op() match {

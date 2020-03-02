@@ -35,13 +35,13 @@ import org.mmadt.processor.obj.value.I1Traverser
 object InstUtil {
 
   def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
-    if(inst.op() == Tokens.choose) return inst.args()
+    if (inst.op() == Tokens.choose) return inst.args()
     inst.args().map{
       case valueArg:Value[_] => valueArg
       case typeArg:Type[_] => traverser.split(traverser.obj() match {
         case atype:Type[_] => atype.range()
         case avalue:Value[_] => avalue
-      }).apply(traverser.model.get(typeArg).getOrElse(typeArg)).obj()
+      }).apply(typeArg).obj()
     }
   }
 

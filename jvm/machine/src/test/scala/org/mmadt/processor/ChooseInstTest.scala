@@ -31,13 +31,19 @@ import org.scalatest.FunSuite
 class ChooseInstTest extends FunSuite {
 
   test("[choose] w/ types"){
-    println(int.choose(
-      int -> int.mult(3),
-      int.mult(1) -> int.mult(4)))
+    assertResult("int[choose,[int->int[mult,3]|int[mult,1]->int[mult,4]]]")(
+      int.choose(
+        int -> int.mult(3),
+        int.mult(1) -> int.mult(4)).toString)
+    assertResult("int{?}<=int[choose,[int->int[mult,3]|int[mult,1]->int[mult,4]]][is,bool<=int[gt,20]]")(
+      int.choose(
+        int -> int.mult(3),
+        int.mult(1) -> int.mult(4)).is(int.gt(20)).toString)
 
-    println(int(4) ==> int.choose(
-      int.mult(2) -> int.mult(3),
-      int.mult(1) -> int.mult(4)))
+    assertResult("int{0,30}<=int{30}[choose,[int{30}->int{30}[mult,3]|int{30}[mult,1]->int{30}[mult,4]]][is,bool<=int[gt,20]]")( // TODO: why is {30} not at is?
+      int.q(30).choose(
+        int -> int.mult(3),
+        int.mult(1) -> int.mult(4)).is(int.gt(20)).toString)
   }
 
   test("[choose] w/ values"){
@@ -65,8 +71,4 @@ class ChooseInstTest extends FunSuite {
         int.is(int.gt(20)) -> int.plus(3),
         int.is(int.gt(10)) -> int.plus(4)).plus(1))
   }
-
-  // TODO: test end type quantifier union
-
-
 }

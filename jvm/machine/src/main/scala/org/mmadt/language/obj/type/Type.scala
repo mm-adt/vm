@@ -82,14 +82,14 @@ trait Type[+T <: Obj] extends Obj
     a.asInstanceOf[R]
   }
   def compose(inst:Inst):this.type
-  def compose[R <: Obj](t2:R,inst:Inst):Type[R] = (t2 match {
+  def compose[R <: Obj](t2:R,inst:Inst):OType[R] = (t2 match {
     case _:Bool => bool(inst)
     case _:Int => int(inst)
     case _:Str => str(inst)
     case _:RecType[Obj,Obj] => rec(t2.asInstanceOf[RecType[Obj,Obj]],inst)
     case _:__ => __(this.insts().map(e => e._2) :+ inst:_*)
     case _:ObjType => obj(inst)
-  }).asInstanceOf[Type[R]]
+  }).asInstanceOf[OType[R]]
 
   // type change during fluency // TODO: get rid of this
   def obj(inst:Inst,q:IntQ = this.q()):ObjType

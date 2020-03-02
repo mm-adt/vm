@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{RecType,Type}
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst,Obj}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj._
 import org.mmadt.storage.obj.`type`.TObj
 import org.mmadt.storage.obj.value.VInst
@@ -35,21 +35,35 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ChooseOp {
+  this:Obj =>
+
   def choose[IT <: Obj,OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(branches.toMap))
 
   def choose[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):OT ={
     this match {
-      case atype:Type[Obj] => atype.compose[OT](generalType(branches.value().values),ChooseOp[IT,OT](branches)).asInstanceOf[OT]
-      case avalue:Value[Obj] =>
+      case atype:Type[IT] with IT =>
+        val newBranches:RecType[IT,OT] = applyRec(atype.range(),branches)
+        atype.compose[OT](generalType[OT](newBranches.value().values),ChooseOp[IT,OT](newBranches))
+      case avalue:Value[IT] with IT =>
         branches.value().find(p => p._1 match {
-          case btype:Type[IT] => (avalue ===> btype).hasNext
-          case bvalue:Value[IT] => avalue.test(bvalue)
+          case btype:Type[IT] with IT => (avalue ===> btype).hasNext
+          case bvalue:Value[IT] with IT => avalue.test(bvalue)
         }).map(_._2).getOrElse(avalue.q(qZero))
         match {
-          case btype:Type[OT] => avalue ==> btype
-          case bvalue:OT => bvalue.q(avalue.q())
+          case btype:Type[OT] with OT => (avalue ==> btype)
+          case bvalue:Value[OT] with OT => bvalue
         }
     }
+  }
+
+  private def applyRec[IT <: Obj,OT <: Obj](current:Type[IT] with IT,branches:RecType[IT,OT]):RecType[IT,OT] ={
+    trec(branches.value().map(x => (x._1 match {
+      case atype:Type[IT] with IT => current.compose(atype).asInstanceOf[IT]
+      case avalue:Value[IT] with IT => avalue
+    },x._2 match {
+      case atype:Type[OT] with OT => current.compose(atype).asInstanceOf[OT]
+      case avalue:Value[OT] with OT => avalue
+    })))
   }
 
   private def generalType[OT <: Obj](outs:Iterable[OT]):OT ={
