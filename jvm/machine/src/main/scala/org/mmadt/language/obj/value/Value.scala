@@ -24,7 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.{Int, Obj}
+import org.mmadt.language.obj.{Int, OType, Obj}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -33,7 +33,7 @@ import org.mmadt.storage.StorageFactory._
 trait Value[+V <: Obj] extends Obj {
 
   def value():Any
-  def start():Type[Obj]
+  def start():OType[V]
 
   override def quant():Int = this.q()._1.q(qOne)
   override def count():IntValue = this.q()._1.q(qOne)

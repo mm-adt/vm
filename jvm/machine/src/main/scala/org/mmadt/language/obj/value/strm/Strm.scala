@@ -30,7 +30,7 @@ import org.mmadt.language.obj.value.Value
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Strm[+O <: Obj] extends Obj
-  with Value[Strm[O]] {
+  with Value[O] {
 
   override def value():Iterator[O]
 

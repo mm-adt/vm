@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.{Int, OType}
 import org.mmadt.language.obj.`type`.{BoolType, IntType, Type}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.storage.obj.value.strm.VIntStrm
@@ -31,7 +31,7 @@ import org.mmadt.storage.obj.value.strm.VIntStrm
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntStrm extends Int
-  with Strm[IntValue] {
+  with Strm[Int] {
 
   override def value():Iterator[IntValue]
   override def start():IntType

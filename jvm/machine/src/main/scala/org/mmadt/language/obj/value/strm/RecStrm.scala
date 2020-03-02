@@ -30,10 +30,10 @@ import org.mmadt.language.obj.{Obj, Rec}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Rec[A,B]
-  with Strm[RecValue[A,B]] {
+  with Strm[Rec[A,B]] {
 
-  override def value():Iterator[RecValue[A,B]] //
-  override def start():RecType[A,B] //
+  override def value():Iterator[RecValue[A,B]]
+  override def start():RecType[A,B]
 
   override def to(label:StrValue):RecType[A,B] = this.start().to(label)
   override def eqs(other:Type[Rec[A,B]]):BoolType = this.start().eqs(other)
