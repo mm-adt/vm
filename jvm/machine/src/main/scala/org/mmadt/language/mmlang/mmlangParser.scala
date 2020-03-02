@@ -23,16 +23,17 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm,StrStrm,Strm}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
+import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
+import org.mmadt.language.obj.value.strm.{IntStrm, StrStrm, Strm}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.storage.obj._
 
 import scala.util.matching.Regex
@@ -44,16 +45,23 @@ import scala.util.parsing.combinator.JavaTokenParsers
 object mmlangParser extends JavaTokenParsers {
 
   override val whiteSpace:Regex = """[\s\n]+""".r
+  var model:Model = Model.id
 
-  def parse[T <: Obj](input:String):Iterator[T] = this.parseAll(expr | emptySpace,input).map{
-    case itty:Iterator[T] => itty
-    case obj:T => Iterator(obj)
-  }.get
+  def parse[T <: Obj](input:String,_model:Model = Model.id):Iterator[T] ={
+    if (null != _model) this.model = _model
+    this.parseAll(expr | emptySpace,input).map{
+      case itty:Iterator[T] => itty
+      case obj:T => Iterator(obj)
+    }.get
+  }
 
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
   lazy val expr:Parser[Any] = multiple | single | obj
 
-  lazy val single  :Parser[Obj]           = ((strm | obj) <~ RDARROW) ~ (aType | anonType) ^^ (x => x._1 ==> x._2)
+  lazy val single  :Parser[Obj]           = ((strm | obj) <~ RDARROW) ~ (aType | anonType) ^^ (x => x._1 match {
+    case atype:Type[_] => (atype ==> this.model) (x._2)
+    case avalue:Value[_] => avalue ==> x._2
+  })
   lazy val multiple:Parser[Iterator[Obj]] = ((strm | obj) <~ RRDARROW) ~ objType ^^ (x => x._1 ===> x._2)
 
   lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | name) ~ opt(quantifier) ^^ {
@@ -63,7 +71,7 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.int => int
       case Tokens.str => str
       case Tokens.rec => rec
-      case name:String => int(name)
+      case name:String => this.model.get(int(name)).get
     })((q,t) => t.q(q))
   }
 

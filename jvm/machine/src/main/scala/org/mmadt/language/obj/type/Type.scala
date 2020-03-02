@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageFactory
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
@@ -72,6 +73,7 @@ trait Type[+T <: Obj] extends Obj
   // type specification and compilation
   final def <=[D <: Obj](domainType:Type[D]):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
   override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
+  def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[R <: Type[Obj]](btype:R):R ={

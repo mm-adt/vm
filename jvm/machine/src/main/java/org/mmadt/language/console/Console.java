@@ -31,9 +31,13 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.mmadt.language.jsr223.mmADTScriptEngine;
+import org.mmadt.language.model.Model;
+import org.mmadt.language.obj.Obj;
+import org.mmadt.language.obj.type.RecType;
+import org.mmadt.language.obj.type.Type;
 
 import javax.script.ScriptEngineManager;
-import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -54,10 +58,12 @@ public class Console {
     private static final String RESULT = "==>";
     private static final String Q = ":q";
     private static final String L = ":l";
+    private static final String MODEL = ":model";
 
     public static void main(final String[] args) throws Exception {
         String engineName = "mmlang";
-        final ScriptEngineManager manager = new ScriptEngineManager();
+        final ScriptEngineManager manager = new ScriptEngineManager();   // TODO: switch to mmADTScriptEngineFactory
+        final mmADTScriptEngine engine = (mmADTScriptEngine) manager.getEngineByName(engineName);
         final Terminal terminal = TerminalBuilder.builder().name("mm-ADT Console").build();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
@@ -73,6 +79,7 @@ public class Console {
         ///////////////////////////////////
         terminal.writer().println(HEADER);
         terminal.flush();
+
         while (true) {
             try {
                 String line = reader.readLine(engineName + "> ");
@@ -86,8 +93,13 @@ public class Console {
                     manager.getEngineFactories().forEach(factory -> terminal.writer().println(RESULT + factory.getEngineName()));
                 else if (line.startsWith(L))
                     engineName = line.replace(L, "").trim();
+                else if (line.equals(MODEL)) {
+                    final Model model = (Model) engine.get("model");
+                    if (null != model) terminal.writer().println(model);
+                } else if (line.startsWith(MODEL))
+                    engine.put("model", Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(line.substring(6)).next()));
                 else
-                    ((Iterator<Object>) manager.getEngineByName(engineName).eval(line)).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
+                    engine.eval(line).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {
                 break;
             } catch (final Throwable e) {

@@ -26,6 +26,7 @@ import java.io.{BufferedReader, Reader}
 
 import javax.script._
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.Obj
 
 import scala.collection.JavaConverters._
@@ -35,7 +36,7 @@ import scala.collection.JavaConverters._
  */
 class mmlangScriptEngine extends AbstractScriptEngine with mmADTScriptEngine {
   override def eval(script:String):java.util.Iterator[Obj] = mmlangScriptEngine.super.eval(script)
-  override def eval(script:String,context:ScriptContext):java.util.Iterator[Obj] = asJavaIterator(mmlangParser.parse[Obj](script))
+  override def eval(script:String,context:ScriptContext):java.util.Iterator[Obj] = asJavaIterator(mmlangParser.parse[Obj](script,context.getBindings(ScriptContext.ENGINE_SCOPE).get("model").asInstanceOf[Model]))
   override def eval(reader:Reader,context:ScriptContext):java.util.Iterator[Obj] = eval(new BufferedReader(reader).readLine(),context)
   override def createBindings():Bindings = new SimpleBindings
   override def getFactory:ScriptEngineFactory = new mmlangScriptEngineFactory

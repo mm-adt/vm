@@ -50,6 +50,7 @@ trait Model {
 
 object Model {
   def apply(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
+  def apply(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value().iterator.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
 
   val id:Model = new Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this
@@ -59,7 +60,7 @@ object Model {
 
   def simple():Model = new Model {
     val typeMap:mutable.Map[String,mutable.Map[Type[Obj],Type[Obj]]] = mutable.Map()
-    override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).fold(Tokens.empty)((x,y) => x + y + "\n")
+    override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).fold(Tokens.empty)((x,y) => x + y + "\n").trim()
 
     override def put(model:Model):Model ={
       model.asInstanceOf[this.type].typeMap.foreach(x => x._2.foreach(y => this.put(y._1,y._2)))
