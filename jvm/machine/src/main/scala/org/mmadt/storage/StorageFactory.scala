@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm, StrStrm}
-import org.mmadt.language.obj.{InstList, IntQ, ORecValue, Obj}
+import org.mmadt.language.obj.{InstList, IntQ, ORecStrm, ORecValue, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
@@ -109,6 +109,7 @@ object StorageFactory {
   def asType[O <: Obj](obj:O):Type[O] = (obj match {
     case strm:IntStrm => return int.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
     case strm:StrStrm => return str.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
+    case strm:ORecStrm => return rec.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
     case atype:Type[_] => atype
     case _:IntValue => int
     case _:StrValue => str

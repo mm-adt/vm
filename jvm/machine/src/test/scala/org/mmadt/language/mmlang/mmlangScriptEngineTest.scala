@@ -140,7 +140,7 @@ class mmlangScriptEngineTest extends FunSuite {
     List(
       int.plus(int(2)).choose(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10))),
       int.plus(int(2)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))),
-      int.plus(int(2)).choose(trec(name=Tokens.rec,Map(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))).
+      int.plus(int(2)).choose(trec(name = Tokens.rec,Map(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))).
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
@@ -184,14 +184,21 @@ class mmlangScriptEngineTest extends FunSuite {
     // assertResult()(engine.eval(".friend.name") // TODO: . for [get]
   }
 
-  test("strm input parsing"){
-    // int strm
-    assertResult(Set(int(1),int(2),int(3)))(asScalaIterator(engine.eval("0,1,2 int[plus,1]")).toSet)
+  test("int strm input parsing"){
+    assertResult(Set(int(-1),int(0)))(asScalaIterator(engine.eval("0,1 int[plus,-1]")).toSet)
+    assertResult(Set(int(1),int(2),int(3)))(asScalaIterator(engine.eval("0,1,2[plus,1]")).toSet)
     assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 int[plus,1][is,int[gt,2]][mult,10]")).toSet)
-    assertResult(Set(int(300),int(40)))(asScalaIterator(engine.eval("0,1,2,3 int[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]")).toSet)
+    assertResult(Set(int(300),int(40)))(asScalaIterator(engine.eval("0,1,2,3[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]")).toSet)
     // assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> (int{3}=>int[plus,1][is,int[gt,2]][mult,10])")).toSet)
-    // str strm
+
+  }
+  test("str strm input parsing"){
     assertResult(str("marko"))(engine.eval("""'m','a','r','k','o' str[fold,'seed','',str[plus,str<seed>]]""").next)
+    assertResult(int(5))(engine.eval("""'m','a','r','k','o'[count]""").next)
+  }
+
+  test("rec strm input parsing"){
+    assertResult(Set(vrec(str("a") -> int(1),str("b") -> int(0)),vrec(str("a") -> int(2),str("b") -> int(0))))(asScalaIterator(engine.eval("""['a'->1],['a'->2][plus,['b'->0]]""")).toSet)
   }
 
   test("anonymous expression parsing"){
