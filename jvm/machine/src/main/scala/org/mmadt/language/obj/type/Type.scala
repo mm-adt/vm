@@ -77,9 +77,10 @@ trait Type[+T <: Obj] extends Obj
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[R <: Type[Obj]](btype:R):R ={
-    var a:Type[T] = this
-    for (i <- btype.insts()) a = a.compose(i._1.asInstanceOf[T],i._2)
-    a.asInstanceOf[R]
+    btype match {
+      case anon:__ => anon(this)
+      case atype:Type[Obj] => atype.insts().seq.foldLeft(this.asInstanceOf[Type[Obj]])((b,a) => b.compose(a._1,a._2)).asInstanceOf[R]
+    }
   }
   def compose(inst:Inst):this.type
   def compose[R <: Obj](t2:R,inst:Inst):OType[R] = (t2 match {
@@ -87,7 +88,7 @@ trait Type[+T <: Obj] extends Obj
     case _:Int => int(inst)
     case _:Str => str(inst)
     case _:RecType[Obj,Obj] => rec(t2.asInstanceOf[RecType[Obj,Obj]],inst)
-    case _:__ => __(this.insts().map(e => e._2) :+ inst:_*)
+    case anon:__ => anon(this)
     case _:ObjType => obj(inst)
   }).asInstanceOf[OType[R]]
 

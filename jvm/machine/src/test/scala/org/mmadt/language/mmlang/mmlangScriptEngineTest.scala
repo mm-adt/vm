@@ -144,9 +144,9 @@ class mmlangScriptEngineTest extends FunSuite {
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
-        // assertResult(chooseInst)(engine.eval("int int[plus,2][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)    // TODO: get anon typing working better with [choose] type inference
+        //assertResult(chooseInst)(engine.eval("int[plus,2][int[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)  // TODO: anons get compiled automagically (need to have consistent behavior between anons and non-anons)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
-        // assertResult(chooseInst)(engine.eval("int => int[plus,2][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next) // TODO: get anon typing working better with [choose] type inference
+        // assertResult(chooseInst)(engine.eval("int[plus,2][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next) // TODO: anons get compiled automagically (need to have consistent behavior between anons and non-anons)
         assertResult(chooseInst)(engine.eval(
           """
             | int[plus,2]
@@ -159,12 +159,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("  5 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(3))(engine.eval("-1 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(20))(engine.eval("1 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
-    assertResult(obj)(engine.eval("int[plus,2][int[is>5]->true|int[is==1]->int[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range()) // TODO: get anon typing working better with [choose] type inference
+    assertResult(obj)(engine.eval("int[plus,2][int[is>5]->true|[is==1]->[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range())
     //
     assertResult(btrue.q(int(3)))(engine.eval("             5{3} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(3).q(int(5)))(engine.eval("           -1{5} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(20).q(int(8),int(10)))(engine.eval("1{8,10} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
-    assertResult(obj.q(+))(engine.eval("int{+}[plus,2][[is>5]->true|int[is==1]->[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range()) // TODO: get anon typing working better with [choose] type inference
+    assertResult(obj.q(+))(engine.eval("int{+}[plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range())
   }
 
   test("traverser read/write state parsing"){
@@ -209,9 +209,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,[gt,[mult,[plus,5]]]]").next)
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)
     assertResult(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)(engine.eval("int[is,[gt,[mult,[plus,5]]]]").next)
-    // assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int int[[is>5] -> 1 | int -> 2]").next)
-    // assertResult(int.plus(int(10)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval("int => [plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
-    // assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int int[plus,10][[is>5] -> 1 | int -> 2]").next)
+    assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int int[[is>5] -> 1 | int -> 2]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
+    assertResult(int.plus(int(10)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval("int int[plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
+    assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int int[plus,10][[is>5] -> 1 | int -> 2]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
     assertResult(Set(int(302),int(42)))(asScalaIterator(engine.eval(
       """ 0,1,2,3
         | [plus,1][is>2]
@@ -258,7 +258,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval("['age'->29]rec[rec[is,rec[get,'age',int][gt,30]] -> rec[put,'name','bill'] | rec -> rec[put,'name','marko']]").next())
   }
 
-  test("model parsing") {
-   // assertResult(true)(engine.eval(""))
+  test("model parsing"){
+    // assertResult(true)(engine.eval(""))
   }
 }
