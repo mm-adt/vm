@@ -27,8 +27,8 @@ import org.mmadt.language.obj.`type`.{StrType, Type}
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.value.VInst
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.VInst
 
 import scala.collection.mutable
 
@@ -38,7 +38,7 @@ import scala.collection.mutable
 trait ExplainOp {
   this:Type[Obj] =>
 
-  def explain():StrType = vstr(name=Tokens.str,value=ExplainOp.printableTable(asType(this)),q=qOne).start()
+  def explain():StrType = vstr(name = Tokens.str,value = ExplainOp.printableTable(asType(this)),q = qOne).start()
 }
 
 object ExplainOp {

@@ -25,12 +25,12 @@ package org.mmadt.storage
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value._
-import org.mmadt.language.obj.value.strm.{IntStrm,RecStrm,StrStrm}
-import org.mmadt.language.obj.{InstList,IntQ,ORecValue,Obj}
+import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm, StrStrm}
+import org.mmadt.language.obj.{InstList, IntQ, ORecValue, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
-import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm,VStrStrm}
+import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm, VStrStrm}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

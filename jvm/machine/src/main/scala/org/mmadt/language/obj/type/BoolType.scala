@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{AndOp,EqsOp,OrOp}
+import org.mmadt.language.obj.op.map.{AndOp, EqsOp, OrOp}
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue,StrValue,Value}
-import org.mmadt.language.obj.{Bool,minZero}
+import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
+import org.mmadt.language.obj.{Bool, minZero}
 import org.mmadt.storage.obj.value.VBool
 
 /**

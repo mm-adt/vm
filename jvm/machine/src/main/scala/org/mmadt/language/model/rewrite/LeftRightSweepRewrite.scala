@@ -60,7 +60,7 @@ object LeftRightSweepRewrite {
   private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst,traverser:Traverser[S]):List[Obj] ={
     inst.op() match {
       case Tokens.choose =>
-        List(trec(name=Tokens.rec,inst.arg0[ORecType]().value().map(x => (x._1 match { // TODO: merge the two identical key/value pair branches into one
+        List(trec(name = Tokens.rec,inst.arg0[ORecType]().value().map(x => (x._1 match { // TODO: merge the two identical key/value pair branches into one
           case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
           case branchValue:Value[_] => branchValue
         },x._2 match {

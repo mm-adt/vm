@@ -28,9 +28,9 @@ import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.value.strm.StrStrm
 import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.`type`.TStr
 import org.mmadt.storage.obj.value.AbstractVObj
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

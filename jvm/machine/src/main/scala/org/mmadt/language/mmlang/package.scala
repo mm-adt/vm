@@ -42,6 +42,6 @@ package object mmlang {
   lazy val RRDARROW = "==>"
   lazy val RSARROW  = "->"
   lazy val EMPTYREC = "[->]"
-  lazy val COLON = ":"
-  lazy val SQUOTE = "'"
+  lazy val COLON    = ":"
+  lazy val SQUOTE   = "'"
 }

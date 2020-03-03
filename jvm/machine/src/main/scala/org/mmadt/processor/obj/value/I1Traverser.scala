@@ -24,7 +24,7 @@ package org.mmadt.processor.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.{Obj, State}
 import org.mmadt.processor.Traverser

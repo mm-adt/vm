@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.{BoolType,StrType,Type}
+import org.mmadt.language.obj.`type`.{BoolType, StrType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.storage.StorageFactory._
 

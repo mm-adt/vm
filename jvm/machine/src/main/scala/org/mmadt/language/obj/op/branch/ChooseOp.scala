@@ -37,7 +37,7 @@ import org.mmadt.storage.obj.value.VInst
 trait ChooseOp {
   this:Obj =>
 
-  def choose[IT <: Obj,OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(value=branches.toMap))
+  def choose[IT <: Obj,OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(value = branches.toMap))
 
   def choose[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):OT ={
     this match {
@@ -58,7 +58,7 @@ trait ChooseOp {
   }
 
   private def applyRec[IT <: Obj,OT <: Obj](current:Type[IT] with IT,branches:RecType[IT,OT]):RecType[IT,OT] ={
-    trec(value=branches.value().map(x => (x._1 match {
+    trec(value = branches.value().map(x => (x._1 match {
       case atype:Type[IT] with IT => current.compose(atype).asInstanceOf[IT]
       case avalue:Value[IT] with IT => avalue
     },x._2 match {

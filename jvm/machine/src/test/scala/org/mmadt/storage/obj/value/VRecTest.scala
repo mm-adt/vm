@@ -93,6 +93,6 @@ class VRecTest extends FunSuite {
     assertResult(rec(X,Y,Z).q(2))(rec(X,Y).q(int(2)) ==> rec.q(int(2)).plus(vrec(Z)))
     assertResult(rec(X,Y,Z).q(2))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(vrec(Y)).plus(vrec(Z).q(34)))
     assertResult(rec(X,Y,Z).q(4))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(vrec(Y)).plus(vrec(Z).q(34)).q(2))
-     assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
+    assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
   }
 }

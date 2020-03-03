@@ -102,8 +102,8 @@ object mmlangParser extends JavaTokenParsers {
   lazy val recValue :Parser[ORecValue]  = opt(name) ~ (LBRACKET ~> repsep((objValue <~ Tokens.:->) ~ objValue,COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec),qOne,x._2.map(o => (o._1,o._2)).toMap))
   lazy val strm     :Parser[Strm[Obj]]  = intStrm | strStrm | recStrm
   lazy val intStrm  :Parser[IntStrm]    = (intValue <~ COMMA) ~ (intValue <~ COMMA) ~ repsep(intValue,COMMA) ^^ (x => int(x._1._1,x._1._2,x._2:_*)) // TODO: go through an implicit channel for all streams
-  lazy val strStrm:Parser[StrStrm]  = (strValue <~ COMMA) ~ (strValue <~ COMMA) ~ repsep(strValue,COMMA) ^^ (x => str(x._1._1,x._1._2,x._2:_*))
-  lazy val recStrm:Parser[ORecStrm] = (recValue <~ COMMA) ~ (recValue <~ COMMA) ~ repsep(recValue,COMMA) ^^ (x => vrec(x._1._1,x._1._2,x._2:_*))
+  lazy val strStrm  :Parser[StrStrm]    = (strValue <~ COMMA) ~ (strValue <~ COMMA) ~ repsep(strValue,COMMA) ^^ (x => str(x._1._1,x._1._2,x._2:_*))
+  lazy val recStrm  :Parser[ORecStrm]   = (recValue <~ COMMA) ~ (recValue <~ COMMA) ~ repsep(recValue,COMMA) ^^ (x => vrec(x._1._1,x._1._2,x._2:_*))
 
   lazy val instArg      :Parser[Obj]  = (stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2)))) | obj // TODO: hardcoded int for unspecified state type
   lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | infixSugar
