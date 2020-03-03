@@ -24,6 +24,7 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.processor.Traverser
@@ -45,6 +46,8 @@ object mmlangPrinter {
     case (x,y) if x == int(Long.MinValue) => "{," + y + "}"
     case _ => "{" + x._1.value() + "," + x._2.value() + "}"
   }
+
+  def strmString(strm:Strm[Obj]):String = strm.value().foldLeft(Tokens.empty)((a,b) => a + b + COMMA).dropRight(1)
 
   def traverserString(trav:Traverser[_]):String ={
     "[" + trav.obj() + "|" + trav.state.foldLeft(EMPTY)((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"

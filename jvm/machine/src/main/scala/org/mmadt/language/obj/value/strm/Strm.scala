@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.Tokens
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.value.Value
 
@@ -38,5 +38,5 @@ trait Strm[+O <: Obj] extends Obj
     case strm:Strm[O] => this.value().sameElements(strm.value())
     case _ => false
   }
-  override def toString:String = value().foldLeft(Tokens.empty)((a,b) => a + b + ",").dropRight(1)
+  override def toString:String = LanguageFactory.printStrm(this)
 }

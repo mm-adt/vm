@@ -22,9 +22,9 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.{RecType,Type}
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{IntValue, ObjValue, RecValue, Value}
+import org.mmadt.language.obj.value.{IntValue,RecValue,Value}
 import org.mmadt.storage.obj._
 
 /**
@@ -34,6 +34,7 @@ package object obj {
   type IntQ = (IntValue,IntValue)
   type InstTuple = (String,List[Obj])
   type State = Map[String,Obj]
+  type InstList = List[(Type[Obj],Inst)]
 
   // less typing
   type OType[+O <: Obj] = O with Type[O]

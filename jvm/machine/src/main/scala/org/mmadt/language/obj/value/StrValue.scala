@@ -23,10 +23,9 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.{BoolType, StrType, Type}
+import org.mmadt.language.obj.`type`.{BoolType,StrType,Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.VStr
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,8 +34,6 @@ trait StrValue extends Str
   with ObjValue
   with Value[Str]
   with StartOp[StrType] {
-
-  def apply(value:StrValue):StrValue = new VStr(this.name,value.value(),this.q())
 
   override def value():String
   override def start():StrType

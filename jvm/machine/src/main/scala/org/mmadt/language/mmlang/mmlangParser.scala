@@ -71,7 +71,7 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.int => int
       case Tokens.str => str
       case Tokens.rec => rec
-      case name:String => this.model.get(int(name)).get
+      case name:String => this.model.get(int(name)).get.asInstanceOf[Type[Obj]]
     })((q,t) => t.q(q))
   }
 

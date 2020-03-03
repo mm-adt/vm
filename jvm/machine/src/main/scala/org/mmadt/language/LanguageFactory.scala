@@ -25,6 +25,7 @@ package org.mmadt.language
 import org.mmadt.language.mmlang.mmlangPrinter
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 
@@ -36,6 +37,8 @@ trait LanguageFactory {
   def printType(atype:Type[Obj]):String
   def printInst(inst:Inst):String
   def printTraverser(traverser:Traverser[Obj]):String
+  def printStrm(strm:Strm[Obj]):String
+  // def printModel(model:Model):String
 }
 
 object LanguageFactory {
@@ -43,11 +46,15 @@ object LanguageFactory {
   def printType(atype:Type[Obj])(implicit f:LanguageFactory):String = f.printType(atype)
   def printInst(inst:Inst)(implicit f:LanguageFactory):String = f.printInst(inst)
   def printTraverser(traverser:Traverser[Obj])(implicit f:LanguageFactory):String = f.printTraverser(traverser)
+  def printStrm(strm:Strm[Obj])(implicit f:LanguageFactory):String = f.printStrm(strm)
+  // def printModel(model:Model)(implicit f:LanguageFactory):String = f.printModel(model)
 
   implicit val mmlangFactory:LanguageFactory = new LanguageFactory {
     override def printValue(value:Value[Obj]):String = mmlangPrinter.valueString(value)
     override def printType(atype:Type[Obj]):String = mmlangPrinter.typeString(atype)
     override def printInst(inst:Inst):String = mmlangPrinter.instString(inst)
     override def printTraverser(traverser:Traverser[Obj]):String = mmlangPrinter.traverserString(traverser)
+    override def printStrm(strm:Strm[Obj]):String = mmlangPrinter.strmString(strm)
+    // override def printModel(model:Model):String = mmlangPrinter.modelString(model)
   }
 }
