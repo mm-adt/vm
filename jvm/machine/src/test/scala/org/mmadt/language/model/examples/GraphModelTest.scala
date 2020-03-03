@@ -22,9 +22,6 @@
 
 package org.mmadt.language.model.examples
 
-import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.{Obj,Str}
-import org.mmadt.storage.obj.trec
 import org.scalatest.FunSuite
 
 /**
@@ -32,8 +29,8 @@ import org.scalatest.FunSuite
  */
 class GraphModelTest extends FunSuite {
 
- // val vertex:RecType[Str,Obj] = trec("vertex")
- // val edge  :RecType[Str,Obj] = trec("edge")
- // val graph :RecType[Str,Obj] = trec("graph")
+  // val vertex:RecType[Str,Obj] = trec("vertex")
+  // val edge  :RecType[Str,Obj] = trec("edge")
+  // val graph :RecType[Str,Obj] = trec("graph")
 
 }

@@ -23,7 +23,7 @@
 package org.mmadt.processor
 
 import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue}
-import org.mmadt.storage.obj.{int, rec, str}
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 import scala.collection.immutable.ListMap
@@ -33,7 +33,7 @@ import scala.collection.immutable.ListMap
  */
 class PutInstTest extends FunSuite {
   test("[put] w/ rec value"){
-    val marko:RecValue[StrValue,ObjValue] = rec(str("name") -> str("marko"))
+    val marko:RecValue[StrValue,ObjValue] = vrec(str("name") -> str("marko"))
     val markoFull                         = marko.put(str("age"),int(29))
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(markoFull)
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(markoFull.put(str("name"),str("marko")))

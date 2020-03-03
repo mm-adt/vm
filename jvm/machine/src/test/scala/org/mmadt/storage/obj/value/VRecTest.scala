@@ -23,7 +23,7 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.obj.value.{IntValue, StrValue}
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 import scala.collection.immutable.ListMap
@@ -73,26 +73,26 @@ class VRecTest extends FunSuite {
 
   test("rec value via map construction"){
     // forwards keys
-    assertResult(ListMap(X,Y))(rec(Map(X,Y)).value)
-    assertResult(ListMap(X,Y))(rec(Map(X)).plus(rec(Map(Y))).value)
-    assertResult(ListMap(X,Y,Z))(rec(Map(X,Y,Z)).value)
-    assertResult(ListMap(X,Y,Z))(rec(Map(X)).plus(rec(Map(Y,Z))).value)
-    assertResult(ListMap(X,Y,Z))(rec(Map(X,Y)).plus(rec(Map(Z))).value)
+    assertResult(ListMap(X,Y))(vrec(Map(X,Y)).value)
+    assertResult(ListMap(X,Y))(vrec(Map(X)).plus(vrec(Map(Y))).value)
+    assertResult(ListMap(X,Y,Z))(vrec(Map(X,Y,Z)).value)
+    assertResult(ListMap(X,Y,Z))(vrec(Map(X)).plus(vrec(Map(Y,Z))).value)
+    assertResult(ListMap(X,Y,Z))(vrec(Map(X,Y)).plus(vrec(Map(Z))).value)
     // backwards keys
-    assertResult(ListMap(Y,X))(rec(Map(Y,X)).value)
-    assertResult(ListMap(Y,X))(rec(Map(Y)).plus(rec(Map(X))).value)
-    assertResult(ListMap(Z,Y,X))(rec(Map(Z,Y,X)).value)
-    assertResult(ListMap(Z,Y,X))(rec(Map(Z)).plus(rec(Map(Y,X))).value)
-    assertResult(ListMap(Z,Y,X))(rec(Map(Z,Y)).plus(rec(Map(X))).value)
+    assertResult(ListMap(Y,X))(vrec(Map(Y,X)).value)
+    assertResult(ListMap(Y,X))(vrec(Map(Y)).plus(vrec(Map(X))).value)
+    assertResult(ListMap(Z,Y,X))(vrec(Map(Z,Y,X)).value)
+    assertResult(ListMap(Z,Y,X))(vrec(Map(Z)).plus(vrec(Map(Y,X))).value)
+    assertResult(ListMap(Z,Y,X))(vrec(Map(Z,Y)).plus(vrec(Map(X))).value)
     // overwrite orderings
-    assertResult(ListMap(X,Y,Z))(rec(Map(X,Y)).plus(rec(Map(X,Z))).value) // TODO: determine overwrite order
+    assertResult(ListMap(X,Y,Z))(vrec(Map(X,Y)).plus(vrec(Map(X,Z))).value) // TODO: determine overwrite order
   }
 
   test("rec value quantifiers"){
     assertResult(rec(X,Y).q(int(2)))(rec(X,Y).q(int(2)) ==> rec.q(int(2)))
-    assertResult(rec(X,Y,Z).q(2))(rec(X,Y).q(int(2)) ==> rec.q(int(2)).plus(rec(Z)))
-    assertResult(rec(X,Y,Z).q(2))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)))
-    assertResult(rec(X,Y,Z).q(4))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)).q(2))
-    // assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
+    assertResult(rec(X,Y,Z).q(2))(rec(X,Y).q(int(2)) ==> rec.q(int(2)).plus(vrec(Z)))
+    assertResult(rec(X,Y,Z).q(2))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(vrec(Y)).plus(vrec(Z).q(34)))
+    assertResult(rec(X,Y,Z).q(4))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(vrec(Y)).plus(vrec(Z).q(34)).q(2))
+     assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
   }
 }

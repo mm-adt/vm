@@ -25,7 +25,7 @@ package org.mmadt.processor
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.processor.obj.value.I1Traverser
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**

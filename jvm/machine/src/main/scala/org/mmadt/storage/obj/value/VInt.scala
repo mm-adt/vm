@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{IntQ, Obj}
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.`type`.TInt
 
 
@@ -35,9 +35,8 @@ import org.mmadt.storage.obj.`type`.TInt
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VInt(name:String,java:Long,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with IntValue {
-
-  def this(java:Long) = this(Tokens.int,java,qOne)
-  def this(name:String,java:Long) = this(name,java,qOne)
+  def this(java:Long) = this(Tokens.int,java,VInt.q1)
+  def this(name:String,java:Long) = this(name,java,VInt.q1)
 
   override def value():Long = java
   override def value(java:Long):this.type = new VInt(this.name,java,quantifier).asInstanceOf[this.type]
@@ -45,4 +44,8 @@ class VInt(name:String,java:Long,quantifier:IntQ) extends AbstractVObj(name,java
   override def q(quantifier:IntQ):this.type = new VInt(name,java,quantifier).asInstanceOf[this.type]
   override def as[O <: Obj](name:String):O = new VInt(name,java,quantifier).asInstanceOf[O]
 
+}
+
+object VInt {
+  val q1:(IntValue,IntValue) = (int(1),int(1)) // prevent stackoverflow on object construction with int quantifiers
 }

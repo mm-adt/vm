@@ -25,7 +25,7 @@ package org.mmadt.storage.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

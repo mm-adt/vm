@@ -33,7 +33,6 @@ import org.mmadt.processor.obj.value.I1Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object InstUtil {
-
   def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
     if (inst.op() == Tokens.choose) return inst.args()
     // if (inst.op() == Tokens.get) return inst.args()

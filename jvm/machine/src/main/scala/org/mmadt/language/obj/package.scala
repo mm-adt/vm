@@ -25,7 +25,7 @@ package org.mmadt.language
 import org.mmadt.language.obj.`type`.{RecType,Type}
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{IntValue,RecValue,Value}
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

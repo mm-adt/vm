@@ -24,7 +24,7 @@ package org.mmadt.language.model.rewrite
 
 import org.mmadt.language.model.Algebra
 import org.mmadt.processor.obj.`type`.CompilingProcessor
-import org.mmadt.storage.obj.int
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**

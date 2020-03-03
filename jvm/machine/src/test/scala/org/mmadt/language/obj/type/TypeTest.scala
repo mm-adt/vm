@@ -25,7 +25,7 @@ package org.mmadt.language.obj.`type`
 import java.util.NoSuchElementException
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**

@@ -25,12 +25,12 @@ package org.mmadt.storage
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value._
-import org.mmadt.language.obj.value.strm.{IntStrm, StrStrm}
-import org.mmadt.language.obj.{InstList, IntQ, Obj}
+import org.mmadt.language.obj.value.strm.{IntStrm,RecStrm,StrStrm}
+import org.mmadt.language.obj.{InstList,IntQ,ORecValue,Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
-import org.mmadt.storage.obj.value.strm.{VIntStrm, VStrStrm}
+import org.mmadt.storage.obj.value.strm.{VIntStrm,VRecStrm,VStrStrm}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,12 +41,13 @@ trait StorageFactory {
   def bool:BoolType = tbool()
   def int:IntType = tint()
   def str:StrType = tstr()
-  def rec:RecType[Obj,Obj] = trec(value = Map.empty)
+  def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType
   def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil):IntType
   def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil):StrType
   def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B]
+  def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B]
   /////////VALUES/////////
   def obj(value:Any):ObjValue
   def bool(value:Boolean):BoolValue = vbool(Tokens.bool,value,qOne)
@@ -55,6 +56,8 @@ trait StorageFactory {
   def str(value:String):StrValue = vstr(Tokens.str,value,qOne)
   def str(value1:StrValue,value2:StrValue,valuesN:StrValue*):StrStrm
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:Map[A,B]):RecValue[A,B] = vrec(Tokens.rec,value,qOne)
+  def vrec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B]
+  def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*):RecStrm[A,B]
   //
   def vbool(name:String,value:Boolean,q:IntQ):BoolValue
   def vint(name:String,value:Long,q:IntQ):IntValue
@@ -68,12 +71,13 @@ object StorageFactory {
   def bool:BoolType = tbool()
   def int:IntType = tint()
   def str:StrType = tstr()
-  def rec:RecType[Obj,Obj] = trec(value = Map.empty)
+  def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):BoolType = f.tbool(name,q,insts)
   def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):IntType = f.tint(name,q,insts)
   def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):StrType = f.tstr(name,q,insts)
   def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):RecType[A,B] = f.trec(name,value,q,insts)
+  def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*)(implicit f:StorageFactory):RecType[A,B] = f.trec(value,values:_*)
   /////////VALUES/////////
   def obj(value:Any)(implicit f:StorageFactory):ObjValue = f.obj(value)
   def bool(value:Boolean)(implicit f:StorageFactory):BoolValue = f.vbool(Tokens.bool,value,qOne)
@@ -82,6 +86,8 @@ object StorageFactory {
   def str(value:String)(implicit f:StorageFactory):StrValue = f.vstr(Tokens.str,value,qOne)
   def str(value1:StrValue,value2:StrValue,valuesN:StrValue*)(implicit f:StorageFactory):StrStrm = f.str(value1,value2,valuesN:_*)
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:Map[A,B])(implicit f:StorageFactory):RecValue[A,B] = f.vrec(Tokens.rec,value,qOne)
+  def vrec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*)(implicit f:StorageFactory):RecValue[A,B] = f.vrec(value,values:_*)
+  def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*)(implicit f:StorageFactory):RecStrm[A,B] = f.vrec(value1,value2,valuesN:_*)
   //
   def vbool(name:String = Tokens.bool,value:Boolean,q:IntQ)(implicit f:StorageFactory):BoolValue = f.vbool(name,value,q)
   def vint(name:String = Tokens.int,q:IntQ,value:Long)(implicit f:StorageFactory):IntValue = f.vint(name,value,q)
@@ -89,8 +95,8 @@ object StorageFactory {
   def vrec[A <: Value[Obj],B <: Value[Obj]](name:String = Tokens.rec,q:IntQ,value:Map[A,B])(implicit f:StorageFactory):RecValue[A,B] = f.vrec(name,value,q)
 
   /////////CONSTANTS//////
-  lazy val btrue :BoolValue           = bool(value=true)
-  lazy val bfalse:BoolValue           = bool(value=false)
+  lazy val btrue :BoolValue           = bool(value = true)
+  lazy val bfalse:BoolValue           = bool(value = false)
   lazy val qZero :(IntValue,IntValue) = (int(0),int(0))
   lazy val qOne  :(IntValue,IntValue) = (int(1),int(1))
   lazy val qMark :(IntValue,IntValue) = (int(0),int(1))
@@ -100,6 +106,16 @@ object StorageFactory {
   lazy val ?     :(IntValue,IntValue) = qMark
   lazy val +     :(IntValue,IntValue) = qPlus
 
+  def asType[O <: Obj](obj:O):Type[O] = (obj match {
+    case strm:IntStrm => return int.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
+    case strm:StrStrm => return str.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
+    case atype:Type[_] => atype
+    case _:IntValue => int
+    case _:StrValue => str
+    case _:BoolValue => bool
+    case _:ORecValue => rec
+  }).asInstanceOf[Type[O]].q(obj.q())
+
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {
     /////////TYPES/////////
     override def obj():ObjType = new TObj()
@@ -107,6 +123,7 @@ object StorageFactory {
     override def tint(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):IntType = new TInt(name,insts,q)
     override def tstr(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):StrType = new TStr(name,insts,q)
     override def trec[A <: Obj,B <: Obj](name:String = Tokens.bool,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B] = new TRec[A,B](name,value,insts,q)
+    override def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B]((value +: values).toMap)
     /////////VALUES/////////
     override def obj(value:Any):ObjValue = new VObj(value)
     override def int(value:Long):IntValue = new VInt(value)
@@ -116,5 +133,8 @@ object StorageFactory {
     override def vstr(name:String,value:String,q:(IntValue,IntValue)):StrValue = new VStr(name,value,q)
     override def str(value1:StrValue,value2:StrValue,valuesN:StrValue*):StrStrm = new VStrStrm(value1 +: (value2 +: valuesN))
     override def vrec[A <: Value[Obj],B <: Value[Obj]](name:String,value:Map[A,B],q:(IntValue,IntValue)):RecValue[A,B] = new VRec[A,B](name,value,q)
+    override def vrec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap)
+    override def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm(value1 +: (value2 +: valuesN))
+
   }
 }

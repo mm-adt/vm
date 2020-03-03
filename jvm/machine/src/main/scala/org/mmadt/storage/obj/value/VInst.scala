@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

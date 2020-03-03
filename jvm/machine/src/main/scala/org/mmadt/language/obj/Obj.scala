@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

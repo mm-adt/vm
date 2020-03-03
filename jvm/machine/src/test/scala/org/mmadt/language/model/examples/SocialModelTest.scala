@@ -24,9 +24,10 @@ package org.mmadt.language.model.examples
 
 import org.mmadt.language.model.{Algebra, Model}
 import org.mmadt.language.obj.`type`.{IntType, RecType}
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.processor.Processor
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
@@ -69,7 +70,7 @@ class SocialModelTest extends FunSuite {
   }
 
   test("rec stream w/ rewrites"){
-    val ppl = rec("people",
+    val ppl = vrec(
       rec(str("name") -> str("marko")),
       rec(str("name") -> str("kuppitz")),
       rec(str("name") -> str("ryan")),

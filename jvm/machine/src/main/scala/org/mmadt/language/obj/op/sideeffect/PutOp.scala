@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj, Rec}
-import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**

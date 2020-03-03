@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Inst, Int, Obj}
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**

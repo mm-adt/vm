@@ -28,7 +28,7 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
-import org.mmadt.storage.obj.asType
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

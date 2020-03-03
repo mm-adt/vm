@@ -22,7 +22,7 @@
 
 package org.mmadt.storage
 
-import org.mmadt.storage.obj.{str, _}
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**

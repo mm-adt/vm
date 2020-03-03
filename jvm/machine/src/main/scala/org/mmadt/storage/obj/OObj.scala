@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.obj
 
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.{IntQ,Obj}
 
 
 /**
@@ -32,3 +32,4 @@ abstract class OObj(val _name:String,val quantifier:IntQ) extends Obj {
   override def q():IntQ = quantifier
   override val name:String = _name
 }
+

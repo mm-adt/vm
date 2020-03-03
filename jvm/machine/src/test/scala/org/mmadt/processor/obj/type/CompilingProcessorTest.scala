@@ -26,7 +26,7 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.processor.Processor
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{FunSuite, Matchers}
 

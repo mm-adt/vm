@@ -25,9 +25,9 @@ package org.mmadt.storage.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.language.obj._
-import org.mmadt.storage.obj.{OObj, _}
+import org.mmadt.language.obj.{Inst,IntQ,Obj,_}
+import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

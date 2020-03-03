@@ -24,7 +24,7 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.{GtOp, PlusOp}
-import org.mmadt.storage.obj.int
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**

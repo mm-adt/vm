@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Inst,Obj}
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.`type`.TRec
 
 /**

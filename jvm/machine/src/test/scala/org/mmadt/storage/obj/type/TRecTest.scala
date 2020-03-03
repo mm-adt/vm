@@ -22,7 +22,6 @@
 
 package org.mmadt.storage.obj.`type`
 
-import org.mmadt.storage.obj._
 import org.scalatest.FunSuite
 
 /**

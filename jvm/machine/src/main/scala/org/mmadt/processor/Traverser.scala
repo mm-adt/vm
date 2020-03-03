@@ -29,7 +29,7 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Obj, State}
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

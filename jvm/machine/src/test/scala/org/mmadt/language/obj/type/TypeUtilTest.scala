@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.traverser.ExplainOp
-import org.mmadt.storage.obj.int
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**

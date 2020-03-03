@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.{BoolType, Type, __}
 import org.mmadt.language.obj.op.FilterInstruction
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**

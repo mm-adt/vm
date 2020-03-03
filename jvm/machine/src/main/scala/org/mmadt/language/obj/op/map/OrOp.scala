@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, __}
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Bool, Inst, Obj}
-import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**

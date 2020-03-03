@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.qOne
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.{VInst, VStr}
 
 /**

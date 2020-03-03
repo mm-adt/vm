@@ -23,7 +23,7 @@
 package org.mmadt.processor.obj.value
 
 import org.mmadt.processor.Processor
-import org.mmadt.storage.obj._
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.{FunSuite, Matchers}
 
