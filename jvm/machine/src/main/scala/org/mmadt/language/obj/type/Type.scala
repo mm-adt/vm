@@ -87,9 +87,8 @@ trait Type[+T <: Obj] extends Obj
     case _:Bool => bool(inst)
     case _:Int => int(inst)
     case _:Str => str(inst)
-    case _:RecType[Obj,Obj] => rec(t2.asInstanceOf[RecType[Obj,Obj]],inst)
-    case anon:__ => anon(this)
-    case _:ObjType => obj(inst)
+    case arec:RecType[Obj,Obj] => rec(arec,inst)
+    case _ => obj(inst)
   }).asInstanceOf[OType[R]]
 
   // type change during fluency // TODO: get rid of this

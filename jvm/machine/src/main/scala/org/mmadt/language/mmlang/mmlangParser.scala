@@ -26,14 +26,11 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
-import org.mmadt.language.obj.value.strm.{IntStrm, StrStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.op.traverser.ToOp
+import org.mmadt.language.obj.value.strm.{IntStrm,StrStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.storage.StorageFactory._
 
 import scala.util.matching.Regex
@@ -58,7 +55,7 @@ object mmlangParser extends JavaTokenParsers {
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
   lazy val expr:Parser[Any] = evaluation | compilation | obj
 
-  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ opt((aType | anonType)) ^^ (x => x._1 ===> x._2.getOrElse(new __(List(IdOp()))))
+  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ opt((aType | anonType)) ^^ (x => x._1 ===> x._2.getOrElse(__().id()))
   lazy val compilation:Parser[Obj]           = objType ~ opt(objType) ^^ (x => x._2 match {
     case Some(atype) => (x._1 ==> this.model) (atype)
     case None => x._1 // TODO: clip domain and send domain through -- (x._1.domain() ==> this.model) (x._1)
@@ -84,7 +81,7 @@ object mmlangParser extends JavaTokenParsers {
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]])
   }
   lazy val recType :Parser[ORecType]  = opt(name) ~ (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE))) <~ RBRACKET ^^ (x => trec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap))
-  lazy val anonType:Parser[__]        = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
+  lazy val anonType:Parser[__]        = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => __(x:_*))
 
   lazy val stateAccess:Parser[Option[Type[Obj]] ~ String] = (opt(canonicalType) <~ LANGLE) ~ "[a-zA-z]+".r <~ RANGLE
 
@@ -107,87 +104,8 @@ object mmlangParser extends JavaTokenParsers {
 
   lazy val instArg      :Parser[Obj]  = (stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2)))) | obj // TODO: hardcoded int for unspecified state type
   lazy val inst         :Parser[Inst] = sugarlessInst | chooseSugar | infixSugar
-  lazy val infixSugar   :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
+  lazy val infixSugar   :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x))
-  lazy val sugarlessInst:Parser[Inst] = LBRACKET ~> ("""[a-z]+""".r <~ opt(COMMA)) ~ repsep(instArg,COMMA) <~ RBRACKET ^^ (x => instMatrix(x._1,x._2))
+  lazy val sugarlessInst:Parser[Inst] = LBRACKET ~> ("""[a-z]+""".r <~ opt(COMMA)) ~ repsep(instArg,COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1,x._2))
 
-  private def instMatrix(op:String,args:List[Obj]):Inst ={ // TODO: move to language.obj.op.InstUtil (should be reused by all JVM-based mm-ADT languages)
-    op match {
-      case Tokens.and | Tokens.and_op => args.head match {
-        case arg:BoolType => AndOp(arg)
-        case arg:BoolValue => AndOp(arg)
-        case arg:__ => AndOp(arg)
-      }
-      case Tokens.or | Tokens.or_op => args.head match {
-        case arg:BoolType => OrOp(arg)
-        case arg:BoolValue => OrOp(arg)
-        case arg:__ => OrOp(arg)
-      }
-      case Tokens.plus | Tokens.plus_op => args.head match {
-        case arg:IntValue => PlusOp(arg)
-        case arg:IntType => PlusOp(arg)
-        case arg:StrValue => PlusOp(arg)
-        case arg:StrType => PlusOp(arg)
-        case arg:ORecValue => PlusOp(arg)
-        case arg:ORecType => PlusOp(arg)
-        case arg:__ => PlusOp(arg)
-      }
-      case Tokens.mult | Tokens.mult_op => args.head match {
-        case arg:IntValue => MultOp(arg)
-        case arg:IntType => MultOp(arg)
-        case arg:__ => MultOp(arg)
-      }
-      case Tokens.gt | Tokens.gt_op => args.head match {
-        case arg:IntValue => GtOp(arg)
-        case arg:IntType => GtOp(arg)
-        case arg:StrValue => GtOp(arg)
-        case arg:StrType => GtOp(arg)
-        case arg:__ => GtOp(arg)
-      }
-      case Tokens.eqs | Tokens.eqs_op => args.head match {
-        case arg:BoolValue => EqsOp(arg)
-        case arg:BoolType => EqsOp(arg)
-        case arg:IntValue => EqsOp(arg)
-        case arg:IntType => EqsOp(arg)
-        case arg:StrValue => EqsOp(arg)
-        case arg:StrType => EqsOp(arg)
-        case arg:ORecValue => EqsOp(arg)
-        case arg:ORecType => EqsOp(arg)
-        case arg:__ => EqsOp(arg)
-      }
-      case Tokens.is => args.head match {
-        case arg:BoolValue => IsOp(arg)
-        case arg:BoolType => IsOp(arg)
-        case arg:__ => IsOp(arg)
-      }
-      case Tokens.get => args match {
-        case List(key:Obj,typeHint:Type[Obj]) => GetOp(key,typeHint)
-        case List(key:Obj) => GetOp(key)
-      }
-      case Tokens.map => args.head match {
-        case arg:__ => MapOp(arg)
-        case arg:Obj => MapOp(arg)
-      }
-      case Tokens.neg => NegOp()
-      case Tokens.count => CountOp()
-      case Tokens.explain => ExplainOp()
-      case Tokens.put => PutOp(args.head,args.tail.head)
-      case Tokens.from =>
-        val label = args.head.asInstanceOf[StrValue]
-        args.tail match {
-          case Nil => FromOp(label)
-          case obj:Obj => FromOp(label,obj)
-        }
-      case Tokens.fold => args.tail.tail.head match {
-        case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x)
-        case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x)
-      }
-      case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
-      case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[Obj,Obj]])
-      case Tokens.id => IdOp()
-      case Tokens.q => QOp()
-      case Tokens.zero => ZeroOp()
-      case Tokens.one => OneOp()
-    }
-  }
 }

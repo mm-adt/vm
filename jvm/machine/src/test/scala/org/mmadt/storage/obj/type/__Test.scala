@@ -37,5 +37,10 @@ class __Test extends FunSuite {
     assertResult(int.plus(int(4)).plus(int.plus(int)).gt(int.plus(int(2))))(x(int))
   }
 
+  test("__  type fluency"){
+    //assertResult(List(int(12)))((int(5) ===> __.plus(2).plus(5).id()).toList)
+    //assertResult(List(int(120)))((int(5) ===> __.plus(2).plus(5).id().mult(10)).toList)
+  }
+
 }
 

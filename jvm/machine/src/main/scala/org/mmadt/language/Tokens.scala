@@ -36,6 +36,7 @@ object Tokens {
   val rec  = "rec"
   val int  = "int"
   val inst = "inst"
+  val __ = "__"
 
   val and     = "and"
   val as      = "as"
