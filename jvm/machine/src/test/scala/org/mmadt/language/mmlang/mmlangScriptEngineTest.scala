@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -70,18 +70,18 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str("marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("'marko comp3 45AHA\"\"\\'-%^&'").next)
   }
 
-  /*test("atomic named value parsing"){
-    assertResult(bool("keep",true))(engine.eval("keep:true").next)
-    assertResult(int("nat",5))(engine.eval("nat:5").next)
-    assertResult(int("score",-51))(engine.eval("score:-51").next)
-    assertResult(str("fname","marko"))(engine.eval("fname:'marko'").next)
-    assertResult(str("garbage","marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("garbage:'marko comp3 45AHA\"\"\\'-%^&'").next)
-  }*/
+  test("atomic named value parsing"){
+    //assertResult(bool("keep",true))(engine.eval("keep:true").next)
+    //assertResult(int("nat",5))(engine.eval("nat:5").next)
+    //assertResult(int("score",-51))(engine.eval("score:-51").next)
+    //assertResult(str("fname","marko"))(engine.eval("fname:'marko'").next)
+    //assertResult(str("garbage","marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("garbage:'marko comp3 45AHA\"\"\\'-%^&'").next)
+  }
 
   test("rec value parsing"){
-    assertResult(trec(str("name") -> str("marko")))(engine.eval("['name'->'marko']").next)
-    assertResult(trec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->'marko','age'->29]").next)
-    assertResult(trec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->  'marko' , 'age' ->29]").next)
+    assertResult(rec(str("name") -> str("marko")))(engine.eval("['name'->'marko']").next)
+    assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->'marko','age'->29]").next)
+    assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->  'marko' , 'age' ->29]").next)
   }
 
   test("rec named value parsing"){
@@ -144,9 +144,9 @@ class mmlangScriptEngineTest extends FunSuite {
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
-        // assertResult(chooseInst)(engine.eval("int int[plus,2][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
+        // assertResult(chooseInst)(engine.eval("int int[plus,2][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)    // TODO: get anon typing working better with [choose] type inference
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
-        // assertResult(chooseInst)(engine.eval("int => int[plus,2][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
+        // assertResult(chooseInst)(engine.eval("int => int[plus,2][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next) // TODO: get anon typing working better with [choose] type inference
         assertResult(chooseInst)(engine.eval(
           """
             | int[plus,2]
@@ -159,12 +159,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("  5 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(3))(engine.eval("-1 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(20))(engine.eval("1 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
-    //assertResult(obj)(engine.eval("int[plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range())
+    assertResult(obj)(engine.eval("int[plus,2][int[is>5]->true|int[is==1]->int[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range()) // TODO: get anon typing working better with [choose] type inference
     //
     assertResult(btrue.q(int(3)))(engine.eval("             5{3} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(3).q(int(5)))(engine.eval("           -1{5} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(20).q(int(8),int(10)))(engine.eval("1{8,10} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
-    //assertResult(obj.q(+))(engine.eval("int{+}[plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range())
+    assertResult(obj.q(+))(engine.eval("int{+}[plus,2][[is>5]->true|int[is==1]->[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range()) // TODO: get anon typing working better with [choose] type inference
   }
 
   test("traverser read/write state parsing"){
