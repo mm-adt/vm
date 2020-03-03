@@ -257,4 +257,8 @@ class mmlangScriptEngineTest extends FunSuite {
   test("composite expression parsing"){
     assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval("['age'->29]rec[rec[is,rec[get,'age',int][gt,30]] -> rec[put,'name','bill'] | rec -> rec[put,'name','marko']]").next())
   }
+
+  test("model parsing") {
+   // assertResult(true)(engine.eval(""))
+  }
 }

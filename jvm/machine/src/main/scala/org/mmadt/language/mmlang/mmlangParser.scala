@@ -71,11 +71,11 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.int => int
       case Tokens.str => str
       case Tokens.rec => rec
-      case name:String => this.model.get(tint(name)).get.asInstanceOf[Type[Obj]]
+      case name:String => this.model.get(name.substring(1)).getOrElse(throw new IllegalArgumentException("Could not locate: " + name))
     })((q,t) => t.q(q))
   }
 
-  lazy val name   :Parser[String]    = "[a-zA-Z]*".r <~ ":"
+  lazy val name   :Parser[String]    = "[a-zA-Z]+".r <~ ":"
   lazy val obj    :Parser[Obj]       = objValue | objType
   lazy val objType:Parser[Type[Obj]] = recType | aType | anonType
 
@@ -86,7 +86,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val recType :Parser[ORecType]  = opt(name) ~ (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE))) <~ RBRACKET ^^ (x => trec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap))
   lazy val anonType:Parser[__]        = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => new __(x)) // anonymous type (instructions only -- no domain/range)
 
-  lazy val stateAccess:Parser[Option[Type[Obj]] ~ String] = (opt(canonicalType) <~ LANGLE) ~ "[a-zA-z]*".r <~ RANGLE
+  lazy val stateAccess:Parser[Option[Type[Obj]] ~ String] = (opt(canonicalType) <~ LANGLE) ~ "[a-zA-z]+".r <~ RANGLE
 
   lazy val quantifier    :Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1,x._2.getOrElse(x._1)))
   lazy val quantifierType:Parser[IntQ] = (Tokens.q_star | Tokens.q_mark | Tokens.q_plus) ^^ {
@@ -106,10 +106,10 @@ object mmlangParser extends JavaTokenParsers {
   lazy val recStrm  :Parser[ORecStrm]   = (recValue <~ COMMA) ~ rep1sep(recValue,COMMA) ^^ (x => vrec(x._1,x._2.head,x._2.tail:_*))
 
   lazy val instArg      :Parser[Obj]  = (stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2)))) | obj // TODO: hardcoded int for unspecified state type
-  lazy val inst         :Parser[Inst] = chooseSugar | sugarlessInst | infixSugar
+  lazy val inst         :Parser[Inst] = sugarlessInst | chooseSugar | infixSugar
   lazy val infixSugar   :Parser[Inst] = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => instMatrix(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst] = recType ^^ (x => ChooseOp(x))
-  lazy val sugarlessInst:Parser[Inst] = LBRACKET ~> ("""[a-zA-Z][a-zA-Z0-9]*""".r <~ opt(COMMA)) ~ repsep(instArg,COMMA) <~ RBRACKET ^^ (x => instMatrix(x._1,x._2))
+  lazy val sugarlessInst:Parser[Inst] = LBRACKET ~> ("""[a-z]+""".r <~ opt(COMMA)) ~ repsep(instArg,COMMA) <~ RBRACKET ^^ (x => instMatrix(x._1,x._2))
 
   private def instMatrix(op:String,args:List[Obj]):Inst ={ // TODO: move to language.obj.op.InstUtil (should be reused by all JVM-based mm-ADT languages)
     op match {
