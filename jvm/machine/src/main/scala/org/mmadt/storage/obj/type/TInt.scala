@@ -34,7 +34,6 @@ class TInt(name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends Abs
   def this() = this(Tokens.int,Nil,qOne)
   def this(name:String) = this(name,Nil,qOne)
 
-  override def compose(inst:Inst):this.type = int(inst,quantifier).asInstanceOf[this.type]
   override def range():this.type = new TInt(name,Nil,quantifier).asInstanceOf[this.type]
   override def q(quantifier:IntQ):this.type = new TInt(name,insts,quantifier).asInstanceOf[this.type]
 }

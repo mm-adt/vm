@@ -35,7 +35,6 @@ class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(Type[Obj],In
   def this() = this(Tokens.rec,Map[A,B](),Nil,qOne)
   def this(java:Map[A,B]) = this(Tokens.rec,java,Nil,qOne)
 
-  override def compose(inst:Inst):this.type = rec[A,B](this,inst,quantifier).asInstanceOf[this.type]
   override def range():this.type = new TRec[A,B](name,java,Nil,quantifier).asInstanceOf[this.type]
   override def q(quantifier:IntQ):this.type = new TRec[A,B](name,java,insts,quantifier).asInstanceOf[this.type]
   override def value():Map[A,B] = java

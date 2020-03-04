@@ -24,8 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.map.{IdOp, MultOp, PlusOp}
+import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -46,16 +45,9 @@ class __(insts:List[(Type[Obj],Inst)] = Nil) extends Type[__] with Obj
   override def q(quantifier:(IntValue,IntValue)):__.this.type = throw new IllegalArgumentException()
   override val name:String = Tokens.__
   override def test(other:Obj):Boolean = throw new IllegalArgumentException()
-  override def id():this.type = this.compose(IdOp())
   override def as[O <: Obj](name:String):O = throw new IllegalArgumentException()
   override def range():__.this.type = this
   override def insts():List[(Type[Obj],Inst)] = insts
-  override def compose(inst:Inst):this.type = new __(insts :+ (new TObj(),inst)).asInstanceOf[this.type]
-  override def int(inst:Inst,q:(IntValue,IntValue)):IntType = throw new IllegalArgumentException()
-  override def bool(inst:Inst,q:(IntValue,IntValue)):BoolType = throw new IllegalArgumentException()
-  override def str(inst:Inst,q:(IntValue,IntValue)):StrType = throw new IllegalArgumentException()
-  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:(IntValue,IntValue)):RecType[A,B] = throw new IllegalArgumentException()
-  override def obj(inst:Inst,q:(IntValue,IntValue)):ObjType = throw new IllegalArgumentException()
   override def count():IntType = throw new IllegalArgumentException()
 
   def apply[T <: Type[T]](obj:Obj):T = insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]

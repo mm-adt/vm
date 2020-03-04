@@ -27,6 +27,7 @@ import org.mmadt.language.obj.op.map.{EqsOp, GtOp, PlusOp}
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
 import org.mmadt.language.obj.{Str, minZero}
+import org.mmadt.storage.StorageFactory.tbool
 import org.mmadt.storage.obj.value.VStr
 
 
@@ -40,12 +41,12 @@ trait StrType extends Str
   def apply(value:StrValue):StrValue = new VStr(this.name,value.value(),this.q())
 
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
-  override def eqs(other:Type[Str]):BoolType = this.bool(EqsOp(other))
-  override def eqs(other:Value[Str]):BoolType = this.bool(EqsOp(other))
+  override def eqs(other:Type[Str]):BoolType = this.compose(tbool(),EqsOp(other))
+  override def eqs(other:Value[Str]):BoolType = this.compose(tbool(),EqsOp(other))
   override def plus(other:Type[Str]):StrType = this.compose(PlusOp(other))
   override def plus(other:Value[Str]):this.type = this.compose(PlusOp(other))
-  override def gt(other:Type[Str]):BoolType = this.bool(GtOp(other))
-  override def gt(other:Value[Str]):BoolType = this.bool(GtOp(other))
+  override def gt(other:Type[Str]):BoolType = this.compose(tbool(),GtOp(other))
+  override def gt(other:Value[Str]):BoolType = this.compose(tbool(),GtOp(other))
   override def is(bool:BoolType):StrType = this.compose(IsOp(bool)).q(minZero(this.q()))
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q()))
 }

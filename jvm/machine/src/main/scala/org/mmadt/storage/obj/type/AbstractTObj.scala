@@ -37,12 +37,6 @@ abstract class AbstractTObj(name:String,insts:List[(Type[Obj],Inst)],quantifier:
   def this() = this(Tokens.obj,Nil,qOne)
   def insts():List[(Type[Obj],Inst)] = insts
 
-  override def int(inst:Inst,quantifier:IntQ = quantifier):IntType = new TInt(typeName(inst.op(),(Tokens.int,inst.args())),this.insts() ::: List((this,inst)),quantifier) // TODO: propagating the type name
-  override def bool(inst:Inst,quantifier:IntQ = quantifier):BoolType = new TBool(Tokens.bool,this.insts() ::: List((this,inst)),quantifier)
-  override def str(inst:Inst,quantifier:IntQ = quantifier):StrType = new TStr(typeName(inst.op(),(Tokens.str,inst.args())),this.insts() ::: List((this,inst)),quantifier) // TODO: propagating the type name
-  override def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,quantifier:IntQ = quantifier):RecType[A,B] = new TRec[A,B](atype.name,atype.value(),this.insts() ::: List((this,inst)),multQ(this,atype))
-  override def obj(inst:Inst,quantifier:IntQ = quantifier):ObjType = new TObj(Tokens.obj,this.insts() ::: List((this,inst)),quantifier)
-
   // utility method
   private def typeName(op:String,nextType:(String,List[Obj])):String =
     if (op.equals(Tokens.as))

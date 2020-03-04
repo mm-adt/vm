@@ -25,11 +25,11 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
-import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.op.map.{IdOp,MapOp,QOp}
+import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
+import org.mmadt.language.obj.value.{StrValue,Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
@@ -82,35 +82,29 @@ trait Type[+T <: Obj] extends Obj
       case atype:Type[Obj] => atype.insts().seq.foldLeft(this.asInstanceOf[Type[Obj]])((b,a) => b.compose(a._1,a._2)).asInstanceOf[R]
     }
   }
-  def compose(inst:Inst):this.type
-  def compose[R <: Obj](t2:R,inst:Inst):OType[R] = (t2 match {
-    case _:Bool => bool(inst)
-    case _:Int => int(inst)
-    case _:Str => str(inst)
-    case arec:RecType[Obj,Obj] => rec(arec,inst)
-    case _ => obj(inst)
+  def compose(inst:Inst):this.type = this.compose(this,inst).asInstanceOf[this.type]
+  def compose[R <: Obj](nextObj:R,inst:Inst):OType[R] = (nextObj match {
+    case _:Bool => tbool(nextObj.name,multQ(this,inst),this.insts() ::: List((this,inst)))
+    case _:Int => tint(nextObj.name,multQ(this,inst),this.insts() ::: List((this,inst)))
+    case _:Str => tstr(nextObj.name,multQ(this,inst),this.insts() ::: List((this,inst)))
+    case arec:RecType[Obj,Obj] => trec(arec.name,arec.value(),multQ(this,inst),this.insts() ::: List((this,inst)))
+    case _:__ => new __(this.insts() ::: List((this,inst)))
+    case _ => tobj(nextObj.name,multQ(this,inst),this.insts() ::: List((this,inst)))
   }).asInstanceOf[OType[R]]
-
-  // type change during fluency // TODO: get rid of this
-  def obj(inst:Inst,q:IntQ = this.q()):ObjType
-  def int(inst:Inst,q:IntQ = this.q()):IntType
-  def bool(inst:Inst,q:IntQ = this.q()):BoolType
-  def str(inst:Inst,q:IntQ = this.q()):StrType
-  def rec[A <: Obj,B <: Obj](atype:RecType[A,B],inst:Inst,q:IntQ = this.q()):RecType[A,B]
 
   // obj-level operations
   override def as[O <: Obj](name:String):O = (InstUtil.nextInst(this) match {
     case Some(x) if x == AsOp(name) => this
     case _ => this.compose(AsOp(name))
   }).asInstanceOf[O]
-  override def count():IntType = int(CountOp(),qOne)
+  override def count():IntType = this.compose(tint(),CountOp()).q(qOne)
   override def id():this.type = this.compose(IdOp())
   override def map[O <: Obj](other:O):O = this.compose(asType(other),MapOp(other)).asInstanceOf[O]
   override def model(model:StrValue):this.type = this.compose(ModelOp(model))
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
-  override def quant():IntType = int(QOp())
+  override def quant():IntType = this.compose(tint(),QOp())
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {

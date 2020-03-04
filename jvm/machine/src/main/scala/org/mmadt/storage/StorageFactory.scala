@@ -23,10 +23,10 @@
 package org.mmadt.storage
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.{BoolType, _}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm.{IntStrm, RecStrm, StrStrm}
-import org.mmadt.language.obj.{InstList, IntQ, ORecStrm, ORecValue, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
@@ -37,12 +37,13 @@ import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm, VStrStrm}
  */
 trait StorageFactory {
   /////////TYPES/////////
-  def obj():ObjType
+  def obj():ObjType = tobj()
   def bool:BoolType = tbool()
   def int:IntType = tint()
   def str:StrType = tstr()
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
+  def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType
   def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil):IntType
   def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil):StrType
@@ -67,12 +68,13 @@ trait StorageFactory {
 
 object StorageFactory {
   /////////TYPES/////////
-  def obj()(implicit f:StorageFactory):ObjType = f.obj()
+  def obj():ObjType = tobj()
   def bool:BoolType = tbool()
   def int:IntType = tint()
   def str:StrType = tstr()
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
+  def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):ObjType = f.tobj(name,q,insts)
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):BoolType = f.tbool(name,q,insts)
   def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):IntType = f.tint(name,q,insts)
   def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):StrType = f.tstr(name,q,insts)
@@ -119,7 +121,7 @@ object StorageFactory {
 
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {
     /////////TYPES/////////
-    override def obj():ObjType = new TObj()
+    override def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType = new TObj(name,insts,q)
     override def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType = new TBool(name,insts,q)
     override def tint(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):IntType = new TInt(name,insts,q)
     override def tstr(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):StrType = new TStr(name,insts,q)

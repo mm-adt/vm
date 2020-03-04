@@ -46,9 +46,9 @@ package object obj {
   // quantifier utilities
   private lazy val zero:IntValue = int(0)
   def minZero(quantifier:IntQ):IntQ = (zero,quantifier._2)
-  def multQ(obj:Obj,atype:Type[_]):IntQ = atype.q() match {
-    case _ if equals(qOne) => obj.q()
-    case typeQuantifier:IntQ => (obj.q()._1 * typeQuantifier._1,obj.q()._2 * typeQuantifier._2)
+  def multQ(objA:Obj,objB:Obj):IntQ = objB.q() match {
+    case _ if equals(qOne) => objA.q()
+    case quantifier:IntQ => (objA.q()._1 * quantifier._1,objA.q()._2 * quantifier._2)
   }
 }
 

@@ -34,7 +34,6 @@ class TBool(name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends Ab
   def this() = this(Tokens.bool,Nil,qOne)
   def this(name:String) = this(name,Nil,qOne)
 
-  override def compose(inst:Inst):this.type = bool(inst).asInstanceOf[this.type]
   override def range():this.type = new TBool(name,Nil,quantifier).asInstanceOf[this.type]
   override def q(quantifier:IntQ):this.type = new TBool(name,insts,quantifier).asInstanceOf[this.type]
 }
