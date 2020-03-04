@@ -28,7 +28,6 @@ import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.ObjValue
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.{TInt, TObj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,7 +38,7 @@ class VObj(name:String,java:Any,quantifier:IntQ) extends AbstractVObj(name,java,
 
   override def value():Any = java
   def value(java:Any):this.type = new VObj(this.name,java,quantifier).asInstanceOf[this.type]
-  override def start():ObjType = new TObj(name,List((new TInt(name,Nil,qZero),StartOp(this))),quantifier)
+  override def start():ObjType = tint(name,quantifier,List((tint(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VObj(name,java,quantifier).asInstanceOf[this.type]
   override def as[O <: Obj](name:String):O = new VObj(name,java,quantifier).asInstanceOf[O]
 

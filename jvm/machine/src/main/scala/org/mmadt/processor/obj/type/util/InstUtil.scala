@@ -50,14 +50,14 @@ object InstUtil {
    */
   def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E = inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
 
-  def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:Type[E]):E = (atype.insts().head._2.apply(start,InstUtil.valueArgs(new I1Traverser[Obj](arg),atype.insts().head._2)) ==> atype.linvert())
+  def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:Type[E]):E = (atype.insts.head._2.apply(start,InstUtil.valueArgs(new I1Traverser[Obj](arg),atype.insts.head._2)) ==> atype.linvert())
 
   @scala.annotation.tailrec
   def createInstList(list:List[(Type[Obj],Inst)],atype:Type[Obj]):List[(Type[Obj],Inst)] ={
-    if (atype.insts().isEmpty) list else createInstList(List((atype.range(),atype.insts().last._2)) ::: list,atype.insts().last._1)
+    if (atype.insts.isEmpty) list else createInstList(List((atype.range(),atype.insts.last._2)) ::: list,atype.insts.last._1)
   }
 
-  def nextInst(atype:Type[_]):Option[Inst] = atype.insts() match {
+  def nextInst(atype:Type[_]):Option[Inst] = atype.insts match {
     case Nil => None
     case x => Some(x.head._2)
   }

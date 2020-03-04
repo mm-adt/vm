@@ -24,8 +24,8 @@ package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{BoolType,IntType,RecType,Type}
-import org.mmadt.storage.obj.`type`.{TBool,TInt,TRec}
+import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec}
 
 import scala.collection.mutable
 
@@ -40,9 +40,9 @@ trait Model {
 
   def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
     val namedType:O = (definition match {
-      case _:BoolType => new TBool(name,Nil,definition.q())
-      case _:IntType => new TInt(name,Nil,definition.q())
-      case rec:RecType[Obj,Obj] => new TRec[Obj,Obj](name,rec.value(),Nil,definition.q())
+      case _:BoolType => new TBool(name,definition.q(),Nil)
+      case _:IntType => new TInt(name,definition.q(),Nil)
+      case rec:RecType[Obj,Obj] => new TRec[Obj,Obj](name,rec.value(),definition.q(),Nil)
     }).asInstanceOf[O]
     this.put(namedType.asInstanceOf[Type[Obj]],definition)
     namedType

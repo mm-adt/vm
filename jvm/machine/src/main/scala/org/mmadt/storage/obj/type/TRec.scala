@@ -24,18 +24,16 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends AbstractTObj(name,insts,quantifier) with RecType[A,B] {
-
-  def this() = this(Tokens.rec,Map[A,B](),Nil,qOne)
-  def this(java:Map[A,B]) = this(Tokens.rec,java,Nil,qOne)
-
-  override def range():this.type = new TRec[A,B](name,java,Nil,quantifier).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new TRec[A,B](name,java,insts,quantifier).asInstanceOf[this.type]
+class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:IntQ,insts:InstList) extends AbstractTObj(name,quantifier,insts) with RecType[A,B] {
+  def this() = this(Tokens.rec,Map[A,B](),qOne,Nil)
+  def this(java:Map[A,B]) = this(Tokens.rec,java,qOne,Nil)
+  override def range():this.type = new TRec[A,B](name,java,quantifier,Nil).asInstanceOf[this.type]
+  override def q(quantifier:IntQ):this.type = new TRec[A,B](name,java,quantifier,insts).asInstanceOf[this.type]
   override def value():Map[A,B] = java
 }

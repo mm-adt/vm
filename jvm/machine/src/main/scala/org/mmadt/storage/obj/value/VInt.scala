@@ -28,7 +28,6 @@ import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.TInt
 
 
 /**
@@ -40,7 +39,7 @@ class VInt(name:String,java:Long,quantifier:IntQ) extends AbstractVObj(name,java
 
   override def value():Long = java
   override def value(java:Long):this.type = new VInt(this.name,java,quantifier).asInstanceOf[this.type]
-  override def start():IntType = new TInt(name,List((new TInt(name,Nil,qZero),StartOp(this))),quantifier)
+  override def start():IntType = tint(name,quantifier,List((tint(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VInt(name,java,quantifier).asInstanceOf[this.type]
   override def as[O <: Obj](name:String):O = new VInt(name,java,quantifier).asInstanceOf[O]
 

@@ -22,25 +22,13 @@
 
 package org.mmadt.storage.obj.`type`
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, IntQ, Obj, _}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.{Inst, InstList, IntQ, Obj}
 import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTObj(name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends OObj(name,quantifier) with Type[Obj] {
-
-  def this() = this(Tokens.obj,Nil,qOne)
-  def insts():List[(Type[Obj],Inst)] = insts
-
-  // utility method
-  private def typeName(op:String,nextType:(String,List[Obj])):String =
-    if (op.equals(Tokens.as))
-      nextType._2.head.asInstanceOf[StrValue].value()
-    else if (Tokens.named(name)) name else nextType._1
-
+abstract class AbstractTObj(name:String,quantifier:IntQ,_insts:InstList) extends OObj(name,quantifier) with Type[Obj] {
+  override val insts:InstList = _insts
 }

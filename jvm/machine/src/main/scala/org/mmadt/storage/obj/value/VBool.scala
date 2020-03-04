@@ -28,7 +28,6 @@ import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.TBool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,7 +39,7 @@ class VBool(name:String,java:Boolean,quantifier:IntQ) extends AbstractVObj(name,
 
   override def value():Boolean = java
   override def value(java:Boolean):this.type = new VBool(this.name,java,quantifier).asInstanceOf[this.type]
-  override def start():BoolType = new TBool(name,List((new TBool(name,Nil,qZero),StartOp(this))),quantifier)
+  override def start():BoolType = tbool(name,quantifier,List((tbool(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VBool(name,java,quantifier).asInstanceOf[this.type]
   override def as[O <: Obj](name:String):O = new VBool(name,java,quantifier).asInstanceOf[O]
 }

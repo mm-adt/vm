@@ -33,14 +33,14 @@ object SinglePassRewrite {
   def rewrite[D <: Obj,R <: Obj](model:Model,startType:Type[D],endType:Type[R]):Type[R] ={
     var btype:Type[R] = endType
     var xtype:Type[R] = btype
-    for (_ <- btype.insts().indices) {
-      while (btype.insts() != Nil) {
+    for (_ <- btype.insts.indices) {
+      while (btype.insts != Nil) {
         model.get(btype) match {
           case Some(rewrite) =>
             xtype = xtype.compose(rewrite.asInstanceOf[Type[R]])
             btype = rewrite.asInstanceOf[Type[R]]
           case None =>
-            xtype = xtype.compose(btype.insts().head._2)
+            xtype = xtype.compose(btype.insts.head._2)
             btype = btype.linvert()
         }
       }

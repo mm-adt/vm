@@ -55,6 +55,6 @@ class IntTypeTest extends FunSuite {
   }
 
   test("int: type structure"){
-    println(int.plus(int(2)).mult(int(5)).insts())
+    println(int.plus(int(2)).mult(int(5)).insts)
   }
 }

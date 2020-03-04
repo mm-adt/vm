@@ -37,21 +37,21 @@ object LeftRightSweepRewrite {
 
   @scala.annotation.tailrec
   def rewrite[S <: Obj](model:Model,atype:Type[S],btype:Type[S],traverser:Traverser[S]):Traverser[S] ={
-    if (atype.insts().nonEmpty) {
+    if (atype.insts.nonEmpty) {
       model.get(atype) match {
         case Some(right:Type[S]) => rewrite(model,right,btype,traverser)
         case None => rewrite(model,
           atype.rinvert(),
-          atype.insts().last._2.apply(
+          atype.insts.last._2.apply(
             atype.rinvert[Type[S]]().range(),
-            rewriteArgs(model,atype.rinvert[Type[S]]().range(),atype.insts().last._2,traverser)).asInstanceOf[Type[S]].compose(btype),
+            rewriteArgs(model,atype.rinvert[Type[S]]().range(),atype.insts.last._2,traverser)).asInstanceOf[Type[S]].compose(btype),
           traverser)
       }
-    } else if (btype.insts().nonEmpty) {
+    } else if (btype.insts.nonEmpty) {
       rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),
-        traverser.apply(btype.insts().head._2.apply(btype.insts().head._1).asInstanceOf[Type[S]]))
+        traverser.apply(btype.insts.head._2.apply(btype.insts.head._1).asInstanceOf[Type[S]]))
     }
     else traverser
   }

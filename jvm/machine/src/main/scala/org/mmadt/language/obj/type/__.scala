@@ -34,23 +34,23 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(insts:List[(Type[Obj],Inst)] = Nil) extends Type[__] with Obj
+class __(_insts:List[(Type[Obj],Inst)] = Nil) extends Type[__] with Obj
   with PlusOp[Obj]
   with MultOp[Obj] {
 
   def this(insts:Inst*) = this(insts.map(i => (new TObj(),i)).toList)
 
-  override def toString:String = insts.foldLeft(Tokens.empty)((a,i) => a + i)
+  override def toString:String = _insts.foldLeft(Tokens.empty)((a,i) => a + i)
   override def q():(IntValue,IntValue) = qOne
   override def q(quantifier:(IntValue,IntValue)):__.this.type = throw new IllegalArgumentException()
   override val name:String = Tokens.__
   override def test(other:Obj):Boolean = throw new IllegalArgumentException()
   override def as[O <: Obj](name:String):O = throw new IllegalArgumentException()
   override def range():__.this.type = this
-  override def insts():List[(Type[Obj],Inst)] = insts
+  override val insts:List[(Type[Obj],Inst)] = _insts
   override def count():IntType = throw new IllegalArgumentException()
 
-  def apply[T <: Type[T]](obj:Obj):T = insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]
+  def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]
 
   override def plus(other:Type[Obj]):__ = this.compose(new VInst((Tokens.plus,List(other)),qOne,null))
   override def plus(other:Value[Obj]):this.type = this.compose(new VInst((Tokens.plus,List(other)),qOne,null))

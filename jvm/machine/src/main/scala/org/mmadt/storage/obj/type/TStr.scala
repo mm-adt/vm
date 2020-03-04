@@ -23,17 +23,17 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{StrType, Type}
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.`type`.StrType
+import org.mmadt.language.obj.{InstList, IntQ}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TStr(name:String,insts:List[(Type[Obj],Inst)],quantifier:IntQ) extends AbstractTObj(name,insts,quantifier) with StrType {
-  def this() = this(Tokens.str,Nil,qOne)
-  def this(name:String) = this(name,Nil,qOne)
-  override def range():this.type = new TStr(name,Nil,quantifier).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new TStr(name,insts,quantifier).asInstanceOf[this.type]
+class TStr(name:String,quantifier:IntQ,insts:InstList) extends AbstractTObj(name,quantifier,insts) with StrType {
+  def this() = this(Tokens.str,qOne,Nil)
+  def this(name:String) = this(name,qOne,Nil)
+  override def range():this.type = new TStr(name,quantifier,Nil).asInstanceOf[this.type]
+  override def q(quantifier:IntQ):this.type = new TStr(name,quantifier,insts).asInstanceOf[this.type]
 }
 

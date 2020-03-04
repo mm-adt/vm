@@ -46,17 +46,17 @@ trait Type[+T <: Obj] extends Obj
   // def apply(values:Obj):Value[Obj]
 
   // type properties
-  def insts():List[(Type[Obj],Inst)]
+  val insts:List[(Type[Obj],Inst)]
   def canonical():this.type = this.range().q(qOne)
   def range():this.type
-  def domain[D <: Obj]():Type[D] = (this.insts() match {
+  def domain[D <: Obj]():Type[D] = (this.insts match {
     case Nil => this
     case i:List[(Type[Obj],Inst)] => i.head._1.range()
   }).asInstanceOf[Type[D]]
 
   // type manipulation functions
   def linvert():this.type ={
-    ((this.insts().tail match {
+    ((this.insts.tail match {
       case Nil => this.range()
       case i => i.foldLeft[Obj](i.head._1.range())((btype,inst) => inst._2.apply(btype))
     }) match {
@@ -65,9 +65,9 @@ trait Type[+T <: Obj] extends Obj
     }).asInstanceOf[this.type]
   }
   def rinvert[R <: Type[Obj]]():R =
-    (this.insts().dropRight(1).lastOption match {
+    (this.insts.dropRight(1).lastOption match {
       case Some(prev) => prev._2.apply(prev._1)
-      case None => this.insts().head._1
+      case None => this.insts.head._1
     }).asInstanceOf[R]
 
   // type specification and compilation
@@ -79,17 +79,17 @@ trait Type[+T <: Obj] extends Obj
   def compose[R <: Type[Obj]](btype:R):R ={
     btype match {
       case anon:__ => anon(this)
-      case atype:Type[Obj] => atype.insts().seq.foldLeft(this.asInstanceOf[Type[Obj]])((b,a) => b.compose(a._1,a._2)).asInstanceOf[R]
+      case atype:Type[Obj] => atype.insts.seq.foldLeft(this.asInstanceOf[Type[Obj]])((b,a) => b.compose(a._1,a._2)).asInstanceOf[R]
     }
   }
   def compose(inst:Inst):this.type = this.compose(this,inst).asInstanceOf[this.type]
   def compose[R <: Obj](nextObj:R,inst:Inst):OType[R] = (nextObj match {
-    case _:Bool => tbool(nextObj.name,multQ(this,inst),this.insts() ::: List((this,inst)))
-    case _:Int => tint(nextObj.name,multQ(this,inst),this.insts() ::: List((this,inst)))
-    case _:Str => tstr(nextObj.name,multQ(this,inst),this.insts() ::: List((this,inst)))
-    case arec:RecType[Obj,Obj] => trec(arec.name,arec.value(),multQ(this,inst),this.insts() ::: List((this,inst)))
-    case _:__ => new __(this.insts() ::: List((this,inst)))
-    case _ => tobj(nextObj.name,multQ(this,inst),this.insts() ::: List((this,inst)))
+    case _:Bool => tbool(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
+    case _:Int => tint(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
+    case _:Str => tstr(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
+    case arec:RecType[Obj,Obj] => trec(arec.name,arec.value(),multQ(this,inst),this.insts ::: List((this,inst)))
+    case _:__ => new __(this.insts ::: List((this,inst)))
+    case _ => tobj(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
   }).asInstanceOf[OType[R]]
 
   // obj-level operations
@@ -114,10 +114,10 @@ trait Type[+T <: Obj] extends Obj
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printType(this)
-  override def hashCode():scala.Int = this.name.hashCode ^ this.insts().hashCode() ^ this.q().hashCode()
+  override def hashCode():scala.Int = this.name.hashCode ^ this.insts.hashCode() ^ this.q().hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:__ => atype.toString.equals(this.toString) // TODO: get __ better aligned with Type
-    case atype:Type[Obj] => this.name == atype.name && this.q() == atype.q() && atype.insts().map(_._2) == this.insts().map(_._2)
+    case atype:Type[Obj] => this.name == atype.name && this.q() == atype.q() && atype.insts.map(_._2) == this.insts.map(_._2)
     case _ => false
   }
 }

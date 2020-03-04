@@ -28,7 +28,6 @@ import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.TStr
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,7 +39,7 @@ class VStr(name:String,java:String,quantifier:IntQ) extends AbstractVObj(name,ja
 
   override def value():String = java
   override def value(java:String):this.type = new VStr(this.name,java,quantifier).asInstanceOf[this.type]
-  override def start():StrType = new TStr(name,List((new TStr(name,Nil,qZero),StartOp(this))),quantifier)
+  override def start():StrType = tstr(name,quantifier,List((tstr(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VStr(name,java,quantifier).asInstanceOf[this.type]
   override def as[O <: Obj](name:String):O = new VStr(name,java,quantifier).asInstanceOf[O]
 }

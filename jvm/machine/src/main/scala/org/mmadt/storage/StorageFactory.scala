@@ -37,7 +37,7 @@ import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm, VStrStrm}
  */
 trait StorageFactory {
   /////////TYPES/////////
-  def obj():ObjType = tobj()
+  def obj:ObjType = tobj()
   def bool:BoolType = tbool()
   def int:IntType = tint()
   def str:StrType = tstr()
@@ -68,7 +68,7 @@ trait StorageFactory {
 
 object StorageFactory {
   /////////TYPES/////////
-  def obj():ObjType = tobj()
+  def obj:ObjType = tobj()
   def bool:BoolType = tbool()
   def int:IntType = tint()
   def str:StrType = tstr()
@@ -121,11 +121,11 @@ object StorageFactory {
 
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {
     /////////TYPES/////////
-    override def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType = new TObj(name,insts,q)
-    override def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType = new TBool(name,insts,q)
-    override def tint(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):IntType = new TInt(name,insts,q)
-    override def tstr(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):StrType = new TStr(name,insts,q)
-    override def trec[A <: Obj,B <: Obj](name:String = Tokens.bool,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B] = new TRec[A,B](name,value,insts,q)
+    override def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType = new TObj(name,q,insts)
+    override def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType = new TBool(name,q,insts)
+    override def tint(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):IntType = new TInt(name,q,insts)
+    override def tstr(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):StrType = new TStr(name,q,insts)
+    override def trec[A <: Obj,B <: Obj](name:String = Tokens.bool,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B] = new TRec[A,B](name,value,q,insts)
     override def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B]((value +: values).toMap)
     /////////VALUES/////////
     override def obj(value:Any):ObjValue = new VObj(value)
@@ -138,6 +138,5 @@ object StorageFactory {
     override def vrec[A <: Value[Obj],B <: Value[Obj]](name:String,value:Map[A,B],q:(IntValue,IntValue)):RecValue[A,B] = new VRec[A,B](name,value,q)
     override def vrec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap)
     override def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm(value1 +: (value2 +: valuesN))
-
   }
 }

@@ -44,7 +44,7 @@ object TypeChecker {
   def matchesVT[O <: Obj](obj:Value[O],pattern:Type[O]):Boolean = (obj ==> pattern).alive()
   def matchesVV[O <: Obj](obj:Value[O],pattern:Value[O]):Boolean = obj.value().equals(pattern.value())
   def matchesTT[O <: Obj](obj:Type[O],pattern:Type[O]):Boolean ={
-    obj.insts().toString().equals(pattern.insts().toString()) ||
+    obj.insts.toString().equals(pattern.insts.toString()) ||
     (obj.domain[Obj]().equals(pattern.domain[Obj]()) && (obj.domain[Type[O]]() ===> pattern).filter(x => x.equals(obj)).hasNext)
   }
   def matchesTV[O <: Obj](obj:Type[O],pattern:Value[O]):Boolean = false
