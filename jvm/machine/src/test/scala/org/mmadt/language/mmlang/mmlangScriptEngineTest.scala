@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{IntType, Type}
+import org.mmadt.language.obj.`type`.{IntType,Type}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -184,14 +184,19 @@ class mmlangScriptEngineTest extends FunSuite {
     // assertResult()(engine.eval(".friend.name") // TODO: . for [get]
   }
 
+  test("bool strm input parsing"){
+    assertResult(Set(btrue))(asScalaIterator(engine.eval("true,false bool[is,[id]]")).toSet)
+    assertResult(Set(btrue))(asScalaIterator(engine.eval("true,false[is,[id]]")).toSet)
+  }
+
   test("int strm input parsing"){
     assertResult(Set(int(-1),int(0)))(asScalaIterator(engine.eval("0,1 int[plus,-1]")).toSet)
     assertResult(Set(int(1),int(2),int(3)))(asScalaIterator(engine.eval("0,1,2[plus,1]")).toSet)
     assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 int[plus,1][is,int[gt,2]][mult,10]")).toSet)
     assertResult(Set(int(300),int(40)))(asScalaIterator(engine.eval("0,1,2,3[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]")).toSet)
     // assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> (int{3}=>int[plus,1][is,int[gt,2]][mult,10])")).toSet)
-
   }
+
   test("str strm input parsing"){
     assertResult(str("marko"))(engine.eval("""'m','a','r','k','o' str[fold,'seed','',str[plus,str<seed>]]""").next)
     assertResult(int(5))(engine.eval("""'m','a','r','k','o'[count]""").next)
