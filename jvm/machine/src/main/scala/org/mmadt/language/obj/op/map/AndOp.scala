@@ -33,6 +33,7 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AndOp {
+  this:Bool =>
   def and(bool:BoolType):BoolType
   def and(bool:BoolValue):this.type
   final def &&(bool:BoolType):BoolType = this.and(bool)

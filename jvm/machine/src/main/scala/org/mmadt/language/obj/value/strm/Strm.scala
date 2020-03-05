@@ -29,11 +29,8 @@ import org.mmadt.language.obj.value.Value
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Strm[+O <: Obj] extends Obj
-  with Value[O] {
-
+trait Strm[+O <: Obj] extends Value[O] {
   override def value():Iterator[O]
-
   // standard Java implementations
   override def toString:String = LanguageFactory.printStrm(this)
   // TODO: need a good hashcode
@@ -41,5 +38,4 @@ trait Strm[+O <: Obj] extends Obj
     case strm:Strm[O] => this.value().sameElements(strm.value())
     case _ => false
   }
-
 }

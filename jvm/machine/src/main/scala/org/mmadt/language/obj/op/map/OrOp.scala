@@ -33,6 +33,7 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OrOp {
+  this:Bool =>
   def or(bool:BoolType):BoolType
   def or(bool:BoolValue):this.type
   final def ||(bool:BoolType):BoolType = this.or(bool)

@@ -31,7 +31,7 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait GetOp[A <: Obj,B <: Obj] {
-
+  this:Rec[A,B] =>
   def get(key:A):B
   def get[BB <: Obj](key:A,btype:BB):BB
 }

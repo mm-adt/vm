@@ -32,6 +32,7 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait MapOp {
+  this:Obj =>
   def map[O <: Obj](other:O):O = other // TODO NO IMPL -- INST
 }
 

@@ -31,7 +31,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Value[+V <: Obj] extends Obj {
-
   def value():Any
   def start():OType[V]
 
