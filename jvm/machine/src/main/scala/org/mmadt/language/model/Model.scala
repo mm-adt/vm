@@ -85,8 +85,8 @@ object Model {
     }
     override def get(left:String):Option[Type[Obj]] ={
       typeMap.get(left) match {
-        case None => return None
-        case Some(m) => m.keys.find(atype => atype.toString.equals(left))
+        case None => None
+        case Some(m) => m.iterator.find(a => left.equals(a._1.toString)).map(_._2)
       }
     }
   }

@@ -55,7 +55,7 @@ object mmlangParser extends JavaTokenParsers {
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
   lazy val expr:Parser[Any] = evaluation | compilation | obj
 
-  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ opt((aType | anonType)) ^^ (x => x._1 ===> x._2.getOrElse(__().id()))
+  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ opt(aType | anonType) ^^ (x => x._1 ===> x._2.getOrElse(__().id()))
   lazy val compilation:Parser[Obj]           = objType ~ opt(objType) ^^ (x => x._2 match {
     case Some(atype) => (x._1 ==> this.model) (atype)
     case None => x._1 // TODO: clip domain and send domain through -- (x._1.domain() ==> this.model) (x._1)

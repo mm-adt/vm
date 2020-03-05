@@ -24,8 +24,9 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{IntType, Type}
+import org.mmadt.language.obj.`type`.{IntType, RecType, Type}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -265,5 +266,9 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("model parsing"){
     assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine.eval("[nat -> int<=int[is>0]]").next)
+    val model:Model = Model(engine.eval("[nat -> int<=int[is>0]]").next.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
+    engine.put("model",model)
+    assertResult(model)(engine.get("model"))
+    assertResult(int <= int.is(int.gt(0)).plus(1))(engine.eval("nat+1").next)
   }
 }
