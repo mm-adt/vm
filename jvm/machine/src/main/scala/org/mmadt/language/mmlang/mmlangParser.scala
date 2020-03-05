@@ -61,22 +61,27 @@ object mmlangParser extends JavaTokenParsers {
     case None => x._1 // TODO: clip domain and send domain through -- (x._1.domain() ==> this.model) (x._1)
   })
 
-  lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | name) ~ opt(quantifier) ^^ {
+  def instOp:String = Tokens.ops.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
+  lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | ("^(?![" + instOp + "])([a-zA-Z]+)").r) ~ opt(quantifier) ^^ {
     case atype ~ q => q.foldRight(atype match {
       //case Tokens.obj => tobj
       case Tokens.bool => bool
       case Tokens.int => int
       case Tokens.str => str
       case Tokens.rec => rec
-      case name:String => this.model.get(name.substring(1)).getOrElse(throw new IllegalArgumentException("Could not locate: " + name))
+      case name:String =>
+        this.model.get(name) match {
+          case Some(atype) => atype
+          case None => tobj(name)
+        }
     })((q,t) => t.q(q))
   }
 
   lazy val name   :Parser[String]    = "[a-zA-Z]+".r <~ ":"
   lazy val obj    :Parser[Obj]       = objValue | objType
-  lazy val objType:Parser[Type[Obj]] = recType | aType | anonType
+  lazy val objType:Parser[Type[Obj]] = aType | recType | anonType
 
-  lazy val aType   :Parser[Type[Obj]] = (opt(canonicalType <~ Tokens.:<=)) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+  lazy val aType   :Parser[Type[Obj]] = opt(canonicalType <~ Tokens.:<=) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]])
   }

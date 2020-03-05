@@ -30,13 +30,15 @@ import org.mmadt.language.obj.`type`._
  */
 object Tokens {
 
+  lazy val ops:List[String] = List(Tokens.get,Tokens.is,Tokens.mult,Tokens.plus,Tokens.gt,Tokens.put,Tokens.map,Tokens.from,Tokens.to)
+
   val obj  = "obj"
   val bool = "bool"
   val str  = "str"
   val rec  = "rec"
   val int  = "int"
   val inst = "inst"
-  val __ = "__"
+  val __   = "__"
 
   val and     = "and"
   val as      = "as"
