@@ -39,7 +39,7 @@ object InstUtil {
     inst.args().map{
       case valueArg:Value[_] => valueArg
       case typeArg:Type[_] => traverser.split(traverser.obj() match {
-        case atype:Type[_] => atype.range()
+        case atype:Type[_] => atype.range
         case avalue:Value[_] => avalue
       }).apply(typeArg).obj()
     }
@@ -54,7 +54,7 @@ object InstUtil {
 
   @scala.annotation.tailrec
   def createInstList(list:List[(Type[Obj],Inst)],atype:Type[Obj]):List[(Type[Obj],Inst)] ={
-    if (atype.insts.isEmpty) list else createInstList(List((atype.range(),atype.insts.last._2)) ::: list,atype.insts.last._1)
+    if (atype.insts.isEmpty) list else createInstList(List((atype.range,atype.insts.last._2)) ::: list,atype.insts.last._1)
   }
 
   def nextInst(atype:Type[_]):Option[Inst] = atype.insts match {

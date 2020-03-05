@@ -47,18 +47,26 @@ trait Type[+T <: Obj] extends Obj
 
   // type properties
   val insts:List[(Type[Obj],Inst)]
-  lazy val canonical:this.type = this.range().q(qOne)
-  def range():this.type
+  lazy val canonical:this.type = this.range.q(qOne)
+  lazy val range:this.type = (this match {
+    case _:BoolType => tbool(this.name,this.q(),Nil)
+    case _:IntType => tint(this.name,this.q(),Nil)
+    case _:StrType => tstr(this.name,this.q(),Nil)
+    case arec:RecType[_,_] => trec(arec.name,arec.value(),arec.q(),Nil)
+    case _:__ => this
+    case _:ObjType => tobj(this.name,this.q(),Nil)
+  }).asInstanceOf[this.type]
+
   def domain[D <: Obj]():Type[D] = (this.insts match {
     case Nil => this
-    case i:List[(Type[Obj],Inst)] => i.head._1.range()
+    case i:List[(Type[Obj],Inst)] => i.head._1.range
   }).asInstanceOf[Type[D]]
 
   // type manipulation functions
   def linvert():this.type ={
     ((this.insts.tail match {
-      case Nil => this.range()
-      case i => i.foldLeft[Obj](i.head._1.range())((btype,inst) => inst._2.apply(btype))
+      case Nil => this.range
+      case i => i.foldLeft[Obj](i.head._1.range)((btype,inst) => inst._2.apply(btype))
     }) match {
       case vv:Value[_] => vv.start()
       case x => x

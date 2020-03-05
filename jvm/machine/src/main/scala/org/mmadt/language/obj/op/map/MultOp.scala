@@ -48,6 +48,6 @@ object MultOp {
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
   def apply[O <: Obj with MultOp[O]](other:__):Inst = new VInst((Tokens.plus,List(other)),qOne,
-    ((a:O,b:List[Obj]) => a.mult(other(a.asInstanceOf[Type[O]].range()).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
+    ((a:O,b:List[Obj]) => a.mult(other(a.asInstanceOf[Type[O]].range).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
 }
 

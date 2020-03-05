@@ -46,6 +46,6 @@ object OrOp {
     case atype:BoolType => a.or(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
-  def apply[O <: Obj with OrOp](other:__):Inst = new VInst((Tokens.or,List(other)),qOne,((a:O,b:List[Obj]) => a.or(other(a.asInstanceOf[BoolType].range()).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with OrOp](other:__):Inst = new VInst((Tokens.or,List(other)),qOne,((a:O,b:List[Obj]) => a.or(other(a.asInstanceOf[BoolType].range).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj])
 
 }

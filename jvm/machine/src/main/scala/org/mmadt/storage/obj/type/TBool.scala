@@ -23,8 +23,8 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{BoolType, Type}
-import org.mmadt.language.obj.{Inst, InstList, IntQ, Obj}
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.{InstList, IntQ}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -33,6 +33,5 @@ import org.mmadt.storage.StorageFactory._
 class TBool(name:String,quantifier:IntQ,insts:InstList) extends AbstractTObj(name,quantifier,insts) with BoolType {
   def this() = this(Tokens.bool,qOne,Nil)
   def this(name:String) = this(name,qOne,Nil)
-  override def range():this.type = new TBool(name,quantifier,Nil).asInstanceOf[this.type]
   override def q(quantifier:IntQ):this.type = new TBool(name,quantifier,insts).asInstanceOf[this.type]
 }

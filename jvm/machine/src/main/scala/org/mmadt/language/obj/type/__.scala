@@ -46,7 +46,6 @@ class __(_insts:List[(Type[Obj],Inst)] = Nil) extends Type[__] with Obj
   override val name:String = Tokens.__
   override def test(other:Obj):Boolean = throw new IllegalArgumentException()
   override def as[O <: Obj](name:String):O = throw new IllegalArgumentException()
-  override def range():__.this.type = this
   override val insts:List[(Type[Obj],Inst)] = _insts
   override def count():IntType = throw new IllegalArgumentException()
 

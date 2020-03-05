@@ -33,7 +33,6 @@ import org.mmadt.storage.StorageFactory._
 class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:IntQ,insts:InstList) extends AbstractTObj(name,quantifier,insts) with RecType[A,B] {
   def this() = this(Tokens.rec,Map[A,B](),qOne,Nil)
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne,Nil)
-  override def range():this.type = new TRec[A,B](name,java,quantifier,Nil).asInstanceOf[this.type]
   override def q(quantifier:IntQ):this.type = new TRec[A,B](name,java,quantifier,insts).asInstanceOf[this.type]
   override def value():Map[A,B] = java
 }

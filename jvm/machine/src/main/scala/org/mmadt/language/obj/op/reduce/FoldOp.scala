@@ -43,5 +43,5 @@ object FoldOp {
     override val seed     :(String,A) = _seed
     override val reduction:Type[A]    = atype
   }
-  def apply[A <: Obj](_seed:(String,A),atype:__):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,((a:Obj,b:List[Obj]) => a.fold(_seed)(atype(a.asInstanceOf[Type[Obj]].range()))).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[A <: Obj](_seed:(String,A),atype:__):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,((a:Obj,b:List[Obj]) => a.fold(_seed)(atype(a.asInstanceOf[Type[Obj]].range))).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

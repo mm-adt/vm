@@ -43,8 +43,8 @@ object LeftRightSweepRewrite {
         case None => rewrite(model,
           atype.rinvert(),
           atype.insts.last._2.apply(
-            atype.rinvert[Type[S]]().range(),
-            rewriteArgs(model,atype.rinvert[Type[S]]().range(),atype.insts.last._2,traverser)).asInstanceOf[Type[S]].compose(btype),
+            atype.rinvert[Type[S]]().range,
+            rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.insts.last._2,traverser)).asInstanceOf[Type[S]].compose(btype),
           traverser)
       }
     } else if (btype.insts.nonEmpty) {

@@ -46,6 +46,6 @@ object AndOp {
     case atype:BoolType => a.and(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
-  def apply[O <: Obj with AndOp](other:__):Inst = new VInst((Tokens.and,List(other)),qOne,((a:O,b:List[Obj]) => a.and(other(a.asInstanceOf[BoolType].range()).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with AndOp](other:__):Inst = new VInst((Tokens.and,List(other)),qOne,((a:O,b:List[Obj]) => a.and(other(a.asInstanceOf[BoolType].range).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj])
 
 }

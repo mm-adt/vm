@@ -46,6 +46,6 @@ object IsOp {
     case atype:BoolType => a.is(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction
 
-  def apply[O <: Obj with IsOp[O],T <: Type[T]](bool:__):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool[T](a.asInstanceOf[T].range()).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction
+  def apply[O <: Obj with IsOp[O],T <: Type[T]](bool:__):Inst = new VInst((Tokens.is,List(bool)),qOne,((a:O,b:List[Obj]) => a.is(bool[T](a.asInstanceOf[T].range).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj]) with FilterInstruction
 }
 

@@ -47,5 +47,5 @@ object GtOp {
     case atype:Type[O] => a.gt(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
-  def apply[O <: Obj with GtOp[O]](other:__):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other(a.asInstanceOf[Type[O]].range()).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with GtOp[O]](other:__):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other(a.asInstanceOf[Type[O]].range).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

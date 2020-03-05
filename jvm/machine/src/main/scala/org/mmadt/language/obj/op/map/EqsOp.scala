@@ -47,5 +47,5 @@ object EqsOp {
     case atype:Type[O] => a.eqs(atype)
   }).asInstanceOf[(Obj,List[Obj]) => Obj])
 
-  def apply[O <: Obj with EqsOp[O]](other:__):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other(a.asInstanceOf[Type[O]].range()).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with EqsOp[O]](other:__):Inst = new VInst((Tokens.eqs,List(other)),qOne,((a:O,b:List[Obj]) => a.eqs(other(a.asInstanceOf[Type[O]].range).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
 }

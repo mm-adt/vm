@@ -23,7 +23,7 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.{Inst, InstList, IntQ, Obj}
+import org.mmadt.language.obj.{InstList, IntQ, Obj}
 import org.mmadt.storage.obj.OObj
 
 /**
