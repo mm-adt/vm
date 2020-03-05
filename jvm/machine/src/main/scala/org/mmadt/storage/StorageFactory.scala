@@ -37,10 +37,10 @@ import org.mmadt.storage.obj.value.strm.{VIntStrm, VRecStrm, VStrStrm}
  */
 trait StorageFactory {
   /////////TYPES/////////
-  def obj:ObjType = tobj()
-  def bool:BoolType = tbool()
-  def int:IntType = tint()
-  def str:StrType = tstr()
+  lazy val obj :ObjType  = tobj()
+  lazy val bool:BoolType = tbool()
+  lazy val int :IntType  = tint()
+  lazy val str :StrType  = tstr()
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
   def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType
@@ -68,10 +68,10 @@ trait StorageFactory {
 
 object StorageFactory {
   /////////TYPES/////////
-  def obj:ObjType = tobj()
-  def bool:BoolType = tbool()
-  def int:IntType = tint()
-  def str:StrType = tstr()
+  lazy val obj :ObjType  = tobj()
+  lazy val bool:BoolType = tbool()
+  lazy val int :IntType  = tint()
+  lazy val str :StrType  = tstr()
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
   def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):ObjType = f.tobj(name,q,insts)

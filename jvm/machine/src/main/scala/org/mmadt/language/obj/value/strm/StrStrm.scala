@@ -23,25 +23,13 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.{BoolType, StrType, Type}
-import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
+import org.mmadt.language.obj.`type`.StrType
+import org.mmadt.language.obj.value.StrValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StrStrm extends Str
-  with Strm[Str] {
-
+trait StrStrm extends Strm[Str] {
   override def value():Iterator[StrValue]
   override def start():StrType
-
-  override def to(label:StrValue):StrType = this.start().to(label)
-  override def eqs(other:Type[Str]):BoolType = this.start().eqs(other)
-  override def eqs(other:Value[Str]):BoolValue = throw new IllegalAccessException()
-  override def plus(other:Type[Str]):StrType = this.start().plus(other)
-  override def plus(other:Value[Str]):this.type = throw new IllegalAccessException()
-  override def gt(other:Type[Str]):BoolType = this.start().gt(other)
-  override def gt(other:Value[Str]):BoolValue = throw new IllegalAccessException()
-  override def is(bool:BoolType):StrType = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = throw new IllegalAccessException()
 }

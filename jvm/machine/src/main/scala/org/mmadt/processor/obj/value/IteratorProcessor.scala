@@ -36,7 +36,7 @@ import org.mmadt.storage.StorageFactory._
 class IteratorProcessor extends Processor {
 
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
-    if (!(asType(domainObj).canonical().equals(rangeType.domain().canonical()))) return Iterator.empty
+    if (!(asType(domainObj).canonical.equals(rangeType.domain().canonical))) return Iterator.empty
     var output:Iterator[Traverser[E]] = domainObj match {
       case strm:Strm[_] => strm.value().map(x => new I1Traverser[E](x.asInstanceOf[E]))
       case single:E => Iterator(new I1Traverser[E](single))

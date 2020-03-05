@@ -38,9 +38,11 @@ trait Rec[A <: Obj,B <: Obj] extends Obj
   with IsOp[Rec[A,B]]
   with ToOp[Rec[A,B]]
   with GetOp[A,B]
-  with PutOp[A,B]
+  with PutOp[A,B] {
+  def value():Map[A,B]
+}
 
 object Rec {
   implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)):RecValue[A,B] = vrec(value=value,values=values)
+  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)):RecValue[A,B] = vrec(value = value,values = values)
 }

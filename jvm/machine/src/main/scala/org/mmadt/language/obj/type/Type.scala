@@ -25,11 +25,11 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.{IdOp,MapOp,QOp}
-import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
-import org.mmadt.language.obj.value.{StrValue,Value}
+import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
@@ -47,7 +47,7 @@ trait Type[+T <: Obj] extends Obj
 
   // type properties
   val insts:List[(Type[Obj],Inst)]
-  def canonical():this.type = this.range().q(qOne)
+  lazy val canonical:this.type = this.range().q(qOne)
   def range():this.type
   def domain[D <: Obj]():Type[D] = (this.insts match {
     case Nil => this
@@ -87,7 +87,7 @@ trait Type[+T <: Obj] extends Obj
     case _:Bool => tbool(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
     case _:Int => tint(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
     case _:Str => tstr(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
-    case arec:RecType[Obj,Obj] => trec(arec.name,arec.value(),multQ(this,inst),this.insts ::: List((this,inst)))
+    case arec:Rec[_,_] => trec(arec.name,arec.value(),multQ(this,inst),this.insts ::: List((this,inst)))
     case _:__ => new __(this.insts ::: List((this,inst)))
     case _ => tobj(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
   }).asInstanceOf[OType[R]]

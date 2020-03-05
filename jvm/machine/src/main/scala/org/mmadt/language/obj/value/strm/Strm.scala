@@ -34,9 +34,12 @@ trait Strm[+O <: Obj] extends Obj
 
   override def value():Iterator[O]
 
+  // standard Java implementations
+  override def toString:String = LanguageFactory.printStrm(this)
+  // TODO: need a good hashcode
   override def equals(other:Any):Boolean = other match {
     case strm:Strm[O] => this.value().sameElements(strm.value())
     case _ => false
   }
-  override def toString:String = LanguageFactory.printStrm(this)
+
 }
