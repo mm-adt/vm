@@ -48,6 +48,7 @@ class I1Traverser[S <: Obj](val obj:S,val state:State) extends Traverser[S] {
         case traverserInst:TraverserInstruction => traverserInst.op() match {
           case Tokens.to => traverserInst.doTo(this)
           case Tokens.from => traverserInst.doFrom(this)
+          case Tokens.fold => traverserInst.doFold(this)
         }
         case _ => this.split[E](InstUtil.instEval(this,inst))
       }

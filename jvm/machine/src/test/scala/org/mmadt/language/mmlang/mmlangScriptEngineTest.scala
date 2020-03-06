@@ -25,9 +25,9 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType,ObjType,RecType,Type}
+import org.mmadt.language.obj.`type`.{IntType, ObjType, RecType, Type}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj,Str}
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -295,5 +295,6 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str <= person.get(str("name"),str))(engine.eval("person[get,'name']").next)
     assertResult(person.get(str("age"),int.named("nat")).plus(1))(engine.eval("person[get,'age'][plus,1]").next)
     assertResult(int(30))(engine.eval("['name'->'marko','age'->29]person[get,'age'][plus,1]").next)
+    //assertResult(false)(engine.eval("['name'->'ryan','age'->10],['name'->'marko','age'->29] person[get,'age'][plus,1]").next) // TODO: need to type check the values against the domain of the type (we currently only type check types against types)
   }
 }

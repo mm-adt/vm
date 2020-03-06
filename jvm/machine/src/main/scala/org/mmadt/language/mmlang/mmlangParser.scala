@@ -69,7 +69,7 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.str => str
       case Tokens.rec => rec
       case name:String =>
-        this.model.get(name) match { // NOTE: model lookup when a domain is unknown (ONLY PLACE MODEL IS USED BY PARSER -- GET RID OF)
+        this.model.get(name) match {
           case Some(atype) => atype
           case None => tobj(name)
         }
@@ -82,8 +82,8 @@ object mmlangParser extends JavaTokenParsers {
   lazy val domainRange:Parser[Type[Obj]] = (Tokens.rec ~> recType) | canonicalType
 
   lazy val aType   :Parser[Type[Obj]] = opt(domainRange <~ Tokens.:<=) ~ domainRange ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
-    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(model.resolve(x)).asInstanceOf[Type[Obj]]))
-    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(model.resolve(x)).asInstanceOf[Type[Obj]])
+    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(this.model.resolve(x)).asInstanceOf[Type[Obj]]))
+    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(this.model.resolve(x)).asInstanceOf[Type[Obj]])
   }
   lazy val recType :Parser[ORecType]  = opt(name) ~ (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE))) <~ RBRACKET ^^ (x => trec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap))
   lazy val anonType:Parser[__]        = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => __(x:_*))
