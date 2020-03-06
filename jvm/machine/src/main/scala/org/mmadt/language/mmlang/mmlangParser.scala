@@ -29,8 +29,8 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.value.strm.{BoolStrm,IntStrm,StrStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
 
@@ -54,19 +54,14 @@ object mmlangParser extends JavaTokenParsers {
   }
 
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
-  lazy val expr:Parser[Any] = evaluation | compilation | obj
-
-  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ opt(aType | anonType) ^^ (x => x._1 ===> {
+  lazy val expr         :Parser[Any]           = evaluation | compilation | obj
+  lazy val evaluation   :Parser[Iterator[Obj]] = (strm | objValue) ~ opt(aType | anonType) ^^ (x => x._1 ===> {
     val t = InstUtil.resolveAnonymous(x._1,x._2.getOrElse(asType(x._1).id()))
     (t.domain() ==> this.model) (t)
   })
-  lazy val compilation:Parser[Obj]           = objType ~ opt(objType) ^^ (x => x._2 match {
-    case Some(atype) => (x._1 ==> this.model) (atype)
-    case None => (x._1.domain() ==> this.model) (x._1)
-  })
-
-  lazy val instOp       :String            = Tokens.ops.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
-  lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | ("^(?!(" + instOp + "))([a-zA-Z]+)").r) ~ opt(quantifier) ^^ {
+  lazy val compilation  :Parser[Obj]           = objType ^^ (x => (x.domain() ==> this.model) (x))
+  lazy val instOp       :String                = Tokens.ops.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
+  lazy val canonicalType:Parser[Type[Obj]]     = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | ("^(?!(" + instOp + "))([a-zA-Z]+)").r) ~ opt(quantifier) ^^ {
     case atype ~ q => q.foldRight(atype match {
       //case Tokens.obj => tobj
       case Tokens.bool => bool

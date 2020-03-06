@@ -93,8 +93,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("rec type parsing"){
-    assertResult(trec(str("name") -> str,str("age") -> int))(engine.eval("[   'name'   ->str ,   'age' ->int]").next)
-    assertResult(trec(str("name") -> str,str("age") -> int))(engine.eval("['name'->str,'age'->int]").next)
+    assertResult(trec(str("name") -> str,str("age") -> int))(engine.eval("rec[   'name'   ->str ,   'age' ->int]").next)
+    assertResult(trec(str("name") -> str,str("age") -> int))(engine.eval("rec['name'->str,'age'->int]").next)
   }
 
   test("rec named type parsing"){
@@ -145,7 +145,7 @@ class mmlangScriptEngineTest extends FunSuite {
     List(
       int.plus(int(2)).choose(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10))),
       int.plus(int(2)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))),
-      int.plus(int(2)).choose(trec(name = Tokens.rec,Map(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))).
+      int.plus(int(2)).choose(trec(name = Tokens.rec,value = Map(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))).
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
@@ -220,9 +220,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,[gt,[mult,[plus,5]]]]").next)
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)
     assertResult(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)(engine.eval("int[is,[gt,[mult,[plus,5]]]]").next)
-    assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int int[[is>5] -> 1 | int -> 2]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
-    assertResult(int.plus(int(10)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval("int int[plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
-    assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval("int int[plus,10][[is>5] -> 1 | int -> 2]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
+    assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval(" int[[is>5] -> 1 | int -> 2]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
+    assertResult(int.plus(int(10)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval(" int[plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
+    assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval(" int[plus,10][[is>5] -> 1 | int -> 2]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
     assertResult(Set(int(302),int(42)))(asScalaIterator(engine.eval(
       """ 0,1,2,3
         | [plus,1][is>2]
@@ -244,8 +244,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("0 int+1*2>10").next)
     assertResult(str("marko rodriguez"))(engine.eval("'marko' str[plus,' '][plus,'rodriguez']").next)
     assertResult(int(10))(engine.eval("10 int[is,bool<=int[gt,5]]").next)
-    assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(engine.eval("int int[plus,10][is,bool<=int[gt,5]]").next)
-    assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(engine.eval("int int[plus,10][is,int[gt,5]]").next)
+    assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(engine.eval(" int[plus,10][is,bool<=int[gt,5]]").next)
+    assertResult(int.q(?) <= int.plus(int(10)).is(int.gt(int(5))))(engine.eval("int[plus,10][is,int[gt,5]]").next)
+    assertResult(int.q(0,3) <= int.q(3).plus(int(10)).is(int.q(3).gt(int(5))))(engine.eval("int{3}[plus,10][is,int[gt,5]]").next)
   }
 
   test("reducing expressions"){
