@@ -27,7 +27,6 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
-import org.mmadt.processor.obj.value.I1Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,8 +48,6 @@ object InstUtil {
    */
   def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E =
     inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
-
-  def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:Type[E]):E = (atype.insts.head._2.apply(start,InstUtil.valueArgs(new I1Traverser[Obj](arg),atype.insts.head._2)) ==> atype.linvert())
 
   @scala.annotation.tailrec
   def createInstList(list:List[(Type[Obj],Inst)],atype:Type[Obj]):List[(Type[Obj],Inst)] ={

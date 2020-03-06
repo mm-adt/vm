@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.LanguageFactory
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
@@ -30,6 +29,7 @@ import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
@@ -48,7 +48,7 @@ trait Type[+T <: Obj] extends Obj
   // type properties
   val insts:List[(Type[Obj],Inst)]
   lazy val canonical:this.type = this.range.q(qOne)
-  lazy val range:this.type = (this match {
+  lazy val range    :this.type = (this match {
     case _:BoolType => tbool(this.name,this.q(),Nil)
     case _:IntType => tint(this.name,this.q(),Nil)
     case _:StrType => tstr(this.name,this.q(),Nil)
@@ -91,14 +91,17 @@ trait Type[+T <: Obj] extends Obj
     }
   }
   def compose(inst:Inst):this.type = this.compose(this,inst).asInstanceOf[this.type]
-  def compose[R <: Obj](nextObj:R,inst:Inst):OType[R] = (nextObj match {
-    case _:Bool => tbool(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
-    case _:Int => tint(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
-    case _:Str => tstr(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
-    case arec:Rec[_,_] => trec(arec.name,arec.value(),multQ(this,inst),this.insts ::: List((this,inst)))
-    case _:__ => new __(this.insts ::: List((this,inst)))
-    case _ => tobj(nextObj.name,multQ(this,inst),this.insts ::: List((this,inst)))
-  }).asInstanceOf[OType[R]]
+  def compose[R <: Obj](nextObj:R,inst:Inst):OType[R] ={
+    val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst))
+    (nextObj match {
+      case _:Bool => tbool(nextObj.name,multQ(this,inst),newInsts)
+      case _:Int => tint(nextObj.name,multQ(this,inst),newInsts)
+      case _:Str => tstr(nextObj.name,multQ(this,inst),newInsts)
+      case arec:Rec[_,_] => trec(arec.name,arec.value(),multQ(this,inst),newInsts)
+      case _:__ => new __(newInsts)
+      case _ => tobj(nextObj.name,multQ(this,inst),newInsts)
+    }).asInstanceOf[OType[R]]
+  }
 
   // obj-level operations
   override def as[O <: Obj](name:String):O = (InstUtil.nextInst(this) match {
@@ -114,6 +117,15 @@ trait Type[+T <: Obj] extends Obj
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
   override def quant():IntType = this.compose(tint(),QOp())
 
+  def named(_name:String):this.type = (this match {
+    case _:BoolType => tbool(_name,this.q(),Nil)
+    case _:IntType => tint(_name,this.q(),Nil)
+    case _:StrType => tstr(_name,this.q(),Nil)
+    case arec:RecType[_,_] => trec(_name,arec.value(),arec.q(),Nil)
+    case _:__ => this
+    case _:ObjType => tobj(_name,this.q(),Nil)
+  }).asInstanceOf[this.type]
+
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
     case argValue:Value[Obj] => TypeChecker.matchesTV(this,argValue)
@@ -122,10 +134,10 @@ trait Type[+T <: Obj] extends Obj
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printType(this)
-  override def hashCode():scala.Int = this.name.hashCode ^ this.insts.hashCode() ^ this.q().hashCode()
+  override def hashCode():scala.Int = this.name.hashCode ^ this.q().hashCode() ^ this.insts.hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:__ => atype.toString.equals(this.toString) // TODO: get __ better aligned with Type
-    case atype:Type[Obj] => this.name == atype.name && this.q() == atype.q() && atype.insts.map(_._2) == this.insts.map(_._2)
+    case atype:Type[Obj] => this.name == atype.name && this.q() == atype.q() && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
     case _ => false
   }
 }

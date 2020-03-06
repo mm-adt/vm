@@ -25,6 +25,7 @@ package org.mmadt.language.model
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.language.obj.op.model.NoOp
 import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec}
 
 import scala.collection.mutable
@@ -37,6 +38,12 @@ trait Model {
   def put(left:Type[Obj],right:Type[Obj]):Model
   def get(left:Type[Obj]):Option[Type[Obj]]
   def get(left:String):Option[Type[Obj]]
+  def resolve(obj:Type[Obj]):Type[Obj] ={
+    this.get(obj.name) match {
+      case Some(atype) => obj.compose(atype,NoOp())
+      case None => obj
+    }
+  }
 
   def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
     val namedType:O = (definition match {
@@ -86,7 +93,7 @@ object Model {
     override def get(left:String):Option[Type[Obj]] ={
       typeMap.get(left) match {
         case None => None
-        case Some(m) => m.iterator.find(a => left.equals(a._1.toString)).map(_._2)
+        case Some(m) => m.iterator.find(a => left.equals(a._1.toString)).map(_._2.range.named(left))
       }
     }
   }

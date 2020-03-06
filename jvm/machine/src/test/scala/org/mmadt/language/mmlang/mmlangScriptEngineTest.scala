@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{IntType, RecType, Type}
+import org.mmadt.language.obj.`type`.{IntType,RecType,Type}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -276,10 +276,13 @@ class mmlangScriptEngineTest extends FunSuite {
     engine.put("model",model)
     assertResult(model)(engine.get("model"))
     // model compilations
-    assertResult(int <= int.is(int.gt(0)))(engine.eval("nat").next)
-    assertResult(int <= int.is(int.gt(0)).plus(1))(engine.eval("nat+1").next)
-    assertResult(trec(str("name") -> str,str("age") -> tobj("nat")))(engine.eval("person").next)
-    assertResult(str <= rec.get(str("name"),str))(engine.eval("person[get,'name']").next)
-    // assertResult(true)(engine.eval("person person[get,'age']").next)
+    assertResult(int.named("nat"))(engine.eval("nat").next)
+    assertResult(int <= int.is(int.gt(0)))(engine.eval("nat nat").next)
+    assertResult(int.named("nat").plus(1))(engine.eval("nat+1").next)
+    assertResult(int <= int.is(int.gt(0)).plus(1))(engine.eval("nat nat+1").next)
+    assertResult(trec(name = "person",value = Map(str("name") -> str,str("age") -> tobj("nat"))))(engine.eval("person").next)
+    assertResult(str <= rec.named("person").get(str("name"),str))(engine.eval("person[get,'name']").next)
+    assertResult(rec.named("person").get(str("age"),int.named("nat")).plus(1))(engine.eval("person[get,'age'][plus,1]").next)
+    // assertResult(rec.named("person").get(str("age"),int.named("nat")).plus(1))(engine.eval("person person[get,'age'][plus,1]").next)
   }
 }
