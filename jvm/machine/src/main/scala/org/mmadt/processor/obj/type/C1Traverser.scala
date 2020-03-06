@@ -33,14 +33,14 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class C1Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id) extends Traverser[S] {
+class C1Traverser[S <: Obj](val obj:S,val state:State = Map.empty,val model:Model = Model.id) extends Traverser[S] {
   def this(obj:S) = this(obj,Map.empty)
   override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new C1Traverser[E](obj,state,this.model)
   override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
     if (rangeType.insts.isEmpty) {
       TypeChecker.checkType(this.obj,rangeType)
       this.asInstanceOf[Traverser[E]]
-    } else {
+    } else
       (InstUtil.nextInst(rangeType) match {
         case None => this
         case Some(inst) => inst match {
@@ -51,6 +51,5 @@ class C1Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id
           case _ => this.split[E](InstUtil.instEval(this,inst))
         }
       }).apply(rangeType.linvert())
-    }
   }
 }

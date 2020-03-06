@@ -35,7 +35,6 @@ import org.mmadt.processor.obj.value.I1Traverser
 object InstUtil {
   def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
     if (inst.op() == Tokens.choose) return inst.args()
-    // if (inst.op() == Tokens.get) return inst.args()
     inst.args().map{
       case valueArg:Value[_] => valueArg
       case typeArg:Type[_] => traverser.split(traverser.obj() match {
@@ -48,7 +47,8 @@ object InstUtil {
   /**
    * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
    */
-  def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E = inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
+  def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E =
+    inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
 
   def typeEval[S <: Obj,E <: Obj](start:S,arg:S,atype:Type[E]):E = (atype.insts.head._2.apply(start,InstUtil.valueArgs(new I1Traverser[Obj](arg),atype.insts.head._2)) ==> atype.linvert())
 

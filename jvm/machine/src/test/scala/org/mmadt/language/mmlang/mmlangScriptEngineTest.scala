@@ -265,10 +265,21 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model parsing"){
+    // model creation
     assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine.eval("[nat -> int<=int[is>0]]").next)
-    val model:Model = Model(engine.eval("[nat -> int<=int[is>0]]").next.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
+    assertResult(trec(
+      tobj("nat") -> (int <= int.is(int.gt(0))),
+      tobj("person") -> trec(
+        str("name") -> str,
+        str("age") -> tobj("nat"))))(engine.eval("[nat -> int<=int[is>0] | person -> ['name'->str,'age'->nat]]").next)
+    val model:Model = Model(engine.eval("[nat -> int<=int[is>0] | person -> ['name'->str,'age'->nat]]").next.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
     engine.put("model",model)
     assertResult(model)(engine.get("model"))
+    // model compilations
+    assertResult(int <= int.is(int.gt(0)))(engine.eval("nat").next)
     assertResult(int <= int.is(int.gt(0)).plus(1))(engine.eval("nat+1").next)
+    assertResult(trec(str("name") -> str,str("age") -> tobj("nat")))(engine.eval("person").next)
+    assertResult(str <= rec.get(str("name"),str))(engine.eval("person[get,'name']").next)
+    // assertResult(true)(engine.eval("person person[get,'age']").next)
   }
 }

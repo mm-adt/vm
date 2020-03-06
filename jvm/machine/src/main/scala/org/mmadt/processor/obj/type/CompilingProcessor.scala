@@ -38,11 +38,11 @@ class CompilingProcessor(val model:Model = Model.id) extends Processor {
 
     // C1Traverser applies rewrite rules until a steady state is reached
     val domainType       :E with Type[E] = domainObj.asInstanceOf[E with Type[E]]
-    var mutatingTraverser:Traverser[E]   = new C1Traverser[E](domainType)
-    var previousTraverser:Traverser[E]   = new C1Traverser[E](rangeType.asInstanceOf[E])
+    var mutatingTraverser:Traverser[E]   = new C1Traverser[E](obj = domainType,model = this.model)
+    var previousTraverser:Traverser[E]   = new C1Traverser[E](obj = rangeType.asInstanceOf[E],model = this.model)
     while (previousTraverser != mutatingTraverser) {
       mutatingTraverser = previousTraverser
-      previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[Type[E]],domainType.asInstanceOf[Type[E]],new C1Traverser(domainType))
+      previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[Type[E]],domainType.asInstanceOf[Type[E]],new C1Traverser(obj = domainType,model = this.model))
     }
 
     // C2Traverser performs type erasure, representing all types in terms of mm-ADT

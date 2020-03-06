@@ -62,7 +62,7 @@ object mmlangParser extends JavaTokenParsers {
   })
 
   def instOp:String = Tokens.ops.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
-  lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | ("^(?![" + instOp + "])([a-zA-Z]+)").r) ~ opt(quantifier) ^^ {
+  lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | ("^(?!(" + instOp + "))([a-zA-Z]+)").r) ~ opt(quantifier) ^^ {
     case atype ~ q => q.foldRight(atype match {
       //case Tokens.obj => tobj
       case Tokens.bool => bool
