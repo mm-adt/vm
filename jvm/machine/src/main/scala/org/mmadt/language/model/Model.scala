@@ -25,7 +25,6 @@ package org.mmadt.language.model
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
-import org.mmadt.language.obj.op.model.NoOp
 import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec}
 
 import scala.collection.mutable
@@ -38,12 +37,12 @@ trait Model {
   def put(left:Type[Obj],right:Type[Obj]):Model
   def get(left:Type[Obj]):Option[Type[Obj]]
   def get(left:String):Option[Type[Obj]]
-  def resolve(obj:Type[Obj]):Type[Obj] ={
-    this.get(obj.name) match {
+  /*def resolve(obj:Type[Obj]):Type[Obj] ={
+    this.get(obj) match {
       case Some(atype) => obj.compose(atype,NoOp())
       case None => obj
     }
-  }
+  }*/
 
   def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
     val namedType:O = (definition match {

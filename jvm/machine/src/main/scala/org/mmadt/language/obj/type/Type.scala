@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
@@ -29,7 +30,6 @@ import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
@@ -87,12 +87,13 @@ trait Type[+T <: Obj] extends Obj
   def compose[R <: Type[Obj]](btype:R):R ={
     btype match {
       case anon:__ => anon(this)
-      case atype:Type[Obj] => atype.insts.seq.foldLeft(this.asInstanceOf[Type[Obj]])((b,a) => b.compose(a._1,a._2)).asInstanceOf[R]
+      case atype:Type[Obj] => atype.insts.seq.foldLeft(this.asInstanceOf[Type[Obj]])((b,a) => a._2(b).asInstanceOf[Type[Obj]]).asInstanceOf[R]
     }
   }
   def compose(inst:Inst):this.type = this.compose(this,inst).asInstanceOf[this.type]
   def compose[R <: Obj](nextObj:R,inst:Inst):OType[R] ={
-    val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst))
+    // val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst))
+    val newInsts = this.insts ::: List((this,inst))
     (nextObj match {
       case _:Bool => tbool(nextObj.name,multQ(this,inst),newInsts)
       case _:Int => tint(nextObj.name,multQ(this,inst),newInsts)

@@ -40,7 +40,7 @@ class __(_insts:List[(Type[Obj],Inst)] = Nil) extends Type[__] with Obj
 
   def this(insts:Inst*) = this(insts.map(i => (new TObj(),i)).toList)
 
-  override def toString:String = _insts.foldLeft(Tokens.empty)((a,i) => a + i)
+  override def toString:String = _insts.foldLeft(Tokens.empty)((a,i) => a + i._2)
   override def q():(IntValue,IntValue) = qOne
   override def q(quantifier:(IntValue,IntValue)):__.this.type = throw new IllegalArgumentException()
   override val name:String = Tokens.__

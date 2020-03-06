@@ -67,7 +67,7 @@ trait ChooseOp {
     })))
   }
 
-  private def generalType[OT <: Obj](outs:Iterable[OT]):OT ={
+  private def generalType[OT <: Obj](outs:Iterable[OT]):OT ={ // TODO: record introspection for type generalization
     val types = outs.map{
       case atype:Type[Obj] => atype.range.asInstanceOf[OT]
       case avalue:OT => avalue

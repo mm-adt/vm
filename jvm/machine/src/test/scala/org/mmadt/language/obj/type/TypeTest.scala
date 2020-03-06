@@ -58,6 +58,7 @@ class TypeTest extends FunSuite {
 
   test("type structure w/ one canonical type"){
     var tobj:IntType = int.plus(10).mult(1).is(int.gt(20))
+    println(tobj + "!!!!")
     assertResult(int)(tobj.domain())
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(tobj.toString)
     assertResult(int.q(0,1))(tobj.range)

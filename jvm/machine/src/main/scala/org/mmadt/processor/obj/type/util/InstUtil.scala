@@ -24,7 +24,7 @@ package org.mmadt.processor.obj.`type`.util
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{Type,__}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 
@@ -48,6 +48,7 @@ object InstUtil {
    */
   def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E =
     inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
+
 
   @scala.annotation.tailrec
   def createInstList(list:List[(Type[Obj],Inst)],atype:Type[Obj]):List[(Type[Obj],Inst)] ={

@@ -107,7 +107,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     processor = new CompilingProcessor()
     var result:List[Int] = processor.apply(int,int.mult(1).choose(int.is(int.gt(5)) -> int.plus(2),int -> int.plus(1)).is(int.gt(3))).map(_.obj()).toList
     assertResult(1)(result.length)
-    assertResult("int{?}<=int[mult,1][choose,[int[is,bool<=int[gt,5]]->int[plus,2]|int->int[plus,1]]][is,bool<=int[gt,3]]")(result.head.toString)
+    assertResult("int{?}<=int[mult,1][choose,[int{?}<=int[is,bool<=int[gt,5]]->int[plus,2]|int->int[plus,1]]][is,bool<=int[gt,3]]")(result.head.toString)
   }
 
   test("compiler w/ multi-types"){

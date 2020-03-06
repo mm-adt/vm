@@ -24,8 +24,8 @@ package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.ReduceInstruction
+import org.mmadt.language.obj.`type`.{Type,__}
+import org.mmadt.language.obj.op.{ReduceInstruction,TraverserInstruction}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,7 +39,7 @@ trait FoldOp {
 }
 
 object FoldOp {
-  def apply[A <: Obj](_seed:(String,A),atype:Type[A]):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,(a:Obj,b:List[Obj]) => a.fold(_seed)(atype)) with ReduceInstruction[A] {
+  def apply[A <: Obj](_seed:(String,A),atype:Type[A]):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,(a:Obj,b:List[Obj]) => a.fold(_seed)(atype)) with TraverserInstruction with ReduceInstruction[A] {
     override val seed     :(String,A) = _seed
     override val reduction:Type[A]    = atype
   }

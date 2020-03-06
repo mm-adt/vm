@@ -29,8 +29,9 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.strm.{BoolStrm,IntStrm,StrStrm,Strm}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
+import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
 
 import scala.util.matching.Regex
@@ -55,10 +56,13 @@ object mmlangParser extends JavaTokenParsers {
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
   lazy val expr:Parser[Any] = evaluation | compilation | obj
 
-  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ opt(aType | anonType) ^^ (x => x._1 ===> x._2.getOrElse(__().id()))
+  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ opt(aType | anonType) ^^ (x => x._1 ===> {
+    val t = InstUtil.resolveAnonymous(x._1,x._2.getOrElse(asType(x._1).id()))
+    (t.domain() ==> this.model) (t)
+  })
   lazy val compilation:Parser[Obj]           = objType ~ opt(objType) ^^ (x => x._2 match {
     case Some(atype) => (x._1 ==> this.model) (atype)
-    case None => x._1 // TODO: clip domain and send domain through -- (x._1.domain() ==> this.model) (x._1)
+    case None => (x._1.domain() ==> this.model) (x._1)
   })
 
   lazy val instOp       :String            = Tokens.ops.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
@@ -70,20 +74,21 @@ object mmlangParser extends JavaTokenParsers {
       case Tokens.str => str
       case Tokens.rec => rec
       case name:String =>
-        this.model.get(name) match {  // NOTE: model lookup when a domain is unknown
+        this.model.get(name) match { // NOTE: model lookup when a domain is unknown (ONLY PLACE MODEL IS USED BY PARSER -- GET RID OF)
           case Some(atype) => atype
           case None => tobj(name)
         }
     })((q,t) => t.q(q))
   }
 
-  lazy val name   :Parser[String]    = "[a-zA-Z]+".r <~ ":"
-  lazy val obj    :Parser[Obj]       = objValue | objType
-  lazy val objType:Parser[Type[Obj]] = aType | recType | anonType
+  lazy val name       :Parser[String]    = "[a-zA-Z]+".r <~ ":"
+  lazy val obj        :Parser[Obj]       = objValue | objType
+  lazy val objType    :Parser[Type[Obj]] = aType | recType | anonType
+  lazy val domainRange:Parser[Type[Obj]] = (Tokens.rec ~> recType) | canonicalType
 
-  lazy val aType   :Parser[Type[Obj]] = opt(canonicalType <~ Tokens.:<=) ~ canonicalType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {  // NOTE: model lookup when a range is unknown
-    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(this.model.resolve(x)).asInstanceOf[Type[Obj]]))
-    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(this.model.resolve(x)).asInstanceOf[Type[Obj]])
+  lazy val aType   :Parser[Type[Obj]] = opt(domainRange <~ Tokens.:<=) ~ domainRange ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]]))
+    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(x).asInstanceOf[Type[Obj]])
   }
   lazy val recType :Parser[ORecType]  = opt(name) ~ (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE))) <~ RBRACKET ^^ (x => trec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap))
   lazy val anonType:Parser[__]        = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => __(x:_*))

@@ -22,9 +22,11 @@
 
 package org.mmadt.language.obj.op
 
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
+import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,8 +34,23 @@ import org.mmadt.processor.Traverser
 trait TraverserInstruction extends Inst {
 
   def doFrom[S <: Obj,E <: Obj](traverser:Traverser[S]):Traverser[E] =
-    traverser.split((if (args().length > 1) traverser.state.getOrElse(arg0[StrValue]().value(),arg1[E]()) else traverser.state(arg0[StrValue]().value())).asInstanceOf[E])
+    traverser.split(composeInstruction((if (args().length > 1) traverser.state.getOrElse(arg0[StrValue]().value(),arg1[E]()) else traverser.state(arg0[StrValue]().value())).asInstanceOf[E]))
 
   def doTo[S <: Obj,E <: Obj](traverser:Traverser[S]):Traverser[E] =
-    traverser.split[E](traverser.obj().asInstanceOf[E],traverser.state + (this.arg0[StrValue]().value() -> traverser.obj()))
+    traverser.split[E](composeInstruction(traverser.obj().asInstanceOf[E]),traverser.state + (this.arg0[StrValue]().value() -> traverser.obj()))
+
+  def doFold[S <: Obj,E <: Obj](traverser:Traverser[S]):Traverser[E] ={
+    val t:Traverser[S] = traverser.obj() match {
+      case _:Type[Obj] => Traverser.stateSplit[S](this.arg0[StrValue]().value(),this.arg1[Obj]())(traverser)
+      case _ => traverser
+    }
+    t.split(InstUtil.instEval(t,this))
+  }
+
+  private def composeInstruction[E <: Obj](obj:E):E ={
+    obj match {
+      case atype:Type[Obj] => atype.compose(this).asInstanceOf[E]
+      case _ => obj
+    }
+  }
 }

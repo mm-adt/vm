@@ -40,16 +40,18 @@ class C1Traverser[S <: Obj](val obj:S,val state:State = Map.empty,val model:Mode
     if (rangeType.insts.isEmpty) {
       TypeChecker.checkType(this.obj,rangeType)
       this.asInstanceOf[Traverser[E]]
-    } else
+    } else {
       (InstUtil.nextInst(rangeType) match {
         case None => this
         case Some(inst) => inst match {
           case traverserInst:TraverserInstruction => traverserInst.op() match {
             case Tokens.to => traverserInst.doTo(this)
             case Tokens.from => traverserInst.doFrom(this)
+            case Tokens.fold => traverserInst.doFold(this)
           }
           case _ => this.split[E](InstUtil.instEval(this,inst))
         }
       }).apply(rangeType.linvert())
+    }
   }
 }

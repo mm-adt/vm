@@ -115,7 +115,7 @@ object StorageFactory {
     case strm:IntStrm => return int.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
     case strm:StrStrm => return str.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
     case strm:ORecStrm => return rec.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
-    case atype:Type[_] => atype
+    case atype:Type[_] => return atype.asInstanceOf[Type[O]]
     case _:IntValue => int
     case _:StrValue => str
     case _:BoolValue => bool
