@@ -34,7 +34,8 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
 class C2Traverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id) extends Traverser[S] {
   def this(obj:S) = this(obj,Map.empty) //
 
-  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new C2Traverser[E](obj,state,this.model) //
+  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] =
+    new C2Traverser[E](model.resolve(obj),state,this.model)
   override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
     val next:Traverser[E] = model.get(obj.asInstanceOf[Type[Obj]].domain()) match {
       case Some(atype) => this.split[E](atype.asInstanceOf[E].q(obj.q()))

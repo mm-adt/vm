@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -42,9 +43,8 @@ object LeftRightSweepRewrite {
         case Some(right:Type[S]) => rewrite(model,right,btype,traverser)
         case None => rewrite(model,
           atype.rinvert(),
-          atype.insts.last._2.apply(
-            atype.rinvert[Type[S]]().range,
-            rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.insts.last._2,traverser)).asInstanceOf[Type[S]].compose(btype),
+          model.resolve(OpInstResolver.resolve(atype.insts.last._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.insts.last._2,traverser)).
+            apply(model.resolve(atype.rinvert[Type[S]]().range)).asInstanceOf[Type[S]]).compose(btype),
           traverser)
       }
     } else if (btype.insts.nonEmpty) {

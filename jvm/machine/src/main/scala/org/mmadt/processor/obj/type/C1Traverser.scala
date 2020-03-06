@@ -35,7 +35,8 @@ import org.mmadt.processor.obj.`type`.util.InstUtil
  */
 class C1Traverser[S <: Obj](val obj:S,val state:State = Map.empty,val model:Model = Model.id) extends Traverser[S] {
   def this(obj:S) = this(obj,Map.empty)
-  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] = new C1Traverser[E](obj,state,this.model)
+  override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] =
+    new C1Traverser[E](model.resolve(obj),state,this.model)
   override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
     if (rangeType.insts.isEmpty) {
       TypeChecker.checkType(this.obj,rangeType)

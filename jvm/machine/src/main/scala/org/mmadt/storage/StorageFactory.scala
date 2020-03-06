@@ -93,10 +93,10 @@ object StorageFactory {
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*)(implicit f:StorageFactory):RecValue[A,B] = f.vrec(value,values:_*)
   def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*)(implicit f:StorageFactory):RecStrm[A,B] = f.vrec(value1,value2,valuesN:_*)
   //
-  def vbool(name:String = Tokens.bool,value:Boolean,q:IntQ)(implicit f:StorageFactory):BoolValue = f.vbool(name,value,q)
-  def vint(name:String = Tokens.int,q:IntQ,value:Long)(implicit f:StorageFactory):IntValue = f.vint(name,value,q)
-  def vstr(name:String = Tokens.str,q:IntQ,value:String)(implicit f:StorageFactory):StrValue = f.vstr(name,value,q)
-  def vrec[A <: Value[Obj],B <: Value[Obj]](name:String = Tokens.rec,q:IntQ,value:Map[A,B])(implicit f:StorageFactory):RecValue[A,B] = f.vrec(name,value,q)
+  def vbool(name:String = Tokens.bool,value:Boolean,q:IntQ = qOne)(implicit f:StorageFactory):BoolValue = f.vbool(name,value,q)
+  def vint(name:String = Tokens.int,value:Long,q:IntQ = qOne)(implicit f:StorageFactory):IntValue = f.vint(name,value,q)
+  def vstr(name:String = Tokens.str,value:String,q:IntQ = qOne)(implicit f:StorageFactory):StrValue = f.vstr(name,value,q)
+  def vrec[A <: Value[Obj],B <: Value[Obj]](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne)(implicit f:StorageFactory):RecValue[A,B] = f.vrec(name,value,q)
 
   /////////CONSTANTS//////
   lazy val btrue :BoolValue           = bool(value = true)

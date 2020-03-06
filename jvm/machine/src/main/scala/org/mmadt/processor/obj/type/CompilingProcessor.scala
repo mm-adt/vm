@@ -25,7 +25,7 @@ package org.mmadt.processor.obj.`type`
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.{Processor, Traverser}
 
@@ -35,6 +35,7 @@ import org.mmadt.processor.{Processor, Traverser}
 class CompilingProcessor(val model:Model = Model.id) extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
     assert(!domainObj.isInstanceOf[Value[Obj]],"The compiling processor only accepts types: " + domainObj)
+    assert(!rangeType.isInstanceOf[__],"The compiling processor can not compile anonymous types: " + rangeType)
     model match {
       case Model.id => Iterator(new C1Traverser(domainObj).apply(rangeType))
       case _ =>

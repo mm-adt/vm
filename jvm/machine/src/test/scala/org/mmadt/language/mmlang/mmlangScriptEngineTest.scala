@@ -25,9 +25,9 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType, ObjType, RecType, Type}
+import org.mmadt.language.obj.`type`.{IntType,ObjType,RecType,Type}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.obj.{Obj,Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -73,11 +73,11 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("atomic named value parsing"){
-    //assertResult(bool("keep",true))(engine.eval("keep:true").next)
-    //assertResult(int("nat",5))(engine.eval("nat:5").next)
-    //assertResult(int("score",-51))(engine.eval("score:-51").next)
-    //assertResult(str("fname","marko"))(engine.eval("fname:'marko'").next)
-    //assertResult(str("garbage","marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("garbage:'marko comp3 45AHA\"\"\\'-%^&'").next)
+    assertResult(vbool(name = "keep",value = true))(engine.eval("keep:true").next)
+    assertResult(vint(name = "nat",value = 5))(engine.eval("nat:5").next)
+    assertResult(vint(name = "score",value = -51))(engine.eval("score:-51").next)
+    assertResult(vstr(name = "fname",value = "marko"))(engine.eval("fname:'marko'").next)
+    assertResult(vstr(name = "garbage",value = "marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("garbage:'marko comp3 45AHA\"\"\\'-%^&'").next)
   }
 
   test("rec value parsing"){
@@ -98,8 +98,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("rec named type parsing"){
-    //assertResult(trec("person")(str("name") -> str,str("age") -> int))(engine.eval("person:[   'name'   ->str ,   'age' ->int]").next)
-    //assertResult(trec("person")(str("name") -> str,str("age") -> int))(engine.eval("person:['name'->str,'age'->int]").next)
+    assertResult(trec(name = "person",Map(str("name") -> str,str("age") -> int)))(engine.eval("person:[   'name'   ->str ,   'age' ->int]").next)
+    assertResult(trec(name = "person",Map(str("name") -> str,str("age") -> int)))(engine.eval("person:['name'->str,'age'->int]").next)
   }
 
   test("composite type get/put"){
@@ -288,10 +288,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(model)(engine.get("model"))
     // model compilations
     assertResult(int <= int.is(int.gt(0)))(engine.eval("nat").next)
+    assertResult(false)(engine.eval("-2 nat[plus,2]").hasNext)
+    assertResult(int(4))(engine.eval("2 nat[plus,2]").next)
     assertResult(int <= int.is(int.gt(0)).plus(1))(engine.eval("nat+1").next)
-    // assertResult(trec(name = "person",value = Map(str("name") -> str,str("age") -> tobj("nat"))))(engine.eval("person").next)
+    assertResult(trec(value = Map(str("name") -> str,str("age") -> tobj("nat"))))(engine.eval("person").next)
     assertResult(str <= person.get(str("name"),str))(engine.eval("person[get,'name']").next)
-    // assertResult(person.get(str("age"),int.named("nat")).plus(1))(engine.eval("person[get,'age'][plus,1]").next)
-    // assertResult(rec.named("person").get(str("age"),int.named("nat")).plus(1))(engine.eval("person person[get,'age'][plus,1]").next)
+    assertResult(person.get(str("age"),int.named("nat")).plus(1))(engine.eval("person[get,'age'][plus,1]").next)
+    assertResult(int(30))(engine.eval("['name'->'marko','age'->29]person[get,'age'][plus,1]").next)
   }
 }

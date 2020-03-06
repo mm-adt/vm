@@ -24,7 +24,8 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.map.{IdOp, PlusOp}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -134,5 +135,11 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     assertResult(int.plus(int.plus(int(2)).plus(int(3)).plus(int(4))))(processor.apply(int.plus(int(0)).plus(int.plus(int(2)).plus(int(3)).plus(int(4))).asInstanceOf[Type[Int]]))
     assertResult(int.plus(int))(processor.apply(int.plus(0).plus(int.plus(0))))
     assertResult(int.plus(int))(processor.apply(int.plus(int(0)).plus(int.plus(int(1)).plus(int(-1)).plus(int(0)))))
+  }
+
+  test("compiler w/ anonymous type"){
+    assertThrows[AssertionError]{
+      processor(__.id().plus(10))
+    }
   }
 }
