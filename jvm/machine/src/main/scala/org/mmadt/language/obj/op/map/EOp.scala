@@ -20,13 +20,13 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.mmkv
+package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.mmlang.mmlangParser
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Inst, Obj, Rec, Str}
-import org.mmadt.storage.StorageFactory.{qOne, _}
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.StorageFactory.{qOne, vrec}
 import org.mmadt.storage.obj.value.VInst
 
 import scala.io.Source
@@ -34,22 +34,16 @@ import scala.io.Source
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait mmkvOp {
-  def mmkv(file:StrValue):Rec[Str,Obj]
+trait EOp {
+  this:Obj =>
+  def |=[O <: Obj](op:StrValue,result:O,arg:StrValue):O
 }
 
-
-object mmkvOp {
-  def apply(file:StrValue):Inst = new VInst(("=mmkv",List(file)),qOne,(a:Obj,b:List[Obj]) => a match {
-    case atype:Type[Obj] => atype.mmkv(b.head.asInstanceOf[StrValue])
-    case _:Value[Obj] => vrec(Source.fromFile(file.value()).getLines().flatMap(k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]]))
-  })
-
-  def peekType(file:String):Map[Str,Obj] ={
-    Source.fromFile(file).getLines()
-      .map(line => mmlangParser.parse(line).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]].next())
-      .map(x => x.value().values)
-      .take(2)
-      .map(x => Map[Str,Obj](str("k") -> asType(x.head),str("v") -> asType(x.last))).next()
-  }
+object EOp {
+ /* def apply[O <: Obj](op:StrValue,result:O,arg:StrValue):Inst = new VInst((s"=${op.value()}",List(arg)),qOne,(a:Obj,b:List[Obj]) => a match {
+    case atype:Type[Obj] => atype.|=(op,result,b.head.asInstanceOf[StrValue])
+    case avalue:Value[Obj] => op.value() match {
+      case "=mmkv" => vrec(Source.fromFile(arg.value()).getLines().flatMap[RecValue[StrValue,ObjValue]](k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]]))
+    }
+  })*/
 }

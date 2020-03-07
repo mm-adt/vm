@@ -23,11 +23,14 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
+import org.mmadt.language.mmlang.mmlangParser
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
 import org.mmadt.language.obj.{Int, ORecValue, OType, Obj, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.mmkv.mmkvOp
+
+import scala.io.Source
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -63,5 +66,5 @@ trait Value[+V <: Obj] extends Obj {
   }
 
   ////////
-  override def mmkv(file:StrValue):Rec[Str,Obj] = mmkvOp.apply(file).apply(file).asInstanceOf[Rec[Str,Obj]]
+  override def mmkv(file:StrValue):Rec[Str,Obj] = vrec(Source.fromFile(file.value()).getLines().flatMap(k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]])).asInstanceOf[Rec[Str,Obj]]
 }

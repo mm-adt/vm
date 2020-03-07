@@ -25,9 +25,9 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType, ObjType, RecType, Type, __}
+import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.GetOp
-import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue}
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -128,6 +128,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(13).q(int(10)))(engine.eval("13{10}[is>5]").next())
   }
 
+  test("quantifier inst parsing"){
+    // assertResult(true)(engine.eval("int[plus,2]{2}[mult,3]{32}[plus,4]").next()) // TODO: support instruction quantification (requires a full refactor of the inst obj model)
+  }
+
   test("refinement type parsing"){
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is,int[gt,10]]").next)
     // assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]").next) //TODO: when a range is specified by the user, use that during compilation
@@ -142,24 +146,11 @@ class mmlangScriptEngineTest extends FunSuite {
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").next().toString.contains("bool<z>"))
   }
 
-  test("get dot-notation parsing") {
-    assertResult(__(GetOp(str("a")),GetOp(str("b")),GetOp(str("c"))))(engine.eval(".a.b.c").next)
-    assertResult(int(4))(engine.eval(
-      """
-        |['a'->
-        |  ['aa'->1,
-        |   'ab'->2],
-        | 'b'->
-        |   ['ba'->3,
-        |    'bb'->
-        |      ['bba'->4]]].b.bb.bba""".stripMargin).next())
-  }
-
   test("choose instruction parsing"){
     List(
-      int.plus(int(2)).choose(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10))),
-      int.plus(int(2)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))),
-      int.plus(int(2)).choose(trec(name = Tokens.rec,value = Map(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))).
+      int.plus(int(2)).choose[IntType,ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10))),
+      int.plus(int(2)).choose(trec[IntType,ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))),
+      int.plus(int(2)).choose(trec[IntType,ObjType](name = Tokens.rec,value = Map[IntType,ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))).
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
@@ -201,7 +192,20 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is,int[gt,5]]").next())
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is>5]").next)
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is > 5]").next)
-    // assertResult()(engine.eval(".friend.name") // TODO: . for [get]
+  }
+
+  test("get dot-notation parsing"){
+    assertResult(__(GetOp(str("a")),GetOp(str("b")),GetOp(str("c"))))(engine.eval(".a.b.c").next)
+    assertResult(int(4))(engine.eval(
+      """
+        |['a'->
+        |  ['aa'->1,
+        |   'ab'->2],
+        | 'b'->
+        |   ['ba'->3,
+        |    'bb'->
+        |      ['bba'->4]]].b.bb.bba""".stripMargin).next())
+    assertResult(int(0))(engine.eval("['a'->['b'->['c'->['d'->0]]]].a.b.c.d").next)
   }
 
   test("bool strm input parsing"){
@@ -234,9 +238,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,[gt,[mult,[plus,5]]]]").next)
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)
     assertResult(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)(engine.eval("int[is,[gt,[mult,[plus,5]]]]").next)
-    assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval(" int[[is>5] -> 1 | int -> 2]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
-    assertResult(int.plus(int(10)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval(" int[plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
-    assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval(" int[plus,10][[is>5] -> 1 | int -> 2]").next) // TODO: a single type (not juxtaposed) should apply its domain to itself to compile itself
+    assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval(" int[[is>5] -> 1 | int -> 2]").next)
+    assertResult(int.plus(int(10)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval(" int[plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
+    assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval(" int[plus,10][[is>5] -> 1 | int -> 2]").next)
     assertResult(Set(int(302),int(42)))(asScalaIterator(engine.eval(
       """ 0,1,2,3
         | [plus,1][is>2]
@@ -284,19 +288,23 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(trec(str("age") -> int).id())(engine.eval("rec['age'->int][id]").next())
     assertResult(vrec(str("age") -> int(29)))(engine.eval("['age'->29] rec['age'->int][id]").next())
     assertResult(trec(str("age") -> int,str("name") -> str) <= trec[Str,Obj](str("age") -> int).put(str("name"),str))(engine.eval("rec['age'->int][put,'name',str]").next())
-    assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval("['age'->29] rec['age'->int][choose,[rec['age'->int][is,rec['age'->int][get,'age'][gt,30]] -> rec['age'->int][put,'name','bill'] | rec['age'->int] -> rec['age'->int][put,'name','marko']]]").next())
-    assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval("['age'->29] rec['age'->int][[is,[get,'age'][gt,30]] -> [put,'name','bill'] | rec -> [put,'name','marko']]").next())
+    assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval(
+      """
+        |['age'->29] rec['age'->int][choose,[
+        |  rec['age'->int][is,rec['age'->int][get,'age'][gt,30]] -> rec['age'->int][put,'name','bill'] |
+        |  rec['age'->int]                                       -> rec['age'->int][put,'name','marko']]]""".stripMargin).next())
+    assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval(
+      """
+        |['age'->29] rec['age'->int][
+        |  [is,[get,'age'][gt,30]] -> [put,'name','bill'] |
+        |  rec                     -> [put,'name','marko']]""".stripMargin).next())
   }
 
-  test("mmkv parsing"){
-    val file:String = getClass.getResource("/mmkv/mmkv.txt").getPath
-    println(engine.eval(s"3[=mmkv,'${file}']").next())
-  }
   test("model parsing"){
     val person:RecType[StrValue,ObjType] = trec(str("name") -> str,str("age") -> int)
     // model creation
     assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine.eval("[nat -> int<=int[is>0]]").next)
-    assertResult(trec(
+    assertResult(trec[ObjType,ObjType](
       tobj("nat") -> (int <= int.is(int.gt(0))),
       tobj("person") -> trec(
         str("name") -> str,

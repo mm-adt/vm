@@ -24,12 +24,12 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
-import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
-import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.obj.op.map.{IdOp,MapOp,QOp}
+import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
+import org.mmadt.language.obj.value.{StrValue,Value}
+import org.mmadt.language.{LanguageFactory,Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
@@ -144,5 +144,5 @@ trait Type[+T <: Obj] extends Obj
   }
 
   /////////
-  override def mmkv(file:StrValue):RecType[Str,Obj] = this.compose(trec(name = "mmkv",value = Map[Str,Obj](str("k") -> int,str("v") -> str)),mmkvOp(file)).q(*)
+  override def mmkv(file:StrValue):RecType[Str,Obj] = this.compose(trec(name = "mmkv",value = mmkvOp.peekType(file.value())),mmkvOp(file)).q(*)
 }
