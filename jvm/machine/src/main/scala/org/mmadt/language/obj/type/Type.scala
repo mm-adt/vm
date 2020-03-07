@@ -144,5 +144,5 @@ trait Type[+T <: Obj] extends Obj
   }
 
   /////////
-  override def mmkv(file:StrValue):RecType[Str,Obj] = this.compose(trec(name = "mmkv",value = mmkvOp.peekType(file.value())),mmkvOp(file)).q(*)
+  override def mmkv(file:StrValue):RecType[StrValue,Obj] = this.compose(trec(name = mmkvOp.MMKV,value = mmkvOp.peekType(file.value())),mmkvOp(file)).q(*)
 }

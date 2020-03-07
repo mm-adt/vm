@@ -50,6 +50,7 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("mmkv file-2 parsing"){
+    assertResult(s"mmkv:['k'->int,'v'->rec['name'->str,'age'->int]]{*}<=obj[=mmkv,'${file2}']")(engine.eval(s"obj[=mmkv,'${file2}']").next.toString)
     assertResult(List(str("marko!"),str("stephen!")))(asScalaIterator(engine.eval(s"1[=mmkv,'${file2}'].v[is.age>28].name+'!'")).toList)
   }
 

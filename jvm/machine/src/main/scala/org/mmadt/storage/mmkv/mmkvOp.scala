@@ -23,9 +23,8 @@
 package org.mmadt.storage.mmkv
 
 import org.mmadt.language.mmlang.mmlangParser
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Inst, Obj, Rec, Str}
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Inst, Obj, Rec}
 import org.mmadt.storage.StorageFactory.{qOne, _}
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,21 +34,25 @@ import scala.io.Source
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait mmkvOp {
-  def mmkv(file:StrValue):Rec[Str,Obj]
+  def mmkv(file:StrValue):Rec[StrValue,Obj]
 }
 
 
 object mmkvOp {
-  def apply(file:StrValue):Inst = new VInst(("=mmkv",List(file)),qOne,(a:Obj,b:List[Obj]) => a match {
-    case atype:Type[Obj] => atype.mmkv(b.head.asInstanceOf[StrValue])
-    case _:Value[Obj] => vrec(Source.fromFile(file.value()).getLines().flatMap(k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]]))
-  })
 
-  def peekType(file:String):Map[Str,Obj] ={
-    Source.fromFile(file).getLines()
-      .map(line => mmlangParser.parse(line).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]].next())
-      .map(x => x.value().values)
-      .take(2)
-      .map(x => Map[Str,Obj](str("k") -> asType(x.head),str("v") -> asType(x.last))).next()
+  lazy val KEY  :StrValue = str("k")
+  lazy val VALUE:StrValue = str("v")
+  lazy val EMMKV:String   = "=mmkv"
+  lazy val MMKV :String   = "mmkv"
+
+  def apply(file:StrValue):Inst = new VInst((EMMKV,List(file)),qOne,(a:Obj,b:List[Obj]) => a.mmkv(b.head.asInstanceOf[StrValue]))
+
+  def peekType(file:String):Map[StrValue,Obj] ={
+    val source = Source.fromFile(file)
+    try {
+      source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().value().asInstanceOf[Map[StrValue,Obj]]
+    } finally {
+      source.close();
+    }
   }
 }

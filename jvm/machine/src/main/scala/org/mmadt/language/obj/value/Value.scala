@@ -66,5 +66,5 @@ trait Value[+V <: Obj] extends Obj {
   }
 
   ////////
-  override def mmkv(file:StrValue):Rec[Str,Obj] = vrec(Source.fromFile(file.value()).getLines().flatMap(k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]])).asInstanceOf[Rec[Str,Obj]]
+  override def mmkv(file:StrValue):Rec[StrValue,Obj] = vrec(Source.fromFile(file.value()).getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]])).asInstanceOf[Rec[StrValue,Obj]]
 }
