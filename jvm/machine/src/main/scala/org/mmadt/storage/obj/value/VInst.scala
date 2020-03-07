@@ -25,7 +25,7 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -51,5 +51,5 @@ class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) exte
       case argType:Type[Obj] => TypeChecker.matchesTT(startType,argType)
     }
   }
-
+  override def mmkv(file:StrValue):Rec[Str,Obj] = null
 }

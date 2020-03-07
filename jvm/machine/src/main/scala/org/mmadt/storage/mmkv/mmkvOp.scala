@@ -20,29 +20,31 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.storage.mmkv
 
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
-import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.mmlang.mmlangParser
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Inst, Obj, Rec, Str}
+import org.mmadt.storage.StorageFactory.{qOne, _}
+import org.mmadt.storage.obj.value.VInst
+
+import scala.io.Source
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Rec[A <: Obj,B <: Obj] extends Obj
-  with EqsOp[Rec[A,B]]
-  with PlusOp[Rec[A,B]]
-  with IsOp[Rec[A,B]]
-  with ToOp[Rec[A,B]]
-  with GetOp[A,B]
-  with PutOp[A,B] {
-  def value():Any
+trait mmkvOp {
+
+  def mmkv(file:StrValue):Rec[Str,Obj]
+
 }
 
-object Rec {
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)):RecValue[A,B] = vrec(value = value,values = values)
+
+object mmkvOp {
+  def apply(file:StrValue):Inst = new VInst(("=mmkv",List(file)),qOne,((a:Obj,b:List[Obj]) => (a match {
+    case atype:Type[Obj] => atype.mmkv(b.head.asInstanceOf[StrValue])
+    case avalue:Value[Obj] => vrec(Source.fromFile(file.value()).getLines().flatMap[RecValue[StrValue,ObjValue]](k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]]))
+  })))
+
 }

@@ -20,29 +20,22 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.storage.mmkv
 
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
-import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{RecValue, Value}
+import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Rec[A <: Obj,B <: Obj] extends Obj
-  with EqsOp[Rec[A,B]]
-  with PlusOp[Rec[A,B]]
-  with IsOp[Rec[A,B]]
-  with ToOp[Rec[A,B]]
-  with GetOp[A,B]
-  with PutOp[A,B] {
-  def value():Any
-}
+class mmkvInstTest extends FunSuite {
+  val file:String = getClass.getResource("/mmkv/mmkv.txt").getPath
 
-object Rec {
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)):RecValue[A,B] = vrec(value = value,values = values)
+  test("[=mmkv] with mmkv.txt"){
+    assertResult(s"mmkv:['k'->int,'v'->str]{*}<=obj[=mmkv,'${file}']")(obj.mmkv(str(file)).toString)
+    assertResult("['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz']")(int(1).mmkv(str(file)).toString)
+    //assertResult("List(['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz'])")((int(1) ===> int.mkvInst("/Users/marko/mmkv.txt")).toList.toString())
+    assertResult(List(int(1),int(2),int(3),int(4)))(Processor.iterator()(int(4),Processor.compiler().apply(int.mmkv(str(file)).get("k",int))).map(_.obj()).toList)
+  }
 }

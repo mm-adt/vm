@@ -32,6 +32,7 @@ import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.language.obj.{Inst, ORecType, ORecValue, Obj}
+import org.mmadt.storage.mmkv.mmkvOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -114,6 +115,9 @@ object OpInstResolver {
       case Tokens.q => QOp()
       case Tokens.zero => ZeroOp()
       case Tokens.one => OneOp()
+      //////////
+      //////////
+      case "=mmkv" => mmkvOp(args.head.asInstanceOf[StrValue])
     }
   }
 }

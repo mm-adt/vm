@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
@@ -30,9 +29,11 @@ import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.mmkv.mmkvOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -92,13 +93,13 @@ trait Type[+T <: Obj] extends Obj
   }
   def compose(inst:Inst):this.type = this.compose(this,inst).asInstanceOf[this.type]
   def compose[R <: Obj](nextObj:R,inst:Inst):OType[R] ={
-     val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst))
+    val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst))
     //val newInsts = this.insts ::: List((this,inst))
     (nextObj match {
       case _:Bool => tbool(nextObj.name,multQ(this,inst),newInsts)
       case _:Int => tint(nextObj.name,multQ(this,inst),newInsts)
       case _:Str => tstr(nextObj.name,multQ(this,inst),newInsts)
-      case arec:Rec[_,_] => trec(arec.name,arec.value(),multQ(this,inst),newInsts)
+      case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInsts)
       case _:__ => new __(newInsts)
       case _ => tobj(nextObj.name,multQ(this,inst),newInsts)
     }).asInstanceOf[OType[R]]
@@ -141,4 +142,7 @@ trait Type[+T <: Obj] extends Obj
     case atype:Type[Obj] => this.name == atype.name && this.q() == atype.q() && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
     case _ => false
   }
+
+  /////////
+  override def mmkv(file:StrValue):RecType[Str,Obj] = this.compose(trec(name = "mmkv",value = Map[Str,Obj](str("k") -> int,str("v") -> str)),mmkvOp(file)).q(*)
 }

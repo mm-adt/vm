@@ -23,11 +23,11 @@
 package org.mmadt.processor.obj.value
 
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
+import org.mmadt.language.obj.op.{FilterInstruction,ReduceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst,Obj}
 import org.mmadt.processor.obj.`type`.util.InstUtil
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.processor.{Processor,Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -49,7 +49,12 @@ class IteratorProcessor extends Processor {
         //////////////FILTER//////////////
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
         //////////////OTHER//////////////
-        case _:Inst => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
+        case _:Inst => output
+          .map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
+          .flatMap(x => x.obj() match {
+            case strm:Strm[E] => strm.value().map(y => x.split(y))
+            case single:E => Iterator(x.split(single))
+          })
       }
     }
     output

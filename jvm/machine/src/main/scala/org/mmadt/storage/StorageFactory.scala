@@ -60,6 +60,7 @@ trait StorageFactory {
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:Map[A,B]):RecValue[A,B] = vrec(Tokens.rec,value,qOne)
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B]
   def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*):RecStrm[A,B]
+  def vrec[A <: Value[Obj],B <: Value[Obj]](value:Iterator[RecValue[A,B]]):RecStrm[A,B]
   //
   def vbool(name:String,value:Boolean,q:IntQ):BoolValue
   def vint(name:String,value:Long,q:IntQ):IntValue
@@ -92,6 +93,7 @@ object StorageFactory {
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:Map[A,B])(implicit f:StorageFactory):RecValue[A,B] = f.vrec(Tokens.rec,value,qOne)
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*)(implicit f:StorageFactory):RecValue[A,B] = f.vrec(value,values:_*)
   def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*)(implicit f:StorageFactory):RecStrm[A,B] = f.vrec(value1,value2,valuesN:_*)
+  def vrec[A <: Value[Obj],B <: Value[Obj]](value:Iterator[RecValue[A,B]])(implicit f:StorageFactory):RecStrm[A,B] = f.vrec(value)
   //
   def vbool(name:String = Tokens.bool,value:Boolean,q:IntQ = qOne)(implicit f:StorageFactory):BoolValue = f.vbool(name,value,q)
   def vint(name:String = Tokens.int,value:Long,q:IntQ = qOne)(implicit f:StorageFactory):IntValue = f.vint(name,value,q)
@@ -142,5 +144,6 @@ object StorageFactory {
     override def vrec[A <: Value[Obj],B <: Value[Obj]](name:String,value:Map[A,B],q:(IntValue,IntValue)):RecValue[A,B] = new VRec[A,B](name,value,q)
     override def vrec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = new VRec[A,B]((value +: values).toMap)
     override def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm(value1 +: (value2 +: valuesN))
+    override def vrec[A <: Value[Obj],B <: Value[Obj]](value:Iterator[RecValue[A,B]]):RecStrm[A,B] = new VRecStrm(value.toSeq)
   }
 }

@@ -24,14 +24,15 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.ChooseOp
-import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.map.{IdOp,MapOp,QOp}
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
 import org.mmadt.language.obj.op.traverser.FromOp
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.{IntValue,StrValue}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.mmkv.mmkvOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,7 +45,8 @@ trait Obj
     with FoldOp
     with MapOp
     with FromOp
-    with QOp {
+    with QOp
+    with mmkvOp {
 
   // quantifier methods
   def q():IntQ
@@ -59,4 +61,5 @@ trait Obj
   // pattern matching methods
   val name:String
   def test(other:Obj):Boolean
+
 }

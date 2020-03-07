@@ -274,6 +274,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval("['age'->29] rec['age'->int][[is,[get,'age'][gt,30]] -> [put,'name','bill'] | rec -> [put,'name','marko']]").next())
   }
 
+  test("mmkv parsing"){
+    val file:String = getClass.getResource("/mmkv/mmkv.txt").getPath
+    println(engine.eval(s"3[=mmkv,'${file}']").next())
+  }
   test("model parsing"){
     val person:RecType[StrValue,ObjType] = trec(str("name") -> str,str("age") -> int)
     // model creation

@@ -24,8 +24,10 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.{Int, OType, Obj}
+import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
+import org.mmadt.language.obj.{Int, ORecValue, OType, Obj, Rec, Str}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.mmkv.mmkvOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,10 +54,14 @@ trait Value[+V <: Obj] extends Obj {
   }
 
   // standard Java implementations
+
   override def toString:String = LanguageFactory.printValue(this)
   override def hashCode():scala.Int = this.name.hashCode ^ this.value().hashCode()
   override def equals(other:Any):Boolean = other match {
     case avalue:Value[V] => avalue.value() == this.value()
     case _ => false
   }
+
+  ////////
+  override def mmkv(file:StrValue):Rec[Str,Obj] = mmkvOp.apply(file).apply(file).asInstanceOf[Rec[Str,Obj]]
 }
