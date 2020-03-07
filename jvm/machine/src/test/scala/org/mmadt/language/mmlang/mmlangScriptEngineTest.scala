@@ -25,8 +25,9 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType, ObjType, RecType, Type}
-import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.`type`.{IntType, ObjType, RecType, Type, __}
+import org.mmadt.language.obj.op.map.GetOp
+import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue}
 import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -139,6 +140,19 @@ class mmlangScriptEngineTest extends FunSuite {
   test("explain instruction parsing"){
     assert(engine.eval("int[plus,int[mult,6]][explain]").next().toString.contains("instruction"))
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").next().toString.contains("bool<z>"))
+  }
+
+  test("get dot-notation parsing") {
+    assertResult(__(GetOp(str("a")),GetOp(str("b")),GetOp(str("c"))))(engine.eval(".a.b.c").next)
+    assertResult(int(4))(engine.eval(
+      """
+        |['a'->
+        |  ['aa'->1,
+        |   'ab'->2],
+        | 'b'->
+        |   ['ba'->3,
+        |    'bb'->
+        |      ['bba'->4]]].b.bb.bba""".stripMargin).next())
   }
 
   test("choose instruction parsing"){

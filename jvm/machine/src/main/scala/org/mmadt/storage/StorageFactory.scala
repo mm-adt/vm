@@ -121,7 +121,7 @@ object StorageFactory {
     case _:IntValue => int
     case _:StrValue => str
     case _:BoolValue => bool
-    case _:ORecValue => rec
+    case recval:ORecValue => trec(value=recval.value())
   }).asInstanceOf[Type[O]].q(obj.q())
 
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {

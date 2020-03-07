@@ -30,7 +30,9 @@ import org.mmadt.language.obj.`type`._
  */
 object Tokens {
 
-  lazy val ops:List[String] = List(Tokens.noop,Tokens.and,Tokens.choose,Tokens.count,Tokens.eqs,Tokens.explain,Tokens.get,Tokens.is,Tokens.mult,Tokens.plus,Tokens.gt,Tokens.put,Tokens.map,Tokens.from,Tokens.to)
+  lazy val ops:Set[String] = Set(
+    Tokens.noop,Tokens.and,Tokens.choose,Tokens.count,Tokens.eqs,Tokens.explain,Tokens.get,Tokens.is,Tokens.mult,
+    Tokens.plus,Tokens.gt,Tokens.put,Tokens.map,Tokens.from,Tokens.to)
 
   val obj  = "obj"
   val bool = "bool"
@@ -77,6 +79,7 @@ object Tokens {
   val eqs_op         = "=="
   val and_op         = "&&"
   val or_op          = "||"
+  val get_op         = "."
 
   val ::  = ":"
   val :-> = "->"
