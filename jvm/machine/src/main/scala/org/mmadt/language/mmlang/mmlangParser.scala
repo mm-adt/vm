@@ -30,8 +30,8 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.value.strm.{BoolStrm,IntStrm,StrStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
 
@@ -57,60 +57,44 @@ object mmlangParser extends JavaTokenParsers {
   def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
 
   // specific to mmlang execution
-  lazy val expr       :Parser[Any]           = evaluation | compilation | obj
-  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ opt(aType | anonType) ^^ (x => x._1 ===> {
-    val t = InstUtil.resolveAnonymous(x._1,x._2.getOrElse(asType(x._1).id()))
-    (t.domain() ==> this.model) (t)
-  })
-  lazy val compilation:Parser[Obj]           = (aType | recType) ^^ (x => (x.domain() ==> this.model) (x))
+  lazy val expr       :Parser[Any]           = compilation | evaluation | (objValue | anonType)
+  lazy val compilation:Parser[Obj]           = aType ^^ (x => (x.domain() ==> this.model) (x))
+  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ (anonType | aType) ^^ (x => x._1 ===> (InstUtil.resolveAnonymous(x._1,x._2).domain() ==> this.model) (x._2))
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // mmlang's language structure
-  lazy val instOp       :String            = Tokens.ops.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
-  lazy val canonicalType:Parser[Type[Obj]] = (Tokens.bool | Tokens.int | Tokens.str | Tokens.rec | ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":")) ~ opt(quantifier) ^^ {
-    case atype ~ q => q.foldRight(atype match {
-      case Tokens.obj => tobj() // obj name already taken
-      case Tokens.bool => bool
-      case Tokens.int => int
-      case Tokens.str => str
-      case Tokens.rec => rec
-      case name:String =>
-        this.model.get(name) match {
-          case Some(atype) => atype
-          case None => tobj(name)
-        }
-    })((q,t) => t.q(q))
-  }
-
-  // name'd objects
-  lazy val name:Parser[String] = "[a-zA-Z]+".r <~ ":"
-  lazy val obj :Parser[Obj]    = objValue | objType
+  lazy val obj:Parser[Obj] = objValue | objType
 
   // type parsing
-  lazy val objType    :Parser[Type[Obj]] = aType | recType | anonType
-  lazy val domainRange:Parser[Type[Obj]] = (Tokens.rec ~> recType) | canonicalType
-  lazy val recType    :Parser[ORecType]  = opt(name) ~ (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE))) <~ RBRACKET ^^ (x => trec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap))
-  lazy val anonType   :Parser[__]        = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => __(x:_*))
-  lazy val aType      :Parser[Type[Obj]] = opt(domainRange <~ Tokens.:<=) ~ domainRange ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+  lazy val objType  :Parser[Type[Obj]]    = aType | anonType
+  lazy val boolType :Parser[BoolType]     = Tokens.bool ^^ (_ => bool)
+  lazy val intType  :Parser[IntType]      = Tokens.int ^^ (_ => int)
+  lazy val strType  :Parser[StrType]      = Tokens.str ^^ (_ => str)
+  lazy val recType  :Parser[ORecType]     = (Tokens.rec ~> recStruct) ^^ (x => trec(value = x))
+  lazy val recStruct:Parser[Map[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE)) <~ RBRACKET) ^^ (x => x.map(o => (o._1,o._2)).toMap)
+  lazy val namedType:Parser[Type[Obj]]    = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":") ^^ (x => this.model.get(x) match {
+    case Some(atype) => atype
+    case None => tobj(x)
+  })
+  lazy val cType    :Parser[Type[Obj]]    = (boolType | intType | strType | recType | namedType) ~ opt(quantifier) ^^ (x => x._1.q(x._2.getOrElse(qOne)))
+  lazy val aType    :Parser[Type[Obj]]    = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(this.model.resolve(x)).asInstanceOf[Type[Obj]]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => {
       y(this.model.resolve(x)).asInstanceOf[Type[Obj]]
     })
   }
-
-  // quantifier parsing
-  lazy val quantifier    :Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1,x._2.getOrElse(x._1)))
-  lazy val quantifierType:Parser[IntQ] = (Tokens.q_star | Tokens.q_mark | Tokens.q_plus) ^^ {
-    case Tokens.q_star => qStar
-    case Tokens.q_mark => qMark
-    case Tokens.q_plus => qPlus
-  }
+  lazy val anonType :Parser[__]           = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => __(x:_*))
+  lazy val instOp   :String               = Tokens.reserved.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
 
   // value parsing
   lazy val objValue :Parser[Value[Obj]] = (boolValue | intValue | strValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val boolValue:Parser[BoolValue]  = opt(name) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => vbool(x._1.getOrElse(Tokens.bool),x._2.toBoolean,qOne))
-  lazy val intValue :Parser[IntValue]   = opt(name) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int),x._2.toLong,qOne))
-  lazy val strValue :Parser[StrValue]   = opt(name) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => vstr(x._1.getOrElse(Tokens.str),x._2.subSequence(1,x._2.length - 1).toString,qOne))
-  lazy val recValue :Parser[ORecValue]  = opt(name) ~ (LBRACKET ~> repsep((objValue <~ Tokens.:->) ~ objValue,COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap,qOne))
+  lazy val boolValue:Parser[BoolValue]  = opt(valueType) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => vbool(x._1.getOrElse(Tokens.bool),x._2.toBoolean,qOne))
+  lazy val intValue :Parser[IntValue]   = opt(valueType) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int),x._2.toLong,qOne))
+  lazy val strValue :Parser[StrValue]   = opt(valueType) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => vstr(x._1.getOrElse(Tokens.str),x._2.subSequence(1,x._2.length - 1).toString,qOne))
+  lazy val recValue :Parser[ORecValue]  = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ Tokens.:->) ~ objValue,COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap,qOne))
+  lazy val valueType:Parser[String]     = "[a-zA-Z]+".r <~ ":"
   lazy val strm     :Parser[Strm[Obj]]  = boolStrm | intStrm | strStrm | recStrm
   lazy val boolStrm :Parser[BoolStrm]   = (boolValue <~ COMMA) ~ rep1sep(boolValue,COMMA) ^^ (x => bool(x._1,x._2.head,x._2.tail:_*))
   lazy val intStrm  :Parser[IntStrm]    = (intValue <~ COMMA) ~ rep1sep(intValue,COMMA) ^^ (x => int(x._1,x._2.head,x._2.tail:_*))
@@ -125,7 +109,13 @@ object mmlangParser extends JavaTokenParsers {
   lazy val getSugar     :Parser[Inst]                       = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp(str(x)))
   lazy val sugarlessInst:Parser[Inst]                       = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(instArg,COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1,x._2))
   // traverser instruction parsing
-  lazy val stateAccess  :Parser[Option[Type[Obj]] ~ String] = (opt(canonicalType) <~ LANGLE) ~ "[a-zA-z]+".r <~ RANGLE
+  lazy val stateAccess  :Parser[Option[Type[Obj]] ~ String] = (opt(cType) <~ LANGLE) ~ "[a-zA-z]+".r <~ RANGLE
 
-
+  // quantifier parsing
+  lazy val quantifier    :Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1,x._2.getOrElse(x._1)))
+  lazy val quantifierType:Parser[IntQ] = (Tokens.q_star | Tokens.q_mark | Tokens.q_plus) ^^ {
+    case Tokens.q_star => qStar
+    case Tokens.q_mark => qMark
+    case Tokens.q_plus => qPlus
+  }
 }

@@ -27,7 +27,7 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.obj.{Obj,Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -86,31 +86,29 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("['name'->  'marko' , 'age' ->29]").next)
   }
 
-  test("rec named value parsing"){
-    //assertResult(trec("single")(str("name") -> str("marko")))(engine.eval("single:['name'->'marko']").next)
-    //assertResult(trec("person")(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("person:['name'->'marko','age'->29]").next)
-    //assertResult(trec("person")(str("name") -> str("marko"),str("age") -> int(29)))(engine.eval("person:['name'->  'marko' , 'age' ->29]").next)
-  }
-
   test("rec type parsing"){
     assertResult(trec(str("name") -> str,str("age") -> int))(engine.eval("rec[   'name'   ->str ,   'age' ->int]").next)
     assertResult(trec(str("name") -> str,str("age") -> int))(engine.eval("rec['name'->str,'age'->int]").next)
+    assertResult(trec(str("name") -> str,str("age") -> int).q(30))(engine.eval("rec['name'->str,'age'->int]{30}").next)
+    assertResult(bool.q(30) <= trec(str("name") -> str,str("age") -> int).q(30).get("age",int).gt(30))(engine.eval("rec['name'->str,'age'->int]{30}[get,'age'][gt,30]").next)
+    assertResult(bool.q(30) <= trec(str("name") -> str,str("age") -> int).q(30).get("age",int).gt(30))(engine.eval("bool{30}<=rec['name'->str,'age'->int]{30}[get,'age'][gt,30]").next)
+    assertResult(bool.q(*) <= trec(str("name") -> str,str("age") -> int).q(*).get("age",int).gt(30))(engine.eval("bool{*}<=rec['name'->str,'age'->int]{*}[get,'age'][gt,30]").next)
   }
 
-  test("rec named type parsing"){
-    assertResult(trec(name = "person",Map(str("name") -> str,str("age") -> int)))(engine.eval("person:[   'name'   ->str ,   'age' ->int]").next)
-    assertResult(trec(name = "person",Map(str("name") -> str,str("age") -> int)))(engine.eval("person:['name'->str,'age'->int]").next)
+  test("rec named value parsing"){
+    assertResult(vrec(name = "person",Map(str("name") -> str("marko"),str("age") -> int(29))))(engine.eval("person:[   'name'   ->'marko' ,   'age' ->29]").next)
+    assertResult(vrec(name = "person",Map(str("name") -> str("marko"),str("age") -> int(29))))(engine.eval("person:['name'->'marko','age'->29]").next)
   }
 
   test("composite type get/put"){
     val person:RecType[StrValue,ObjType] = trec(str("name") -> str,str("age") -> int)
     assertResult(str <= person.get(str("name")))(engine.eval("str<=rec['name'->str,'age'->int][get,'name']").next)
     assertResult(int <= person.get(str("age")))(engine.eval("int<=rec['name'->str,'age'->int][get,'age']").next)
-    assertResult(int <= rec.put(str("age"),int).get(str("age")))(engine.eval("rec[put,'age',int][get,'age']").next)
-    assertResult(int <= rec.put(str("age"),int).get(str("age")).plus(int(10)))(engine.eval("rec[put,'age',int][get,'age'][plus,10]").next)
-    assertResult(int <= rec.put(str("age"),int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[put,'age',int][get,'age'][plus,10]").next)
-    assertResult(int(20))(engine.eval("['name'->'marko'] rec[put,'age',10][get,'age'][plus,10]").next)
-    assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[put,'age',10][get,'age'][plus,10]").next)
+    assertResult(int <= rec.put(str("age"),int).get(str("age")))(engine.eval("rec[][put,'age',int][get,'age']").next)
+    assertResult(int <= rec.put(str("age"),int).get(str("age")).plus(int(10)))(engine.eval("rec[][put,'age',int][get,'age'][plus,10]").next)
+    assertResult(int <= rec.put(str("age"),int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[][put,'age',int][get,'age'][plus,10]").next)
+    assertResult(int(20))(engine.eval("['name'->'marko'] rec[][put,'age',10][get,'age'][plus,10]").next)
+    assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[][put,'age',10][get,'age'][plus,10]").next)
     // TODO: these are rec types being used as rec values
     // assertResult(rec(str("name") -> str("marko"),str("age") -> int(20)))(engine.eval("['name'->'marko'] => rec['name'->str][put,'age',10][put,'age',[get,'age'][plus,10]]").next)
     // assertResult(rec(str("name") -> str("marko"),str("age") -> int(25)))(engine.eval("['name':'marko'] => [put,'age',10][put,'age',[get,'age',int][plus,15]]").next)
@@ -125,6 +123,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str("marko").q(int(10),int(100)))(engine.eval("'marko'{10,100}").next)
     assertResult(int(20).q(int(10)))(engine.eval("13{10}[plus,7]").next())
     assertResult(int(13).q(int(10)))(engine.eval("13{10}[is>5]").next())
+  }
+
+  test("anonymous type"){
+    assertResult(__.plus(1).mult(2))(engine.eval("[plus,1][mult,2]").next())
   }
 
   test("quantifier inst parsing"){
@@ -151,7 +153,7 @@ class mmlangScriptEngineTest extends FunSuite {
       int.plus(int(2)).choose(trec[IntType,ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))),
       int.plus(int(2)).choose(trec[IntType,ObjType](name = Tokens.rec,value = Map[IntType,ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))).
       foreach(chooseInst => {
-        assertResult(chooseInst)(engine.eval("int[plus,2][choose,[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]").next)
+        assertResult(chooseInst)(engine.eval("int[plus,2][choose,rec[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,[gt,10]]->int[gt,20] | int->int[plus,10]]").next)
@@ -194,7 +196,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("get dot-notation parsing"){
-    assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c").next)
+//    assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c").next)
     assertResult(int(4))(engine.eval(
       """
         |['a'->
@@ -289,7 +291,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(trec(str("age") -> int,str("name") -> str) <= trec[Str,Obj](str("age") -> int).put(str("name"),str))(engine.eval("rec['age'->int][put,'name',str]").next())
     assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval(
       """
-        |['age'->29] rec['age'->int][choose,[
+        |['age'->29] rec['age'->int][choose,rec[
         |  rec['age'->int][is,rec['age'->int][get,'age'][gt,30]] -> rec['age'->int][put,'name','bill'] |
         |  rec['age'->int]                                       -> rec['age'->int][put,'name','marko']]]""".stripMargin).next())
     assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval(
@@ -302,13 +304,13 @@ class mmlangScriptEngineTest extends FunSuite {
   test("model parsing"){
     val person:RecType[StrValue,ObjType] = trec(str("name") -> str,str("age") -> int)
     // model creation
-    assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine.eval("[nat -> int<=int[is>0]]").next)
+    assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine.eval("rec[nat -> int<=int[is>0]]").next)
     assertResult(trec[ObjType,ObjType](
       tobj("nat") -> (int <= int.is(int.gt(0))),
       tobj("person") -> trec(
         str("name") -> str,
-        str("age") -> tobj("nat"))))(engine.eval("[nat -> int<=int[is>0] | person -> ['name'->str,'age'->nat]]").next)
-    val model:Model = Model(engine.eval("[nat -> int<=int[is>0] | person -> ['name'->str,'age'->nat]]").next.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
+        str("age") -> tobj("nat"))))(engine.eval("rec[nat -> int<=int[is>0] | person -> rec['name'->str,'age'->nat]]").next)
+    val model:Model = Model(engine.eval("rec[nat -> int<=int[is>0] | person -> rec['name'->str,'age'->nat]]").next.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
     engine.put("model",model)
     assertResult(model)(engine.get("model"))
     // model compilations

@@ -22,17 +22,15 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`._
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object Tokens {
 
-  lazy val ops:Set[String] = Set(
+  lazy val reserved:Set[String] = Set(
     Tokens.noop,Tokens.and,Tokens.choose,Tokens.count,Tokens.eqs,Tokens.explain,Tokens.get,Tokens.is,Tokens.mult,
-    Tokens.plus,Tokens.gt,Tokens.put,Tokens.map,Tokens.from,Tokens.to)
+    Tokens.plus,Tokens.gt,Tokens.put,Tokens.map,Tokens.from,Tokens.to,
+    Tokens.btrue,Tokens.bfalse)
 
   val obj  = "obj"
   val bool = "bool"
@@ -88,13 +86,4 @@ object Tokens {
   val :<= = "<="
 
   def named(name:String):Boolean = !Set(bool,str,rec,int,inst).contains(name) // TODO: global immutable set
-
-  def symbol(obj:Obj):String = obj match {
-    case _:BoolType => Tokens.bool
-    case _:IntType => Tokens.int
-    case _:StrType => Tokens.str
-    case _:RecType[_,_] => Tokens.rec
-    case _:Type[Obj] => Tokens.obj
-    case _ => throw new Exception("error: " + obj)
-  }
 }
