@@ -32,12 +32,12 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst {
-  override def as[O <: Obj](name:String):O = this.asInstanceOf[O] //
-  def this(java:InstTuple) = this(java,qOne,null) //
-  override def value():InstTuple = java //
-  override def q(quantifier:IntQ):this.type = new VInst(java,quantifier,function).asInstanceOf[this.type] //
-  override def id():this.type = this //
-  override def apply(obj:Obj,args:List[Obj]):Obj = function.apply(obj,args) //
+  override def as[O <: Obj](name:String):O = this.asInstanceOf[O]
+  def this(java:InstTuple) = this(java,qOne,null)
+  override def value():InstTuple = java
+  override def q(quantifier:IntQ):this.type = new VInst(java,quantifier,function).asInstanceOf[this.type]
+  override def id():this.type = this
+  override def apply(obj:Obj,args:List[Obj]):Obj = function.apply(obj,args)
   override def count():IntValue = this.q()._2
   override def quant():IntValue = this.q()._2
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
@@ -51,5 +51,4 @@ class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) exte
       case argType:Type[Obj] => TypeChecker.matchesTT(startType,argType)
     }
   }
-  override def mmkv(file:StrValue):Rec[StrValue,Obj] = null
 }

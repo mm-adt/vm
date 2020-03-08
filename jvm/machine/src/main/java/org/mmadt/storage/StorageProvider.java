@@ -20,39 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.mmkv
+package org.mmadt.storage;
 
-import org.mmadt.language.mmlang.mmlangParser
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj, Rec}
-import org.mmadt.storage.StorageFactory.{qOne, _}
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.language.model.Model;
+import org.mmadt.language.obj.Inst;
+import org.mmadt.language.obj.Obj;
 
-import scala.io.Source
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait mmkvOp {
-  def mmkv(file:StrValue):Rec[StrValue,Obj]
-}
+public interface StorageProvider {
 
+    public String name();
 
-object mmkvOp {
+    public Model model();
 
-  lazy val KEY  :StrValue = str("k")
-  lazy val VALUE:StrValue = str("v")
-  lazy val EMMKV:String   = "=mmkv"
-  lazy val MMKV :String   = "mmkv"
+    public Optional<Inst> resolveInstruction(final String opcode, final List<Obj> args);
 
-  def apply(file:StrValue):Inst = new VInst((EMMKV,List(file)),qOne,(a:Obj,b:List[Obj]) => a.mmkv(b.head.asInstanceOf[StrValue]))
-
-  def peekType(file:String):Map[StrValue,Obj] ={
-    val source = Source.fromFile(file)
-    try {
-      source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().value().asInstanceOf[Map[StrValue,Obj]]
-    } finally {
-      source.close();
-    }
-  }
 }

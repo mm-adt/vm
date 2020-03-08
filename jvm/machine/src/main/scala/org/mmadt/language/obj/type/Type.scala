@@ -24,16 +24,15 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.{IdOp,MapOp,QOp}
-import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
-import org.mmadt.language.obj.value.{StrValue,Value}
-import org.mmadt.language.{LanguageFactory,Tokens}
+import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
+import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.mmkv.mmkvOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -142,7 +141,4 @@ trait Type[+T <: Obj] extends Obj
     case atype:Type[Obj] => this.name == atype.name && this.q() == atype.q() && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
     case _ => false
   }
-
-  /////////
-  override def mmkv(file:StrValue):RecType[StrValue,Obj] = this.compose(trec(name = mmkvOp.MMKV,value = mmkvOp.peekType(file.value())),mmkvOp(file)).q(*)
 }

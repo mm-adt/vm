@@ -32,7 +32,6 @@ import org.mmadt.language.obj.value.IntValue
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.mmkv.mmkvOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -45,8 +44,7 @@ trait Obj
     with FoldOp
     with MapOp
     with FromOp
-    with QOp
-    with mmkvOp {
+    with QOp {
   //with EOp {
   // quantifier methods
   def q():IntQ

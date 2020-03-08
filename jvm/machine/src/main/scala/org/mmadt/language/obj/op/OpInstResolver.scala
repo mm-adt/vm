@@ -22,6 +22,8 @@
 
 package org.mmadt.language.obj.op
 
+import java.util.ServiceLoader
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
@@ -32,7 +34,10 @@ import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.language.obj.{Inst, ORecType, ORecValue, Obj}
-import org.mmadt.storage.mmkv.mmkvOp
+import org.mmadt.storage.StorageProvider
+
+import scala.collection.JavaConverters
+import scala.collection.JavaConverters.asScalaIterator
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -115,9 +120,18 @@ object OpInstResolver {
       case Tokens.q => QOp()
       case Tokens.zero => ZeroOp()
       case Tokens.one => OneOp()
-      //////////
-      //////////
-      case "=mmkv" => mmkvOp(args.head.asInstanceOf[StrValue])
+      //////////////////////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////////////////////
+      case _ => service(op,args) match {
+        case Some(inst) => inst
+        case None => throw new IllegalArgumentException("Unknown instruction: " + op + "," + args)
+      }
     }
   }
+
+  private lazy val loader:ServiceLoader[StorageProvider] = ServiceLoader.load(classOf[StorageProvider])
+  private def service(op:String,args:List[Obj]):Option[Inst] = Option(asScalaIterator(loader.iterator)
+    .map(s => s.resolveInstruction(op,JavaConverters.seqAsJavaList(args)))
+    .filter(i => i.isPresent)
+    .map(i => i.get()).next())
 }
