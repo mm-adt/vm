@@ -49,10 +49,10 @@ trait ChooseOp {
         branches.value().find(p => p._1 match {
           case btype:Type[IT] with IT => (avalue ===> btype).hasNext
           case bvalue:Value[IT] with IT => avalue.test(bvalue)
-        }).map(_._2).getOrElse(avalue.q(qZero))
+        }).map(_._2.q(avalue.q())).getOrElse(avalue.q(qZero))
         match {
           case btype:Type[OT] with OT => strm(avalue ===> btype) // TODO: ===> should generate streams, not iterators
-          case bvalue:Value[OT] with OT => bvalue
+          case bvalue:Value[OT] with OT => bvalue.q(avalue.q())
         }
     }
   }

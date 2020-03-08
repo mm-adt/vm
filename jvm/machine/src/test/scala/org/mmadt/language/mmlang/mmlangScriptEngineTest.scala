@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
@@ -195,7 +194,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("get dot-notation parsing"){
-    assertResult(__(GetOp(str("a")),GetOp(str("b")),GetOp(str("c"))))(engine.eval(".a.b.c").next)
+    assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c").next)
     assertResult(int(4))(engine.eval(
       """
         |['a'->

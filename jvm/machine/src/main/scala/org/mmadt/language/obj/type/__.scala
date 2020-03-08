@@ -24,40 +24,38 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
-import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.op.OpInstResolver
+import org.mmadt.language.obj.op.map.NegOp
+import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.{Inst, IntQ, Obj, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.`type`.TObj
-import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(_insts:List[(Type[Obj],Inst)] = Nil) extends Type[__] with Obj
-  with PlusOp[Obj]
-  with MultOp[Obj] {
-
-  def this(insts:Inst*) = this(insts.map(i => (new TObj(),i)).toList)
-
+class __(_insts:List[(Type[Obj],Inst)] = Nil,_quantifier:IntQ = qOne) extends Type[__] with Obj {
   override def toString:String = _insts.foldLeft(Tokens.empty)((a,i) => a + i._2)
   override def q():(IntValue,IntValue) = qOne
-  override def q(quantifier:(IntValue,IntValue)):__.this.type = throw new IllegalArgumentException()
+  override def q(quantifier:IntQ):this.type = new __(this._insts,multQ(this._quantifier,quantifier)).asInstanceOf[this.type]
   override val name:String = Tokens.__
   override def test(other:Obj):Boolean = throw new IllegalArgumentException()
   override def as[O <: Obj](name:String):O = throw new IllegalArgumentException()
   override val insts:List[(Type[Obj],Inst)] = _insts
   override def count():IntType = throw new IllegalArgumentException()
 
-  def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]
+  def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a).q(multQ(a,i._1))).asInstanceOf[T]
 
-  override def plus(other:Type[Obj]):__ = this.compose(new VInst((Tokens.plus,List(other)),qOne,null))
-  override def plus(other:Value[Obj]):this.type = this.compose(new VInst((Tokens.plus,List(other)),qOne,null))
-  override def mult(other:Type[Obj]):__ = this.compose(new VInst((Tokens.mult,List(other)),qOne,null))
-  override def mult(other:Value[Obj]):this.type = this.compose(new VInst((Tokens.mult,List(other)),qOne,null))
+  def get(key:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.get,List(key)))
+  def and(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.and,List(other)))
+  def plus(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.plus,List(other)))
+  def mult(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.mult,List(other)))
+  def neg():this.type = this.compose(NegOp())
+
+
 }
 
-object __ extends __(Nil) {
-  def apply(insts:Inst*):__ = new __(insts.map(i => (new TObj(),i)).toList)
+object __ extends __(Nil,qOne) {
+  def apply(insts:Inst*):__ = new __(insts.map(i => (new TObj(),i)).toList,qOne)
 }
 

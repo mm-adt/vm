@@ -39,8 +39,13 @@ class QTest extends FunSuite {
 
   test("type quantifiers toString"){
     assertResult("int")(int.toString)
+    assertResult("int")(int.q(1).toString)
+    assertResult("int")(int.q(1).q(1).q(10).q(1).toString)
     assertResult("int{0}")(int.q(0).toString)
-    assertResult("int{1,2}")(int.q(int(1),int(2)).toString)
+    assertResult("int{?}")(int.q(0,1).toString)
+    assertResult("int{+}")(int.q(1,Long.MaxValue).toString)
+    assertResult("int{*}")(int.q(0,Long.MaxValue).toString)
+    assertResult("int{1,2}")(int.q(1,2).toString)
     assertResult("int{1,2}")(int.q(1,2).toString)
     assertResult("bool{3}<=int{3}[gt,5]")(int.q(3).gt(5).toString)
     assertResult("int{?}<=int[is,bool<=int[gt,5]]")(int.is(int.gt(5)).toString)

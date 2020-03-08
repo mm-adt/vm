@@ -48,11 +48,10 @@ trait Obj
     with QOp
     with mmkvOp {
   //with EOp {
-
   // quantifier methods
   def q():IntQ
   def q(quantifier:IntQ):this.type
-  def q(single:IntValue):this.type = this.q(single,single)
+  def q(single:IntValue):this.type = this.q(single.q(qOne),single.q(qOne))
   def alive():Boolean = this.q() != qZero
 
   // utility methods

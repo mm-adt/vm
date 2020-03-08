@@ -25,10 +25,8 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.mmlang.mmlangParser
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
-import org.mmadt.language.obj.{Int, ORecValue, OType, Obj, Rec, Str}
+import org.mmadt.language.obj.{Int, OType, Obj, Rec, _}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.mmkv.mmkvOp
 
 import scala.io.Source
 
@@ -61,7 +59,7 @@ trait Value[+V <: Obj] extends Obj {
   override def toString:String = LanguageFactory.printValue(this)
   override def hashCode():scala.Int = this.name.hashCode ^ this.value().hashCode()
   override def equals(other:Any):Boolean = other match {
-    case avalue:Value[V] => avalue.value() == this.value()
+    case avalue:Value[V] => avalue.value() == this.value() && eqQ(this,avalue)
     case _ => false
   }
 

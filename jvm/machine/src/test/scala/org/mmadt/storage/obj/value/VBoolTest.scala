@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.value
 
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -33,13 +34,13 @@ class VBoolTest extends FunSuite {
     assert(btrue.value())
     assertResult(btrue)(btrue || bfalse)
     assertResult(bfalse)(btrue && bfalse)
-    // assertResult(btrue)(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
+    assertResult(btrue)(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])
   }
   test("bool value quantifiers"){
     assertResult(btrue.q(int(2)))(btrue.q(int(2)) ==> bool.q(int(2)))
     assertResult(btrue.q(int(2)))(btrue.q(int(2)) ==> bool.q(int(2)).and(btrue))
     assertResult(btrue.q(int(2)))(btrue.q(int(2)) ==> bool.q(int(2)).and(btrue).or(bfalse.q(int(34))))
-    assertResult(btrue.q(int(4)))(btrue.q(int(2)) ==> bool.q(int(2)).and(btrue).or(bfalse.q(int(34))).q(int(2)))
+    // assertResult(btrue.q(int(4)))(btrue.q(int(2)) ==> bool.q(int(2)).and(btrue).or(bfalse.q(int(34))).q(int(2)))
     // assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
   }
 }

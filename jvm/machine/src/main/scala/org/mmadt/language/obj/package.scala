@@ -50,6 +50,22 @@ package object obj {
     case _ if equals(qOne) => objA.q()
     case quantifier:IntQ => (objA.q()._1 * quantifier._1,objA.q()._2 * quantifier._2)
   }
+  def multQ(qA:IntQ,qB:IntQ):IntQ = qB match {
+    case _ if equals(qOne) => qA
+    case _:IntQ => (qA._1 * qB._1,qA._2 * qB._2)
+  }
+
+  def eqQ(objA:Obj,objB:Obj):Boolean ={
+    val aQ = objA.q()
+    val bQ = objB.q()
+    (aQ,bQ) match {
+      case (null,null) => true
+      case (null,y) if y._1.value() == 1 && y._2.value() == 1 => true
+      case (x,null) if x._1.value() == 1 && x._2.value() == 1 => true
+      case (x,y) if x._1.value() == y._1.value() && x._2.value() == y._2.value() => true
+      case _ => false
+    }
+  }
 }
 
 
