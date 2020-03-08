@@ -130,8 +130,8 @@ object OpInstResolver {
   }
 
   private lazy val loader:ServiceLoader[StorageProvider] = ServiceLoader.load(classOf[StorageProvider])
-  private def service(op:String,args:List[Obj]):Option[Inst] = Option(asScalaIterator(loader.iterator)
-    .map(s => s.resolveInstruction(op,JavaConverters.seqAsJavaList(args)))
-    .filter(i => i.isPresent)
-    .map(i => i.get()).next())
+  private def service(op:String,args:List[Obj]):Option[Inst] = asScalaIterator(loader.iterator)
+    .map(_.resolveInstruction(op,JavaConverters.seqAsJavaList(args)))
+    .find(_.isPresent)
+    .map(_.get())
 }

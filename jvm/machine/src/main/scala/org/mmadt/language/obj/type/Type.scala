@@ -23,12 +23,12 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
@@ -137,8 +137,8 @@ trait Type[+T <: Obj] extends Obj
   override def toString:String = LanguageFactory.printType(this)
   override def hashCode():scala.Int = this.name.hashCode ^ this.q().hashCode() ^ this.insts.hashCode()
   override def equals(other:Any):Boolean = other match {
-    case atype:__ => atype.toString.equals(this.toString) // TODO: get __ better aligned with Type
-    case atype:Type[Obj] => this.name == atype.name && this.q() == atype.q() && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
+    case anon:__ => anon.toString.equals(this.toString) // TODO: get __ better aligned with Type
+    case atype:Type[Obj] => this.name == atype.name && eqQ(this,atype) && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
     case _ => false
   }
 }
