@@ -51,4 +51,5 @@ class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) exte
       case argType:Type[Obj] => TypeChecker.matchesTT(startType,argType)
     }
   }
+  override def =:[O <: Obj](op:String)(args:Obj*):O = args.head.asInstanceOf[O]
 }

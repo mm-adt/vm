@@ -24,6 +24,8 @@ package org.mmadt.storage.mmkv
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.language.obj.ORecType
+import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -37,6 +39,7 @@ class mmkvInstTest extends FunSuite {
   val engine:mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
   val file1 :String            = getClass.getResource("/mmkv/mmkv-1.txt").getPath
   val file2 :String            = getClass.getResource("/mmkv/mmkv-2.txt").getPath
+  val mmkv  :String            = "=mmkv"
 
   test("mmkv parsing"){
     println(engine.eval(s"3[=mmkv,'${file1}']").next())
@@ -54,9 +57,10 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("[=mmkv] with mmkv-1.txt"){ // TODO obj.=('mmkv',str(file1))
-    //assertResult(s"mmkv:['k'->int,'v'->str]{*}<=obj[=mmkv,'${file1}']")(obj.mmkv(str(file1)).toString)
-    //assertResult("['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz']")(int(1).mmkv(str(file1)).toString)
-    //assertResult("List(['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz'])")((int(1) ===> int.mkvInst("/Users/marko/mmkv-1.txt")).toList.toString())
-    //assertResult(List(int(1),int(2),int(3),int(4)))(Processor.iterator()(int(4),Processor.compiler().apply(int.mmkv(str(file1)).get("k",int))).map(_.obj()).toList)
+    assertResult(s"mmkv:['k'->int,'v'->str]{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
+    assertResult("['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz']")(int(1).=:(mmkv)(str(file1)).toString)
+    assertResult(List(int(1),int(2),int(3),int(4)))(Processor.iterator()(int(4),Processor.compiler().apply(int.=:[ORecType](mmkv)(str(file1)).get(str("k"),int))).map(_.obj()).toList)
+    //assertResult("List(['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz'])")((int(1) ===> int.|=("=mmkv", str(file1))).toList.toString())
   }
 }
+

@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.ChooseOp
-import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.map.{EvalOp, IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.traverser.FromOp
@@ -44,8 +44,8 @@ trait Obj
     with FoldOp
     with MapOp
     with FromOp
-    with QOp {
-  //with EOp {
+    with QOp
+    with EvalOp {
   // quantifier methods
   def q():IntQ
   def q(quantifier:IntQ):this.type
