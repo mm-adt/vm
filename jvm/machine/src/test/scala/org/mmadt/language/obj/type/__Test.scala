@@ -33,7 +33,7 @@ import org.scalatest.FunSuite
 class __Test extends FunSuite {
 
   test("__ type in raw form"){
-    val x = __(PlusOp(int(4)),PlusOp(int.plus(int)),GtOp(__(PlusOp(int(2)))))
+    val x = __(List(PlusOp(int(4)),PlusOp(int.plus(int)),GtOp(__(List(PlusOp(int(2)))))))
     assertResult(int.plus(int(4)).plus(int.plus(int)).gt(int.plus(int(2))))(x(int))
   }
 

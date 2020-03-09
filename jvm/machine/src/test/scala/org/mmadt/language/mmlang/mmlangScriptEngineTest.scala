@@ -109,9 +109,6 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int <= rec.put(str("age"),int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[][put,'age',int][get,'age'][plus,10]").next)
     assertResult(int(20))(engine.eval("['name'->'marko'] rec[][put,'age',10][get,'age'][plus,10]").next)
     assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[][put,'age',10][get,'age'][plus,10]").next)
-    // TODO: these are rec types being used as rec values
-    // assertResult(rec(str("name") -> str("marko"),str("age") -> int(20)))(engine.eval("['name'->'marko'] => rec['name'->str][put,'age',10][put,'age',[get,'age'][plus,10]]").next)
-    // assertResult(rec(str("name") -> str("marko"),str("age") -> int(25)))(engine.eval("['name':'marko'] => [put,'age',10][put,'age',[get,'age',int][plus,15]]").next)
   }
 
   test("quantified value parsing"){
@@ -132,7 +129,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("quantifier inst parsing"){
-    // assertResult(true)(engine.eval("int[plus,2]{2}[mult,3]{32}[plus,4]").next()) // TODO: support instruction quantification (requires a full refactor of the inst obj model)
+    // assertResult(true)(engine.eval("[plus,2]{2}[mult,3]{32}[plus,4]").next()) // TODO: support instruction quantification (requires a full refactor of the inst obj model)
   }
 
   test("refinement type parsing"){

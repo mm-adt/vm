@@ -24,13 +24,13 @@ package org.mmadt.storage
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType,_}
+import org.mmadt.language.obj.`type`.{BoolType, _}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
-import org.mmadt.storage.obj.value.strm.{VBoolStrm,VIntStrm,VRecStrm,VStrStrm}
+import org.mmadt.storage.obj.value.strm.{VBoolStrm, VIntStrm, VRecStrm, VStrStrm}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -116,14 +116,11 @@ object StorageFactory {
   lazy val +     :(IntValue,IntValue) = qPlus
 
   def asType[O <: Obj](obj:O):Type[O] = (obj match {
-    case strm:BoolStrm => return bool.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
-    case strm:IntStrm => return int.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
-    case strm:StrStrm => return str.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
-    case strm:ORecStrm => return rec.q(int(0),strm.q()._2).asInstanceOf[Type[O]]
-    case atype:Type[_] => return atype.asInstanceOf[Type[O]]
-    case _:IntValue => int
-    case _:StrValue => str
-    case _:BoolValue => bool
+    case atype:Type[O] => return atype
+    case _:IntValue | _:IntStrm => int
+    case _:StrValue | _:StrStrm => str
+    case _:BoolValue | _:BoolStrm => bool
+    case _:ORecStrm => rec
     case recval:ORecValue => trec(value = recval.value())
   }).asInstanceOf[Type[O]].q(obj.q())
 

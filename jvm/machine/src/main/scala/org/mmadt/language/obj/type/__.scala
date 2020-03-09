@@ -29,33 +29,26 @@ import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Inst, IntQ, Obj, _}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.TObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(_insts:List[(Type[Obj],Inst)] = Nil,_quantifier:IntQ = qOne) extends Type[__] with Obj {
-  override def toString:String = _insts.foldLeft(Tokens.empty)((a,i) => a + i._2)
-  override def q():(IntValue,IntValue) = qOne
+class __(_insts:List[(Type[Obj],Inst)] = Nil,_quantifier:IntQ = qOne) extends Type[__] {
+  override val name :String                 = Tokens.__
+  override val insts:List[(Type[Obj],Inst)] = this._insts
+  override def q():(IntValue,IntValue) = this._quantifier
   override def q(quantifier:IntQ):this.type = new __(this._insts,multQ(this._quantifier,quantifier)).asInstanceOf[this.type]
-  override val name:String = Tokens.__
-  override def test(other:Obj):Boolean = throw new IllegalArgumentException()
-  override def as[O <: Obj](name:String):O = throw new IllegalArgumentException()
-  override val insts:List[(Type[Obj],Inst)] = _insts
-  override def count():IntType = throw new IllegalArgumentException()
 
   def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]
-
+  // type-agnostic monoid supporting all instructions
   def get(key:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.get,List(key)))
   def and(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.and,List(other)))
   def plus(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.plus,List(other)))
   def mult(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.mult,List(other)))
   def neg():this.type = this.compose(NegOp())
-
-
 }
 
 object __ extends __(Nil,qOne) {
-  def apply(insts:Inst*):__ = new __(insts.map(i => (new TObj(),i)).toList,qOne)
+  def apply(insts:List[Inst]):__ = new __(insts.map(i => (__,i)))
 }
 

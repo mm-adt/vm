@@ -85,7 +85,7 @@ object mmlangParser extends JavaTokenParsers {
       y(this.model.resolve(x)).asInstanceOf[Type[Obj]]
     })
   }
-  lazy val anonType :Parser[__]           = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => __(x:_*))
+  lazy val anonType :Parser[__]           = rep1[Inst](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ (x => __(x))
   lazy val instOp   :String               = Tokens.reserved.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
 
   // value parsing
