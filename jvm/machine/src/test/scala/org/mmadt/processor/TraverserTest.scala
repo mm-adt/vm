@@ -24,7 +24,6 @@ package org.mmadt.processor
 
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.processor.obj.value.I1Traverser
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -33,7 +32,7 @@ import org.scalatest.FunSuite
  */
 class TraverserTest extends FunSuite {
 
-  def trav(obj:Obj):Traverser[Obj] = new I1Traverser[Obj](obj)
+  def trav(obj:Obj):Traverser[Obj] = Traverser.standard(obj)
 
   test("traverser toString"){
     assertResult("[3|a->3]"){
@@ -71,7 +70,7 @@ class TraverserTest extends FunSuite {
   }
 
   test("multi input"){
-    assertResult(int(90)) {
+    assertResult(int(90)){
       int(1,2,3) ==> int.plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)
     }
     assertResult(int(30)){

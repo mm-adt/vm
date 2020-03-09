@@ -23,11 +23,11 @@
 package org.mmadt.processor.obj.value
 
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.{FilterInstruction,ReduceInstruction}
+import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst,Obj}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.obj.`type`.util.InstUtil
-import org.mmadt.processor.{Processor,Traverser}
+import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -38,14 +38,14 @@ class IteratorProcessor extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
     if (!(asType(domainObj).test(rangeType.domain()))) throw new IllegalArgumentException("The obj " + domainObj + " does not match the domain type " + rangeType.domain()) // TODO: generalize to value testing
     var output:Iterator[Traverser[E]] = domainObj match {
-      case strm:Strm[_] => strm.value().map(x => new I1Traverser[E](x.asInstanceOf[E]))
-      case single:E => Iterator(new I1Traverser[E](single))
+      case strm:Strm[_] => strm.value().map(x => Traverser.standard(x.asInstanceOf[E]))
+      case single:E => Iterator(Traverser.standard(single))
     }
     for (tt <- InstUtil.createInstList(Nil,rangeType)) {
       output = tt._2 match {
         //////////////REDUCE//////////////
         case reducer:ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)(
-          (traverser,mutatingSeed) => Traverser.stateSplit(reducer.seed._1,mutatingSeed)(traverser).apply(reducer.reduction).obj())).map(e => new I1Traverser[E](e))
+          (traverser,mutatingSeed) => Traverser.stateSplit(reducer.seed._1,mutatingSeed)(traverser).apply(reducer.reduction).obj())).map(e => Traverser.standard(e))
         //////////////FILTER//////////////
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
         //////////////OTHER//////////////

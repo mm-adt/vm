@@ -22,37 +22,28 @@
 
 package org.mmadt.processor.obj.`type`
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.{Obj, State}
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.processor.Traverser
 import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class C1Traverser[S <: Obj](val obj:S,val state:State = Map.empty,val model:Model = Model.id) extends Traverser[S] {
-  def this(obj:S) = this(obj,Map.empty)
+class TypeFunctorTraverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id) extends Traverser[S] {
+  def this(obj:S) = this(obj,Map.empty) //
+
   override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] =
-    new C1Traverser[E](model.resolve(obj),state,this.model)
+    new TypeFunctorTraverser[E](model.resolve(obj),state,this.model)
   override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
-    if (rangeType.insts.isEmpty) {
-      TypeChecker.checkType(this.obj,rangeType)
-      this.asInstanceOf[Traverser[E]]
-    } else {
-      (InstUtil.nextInst(rangeType) match {
-        case None => this
-        case Some(inst) => inst match {
-          case traverserInst:TraverserInstruction => traverserInst.op() match {
-            case Tokens.to => traverserInst.doTo(this)
-            case Tokens.from => traverserInst.doFrom(this)
-            case Tokens.fold => traverserInst.doFold(this)
-          }
-          case _ => this.split[E](InstUtil.instEval(this,inst))
-        }
-      }).apply(rangeType.linvert())
+    val next:Traverser[E] = model.get(obj.asInstanceOf[Type[Obj]].domain()) match {
+      case Some(atype) => this.split[E](atype.asInstanceOf[E].q(obj.q()))
+      case None => this.asInstanceOf[Traverser[E]]
     }
+    (InstUtil.nextInst(rangeType) match {
+      case None => return next
+      case Some(inst) => this.split[E](InstUtil.instEval(next,inst))
+    }).apply(rangeType.linvert())
   }
 }

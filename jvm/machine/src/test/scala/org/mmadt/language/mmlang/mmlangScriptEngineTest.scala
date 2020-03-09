@@ -27,7 +27,7 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj,Str}
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -126,7 +126,11 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("anonymous type"){
-    assertResult(__.plus(1).mult(2))(engine.eval("[plus,1][mult,2]").next())
+    // assertResult(__.plus(1).mult(2))(engine.eval("[plus,1][mult,2]").next())
+    //  assertResult(__.plus(1).mult(__.plus(10)))(engine.eval("[plus,1][mult,[plus,10]]").next())
+    // assertResult(int(75))(engine.eval("4[plus,1][mult,[plus,10]]").next())
+    //
+    println(engine.eval("3 int{10}[plus,1][gt,20]").next())
   }
 
   test("quantifier inst parsing"){
@@ -196,7 +200,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("get dot-notation parsing"){
-//    assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c").next)
+    //    assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c").next)
     assertResult(int(4))(engine.eval(
       """
         |['a'->
@@ -315,7 +319,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(model)(engine.get("model"))
     // model compilations
     assertResult(int <= int.is(int.gt(0)))(engine.eval("nat").next)
-    assertResult(false)(engine.eval("-2 nat[plus,2]").hasNext)
+    assertThrows[AssertionError]{
+      engine.eval("-2 nat[plus,2]").next()
+    }
+    /*assertThrows[AssertionError]{ // TODO: requires that a specified range can't be overridden by abstract interpretation
+      println(engine.eval("nat<=nat[plus,-3]").next())
+      engine.eval("2 nat<=nat[plus,-3]").next()
+    }*/
     assertResult(int(4))(engine.eval("2 nat[plus,2]").next)
     assertResult(int <= int.is(int.gt(0)).plus(1))(engine.eval("nat+1").next)
     assertResult(trec(value = Map(str("name") -> str,str("age") -> tobj("nat"))))(engine.eval("person").next)

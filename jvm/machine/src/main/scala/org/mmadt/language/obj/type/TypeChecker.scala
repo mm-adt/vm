@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.Value
 
@@ -31,17 +30,7 @@ import org.mmadt.language.obj.value.Value
  */
 object TypeChecker {
 
-  def checkType[O <: Obj](obj:O,atype:Type[Obj]):O ={
-    if (obj.isInstanceOf[Rec[O,O]] || atype.isInstanceOf[ORecType] || (obj.isInstanceOf[Type[Obj]] || ((obj match {
-      case avalue:Value[Obj] => avalue.start().getClass.isAssignableFrom(atype.getClass) || atype.name.equals(Tokens.obj)
-      case atype:Type[Obj] => atype.getClass.isAssignableFrom(atype.getClass) || atype.name.equals(Tokens.obj)
-    }) && obj.q()._1.value() >= atype.q()._1.value() && obj.q()._2.value() <= atype.q()._2.value())))
-      obj
-    else
-      throw new IllegalArgumentException("The obj " + obj + " does not match the type " + atype)
-  }
-
-  def matchesVT[O <: Obj](obj:Value[O],pattern:Type[O]):Boolean = (obj ==> pattern).alive()
+  def matchesVT[O <: Obj](obj:Value[O],pattern:Type[O]):Boolean = (obj ==> pattern).alive() || pattern.q()._1.value() == 0
   def matchesVV[O <: Obj](obj:Value[O],pattern:Value[O]):Boolean = obj.value().equals(pattern.value())
   def matchesTT[O <: Obj](obj:Type[O],pattern:Type[O]):Boolean ={
     obj.insts.toString().equals(pattern.insts.toString()) ||

@@ -24,11 +24,13 @@ package org.mmadt.processor
 
 import java.util.Objects
 
-import org.mmadt.language.LanguageFactory
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.op.TraverserInstruction
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{Obj, State}
+import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -58,4 +60,35 @@ trait Traverser[+S <: Obj] {
 object Traverser {
   def stateSplit[S <: Obj](label:String,obj:Obj)(traverser:Traverser[S]):Traverser[S] = traverser.split(traverser.obj(),traverser.state + (label -> obj))
   def qSplit[S <: Obj](traverser:Traverser[S]):Traverser[IntValue] = traverser.split(int(traverser.obj().q()._1.value()))
+  def typeCheck[S <: Obj](traverser:Traverser[S],checkType:Type[S]):Unit ={
+    assert(traverser.obj() match {
+      case atype:Type[S] => atype.range.test(checkType)
+      case avalue:Value[S] => avalue.test(checkType)
+    },traverser.obj() + " is not in " + checkType)
+  }
+
+  def standard[S <: Obj](obj:S,state:State = Map.empty,model:Model = Model.id):Traverser[S] = new StandardTraverser[S](obj,state,model)
+
+  class StandardTraverser[S <: Obj](val obj:S,val state:State = Map.empty,val model:Model = Model.id) extends Traverser[S] {
+    def this(obj:S) = this(obj,Map.empty)
+    override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] =
+      new StandardTraverser[E](model.resolve(obj),state,this.model)
+    override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
+      Traverser.typeCheck(this,rangeType.domain())
+      (InstUtil.nextInst(rangeType) match {
+        case None =>
+          assert(rangeType.domain() == rangeType.domain())
+          return this.asInstanceOf[Traverser[E]]
+        case Some(inst) => inst match {
+          case traverserInst:TraverserInstruction => traverserInst.op() match {
+            case Tokens.to => traverserInst.doTo(this)
+            case Tokens.from => traverserInst.doFrom(this)
+            case Tokens.fold => traverserInst.doFold(this)
+          }
+          case _ => this.split[E](InstUtil.instEval(this,inst))
+        }
+      }).apply(rangeType.linvert())
+    }
+  }
+
 }
