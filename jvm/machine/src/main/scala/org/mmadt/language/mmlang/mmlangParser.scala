@@ -59,7 +59,7 @@ object mmlangParser extends JavaTokenParsers {
   // specific to mmlang execution
   lazy val expr       :Parser[Any]           = compilation | evaluation | (objValue | anonType)
   lazy val compilation:Parser[Obj]           = aType ^^ (x => (x.domain() ==> this.model) (x))
-  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ (aType | anonType) ^^ (x => x._1 ===> (InstUtil.resolveAnonymous(x._1,x._2).domain() ==> this.model) (x._2))
+  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ (anonType | aType) ^^ (x => x._1 ===> (InstUtil.resolveAnonymous(x._1,x._2).domain() ==> this.model) (x._2))
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
