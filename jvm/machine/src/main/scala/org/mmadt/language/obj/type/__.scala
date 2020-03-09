@@ -44,7 +44,7 @@ class __(_insts:List[(Type[Obj],Inst)] = Nil,_quantifier:IntQ = qOne) extends Ty
   override val insts:List[(Type[Obj],Inst)] = _insts
   override def count():IntType = throw new IllegalArgumentException()
 
-  def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a).q(multQ(a,i._1))).asInstanceOf[T]
+  def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]
 
   def get(key:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.get,List(key)))
   def and(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.and,List(other)))

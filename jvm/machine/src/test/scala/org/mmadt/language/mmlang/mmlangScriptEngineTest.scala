@@ -126,11 +126,9 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("anonymous type"){
-    // assertResult(__.plus(1).mult(2))(engine.eval("[plus,1][mult,2]").next())
-    //  assertResult(__.plus(1).mult(__.plus(10)))(engine.eval("[plus,1][mult,[plus,10]]").next())
-    // assertResult(int(75))(engine.eval("4[plus,1][mult,[plus,10]]").next())
-    //
-    println(engine.eval("3 int{10}[plus,1][gt,20]").next())
+    assertResult(__.plus(1).mult(2))(engine.eval("[plus,1][mult,2]").next())
+    assertResult(__.plus(1).mult(__.plus(10)))(engine.eval("[plus,1][mult,[plus,10]]").next())
+    assertResult(int(75))(engine.eval("4[plus,1][mult,[plus,10]]").next())
   }
 
   test("quantifier inst parsing"){
