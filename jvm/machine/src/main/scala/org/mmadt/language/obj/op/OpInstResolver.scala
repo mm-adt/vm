@@ -43,6 +43,12 @@ import scala.collection.JavaConverters.asScalaIterator
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object OpInstResolver {
+  private val providers:List[StorageProvider] = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toList
+  private def service(op:String,args:List[Obj]):Option[Inst] = providers.iterator
+    .map(_.resolveInstruction(op,JavaConverters.seqAsJavaList(args)))
+    .find(_.isPresent)
+    .map(_.get())
+
   def resolve(op:String,args:List[Obj]):Inst ={
     op match {
       case Tokens.and | Tokens.and_op => args.head match {
@@ -129,9 +135,5 @@ object OpInstResolver {
     }
   }
 
-  private lazy val loader:ServiceLoader[StorageProvider] = ServiceLoader.load(classOf[StorageProvider])
-  private def service(op:String,args:List[Obj]):Option[Inst] = asScalaIterator(loader.iterator)
-    .map(_.resolveInstruction(op,JavaConverters.seqAsJavaList(args)))
-    .find(_.isPresent)
-    .map(_.get())
+
 }

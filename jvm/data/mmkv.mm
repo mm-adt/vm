@@ -1,5 +1,5 @@
-['k'->int,'v'->rec['name'->str,'age'->int]]
+rec['k'->int,'v'->rec['name'->str,'age'->int]]
 ['k'->1,'v'->['name'->'marko','age'->29]]
 ['k'->2,'v'->['name'->'ryan','age'->25]]
 ['k'->3,'v'->['name'->'stephen','age'->32]]
-['k'->4,'v'->['name'->'kuppitz','age'->23]]
+['k'->4,'v'->['name'->'kuppitz','age'->23]

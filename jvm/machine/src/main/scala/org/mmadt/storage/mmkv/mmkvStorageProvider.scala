@@ -28,8 +28,8 @@ import java.util.Optional
 import org.mmadt.language.mmlang.mmlangParser
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{ObjValue,RecValue,StrValue,Value}
-import org.mmadt.language.obj.{Inst,Obj,Rec}
+import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Inst, Obj, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
 import org.mmadt.storage.obj.value.VInst
@@ -41,8 +41,13 @@ import scala.io.Source
  */
 class mmkvStorageProvider extends StorageProvider {
   private val emmkv = "=mmkv"
-  override def name():String = "mmkv"
-  override def model():Model = Model.id
+  private val kv    = rec[Str,Obj].named("kv")
+  private val mmkv  = kv.q(*).named("mmkv")
+  override def name:String = "mmkv"
+  override val model:Model = Model(
+    mmkv.put(str("k"),obj) -> mmkv.id(),
+    mmkv.put(str("v"),obj) -> mmkv.id())
+
   override def resolveInstruction(opcode:String,args:util.List[Obj]):Optional[Inst] ={
     if (!opcode.equals(emmkv)) return Optional.empty()
     Optional.of(new mmkvInst(args.get(0).asInstanceOf[StrValue]))
@@ -61,7 +66,7 @@ class mmkvStorageProvider extends StorageProvider {
         val source = Source.fromFile(file)
         try vrec(source.getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]])).asInstanceOf[Rec[StrValue,Obj]]
         finally source.close()
-      case atype:Type[Obj] => atype.compose(trec(name = name(),value = peekType(file)),new mmkvInst(file)).q(*)
+      case atype:Type[Obj] => atype.compose(trec(name = name,value = peekType(file)),new mmkvInst(file)).q(*)
     }
   })
 

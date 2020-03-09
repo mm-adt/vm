@@ -57,16 +57,16 @@ object mmlangPrinter {
 
   def typeString(atype:Type[Obj]):String ={
     val range  = (atype match {
-      case arec:RecType[Obj,Obj] => (if (Tokens.named(atype.name)) (atype.name + COLON) else Tokens.rec) + mapString(arec.value())
+      case arec:RecType[Obj,Obj] => if (Tokens.named(atype.name)) atype.name else Tokens.rec + mapString(arec.value())
       case _ => atype.name
     }) + qString(atype.q())
     val domain = if (atype.insts.isEmpty) Tokens.empty else {
       (atype.insts.head._1 match {
-        case arec:RecType[Obj,Obj] => (if (Tokens.named(arec.name)) (arec.name + COLON) else Tokens.rec) + mapString(arec.value())
+        case arec:RecType[Obj,Obj] => if (Tokens.named(arec.name)) arec.name else Tokens.rec + mapString(arec.value())
         case btype:Type[Obj] => btype.name
       }) + qString(atype.insts.head._1.q())
     }
-    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + domain)) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
+    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (domain.equals("obj{0}")) Tokens.empty else domain))) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
   }
 
   def valueString(avalue:Value[Obj]):String ={

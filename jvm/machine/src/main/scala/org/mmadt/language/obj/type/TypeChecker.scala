@@ -53,10 +53,16 @@ object TypeChecker {
        case recType:ORecType if pattern.isInstanceOf[ORecType] => testRecord(recType.value(),pattern.asInstanceOf[ORecType].value())
        case _ => true
      })) &&
-    (obj.insts == pattern.insts) &&
+    obj.insts
+      .map(_._2)
+      .zip(pattern.insts.map(_._2))
+      .map(a => matchesInst(a._1,a._2))
+      .fold(obj.insts.length == pattern.insts.length)(_ && _) &&
     withinQ(obj,pattern)
   }
   def matchesTV[O <: Obj](obj:Type[O],pattern:Value[O]):Boolean = false
+
+  private def matchesInst(a:Inst,b:Inst) = a.value()._1.equals(b.value()._1) && a.value()._2.zip(b.value()._2).map(a => a._1.test(a._2)).fold(a.args().length == b.args().length)(_ && _)
 
   ////////////////////////////////////////////////////////
 
@@ -68,6 +74,7 @@ object TypeChecker {
   }
 
   private def testRecord(leftMap:Map[Obj,Obj],rightMap:Map[Obj,Obj]):Boolean ={
+    if (rightMap.size > leftMap.size) return false
     if (leftMap.equals(rightMap)) return true
     val typeMap:mutable.Map[Obj,Obj] = mutable.Map() ++ rightMap
     leftMap.map(a => typeMap.find(k => a._1.test(k._1) && a._2.test(k._2)).map(z => typeMap.remove(z._1))).toList

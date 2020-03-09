@@ -36,11 +36,13 @@ import org.mmadt.language.model.Model;
 import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.type.RecType;
 import org.mmadt.language.obj.type.Type;
+import org.mmadt.storage.StorageProvider;
 
 import javax.script.ScriptEngineManager;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
 /**
@@ -85,6 +87,7 @@ public class Console {
         terminal.writer().println(HEADER);
         terminal.flush();
 
+        engine.put(MODEL, loadModels());
         while (true) {
             try {
                 String line = reader.readLine(engineName + "> ");
@@ -137,6 +140,11 @@ public class Console {
 
             }
         }
+    }
+
+    private static Model loadModels() {
+        ServiceLoader<StorageProvider> loader = ServiceLoader.load(StorageProvider.class);
+        return loader.stream().map(x -> x.get().model()).reduce(Model.simple(), Model::put);
     }
 }
 

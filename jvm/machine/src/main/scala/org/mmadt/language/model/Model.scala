@@ -24,9 +24,10 @@ package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{BoolType,IntType,RecType,Type}
+import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
 import org.mmadt.language.obj.op.model.NoOp
-import org.mmadt.storage.obj.`type`.{TBool,TInt,TRec}
+import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec}
 
 import scala.collection.mutable
 
@@ -57,6 +58,8 @@ trait Model {
     this.put(namedType.asInstanceOf[Type[Obj]],definition)
     namedType
   }
+
+  def recType:RecType[Type[Obj],Type[Obj]]
 }
 
 object Model {
@@ -68,7 +71,8 @@ object Model {
     override def put(model:Model):Model = this
     override def get(left:Type[Obj]):Option[Type[Obj]] = None
     override def get(left:String):Option[Type[Obj]] = None
-    override def resolve[E<:Obj](obj:E):E = obj
+    override def resolve[E <: Obj](obj:E):E = obj
+    override def recType:RecType[Type[Obj],Type[Obj]] = rec
   }
 
   def simple():Model = new Model {
@@ -85,7 +89,7 @@ object Model {
       this
     }
     override def get(left:Type[Obj]):Option[Type[Obj]] ={
-      val x = typeMap.get(left.name) match {
+      val x:mutable.Map[Type[Obj],Type[Obj]] = typeMap.get(left.name) match {
         case None => return None
         case Some(m) => m
       }
@@ -95,10 +99,14 @@ object Model {
       }
     }
     override def get(left:String):Option[Type[Obj]] ={
+      if (left.equals(Tokens.model)) return Option(recType)
       typeMap.get(left) match {
         case None => None
         case Some(m) => m.iterator.find(a => left.equals(a._1.toString)).map(_._2.range.named(left))
       }
+    }
+    override def recType:RecType[Type[Obj],Type[Obj]] ={
+      this.typeMap.values.flatten.toMap.map(x => trec(value = x).named(Tokens.model)).iterator.next()
     }
   }
 }

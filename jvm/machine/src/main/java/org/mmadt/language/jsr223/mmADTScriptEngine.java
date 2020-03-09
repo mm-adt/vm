@@ -22,8 +22,13 @@
 
 package org.mmadt.language.jsr223;
 
+import org.mmadt.language.model.Model;
 import org.mmadt.language.obj.Obj;
+import org.mmadt.language.obj.type.RecType;
+import org.mmadt.language.obj.type.Type;
+import org.mmadt.storage.StorageFactory;
 
+import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -45,6 +50,9 @@ public interface mmADTScriptEngine extends ScriptEngine {
 
     @Override
     public Iterator<Obj> eval(String script, ScriptContext context) throws ScriptException;
+
+    @Override
+    public Iterator<Obj> eval(String script, Bindings bindings) throws ScriptException;
 
     @Override
     public Iterator<Obj> eval(Reader reader, ScriptContext context) throws ScriptException;
