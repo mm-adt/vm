@@ -55,6 +55,10 @@ package object obj {
     case _:IntQ => (qA._1 * qB._1,qA._2 * qB._2)
   }
 
+  def withinQ(objA:Obj,objB:Obj):Boolean ={
+    objA.q()._1.value() >= objB.q()._1.value() &&
+    objA.q()._2.value() <= objB.q()._2.value()
+  }
   def eqQ(objA:Obj,objB:Obj):Boolean ={
     val aQ = objA.q()
     val bQ = objB.q()

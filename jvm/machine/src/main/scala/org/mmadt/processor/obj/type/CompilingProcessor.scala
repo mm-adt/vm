@@ -24,7 +24,7 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{Type, TypeChecker, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{OType, Obj}
 import org.mmadt.processor.{Processor, Traverser}
@@ -36,6 +36,7 @@ class CompilingProcessor(val model:Model = Model.id) extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
     assert(!domainObj.isInstanceOf[Value[Obj]],"The compiling processor only accepts types: " + domainObj)
     assert(!rangeType.isInstanceOf[__],"The compiling processor can not compile anonymous types: " + rangeType)
+    TypeChecker.typeCheck(domainObj,rangeType.domain())
     model match {
       case Model.id => Iterator(Traverser.standard(domainObj).apply(rangeType))
       case _ =>
@@ -46,6 +47,7 @@ class CompilingProcessor(val model:Model = Model.id) extends Processor {
           mutatingTraverser = previousTraverser
           previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[Type[E]],domainType.asInstanceOf[Type[E]],Traverser.standard(obj = domainType,model = this.model))
         }
+        TypeChecker.typeCheck(mutatingTraverser.obj(),rangeType.range)
         Iterator(new TypeFunctorTraverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(mutatingTraverser.obj().asInstanceOf[Type[E]])) // TODO: do we want type resolution at compilation
     }
   }

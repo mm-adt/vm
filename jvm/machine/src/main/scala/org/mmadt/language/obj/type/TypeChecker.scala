@@ -22,19 +22,55 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
+
+import scala.collection.mutable
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object TypeChecker {
+  def matchesVT[O <: Obj](obj:Value[O],pattern:Type[O]):Boolean ={
+    (pattern.name.equals(Tokens.obj) || // all objects are obj
+     (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
+     obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
+     (obj.isInstanceOf[ORecValue] &&
+      testRecord(obj.asInstanceOf[ORecValue].value().asInstanceOf[Map[Obj,Obj]],pattern.asInstanceOf[ORecType].value()))) && // structural type checking on records
+    withinQ(obj,pattern) // must be within the type's quantified window
+  }
 
-  def matchesVT[O <: Obj](obj:Value[O],pattern:Type[O]):Boolean = (obj ==> pattern).alive() || pattern.q()._1.value() == 0
-  def matchesVV[O <: Obj](obj:Value[O],pattern:Value[O]):Boolean = obj.value().equals(pattern.value())
+  def matchesVV[O <: Obj](obj:Value[O],pattern:Value[O]):Boolean =
+    obj.value().equals(pattern.value()) &&
+    withinQ(obj,pattern)
+
   def matchesTT[O <: Obj](obj:Type[O],pattern:Type[O]):Boolean ={
-    obj.insts.toString().equals(pattern.insts.toString()) ||
-    (obj.domain[Obj]().equals(pattern.domain[Obj]()) && (obj.domain[Type[O]]() ===> pattern).filter(x => x.equals(obj)).hasNext)
+    (pattern.name.equals(Tokens.obj) || // all objects are obj
+     (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) ||
+     (obj match {
+       case recType:ORecType if pattern.isInstanceOf[ORecType] => testRecord(recType.value(),pattern.asInstanceOf[ORecType].value())
+       case _ => true
+     })) &&
+    (obj.insts == pattern.insts) &&
+    withinQ(obj,pattern)
   }
   def matchesTV[O <: Obj](obj:Type[O],pattern:Value[O]):Boolean = false
+
+  ////////////////////////////////////////////////////////
+
+  def typeCheck[S <: Obj](obj:S,checkType:Type[S]):Unit ={
+    assert(obj match {
+      case atype:Type[S] => atype.range.test(checkType)
+      case avalue:Value[S] => avalue.test(checkType)
+    },obj + " is not in " + checkType)
+  }
+
+  private def testRecord(leftMap:Map[Obj,Obj],rightMap:Map[Obj,Obj]):Boolean ={
+    if (leftMap.equals(rightMap)) return true
+    val typeMap:mutable.Map[Obj,Obj] = mutable.Map() ++ rightMap
+    leftMap.map(a => typeMap.find(k => a._1.test(k._1) && a._2.test(k._2)).map(z => typeMap.remove(z._1))).toList
+    typeMap.isEmpty
+  }
 }

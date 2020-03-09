@@ -30,6 +30,6 @@ import org.scalatest.FunSuite
  */
 class TypeInferenceTest extends FunSuite {
   test("type inference"){
-    assertResult("int{0,3}<=int{3}[mult,5][is,bool{3}<=int{3}[gt,int{3}[plus,10]]]")((int.q(3) ==> int.mult(5).is(int.gt(int.plus(10)))).toString)
+    assertResult("int{0,3}<=int{3}[mult,5][is,bool{3}<=int{3}[gt,int{3}[plus,10]]]")((int.q(3) ==> int.q(*).mult(5).is(int.gt(int.plus(10)))).toString)
   }
 }

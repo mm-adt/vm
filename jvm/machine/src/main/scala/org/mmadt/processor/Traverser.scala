@@ -27,7 +27,7 @@ import java.util.Objects
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Obj, State, _}
 import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.obj.`type`.util.InstUtil
@@ -61,12 +61,6 @@ object Traverser {
   // traverser utility methods
   def stateSplit[S <: Obj](label:String,obj:Obj)(traverser:Traverser[S]):Traverser[S] = traverser.split(traverser.obj(),traverser.state + (label -> obj))
   def qSplit[S <: Obj](traverser:Traverser[S]):Traverser[IntValue] = traverser.split(int(traverser.obj().q()._1.value()))
-  def typeCheck[S <: Obj](traverser:Traverser[S],checkType:Type[S]):Unit ={
-    assert(traverser.obj() match {
-      case atype:Type[S] => atype.range.test(checkType)
-      case avalue:Value[S] => avalue.test(checkType)
-    },traverser.obj() + " is not in " + checkType)
-  }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // traverser construction methods
@@ -77,11 +71,8 @@ object Traverser {
     override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] =
       new StandardTraverser[E](model.resolve(obj),state,this.model)
     override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
-      Traverser.typeCheck(this,rangeType.domain())
       (InstUtil.nextInst(rangeType) match {
-        case None =>
-          assert(rangeType.domain() == rangeType.domain())
-          return this.asInstanceOf[Traverser[E]]
+        case None => return this.asInstanceOf[Traverser[E]]
         case Some(inst) =>
           val next:Traverser[E] = inst match {
             case traverserInst:TraverserInstruction => traverserInst.op() match {

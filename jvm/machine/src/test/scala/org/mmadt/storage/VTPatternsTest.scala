@@ -22,6 +22,8 @@
 
 package org.mmadt.storage
 
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -41,6 +43,10 @@ class VTPatternsTest extends FunSuite {
     //
     assert(int.plus(2).test(int.plus(2)))
     assert(str.plus("a").test(str.plus("a")))
+    //
+    assert(int.named("nat").test(int))
+    assert(!int.named("nat").test(int.is(int.gt(0))))
+    assert(!int.named("nat").test(int.named("nat").is(int.gt(0))))
   }
 
   test("value/type patterns on atomic objs"){
@@ -53,7 +59,56 @@ class VTPatternsTest extends FunSuite {
 
   test("value/type patterns on refinement types"){
     assert(int(6).test(int))
+    assert(!int(6).test(int.q(0)))
     assert(int.plus(2).test(int.plus(2)))
     assert(!int.plus(2).test(int.plus(3)))
+  }
+
+  test("record value/type checking"){
+    val markoLess     = vrec(str("name") -> str("marko"))
+    val marko         = vrec(str("name") -> str("marko"),str("age") -> int(29))
+    val markoMore     = vrec(str("name") -> str("marko"),str("age") -> int(29),str("alive") -> bfalse)
+    val person        = trec(str("name") -> str,str("age") -> int)
+    val personLess    = trec(str("age") -> int)
+    val markoLessName = vrec(name = "person",Map(str("name") -> str("marko")))
+    val markoName     = vrec(name = "person",Map(str("name") -> str("marko"),str("age") -> int(29)))
+    val markoMoreName = vrec(name = "person",Map(str("name") -> str("marko"),str("age") -> int(29),str("alive") -> bfalse))
+    val personName    = trec(name = "person",Map(str("name") -> str,str("age") -> int))
+    assert(marko.test(marko))
+    assert(markoMore.test(markoMore))
+    assert(markoLess.test(markoLess))
+    assert(!markoLess.test(markoMore))
+    assert(!markoMore.test(markoLess))
+    assert(markoName.test(marko))
+    assert(markoMoreName.test(markoMore))
+    assert(markoLessName.test(markoLess))
+    assert(markoLess.test(rec))
+    assert(marko.test(rec))
+    assert(markoMore.test(rec))
+    assert(markoLessName.test(rec))
+    assert(markoName.test(rec))
+    assert(markoMoreName.test(rec))
+    assert(!markoLess.test(person))
+    assert(marko.test(person))
+    assert(markoMore.test(person))
+    assert(markoLessName.test(personName))
+    assert(markoName.test(personName))
+    assert(markoMoreName.test(personName))
+    assert(!markoLessName.test(person))
+    assert(markoName.test(person))
+    assert(markoMoreName.test(person))
+    assert(!markoLess.test(personName))
+    assert(marko.test(personName))
+    assert(markoMore.test(personName))
+    assert(person.test(personName))
+    assert(personName.test(personName))
+    assert(personName.test(person))
+    assert(person.test(personLess))
+    assert(!personLess.test(person))
+    assert(personLess.test(rec))
+    assert(!rec.test(personLess))
+    assert(!rec.test(person))
+    assert(rec.test(rec))
+    assert(vrec(Map.empty[Value[Obj],Value[Obj]]).test(rec))
   }
 }

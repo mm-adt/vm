@@ -48,17 +48,17 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler w/ linear quantified type"){
-    var result:List[Int] = processor.apply(int.q(int(2)),int.mult(int(2))).map(_.obj()).toList
+    var result:List[Int] = processor.apply(int.q(int(2)),int.q(*).mult(int(2))).map(_.obj()).toList
     assertResult(1)(result.length)
     assertResult(int.q(int(2)).mult(int(2)))(result.head)
     assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)))(result.head)
     /////
-    result = processor.apply(int.q(2),int.mult(int(2)).plus(int(3))).map(_.obj()).toList
+    result = processor.apply(int.q(2),int.q(1,3).mult(int(2)).plus(int(3))).map(_.obj()).toList
     assertResult(1)(result.length)
     assertResult(int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
     assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
     /////
-    result = processor.apply(int.q(int(2)),int.mult(int(2)).is(int.gt(int(2)))).map(_.obj()).toList
+    result = processor.apply(int.q(int(2)),int.q(2).mult(int(2)).is(int.gt(int(2)))).map(_.obj()).toList
     assertResult(1)(result.length)
     // int{0,2}<=int{2}[mult,2][is,bool{2}<=int{2}[gt,2]]
     assertResult(int.q(0,2) <= int.q(2).mult(2).is(bool.q(2) <= int.q(2).gt(2)))(result.head)

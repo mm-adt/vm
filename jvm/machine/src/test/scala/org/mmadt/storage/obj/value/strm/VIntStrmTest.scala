@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.value.strm
 
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
@@ -30,10 +31,6 @@ import org.scalatest.FunSuite
 class VIntStrmTest extends FunSuite {
 
   test("int strm"){
-    /*assertResult(int(int(3),int(5),int(7),int(9)))(int(int(2),int(4),int(6),int(8)).plus(int(1)))
-    assertResult(int(3,5,7,9))(int(2,4,6,8).plus(int(1)))
-    assertResult(int(3,5,7,9))(int(2,4,6,8) + 1)
-    assertResult(int.q(int(4)) <= int.q(qZero).compose(StartOp(int(2,4,6,8))).plus(int))(int(2,4,6,8).plus(int))*/
-    // TODO: [start] should be fluent and redefines the domain
+    assertResult((int(4),int(4)))(int(1,2,3,4).q())
   }
 }
