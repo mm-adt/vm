@@ -47,11 +47,11 @@ trait ChooseOp {
         atype.compose[OT](rangeType,ChooseOp[IT,OT](newBranches))
       case avalue:Value[IT] with IT =>
         branches.value().find(p => p._1 match {
-          case btype:Type[IT] with IT => (avalue ===> btype).hasNext
+          case btype:Type[IT] with IT => (avalue ===> btype).toStrm.value().hasNext
           case bvalue:Value[IT] with IT => avalue.test(bvalue)
         }).map(_._2.q(avalue.q())).getOrElse(avalue.q(qZero))
         match {
-          case btype:Type[OT] with OT => strm(avalue ===> btype) // TODO: ===> should generate streams, not iterators
+          case btype:Type[OT] with OT => avalue ===> btype // TODO: ===> should generate streams, not iterators
           case bvalue:Value[OT] with OT => bvalue.q(avalue.q())
         }
     }

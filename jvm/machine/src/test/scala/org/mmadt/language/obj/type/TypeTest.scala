@@ -154,7 +154,7 @@ class TypeTest extends FunSuite {
 
   test("type structure w/ three canonical types"){
     val boolType:BoolType = int.plus(int(10)).mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a")
-    assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=str{0}[start,'hello'][plus,str]][gt,'a']")(boolType.toString)
+    assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=[start,'hello'][plus,str]][gt,'a']")(boolType.toString)
     assertResult(bool.q(0,1))(boolType.range)
     assertResult(bool)(boolType.canonical)
     assertResult(5)(boolType.insts.length)
@@ -165,7 +165,7 @@ class TypeTest extends FunSuite {
     //
     val strType:StrType = boolType.rinvert[StrType]()
     assertResult(int)(strType.domain())
-    assertResult("str{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=str{0}[start,'hello'][plus,str]]")(strType.toString)
+    assertResult("str{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=[start,'hello'][plus,str]]")(strType.toString)
     assertResult(str.q(0,1))(strType.range)
     assertResult(str)(strType.canonical)
     assertResult(4)(strType.insts.length)

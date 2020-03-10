@@ -25,12 +25,18 @@ package org.mmadt.language.obj.value.strm
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.value.Value
+import org.mmadt.storage.StorageFactory.strm
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Strm[+O <: Obj] extends Value[O] {
   override def value():Iterator[O]
+
+  // utility methods
+  override def toStrm:Strm[this.type] = this.asInstanceOf[Strm[this.type]]
+  def single:O = this.value().next()
+
   // standard Java implementations
   override def toString:String = LanguageFactory.printStrm(this)
   // TODO: need a good hashcode

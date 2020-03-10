@@ -28,12 +28,13 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class IteratorProcessor extends Processor {
-  override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
+  override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
     TypeChecker.typeCheck(domainObj,rangeType.domain())
     var output:Iterator[Traverser[E]] = domainObj match {
       case strm:Strm[_] => strm.value().map(x => Traverser.standard(x.asInstanceOf[E]))
@@ -55,9 +56,9 @@ class IteratorProcessor extends Processor {
           })
       }
     }
-    output.map(x => {
+    Processor.strmOrSingle(output.map(x => {
       TypeChecker.typeCheck(x.obj(),if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q()._2) else rangeType.range) // iterator processor linearizes the stream
-      x
-    })
+      x.obj()
+    }))
   }
 }

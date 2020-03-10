@@ -42,11 +42,11 @@ class mmlangScriptEngineTest extends FunSuite {
   val engine:mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
 
   test("empty space parsing"){
-    val empty:java.util.Iterator[Obj] = asJavaIterator(Iterator.empty)
-    assertResult(empty)(engine.eval(""))
-    assertResult(empty)(engine.eval("    "))
-    assertResult(empty)(engine.eval("  \n  "))
-    assertResult(empty)(engine.eval("\t  \n  "))
+
+    assert(!engine.eval("").alive())
+    assert(!engine.eval("    ").alive())
+    assert(!engine.eval("  \n  ").alive())
+    assert(!engine.eval("\t  \n  ").alive())
   }
 
   test("canonical type parsing"){
@@ -209,16 +209,16 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("bool strm input parsing"){
-    assertResult(Set(btrue))(asScalaIterator(engine.eval("true,false bool{*}[is,[id]]")).toSet)
-    assertResult(Set(btrue))(asScalaIterator(engine.eval("true,false[is,[id]]")).toSet)
+    assertResult(Set(btrue))(engine.eval("true,false bool{*}[is,[id]]").toSet)
+    assertResult(Set(btrue))(engine.eval("true,false[is,[id]]").toSet)
   }
 
   test("int strm input parsing"){
-    assertResult(Set(int(-1),int(0)))(asScalaIterator(engine.eval("0,1 int{+}[plus,-1]")).toSet)
-    assertResult(Set(int(1),int(2),int(3)))(asScalaIterator(engine.eval("0,1,2[plus,1]")).toSet)
-    assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 int{2,5}[plus,1][is,int[gt,2]][mult,10]")).toSet)
-    assertResult(Set(int(300),int(40)))(asScalaIterator(engine.eval("0,1,2,3[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]")).toSet)
-    // assertResult(Set(int(30),int(40)))(asScalaIterator(engine.eval("0,1,2,3 ==> (int{3}=>int[plus,1][is,int[gt,2]][mult,10])")).toSet)
+    assertResult(Set(int(-1),int(0)))(engine.eval("0,1 int{+}[plus,-1]").toSet)
+    assertResult(Set(int(1),int(2),int(3)))(engine.eval("0,1,2[plus,1]").toSet)
+    assertResult(Set(int(30),int(40)))(engine.eval("0,1,2,3 int{2,5}[plus,1][is,int[gt,2]][mult,10]").toSet)
+    assertResult(Set(int(300),int(40)))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]").toSet)
+    // assertResult(Set(int(30),int(40)))(engine.eval("0,1,2,3 ==> (int{3}=>int[plus,1][is,int[gt,2]][mult,10])")).toSet)
   }
 
   test("str strm input parsing"){
@@ -227,7 +227,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("rec strm input parsing"){
-    assertResult(Set(vrec(str("a") -> int(1),str("b") -> int(0)),vrec(str("a") -> int(2),str("b") -> int(0))))(asScalaIterator(engine.eval("""['a'->1],['a'->2][plus,['b'->0]]""")).toSet)
+    assertResult(Set(vrec(str("a") -> int(1),str("b") -> int(0)),vrec(str("a") -> int(2),str("b") -> int(0))))(engine.eval("""['a'->1],['a'->2][plus,['b'->0]]""").toSet)
   }
 
   test("anonymous expression parsing"){
@@ -239,13 +239,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.is(int.gt(int.mult(int.plus(int(5))))))(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)
     assertResult(engine.eval("int[is,int[gt,int[mult,int[plus,5]]]]").next)(engine.eval("int[is,[gt,[mult,[plus,5]]]]").next)
     assertResult(int.choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval(" int[[is>5] -> 1 | int -> 2]").next)
-    assertResult(int.plus(int(10)).choose(trec(int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval(" int[plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
+    assertResult(int.plus(int(10)).choose(trec[Obj,Obj](int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10)))))(engine.eval(" int[plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]").next)
     assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1),int -> int(2)))(engine.eval(" int[plus,10][[is>5] -> 1 | int -> 2]").next)
-    assertResult(Set(int(302),int(42)))(asScalaIterator(engine.eval(
+    assertResult(Set(int(302),int(42)))(engine.eval(
       """ 0,1,2,3
         | [plus,1][is>2]
         |   [ [is>3] -> [mult,10]
-        |   | int    -> [mult,100]][plus,2]""".stripMargin)).toSet)
+        |   | int    -> [mult,100]][plus,2]""".stripMargin).toSet)
     assertResult(bfalse)(engine.eval("4[plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("5[plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("true[bool -> bool | int -> int]").next)

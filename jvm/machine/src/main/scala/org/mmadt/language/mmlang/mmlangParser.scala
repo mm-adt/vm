@@ -30,9 +30,10 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.strm.{BoolStrm,IntStrm,StrStrm,Strm}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
+import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.processor.obj.`type`.util.InstUtil
+import org.mmadt.storage.StorageFactory.{strm=>estrm}
 import org.mmadt.storage.StorageFactory._
 
 import scala.util.matching.Regex
@@ -47,19 +48,16 @@ object mmlangParser extends JavaTokenParsers {
   var model:Model = Model.id
 
   // all mm-ADT languages must be able to accept a string representation of an expression in the language and return an Iterator[Obj]
-  def parse[T <: Obj](input:String,_model:Model = Model.id):Iterator[T] ={
+  def parse[O <: Obj](input:String,_model:Model = Model.id):O ={
     if (null != _model) this.model = _model
-    this.parseAll(expr | emptySpace,input.trim).map{
-      case itty:Iterator[T] => itty
-      case obj:T => Iterator(obj)
-    }.get
+    this.parseAll(expr | emptySpace,input.trim).get.asInstanceOf[O]
   }
-  def emptySpace[T]:Parser[Iterator[T]] = (Tokens.empty | whiteSpace) ^^ (_ => Iterator.empty)
+  def emptySpace[O <:Obj]:Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
 
   // specific to mmlang execution
-  lazy val expr       :Parser[Any]           = compilation | evaluation | (objValue | anonType)
+  lazy val expr       :Parser[Obj]           = compilation | evaluation | (objValue | anonType)
   lazy val compilation:Parser[Obj]           = aType ^^ (x => (x.domain() ==> this.model) (x))
-  lazy val evaluation :Parser[Iterator[Obj]] = (strm | objValue) ~ (anonType | aType) ^^ (x => x._1 ===> (InstUtil.resolveAnonymous(x._1,x._2).domain() ==> this.model) (x._2))
+  lazy val evaluation :Parser[Obj] = (strm | objValue) ~ (anonType | aType) ^^ (x => x._1 ===> (InstUtil.resolveAnonymous(x._1,x._2).domain() ==> this.model) (x._2))
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////

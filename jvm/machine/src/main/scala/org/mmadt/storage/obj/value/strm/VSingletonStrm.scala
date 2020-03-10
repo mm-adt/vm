@@ -20,32 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.storage.obj.value.strm
 
-import org.mmadt.language.model.Model
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.processor.obj.`type`.CompilingProcessor
-import org.mmadt.processor.obj.value.IteratorProcessor
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{OStrm, OType, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Processor {
-  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E // TODO: this should be a Strm[E] or just E (with Strm inspected)
-  def apply[S <: Obj,E <: Obj](rangeType:Type[E]):Type[E] = this.apply(rangeType.domain[S](),rangeType).asInstanceOf[Type[E]]
+class VSingletonStrm[O <: Obj](obj:O) extends Strm[O] {
+  override def value():Iterator[O] = Iterator.single(obj)
+  override def start():OType[O] = obj.q(0).asInstanceOf[OType[O]]
+  override def q():(IntValue,IntValue) = obj.q()
+  override def q(quantifier:(IntValue,IntValue)):this.type = this
+  override val name:String = obj.name
+  override def as[O <: Obj](name:String):O = obj.as(name)
 }
 
-object Processor {
-  def compiler(model:Model = Model.id):Processor = new CompilingProcessor(model)
-  def iterator(model:Model = Model.id):Processor = new IteratorProcessor()
-
-  def strmOrSingle[O <: Obj](itty:Iterator[O]):O ={
-    if (itty.hasNext) {
-      val first = itty.next()
-      if (itty.hasNext) strm[O]((first +: itty.toList).iterator) else first
-    } else
-      strm
-  }
+object VSingletonStrm {
+  def single[O <: Obj](obj:O):OStrm[O] = new VSingletonStrm[O](obj).asInstanceOf[OStrm[O]]
 }

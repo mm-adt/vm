@@ -64,7 +64,7 @@ class mmkvStorageProvider extends StorageProvider {
     a match {
       case _:Value[Obj] =>
         val source = Source.fromFile(file)
-        try vrec(source.getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[Iterator[RecValue[StrValue,ObjValue]]])).asInstanceOf[Rec[StrValue,Obj]]
+        try vrec(source.getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,ObjValue]].toStrm.value())).asInstanceOf[Rec[StrValue,Obj]]
         finally source.close()
       case atype:Type[Obj] => atype.compose(trec(name = name,value = peekType(file)),new mmkvInst(file)).q(*)
     }

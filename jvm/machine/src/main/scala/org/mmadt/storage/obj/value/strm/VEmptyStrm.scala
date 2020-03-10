@@ -20,11 +20,26 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.model
+package org.mmadt.storage.obj.value.strm
+
+import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{OStrm, OType, Obj}
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait KVStore {
-  //val model: RecValue[_, _] = rec(str("kvstore") -> rec.q(0, Long.MaxValue), str("kv") -> rec(str("k") -> int, str("v") -> (int | str | bool)))
+class VEmptyStrm[O <: Obj] extends Strm[O] {
+  override def value():Iterator[O] = Iterator.empty
+  override def start():OType[O] = obj.q(0).asInstanceOf[OType[O]]
+  override def q():(IntValue,IntValue) = qZero
+  override def q(quantifier:(IntValue,IntValue)):this.type = throw new UnsupportedOperationException
+  override val name:String = obj.name
+  override def as[O <: Obj](name:String):O = this.asInstanceOf[O]
+}
+
+object VEmptyStrm {
+  private val _empty:OStrm[Obj] = new VEmptyStrm[Obj]().asInstanceOf[OStrm[Obj]]
+  def empty[O <: Obj]:OStrm[O] = _empty.asInstanceOf[OStrm[O]]
 }

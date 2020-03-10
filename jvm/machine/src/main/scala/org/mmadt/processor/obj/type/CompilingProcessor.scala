@@ -35,11 +35,11 @@ import org.mmadt.processor.{Processor, Traverser}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CompilingProcessor(val model:Model = Model.id) extends Processor {
-  override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):Iterator[Traverser[E]] ={
+  override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
     assert(!domainObj.isInstanceOf[Value[Obj]],"The compiling processor only accepts types: " + domainObj)
     assert(!rangeType.isInstanceOf[__],"The compiling processor can not compile anonymous types: " + rangeType)
     TypeChecker.typeCheck(domainObj,rangeType.domain())
-    if (skipCompilation(rangeType)) Iterator(Traverser.standard(domainObj).apply(rangeType))
+    if (skipCompilation(rangeType)) Traverser.standard(domainObj).apply(rangeType).obj()
     else {
       val domainType       :OType[E]     = domainObj.asInstanceOf[OType[E]]
       var mutatingTraverser:Traverser[E] = Traverser.standard(obj = domainType,model = this.model)
@@ -49,7 +49,7 @@ class CompilingProcessor(val model:Model = Model.id) extends Processor {
         previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[Type[E]],domainType.asInstanceOf[Type[E]],Traverser.standard(obj = domainType,model = this.model))
       }
       TypeChecker.typeCheck(mutatingTraverser.obj(),rangeType.range)
-      Iterator(new TypeFunctorTraverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(mutatingTraverser.obj().asInstanceOf[Type[E]])) // TODO: do we want type resolution at compilation
+      new TypeFunctorTraverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(mutatingTraverser.obj().asInstanceOf[Type[E]]).obj() // TODO: do we want type resolution at compilation
     }
   }
   def skipCompilation[E <: Obj](rangeType:Type[E]):Boolean = model.equals(Model.id) ||

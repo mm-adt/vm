@@ -36,11 +36,11 @@ import scala.collection.JavaConverters._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class mmlangScriptEngine extends AbstractScriptEngine with mmADTScriptEngine {
-  override def eval(script:String):java.util.Iterator[Obj] = mmlangScriptEngine.super.eval(script)
-  override def eval(script:String,context:ScriptContext):java.util.Iterator[Obj] = asJavaIterator(mmlangParser.parse[Obj](script,getModel(context.getBindings(ScriptContext.ENGINE_SCOPE))))
-  override def eval(script:String,bindings:Bindings):java.util.Iterator[Obj] = asJavaIterator(mmlangParser.parse[Obj](script,getModel(bindings)))
-  override def eval(reader:Reader,context:ScriptContext):java.util.Iterator[Obj] = eval(new BufferedReader(reader).readLine(),context)
-  override def eval(reader:Reader):java.util.Iterator[Obj] = eval(new BufferedReader(reader).readLine(),new SimpleScriptContext())
+  override def eval(script:String):Obj = mmlangScriptEngine.super.eval(script)
+  override def eval(script:String,context:ScriptContext):Obj = mmlangParser.parse[Obj](script,getModel(context.getBindings(ScriptContext.ENGINE_SCOPE)))
+  override def eval(script:String,bindings:Bindings):Obj = mmlangParser.parse[Obj](script,getModel(bindings))
+  override def eval(reader:Reader,context:ScriptContext):Obj = eval(new BufferedReader(reader).readLine(),context)
+  override def eval(reader:Reader):Obj = eval(new BufferedReader(reader).readLine(),new SimpleScriptContext())
   override def createBindings():Bindings = new SimpleBindings()
   override def getFactory:ScriptEngineFactory = new mmlangScriptEngineFactory()
 

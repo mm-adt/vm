@@ -81,8 +81,8 @@ trait Type[+T <: Obj] extends Obj
 
   // type specification and compilation
   final def <=[D <: Obj](domainType:Type[D]):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
-  override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
-  def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,InstUtil.resolveAnonymous(this,rangeType)).next().obj()
+  override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,InstUtil.resolveAnonymous(this,rangeType))
+  def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,InstUtil.resolveAnonymous(this,rangeType))
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[R <: Type[Obj]](btype:R):R ={

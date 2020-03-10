@@ -37,6 +37,7 @@ import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.type.RecType;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.storage.StorageProvider;
+import scala.collection.JavaConverters;
 
 import javax.script.ScriptEngineManager;
 import java.io.File;
@@ -109,7 +110,7 @@ public class Console {
                 else if (line.startsWith(MODEL_OP))
                     engine.put(MODEL, Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(line.substring(6)).next()));
                 else
-                    engine.eval(line).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
+                    JavaConverters.asJavaIterator(engine.eval(line).toStrm().value()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {
                 break;
             } catch (final Throwable e) {

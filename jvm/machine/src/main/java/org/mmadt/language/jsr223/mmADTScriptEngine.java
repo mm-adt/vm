@@ -41,21 +41,21 @@ import java.util.Iterator;
 public interface mmADTScriptEngine extends ScriptEngine {
 
     @Override
-    public default Iterator<Obj> eval(String script) throws ScriptException {
+    public default Obj eval(String script) throws ScriptException {
         return this.eval(script, this.getContext());
     }
 
     @Override
-    public Iterator<Obj> eval(Reader reader) throws ScriptException;
+    public Obj eval(Reader reader) throws ScriptException;
 
     @Override
-    public Iterator<Obj> eval(String script, ScriptContext context) throws ScriptException;
+    public Obj eval(String script, ScriptContext context) throws ScriptException;
 
     @Override
-    public Iterator<Obj> eval(String script, Bindings bindings) throws ScriptException;
+    public Obj eval(String script, Bindings bindings) throws ScriptException;
 
     @Override
-    public Iterator<Obj> eval(Reader reader, ScriptContext context) throws ScriptException;
+    public Obj eval(Reader reader, ScriptContext context) throws ScriptException;
 
 
 }

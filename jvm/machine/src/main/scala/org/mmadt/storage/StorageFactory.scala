@@ -30,7 +30,7 @@ import org.mmadt.language.obj.value.strm._
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
-import org.mmadt.storage.obj.value.strm.{VBoolStrm, VIntStrm, VRecStrm, VStrStrm}
+import org.mmadt.storage.obj.value.strm._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -67,7 +67,8 @@ trait StorageFactory {
   def vstr(name:String,value:String,q:IntQ):StrValue
   def vrec[A <: Value[Obj],B <: Value[Obj]](name:String,value:Map[A,B],q:IntQ = qOne):RecValue[A,B]
   //
-  def strm[O <: Obj](itty:Iterator[O]):O
+  def strm[O <: Obj](itty:Iterator[O]):OStrm[O]
+  def strm[O <: Obj]:OStrm[O]
 }
 
 object StorageFactory {
@@ -101,7 +102,8 @@ object StorageFactory {
   def vint(name:String = Tokens.int,value:Long,q:IntQ = qOne)(implicit f:StorageFactory):IntValue = f.vint(name,value,q)
   def vstr(name:String = Tokens.str,value:String,q:IntQ = qOne)(implicit f:StorageFactory):StrValue = f.vstr(name,value,q)
   def vrec[A <: Value[Obj],B <: Value[Obj]](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne)(implicit f:StorageFactory):RecValue[A,B] = f.vrec(name,value,q)
-  def strm[O <: Obj](itty:Iterator[O])(implicit f:StorageFactory):O = f.strm(itty)
+  def strm[O <: Obj](itty:Iterator[O])(implicit f:StorageFactory):OStrm[O] = f.strm[O](itty)
+  def strm[O <: Obj](implicit f:StorageFactory):OStrm[O] = f.strm[O]
 
   /////////CONSTANTS//////
   lazy val btrue :BoolValue           = bool(value = true)
@@ -146,7 +148,8 @@ object StorageFactory {
     override def vrec[A <: Value[Obj],B <: Value[Obj]](value1:RecValue[A,B],value2:RecValue[A,B],valuesN:RecValue[A,B]*):RecStrm[A,B] = new VRecStrm(value1 +: (value2 +: valuesN))
     override def vrec[A <: Value[Obj],B <: Value[Obj]](value:Iterator[RecValue[A,B]]):RecStrm[A,B] = new VRecStrm(value.toSeq)
     //
-    override def strm[O <: Obj](itty:Iterator[O]):O ={
+    override def strm[O <: Obj]:OStrm[O] = VEmptyStrm.empty[O]
+    override def strm[O <: Obj](itty:Iterator[O]):OStrm[O] ={
       if (itty.hasNext) {
         val first:O = itty.next()
         if (itty.hasNext) {
@@ -154,12 +157,13 @@ object StorageFactory {
           (first match {
             case boolValue:BoolValue => bool(value1 = boolValue,value2 = second.asInstanceOf[BoolValue],valuesN = itty.asInstanceOf[Iterator[BoolValue]].toSeq:_*)
             case intValue:IntValue => int(value1 = intValue,value2 = second.asInstanceOf[IntValue],valuesN = itty.asInstanceOf[Iterator[IntValue]].toSeq:_*)
-            //case strValue:StrValue => str(value1 = strValue,value2 = second.asInstanceOf[StrValue],valuesN = itty.asInstanceOf[Iterator[StrValue]].toList:_*)
+            case strValue:StrValue => str(value1 = strValue,value2 = second.asInstanceOf[StrValue],valuesN = itty.asInstanceOf[Iterator[StrValue]].toList:_*)
+            case recValue:ORecValue => vrec[Value[Obj],Value[Obj]](value1 = recValue,value2 = second.asInstanceOf[ORecValue],valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList:_*)
             // case recValue:...
-          }).asInstanceOf[O]
-        } else first
+          }).asInstanceOf[OStrm[O]]
+        } else VSingletonStrm.single(first)
       } else {
-        int(0).q(qZero).asInstanceOf[O]
+        strm[O]
       }
     }
   }
