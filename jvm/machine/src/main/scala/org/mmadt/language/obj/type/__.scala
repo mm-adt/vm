@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2019-2029 RReduX,Inc. [http://rredux.com]
+ *
+ * This file is part of mm-ADT.
+ *
+ *  mm-ADT is free software: you can redistribute it and/or modify it under
+ *  the terms of the GNU Affero General Public License as published by the
+ *  Free Software Foundation, either version 3 of the License, or (at your option)
+ *  any later version.
+ *
+ *  mm-ADT is distributed in the hope that it will be useful, but WITHOUT ANY
+ *  WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ *  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
+ *  License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  You can be released from the requirements of the license by purchasing a
+ *  commercial license from RReduX,Inc. at [info@rredux.com].
+ */
+
+package org.mmadt.language.obj.`type`
+
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.op.OpInstResolver
+import org.mmadt.language.obj.op.map.NegOp
+import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.{Inst, IntQ, Obj, _}
+import org.mmadt.storage.StorageFactory._
+
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+class __(_insts:List[(Type[Obj],Inst)] = Nil,_quantifier:IntQ = qOne) extends Type[__] {
+  override val name :String                 = Tokens.__
+  override val insts:List[(Type[Obj],Inst)] = this._insts
+  override def q():(IntValue,IntValue) = this._quantifier
+  override def q(quantifier:IntQ):this.type = new __(this._insts,multQ(this._quantifier,quantifier)).asInstanceOf[this.type]
+
+  def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]
+  // type-agnostic monoid supporting all instructions
+  def get(key:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.get,List(key)))
+  def and(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.and,List(other)))
+  def plus(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.plus,List(other)))
+  def mult(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.mult,List(other)))
+  def neg():this.type = this.compose(NegOp())
+}
+
+object __ extends __(Nil,qOne) {
+  def apply(insts:List[Inst]):__ = new __(insts.map(i => (__,i)))
+}
+

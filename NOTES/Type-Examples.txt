@@ -1,0 +1,105 @@
+```md
+![mmadt-logo](https://www.mm-adt.org/assets/images/mm-adt-logo.png)
+```
+
+There are two kinds of objects in mm-ADT: *types* and *values*.
+
+Values
+------
+* `1, 6, -5`     ~> int values
+* `true false`   ~> bool values
+* `'ab' 'mab'`   ~> str values
+* `0.3  32.78`   ~> real values
+* `['age':29]`   ~> rec values
+* `[plus,2]`     ~> inst values
+
+Canonical Types
+---------------
+* `int`    ~>   a single int value
+* `bool`
+* `str`
+* `real`
+* `rec`
+* `inst`
+
+
+Quantified Types
+----------------
+* `int{1,4}`      ~>  one to four int values 
+* `int{4}`        ~>  four int values
+* `int{0.37}`     ~>  a fuzzy int value
+* `int{u_matrix}` ~>  an integer in quantum superposition
+
+Quantifiers can come from any ordered ring with unity (see SRT: https://zenodo.org/record/2565243).
+Interestingly, mm-ADT instruction for a ring with unity (`*` is function composition and `+` is branching).
+
+Refinement Types
+----------------
+* `int[is,[gt,5]]`      ~> a single int value greater than 5
+* `int[is>5]`           ~> sugar syntax for the previous
+* `int[is>5&<10]`       ~> a single int value between 5 and 10
+* `int[choose[1,5,10]]` ~> a single int value drawn from the enumerated choices
+* `int[1|5|10]`         ~> sugar syntax for the previous
+* `[1|5|10]`            ~> sugar syntax for the previous
+
+
+Union Types
+-----------
+* `obj[choose,[int,bool,str]]`             ~> an int or bool or str
+* `[int|bool|str]`                         ~> sugar syntax for the previous
+* `[int[is>2]|true|str{?}]`                   ~> an int greater than 2 or the true bool value or a str or nothing.
+
+
+Option/None/Some
+----------------
+* `int{0,1}`       ~> 0 or 1 int (Option)
+* `int{?}`         ~> syntax sugar for the previous
+* `int{0,0}`       ~> 0 ints (None)
+* `int{0}`         ~> syntax sugar for the previous
+* `int{1}`         ~> 1 int (Some)
+* `int`            ~> syntax sugar for the previous
+
+The sugars on quantifiers are: `?` (zero or one), `+` (one or more), `*` (zero or more).
+
+Certain vs. Potential  
+---------------------
+```
+int => int[is,[gt,4]]   // embed the LHS obj into the RHS type
+
+int{?}<=int[is,[gt,4]]  // the previous yields a int{?} range compilation (optional: some or none)
+   int<=int[is,[gt,4]]  // force an int range (some) -- if range isn't met, failing type check
+```
+
+
+
+Embedded Types
+--------------
+* `int[plus,2]`            ~> an int embedded in the same ordered interger space shifted by 2
+* `bool<=int[gt,3]`        ~> a non-injective/surjective mapping from int to bool
+
+```
+[int[is>2][plus,3]
+|true
+|str{?}[plus,'mm']]        ~> a int greater than 2, or a true value, or maybe a string with mm appended to it.
+```
+
+
+
+
+========================================================
+
+
+
+
+`Processor[Obj,Type,Model]`
+`Traverser[Obj,Type,Model,State]`
+
+** A **processor** gets an input (stream) and embeds it into the provided type (query). The model is a read-only data structure specifying rewrites/schemas/global_values. A processor can be thought of as a "swarm" of traversers obeying the rules of the model.
+
+** A **traverser** references an obj and maintains a thread-local, read/write variable state accessed via [to] and [from] instructions.
+
+I believe that a processor is just a traverser that controls an "internal swarm." Traversers/processes are computational context's for the traversers/processes boxed within. Model and state should be one. And a model-state is read/write for the single traverser, but then read-only for the nested traverser swarm. Moving between swarms (model-ADTs) will be via `[=rdf]`,`[=neo4j]`,`[=spark]`,`[=kvstore]`, ... This is what "freezes parental context" and spawns a new computational process. Communication between context's is via 
+
+```      
+      ATraverser[A[Obj],Model-State] <=[=adt]=> BTraverser[B[Obj],Model-State]
+```

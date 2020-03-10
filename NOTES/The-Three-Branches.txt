@@ -1,0 +1,18 @@
+Here is a outline of the branch instructions in mm-ADT.
+
+[ a->b | c->d | e->f ]   (take the first that passes on the lhs) "choose rec" 
+[ a->b ; c->d ; e->f ]   (take all that pass on the lhs)         "branch rec"
+[ a->b , c->d , e->f ]   (take all if all the lhs pass)          "bundle rec"
+
+There are two field connectors: -> (check) and ~> (pipe)
+
+a->b (if traverser[x] goes down a and yields traverser[y], then put traverser[x] on b)
+a~>b (if traverser[x] goes down a and yields traverser[y], then put traverser[y] on b)
+
+ “repeat rec”  [super draft]
+[repeat,[until->a][b][emit->c]] 
+[repeat,[until->a][b]]            // while-do
+[repeat,[b][until->a]]            // do-while
+[repeat,[b][times->int]]          // until as counter
+
+I believe that [match] (as understood in TP3) is a [repeat,[ | | | ][until->branch_tag_analysis]

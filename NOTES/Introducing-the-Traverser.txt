@@ -1,0 +1,145 @@
+///////////////////////////////////////////////////////
+////        mm-ADT VM Java Object Model            ////
+///////////////////////////////////////////////////////
+
+
+class Traverser<O extends Obj> {     // **Traverser**
+  O obj;                                // e.g. vertex::['name':'marko','age':29]
+  State state;                          // e.g. x->4, y->'hello'
+  Model model;                          // e.g. pg->vertex | edge
+}
+  // *** T is an impl (JVM-oriented) and <O> is the current obj type (mm-ADT).
+  // TObj<Obj>
+  // TBool<Bool>
+  // TInt<Int>
+  // TReal<Real>
+  // TStr<Str>
+  // TRec<Rec>
+  // TLst<Lst>
+  // TInst<Inst>
+  // *** each T-type has an mm-specific fluent instruction API (e.g. TInt.plus(), TInt.mult(), etc.)
+
+
+
+class Obj<J extends Object> {        // **Object**
+  String symbol;                        // e.g. vertex
+  J java;                               // e.g. Map.of(OStr.of('id'),OInt.of(1),OStr.of('label'),OStr.of('person'))
+  Pair<WithOrderedRing> quantifier;     // e.g. {?}
+  Inst ref;                             // e.g. <=[=rdb][get,'V'][...]
+}
+  // *** O is an impl (JVM-oriented) and <J> is the wrapped Java object (JVM-oriented).
+  // OObj<Object>
+  // OBool<Boolean>
+  // OInt<Integer>
+  // OReal<Float>
+  // OStr<String>
+  // ORec<Map>
+  // OLst<List>
+  // OInst<List>
+  // *** each Obj-type has an mm-specific fluent instruction API (e.g. OInt.plus(), OInt.mult(), etc.)
+
+  // ********************************************************************** //
+  // Typically, TObj.xxx() => OObj.xxx()                                    //
+  // However, via state/model instrospection, TObj.xxx() => OObj.yyy()      //
+  // Such "rewiring" is guided by the traverser's internal insts/algorithm  //
+  //   -- ultimately, State and Model are [choose]-instructions             //
+  //   -- future versions will support mm-ADT programmable State and Model  //
+  //   -- Traversers will be mm-ADT objs w/ State/Model encoded in <=       //
+  // ********************************************************************** //
+
+class State {                        // **Bindings**          (local to traverser)
+  Map<String,Obj> variables;            // e.g. x->4, y->'hello'
+}
+
+class Model {                        // **Category+Functor**  (global to swarm/can be localized for distribution)
+  String name;                          // e.g. pg, rdb, mongo, pg<=rdb
+  Map<String,Obj> types;                // e.g. person -> ['name':str,'age':int]
+  Map<String,Map<Inst,Inst>> apis;      // e.g. person -> ([drop,'name']->[error] | [put,'name',str]->[error])
+}
+
+
+///////////////////////////////////////////////////////
+////        mm-ADT VM Java Object Fluency          ////
+///////////////////////////////////////////////////////
+
+// ** example using 1-token ** //
+TInt.of(1).plus(2).is(gt(5)).to('x')  // TInt.obj.java == Java 1
+  1. 1
+  2. 3
+  3. 4{0}
+  4. 4{0}~x (doesn't store)                             ** evaluation via instances **
+
+// ** example using int-token ** //
+TInt.of().plus(2).is(gt(5)).to('x')   // TInt.obj.java == Java null
+  1. int
+  2. int<=int[plus,2]
+  3. int{?}<=int[plus,2][is,bool<=int[gt,5]]
+  4. int{?}~x<=int[plus,2][is,bool<=int[gt,5]][to,x]    ** compilation via types **
+
+Given (4) above:
+
+  1 => int{?}~x<=int[plus,2][is,bool<=int[gt,5]][to,x]
+  // yields 4{0}~x (doesn't store)
+
+
+///////////////////////////////////////////////////////
+////            mmlang Syntax                      ////
+///////////////////////////////////////////////////////
+
+vertex::['id'  :int~x,
+         'outE':edge{*} <=[=rdb][get,'E'][is,[get,'outV'][eq,x]]]~v                              // vertex edges in rdb E-table
+                        <=[=rdb][get,'V'][is,[get,'id'][eq,x]][to,vrow]                          // rdb row as vertex
+ ^[_[drop,'id']                               -> [error]                                         // can't drop id
+  |_[put,str~a,obj~b]                         -> [map,vrow][put,a,b]                             // add property, update row
+  |_[drop,'outE']                             -> vertex   <=[=rdb][get,'E']
+                                                                  [is,[get,'outV'][eq,x]]
+                                                                  [drop][map,v]                  // drops rows in E-table
+  |_[get,'outE'][is,[get,'label'][eq,str~c]] 
+                [get,'inV']                   -> vertex{*}<=[=rdb][get,'E']
+  																  [is,[and,[get,'outV'][eq,x],
+                        												   [get,'label'][eq,c]]]
+                        									      [map,['id':[get,'inV']]]]      // vertex edges index by label
+
+///////////////////////////////////////////////////////
+////            mmlang Sugar Syntax                ////
+///////////////////////////////////////////////////////
+
+x::y  == y[as,x]
+~x    == [to,x]
+=x    == [map,x]
+x=>y  == x[as,y]
+x<=y  == y[as,x]
+.x    == [get,x]
+_x    == non-executing obj ('quoted')
+x^y   == x[attach,y]
+[x|y] == [choose,x,y]
+[x+y] == [branch,x,y]
+x->y  == [a,x][map,y]
+x+y   == x[plus,y]
+x*y   == x[mult,y]
+x/y   == x[div,y]
+-x    == x[neg]
+x&y   == [and,x,y]
+x|y   == [or,x,y]
+x>y   == x[gt,y]
+x<y   == x[lt,y]
+x>=y  == x[gte,y]
+x=<y  == x[lte,y]
+x==y  == x[eq,y]
+
+// ** same example above but using sugar ** //
+
+vertex::['id'  :int~x,
+         'outE':edge{*} <=[=rdb].E[is.outV==x]~v]                                      // vertex edges in rdb E-table
+                        <=[=rdb].V[is.id==x]~vrow                                      // rdb row as vertex
+ ^[_[drop,'id']                      -> [error]                                        // can't drop id
+  |_[put,str~a,obj~b]                -> [map,vrow][put,a,b]                            // add property, update row
+  |_[drop,'outE']                    -> vertex   <=[=rdb].E[is.outV==x][drop][map,v]   // drops rows in E-table
+  |_.outE[is.label==str~c].inV       -> vertex{*}<=[=rdb].E[is.outV==x&&.label==c]
+                                                           [map,['id':.inV]]]          // vertex edges index by label
+
+
+person::['name':str~x,'age':int]   <=[=rdb][get,'people'][is,[get,'name'][eq,x]]
+  ^[_[put,'age',int~y]  ->   person<=row[put,'years',y]
+   |_[get,'age']        ->      int<=row[get,'years']
+   | [a,inst]           ->   obj{0}<=row[error]]

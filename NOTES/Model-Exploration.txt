@@ -1,0 +1,20 @@
+Traverser
+  - State 
+  - Model
+Obj
+
+[mysql->[mysql->[eval,'connection','127.0.0.1',8080]]
+
+[rdb->
+ [rdb  ->[str:table] <=[=mysql]
+ |table->row{*}
+ |row  ->[str:obj]]]
+
+[social->
+  [people->person{*} <=[=rdb][get,'people']
+  |person->
+    ['name':str,'age':int]
+  	  ^=[_[put,'name',str] -> [error]]
+  	  <=[=rdb][get,x] |
+  |company->
+    ['name':str,staff:person{*}]]]

@@ -1,0 +1,26 @@
+Everything in mm-ADT is an `obj`.
+There are 7 *kinds* of `objs`: `bool`,`int`,`real`,`str`,`lst`,`rec`,`inst`.
+There are 2 *sorts* of every kind of `obj`: *types* and *values*.
+
+Everything of the form `range<=domain[inst]` is a _type_, where `range` and `domain` are kinds.
+Everything else is a _value_.
+
+`int<=int` is a kind of `int` whose definition is solely dependent on itself. This is called a *canonical type*.
+`bool<=int[gt,5]` is a kind of `bool` whose definition is dependent on an `int`. This is called a *dependent type*.
+`int<=int[is,[gt,5]]` is a kind of `int` constrained to those `int` values that are grater than 5. This is called a *constrained type*.
+`7` is a kind of `int` constrained to the singleton `7`. This is called a *value*.
+
+When the `range` is the same as the `domain`, then `domain<=[inst]` can be written. Thus, the _canonical types_ are of the form `int`.
+
+
+A *program* in mm-ADT is of the form `start => range<=domain[inst]`, where `start` is an `obj`. 
+The operator `=>` is called _embed_ and has a signature of `obj => type`.
+Thus, a _program_ in mm-ADT is the _embedding_ of an `obj` within a `type`. 
+
+Since _types_ are instructions, _stream ring theory_ says that instructions form a ring with unity.
+Thus, mm-ADT's type theory is stream ring theory.
+Stream ring theory provides the algebra for composing, rewriting, infering, etc. mm-ADT types.
+
+Since _types_ are `objs`, `type => type` is the embedding of a type within another type. This is called *program compilation*.
+Since _values_ are `objs`, `value => type` is the embedding of a value within a type. This is called *program evaluation*.
+

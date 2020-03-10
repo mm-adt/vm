@@ -1,0 +1,67 @@
+graphdb.[ graph  -> vertex{*} 
+        | vertex -> ['id':int,'inE':edge{*},'outE':edge{*}]
+        | edge   -> ['label':str,'outV':vertex,'inV':vertex]]
+
+
+neo4j -> [ graphdb -> [ graph  -> vertex{*} <= [eval,'getAllNodes']
+                                  -> [ [is,[get,'id'][eq,int~x]] -> (vertex.['id':x]{?} <= [eval,'getNodeById',int~x])
+                                     | [dedup,[get,'id']]        -> [id]
+                                     | [order,[get,'id']]        -> [id]]
+                      | vertex -> ['id':int,
+                                   'inE':edge{*}  <= [eval,'getRelationships(IN)']
+                                     -> [ [is,[get,'label'][eq,y]] -> [eval,'getRelationships(IN,y)]],
+                                   'outE':edge{*} <= [eval,'getRelationships(OUT)']
+                                     -> [ [is,[get,'label'][eq,y]] -> [eval,'getRelationships(OUT,y)]]]
+                                    -> [ [drop,'id']  -> [error]
+                                       | [put,'id']   -> [error]]
+                      | edge   -> ['label':str,
+                                  'outV' :vertex,
+                                  'inV'  :vertex]]
+         | kvstore -> []]
+
+
+rdb -> [ store -> [str:table]
+       | table -> row{*}
+       | row   -> [str:entry] 
+       | entry -> bool|int|real|str]
+
+
+vertex.['id':2]{?} <=[=neo4j.graphdb.graph][is,[get,'id'][eq,2]][get,'outE'][is,[get,'label'][eq,'knows']][get,'inV']
+
+
+graphdb_rdb.[ graph  -> vertex{*}       <=(table  <=[=rdb][get,'V'])
+            | vertex -> ['id'  :int~x,
+                         'inE' :edge.['inV' :x]{*} <=(row{*} <=[=rdb][get,'E'][is,[get,'inV'][eq,x]]),
+                         'outE':edge.['outV':x]{*} <=(row{*} <=[=rdb][get,'E'][is,[get,'outV'][eq,x]])]
+            | edge   -> ['label':str,
+                         'outV' :vertex.['id':int <=[=row][get,'outV']],
+                         'inV'  :vertex.['id':int <=[=row][get,'inV']]]]
+
+
+
+
+
+[ model -> [ tp | kv | rdf | wc ]
+| vars  -> [ x  | y  | z ]]
+
+ 
+
+
+
+
+
+
+int<=>[ x -> 0 | y -> 1]
+
+bool<=bool[id]     : ??    // domain:type     range:type
+bool<=true[id]     : ??    // domain:instance range:type
+true<=bool[id]     : ??    // domain:type     range:instance
+true<=true[id]     : ??    // domina:instance range:instance
+
+
+bool<=int[plus,7][gt,int<=int[mult,int<=int[minus,2]]
+
+boo<= (int+7) > (int+7) * (int+7) - 2
+
+
+
