@@ -45,6 +45,7 @@ object Tokens {
   val as      = "as"
   val choose  = "choose"
   val count   = "count"
+  val error   = "error"
   val eqs     = "eq"
   val explain = "explain"
   val get     = "get"

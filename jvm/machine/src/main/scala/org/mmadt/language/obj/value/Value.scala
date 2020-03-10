@@ -46,6 +46,7 @@ trait Value[+V <: Obj] extends Obj {
     case atype:Type[O] => this ==> atype
   }
   override def =:[O <: Obj](op:String)(args:Obj*):O = OpInstResolver.resolve(op,args.toList).apply(this).asInstanceOf[O]
+  override def error(message:String):this.type = throw new RuntimeException("error: " + message)
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {

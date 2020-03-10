@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.op.sideeffect.{ErrorOp, PutOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.language.obj.{Inst, ORecType, ORecValue, Obj}
@@ -120,6 +120,7 @@ object OpInstResolver {
         case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x)
         case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x)
       }
+      case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].value())
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
       case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[Obj,Obj]])
       case Tokens.id => IdOp()

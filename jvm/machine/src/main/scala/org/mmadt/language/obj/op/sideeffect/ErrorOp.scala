@@ -20,26 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.value.strm
+package org.mmadt.language.obj.op.sideeffect
 
-import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Strm[+O <: Obj] extends Value[O] {
-  override def value():Iterator[O]
+trait ErrorOp {
+  this:Obj =>
+  def error(message:String):this.type
+}
 
-  // utility methods
-  override def toStrm:Strm[this.type] = this.asInstanceOf[Strm[this.type]]
-
-  // standard Java implementations
-  override def toString:String = LanguageFactory.printStrm(this)
-  // TODO: need a good hashcode
-  override def equals(other:Any):Boolean = other match {
-    case strm:Strm[O] => this.value().sameElements(strm.value())
-    case _ => false
-  }
+object ErrorOp {
+  def apply(message:String):Inst = new VInst((Tokens.error,List(str(message))),qOne,(_:Obj,_:List[Obj]) => throw new RuntimeException("error: " + message))
 }

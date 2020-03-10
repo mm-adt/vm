@@ -27,6 +27,7 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{eqQ, _}
@@ -119,6 +120,7 @@ trait Type[+T <: Obj] extends Obj
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
   override def quant():IntType = this.compose(tint(),QOp())
   override def =:[O <: Obj](op:String)(args:Obj*):O = OpInstResolver.resolve(op,args.toList).apply(this).asInstanceOf[O]
+  override def error(message:String):this.type = this.compose(ErrorOp(message))
 
   def named(_name:String):this.type = (this match {
     case _:BoolType => tbool(_name,this.q(),Nil)

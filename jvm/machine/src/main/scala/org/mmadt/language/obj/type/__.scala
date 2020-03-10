@@ -27,17 +27,17 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, IntQ, Obj, _}
+import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __(_insts:List[(Type[Obj],Inst)] = Nil,_quantifier:IntQ = qOne) extends Type[__] {
-  override val name :String                 = Tokens.__
+  override val name :String                 = Tokens.empty
   override val insts:List[(Type[Obj],Inst)] = this._insts
   override def q():(IntValue,IntValue) = this._quantifier
-  override def q(quantifier:IntQ):this.type = new __(this._insts,multQ(this._quantifier,quantifier)).asInstanceOf[this.type]
+  override def q(quantifier:IntQ):this.type = new __(this._insts,quantifier).asInstanceOf[this.type]
 
   def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]
   // type-agnostic monoid supporting all instructions

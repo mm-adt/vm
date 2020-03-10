@@ -52,4 +52,5 @@ class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) exte
     }
   }
   override def =:[O <: Obj](op:String)(args:Obj*):O = args.head.asInstanceOf[O]
+  override def error(message:String):this.type = throw new RuntimeException("error: " + message)
 }

@@ -27,6 +27,7 @@ import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.{EvalOp, IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.Strm
@@ -46,7 +47,9 @@ trait Obj
     with MapOp
     with FromOp
     with QOp
+    with ErrorOp
     with EvalOp {
+
   // quantifier methods
   def q():IntQ
   def q(quantifier:IntQ):this.type
@@ -58,8 +61,8 @@ trait Obj
   def toList:List[this.type] = toStrm.value().toList
   def toSet:Set[this.type] = toStrm.value().toSet
   def next():this.type = toStrm.value().next()
-  def ==>[R <: Obj](rangeType:Type[R]):R = Processor.iterator().apply(this,InstUtil.resolveAnonymous(this,rangeType)).toStrm.value().next()
-  def ===>[R <: Obj](rangeType:R):R = Processor.iterator().apply(this,InstUtil.resolveAnonymous(this,rangeType.asInstanceOf[Type[R]])) // TODO: spec'd to R cause of FoldOp
+  def ==>[E <: Obj](rangeType:Type[E]):E = Processor.iterator().apply(this,InstUtil.resolveAnonymous(this,rangeType)).toStrm.value().next()
+  def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,InstUtil.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: spec'd to R cause of FoldOp
 
   // pattern matching methods
   val name:String

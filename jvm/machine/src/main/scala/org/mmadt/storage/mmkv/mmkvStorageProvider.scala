@@ -45,8 +45,8 @@ class mmkvStorageProvider extends StorageProvider {
   private val mmkv  = kv.q(*).named("mmkv")
   override def name:String = "mmkv"
   override val model:Model = Model(
-    mmkv.put(str("k"),obj) -> mmkv.id(),
-    mmkv.put(str("v"),obj) -> mmkv.id())
+    mmkv.put(str("k"),obj) -> mmkv.error("keys are immutable"),
+    mmkv.put(str("v"),obj) -> mmkv.error("values are immutable"))
 
   override def resolveInstruction(opcode:String,args:util.List[Obj]):Optional[Inst] ={
     if (!opcode.equals(emmkv)) return Optional.empty()
