@@ -47,8 +47,8 @@ object MultOp {
     override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
       trav.split(Traverser.resolveArg(trav,other) match {
         case avalue:Value[O] => trav.obj().asInstanceOf[O].mult(avalue)
-        case atype:Type[O] => trav.obj().asInstanceOf[O].mult(atype)
         case anon:__ => trav.obj().asInstanceOf[O].mult(anon[Type[O]](trav.obj().asInstanceOf[O]))
+        case atype:Type[O] => trav.obj().asInstanceOf[O].mult(atype)
       })
     }
   }

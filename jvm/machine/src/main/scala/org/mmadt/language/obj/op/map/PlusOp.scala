@@ -47,10 +47,11 @@ object PlusOp {
     override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
       trav.split(Traverser.resolveArg(trav,other) match {
         case avalue:Value[O] => trav.obj().asInstanceOf[O].plus(avalue)
-        case atype:Type[O] => trav.obj().asInstanceOf[O].plus(atype)
         case anon:__ => trav.obj().asInstanceOf[O].plus(anon[Type[O]](trav.obj().asInstanceOf[O]))
+        case atype:Type[O] => trav.obj().asInstanceOf[O].plus(atype)
       })
     }
   }
+
 }
 

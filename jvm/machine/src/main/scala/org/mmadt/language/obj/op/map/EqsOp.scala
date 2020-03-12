@@ -27,7 +27,6 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -42,9 +41,16 @@ trait EqsOp[O <: Obj] {
 }
 
 object EqsOp {
-  def apply[O <: Obj with EqsOp[O]](other:Obj):Inst = new VInst((Tokens.eqs,List(other)),qOne,(trav:Traverser[Obj]) => trav.split(Traverser.resolveArg(trav,other) match {
-    case avalue:Value[O] => trav.obj().asInstanceOf[O].eqs(avalue)
-    case atype:Type[O] => trav.obj().asInstanceOf[O].eqs(atype)
-    case anon:__ => trav.obj().asInstanceOf[O].eqs(anon[OType[O]](trav.obj().asInstanceOf[O]))
-  }))
+  def apply[O <: Obj with EqsOp[O]](other:Obj):Inst = new EqsInst[O](other)
+
+  class EqsInst[O <: Obj with EqsOp[O]](other:Obj) extends VInst((Tokens.eqs,List(other))) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+      trav.split(Traverser.resolveArg(trav,other) match {
+        case avalue:Value[O] => trav.obj().asInstanceOf[O].eqs(avalue)
+        case atype:Type[O] => trav.obj().asInstanceOf[O].eqs(atype)
+        case anon:__ => trav.obj().asInstanceOf[O].eqs(anon[OType[O]](trav.obj().asInstanceOf[O]))
+      })
+    }
+  }
+
 }
