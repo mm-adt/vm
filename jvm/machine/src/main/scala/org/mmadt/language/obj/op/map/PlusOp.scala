@@ -27,7 +27,6 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -42,10 +41,16 @@ trait PlusOp[O <: Obj] {
 }
 
 object PlusOp {
-  def apply[O <: Obj with PlusOp[O]](other:Obj):Inst = new VInst((Tokens.plus,List(other)),qOne,(trav:Traverser[Obj]) => trav.split(Traverser.resolveArg(trav,other) match {
-    case avalue:Value[O] => trav.obj().asInstanceOf[O].plus(avalue)
-    case atype:Type[O] => trav.obj().asInstanceOf[O].plus(atype)
-    case anon:__ => trav.obj().asInstanceOf[O].plus(anon[Type[O]](trav.obj().asInstanceOf[O]))
-  }))
+  def apply[O <: Obj with PlusOp[O]](other:Obj):Inst = new PlusInst[O](other)
+
+  class PlusInst[O <: Obj with PlusOp[O]](other:Obj) extends VInst((Tokens.plus,List(other))) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+      trav.split(Traverser.resolveArg(trav,other) match {
+        case avalue:Value[O] => trav.obj().asInstanceOf[O].plus(avalue)
+        case atype:Type[O] => trav.obj().asInstanceOf[O].plus(atype)
+        case anon:__ => trav.obj().asInstanceOf[O].plus(anon[Type[O]](trav.obj().asInstanceOf[O]))
+      })
+    }
+  }
 }
 

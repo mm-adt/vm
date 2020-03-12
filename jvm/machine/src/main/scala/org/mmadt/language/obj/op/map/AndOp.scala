@@ -23,11 +23,10 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{BoolType, Type, __}
+import org.mmadt.language.obj.`type`.{BoolType, __}
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Bool, Inst, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -42,9 +41,16 @@ trait AndOp {
 }
 
 object AndOp {
-  def apply(other:Obj):Inst = new VInst((Tokens.and,List(bool)),qOne,(trav:Traverser[Obj]) => trav.split(Traverser.resolveArg(trav,other) match {
-    case avalue:BoolValue =>trav.obj().asInstanceOf[Bool].and(avalue)
-    case atype:BoolType => trav.obj().asInstanceOf[Bool].and(atype)
-    case anon:__ => trav.obj().asInstanceOf[Bool].and(anon[BoolType](trav.obj().asInstanceOf[BoolType]))
-  }))
+  def apply(other:Obj):Inst = new AndInst(other)
+
+  class AndInst(other:Obj) extends VInst((Tokens.and,List(other))) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+      trav.split(Traverser.resolveArg(trav,other) match {
+        case avalue:BoolValue => trav.obj().asInstanceOf[Bool].and(avalue)
+        case atype:BoolType => trav.obj().asInstanceOf[Bool].and(atype)
+        case anon:__ => trav.obj().asInstanceOf[Bool].and(anon[BoolType](trav.obj().asInstanceOf[BoolType]))
+      })
+    }
+  }
+
 }

@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.op.model
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -35,5 +35,10 @@ trait NoOp {
 }
 
 object NoOp {
-  def apply():Inst = new VInst(("noop",Nil),qOne,(trav:Traverser[Obj]) => trav)
+  def apply():Inst = new NoInst
+
+  class NoInst extends VInst((Tokens.noop,Nil)) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav
+  }
+
 }

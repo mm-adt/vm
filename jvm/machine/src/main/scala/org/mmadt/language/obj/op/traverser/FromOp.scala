@@ -45,7 +45,7 @@ object FromOp {
   def apply(label:StrValue):Inst = new FromInst(label)
   def apply[O <: Obj](label:StrValue,default:Obj):Inst = new FromInst(label,default)
 
-  class FromInst(label:StrValue,default:Obj = null) extends VInst((Tokens.from,List(label)),qOne,x => x) with TraverserInstruction {
+  class FromInst(label:StrValue,default:Obj = null) extends VInst((Tokens.from,List(label))) with TraverserInstruction {
     override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
       trav.split(composeInstruction(
         if (null != default)

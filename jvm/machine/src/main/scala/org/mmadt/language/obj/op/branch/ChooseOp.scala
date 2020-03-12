@@ -83,6 +83,10 @@ trait ChooseOp {
 }
 
 object ChooseOp {
-  def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,
-    (trav:Traverser[Obj]) => trav.split(trav.obj().choose(branches))) with BranchInstruction
+  def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):Inst = new ChooseInst(branches)
+
+  class ChooseInst[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]) extends VInst((Tokens.choose,List(branches))) with BranchInstruction {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().choose(branches))
+  }
+
 }

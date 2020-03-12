@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -37,5 +36,9 @@ trait ZeroOp[O <: Obj] {
 }
 
 object ZeroOp {
-  def apply[O <: Obj with ZeroOp[O]]():Inst = new VInst((Tokens.zero,Nil),qOne,(trav:Traverser[Obj]) => trav.split(trav.obj().asInstanceOf[O].zero()))
+  def apply[O <: Obj with ZeroOp[O]]():Inst = new ZeroInst
+
+  class ZeroInst[O <: Obj with ZeroOp[O]] extends VInst((Tokens.zero,Nil)) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().asInstanceOf[O].zero())
+  }
 }

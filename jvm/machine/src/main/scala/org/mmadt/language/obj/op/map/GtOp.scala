@@ -50,5 +50,4 @@ object GtOp {
       case anon:__ => trav.obj().asInstanceOf[O].gt(anon[Type[O]](trav.obj().asInstanceOf[O]))
     })
   }
-
 }

@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.InitialInstruction
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -37,5 +36,9 @@ trait StartOp[+O <: Obj] {
 }
 
 object StartOp {
-  def apply(starts:Obj):Inst = new VInst((Tokens.start,List(starts)),qOne,(trav:Traverser[Obj]) => trav.split(starts)) with InitialInstruction
+  def apply(starts:Obj):Inst = new StartInst(starts)
+
+  class StartInst(starts:Obj) extends VInst(Tokens.start,List(starts)) with InitialInstruction {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(starts)
+  }
 }
