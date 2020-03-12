@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -37,5 +36,12 @@ trait AsOp {
 }
 
 object AsOp {
-  def apply(name:StrValue):Inst = new VInst((Tokens.as,List(name)),qOne,((trav:Traverser[Obj]) => trav.split(trav.obj().as[Obj](name.value()))))
+  def apply(name:StrValue):Inst = new AsInst(name)
+
+  class AsInst(name:StrValue) extends VInst((Tokens.as,List(name))) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+      trav.split(trav.obj().as[Obj](name.value()))
+    }
+  }
+
 }

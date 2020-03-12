@@ -43,7 +43,13 @@ trait ExplainOp {
 }
 
 object ExplainOp {
-  def apply():Inst = new VInst((Tokens.explain,Nil),qOne,(trav:Traverser[Obj]) => trav.split(trav.obj().asInstanceOf[Type[Obj]].explain())) with TraverserInstruction
+  def apply():Inst = new ExplainInst
+
+  class ExplainInst extends VInst((Tokens.explain,Nil)) with TraverserInstruction {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+      trav.split(trav.obj().asInstanceOf[Type[Obj]].explain())
+    }
+  }
 
   private type Row = (Int,Inst,Type[Obj],Type[Obj],mutable.LinkedHashMap[String,Obj])
 
