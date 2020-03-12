@@ -27,6 +27,7 @@ import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Inst, Int, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,9 +40,13 @@ trait CountOp[O <: Int] {
 }
 
 object CountOp {
-  lazy val zero:IntValue = int(0)
-  def apply():Inst = new VInst((Tokens.count,Nil),qOne,(a:Obj,_:List[Obj]) => a.count()) with ReduceInstruction[Int] {
+  def apply():Inst = new CountInst()
+
+  class CountInst extends VInst((Tokens.count,Nil)) with ReduceInstruction[Int] {
+    lazy     val zero     :IntValue          = int(0)
     override val seed     :(String,IntValue) = ("seed",zero)
     override val reduction:IntType           = int.quant().plus(int.from[IntType](seed._1))
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().count())
   }
+
 }

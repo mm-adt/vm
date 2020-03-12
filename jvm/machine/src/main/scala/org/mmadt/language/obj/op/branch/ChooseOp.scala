@@ -27,6 +27,7 @@ import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.`type`.TObj
 import org.mmadt.storage.obj.value.VInst
@@ -82,5 +83,6 @@ trait ChooseOp {
 }
 
 object ChooseOp {
-  def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,(a:Obj,b:List[Obj]) => a.choose(b.head.asInstanceOf[RecType[IT,OT]])) with BranchInstruction
+  def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):Inst = new VInst((Tokens.choose,List(branches)),qOne,
+    (trav:Traverser[Obj]) => trav.split(trav.obj().choose(branches))) with BranchInstruction
 }

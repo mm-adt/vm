@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj, Rec}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -37,6 +38,6 @@ trait GetOp[A <: Obj,B <: Obj] {
 }
 
 object GetOp {
-  def apply[A <: Obj,B <: Obj](key:A):Inst = new VInst((Tokens.get,List(key)),qOne,((a:Rec[A,B],b:List[Obj]) => a.get(b.head.asInstanceOf[A])).asInstanceOf[(Obj,List[Obj]) => Obj])
-  def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst = new VInst((Tokens.get,List(key,typeHint)),qOne,((a:Rec[A,B],b:List[Obj]) => a.get(b.head.asInstanceOf[A],typeHint)).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[A <: Obj,B <: Obj](key:A):Inst = new VInst((Tokens.get,List(key)),qOne,(trav:Traverser[Obj]) => trav.split(trav.obj().asInstanceOf[Rec[A,B]].get(key)))
+  def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst = new VInst((Tokens.get,List(key,typeHint)),qOne,(trav:Traverser[Obj]) => trav.split(trav.obj().asInstanceOf[Rec[A,B]].get(key,typeHint)))
 }

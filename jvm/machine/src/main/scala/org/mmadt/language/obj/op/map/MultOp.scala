@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, OType, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,13 +42,10 @@ trait MultOp[O <: Obj] {
 }
 
 object MultOp {
-  def apply[O <: Obj with MultOp[O]](other:Value[O]):Inst = new VInst((Tokens.mult,List(other)),qOne,((a:O,b:List[Obj]) => a.mult(other)).asInstanceOf[(Obj,List[Obj]) => Obj])
-  def apply[O <: Obj with MultOp[O]](other:Type[O]):Inst = new VInst((Tokens.mult,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case avalue:Value[O] => a.mult(avalue)
-    case atype:Type[O] => a.mult(atype)
-  }).asInstanceOf[(Obj,List[Obj]) => Obj])
-
-  def apply[O <: Obj with MultOp[O]](other:__):Inst = new VInst((Tokens.plus,List(other)),qOne,
-    ((a:O,b:List[Obj]) => a.mult(other(a.asInstanceOf[Type[O]].range).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with MultOp[O]](other:Obj):Inst = new VInst((Tokens.mult,List(other)),qOne,(trav:Traverser[Obj]) => trav.split(Traverser.resolveArg(trav,other) match {
+    case avalue:Value[O] => trav.obj().asInstanceOf[O].mult(avalue)
+    case atype:Type[O] => trav.obj().asInstanceOf[O].mult(atype)
+    case anon:__ => trav.obj().asInstanceOf[O].mult(anon[OType[O]](trav.obj().asInstanceOf[O]))
+  }))
 }
 

@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type, __}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -41,11 +41,14 @@ trait GtOp[O <: Obj] {
 }
 
 object GtOp {
-  def apply[O <: Obj with GtOp[O]](other:Value[O]):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
-  def apply[O <: Obj with GtOp[O]](other:Type[O]):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => b.head match {
-    case avalue:Value[O] => a.gt(avalue)
-    case atype:Type[O] => a.gt(atype)
-  }).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with GtOp[O]](other:Obj):Inst = new GtInst[O](other.asInstanceOf[O])
 
-  def apply[O <: Obj with GtOp[O]](other:__):Inst = new VInst((Tokens.gt,List(other)),qOne,((a:O,b:List[Obj]) => a.gt(other(a.asInstanceOf[Type[O]].range).asInstanceOf[Type[O]])).asInstanceOf[(Obj,List[Obj]) => Obj])
+  class GtInst[O <: Obj with GtOp[O]](other:O) extends VInst((Tokens.gt,List(other))) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(Traverser.resolveArg(trav,other) match {
+      case avalue:Value[O] => trav.obj().asInstanceOf[O].gt(avalue)
+      case atype:Type[O] => trav.obj().asInstanceOf[O].gt(atype)
+      case anon:__ => trav.obj().asInstanceOf[O].gt(anon[Type[O]](trav.obj().asInstanceOf[O]))
+    })
+  }
+
 }

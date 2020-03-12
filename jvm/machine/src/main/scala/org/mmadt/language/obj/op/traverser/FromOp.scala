@@ -25,7 +25,8 @@ package org.mmadt.language.obj.op.traverser
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst,Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,7 +42,18 @@ trait FromOp {
 }
 
 object FromOp {
-  def apply(label:StrValue):Inst = new VInst((Tokens.from,List(label)),qOne,(a:Obj,b:List[Obj]) => a.from[Obj](label)) with TraverserInstruction
-  def apply[O <: Obj](label:StrValue,default:Obj):Inst = new VInst((Tokens.from,List(label,default)),qOne,(a:Obj,b:List[Obj]) => a.from[O](label,default)) with TraverserInstruction
-  // def apply[O <: Obj](label:StrValue,default:__):Inst = new VInst((Tokens.from,List(label,default)),qOne,(a:Obj,b:List[Obj]) => a.from[O](label,default(a.asInstanceOf[Type[_]].range()))) with TraverserInstruction
+  def apply(label:StrValue):Inst = new FromInst(label)
+  def apply[O <: Obj](label:StrValue,default:Obj):Inst = new FromInst(label,default)
+
+  class FromInst(label:StrValue,default:Obj = null) extends VInst((Tokens.from,List(label)),qOne,x => x) with TraverserInstruction {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+      trav.split(composeInstruction(
+        if (null != default)
+          trav.state.getOrElse(arg0[StrValue]().value(),default)
+        else {
+          trav.state.getOrElse(arg0[StrValue]().value(),trav.obj())
+        }))
+    }
+  }
+
 }

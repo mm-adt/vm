@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj, Rec}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -36,5 +36,10 @@ trait PutOp[A <: Obj,B <: Obj] {
 }
 
 object PutOp {
-  def apply[A <: Obj,B <: Obj](key:A,value:B):Inst = new VInst((Tokens.put,List(key,value)),qOne,((a:Rec[A,B],b:List[Obj]) => a.put(key,value)).asInstanceOf[(Obj,List[Obj]) => Obj]) //
+  def apply[A <: Obj,B <: Obj](key:A,value:B):Inst = new PutInst[A,B](key,value)
+
+  class PutInst[A <: Obj,B <: Obj](key:A,value:B) extends VInst((Tokens.put,List(key,value))) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().asInstanceOf[Rec[A,B]].put(key,value))
+  }
+
 }

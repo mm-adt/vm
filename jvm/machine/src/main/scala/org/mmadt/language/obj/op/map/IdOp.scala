@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -36,5 +36,10 @@ trait IdOp {
 }
 
 object IdOp {
-  def apply():Inst = new VInst((Tokens.id,Nil),qOne,(a:Obj,b:List[Obj]) => a.id())
+  def apply():Inst = new IdInst
+
+  class IdInst extends VInst((Tokens.id,Nil)) {
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().id())
+  }
+
 }

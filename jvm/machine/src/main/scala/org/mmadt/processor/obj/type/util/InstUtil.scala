@@ -47,7 +47,7 @@ object InstUtil {
    * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
    */
   def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E =
-    inst.apply(traverser.obj(),InstUtil.valueArgs(traverser,inst)).asInstanceOf[E]
+    inst.apply(traverser).asInstanceOf[E]
 
 
   @scala.annotation.tailrec

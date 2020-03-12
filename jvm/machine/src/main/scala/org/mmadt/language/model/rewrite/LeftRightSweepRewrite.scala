@@ -36,7 +36,6 @@ import org.mmadt.storage.StorageFactory._
  */
 object LeftRightSweepRewrite {
 
-  @scala.annotation.tailrec
   def rewrite[S <: Obj](model:Model,atype:Type[S],btype:Type[S],traverser:Traverser[S]):Traverser[S] ={
     if (atype.insts.nonEmpty) {
       model.get(atype) match {
@@ -44,14 +43,14 @@ object LeftRightSweepRewrite {
         case None => rewrite(model,
           atype.rinvert(),
           model.resolve(OpInstResolver.resolve(atype.insts.last._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.insts.last._2,traverser)).
-            apply(model.resolve(atype.rinvert[Type[S]]().range)).asInstanceOf[Type[S]]).compose(btype),
+            apply(Traverser.standard(model.resolve(atype.rinvert[Type[S]]().range))).obj().asInstanceOf[Type[S]]).compose(btype),
           traverser)
       }
     } else if (btype.insts.nonEmpty) {
       rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),
-        traverser.apply(btype.insts.head._2.apply(btype.insts.head._1).asInstanceOf[Type[S]]))
+        btype.insts.head._2.apply(traverser)).asInstanceOf[Traverser[S]]
     }
     else traverser
   }

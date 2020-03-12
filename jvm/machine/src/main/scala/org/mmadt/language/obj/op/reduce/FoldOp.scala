@@ -24,8 +24,10 @@ package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type,__}
-import org.mmadt.language.obj.op.{ReduceInstruction,TraverserInstruction}
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.{ReduceInstruction, TraverserInstruction}
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,9 +41,21 @@ trait FoldOp {
 }
 
 object FoldOp {
-  def apply[A <: Obj](_seed:(String,A),atype:Type[A]):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,(a:Obj,b:List[Obj]) => a.fold(_seed)(atype)) with TraverserInstruction with ReduceInstruction[A] {
+  def apply[A <: Obj](_seed:(String,A),atype:Type[A]):Inst = new FoldInst[A](_seed,atype)
+  def apply[A <: Obj](_seed:(String,A),atype:__):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,
+    (trav:Traverser[Obj]) => trav.split(trav.obj().fold(_seed)(atype(trav.obj().asInstanceOf[Type[Obj]].range))))
+
+  class FoldInst[A <: Obj](_seed:(String,A),atype:Type[A]) extends VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype))) with ReduceInstruction[A] with TraverserInstruction {
     override val seed     :(String,A) = _seed
     override val reduction:Type[A]    = atype
+
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+      val t:Traverser[Obj] = trav.obj() match {
+        case _:Type[Obj] => Traverser.stateSplit[Obj](this.arg0[StrValue]().value(),this.arg1[Obj]())(trav)
+        case _ => trav
+      }
+      t.split(t.obj().fold(seed)(atype))
+    }
   }
-  def apply[A <: Obj](_seed:(String,A),atype:__):Inst = new VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype)),qOne,((a:Obj,b:List[Obj]) => a.fold(_seed)(atype(a.asInstanceOf[Type[Obj]].range))).asInstanceOf[(Obj,List[Obj]) => Obj])
+
 }

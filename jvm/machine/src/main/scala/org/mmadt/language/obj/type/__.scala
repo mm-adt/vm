@@ -27,7 +27,8 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, OType, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -39,7 +40,8 @@ class __(_insts:List[(Type[Obj],Inst)] = Nil,_quantifier:IntQ = qOne) extends Ty
   override def q():(IntValue,IntValue) = this._quantifier
   override def q(quantifier:IntQ):this.type = new __(this._insts,quantifier).asInstanceOf[this.type]
 
-  def apply[T <: Type[T]](obj:Obj):T = _insts.foldLeft(asType(obj).asInstanceOf[Obj])((a,i) => i._2(a)).asInstanceOf[T]
+
+  def apply[T <: Obj](obj:Obj):OType[T] = _insts.foldLeft[Traverser[Obj]](Traverser.standard(asType(obj)))((a,i) => i._2(a)).obj().asInstanceOf[OType[T]]
   // type-agnostic monoid supporting all instructions
   def get(key:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.get,List(key)))
   def and(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.and,List(other)))

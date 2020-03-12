@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -36,5 +37,5 @@ trait OneOp[O <: Obj] {
 }
 
 object OneOp {
-  def apply[O <: Obj with OneOp[O]]():Inst = new VInst((Tokens.one,Nil),qOne,((a:O,_:List[Obj]) => a.one()).asInstanceOf[(Obj,List[Obj]) => Obj])
+  def apply[O <: Obj with OneOp[O]]():Inst = new VInst((Tokens.one,Nil),qOne,(trav:Traverser[Obj]) => trav.split(trav.obj().asInstanceOf[O].one()))
 }

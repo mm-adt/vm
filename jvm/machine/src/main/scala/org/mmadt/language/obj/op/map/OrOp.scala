@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, __}
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Bool, Inst, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,12 +42,9 @@ trait OrOp {
 }
 
 object OrOp {
-  def apply(bool:BoolValue):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => a.or(bool)).asInstanceOf[(Obj,List[Obj]) => Obj])
-  def apply(bool:BoolType):Inst = new VInst((Tokens.or,List(bool)),qOne,((a:Bool,b:List[Obj]) => b.head match {
-    case avalue:BoolValue => a.or(avalue)
-    case atype:BoolType => a.or(atype)
-  }).asInstanceOf[(Obj,List[Obj]) => Obj])
-
-  def apply[O <: Obj with OrOp](other:__):Inst = new VInst((Tokens.or,List(other)),qOne,((a:O,b:List[Obj]) => a.or(other(a.asInstanceOf[BoolType].range).asInstanceOf[BoolType])).asInstanceOf[(Obj,List[Obj]) => Obj])
-
+  def apply(other:Obj):Inst = new VInst((Tokens.or,List(bool)),qOne,(trav:Traverser[Obj]) => trav.split(Traverser.resolveArg(trav,other) match {
+    case avalue:BoolValue => trav.obj().asInstanceOf[Bool].or(avalue)
+    case atype:BoolType => trav.obj().asInstanceOf[Bool].or(atype)
+    case anon:__ => trav.obj().asInstanceOf[Bool].or(anon[BoolType](trav.obj().asInstanceOf[BoolType]))
+  }))
 }

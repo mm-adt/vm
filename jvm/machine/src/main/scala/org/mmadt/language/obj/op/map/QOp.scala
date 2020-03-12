@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Int, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -36,5 +37,5 @@ trait QOp {
 }
 
 object QOp {
-  def apply():Inst = new VInst((Tokens.q,Nil),qOne,(a:Obj,_:List[Obj]) => a.quant())
+  def apply():Inst = new VInst((Tokens.q,Nil),qOne,(trav:Traverser[Obj]) => trav.split(trav.obj().quant()))
 }

@@ -24,7 +24,9 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -37,6 +39,9 @@ trait MapOp {
 }
 
 object MapOp {
-  def apply[O <: Obj](other:O):Inst = new VInst((Tokens.map,List(other)),qOne,(a:Obj,b:List[Obj]) => a.map(b.head))
-  def apply[O <: Obj](other:__):Inst = new VInst((Tokens.map,List(other)),qOne,(a:Obj,b:List[Obj]) => a.map(other(a.asInstanceOf[Type[_]].range).asInstanceOf[O]))
+  def apply[O <: Obj](other:O):Inst = new VInst((Tokens.map,List(other)),qOne,(trav:Traverser[Obj]) => trav.split(other match {
+    case avalue:Value[O] => trav.obj().map(avalue)
+    case atype:Type[O] => trav.obj().map(atype).asInstanceOf[O]
+    case anon:__ => trav.obj().map(anon(trav.obj().asInstanceOf[Type[_]].range).asInstanceOf[O])
+  }))
 }

@@ -45,7 +45,7 @@ class TypeFunctorTraverser[S <: Obj](val obj:S,val state:State,val model:Model =
       case None =>
         assert(rangeType.domain() == rangeType.range)
         return next
-      case Some(inst) => this.split[E](InstUtil.instEval(next,inst))
+      case Some(inst) => inst.apply(next).asInstanceOf[Traverser[E]]
     }).apply(rangeType.linvert())
   }
 }

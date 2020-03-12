@@ -25,23 +25,22 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
-import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageFactory, Tokens}
-import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.util.InstUtil
+import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Type[+T <: Obj] extends Obj
-  with ExplainOp
-  with ModelOp {
+  with ExplainOp {
   this:T =>
 
   // value constructor
@@ -68,7 +67,7 @@ trait Type[+T <: Obj] extends Obj
   def linvert():this.type ={
     ((this.insts.tail match {
       case Nil => this.range
-      case i => i.foldLeft[Obj](i.head._1.range)((btype,inst) => inst._2.apply(btype))
+      case i => i.foldLeft[Traverser[Obj]](Traverser.standard(i.head._1.range))((btype,inst) => inst._2.apply(btype)).obj()
     }) match {
       case vv:Value[_] => vv.start()
       case x => x
@@ -76,7 +75,7 @@ trait Type[+T <: Obj] extends Obj
   }
   def rinvert[R <: Type[Obj]]():R =
     (this.insts.dropRight(1).lastOption match {
-      case Some(prev) => prev._2.apply(prev._1)
+      case Some(prev) => prev._2.apply(Traverser.standard(prev._1)).obj()
       case None => this.insts.head._1
     }).asInstanceOf[R]
 
@@ -89,7 +88,7 @@ trait Type[+T <: Obj] extends Obj
   def compose[R <: Type[Obj]](btype:R):R ={
     btype match {
       case anon:__ => anon(this)
-      case atype:Type[Obj] => atype.insts.seq.foldLeft(this.asInstanceOf[Type[Obj]])((b,a) => a._2(b).asInstanceOf[Type[Obj]]).asInstanceOf[R]
+      case atype:Type[Obj] => atype.insts.seq.foldLeft[Traverser[Obj]](Traverser.standard(this))((b,a) => a._2(b)).obj().asInstanceOf[R]
     }
   }
   def compose(inst:Inst):this.type = this.compose(this,inst).asInstanceOf[this.type]
@@ -114,12 +113,11 @@ trait Type[+T <: Obj] extends Obj
   override def count():IntType = this.compose(tint(),CountOp()).q(qOne)
   override def id():this.type = this.compose(IdOp())
   override def map[O <: Obj](other:O):O = this.compose(asType(other),MapOp(other)).asInstanceOf[O]
-  override def model(model:StrValue):this.type = this.compose(ModelOp(model))
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
   override def quant():IntType = this.compose(tint(),QOp())
-  override def =:[O <: Obj](op:String)(args:Obj*):O = OpInstResolver.resolve(op,args.toList).apply(this).asInstanceOf[O]
+  override def =:[O <: Obj](op:String)(args:Obj*):O = OpInstResolver.resolve(op,args.toList).apply(Traverser.standard(this)).obj().asInstanceOf[O]
   override def error(message:String):this.type = this.compose(ErrorOp(message))
 
   def named(_name:String):this.type = (this match {

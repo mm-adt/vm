@@ -27,6 +27,7 @@ import org.mmadt.language.obj.`type`.{StrType, Type}
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -42,14 +43,14 @@ trait ExplainOp {
 }
 
 object ExplainOp {
-  def apply():Inst = new VInst((Tokens.explain,Nil),qOne,((a:Type[Obj],b:List[Obj]) => a.explain()).asInstanceOf[(Obj,List[Obj]) => Obj]) with TraverserInstruction
+  def apply():Inst = new VInst((Tokens.explain,Nil),qOne,(trav:Traverser[Obj]) => trav.split(trav.obj().asInstanceOf[Type[Obj]].explain())) with TraverserInstruction
 
   private type Row = (Int,Inst,Type[Obj],Type[Obj],mutable.LinkedHashMap[String,Obj])
 
   private def explain(atype:Type[Obj],state:mutable.LinkedHashMap[String,Obj],depth:Int = 0):List[Row] ={
     val report = atype.insts.foldLeft(List[Row]())((a,b) => {
-      if (b._2.isInstanceOf[TraverserInstruction]) state += (b._2.arg0().asInstanceOf[StrValue].value() -> b._2.apply(b._1).asInstanceOf[Type[Obj]].range)
-      val temp  = if (b._2.isInstanceOf[TraverserInstruction]) a else a :+ (depth,b._2,lastRange(b._1),b._2.apply(b._1).asInstanceOf[Type[Obj]].range,mutable.LinkedHashMap(state.toSeq:_*))
+      if (b._2.isInstanceOf[TraverserInstruction]) state += (b._2.arg0().asInstanceOf[StrValue].value() -> b._2.apply(Traverser.standard(b._1)).obj().asInstanceOf[Type[Obj]].range)
+      val temp  = if (b._2.isInstanceOf[TraverserInstruction]) a else a :+ (depth,b._2,lastRange(b._1),b._2.apply(Traverser.standard(b._1)).obj().asInstanceOf[Type[Obj]].range,mutable.LinkedHashMap(state.toSeq:_*))
       val inner = b._2.args().foldLeft(List[Row]())((x,y) => x ++ (y match {
         case btype:Type[Obj] => explain(btype,mutable.LinkedHashMap(state.toSeq:_*),depth + 1)
         case _ => Nil

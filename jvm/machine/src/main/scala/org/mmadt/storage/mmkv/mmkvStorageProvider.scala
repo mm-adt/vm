@@ -30,6 +30,7 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj, Rec, Str}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
 import org.mmadt.storage.obj.value.VInst
@@ -53,21 +54,21 @@ class mmkvStorageProvider extends StorageProvider {
     Optional.of(new mmkvInst(args.get(0).asInstanceOf[StrValue]))
   }
 
-  class mmkvInst(fileStr:StrValue) extends VInst((emmkv,List(fileStr)),qOne,(a:Obj,b:List[Obj]) => {
-    val file:String = b.head.asInstanceOf[StrValue].value()
+  class mmkvInst(fileStr:StrValue) extends VInst((emmkv,List(fileStr)),qOne,(trav:Traverser[Obj]) => {
+    val file:String = fileStr.value()
     def peekType(file:String):Map[StrValue,Obj] ={
       val source = Source.fromFile(file)
       try source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().value().asInstanceOf[Map[StrValue,Obj]]
       finally source.close();
     }
     ////
-    a match {
+    trav.split(trav.obj() match {
       case _:Value[Obj] =>
         val source = Source.fromFile(file)
         try vrec(source.getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,ObjValue]].toStrm.value())).asInstanceOf[Rec[StrValue,Obj]]
         finally source.close()
       case atype:Type[Obj] => atype.compose(trec(name = name,value = peekType(file)),new mmkvInst(file)).q(*)
-    }
+    })
   })
 
 }

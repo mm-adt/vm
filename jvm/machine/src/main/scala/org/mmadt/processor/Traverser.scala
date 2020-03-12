@@ -24,12 +24,11 @@ package org.mmadt.processor
 
 import java.util.Objects
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{Obj, State, _}
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
 
@@ -61,6 +60,17 @@ object Traverser {
   // traverser utility methods
   def stateSplit[S <: Obj](label:String,obj:Obj)(traverser:Traverser[S]):Traverser[S] = traverser.split(traverser.obj(),traverser.state + (label -> obj))
   def qSplit[S <: Obj](traverser:Traverser[S]):Traverser[IntValue] = traverser.split(int(traverser.obj().q()._1.value()))
+  def resolveArg[S <: Obj,E <: Obj](traverser:Traverser[S],arg:E):E ={
+    (arg match {
+      case anon:__ => anon(traverser.obj().asInstanceOf[Type[_]].range)
+      case valueArg:Value[_] => valueArg
+      case typeArg:Type[_] => traverser.split(traverser.obj() match {
+        case atype:Type[_] => atype.range
+        case avalue:Value[_] => avalue
+      }).apply(typeArg).obj()
+    }).asInstanceOf[E]
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // traverser construction methods
@@ -74,14 +84,7 @@ object Traverser {
       (InstUtil.nextInst(rangeType) match {
         case None => return this.asInstanceOf[Traverser[E]]
         case Some(inst) =>
-          val next:Traverser[E] = inst match {
-            case traverserInst:TraverserInstruction => traverserInst.op() match {
-              case Tokens.to => traverserInst.doTo(this)
-              case Tokens.from => traverserInst.doFrom(this)
-              case Tokens.fold => traverserInst.doFold(this)
-            }
-            case _ => this.split[E](InstUtil.instEval(this,inst))
-          }
+          val next:Traverser[E] = inst.apply(this).asInstanceOf[Traverser[E]]
           next.split[E](next.obj().q(multQ(next.obj(),inst))) // TODO: avoid the double split by merging traverser instruction handling with obj instruction handling
       }).apply(rangeType.linvert())
     }

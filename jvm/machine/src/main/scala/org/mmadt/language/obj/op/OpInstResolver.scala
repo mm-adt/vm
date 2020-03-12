@@ -32,8 +32,8 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, PutOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
-import org.mmadt.language.obj.{Inst, ORecType, ORecValue, Obj}
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters
@@ -51,61 +51,18 @@ object OpInstResolver {
 
   def resolve(op:String,args:List[Obj]):Inst ={
     op match {
-      case Tokens.and | Tokens.and_op => args.head match {
-        case arg:BoolType => AndOp(arg)
-        case arg:BoolValue => AndOp(arg)
-        case arg:__ => AndOp(arg)
-      }
-      case Tokens.or | Tokens.or_op => args.head match {
-        case arg:BoolType => OrOp(arg)
-        case arg:BoolValue => OrOp(arg)
-        case arg:__ => OrOp(arg)
-      }
-      case Tokens.plus | Tokens.plus_op => args.head match {
-        case arg:IntValue => PlusOp(arg)
-        case arg:IntType => PlusOp(arg)
-        case arg:StrValue => PlusOp(arg)
-        case arg:StrType => PlusOp(arg)
-        case arg:ORecValue => PlusOp(arg)
-        case arg:ORecType => PlusOp(arg)
-        case arg:__ => PlusOp(arg)
-      }
-      case Tokens.mult | Tokens.mult_op => args.head match {
-        case arg:IntValue => MultOp(arg)
-        case arg:IntType => MultOp(arg)
-        case arg:__ => MultOp(arg)
-      }
-      case Tokens.gt | Tokens.gt_op => args.head match {
-        case arg:IntValue => GtOp(arg)
-        case arg:IntType => GtOp(arg)
-        case arg:StrValue => GtOp(arg)
-        case arg:StrType => GtOp(arg)
-        case arg:__ => GtOp(arg)
-      }
-      case Tokens.eqs | Tokens.eqs_op => args.head match {
-        case arg:BoolValue => EqsOp(arg)
-        case arg:BoolType => EqsOp(arg)
-        case arg:IntValue => EqsOp(arg)
-        case arg:IntType => EqsOp(arg)
-        case arg:StrValue => EqsOp(arg)
-        case arg:StrType => EqsOp(arg)
-        case arg:ORecValue => EqsOp(arg)
-        case arg:ORecType => EqsOp(arg)
-        case arg:__ => EqsOp(arg)
-      }
-      case Tokens.is => args.head match {
-        case arg:BoolValue => IsOp(arg)
-        case arg:BoolType => IsOp(arg)
-        case arg:__ => IsOp(arg)
-      }
+      case Tokens.and | Tokens.and_op => AndOp(args.head)
+      case Tokens.or | Tokens.or_op => OrOp(args.head)
+      case Tokens.plus | Tokens.plus_op => PlusOp(args.head)
+      case Tokens.mult | Tokens.mult_op => MultOp(args.head)
+      case Tokens.gt | Tokens.gt_op => GtOp(args.head)
+      case Tokens.eqs | Tokens.eqs_op => EqsOp(args.head)
+      case Tokens.is => IsOp(args.head)
       case Tokens.get => args match {
         case List(key:Obj,typeHint:Type[Obj]) => GetOp(key,typeHint)
         case List(key:Obj) => GetOp(key)
       }
-      case Tokens.map => args.head match {
-        case arg:__ => MapOp(arg)
-        case arg:Obj => MapOp(arg)
-      }
+      case Tokens.map => MapOp(args.head)
       case Tokens.neg => NegOp()
       case Tokens.count => CountOp()
       case Tokens.explain => ExplainOp()

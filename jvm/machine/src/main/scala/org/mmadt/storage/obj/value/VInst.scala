@@ -25,19 +25,20 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
+import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst {
+class VInst(java:InstTuple,quantifier:IntQ,function:Traverser[Obj] => Traverser[Obj]) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst {
   override def as[O <: Obj](name:String):O = this.asInstanceOf[O]
   def this(java:InstTuple) = this(java,qOne,null)
   override def value():InstTuple = java
   override def q(quantifier:IntQ):this.type = new VInst(java,quantifier,function).asInstanceOf[this.type]
   override def id():this.type = this
-  override def apply(obj:Obj,args:List[Obj]):Obj = function.apply(obj,args)
+  override def apply(trav:Traverser[Obj]):Traverser[Obj] = function.apply(trav)
   override def count():IntValue = this.q()._2
   override def quant():IntValue = this.q()._2
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
@@ -53,4 +54,11 @@ class VInst(java:InstTuple,quantifier:IntQ,function:(Obj,List[Obj]) => Obj) exte
   }
   override def =:[O <: Obj](op:String)(args:Obj*):O = args.head.asInstanceOf[O]
   override def error(message:String):this.type = throw new RuntimeException("error: " + message)
+
+  def composeInstruction[E <: Obj](obj:E):E ={
+    obj match {
+      case atype:Type[Obj] => atype.compose(this).asInstanceOf[E]
+      case _ => obj
+    }
+  }
 }

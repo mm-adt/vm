@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -36,5 +37,5 @@ trait ErrorOp {
 }
 
 object ErrorOp {
-  def apply(message:String):Inst = new VInst((Tokens.error,List(str(message))),qOne,(_:Obj,_:List[Obj]) => throw new RuntimeException("error: " + message))
+  def apply(message:String):Inst = new VInst((Tokens.error,List(str(message))),qOne,(trav:Traverser[Obj]) => throw new RuntimeException("error: " + message))
 }
