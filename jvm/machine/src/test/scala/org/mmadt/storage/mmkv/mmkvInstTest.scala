@@ -64,8 +64,8 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("mmkv file-2 adding"){
-    assertResult("['k'->2,'v'->['name'->'ryan','age'->25]],['k'->3,'v'->['name'->'stephen','age'->32]],['k'->4,'v'->['name'->'kuppitz','age'->23]],['a'->'b']")(
-      engine.eval(s"'x'[=mmkv,'${file2}'][add,['a'->'b']]").toString)
+    println(engine.eval(s"'x'[=mmkv,'${file2}'][add,mmkv:['k'->'b','v'->1]][=mmkv,'${file2}']").toList)
+    println(engine.eval(s"'x'[=mmkv,'${file2}'][add,mmkv:['k'->'b','v'->1]][=mmkv,'${file2}']").toList)
   }
 
   test("mmkv model"){

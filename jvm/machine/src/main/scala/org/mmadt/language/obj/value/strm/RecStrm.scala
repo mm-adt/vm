@@ -34,7 +34,7 @@ trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Strm[Rec[A,B]] with Rec[A
   override val value:Iterator[RecValue[A,B]]
   override def start():RecType[A,B]
 
-  override def add[O<:Obj](obj:O):this.type = throw new UnsupportedOperationException
+  override def add[O<:Obj](obj:O):O = throw new UnsupportedOperationException
   override def to(label:StrValue):RecType[A,B] = throw new UnsupportedOperationException
   override def eqs(other:Type[Rec[A,B]]):BoolType = throw new UnsupportedOperationException
   override def eqs(other:Value[Rec[A,B]]):BoolValue = throw new UnsupportedOperationException

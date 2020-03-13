@@ -326,24 +326,25 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model parsing"){
+   /* val engine2                          = mmlangScriptEngineFactory.get.getScriptEngine
     val person:RecType[StrValue,ObjType] = trec(str("name") -> str,str("age") -> int)
     // model creation
-    assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine.eval("rec[nat -> int<=int[is>0]]").next)
+    assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine2.eval("rec[nat -> int<=int[is>0]]").next)
     assertResult(trec[ObjType,ObjType](
       tobj("nat") -> (int <= int.is(int.gt(0))),
       tobj("person") -> trec(
         str("name") -> str,
-        str("age") -> tobj("nat"))))(engine.eval("rec[nat -> int<=int[is>0] | person -> rec['name'->str,'age'->nat]]").next)
-    val model:Model = Model(engine.eval("rec[nat -> int<=int[is>0] | person -> rec['name'->str,'age'->nat]]").next.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
-    engine.put("model",model)
-    assertResult(model)(engine.get("model"))
+        str("age") -> tobj("nat"))))(engine2.eval("rec[nat -> int<=int[is>0] | person -> rec['name'->str,'age'->nat]]").next)
+    val model:Model = Model(engine2.eval("rec[nat -> int<=int[is>0] | person -> rec['name'->str,'age'->nat]]").next.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
+    engine2.put("model",model)
+    assertResult(model)(engine2.get("model"))
     // model compilations
-    assertResult(int <= int.is(int.gt(0)))(engine.eval("nat").next)
-    assertResult(int(4))(engine.eval("2 nat[plus,2]").next)
-    assertResult(int <= int.is(int.gt(0)).plus(1))(engine.eval("nat+1").next)
-    assertResult(trec(value = Map(str("name") -> str,str("age") -> tobj("nat"))))(engine.eval("person").next)
-    assertResult(str <= person.get(str("name"),str))(engine.eval("person[get,'name']").next)
-    assertResult(person.get(str("age"),int.named("nat")).plus(1))(engine.eval("person[get,'age'][plus,1]").next)
+    assertResult(int <= int.is(int.gt(0)))(engine2.eval("nat").next)
+    assertResult(int(4))(engine2.eval("2 nat[plus,2]").next)
+    assertResult(int <= int.is(int.gt(0)).plus(1))(engine2.eval("nat+1").next)
+    assertResult(trec(value = Map(str("name") -> str,str("age") -> tobj("nat"))))(engine2.eval("person").next)
+    assertResult(str <= person.get(str("name"),str))(engine2.eval("person[get,'name']").next)
+    assertResult(person.get(str("age"),int.named("nat")).plus(1))(engine2.eval("person[get,'age'][plus,1]").next)*/
 
     // model type checking
     /* assertThrows[AssertionError]{ // TODO: requires no type erasure and model checking

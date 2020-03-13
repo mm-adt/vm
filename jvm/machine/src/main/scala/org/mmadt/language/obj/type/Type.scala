@@ -105,7 +105,7 @@ trait Type[+T <: Obj] extends Obj
 
   // obj-level operations
   override def a(atype:Type[Obj]):Bool = this.compose(bool,AOp(atype))
-  override def add[O<:Obj](obj:O):this.type = this.compose(AddOp(obj))
+  override def add[O<:Obj](obj:O):O = this.compose(asType(obj).asInstanceOf[O],AddOp(obj))
   override def as[O <: Obj](obj:O):O = this.compose(obj,AsOp(obj))
   override def count():IntType = this.compose(tint(),CountOp())
   override def id():this.type = this.compose(IdOp())

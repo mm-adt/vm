@@ -27,15 +27,16 @@ import java.util.Optional
 
 import org.mmadt.language.mmlang.mmlangParser
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.value._
+import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.{Inst, Obj, Rec, Str}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
 import org.mmadt.storage.obj.value.VInst
 
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,25 +53,55 @@ class mmkvStorageProvider extends StorageProvider {
 
   override def resolveInstruction(opcode:String,args:util.List[Obj]):Optional[Inst[Obj,Obj]] ={
     if (!opcode.equals(emmkv)) return Optional.empty()
+    // Optional.of(inst.getOrElse(new mmkvInst(args.get(0).asInstanceOf[StrValue])))
     Optional.of(new mmkvInst(args.get(0).asInstanceOf[StrValue]))
   }
 
+  var counter:Long                                = 0
+  var inst   :Option[mmkvInst]                    = None
+  var recType:RecType[StrValue,Obj]               = rec
+  var records:List[RecValue[StrValue,Value[Obj]]] = Nil
+
   class mmkvInst(fileStr:StrValue) extends VInst[Obj,Rec[StrValue,Obj]]((emmkv,List(fileStr))) {
     val file:String = fileStr.value
-    def peekType(file:String):Map[StrValue,Obj] ={
-      val source = Source.fromFile(file)
-      try source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().value().asInstanceOf[Map[StrValue,Obj]]
+    inst = Some(this)
+
+    recType = {
+      val source = Source.fromFile(fileStr.value)
+      try trec[StrValue,Obj](name = "mmkv",value = source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().value().asInstanceOf[Map[StrValue,Obj]])
       finally source.close();
     }
-    override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
-      trav.split(trav.obj() match {
-        case _:Value[Obj] =>
-          val source = Source.fromFile(file)
-          try vrec(source.getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,ObjValue]].toStrm.value)).asInstanceOf[Rec[StrValue,Obj]]
-          finally source.close()
-        case atype:Type[Obj] => atype.compose(trec(name = "mmkv",value = peekType(file)),new mmkvInst(file)).q(*)
-      })
+    records = {
+      val source:BufferedSource = Source.fromFile(fileStr.value)
+      try {
+        val temp = vrec(source.getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,Value[Obj]]].toStrm.value)).value.toList
+        counter = temp.map(x => x.value(str("k"))).map(x => x.asInstanceOf[IntValue].value).max
+        temp
+      }
+      finally source.close()
+
     }
+
+    override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
+      trav.split((trav.obj() match {
+        case atype:Type[_] => atype.compose(trec[StrValue,Obj](name = "mmkv",value = recType.value()),new mmkvInst(file)).q(*)
+        case _:Value[_] => new mmkvStrm
+      }).asInstanceOf[Rec[StrValue,Obj]])
+    }
+  }
+
+  class mmkvStrm extends RecStrm[StrValue,Value[Obj]] {
+    override def add[O <: Obj](obj:O):O ={
+      counter = counter + 1
+      println(records.length + "--" + counter.toString)
+      records = obj.asInstanceOf[RecValue[StrValue,Value[Obj]]] +: records
+      obj
+    }
+    override val value:Iterator[RecValue[StrValue,Value[Obj]]] = ((list:List[RecValue[StrValue,Value[Obj]]]) => list.iterator).apply(records)
+    override def start():RecType[StrValue,Value[Obj]] = recType.asInstanceOf[RecType[StrValue,Value[Obj]]]
+    override val q:(IntValue,IntValue) = (records.length,records.length)
+    override def q(quantifier:(IntValue,IntValue)):mmkvStrm.this.type = this
+    override val name:String = "mmkv"
   }
 
 }

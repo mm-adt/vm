@@ -41,9 +41,9 @@ class VRecStrm[A <: Value[Obj],B <: Value[Obj]](name:String,java:Seq[RecValue[A,
   override def start():RecType[A,B] = trec(name,Map.empty[A,B],quantifier,List((trec(name,Map.empty[A,B],qZero,Nil),StartOp(this).asInstanceOf[Inst[Obj,Obj]])))
   override def q(quantifier:IntQ):this.type = this
 
-  override def add[O<:Obj](obj:O):this.type ={
+  override def add[O<:Obj](obj:O):O ={
     println("Adding record: " + obj)
-    new VRecStrm[A,B](name = this.name,java = this.value.toSeq :+ obj.asInstanceOf[RecValue[A,B]]).asInstanceOf[this.type]
+   obj
   }
 }
 
