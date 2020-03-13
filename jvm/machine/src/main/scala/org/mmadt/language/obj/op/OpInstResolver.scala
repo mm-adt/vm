@@ -29,11 +29,12 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
+import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, PutOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Bool, Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters
@@ -49,8 +50,9 @@ object OpInstResolver {
     .find(_.isPresent)
     .map(_.get())
 
-  def resolve[S<:Obj,E<:Obj](op:String,args:List[Obj]):Inst[S,E] ={
+  def resolve[S <: Obj,E <: Obj](op:String,args:List[Obj]):Inst[S,E] ={
     op match {
+      case Tokens.as => AsOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.and | Tokens.and_op => AndOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.or | Tokens.or_op => OrOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.plus | Tokens.plus_op => PlusOp(args.head).asInstanceOf[Inst[S,E]]

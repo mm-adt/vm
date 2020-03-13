@@ -35,7 +35,7 @@ import scala.collection.immutable.ListMap
  */
 class PersonTest extends FunSuite {
 
-  test("person rec"){
+  /*test("person rec"){
     val marko:RecValue[StrValue,ObjValue] = vrec(Map(str("name") -> str("marko"),str("age") -> int(29)))
     assertResult(ListMap(str("name") -> str("marko"),str("age") -> int(29)))(marko.value())
     assertResult("['name'->'marko','age'->29]")(marko.toString)
@@ -47,7 +47,7 @@ class PersonTest extends FunSuite {
     assertResult(int(29))(marko ==> rec.get(str("age"),int))
     assertResult(str("marko"))(marko.as[Obj]("person") ==> rec.get(str("name"),str))
     assertResult(int(29))(marko.as[Obj]("person") ==> rec.get(str("age"),int))
-  }
+  }*/
 
   /*test("person compilation") {
     val marko = new TRec[Str, Obj](Map(str("name") -> str("marko"), str("age") -> int(29)), Nil, qOne).as("person")

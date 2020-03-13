@@ -25,6 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
@@ -103,7 +104,7 @@ trait Type[+T <: Obj] extends Obj
   }
 
   // obj-level operations
-  override def as[O <: Obj](name:String):O = throw new UnsupportedOperationException
+  override def as[O <: Obj](obj:O):O = this.compose(asType(obj).asInstanceOf[O],AsOp(obj))
   override def count():IntType = this.compose(tint(),CountOp())
   override def id():this.type = this.compose(IdOp[this.type]())
   override def map[O <: Obj](other:O):O = this.compose(asType(other).asInstanceOf[O],MapOp[O](other))
@@ -152,5 +153,10 @@ object Type {
   def resolveAnonymous[R <: Obj](obj:Obj,rangeType:Type[R]):Type[R] = rangeType match {
     case x:__ => x(obj)
     case x:R => x
+  }
+
+  def resolve[R <: Obj](objA:Obj,objB:R):R = objB match {
+    case x:__ => x(objA)
+    case _ => objB
   }
 }

@@ -40,6 +40,5 @@ class VStrStrm(name:String,java:Seq[StrValue]) extends AbstractVObj(name,java,qu
   override def value():Iterator[StrValue] = java.iterator
   override def start():StrType = tstr(name,quantifier,List((tstr(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = this
-  override def as[O <: Obj](name:String):O = new VStrStrm(name,this.value().toSeq).asInstanceOf[O]
 }
 

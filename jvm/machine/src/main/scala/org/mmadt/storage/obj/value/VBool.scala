@@ -41,5 +41,4 @@ class VBool(name:String,java:Boolean,quantifier:IntQ) extends AbstractVObj(name,
   override def value(java:Boolean):this.type = new VBool(this.name,java,quantifier).asInstanceOf[this.type]
   override def start():BoolType = tbool(name,quantifier,List((tbool(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VBool(name,java,quantifier).asInstanceOf[this.type]
-  override def as[O <: Obj](name:String):O = new VBool(name,java,quantifier).asInstanceOf[O]
 }

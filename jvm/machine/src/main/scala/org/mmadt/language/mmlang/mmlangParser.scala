@@ -29,11 +29,12 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.GetOp
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.op.model.AsOp
+import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
+import org.mmadt.language.obj.value.strm.{BoolStrm,IntStrm,StrStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.{strm => estrm, _}
+import org.mmadt.storage.StorageFactory.{strm => estrm,_}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -65,7 +66,7 @@ object mmlangParser extends JavaTokenParsers {
   lazy val obj:Parser[Obj] = objValue | objType
 
   // type parsing
-  lazy val objType  :Parser[Type[Obj]]    = aType | anonType
+  lazy val objType  :Parser[Type[Obj]]    = anonType | aType
   lazy val boolType :Parser[BoolType]     = Tokens.bool ^^ (_ => bool)
   lazy val intType  :Parser[IntType]      = Tokens.int ^^ (_ => int)
   lazy val strType  :Parser[StrType]      = Tokens.str ^^ (_ => str)
@@ -75,12 +76,12 @@ object mmlangParser extends JavaTokenParsers {
     case Some(atype) => atype
     case None => tobj(x)
   })
-  lazy val cType    :Parser[Type[Obj]]    = (boolType | intType | strType | recType | namedType) ~ opt(quantifier) ^^ (x => x._2.map(x._1.q).getOrElse(x._1))
-  lazy val aType    :Parser[Type[Obj]]    = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj,Obj]](inst | stateAccess ^^ (x => ToOp(str(x._2)))) ^^ {
+  lazy val cType    :Parser[Type[Obj]]    = (boolType | intType | strType | recType | namedType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val aType    :Parser[Type[Obj]]    = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj,Obj]](stateAccess ^^ (x => ToOp[Obj](str(x._2))) | inst | cType ^^ (t => AsOp(t))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(Traverser.standard(this.model.resolve(x))).obj().asInstanceOf[Type[Obj]]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(Traverser.standard(this.model.resolve(x))).obj().asInstanceOf[Type[Obj]])
   }
-  lazy val anonType :Parser[__]           = rep1[Inst[Obj,Obj]](inst | stateAccess ^^ (x => ToOp[Obj](str(x._2)))) ^^ (x => __(x))
+  lazy val anonType :Parser[__]           = (stateAccess ^^ (x => FromOp(str(x._2))) | inst) ~ rep[Inst[Obj,Obj]](inst | stateAccess ^^ (x => ToOp[Obj](str(x._2))) | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))
   lazy val instOp   :String               = Tokens.reserved.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
 
   // value parsing
@@ -97,12 +98,11 @@ object mmlangParser extends JavaTokenParsers {
   lazy val recStrm  :Parser[ORecStrm]   = (recValue <~ COMMA) ~ rep1sep(recValue,COMMA) ^^ (x => vrec(x._1,x._2.head,x._2.tail:_*))
 
   // instruction parsing
-  lazy val instArg      :Parser[Obj]                        = (stateAccess ^^ (x => x._1.getOrElse(int).from[Obj](str(x._2)))) | obj // TODO: hardcoded int for unspecified state type
   lazy val inst         :Parser[Inst[Obj,Obj]]              = (sugarlessInst | infixSugar | getSugar | chooseSugar) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Inst[Obj,Obj]]).getOrElse(x._1))
-  lazy val infixSugar   :Parser[Inst[Obj,Obj]]              = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ instArg ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
+  lazy val infixSugar   :Parser[Inst[Obj,Obj]]              = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ obj ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst[Obj,Obj]]              = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(value = x.map(o => (o._1,o._2)).toMap)))
   lazy val getSugar     :Parser[Inst[Obj,Obj]]              = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp[Obj,Obj](str(x)).asInstanceOf[Inst[Obj,Obj]])
-  lazy val sugarlessInst:Parser[Inst[Obj,Obj]]              = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(instArg,COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1,x._2))
+  lazy val sugarlessInst:Parser[Inst[Obj,Obj]]              = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(obj,COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1,x._2))
   // traverser instruction parsing
   lazy val stateAccess  :Parser[Option[Type[Obj]] ~ String] = (opt(cType) <~ LANGLE) ~ "[a-zA-z]+".r <~ RANGLE
 

@@ -40,6 +40,5 @@ class VRecStrm[A <: Value[Obj],B <: Value[Obj]](name:String,java:Seq[RecValue[A,
   override def value():Iterator[RecValue[A,B]] = java.iterator
   override def start():RecType[A,B] = trec(name,Map.empty[A,B],quantifier,List((trec(name,Map.empty[A,B],qZero,Nil),StartOp(this).asInstanceOf[Inst[Obj,Obj]])))
   override def q(quantifier:IntQ):this.type = this
-  override def as[O <: Obj](name:String):O = new VRecStrm[A,B](name,java).asInstanceOf[O]
 }
 

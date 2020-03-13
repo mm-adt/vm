@@ -23,10 +23,10 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.IntQ
 import org.mmadt.language.obj.`type`.ObjType
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.ObjValue
-import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -40,6 +40,4 @@ class VObj(name:String,java:Any,quantifier:IntQ) extends AbstractVObj(name,java,
   def value(java:Any):this.type = new VObj(this.name,java,quantifier).asInstanceOf[this.type]
   override def start():ObjType = tint(name,quantifier,List((tint(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VObj(name,java,quantifier).asInstanceOf[this.type]
-  override def as[O <: Obj](name:String):O = new VObj(name,java,quantifier).asInstanceOf[O]
-
 }

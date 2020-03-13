@@ -35,7 +35,7 @@ class VSingletonStrm[O <: Obj](obj:O) extends Strm[O] {
   override val q:(IntValue,IntValue) = obj.q
   override def q(quantifier:(IntValue,IntValue)):this.type = this
   override val name:String = obj.name
-  override def as[O <: Obj](name:String):O = obj.as(name)
+  override def as[O2 <: Obj](obj:O2):O2 = obj.as(obj)
 }
 
 object VSingletonStrm {

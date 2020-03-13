@@ -33,7 +33,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Processor {
-  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E // TODO: this should be a Strm[E] or just E (with Strm inspected)
+  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E
   def apply[S <: Obj,E <: Obj](rangeType:Type[E]):Type[E] = this.apply(rangeType.domain[S](),rangeType).asInstanceOf[Type[E]]
 }
 

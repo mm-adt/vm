@@ -36,7 +36,6 @@ class VEmptyStrm[O <: Obj] extends Strm[O] {
   override val q:(IntValue,IntValue) = qZero
   override def q(quantifier:(IntValue,IntValue)):this.type = throw new UnsupportedOperationException
   override val name:String = obj.name
-  override def as[O <: Obj](name:String):O = this.asInstanceOf[O]
 }
 
 object VEmptyStrm {

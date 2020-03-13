@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -41,6 +41,4 @@ class VRec[A <: Value[Obj],B <: Value[Obj]](name:String,java:Map[A,B],quantifier
   override def value(java:Map[A,B]):this.type = new VRec(this.name,java,quantifier).asInstanceOf[this.type]
   override def start():RecType[A,B] = trec(name,java,quantifier,List((trec(name,java,qZero,Nil),StartOp[Obj](this))))
   override def q(quantifier:IntQ):this.type = new VRec(name,java,quantifier).asInstanceOf[this.type]
-  override def as[O <: Obj](name:String):O = new VRec(name,java,quantifier).asInstanceOf[O]
-
 }

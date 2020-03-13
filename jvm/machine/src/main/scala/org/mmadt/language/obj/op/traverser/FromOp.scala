@@ -51,7 +51,7 @@ object FromOp {
         if (null != default)
           trav.state.getOrElse(arg0[StrValue]().value(),default).asInstanceOf[O]
         else {
-          trav.state.getOrElse(arg0[StrValue]().value(),trav.obj().asInstanceOf[O]).asInstanceOf[O]
+          trav.state.getOrElse(arg0[StrValue]().value(),asType(trav.obj())).asInstanceOf[O]
         }))
     }
   }

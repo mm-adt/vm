@@ -20,25 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.value.strm
+package org.mmadt.processor
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.value.strm.BoolStrm
-import org.mmadt.language.obj.{IntQ, Obj}
-import org.mmadt.storage.StorageFactory.{int, qZero, tbool}
-import org.mmadt.storage.obj.value.AbstractVObj
+import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.storage.StorageFactory._
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBoolStrm(name:String,java:Seq[BoolValue]) extends AbstractVObj(name,java,quantifier = (int(java.length),int(java.length))) with BoolStrm {
-  def this(java:Seq[BoolValue]) = this(name = Tokens.bool,java)
-
-  override def value():Iterator[BoolValue] = java.iterator
-  override def start():BoolType = tbool(name,quantifier,List((tbool(name,qZero,Nil),StartOp(this))))
-  override def q(quantifier:IntQ):this.type = this
+class AsInstTest extends FunSuite {
+  test("int[as,rec]"){
+    assertResult(vrec(str("age") -> int(5)))(int(5) ===> int.as(trec(str("age") -> int)))
+    assertResult(vrec(str("X") -> int(5),str("Y") -> int(15)))(int(5) ===> int.to("x").plus(10).to("y").as(trec(str("X") -> int.from[IntType]("x"),str("Y") -> int.from[IntType]("y"))))
+    assertResult(str("14hello"))(int(5) ===> int.plus(2).mult(2).as(str).plus("hello"))
+  }
 }
-

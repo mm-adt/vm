@@ -27,11 +27,9 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj,Str}
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-
-import scala.collection.JavaConverters._
 
 
 /**
@@ -138,6 +136,16 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is>10]").next)
   }
 
+  test("as instruction parsing"){
+    assertResult(str("14"))(engine.eval("5[plus,2][mult,2][as,str]").next)
+    assertResult(str("14hello"))(engine.eval("5 int[plus,2][mult,2]str[plus,'hello']").next)
+    assertResult(str("14hello"))(engine.eval("5[plus,2][mult,2]str[plus,'hello']").next)
+    assertResult(vrec(str("x") -> int(7)))(engine.eval("5 int[plus,2][as,rec['x'->int]]").next)
+    assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'-><x>,'y'-><y>]]").next)
+    assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>]]").next)
+    assertResult(vrec(str("x") -> int(7),str("y") -> int(10),str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>,'z'->[as,rec['a'-><x> + <y>]]]]").next)
+  }
+
   test("endomorphic type parsing"){
     assertResult(int.plus(int.mult(int(6))))(engine.eval("int[plus,int[mult,6]]").next)
   }
@@ -182,6 +190,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,<a>]").next)
     assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<a>]").next)
     assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]int<b>[mult,int<a>]").next)
+    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,<x>]").next)
+    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<x>]").next)
+    assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<x>[plus,int<y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<x>[plus,<y>]]").next.toString)
+    assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<x>[plus,<y>]]").next)
   }
 
   test("infix operator instruction parsing"){

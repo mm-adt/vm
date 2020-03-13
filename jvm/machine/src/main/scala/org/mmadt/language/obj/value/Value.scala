@@ -36,6 +36,7 @@ trait Value[+V <: Obj] extends Obj {
   def value():Any
   def start():OType[V]
 
+  override def as[O<:Obj](obj:O):O = this.asInstanceOf[O]
   override def quant():Int = this.q._1.q(qOne)
   override def count():IntValue = this.q._1.q(qOne)
   override def id():this.type = this
