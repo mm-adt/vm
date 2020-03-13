@@ -31,7 +31,7 @@ import org.mmadt.processor.Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TypeFunctorTraverser[S <: Obj](val obj:S,val state:State,val model:Model = Model.id) extends Traverser[S] {
-  def this(obj:S) = this(obj,Map.empty) //
+  def this(obj:S) = this(obj,Map.empty)
 
   override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] =
     new TypeFunctorTraverser[E](model.resolve(obj),state,this.model)

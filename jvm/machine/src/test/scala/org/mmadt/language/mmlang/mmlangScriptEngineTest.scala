@@ -132,7 +132,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("refinement type parsing"){
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is,int[gt,10]]").next)
-    // assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]").next) //TODO: when a range is specified by the user, use that during compilation
+//    assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]").next) //TODO: when a range is specified by the user, use that during compilation
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is>10]").next)
   }
 
