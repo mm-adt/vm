@@ -49,19 +49,19 @@ class mmkvStorageProvider extends StorageProvider {
     mmkv.put(str("k"),obj) -> mmkv.error("keys are immutable"),
     mmkv.put(str("v"),obj) -> mmkv.error("values are immutable"))
 
-  override def resolveInstruction(opcode:String,args:util.List[Obj]):Optional[Inst] ={
+  override def resolveInstruction(opcode:String,args:util.List[Obj]):Optional[Inst[Obj,Obj]] ={
     if (!opcode.equals(emmkv)) return Optional.empty()
     Optional.of(new mmkvInst(args.get(0).asInstanceOf[StrValue]))
   }
 
-  class mmkvInst(fileStr:StrValue) extends VInst((emmkv,List(fileStr))) {
+  class mmkvInst(fileStr:StrValue) extends VInst[Obj,Rec[StrValue,Obj]]((emmkv,List(fileStr))) {
     val file:String = fileStr.value()
     def peekType(file:String):Map[StrValue,Obj] ={
       val source = Source.fromFile(file)
       try source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().value().asInstanceOf[Map[StrValue,Obj]]
       finally source.close();
     }
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+    override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
       trav.split(trav.obj() match {
         case _:Value[Obj] =>
           val source = Source.fromFile(file)

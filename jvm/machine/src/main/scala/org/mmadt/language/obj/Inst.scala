@@ -29,7 +29,7 @@ import org.mmadt.processor.Traverser
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Inst extends Obj {
+trait Inst[S <: Obj,+E <: Obj] extends Obj {
   def value():InstTuple
 
   override val name:String = Tokens.inst
@@ -40,15 +40,13 @@ trait Inst extends Obj {
   final def arg1[O <: Obj]():O = this.value()._2.tail.head.asInstanceOf[O]
   final def arg2[O <: Obj]():O = this.value()._2.tail.tail.head.asInstanceOf[O]
   final def arg3[O <: Obj]():O = this.value()._2.tail.tail.tail.head.asInstanceOf[O]
-  //def apply(obj:Obj,args:List[Obj]):Obj
-  //def apply(obj:Obj):Obj = this.apply(obj,this.args())
-  def apply(trav:Traverser[Obj]):Traverser[Obj]
+  def apply(trav:Traverser[S]):Traverser[E]
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printInst(this)
   override def hashCode:scala.Int = this.value().hashCode()
   override def equals(other:Any):Boolean = other match {
-    case inst:Inst => inst.op() == this.op() && inst.args() == this.args()
+    case inst:Inst[_,_] => inst.op() == this.op() && inst.args() == this.args()
     case _ => false
   }
 }

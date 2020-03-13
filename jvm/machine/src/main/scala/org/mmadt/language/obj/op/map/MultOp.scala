@@ -41,14 +41,14 @@ trait MultOp[O <: Obj] {
 }
 
 object MultOp {
-  def apply[O <: Obj with MultOp[O]](other:Obj):Inst = new MultInst[O](other)
+  def apply[O <: Obj with MultOp[O]](other:Obj):Inst[O,O] = new MultInst[O](other)
 
-  class MultInst[O <: Obj with MultOp[O]](other:Obj) extends VInst((Tokens.mult,List(other))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+  class MultInst[O <: Obj with MultOp[O]](other:Obj) extends VInst[O,O]((Tokens.mult,List(other))) {
+    override def apply(trav:Traverser[O]):Traverser[O] ={
       trav.split(Traverser.resolveArg(trav,other) match {
-        case avalue:Value[O] => trav.obj().asInstanceOf[O].mult(avalue)
-        case anon:__ => trav.obj().asInstanceOf[O].mult(anon[Type[O]](trav.obj().asInstanceOf[O]))
-        case atype:Type[O] => trav.obj().asInstanceOf[O].mult(atype)
+        case avalue:Value[O] => trav.obj().mult(avalue)
+        case anon:__ => trav.obj().mult(anon[Type[O]](trav.obj()))
+        case atype:Type[O] => trav.obj().mult(atype)
       })
     }
   }

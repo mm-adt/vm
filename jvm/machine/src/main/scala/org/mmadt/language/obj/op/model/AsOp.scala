@@ -36,12 +36,10 @@ trait AsOp {
 }
 
 object AsOp {
-  def apply(name:StrValue):Inst = new AsInst(name)
+  def apply[O <: Obj](name:StrValue):Inst[Obj,O] = new AsInst[O](name)
 
-  class AsInst(name:StrValue) extends VInst((Tokens.as,List(name))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
-      trav.split(trav.obj().as[Obj](name.value()))
-    }
+  class AsInst[O <: Obj](name:StrValue) extends VInst[Obj,O]((Tokens.as,List(name))) {
+    override def apply(trav:Traverser[Obj]):Traverser[O] = trav.split(trav.obj().as[O](name.value()))
   }
 
 }

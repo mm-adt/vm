@@ -36,9 +36,10 @@ trait StartOp[+O <: Obj] {
 }
 
 object StartOp {
-  def apply(starts:Obj):Inst = new StartInst(starts)
+  def apply[O <: Obj](starts:O):Inst[O,O] = new StartInst(starts)
 
-  class StartInst(starts:Obj) extends VInst((Tokens.start,List(starts))) with InitialInstruction {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(starts)
+  class StartInst[O <: Obj](starts:O) extends VInst[O,O]((Tokens.start,List(starts))) with InitialInstruction {
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(starts)
   }
+
 }

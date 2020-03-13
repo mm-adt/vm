@@ -36,10 +36,10 @@ trait OneOp[O <: Obj] {
 }
 
 object OneOp {
-  def apply[O <: Obj with OneOp[O]]():Inst = new OneInst
+  def apply[O <: Obj with OneOp[O]]():Inst[O,O] = new OneInst[O]
 
-  class OneInst[O <: Obj with OneOp[O]] extends VInst((Tokens.one,Nil)) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().asInstanceOf[O].one())
+  class OneInst[O <: Obj with OneOp[O]] extends VInst[O,O]((Tokens.one,Nil)) {
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().one())
   }
 
 }

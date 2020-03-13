@@ -32,7 +32,7 @@ import org.mmadt.processor.Traverser
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object InstUtil {
-  def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):List[Obj] ={
+  def valueArgs[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst[Obj,Obj]):List[Obj] ={
     if (inst.op() == Tokens.choose) return inst.args()
     inst.args().map{
       case valueArg:Value[_] => valueArg
@@ -46,16 +46,16 @@ object InstUtil {
   /**
    * Before an instruction is applied, its arguments are computing by a split of the incoming traverser
    */
-  def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst):E =
+  def instEval[S <: Obj,E <: Obj](traverser:Traverser[S],inst:Inst[Obj,Obj]):E =
     inst.apply(traverser).asInstanceOf[E]
 
 
   @scala.annotation.tailrec
-  def createInstList(list:List[(Type[Obj],Inst)],atype:Type[Obj]):List[(Type[Obj],Inst)] ={
+  def createInstList(list:List[(Type[Obj],Inst[Obj,Obj])],atype:Type[Obj]):List[(Type[Obj],Inst[Obj,Obj])] ={
     if (atype.insts.isEmpty) list else createInstList(List((atype.range,atype.insts.last._2)) ::: list,atype.insts.last._1)
   }
 
-  def nextInst(atype:Type[_]):Option[Inst] = atype.insts match {
+  def nextInst(atype:Type[_]):Option[Inst[Obj,Obj]] = atype.insts match {
     case Nil => None
     case x => Some(x.head._2)
   }

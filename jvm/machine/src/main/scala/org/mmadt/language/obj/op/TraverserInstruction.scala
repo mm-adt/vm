@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.op
 
-import org.mmadt.language.obj.Inst
+import org.mmadt.language.obj.{Inst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait TraverserInstruction extends Inst
+trait TraverserInstruction

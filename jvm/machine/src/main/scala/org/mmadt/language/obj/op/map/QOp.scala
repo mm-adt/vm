@@ -36,10 +36,10 @@ trait QOp {
 }
 
 object QOp {
-  def apply():Inst = new QInst
+  def apply():Inst[Obj,Int] = new QInst
 
-  class QInst extends VInst((Tokens.q,Nil)) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().quant())
+  class QInst extends VInst[Obj,Int]((Tokens.q,Nil)) {
+    override def apply(trav:Traverser[Obj]):Traverser[Int] = trav.split(trav.obj().quant())
   }
 
 }

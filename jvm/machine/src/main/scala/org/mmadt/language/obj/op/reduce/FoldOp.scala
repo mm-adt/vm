@@ -41,16 +41,16 @@ trait FoldOp {
 }
 
 object FoldOp {
-  def apply[A <: Obj](_seed:(String,A),atype:Type[A]):Inst = new FoldInst[A](_seed,atype)
-  def apply[A <: Obj](_seed:(String,A),atype:__):Inst = new FoldInst[A](_seed,atype)
+  def apply[A <: Obj](_seed:(String,A),atype:A):Inst[Obj,A] = new FoldInst[A](_seed,atype)
+  def apply[A <: Obj](_seed:(String,A),atype:__):Inst[Obj,A] = new FoldInst[A](_seed,atype)
 
-  class FoldInst[A <: Obj](_seed:(String,A),atype:Obj) extends VInst((Tokens.fold,List(str(_seed._1),_seed._2,atype))) with ReduceInstruction[A] with TraverserInstruction {
+  class FoldInst[A <: Obj](_seed:(String,A),atype:Obj) extends VInst[Obj,A]((Tokens.fold,List(str(_seed._1),_seed._2,atype))) with ReduceInstruction[A] with TraverserInstruction {
     override val seed     :(String,A) = _seed
     override val reduction:Type[A]    = atype.asInstanceOf[Type[A]]
 
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+    override def apply(trav:Traverser[Obj]):Traverser[A] ={
       val t:Traverser[Obj] = trav.obj() match {
-        case _:Type[Obj] => Traverser.stateSplit[Obj](this.arg0[StrValue]().value(),this.arg1[Obj]())(trav)
+        case _:Type[Obj] => Traverser.stateSplit[Obj](this.arg0[StrValue]().value(),this.arg1[A]())(trav)
         case _ => trav
       }
       t.split(t.obj().fold(seed)(atype match {
@@ -59,4 +59,5 @@ object FoldOp {
       }))
     }
   }
+
 }

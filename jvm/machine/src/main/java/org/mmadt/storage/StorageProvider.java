@@ -34,10 +34,10 @@ import java.util.Optional;
  */
 public interface StorageProvider {
 
-    public String name();
+    String name();
 
-    public Model model();
+    Model model();
 
-    public Optional<Inst> resolveInstruction(final String opcode, final List<Obj> args);
+    Optional<Inst<Obj, Obj>> resolveInstruction(final String opcode, final List<Obj> args);
 
 }

@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.op.filter
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{BoolType, Type, __}
+import org.mmadt.language.obj.`type`.{BoolType, __}
 import org.mmadt.language.obj.op.FilterInstruction
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,18 +35,18 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait IsOp[O <: Obj] {
   this:O =>
-  def is(bool:BoolType):O with Type[O]
+  def is(bool:BoolType):OType[O]
   def is(bool:BoolValue):this.type
 }
 
 object IsOp {
-  def apply[O <: Obj with IsOp[O],T <: Type[T]](other:Obj):Inst = new IsInst[O](other)
+  def apply[O <: Obj with IsOp[O]](other:Obj):Inst[O,O] = new IsInst[O](other)
 
-  class IsInst[O <: Obj with IsOp[O]](other:Obj) extends VInst((Tokens.is,List(other))) with FilterInstruction {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(Traverser.resolveArg(trav,other) match {
-      case avalue:BoolValue => trav.obj().asInstanceOf[O].is(avalue)
-      case atype:BoolType => trav.obj().asInstanceOf[O].is(atype)
-      case anon:__ => trav.obj().asInstanceOf[O].is(anon[BoolType](trav.obj().asInstanceOf[O]))
+  class IsInst[O <: Obj with IsOp[O]](other:Obj) extends VInst[O,O]((Tokens.is,List(other))) with FilterInstruction {
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(Traverser.resolveArg(trav,other) match {
+      case avalue:BoolValue => trav.obj().is(avalue)
+      case atype:BoolType => trav.obj().is(atype)
+      case anon:__ => trav.obj().is(anon[BoolType](trav.obj()))
     })
   }
 

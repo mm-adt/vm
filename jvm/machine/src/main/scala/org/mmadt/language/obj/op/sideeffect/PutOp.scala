@@ -36,10 +36,10 @@ trait PutOp[A <: Obj,B <: Obj] {
 }
 
 object PutOp {
-  def apply[A <: Obj,B <: Obj](key:A,value:B):Inst = new PutInst[A,B](key,value)
+  def apply[A <: Obj,B <: Obj](key:A,value:B):Inst[Rec[A,B],Rec[A,B]] = new PutInst[A,B](key,value)
 
-  class PutInst[A <: Obj,B <: Obj](key:A,value:B) extends VInst((Tokens.put,List(key,value))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().asInstanceOf[Rec[A,B]].put(key,value))
+  class PutInst[A <: Obj,B <: Obj](key:A,value:B) extends VInst[Rec[A,B],Rec[A,B]]((Tokens.put,List(key,value))) {
+    override def apply(trav:Traverser[Rec[A,B]]):Traverser[Rec[A,B]] = trav.split(trav.obj().put(key,value))
   }
 
 }

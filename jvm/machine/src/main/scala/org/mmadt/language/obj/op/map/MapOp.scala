@@ -34,19 +34,19 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait MapOp {
   this:Obj =>
-  def map[O <: Obj](other:O):O = other // TODO NO IMPL -- INST
+  def map[O <: Obj](other:O):O = other
 }
 
 object MapOp {
-  def apply[O <: Obj](other:O):Inst = new MapInst(other)
+  def apply[O <: Obj](other:O):Inst[Obj,O] = new MapInst[O](other)
 
-  class MapInst(other:Obj) extends VInst((Tokens.map,List(other))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+  class MapInst[O <: Obj](other:O) extends VInst[Obj,O]((Tokens.map,List(other))) {
+    override def apply(trav:Traverser[Obj]):Traverser[O] ={
       trav.split(other match {
         case avalue:Value[Obj] => trav.obj().map(avalue)
         case anon:__ => trav.obj().map(anon(trav.obj().asInstanceOf[Type[_]].range))
         case atype:Type[Obj] => trav.obj().map(atype)
-      })
+      }).asInstanceOf[Traverser[O]]
     }
   }
 

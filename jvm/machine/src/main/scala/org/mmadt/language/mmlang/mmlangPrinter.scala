@@ -79,7 +79,7 @@ object mmlangPrinter {
       }) + qString(avalue.q())
   }
 
-  def instString(inst:Inst):String ={
+  def instString(inst:Inst[_,_]):String ={
     (inst.op() match {
       case Tokens.to | Tokens.from => LANGLE + inst.arg0[StrValue]().value() + RANGLE
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj,Obj]]().value(),PIPE) + RBRACKET

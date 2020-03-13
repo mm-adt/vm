@@ -36,9 +36,10 @@ trait ZeroOp[O <: Obj] {
 }
 
 object ZeroOp {
-  def apply[O <: Obj with ZeroOp[O]]():Inst = new ZeroInst
+  def apply[O <: Obj with ZeroOp[O]]():Inst[O,O] = new ZeroInst
 
-  class ZeroInst[O <: Obj with ZeroOp[O]] extends VInst((Tokens.zero,Nil)) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().asInstanceOf[O].zero())
+  class ZeroInst[O <: Obj with ZeroOp[O]] extends VInst[O,O]((Tokens.zero,Nil)) {
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().zero())
   }
+
 }

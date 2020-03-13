@@ -48,7 +48,7 @@ class IteratorProcessor extends Processor {
         //////////////FILTER//////////////
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
         //////////////OTHER//////////////
-        case _:Inst => output
+        case _:Inst[Obj,Obj] => output
           .map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
           .flatMap(x => x.obj() match {
             case strm:Strm[E] => strm.value().map(y => x.split(y))

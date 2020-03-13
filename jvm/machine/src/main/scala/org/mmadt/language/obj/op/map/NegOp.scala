@@ -36,10 +36,10 @@ trait NegOp {
 }
 
 object NegOp {
-  def apply[O <: Obj with NegOp]():Inst = new NegInst[O]
+  def apply[O <: Obj with NegOp]():Inst[O,O] = new NegInst[O]
 
-  class NegInst[O <: Obj with NegOp] extends VInst((Tokens.neg,Nil)) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().asInstanceOf[O].neg())
+  class NegInst[O <: Obj with NegOp] extends VInst[O,O]((Tokens.neg,Nil)) {
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().neg())
   }
 
 }

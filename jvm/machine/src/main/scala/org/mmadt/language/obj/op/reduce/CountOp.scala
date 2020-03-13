@@ -40,13 +40,13 @@ trait CountOp[O <: Int] {
 }
 
 object CountOp {
-  def apply():Inst = new CountInst()
+  def apply():Inst[Obj,Int] = new CountInst
 
-  class CountInst extends VInst((Tokens.count,Nil)) with ReduceInstruction[Int] {
+  class CountInst extends VInst[Obj,Int]((Tokens.count,Nil)) with ReduceInstruction[Int] {
     lazy     val zero     :IntValue          = int(0)
     override val seed     :(String,IntValue) = ("seed",zero)
     override val reduction:IntType           = int.quant().plus(int.from[IntType](seed._1))
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().count())
+    override def apply(trav:Traverser[Obj]):Traverser[Int] = trav.split(trav.obj().count())
   }
 
 }

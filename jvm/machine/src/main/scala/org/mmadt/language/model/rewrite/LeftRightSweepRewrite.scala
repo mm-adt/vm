@@ -56,7 +56,7 @@ object LeftRightSweepRewrite {
   }
 
   // if no match, then apply the instruction after rewriting its arguments
-  private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst,traverser:Traverser[S]):List[Obj] ={
+  private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst[Obj,Obj],traverser:Traverser[S]):List[Obj] ={
     inst.op() match {
       case Tokens.choose =>
         List(trec(name = Tokens.rec,inst.arg0[ORecType]().value().map(x => (x._1 match { // TODO: merge the two identical key/value pair branches into one

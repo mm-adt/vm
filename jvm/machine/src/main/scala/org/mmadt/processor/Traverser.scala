@@ -83,7 +83,7 @@ object Traverser {
     override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
       (InstUtil.nextInst(rangeType) match {
         case None => return this.asInstanceOf[Traverser[E]]
-        case Some(inst) =>
+        case Some(inst:Inst[Obj,Obj]) =>
           val next:Traverser[E] = inst.apply(this).asInstanceOf[Traverser[E]]
           next.split[E](next.obj().q(multQ(next.obj(),inst))) // TODO: avoid the double split by merging traverser instruction handling with obj instruction handling
       }).apply(rangeType.linvert())

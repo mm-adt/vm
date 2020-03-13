@@ -35,10 +35,10 @@ trait NoOp {
 }
 
 object NoOp {
-  def apply():Inst = new NoInst
+  def apply[O <: Obj]():Inst[O,O] = new NoInst
 
-  class NoInst extends VInst((Tokens.noop,Nil)) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav
+  class NoInst[O <: Obj] extends VInst[O,O]((Tokens.noop,Nil)) {
+    override def apply(trav:Traverser[O]):Traverser[O] = trav
   }
 
 }

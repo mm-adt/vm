@@ -37,9 +37,9 @@ trait ErrorOp {
 }
 
 object ErrorOp {
-  def apply(message:String):Inst = new ErrorInst(message)
+  def apply(message:String):Inst[Obj,Obj] = new ErrorInst(message)
 
-  class ErrorInst(message:String) extends VInst((Tokens.error,List(str(message)))) {
+  class ErrorInst(message:String) extends VInst[Obj,Obj]((Tokens.error,List(str(message)))) {
     override def apply(trav:Traverser[Obj]):Traverser[Obj] = throw new RuntimeException("error:" + message)
   }
 

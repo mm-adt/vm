@@ -41,14 +41,14 @@ trait AndOp {
 }
 
 object AndOp {
-  def apply(other:Obj):Inst = new AndInst(other)
+  def apply(other:Obj):Inst[Bool,Bool] = new AndInst(other)
 
-  class AndInst(other:Obj) extends VInst((Tokens.and,List(other))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+  class AndInst(other:Obj) extends VInst[Bool,Bool]((Tokens.and,List(other))) {
+    override def apply(trav:Traverser[Bool]):Traverser[Bool] ={
       trav.split(Traverser.resolveArg(trav,other) match {
-        case avalue:BoolValue => trav.obj().asInstanceOf[Bool].and(avalue)
-        case atype:BoolType => trav.obj().asInstanceOf[Bool].and(atype)
-        case anon:__ => trav.obj().asInstanceOf[Bool].and(anon[BoolType](trav.obj().asInstanceOf[BoolType]))
+        case avalue:BoolValue => trav.obj().and(avalue)
+        case atype:BoolType => trav.obj().and(atype)
+        case anon:__ => trav.obj().and(anon[BoolType](trav.obj()))
       })
     }
   }

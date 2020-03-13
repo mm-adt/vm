@@ -34,7 +34,7 @@ package object obj {
   type IntQ = (IntValue,IntValue)
   type InstTuple = (String,List[Obj])
   type State = Map[String,Obj]
-  type InstList = List[(Type[Obj],Inst)]
+  type InstList = List[(Type[Obj],Inst[Obj,Obj])]
 
   // less typing
   type OType[+O <: Obj] = O with Type[O]

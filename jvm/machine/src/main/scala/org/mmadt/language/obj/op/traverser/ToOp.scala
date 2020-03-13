@@ -23,10 +23,9 @@
 package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.{VInst, VStr}
 
@@ -35,17 +34,16 @@ import org.mmadt.storage.obj.value.{VInst, VStr}
  */
 trait ToOp[O <: Obj] {
   this:O =>
-  def to(label:String):O with Type[O] = this.to(new VStr(label))
-  def to(label:StrValue):O with Type[O]
-  final def ~(label:String):O with Type[O] = this.to(label)
+  def to(label:String):OType[O] = this.to(new VStr(label))
+  def to(label:StrValue):OType[O]
 }
 
 object ToOp {
-  def apply[O <: Type[O]](label:StrValue):Inst = new ToInst(label)
+  def apply[O <: Obj](label:StrValue):Inst[O,O] = new ToInst(label)
 
-  class ToInst(label:StrValue) extends VInst((Tokens.to,List(label))) with TraverserInstruction {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
-      trav.split[Obj](composeInstruction(trav.obj()),trav.state + (this.arg0[StrValue]().value() -> trav.obj()))
+  class ToInst[O <: Obj](label:StrValue) extends VInst[O,O]((Tokens.to,List(label))) with TraverserInstruction {
+    override def apply(trav:Traverser[O]):Traverser[O] ={
+      trav.split[O](composeInstruction(trav.obj()),trav.state + (this.arg0[StrValue]().value() -> trav.obj()))
     }
   }
 

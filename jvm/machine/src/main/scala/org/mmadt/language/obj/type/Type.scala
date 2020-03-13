@@ -25,7 +25,6 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
-import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
@@ -47,7 +46,7 @@ trait Type[+T <: Obj] extends Obj
   // def apply(values:Obj):Value[Obj]
 
   // type properties
-  val insts:List[(Type[Obj],Inst)]
+  val insts:List[(Type[Obj],Inst[Obj,Obj])]
   lazy val canonical:this.type = this.range.q(qOne)
   lazy val range    :this.type = (this match {
     case _:BoolType => tbool(this.name,this.q(),Nil)
@@ -60,7 +59,7 @@ trait Type[+T <: Obj] extends Obj
 
   def domain[D <: Obj]():Type[D] = (this.insts match {
     case Nil => this
-    case i:List[(Type[Obj],Inst)] => i.head._1.range
+    case i:List[(Type[Obj],Inst[_,_])] => i.head._1.range
   }).asInstanceOf[Type[D]]
 
   // type manipulation functions
@@ -91,28 +90,24 @@ trait Type[+T <: Obj] extends Obj
       case atype:Type[Obj] => atype.insts.seq.foldLeft[Traverser[Obj]](Traverser.standard(this))((b,a) => a._2(b)).obj().asInstanceOf[R]
     }
   }
-  def compose(inst:Inst):this.type = this.compose(this,inst).asInstanceOf[this.type]
-  def compose[R <: Obj](nextObj:R,inst:Inst):OType[R] ={
-    val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst))
-    //val newInsts = this.insts ::: List((this,inst))
+  def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
+  def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={
+    val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]]))
     (nextObj match {
       case _:Bool => tbool(nextObj.name,multQ(this,inst),newInsts)
       case _:Int => tint(nextObj.name,multQ(this,inst),newInsts)
       case _:Str => tstr(nextObj.name,multQ(this,inst),newInsts)
       case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInsts)
-      case _:__ => new __(newInsts)
+      case _:__ => new __(newInsts.asInstanceOf[List[Tuple2[Type[Obj],Inst[Obj,Obj]]]])
       case _ => tobj(nextObj.name,multQ(this,inst),newInsts)
-    }).asInstanceOf[OType[R]]
+    }).asInstanceOf[R]
   }
 
   // obj-level operations
-  override def as[O <: Obj](name:String):O = (InstUtil.nextInst(this) match {
-    case Some(x) if x == AsOp(name) => this
-    case _ => this.compose(AsOp(name))
-  }).asInstanceOf[O]
+  override def as[O <: Obj](name:String):O = throw new UnsupportedOperationException
   override def count():IntType = this.compose(tint(),CountOp()).q(qOne)
-  override def id():this.type = this.compose(IdOp())
-  override def map[O <: Obj](other:O):O = this.compose(asType(other),MapOp(other)).asInstanceOf[O]
+  override def id():this.type = this.compose(IdOp[this.type]())
+  override def map[O <: Obj](other:O):O = this.compose(asType(other).asInstanceOf[O],MapOp[O](other))
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]

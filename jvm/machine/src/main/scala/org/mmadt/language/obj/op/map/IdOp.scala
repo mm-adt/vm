@@ -36,10 +36,10 @@ trait IdOp {
 }
 
 object IdOp {
-  def apply():Inst = new IdInst
+  def apply[O <: Obj]():Inst[O,O] = new IdInst
 
-  class IdInst extends VInst((Tokens.id,Nil)) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().id())
+  class IdInst[O <: Obj] extends VInst[O,O]((Tokens.id,Nil)) {
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().id())
   }
 
 }

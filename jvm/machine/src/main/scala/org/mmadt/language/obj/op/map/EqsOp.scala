@@ -41,14 +41,14 @@ trait EqsOp[O <: Obj] {
 }
 
 object EqsOp {
-  def apply[O <: Obj with EqsOp[O]](other:Obj):Inst = new EqsInst[O](other)
+  def apply[O <: Obj with EqsOp[O]](other:Obj):Inst[O,Bool] = new EqsInst[O](other.asInstanceOf[O])
 
-  class EqsInst[O <: Obj with EqsOp[O]](other:Obj) extends VInst((Tokens.eqs,List(other))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+  class EqsInst[O <: Obj with EqsOp[O]](other:O) extends VInst[O,Bool]((Tokens.eqs,List(other))) {
+    override def apply(trav:Traverser[O]):Traverser[Bool] ={
       trav.split(Traverser.resolveArg(trav,other) match {
-        case avalue:Value[O] => trav.obj().asInstanceOf[O].eqs(avalue)
-        case atype:Type[O] => trav.obj().asInstanceOf[O].eqs(atype)
-        case anon:__ => trav.obj().asInstanceOf[O].eqs(anon[OType[O]](trav.obj().asInstanceOf[O]))
+        case avalue:Value[O] => trav.obj().eqs(avalue)
+        case anon:__ => trav.obj().eqs(anon[OType[O]](trav.obj()))
+        case atype:Type[O] => trav.obj().eqs(atype)
       })
     }
   }

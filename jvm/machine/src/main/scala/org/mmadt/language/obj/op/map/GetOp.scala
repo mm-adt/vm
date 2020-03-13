@@ -37,11 +37,11 @@ trait GetOp[A <: Obj,B <: Obj] {
 }
 
 object GetOp {
-  def apply[A <: Obj,B <: Obj](key:A):Inst = new GetInst(key)
-  def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst = new GetInst(key)
+  def apply[A <: Obj,B <: Obj](key:A):Inst[Rec[A,B],B] = new GetInst(key)
+  def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst[Rec[A,B],B] = new GetInst(key)
 
-  class GetInst[A <: Obj,B <: Obj](key:A) extends VInst((Tokens.get,List(key))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav.split(trav.obj().asInstanceOf[Rec[A,B]].get(key))
+  class GetInst[A <: Obj,B <: Obj](key:A) extends VInst[Rec[A,B],B]((Tokens.get,List(key))) {
+    override def apply(trav:Traverser[Rec[A,B]]):Traverser[B] = trav.split(trav.obj().get(key))
   }
 
 }

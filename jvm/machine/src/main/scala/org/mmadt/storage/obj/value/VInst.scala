@@ -32,13 +32,13 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst(java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst {
+class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst[S,E] {
   override def as[O <: Obj](name:String):O = this.asInstanceOf[O]
   def this(java:InstTuple) = this(java,qOne)
   override def value():InstTuple = java
   override def q(quantifier:IntQ):this.type = new VInst(java,quantifier).asInstanceOf[this.type]
   override def id():this.type = this
-  override def apply(trav:Traverser[Obj]):Traverser[Obj] = trav
+  override def apply(trav:Traverser[S]):Traverser[E] = trav.asInstanceOf[Traverser[E]]
   override def count():IntValue = this.q()._2
   override def quant():IntValue = this.q()._2
   override def =:[O <: Obj](op:String)(args:Obj*):O = args.head.asInstanceOf[O]
@@ -47,7 +47,7 @@ class VInst(java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.i
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
   def test(other:Obj):Boolean = false
 
-  def composeInstruction[E <: Obj](obj:E):E ={
+  def composeInstruction(obj:E):E ={
     obj match {
       case atype:Type[Obj] => atype.compose(this).asInstanceOf[E]
       case _ => obj

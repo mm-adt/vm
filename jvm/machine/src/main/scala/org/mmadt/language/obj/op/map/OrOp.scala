@@ -41,14 +41,14 @@ trait OrOp {
 }
 
 object OrOp {
-  def apply(other:Obj):Inst = new OrInst(other)
+  def apply(other:Obj):Inst[Bool,Bool] = new OrInst(other)
 
-  class OrInst(other:Obj) extends VInst((Tokens.or,List(other))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+  class OrInst(other:Obj) extends VInst[Bool,Bool]((Tokens.or,List(other))) {
+    override def apply(trav:Traverser[Bool]):Traverser[Bool] ={
       trav.split(Traverser.resolveArg(trav,other) match {
-        case avalue:BoolValue => trav.obj().asInstanceOf[Bool].or(avalue)
-        case atype:BoolType => trav.obj().asInstanceOf[Bool].or(atype)
-        case anon:__ => trav.obj().asInstanceOf[Bool].or(anon[BoolType](trav.obj().asInstanceOf[BoolType]))
+        case avalue:BoolValue => trav.obj().or(avalue)
+        case atype:BoolType => trav.obj().or(atype)
+        case anon:__ => trav.obj().or(anon[BoolType](trav.obj().asInstanceOf[BoolType]))
       })
     }
   }

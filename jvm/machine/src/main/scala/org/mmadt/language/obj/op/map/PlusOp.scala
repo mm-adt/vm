@@ -41,14 +41,14 @@ trait PlusOp[O <: Obj] {
 }
 
 object PlusOp {
-  def apply[O <: Obj with PlusOp[O]](other:Obj):Inst = new PlusInst[O](other)
+  def apply[O <: Obj with PlusOp[O]](other:Obj):Inst[O,O] = new PlusInst[O](other)
 
-  class PlusInst[O <: Obj with PlusOp[O]](other:Obj) extends VInst((Tokens.plus,List(other))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] ={
+  class PlusInst[O <: Obj with PlusOp[O]](other:Obj) extends VInst[O,O]((Tokens.plus,List(other))) {
+    override def apply(trav:Traverser[O]):Traverser[O] ={
       trav.split(Traverser.resolveArg(trav,other) match {
-        case avalue:Value[O] => trav.obj().asInstanceOf[O].plus(avalue)
-        case anon:__ => trav.obj().asInstanceOf[O].plus(anon[Type[O]](trav.obj().asInstanceOf[O]))
-        case atype:Type[O] => trav.obj().asInstanceOf[O].plus(atype)
+        case avalue:Value[O] => trav.obj().plus(avalue)
+        case anon:__ => trav.obj().plus(anon[Type[O]](trav.obj()))
+        case atype:Type[O] => trav.obj().plus(atype)
       })
     }
   }
