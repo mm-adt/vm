@@ -58,21 +58,21 @@ object LeftRightSweepRewrite {
   // if no match, then apply the instruction after rewriting its arguments
   private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst[Obj,Obj],traverser:Traverser[S]):List[Obj] ={
     inst.op() match {
+      case Tokens.a | Tokens.as | Tokens.map => inst.args()
       case Tokens.choose =>
-        List(trec(name = Tokens.rec,inst.arg0[ORecType]().value().map(x => (x._1 match { // TODO: merge the two identical key/value pair branches into one
-          case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
-          case branchValue:Value[_] => branchValue
-        },x._2 match {
-          case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
-          case branchValue:Value[_] => branchValue
-        }))))
-      case Tokens.a => inst.args()
-      case Tokens.as => inst.args()
-      case Tokens.map => inst.args()
+        def branching(obj:Obj):Obj ={
+          obj match {
+            case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
+            case branchValue:Value[_] => branchValue
+          }
+        }
+        List(trec(name = Tokens.rec,inst.arg0[ORecType]().value().map(x => (branching(x._1),branching(x._2)))))
       case _ => inst.args().map{
         case atype:Type[_] => rewrite(model,atype,start,traverser.split(start)).obj()
         case avalue:Value[_] => avalue
       }
     }
   }
+
+
 }
