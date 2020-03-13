@@ -29,7 +29,7 @@ import org.mmadt.language.obj.{IntQ, Obj}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 abstract class OObj(val _name:String,val quantifier:IntQ) extends Obj {
-  override def q():IntQ = quantifier
+  override val q:IntQ = quantifier
   override val name:String = _name
 }
 

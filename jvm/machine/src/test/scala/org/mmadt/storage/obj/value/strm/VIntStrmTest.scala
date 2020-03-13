@@ -31,6 +31,6 @@ import org.scalatest.FunSuite
 class VIntStrmTest extends FunSuite {
 
   test("int strm"){
-    assertResult((int(4),int(4)))(int(1,2,3,4).q())
+    assertResult((int(4),int(4)))(int(1,2,3,4).q)
   }
 }

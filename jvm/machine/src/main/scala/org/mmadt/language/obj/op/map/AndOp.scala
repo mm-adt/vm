@@ -48,7 +48,6 @@ object AndOp {
       trav.split(Traverser.resolveArg(trav,other) match {
         case avalue:BoolValue => trav.obj().and(avalue)
         case atype:BoolType => trav.obj().and(atype)
-        case anon:__ => trav.obj().and(anon[BoolType](trav.obj()))
       })
     }
   }

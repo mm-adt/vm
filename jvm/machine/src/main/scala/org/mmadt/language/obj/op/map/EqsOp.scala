@@ -47,7 +47,6 @@ object EqsOp {
     override def apply(trav:Traverser[O]):Traverser[Bool] ={
       trav.split(Traverser.resolveArg(trav,other) match {
         case avalue:Value[O] => trav.obj().eqs(avalue)
-        case anon:__ => trav.obj().eqs(anon[OType[O]](trav.obj()))
         case atype:Type[O] => trav.obj().eqs(atype)
       })
     }

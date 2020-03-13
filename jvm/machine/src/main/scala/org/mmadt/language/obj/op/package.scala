@@ -20,11 +20,40 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op
+package org.mmadt.language.obj
+
+import org.mmadt.language.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait BranchInstruction {
+package object op {
+
+  trait BarrierInstruction
+
+  trait BranchInstruction
+
+  trait FilterInstruction {
+    def keep(obj:Obj):Boolean = !(obj.q._1.value() == 0 && obj.q._2.value() == 0)
+  }
+
+  trait FlatmapInstruction
+
+  trait InitialInstruction
+
+  trait MapInstruction
+
+  trait QuantifierInstruction
+
+  trait ReduceInstruction[O <: Obj] {
+    val seed     :(String,O)
+    val reduction:Type[O]
+  }
+
+  trait SideEffectInstruction
+
+  trait TerminalInstruction
+
+  trait TraverserInstruction
 
 }

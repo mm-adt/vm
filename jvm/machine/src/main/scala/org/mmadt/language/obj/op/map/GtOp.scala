@@ -47,7 +47,6 @@ object GtOp {
     override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(Traverser.resolveArg(trav,other) match {
       case avalue:Value[O] => trav.obj().gt(avalue)
       case atype:Type[O] => trav.obj().gt(atype)
-      case anon:__ => trav.obj().gt(anon[Type[O]](trav.obj()))
     })
   }
 

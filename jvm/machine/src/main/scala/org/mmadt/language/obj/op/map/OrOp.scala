@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{BoolType, __}
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Bool, Inst, Obj}
 import org.mmadt.processor.Traverser
@@ -48,7 +48,6 @@ object OrOp {
       trav.split(Traverser.resolveArg(trav,other) match {
         case avalue:BoolValue => trav.obj().or(avalue)
         case atype:BoolType => trav.obj().or(atype)
-        case anon:__ => trav.obj().or(anon[BoolType](trav.obj().asInstanceOf[BoolType]))
       })
     }
   }

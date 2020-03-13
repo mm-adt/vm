@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.op.QuantifierInstruction
 import org.mmadt.language.obj.{Inst, Int, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
@@ -38,7 +39,7 @@ trait QOp {
 object QOp {
   def apply():Inst[Obj,Int] = new QInst
 
-  class QInst extends VInst[Obj,Int]((Tokens.q,Nil)) {
+  class QInst extends VInst[Obj,Int]((Tokens.q,Nil)) with QuantifierInstruction {
     override def apply(trav:Traverser[Obj]):Traverser[Int] = trav.split(trav.obj().quant())
   }
 

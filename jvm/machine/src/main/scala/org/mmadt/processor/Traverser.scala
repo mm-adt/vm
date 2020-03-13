@@ -59,7 +59,7 @@ trait Traverser[+S <: Obj] {
 object Traverser {
   // traverser utility methods
   def stateSplit[S <: Obj](label:String,obj:Obj)(traverser:Traverser[S]):Traverser[S] = traverser.split(traverser.obj(),traverser.state + (label -> obj))
-  def qSplit[S <: Obj](traverser:Traverser[S]):Traverser[IntValue] = traverser.split(int(traverser.obj().q()._1.value()))
+  def qSplit[S <: Obj](traverser:Traverser[S]):Traverser[IntValue] = traverser.split(int(traverser.obj().q._1.value()))
   def resolveArg[S <: Obj,E <: Obj](traverser:Traverser[S],arg:E):E ={
     (arg match {
       case anon:__ => anon(traverser.obj().asInstanceOf[Type[_]].range)

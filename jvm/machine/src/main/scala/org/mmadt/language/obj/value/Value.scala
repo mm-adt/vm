@@ -36,8 +36,8 @@ trait Value[+V <: Obj] extends Obj {
   def value():Any
   def start():OType[V]
 
-  override def quant():Int = this.q()._1.q(qOne)
-  override def count():IntValue = this.q()._1.q(qOne)
+  override def quant():Int = this.q._1.q(qOne)
+  override def count():IntValue = this.q._1.q(qOne)
   override def id():this.type = this
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this ==> atype
   override def from[O <: Obj](label:StrValue):O = this.start().from(label)

@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.processor.Traverser
@@ -47,7 +47,6 @@ object MultOp {
     override def apply(trav:Traverser[O]):Traverser[O] ={
       trav.split(Traverser.resolveArg(trav,other) match {
         case avalue:Value[O] => trav.obj().mult(avalue)
-        case anon:__ => trav.obj().mult(anon[Type[O]](trav.obj()))
         case atype:Type[O] => trav.obj().mult(atype)
       })
     }

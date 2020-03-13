@@ -28,7 +28,6 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,7 +48,7 @@ class IteratorProcessor extends Processor {
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
         //////////////OTHER//////////////
         case _:Inst[Obj,Obj] => output
-          .map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]])
+          .map(_.apply(tt._1.compose(tt._1,tt._2)))
           .flatMap(x => x.obj() match {
             case strm:Strm[E] => strm.value().map(y => x.split(y))
             case single:E => Iterator(x.split(single))
@@ -57,7 +56,7 @@ class IteratorProcessor extends Processor {
       }
     }
     Processor.strmOrSingle(output.map(x => {
-      TypeChecker.typeCheck(x.obj(),if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q()._2) else rangeType.range) // iterator processor linearizes the stream
+      TypeChecker.typeCheck(x.obj(),if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q._2) else rangeType.range) // iterator processor linearizes the stream
       x.obj()
     }))
   }

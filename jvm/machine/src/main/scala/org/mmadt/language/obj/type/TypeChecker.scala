@@ -62,7 +62,11 @@ object TypeChecker {
   }
   def matchesTV[O <: Obj](obj:Type[O],pattern:Value[O]):Boolean = false
 
-  private def matchesInst(a:Inst[_,_],b:Inst[_,_]) = a.value()._1.equals(b.value()._1) && a.value()._2.zip(b.value()._2).map(a => a._1.test(a._2)).fold(a.args().length == b.args().length)(_ && _)
+  private def matchesInst(a:Inst[_,_],b:Inst[_,_]) =
+    a.value()._1.equals(b.value()._1) &&
+    a.value()._2.zip(b.value()._2).
+      map(a => a._1.test(a._2)).
+      fold(a.args().length == b.args().length)(_ && _)
 
   ////////////////////////////////////////////////////////
 

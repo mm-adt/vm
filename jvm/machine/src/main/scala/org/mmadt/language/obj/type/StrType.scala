@@ -38,7 +38,7 @@ trait StrType extends Str
   with Type[Str]
   with ObjType {
 
-  def apply(value:StrValue):StrValue = new VStr(this.name,value.value(),this.q())
+  def apply(value:StrValue):StrValue = new VStr(this.name,value.value(),this.q)
 
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
   override def eqs(other:Type[Str]):BoolType = this.compose(bool,EqsOp(other))
@@ -47,8 +47,8 @@ trait StrType extends Str
   override def plus(other:Value[Str]):this.type = this.compose(PlusOp(other))
   override def gt(other:Type[Str]):BoolType = this.compose(bool,GtOp(other))
   override def gt(other:Value[Str]):BoolType = this.compose(bool,GtOp(other))
-  override def is(bool:BoolType):StrType = this.compose(IsOp(bool)).q(minZero(this.q()))
-  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q()))
+  override def is(bool:BoolType):StrType = this.compose(IsOp(bool)).q(minZero(this.q))
+  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q))
 }
 
 

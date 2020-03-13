@@ -47,9 +47,9 @@ package object obj {
   // quantifier utilities
   private lazy val zero:IntValue = int(0)
   def minZero(quantifier:IntQ):IntQ = (zero,quantifier._2)
-  def multQ(objA:Obj,objB:Obj):IntQ = objB.q() match {
-    case _ if equals(qOne) => objA.q()
-    case quantifier:IntQ => (objA.q()._1 * quantifier._1,objA.q()._2 * quantifier._2)
+  def multQ(objA:Obj,objB:Obj):IntQ = objB.q match {
+    case _ if equals(qOne) => objA.q
+    case quantifier:IntQ => (objA.q._1 * quantifier._1,objA.q._2 * quantifier._2)
   }
   def multQ(qA:IntQ,qB:IntQ):IntQ = qB match {
     case _ if equals(qOne) => qA
@@ -57,12 +57,12 @@ package object obj {
   }
 
   def withinQ(objA:Obj,objB:Obj):Boolean ={
-    objA.q()._1.value() >= objB.q()._1.value() &&
-    objA.q()._2.value() <= objB.q()._2.value()
+    objA.q._1.value() >= objB.q._1.value() &&
+    objA.q._2.value() <= objB.q._2.value()
   }
   def eqQ(objA:Obj,objB:Obj):Boolean ={
-    val aQ = objA.q()
-    val bQ = objB.q()
+    val aQ = objA.q
+    val bQ = objB.q
     (aQ,bQ) match {
       case (null,null) => true
       case (null,y) if y._1.value() == 1 && y._2.value() == 1 => true

@@ -37,7 +37,7 @@ trait IntType extends Int
   with Type[Int]
   with ObjType {
 
-  def apply(value:IntValue):IntValue = new VInt(this.name,value.value(),this.q())
+  def apply(value:IntValue):IntValue = new VInt(this.name,value.value(),this.q)
 
 
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
@@ -51,8 +51,8 @@ trait IntType extends Int
   override def gt(other:Value[Int]):BoolType = this.compose(bool,GtOp(other))
   override def eqs(other:Type[Int]):BoolType = this.compose(bool,EqsOp(other))
   override def eqs(other:Value[Int]):BoolType = this.compose(bool,EqsOp(other))
-  override def is(bool:BoolType):IntType = this.compose(IsOp(bool)).q(minZero(this.q()))
-  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q()))
+  override def is(bool:BoolType):IntType = this.compose(IsOp(bool)).q(minZero(this.q))
+  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q))
   override def zero():IntType = this.compose(ZeroOp())
 }
 

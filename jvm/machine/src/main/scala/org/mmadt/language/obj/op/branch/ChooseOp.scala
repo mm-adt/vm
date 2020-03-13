@@ -50,10 +50,10 @@ trait ChooseOp {
         branches.value().find(p => p._1 match {
           case btype:Type[IT] with IT => (avalue ===> btype).toStrm.value().hasNext
           case bvalue:Value[IT] with IT => avalue.test(bvalue)
-        }).map(_._2.q(avalue.q())).getOrElse(avalue.q(qZero))
+        }).map(_._2.q(avalue.q)).getOrElse(avalue.q(qZero))
         match {
           case btype:Type[OT] with OT => avalue ===> btype // TODO: ===> should generate streams, not iterators
-          case bvalue:Value[OT] with OT => bvalue.q(avalue.q())
+          case bvalue:Value[OT] with OT => bvalue.q(avalue.q)
         }
     }
   }
@@ -76,7 +76,7 @@ trait ChooseOp {
     (types.toSet.size match {
       case 1 => types.head
       case _ => new TObj().asInstanceOf[OT]
-    }).q(types.map(x => x.q()).reduce((a,b) => (
+    }).q(types.map(x => x.q).reduce((a,b) => (
       int(Math.min(a._1.value(),b._1.value())),
       int(Math.max(a._2.value(),b._2.value()))))) // the quantification is the largest span of the all the branch ranges
   }

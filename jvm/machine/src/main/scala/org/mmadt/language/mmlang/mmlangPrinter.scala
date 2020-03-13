@@ -59,12 +59,12 @@ object mmlangPrinter {
     val range  = (atype match {
       case arec:RecType[Obj,Obj] => if (Tokens.named(atype.name)) atype.name else Tokens.rec + mapString(arec.value())
       case _ => atype.name
-    }) + qString(atype.q())
+    }) + qString(atype.q)
     val domain = if (atype.insts.isEmpty) Tokens.empty else {
       (atype.insts.head._1 match {
         case arec:RecType[Obj,Obj] => if (Tokens.named(arec.name)) arec.name else Tokens.rec + mapString(arec.value())
         case btype:Type[Obj] => btype.name
-      }) + qString(atype.insts.head._1.q())
+      }) + qString(atype.insts.head._1.q)
     }
     (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.insts.head._1.alive()) domain else Tokens.empty))) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
   }
@@ -76,7 +76,7 @@ object mmlangPrinter {
         case arec:RecValue[ObjValue,ObjValue] => mapString(arec.value())
         case astr:StrValue => SQUOTE + astr.value() + SQUOTE
         case _ => avalue.value()
-      }) + qString(avalue.q())
+      }) + qString(avalue.q)
   }
 
   def instString(inst:Inst[_,_]):String ={
@@ -88,6 +88,6 @@ object mmlangPrinter {
         // case args:List[StrValue] if inst.op().equals(Tokens.as) => LBRACKET + inst.op() + "," + args.head.value() + RBRACKET
         case args:List[Obj] => LBRACKET + inst.op() + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a,b) => a + b).dropRight(1) + RBRACKET
       }
-    }) + qString(inst.q())
+    }) + qString(inst.q)
   }
 }

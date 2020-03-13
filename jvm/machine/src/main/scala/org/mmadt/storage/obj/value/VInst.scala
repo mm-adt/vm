@@ -39,8 +39,9 @@ class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends Ab
   override def q(quantifier:IntQ):this.type = new VInst(java,quantifier).asInstanceOf[this.type]
   override def id():this.type = this
   override def apply(trav:Traverser[S]):Traverser[E] = trav.asInstanceOf[Traverser[E]]
-  override def count():IntValue = this.q()._2
-  override def quant():IntValue = this.q()._2
+  override def count():IntValue = this.q._2
+  override val q:IntQ = quantifier
+  override def quant():IntValue = this.q._2
   override def =:[O <: Obj](op:String)(args:Obj*):O = args.head.asInstanceOf[O]
   override def error(message:String):this.type = throw new RuntimeException("error: " + message)
 

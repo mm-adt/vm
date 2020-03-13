@@ -49,12 +49,12 @@ trait Type[+T <: Obj] extends Obj
   val insts:List[(Type[Obj],Inst[Obj,Obj])]
   lazy val canonical:this.type = this.range.q(qOne)
   lazy val range    :this.type = (this match {
-    case _:BoolType => tbool(this.name,this.q(),Nil)
-    case _:IntType => tint(this.name,this.q(),Nil)
-    case _:StrType => tstr(this.name,this.q(),Nil)
-    case arec:RecType[_,_] => trec(arec.name,arec.value(),arec.q(),Nil)
+    case _:BoolType => tbool(this.name,this.q,Nil)
+    case _:IntType => tint(this.name,this.q,Nil)
+    case _:StrType => tstr(this.name,this.q,Nil)
+    case arec:RecType[_,_] => trec(arec.name,arec.value(),arec.q,Nil)
     case _:__ => this
-    case _:ObjType => tobj(this.name,this.q(),Nil)
+    case _:ObjType => tobj(this.name,this.q,Nil)
   }).asInstanceOf[this.type]
 
   def domain[D <: Obj]():Type[D] = (this.insts match {
@@ -79,7 +79,7 @@ trait Type[+T <: Obj] extends Obj
     }).asInstanceOf[R]
 
   // type specification and compilation
-  final def <=[D <: Obj](domainType:Type[D]):this.type = domainType.compose(this).q(this.q()).asInstanceOf[this.type]
+  final def <=[D <: Obj](domainType:Type[D]):this.type = domainType.compose(this).q(this.q).asInstanceOf[this.type]
   override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,InstUtil.resolveAnonymous(this,rangeType))
   def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,InstUtil.resolveAnonymous(this,rangeType))
 
@@ -112,16 +112,16 @@ trait Type[+T <: Obj] extends Obj
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
   override def quant():IntType = this.compose(tint(),QOp())
-  override def =:[O <: Obj](op:String)(args:Obj*):O = OpInstResolver.resolve(op,args.toList).apply(Traverser.standard(this)).obj().asInstanceOf[O]
+  override def =:[O <: Obj](op:String)(args:Obj*):O = OpInstResolver.resolve(op,args.toList).apply(Traverser.standard(this)).obj()
   override def error(message:String):this.type = this.compose(ErrorOp(message))
 
   def named(_name:String):this.type = (this match {
-    case _:BoolType => tbool(_name,this.q(),Nil)
-    case _:IntType => tint(_name,this.q(),Nil)
-    case _:StrType => tstr(_name,this.q(),Nil)
-    case arec:RecType[_,_] => trec(_name,arec.value(),arec.q(),Nil)
+    case _:BoolType => tbool(_name,this.q,Nil)
+    case _:IntType => tint(_name,this.q,Nil)
+    case _:StrType => tstr(_name,this.q,Nil)
+    case arec:RecType[_,_] => trec(_name,arec.value(),arec.q,Nil)
     case _:__ => this
-    case _:ObjType => tobj(_name,this.q(),Nil)
+    case _:ObjType => tobj(_name,this.q,Nil)
   }).asInstanceOf[this.type]
 
   // pattern matching methods
@@ -132,7 +132,7 @@ trait Type[+T <: Obj] extends Obj
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printType(this)
-  override def hashCode():scala.Int = this.name.hashCode ^ this.q().hashCode() ^ this.insts.hashCode()
+  override def hashCode():scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.insts.hashCode()
   override def equals(other:Any):Boolean = other match {
     case anon:__ => anon.toString.equals(this.toString) // TODO: get __ better aligned with Type
     case atype:Type[Obj] => this.name == atype.name && eqQ(this,atype) && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))

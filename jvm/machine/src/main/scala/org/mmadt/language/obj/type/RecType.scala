@@ -38,8 +38,8 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   with Type[Rec[A,B]]
   with ObjType {
 
-  def apply(value:(Value[A],Value[B])*):RecValue[Value[A],Value[B]] = new VRec[Value[A],Value[B]](this.name,value.toMap,this.q())
-  def apply(value:RecValue[Value[A],Value[B]]):RecValue[Value[A],Value[B]] = new VRec[Value[A],Value[B]](this.name,value.value(),this.q())
+  def apply(value:(Value[A],Value[B])*):RecValue[Value[A],Value[B]] = new VRec[Value[A],Value[B]](this.name,value.toMap,this.q)
+  def apply(value:RecValue[Value[A],Value[B]]):RecValue[Value[A],Value[B]] = new VRec[Value[A],Value[B]](this.name,value.value(),this.q)
   def value():Map[A,B]
 
   override def eqs(other:Type[Rec[A,B]]):BoolType = this.compose(bool,EqsOp(other))
@@ -47,15 +47,15 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
   override def get[BB <: Obj](key:A,btype:BB):BB = this.compose(btype,GetOp(key))
   override def get(key:A):B = this.compose(this.value()(key),GetOp[A,B](key))
-  override def put(key:A,value:B):RecType[A,B] = this.compose(trec(this.name,this.value() + (key -> value),this.q(),this.insts),PutOp(key,value))
-  override def plus(other:Type[Rec[A,B]]):RecType[A,B] = this.compose(trec(name,this.value() ++ other.asInstanceOf[RecType[A,B]].value(),this.q(),this.insts),PlusOp(other))
-  override def plus(other:Value[Rec[A,B]]):this.type = this.compose(trec(name,this.value() ++ other.asInstanceOf[RecValue[_,_]].value().asInstanceOf[Map[A,B]],this.q(),this.insts),PlusOp(other)).asInstanceOf[this.type]
-  override def is(bool:BoolType):RecType[A,B] = this.compose(IsOp(bool)).q(minZero(this.q()))
-  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q()))
+  override def put(key:A,value:B):RecType[A,B] = this.compose(trec(this.name,this.value() + (key -> value),this.q,this.insts),PutOp(key,value))
+  override def plus(other:Type[Rec[A,B]]):RecType[A,B] = this.compose(trec(name,this.value() ++ other.asInstanceOf[RecType[A,B]].value(),this.q,this.insts),PlusOp(other))
+  override def plus(other:Value[Rec[A,B]]):this.type = this.compose(trec(name,this.value() ++ other.asInstanceOf[RecValue[_,_]].value().asInstanceOf[Map[A,B]],this.q,this.insts),PlusOp(other)).asInstanceOf[this.type]
+  override def is(bool:BoolType):RecType[A,B] = this.compose(IsOp(bool)).q(minZero(this.q))
+  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q))
 
-  override def hashCode():scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.insts.hashCode() ^ this.q().hashCode()
+  override def hashCode():scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.insts.hashCode() ^ this.q.hashCode()
   override def equals(other:Any):Boolean = other match {
-    case atype:RecType[A,B] => this.name == atype.name && this.q() == atype.q() && this.value() == atype.value() && this.insts.map(_._2) == atype.insts.map(_._2)
+    case atype:RecType[A,B] => this.name == atype.name && this.q == atype.q && this.value() == atype.value() && this.insts.map(_._2) == atype.insts.map(_._2)
     case _ => false
   }
 }

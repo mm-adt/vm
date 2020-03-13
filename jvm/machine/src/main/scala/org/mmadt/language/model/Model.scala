@@ -51,9 +51,9 @@ trait Model {
 
   def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
     val namedType:O = (definition match {
-      case _:BoolType => new TBool(name,definition.q(),Nil)
-      case _:IntType => new TInt(name,definition.q(),Nil)
-      case rec:RecType[Obj,Obj] => new TRec[Obj,Obj](name,rec.value(),definition.q(),Nil)
+      case _:BoolType => new TBool(name,definition.q,Nil)
+      case _:IntType => new TInt(name,definition.q,Nil)
+      case rec:RecType[Obj,Obj] => new TRec[Obj,Obj](name,rec.value(),definition.q,Nil)
     }).asInstanceOf[O]
     this.put(namedType.asInstanceOf[Type[Obj]],definition)
     namedType

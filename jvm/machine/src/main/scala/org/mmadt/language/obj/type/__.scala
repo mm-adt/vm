@@ -34,10 +34,10 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,_quantifier:IntQ = qOne) extends Type[__] {
+class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOne) extends Type[__] {
   override val name :String                 = Tokens.empty
   override val insts:List[(Type[Obj],Inst[Obj,Obj])] = this._insts
-  override def q():(IntValue,IntValue) = this._quantifier
+  override val q:(IntValue,IntValue) = this._quantifier
   override def q(quantifier:IntQ):this.type = new __(this._insts,quantifier).asInstanceOf[this.type]
 
 
