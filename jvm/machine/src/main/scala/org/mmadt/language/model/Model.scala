@@ -40,6 +40,7 @@ trait Model {
   def get(left:Type[Obj]):Option[Type[Obj]]
   def get(left:String):Option[Type[Obj]]
   def resolve[E <: Obj](obj:E):E ={
+    if (obj.name.equals(Tokens.model)) return recType.asInstanceOf[E]
     obj match {
       case atype:Type[Obj] => this.get(atype.range.name) match {
         case Some(btype) => atype.compose(btype,NoOp()).asInstanceOf[E]
@@ -89,6 +90,7 @@ object Model {
       this
     }
     override def get(left:Type[Obj]):Option[Type[Obj]] ={
+      if (left.name.equals(Tokens.model)) return Option(recType)
       val x:mutable.Map[Type[Obj],Type[Obj]] = typeMap.get(left.name) match {
         case None => return None
         case Some(m) => m
@@ -106,7 +108,7 @@ object Model {
       }
     }
     override def recType:RecType[Type[Obj],Type[Obj]] ={
-      this.typeMap.values.flatten.toMap.map(x => trec(value = x).named(Tokens.model)).iterator.next()
+      trec[Type[Obj],Type[Obj]](value = this.typeMap.values.foldRight(Map[Type[Obj],Type[Obj]]())((a,b) => b ++ a.toMap))
     }
   }
 }

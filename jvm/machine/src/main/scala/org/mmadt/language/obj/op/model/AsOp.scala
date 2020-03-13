@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AsOp {
-  def as[O <: Obj](obj:O):O // TODO: spec to StrValue
+  def as[O <: Obj](obj:O):O
 }
 
 object AsOp {
@@ -49,14 +49,18 @@ object AsOp {
               vrec(rectype.name,rectype.value().map(x =>
                 (x._1 match {
                   case kvalue:Value[Obj] => kvalue
-                  case ktype:Type[Obj] => trav.apply(Type.resolveAnonymous(trav.obj(),ktype)).obj().asInstanceOf[Value[Obj]]
+                  case ktype:Type[Obj] =>
+                    TypeChecker.matchesVT(avalue,ktype)
+                    trav.apply(Type.resolveAnonymous(trav.obj(),ktype)).obj().asInstanceOf[Value[Obj]]
                 }) -> (x._2 match {
                   case vvalue:Value[Obj] => vvalue
-                  case vtype:Type[Obj] => trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
+                  case vtype:Type[Obj] =>
+                    TypeChecker.matchesVT(avalue,vtype)
+                    trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
                 })),avalue.q)
             }
-          case _:Str => trav.split(vstr(value = avalue.value.toString)).apply(atype).obj()
-          case _:Int => trav.split(vint(value = Integer.valueOf(avalue.value.toString).longValue())).apply(atype).obj()
+          case _:Str => trav.split(vstr(name = atype.name,value = avalue.value.toString)).apply(atype).obj()
+          case _:Int => trav.split(vint(name = atype.name,value = Integer.valueOf(avalue.value.toString).longValue())).apply(atype).obj()
           case _ => trav.apply(atype).obj()
         }
         case (obj:Obj,avalue:Value[Obj]) => avalue.q(multQ(avalue,obj))

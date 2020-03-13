@@ -119,20 +119,20 @@ object StorageFactory {
 
   def asType[O <: Obj](obj:O):Type[O] = (obj match {
     case atype:Type[O] => return atype
-    case _:IntValue | _:IntStrm => int
-    case _:StrValue | _:StrStrm => str
-    case _:BoolValue | _:BoolStrm => bool
-    case _:ORecStrm => rec
-    case recval:ORecValue => trec(value = recval.value)
-  }).asInstanceOf[Type[O]].q(obj.q)
+    case _:IntValue | _:IntStrm => tint(name = obj.name,q = obj.q)
+    case _:StrValue | _:StrStrm => tstr(name = obj.name,q = obj.q)
+    case _:BoolValue | _:BoolStrm => tbool(name = obj.name,q = obj.q)
+    case _:ORecStrm => trec(name = obj.name,value = Map.empty,q = obj.q)
+    case recval:ORecValue => trec(name = recval.name,value = recval.value,q = obj.q)
+  }).asInstanceOf[Type[O]]
 
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {
     /////////TYPES/////////
     override def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType = new TObj(name,q,insts)
     override def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType = new TBool(name,q,insts)
-    override def tint(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):IntType = new TInt(name,q,insts)
-    override def tstr(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):StrType = new TStr(name,q,insts)
-    override def trec[A <: Obj,B <: Obj](name:String = Tokens.bool,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B] = new TRec[A,B](name,value,q,insts)
+    override def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil):IntType = new TInt(name,q,insts)
+    override def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil):StrType = new TStr(name,q,insts)
+    override def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B] = new TRec[A,B](name,value,q,insts)
     override def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B]((value +: values).toMap)
     /////////VALUES/////////
     override def obj(value:Any):ObjValue = new VObj(value)

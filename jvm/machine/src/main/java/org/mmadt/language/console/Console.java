@@ -108,7 +108,7 @@ public class Console {
                 } else if (line.startsWith(MODEL_OP) && new File(line.substring(6).trim()).exists())
                     engine.put(MODEL, loadFiles(terminal, engine, line.substring(6).trim()));
                 else if (line.startsWith(MODEL_OP))
-                    engine.put(MODEL, Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(line.substring(6)).next()));
+                    engine.put(MODEL, ((Model) engine.get(MODEL)).put(Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(line.substring(6)).next())));
                 else
                     JavaConverters.asJavaIterator(engine.eval(line).toStrm().value()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {
