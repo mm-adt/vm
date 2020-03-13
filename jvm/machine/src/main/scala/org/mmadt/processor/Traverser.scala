@@ -82,7 +82,7 @@ object Traverser {
     override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
       (Type.nextInst(rangeType) match {
         case None => return this.asInstanceOf[Traverser[E]]
-        case Some(inst:Inst[Obj,Obj]) => inst.apply(this).asInstanceOf[Traverser[E]]
+        case Some(inst:Inst[Obj,E]) => inst.apply(this)
       }).apply(rangeType.linvert())
     }
   }

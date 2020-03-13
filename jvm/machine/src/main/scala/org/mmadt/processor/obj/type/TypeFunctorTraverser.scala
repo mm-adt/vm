@@ -37,14 +37,14 @@ class TypeFunctorTraverser[S <: Obj](val obj:S,val state:State,val model:Model =
     new TypeFunctorTraverser[E](model.resolve(obj),state,this.model)
   override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
     val next:Traverser[E] = model.get(obj.asInstanceOf[Type[Obj]].domain()) match {
-      case Some(atype) => this.split[E](atype.asInstanceOf[E].q(obj.q))
+      case Some(atype:E) => this.split[E](atype.q(obj.q))
       case None => this.asInstanceOf[Traverser[E]]
     }
     (Type.nextInst(rangeType) match {
       case None =>
         assert(rangeType.domain() == rangeType.range)
         return next
-      case Some(inst) => inst.apply(next).asInstanceOf[Traverser[E]]
+      case Some(inst:Inst[Obj,E]) => inst.apply(next)
     }).apply(rangeType.linvert())
   }
 }
