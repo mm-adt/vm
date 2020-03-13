@@ -34,7 +34,7 @@ package object op {
   trait BranchInstruction
 
   trait FilterInstruction {
-    def keep(obj:Obj):Boolean = !(obj.q._1.value() == 0 && obj.q._2.value() == 0)
+    def keep(obj:Obj):Boolean = !(obj.q._1.value == 0 && obj.q._2.value == 0)
   }
 
   trait FlatmapInstruction

@@ -49,9 +49,9 @@ object FromOp {
     override def apply(trav:Traverser[Obj]):Traverser[O] ={
       trav.split(composeInstruction(
         if (null != default)
-          trav.state.getOrElse(arg0[StrValue]().value(),default).asInstanceOf[O]
+          trav.state.getOrElse(arg0[StrValue]().value,default).asInstanceOf[O]
         else {
-          trav.state.getOrElse(arg0[StrValue]().value(),asType(trav.obj())).asInstanceOf[O]
+          trav.state.getOrElse(arg0[StrValue]().value,asType(trav.obj())).asInstanceOf[O]
         }))
     }
   }

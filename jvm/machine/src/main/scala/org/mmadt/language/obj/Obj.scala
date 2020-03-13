@@ -57,10 +57,10 @@ trait Obj
 
   // utility methods
   def toStrm:Strm[this.type] = strm[this.type](Iterator[this.type](this))
-  def toList:List[this.type] = toStrm.value().toList
-  def toSet:Set[this.type] = toStrm.value().toSet
-  def next():this.type = toStrm.value().next()
-  def ==>[E <: Obj](rangeType:Type[E]):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType)).toStrm.value().next()
+  def toList:List[this.type] = toStrm.value.toList
+  def toSet:Set[this.type] = toStrm.value.toSet
+  def next():this.type = toStrm.value.next()
+  def ==>[E <: Obj](rangeType:Type[E]):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType)).toStrm.value.next()
   def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: spec'd to R cause of FoldOp
 
   // pattern matching methods

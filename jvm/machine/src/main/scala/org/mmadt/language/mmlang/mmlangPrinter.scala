@@ -44,10 +44,10 @@ object mmlangPrinter {
     case (x,y) if x == y => s"${LCURL}${x}${RCURL}"
     case (x,y) if y == int(Long.MaxValue) => "{" + x + ",}"
     case (x,y) if x == int(Long.MinValue) => "{," + y + "}"
-    case _ => "{" + x._1.value() + "," + x._2.value() + "}"
+    case _ => "{" + x._1.value + "," + x._2.value + "}"
   }
 
-  def strmString(strm:Strm[Obj]):String = strm.value().foldLeft(Tokens.empty)((a,b) => a + b + COMMA).dropRight(1)
+  def strmString(strm:Strm[Obj]):String = strm.value.foldLeft(Tokens.empty)((a,b) => a + b + COMMA).dropRight(1)
 
   def traverserString(trav:Traverser[_]):String ={
     "[" + trav.obj() + "|" + trav.state.foldLeft(EMPTY)((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
@@ -73,15 +73,15 @@ object mmlangPrinter {
     val named = Tokens.named(avalue.name)
     (if (named) avalue.name + COLON else EMPTY) + (
       avalue match {
-        case arec:RecValue[ObjValue,ObjValue] => mapString(arec.value())
-        case astr:StrValue => SQUOTE + astr.value() + SQUOTE
-        case _ => avalue.value()
+        case arec:RecValue[ObjValue,ObjValue] => mapString(arec.value)
+        case astr:StrValue => SQUOTE + astr.value + SQUOTE
+        case _ => avalue.value
       }) + qString(avalue.q)
   }
 
   def instString(inst:Inst[_,_]):String ={
     (inst.op() match {
-      case Tokens.to | Tokens.from => LANGLE + inst.arg0[StrValue]().value() + RANGLE
+      case Tokens.to | Tokens.from => LANGLE + inst.arg0[StrValue]().value + RANGLE
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj,Obj]]().value(),PIPE) + RBRACKET
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET

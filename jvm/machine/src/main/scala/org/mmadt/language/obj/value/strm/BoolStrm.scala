@@ -30,6 +30,6 @@ import org.mmadt.language.obj.value.BoolValue
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolStrm extends Strm[Bool] {
-  override def value():Iterator[BoolValue]
+  override val value:Iterator[BoolValue]
   override def start():BoolType
 }

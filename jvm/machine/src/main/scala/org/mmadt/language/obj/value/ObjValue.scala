@@ -35,5 +35,4 @@ trait ObjValue extends Obj
 
   override def start():ObjType
   //def value(java:Any):this.type
-  override def value():Any
 }

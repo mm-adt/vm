@@ -30,12 +30,11 @@ import org.mmadt.language.obj.{OStrm, OType, Obj}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VSingletonStrm[O <: Obj](obj:O) extends Strm[O] {
-  override def value():Iterator[O] = Iterator.single(obj)
+  override val value:Iterator[O] = Iterator.single(obj)
   override def start():OType[O] = obj.q(0).asInstanceOf[OType[O]]
   override val q:(IntValue,IntValue) = obj.q
   override def q(quantifier:(IntValue,IntValue)):this.type = this
   override val name:String = obj.name
-  override def as[O2 <: Obj](obj:O2):O2 = obj.as(obj)
 }
 
 object VSingletonStrm {

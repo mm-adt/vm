@@ -55,7 +55,7 @@ class mmkvStorageProvider extends StorageProvider {
   }
 
   class mmkvInst(fileStr:StrValue) extends VInst[Obj,Rec[StrValue,Obj]]((emmkv,List(fileStr))) {
-    val file:String = fileStr.value()
+    val file:String = fileStr.value
     def peekType(file:String):Map[StrValue,Obj] ={
       val source = Source.fromFile(file)
       try source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().value().asInstanceOf[Map[StrValue,Obj]]
@@ -65,7 +65,7 @@ class mmkvStorageProvider extends StorageProvider {
       trav.split(trav.obj() match {
         case _:Value[Obj] =>
           val source = Source.fromFile(file)
-          try vrec(source.getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,ObjValue]].toStrm.value())).asInstanceOf[Rec[StrValue,Obj]]
+          try vrec(source.getLines().drop(1).flatMap(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,ObjValue]].toStrm.value)).asInstanceOf[Rec[StrValue,Obj]]
           finally source.close()
         case atype:Type[Obj] => atype.compose(trec(name = "mmkv",value = peekType(file)),new mmkvInst(file)).q(*)
       })

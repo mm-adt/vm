@@ -38,12 +38,12 @@ object TypeChecker {
      (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
      obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
      (obj.isInstanceOf[ORecValue] &&
-      testRecord(obj.asInstanceOf[ORecValue].value().asInstanceOf[Map[Obj,Obj]],pattern.asInstanceOf[ORecType].value()))) && // structural type checking on records
+      testRecord(obj.asInstanceOf[ORecValue].value.asInstanceOf[Map[Obj,Obj]],pattern.asInstanceOf[ORecType].value()))) && // structural type checking on records
     withinQ(obj,pattern) // must be within the type's quantified window
   }
 
   def matchesVV[O <: Obj](obj:Value[O],pattern:Value[O]):Boolean =
-    obj.value().equals(pattern.value()) &&
+    obj.value.equals(pattern.value) &&
     withinQ(obj,pattern)
 
   def matchesTT[O <: Obj](obj:Type[O],pattern:Type[O]):Boolean ={

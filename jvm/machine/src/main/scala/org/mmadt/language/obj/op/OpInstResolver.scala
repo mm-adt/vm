@@ -76,10 +76,10 @@ object OpInstResolver {
           case obj:Obj => FromOp(label,obj).asInstanceOf[Inst[S,E]]
         }
       case Tokens.fold => args.tail.tail.head match {
-        case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x).asInstanceOf[Inst[S,E]]
-        case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value(),args.tail.head),x).asInstanceOf[Inst[S,E]]
+        case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x).asInstanceOf[Inst[S,E]]
+        case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x).asInstanceOf[Inst[S,E]]
       }
-      case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].value()).asInstanceOf[Inst[S,E]]
+      case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].value).asInstanceOf[Inst[S,E]]
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue]).asInstanceOf[Inst[S,E]]
       case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[S,E]])
       case Tokens.id => IdOp().asInstanceOf[Inst[S,E]]

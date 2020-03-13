@@ -48,7 +48,7 @@ trait ChooseOp {
         atype.compose[OT](rangeType,ChooseOp[IT,OT](newBranches))
       case avalue:Value[IT] with IT =>
         branches.value().find(p => p._1 match {
-          case btype:Type[IT] with IT => (avalue ===> btype).toStrm.value().hasNext
+          case btype:Type[IT] with IT => (avalue ===> btype).toStrm.value.hasNext
           case bvalue:Value[IT] with IT => avalue.test(bvalue)
         }).map(_._2.q(avalue.q)).getOrElse(avalue.q(qZero))
         match {
@@ -77,8 +77,8 @@ trait ChooseOp {
       case 1 => types.head
       case _ => new TObj().asInstanceOf[OT]
     }).q(types.map(x => x.q).reduce((a,b) => (
-      int(Math.min(a._1.value(),b._1.value())),
-      int(Math.max(a._2.value(),b._2.value()))))) // the quantification is the largest span of the all the branch ranges
+      int(Math.min(a._1.value,b._1.value)),
+      int(Math.max(a._2.value,b._2.value))))) // the quantification is the largest span of the all the branch ranges
   }
 }
 

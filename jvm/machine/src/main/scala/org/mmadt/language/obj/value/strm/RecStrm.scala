@@ -30,7 +30,7 @@ import org.mmadt.language.obj.{Obj, Rec}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Strm[Rec[A,B]] with Rec[A,B] {
-  override def value():Iterator[RecValue[A,B]]
+  override val value:Iterator[RecValue[A,B]]
   override def start():RecType[A,B]
 
   override def to(label:StrValue):RecType[A,B] = throw new UnsupportedOperationException

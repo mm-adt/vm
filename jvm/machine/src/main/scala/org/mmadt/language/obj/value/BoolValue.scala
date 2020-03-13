@@ -35,17 +35,17 @@ trait BoolValue extends Bool
   with Value[Bool]
   with StartOp[BoolType] {
 
-  override def value():Boolean
+  override val value:Boolean
   override def start():BoolType
   def value(java:Boolean):this.type
 
   override def to(label:StrValue):BoolType = this.start().to(label)
   override def eqs(other:Type[Bool]):BoolType = this.start().eqs(other)
-  override def eqs(other:Value[Bool]):BoolValue = this.value(this.value().equals(other.value()))
+  override def eqs(other:Value[Bool]):BoolValue = this.value(this.value.equals(other.value))
   override def and(bool:BoolType):BoolType = this.start().and(bool)
-  override def and(other:BoolValue):this.type = this.value(this.value() && other.value())
+  override def and(other:BoolValue):this.type = this.value(this.value && other.value)
   override def or(bool:BoolType):BoolType = this.start().or(bool)
-  override def or(other:BoolValue):this.type = this.value(this.value() || other.value())
+  override def or(other:BoolValue):this.type = this.value(this.value || other.value)
   override def is(bool:BoolType):BoolType = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(qZero)
+  override def is(bool:BoolValue):this.type = if (bool.value) this else this.q(qZero)
 }

@@ -31,7 +31,7 @@ import org.scalatest.FunSuite
  */
 class VBoolTest extends FunSuite {
   test("bool value"){
-    assert(btrue.value())
+    assert(btrue.value)
     assertResult(btrue)(btrue || bfalse)
     assertResult(bfalse)(btrue && bfalse)
     assertResult(btrue)(int(4) ==> (int.plus(3).mult(int) ==> int.plus(2).gt(5)).asInstanceOf[BoolType])

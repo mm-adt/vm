@@ -37,7 +37,7 @@ class VInt(name:String,java:Long,quantifier:IntQ) extends AbstractVObj(name,java
   def this(java:Long) = this(Tokens.int,java,VInt.q1)
   def this(name:String,java:Long) = this(name,java,VInt.q1)
 
-  override def value():Long = java
+  override val value:Long = java
   override def value(java:Long):this.type = new VInt(this.name,java,quantifier).asInstanceOf[this.type]
   override def start():IntType = tint(name,quantifier,List((tint(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VInt(name,java,quantifier).asInstanceOf[this.type]

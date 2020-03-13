@@ -33,7 +33,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Value[+V <: Obj] extends Obj {
-  def value():Any
+  val value:Any
   def start():OType[V]
 
   override def as[O<:Obj](obj:O):O = this.asInstanceOf[O]
@@ -58,9 +58,9 @@ trait Value[+V <: Obj] extends Obj {
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printValue(this)
-  override def hashCode():scala.Int = this.name.hashCode ^ this.value().hashCode()
+  override def hashCode():scala.Int = this.name.hashCode ^ this.value.hashCode()
   override def equals(other:Any):Boolean = other match {
-    case avalue:Value[V] => avalue.value() == this.value() && eqQ(this,avalue)
+    case avalue:Value[V] => avalue.value == this.value && eqQ(this,avalue)
     case _ => false
   }
 }

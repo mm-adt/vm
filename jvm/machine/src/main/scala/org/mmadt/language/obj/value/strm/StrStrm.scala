@@ -30,6 +30,6 @@ import org.mmadt.language.obj.value.StrValue
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrStrm extends Strm[Str] {
-  override def value():Iterator[StrValue]
+  override val value:Iterator[StrValue]
   override def start():StrType
 }

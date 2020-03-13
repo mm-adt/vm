@@ -45,8 +45,8 @@ object ToOp {
   class ToInst[O <: Obj](label:StrValue) extends VInst[O,O]((Tokens.to,List(label))) with TraverserInstruction {
     override def apply(trav:Traverser[O]):Traverser[O] ={
       trav.obj() match {
-        case atype:Type[Obj] => trav.split[O](composeInstruction(trav.obj()),state = trav.state + (label.value() -> atype.range))
-        case avalue:Value[Obj] => trav.split[O](trav.obj(),state = trav.state + (label.value() -> avalue))
+        case atype:Type[Obj] => trav.split[O](composeInstruction(trav.obj()),state = trav.state + (label.value -> atype.range))
+        case avalue:Value[Obj] => trav.split[O](trav.obj(),state = trav.state + (label.value -> avalue))
       }
     }
   }

@@ -37,7 +37,7 @@ trait IntType extends Int
   with Type[Int]
   with ObjType {
 
-  def apply(value:IntValue):IntValue = new VInt(this.name,value.value(),this.q)
+  def apply(value:IntValue):IntValue = new VInt(this.name,value.value,this.q)
 
 
   override def to(label:StrValue):this.type = this.compose(ToOp(label))

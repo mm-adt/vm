@@ -57,17 +57,17 @@ package object obj {
   }
 
   def withinQ(objA:Obj,objB:Obj):Boolean ={
-    objA.q._1.value() >= objB.q._1.value() &&
-    objA.q._2.value() <= objB.q._2.value()
+    objA.q._1.value >= objB.q._1.value &&
+    objA.q._2.value <= objB.q._2.value
   }
   def eqQ(objA:Obj,objB:Obj):Boolean ={
     val aQ = objA.q
     val bQ = objB.q
     (aQ,bQ) match {
       case (null,null) => true
-      case (null,y) if y._1.value() == 1 && y._2.value() == 1 => true
-      case (x,null) if x._1.value() == 1 && x._2.value() == 1 => true
-      case (x,y) if x._1.value() == y._1.value() && x._2.value() == y._2.value() => true
+      case (null,y) if y._1.value == 1 && y._2.value == 1 => true
+      case (x,null) if x._1.value == 1 && x._2.value == 1 => true
+      case (x,y) if x._1.value == y._1.value && x._2.value == y._2.value => true
       case _ => false
     }
   }

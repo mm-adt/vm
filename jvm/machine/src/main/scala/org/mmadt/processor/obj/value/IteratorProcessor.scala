@@ -36,7 +36,7 @@ class IteratorProcessor extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
     TypeChecker.typeCheck(domainObj,rangeType.domain())
     var output:Iterator[Traverser[E]] = domainObj match {
-      case strm:Strm[_] => strm.value().map(x => Traverser.standard(x.asInstanceOf[E]))
+      case strm:Strm[_] => strm.value.map(x => Traverser.standard(x.asInstanceOf[E]))
       case single:E => Iterator(Traverser.standard(single))
     }
     for (tt <- Type.createInstList(Nil,rangeType)) {
@@ -50,7 +50,7 @@ class IteratorProcessor extends Processor {
         case _:Inst[Obj,Obj] => output
           .map(_.apply(tt._1.compose(tt._1,tt._2)))
           .flatMap(x => x.obj() match {
-            case strm:Strm[E] => strm.value().map(y => x.split(y))
+            case strm:Strm[E] => strm.value.map(y => x.split(y))
             case single:E => Iterator(x.split(single))
           })
       }

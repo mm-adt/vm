@@ -36,7 +36,7 @@ trait BoolType extends Bool
   with Type[Bool]
   with ObjType {
 
-  def apply(value:BoolValue):BoolValue = new VBool(this.name,value.value(),this.q)
+  def apply(value:BoolValue):BoolValue = new VBool(this.name,value.value,this.q)
 
   override def and(bool:BoolType):BoolType = this.compose(AndOp(bool))
   override def and(bool:BoolValue):this.type = this.compose(AndOp(bool))

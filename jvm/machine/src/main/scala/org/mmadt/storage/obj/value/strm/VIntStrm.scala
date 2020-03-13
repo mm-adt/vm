@@ -37,7 +37,7 @@ import org.mmadt.storage.obj.value.AbstractVObj
 class VIntStrm(name:String,java:Seq[IntValue]) extends AbstractVObj(name,java,quantifier = (int(java.length),int(java.length))) with IntStrm {
   def this(java:Seq[IntValue]) = this(name = Tokens.int,java)
 
-  override def value():Iterator[IntValue] = java.iterator
+  override val value:Iterator[IntValue] = java.iterator
   override def start():IntType = tint(name,quantifier,List((tint(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = this
 }

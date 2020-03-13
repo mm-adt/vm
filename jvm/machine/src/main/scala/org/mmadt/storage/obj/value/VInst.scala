@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
 class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst[S,E] {
   override def as[O <: Obj](obj:O):O = this.asInstanceOf[O]
   def this(java:InstTuple) = this(java,qOne)
-  override def value():InstTuple = java
+  override val value:InstTuple = java
   override def q(quantifier:IntQ):this.type = new VInst(java,quantifier).asInstanceOf[this.type]
   override def id():this.type = this
   override def apply(trav:Traverser[S]):Traverser[E] = trav.asInstanceOf[Traverser[E]]

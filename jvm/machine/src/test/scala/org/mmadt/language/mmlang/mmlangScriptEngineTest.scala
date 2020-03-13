@@ -174,10 +174,10 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("choose with mixed end types"){
-    assertResult(btrue)(engine.eval("  5 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
-    assertResult(int(3))(engine.eval("-1 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
-    assertResult(int(20))(engine.eval("1 [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
-    assertResult(obj)(engine.eval("int[plus,2][int[is>5]->true|[is==1]->[plus,2]|int->20]").next.asInstanceOf[Type[Obj]].range)
+    assertResult(btrue)(engine.eval("  5 [plus,2][[is>5]->true|[is==1]->[plus 2]|int->20]").next)
+    assertResult(int(3))(engine.eval("-1 [plus,2][[is>5]->true|[is==1]->[plus2]|int->20]").next)
+    assertResult(int(20))(engine.eval("1 [plus,2][[is>5]->true|[is==1]->[plus 2]|int->20]").next)
+    assertResult(obj)(engine.eval("int[plus,2][int[is>5]->true|[is==1]->[plus2]|int->20]").next.asInstanceOf[Type[Obj]].range)
     //
     assertResult(btrue.q(int(3)))(engine.eval("             5{3} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)
     assertResult(int(3).q(int(5)))(engine.eval("           -1{5} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").next)

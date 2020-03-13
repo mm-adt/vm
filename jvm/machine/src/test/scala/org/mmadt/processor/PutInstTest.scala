@@ -40,8 +40,8 @@ class PutInstTest extends FunSuite {
     assertResult(rec(str("name") -> str("kuppitz"),str("age") -> int(29)))(markoFull.put(str("name"),str("kuppitz")))
     assertResult(rec(str("name") -> str("marko"),str("age") -> int(28)))(markoFull.put(str("age"),int(28)))
     // test rec key/value ordering
-    assertResult(ListMap(str("name") -> str("kuppitz"),str("age") -> int(29)))(markoFull.put(str("name"),str("kuppitz")).value())
-    assertResult(ListMap(str("name") -> str("marko"),str("age") -> int(28)))(markoFull.put(str("age"),int(28)).value())
+    assertResult(ListMap(str("name") -> str("kuppitz"),str("age") -> int(29)))(markoFull.put(str("name"),str("kuppitz")).value)
+    assertResult(ListMap(str("name") -> str("marko"),str("age") -> int(28)))(markoFull.put(str("age"),int(28)).value)
     assertResult(int(29))(markoFull.get(str("age")))
   }
 }

@@ -35,17 +35,17 @@ trait StrValue extends Str
   with Value[Str]
   with StartOp[StrType] {
 
-  override def value():String
+  override val value:String
   override def start():StrType
   def value(java:String):this.type
 
   override def to(label:StrValue):StrType = this.start().to(label)
   override def eqs(other:Type[Str]):BoolType = this.start().eqs(other)
-  override def eqs(other:Value[Str]):BoolValue = bool(this.value().equals(other.value())).q(this.q)
+  override def eqs(other:Value[Str]):BoolValue = bool(this.value.equals(other.value)).q(this.q)
   override def plus(other:Type[Str]):StrType = this.start().plus(other)
-  override def plus(other:Value[Str]):this.type = this.value(this.value() + other.value())
+  override def plus(other:Value[Str]):this.type = this.value(this.value + other.value)
   override def gt(other:Type[Str]):BoolType = this.start().gt(other)
-  override def gt(other:Value[Str]):BoolValue = bool(this.value() > other.asInstanceOf[StrValue].value()).q(this.q)
+  override def gt(other:Value[Str]):BoolValue = bool(this.value > other.asInstanceOf[StrValue].value).q(this.q)
   override def is(bool:BoolType):StrType = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value()) this else this.q(qZero)
+  override def is(bool:BoolValue):this.type = if (bool.value) this else this.q(qZero)
 }

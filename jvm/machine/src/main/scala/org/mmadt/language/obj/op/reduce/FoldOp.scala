@@ -50,7 +50,7 @@ object FoldOp {
 
     override def apply(trav:Traverser[Obj]):Traverser[A] ={
       val t:Traverser[Obj] = trav.obj() match {
-        case _:Type[Obj] => Traverser.stateSplit[Obj](this.arg0[StrValue]().value(),this.arg1[A]())(trav)
+        case _:Type[Obj] => Traverser.stateSplit[Obj](this.arg0[StrValue]().value,this.arg1[A]())(trav)
         case _ => trav
       }
       t.split(t.obj().fold(seed)(atype match {

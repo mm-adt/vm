@@ -52,7 +52,7 @@ object AsOp {
             case vtype:Type[Obj] => trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
           })),avalue.q)
         case (avalue:IntValue,atype:IntType) => trav.apply(atype).obj()
-        case (avalue:Value[Obj],atype:StrType) => vstr(atype.name,avalue.value().toString,avalue.q)
+        case (avalue:Value[Obj],atype:StrType) => vstr(atype.name,avalue.value.toString,avalue.q)
         case (avalue:Value[Obj],bvalue:Value[Obj]) => bvalue.q(avalue.q)
         case (atype:Type[Obj],btype:Type[Obj]) => atype.as(btype)
       }).asInstanceOf[Traverser[O]]

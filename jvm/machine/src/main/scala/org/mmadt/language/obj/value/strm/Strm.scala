@@ -30,7 +30,7 @@ import org.mmadt.language.obj.value.Value
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Strm[+O <: Obj] extends Value[O] {
-  override def value():Iterator[O]
+  override val value:Iterator[O]
 
   // utility methods
   override def toStrm:Strm[this.type] = this.asInstanceOf[Strm[this.type]]
@@ -39,7 +39,7 @@ trait Strm[+O <: Obj] extends Value[O] {
   override def toString:String = LanguageFactory.printStrm(this)
   // TODO: need a good hashcode
   override def equals(other:Any):Boolean = other match {
-    case strm:Strm[O] => this.value().sameElements(strm.value())
+    case strm:Strm[O] => this.value.sameElements(strm.value)
     case _ => false
   }
 }
