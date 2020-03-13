@@ -67,11 +67,11 @@ public class Console {
     private static final String LANG_OP = ":lang";
     private static final String MODEL_OP = ":model";
     private static final String MODEL = "model";
+    private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
 
     public static void main(final String[] args) throws Exception {
         String engineName = "mmlang";
-        final ScriptEngineManager manager = new ScriptEngineManager();   // TODO: switch to mmADTScriptEngineFactory
-        final mmADTScriptEngine engine = (mmADTScriptEngine) manager.getEngineByName(engineName);
+        final mmADTScriptEngine engine = (mmADTScriptEngine) MANAGER.getEngineByName(engineName);
         final Terminal terminal = TerminalBuilder.builder().name("mm-ADT Console").build();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
@@ -80,7 +80,6 @@ public class Console {
                 .terminal(terminal)
                 .highlighter(new DefaultHighlighter())
                 .variable(LineReader.HISTORY_FILE, HISTORY)
-                //.variable(LineReader.HISTORY_IGNORE, List.of(Q)) TODO: don't want to have :q in the history
                 .history(history)
                 .parser(parser)
                 .build();
@@ -99,7 +98,7 @@ public class Console {
                 if (line.equals(QUIT_OP))
                     break;
                 else if (line.equals(LANG_OP))
-                    manager.getEngineFactories().forEach(factory -> terminal.writer().println(RESULT + factory.getEngineName()));
+                    MANAGER.getEngineFactories().forEach(factory -> terminal.writer().println(RESULT + factory.getEngineName()));
                 else if (line.startsWith(LANG_OP))
                     engineName = line.replace(LANG_OP, "").trim();
                 else if (line.equals(MODEL_OP)) {

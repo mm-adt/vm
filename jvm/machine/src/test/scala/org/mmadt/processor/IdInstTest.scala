@@ -35,5 +35,6 @@ class IdInstTest extends FunSuite {
     assertResult(int(2))(int(2).id())
     assertResult(int(2))(int(2).id().id())
     assertResult(int(2))(int(2) ==> int.id().id())
+    assert(int.id().id().domain() == int.id().range)
   }
 }

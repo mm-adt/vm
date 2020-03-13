@@ -41,10 +41,10 @@ class IntTypeTest extends FunSuite {
       println(int(5) ==> (int <= int.is(int.gt(5))))
     }*/
     //assertResult("5{0}")((int(5) ==> int.is(int.gt(5))).toString)
-    /*intercept[IllegalArgumentException]{
+    intercept[AssertionError]{
       println(int.q(0) <= int.is(int.gt(5)))
       println(int(6) ==> int.q(0) <= int.is(int.gt(5)))
-    }*/
+    }
   }
   test("int: deep nest"){
     assertResult(int(2))(int(1) ==> int.plus(1))

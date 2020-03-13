@@ -23,7 +23,7 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.language.obj.op.map._
 
 /**
@@ -62,6 +62,11 @@ object Algebra {
     }
   }
 
-  def ring[O <: Obj](ring:Type[O]):Model = group(ring)("+").put(group(ring)("*"))
-
+  def ring[O <: IntType](ring:O):Model ={
+    group(ring)("+").put(
+      group(ring)("*")).put(
+      Model(
+        ring.mult(ring.one().neg()) -> ring.neg()
+      ))
+  }
 }

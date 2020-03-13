@@ -24,6 +24,7 @@ package org.mmadt.language.mmlang
 
 import java.util
 
+import javax.script.ScriptEngineManager
 import org.mmadt.language.jsr223.{mmADTScriptEngine, mmADTScriptEngineFactory}
 
 import scala.collection.JavaConverters._
@@ -43,5 +44,10 @@ class mmlangScriptEngineFactory extends mmADTScriptEngineFactory {
   override def getMethodCallSyntax(obj:String,m:String,args:String*):String = obj + " => " + " [" + m + "," + args + "]";
   override def getOutputStatement(toDisplay:String):String = toDisplay
   override def getProgram(statements:String*):String = statements.foldLeft("")((a,b) => a + " " + b).trim();
-  override def getScriptEngine:mmADTScriptEngine = new mmlangScriptEngine
+  override def getScriptEngine:mmADTScriptEngine = new mmlangScriptEngine(this)
+}
+
+object mmlangScriptEngineFactory {
+  private val staticFactory:mmlangScriptEngineFactory = asScalaIterator(new ScriptEngineManager().getEngineFactories.listIterator()).filter(factory => factory.getEngineName.equals("mmlang")).next().asInstanceOf[mmlangScriptEngineFactory]
+  val get:mmlangScriptEngineFactory = staticFactory
 }

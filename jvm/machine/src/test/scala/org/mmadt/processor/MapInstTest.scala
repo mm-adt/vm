@@ -38,6 +38,8 @@ class MapInstTest extends FunSuite {
     assertResult("int[plus,1][map,int]")(int.plus(1).map(int).toString)
     assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int.mult(10)).toString)
     assertResult(int(200))(int(18) ==> int.plus(1).map(int.mult(10)).plus(10))
-    // assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int(20)).toString)
+    assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int.mult(10)).toString)
+    //
+    assertResult(int(60))(int(5) ==> int.plus(1).map(int.mult(10)))
   }
 }

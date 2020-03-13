@@ -22,6 +22,8 @@
 
 package org.mmadt.language.model
 
+import org.mmadt.language.obj.OType
+import org.mmadt.language.obj.Int
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -32,7 +34,7 @@ import org.scalatest.FunSuite
 class AlgebraTest extends FunSuite {
 
   test("int group */+ rewrites"){
-    val model    = Algebra.group(int)("*").put(Algebra.group(int)("+"))
+    val model    = Algebra.ring(int)
     val compiler = Processor.compiler(model)
     println(model)
     assertResult(int)(compiler(int + int.zero()))
@@ -40,7 +42,7 @@ class AlgebraTest extends FunSuite {
     assertResult(int)(compiler(int + int.zero()))
     assertResult(int)(compiler(-(-int) + int.zero()))
     assertResult(int.zero())(compiler(int + -int))
-    //  assertResult(-int)(compiler(int * -int.one()))
+    assertResult(-int)(compiler(int * -int.one()))
     // assertResult(int)(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
     // assertResult(int)(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
   }

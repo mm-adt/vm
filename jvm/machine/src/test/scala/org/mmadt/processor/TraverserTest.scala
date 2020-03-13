@@ -23,6 +23,7 @@
 package org.mmadt.processor
 
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -40,9 +41,9 @@ class TraverserTest extends FunSuite {
     assertResult("[8|a->3,b->8]"){
       trav(int(3))(int.to("a").plus(int(5)).to("b")).toString
     }
-    /*assertResult("[11|a->3]"){
+    assertResult("[11|a->3]"){
       trav(int(3))(int.to("a").plus(int(5).to("b").plus(int.from[IntType]("a")))).toString
-    }*/
+    }
   }
 
   test("traverser state"){

@@ -32,6 +32,7 @@ class ZeroInstTest extends FunSuite {
   test("[zero] w/ int value"){
     assertResult(int(0))(int(0).zero())
     assertResult(int(0))(int(1).zero())
+    assertResult(int(0))(int(781).zero())
     assertResult(int(0))(int(1).plus(100).zero())
     assertResult(int(0).q(10))(int(1).q(10).plus(100).zero())
   }

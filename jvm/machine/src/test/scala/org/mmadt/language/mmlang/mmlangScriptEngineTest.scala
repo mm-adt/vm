@@ -27,7 +27,7 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.obj.{Obj,Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -37,7 +37,7 @@ import org.scalatest.FunSuite
  */
 class mmlangScriptEngineTest extends FunSuite {
 
-  val engine:mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+  val engine:mmADTScriptEngine = mmlangScriptEngineFactory.get.getScriptEngine()
 
   test("empty space parsing"){
 
@@ -220,7 +220,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("get dot-notation parsing"){
-    //    assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c").next)
+    assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c").next)
     assertResult(int(4))(engine.eval(
       """
         |['a'->
