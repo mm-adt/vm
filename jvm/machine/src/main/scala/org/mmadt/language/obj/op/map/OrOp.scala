@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.{Bool, Inst, Obj}
+import org.mmadt.language.obj.{Bool, Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
@@ -45,10 +45,10 @@ object OrOp {
 
   class OrInst(other:Obj) extends VInst[Bool,Bool]((Tokens.or,List(other))) {
     override def apply(trav:Traverser[Bool]):Traverser[Bool] ={
-      trav.split(Traverser.resolveArg(trav,other) match {
+      trav.split((Traverser.resolveArg(trav,other) match {
         case avalue:BoolValue => trav.obj().or(avalue)
         case atype:BoolType => trav.obj().or(atype)
-      })
+      }).q(multQ(trav.obj().q,this.q)))
     }
   }
 

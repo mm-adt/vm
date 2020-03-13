@@ -44,10 +44,10 @@ object GtOp {
   def apply[O <: Obj with GtOp[O]](other:Obj):Inst[O,Bool] = new GtInst[O](other.asInstanceOf[O])
 
   class GtInst[O <: Obj with GtOp[O]](other:O) extends VInst[O,Bool]((Tokens.gt,List(other))) {
-    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(Traverser.resolveArg(trav,other) match {
+    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split((Traverser.resolveArg(trav,other) match {
       case avalue:Value[O] => trav.obj().gt(avalue)
       case atype:Type[O] => trav.obj().gt(atype)
-    })
+    }).q(multQ(trav.obj().q,this.q)))
   }
 
 }

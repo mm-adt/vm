@@ -23,9 +23,9 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{BoolType, __}
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.{Bool, Inst, Obj}
+import org.mmadt.language.obj.{Bool, Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
@@ -45,10 +45,10 @@ object AndOp {
 
   class AndInst(other:Obj) extends VInst[Bool,Bool]((Tokens.and,List(other))) {
     override def apply(trav:Traverser[Bool]):Traverser[Bool] ={
-      trav.split(Traverser.resolveArg(trav,other) match {
+      trav.split((Traverser.resolveArg(trav,other) match {
         case avalue:BoolValue => trav.obj().and(avalue)
         case atype:BoolType => trav.obj().and(atype)
-      })
+      }).q(multQ(trav.obj().q,this.q)))
     }
   }
 

@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.Traverser
 

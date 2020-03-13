@@ -32,7 +32,6 @@ import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.processor.Processor
-import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -61,8 +60,8 @@ trait Obj
   def toList:List[this.type] = toStrm.value().toList
   def toSet:Set[this.type] = toStrm.value().toSet
   def next():this.type = toStrm.value().next()
-  def ==>[E <: Obj](rangeType:Type[E]):E = Processor.iterator().apply(this,InstUtil.resolveAnonymous(this,rangeType)).toStrm.value().next()
-  def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,InstUtil.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: spec'd to R cause of FoldOp
+  def ==>[E <: Obj](rangeType:Type[E]):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType)).toStrm.value().next()
+  def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: spec'd to R cause of FoldOp
 
   // pattern matching methods
   val name:String

@@ -45,10 +45,10 @@ object EqsOp {
 
   class EqsInst[O <: Obj with EqsOp[O]](other:O) extends VInst[O,Bool]((Tokens.eqs,List(other))) {
     override def apply(trav:Traverser[O]):Traverser[Bool] ={
-      trav.split(Traverser.resolveArg(trav,other) match {
+      trav.split((Traverser.resolveArg(trav,other) match {
         case avalue:Value[O] => trav.obj().eqs(avalue)
         case atype:Type[O] => trav.obj().eqs(atype)
-      })
+      }).q(multQ(trav.obj().q,this.q)))
     }
   }
 

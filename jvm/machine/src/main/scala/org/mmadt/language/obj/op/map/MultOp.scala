@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, OType, Obj}
+import org.mmadt.language.obj.{Inst, OType, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
@@ -45,10 +45,10 @@ object MultOp {
 
   class MultInst[O <: Obj with MultOp[O]](other:Obj) extends VInst[O,O]((Tokens.mult,List(other))) {
     override def apply(trav:Traverser[O]):Traverser[O] ={
-      trav.split(Traverser.resolveArg(trav,other) match {
+      trav.split((Traverser.resolveArg(trav,other) match {
         case avalue:Value[O] => trav.obj().mult(avalue)
         case atype:Type[O] => trav.obj().mult(atype)
-      })
+      }).q(multQ(trav.obj().q,this.q)))
     }
   }
 

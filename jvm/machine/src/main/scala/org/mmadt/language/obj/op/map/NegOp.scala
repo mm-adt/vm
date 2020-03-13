@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,7 +39,7 @@ object NegOp {
   def apply[O <: Obj with NegOp]():Inst[O,O] = new NegInst[O]
 
   class NegInst[O <: Obj with NegOp] extends VInst[O,O]((Tokens.neg,Nil)) {
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().neg())
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().neg().q(multQ(trav.obj().q,this.q)))
   }
 
 }

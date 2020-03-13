@@ -36,8 +36,7 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
     assertResult(List(int(110)))(Processor.iterator().apply(int(5),int.mult(int(2)).plus(int(100))).toStrm.toList)
     assertResult(List(int(110)))(Processor.iterator()(int(5),int * 2 + 100).toStrm.toList)
     assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5).q(10),int.q(10).mult(int(2)).plus(int(100))).toStrm.toList)
-    //   assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.q(10).mult(int(2)).plus(int(100))).map(_.obj()).toList)
-    //   assertResult(List(int(110).q(10)))(Processor.iterator[Int,Int]().apply(int(5),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
+    // assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5),int.mult(int(2)).plus(int(100)).q(10)).toStrm.toList)
     //   assertResult(List(int(110).q(100)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
   }
 
@@ -48,7 +47,7 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
       int.is(int.gt(int(20))) -> int.plus(int(3)),
       int.is(int.gt(int(10))) -> int.plus(int(2)),
       int -> int.plus(int(1))).plus(int(0))).toList)
-    assertResult(int(50))((int(10).q(int(50)) ===> int.q(*).q(50).plus(int(2)).count()).next)
+    assertResult(int(50))((int(10).q(int(50)) ===> int.q(50).plus(int(2)).count()).next)
     assertResult(int(3))((int(10,20,30) ===> int.q(+).plus(int(2)).count()).next)
     assertResult(int(4))((int(10,20,30,40) ===> int.q(*).plus(int(2)).mult(int(100)).count()).next)
     assertResult(int(2))((int(10,20,30,40) ===> int.q(*).is(int.gt(int(20))).count()).next)

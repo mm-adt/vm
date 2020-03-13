@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,7 +39,7 @@ object IdOp {
   def apply[O <: Obj]():Inst[O,O] = new IdInst
 
   class IdInst[O <: Obj] extends VInst[O,O]((Tokens.id,Nil)) {
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().id())
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().id().q(multQ(trav.obj().q,this.q)))
   }
 
 }

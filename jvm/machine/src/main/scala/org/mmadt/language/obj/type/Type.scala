@@ -31,7 +31,6 @@ import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageFactory, Tokens}
-import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 
@@ -80,8 +79,8 @@ trait Type[+T <: Obj] extends Obj
 
   // type specification and compilation
   final def <=[D <: Obj](domainType:Type[D]):this.type = domainType.compose(this).q(this.q).asInstanceOf[this.type]
-  override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,InstUtil.resolveAnonymous(this,rangeType))
-  def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,InstUtil.resolveAnonymous(this,rangeType))
+  override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,Type.resolveAnonymous(this,rangeType))
+  def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,Type.resolveAnonymous(this,rangeType))
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[R <: Type[Obj]](btype:R):R ={
@@ -105,7 +104,7 @@ trait Type[+T <: Obj] extends Obj
 
   // obj-level operations
   override def as[O <: Obj](name:String):O = throw new UnsupportedOperationException
-  override def count():IntType = this.compose(tint(),CountOp()).q(qOne)
+  override def count():IntType = this.compose(tint(),CountOp())
   override def id():this.type = this.compose(IdOp[this.type]())
   override def map[O <: Obj](other:O):O = this.compose(asType(other).asInstanceOf[O],MapOp[O](other))
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
@@ -126,16 +125,32 @@ trait Type[+T <: Obj] extends Obj
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
-    case argValue:Value[Obj] => TypeChecker.matchesTV(this,argValue)
-    case argType:Type[Obj] => TypeChecker.matchesTT(this,argType)
+    case argValue:Value[_] => TypeChecker.matchesTV(this,argValue)
+    case argType:Type[_] => TypeChecker.matchesTT(this,argType)
   }
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printType(this)
   override def hashCode():scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.insts.hashCode()
   override def equals(other:Any):Boolean = other match {
-    case anon:__ => anon.toString.equals(this.toString) // TODO: get __ better aligned with Type
-    case atype:Type[Obj] => this.name == atype.name && eqQ(this,atype) && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
+    case atype:Type[_] => this.name == atype.name && eqQ(this,atype) && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
     case _ => false
+  }
+}
+
+object Type {
+  @scala.annotation.tailrec
+  def createInstList(list:List[(Type[Obj],Inst[Obj,Obj])],atype:Type[Obj]):List[(Type[Obj],Inst[Obj,Obj])] ={
+    if (atype.insts.isEmpty) list else createInstList(List((atype.range,atype.insts.last._2)) ::: list,atype.insts.last._1)
+  }
+
+  def nextInst(atype:Type[_]):Option[Inst[Obj,Obj]] = atype.insts match {
+    case Nil => None
+    case x => Some(x.head._2)
+  }
+
+  def resolveAnonymous[R <: Obj](obj:Obj,rangeType:Type[R]):Type[R] = rangeType match {
+    case x:__ => x(obj)
+    case x:R => x
   }
 }

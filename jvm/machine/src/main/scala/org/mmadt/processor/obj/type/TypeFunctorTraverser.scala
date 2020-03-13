@@ -26,7 +26,6 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.processor.Traverser
-import org.mmadt.processor.obj.`type`.util.InstUtil
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,7 +40,7 @@ class TypeFunctorTraverser[S <: Obj](val obj:S,val state:State,val model:Model =
       case Some(atype) => this.split[E](atype.asInstanceOf[E].q(obj.q))
       case None => this.asInstanceOf[Traverser[E]]
     }
-    (InstUtil.nextInst(rangeType) match {
+    (Type.nextInst(rangeType) match {
       case None =>
         assert(rangeType.domain() == rangeType.range)
         return next

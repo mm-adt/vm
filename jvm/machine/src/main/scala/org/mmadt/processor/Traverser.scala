@@ -29,7 +29,6 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{Obj, State, _}
-import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -81,11 +80,9 @@ object Traverser {
     override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] =
       new StandardTraverser[E](model.resolve(obj),state,this.model)
     override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
-      (InstUtil.nextInst(rangeType) match {
+      (Type.nextInst(rangeType) match {
         case None => return this.asInstanceOf[Traverser[E]]
-        case Some(inst:Inst[Obj,Obj]) =>
-          val next:Traverser[E] = inst.apply(this).asInstanceOf[Traverser[E]]
-          next.split[E](next.obj().q(multQ(next.obj(),inst))) // TODO: avoid the double split by merging traverser instruction handling with obj instruction handling
+        case Some(inst:Inst[Obj,Obj]) => inst.apply(this).asInstanceOf[Traverser[E]]
       }).apply(rangeType.linvert())
     }
   }

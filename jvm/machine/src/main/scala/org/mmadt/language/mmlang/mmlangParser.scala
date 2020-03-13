@@ -33,7 +33,6 @@ import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.processor.Traverser
-import org.mmadt.processor.obj.`type`.util.InstUtil
 import org.mmadt.storage.StorageFactory.{strm => estrm, _}
 
 import scala.util.matching.Regex
@@ -57,7 +56,7 @@ object mmlangParser extends JavaTokenParsers {
   // specific to mmlang execution
   lazy val expr       :Parser[Obj] = compilation | evaluation | (objValue | anonType)
   lazy val compilation:Parser[Obj] = aType ^^ (x => (x.domain() ==> this.model) (x))
-  lazy val evaluation :Parser[Obj] = (strm | objValue) ~ (anonType | aType) ^^ (x => x._1 ===> (InstUtil.resolveAnonymous(x._1,x._2).domain() ==> this.model) (x._2))
+  lazy val evaluation :Parser[Obj] = (strm | objValue) ~ (anonType | aType) ^^ (x => x._1 ===> (Type.resolveAnonymous(x._1,x._2).domain() ==> this.model) (x._2))
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
