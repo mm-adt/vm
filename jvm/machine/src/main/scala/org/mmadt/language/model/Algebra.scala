@@ -52,12 +52,16 @@ object Algebra {
     op match {
       case "*" =>
         val m = group.asInstanceOf[MultOne[O]]
-        Model(m.mult(m.one()) -> m)
+        Model(
+          m.one().one() -> m.one(),
+          m.mult(m.one()) -> m)
       case "+" =>
         val p = group.asInstanceOf[PlusMinusZero[O]]
         Model(
           p + p.zero() -> p,
           p + -p -> p.zero(),
+          p.zero().zero() -> p.zero(),
+          p.neg().zero() -> p.zero(),
           -(-p) -> p)
     }
   }

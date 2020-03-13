@@ -32,14 +32,14 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait OneOp[O <: Obj] {
   this:O =>
-  def one():O
+  def one():O with OneOp[O]
 }
 
 object OneOp {
   def apply[O <: Obj with OneOp[O]]():Inst[O,O] = new OneInst[O]
 
   class OneInst[O <: Obj with OneOp[O]] extends VInst[O,O]((Tokens.one,Nil)) {
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().one().q(multQ(trav.obj().q,this.q)))
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().q(multQ(trav.obj().q,this.q)).one())
   }
 
 }
