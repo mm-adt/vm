@@ -23,11 +23,13 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.op.OpInstResolver
+import org.mmadt.processor.Traverser
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait EvalOp {
   this:Obj =>
-  def =:[O <: Obj](op:String)(args:Obj*):O
+  def =:[O <: Obj](op:String)(args:Obj*):O =  OpInstResolver.resolve(op,args.toList).apply(Traverser.standard(this)).obj()
 }

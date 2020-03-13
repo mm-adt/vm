@@ -113,7 +113,6 @@ trait Type[+T <: Obj] extends Obj
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue,default:Obj):O = this.compose(FromOp(label,default)).asInstanceOf[O]
   override def quant():IntType = this.compose(tint(),QOp())
-  override def =:[O <: Obj](op:String)(args:Obj*):O = OpInstResolver.resolve(op,args.toList).apply(Traverser.standard(this)).obj()
   override def error(message:String):this.type = this.compose(ErrorOp(message))
 
   def named(_name:String):this.type = (this match {

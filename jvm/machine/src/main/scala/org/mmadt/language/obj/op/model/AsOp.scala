@@ -44,14 +44,17 @@ object AsOp {
     override def apply(trav:Traverser[Obj]):Traverser[O] ={
       trav.split((trav.obj(),obj) match {
         case (avalue:Value[Obj],atype:Type[Obj]) => atype match {
-          case rectype:ORecType => vrec(rectype.name,rectype.value().map(x =>
-            (x._1 match {
-              case kvalue:Value[Obj] => kvalue
-              case ktype:Type[Obj] => trav.apply(Type.resolveAnonymous(trav.obj(),ktype)).obj().asInstanceOf[Value[Obj]]
-            }) -> (x._2 match {
-              case vvalue:Value[Obj] => vvalue
-              case vtype:Type[Obj] => trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
-            })),avalue.q)
+          case rectype:ORecType =>
+            if (avalue.test(rectype)) avalue.named(rectype.name) else {
+              vrec(rectype.name,rectype.value().map(x =>
+                (x._1 match {
+                  case kvalue:Value[Obj] => kvalue
+                  case ktype:Type[Obj] => trav.apply(Type.resolveAnonymous(trav.obj(),ktype)).obj().asInstanceOf[Value[Obj]]
+                }) -> (x._2 match {
+                  case vvalue:Value[Obj] => vvalue
+                  case vtype:Type[Obj] => trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
+                })),avalue.q)
+            }
           case _:Str => trav.split(vstr(value = avalue.value.toString)).apply(atype).obj()
           case _:Int => trav.split(vint(value = Integer.valueOf(avalue.value.toString).longValue())).apply(atype).obj()
           case _ => trav.apply(atype).obj()

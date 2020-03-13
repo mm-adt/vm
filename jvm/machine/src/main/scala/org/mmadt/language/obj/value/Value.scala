@@ -24,9 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.{Int, OType, Obj, _}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -48,8 +46,14 @@ trait Value[+V <: Obj] extends Obj {
     case _:Value[_] => other
     case atype:Type[O] => this ==> atype
   }
-  override def =:[O <: Obj](op:String)(args:Obj*):O = OpInstResolver.resolve(op,args.toList).apply(Traverser.standard(this)).obj().asInstanceOf[O]
   override def error(message:String):this.type = throw new RuntimeException("error: " + message)
+
+  def named(_name:String):this.type = (this match {
+    case x:BoolValue => vbool(_name,x.value,x.q)
+    case x:IntValue => vint(_name,x.value,x.q)
+    case x:StrValue => vstr(_name,x.value,x.q)
+    case x:RecValue[_,_] => vrec(_name,x.value,x.q)
+  }).asInstanceOf[this.type]
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
