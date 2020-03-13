@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{ReduceInstruction, TraverserInstruction}
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.processor.Traverser
@@ -42,7 +42,6 @@ trait FoldOp {
 
 object FoldOp {
   def apply[A <: Obj](_seed:(String,A),atype:A):Inst[Obj,A] = new FoldInst[A](_seed,atype)
-  //def apply[A <: Obj](_seed:(String,A),atype:__):Inst[Obj,A] = new FoldInst[A](_seed,atype)
 
   class FoldInst[A <: Obj](_seed:(String,A),atype:Obj) extends VInst[Obj,A]((Tokens.fold,List(str(_seed._1),_seed._2,atype))) with ReduceInstruction[A] with TraverserInstruction {
     override val seed     :(String,A) = _seed
@@ -53,10 +52,7 @@ object FoldOp {
         case _:Type[Obj] => Traverser.stateSplit[Obj](this.arg0[StrValue]().value,this.arg1[A]())(trav)
         case _ => trav
       }
-      t.split(t.obj().fold(seed)(atype match {
-        case anon:__ => anon(trav.obj())
-        case atype:Type[A] => atype
-      }))
+      t.split(t.obj().fold(seed)(Type.resolveAnonymous(t.obj(),reduction)))
     }
   }
 

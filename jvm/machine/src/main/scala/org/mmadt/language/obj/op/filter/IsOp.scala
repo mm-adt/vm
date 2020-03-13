@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.filter
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{BoolType, __}
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.op.FilterInstruction
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Inst, OType, Obj}
@@ -46,7 +46,6 @@ object IsOp {
     override def apply(trav:Traverser[O]):Traverser[O] = trav.split(Traverser.resolveArg(trav,other) match {
       case avalue:BoolValue => trav.obj().is(avalue)
       case atype:BoolType => trav.obj().is(atype)
-      case anon:__ => trav.obj().is(anon[BoolType](trav.obj()))
     })
   }
 
