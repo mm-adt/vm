@@ -23,16 +23,18 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
+import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Strm[Rec[A,B]] with Rec[A,B] {
+trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Strm[Rec[A,B]] with Rec[A,B] with AddOp {
   override val value:Iterator[RecValue[A,B]]
   override def start():RecType[A,B]
 
+  override def add[O<:Obj](obj:O):this.type = throw new UnsupportedOperationException
   override def to(label:StrValue):RecType[A,B] = throw new UnsupportedOperationException
   override def eqs(other:Type[Rec[A,B]]):BoolType = throw new UnsupportedOperationException
   override def eqs(other:Value[Rec[A,B]]):BoolValue = throw new UnsupportedOperationException

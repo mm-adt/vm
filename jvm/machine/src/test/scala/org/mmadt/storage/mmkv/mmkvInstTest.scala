@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.mmkv
 
-import javax.script.{ScriptContext, SimpleBindings, SimpleScriptContext}
+import javax.script.{ScriptContext, SimpleBindings}
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
@@ -30,8 +30,6 @@ import org.mmadt.language.obj.ORecType
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-
-import scala.collection.JavaConverters.asScalaIterator
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -65,18 +63,26 @@ class mmkvInstTest extends FunSuite {
     //assertResult("List(['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz'])")((int(1) ===> int.|=("=mmkv", str(file1))).toList.toString())
   }
 
-  /*test("mmkv model"){
-    val engine2  = new mmlangScriptEngineFactory().getScriptEngine
-    val bindings = new SimpleBindings()
-    bindings.put(Tokens.model,new mmkvStorageProvider().model)
-    val context  = new SimpleScriptContext()
-    context.setBindings(bindings,ScriptContext.GLOBAL_SCOPE)
-    engine2.setContext(context)
-    //assertResult(Tokens.model)(engine2.eval(Tokens.model)).next().name)
-    assertResult(engine2.eval(s"obj[=mmkv,'${file2}'][id]").next())(engine2.eval(s"obj[=mmkv,'${file2}'][put,'v',6]",bindings).next())
-    assertResult(engine2.eval(s"obj[=mmkv,'${file2}'][id]").next())(engine2.eval(s"obj[=mmkv,'${file2}'][put,'k',346]",bindings).next())
-    assertResult("int")(engine2.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
-  }*/
+  test("mmkv file-2 adding"){
+    assertResult("['k'->2,'v'->['name'->'ryan','age'->25]],['k'->3,'v'->['name'->'stephen','age'->32]],['k'->4,'v'->['name'->'kuppitz','age'->23]],['a'->'b']")(
+      engine.eval(s"'x'[=mmkv,'${file2}'][add,['a'->'b']]").toString)
+  }
+
+  test("mmkv model"){
+    assertThrows[RuntimeException]{
+      val engine2 = mmlangScriptEngineFactory.get.getScriptEngine
+      assertResult("obj")(engine2.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
+      engine2.put(Tokens.model,new mmkvStorageProvider().model)
+      println(engine2.eval(s"obj[=mmkv,'${file2}'][put,'v',6]").next())
+    }
+    assertThrows[RuntimeException]{
+      val engine2 = mmlangScriptEngineFactory.get.getScriptEngine
+      assertResult("obj")(engine2.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
+      engine2.put(Tokens.model,new mmkvStorageProvider().model)
+      println(engine2.eval(s"obj[=mmkv,'${file2}'][put,'k',346]").next())
+    }
+    assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
+  }
 
 }
 

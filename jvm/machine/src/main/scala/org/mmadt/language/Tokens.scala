@@ -41,6 +41,7 @@ object Tokens {
   val __   = "__"
 
   val a       = "a"
+  val add     = "add"
   val noop    = "noop"
   val and     = "and"
   val as      = "as"

@@ -22,10 +22,11 @@
 
 package org.mmadt.processor.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
+import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction, SideEffectInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, ORecStrm, Obj}
 import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 
@@ -35,8 +36,11 @@ import org.mmadt.storage.StorageFactory._
 class IteratorProcessor extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
     TypeChecker.typeCheck(domainObj,rangeType.domain())
-    var output:Iterator[Traverser[E]] = domainObj match {
-      case strm:Strm[_] => strm.value.map(x => Traverser.standard(x.asInstanceOf[E]))
+    var lastStrm:Option[Strm[_]]       = None
+    var output  :Iterator[Traverser[E]] = domainObj match {
+      case strm:Strm[_] =>
+        lastStrm = Option(strm)
+        strm.value.map(x => Traverser.standard(x.asInstanceOf[E]))
       case single:E => Iterator(Traverser.standard(single))
     }
     for (tt <- Type.createInstList(Nil,rangeType)) {
@@ -47,10 +51,17 @@ class IteratorProcessor extends Processor {
         //////////////FILTER//////////////
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
         //////////////OTHER//////////////
+        case sideeffect:SideEffectInstruction if sideeffect.op() == Tokens.add => output.map(x => x.split(lastStrm match {
+          case Some(strm) => strm.asInstanceOf[ORecStrm].add(sideeffect.arg0()).asInstanceOf[E]
+          case None => throw new IllegalAccessException
+        }))
+        //////////////OTHER//////////////
         case _:Inst[Obj,Obj] => output
           .map(_.apply(tt._1.compose(tt._1,tt._2)))
           .flatMap(x => x.obj() match {
-            case strm:Strm[E] => strm.value.map(y => x.split(y))
+            case strm:Strm[E] =>
+              lastStrm = Option(strm)
+              strm.value.map(y => x.split(y))
             case single:E => Iterator(x.split(single))
           })
       }

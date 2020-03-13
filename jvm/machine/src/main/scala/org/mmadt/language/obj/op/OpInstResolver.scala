@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.sideeffect.{ErrorOp, PutOp}
+import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
@@ -52,6 +52,7 @@ object OpInstResolver {
 
   def resolve[S <: Obj,E <: Obj](op:String,args:List[Obj]):Inst[S,E] ={
     op match {
+      case Tokens.add => AddOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.a | Tokens.a_op => AOp(args.head.asInstanceOf[Type[Obj]]).asInstanceOf[Inst[S,E]]
       case Tokens.as => AsOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.and | Tokens.and_op => AndOp(args.head).asInstanceOf[Inst[S,E]]

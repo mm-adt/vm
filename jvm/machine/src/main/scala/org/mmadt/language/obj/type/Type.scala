@@ -23,11 +23,10 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.map.{AOp, IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.sideeffect.ErrorOp
+import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{eqQ, _}
@@ -39,6 +38,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Type[+T <: Obj] extends Obj
+  with AddOp
   with ExplainOp {
   this:T =>
 
@@ -105,9 +105,10 @@ trait Type[+T <: Obj] extends Obj
 
   // obj-level operations
   override def a(atype:Type[Obj]):Bool = this.compose(bool,AOp(atype))
+  override def add[O<:Obj](obj:O):this.type = this.compose(AddOp(obj))
   override def as[O <: Obj](obj:O):O = this.compose(obj,AsOp(obj))
   override def count():IntType = this.compose(tint(),CountOp())
-  override def id():this.type = this.compose(IdOp[this.type]())
+  override def id():this.type = this.compose(IdOp())
   override def map[O <: Obj](other:O):O = this.compose(asType(other).asInstanceOf[O],MapOp[O](other))
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
