@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.map.{IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.map.{AOp, IdOp, MapOp, QOp}
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
@@ -104,6 +104,7 @@ trait Type[+T <: Obj] extends Obj
   }
 
   // obj-level operations
+  override def a(atype:Type[Obj]):Bool = this.compose(bool,AOp(atype))
   override def as[O <: Obj](obj:O):O = this.compose(obj,AsOp(obj))
   override def count():IntType = this.compose(tint(),CountOp())
   override def id():this.type = this.compose(IdOp[this.type]())

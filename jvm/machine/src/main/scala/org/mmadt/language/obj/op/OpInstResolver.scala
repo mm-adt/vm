@@ -52,6 +52,7 @@ object OpInstResolver {
 
   def resolve[S <: Obj,E <: Obj](op:String,args:List[Obj]):Inst[S,E] ={
     op match {
+      case Tokens.a | Tokens.a_op => AOp(args.head.asInstanceOf[Type[Obj]]).asInstanceOf[Inst[S,E]]
       case Tokens.as => AsOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.and | Tokens.and_op => AndOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.or | Tokens.or_op => OrOp(args.head).asInstanceOf[Inst[S,E]]

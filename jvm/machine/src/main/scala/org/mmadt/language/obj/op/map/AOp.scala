@@ -20,27 +20,27 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.sideeffect
+package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.{Bool, Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ErrorOp {
+trait AOp {
   this:Obj =>
-  def error(message:String):this.type
+  def a(other:Type[Obj]):Bool
 }
 
-object ErrorOp {
-  def apply(message:String):Inst[Obj,Obj] = new ErrorInst(message)
+object AOp {
+  def apply(other:Type[Obj]):Inst[Obj,Bool] = new AInst(other)
 
-  class ErrorInst(message:String) extends VInst[Obj,Obj]((Tokens.error,List(str(message)))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = throw new RuntimeException("error: " + message)
+  class AInst(other:Type[Obj]) extends VInst[Obj,Bool]((Tokens.a,List(other))) {
+    override def apply(trav:Traverser[Obj]):Traverser[Bool] = trav.split(trav.obj().a(other).q(multQ(trav.obj().q,this.q)))
   }
 
 }

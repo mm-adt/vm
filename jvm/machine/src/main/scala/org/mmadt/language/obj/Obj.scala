@@ -24,21 +24,22 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.ChooseOp
-import org.mmadt.language.obj.op.map.{EvalOp, IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.processor.Processor
+import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Obj
-  extends AsOp
+  extends AOp
+    with AsOp
     with CountOp[Int]
     with ChooseOp
     with IdOp

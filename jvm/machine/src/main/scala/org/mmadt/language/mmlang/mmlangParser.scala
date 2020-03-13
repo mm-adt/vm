@@ -30,11 +30,11 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
-import org.mmadt.language.obj.value.strm.{BoolStrm,IntStrm,StrStrm,Strm}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
+import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
+import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.{strm => estrm,_}
+import org.mmadt.storage.StorageFactory.{strm => estrm, _}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -99,7 +99,7 @@ object mmlangParser extends JavaTokenParsers {
 
   // instruction parsing
   lazy val inst         :Parser[Inst[Obj,Obj]]              = (sugarlessInst | infixSugar | getSugar | chooseSugar) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Inst[Obj,Obj]]).getOrElse(x._1))
-  lazy val infixSugar   :Parser[Inst[Obj,Obj]]              = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op) ~ obj ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
+  lazy val infixSugar   :Parser[Inst[Obj,Obj]]              = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op | Tokens.a_op | Tokens.is) ~ obj ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst[Obj,Obj]]              = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(value = x.map(o => (o._1,o._2)).toMap)))
   lazy val getSugar     :Parser[Inst[Obj,Obj]]              = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp[Obj,Obj](str(x)).asInstanceOf[Inst[Obj,Obj]])
   lazy val sugarlessInst:Parser[Inst[Obj,Obj]]              = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(obj,COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1,x._2))

@@ -40,6 +40,7 @@ object Tokens {
   val inst = "inst"
   val __   = "__"
 
+  val a       = "a"
   val noop    = "noop"
   val and     = "and"
   val as      = "as"
@@ -79,6 +80,7 @@ object Tokens {
   val and_op         = "&&"
   val or_op          = "||"
   val get_op         = "."
+  val a_op           = "?"
 
   val ::  = ":"
   val :-> = "->"

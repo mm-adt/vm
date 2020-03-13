@@ -132,11 +132,16 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("refinement type parsing"){
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is,int[gt,10]]").next)
-//    assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]").next) //TODO: when a range is specified by the user, use that during compilation
+    //    assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]").next) //TODO: when a range is specified by the user, use that during compilation
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is>10]").next)
   }
 
   test("as instruction parsing"){
+    assertResult(int(1))(engine.eval("1[as,int]").next)
+    assertResult(str("1"))(engine.eval("1[as,str]").next)
+    assertResult(int(14))(engine.eval("'1'[plus,'4'][as,int]").next)
+    assertResult(int(16))(engine.eval("'1'[plus,'4'][as,int[plus,2]]").next)
+    assertResult(int(16))(engine.eval("'1'[plus,'4'][as,int][plus,2]").next)
     assertResult(str("14"))(engine.eval("5[plus,2][mult,2][as,str]").next)
     assertResult(str("14hello"))(engine.eval("5 int[plus,2][mult,2]str[plus,'hello']").next)
     assertResult(str("14hello"))(engine.eval("5[plus,2][mult,2]str[plus,'hello']").next)
@@ -144,6 +149,14 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'-><x>,'y'-><y>]]").next)
     assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>]]").next)
     assertResult(vrec(str("x") -> int(7),str("y") -> int(10),str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>,'z'->[as,rec['a'-><x> + <y>]]]]").next)
+  }
+
+  test("a instruction parsing"){
+    assertResult(btrue)(engine.eval("1[a,int]").next())
+    assertResult(bfalse)(engine.eval("'1'[a,int]").next())
+    assertResult(int(1))(engine.eval("1[is?int]").next())
+    assertResult(int(1))(engine.eval("1 is?int").next())
+    assertResult(int(1))(engine.eval("1is?int").next())
   }
 
   test("endomorphic type parsing"){
@@ -256,8 +269,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(Set(int(302),int(42)))(engine.eval(
       """ 0,1,2,3
         | [plus,1][is>2]
-        |   [ [is>3] -> [mult,10]
-        |   | int    -> [mult,100]][plus,2]""".stripMargin).toSet)
+        |   [ is>3 -> [mult,10]
+        |   | int  -> [mult,100]][plus,2]""".stripMargin).toSet)
     assertResult(bfalse)(engine.eval("4[plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("5[plus,1][[is>5] -> true | int -> false]").next)
     assertResult(btrue)(engine.eval("true[bool -> bool | int -> int]").next)
@@ -308,8 +321,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec(str("age") -> int(29),str("name") -> str("marko")))(engine.eval(
       """
         |['age'->29] rec['age'->int][
-        |  [is,[get,'age'][gt,30]] -> [put,'name','bill'] |
-        |  rec                     -> [put,'name','marko']]""".stripMargin).next())
+        |  is.age>30  -> [put,'name','bill'] |
+        |  rec        -> [put,'name','marko']]""".stripMargin).next())
   }
 
   test("model parsing"){

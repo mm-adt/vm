@@ -33,6 +33,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst[S,E] {
+  override def a(atype:Type[Obj]):Bool = btrue
   override def as[O <: Obj](obj:O):O = this.asInstanceOf[O]
   def this(java:InstTuple) = this(java,qOne)
   override val value:InstTuple = java

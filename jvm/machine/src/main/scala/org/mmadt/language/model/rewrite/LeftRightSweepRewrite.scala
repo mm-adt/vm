@@ -66,6 +66,9 @@ object LeftRightSweepRewrite {
           case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
           case branchValue:Value[_] => branchValue
         }))))
+      case Tokens.a => inst.args()
+      case Tokens.as => inst.args()
+      case Tokens.map => inst.args()
       case _ => inst.args().map{
         case atype:Type[_] => rewrite(model,atype,start,traverser.split(start)).obj()
         case avalue:Value[_] => avalue
