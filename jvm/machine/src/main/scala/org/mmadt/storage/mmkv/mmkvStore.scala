@@ -22,7 +22,6 @@
 
 package org.mmadt.storage.mmkv
 
-import java.io.{File, PrintWriter}
 import java.util.concurrent.atomic.AtomicLong
 
 import org.mmadt.language.mmlang.mmlangParser
@@ -46,9 +45,7 @@ class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
 
   val schema:RecType[StrValue,Obj] = {
     val source = Source.fromFile(file)
-    try trec[StrValue,Obj](name = MMKV,value = source.getLines().take(1)
-      .map(line => mmlangParser.parseAll(mmlangParser.recType,line).get)
-      .next().value().asInstanceOf[Map[StrValue,Obj]])
+    try source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().asInstanceOf[RecType[StrValue,Obj]].named(MMKV)
     finally source.close();
   }
 
