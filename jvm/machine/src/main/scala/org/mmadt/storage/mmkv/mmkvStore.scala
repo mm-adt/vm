@@ -52,28 +52,41 @@ class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
     finally source.close();
   }
 
-  val store:mutable.Map[Value[K],Value[V]] = {
+  val store:mutable.Map[K,V] = {
     val source:BufferedSource = Source.fromFile(file)
     try source.getLines().drop(1)
       .map(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,Value[Obj]]].value.values)
-      .foldLeft(new mutable.LinkedHashMap[Value[K],Value[V]]())((b,a) => b ++ Map(a.head.asInstanceOf[Value[K]] -> a.tail.head.asInstanceOf[Value[V]]))
+      .foldLeft(new mutable.LinkedHashMap[K,V])((b,a) => b ++ Map(a.head.asInstanceOf[K] -> a.tail.head.asInstanceOf[V]))
     finally source.close()
   }
 
   val counter:AtomicLong = new AtomicLong(store.keys.map(x => x.asInstanceOf[IntValue].value).max)
 
-  def get(key:Value[K]):Value[V] = store(key)
-  def put(key:Value[K],value:Value[V]):Value[V] = store.put(key,value).getOrElse(value)
-  def put(value:Value[V]):Value[V] = store.put(int(counter.get()).asInstanceOf[Value[K]],value).getOrElse(value)
-  def remove(key:Value[K]):Value[V] = store.remove(key).get
-  def strm():RecStrm[StrValue,Value[Obj]] = vrec(value = store.iterator.map(x => vrec(K -> x._1,V -> x._2)))
+  def get(key:K):V = store(key)
+  def put(key:K,value:V):V = store.put(key,value).getOrElse(value)
+  def put(value:V):V = store.put(int(counter.get()).asInstanceOf[K],value).getOrElse(value)
+  def remove(key:K):V = store.remove(key).get
+  def strm():RecStrm[StrValue,Value[Obj]] = vrec(value = store.iterator.map(x => vrec(K -> x._1.asInstanceOf[Value[V]],V -> x._2.asInstanceOf[Value[V]])))
 
   override def close():Unit ={
     val writer = new PrintWriter(new File(file))
     try {
       writer.println(schema.toString)
-      store.foreach(x => writer.println(vrec(K -> x._1,V -> x._2)))
+      store.foreach(x => writer.println(vrec(K -> x._1.asInstanceOf[Value[V]],V -> x._2.asInstanceOf[Value[V]])))
+      store.clear()
     } finally writer.close()
+  }
+}
+
+object mmkvStore extends AutoCloseable {
+  private val dbs:mutable.Map[String,mmkvStore[Obj,Obj]] = new mutable.LinkedHashMap
+
+  def open[K <: Obj,V <: Obj](file:String):mmkvStore[K,V] =
+    dbs.getOrElseUpdate(file,new mmkvStore(file)).asInstanceOf[mmkvStore[K,V]]
+
+  override def close():Unit ={
+    dbs.values.foreach(m => m.close())
+    dbs.clear()
   }
 }
 

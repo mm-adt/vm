@@ -34,8 +34,6 @@ import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
 import org.mmadt.storage.obj.value.VInst
 
-import scala.collection.mutable
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -57,7 +55,7 @@ class mmkvStorageProvider extends StorageProvider {
   }
 
   class mmkvInst(fileStr:StrValue) extends VInst[Obj,Rec[StrValue,Obj]]((emmkv,List(fileStr))) {
-    val store:mmkvStore[StrValue,ObjValue] = mmkvStorageProvider.open(fileStr.value)
+    val store:mmkvStore[StrValue,ObjValue] = mmkvStore.open(fileStr.value)
     override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
       trav.split((trav.obj() match {
         case atype:Type[_] => atype.compose(store.schema,this).q(*)
@@ -68,9 +66,3 @@ class mmkvStorageProvider extends StorageProvider {
 
 }
 
-object mmkvStorageProvider {
-  private val dbs:mutable.Map[String,mmkvStore[Obj,Obj]] = new mutable.LinkedHashMap
-
-  def open[K <: Obj,V <: Obj](file:String):mmkvStore[K,V] = dbs.getOrElseUpdate(file,new mmkvStore(file)).asInstanceOf[mmkvStore[K,V]]
-  def close():Unit = dbs.values.foreach(m => m.close())
-}
