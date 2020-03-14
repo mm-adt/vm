@@ -52,7 +52,7 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("mmkv file-2 parsing"){
-    assertResult(s"mmkv{*}<=obj[=mmkv,'${file2}']")(engine.eval(s"obj[=mmkv,'${file2}']").next.toString)
+    assertResult(s"mmkv{*}<=obj[=mmkv,'${file2}']")(engine.eval(s"obj[=mmkv,'${file2}']").next().toString)
     assertResult(List(str("marko!"),str("stephen!")))(engine.eval(s"1[=mmkv,'${file2}'].v[is.age>28].name+'!'").toList)
   }
 
@@ -60,7 +60,7 @@ class mmkvInstTest extends FunSuite {
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
     assertResult("['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz']")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(List(int(1),int(2),int(3),int(4)))(Processor.iterator()(int(4),Processor.compiler().apply(int.=:[ORecType](mmkv)(str(file1)).get(str("k"),int))).toStrm.toList)
-    //assertResult("List(['k'->1,'v'->'marko'],['k'->2,'v'->'ryan'],['k'->3,'v'->'stephen'],['k'->4,'v'->'kuppitz'])")((int(1) ===> int.|=("=mmkv", str(file1))).toList.toString())
+    assertResult("['k'->1,'v'->'marko']")(((int(1) ==> int.=:(mmkv)(str(file1))).toString))
   }
 
   test("mmkv file-2 adding"){

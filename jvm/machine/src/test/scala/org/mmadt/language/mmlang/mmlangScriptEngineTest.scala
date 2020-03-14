@@ -326,7 +326,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model parsing"){
-   /* val engine2                          = mmlangScriptEngineFactory.get.getScriptEngine
+    val engine2                          = mmlangScriptEngineFactory.get.getScriptEngine
     val person:RecType[StrValue,ObjType] = trec(str("name") -> str,str("age") -> int)
     // model creation
     assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine2.eval("rec[nat -> int<=int[is>0]]").next)
@@ -344,7 +344,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int <= int.is(int.gt(0)).plus(1))(engine2.eval("nat+1").next)
     assertResult(trec(value = Map(str("name") -> str,str("age") -> tobj("nat"))))(engine2.eval("person").next)
     assertResult(str <= person.get(str("name"),str))(engine2.eval("person[get,'name']").next)
-    assertResult(person.get(str("age"),int.named("nat")).plus(1))(engine2.eval("person[get,'age'][plus,1]").next)*/
+    assertResult(person.get(str("age"),int.named("nat")).plus(1))(engine2.eval("person[get,'age'][plus,1]").next)
 
     // model type checking
     /* assertThrows[AssertionError]{ // TODO: requires no type erasure and model checking

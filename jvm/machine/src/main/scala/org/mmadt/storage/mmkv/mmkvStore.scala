@@ -40,9 +40,9 @@ import scala.io.{BufferedSource, Source}
  */
 class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
 
-  private val MMKV:String = "mmkv"
-  private val K   :String = "k"
-  private val V   :String = "v"
+  private val MMKV:String   = "mmkv"
+  private val K   :StrValue = str("k")
+  private val V   :StrValue = str("v")
 
   val schema:RecType[StrValue,Obj] = {
     val source = Source.fromFile(file)
@@ -66,13 +66,13 @@ class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
   def put(key:Value[K],value:Value[V]):Value[V] = store.put(key,value).getOrElse(value)
   def put(value:Value[V]):Value[V] = store.put(int(counter.get()).asInstanceOf[Value[K]],value).getOrElse(value)
   def remove(key:Value[K]):Value[V] = store.remove(key).get
-  def strm():RecStrm[StrValue,Value[Obj]] = vrec(value = store.iterator.map(x => vrec(str(K) -> x._1,str(V) -> x._2)))
+  def strm():RecStrm[StrValue,Value[Obj]] = vrec(value = store.iterator.map(x => vrec(K -> x._1,V -> x._2)))
 
   override def close():Unit ={
     val writer = new PrintWriter(new File(file))
     try {
       writer.println(schema.toString)
-      store.foreach(x => writer.println(vrec(str(K) -> x._1,str(V) -> x._2)))
+      store.foreach(x => writer.println(vrec(K -> x._1,V -> x._2)))
     } finally writer.close()
   }
 }
