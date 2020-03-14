@@ -52,7 +52,7 @@ class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
     finally source.close();
   }
 
-  val store:mutable.Map[K,V] = {
+  private val store:mutable.Map[K,V] = {
     val source:BufferedSource = Source.fromFile(file)
     try source.getLines().drop(1)
       .map(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,Value[Obj]]].value.values)
@@ -60,21 +60,29 @@ class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
     finally source.close()
   }
 
-  val counter:AtomicLong = new AtomicLong(store.keys.map(x => x.asInstanceOf[IntValue].value).max)
+  private val counter:AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].value).max)
 
   def get(key:K):V = store(key)
   def put(key:K,value:V):V = store.put(key,value).getOrElse(value)
   def put(value:V):V = store.put(int(counter.get()).asInstanceOf[K],value).getOrElse(value)
   def remove(key:K):V = store.remove(key).get
   def strm():RecStrm[StrValue,Value[Obj]] = vrec(value = store.iterator.map(x => vrec(K -> x._1.asInstanceOf[Value[V]],V -> x._2.asInstanceOf[Value[V]])))
+  def clear():Unit ={
+    counter.set(0L)
+    store.clear()
+  }
+  def count():Long = this.store.size
 
   override def close():Unit ={
-    val writer = new PrintWriter(new File(file))
+    /*val writer = new PrintWriter(new File(file))
     try {
       writer.println(schema.toString)
       store.foreach(x => writer.println(vrec(K -> x._1.asInstanceOf[Value[V]],V -> x._2.asInstanceOf[Value[V]])))
+      writer.flush()
       store.clear()
-    } finally writer.close()
+      counter.set(0L)
+      mmkvStore.dbs.remove(file).nonEmpty
+    } finally writer.close()*/
   }
 }
 

@@ -22,7 +22,6 @@
 
 package org.mmadt.storage.mmkv
 
-import javax.script.{ScriptContext, SimpleBindings}
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory

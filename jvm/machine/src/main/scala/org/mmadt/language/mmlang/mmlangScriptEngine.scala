@@ -38,7 +38,7 @@ class mmlangScriptEngine(factory:ScriptEngineFactory) extends AbstractScriptEngi
   override def eval(script:String,context:ScriptContext):Obj = mmlangParser.parse[Obj](script,getModel(context.getBindings(ScriptContext.ENGINE_SCOPE)))
   override def eval(script:String,bindings:Bindings):Obj = mmlangParser.parse[Obj](script,getModel(bindings))
   override def eval(reader:Reader,context:ScriptContext):Obj = eval(new BufferedReader(reader).readLine(),context)
-  override def eval(reader:Reader):Obj = eval(new BufferedReader(reader).readLine(),new SimpleScriptContext())
+  override def eval(reader:Reader):Obj = eval(new BufferedReader(reader).readLine(),this.getContext)
   override def createBindings():Bindings = new SimpleBindings()
   override def getFactory:ScriptEngineFactory = factory
 
