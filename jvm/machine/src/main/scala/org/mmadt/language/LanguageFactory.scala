@@ -22,6 +22,8 @@
 
 package org.mmadt.language
 
+import java.util.ServiceLoader
+
 import org.mmadt.language.mmlang.mmlangPrinter
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
@@ -42,6 +44,10 @@ trait LanguageFactory {
 }
 
 object LanguageFactory {
+  ///////PROVIDERS///////
+  private lazy val providers:ServiceLoader[LanguageProvider] = ServiceLoader.load(classOf[LanguageProvider])
+  def getLanguage(name:String):LanguageProvider = providers.stream().filter(x => x.get().name().equals(name)).findFirst().get().get()
+  ///////////////////////
   def printValue(value:Value[Obj])(implicit f:LanguageFactory):String = f.printValue(value)
   def printType(atype:Type[Obj])(implicit f:LanguageFactory):String = f.printType(atype)
   def printInst(inst:Inst[_,_])(implicit f:LanguageFactory):String = f.printInst(inst)

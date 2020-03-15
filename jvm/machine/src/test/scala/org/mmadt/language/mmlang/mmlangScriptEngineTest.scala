@@ -22,12 +22,12 @@
 
 package org.mmadt.language.mmlang
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj,Str}
+import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -37,7 +37,7 @@ import org.scalatest.FunSuite
  */
 class mmlangScriptEngineTest extends FunSuite {
 
-  val engine:mmADTScriptEngine = mmlangScriptEngineFactory.get.getScriptEngine()
+  lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("empty space parsing"){
 
@@ -326,7 +326,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model parsing"){
-    val engine2                          = mmlangScriptEngineFactory.get.getScriptEngine
+    val engine2                          = LanguageFactory.getLanguage("mmlang").getEngine.get()
     val person:RecType[StrValue,ObjType] = trec(str("name") -> str,str("age") -> int)
     // model creation
     assertResult(trec(tobj("nat") -> (int <= int.is(int.gt(0)))))(engine2.eval("rec[nat -> int<=int[is>0]]").next)
@@ -347,14 +347,14 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(person.get(str("age"),int.named("nat")).plus(1))(engine2.eval("person[get,'age'][plus,1]").next)
 
     // model type checking
-    /* assertThrows[AssertionError]{ // TODO: requires no type erasure and model checking
-   engine.eval("-2 nat[plus,2]").next()
-    }*/
+    /*  assertThrows[AssertionError]{ // TODO: requires no type erasure and model checking
+    engine.eval("-2 nat[plus,2]").next()
+     }*/
     /*assertThrows[AssertionError]{ // TODO: requires that a specified range can't be overridden by abstract interpretation
       println(engine.eval("nat<=nat[plus,-3]").next())
       engine.eval("2 nat<=nat[plus,-3]").next()
     }*/
-    //assertResult(int(30))(engine.eval("['name'->'marko','age'->29]person[get,'age'][plus,1]").next) // TODO: need to type check the values against the domain of the type (we currently only type check types against types)
+    //assertResult(int(30))(engine.eval("['name'->'marko','age'->29]person[get,'age',nat][plus,1]").next) // TODO: need to type check the values against the domain of the type (we currently only type check types against types)
     //assertResult(false)(engine.eval("['name'->'ryan','age'->10],['name'->'marko','age'->29] person[get,'age'][plus,1]").next) // TODO: need to type check the values against the domain of the type (we currently only type check types against types)
   }
 }

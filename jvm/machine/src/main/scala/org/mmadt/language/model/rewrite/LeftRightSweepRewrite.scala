@@ -40,11 +40,12 @@ object LeftRightSweepRewrite {
     if (atype.insts.nonEmpty) {
       model.get(atype) match {
         case Some(right:Type[S]) => rewrite(model,right,btype,traverser)
-        case None => rewrite(model,
-          atype.rinvert(),
-          model.resolve(OpInstResolver.resolve(atype.insts.last._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.insts.last._2,traverser)).
-            apply(Traverser.standard(model.resolve(atype.rinvert[Type[S]]().range))).obj().asInstanceOf[Type[S]]).compose(btype),
-          traverser)
+        case None =>
+          val inst:Inst[Obj,Obj] = OpInstResolver.resolve(atype.insts.last._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.insts.last._2,traverser))
+          rewrite(model,
+            atype.rinvert(),
+            inst.apply(traverser.split(atype.rinvert[Type[S]]().range)).obj().asInstanceOf[Type[S]].compose(btype), // might need a model.resolve down the road
+            traverser)
       }
     } else if (btype.insts.nonEmpty) {
       rewrite(model,
@@ -58,7 +59,7 @@ object LeftRightSweepRewrite {
   // if no match, then apply the instruction after rewriting its arguments
   private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst[Obj,Obj],traverser:Traverser[S]):List[Obj] ={
     inst.op() match {
-      case Tokens.a | Tokens.as | Tokens.map => inst.args()
+      case Tokens.a | Tokens.as | Tokens.map | Tokens.put => inst.args()
       case Tokens.choose =>
         def branching(obj:Obj):Obj ={
           obj match {

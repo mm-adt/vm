@@ -33,9 +33,9 @@ import org.mmadt.language.obj.Obj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class mmlangScriptEngine(factory:ScriptEngineFactory) extends AbstractScriptEngine with mmADTScriptEngine {
-  override def eval(script:String):Obj = mmlangScriptEngine.super.eval(script)
-  override def eval(script:String,context:ScriptContext):Obj = mmlangParser.parse[Obj](script,getModel(context.getBindings(ScriptContext.ENGINE_SCOPE)))
+class mmlangScriptEngine(factory:mmlangScriptEngineFactory) extends AbstractScriptEngine with mmADTScriptEngine {
+  override def eval(script:String):Obj = super.eval(script)
+  override def eval(script:String,context:ScriptContext):Obj = mmlangParser.parse[Obj](script,getModel(context))
   override def eval(script:String,bindings:Bindings):Obj = mmlangParser.parse[Obj](script,getModel(bindings))
   override def eval(reader:Reader,context:ScriptContext):Obj = eval(new BufferedReader(reader).readLine(),context)
   override def eval(reader:Reader):Obj = eval(new BufferedReader(reader).readLine(),this.getContext)
@@ -43,5 +43,9 @@ class mmlangScriptEngine(factory:ScriptEngineFactory) extends AbstractScriptEngi
   override def getFactory:ScriptEngineFactory = factory
 
   private def getModel(bindings:Bindings):Model = if (bindings.containsKey(Tokens.model)) bindings.get(Tokens.model).asInstanceOf[Model] else Model.id
+  private def getModel(context:ScriptContext):Model =
+    if (context.getBindings(ScriptContext.ENGINE_SCOPE).containsKey(Tokens.model)) context.getBindings(ScriptContext.ENGINE_SCOPE).get(Tokens.model).asInstanceOf[Model]
+    else if (context.getBindings(ScriptContext.GLOBAL_SCOPE).containsKey(Tokens.model)) context.getBindings(ScriptContext.GLOBAL_SCOPE).get(Tokens.model).asInstanceOf[Model]
+    else Model.id
 }
 

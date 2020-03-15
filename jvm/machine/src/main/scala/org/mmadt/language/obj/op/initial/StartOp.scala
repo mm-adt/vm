@@ -23,9 +23,11 @@
 package org.mmadt.language.obj.op.initial
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.InitialInstruction
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -39,7 +41,10 @@ object StartOp {
   def apply[O <: Obj](starts:O):Inst[O,O] = new StartInst(starts)
 
   class StartInst[O <: Obj](starts:O) extends VInst[O,O]((Tokens.start,List(starts))) with InitialInstruction {
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(starts)
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
+      case atype:Type[_] => atype.compose(asType[O](starts),StartOp(starts)).q(starts.q)
+      case _ => starts
+    })
   }
 
 }

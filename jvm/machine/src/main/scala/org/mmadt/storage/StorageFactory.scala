@@ -22,6 +22,8 @@
 
 package org.mmadt.storage
 
+import java.util.ServiceLoader
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, _}
@@ -72,6 +74,8 @@ trait StorageFactory {
 }
 
 object StorageFactory {
+  ///////PROVIDERS///////
+  val providers:ServiceLoader[StorageProvider] = ServiceLoader.load(classOf[StorageProvider])
   /////////TYPES/////////
   lazy val obj :ObjType  = tobj()
   lazy val bool:BoolType = tbool()
@@ -117,14 +121,14 @@ object StorageFactory {
   lazy val ?     :(IntValue,IntValue) = qMark
   lazy val +     :(IntValue,IntValue) = qPlus
 
-  def asType[O <: Obj](obj:O):Type[O] = (obj match {
-    case atype:Type[O] => return atype
+  def asType[O <: Obj](obj:O):OType[O] = (obj match {
+    case atype:Type[O] with O => return atype
     case _:IntValue | _:IntStrm => tint(name = obj.name,q = obj.q)
     case _:StrValue | _:StrStrm => tstr(name = obj.name,q = obj.q)
     case _:BoolValue | _:BoolStrm => tbool(name = obj.name,q = obj.q)
     case _:ORecStrm => trec(name = obj.name,value = Map.empty,q = obj.q)
     case recval:ORecValue => trec(name = recval.name,value = recval.value,q = obj.q)
-  }).asInstanceOf[Type[O]]
+  }).asInstanceOf[OType[O]]
 
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {
     /////////TYPES/////////

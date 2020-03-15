@@ -22,9 +22,8 @@
 
 package org.mmadt.storage.mmkv
 
-import org.mmadt.language.Tokens
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.ORecType
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
@@ -35,7 +34,7 @@ import org.scalatest.FunSuite
  */
 class mmkvInstTest extends FunSuite {
 
-  val engine:mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+  lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
   val file1 :String            = getClass.getResource("/mmkv/mmkv-1.txt").getPath
   val file2 :String            = getClass.getResource("/mmkv/mmkv-2.txt").getPath
   val mmkv  :String            = "=mmkv"
@@ -52,7 +51,7 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv file-2 parsing"){
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file2}']")(engine.eval(s"obj[=mmkv,'${file2}']").next().toString)
-    assertResult(List(str("marko!"),str("stephen!")))(engine.eval(s"1[=mmkv,'${file2}'].v[is.age>28].name+'!'").toList)
+    assertResult(List(str("marko!"),str("stephen!")))(engine.eval(s"1[=mmkv,'${file2}'][get,'v'][is,[get,'age',int][gt,28]].name+'!'").toList)
   }
 
   test("[=mmkv] with mmkv-1.txt"){ // TODO obj.=('mmkv',str(file1))
@@ -68,19 +67,13 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("mmkv model"){
-    assertThrows[RuntimeException]{
-      val engine2 = mmlangScriptEngineFactory.get.getScriptEngine
-      assertResult("obj")(engine2.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
-      engine2.put(Tokens.model,new mmkvStorageProvider().model)
-      println(engine2.eval(s"obj[=mmkv,'${file2}'][put,'v',6]").next())
-    }
-    assertThrows[RuntimeException]{
-      val engine2 = mmlangScriptEngineFactory.get.getScriptEngine
-      assertResult("obj")(engine2.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
-      engine2.put(Tokens.model,new mmkvStorageProvider().model)
-      println(engine2.eval(s"obj[=mmkv,'${file2}'][put,'k',346]").next())
-    }
     assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
+    assertThrows[RuntimeException]{
+      println(engine.eval(s"obj[=mmkv,'${file2}'][put,'v',6]").next())
+    }
+    assertThrows[RuntimeException]{
+      println(engine.eval(s"obj[=mmkv,'${file2}'][put,'k',346]").next())
+    }
   }
 
 }

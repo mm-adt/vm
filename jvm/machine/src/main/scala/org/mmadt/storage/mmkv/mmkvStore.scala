@@ -24,11 +24,11 @@ package org.mmadt.storage.mmkv
 
 import java.util.concurrent.atomic.AtomicLong
 
-import org.mmadt.language.mmlang.mmlangParser
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{IntValue, RecValue, StrValue, Value}
+import org.mmadt.language.{LanguageFactory, LanguageProvider}
 import org.mmadt.storage.StorageFactory._
 
 import scala.collection.mutable
@@ -39,20 +39,21 @@ import scala.io.{BufferedSource, Source}
  */
 class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
 
-  private val MMKV:String   = "mmkv"
-  private val K   :StrValue = str("k")
-  private val V   :StrValue = str("v")
+  private val mmlang:LanguageProvider = LanguageFactory.getLanguage("mmlang")
+  private val MMKV  :String           = "mmkv"
+  private val K     :StrValue         = str("k")
+  private val V     :StrValue         = str("v")
 
   val schema:RecType[StrValue,Obj] = {
     val source = Source.fromFile(file)
-    try source.getLines().take(1).map(line => mmlangParser.parseAll(mmlangParser.recType,line).get).next().asInstanceOf[RecType[StrValue,Obj]].named(MMKV)
+    try source.getLines().take(1).map(line => mmlang.parse[RecType[StrValue,Obj]](line)).next().named(MMKV)
     finally source.close();
   }
 
   private val store:mutable.Map[K,V] = {
     val source:BufferedSource = Source.fromFile(file)
     try source.getLines().drop(1)
-      .map(k => mmlangParser.parse(k).asInstanceOf[RecValue[StrValue,Value[Obj]]].value.values)
+      .map(k => mmlang.parse[RecValue[StrValue,Value[Obj]]](k).value.values)
       .foldLeft(new mutable.LinkedHashMap[K,V])((b,a) => b ++ Map(a.head.asInstanceOf[K] -> a.tail.head.asInstanceOf[V]))
     finally source.close()
   }

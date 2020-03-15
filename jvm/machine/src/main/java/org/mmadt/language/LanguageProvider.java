@@ -20,32 +20,32 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.map
+package org.mmadt.language;
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst,Obj,Rec,multQ}
-import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.language.jsr223.mmADTScriptEngine;
+import org.mmadt.language.model.Model;
+import org.mmadt.language.obj.Obj;
+
+import javax.script.ScriptException;
+import java.util.Optional;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GetOp[A <: Obj,B <: Obj] {
-  this:Rec[A,B] =>
-  def get(key:A):B
-  def get[BB <: Obj](key:A,btype:BB):BB
-}
+public interface LanguageProvider {
 
-object GetOp {
-  def apply[A <: Obj,B <: Obj](key:A):Inst[Rec[A,B],B] = new GetInst[A,B](key)
-  def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst[Rec[A,B],B] = new GetInst(key,typeHint)
+    String name();
 
-  class GetInst[A <: Obj,B <: Obj](key:A,typeHint:B = obj.asInstanceOf[B]) extends VInst[Rec[A,B],B]((Tokens.get,List(key))) {
-    override def apply(trav:Traverser[Rec[A,B]]):Traverser[B] = trav.split((typeHint.name match {
-      case Tokens.obj => trav.model.resolve(trav.obj()).get(key)
-      case _ => trav.model.resolve(trav.obj()).get(key,typeHint)
-    }).q(multQ(trav.obj().q,this.q)))
-  }
+    Model model();
+
+    Optional<mmADTScriptEngine> getEngine();
+
+    default <O extends Obj> O parse(final String script) {
+        try {
+            return (O) getEngine().get().eval(script);
+        } catch (ScriptException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
 
 }

@@ -22,21 +22,31 @@
 
 package org.mmadt.storage.mmkv
 
+import javax.script.ScriptContext
+import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{IntType,ObjType,RecType}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue}
+import org.mmadt.language.obj.`type`.{IntType, ObjType, RecType}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.{BeforeAndAfter,FunSuite}
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class mmkvStoreTest extends FunSuite {
+  lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
+  val file1 :String            = getClass.getResource("/mmkv/mmkv-1.txt").getPath
+  val file2 :String            = getClass.getResource("/mmkv/mmkv-2.txt").getPath
+  val file3 :String            = getClass.getResource("/mmkv/mmkv-3.txt").getPath
+  val mmkv  :String            = "=mmkv"
 
-  val file1:String = getClass.getResource("/mmkv/mmkv-1.txt").getPath
-  val file2:String = getClass.getResource("/mmkv/mmkv-2.txt").getPath
-  val file3:String = getClass.getResource("/mmkv/mmkv-3.txt").getPath
-  val mmkv :String = "=mmkv"
+  test("mmkv storage provider"){
+    assert(engine.getBindings(ScriptContext.ENGINE_SCOPE).values().isEmpty)
+    assert(engine.getBindings(ScriptContext.GLOBAL_SCOPE).containsKey(Tokens.model))
+    //assert(engine.getBindings(ScriptContext.GLOBAL_SCOPE).get(Tokens.model).asInstanceOf[Model].recType.value().contains(tobj("mmkv")))
+    //assert(engine.eval("model").asInstanceOf[RecType[Type[Obj],Type[Obj]]].value().contains(tobj("mmkv")))
+  }
 
   test("mmkv store [get]"){
     val store = mmkvStore.open[IntValue,StrValue](file1)

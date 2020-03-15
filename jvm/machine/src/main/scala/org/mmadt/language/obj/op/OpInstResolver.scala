@@ -28,6 +28,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
+import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
@@ -88,6 +89,7 @@ object OpInstResolver {
       case Tokens.q => QOp().asInstanceOf[Inst[S,E]]
       case Tokens.zero => ZeroOp().asInstanceOf[Inst[S,E]]
       case Tokens.one => OneOp().asInstanceOf[Inst[S,E]]
+      case Tokens.start => StartOp(args.head).asInstanceOf[Inst[S,E]]
       //////////////////////////////////////////////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////////////////////////////
       case _ => service(op,args) match {

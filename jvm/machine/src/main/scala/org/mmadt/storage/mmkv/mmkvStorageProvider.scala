@@ -45,7 +45,7 @@ class mmkvStorageProvider extends StorageProvider {
   override def name:String = "mmkv"
 
   override val model:Model = Model(
-    tobj(name) -> trec(K -> obj,V -> obj),
+    // tobj(name) -> trec(K -> obj,V -> obj), // TODO: this needs to be dynamically determined by mmkvStore file access
     mmkv.put(K,obj) -> mmkv.error("keys are immutable"),
     mmkv.put(V,obj) -> mmkv.error("values are immutable"))
 
