@@ -36,19 +36,20 @@ import scala.collection.JavaConverters.asScalaIterator
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class mmlangLanguageProvider extends LanguageProvider {
-  override val name:String = "mmlang"
-  override val model:Model = Model.id
+  override val name :String = mmlangLanguageProvider._name
+  override val model:Model  = Model.id
   override def getEngine:Optional[mmADTScriptEngine] = Optional.of(mmlangLanguageProvider.scriptEngine())
 }
 
 object mmlangLanguageProvider {
+  private      val _name              :String              = "mmlang"
   private lazy val scriptEngineManager:ScriptEngineManager = {
     val model  :Model               = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toSeq.map(x => x.model()).headOption.getOrElse(Model.id)
     val manager:ScriptEngineManager = new ScriptEngineManager()
     manager.setBindings(bindings(Tokens.model -> model))
     manager
   }
-  private def scriptEngine():mmADTScriptEngine = scriptEngineManager.getEngineByName("mmlang").asInstanceOf[mmlangScriptEngine]
+  private def scriptEngine():mmADTScriptEngine = scriptEngineManager.getEngineByName(_name).asInstanceOf[mmlangScriptEngine]
 
   private def bindings(pairs:Tuple2[String,Any]*):Bindings ={
     val bindings:Bindings = new SimpleBindings()

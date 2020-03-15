@@ -31,20 +31,14 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.mmadt.language.LanguageFactory;
+import org.mmadt.language.Tokens;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
 import org.mmadt.language.model.Model;
-import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.type.RecType;
-import org.mmadt.language.obj.type.Type;
-import org.mmadt.storage.StorageProvider;
 import scala.collection.JavaConverters;
 
 import javax.script.ScriptEngineManager;
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Objects;
-import java.util.ServiceLoader;
-import java.util.stream.Stream;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -71,7 +65,7 @@ public class Console {
 
     public static void main(final String[] args) throws Exception {
         String engineName = "mmlang";
-        final mmADTScriptEngine engine = (mmADTScriptEngine) MANAGER.getEngineByName(engineName);
+        final mmADTScriptEngine engine = LanguageFactory.getLanguage("mmlang").getEngine().get();
         final Terminal terminal = TerminalBuilder.builder().name("mm-ADT Console").build();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
@@ -87,7 +81,6 @@ public class Console {
         terminal.writer().println(HEADER);
         terminal.flush();
 
-        engine.put(MODEL, loadModels());
         while (true) {
             try {
                 String line = reader.readLine(engineName + "> ");
@@ -101,13 +94,10 @@ public class Console {
                     MANAGER.getEngineFactories().forEach(factory -> terminal.writer().println(RESULT + factory.getEngineName()));
                 else if (line.startsWith(LANG_OP))
                     engineName = line.replace(LANG_OP, "").trim();
-                else if (line.equals(MODEL_OP)) {
-                    final Model model = (Model) engine.get(MODEL);
-                    if (null != model) terminal.writer().println(model);
-                } else if (line.startsWith(MODEL_OP) && new File(line.substring(6).trim()).exists())
-                    engine.put(MODEL, loadFiles(terminal, engine, line.substring(6).trim()));
+                else if (line.equals(MODEL_OP))
+                    terminal.writer().println(Model.apply((RecType) engine.eval(Tokens.model())));
                 else if (line.startsWith(MODEL_OP))
-                    engine.put(MODEL, ((Model) engine.get(MODEL)).put(Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(line.substring(6)).next())));
+                    engine.put(MODEL, Model.apply((RecType) engine.eval(Tokens.model())).put(Model.apply((RecType) engine.eval(line.substring(6)))));
                 else
                     JavaConverters.asJavaIterator(engine.eval(line).toStrm().value()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {
@@ -119,7 +109,7 @@ public class Console {
         }
     }
 
-    private static Model loadFiles(final Terminal terminal, final mmADTScriptEngine engine, final String location) {
+    /*private static Model loadFiles(final Terminal terminal, final mmADTScriptEngine engine, final String location) {
         if (null == engine.get(MODEL))
             engine.put(MODEL, Model.simple());
         final Model model = (Model) engine.get(MODEL);
@@ -140,12 +130,7 @@ public class Console {
 
             }
         }
-    }
-
-    private static Model loadModels() {
-        ServiceLoader<StorageProvider> loader = ServiceLoader.load(StorageProvider.class);
-        return loader.stream().map(x -> x.get().model()).reduce(Model.simple(), Model::put);
-    }
+    }*/
 }
 
 
