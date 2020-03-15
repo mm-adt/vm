@@ -1,0 +1,77 @@
+# One More Saturday Night with mm-ADT
+
+Via Wikipedia:
+  * An **intentional definition** gives the meaning of a term by specifying necessary and sufficient conditions
+    for when the term should be used.
+  * An **extensional definition** of a concept or term formulates its meaning by specifying its extension, that is, 
+    listing every object that falls under the definition of the concept or term in question. 
+
+## Intentional Type Construction
+
+When the traverser starts at a type (e.g., `obj{0}` below), the traverser builds a type checked/compiled type.
+The technique of using the same instructions to operate on types as on values is called **abstract interpretation**.
+The idea is that a type such as `int` is all integers in one. Thus, `int + 1` must yield an output that is true for all `ints`, not just a single value of `int` (i.e. parallel reasoning across all integer values via an *abstract* set of integers).
+
+```groovy
+mmlang> obj{0}[=mmkv,'data/mmkv.mm'][get,'v'][is,[get,'age'][gt,28]][get,'name'][plus,'!']
+==>str{*}<=[=mmkv,'data/mmkv.mm'][get,'v'][is,bool{*}<=rec['name'->str,'age'->int]{*}[get,'age'][gt,28]][get,'name'][plus,'!']
+```
+
+When you append an `[explain]` instruction, the traverser walks his current type reference data structure to create a `str` table representation of the domain/range of all the types used in the composition.
+
+```groovy
+mmlang> obj{0}[=mmkv,'data/mmkv.mm'][get,'v'][is,[get,'age'][gt,28]][get,'name'][plus,'!'][explain]
+==>str<=[start,'
+str{*}<=[=mmkv,'data/mmkv.mm'][get,'v'][is,bool{*}<=rec['name'->str,'age'->int]{*}[get,'age'][gt,28]][get,'name'][plus,'!']
+instruction                                                       domain                                 range                            state
+------------------------------------------------------------------------------------------------------------------------------------------------
+[=mmkv,'data/mmkv.mm']                                            obj{0}                            =>   mmkv{*}
+[get,'v']                                                         mmkv{*}                           =>   rec['name'->str,'age'->int]{*}
+[is,bool{*}<=rec['name'->str,'age'->int]{*}[get,'age'][gt,28]]    rec['name'->str,'age'->int]{*}    =>   rec['name'->str,'age'->int]{*}
+ [get,'age']                                                       rec['name'->str,'age'->int]{*}   =>    int{*}
+ [gt,28]                                                           int{*}                           =>    bool{*}
+[get,'name']                                                      rec['name'->str,'age'->int]{*}    =>   str{*}
+[plus,'!']                                                        str{*}                            =>   str{*}
+']
+mmlang>
+```
+
+---
+
+## Extentional Set Construction
+
+The set of elements in this type can now be enumerated. Compilation (intentional) vs. evaluation (extentional).  
+
+```groovy
+mmlang> [=mmkv,'data/mmkv.mm']
+==>['k'->1,'v'->['name'->'marko','age'->29]]
+==>['k'->2,'v'->['name'->'ryan','age'->25]]
+==>['k'->3,'v'->['name'->'stephen','age'->32]]
+==>['k'->4,'v'->['name'->'kuppitz','age'->23]]
+mmlang> [=mmkv,'data/mmkv.mm'][get,'v'][is,[get,'age',int][gt,28]][get,'name'][plus,'!']
+==>'marko!'
+==>'stephen!'
+```
+
+`mmlang` has lots of syntax sugar shortcuts for common instruction patterns.
+
+```groovy
+mmlang> [=mmkv,'data/mmkv.mm'].v[is.age>28].name+'!'
+==>'marko!'
+==>'stephen!
+```
+---
+
+Some more examples demonstrating abstract interpretation, functions as types, and type quantifiers...
+
+```groovy
+mmlang> int + 1
+==>int[plus,1]
+mmlang> int[is>4]
+==>int{?}<=int[is,bool<=int[gt,4]]
+mmlang> int[is>4] + 1
+==>int{?}<=int[is,bool<=int[gt,4]][plus,1]
+mmlang> int{3}[is>4] + 1
+==>int{0,3}<=int{3}[is,bool{3}<=int{3}[gt,4]][plus,1]
+mmlang>
+```

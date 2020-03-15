@@ -51,7 +51,8 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv file-2 parsing"){
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file2}']")(engine.eval(s"obj[=mmkv,'${file2}']").next().toString)
-    assertResult(List(str("marko!"),str("stephen!")))(engine.eval(s"1[=mmkv,'${file2}'][get,'v'][is,[get,'age',int][gt,28]].name+'!'").toList)
+    assertResult(List(str("marko!"),str("stephen!")))(engine.eval(s"1[=mmkv,'${file2}'][get,'v'][is,[get,'age',int][gt,28]][get,'name'][plus,'!']").toList)
+    assertResult(List(str("marko!"),str("stephen!")))(engine.eval(s"1[=mmkv,'${file2}'].v[is.age>28].name+'!'").toList)
   }
 
   test("[=mmkv] with mmkv-1.txt"){ // TODO obj.=('mmkv',str(file1))
