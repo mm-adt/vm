@@ -24,12 +24,12 @@ package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{BoolType,IntType,RecType,Type}
+import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.model.NoOp
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.{TBool,TInt,TRec}
+import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec}
 
 import scala.collection.mutable
 

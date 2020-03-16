@@ -47,18 +47,17 @@ class mmkvStorageProvider extends StorageProvider {
     // tobj(name) -> trec(K -> obj,V -> obj), // TODO: this needs to be dynamically determined by mmkvStore file access
     mmkv.put(K,obj) -> mmkv.error("keys are immutable"),
     mmkv.put(V,obj) -> mmkv.error("values are immutable"),
-    (mmkv <= obj.q(0).compose(mmkv,mmkvOp(str.to("x"))).is(mmkv.get(K,int).eqs(int.to("y")))) -> obj.q(0).compose(mmkvOp.isGetKeyEq(str.from("x"),int.from("y"))))
+    (mmkv <= obj.q(0).compose(mmkv,mmkvOp.strm(str.to("x"))).is(mmkv.get(K,int).eqs(int.to("y")))) -> (mmkv.q(qMark) <= obj.q(0).compose(mmkvOp.isGetKeyEq(str.from("x"),int.from("y")))))
 
   val getByKeyEq:StrValue = str("getByKeyEq")
-  override def resolveInstruction(opcode:String,args:util.List[Obj]):Optional[Inst[Obj,Obj]] ={
+  override def resolveInstruction(op:String,args:util.List[Obj]):Optional[Inst[Obj,Obj]] ={
+    if (op != opcode) Optional.empty()
     Optional.ofNullable(asScalaIterator(args.iterator()).toList match {
-      case List(file:Str) => mmkvOp(file)
+      case List(file:Str) => mmkvOp.strm(file)
       case List(file:Str,this.getByKeyEq,key:Obj) => mmkvOp.isGetKeyEq(file,key)
       case _ => null
     })
   }
-
-
 }
 
 object mmkvStorageProvider {
@@ -70,31 +69,30 @@ object mmkvStorageProvider {
 
   object mmkvOp {
     def isGetKeyEq(file:Str,key:Obj):Inst[Obj,Rec[StrValue,Obj]] = new mmkvIsGetKeyEqInst(file,key)
-    def apply(file:Str):Inst[Obj,Rec[StrValue,Obj]] = new mmkvInst(file)
+    def strm(file:Str):Inst[Obj,Rec[StrValue,Obj]] = new mmkvInst(file)
 
     class mmkvInst(fileStr:Str) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr))) {
       override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
-        val store:mmkvStore[StrValue,ObjValue] = fileStr match {
-          case _:Type[_] => throw new UnsupportedOperationException
-          case avalue:StrValue => mmkvStore.open(avalue.value)
-        }
         trav.split((trav.obj() match {
-          case atype:Type[_] => atype.compose(store.schema,this).q(*)
-          case _:Value[_] => store.strm()
+          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).q(*)
+          case _:Value[_] => connect(fileStr).strm()
         }).asInstanceOf[Rec[StrValue,Obj]])
       }
     }
 
     class mmkvIsGetKeyEqInst(fileStr:Str,key:Obj) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr,str("getByKeyEq"),key))) {
       override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
-        val store:mmkvStore[Value[Obj],Value[Obj]] = fileStr match {
-          case _:Type[_] => throw new UnsupportedOperationException
-          case avalue:StrValue => mmkvStore.open(avalue.value)
-        }
         trav.split((trav.obj() match {
-          case atype:Type[_] => atype.compose(store.schema,this).q(*)
-          case _ => vrec(K -> key.asInstanceOf[Value[Obj]],V -> store.get(key.asInstanceOf[Value[Obj]]))
+          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).q(*)
+          case _ => vrec(K -> key.asInstanceOf[Value[Obj]],V -> connect(fileStr).get(key.asInstanceOf[Value[Obj]]))
         }).asInstanceOf[Rec[StrValue,Obj]])
+      }
+    }
+
+    private def connect(file:Str):mmkvStore[Value[Obj],Value[Obj]] ={
+      file match {
+        case _:Type[_] => throw new UnsupportedOperationException
+        case avalue:StrValue => mmkvStore.open(avalue.value)
       }
     }
 
