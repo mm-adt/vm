@@ -24,10 +24,12 @@ package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.language.obj.`type`.{BoolType,IntType,RecType,Type}
+import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.model.NoOp
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec}
+import org.mmadt.storage.obj.`type`.{TBool,TInt,TRec}
 
 import scala.collection.mutable
 
@@ -97,8 +99,29 @@ object Model {
       }
       x.get(left) match {
         case Some(m) => Some(m)
-        case None => x.iterator.find(a => left.test(a._1)).map(_._2)
+        case None => x.iterator.find(a => left.test(a._1)).map(a => {
+          val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap
+          a._2.insts.map(x =>
+            OpInstResolver.resolve[Obj,Obj](
+              x._2.op(),
+              x._2.args().map(i => Traverser.resolveArg[Obj,Obj](Traverser.standard(x._1,state),i))))
+            .foldRight(a._2.domain())((x,z) => z.compose(x))
+        })
       }
+    }
+
+    // generate traverser state
+    private def bindLeftValuesToRightVariables(left:Type[Obj],right:Type[Obj]):List[(Obj,Type[Obj])] ={
+      left.insts.map(_._2).zip(right.insts.map(_._2))
+        .flatMap(x => x._1.args().zip(x._2.args()))
+        .filter(x => x._2.isInstanceOf[Type[Obj]])
+        .flatMap(x => {
+          x._1 match {
+            case left1:Type[Obj] => bindLeftValuesToRightVariables(left1,x._2.asInstanceOf[Type[Obj]])
+            case _ => List(x)
+          }
+        })
+        .map(x => (x._1,x._2.asInstanceOf[Type[Obj]]))
     }
     override def get(left:String):Option[Type[Obj]] ={
       if (left.equals(Tokens.model)) return Option(recType)
@@ -108,7 +131,7 @@ object Model {
       }
     }
     override def recType:RecType[Type[Obj],Type[Obj]] ={
-      trec[Type[Obj],Type[Obj]](value = this.typeMap.values.foldRight(Map[Type[Obj],Type[Obj]]())((a,b) => b ++ a.toMap))
+      trec[Type[Obj],Type[Obj]](value = this.typeMap.values.foldRight(mutable.Map[Type[Obj],Type[Obj]]())((a,b) => b ++ a).toMap)
     }
   }
 }

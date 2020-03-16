@@ -26,7 +26,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
-import org.mmadt.language.obj.{Int, minZero}
+import org.mmadt.language.obj.{Int, OType, OValue, minZero}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInt
 

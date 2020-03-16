@@ -70,11 +70,13 @@ class mmkvInstTest extends FunSuite {
   test("mmkv model"){
     assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
     assertThrows[RuntimeException]{
-      println(engine.eval(s"obj[=mmkv,'${file2}'][put,'v',6]").next())
+      engine.eval(s"obj[=mmkv,'${file2}'][put,'v',6]").next()
     }
     assertThrows[RuntimeException]{
-      println(engine.eval(s"obj[=mmkv,'${file2}'][put,'k',346]").next())
+      engine.eval(s"obj[=mmkv,'${file2}'][put,'k',346]").next()
     }
+    assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").next().toString)
+    assertResult(str("marko"))(engine.eval(s"'x'[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']").next())
   }
 
 }

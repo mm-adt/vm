@@ -43,9 +43,6 @@ class mmlangScriptEngine(factory:mmlangScriptEngineFactory) extends AbstractScri
   override def getFactory:ScriptEngineFactory = factory
 
   private def getModel(bindings:Bindings):Model = if (bindings.containsKey(Tokens.model)) bindings.get(Tokens.model).asInstanceOf[Model] else Model.id
-  private def getModel(context:ScriptContext):Model =
-    if (context.getBindings(ScriptContext.ENGINE_SCOPE).containsKey(Tokens.model)) context.getBindings(ScriptContext.ENGINE_SCOPE).get(Tokens.model).asInstanceOf[Model]
-    else if (context.getBindings(ScriptContext.GLOBAL_SCOPE).containsKey(Tokens.model)) context.getBindings(ScriptContext.GLOBAL_SCOPE).get(Tokens.model).asInstanceOf[Model]
-    else Model.id
+  private def getModel(context:ScriptContext):Model = Option(context.getAttribute(Tokens.model).asInstanceOf[Model]).getOrElse(Model.id)
 }
 

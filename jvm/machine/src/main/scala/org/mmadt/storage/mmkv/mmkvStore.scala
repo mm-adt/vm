@@ -85,7 +85,7 @@ class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
 }
 
 object mmkvStore extends AutoCloseable {
-  private val dbs:mutable.Map[String,mmkvStore[Obj,Obj]] = new mutable.LinkedHashMap
+  private val dbs:mutable.Map[String,mmkvStore[Obj,Obj]] = new mutable.HashMap
 
   def open[K <: Obj,V <: Obj](file:String):mmkvStore[K,V] =
     dbs.getOrElseUpdate(file,new mmkvStore(file)).asInstanceOf[mmkvStore[K,V]]

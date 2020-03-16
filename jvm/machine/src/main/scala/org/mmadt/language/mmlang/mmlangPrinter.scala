@@ -85,7 +85,6 @@ object mmlangPrinter {
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj,Obj]]().value(),PIPE) + RBRACKET
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET
-        // case args:List[StrValue] if inst.op().equals(Tokens.as) => LBRACKET + inst.op() + "," + args.head.value() + RBRACKET
         case args:List[Obj] => LBRACKET + inst.op() + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a,b) => a + b).dropRight(1) + RBRACKET
       }
     }) + qString(inst.q)
