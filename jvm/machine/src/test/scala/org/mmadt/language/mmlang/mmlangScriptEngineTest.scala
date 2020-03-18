@@ -51,6 +51,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bool)(engine.eval("bool").next)
     assertResult(int)(engine.eval("int").next)
     assertResult(str)(engine.eval("str").next)
+    assertResult(rec)(engine.eval("rec[]").next)
     assertResult(rec)(engine.eval("rec").next)
   }
 
@@ -58,6 +59,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bool.q(int(2)))(engine.eval("bool{2}").next)
     assertResult(int.q(int(0),int(1)))(engine.eval("int{?}").next)
     assertResult(str)(engine.eval("str{1}").next)
+    assertResult(rec.q(int(5),int(10)))(engine.eval("rec[]{5,10}").next)
     assertResult(rec.q(int(5),int(10)))(engine.eval("rec{5,10}").next)
   }
 

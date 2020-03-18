@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language
+package org.mmadt.language.obj.`type`
 
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -56,5 +56,10 @@ class IntTypeTest extends FunSuite {
 
   test("int: type structure"){
     println(int.plus(int(2)).mult(int(5)).insts)
+  }
+
+  test("int: pattern matching"){
+    assert(int.test(int))
+    assert(!int.test(str))
   }
 }

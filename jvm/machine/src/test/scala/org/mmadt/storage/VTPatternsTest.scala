@@ -23,6 +23,7 @@
 package org.mmadt.storage
 
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -31,6 +32,14 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VTPatternsTest extends FunSuite {
+
+  test("type instructions"){
+    assert(int.plus(1).mult(2).test(int.plus(1).mult(2)))
+    assert(int(10).test(int.from[IntType]("x")))
+    assert(int.plus(10).test(int.plus(int.from[IntType]("x"))))
+    assert(int.plus(10).test(int.plus(int.from[IntType]("x").plus(2))))
+    assert(!int.plus(10).test(int.plus(int.from[IntType]("x").plus(2)).mult(20)))
+  }
 
   test("type/type patterns on atomic objs"){
     assert(int.test(int))
@@ -44,7 +53,7 @@ class VTPatternsTest extends FunSuite {
     assert(int.plus(2).test(int.plus(2)))
     assert(str.plus("a").test(str.plus("a")))
     //
-    assert(int.named("nat").test(int))
+    assert(!int.named("nat").test(int))
     assert(!int.named("nat").test(int.is(int.gt(0))))
     assert(!int.named("nat").test(int.named("nat").is(int.gt(0))))
   }

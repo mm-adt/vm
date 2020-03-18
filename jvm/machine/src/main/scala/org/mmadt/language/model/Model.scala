@@ -44,7 +44,7 @@ trait Model {
   def resolve[E <: Obj](obj:E):E ={
     if (obj.name.equals(Tokens.model)) return recType.asInstanceOf[E]
     obj match {
-      case atype:Type[Obj] => this.get(atype.range.name) match {
+      case atype:Type[Obj] => this.get(atype.name) match {
         case Some(btype) => atype.compose(btype,NoOp()).asInstanceOf[E]
         case None => obj
       }
@@ -127,7 +127,7 @@ object Model {
       if (left.equals(Tokens.model)) return Option(recType)
       typeMap.get(left) match {
         case None => None
-        case Some(m) => m.iterator.find(a => left.equals(a._1.toString)).map(_._2.range.named(left))
+        case Some(m) => m.iterator.find(a => tobj(left).test(a._1)).map(_._2.named(left))
       }
     }
     override def recType:RecType[Type[Obj],Type[Obj]] ={

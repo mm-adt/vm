@@ -24,8 +24,8 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.value.{RecValue, Value}
 
 import scala.collection.mutable
 
@@ -37,8 +37,8 @@ object TypeChecker {
     (pattern.name.equals(Tokens.obj) || // all objects are obj
      (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
      obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
-     (obj.isInstanceOf[ORecValue] &&
-      testRecord(obj.asInstanceOf[ORecValue].value.asInstanceOf[Map[Obj,Obj]],pattern.asInstanceOf[ORecType].value()))) && // structural type checking on records
+     (obj.isInstanceOf[RecValue[_,_]] &&
+      testRecord(obj.value.asInstanceOf[Map[Obj,Obj]],pattern.asInstanceOf[ORecType].value()))) && // structural type checking on records
     withinQ(obj,pattern) // must be within the type's quantified window
   }
 
@@ -47,26 +47,24 @@ object TypeChecker {
     withinQ(obj,pattern)
 
   def matchesTT[O <: Obj](obj:Type[O],pattern:Type[O]):Boolean ={
-    (pattern.name.equals(Tokens.obj) || // all objects are obj
+    ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj)) || // all objects are obj
      (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) ||
      (obj match {
-       case recType:ORecType if pattern.isInstanceOf[ORecType] => testRecord(recType.value(),pattern.asInstanceOf[ORecType].value())
-       case _ => true
+       case recType:ORecType if pattern.isInstanceOf[RecType[_,_]] => testRecord(recType.value(),pattern.asInstanceOf[ORecType].value())
+       case _ => false
      })) &&
     obj.insts
       .map(_._2)
       .zip(pattern.insts.map(_._2))
-      .map(a => matchesInst(a._1,a._2))
+      .map(insts => insts._1.op().equals(insts._2.op()) &&
+                    insts._1.args().zip(insts._2.args()).
+                      map(a => a._1.test(a._2)).
+                      fold(insts._1.args().length == insts._2.args().length)(_ && _))
       .fold(obj.insts.length == pattern.insts.length)(_ && _) &&
     withinQ(obj,pattern)
   }
-  def matchesTV[O <: Obj](obj:Type[O],pattern:Value[O]):Boolean = false
 
-  private def matchesInst(a:Inst[_,_],b:Inst[_,_]) =
-    a.value()._1.equals(b.value()._1) &&
-    a.value()._2.zip(b.value()._2).
-      map(a => a._1.test(a._2)).
-      fold(a.args().length == b.args().length)(_ && _)
+  def matchesTV[O <: Obj](obj:Type[O],pattern:Value[O]):Boolean = false
 
   ////////////////////////////////////////////////////////
 

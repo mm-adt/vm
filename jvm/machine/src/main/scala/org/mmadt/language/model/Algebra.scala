@@ -70,7 +70,8 @@ object Algebra {
     group(ring)("+").put(
       group(ring)("*")).put(
       Model(
-        ring.mult(ring.one().neg()) -> ring.neg()
+        ring.mult(ring.one().neg()) -> ring.neg(),
+        ring.to("x").mult(ring.to("y").plus(ring.to("z"))) -> ring.from[IntType]("x").plus(ring.from[IntType]("y")).mult(ring.from[IntType]("x").plus(ring.from[IntType]("z")))
       ))
   }
 }

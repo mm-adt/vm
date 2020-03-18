@@ -30,11 +30,11 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
-import org.mmadt.language.obj.value.strm.{BoolStrm,IntStrm,StrStrm,Strm}
-import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
+import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
+import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.{strm => estrm,_}
+import org.mmadt.storage.StorageFactory.{strm => estrm, _}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -68,7 +68,7 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   lazy val boolType :Parser[BoolType]     = Tokens.bool ^^ (_ => bool)
   lazy val intType  :Parser[IntType]      = Tokens.int ^^ (_ => int)
   lazy val strType  :Parser[StrType]      = Tokens.str ^^ (_ => str)
-  lazy val recType  :Parser[ORecType]     = (Tokens.rec ~> recStruct) ^^ (x => trec(value = x))
+  lazy val recType  :Parser[ORecType]     = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(value = x.getOrElse(Map.empty)))
   lazy val recStruct:Parser[Map[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE)) <~ RBRACKET) ^^ (x => x.map(o => (o._1,o._2)).toMap)
   lazy val namedType:Parser[Type[Obj]]    = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":") ^^ (x => this.model.get(x) match {
     case Some(atype) => atype
