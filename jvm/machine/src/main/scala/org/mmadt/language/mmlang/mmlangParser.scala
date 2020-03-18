@@ -69,7 +69,7 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   lazy val intType  :Parser[IntType]      = Tokens.int ^^ (_ => int)
   lazy val strType  :Parser[StrType]      = Tokens.str ^^ (_ => str)
   lazy val recType  :Parser[ORecType]     = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(value = x.getOrElse(Map.empty)))
-  lazy val recStruct:Parser[Map[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,(COMMA | PIPE)) <~ RBRACKET) ^^ (x => x.map(o => (o._1,o._2)).toMap)
+  lazy val recStruct:Parser[Map[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj,(COMMA | PIPE)) <~ RBRACKET) ^^ (x => x.map(o => (o._1,o._2)).toMap)
   lazy val namedType:Parser[Type[Obj]]    = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":") ^^ (x => this.model.get(x) match {
     case Some(atype) => atype
     case None => tobj(x)
@@ -87,7 +87,7 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   lazy val boolValue:Parser[BoolValue]  = opt(valueType) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => vbool(x._1.getOrElse(Tokens.bool),x._2.toBoolean,qOne))
   lazy val intValue :Parser[IntValue]   = opt(valueType) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int),x._2.toLong,qOne))
   lazy val strValue :Parser[StrValue]   = opt(valueType) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => vstr(x._1.getOrElse(Tokens.str),x._2.subSequence(1,x._2.length - 1).toString,qOne))
-  lazy val recValue :Parser[ORecValue]  = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ Tokens.:->) ~ objValue,COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap,qOne))
+  lazy val recValue :Parser[ORecValue]  = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ (Tokens.:-> | Tokens.::)) ~ objValue,COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec),x._2.map(o => (o._1,o._2)).toMap,qOne))
   lazy val valueType:Parser[String]     = "[a-zA-Z]+".r <~ ":"
   lazy val strm     :Parser[Strm[Obj]]  = boolStrm | intStrm | strStrm | recStrm
   lazy val boolStrm :Parser[BoolStrm]   = (boolValue <~ COMMA) ~ rep1sep(boolValue,COMMA) ^^ (x => bool(x._1,x._2.head,x._2.tail:_*))

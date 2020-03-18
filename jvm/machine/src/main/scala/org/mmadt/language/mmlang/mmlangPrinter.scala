@@ -53,7 +53,7 @@ object mmlangPrinter {
     "[" + trav.obj() + "|" + trav.state.foldLeft(EMPTY)((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
   }
 
-  private def mapString(map:Map[_,_],sep:String = COMMA):String = if (map.isEmpty) EMPTYREC else map.foldLeft(LBRACKET)((string,kv) => string + (kv._1 + RSARROW + kv._2 + sep)).dropRight(1) + RBRACKET
+  private def mapString(map:Map[_,_],sep:String = COMMA):String = if (map.isEmpty) EMPTYREC else map.foldLeft(LBRACKET)((string,kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
 
   def typeString(atype:Type[Obj]):String ={
     val range  = (atype match {

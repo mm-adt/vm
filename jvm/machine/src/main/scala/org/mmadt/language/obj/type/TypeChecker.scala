@@ -76,12 +76,11 @@ object TypeChecker {
   }
 
   private def testRecord(leftMap:Map[Obj,Obj],rightMap:Map[Obj,Obj]):Boolean ={
-    if (rightMap.size > leftMap.size) return false
     if (leftMap.equals(rightMap)) return true
     val typeMap:mutable.Map[Obj,Obj] = mutable.Map() ++ rightMap
     leftMap.map(a => typeMap.find(k =>
       a._1.test(Type.resolve(a._1,k._1)) &&
       a._2.test(Type.resolve(a._2,k._2))).map(z => typeMap.remove(z._1))).toList
-    typeMap.isEmpty
+    typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.value != 0)
   }
 }

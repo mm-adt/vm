@@ -39,10 +39,10 @@ import scala.io.{BufferedSource, Source}
  */
 class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
 
-  private val mmlang:LanguageProvider = LanguageFactory.getLanguage("mmlang")
-  private val MMKV  :String           = "mmkv"
-  private val K     :StrValue         = str("k")
-  private val V     :StrValue         = str("v")
+  private lazy val mmlang:LanguageProvider = LanguageFactory.getLanguage("mmlang")
+  private      val MMKV  :String           = "mmkv"
+  private      val K     :StrValue         = str("k")
+  private      val V     :StrValue         = str("v")
 
   val schema:RecType[StrValue,Obj] = {
     val source = Source.fromFile(file)

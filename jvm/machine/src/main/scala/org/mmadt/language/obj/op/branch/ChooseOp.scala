@@ -52,7 +52,7 @@ trait ChooseOp {
           case bvalue:Value[IT] with IT => avalue.test(bvalue)
         }).map(_._2.q(avalue.q)).getOrElse(avalue.q(qZero))
         match {
-          case btype:Type[OT] with OT => avalue ===> btype // TODO: ===> should generate streams, not iterators
+          case btype:Type[OT] with OT => avalue ===> btype
           case bvalue:Value[OT] with OT => bvalue.q(avalue.q)
         }
     }

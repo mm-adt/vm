@@ -31,16 +31,16 @@ import org.scalatest.FunSuite
 class ChooseInstTest extends FunSuite {
 
   test("[choose] w/ types"){
-    assertResult("int[choose,[int->int[mult,3]|int[mult,1]->int[mult,4]]]")(
+    assertResult("int[choose,[int:int[mult,3]|int[mult,1]:int[mult,4]]]")(
       int.choose(
         int -> int.mult(3),
         int.mult(1) -> int.mult(4)).toString)
-    assertResult("int{?}<=int[choose,[int->int[mult,3]|int[mult,1]->int[mult,4]]][is,bool<=int[gt,20]]")(
+    assertResult("int{?}<=int[choose,[int:int[mult,3]|int[mult,1]:int[mult,4]]][is,bool<=int[gt,20]]")(
       int.choose(
         int -> int.mult(3),
         int.mult(1) -> int.mult(4)).is(int.gt(20)).toString)
 
-    assertResult("int{0,30}<=int{30}[choose,[int{30}->int{30}[mult,3]|int{30}[mult,1]->int{30}[mult,4]]][is,bool<=int[gt,20]]")( // TODO: why is {30} not at is?
+    assertResult("int{0,30}<=int{30}[choose,[int{30}:int{30}[mult,3]|int{30}[mult,1]:int{30}[mult,4]]][is,bool<=int[gt,20]]")( // TODO: why is {30} not at is?
       int.q(30).choose(
         int -> int.mult(3),
         int.mult(1) -> int.mult(4)).is(int.gt(20)).toString)
