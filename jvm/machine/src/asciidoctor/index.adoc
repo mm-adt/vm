@@ -1,6 +1,12 @@
 = mm-ADT: A Multi-Model Abstract Data Type
 Marko A. Rodriguez <marko@rredux.com>
 :project-version:
+:icons: font
+:toc: left
+:toclevels: 5
+:doctype: book
+:docinfo: shared-head
+:favicon: ./images/favicon.ico
 
 image::images/mm-adt-logo.png[mm-ADT Logo,float="left",width=150]
 
