@@ -24,12 +24,12 @@ package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{BoolType, IntType, RecType, Type}
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.model.NoOp
+import org.mmadt.language.obj.op.model.{AsOp, NoOp}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.{TBool, TInt, TRec}
 
 import scala.collection.mutable
 
@@ -37,6 +37,9 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
+  def apply[A <: Obj,B <: Value[Obj]](ctype:Type[A])(avalue:B with Value[Obj]):B ={
+    AsOp(this.get(ctype.name).get).apply(Traverser.standard(avalue,model = this)).obj().asInstanceOf[B]
+  }
   def put(model:Model):Model
   def put(left:Type[Obj],right:Type[Obj]):Model
   def get(left:Type[Obj]):Option[Type[Obj]]
@@ -53,21 +56,16 @@ trait Model {
   }
 
   def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
-    val namedType:O = (definition match {
-      case _:BoolType => new TBool(name,definition.q,Nil)
-      case _:IntType => new TInt(name,definition.q,Nil)
-      case rec:RecType[Obj,Obj] => new TRec[Obj,Obj](name,rec.value(),definition.q,Nil)
-    }).asInstanceOf[O]
-    this.put(namedType.asInstanceOf[Type[Obj]],definition)
-    namedType
+    this.put(tobj(name),definition.named(name))
+    definition.named(name).range
   }
 
   def recType:RecType[Type[Obj],Type[Obj]]
 }
 
 object Model {
-  def apply(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
-  def apply(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value().iterator.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
+  def from(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
+  def from(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value().iterator.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
 
   val id:Model = new Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this
@@ -127,7 +125,7 @@ object Model {
       if (left.equals(Tokens.model)) return Option(recType)
       typeMap.get(left) match {
         case None => None
-        case Some(m) => m.iterator.find(a => tobj(left).test(a._1)).map(_._2.named(left))
+        case Some(m) => m.iterator.find(a => tobj(left).test(a._1)).map(_._2)
       }
     }
     override def recType:RecType[Type[Obj],Type[Obj]] ={

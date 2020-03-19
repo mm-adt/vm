@@ -95,9 +95,9 @@ public class Console {
                 else if (line.startsWith(LANG_OP))
                     engineName = line.replace(LANG_OP, "").trim();
                 else if (line.equals(MODEL_OP))
-                    terminal.writer().println(Model.apply((RecType) engine.eval(Tokens.model())));
+                    terminal.writer().println(Model.from((RecType) engine.eval(Tokens.model())));
                 else if (line.startsWith(MODEL_OP))
-                    engine.put(MODEL, Model.apply((RecType) engine.eval(Tokens.model())).put(Model.apply((RecType) engine.eval(line.substring(6)))));
+                    engine.put(MODEL, Model.from((RecType) engine.eval(Tokens.model())).put(Model.from((RecType) engine.eval(line.substring(6)))));
                 else
                     JavaConverters.asJavaIterator(engine.eval(line).toStrm().value()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {

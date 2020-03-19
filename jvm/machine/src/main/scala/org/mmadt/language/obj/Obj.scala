@@ -65,6 +65,7 @@ trait Obj
   def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: spec'd to R cause of FoldOp
 
   // pattern matching methods
+  def named(_name:String):this.type
   val name:String
   def test(other:Obj):Boolean
 

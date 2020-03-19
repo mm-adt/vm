@@ -55,4 +55,5 @@ class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends Ab
       case _ => obj
     }
   }
+  override def named(_name:String):VInst.this.type = this
 }

@@ -44,6 +44,10 @@ trait Traverser[+S <: Obj] {
   def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] // clone the traverser with a new obj location
   def apply[E <: Obj](rangeType:Type[E]):Traverser[E] // embed the traverser's obj into the provided type
 
+  // helper utilities
+  lazy val avalue:Boolean = this.obj().isInstanceOf[Value[Obj]]
+  lazy val atype :Boolean = this.obj().isInstanceOf[Type[Obj]]
+
   // standard Java implementations
   override def toString:String = LanguageFactory.printTraverser(this)
   override def hashCode():scala.Int = this.obj().hashCode() ^ state.hashCode()

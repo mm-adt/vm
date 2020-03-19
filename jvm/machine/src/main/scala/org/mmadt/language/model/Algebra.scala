@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.map._
  */
 object Algebra {
 
-  def universal(atype:Type[Obj]):Model = Model(atype.id() -> atype)
+  def universal(atype:Type[Obj]):Model = Model.from(atype.id() -> atype)
 
   type MultOne[T <: Obj] = Type[T] with MultOp[T] with OneOp[T]
   type PlusZero[T <: Obj] = Type[T] with PlusOp[T] with ZeroOp[T]
@@ -39,10 +39,10 @@ object Algebra {
     op match {
       case "*" =>
         val m = monoid.asInstanceOf[MultOne[O]]
-        Model(m.mult(m.one()) -> m)
+        Model.from(m.mult(m.one()) -> m)
       case "+" =>
         val p = monoid.asInstanceOf[PlusZero[O]]
-        Model(p.plus(p.zero()) -> p)
+        Model.from(p.plus(p.zero()) -> p)
     }
   }
 
@@ -52,12 +52,12 @@ object Algebra {
     op match {
       case "*" =>
         val m = group.asInstanceOf[MultOne[O]]
-        Model(
+        Model.from(
           m.one().one() -> m.one(),
           m.mult(m.one()) -> m)
       case "+" =>
         val p = group.asInstanceOf[PlusMinusZero[O]]
-        Model(
+        Model.from(
           p + p.zero() -> p,
           p + -p -> p.zero(),
           p.zero().zero() -> p.zero(),
@@ -69,7 +69,7 @@ object Algebra {
   def ring[O <: IntType](ring:O):Model ={
     group(ring)("+").put(
       group(ring)("*")).put(
-      Model(
+      Model.from(
         ring.mult(ring.one().neg()) -> ring.neg(),
         ring.to("x").mult(ring.to("y").plus(ring.to("z"))) -> ring.from[IntType]("x").plus(ring.from[IntType]("y")).mult(ring.from[IntType]("x").plus(ring.from[IntType]("z")))
       ))

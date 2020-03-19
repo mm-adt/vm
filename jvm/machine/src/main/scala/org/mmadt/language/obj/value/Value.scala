@@ -24,7 +24,9 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.{Int, OType, Obj, _}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -35,7 +37,7 @@ trait Value[+V <: Obj] extends Obj {
   def start():OType[V]
 
   override def a(atype:Type[Obj]):Bool = bool(this.test(atype))
-  override def as[O <: Obj](obj:O):O = this.asInstanceOf[O]
+  override def as[O <: Obj](obj:O):O = AsOp(obj).apply(Traverser.standard(this)).obj()
   override def quant():Int = this.q._1.q(qOne)
   override def count():IntValue = this.q._1.q(qOne)
   override def id():this.type = this
@@ -48,7 +50,7 @@ trait Value[+V <: Obj] extends Obj {
   }
   override def error(message:String):this.type = throw new RuntimeException("error: " + message)
 
-  def named(_name:String):this.type = (this match {
+  override def named(_name:String):this.type = (this match {
     case x:BoolValue => vbool(_name,x.value,x.q)
     case x:IntValue => vint(_name,x.value,x.q)
     case x:StrValue => vstr(_name,x.value,x.q)

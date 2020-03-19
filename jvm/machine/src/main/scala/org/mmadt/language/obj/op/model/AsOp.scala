@@ -23,12 +23,16 @@
 package org.mmadt.language.obj.op.model
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.`type`.{IntType, RecType, StrType, Type, TypeChecker}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.VInst
+
+import scala.collection.mutable
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -42,11 +46,12 @@ object AsOp {
 
   class AsInst[O <: Obj](obj:O) extends VInst[Obj,O]((Tokens.as,List(obj))) {
     override def apply(trav:Traverser[Obj]):Traverser[O] ={
-      trav.split((trav.obj(),obj) match {
-        case (avalue:Value[Obj],atype:Type[Obj]) => atype match {
-          case rectype:ORecType =>
-            if (avalue.test(rectype)) avalue.named(rectype.name) else {
-              vrec(rectype.name,rectype.value().map(x =>
+      testAlive(trav.split(obj match {
+        case atype:Type[Obj] if trav.avalue => atype match {
+          case rectype:RecType[Obj,Obj] => {
+            trav.obj() match {
+              case recvalue:ORecValue => vrec(name = rectype.name,value = makeMap(trav.model,recvalue.value,rectype.value()))
+              case avalue:Value[Obj] => vrec(rectype.name,rectype.value().map(x =>
                 (x._1 match {
                   case kvalue:Value[Obj] => kvalue
                   case ktype:Type[Obj] =>
@@ -59,14 +64,43 @@ object AsOp {
                     trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
                 })),avalue.q)
             }
-          case _:Str => trav.split(vstr(name = atype.name,value = avalue.value.toString)).apply(atype).obj()
-          case _:Int => trav.split(vint(name = atype.name,value = Integer.valueOf(avalue.value.toString).longValue())).apply(atype).obj()
+          }
+          case atype:StrType if trav.avalue => trav.split(vstr(name = atype.name,value = trav.obj().asInstanceOf[Value[Obj]].value.toString)).apply(atype).obj()
+          case atype:IntType if trav.avalue => trav.split(vint(name = atype.name,value = Integer.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).longValue())).apply(atype).obj()
           case _ => trav.apply(atype).obj()
         }
-        case (obj:Obj,avalue:Value[Obj]) => avalue.q(multQ(avalue,obj))
-        case (atype:Type[Obj],btype:Type[Obj]) => atype.compose(btype,AsOp(btype))
-      }).asInstanceOf[Traverser[O]]
+        case avalue:Value[Obj] => avalue.q(multQ(avalue,obj)).named(avalue.name)
+        case btype:Type[Obj] if trav.atype =>  trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
+      }).asInstanceOf[Traverser[O]])
+    }
+
+    private def testAlive(trav:Traverser[O]):Traverser[O] ={
+      assert(trav.obj().alive())
+      trav
+    }
+
+    private def makeMap(model:Model,leftMap:Map[Value[Obj],Value[Obj]],rightMap:Map[Obj,Obj]):Map[Value[Obj],Value[Obj]] ={
+      if (leftMap.equals(rightMap)) return leftMap
+      val typeMap :mutable.Map[Obj,Obj]               = mutable.Map() ++ rightMap
+        .map(x => (x._1 match {
+          case atype:Type[Obj] if atype.insts.isEmpty => model.get(atype.name).getOrElse(atype)
+          case other:Obj => other
+        },x._2 match {
+          case atype:Type[Obj] if atype.insts.isEmpty => model.get(atype.name).getOrElse(atype)
+          case other:Obj => other
+        }))
+      var valueMap:mutable.Map[Value[Obj],Value[Obj]] = mutable.Map()
+      leftMap.map(a => typeMap.find(k =>
+        a._1.test(Type.resolve(a._1,k._1)) &&
+        a._2.test(Type.resolve(a._2,k._2))).map(z => {
+        valueMap = valueMap + (a._1 -> AsOp(z._2).apply(Traverser.standard(a._2)).obj().asInstanceOf[Value[Obj]])
+        typeMap.remove(z._1)
+      })).toList
+      assert(typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.value != 0))
+      //println(valueMap.iterator.toMap)
+      valueMap.iterator.toMap
     }
   }
+
 
 }

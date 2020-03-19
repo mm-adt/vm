@@ -38,8 +38,6 @@ trait StrType extends Str
   with Type[Str]
   with ObjType {
 
-  def apply(value:StrValue):StrValue = new VStr(this.name,value.value,this.q)
-
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
   override def eqs(other:Type[Str]):BoolType = this.compose(bool,EqsOp(other))
   override def eqs(other:Value[Str]):BoolType = this.compose(bool,EqsOp(other))

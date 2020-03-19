@@ -34,7 +34,7 @@ import org.scalatest.FunSuite
 class GraphModelTest extends FunSuite {
   private type Vertex = RecValue[StrValue,Value[Obj]]
   private type Graph = Rec[StrValue,Value[Obj]]
-  val model:Model = Model(
+  val model:Model = Model.from(
     tobj("vertex") -> trec(str("id") -> int,str("outE") -> tobj("edge").q(*),str("inE") -> tobj("edge").q(*)),
     tobj("edge") -> trec(str("outV") -> tobj("vertex"),str("label") -> str,str("inV") -> tobj("vertex")),
     tobj("graph") -> tobj("vertex").q(*)

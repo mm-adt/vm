@@ -35,7 +35,7 @@ class ModelTest extends FunSuite {
 
   test("simulating model values"){
     // TODO: this needs a lot of work (seeing if I can get away with variables stored in the model as named types)
-    val model  :Model     = Model(tstr("x") -> str.plus("hello"))
+    val model  :Model     = Model.from(tstr("x") -> str.plus("hello"))
     val program:Type[Str] = str.plus(tstr("x"))
     println(model)
     // println(model.resolve(tstr("x")) + "!!")

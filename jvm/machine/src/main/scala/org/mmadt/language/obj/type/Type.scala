@@ -42,9 +42,6 @@ trait Type[+T <: Obj] extends Obj
   with ExplainOp {
   this:T =>
 
-  // value constructor
-  // def apply(values:Obj):Value[Obj]
-
   // type properties
   val insts:List[(Type[Obj],Inst[Obj,Obj])]
   lazy val canonical:this.type = this.range.q(qOne)
@@ -117,12 +114,12 @@ trait Type[+T <: Obj] extends Obj
   override def error(message:String):this.type = this.compose(ErrorOp(message))
 
   def named(_name:String):this.type = (this match {
-    case _:BoolType => tbool(_name,this.q,Nil)
-    case _:IntType => tint(_name,this.q,Nil)
-    case _:StrType => tstr(_name,this.q,Nil)
-    case arec:RecType[_,_] => trec(_name,arec.value(),arec.q,Nil)
+    case _:BoolType => tbool(_name,this.q,this.insts)
+    case _:IntType => tint(_name,this.q,this.insts)
+    case _:StrType => tstr(_name,this.q,this.insts)
+    case arec:RecType[_,_] => trec(_name,arec.value(),arec.q,this.insts)
     case _:__ => this
-    case _:ObjType => tobj(_name,this.q,Nil)
+    case _:ObjType => tobj(_name,this.q,this.insts)
   }).asInstanceOf[this.type]
 
   // pattern matching methods
