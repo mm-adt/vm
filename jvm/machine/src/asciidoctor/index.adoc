@@ -6,6 +6,7 @@ Marko A. Rodriguez <marko@rredux.com>
 :toclevels: 5
 :doctype: book
 :docinfo: shared-head
+:stem: latexmath
 :favicon: ./images/favicon.ico
 
 image::images/mm-adt-logo.png[mm-ADT Logo,float="left",width=150]
@@ -14,7 +15,8 @@ mm-ADT integrates a variety of data processing technologies via the distributed 
 
 == The mm-ADT Console
 
-The mm-ADT VM is packaged with a REPL console that supports any mm-ADT language. The default language is `mmlang`.
+The mm-ADT VM is packaged with a REPL console that supports any mm-ADT language.
+The default language is `mmlang`.
 
 ```mmlang
 ~/software/mm-adt/vm/jvm bin/mmadt.sh
@@ -29,9 +31,10 @@ mmlang>
 ```
 
 `mmlang` is in 1-to-1 correspondence with the storage and processing architecture of the mm-ADT VM. As such, `mmlang`
-has an assembly language look-and-feel. Fortunately, the mm-ADT VM was designed to easily support other programming
-and query languages via the it's `LanguageProvider` interface. Any language that implements `LanguageProvider` can
-be used in the mm-ADT console. Furthermore, models can be shared between languages.
+has an assembly language look-and-feel.
+Fortunately, the mm-ADT VM was designed to easily support other programming and query languages via the it's `LanguageProvider` interface.
+Any language that implements `LanguageProvider` can be used in the mm-ADT console.
+Furthermore, models can be shared between languages.
 
 ```mmlang
 mmlang> 1
@@ -50,25 +53,41 @@ mmlang> 1[plus,2]
 
 The mm-ADT VM has three primary integration points.
 
-* `LanguageProvider`: Language developers can design custom language or develop parsers for existing languages that
-compile to mm-ADT VM bytecode (binary) or unicode (`mmlang` encoding). All mm-ADT languages integrate with the mm-ADT
-console.
-* `StorageProvider`: Storage systems can be integrated with mm-ADT. mm-ADT's flexible data model and type
-system comfortably support key/value stores, document stores, wide-column stores, graph stores, relational stores, and
-other novel or hybrid forms such as hypergraphs and docugraph systems.
-* `ProcessorProvider`: Processors are any push- or pull-based execution engines. Processors are responsible for
-driving the the mm-ADT VM's distributed traverser algorithm on a single-machine in-memory, multi-threaded,
-distributed near-time, all the way up to cluster-oriented processors for batch analytics.
+* `LanguageProvider`: Language developers can design custom language or develop parsers for existing languages that compile to mm-ADT VM bytecode (binary) or unicode (`mmlang` encoding).
+All mm-ADT languages integrate with the mm-ADT console.
+* `StorageProvider`: Storage systems can be integrated with mm-ADT. mm-ADT's flexible data model and type system comfortably support key/value stores, document stores, wide-column stores, graph stores, relational stores, and other novel or hybrid forms such as hypergraphs and docugraph systems.
+* `ProcessorProvider`: Processors are any push- or pull-based execution engines.
+Processors are responsible for driving the the mm-ADT VM's distributed traverser algorithm on a single-machine in-memory, multi-threaded, distributed near-time, all the way up to cluster-oriented processors for batch analytics.
 
-The mm-ADT VM enables the intermingling of any language, any storage system, and any processor that can faithfully
-implement the core language semantics (types and values), processor semantics (monadic traversers), and/or
-storage semantics (streams of atomic and composite data structures).
+The mm-ADT VM enables the intermingling of any language, any storage system, and any processor that can faithfully implement the core language semantics (types and values), processor semantics (monadic traversers), and/or storage semantics (streams of atomic and composite data structures).
 
 === Language Structures
 
-An mm-ADT program is a _type_. It determines a set of `objs`. A canonical type is denoted with a token such as `int`
-or `bool`. These canonical types can be constrained and extended using instructions. A complex type definition is
-provided below that captures a large number of the mm-ADT type constructs.
+A _type_ denotes a set of `objs`. For example, `int` refers to a the set of integers. A set is a non-repeating collection of `objs.`
+A _stream_ generalizes a set. A stream is an unordered collection of `objs` of varying cardinality (a multi-set, or bag).
+In mm-ADT, `int` is shorthand for `int{1}`--a single integer. In practice, when `int` is used to define a value, it is referring
+to a single integer from the set of all integers--`int`. `bool{42}` refers to `42` boolean values. `{ }`-expressions
+operate on the mm-ADT VM's _quantifier ring_ (w/ unity). Any `obj` that supports `+`/`*`/`0`/`1` and various rules governing their composition
+is supported by mm-ADT. In mm-ADT types can be specified to as accurate degree or as fuzzy a degree as possible.
+
+Typically, the quantifier of choice for most applications is the `int` or `int` range rings. Common programming concepts
+that are usually captured by classes or functors (lifting) are expressed in mm-ADT via quantification.
+
+```mmlang
+int                          // a single int (some)
+int{?}<=int[is,[gt,0]]       // 0 or 1 int   (maybe/option)
+int{0}<=int[is,false]        // 0 ints       (none)
+int{4}<=int{2}[[id]+[id]]    // 4 ints
+int{*}<=[=db][get,'costs']   // 0 or more ints
+```
+
+mm-ADT types are constructed using a small collection of modifiers. These are written below within the ascii-structure.
+
+```
+range{quantifier}<=domain{quantifier}[op,value|type]{quantifier}[ bran->ch | ing->inst ][inst][inst,[with[nesting]]]
+```
+
+A complex type definition is provided below that captures a large number of the mm-ADT type constructs.
 
 ```mmadt
 int<=int{2}<x>[plus,10]<y>[is.<10 -> <x>
@@ -105,8 +124,8 @@ instruction                                    domain         range      state
 
 ===== Values
 
-There are only two kinds of structures in mm-ADT: _values_ and _types_. Values are the elements of standard data
-type sets such as:
+There are only two kinds of structures in mm-ADT: _values_ and _types_.
+Values are the elements of standard data type sets such as:
 
 * `bool`: two element boolean set containing `true` and `false`.
 * `int`: an integer set including positive and negative values (overflow prevention via dynamic bit expansion).
@@ -144,14 +163,11 @@ mm-ADT types differ from convention in that they serve to denote:
 * *translating types*: specify a mapping from a domain set of elements to a range set of elements as in `int[plus,2]`.
 * *recursive types*:
 
-
-
-
 === Model Categories and their Functors
 
-A _model_ is a set of related types (a type of types). Mathematically, a every mm-ADT model forms a category where
-the category _objects_ are the canonical types and the _morphisms_ are types that span the canonical types. All
-mm-ADT types respective associative composition and every type's identity morphism is the `[id]` instruction as in
+A _model_ is a set of related types (a type of types).
+Mathematically, a every mm-ADT model forms a category where the category _objects_ are the canonical types and the _morphisms_ are types that span the canonical types.
+All mm-ADT types respective associative composition and every type's identity morphism is the `[id]` instruction as in
 `int<=int[id]`.
 
 === Storage Structures
