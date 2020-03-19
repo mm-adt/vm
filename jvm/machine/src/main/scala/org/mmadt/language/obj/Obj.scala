@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 
 /**

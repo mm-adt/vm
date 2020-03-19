@@ -22,11 +22,10 @@
 
 package org.mmadt.processor.obj.value
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction, SideEffectInstruction}
+import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.processor.{Processor, Traverser}
@@ -38,7 +37,7 @@ import org.mmadt.storage.StorageFactory._
 class IteratorProcessor(model:Model = Model.id) extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
     val domainObjAs:S = domainObj match {
-      case atype:Type[S] with S=> atype
+      case atype:Type[S] with S => atype
       case avalue:Value[S] with S => model[S,S](rangeType.domain[S]())(avalue)
     }
     TypeChecker.typeCheck(domainObjAs,rangeType.domain())
@@ -57,16 +56,10 @@ class IteratorProcessor(model:Model = Model.id) extends Processor {
         //////////////FILTER//////////////
         case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
         //////////////OTHER//////////////
-        case sideeffect:SideEffectInstruction if sideeffect.op() == Tokens.add => output.map(x => x.split(lastStrm match {
-          case Some(strm) => strm.asInstanceOf[ORecStrm].add(sideeffect.arg0()).asInstanceOf[E]
-          case None => throw new IllegalAccessException
-        }))
-        //////////////OTHER//////////////
         case _:Inst[Obj,Obj] => output
           .map(_.apply(tt._1.compose(tt._1,tt._2)))
           .flatMap(x => x.obj() match {
             case strm:Strm[E] =>
-              lastStrm = Option(strm)
               strm.value.map(y => x.split(y))
             case single:E => Iterator(x.split(single))
           })

@@ -26,11 +26,11 @@ import java.util
 import java.util.Optional
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value._
-import org.mmadt.language.obj.{Inst,Obj,Rec,Str}
+import org.mmadt.language.obj.{Inst, Obj, Rec, Str}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.{str,_}
+import org.mmadt.storage.StorageFactory.{str, _}
 import org.mmadt.storage.StorageProvider
 import org.mmadt.storage.mmkv.mmkvStorageProvider._
 import org.mmadt.storage.obj.value.VInst
@@ -47,14 +47,18 @@ class mmkvStorageProvider extends StorageProvider {
     // tobj(name) -> trec(K -> obj,V -> obj), // TODO: this needs to be dynamically determined by mmkvStore file access
     mmkv.put(K,obj) -> mmkv.error("keys are immutable"),
     mmkv.put(V,obj) -> mmkv.error("values are immutable"),
-    (mmkv <= obj.q(0).compose(mmkv,mmkvOp.strm(str.to("x"))).is(mmkv.get(K,int).eqs(int.to("y")))) -> (mmkv.q(qMark) <= obj.q(0).compose(mmkvOp.isGetKeyEq(str.from("x"),int.from("y")))))
+    (mmkv <= obj.q(0).compose(mmkv,mmkvOp.strm(str.to("x"))).is(mmkv.get(K,int).eqs(int.to("y")))) -> (mmkv.q(qMark) <= obj.q(0).compose(mmkvOp.isGetKeyEq(str.from("x"),int.from("y")))),
+    (trec(K -> int,V -> obj).q(*) <= obj.q(0).compose(mmkv,mmkvOp.strm(str.to("x"))).add(trec(K -> int,V -> obj).to("y"))) -> mmkv.compose(mmkvOp.addKeyValue(str.from("x"),rec.from[RecType[StrValue,Obj]]("y"))))
 
-  val getByKeyEq:StrValue = str("getByKeyEq")
+  val getByKeyEq :StrValue = str("getByKeyEq")
+  val addKeyValue:StrValue = str("addKeyValue")
   override def resolveInstruction(op:String,args:util.List[Obj]):Optional[Inst[Obj,Obj]] ={
     if (op != opcode) Optional.empty()
+
     Optional.ofNullable(asScalaIterator(args.iterator()).toList match {
       case List(file:Str) => mmkvOp.strm(file)
       case List(file:Str,this.getByKeyEq,key:Obj) => mmkvOp.isGetKeyEq(file,key)
+      case List(file:Str,this.addKeyValue,key:Obj) => mmkvOp.addKeyValue(file,key.asInstanceOf[Rec[StrValue,Obj]])
       case _ => null
     })
   }
@@ -68,6 +72,7 @@ object mmkvStorageProvider {
   private val mmkv       = rec[Str,Obj].q(*).named("mmkv")
 
   object mmkvOp {
+    def addKeyValue(file:Str,kv:Rec[StrValue,Obj]):Inst[Obj,Rec[StrValue,Obj]] = new mmkvAddKeyValueInst(file,kv)
     def isGetKeyEq(file:Str,key:Obj):Inst[Obj,Rec[StrValue,Obj]] = new mmkvIsGetKeyEqInst(file,key)
     def strm(file:Str):Inst[Obj,Rec[StrValue,Obj]] = new mmkvInst(file)
 
@@ -85,6 +90,17 @@ object mmkvStorageProvider {
         trav.split((trav.obj() match {
           case atype:Type[_] => atype.compose(connect(fileStr).schema,this).q(*)
           case _ => vrec(K -> key.asInstanceOf[Value[Obj]],V -> connect(fileStr).get(key.asInstanceOf[Value[Obj]]))
+        }).asInstanceOf[Rec[StrValue,Obj]])
+      }
+    }
+
+    class mmkvAddKeyValueInst(fileStr:Str,key:Rec[StrValue,Obj]) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr,str("addKeyValue"),key))) {
+      override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
+        trav.split((trav.obj() match {
+          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).q(*)
+          case _ => vrec(K ->  Traverser.resolveArg[Obj,Obj](trav,key).asInstanceOf[RecValue[StrValue,ObjValue]].get(str("k")).asInstanceOf[Value[Obj]],V -> connect(fileStr).put(
+            Traverser.resolveArg[Obj,Obj](trav,key).asInstanceOf[RecValue[StrValue,ObjValue]].get(str("k")),
+            Traverser.resolveArg[Obj,Obj](trav,key).asInstanceOf[RecValue[StrValue,ObjValue]].get(str("v"))))
         }).asInstanceOf[Rec[StrValue,Obj]])
       }
     }

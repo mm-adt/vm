@@ -24,7 +24,8 @@ package org.mmadt.storage.mmkv
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.obj.ORecType
+import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.{ORecType, Obj}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -35,9 +36,9 @@ import org.scalatest.FunSuite
 class mmkvInstTest extends FunSuite {
 
   lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
-  val file1 :String            = getClass.getResource("/mmkv/mmkv-1.txt").getPath
-  val file2 :String            = getClass.getResource("/mmkv/mmkv-2.txt").getPath
-  val mmkv  :String            = "=mmkv"
+  val file1:String = getClass.getResource("/mmkv/mmkv-1.txt").getPath
+  val file2:String = getClass.getResource("/mmkv/mmkv-2.txt").getPath
+  val mmkv :String = "=mmkv"
 
   test("mmkv parsing"){
     println(engine.eval(s"3[=mmkv,'${file1}']").next())
@@ -62,11 +63,6 @@ class mmkvInstTest extends FunSuite {
     assertResult("['k':1,'v':'marko']")(((int(1) ==> int.=:(mmkv)(str(file1))).toString))
   }
 
-  test("mmkv file-2 adding"){
-    println(engine.eval(s"'x'[=mmkv,'${file2}'][add,mmkv:['k':'b','v':1]][=mmkv,'${file2}']").toList)
-    println(engine.eval(s"'x'[=mmkv,'${file2}'][add,mmkv:['k':'b','v':1]][=mmkv,'${file2}']").toList)
-  }
-
   test("mmkv model"){
     assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
     assertThrows[RuntimeException]{
@@ -77,6 +73,14 @@ class mmkvInstTest extends FunSuite {
     }
     assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").next().toString)
     assertResult(str("marko"))(engine.eval(s"'x'[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']").next())
+
+    assertResult(vrec[StrValue,Value[Obj]](
+      str("k") -> int(200),
+      str("v") -> vrec[StrValue,Value[Obj]](
+        str("name") -> str("blah"),
+        str("age") -> int(22))))(engine.eval(s"'x'[=mmkv,'${file2}'][add['k':200,'v':['name':'blah','age':22]]]").next())
+
+    println(engine.eval(s"'x'[=mmkv,'${file2}'][add,['k':200,'v':['name':'blah','age':22]]][=mmkv,'${file2}'][is,[get,'k'][eq,200]][get,'v']").next())
   }
 
 }

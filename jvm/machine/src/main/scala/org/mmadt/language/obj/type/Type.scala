@@ -23,15 +23,15 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.op.map.{AOp, IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.map.{AOp,IdOp,MapOp,QOp}
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
-import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageFactory, Tokens}
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.sideeffect.{AddOp,ErrorOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
+import org.mmadt.language.obj.value.{StrValue,Value}
+import org.mmadt.language.obj.{eqQ,_}
+import org.mmadt.language.{LanguageFactory,Tokens}
+import org.mmadt.processor.{Processor,Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
