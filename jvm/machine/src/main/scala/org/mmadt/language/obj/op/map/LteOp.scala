@@ -20,32 +20,34 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
+import org.mmadt.processor.Traverser
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Int extends Obj
-  with EqsOp[Int]
-  with PlusOp[Int]
-  with MultOp[Int]
-  with NegOp
-  with GtOp[Int]
-  with GteOp[Int]
-  with LtOp[Int]
-  with LteOp[Int]
-  with IsOp[Int]
-  with OneOp[Int]
-  with ToOp[Int]
-  with ZeroOp[Int]
+trait LteOp[O <: Obj] {
+  this:O =>
+  def lte(other:Type[O]):OType[Bool]
+  def lte(other:Value[O]):Bool
+  final def =<(other:Type[O]):OType[Bool] = this.lte(other)
+  final def =<(other:Value[O]):Bool = this.lte(other)
+}
 
-object Int {
-  @inline implicit def longToInt(java:Long):IntValue = int(java)
-  @inline implicit def intToInt(java:scala.Int):IntValue = int(java.longValue())
+object LteOp {
+  def apply[O <: Obj with LteOp[O]](other:Obj):Inst[O,Bool] = new LteInst[O](other.asInstanceOf[O])
+
+  class LteInst[O <: Obj with LteOp[O]](other:O) extends VInst[O,Bool]((Tokens.lte,List(other))) {
+    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split((Traverser.resolveArg(trav,other) match {
+      case avalue:Value[O] => trav.obj().lte(avalue)
+      case atype:Type[O] => trav.obj().lte(atype)
+    }).q(multQ(trav.obj().q,this.q)))
+  }
+
 }

@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GtOp, LtOp, PlusOp}
+import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.storage.StorageFactory._
@@ -35,7 +35,9 @@ trait Str extends Obj
   with EqsOp[Str]
   with PlusOp[Str]
   with GtOp[Str]
+  with GteOp[Str]
   with LtOp[Str]
+  with LteOp[Str]
   with IsOp[Str]
   with ToOp[Str]
 

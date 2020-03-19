@@ -25,8 +25,8 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj,Str}
-import org.mmadt.language.{LanguageFactory,Tokens}
+import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -214,12 +214,16 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.plus(int(6)))(engine.eval("int+6").next)
     assertResult(int.plus(int(6)).gt(int(10)))(engine.eval("int+6>10").next)
     assertResult(int.plus(int(6)).lt(int(10)))(engine.eval("int+6<10").next)
+    assertResult(int.plus(int(6)).lte(int(10)))(engine.eval("int+6=<10").next)
+    assertResult(int.plus(int(6)).gte(int(10)))(engine.eval("int+6>=10").next)
     assertResult(int.plus(int(1)).mult(int(2)).gt(int(10)))(engine.eval("int+1*2>10").next)
     assertResult(str.plus(str("hello")))(engine.eval("str+'hello'").next)
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is,int[gt,5]]").next())
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is>5]").next)
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is > 5]").next)
     assertResult(int.is(int.lt(int(5))))(engine.eval("int[is < 5]").next)
+    assertResult(int.is(int.lte(int(5))))(engine.eval("int[is =< 5]").next)
+    assertResult(int.is(int.gte(int(5))))(engine.eval("int[is >= 5]").next)
   }
 
   test("get dot-notation parsing"){

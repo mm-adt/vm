@@ -52,52 +52,54 @@ object OpInstResolver {
     .map(_.get())
 
   def resolve[S <: Obj,E <: Obj](op:String,args:List[Obj]):Inst[S,E] ={
-    op match {
-      case Tokens.add => AddOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.a | Tokens.a_op => AOp(args.head.asInstanceOf[Type[Obj]]).asInstanceOf[Inst[S,E]]
-      case Tokens.as => AsOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.and | Tokens.and_op => AndOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.or | Tokens.or_op => OrOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.plus | Tokens.plus_op => PlusOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.mult | Tokens.mult_op => MultOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.gt | Tokens.gt_op => GtOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.lt | Tokens.lt_op => LtOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.eqs | Tokens.eqs_op => EqsOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.is => IsOp(args.head).asInstanceOf[Inst[S,E]]
+    (op match {
+      case Tokens.add => AddOp(args.head)
+      case Tokens.a | Tokens.a_op => AOp(args.head.asInstanceOf[Type[Obj]])
+      case Tokens.as => AsOp(args.head)
+      case Tokens.and | Tokens.and_op => AndOp(args.head)
+      case Tokens.or | Tokens.or_op => OrOp(args.head)
+      case Tokens.plus | Tokens.plus_op => PlusOp(args.head)
+      case Tokens.mult | Tokens.mult_op => MultOp(args.head)
+      case Tokens.gt | Tokens.gt_op => GtOp(args.head)
+      case Tokens.gte | Tokens.gte_op => GteOp(args.head)
+      case Tokens.lt | Tokens.lt_op => LtOp(args.head)
+      case Tokens.lte | Tokens.lte_op => LteOp(args.head)
+      case Tokens.eqs | Tokens.eqs_op => EqsOp(args.head)
+      case Tokens.is => IsOp(args.head)
       case Tokens.get => args match {
-        case List(key:Obj,typeHint:Type[Obj]) => GetOp(key,typeHint).asInstanceOf[Inst[S,E]]
-        case List(key:Obj) => GetOp(key).asInstanceOf[Inst[S,E]]
+        case List(key:Obj,typeHint:Type[Obj]) => GetOp(key,typeHint)
+        case List(key:Obj) => GetOp(key)
       }
-      case Tokens.map => MapOp(args.head).asInstanceOf[Inst[S,E]]
-      case Tokens.neg => NegOp().asInstanceOf[Inst[S,E]]
-      case Tokens.count => CountOp().asInstanceOf[Inst[S,E]]
-      case Tokens.explain => ExplainOp().asInstanceOf[Inst[S,E]]
-      case Tokens.put => PutOp(args.head,args.tail.head).asInstanceOf[Inst[S,E]]
+      case Tokens.map => MapOp(args.head)
+      case Tokens.neg => NegOp()
+      case Tokens.count => CountOp()
+      case Tokens.explain => ExplainOp()
+      case Tokens.put => PutOp(args.head,args.tail.head)
       case Tokens.from =>
         val label = args.head.asInstanceOf[StrValue]
         args.tail match {
-          case Nil => FromOp(label).asInstanceOf[Inst[S,E]]
-          case obj:Obj => FromOp(label,obj).asInstanceOf[Inst[S,E]]
+          case Nil => FromOp(label)
+          case obj:Obj => FromOp(label,obj)
         }
       case Tokens.fold => args.tail.tail.head match {
-        case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x).asInstanceOf[Inst[S,E]]
-        case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x).asInstanceOf[Inst[S,E]]
+        case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x)
+        case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x)
       }
-      case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].value).asInstanceOf[Inst[S,E]]
-      case Tokens.to => ToOp(args.head.asInstanceOf[StrValue]).asInstanceOf[Inst[S,E]]
+      case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].value)
+      case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
       case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[S,E]])
-      case Tokens.id => IdOp().asInstanceOf[Inst[S,E]]
-      case Tokens.q => QOp().asInstanceOf[Inst[S,E]]
-      case Tokens.zero => ZeroOp().asInstanceOf[Inst[S,E]]
-      case Tokens.one => OneOp().asInstanceOf[Inst[S,E]]
-      case Tokens.start => StartOp(args.head).asInstanceOf[Inst[S,E]]
+      case Tokens.id => IdOp()
+      case Tokens.q => QOp()
+      case Tokens.zero => ZeroOp()
+      case Tokens.one => OneOp()
+      case Tokens.start => StartOp(args.head)
       //////////////////////////////////////////////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////////////////////////////
       case _ => service(op,args) match {
-        case Some(inst) => inst.asInstanceOf[Inst[S,E]]
+        case Some(inst) => inst
         case None => throw new IllegalArgumentException("Unknown instruction: " + op + "," + args)
       }
-    }
+    }).asInstanceOf[Inst[S,E]]
   }
 
 
