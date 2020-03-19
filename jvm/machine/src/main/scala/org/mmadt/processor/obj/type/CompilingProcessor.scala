@@ -46,9 +46,7 @@ class CompilingProcessor(val model:Model = Model.id) extends Processor {
         mutatingTraverser = previousTraverser
         previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[Type[E]],domainType,Traverser.standard(obj = domainType,model = this.model))
       }
-      //TypeChecker.typeCheck(mutatingTraverser.obj(),rangeType.range)
       mutatingTraverser.obj()
-      //new TypeFunctorTraverser[E](domainObj.asInstanceOf[E],Map.empty,model).apply(mutatingTraverser.obj().asInstanceOf[Type[E]]).obj() // TODO: do we want type resolution at compilation
     }
   }
 }

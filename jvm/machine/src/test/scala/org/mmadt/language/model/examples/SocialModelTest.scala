@@ -39,6 +39,7 @@ class SocialModelTest extends FunSuite {
   val functor  :Model     = Model.simple()
   val scompiler:Processor = Processor.compiler(social)
   val fcompiler:Processor = Processor.compiler(functor)
+  val siterator:Processor = Processor.iterator(social)
 
   // define model types
   val nat   :IntType          = social.define("nat")(int <= int.is(int.gt(0)))
@@ -79,8 +80,9 @@ class SocialModelTest extends FunSuite {
     assertResult("nat<=person[get,'age'][plus,nat]")(endo.toString)
     assertResult("nat")(endo.range.name)
     assertResult("person")(endo.domain().name)
-    assertResult(social(nat)(40))(Processor.iterator(social).apply(vrec(str("name") -> str("ryan"),str("age") -> int(20)),endo))
-    assertResult("int<=rec['name':str,'age':nat][get,'age'][plus,int]")(fcompiler(endo).toString)
+    assertResult(social(nat)(40))(siterator(vrec(str("name") -> str("ryan"),str("age") -> int(20)),endo))
+    assertResult("int<=rec['name':str,'age':nat][get,'age'][plus,int]")(fcompiler(endo).toString) // TODO: age:int
+    // assertResult(social(nat)(40))(siterator(vrec(str("name") -> str("ryan"),str("age") -> int(20)),fcompiler(endo)))
   }
 
   test("rec stream w/ rewrites"){

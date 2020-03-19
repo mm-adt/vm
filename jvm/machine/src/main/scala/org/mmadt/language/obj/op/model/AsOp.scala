@@ -92,7 +92,7 @@ object AsOp {
       leftMap.map(a => typeMap.find(k =>
         a._1.test(Type.resolve(a._1,k._1)) &&
         a._2.test(Type.resolve(a._2,k._2))).map(z => {
-        valueMap = valueMap + (a._1 -> AsOp(z._2).apply(Traverser.standard(a._2)).obj().asInstanceOf[Value[Obj]])
+        valueMap = valueMap + (a._1 -> a._2.as(z._2).asInstanceOf[Value[Obj]])
         typeMap.remove(z._1)
       })).toList
       assert(typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.value != 0))
