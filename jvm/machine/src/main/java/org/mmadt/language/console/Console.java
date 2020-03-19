@@ -40,6 +40,9 @@ import scala.collection.JavaConverters;
 
 import javax.script.ScriptEngineManager;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -85,7 +88,7 @@ public class Console {
             try {
                 String line = reader.readLine(engineName + "> ");
                 while (line.trim().endsWith("/")) {
-                    line = line.trim().substring(0, line.length() - 1) + reader.readLine(".".repeat(engineName.length()) + "> ");
+                    line = line.trim().substring(0, line.length() - 1) + reader.readLine(IntStream.range(0, engineName.length()).mapToObj(x -> ".").collect(Collectors.joining()) + "> ");
                 }
                 ///////////////////
                 if (line.equals(QUIT_OP))
