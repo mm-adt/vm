@@ -22,6 +22,8 @@
 
 package org.mmadt.language.obj.op.traverser
 
+import java.util
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, StrType, Type}
 import org.mmadt.language.obj.op.TraverserInstruction
@@ -84,19 +86,46 @@ object ExplainOp {
     val c3                    = report.map(x => x._4.toString.length).max + 4
     val builder:StringBuilder = new StringBuilder()
     builder
-      .append("instruction").append(" ".repeat(Math.abs(11 - c1)))
-      .append("domain").append(" ".repeat(Math.abs(6 - c2)))
-      .append(" ".repeat(5))
-      .append("range").append(" ".repeat(Math.abs(6 - c3)))
+      .append("instruction").append(stolenRepeat(" ",Math.abs(11 - c1)))
+      .append("domain").append(stolenRepeat(" ",Math.abs(6 - c2)))
+      .append(stolenRepeat(" ",5))
+      .append("range").append(stolenRepeat(" ",Math.abs(6 - c3)))
       .append("state").append("\n")
-    builder.append("-".repeat(builder.length)).append("\n")
+    builder.append(stolenRepeat("-",builder.length)).append("\n")
     report.foldLeft(builder)((a,b) => a
-      .append(" ".repeat(b._1))
-      .append(instMax(b._2)).append(" ".repeat(Math.abs(c1 - (instMax(b._2).length))))
-      .append(b._3).append(" ".repeat(Math.abs(c2 - (b._3.toString.length) - (b._1))))
-      .append("=>").append(" ".repeat(3)).append(" ".repeat(b._1))
-      .append(b._4).append(" ".repeat(Math.abs(c3 - (b._4.toString.length) - (b._1))))
+      .append(stolenRepeat(" ",b._1))
+      .append(instMax(b._2)).append(stolenRepeat(" ",Math.abs(c1 - (instMax(b._2).length))))
+      .append(b._3).append(stolenRepeat(" ",Math.abs(c2 - (b._3.toString.length) - (b._1))))
+      .append("=>").append(stolenRepeat(" ",3)).append(stolenRepeat(" ",b._1))
+      .append(b._4).append(stolenRepeat(" ",Math.abs(c3 - (b._4.toString.length) - (b._1))))
       .append(b._5.foldLeft("")((x,y) => x + (y._2 + "<" + y._1 + "> "))).append("\n"))
     "\n" + atype.toString + "\n\n" + builder.toString()
+  }
+
+  // stolen from Scala distribution as this method doesn't exist in some distributions of Scala
+  private def stolenRepeat(string:String,count:Int):String ={
+    if (count < 0) throw new IllegalArgumentException("count is negative: " + count)
+    if (count == 1) return string
+    val len = string.length
+    if (len == 0 || count == 0) return ""
+    if (len == 1) {
+      val single = new Array[Byte](count)
+      util.Arrays.fill(single,string.charAt(0).asInstanceOf[Byte])
+      return new String(single)
+    }
+
+    if (Integer.MAX_VALUE / count < len) throw new OutOfMemoryError("Repeating " + len + " bytes String " + count + " times will produce a String exceeding maximum size.")
+    val limit    = len * count
+    val multiple = new Array[Byte](limit)
+    System.arraycopy(string.getBytes,0,multiple,0,len)
+    var copied = len
+
+    while ( {copied < limit - copied}) {
+      System.arraycopy(multiple,0,multiple,copied,copied)
+
+      copied <<= 1
+    }
+    System.arraycopy(multiple,0,multiple,copied,limit - copied)
+    new String(multiple)
   }
 }

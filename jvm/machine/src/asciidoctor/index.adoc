@@ -49,7 +49,9 @@ storage semantics (streams of atomic and composite data structures).
 
 === Language Structures
 
-==== Types and Values
+==== Values and Types
+
+===== Values
 
 There are only two kinds of structures in mm-ADT: _values_ and _types_. Values are the elements of standard data
 type sets such as:
@@ -61,6 +63,13 @@ type sets such as:
 * `rec`: a key/value structure supporting arbitrary key and value types.
 * `lst`: an ordered list of values support tuple and inductive applications.
 * `inst`: an instruction is a `str` opcode and an ordered list of arguments
+
+```mmlang
+
+```
+
+
+===== Types
 
 mm-ADT types differ from convention in that they serve to denote:
 
