@@ -6,9 +6,7 @@ image::images/mm-adt-logo.png[mm-ADT Logo,float="left",width=150]
 
 mm-ADT integrates a variety of data processing technologies via the distributed mm-ADT virtual machine (mm-ADT VM).
 
-== Basic Concepts
-
-=== The mm-ADT Console
+== The mm-ADT Console
 
 The mm-ADT VM is packaged with a REPL console that supports any mm-ADT language. The default language is `mmlang`.
 
@@ -29,7 +27,29 @@ has an assembly language look-and-feel. Fortunately, the mm-ADT VM was designed 
 and query languages via the it's `LanguageProvider` interface. Any language that implements `LanguageProvider` can
 be used in the mm-ADT console. Furthermore, models can be shared between languages.
 
-=== Types and Values
+== Core Concepts
+
+=== Language, Storage, and Processor
+
+The mm-ADT VM has three primary integration points.
+
+* `LanguageProvider`: Language developers can design custom language or develop parsers for existing languages that
+compile to mm-ADT VM bytecode (binary) or unicode (`mmlang` encoding). All mm-ADT languages integrate with the mm-ADT
+console.
+* `StorageProvider`: Storage systems can be integrated with mm-ADT. mm-ADT's flexible data model and type
+system comfortably support key/value stores, document stores, wide-column stores, graph stores, relational stores, and
+other novel or hybrid forms such as hypergraphs and docugraph systems.
+* `ProcessorProvider`: Processors are any push- or pull-based execution engines. Processors are responsible for
+driving the the mm-ADT VM's distributed traverser algorithm on a single-machine in-memory, multi-threaded,
+distributed near-time, all the way up to cluster-oriented processors for batch analytics.
+
+The mm-ADT VM enables the intermingling of any language, any storage system, and any processor that can faithfully
+implement the core language semantics (types and values), processor semantics (monadic traversers), and/or
+storage semantics (streams of atomic and composite data structures).
+
+=== Language Structures
+
+==== Types and Values
 
 There are only two kinds of structures in mm-ADT: _values_ and _types_. Values are the elements of standard data
 type sets such as:
@@ -70,3 +90,6 @@ the category _objects_ are the canonical types and the _morphisms_ are types tha
 mm-ADT types respective associative composition and every type's identity morphism is the `[id]` instruction as in
 `int<=int[id]`.
 
+=== Storage Structures
+
+=== Processor Structures
