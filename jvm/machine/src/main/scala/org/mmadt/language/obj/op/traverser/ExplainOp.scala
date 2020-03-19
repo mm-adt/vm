@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{StrType, Type}
+import org.mmadt.language.obj.`type`.{RecType, StrType, Type}
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj, Str}
+import org.mmadt.language.obj.{Inst, OValue, Obj, Str}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -45,7 +45,7 @@ trait ExplainOp {
 object ExplainOp {
   def apply():Inst[Obj,Str] = new ExplainInst
 
-  class ExplainInst extends VInst[Obj,Str]((Tokens.explain,Nil))  {
+  class ExplainInst extends VInst[Obj,Str]((Tokens.explain,Nil)) {
     override def apply(trav:Traverser[Obj]):Traverser[Str] ={
       trav.split(trav.obj().asInstanceOf[Type[Obj]].explain())
     }
@@ -58,6 +58,10 @@ object ExplainOp {
       if (b._2.isInstanceOf[TraverserInstruction]) state += (b._2.arg0[StrValue]().value -> b._2.apply(Traverser.standard(b._1)).obj().asInstanceOf[Type[Obj]].range)
       val temp  = if (b._2.isInstanceOf[TraverserInstruction]) a else a :+ (depth,b._2,lastRange(b._1),b._2.apply(Traverser.standard(b._1)).obj().asInstanceOf[Type[Obj]].range,mutable.LinkedHashMap(state.toSeq:_*))
       val inner = b._2.args().foldLeft(List[Row]())((x,y) => x ++ (y match {
+        case branches:RecType[Obj,Obj] if b._2.op() == Tokens.choose => branches.value().flatMap(x => List(x._1,x._2)).map{
+          case btype:Type[Obj] => btype
+          case bvalue:OValue[Obj] => bvalue.start().asInstanceOf[Type[Obj]]
+        }.flatMap(x => explain(x,mutable.LinkedHashMap(state.toSeq:_*),depth + 1))
         case btype:Type[Obj] => explain(btype,mutable.LinkedHashMap(state.toSeq:_*),depth + 1)
         case _ => Nil
       }))
@@ -67,10 +71,15 @@ object ExplainOp {
   }
 
   private def lastRange(atype:Type[Obj]):Type[Obj] = if (atype.insts.isEmpty) atype else atype.linvert().range
+  private val MAX_LENGTH_STRING = 40
+  private def instMax(inst:Inst[Obj,Obj]):String ={
+    val instString = inst.toString.substring(0,Math.min(MAX_LENGTH_STRING,inst.toString.length))
+    if (instString.length == MAX_LENGTH_STRING) instString + "..." else instString
+  }
 
   def printableTable(atype:Type[Obj]):String ={
     val report                = explain(atype,mutable.LinkedHashMap.empty[String,Obj])
-    val c1                    = report.map(x => x._2.toString.length).max + 4
+    val c1                    = report.map(x => instMax(x._2).length).max + 4
     val c2                    = report.map(x => x._3.toString.length).max + 4
     val c3                    = report.map(x => x._4.toString.length).max + 4
     val builder:StringBuilder = new StringBuilder()
@@ -83,7 +92,7 @@ object ExplainOp {
     builder.append("-".repeat(builder.length)).append("\n")
     report.foldLeft(builder)((a,b) => a
       .append(" ".repeat(b._1))
-      .append(b._2).append(" ".repeat(Math.abs(c1 - (b._2.toString.length))))
+      .append(instMax(b._2)).append(" ".repeat(Math.abs(c1 - (instMax(b._2).length))))
       .append(b._3).append(" ".repeat(Math.abs(c2 - (b._3.toString.length) - (b._1))))
       .append("=>").append(" ".repeat(3)).append(" ".repeat(b._1))
       .append(b._4).append(" ".repeat(Math.abs(c3 - (b._4.toString.length) - (b._1))))
