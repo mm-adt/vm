@@ -1,10 +1,16 @@
-import sbt.Keys.autoScalaLibrary
+import com.typesafe.sbt.site.asciidoctor.AsciidoctorPlugin
+import sbt.Keys.{autoScalaLibrary, _}
+import sbt._
 import sbtassembly.AssemblyPlugin.defaultShellScript
 
 ThisBuild / organization := "org.mmadt"
 ThisBuild / scalaVersion := "2.12.10"
 ThisBuild / version := "0.1-SNAPSHOT"
 Compile / compileOrder := CompileOrder.JavaThenScala
+makeSite := {(makeSite in machine).value}
+scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"), "scm:git:git@github.com:mm-adt/vm.git"))
+enablePlugins(GhpagesPlugin)
+git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", "")
 
 lazy val machine = (project in file("machine"))
   .settings(
@@ -20,3 +26,6 @@ lazy val machine = (project in file("machine"))
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"))
   .enablePlugins(AssemblyPlugin)
+  .enablePlugins(AsciidoctorPlugin)
+
+

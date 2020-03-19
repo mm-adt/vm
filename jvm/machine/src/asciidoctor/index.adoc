@@ -1,0 +1,72 @@
+= mm-ADT: A Multi-Model Abstract Data Type
+Marko A. Rodriguez <marko@rredux.com>
+:project-version:
+
+image::images/mm-adt-logo.png[mm-ADT Logo,float="left",width=150]
+
+mm-ADT integrates a variety of data processing technologies via the distributed mm-ADT virtual machine (mm-ADT VM).
+
+== Basic Concepts
+
+=== The mm-ADT Console
+
+The mm-ADT VM is packaged with a REPL console that supports any mm-ADT language. The default language is `mmlang`.
+
+```mmlang
+~/software/mm-adt/vm/jvm bin/mmadt.sh
+                                _____ _______
+                           /\  |  __ |__   __|
+ _ __ ___  _ __ ___ _____ /  \ | |  | | | |
+| '_ ` _ \| '_ ` _ |_____/ /\ \| |  | | | |
+| | | | | | | | | | |   / ____ \ |__| | | |
+|_| |_| |_|_| |_| |_|  /_/    \_\____/  |_|
+                                 mm-adt.org
+mmlang>
+```
+
+`mmlang` is in 1-to-1 correspondence with the storage and processing architecture of the mm-ADT VM. As such, `mmlang`
+has an assembly language look-and-feel. Fortunately, the mm-ADT VM was designed to easily support other programming
+and query languages via the it's `LanguageProvider` interface. Any language that implements `LanguageProvider` can
+be used in the mm-ADT console. Furthermore, models can be shared between languages.
+
+=== Types and Values
+
+There are only two kinds of structures in mm-ADT: _values_ and _types_. Values are the elements of standard data
+type sets such as:
+
+* `bool`: two element boolean set containing `true` and `false`.
+* `int`: an integer set including positive and negative values (overflow prevention via dynamic bit expansion).
+* `real`: a decimal set including positive and negative values (overflow prevention via dynamic bit expansion).
+* `str`: the set of all Unicode strings.
+* `rec`: a key/value structure supporting arbitrary key and value types.
+* `lst`: an ordered list of values support tuple and inductive applications.
+* `inst`: an instruction is a `str` opcode and an ordered list of arguments
+
+mm-ADT types differ from convention in that they serve to denote:
+
+* *canonical types*: sets of elements denoted as `int` or `str`, etc.
+* *refined types*: constraints on the canonical set types such as `nat<=int[is,[gt,0]]`
+* *quantified types*: specifying the cardinality of a set via quantification `int{0,5}` (a type of 0 to 5 `int` values).
+* *dependent types*:
+* *translating types*: specify a mapping from a domain set of elements to a range set of elements as in `int[plus,2]`.
+* *recursive types*:
+
+
+```mmlang
+mmlang> 1
+==>1
+mmlang> +2
+==>[plus,2]
+mmlang> 1+2
+==>3
+mmlang> 1[plus,2]
+==>3
+```
+
+=== Model Categories and their Functors
+
+A _model_ is a set of related types (a type of types). Mathematically, a every mm-ADT model forms a category where
+the category _objects_ are the canonical types and the _morphisms_ are types that span the canonical types. All
+mm-ADT types respective associative composition and every type's identity morphism is the `[id]` instruction as in
+`int<=int[id]`.
+
