@@ -1,5 +1,5 @@
 import com.typesafe.sbt.site.asciidoctor.AsciidoctorPlugin
-import sbt.Keys.{autoScalaLibrary,_}
+import sbt.Keys.{autoScalaLibrary, _}
 import sbt._
 import sbtassembly.AssemblyPlugin.defaultShellScript
 
@@ -24,10 +24,11 @@ lazy val machine = (project in file("machine"))
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:",""),
-    scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"),"scm:git:git@github.com:mm-adt/vm.git")))
+    scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"),"scm:git:git@github.com:mm-adt/vm.git")),
+    excludeFilter in ghpagesCleanSite := ((f:File) => true)
+  )
   .enablePlugins(AssemblyPlugin)
   .enablePlugins(AsciidoctorPlugin)
   .enablePlugins(GhpagesPlugin)
-
 
 
