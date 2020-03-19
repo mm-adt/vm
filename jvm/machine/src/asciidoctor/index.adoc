@@ -27,6 +27,17 @@ has an assembly language look-and-feel. Fortunately, the mm-ADT VM was designed 
 and query languages via the it's `LanguageProvider` interface. Any language that implements `LanguageProvider` can
 be used in the mm-ADT console. Furthermore, models can be shared between languages.
 
+```mmlang
+mmlang> 1
+==>1
+mmlang> +2
+==>[plus,2]
+mmlang> 1+2
+==>3
+mmlang> 1[plus,2]
+==>3
+```
+
 == Core Concepts
 
 === Language, Storage, and Processor
@@ -65,9 +76,21 @@ type sets such as:
 * `inst`: an instruction is a `str` opcode and an ordered list of arguments
 
 ```mmlang
-
+mmlang> 45[plus,5][plus,[mult,2]]
+==>150
+mmlang> 'a','b','c'[fold,'seed','',[plus,str<seed>]]
+==>'abc'
+mmlang> 1,2,3[plus,2]<x>[plus,3]<y>[as,rec['a':int<x>,'b':int<y>]]
+==>['a':3,'b':6]
+==>['a':4,'b':7]
+==>['a':5,'b':8]
+mmlang> ['a':['b':['c':['d':0]]]]
+==>['a':['b':['c':['d':0]]]]
+mmlang> ['a':['b':['c':['d':0]]]].a.b.c.d
+==>0
+mmlang> .a
+==>[get,'a']
 ```
-
 
 ===== Types
 
@@ -81,16 +104,7 @@ mm-ADT types differ from convention in that they serve to denote:
 * *recursive types*:
 
 
-```mmlang
-mmlang> 1
-==>1
-mmlang> +2
-==>[plus,2]
-mmlang> 1+2
-==>3
-mmlang> 1[plus,2]
-==>3
-```
+
 
 === Model Categories and their Functors
 

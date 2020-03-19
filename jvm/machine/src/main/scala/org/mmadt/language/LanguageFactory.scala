@@ -31,6 +31,8 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 
+import scala.collection.JavaConverters
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -46,7 +48,7 @@ trait LanguageFactory {
 object LanguageFactory {
   ///////PROVIDERS///////
   private lazy val providers:ServiceLoader[LanguageProvider] = ServiceLoader.load(classOf[LanguageProvider])
-  def getLanguage(name:String):LanguageProvider = providers.stream().filter(x => x.get().name().equals(name)).findFirst().get().get()
+  def getLanguage(name:String):LanguageProvider = JavaConverters.asScalaIterator(providers.iterator()).filter(x => x.name().equals(name)).next()
   ///////////////////////
   def printValue(value:Value[Obj])(implicit f:LanguageFactory):String = f.printValue(value)
   def printType(atype:Type[Obj])(implicit f:LanguageFactory):String = f.printType(atype)
