@@ -24,9 +24,9 @@ package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.{RecType,Type}
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.model.{AsOp, NoOp}
+import org.mmadt.language.obj.op.model.{AsOp,NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -37,8 +37,10 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
-  def apply[A <: Obj,B <: Value[Obj]](ctype:Type[A])(avalue:B with Value[Obj]):B ={
-    AsOp(this.get(ctype.name).get).apply(Traverser.standard(avalue,model = this)).obj().asInstanceOf[B]
+  def apply[A <: Obj,B <: Obj](ctype:Type[A])(avalue:B with Value[Obj]):B ={
+    if (this.get(ctype.name).isDefined)
+      AsOp(this.get(ctype.name).get).apply(Traverser.standard(avalue,model = this)).obj().asInstanceOf[B]
+    else avalue
   }
   def put(model:Model):Model
   def put(left:Type[Obj],right:Type[Obj]):Model
@@ -56,8 +58,13 @@ trait Model {
   }
 
   def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
-    this.put(tobj(name),definition.named(name))
-    definition.named(name).range
+    if (definition.domain().name.equals(name)) {
+      this.put(tobj(name),definition)
+      definition.domain().asInstanceOf[O]
+    } else {
+      this.put(tobj(name),definition.named(name))
+      definition.named(name).range
+    }
   }
 
   def recType:RecType[Type[Obj],Type[Obj]]

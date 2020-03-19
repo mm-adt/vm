@@ -39,7 +39,7 @@ trait Processor {
 
 object Processor {
   def compiler(model:Model = Model.id):Processor = new CompilingProcessor(model)
-  def iterator(model:Model = Model.id):Processor = new IteratorProcessor()
+  def iterator(model:Model = Model.id):Processor = new IteratorProcessor(model)
 
   def strmOrSingle[O <: Obj](itty:Iterator[O]):O ={
     if (itty.hasNext) {

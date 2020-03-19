@@ -23,10 +23,10 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.{RecType,Type}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.value.{ObjValue,RecValue,StrValue,Value}
+import org.mmadt.language.obj.{Inst,IntQ,Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -57,12 +57,12 @@ object mmlangPrinter {
 
   def typeString(atype:Type[Obj]):String ={
     val range  = (atype match {
-      case arec:RecType[Obj,Obj] => if (Tokens.named(atype.name)) atype.name else Tokens.rec + mapString(arec.value())
+      case arec:RecType[Obj,Obj] => if (atype.insts.nonEmpty && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.insts.isEmpty) Tokens.empty else {
       (atype.insts.head._1 match {
-        case arec:RecType[Obj,Obj] => if (Tokens.named(arec.name)) arec.name else Tokens.rec + mapString(arec.value())
+        case arec:RecType[Obj,Obj] => if (atype.insts.nonEmpty && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
         case btype:Type[Obj] => btype.name
       }) + qString(atype.insts.head._1.q)
     }

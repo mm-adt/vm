@@ -44,5 +44,5 @@ trait Rec[A <: Obj,B <: Obj] extends Obj
 
 object Rec {
   implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)):RecValue[A,B] = vrec(value = value,values = values)
+  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = vrec(value = value,values = values:_*)
 }

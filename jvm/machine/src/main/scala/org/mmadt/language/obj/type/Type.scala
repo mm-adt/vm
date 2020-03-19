@@ -49,7 +49,7 @@ trait Type[+T <: Obj] extends Obj
     case _:BoolType => tbool(this.name,this.q,Nil)
     case _:IntType => tint(this.name,this.q,Nil)
     case _:StrType => tstr(this.name,this.q,Nil)
-    case arec:RecType[_,_] => trec(arec.name,arec.value(),arec.q,Nil)
+    case arec:RecType[_,_] => trec(this.name,arec.value(),arec.q,Nil)
     case _:__ => this
     case _:ObjType => tobj(this.name,this.q,Nil)
   }).asInstanceOf[this.type]
@@ -81,11 +81,9 @@ trait Type[+T <: Obj] extends Obj
   def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,Type.resolveAnonymous(this,rangeType))
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
-  def compose[R <: Type[Obj]](btype:R):R ={
-    btype match {
-      case anon:__ => anon(this)
-      case atype:Type[Obj] => atype.insts.seq.foldLeft[Traverser[Obj]](Traverser.standard(this))((b,a) => a._2(b)).obj().asInstanceOf[R]
-    }
+  def compose[R <: Type[Obj]](btype:R):R = btype match {
+    case anon:__ => anon(this)
+    case atype:Type[Obj] => atype.insts.seq.foldLeft[Traverser[Obj]](Traverser.standard(this))((b,a) => a._2(b)).obj().asInstanceOf[R].named(btype.name)
   }
   def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={
@@ -102,9 +100,9 @@ trait Type[+T <: Obj] extends Obj
 
   // obj-level operations
   override def a(atype:Type[Obj]):Bool = this.compose(bool,AOp(atype))
-  override def add[O<:Obj](obj:O):O = this.compose(asType(obj).asInstanceOf[O],AddOp(obj))
+  override def add[O <: Obj](obj:O):O = this.compose(asType(obj).asInstanceOf[O],AddOp(obj))
   override def as[O <: Obj](obj:O):O = this.compose(obj,AsOp(obj))
-  override def count():IntType = this.compose(tint(),CountOp())
+  override def count():IntType = this.compose(int,CountOp())
   override def id():this.type = this.compose(IdOp())
   override def map[O <: Obj](other:O):O = this.compose(asType(other).asInstanceOf[O],MapOp[O](other))
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
@@ -130,7 +128,7 @@ trait Type[+T <: Obj] extends Obj
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printType(this)
-  override def hashCode():scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.insts.hashCode()
+  override def hashCode:scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.insts.hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:Type[_] => this.name == atype.name && eqQ(this,atype) && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
     case _ => false

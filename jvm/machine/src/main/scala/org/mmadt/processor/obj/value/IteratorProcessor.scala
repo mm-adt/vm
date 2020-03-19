@@ -23,21 +23,27 @@
 package org.mmadt.processor.obj.value
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.model.Model
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction, SideEffectInstruction}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, ORecStrm, Obj}
 import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class IteratorProcessor extends Processor {
+class IteratorProcessor(model:Model = Model.id) extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
-    TypeChecker.typeCheck(domainObj,rangeType.domain())
-    var lastStrm:Option[Strm[_]]       = None
-    var output  :Iterator[Traverser[E]] = domainObj match {
+    val domainObjAs:S = domainObj match {
+      case atype:Type[S] with S=> atype
+      case avalue:Value[S] with S => model[S,S](rangeType.domain[S]())(avalue)
+    }
+    TypeChecker.typeCheck(domainObjAs,rangeType.domain())
+    var lastStrm:Option[Strm[_]]        = None
+    var output  :Iterator[Traverser[E]] = domainObjAs match {
       case strm:Strm[_] =>
         lastStrm = Option(strm)
         strm.value.map(x => Traverser.standard(x.asInstanceOf[E]))

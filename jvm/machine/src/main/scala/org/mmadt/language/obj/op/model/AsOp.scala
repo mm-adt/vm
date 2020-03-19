@@ -25,11 +25,10 @@ package org.mmadt.language.obj.op.model
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{IntType, RecType, StrType, Type, TypeChecker}
+import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.TInt
 import org.mmadt.storage.obj.value.VInst
 
 import scala.collection.mutable
@@ -45,10 +44,11 @@ object AsOp {
   def apply[O <: Obj](obj:O):Inst[Obj,O] = new AsInst[O](obj)
 
   class AsInst[O <: Obj](obj:O) extends VInst[Obj,O]((Tokens.as,List(obj))) {
+
     override def apply(trav:Traverser[Obj]):Traverser[O] ={
-      testAlive(trav.split(obj match {
+      trav.split(testAlive(obj match {
         case atype:Type[Obj] if trav.avalue => atype match {
-          case rectype:RecType[Obj,Obj] => {
+          case rectype:RecType[Obj,Obj] =>
             trav.obj() match {
               case recvalue:ORecValue => vrec(name = rectype.name,value = makeMap(trav.model,recvalue.value,rectype.value()))
               case avalue:Value[Obj] => vrec(rectype.name,rectype.value().map(x =>
@@ -62,20 +62,19 @@ object AsOp {
                   case vtype:Type[Obj] =>
                     TypeChecker.matchesVT(avalue,vtype)
                     trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
-                })),avalue.q)
+                })))
             }
-          }
           case atype:StrType if trav.avalue => trav.split(vstr(name = atype.name,value = trav.obj().asInstanceOf[Value[Obj]].value.toString)).apply(atype).obj()
           case atype:IntType if trav.avalue => trav.split(vint(name = atype.name,value = Integer.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).longValue())).apply(atype).obj()
           case _ => trav.apply(atype).obj()
         }
-        case avalue:Value[Obj] => avalue.q(multQ(avalue,obj)).named(avalue.name)
-        case btype:Type[Obj] if trav.atype =>  trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
-      }).asInstanceOf[Traverser[O]])
+        case avalue:Value[Obj] => avalue
+        case btype:Type[Obj] if trav.atype => trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
+      }).q(trav.obj().q)).asInstanceOf[Traverser[O]]
     }
 
-    private def testAlive(trav:Traverser[O]):Traverser[O] ={
-      assert(trav.obj().alive())
+    private def testAlive[X <: Obj](trav:X):X ={
+      assert(trav.alive())
       trav
     }
 

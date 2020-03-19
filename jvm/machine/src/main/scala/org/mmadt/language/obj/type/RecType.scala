@@ -53,7 +53,7 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   override def is(bool:BoolType):RecType[A,B] = this.compose(IsOp(bool)).q(minZero(this.q))
   override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q))
 
-  override def hashCode():scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.insts.hashCode() ^ this.q.hashCode()
+  override def hashCode:scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.insts.hashCode() ^ this.q.hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:RecType[A,B] => this.name == atype.name && this.q == atype.q && this.value() == atype.value() && this.insts.map(_._2) == atype.insts.map(_._2)
     case _ => false

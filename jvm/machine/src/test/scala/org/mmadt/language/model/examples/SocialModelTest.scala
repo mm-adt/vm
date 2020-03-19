@@ -35,38 +35,39 @@ import org.scalatest.FunSuite
  */
 class SocialModelTest extends FunSuite {
 
-  val social  :Model     = Model.simple()
-  val compiler:Processor = Processor.compiler(social)
+  val social   :Model     = Model.simple()
+  val functor  :Model     = Model.simple()
+  val scompiler:Processor = Processor.compiler(social)
+  val fcompiler:Processor = Processor.compiler(functor)
 
   // define model types
   val nat   :IntType          = social.define("nat")(int <= int.is(int.gt(0)))
-  val person:RecType[Str,Obj] = social.define("person")(trec(str("name") -> str,str("age") -> nat))
-  val people:RecType[Str,Obj] = social.define("people")(person.q(*))
-  social.put(nat.range.plus(nat.range),int.plus(int))
-  social.put(int.plus(int),nat.range.plus(nat.range))
-  social.define("int")(int <= nat.range.id())
-  //social.put(Algebra.universal(person)) // TODO: make obj a type variable in a model
-  //social.put(Algebra.universal(str))
-  //social.put(Algebra.group(nat)("+"))
-  //social.put(Algebra.group(nat)("*"))
-  println(social)
+  val person:RecType[Str,Obj] = social.define("person")(trec[Str,Obj](str("name") -> str,str("age") -> nat).id())
+  social.define("int")(int <= nat.id())
+  println(social + "\n---")
+
+  functor.define("nat")(int <= nat.id())
+  functor.define("person")(trec(str("name") -> str,str("age") -> int) <= person.id())
+  println(functor)
 
   test("model types"){
+    assertResult(social(nat)(34))(social(nat)(34))
     assertResult("nat")(social(nat)(34).name)
+    assertResult("int")(social(int)(social(nat)(34)).name)
     assertResult(34)(social(nat)(34).value)
-    assertThrows[AssertionError]{
-      social(nat)(-34)
-    }
+    assertThrows[AssertionError]{social(nat)(-34)}
     assertResult("nat[plus,nat]")(nat.plus(nat).toString)
 
     // map nat to nat
-    val marko:RecValue[StrValue,Value[Obj]] = social(person)(vrec(str("name") -> str("marko"),str("age") -> social(nat)(29)))
+    val marko:RecValue[StrValue,Value[Obj]] = social(person)(Map(str("name") -> str("marko"),str("age") -> social(nat)(29)))
+    assertResult("person")(marko.name)
     assertResult("nat")(marko.get(str("age")).name)
     assertResult(29L)(marko.get(str("age")).value)
     assertResult("int")(social(int)(marko.get(str("age"))).name)
     assertResult(29L)(social(int)(marko.get(str("age"))).value)
     // map int to nat
-    val ryan:RecValue[StrValue,Value[Obj]] = social(person)(vrec(str("name") -> str("ryan"),str("age") -> int(20)))
+    val ryan:RecValue[StrValue,Value[Obj]] = social(person)(Map(str("name") -> str("ryan"),str("age") -> int(20)))
+    assertResult("person")(ryan.name)
     assertResult("nat")(ryan.get(str("age")).name)
     assertResult(20L)(ryan.get(str("age")).value)
     assertResult("int")(social(int)(ryan.get(str("age"))).name)
@@ -74,19 +75,13 @@ class SocialModelTest extends FunSuite {
   }
 
   test("model values"){
-    assertResult(social(nat)(1))(social(nat)(1))
-    assertResult("person")(person(str("name") -> str("marko"),str("age") -> int(29)).name)
+    val endo = scompiler(person.get(str("age"),int).plus(int))
+    assertResult("nat<=person[get,'age'][plus,nat]")(endo.toString)
+    assertResult("nat")(endo.range.name)
+    assertResult("person")(endo.domain().name)
+    assertResult(social(nat)(40))(Processor.iterator(social).apply(vrec(str("name") -> str("ryan"),str("age") -> int(20)),endo))
+    assertResult("int<=rec['name':str,'age':nat][get,'age'][plus,int]")(fcompiler(endo).toString)
   }
-
-  /*test("model compilations"){
-    assertResult(social.get(nat).get)(compiler(nat.plus(nat.zero())))
-    assertResult(social.get(nat).get)(compiler(nat.plus(nat.zero()).plus(nat.plus(nat.neg())).plus(nat.zero()).plus(nat.plus(nat.neg())).plus(nat.zero())))
-    assertResult(rec.get(str("name"),str))(compiler(person.id().get("name",str)))
-    println(compiler(person.id().get("name",str).plus(" rodriguez")))
-    assertResult(rec.get(str("name"),str).plus(" rodriguez"))(compiler(person.id().get("name",str).plus(" rodriguez")))
-    // assertResult(rec.get(str("name"),str).plus(" rodriguez"))(compiler(person.id().get("firstname",str).id().plus(" rodriguez")))
-    // assertResult(int <= rec.get(str("age"),int).is(int.gt(0)))(compiler(person.id().get(str("age"),nat)))
-  }*/
 
   test("rec stream w/ rewrites"){
     val ppl = vrec(
