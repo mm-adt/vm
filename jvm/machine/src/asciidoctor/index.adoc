@@ -60,6 +60,41 @@ storage semantics (streams of atomic and composite data structures).
 
 === Language Structures
 
+An mm-ADT program is a _type_. It determines a set of `objs`. A canonical type is denoted with a token such as `int`
+or `bool`. These canonical types can be constrained and extended using instructions. A complex type definition is
+provided below that captures a large number of the mm-ADT type constructs.
+
+```mmadt
+int<=int{2}<x>[plus,10]<y>[is.<10 -> <x>
+                          |is.<20 -> <y>
+                          |int    -> <x>+<y>][count]
+```
+
+.mmlang Language Structures
+|===
+|Classification          |`mmlang` |Description
+
+|`obj` instruction       |`[ ]`    |The bulk of instructions operate on `objs`.
+|traverser instruction   |`< >`    |Traversers are independent computational contexts that can be programmed.
+|quantifiers             |`{ }`    |Every `obj` has a quantity as specified by the associated algebraic ring w/ unity.
+|branching instructions  |`[->]`   |A `rec` type is used for guarded branching.
+|domain/range specifies  |`<=`     |Every type has a domain and a range. Classic types have are endomorphisms.
+|===
+
+```mmadt
+instruction                                    domain         range      state
+-------------------------------------------------------------------------------
+[plus,10]                                      int{2}    =>   int{2}      int{2}<x>
+[choose,[int{0,2}<=int{2}[is,bool{2}<=in...    int{2}    =>   int{2}      int{2}<x> int{2}<y>
+ [is,bool{2}<=int{2}[lt,10]]                    int{2}   =>    int{0,2}   int{2}<x> int{2}<y>
+  [lt,10]                                        int{2}  =>     bool{2}   int{2}<x> int{2}<y>
+ [is,bool{2}<=int{2}[lt,20]]                    int{2}   =>    int{0,2}   int{2}<x> int{2}<y>
+  [lt,20]                                        int{2}  =>     bool{2}   int{2}<x> int{2}<y>
+ [plus,int{2}<y>]                               int{2}   =>    int{2}     int{2}<x> int{2}<y>
+[count]                                        int{2}    =>   int         int{2}<x> int{2}<y>
+']
+```
+
 ==== Values and Types
 
 ===== Values
