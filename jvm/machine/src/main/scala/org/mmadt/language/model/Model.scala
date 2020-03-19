@@ -58,13 +58,8 @@ trait Model {
   }
 
   def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
-    if (definition.domain().name.equals(name)) {
-      this.put(tobj(name),definition)
-      definition.domain().asInstanceOf[O]
-    } else {
-      this.put(tobj(name),definition.named(name))
-      definition.named(name).range
-    }
+    this.put(tobj(name),definition)
+    definition.range
   }
 
   def recType:RecType[Type[Obj],Type[Obj]]
@@ -132,7 +127,7 @@ object Model {
       if (left.equals(Tokens.model)) return Option(recType)
       typeMap.get(left) match {
         case None => None
-        case Some(m) => m.iterator.find(a => tobj(left).test(a._1)).map(_._2)
+        case Some(m) => m.iterator.find(a => left.equals(a._1.toString)).map(_._2)
       }
     }
     override def recType:RecType[Type[Obj],Type[Obj]] ={

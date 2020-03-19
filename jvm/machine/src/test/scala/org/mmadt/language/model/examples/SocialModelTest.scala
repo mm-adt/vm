@@ -35,54 +35,56 @@ import org.scalatest.FunSuite
  */
 class SocialModelTest extends FunSuite {
 
-  val social   :Model     = Model.simple()
-  val functor  :Model     = Model.simple()
-  val scompiler:Processor = Processor.compiler(social)
-  val fcompiler:Processor = Processor.compiler(functor)
-  val siterator:Processor = Processor.iterator(social)
+  val mmsocial  :Model     = Model.simple()
+  val socialmm  :Model     = Model.simple()
+  val msCompiler:Processor = Processor.compiler(mmsocial)
+  val smCompiler:Processor = Processor.compiler(socialmm)
+  val msIterator:Processor = Processor.iterator(mmsocial)
+  val smIterator:Processor = Processor.iterator(socialmm)
 
-  // define model types
-  val nat   :IntType          = social.define("nat")(int <= int.is(int.gt(0)))
-  val person:RecType[Str,Obj] = social.define("person")(trec[Str,Obj](str("name") -> str,str("age") -> nat).id())
-  social.define("int")(int <= nat.id())
-  println(social + "\n---")
 
-  functor.define("nat")(int <= nat.id())
-  functor.define("person")(trec(str("name") -> str,str("age") -> int) <= person.id())
-  println(functor)
+  val nat   :IntType          = mmsocial.define("int")(int.named("nat") <= int.is(int.gt(0)))
+  val person:RecType[Str,Obj] = mmsocial.define("rec")(trec[Str,Obj](str("name") -> str,str("age") -> nat).named("person") <= trec[Str,Obj](str("name") -> str,str("age") -> int).id())
+  println("mm=>social\n" + mmsocial)
 
-  test("model types"){
-    assertResult(social(nat)(34))(social(nat)(34))
-    assertResult("nat")(social(nat)(34).name)
-    assertResult("int")(social(int)(social(nat)(34)).name)
-    assertResult(34)(social(nat)(34).value)
-    assertThrows[AssertionError]{social(nat)(-34)}
+  socialmm.define("nat")(int <= nat.id())
+  socialmm.define("person")(trec(str("name") -> str,str("age") -> int) <= person.id())
+  println("social=>mm\n" + socialmm)
+
+  test("model atomic types"){
+    assertResult("nat")(nat.name)
+    assertResult(mmsocial(int)(34))(mmsocial(int)(34))
+    assertResult("nat")(mmsocial(int)(34).name)
+    assertResult("int")(socialmm(nat)(34).name)
+    assertResult(34)(socialmm(nat)(34).value)
+    assertThrows[AssertionError]{mmsocial(int)(-34)}
     assertResult("nat[plus,nat]")(nat.plus(nat).toString)
+  }
 
+  test("model composite types"){
     // map nat to nat
-    val marko:RecValue[StrValue,Value[Obj]] = social(person)(Map(str("name") -> str("marko"),str("age") -> social(nat)(29)))
+    val marko:RecValue[StrValue,Value[Obj]] = mmsocial(rec)(Map(str("name") -> str("marko"),str("age") -> int(29)))
     assertResult("person")(marko.name)
     assertResult("nat")(marko.get(str("age")).name)
     assertResult(29L)(marko.get(str("age")).value)
-    assertResult("int")(social(int)(marko.get(str("age"))).name)
-    assertResult(29L)(social(int)(marko.get(str("age"))).value)
+    assertResult("int")(socialmm(nat)(marko.get(str("age"))).name)
+    assertResult(29L)(socialmm(nat)(marko.get(str("age"))).value)
     // map int to nat
-    val ryan:RecValue[StrValue,Value[Obj]] = social(person)(Map(str("name") -> str("ryan"),str("age") -> int(20)))
+    val ryan:RecValue[StrValue,Value[Obj]] = mmsocial(rec)(Map(str("name") -> str("ryan"),str("age") -> int(20)))
     assertResult("person")(ryan.name)
     assertResult("nat")(ryan.get(str("age")).name)
     assertResult(20L)(ryan.get(str("age")).value)
-    assertResult("int")(social(int)(ryan.get(str("age"))).name)
-    assertResult(20L)(social(int)(ryan.get(str("age"))).value)
+    assertResult("int")(socialmm(nat)(ryan.get(str("age"))).name)
+    assertResult(20L)(socialmm(nat)(ryan.get(str("age"))).value)
   }
 
-  test("model values"){
-    val endo = scompiler(person.get(str("age"),int).plus(int))
-    assertResult("nat<=person[get,'age'][plus,nat]")(endo.toString)
-    assertResult("nat")(endo.range.name)
-    assertResult("person")(endo.domain().name)
-    assertResult(social(nat)(40))(siterator(vrec(str("name") -> str("ryan"),str("age") -> int(20)),endo))
-    assertResult("int<=rec['name':str,'age':nat][get,'age'][plus,int]")(fcompiler(endo).toString) // TODO: age:int
-    // assertResult(social(nat)(40))(siterator(vrec(str("name") -> str("ryan"),str("age") -> int(20)),fcompiler(endo)))
+  test("model compilation and evaluation"){
+    val toSocial = msCompiler(person.get(str("age"),nat).plus(nat))
+    assertResult("nat<=person[get,'age'][plus,nat]")(toSocial.toString)
+    assertResult("nat")(toSocial.range.name)
+    assertResult("person")(toSocial.domain().name)
+    assertResult("int<=rec['name':str,'age':int][get,'age'][plus,int]")(smCompiler(toSocial).toString)
+    assertResult(int(40))(smIterator(vrec(str("name") -> str("ryan"),str("age") -> int(20)),smCompiler(toSocial)))
   }
 
   test("rec stream w/ rewrites"){
