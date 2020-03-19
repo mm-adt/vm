@@ -35,9 +35,9 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOne) extends Type[__] {
-  override val name :String                 = Tokens.empty
+  override val name :String                          = Tokens.empty
   override val insts:List[(Type[Obj],Inst[Obj,Obj])] = this._insts
-  override val q:(IntValue,IntValue) = this._quantifier
+  override val q    :(IntValue,IntValue)             = this._quantifier
   override def q(quantifier:IntQ):this.type = new __(this._insts,quantifier).asInstanceOf[this.type]
 
 
@@ -47,6 +47,7 @@ class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOn
   def and(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.and,List(other)))
   def plus(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.plus,List(other)))
   def mult(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.mult,List(other)))
+  def gt(other:Obj):BoolType = this.compose(bool,OpInstResolver.resolve(Tokens.gt,List(other)))
   def neg():this.type = this.compose(NegOp())
 }
 

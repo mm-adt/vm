@@ -20,26 +20,30 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.processor
 
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GtOp, LtOp, PlusOp}
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.Bool
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.storage.StorageFactory.{btrue, int}
+import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Str extends Obj
-  with EqsOp[Str]
-  with PlusOp[Str]
-  with GtOp[Str]
-  with LtOp[Str]
-  with IsOp[Str]
-  with ToOp[Str]
-
-
-object Str {
-  @inline implicit def stringToStr(java:String):StrValue = str(java)
+class LtInstTest extends FunSuite {
+  test("[gt] w/ int"){
+    assertResult(btrue)(int(1).lt(int(3))) // value * value = value
+    assert(int(1).lt(int(3)).isInstanceOf[BoolValue])
+    assert(int(1).lt(int(3)).isInstanceOf[Bool])
+    assertResult(int(1).lt(int))(int(1).lt(int)) // value * type = type
+    assert(int(1).lt(int).isInstanceOf[BoolType])
+    assert(int(1).lt(int).isInstanceOf[Bool])
+    assertResult(int.lt(int(3)))(int.lt(int(3))) // type * value = type
+    assert(int.lt(int(3)).isInstanceOf[BoolType])
+    assert(int.lt(int(3)).isInstanceOf[Bool])
+    assertResult(int.lt(int))(int.lt(int)) // type * type = type
+    assert(int.lt(int).isInstanceOf[BoolType])
+    assert(int.lt(int).isInstanceOf[Bool])
+  }
 }

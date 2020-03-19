@@ -54,6 +54,10 @@ object FoldOp {
       }
       t.split(t.obj().fold(seed)(Type.resolveAnonymous(t.obj(),reduction)))
     }
+
+    /*private def deduceSeed(defaultSeed:ZeroOp[Type[Obj]],model:Model):Option[Obj] = {
+       Option(Traverser.standard(int(1))(model.get(defaultSeed.zero()).get).obj())
+    }*/
   }
 
 }

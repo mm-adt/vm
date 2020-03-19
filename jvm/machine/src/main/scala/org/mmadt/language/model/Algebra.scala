@@ -25,6 +25,8 @@ package org.mmadt.language.model
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.language.obj.op.map._
+import org.mmadt.language.obj.value.Value
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,16 +50,18 @@ object Algebra {
 
   type MultDivOne[T <: Obj] = MultOne[T] // with InverseOp with DivOp
   type PlusMinusZero[T <: Obj] = PlusZero[T] with NegOp // with MinusOp
-  def group[O <: Type[O]](group:Obj)(op:String):Model ={
+  def group[O <: Type[O]](group:Obj)(op:String,identity:Value[Obj]):Model ={
     op match {
       case "*" =>
         val m = group.asInstanceOf[MultOne[O]]
         Model.from(
+          //m.one() -> identity.start(),
           m.one().one() -> m.one(),
           m.mult(m.one()) -> m)
       case "+" =>
         val p = group.asInstanceOf[PlusMinusZero[O]]
         Model.from(
+          //p.zero() -> identity.start(),
           p + p.zero() -> p,
           p + -p -> p.zero(),
           p.zero().zero() -> p.zero(),
@@ -67,8 +71,8 @@ object Algebra {
   }
 
   def ring[O <: IntType](ring:O):Model ={
-    group(ring)("+").put(
-      group(ring)("*")).put(
+    group(ring)("+",int(0)).put(
+      group(ring)("*",int(1))).put(
       Model.from(
         ring.mult(ring.one().neg()) -> ring.neg(),
         ring.to("x").mult(ring.to("y").plus(ring.to("z"))) -> ring.from[IntType]("x").plus(ring.from[IntType]("y")).mult(ring.from[IntType]("x").plus(ring.from[IntType]("z")))

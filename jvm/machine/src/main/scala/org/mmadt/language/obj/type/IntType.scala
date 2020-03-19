@@ -25,7 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
 import org.mmadt.language.obj.{Int, minZero}
 import org.mmadt.storage.StorageFactory._
 
@@ -45,6 +45,8 @@ trait IntType extends Int
   override def one():IntType = this.compose(OneOp())
   override def gt(other:Type[Int]):BoolType = this.compose(bool,GtOp(other))
   override def gt(other:Value[Int]):BoolType = this.compose(bool,GtOp(other))
+  override def lt(other:Type[Int]):BoolType = this.compose(bool,LtOp(other))
+  override def lt(other:Value[Int]):BoolType = this.compose(bool,LtOp(other))
   override def eqs(other:Type[Int]):BoolType = this.compose(bool,EqsOp(other))
   override def eqs(other:Value[Int]):BoolType = this.compose(bool,EqsOp(other))
   override def is(bool:BoolType):IntType = this.compose(IsOp(bool)).q(minZero(this.q))

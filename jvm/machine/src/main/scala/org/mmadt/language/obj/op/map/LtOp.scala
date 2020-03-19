@@ -20,33 +20,34 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.model.rewrite
+package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.model.Model
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
+import org.mmadt.processor.Traverser
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-object SinglePassRewrite {
-  def rewrite[D <: Obj,R <: Obj](model:Model,startType:Type[D],endType:Type[R]):Type[R] ={
-    var btype:Type[R] = endType
-    var xtype:Type[R] = btype
-    for (_ <- btype.insts.indices) {
-      while (btype.insts != Nil) {
-        model.get(btype) match {
-          case Some(rewrite) =>
-            xtype = xtype.compose(rewrite.asInstanceOf[Type[R]])
-            btype = rewrite.asInstanceOf[Type[R]]
-          case None =>
-            xtype = xtype.compose(btype.insts.head._2)
-            btype = btype.linvert()
-        }
-      }
-      btype = xtype
-      xtype = btype.domain()
-    }
-    btype
+trait LtOp[O <: Obj] {
+  this:O =>
+  def lt(other:Type[O]):OType[Bool]
+  def lt(other:Value[O]):Bool
+  final def <(other:Type[O]):OType[Bool] = this.lt(other)
+  final def <(other:Value[O]):Bool = this.lt(other)
+}
+
+object LtOp {
+  def apply[O <: Obj with LtOp[O]](other:Obj):Inst[O,Bool] = new LtInst[O](other.asInstanceOf[O])
+
+  class LtInst[O <: Obj with LtOp[O]](other:O) extends VInst[O,Bool]((Tokens.lt,List(other))) {
+    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split((Traverser.resolveArg(trav,other) match {
+      case avalue:Value[O] => trav.obj().lt(avalue)
+      case atype:Type[O] => trav.obj().lt(atype)
+    }).q(multQ(trav.obj().q,this.q)))
   }
+
 }

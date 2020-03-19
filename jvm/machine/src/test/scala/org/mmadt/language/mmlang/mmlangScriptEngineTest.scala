@@ -213,11 +213,13 @@ class mmlangScriptEngineTest extends FunSuite {
   test("infix operator instruction parsing"){
     assertResult(int.plus(int(6)))(engine.eval("int+6").next)
     assertResult(int.plus(int(6)).gt(int(10)))(engine.eval("int+6>10").next)
+    assertResult(int.plus(int(6)).lt(int(10)))(engine.eval("int+6<10").next)
     assertResult(int.plus(int(1)).mult(int(2)).gt(int(10)))(engine.eval("int+1*2>10").next)
     assertResult(str.plus(str("hello")))(engine.eval("str+'hello'").next)
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is,int[gt,5]]").next())
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is>5]").next)
     assertResult(int.is(int.gt(int(5))))(engine.eval("int[is > 5]").next)
+    assertResult(int.is(int.lt(int(5))))(engine.eval("int[is < 5]").next)
   }
 
   test("get dot-notation parsing"){

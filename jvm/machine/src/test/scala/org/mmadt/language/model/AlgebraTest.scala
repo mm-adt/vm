@@ -23,7 +23,7 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.processor.Processor
+import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -53,5 +53,10 @@ class AlgebraTest extends FunSuite {
     //assertResult(int(200))(evaluator(int(10),compiler(int.to("x").mult(int.to("y").plus(int.to("z"))))))
   }
 
+  test("int monoid elements for fold"){
+    val model = Algebra.ring(int)
+    //assertResult(int(0))(Traverser.standard(int(0))(model.get(int.zero()).get).obj())
+    //assertResult(int(1))(Traverser.standard(int(0))(model.get(int.one()).get).obj())
+  }
 
 }

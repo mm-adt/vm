@@ -79,7 +79,7 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(Traverser.standard(x,model = this.model)).obj().asInstanceOf[Type[Obj]]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(Traverser.standard(x,model = this.model)).obj().asInstanceOf[Type[Obj]])
   }
-  lazy val anonType :Parser[__]           = (stateAccess ^^ (x => FromOp(str(x._2))) | inst) ~ rep[Inst[Obj,Obj]](inst | stateAccess ^^ (x => ToOp[Obj](str(x._2))) | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))
+  lazy val anonType :Parser[__]           = (stateAccess ^^ (x => FromOp(str(x._2))) | inst) ~ rep[Inst[Obj,Obj]](stateAccess ^^ (x => ToOp[Obj](str(x._2))) | inst | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))
   lazy val instOp   :String               = Tokens.reserved.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
 
   // value parsing
@@ -97,7 +97,7 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
 
   // instruction parsing
   lazy val inst         :Parser[Inst[Obj,Obj]]              = (sugarlessInst | infixSugar | getSugar | chooseSugar) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Inst[Obj,Obj]]).getOrElse(x._1))
-  lazy val infixSugar   :Parser[Inst[Obj,Obj]]              = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.eqs_op | Tokens.a_op | Tokens.is) ~ obj ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
+  lazy val infixSugar   :Parser[Inst[Obj,Obj]]              = (Tokens.plus_op | Tokens.mult_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op | Tokens.a_op | Tokens.is) ~ obj ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
   lazy val chooseSugar  :Parser[Inst[Obj,Obj]]              = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(value = x.map(o => (o._1,o._2)).toMap)))
   lazy val getSugar     :Parser[Inst[Obj,Obj]]              = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp[Obj,Obj](str(x)).asInstanceOf[Inst[Obj,Obj]])
   lazy val sugarlessInst:Parser[Inst[Obj,Obj]]              = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(obj,COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1,x._2))

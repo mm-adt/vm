@@ -61,6 +61,7 @@ object OpInstResolver {
       case Tokens.plus | Tokens.plus_op => PlusOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.mult | Tokens.mult_op => MultOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.gt | Tokens.gt_op => GtOp(args.head).asInstanceOf[Inst[S,E]]
+      case Tokens.lt | Tokens.lt_op => LtOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.eqs | Tokens.eqs_op => EqsOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.is => IsOp(args.head).asInstanceOf[Inst[S,E]]
       case Tokens.get => args match {

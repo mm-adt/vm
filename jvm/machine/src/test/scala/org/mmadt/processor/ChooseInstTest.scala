@@ -22,6 +22,7 @@
 
 package org.mmadt.processor
 
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -70,5 +71,19 @@ class ChooseInstTest extends FunSuite {
         int.is(int.gt(30)) -> int.plus(2),
         int.is(int.gt(20)) -> int.plus(3),
         int.is(int.gt(10)) -> int.plus(4)).plus(1))
+
+    assertResult(int(33))(
+      int(0) ==> int.plus(29).choose(
+        int.is(__.gt(40)) -> int.plus(1),
+        int.is(__.gt(30)) -> int.plus(2),
+        int.is(__.gt(20)) -> int.plus(3),
+        int.is(__.gt(10)) -> int.plus(4)).plus(int(1)))
+
+    assertResult(int(32))(
+      int(0) ==> int.plus(29).choose(
+        int.is(int.gt(40)) -> __.plus(1),
+        int.is(int.gt(30)) -> __.plus(2),
+        int.is(int.gt(20)) -> __.plus(3),
+        int.is(int.gt(10)) -> __.plus(4)))
   }
 }
