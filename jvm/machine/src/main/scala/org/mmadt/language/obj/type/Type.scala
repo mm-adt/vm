@@ -76,7 +76,7 @@ trait Type[+T <: Obj] extends Obj
     }).asInstanceOf[R]
 
   // type specification and compilation
-  final def <=[D <: Obj](domainType:Type[D]):this.type = domainType.compose(this).q(this.q).asInstanceOf[this.type]
+  final def <=[D <: Obj](domainType:Type[D]):this.type = Some(domainType).filter(x => x.insts.isEmpty).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
   override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,Type.resolveAnonymous(this,rangeType))
   def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,Type.resolveAnonymous(this,rangeType))
 

@@ -38,9 +38,8 @@ import scala.collection.mutable
  */
 trait Model {
   def apply[B <: Obj](obj:B):B = (obj match {
-    case atype:Type[Obj] if isSymbol(atype) => this.apply(this.symbol(atype.name).get.named(atype.name))
     case atype:Type[Obj] => this.symbol(atype.name).map(x => atype.asInstanceOf[Type[Obj]].compose(x,NoOp())).getOrElse(this.get(atype).getOrElse(atype))
-    case avalue:Value[Obj] => this.symbol(avalue.name).map(x => AsOp(x).apply(Traverser.standard(avalue,model = this)).obj().asInstanceOf[B]).getOrElse(avalue)
+    case avalue:Value[Obj] => this.symbol(avalue.name).map(x => AsOp[Obj](x).apply(Traverser.standard(avalue,model = this)).obj()).getOrElse(avalue)
   }).asInstanceOf[B]
 
   def put(model:Model):Model

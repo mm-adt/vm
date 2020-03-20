@@ -44,11 +44,11 @@ class SocialModelTest extends FunSuite {
 
 
   val nat   :IntType          = mmsocial.define(int.named("nat") <= int.is(int.gt(0)))
-  val person:RecType[Str,Obj] = mmsocial.define(trec[Str,Obj](str("name") -> str,str("age") -> nat).named("person") <= trec[Str,Obj](str("name") -> str,str("age") -> int).id())
+  val person:RecType[Str,Obj] = mmsocial.define(trec[Str,Obj](str("name") -> str,str("age") -> nat).named("person") <= trec[Str,Obj](str("name") -> str,str("age") -> int))
   println("mm=>social\n" + mmsocial)
 
   socialmm.define(int <= nat.id())
-  socialmm.define(trec(str("name") -> str,str("age") -> int) <= person.id())
+  socialmm.define(trec(str("name") -> str,str("age") -> int) <= person)
   println("social=>mm\n" + socialmm)
 
   test("model atomic types"){
