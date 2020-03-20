@@ -25,7 +25,6 @@ package org.mmadt.processor.obj.`type`
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
 import org.mmadt.language.obj.`type`.{Type, TypeChecker, __}
-import org.mmadt.language.obj.op.model.NoOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{OType, Obj}
 import org.mmadt.processor.{Processor, Traverser}
@@ -40,10 +39,7 @@ class CompilingProcessor(val model:Model = Model.id) extends Processor {
     TypeChecker.typeCheck(domainObj,rangeType.domain())
     if (model == Model.id) Traverser.standard(domainObj).apply(rangeType).obj()
     else {
-      val domainType       :OType[E]     = model.get(domainObj.name)
-        .map(x => domainObj.asInstanceOf[Type[Obj]].compose(x,NoOp()))
-        .getOrElse(domainObj)
-        .asInstanceOf[OType[E]]
+      val domainType       :OType[E]     = model(domainObj).asInstanceOf[OType[E]]
       var mutatingTraverser:Traverser[E] = Traverser.standard(obj = domainType,model = this.model)
       var previousTraverser:Traverser[E] = Traverser.standard(obj = rangeType.asInstanceOf[E],model = this.model)
       while (previousTraverser != mutatingTraverser) {

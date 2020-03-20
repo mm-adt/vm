@@ -53,9 +53,9 @@ class GraphModelTest extends FunSuite {
     val peter :Vertex = vrec(str("id") -> int(6))
     val graph :Graph  = vrec(marko,vadas,lop,josh,ripple,peter)
     //
-    assert(graph.test(model.get("graph").get))
-    graph.toList.foreach(v => assert(v.test(model.get("vertex").get)))
-    graph.toList.foreach(v => assert(!v.test(model.get("edge").get)))
+    assert(graph.test(model.symbol("graph").get))
+    graph.toList.foreach(v => assert(v.test(model.symbol("vertex").get)))
+    graph.toList.foreach(v => assert(!v.test(model.symbol("edge").get)))
   }
 
   test("connected values"){
@@ -70,9 +70,9 @@ class GraphModelTest extends FunSuite {
     val graph:Graph = vrec(marko,vadas,lop,josh,ripple,peter)
     println(marko)
     //
-    assert(graph.test(model.get("graph").get))
-    graph.toList.foreach(v => assert(v.test(model.get("vertex").get)))
-    graph.toList.foreach(v => assert(!v.test(model.get("edge").get)))
+    assert(graph.test(model.symbol("graph").get))
+    graph.toList.foreach(v => assert(v.test(model.symbol("vertex").get)))
+    graph.toList.foreach(v => assert(!v.test(model.symbol("edge").get)))
   }
 
 }

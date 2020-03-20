@@ -130,6 +130,11 @@ object StorageFactory {
     case recval:ORecValue => trec(name = recval.name,value = recval.value,q = obj.q)
   }).asInstanceOf[OType[O]]
 
+  def isSymbol[O <: Obj](obj:O):Boolean = obj match {
+    case _:Value[_] => false
+    case atype:Type[_] => atype.insts.isEmpty && atype.getClass.equals(tobj().getClass) && !atype.name.equals(Tokens.obj)
+  }
+
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {
     /////////TYPES/////////
     override def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType = new TObj(name,q,insts)

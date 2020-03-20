@@ -37,27 +37,20 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
-  def apply[B <: Obj](avalue:B with Value[Obj]):B = this.get(avalue.name).map(x => AsOp(x).apply(Traverser.standard(avalue,model = this)).obj().asInstanceOf[B]).getOrElse(avalue)
+  def apply[B <: Obj](obj:B):B = (obj match {
+    case atype:Type[Obj] if isSymbol(atype) => this.apply(this.symbol(atype.name).get.named(atype.name))
+    case atype:Type[Obj] => this.symbol(atype.name).map(x => atype.asInstanceOf[Type[Obj]].compose(x,NoOp())).getOrElse(this.get(atype).getOrElse(atype))
+    case avalue:Value[Obj] => this.symbol(avalue.name).map(x => AsOp(x).apply(Traverser.standard(avalue,model = this)).obj().asInstanceOf[B]).getOrElse(avalue)
+  }).asInstanceOf[B]
+
   def put(model:Model):Model
   def put(left:Type[Obj],right:Type[Obj]):Model
   def get(left:Type[Obj]):Option[Type[Obj]]
-  def get(left:String):Option[Type[Obj]]
-  def resolve[E <: Obj](obj:E):E ={
-    if (obj.name.equals(Tokens.model)) return recType.asInstanceOf[E]
-    obj match {
-      case atype:Type[Obj] => this.get(atype.name) match {
-        case Some(btype) => atype.compose(btype,NoOp()).asInstanceOf[E]
-        case None => obj
-      }
-      case _ => obj
-    }
-  }
-
-  def define[O <: Obj](name:String)(definition:O with Type[Obj]):O ={
-    this.put(tobj(name),definition)
+  def symbol(left:String):Option[Type[Obj]]
+  def define[O <: Obj](definition:O with Type[Obj]):O ={
+    this.put(tobj(definition.domain().name),definition)
     definition.range
   }
-
   def recType:RecType[Type[Obj],Type[Obj]]
 }
 
@@ -69,8 +62,7 @@ object Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this
     override def put(model:Model):Model = this
     override def get(left:Type[Obj]):Option[Type[Obj]] = None
-    override def get(left:String):Option[Type[Obj]] = None
-    override def resolve[E <: Obj](obj:E):E = obj
+    override def symbol(left:String):Option[Type[Obj]] = None
     override def recType:RecType[Type[Obj],Type[Obj]] = rec
   }
 
@@ -88,7 +80,7 @@ object Model {
       this
     }
     override def get(left:Type[Obj]):Option[Type[Obj]] ={
-      if (left.name.equals(Tokens.model)) return Option(recType)
+      if (left.name.equals(Tokens.model)) return Some(recType)
       val x:mutable.Map[Type[Obj],Type[Obj]] = typeMap.get(left.name) match {
         case None => return None
         case Some(m) => m
@@ -96,11 +88,11 @@ object Model {
       x.get(left) match {
         case Some(m) => Some(m)
         case None => x.iterator.find(a => left.test(a._1)).map(a => {
-          val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap
+          val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap // TODO: may need to give model to traverser
           a._2.insts.map(x =>
             OpInstResolver.resolve[Obj,Obj](
               x._2.op(),
-              x._2.args().map(i => Traverser.resolveArg[Obj,Obj](Traverser.standard(x._1,state),i))))
+              x._2.args().map(i => Traverser.resolveArg[Obj,Obj](Traverser.standard(x._1,state),i)))) // TODO: may need to give model to traverser
             .foldRight(a._2.domain())((x,z) => z.compose(x))
         })
       }
@@ -119,11 +111,11 @@ object Model {
         })
         .map(x => (x._1,x._2.asInstanceOf[Type[Obj]]))
     }
-    override def get(left:String):Option[Type[Obj]] ={
-      if (left.equals(Tokens.model)) return Option(recType)
+    override def symbol(left:String):Option[Type[Obj]] ={
+      if (left.equals(Tokens.model)) return Some(recType)
       typeMap.get(left) match {
         case None => None
-        case Some(m) => m.iterator.find(a => left.equals(a._1.toString)).map(_._2)
+        case Some(m) => m.iterator.find(a => isSymbol(a._1) && left.equals(a._1.name)).map(_._2)
       }
     }
     override def recType:RecType[Type[Obj],Type[Obj]] ={

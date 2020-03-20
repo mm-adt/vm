@@ -70,7 +70,7 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   lazy val strType  :Parser[StrType]      = Tokens.str ^^ (_ => str)
   lazy val recType  :Parser[ORecType]     = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(value = x.getOrElse(Map.empty)))
   lazy val recStruct:Parser[Map[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj,(COMMA | PIPE)) <~ RBRACKET) ^^ (x => x.map(o => (o._1,o._2)).toMap)
-  lazy val namedType:Parser[Type[Obj]]    = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":") ^^ (x => this.model.get(x) match {
+  lazy val namedType:Parser[Type[Obj]]    = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":") ^^ (x => this.model.symbol(x) match {
     case Some(atype) => atype
     case None => tobj(x)
   })

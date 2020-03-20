@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst,Obj,Rec,multQ}
+import org.mmadt.language.obj.{Inst, Obj, Rec, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -42,10 +42,7 @@ object GetOp {
   def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst[Rec[A,B],B] = new GetInst(key,typeHint)
 
   class GetInst[A <: Obj,B <: Obj](key:A,typeHint:B = obj.asInstanceOf[B]) extends VInst[Rec[A,B],B]((Tokens.get,List(key))) {
-    override def apply(trav:Traverser[Rec[A,B]]):Traverser[B] = trav.split((typeHint.name match {
-      case Tokens.obj => trav.model.resolve(trav.obj()).get(key)
-      case _ => trav.model.resolve(trav.obj()).get(key,typeHint)
-    }).q(multQ(trav.obj().q,this.q)))
+    override def apply(trav:Traverser[Rec[A,B]]):Traverser[B] = trav.split(trav.obj().get(key).q(multQ(trav.obj().q,this.q)))
   }
 
 }

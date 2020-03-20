@@ -81,23 +81,15 @@ object AsOp {
     private def makeMap(model:Model,leftMap:Map[Value[Obj],Value[Obj]],rightMap:Map[Obj,Obj]):Map[Value[Obj],Value[Obj]] ={
       if (leftMap.equals(rightMap)) return leftMap
       val typeMap :mutable.Map[Obj,Obj]               = mutable.Map() ++ rightMap
-        .map(x => (x._1 match {
-          case atype:Type[Obj] if atype.insts.isEmpty => model.get(atype.name).getOrElse(atype)
-          case other:Obj => other
-        },x._2 match {
-          case atype:Type[Obj] if atype.insts.isEmpty => model.get(atype.name).getOrElse(atype)
-          case other:Obj => other
-        }))
       var valueMap:mutable.Map[Value[Obj],Value[Obj]] = mutable.Map()
       leftMap.map(a => typeMap.find(k =>
-        a._1.test(Type.resolve(a._1,k._1)) &&
-        a._2.test(Type.resolve(a._2,k._2))).map(z => {
+        model(a._1).test(Type.resolve(a._1,k._1)) &&
+        model(a._2).test(Type.resolve(a._2,k._2))).map(z => {
         valueMap = valueMap + (a._1 -> a._2.as(z._2).asInstanceOf[Value[Obj]])
         typeMap.remove(z._1)
-      })).toList
+      }))
       assert(typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.value != 0))
-      //println(valueMap.iterator.toMap)
-      valueMap.iterator.toMap
+      valueMap.toMap
     }
   }
 

@@ -82,7 +82,7 @@ object Traverser {
   class StandardTraverser[S <: Obj](val obj:S,val state:State = Map.empty,val model:Model = Model.id) extends Traverser[S] {
     def this(obj:S) = this(obj,Map.empty)
     override def split[E <: Obj](obj:E,state:State = this.state):Traverser[E] =
-      new StandardTraverser[E](model.resolve(obj),state,this.model)
+      new StandardTraverser[E](model[E](obj),state,this.model)
     override def apply[E <: Obj](rangeType:Type[E]):Traverser[E] ={
       (Type.nextInst(rangeType) match {
         case None => return this.asInstanceOf[Traverser[E]]

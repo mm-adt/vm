@@ -146,14 +146,14 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     val socialToMM:Model            = Model.simple()
     val mmToSocial:Model            = Model.simple()
     //
-    val nat       :IntType          = mmToSocial.define("int")(int.named("nat") <= int.is(int.gt(0)))
-    val person    :RecType[Str,Obj] = mmToSocial.define("rec")(trec(name = "person",Map[Str,Obj](str("name") -> str,str("age") -> nat)) <= trec(str("name") -> str,str("age") -> int))
-    socialToMM.define("nat")(int <= nat.id())
-    socialToMM.define("person")(trec(str("name") -> str,str("age") -> int) <= person)
+    val nat       :IntType          = mmToSocial.define(int.named("nat") <= int.is(int.gt(0)))
+    val person    :RecType[Str,Obj] = mmToSocial.define(trec(name = "person",Map[Str,Obj](str("name") -> str,str("age") -> nat)) <= trec(str("name") -> str,str("age") -> int).id())
+    socialToMM.define(int <= nat.id())
+    socialToMM.define(trec(str("name") -> str,str("age") -> int) <= person.id())
     println(mmToSocial + "\n" + socialToMM)
     //
-    assertResult("nat")(mmToSocial(32).name)
-    assertResult(32)(mmToSocial(32).value)
+    assertResult("nat")(mmToSocial(int(32)).name)
+    assertResult(32)(mmToSocial(int(32)).value)
     assertResult("int")(socialToMM(int(32).named("nat")).name)
     assertResult(32)(socialToMM(int(32).named("nat")).value)
     //

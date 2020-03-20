@@ -43,40 +43,41 @@ class SocialModelTest extends FunSuite {
   val smIterator:Processor = Processor.iterator(socialmm)
 
 
-  val nat   :IntType          = mmsocial.define("int")(int.named("nat") <= int.is(int.gt(0)))
-  val person:RecType[Str,Obj] = mmsocial.define("rec")(trec[Str,Obj](str("name") -> str,str("age") -> nat).named("person") <= trec[Str,Obj](str("name") -> str,str("age") -> int).id())
+  val nat   :IntType          = mmsocial.define(int.named("nat") <= int.is(int.gt(0)))
+  val person:RecType[Str,Obj] = mmsocial.define(trec[Str,Obj](str("name") -> str,str("age") -> nat).named("person") <= trec[Str,Obj](str("name") -> str,str("age") -> int).id())
   println("mm=>social\n" + mmsocial)
 
-  socialmm.define("nat")(int <= nat.id())
-  socialmm.define("person")(trec(str("name") -> str,str("age") -> int) <= person.id())
+  socialmm.define(int <= nat.id())
+  socialmm.define(trec(str("name") -> str,str("age") -> int) <= person.id())
   println("social=>mm\n" + socialmm)
 
   test("model atomic types"){
     assertResult("nat")(nat.name)
     assertResult(mmsocial(int(34)))(mmsocial(int(34)))
     assertResult("nat")(mmsocial(int(34)).name)
-    assertResult("int")(socialmm(34).name)
-    assertResult(34)(socialmm(34).value)
-    assertThrows[AssertionError]{mmsocial(-34)}
+    assertResult("int")(socialmm(int(34)).name)
+    assertResult("int")(socialmm(mmsocial(int(34))).name)
+    assertResult(34)(socialmm(int(34)).value)
+    assertThrows[AssertionError]{mmsocial(int(-34))}
     assertResult("nat[plus,nat]")(nat.plus(nat).toString)
   }
 
-  /*test("model composite types"){
+  test("model composite types"){
     // map nat to nat
-    val marko:RecValue[StrValue,Value[Obj]] = mmsocial(rec)(Map(str("name") -> str("marko"),str("age") -> int(29)))
+    val marko:RecValue[StrValue,Value[Obj]] = mmsocial(vrec(str("name") -> str("marko"),str("age") -> int(29)))
     assertResult("person")(marko.name)
     assertResult("nat")(marko.get(str("age")).name)
     assertResult(29L)(marko.get(str("age")).value)
-    assertResult("int")(socialmm(nat)(marko.get(str("age"))).name)
-    assertResult(29L)(socialmm(nat)(marko.get(str("age"))).value)
+    assertResult("int")(socialmm(marko.get(str("age"))).name)
+    assertResult(29L)(socialmm(marko.get(str("age"))).value)
     // map int to nat
-    val ryan:RecValue[StrValue,Value[Obj]] = mmsocial(rec)(Map(str("name") -> str("ryan"),str("age") -> int(20)))
+    val ryan:RecValue[StrValue,Value[Obj]] = mmsocial(vrec(str("name") -> str("ryan"),str("age") -> int(20)))
     assertResult("person")(ryan.name)
     assertResult("nat")(ryan.get(str("age")).name)
     assertResult(20L)(ryan.get(str("age")).value)
-    assertResult("int")(socialmm(nat)(ryan.get(str("age"))).name)
-    assertResult(20L)(socialmm(nat)(ryan.get(str("age"))).value)
-  }*/
+    assertResult("int")(socialmm(ryan.get(str("age"))).name)
+    assertResult(20L)(socialmm(ryan.get(str("age"))).value)
+  }
 
   test("model compilation and evaluation"){
     val toSocial = msCompiler(person.get(str("age"),nat).plus(nat))
