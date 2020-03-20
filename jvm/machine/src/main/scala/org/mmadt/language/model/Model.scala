@@ -37,11 +37,7 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
-  def apply[A <: Obj,B <: Obj](ctype:Type[A])(avalue:B with Value[Obj]):B ={
-    if (this.get(ctype.name).isDefined)
-      AsOp(this.get(ctype.name).get).apply(Traverser.standard(avalue,model = this)).obj().asInstanceOf[B]
-    else avalue
-  }
+  def apply[B <: Obj](avalue:B with Value[Obj]):B = this.get(avalue.name).map(x => AsOp(x).apply(Traverser.standard(avalue,model = this)).obj().asInstanceOf[B]).getOrElse(avalue)
   def put(model:Model):Model
   def put(left:Type[Obj],right:Type[Obj]):Model
   def get(left:Type[Obj]):Option[Type[Obj]]

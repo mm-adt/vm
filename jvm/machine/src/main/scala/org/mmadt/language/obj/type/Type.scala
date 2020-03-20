@@ -23,15 +23,15 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.op.map.{AOp,IdOp,MapOp,QOp}
-import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
-import org.mmadt.language.obj.op.sideeffect.{AddOp,ErrorOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp}
-import org.mmadt.language.obj.value.{StrValue,Value}
-import org.mmadt.language.obj.{eqQ,_}
-import org.mmadt.language.{LanguageFactory,Tokens}
-import org.mmadt.processor.{Processor,Traverser}
+import org.mmadt.language.obj.op.map.{AOp, IdOp, MapOp, QOp}
+import org.mmadt.language.obj.op.model.{AsOp, NoOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
+import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.{eqQ, _}
+import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -83,7 +83,7 @@ trait Type[+T <: Obj] extends Obj
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[R <: Type[Obj]](btype:R):R = btype match {
     case anon:__ => anon(this)
-    case atype:Type[Obj] => atype.insts.seq.foldLeft[Traverser[Obj]](Traverser.standard(this))((b,a) => a._2(b)).obj().asInstanceOf[R].named(btype.name)
+    case atype:Type[Obj] => atype.insts.seq.foldLeft[Traverser[Obj]](Traverser.standard(this))((b,a) => a._2(b)).obj().asInstanceOf[R].compose(btype.range,NoOp())
   }
   def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={

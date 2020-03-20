@@ -23,9 +23,8 @@
 package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.map.{IdOp, PlusOp}
+import org.mmadt.language.obj.`type`.{IntType, RecType, Type, __}
+import org.mmadt.language.obj.{Int, Obj, Str}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -35,7 +34,7 @@ import org.scalatest.{FunSuite, Matchers}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks with Matchers {
-  final var processor:Processor = new CompilingProcessor()
+  final var processor:Processor = Processor.compiler()
 
   test("compiler w/ linear singleton type"){
     var result:List[Int] = processor.apply(int,int.mult(int(2))).toList
@@ -65,7 +64,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler w/ linear quantified type and model"){
-    processor = new CompilingProcessor(
+    processor = Processor.compiler(
       Model.simple().
         put(int.mult(2),int.plus(int)).
         put(int.plus(0),int).
@@ -94,7 +93,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     }
   }
   test("compiler w/ model"){
-    processor = new CompilingProcessor(
+    processor = Processor.compiler(
       Model.simple().
         put(int.plus(int),int.mult(int(2))).
         put(int.mult(int(2)).mult(int(2)),int.mult(int(4))). // TODO: mult(x).mult(x) -> mult(x.mult(2))   (variables in patterns)
@@ -105,14 +104,14 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler w/ [choose]"){
-    processor = new CompilingProcessor()
+    processor = Processor.compiler()
     var result:List[Int] = processor.apply(int,int.mult(1).choose(int.is(int.gt(5)) -> int.plus(2),int -> int.plus(1)).is(int.gt(3))).toList
     assertResult(1)(result.length)
     assertResult("int{?}<=int[mult,1][choose,[int{?}<=int[is,bool<=int[gt,5]]:int[plus,2]|int:int[plus,1]]][is,bool<=int[gt,3]]")(result.head.toString)
   }
 
   test("compiler w/ multi-types"){
-    val processor:Processor = new CompilingProcessor(
+    val processor:Processor = Processor.compiler(
       Model.simple().
         put(int.plus(int(0)),int).
         put(int.gt(int(0)),int.eqs(int(0))))
@@ -125,7 +124,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler w/ nested instructions"){
-    processor = new CompilingProcessor(
+    processor = Processor.compiler(
       Model.simple().
         put(int.mult(int(2)),int.plus(int)).
         put(int.plus(int(0)),int).
@@ -141,5 +140,43 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     assertThrows[AssertionError]{
       processor(__.id().plus(10))
     }
+  }
+
+  test("compiler with domain rewrites"){
+    val socialToMM:Model            = Model.simple()
+    val mmToSocial:Model            = Model.simple()
+    //
+    val nat       :IntType          = mmToSocial.define("int")(int.named("nat") <= int.is(int.gt(0)))
+    val person    :RecType[Str,Obj] = mmToSocial.define("rec")(trec(name = "person",Map[Str,Obj](str("name") -> str,str("age") -> nat)) <= trec(str("name") -> str,str("age") -> int))
+    socialToMM.define("nat")(int <= nat.id())
+    socialToMM.define("person")(trec(str("name") -> str,str("age") -> int) <= person)
+    println(mmToSocial + "\n" + socialToMM)
+    //
+    assertResult("nat")(mmToSocial(32).name)
+    assertResult(32)(mmToSocial(32).value)
+    assertResult("int")(socialToMM(int(32).named("nat")).name)
+    assertResult(32)(socialToMM(int(32).named("nat")).value)
+    //
+    val compile1 = Processor.compiler(mmToSocial).apply(trec(str("name") -> str,str("age") -> int))
+    assertResult("person")(compile1.domain().name)
+    assertResult("nat")(compile1.domain().asInstanceOf[RecType[Str,Obj]].get(str("age")).name)
+    assertResult("person")(compile1.range.name)
+    assertResult("nat")(compile1.range.asInstanceOf[RecType[Str,Obj]].get(str("age")).name)
+
+    val compile2 = Processor.compiler(mmToSocial).apply(trec(str("name") -> str,str("age") -> int).id().get("age",int))
+    assertResult("person")(compile2.domain().name)
+    assertResult("nat")(compile2.domain().asInstanceOf[RecType[Str,Obj]].get(str("age")).name)
+    assertResult("nat")(compile2.range.name)
+
+    val compile3 = Processor.compiler(socialToMM).apply(compile1)
+    assertResult("rec")(compile3.domain().name)
+    assertResult("int")(compile3.domain().asInstanceOf[RecType[Str,Obj]].get(str("age")).name)
+    assertResult("rec")(compile3.range.name)
+    assertResult("int")(compile3.range.asInstanceOf[RecType[Str,Obj]].get(str("age")).name)
+
+    val compile4 = Processor.compiler(socialToMM).apply(compile2)
+    assertResult("rec")(compile4.domain().name)
+    assertResult("int")(compile4.domain().asInstanceOf[RecType[Str,Obj]].get(str("age")).name)
+    assertResult("int")(compile4.range.name)
   }
 }
