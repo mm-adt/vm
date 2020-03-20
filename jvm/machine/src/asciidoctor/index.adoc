@@ -15,8 +15,9 @@ image::images/mm-adt-logo.png[mm-ADT Logo,float="left",width=150]
 http://mm-adt.org[mm-ADT] is a dual licensed https://www.gnu.org/licenses/agpl-3.0.txt[AGPL3]/commercial open source
 project intended to provide computer scientists, mathematicians, engineers, and others involved in the process of
 creating software a royalty-based OSS model. By virtue of the integrative-nature of the Turing Complete mm-ADT virtual
-machine (VM), a large number of modern data technologies can be integrated. Each integration point offers a development team access
-to a revenue stream from commercial organizations leveraging the technology.
+machine (VM), data processing technologies can be composed to create novel _synthetic data systems_ tailored to the
+space/time constraints of the problem at hand. Furthermore, each integration point offers a development team access
+to a revenue stream from the commercial organizations leveraging the technologies in the mm-ADT ecosystem.
 
 == The mm-ADT Console
 
@@ -82,6 +83,7 @@ int<=int{2}<x>[plus,10]<y>[is.<10 -> <x>
 ```
 
 .mmlang Language Structures
+[cols="75,1,200"]
 |===
 |Classification          |`mmlang` |Description
 
@@ -106,30 +108,25 @@ The fundamental base types of mm-ADT are:
 
 The referent denoting that union of all these types is `obj`. Thus, `true` (`bool`), `42` (`int`), and `['a':1]` (`rec`) are in `obj`.
 
-A type is built from a _canonical type_ (called the _domain_) by composing instructions drawn from the set `inst`, where `inst`
-is the carrier set of the *_instruction ring_* (an https://en.wikipedia.org/wiki/Ring_%28mathematics%29:[algebraic ring with unity]). Serial composition is multiplication (`\*`)
-and parallel composition is addition (`+`) such that, if `<A,+,*>` is the ring with `A` the carrier set, with a `0` element
-(additive identity), a `1` element (multiplicative identity), and `a,b,c,...,0,1` in the examples below in `A`,
-then the following ring axioms much hold.
+A type is built from a _canonical type_ (called the _domain_) by composing instructions drawn from the set `inst`. `inst`
+is the carrier set of the mm-ADT *_instruction ring_* (an https://en.wikipedia.org/wiki/Ring_%28mathematics%29:[algebraic ring with unity]).
+Serial composition is multiplication (`\*`) and parallel composition is addition (`+`). If `<A,+,*>` is a ring with `A` the carrier set, `0` the
+additive identity, `1` the multiplicative identity, and `a,b,c,...,0,1` in `A`,
+then the ring must obey the itemized axioms and benefit from the deductions that yield the common implications and equalities.
 
-. `(a + b) + c = a + (b + c)`
-. `0 + a = a + 0 = a`
-. `a - a = a + (-a) = 0`
-. `a + b = b + a`
-. `(a * b) * c = a * (b * c)`
-. `1 * a = a * 1 = a`
-. `(a + b) * c = (a * c) + (b * c)`
-. `a * (b + c) = (a * b) + (a * c)`
+.The Ring Axioms and Useful Deductions
+|===
+|Ring Axioms                        |Popular Entailments
 
-From these axioms, the following common implications are equalities can be deduced.
-
-. `a + b = a + c => b = c`
-. `a + b = 0 => a = -b & b = -a`
-. `-(a+b) = (-a) + (-b)`
-. `-(-a) = a`
-. `a*0 = 0 = 0*a`
-. `a * (-b) = -a * b = -(a * b)`
-. `(-a) * (-b) = a * b`
+|`(a + b) + c = a + (b + c)`        |`a + b = a + c => b = c`
+|`0 + a = a + 0 = a`                |`a + b = 0 => a = -b & b = -a`
+|`a - a = a + (-a) = 0`             |`-(a+b) = (-a) + (-b)`
+|`a + b = b + a`                    |`-(-a) = a`
+|`(a * b) * c = a * (b * c)`        |`a*0 = 0 = 0*a`
+|`1 * a = a * 1 = a`                |`a * (-b) = -a * b = -(a * b)`
+|`(a + b) * c = (a * c) + (b * c)`  |`(-a) * (-b) = a * b`
+|`a * (b + c) = (a * b) + (a * c)`  |
+|===
 
 In mm-ADT, the carrier set is the set of all instructions `inst` where:
 
@@ -143,8 +140,9 @@ int<=int[plus,10] * bool<=int[gt,5]   ==   bool<=int[plus,10][gt,5]
 int<=int[plus,10] + bool<=int[gt,5]   ==    obj<=int[branch,[plus,10],[gt,5]]
 ```
 
-All serial and parallel composition are associative (except for those that use instructions from the `inst` sub-ring: _the reduce near-ring_).
-Finally, the distributivity of multiplications over addition is made apparent via:
+All serial and parallel compositions are https://en.wikipedia.org/wiki/Associative_property[associative] except for those that
+use instructions from the `inst` sub-ring: _the reduce near-ring_ (discussed later). Finally, the
+https://en.wikipedia.org/wiki/Distributive_property[distributivity] of multiplications over addition is made apparent via:
 
 ```Delphi
 [plus,10] * ([gt,5] + [lt,2])     ==   [plus,10][gt,5] + [plus,10][lt,2]
@@ -153,39 +151,40 @@ Finally, the distributivity of multiplications over addition is made apparent vi
 
 The above expressions have a diagrammatic representation where the lines are streams of `objs` that are being operated
 on by the `insts` they meet along the way. Whenever the diagram branches, the `obj` at the branch is cloned, taking
-both branches (always).
+*both* branches.
 
-[ditaa,"inst-left-distributivity"]
+[ditaa,"inst-left-distributivity",align="center"]
 ....
 
              /--[gt,5]--\                /-[plus,10]--[gt,5]-\
---[plus,10]--+          +-->   ====>   --+                   +-->
+--[plus,10]--+          +-->   <--->   --+                   +-->
              \--[lt,2]--/                \-[plus,10]--[lt,2]-/
 ....
 
-[ditaa,"inst-right-distributivity"]
+[ditaa,"inst-right-distributivity",align="center"]
 ....
   /--[plus,10]--\                        /-[plus,10]--[gt,7]-\
---+             +--[gt,7]-->   ====>   --+                   +-->
+--+             +--[gt,7]-->   <--->   --+                   +-->
   \--[mult,5]---/                        \-[mult,5]---[gt,7]-/
 ....
 
 
 ==== Type Quantification and the Quantifier Ring
 
-A _type_ denotes a set of `objs`. For example, `int` refers to a the set of integers. A set is a non-repeating collection of `objs.`
+Typically, a type denotes a set of elements. A set is a non-repeating collection of said elements.
 A _stream_ generalizes a set. A stream is an unordered collection of `objs` of varying cardinality (a multi-set, or bag).
-In mm-ADT, `int` is shorthand for `int{1}`--a single integer. In practice, when `int` is used to define a value, it is referring
-to a single integer from the set of all integers--e.g., `val answer:int = 42`. `bool{42}` refers to `42` boolean values. All
+In mm-ADT, `int` is shorthand for `int{1}`--a single integer. This is analogous to other languages, where when `int` is used
+to define a value, it is referring to a single integer from the set of all integers--e.g., `val answer:int = 42`.
+Where mm-ADT differs from other languages is that `bool{42}` is a type denoting `42` boolean values. All
 `mmlang` expressions within `{ }` operate on the mm-ADT VM's *_quantifier ring_* (w/ unity). Any `obj` that supports
-`+`/`*`/`0`/`1` and various rules governing their composition is supported by mm-ADT. In mm-ADT, types can be specified to
+`+`/`*`/`0`/`1` and the axioms governing their composition is supported by mm-ADT. In mm-ADT, types can be specified to
 an as accurate or fuzzy degree as computationally and conceptually possible.
 
 Typically, the quantifier of choice for most applications is the `int` ring (or `int` range ring -- `{2,13}`). Common programming concepts
-that are usually captured by classes or functors (lifting) are expressed in mm-ADT via quantification.
+that are usually captured by typeclasses or functors (via lifting) are expressed in mm-ADT via quantification.
 
 ```Delphi
-int                          // a single int (some)
+int                          // a single int (just/some)
 int{?}<=int[is,[gt,0]]       // 0 or 1 int   (maybe/option)
 int{0}<=int[is,false]        // 0 ints       (none)
 int{4}<=int{2}[[id]+[id]]    // 4 ints
@@ -194,10 +193,9 @@ int{*}<=[=db][get,'costs']   // 0 or more ints
 
 NOTE: `{?}` is shorthand for `{0,1}`, `{+}` for `{1,+infty}`, `{*}` for `{0,+infty}`, and ` ` (nothing) for `{1}`.
 
-The type system of mm-ADT is characterized by a particular formulation of the direct product of rings over
-the _quantifier_ and _instruction_ rings. The direct product of these two rings is  a ring itself. Thus, mm-ADT's
-types are completely understood using ring theory (a sub-ring of the mm-ADT type system
-is a _near-ring_ and special considerations are required when composing instructions from that set).
+The type system of mm-ADT is characterized by a particular formulation of the https://en.wikipedia.org/wiki/Product_ring[direct product of rings]
+over the _quantifier_ and _instruction_ rings. The direct product of these two rings is a ring itself. Thus, mm-ADT's
+types are founded on ring theory.
 
 ```Delphi
 mmlang> int
@@ -248,10 +246,23 @@ mmlang> .a
 
 === Model Categories and their Functors
 
-A _model_ is a set of related types (a type of types).
-Mathematically, a every mm-ADT model forms a category where the category _objects_ are the canonical types and the _morphisms_ are types that span the canonical types.
-All mm-ADT types respective associative composition and every type's identity morphism is the `[id]` instruction as in
-`int<=int[id]`.
+A _model_ is a set of related types (a type of types). Every mm-ADT model forms a category where the category's _objects_
+are the canonical types and the _morphisms_ are types that span the canonicals. All mm-ADT types respect associative composition
+and every type's identity morphism is the `[id]` instruction as in `int<=int[id]`.
+
+[ditaa,"type-commutativity",align="center"]
+....
+         int---[gt,0]---->bool
+
+          |                ^
+          |                |
+[plus,int[is,[gte,0]]      |[id]
+          |                |
+          v                v
+
+         int---[gt,0]--->bool
+....
+
 
 === Storage Structures
 
