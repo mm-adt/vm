@@ -24,9 +24,9 @@ package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{RecType,Type}
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.model.{AsOp,NoOp}
+import org.mmadt.language.obj.op.model.{AsOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -37,6 +37,7 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Model {
+
   def apply[B <: Obj](obj:B):B = (obj match {
     case atype:Type[Obj] => this.symbol(atype.name).map(x => atype.asInstanceOf[Type[Obj]].compose(x,NoOp())).getOrElse(this.get(atype).getOrElse(atype))
     case avalue:Value[Obj] => this.symbol(avalue.name).map(x => AsOp[Obj](x).apply(Traverser.standard(avalue,model = this)).obj()).getOrElse(avalue)
@@ -50,19 +51,22 @@ trait Model {
     this.put(tobj(definition.domain().name),definition)
     definition.range
   }
-  def recType:RecType[Type[Obj],Type[Obj]]
+  def toRec:RecType[Type[Obj],Type[Obj]]
 }
 
 object Model {
-  def from(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
-  def from(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value().iterator.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
+  def from(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(maybeSymbol(a._1),a._2))
+  def from(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value().iterator.foldRight(this.simple())((a,b) => b.put(maybeSymbol(a._1),a._2))
 
+  private def maybeSymbol(atype:Type[Obj]):Type[Obj] ={
+    if (isSymbol(atype)) atype else if (atype.insts.isEmpty) tobj(atype.name) else atype
+  }
   val id:Model = new Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this
     override def put(model:Model):Model = this
     override def get(left:Type[Obj]):Option[Type[Obj]] = None
     override def symbol(left:String):Option[Type[Obj]] = None
-    override def recType:RecType[Type[Obj],Type[Obj]] = rec
+    override def toRec:RecType[Type[Obj],Type[Obj]] = rec
   }
 
   def simple():Model = new Model {
@@ -79,24 +83,22 @@ object Model {
       this
     }
     override def get(left:Type[Obj]):Option[Type[Obj]] ={
-      if (left.name.equals(Tokens.model)) return Some(recType)
-      val x:mutable.Map[Type[Obj],Type[Obj]] = typeMap.get(left.name) match {
-        case None => return None
-        case Some(m) => m
-      }
-      x.get(left) match {
-        case Some(m) => Some(m)
-        case None => x.iterator.find(a => left.test(a._1)).map(a => {
-          val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap // TODO: may need to give model to traverser
-          a._2.insts.map(x =>
-            OpInstResolver.resolve[Obj,Obj](
-              x._2.op(),
-              x._2.args().map(i => Traverser.resolveArg[Obj,Obj](Traverser.standard(x._1,state),i)))) // TODO: may need to give model to traverser
-            .foldRight(a._2.domain())((x,z) => z.compose(x))
-        })
+      if (left.name.equals(Tokens.model)) return Some(toRec)
+      this.typeMap.get(left.name) match {
+        case None => None
+        case Some(m) => m.get(left) match {
+          case Some(n) => Some(n)
+          case None => m.iterator.find(a => left.test(a._1)).map(a => {
+            val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap // TODO: may need to give model to traverser
+            a._2.insts.map(x =>
+              OpInstResolver.resolve[Obj,Obj](
+                x._2.op(),
+                x._2.args().map(i => Traverser.resolveArg[Obj,Obj](Traverser.standard(x._1,state),i)))) // TODO: may need to give model to traverser
+              .foldRight(a._2.domain[Obj]())((x,z) => z.compose(x))
+          })
+        }
       }
     }
-
     // generate traverser state
     private def bindLeftValuesToRightVariables(left:Type[Obj],right:Type[Obj]):List[(Obj,Type[Obj])] ={
       left.insts.map(_._2).zip(right.insts.map(_._2))
@@ -110,15 +112,16 @@ object Model {
         })
         .map(x => (x._1,x._2.asInstanceOf[Type[Obj]]))
     }
+    override def toRec:RecType[Type[Obj],Type[Obj]] ={
+      trec[Type[Obj],Type[Obj]](value = this.typeMap.values.foldRight(mutable.Map[Type[Obj],Type[Obj]]())((a,b) => b ++ a).toMap)
+    }
     override def symbol(left:String):Option[Type[Obj]] ={
-      if (left.equals(Tokens.model)) return Some(recType)
+      if (left.equals(Tokens.model)) return Some(toRec)
       typeMap.get(left) match {
         case None => None
         case Some(m) => m.iterator.find(a => isSymbol(a._1) && left.equals(a._1.name)).map(_._2)
       }
     }
-    override def recType:RecType[Type[Obj],Type[Obj]] ={
-      trec[Type[Obj],Type[Obj]](value = this.typeMap.values.foldRight(mutable.Map[Type[Obj],Type[Obj]]())((a,b) => b ++ a).toMap)
-    }
   }
+
 }

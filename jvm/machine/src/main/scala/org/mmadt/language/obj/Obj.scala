@@ -25,7 +25,7 @@ package org.mmadt.language.obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.AsOp
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
@@ -45,6 +45,7 @@ trait Obj
     with IdOp
     with FoldOp
     with MapOp
+    with ModelOp
     with FromOp
     with QOp
     with ErrorOp

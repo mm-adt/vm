@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.AsOp
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
@@ -53,6 +53,7 @@ object OpInstResolver {
 
   def resolve[S <: Obj,E <: Obj](op:String,args:List[Obj]):Inst[S,E] ={
     (op match {
+      case Tokens.noop => NoOp()
       case Tokens.add => AddOp(args.head)
       case Tokens.a | Tokens.a_op => AOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.as => AsOp(args.head)
@@ -71,6 +72,7 @@ object OpInstResolver {
         case List(key:Obj) => GetOp(key)
       }
       case Tokens.map => MapOp(args.head)
+      case Tokens.model => ModelOp(args.head.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
       case Tokens.neg => NegOp()
       case Tokens.count => CountOp()
       case Tokens.explain => ExplainOp()

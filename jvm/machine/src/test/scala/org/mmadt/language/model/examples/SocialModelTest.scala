@@ -62,6 +62,23 @@ class SocialModelTest extends FunSuite {
     assertResult("nat[plus,nat]")(nat.plus(nat).toString)
   }
 
+  test("model mapping and inverse mapping"){
+    val result = (1 to 100).foldRight(int(40))((_,b) => {
+      val result = socialmm(mmsocial(b))
+      assertResult("int")(result.name)
+      assertResult(40)(result.value)
+      assertResult(qOne)(result.q)
+      result
+    })
+    assertResult("int")(result.name)
+    assertResult(40)(result.value)
+    assertResult(qOne)(result.q)
+    //
+    assertResult("nat")(mmsocial(result).name)
+    assertResult(40)(mmsocial(result).value)
+    assertResult(qOne)(mmsocial(result).q)
+  }
+
   test("model composite types"){
     // map nat to nat
     val marko:RecValue[StrValue,Value[Obj]] = mmsocial(vrec(str("name") -> str("marko"),str("age") -> int(29)))

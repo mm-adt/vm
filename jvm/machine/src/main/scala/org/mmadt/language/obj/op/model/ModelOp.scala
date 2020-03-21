@@ -23,6 +23,9 @@
 package org.mmadt.language.obj.op.model
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.model.Model
+import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.op.model.ModelOp.ModelT
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
@@ -30,15 +33,21 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait NoOp {
+trait ModelOp {
   this:Obj =>
+
+  def model[E <: Obj](model:ModelT):E = this match {
+    case atype:Type[_] => atype.compose(this,ModelOp(model)).asInstanceOf[E]
+    case other:E => Model.from(model).apply(other)
+  }
 }
 
-object NoOp {
-  def apply[O <: Obj]():Inst[O,O] = new NoInst
+object ModelOp {
+  private type ModelT = RecType[Type[Obj],Type[Obj]]
+  def apply[S <: Obj,E <: Obj](model:ModelT):Inst[S,E] = new ModelInst[S,E](model)
 
-  class NoInst[O <: Obj] extends VInst[O,O]((Tokens.noop,Nil)) {
-    override def apply(trav:Traverser[O]):Traverser[O] = trav
+  class ModelInst[S <: Obj,E <: Obj](model:ModelT) extends VInst[S,E]((Tokens.model,List(model))) {
+    override def apply(trav:Traverser[S]):Traverser[E] = trav.split(trav.obj().model(arg0()).asInstanceOf[E])
   }
 
 }

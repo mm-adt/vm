@@ -24,10 +24,10 @@ package org.mmadt.processor.obj.value
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
+import org.mmadt.language.obj.`type`.{Type,TypeChecker}
+import org.mmadt.language.obj.op.{FilterInstruction,ReduceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.processor.{Processor,Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -65,7 +65,7 @@ class IteratorProcessor(model:Model = Model.id) extends Processor {
       }
     }
     Processor.strmOrSingle(output.map(x => {
-      TypeChecker.typeCheck(x.obj(),if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q._2) else rangeType.range) // iterator processor linearizes the stream
+      //TypeChecker.typeCheck(x.obj(),if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q._2) else rangeType.range) // iterator processor linearizes the stream
       x.obj()
     }))
   }

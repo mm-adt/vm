@@ -148,7 +148,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     //
     val nat       :IntType          = mmToSocial.define(int.named("nat") <= int.is(int.gt(0)))
     val person    :RecType[Str,Obj] = mmToSocial.define(trec(name = "person",Map[Str,Obj](str("name") -> str,str("age") -> nat)) <= trec(str("name") -> str,str("age") -> int))
-    socialToMM.define(int <= nat.id())
+    socialToMM.define(int <= nat)
     socialToMM.define(trec(str("name") -> str,str("age") -> int) <= person)
     println(mmToSocial + "\n" + socialToMM)
     //

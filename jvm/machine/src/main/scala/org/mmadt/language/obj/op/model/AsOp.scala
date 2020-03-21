@@ -66,7 +66,7 @@ object AsOp {
             }
           case atype:StrType if trav.avalue => trav.split(vstr(name = atype.name,value = trav.obj().asInstanceOf[Value[Obj]].value.toString)).apply(atype).obj()
           case atype:IntType if trav.avalue => trav.split(vint(name = atype.name,value = Integer.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).longValue())).apply(atype).obj()
-          case _ => trav.apply(atype).obj()
+          case xtype:Type[Obj] if trav.avalue => trav.obj().named(xtype.name).asInstanceOf[O]
         }
         case avalue:Value[Obj] => avalue
         case btype:Type[Obj] if trav.atype => trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))

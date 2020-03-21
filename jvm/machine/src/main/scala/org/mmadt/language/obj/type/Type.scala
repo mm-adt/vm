@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.op.map.{AOp, IdOp, MapOp, QOp}
-import org.mmadt.language.obj.op.model.{AsOp, NoOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp}
@@ -39,6 +39,7 @@ import org.mmadt.storage.StorageFactory._
  */
 trait Type[+T <: Obj] extends Obj
   with AddOp
+  with ModelOp
   with ExplainOp {
   this:T =>
 
@@ -104,6 +105,7 @@ trait Type[+T <: Obj] extends Obj
   override def as[O <: Obj](obj:O):O = this.compose(obj,AsOp(obj))
   override def count():IntType = this.compose(int,CountOp())
   override def id():this.type = this.compose(IdOp())
+  // override def model[O <: Obj](model:RecType[Type[Obj],Type[Obj]]):O = this.compose(this,ModelOp(model)).asInstanceOf[O]
   override def map[O <: Obj](other:O):O = this.compose(asType(other).asInstanceOf[O],MapOp[O](other))
   override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this.compose(asType(seed._2),FoldOp(seed,atype)).asInstanceOf[O]
   override def from[O <: Obj](label:StrValue):O = this.compose(FromOp(label)).asInstanceOf[O]
