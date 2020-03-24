@@ -37,7 +37,11 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AsOp {
-  def as[O <: Obj](obj:O):O
+  this:Obj =>
+  def as[O <: Obj](obj:O):O = this match {
+    case atype:Type[_] => atype.compose(obj,AsOp(obj))
+    case _ => AsOp(obj).apply(Traverser.standard(this)).obj()
+  }
 }
 
 object AsOp {
@@ -64,9 +68,9 @@ object AsOp {
                     trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
                 })))
             }
-          case atype:StrType if trav.avalue => trav.split(vstr(name = atype.name,value = trav.obj().asInstanceOf[Value[Obj]].value.toString)).apply(atype).obj()
-          case atype:IntType if trav.avalue => trav.split(vint(name = atype.name,value = Integer.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).longValue())).apply(atype).obj()
-          case xtype:Type[Obj] if trav.avalue => trav.obj().named(xtype.name).asInstanceOf[O]
+          case atype:StrType => trav.split(vstr(name = atype.name,value = trav.obj().asInstanceOf[Value[Obj]].value.toString)).apply(atype).obj()
+          case atype:IntType => trav.split(vint(name = atype.name,value = Integer.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).longValue())).apply(atype).obj()
+          case xtype:Type[Obj] => trav.obj().named(xtype.name).asInstanceOf[O]
         }
         case avalue:Value[Obj] => avalue
         case btype:Type[Obj] if trav.atype => trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))

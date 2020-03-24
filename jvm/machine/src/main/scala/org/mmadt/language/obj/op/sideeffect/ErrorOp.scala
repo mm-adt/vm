@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -33,7 +34,10 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait ErrorOp {
   this:Obj =>
-  def error(message:String):this.type
+  def error(message:String):this.type = this match {
+    case atype:Type[_] => atype.compose(this,ErrorOp(message))
+    case _ => throw new RuntimeException("error: " + message)
+  }
 }
 
 object ErrorOp {

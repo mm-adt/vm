@@ -36,7 +36,10 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FoldOp {
   this:Obj =>
-  def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = seed._2
+  def fold[O <: Obj](seed:(String,O))(foldType:Type[O]):O = this match {
+    case atype:Type[_] => atype.compose(asType[O](seed._2),FoldOp(seed,foldType))
+    case _ => this ==> foldType
+  }
   def fold[O <: Obj](seed:O)(atype:Type[O]):O = fold("seed" -> seed)(atype)
 }
 

@@ -23,6 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
@@ -32,7 +34,12 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait IdOp {
   this:Obj =>
-  def id():this.type
+  def id():this.type ={
+    this match {
+      case atype:Type[_] => atype.compose(this,IdOp())
+      case _ => this
+    }
+  }
 }
 
 object IdOp {

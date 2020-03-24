@@ -27,6 +27,7 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory.asType
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -34,7 +35,13 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait MapOp {
   this:Obj =>
-  def map[O <: Obj](other:O):O = other
+  def map[O <: Obj](other:O):O = this match {
+    case atype:Type[_] => atype.compose(asType(other).asInstanceOf[O],MapOp[O](other))
+    case _ => other match {
+      case _:Value[_] => other
+      case atype:Type[O] => this ==> atype
+    }
+  }
 }
 
 object MapOp {

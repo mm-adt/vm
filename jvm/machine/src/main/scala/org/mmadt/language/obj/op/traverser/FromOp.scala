@@ -23,8 +23,9 @@
 package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -35,10 +36,14 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FromOp {
   this:Obj =>
-  def from[O <: Obj](label:String):O = this.from(str(label))
-  def from[O <: Obj](label:String,default:Obj):O = this.from(str(label),default)
-  def from[O <: Obj](label:StrValue):O = label.asInstanceOf[O] // TODO NO IMPL -- INST
-  def from[O <: Obj](label:StrValue,default:Obj):O = default.asInstanceOf[O]
+  def from[O <: Obj](label:StrValue):O = this match {
+    case atype:Type[_] => atype.compose(FromOp(label)).asInstanceOf[O]
+    case avalue:Value[_] => avalue.start().from(label)
+  }
+  def from[O <: Obj](label:StrValue,default:O):O = this match {
+    case atype:Type[_] => atype.compose(asType[O](default),FromOp(label,default))
+    case avalue:Value[_] => avalue.start().from(label,default)
+  }
 }
 
 object FromOp {

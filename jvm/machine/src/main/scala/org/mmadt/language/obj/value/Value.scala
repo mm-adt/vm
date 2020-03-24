@@ -24,9 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.{Int, OType, Obj, _}
-import org.mmadt.processor.Traverser
+import org.mmadt.language.obj.{OType, Obj, _}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -35,20 +33,6 @@ import org.mmadt.storage.StorageFactory._
 trait Value[+V <: Obj] extends Obj {
   val value:Any
   def start():OType[V]
-
-  override def a(atype:Type[Obj]):Bool = bool(this.test(atype))
-  override def as[O <: Obj](obj:O):O = AsOp(obj).apply(Traverser.standard(this)).obj()
-  override def quant():Int = this.q._1.q(qOne)
-  override def count():IntValue = this.q._1.q(qOne)
-  override def id():this.type = this
-  override def fold[O <: Obj](seed:(String,O))(atype:Type[O]):O = this ==> atype
-  override def from[O <: Obj](label:StrValue):O = this.start().from(label)
-  override def from[O <: Obj](label:StrValue,default:Obj):O = this.start().from(label,default)
-  override def map[O <: Obj](other:O):O = other match {
-    case _:Value[_] => other
-    case atype:Type[O] => this ==> atype
-  }
-  override def error(message:String):this.type = throw new RuntimeException("error: " + message)
 
   override def named(_name:String):this.type = (this match {
     case x:BoolValue => vbool(_name,x.value,x.q)

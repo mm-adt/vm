@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Inst, IntQ, OType, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, OType, Obj,Int}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 

@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Inst, Int, Obj}
@@ -34,9 +34,12 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait CountOp[O <: Int] {
+trait CountOp {
   this:Obj =>
-  def count():O
+  def count():Int = this match {
+    case atype:Type[_] => atype.compose(asType(this.q._1),CountOp())
+    case _ => this.q._1
+  }
 }
 
 object CountOp {
@@ -45,7 +48,7 @@ object CountOp {
   class CountInst extends VInst[Obj,Int]((Tokens.count,Nil)) with ReduceInstruction[Int] {
     lazy     val zero     :IntValue          = int(0)
     override val seed     :(String,IntValue) = ("seed",zero)
-    override val reduction:IntType           = int.quant().plus(int.from[IntType](seed._1))
+    override val reduction:IntType           = int.quant().plus(int.from[IntType](seed._1)).asInstanceOf[IntType]
     override def apply(trav:Traverser[Obj]):Traverser[Int] = trav.split(trav.obj().count())
   }
 

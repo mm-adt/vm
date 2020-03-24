@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.{Bool, Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory.bool
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -33,7 +34,10 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait AOp {
   this:Obj =>
-  def a(other:Type[Obj]):Bool
+  def a(other:Type[Obj]):Bool = this match {
+    case atype:Type[_] => atype.compose(bool,AOp(other))
+    case _ => bool(this.test(other))
+  }
 }
 
 object AOp {
