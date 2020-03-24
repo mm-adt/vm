@@ -43,8 +43,6 @@ trait BoolType extends Bool
   override def or(bool:BoolType):BoolType = this.compose(OrOp(bool))
   override def or(bool:BoolValue):this.type = this.compose(OrOp(bool))
   override def to(label:StrValue):this.type = this.compose(ToOp(label))
-  override def is(bool:BoolType):BoolType = this.compose(IsOp(bool)).q(minZero(this.q))
-  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q))
 }
 
 

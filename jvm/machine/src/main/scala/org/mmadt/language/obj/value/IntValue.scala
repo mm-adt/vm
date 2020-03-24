@@ -56,7 +56,5 @@ trait IntValue extends Int
   override def lt(other:Value[Int]):BoolValue = vbool(value = this.value < other.value.asInstanceOf[Long],q = this.q)
   override def lte(other:Type[Int]):BoolType = this.start().lte(other)
   override def lte(other:Value[Int]):BoolValue = vbool(value = this.value <= other.value.asInstanceOf[Long],q = this.q)
-  override def is(bool:BoolType):IntType = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value) this else this.q(qZero)
   override def zero():IntValue = this.value(0L)
 }

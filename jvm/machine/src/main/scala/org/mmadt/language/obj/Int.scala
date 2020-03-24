@@ -40,7 +40,6 @@ trait Int extends Obj
   with GteOp[Int]
   with LtOp[Int]
   with LteOp[Int]
-  with IsOp[Int]
   with OneOp[Int]
   with ToOp[Int]
   with ZeroOp[Int]

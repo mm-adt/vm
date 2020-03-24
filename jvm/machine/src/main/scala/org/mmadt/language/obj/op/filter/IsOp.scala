@@ -23,26 +23,34 @@
 package org.mmadt.language.obj.op.filter
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.op.FilterInstruction
-import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.{Inst, OType, Obj}
+import org.mmadt.language.obj.value.{BoolValue, Value}
+import org.mmadt.language.obj.{Inst, OType, Obj, minZero}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IsOp[O <: Obj] {
-  this:O =>
-  def is(bool:BoolType):OType[O]
-  def is(bool:BoolValue):this.type
+trait IsOp {
+  this:Obj =>
+  def is(bool:BoolType):OType[this.type] = (this match {
+    case atype:Type[_] => atype.compose(asType(this),IsOp(bool)).q(minZero(this.q))
+    case avalue:Value[_] => avalue.start().is(bool)
+  }).asInstanceOf[OType[this.type]]
+
+  def is(bool:BoolValue):this.type = this match {
+    case atype:Type[_] => atype.compose(this.q(minZero(this.q)),IsOp(bool))
+    case _ => if (bool.value) this else this.q(0)
+  }
 }
 
 object IsOp {
-  def apply[O <: Obj with IsOp[O]](other:Obj):Inst[O,O] = new IsInst[O](other)
+  def apply[O <: Obj with IsOp](other:Obj):Inst[O,O] = new IsInst[O](other)
 
-  class IsInst[O <: Obj with IsOp[O]](other:Obj) extends VInst[O,O]((Tokens.is,List(other))) with FilterInstruction {
+  class IsInst[O <: Obj with IsOp](other:Obj) extends VInst[O,O]((Tokens.is,List(other))) with FilterInstruction {
     override def apply(trav:Traverser[O]):Traverser[O] = trav.split(Traverser.resolveArg(trav,other) match {
       case avalue:BoolValue => trav.obj().is(avalue)
       case atype:BoolType => trav.obj().is(atype)

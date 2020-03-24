@@ -50,8 +50,6 @@ trait StrType extends Str
   override def lt(other:Value[Str]):BoolType = this.compose(bool,LtOp(other))
   override def lte(other:Type[Str]):BoolType = this.compose(bool,LteOp(other))
   override def lte(other:Value[Str]):BoolType = this.compose(bool,LteOp(other))
-  override def is(bool:BoolType):StrType = this.compose(IsOp(bool)).q(minZero(this.q))
-  override def is(bool:BoolValue):this.type = this.compose(IsOp(bool)).q(minZero(this.q))
 }
 
 

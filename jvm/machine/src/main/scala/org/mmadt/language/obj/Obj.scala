@@ -24,13 +24,14 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.ChooseOp
+import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue,StrValue}
+import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 
@@ -43,6 +44,7 @@ trait Obj
     with CountOp
     with ChooseOp
     with IdOp
+    with IsOp
     with FoldOp
     with MapOp
     with ModelOp

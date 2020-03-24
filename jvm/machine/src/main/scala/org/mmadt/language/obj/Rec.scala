@@ -35,7 +35,6 @@ import org.mmadt.storage.StorageFactory._
 trait Rec[A <: Obj,B <: Obj] extends Obj
   with EqsOp[Rec[A,B]]
   with PlusOp[Rec[A,B]]
-  with IsOp[Rec[A,B]]
   with ToOp[Rec[A,B]]
   with GetOp[A,B]
   with PutOp[A,B] {

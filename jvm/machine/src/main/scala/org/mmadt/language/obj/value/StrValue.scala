@@ -52,6 +52,4 @@ trait StrValue extends Str
   override def lt(other:Value[Str]):BoolValue = bool(this.value < other.asInstanceOf[StrValue].value).q(this.q)
   override def lte(other:Type[Str]):BoolType = this.start().lte(other)
   override def lte(other:Value[Str]):BoolValue = bool(this.value <= other.asInstanceOf[StrValue].value).q(this.q)
-  override def is(bool:BoolType):StrType = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value) this else this.q(qZero)
 }

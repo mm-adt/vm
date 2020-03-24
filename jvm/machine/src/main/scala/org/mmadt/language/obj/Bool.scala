@@ -33,7 +33,6 @@ import org.mmadt.storage.StorageFactory._
  */
 trait Bool extends Obj
   with EqsOp[Bool]
-  with IsOp[Bool]
   with AndOp
   with OrOp
   with ToOp[Bool]

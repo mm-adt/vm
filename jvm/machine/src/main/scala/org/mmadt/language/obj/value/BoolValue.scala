@@ -46,6 +46,4 @@ trait BoolValue extends Bool
   override def and(other:BoolValue):this.type = this.value(this.value && other.value)
   override def or(bool:BoolType):BoolType = this.start().or(bool)
   override def or(other:BoolValue):this.type = this.value(this.value || other.value)
-  override def is(bool:BoolType):BoolType = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value) this else this.q(qZero)
 }

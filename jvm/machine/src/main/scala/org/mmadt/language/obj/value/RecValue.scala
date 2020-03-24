@@ -43,8 +43,6 @@ trait RecValue[A <: Value[Obj],B <: Value[Obj]] extends Rec[A,B]
   override def eqs(other:Value[Rec[A,B]]):BoolValue = bool(this.value.equals(other.value))
   override def plus(other:Type[Rec[A,B]]):RecType[A,B] = this.start().plus(other)
   override def plus(other:Value[Rec[A,B]]):this.type = this.value(this.value ++ other.asInstanceOf[RecValue[A,B]].value)
-  override def is(bool:BoolType):RecType[A,B] = this.start().is(bool)
-  override def is(bool:BoolValue):this.type = if (bool.value) this else this.q(qZero)
   override def get(key:A):B = this.value(key)
   override def get[BB <: Obj](key:A,btype:BB):BB = this.value(key).asInstanceOf[BB]
   override def put(key:A,value:B):RecValue[A,B] = this.value(this.value + (key -> value))

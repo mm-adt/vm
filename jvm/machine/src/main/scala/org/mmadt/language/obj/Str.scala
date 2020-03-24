@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.StrValue
@@ -38,7 +37,6 @@ trait Str extends Obj
   with GteOp[Str]
   with LtOp[Str]
   with LteOp[Str]
-  with IsOp[Str]
   with ToOp[Str]
 
 
