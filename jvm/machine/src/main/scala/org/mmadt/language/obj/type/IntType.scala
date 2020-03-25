@@ -40,13 +40,9 @@ trait IntType extends Int
   override def mult(other:Value[Int]):this.type = this.compose(MultOp(other))
   override def neg():this.type = this.compose(NegOp())
   override def one():IntType = this.compose(OneOp())
-  override def gt(other:Type[Int]):BoolType = this.compose(bool,GtOp(other))
   override def gt(other:Value[Int]):BoolType = this.compose(bool,GtOp(other))
-  override def gte(other:Type[Int]):BoolType = this.compose(bool,GteOp(other))
   override def gte(other:Value[Int]):BoolType = this.compose(bool,GteOp(other))
-  override def lt(other:Type[Int]):BoolType = this.compose(bool,LtOp(other))
   override def lt(other:Value[Int]):BoolType = this.compose(bool,LtOp(other))
-  override def lte(other:Type[Int]):BoolType = this.compose(bool,LteOp(other))
   override def lte(other:Value[Int]):BoolType = this.compose(bool,LteOp(other))
   override def zero():IntType = this.compose(ZeroOp())
 }

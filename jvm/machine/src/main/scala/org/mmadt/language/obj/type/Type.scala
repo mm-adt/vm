@@ -23,9 +23,8 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.op.map.QOp
 import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
-import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp}
+import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}

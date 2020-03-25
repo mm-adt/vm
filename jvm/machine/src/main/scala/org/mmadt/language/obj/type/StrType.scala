@@ -37,13 +37,9 @@ trait StrType extends Str
 
   override def plus(other:Type[Str]):StrType = this.compose(PlusOp(other))
   override def plus(other:Value[Str]):this.type = this.compose(PlusOp(other))
-  override def gt(other:Type[Str]):BoolType = this.compose(bool,GtOp(other))
   override def gt(other:Value[Str]):BoolType = this.compose(bool,GtOp(other))
-  override def gte(other:Type[Str]):BoolType = this.compose(bool,GteOp(other))
   override def gte(other:Value[Str]):BoolType = this.compose(bool,GteOp(other))
-  override def lt(other:Type[Str]):BoolType = this.compose(bool,LtOp(other))
   override def lt(other:Value[Str]):BoolType = this.compose(bool,LtOp(other))
-  override def lte(other:Type[Str]):BoolType = this.compose(bool,LteOp(other))
   override def lte(other:Value[Str]):BoolType = this.compose(bool,LteOp(other))
 }
 

@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.{BoolType, StrType, Type}
+import org.mmadt.language.obj.`type`.{BoolType,StrType,Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.storage.StorageFactory._
 
@@ -41,12 +41,8 @@ trait StrValue extends Str
 
   override def plus(other:Type[Str]):StrType = this.start().plus(other)
   override def plus(other:Value[Str]):this.type = this.value(this.value + other.value)
-  override def gt(other:Type[Str]):BoolType = this.start().gt(other)
   override def gt(other:Value[Str]):BoolValue = bool(this.value > other.asInstanceOf[StrValue].value).q(this.q)
-  override def gte(other:Type[Str]):BoolType = this.start().gte(other)
   override def gte(other:Value[Str]):BoolValue = bool(this.value >= other.asInstanceOf[StrValue].value).q(this.q)
-  override def lt(other:Type[Str]):BoolType = this.start().lt(other)
   override def lt(other:Value[Str]):BoolValue = bool(this.value < other.asInstanceOf[StrValue].value).q(this.q)
-  override def lte(other:Type[Str]):BoolType = this.start().lte(other)
   override def lte(other:Value[Str]):BoolValue = bool(this.value <= other.asInstanceOf[StrValue].value).q(this.q)
 }

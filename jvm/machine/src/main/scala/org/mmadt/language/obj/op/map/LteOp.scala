@@ -27,6 +27,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory.bool
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -34,10 +35,14 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait LteOp[O <: Obj] {
   this:O =>
-  def lte(other:Type[O]):BoolType
   def lte(other:Value[O]):Bool
-  final def =<(other:Type[O]):BoolType = this.lte(other)
+  def lte(other:Type[O]):BoolType = this match {
+    case atype:Type[_] => atype.compose(bool,LteOp(other))
+    case avalue:Value[_] => avalue.start().compose(bool,LteOp(other))
+  }
+
   final def =<(other:Value[O]):Bool = this.lte(other)
+  final def =<(other:Type[O]):BoolType = this.lte(other)
 }
 
 object LteOp {
