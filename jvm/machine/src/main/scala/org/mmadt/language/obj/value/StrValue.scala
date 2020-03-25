@@ -39,9 +39,6 @@ trait StrValue extends Str
   override def start():StrType
   def value(java:String):this.type
 
-  override def to(label:StrValue):StrType = this.start().to(label)
-  override def eqs(other:Type[Str]):BoolType = this.start().eqs(other)
-  override def eqs(other:Value[Str]):BoolValue = bool(this.value.equals(other.value)).q(this.q)
   override def plus(other:Type[Str]):StrType = this.start().plus(other)
   override def plus(other:Value[Str]):this.type = this.value(this.value + other.value)
   override def gt(other:Type[Str]):BoolType = this.start().gt(other)

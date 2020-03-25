@@ -25,18 +25,22 @@ package org.mmadt.language.obj.op.traverser
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.value.{StrValue,Value}
-import org.mmadt.language.obj.{Inst,OType,Obj}
+import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.obj.value.{VInst,VStr}
+import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ToOp[O <: Obj] {
   this:O =>
-  def to(label:String):OType[O] = this.to(new VStr(label))
-  def to(label:StrValue):OType[O]
+  def to(label:String):OType[O] = this.to(str(label))
+  def to(label:StrValue):OType[O] = this match {
+    case atype:Type[O] => atype.compose(ToOp[O](label)).asInstanceOf[OType[O]]
+    case avalue:Value[O] => avalue.start().compose(ToOp[O](label))
+  }
 }
 
 object ToOp {
@@ -45,7 +49,7 @@ object ToOp {
   class ToInst[O <: Obj](label:StrValue) extends VInst[O,O]((Tokens.to,List(label))) with TraverserInstruction {
     override def apply(trav:Traverser[O]):Traverser[O] ={
       trav.obj() match {
-        case atype:Type[Obj] => trav.split[O](composeInstruction(trav.obj()),state = trav.state + (label.value -> atype.range))
+        case atype:Type[O] => trav.split[O](composeInstruction(trav.obj()),state = trav.state + (label.value -> atype.range))
         case avalue:Value[Obj] => trav.split[O](trav.obj(),state = trav.state + (label.value -> avalue))
       }
     }

@@ -39,9 +39,6 @@ trait IntValue extends Int
   override def start():IntType
   def value(java:Long):this.type
 
-  override def to(label:StrValue):IntType = this.start().to(label)
-  override def eqs(other:Type[Int]):BoolType = this.start().eqs(other)
-  override def eqs(other:Value[Int]):BoolValue = vbool(value = this.value.equals(other.value),q = this.q)
   override def plus(other:Type[Int]):IntType = this.start().plus(other)
   override def plus(other:Value[Int]):this.type = this.value(this.value + other.value.asInstanceOf[Long])
   override def mult(other:Type[Int]):IntType = this.start().mult(other)

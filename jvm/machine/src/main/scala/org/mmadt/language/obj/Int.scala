@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.IntValue
@@ -32,7 +31,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Int extends Obj
-  with EqsOp[Int]
   with PlusOp[Int]
   with MultOp[Int]
   with NegOp

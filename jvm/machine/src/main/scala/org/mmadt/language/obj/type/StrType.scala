@@ -23,10 +23,8 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, StrValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 
 
@@ -37,9 +35,6 @@ trait StrType extends Str
   with Type[Str]
   with ObjType {
 
-  override def to(label:StrValue):this.type = this.compose(ToOp(label))
-  override def eqs(other:Type[Str]):BoolType = this.compose(bool,EqsOp(other))
-  override def eqs(other:Value[Str]):BoolType = this.compose(bool,EqsOp(other))
   override def plus(other:Type[Str]):StrType = this.compose(PlusOp(other))
   override def plus(other:Value[Str]):this.type = this.compose(PlusOp(other))
   override def gt(other:Type[Str]):BoolType = this.compose(bool,GtOp(other))

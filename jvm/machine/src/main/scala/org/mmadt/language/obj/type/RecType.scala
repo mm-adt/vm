@@ -22,12 +22,10 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
+import org.mmadt.language.obj.op.map.{GetOp,PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Obj, Rec, minZero}
+import org.mmadt.language.obj.value.{RecValue,Value}
+import org.mmadt.language.obj.{Obj,Rec}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VRec
 
@@ -42,9 +40,6 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   def apply(value:RecValue[Value[A],Value[B]]):RecValue[Value[A],Value[B]] = new VRec[Value[A],Value[B]](this.name,value.value,this.q)
   def value():Map[A,B]
 
-  override def eqs(other:Type[Rec[A,B]]):BoolType = this.compose(bool,EqsOp(other))
-  override def eqs(other:Value[Rec[A,B]]):BoolType = this.compose(bool,EqsOp(other))
-  override def to(label:StrValue):this.type = this.compose(ToOp(label))
   override def get[BB <: Obj](key:A,btype:BB):BB = this.compose(btype,GetOp[A,BB](key,btype))
   override def get(key:A):B = this.compose(this.value()(key),GetOp[A,B](key,asType(this.value()(key))))
   override def put(key:A,value:B):RecType[A,B] = this.compose(trec(this.name,this.value() + (key -> value),this.q,this.insts),PutOp(key,value))

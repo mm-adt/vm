@@ -22,8 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{AndOp, EqsOp, OrOp}
+import org.mmadt.language.obj.op.map.{AndOp, OrOp}
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
@@ -32,7 +31,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Bool extends Obj
-  with EqsOp[Bool]
   with AndOp
   with OrOp
   with ToOp[Bool]

@@ -24,30 +24,37 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, Type, __}
+import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait EqsOp[O <: Obj] {
-  this:O =>
-  def eqs(other:Type[O]):BoolType
-  def eqs(other:Value[O]):Bool
-  // final def ===(other: T): BoolType = this.eq(other)
-  // final def ===(other: V): Bool = this.eq(other)
+trait EqsOp {
+  this:Obj =>
+  def eqs(other:Type[_]):BoolType = this match {
+    case atype:Type[_] => atype.compose(bool,EqsOp(other))
+    case avalue:Value[_] => avalue.start().eqs(other)
+  }
+  def eqs(other:Value[_]):Bool = this match {
+    case atype:Type[_] => atype.compose(bool,EqsOp(other))
+    case avalue:Value[_] => bool(avalue.value.equals(other.value))
+  }
+  // TODO final def ===(other: T): BoolType = this.eq(other)
+  // TODO final def ===(other: V): Bool = this.eq(other)
 }
 
 object EqsOp {
-  def apply[O <: Obj with EqsOp[O]](other:Obj):Inst[O,Bool] = new EqsInst[O](other.asInstanceOf[O])
+  def apply(other:Obj):Inst[Obj,Bool] = new EqsInst(other)
 
-  class EqsInst[O <: Obj with EqsOp[O]](other:O) extends VInst[O,Bool]((Tokens.eqs,List(other))) {
-    override def apply(trav:Traverser[O]):Traverser[Bool] ={
+  class EqsInst(other:Obj) extends VInst[Obj,Bool]((Tokens.eqs,List(other))) {
+    override def apply(trav:Traverser[Obj]):Traverser[Bool] ={
       trav.split((Traverser.resolveArg(trav,other) match {
-        case avalue:Value[O] => trav.obj().eqs(avalue)
-        case atype:Type[O] => trav.obj().eqs(atype)
+        case avalue:Value[_] => trav.obj().eqs(avalue)
+        case atype:Type[_] => trav.obj().eqs(atype)
       }).q(multQ(trav.obj().q,this.q)))
     }
   }

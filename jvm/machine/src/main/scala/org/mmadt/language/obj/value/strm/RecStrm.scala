@@ -22,26 +22,19 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.obj.`type`.{BoolType, RecType, Type}
-import org.mmadt.language.obj.op.sideeffect.AddOp
-import org.mmadt.language.obj.value.{BoolValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.language.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Strm[Rec[A,B]] with Rec[A,B] with AddOp {
+trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Strm[Rec[A,B]] with Rec[A,B] {
   override val value:Iterator[RecValue[A,B]]
   override def start():RecType[A,B]
 
-  override def add[O<:Obj](obj:O):O = throw new UnsupportedOperationException
-  override def to(label:StrValue):RecType[A,B] = throw new UnsupportedOperationException
-  override def eqs(other:Type[Rec[A,B]]):BoolType = throw new UnsupportedOperationException
-  override def eqs(other:Value[Rec[A,B]]):BoolValue = throw new UnsupportedOperationException
   override def plus(other:Type[Rec[A,B]]):RecType[A,B] = throw new UnsupportedOperationException
   override def plus(other:Value[Rec[A,B]]):this.type = throw new UnsupportedOperationException
- // override def is(bool:BoolType):RecType[A,B] = throw new UnsupportedOperationException
-//  override def is(bool:BoolValue):this.type = throw new UnsupportedOperationException
   override def get(key:A):B = throw new UnsupportedOperationException
   override def get[BB <: Obj](key:A,btype:BB):BB = throw new UnsupportedOperationException
   override def put(key:A,value:B):RecValue[A,B] = throw new UnsupportedOperationException

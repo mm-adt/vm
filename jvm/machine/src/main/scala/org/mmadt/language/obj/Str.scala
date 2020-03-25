@@ -31,7 +31,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Str extends Obj
-  with EqsOp[Str]
   with PlusOp[Str]
   with GtOp[Str]
   with GteOp[Str]

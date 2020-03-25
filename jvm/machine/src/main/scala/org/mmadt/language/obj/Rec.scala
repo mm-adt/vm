@@ -22,8 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.map.{EqsOp, GetOp, PlusOp}
+import org.mmadt.language.obj.op.map.{GetOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.{RecValue, Value}
@@ -33,7 +32,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj,B <: Obj] extends Obj
-  with EqsOp[Rec[A,B]]
   with PlusOp[Rec[A,B]]
   with ToOp[Rec[A,B]]
   with GetOp[A,B]
@@ -42,6 +40,6 @@ trait Rec[A <: Obj,B <: Obj] extends Obj
 }
 
 object Rec {
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
-  implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = vrec(value = value,values = values:_*)
+  @inline implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
+  @inline implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = vrec(value = value,values = values:_*)
 }

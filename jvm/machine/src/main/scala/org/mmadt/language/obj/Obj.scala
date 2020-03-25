@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 
@@ -51,7 +51,8 @@ trait Obj
     with FromOp
     with QOp
     with ErrorOp
-    with EvalOp {
+    with EvalOp
+    with EqsOp {
 
   // quantifier methods
   val q:IntQ
@@ -75,7 +76,10 @@ trait Obj
 }
 
 object Obj {
+  @inline implicit def booleanToBool(java:Boolean):BoolValue = bool(java)
   @inline implicit def longToInt(java:Long):IntValue = int(java)
   @inline implicit def intToInt(java:scala.Int):IntValue = int(java.longValue())
   @inline implicit def stringToStr(java:String):StrValue = str(java)
+  @inline implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
+  @inline implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = vrec(value = value,values = values:_*)
 }

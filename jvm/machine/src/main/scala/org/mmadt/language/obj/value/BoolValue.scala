@@ -23,9 +23,8 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.`type`.{BoolType, Type}
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,9 +38,6 @@ trait BoolValue extends Bool
   override def start():BoolType
   def value(java:Boolean):this.type
 
-  override def to(label:StrValue):BoolType = this.start().to(label)
-  override def eqs(other:Type[Bool]):BoolType = this.start().eqs(other)
-  override def eqs(other:Value[Bool]):BoolValue = this.value(this.value.equals(other.value))
   override def and(bool:BoolType):BoolType = this.start().and(bool)
   override def and(other:BoolValue):this.type = this.value(this.value && other.value)
   override def or(bool:BoolType):BoolType = this.start().or(bool)
