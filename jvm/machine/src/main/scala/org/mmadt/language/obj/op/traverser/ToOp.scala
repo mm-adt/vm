@@ -38,7 +38,7 @@ trait ToOp[O <: Obj] {
   this:O =>
   def to(label:String):OType[O] = this.to(str(label))
   def to(label:StrValue):OType[O] = this match {
-    case atype:Type[O] => atype.compose(ToOp[O](label)).asInstanceOf[OType[O]]
+    case atype:Type[_] => atype.compose(ToOp[O](label)).asInstanceOf[OType[O]]
     case avalue:Value[O] => avalue.start().compose(ToOp[O](label))
   }
 }
@@ -49,8 +49,8 @@ object ToOp {
   class ToInst[O <: Obj](label:StrValue) extends VInst[O,O]((Tokens.to,List(label))) with TraverserInstruction {
     override def apply(trav:Traverser[O]):Traverser[O] ={
       trav.obj() match {
-        case atype:Type[O] => trav.split[O](composeInstruction(trav.obj()),state = trav.state + (label.value -> atype.range))
-        case avalue:Value[Obj] => trav.split[O](trav.obj(),state = trav.state + (label.value -> avalue))
+        case atype:Type[_] => trav.split[O](composeInstruction(trav.obj()),state = trav.state + (label.value -> atype.range))
+        case avalue:Value[_] => trav.split[O](trav.obj(),state = trav.state + (label.value -> avalue))
       }
     }
   }

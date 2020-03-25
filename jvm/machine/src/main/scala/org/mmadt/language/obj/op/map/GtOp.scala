@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
@@ -34,9 +34,9 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait GtOp[O <: Obj] {
   this:O =>
-  def gt(other:Type[O]):OType[Bool]
+  def gt(other:Type[O]):BoolType
   def gt(other:Value[O]):Bool
-  final def >(other:Type[O]):OType[Bool] = this.gt(other)
+  final def >(other:Type[O]):BoolType = this.gt(other)
   final def >(other:Value[O]):Bool = this.gt(other)
 }
 
