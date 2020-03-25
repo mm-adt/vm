@@ -137,7 +137,7 @@ object Type {
 
   def resolveAnonymous[R <: Obj](obj:Obj,rangeType:Type[R]):Type[R] = rangeType match {
     case x:__ => x(obj)
-    case x:R => x
+    case x => x
   }
 
   def resolve[R <: Obj](objA:Obj,objB:R):R = objB match {

@@ -122,12 +122,12 @@ object StorageFactory {
   lazy val +     :(IntValue,IntValue) = qPlus
 
   def asType[O <: Obj](obj:O):OType[O] = (obj match {
-    case atype:Type[O] with O => return atype
+    case atype:Type[_] => atype
     case _:IntValue | _:IntStrm => tint(name = obj.name,q = obj.q)
     case _:StrValue | _:StrStrm => tstr(name = obj.name,q = obj.q)
     case _:BoolValue | _:BoolStrm => tbool(name = obj.name,q = obj.q)
-    case _:ORecStrm => trec(name = obj.name,value = Map.empty,q = obj.q)
-    case recval:ORecValue => trec(name = recval.name,value = recval.value,q = obj.q)
+    case _:RecStrm[_,_] => trec(name = obj.name,value = Map.empty,q = obj.q)
+    case recval:RecValue[_,_] => trec(name = recval.name,value = recval.value,q = obj.q)
   }).asInstanceOf[OType[O]]
 
   def isSymbol[O <: Obj](obj:O):Boolean = obj match {
@@ -167,7 +167,7 @@ object StorageFactory {
             case boolValue:BoolValue => bool(value1 = boolValue,value2 = second.asInstanceOf[BoolValue],valuesN = itty.asInstanceOf[Iterator[BoolValue]].toSeq:_*)
             case intValue:IntValue => int(value1 = intValue,value2 = second.asInstanceOf[IntValue],valuesN = itty.asInstanceOf[Iterator[IntValue]].toSeq:_*)
             case strValue:StrValue => str(value1 = strValue,value2 = second.asInstanceOf[StrValue],valuesN = itty.asInstanceOf[Iterator[StrValue]].toList:_*)
-            case recValue:ORecValue => vrec[Value[Obj],Value[Obj]](value1 = recValue,value2 = second.asInstanceOf[ORecValue],valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList:_*)
+            case recValue:RecValue[_,_] => vrec(value1 = recValue.asInstanceOf[ORecValue],value2 = second.asInstanceOf[ORecValue],valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList:_*)
             // case recValue:...
           }).asInstanceOf[OStrm[O]]
         } else VSingletonStrm.single(first)

@@ -49,9 +49,10 @@ object MapOp {
 
   class MapInst[O <: Obj](other:O) extends VInst[Obj,O]((Tokens.map,List(other))) {
     override def apply(trav:Traverser[Obj]):Traverser[O] = (trav.obj(),other) match {
-      case (_:Obj,avalue:Value[O] with O) => trav.split(avalue)
-      case (ttype:Type[Obj],atype:Type[O] with O) => trav.split(ttype.compose(atype,MapOp(atype)))
+      case (_:Obj,avalue:Value[_] with O) => trav.split(avalue)
+      case (ttype:Type[_],atype:Type[_] with O) => trav.split(ttype.compose(atype,MapOp(atype)))
       case (_:Value[Obj],atype:Type[O] with O) => trav.apply(atype)
+      case _ => throw new IllegalStateException
     }
   }
 

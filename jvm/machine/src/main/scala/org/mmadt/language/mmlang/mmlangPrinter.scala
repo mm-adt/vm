@@ -57,13 +57,13 @@ object mmlangPrinter {
 
   def typeString(atype:Type[Obj]):String ={
     val range  = (atype match {
-      case arec:RecType[Obj,Obj] => if (atype.insts.nonEmpty && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
+      case arec:RecType[_,_] => if (atype.insts.nonEmpty && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.insts.isEmpty) Tokens.empty else {
       (atype.insts.head._1 match {
-        case arec:RecType[Obj,Obj] => if (atype.insts.nonEmpty && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
-        case btype:Type[Obj] => btype.name
+        case arec:RecType[_,_] => if (atype.insts.nonEmpty && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
+        case btype:Type[_] => btype.name
       }) + qString(atype.insts.head._1.q)
     }
     (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.insts.head._1.alive()) domain else Tokens.empty))) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
@@ -73,7 +73,7 @@ object mmlangPrinter {
     val named = Tokens.named(avalue.name)
     (if (named) avalue.name + COLON else EMPTY) + (
       avalue match {
-        case arec:RecValue[ObjValue,ObjValue] => mapString(arec.value)
+        case arec:RecValue[_,_] => mapString(arec.value)
         case astr:StrValue => SQUOTE + astr.value + SQUOTE
         case _ => avalue.value
       }) + qString(avalue.q)

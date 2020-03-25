@@ -82,6 +82,7 @@ object OpInstResolver {
         args.tail match {
           case Nil => FromOp(label)
           case obj:Obj => FromOp(label,obj)
+          case _ => throw new IllegalStateException
         }
       case Tokens.fold => args.tail.tail.head match {
         case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x)

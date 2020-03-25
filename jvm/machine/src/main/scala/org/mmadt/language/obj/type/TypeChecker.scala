@@ -70,8 +70,8 @@ object TypeChecker {
 
   def typeCheck[S <: Obj](obj:S,checkType:Type[S]):Unit ={
     assert(obj match {
-      case atype:Type[S] => atype.range.test(checkType)
-      case avalue:Value[S] => avalue.test(checkType)
+      case atype:Type[_] => atype.range.test(checkType)
+      case avalue:Value[_] => avalue.test(checkType)
     },obj + " is not in " + checkType)
   }
 
