@@ -44,7 +44,7 @@ object ErrorOp {
   def apply(message:String):Inst[Obj,Obj] = new ErrorInst(message)
 
   class ErrorInst(message:String) extends VInst[Obj,Obj]((Tokens.error,List(str(message)))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = throw new RuntimeException("error: " + message)
+    override def apply(trav:Traverser[Obj]):Traverser[Obj] = throw new AssertionError("error: " + message)
   }
 
 }

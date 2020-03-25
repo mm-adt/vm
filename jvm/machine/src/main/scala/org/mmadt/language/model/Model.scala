@@ -28,6 +28,7 @@ import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.model.{AsOp, NoOp}
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -40,6 +41,7 @@ trait Model {
 
   def apply[B <: Obj](obj:B):B = (obj match {
     case atype:Type[Obj] => this.symbol(atype.name).map(x => atype.asInstanceOf[Type[Obj]].compose(x,NoOp())).getOrElse(this.get(atype).getOrElse(atype))
+    case astrm:Strm[Obj] => strm(astrm.value.map(this.apply)) // TODO: migrate to AsOp?
     case avalue:Value[Obj] => this.symbol(avalue.name).map(x => AsOp[Obj](x).apply(Traverser.standard(avalue,model = this)).obj()).getOrElse(avalue)
   }).asInstanceOf[B]
 
