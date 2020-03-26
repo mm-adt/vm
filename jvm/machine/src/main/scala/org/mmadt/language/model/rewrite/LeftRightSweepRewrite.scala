@@ -59,7 +59,10 @@ object LeftRightSweepRewrite {
   // if no match, then apply the instruction after rewriting its arguments
   private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst[Obj,Obj],traverser:Traverser[S]):List[Obj] ={
     inst.op() match {
-      case Tokens.a | Tokens.as | Tokens.map | Tokens.put | Tokens.model => inst.args()
+      case Tokens.a | Tokens.as | Tokens.map | Tokens.put | Tokens.model => inst.args().map{
+        case atype:Type[_] if isSymbol(atype) => model(atype)
+        case other => other
+      }
       case Tokens.choose =>
         def branching(obj:Obj):Obj ={
           obj match {

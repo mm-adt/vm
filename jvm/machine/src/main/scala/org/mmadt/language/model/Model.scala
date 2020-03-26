@@ -55,12 +55,9 @@ trait Model {
 }
 
 object Model {
-  def from(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(maybeSymbol(a._1),a._2))
-  def from(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value().iterator.foldRight(this.simple())((a,b) => b.put(maybeSymbol(a._1),a._2))
+  def from(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
+  def from(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value().iterator.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
 
-  private def maybeSymbol(atype:Type[Obj]):Type[Obj] ={
-    if (isSymbol(atype)) atype else if (atype.insts.isEmpty) tobj(atype.name) else atype
-  }
   val id:Model = new Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this
     override def put(model:Model):Model = this

@@ -29,7 +29,7 @@ object Tokens {
 
   lazy val reserved:Set[String] = Set(
     Tokens.noop,Tokens.and,Tokens.choose,Tokens.count,Tokens.eqs,Tokens.explain,Tokens.get,Tokens.is,Tokens.mult,
-    Tokens.plus,Tokens.gt,Tokens.put,Tokens.map,Tokens.from,Tokens.to,Tokens.model,Tokens.as,Tokens.a,
+    Tokens.plus,Tokens.gt,Tokens.put,Tokens.map,Tokens.from,Tokens.to,Tokens.as,Tokens.a, // Tokens.model (shared with global name)
     Tokens.btrue,Tokens.bfalse)
 
   val obj  = "obj"

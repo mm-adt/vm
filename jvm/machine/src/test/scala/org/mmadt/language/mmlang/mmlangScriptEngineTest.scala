@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj,Str,Int}
+import org.mmadt.language.obj.{Obj,Str}
 import org.mmadt.language.{LanguageFactory,Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -332,9 +332,14 @@ class mmlangScriptEngineTest extends FunSuite {
         |  rec        -> [put,'name','marko']]""".stripMargin).next())
   }
 
+  test("global model"){
+    println(engine.eval("model"))
+  }
+
   test("model inst parsing"){
     assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]]")(engine.eval("int[plus,1][model,rec[int<=int[is,[gt,0]]:nat]]").toString)
     assertResult("nat:11")(engine.eval("10[plus,1][model,rec[int[is,[gt,0]]:nat]]").toString)
+    assertResult("-10")(engine.eval("-11[plus,1][model,rec[int[is,[gt,0]]:nat]]").toString)
   }
 
   /*test("model parsing"){
