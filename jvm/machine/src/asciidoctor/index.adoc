@@ -269,15 +269,17 @@ rec[
   int[plus,[id]]      -> nat[mult,2]]
 ```
 
+The above model is diagrammed below where object morphisms are solid lines and the arrow morphism is the dotted line.
+
 [ditaa,"int-nat-functor",align="center"]
 ....
          int---[plus,[id]]--->int
 
-           |                   |
-           |                   |
-int[is[gte,0]]                int[is[gte,0]]
-           |                   |
-           v                   v
+           |         |          |
+           |         |          |
+int[is[gte,0]]       :         int[is[gte,0]]
+           |         |          |
+           v         v          v
 
          nat-----[mult,2]---->nat
 ....
