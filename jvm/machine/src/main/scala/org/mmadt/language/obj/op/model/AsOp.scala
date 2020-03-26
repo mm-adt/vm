@@ -22,6 +22,8 @@
 
 package org.mmadt.language.obj.op.model
 
+import java.lang.{Double => JDouble}
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
@@ -70,6 +72,7 @@ object AsOp {
             }
           case atype:StrType => trav.split(vstr(name = atype.name,value = trav.obj().asInstanceOf[Value[Obj]].value.toString)).apply(atype).obj()
           case atype:IntType => trav.split(vint(name = atype.name,value = Integer.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).longValue())).apply(atype).obj()
+          case atype:RealType => trav.split(vreal(name = atype.name,value = JDouble.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).doubleValue())).apply(atype).obj()
           case xtype:Type[Obj] => trav.obj().named(xtype.name).asInstanceOf[O]
         }
         case avalue:Value[Obj] => avalue
