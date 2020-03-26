@@ -30,11 +30,11 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
-import org.mmadt.language.obj.value.strm.{BoolStrm, IntStrm, StrStrm, Strm}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue, Value}
+import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
+import org.mmadt.language.obj.value.strm.{BoolStrm,IntStrm,StrStrm,Strm}
+import org.mmadt.language.obj.value.{BoolValue,IntValue,StrValue,Value}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.{strm => estrm, _}
+import org.mmadt.storage.StorageFactory.{strm => estrm,_}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -55,7 +55,10 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   // specific to mmlang execution
   lazy val expr       :Parser[Obj] = compilation | evaluation | (objValue | anonType)
   lazy val compilation:Parser[Obj] = aType ^^ (x => (x.domain() ==> this.model) (x))
-  lazy val evaluation :Parser[Obj] = (strm | objValue) ~ (anonType | aType) ^^ (x => x._1 ===> (Type.resolveAnonymous(x._1,x._2).domain() ==> this.model) (x._2))
+  lazy val evaluation :Parser[Obj] = (strm | objValue) ~ opt(anonType | aType) ^^ (x =>
+    x._1 ===>
+    ((Type.resolveAnonymous(x._1,x._2.getOrElse(asType[Obj](x._1))).domain() ==> this.model)
+      (x._2.getOrElse(asType[Obj](x._1))),this.model))
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////

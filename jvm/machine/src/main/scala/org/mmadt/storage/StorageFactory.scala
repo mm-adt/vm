@@ -168,7 +168,6 @@ object StorageFactory {
             case intValue:IntValue => int(value1 = intValue,value2 = second.asInstanceOf[IntValue],valuesN = itty.asInstanceOf[Iterator[IntValue]].toSeq:_*)
             case strValue:StrValue => str(value1 = strValue,value2 = second.asInstanceOf[StrValue],valuesN = itty.asInstanceOf[Iterator[StrValue]].toList:_*)
             case recValue:RecValue[_,_] => vrec(value1 = recValue.asInstanceOf[ORecValue],value2 = second.asInstanceOf[ORecValue],valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList:_*)
-            // case recValue:...
           }).asInstanceOf[OStrm[O]]
         } else VSingletonStrm.single(first)
       } else {

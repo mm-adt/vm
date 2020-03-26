@@ -24,6 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{OType, Obj, _}
 import org.mmadt.storage.StorageFactory._
 

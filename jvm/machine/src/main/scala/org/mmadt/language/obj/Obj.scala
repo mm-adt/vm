@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
@@ -66,7 +67,8 @@ trait Obj
   def toSet:Set[this.type] = toStrm.value.toSet
   def next():this.type = toStrm.value.next()
   def ==>[E <: Obj](rangeType:Type[E]):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType)).toStrm.value.next()
-  def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: spec'd to R cause of FoldOp
+  def ===>[E <: Obj](rangeType:E,model:Model):E = Processor.iterator(model).apply(this,Type.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: spec'd to R cause of FoldOp
+  def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: necessary for __ typecasting -- weird)
 
   // pattern matching methods
   def named(_name:String):this.type

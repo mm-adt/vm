@@ -76,13 +76,13 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
     assertThrows[AssertionError]{
       int(10) ===> bool.and(bfalse)
     }
-    assertThrows[AssertionError]{
+    assertThrows[ClassCastException]{ // TODO: get these to be assertion errors
       int(10) ===> str
     }
-    assertThrows[AssertionError]{
+    assertThrows[ClassCastException]{
       int(10) ===> str.q(2)
     }
-    assertThrows[AssertionError]{
+    assertThrows[ClassCastException]{
       str("hello") ===> bool
     }
   }

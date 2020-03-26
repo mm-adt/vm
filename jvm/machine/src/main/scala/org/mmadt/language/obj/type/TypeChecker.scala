@@ -24,6 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.processor.Traverser
@@ -36,7 +37,7 @@ import scala.collection.mutable
 object TypeChecker {
   def matchesVT[O <: Obj](obj:Value[O],pattern:Type[O]):Boolean ={
     (pattern.name.equals(Tokens.obj) || // all objects are obj
-     (!obj.name.equals(Tokens.rec) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && Traverser.standard(obj).apply(pattern).obj().alive()) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
+     (!obj.name.equals(Tokens.rec) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || Traverser.standard(obj).apply(pattern).obj().alive())) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
      obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
      (obj.isInstanceOf[RecValue[_,_]] &&
       testRecord(obj.value.asInstanceOf[Map[Obj,Obj]],pattern.asInstanceOf[ORecType].value()))) && // structural type checking on records

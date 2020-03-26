@@ -9,6 +9,8 @@ Marko A. Rodriguez <marko@rredux.com>
 :stem: latexmath
 :favicon: ./images/favicon.ico
 :source-highlighter: coderay
+:source-language: Delphi
+require 'asciidoctor-diagram/svgbob'
 
 image::images/mm-adt-logo.png[mm-ADT Logo,float="left",width=150]
 
@@ -36,7 +38,7 @@ The mm-ADT VM enables the intermingling of any language, any storage system, and
 The mm-ADT VM is packaged with a https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop:[REPL] console that supports any mm-ADT language.
 The default language is `mmlang`.
 
-```
+```text
 ~/software/mm-adt/vm/jvm bin/mmadt.sh
                                 _____ _______
                            /\  |  __ |__   __|
@@ -53,7 +55,7 @@ has an assembly language look-and-feel. Fortunately, the mm-ADT VM was designed 
 query languages via the it's `LanguageProvider` interface. Any language that implements `LanguageProvider` can be
 used in the mm-ADT console. Furthermore, mm-ADT _models_ can be shared between languages.
 
-```Delphi
+```
 mmlang> 1
 ==>1
 mmlang> +2
@@ -70,13 +72,13 @@ mmlang> 1[plus,2]
 
 mm-ADT types are constructed using a small collection of modifiers. These are written below within the ascii-structure.
 
-```Delphi
+```
 range{q}<=domain{q}[inst]{q}[bran->ch|ing->inst][with[nesting]]
 ```
 
 A complex type definition is provided below that captures a large number of the mm-ADT type constructs.
 
-```Delphi
+```
 int<=int{2}<x>[plus,10]<y>[is.<10 -> <x>
                           |is.<20 -> <y>
                           |int    -> <x>+<y>][count]
@@ -135,7 +137,7 @@ In mm-ADT, the carrier set is the set of all instructions `inst` where:
 
 As an example, the instructions `[plus,10]` and `[gt,5]` can be combined via serial and/or parallel composition.
 
-```Delphi
+```
 int<=int[plus,10] * bool<=int[gt,5]   ==   bool<=int[plus,10][gt,5]
 int<=int[plus,10] + bool<=int[gt,5]   ==    obj<=int[branch,[plus,10],[gt,5]]
 ```
@@ -183,7 +185,7 @@ an as accurate or fuzzy degree as computationally and conceptually possible.
 Typically, the quantifier of choice for most applications is the `int` ring (or `int` range ring -- `{2,13}`). Common programming concepts
 that are usually captured by typeclasses or functors (via lifting) are expressed in mm-ADT via quantification.
 
-```Delphi
+```
 int                          // a single int (just/some)
 int{?}<=int[is,[gt,0]]       // 0 or 1 int   (maybe/option)
 int{0}<=int[is,false]        // 0 ints       (none)
@@ -197,7 +199,7 @@ The type system of mm-ADT is characterized by a particular formulation of the ht
 over the _quantifier_ and _instruction_ rings. The direct product of these two rings is a ring itself. Thus, mm-ADT's
 types are founded on ring theory.
 
-```Delphi
+```
 mmlang> int
 ==>int                                               // equivalent to int{1}<=int{1}
 mmlang> int[plus,2]
@@ -264,6 +266,204 @@ and every type's identity morphism is the `[id]` instruction as in `int<=int[id]
 ....
 
 
-=== Storage Structures
+== Storage Structures
 
-=== Processor Structures
+== Processor Structures
+
+== Instructions
+
+=== Branch Instructions
+
+==== [choose]
+
+```
+y<=x[choose,y<=x:type,(y<=x:type)*]
+```
+
+=== Filter Instructions
+
+==== [is]
+
+```
+obj<=obj[is,bool]
+```
+
+`[is]` is the canonical filter instruction.
+
+```
+x:obj[is,y:bool] = [ y[eq,true]  -> x
+                   | y[eq,false] -> x[q,0] ]
+```
+
+```
+mmlang> 6,42[is,true]
+==>6
+==>42
+mmlang> 6,42[is,false]
+mmlang> 6,42[is,[a,int]]
+==>6
+==>42
+mmlang> 6,42 is[a,int]
+==>6
+==>42
+mmlang> 6,42[is,[gt,10]]
+==>42
+mmlang> 6,42[is,[lt,10]]
+==>6
+mmlang> 6,42[is>10]
+==>42
+mmlang> 6,42 is>10
+==>42
+mmlang> int{2}[is>10]
+==>int{0,2}<=int{2}[is,bool{2}<=int{2}[gt,10]]
+```
+
+=== Map Instructions
+
+==== [a]
+
+```
+bool<=obj[a,type]
+```
+
+==== [and]
+
+```
+bool<=bool[and,bool]
+```
+
+==== [eq]
+
+```
+bool<=obj[as,obj]
+```
+
+==== [get]
+
+```
+y <= rec[x:y][get,x]
+```
+
+==== [gte]
+
+```
+bool<=x[gte,x:ord]
+```
+
+==== [gt]
+
+```
+bool<=x[gt,x:ord]
+```
+
+==== [id]
+
+```
+obj<=obj[id]
+```
+
+==== [lte]
+
+```
+bool<=x[lte,x:ord]
+```
+
+==== [lt]
+
+```
+bool<=x[lt,x:ord]
+```
+
+==== [map]
+
+```
+x<=obj[map,x:type]
+```
+
+==== [mult]
+
+```
+x<=x[mult,x:mmonoid]
+```
+
+==== [neg]
+
+```
+x<=x[neg,x:pgroup]
+```
+
+==== [one]
+
+```
+x<=x:mmonoid[one]
+```
+
+==== [or]
+
+```
+bool<=bool[or,bool]
+```
+
+==== [plus]
+
+```
+x<=x[plus,x:pmonoid]
+```
+
+==== [q]
+
+```
+ring<=obj{ring}[q]
+```
+
+==== [zero]
+
+```
+x<=x:pmonoid[one]
+```
+
+=== Model Instructions
+
+==== [as]
+
+```
+x<=obj[as,x:type]
+```
+
+=== Reduce Instructions
+
+==== [count]
+
+```
+ring:x<=obj{ring:x}[count]
+```
+
+==== [fold]
+
+=== SideEffect Instructions
+
+==== [error]
+
+```
+obj<=obj[error,str]
+```
+
+=== Traverser Instructions
+
+==== [explain]
+
+```
+str<=type[explain]
+```
+
+==== [from]
+
+```
+y<=obj<x:y>[from,x]
+```
+
+==== [to]
+
+```
+y<x:y><=y[to,x]
+```

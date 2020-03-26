@@ -99,6 +99,8 @@ public class Console {
                     engineName = line.replace(LANG_OP, "").trim();
                 else if (line.equals(MODEL_OP))
                     terminal.writer().println(Model.from((RecType) engine.eval(Tokens.model())));
+                else if(line.equals(MODEL_OP + " clear"))
+                    engine.put(MODEL,Model.simple());
                 else if (line.startsWith(MODEL_OP))
                     engine.put(MODEL, Model.from((RecType) engine.eval(Tokens.model())).put(Model.from((RecType) engine.eval(line.substring(6)))));
                 else

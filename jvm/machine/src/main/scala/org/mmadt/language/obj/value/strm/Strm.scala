@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.LanguageFactory
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.value.Value
 
@@ -35,6 +36,7 @@ trait Strm[+O <: Obj] extends Value[O] {
   // utility methods
   override def toStrm:Strm[this.type] = this.asInstanceOf[Strm[this.type]]
 
+  override def named(_name:String):this.type = this
   // standard Java implementations
   override def toString:String = LanguageFactory.printStrm(this)
   // TODO: need a good hashcode
