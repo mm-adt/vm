@@ -20,35 +20,16 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.language.obj.value.strm
 
-import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
+import org.mmadt.language.obj.Real
+import org.mmadt.language.obj.`type`.RealType
+import org.mmadt.language.obj.value.RealValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class OneInstTest extends FunSuite {
-  test("[one] w/ int value"){
-    assertResult(int(1))(int(0).one())
-    assertResult(int(1))(int(1).one())
-    assertResult(int(1))(int(1).plus(100).one())
-    assertResult(int(1).q(10))(int(1).q(10).plus(100).one())
-  }
-  test("[one] w/ int type"){
-    assertResult("int[one]")(int.one().toString)
-    assertResult("int{10}[one]")(int.q(10).one().toString)
-  }
-
-  test("[one] w/ real value"){
-    assertResult(real(1.0))(real(0.0).one())
-    assertResult(real(1.0))(real(1.0).one())
-    assertResult(real(1.0))(real(1.0).plus(100.0).one())
-    assertResult(real(1.0).q(10))(real(1.0).q(10).plus(100.0).one())
-  }
-
-  test("[one] w/ real type"){
-    assertResult("real[one]")(real.one().toString)
-    assertResult("real{10}[one]")(real.q(10).one().toString)
-  }
+trait RealStrm extends Strm[Real] {
+  override val value:Iterator[RealValue]
+  override def start():RealType
 }

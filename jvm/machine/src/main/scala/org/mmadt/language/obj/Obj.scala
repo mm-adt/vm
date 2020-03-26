@@ -81,6 +81,8 @@ object Obj {
   @inline implicit def booleanToBool(java:Boolean):BoolValue = bool(java)
   @inline implicit def longToInt(java:Long):IntValue = int(java)
   @inline implicit def intToInt(java:scala.Int):IntValue = int(java.longValue())
+  @inline implicit def doubleToReal(java:scala.Double):RealValue = real(java)
+  @inline implicit def floatToReal(java:scala.Float):RealValue = real(java)
   @inline implicit def stringToStr(java:String):StrValue = str(java)
   @inline implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
   @inline implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = vrec(value = value,values = values:_*)

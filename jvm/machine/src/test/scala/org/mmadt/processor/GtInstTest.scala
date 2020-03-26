@@ -46,4 +46,19 @@ class GtInstTest extends FunSuite {
     assert(int.gt(int).isInstanceOf[BoolType])
     assert(int.gt(int).isInstanceOf[Bool])
   }
+
+  test("[gt] w/ real"){
+    assertResult(bfalse)(real(1).gt(real(3))) // value * value = value
+    assert(real(1).gt(real(3)).isInstanceOf[BoolValue])
+    assert(real(1).gt(real(3)).isInstanceOf[Bool])
+    assertResult(real(1).gt(real))(real(1).gt(real)) // value * type = type
+    assert(real(1).gt(real).isInstanceOf[BoolType])
+    assert(real(1).gt(real).isInstanceOf[Bool])
+    assertResult(real.gt(real(3)))(real.gt(real(3))) // type * value = type
+    assert(real.gt(real(3)).isInstanceOf[BoolType])
+    assert(real.gt(real(3)).isInstanceOf[Bool])
+    assertResult(real.gt(real))(real.gt(real)) // type * type = type
+    assert(real.gt(real).isInstanceOf[BoolType])
+    assert(real.gt(real).isInstanceOf[Bool])
+  }
 }

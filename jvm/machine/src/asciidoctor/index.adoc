@@ -10,7 +10,10 @@ Marko A. Rodriguez <marko@rredux.com>
 :favicon: ./images/favicon.ico
 :source-highlighter: coderay
 :source-language: Delphi
-require 'asciidoctor-diagram/svgbob'
+
+//\[
+//\int_0^1 x^n dx = \frac{1}{n+1}
+//\]
 
 image::images/mm-adt-logo.png[mm-ADT Logo,float="left",width=150]
 
@@ -249,15 +252,17 @@ mmlang> .a
 
 === Model Categories and their Functors
 
-An mm-ADT _model_ defines a set types within a _domain of discourse_.
-It also defines path equations that specify semantic equivalence between types.
+An mm-ADT _model_ specifies relationships between a set of types within a https://en.wikipedia.org/wiki/Domain_of_discourse[_domain of discourse_].
+These relationships are https://en.wikipedia.org/wiki/Path_(topology)[path equations] that specify semantic equivalences between types.
 There are two general classes of models:
 
-. *Category*: A category model has `ctype` and `type` mappings to other `ctypes` and `types` within the domain.
+. *Category*: A category model has `ctype` and `type` mappings to other `ctypes` and `types` within the category.
 . *Functor*: A functor model maps `ctypes` and `types` from one category model to a `ctypes` and `types` in another category model.
 
-Every mm-ADT model forms a category where the category's _objects_ are the canonical types and the _arrows_ are types that span the canonicals.
-All mm-ADT types defined using instructions not in the reduce near-ring, form a category, where associative composition is guaranteed and every type's identity morphism is the `[id]` instruction as in `int<=int[id]`.
+Every mm-ADT model excluding instructions from the reduce near-ring, forms a https://en.wikipedia.org/wiki/Category_(mathematics)[category], where
+the category's _objects_ are the canonical types (`ctypes`) and the _arrows_ are types that span the canonicals.
+mm-ADT models are defined via types that are constructed via the instruction ring where both `+` and `*` are associative
+and the `[id]` instruction serves as the identity as in `int<=int[id]`.
 
 A _model_ is a `rec` that specifies how a "left-hand side" (LHS) type maps to a "right-hand side" (RHS) type.
 Both object and arrow morphisms are captured in this structure.
@@ -265,8 +270,8 @@ The model below is a _functor model_ in that is specifies how to move from the c
 
 ```
 rec[
-  int<=int[is,[gt,0]] -> nat,
-  int[plus,[id]]      -> nat[mult,2]]
+  int<=int[is,[gte,0]] -> nat,
+  int[plus,[id]]       -> nat[mult,2]]
 ```
 
 The above model is diagrammed below where object morphisms are solid lines and the arrow morphism is the dotted line.
@@ -287,22 +292,22 @@ int[is[gte,0]]       :         int[is[gte,0]]
 [source]
 ----
 mmlang> :model clear
-mmlang> :model rec[int<=int[is>0] -> nat]
+mmlang> :model rec[int<=int[is>=0] -> nat]
 mmlang> :model rec[int + [id] -> nat * 2]
 mmlang> :model
 int ->
-	int[is,bool<=int[gt,0]] -> nat
-	int[plus,int[id]] -> nat<=int[is,bool<=int[gt,0]][mult,2]
+	int[is,bool<=int[gte,0]] -> nat
+	int[plus,int[id]] -> nat<=int[is,bool<=int[gte,0]][mult,2]
 mmlang> 32
 ==>nat:32
 mmlang> 32[plus,[id]]
 ==>nat:64
 mmlang> int[plus,[id]][explain]
 ==>str<=[start,'
-nat<=int[is,bool<=int[gt,0]][mult,2]
+nat<=int[is,bool<=int[gte,0]][mult,2]
 instruction             domain      range    state
 ---------------------------------------------------
-[is,bool<=int[gt,0]]    int    =>   int{?}
+[is,bool<=int[gte,0]]    int    =>   int{?}
  [gt,0]                  int   =>    bool
 [mult,2]                nat    =>   nat
 ']

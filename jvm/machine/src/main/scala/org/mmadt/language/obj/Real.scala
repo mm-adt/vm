@@ -20,35 +20,29 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.language.obj
 
+import org.mmadt.language.obj.op.map._
+import org.mmadt.language.obj.op.traverser.ToOp
+import org.mmadt.language.obj.value.RealValue
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class OneInstTest extends FunSuite {
-  test("[one] w/ int value"){
-    assertResult(int(1))(int(0).one())
-    assertResult(int(1))(int(1).one())
-    assertResult(int(1))(int(1).plus(100).one())
-    assertResult(int(1).q(10))(int(1).q(10).plus(100).one())
-  }
-  test("[one] w/ int type"){
-    assertResult("int[one]")(int.one().toString)
-    assertResult("int{10}[one]")(int.q(10).one().toString)
-  }
+trait Real extends Obj
+  with PlusOp[Real]
+  with MultOp[Real]
+  with NegOp
+  with GtOp[Real]
+  with GteOp[Real]
+  with LtOp[Real]
+  with LteOp[Real]
+  with OneOp[Real]
+  with ToOp[Real]
+  with ZeroOp[Real]
 
-  test("[one] w/ real value"){
-    assertResult(real(1.0))(real(0.0).one())
-    assertResult(real(1.0))(real(1.0).one())
-    assertResult(real(1.0))(real(1.0).plus(100.0).one())
-    assertResult(real(1.0).q(10))(real(1.0).q(10).plus(100.0).one())
-  }
-
-  test("[one] w/ real type"){
-    assertResult("real[one]")(real.one().toString)
-    assertResult("real{10}[one]")(real.q(10).one().toString)
-  }
+object Real {
+  @inline implicit def doubleToReal(java:Double):RealValue = real(java)
+  @inline implicit def floatToReal(java:Float):RealValue = real(java.doubleValue())
 }

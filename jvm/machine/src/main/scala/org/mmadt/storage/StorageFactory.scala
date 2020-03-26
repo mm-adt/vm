@@ -42,12 +42,14 @@ trait StorageFactory {
   lazy val obj :ObjType  = tobj()
   lazy val bool:BoolType = tbool()
   lazy val int :IntType  = tint()
+  lazy val real:RealType = treal()
   lazy val str :StrType  = tstr()
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
   def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType
   def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil):IntType
+  def treal(name:String = Tokens.real,q:IntQ = qOne,insts:InstList = Nil):RealType
   def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil):StrType
   def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B]
   def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B]
@@ -57,6 +59,8 @@ trait StorageFactory {
   def bool(value1:BoolValue,value2:BoolValue,valuesN:BoolValue*):BoolStrm
   def int(value:Long):IntValue
   def int(value1:IntValue,value2:IntValue,valuesN:IntValue*):IntStrm
+  def real(value:Double):RealValue = vreal(Tokens.real,value,qOne)
+  def real(value1:RealValue,value2:RealValue,valuesN:RealValue*):RealStrm
   def str(value:String):StrValue = vstr(Tokens.str,value,qOne)
   def str(value1:StrValue,value2:StrValue,valuesN:StrValue*):StrStrm
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:Map[A,B]):RecValue[A,B] = vrec(Tokens.rec,value,qOne)
@@ -66,6 +70,7 @@ trait StorageFactory {
   //
   def vbool(name:String,value:Boolean,q:IntQ):BoolValue
   def vint(name:String,value:Long,q:IntQ):IntValue
+  def vreal(name:String,value:Double,q:IntQ):RealValue
   def vstr(name:String,value:String,q:IntQ):StrValue
   def vrec[A <: Value[Obj],B <: Value[Obj]](name:String,value:Map[A,B],q:IntQ = qOne):RecValue[A,B]
   //
@@ -80,12 +85,14 @@ object StorageFactory {
   lazy val obj :ObjType  = tobj()
   lazy val bool:BoolType = tbool()
   lazy val int :IntType  = tint()
+  lazy val real:RealType = treal()
   lazy val str :StrType  = tstr()
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
   def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):ObjType = f.tobj(name,q,insts)
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):BoolType = f.tbool(name,q,insts)
   def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):IntType = f.tint(name,q,insts)
+  def treal(name:String = Tokens.real,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):RealType = f.treal(name,q,insts)
   def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):StrType = f.tstr(name,q,insts)
   def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):RecType[A,B] = f.trec(name,value,q,insts)
   def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*)(implicit f:StorageFactory):RecType[A,B] = f.trec(value,values:_*)
@@ -95,6 +102,9 @@ object StorageFactory {
   def bool(value1:BoolValue,value2:BoolValue,valuesN:BoolValue*)(implicit f:StorageFactory):BoolStrm = f.bool(value1,value2,valuesN:_*)
   def int(value:Long)(implicit f:StorageFactory):IntValue = f.int(value)
   def int(value1:IntValue,value2:IntValue,valuesN:IntValue*)(implicit f:StorageFactory):IntStrm = f.int(value1,value2,valuesN:_*)
+  def real(value:Double)(implicit f:StorageFactory):RealValue = f.vreal(Tokens.real,value,qOne)
+  def real(value:Float)(implicit f:StorageFactory):RealValue = f.vreal(Tokens.real,value.doubleValue(),qOne)
+  def real(value1:RealValue,value2:RealValue,valuesN:RealValue*)(implicit f:StorageFactory):RealStrm = f.real(value1,value2,valuesN:_*)
   def str(value:String)(implicit f:StorageFactory):StrValue = f.vstr(Tokens.str,value,qOne)
   def str(value1:StrValue,value2:StrValue,valuesN:StrValue*)(implicit f:StorageFactory):StrStrm = f.str(value1,value2,valuesN:_*)
   def vrec[A <: Value[Obj],B <: Value[Obj]](value:Map[A,B])(implicit f:StorageFactory):RecValue[A,B] = f.vrec(Tokens.rec,value,qOne)
@@ -104,6 +114,7 @@ object StorageFactory {
   //
   def vbool(name:String = Tokens.bool,value:Boolean,q:IntQ = qOne)(implicit f:StorageFactory):BoolValue = f.vbool(name,value,q)
   def vint(name:String = Tokens.int,value:Long,q:IntQ = qOne)(implicit f:StorageFactory):IntValue = f.vint(name,value,q)
+  def vreal(name:String = Tokens.real,value:Double,q:IntQ = qOne)(implicit f:StorageFactory):RealValue = f.vreal(name,value,q)
   def vstr(name:String = Tokens.str,value:String,q:IntQ = qOne)(implicit f:StorageFactory):StrValue = f.vstr(name,value,q)
   def vrec[A <: Value[Obj],B <: Value[Obj]](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne)(implicit f:StorageFactory):RecValue[A,B] = f.vrec(name,value,q)
   def strm[O <: Obj](itty:Iterator[O])(implicit f:StorageFactory):OStrm[O] = f.strm[O](itty)
@@ -124,6 +135,7 @@ object StorageFactory {
   def asType[O <: Obj](obj:O):OType[O] = (obj match {
     case atype:Type[_] => atype
     case _:IntValue | _:IntStrm => tint(name = obj.name,q = obj.q)
+    case _:RealValue | _:RealStrm => treal(name = obj.name,q = obj.q)
     case _:StrValue | _:StrStrm => tstr(name = obj.name,q = obj.q)
     case _:BoolValue | _:BoolStrm => tbool(name = obj.name,q = obj.q)
     case _:RecStrm[_,_] => trec(name = obj.name,value = Map.empty,q = obj.q)
@@ -140,16 +152,20 @@ object StorageFactory {
     override def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType = new TObj(name,q,insts)
     override def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType = new TBool(name,q,insts)
     override def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil):IntType = new TInt(name,q,insts)
+    override def treal(name:String = Tokens.real,q:IntQ = qOne,insts:InstList = Nil):RealType = new TReal(name,q,insts)
     override def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil):StrType = new TStr(name,q,insts)
     override def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B] = new TRec[A,B](name,value,q,insts)
     override def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B]((value +: values).toMap)
     /////////VALUES/////////
     override def obj(value:Any):ObjValue = new VObj(value)
     override def int(value:Long):IntValue = new VInt(value)
+    override def real(value:Double):RealValue = new VReal(value)
     override def vbool(name:String,value:Boolean,q:(IntValue,IntValue)):BoolValue = new VBool(name,value,q)
     override def bool(value1:BoolValue,value2:BoolValue,valuesN:BoolValue*):BoolStrm = new VBoolStrm(value1 +: (value2 +: valuesN))
     override def vint(name:String,value:Long,q:(IntValue,IntValue)):IntValue = new VInt(name,value,q)
     override def int(value1:IntValue,value2:IntValue,valuesN:IntValue*):IntStrm = new VIntStrm(value1 +: (value2 +: valuesN))
+    override def vreal(name:String,value:Double,q:(IntValue,IntValue)):RealValue = new VReal(name,value,q)
+    override def real(value1:RealValue,value2:RealValue,valuesN:RealValue*):RealStrm = new VRealStrm(value1 +: (value2 +: valuesN))
     override def vstr(name:String,value:String,q:(IntValue,IntValue)):StrValue = new VStr(name,value,q)
     override def str(value1:StrValue,value2:StrValue,valuesN:StrValue*):StrStrm = new VStrStrm(value1 +: (value2 +: valuesN))
     override def vrec[A <: Value[Obj],B <: Value[Obj]](name:String,value:Map[A,B],q:(IntValue,IntValue)):RecValue[A,B] = new VRec[A,B](name,value,q)
@@ -166,6 +182,7 @@ object StorageFactory {
           (first match {
             case boolValue:BoolValue => bool(value1 = boolValue,value2 = second.asInstanceOf[BoolValue],valuesN = itty.asInstanceOf[Iterator[BoolValue]].toSeq:_*)
             case intValue:IntValue => int(value1 = intValue,value2 = second.asInstanceOf[IntValue],valuesN = itty.asInstanceOf[Iterator[IntValue]].toSeq:_*)
+            case realValue:RealValue => real(value1 = realValue,value2 = second.asInstanceOf[RealValue],valuesN = itty.asInstanceOf[Iterator[RealValue]].toSeq:_*)
             case strValue:StrValue => str(value1 = strValue,value2 = second.asInstanceOf[StrValue],valuesN = itty.asInstanceOf[Iterator[StrValue]].toList:_*)
             case recValue:RecValue[_,_] => vrec(value1 = recValue.asInstanceOf[ORecValue],value2 = second.asInstanceOf[ORecValue],valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList:_*)
           }).asInstanceOf[OStrm[O]]
@@ -174,5 +191,6 @@ object StorageFactory {
         strm[O]
       }
     }
+
   }
 }

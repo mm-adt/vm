@@ -20,35 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.storage.obj.`type`
 
-import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.RealType
+import org.mmadt.language.obj.{InstList, IntQ}
+import org.mmadt.storage.StorageFactory.qOne
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class OneInstTest extends FunSuite {
-  test("[one] w/ int value"){
-    assertResult(int(1))(int(0).one())
-    assertResult(int(1))(int(1).one())
-    assertResult(int(1))(int(1).plus(100).one())
-    assertResult(int(1).q(10))(int(1).q(10).plus(100).one())
-  }
-  test("[one] w/ int type"){
-    assertResult("int[one]")(int.one().toString)
-    assertResult("int{10}[one]")(int.q(10).one().toString)
-  }
-
-  test("[one] w/ real value"){
-    assertResult(real(1.0))(real(0.0).one())
-    assertResult(real(1.0))(real(1.0).one())
-    assertResult(real(1.0))(real(1.0).plus(100.0).one())
-    assertResult(real(1.0).q(10))(real(1.0).q(10).plus(100.0).one())
-  }
-
-  test("[one] w/ real type"){
-    assertResult("real[one]")(real.one().toString)
-    assertResult("real{10}[one]")(real.q(10).one().toString)
-  }
+class TReal(name:String,quantifier:IntQ,insts:InstList) extends AbstractTObj(name,quantifier,insts) with RealType {
+  def this() = this(Tokens.real,qOne,Nil)
+  def this(name:String) = this(name,qOne,Nil)
+  override def q(quantifier:IntQ):this.type = new TReal(name,quantifier,insts).asInstanceOf[this.type]
 }

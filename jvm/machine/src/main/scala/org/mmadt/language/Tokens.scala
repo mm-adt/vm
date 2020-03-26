@@ -37,6 +37,7 @@ object Tokens {
   val str  = "str"
   val rec  = "rec"
   val int  = "int"
+  val real = "real"
   val inst = "inst"
   val __   = "__"
 
@@ -96,5 +97,5 @@ object Tokens {
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name:String):Boolean = !Set(bool,str,rec,int,inst).contains(name) // TODO: global immutable set
+  def named(name:String):Boolean = !Set(bool,str,real,rec,int,inst).contains(name) // TODO: global immutable set
 }

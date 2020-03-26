@@ -20,35 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.storage.obj.value.strm
 
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.IntQ
+import org.mmadt.language.obj.`type`.RealType
+import org.mmadt.language.obj.op.initial.StartOp
+import org.mmadt.language.obj.value.RealValue
+import org.mmadt.language.obj.value.strm.RealStrm
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
+import org.mmadt.storage.obj.value.AbstractVObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class OneInstTest extends FunSuite {
-  test("[one] w/ int value"){
-    assertResult(int(1))(int(0).one())
-    assertResult(int(1))(int(1).one())
-    assertResult(int(1))(int(1).plus(100).one())
-    assertResult(int(1).q(10))(int(1).q(10).plus(100).one())
-  }
-  test("[one] w/ int type"){
-    assertResult("int[one]")(int.one().toString)
-    assertResult("int{10}[one]")(int.q(10).one().toString)
-  }
+class VRealStrm(name:String,java:Seq[RealValue]) extends AbstractVObj(name,java,quantifier = (int(java.length),int(java.length))) with RealStrm {
+  def this(java:Seq[RealValue]) = this(name = Tokens.real,java)
 
-  test("[one] w/ real value"){
-    assertResult(real(1.0))(real(0.0).one())
-    assertResult(real(1.0))(real(1.0).one())
-    assertResult(real(1.0))(real(1.0).plus(100.0).one())
-    assertResult(real(1.0).q(10))(real(1.0).q(10).plus(100.0).one())
-  }
-
-  test("[one] w/ real type"){
-    assertResult("real[one]")(real.one().toString)
-    assertResult("real{10}[one]")(real.q(10).one().toString)
-  }
+  override val value:Iterator[RealValue] = java.iterator
+  override def start():RealType = treal(name,quantifier,List((treal(name,qZero,Nil),StartOp(this))))
+  override def q(quantifier:IntQ):this.type = this
 }

@@ -24,7 +24,6 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{OType, Obj, _}
 import org.mmadt.storage.StorageFactory._
 
@@ -38,6 +37,7 @@ trait Value[+V <: Obj] extends Obj {
   override def named(_name:String):this.type = (this match {
     case x:BoolValue => vbool(_name,x.value,x.q)
     case x:IntValue => vint(_name,x.value,x.q)
+    case x:RealValue => vreal(_name,x.value,x.q)
     case x:StrValue => vstr(_name,x.value,x.q)
     case x:RecValue[_,_] => vrec(_name,x.value,x.q)
   }).asInstanceOf[this.type]
