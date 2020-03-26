@@ -54,15 +54,15 @@ class SocialModelTest extends FunSuite {
   println("social=>mm\n" + socialmm)
 
   test("model atomic types"){
-    assertResult(int.getClass)(mmsocial.fromSymbol("nat").get.getClass)
+    assertResult(int.getClass)(mmsocial.get(tobj("nat")).get.getClass)
     assertResult("nat")(nat.name)
     assertResult(nat(34))(nat(34))
     assertResult("nat")(nat(int(34)).name)
     assertResult("int")(socialmm(nat(34)).name)
     assertResult("int")(socialmm(mmsocial(int(34))).name)
     assertResult(34)(mmsocial(int(34)).value)
-    // assertThrows[AssertionError]{nat(int(-34))}
-    //assertResult("nat[plus,nat]")(nat.plus(nat).toString)
+    // assertThrows[AssertionError]{mmsocial(int(-34))}
+    assertResult("nat[plus,nat]")(nat.plus(nat).toString)
   }
 
   test("model mapping and inverse mapping"){
@@ -99,12 +99,12 @@ class SocialModelTest extends FunSuite {
     assertResult(20L)(socialmm(ryan.get(str("age"))).value)
   }
 
-  /*test("bad model mappings"){
-    assertThrows[AssertionError]{mmsocial(vrec(str("name") -> int(34),str("age") -> int(24)))}
-    assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko")))}
+  test("bad model mappings"){
+    //assertThrows[AssertionError]{mmsocial(vrec(str("name") -> int(34),str("age") -> int(24)))}
+    //assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko")))}
     assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko"),str("age") -> int(-120)))}
-    assertThrows[AssertionError]{mmsocial(int(-130))}
-  }*/
+    //assertThrows[AssertionError]{mmsocial(int(-130))}
+  }
 
   test("model compilation and evaluation"){
     val toSocial = msCompiler(trec[Str,Obj](str("name") -> str,str("age") -> int).get(str("age"),int).plus(int))

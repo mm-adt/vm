@@ -23,10 +23,11 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj,Str}
-import org.mmadt.language.{LanguageFactory,Tokens}
+import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -340,6 +341,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]]")(engine.eval("int[plus,1][model,rec[int<=int[is,[gt,0]]:nat]]").toString)
     assertResult("nat:11")(engine.eval("10[plus,1][model,rec[int[is,[gt,0]]:nat]]").toString)
     assertResult("-10")(engine.eval("-11[plus,1][model,rec[int[is,[gt,0]]:nat]]").toString)
+    engine.put("model",Model.simple().put(int <= int.is(int.gt(0)),tobj("nat")))
+    assertResult("nat:12")(engine.eval("11[plus,1][as,nat]").toString)
+    assertResult(btrue)(engine.eval("11[plus,10][a,nat]"))
+    assertResult(bfalse)(engine.eval("-100[plus,10][a,nat]"))
+    assertThrows[AssertionError]{engine.eval("-11[plus,1][as,nat]")}
+    println(engine.eval("int[plus,10][a,nat]"))
+    println(engine.eval("int[plus,1][as,nat][mult,19]").toString)
   }
 
   /*test("model parsing"){

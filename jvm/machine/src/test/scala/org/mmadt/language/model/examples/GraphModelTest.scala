@@ -53,7 +53,7 @@ class GraphModelTest extends FunSuite {
     val peter :Vertex = vrec(str("id") -> int(6))
     val graph :Graph  = vrec(marko,vadas,lop,josh,ripple,peter)
     //
-    assert(graph.test(model.fromSymbol("graph").get))
+    assert(graph.test(model.get(tobj("graph")).get))
     // graph.toList.foreach(v => assert(v.test(model.symbol("vertex").get)))
     // graph.toList.foreach(v => assert(!v.test(model.symbol("edge").get)))
   }

@@ -23,12 +23,12 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.{RecType,Type}
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{OType, Obj}
+import org.mmadt.language.obj.{OType,Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -42,15 +42,14 @@ trait Model {
   def apply[B <: Obj](name:String):OType[B] = this.toRec.value().values.find(x => x.name == name).get.asInstanceOf[OType[B]]
   def apply[B <: Obj](obj:B):B = (obj match {
     case astrm:Strm[Obj] => strm(astrm.value.map(x => this.apply(x))) // TODO: migrate to AsOp?
-    case avalue:Value[Obj] => this.fromValue(avalue).getOrElse(avalue)
-    case atype:Type[Obj] => this.fromType(atype).getOrElse(atype)
+    case avalue:Value[Obj] => this.get(avalue).getOrElse(avalue)
+    case atype:Type[Obj] => this.get(atype).getOrElse(atype)
   }).asInstanceOf[B]
 
   def put(model:Model):Model
   def put(left:Type[Obj],right:Type[Obj]):Model
-  def fromType(left:Type[Obj]):Option[Type[Obj]]
-  def fromValue(left:Value[Obj]):Option[Value[Obj]]
-  def fromSymbol(left:String):Option[Type[Obj]]
+  def get(left:Type[Obj]):Option[Type[Obj]]
+  def get(left:Value[Obj]):Option[Value[Obj]]
   def toRec:RecType[Type[Obj],Type[Obj]]
 }
 
@@ -61,10 +60,9 @@ object Model {
   val id:Model = new Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this
     override def put(model:Model):Model = this
-    override def fromType(left:Type[Obj]):Option[Type[Obj]] = None
-    override def fromSymbol(left:String):Option[Type[Obj]] = None
+    override def get(left:Type[Obj]):Option[Type[Obj]] = None
+    override def get(left:Value[Obj]):Option[Value[Obj]] = None
     override def toRec:RecType[Type[Obj],Type[Obj]] = rec
-    override def fromValue(left:Value[Obj]):Option[Value[Obj]] = Some(left)
   }
 
   def simple():Model = new Model {
@@ -80,8 +78,9 @@ object Model {
       typeMap(left.name).put(left,right)
       this
     }
-    override def fromType(left:Type[Obj]):Option[Type[Obj]] ={
+    override def get(left:Type[Obj]):Option[Type[Obj]] ={
       if (left.name.equals(Tokens.model)) return Some(toRec)
+      if (isSymbol(left)) return this.typeMap.values.flatten.find(x => x._2.name.equals(left.name) && x._2.insts.isEmpty).map(x => x._1.named(left.name))
       this.typeMap.get(left.name) match {
         case None => None
         case Some(m) => m.get(left) match {
@@ -113,14 +112,7 @@ object Model {
     override def toRec:RecType[Type[Obj],Type[Obj]] ={
       trec[Type[Obj],Type[Obj]](value = this.typeMap.values.foldRight(mutable.Map[Type[Obj],Type[Obj]]())((a,b) => b ++ a).toMap)
     }
-    override def fromSymbol(left:String):Option[Type[Obj]] ={
-      if (left.equals(Tokens.model)) return Some(toRec)
-      typeMap.get(left) match {
-        case None => typeMap.values.flatten.find(x => x._2.insts.isEmpty && left.equals(x._2.name)).map(_._2)
-        case Some(m) => m.iterator.find(a => a._2.insts.isEmpty && left.equals(a._2.name)).map(_._2)
-      }
-    }
-    override def fromValue(left:Value[Obj]):Option[Value[Obj]] ={
+    override def get(left:Value[Obj]):Option[Value[Obj]] ={
       typeMap.get(left.name) match {
         case None => typeMap.values.flatten.find(x => x._2.insts.isEmpty && left.test(x._2.name)).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
         case Some(m) => m.iterator.find(a => a._2.insts.isEmpty && left.test(a._1)).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
