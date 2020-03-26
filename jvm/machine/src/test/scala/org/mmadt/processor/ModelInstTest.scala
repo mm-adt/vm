@@ -32,8 +32,8 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelInstTest extends FunSuite {
-  val modelA:RecType[Type[Obj],Type[Obj]] = trec(int -> (tobj("nat") <= int.is(int.gt(0))))
-  val modelB:RecType[Type[Obj],Type[Obj]] = trec(tobj("nat") -> (int <= int.named("nat")))
+  val modelA:RecType[Type[Obj],Type[Obj]] = trec((int<=int.is(int.gt(0))) -> int.named("nat"))
+  val modelB:RecType[Type[Obj],Type[Obj]] = trec(int.named("nat") -> int)
 
   test("[model] w/ values"){
     assertResult("nat")(int(5).model[IntValue](modelA).name)
@@ -44,7 +44,7 @@ class ModelInstTest extends FunSuite {
 
   }
   test("[map] w/ types"){
-    assertResult("int[plus,1][model,rec[int:nat<=int[is,bool<=int[gt,0]]]]")(int.plus(1).model(modelA).toString)
-    assertResult("int[plus,1][model,rec[int:nat<=int[is,bool<=int[gt,0]]]][plus,10][model,rec[nat:int<=nat[id]]]")(int.plus(1).model[Int](modelA).plus(10).model(modelB).toString)
+    assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]]")(int.plus(1).model(modelA).toString)
+    assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]][plus,10][model,rec[nat:int]]")(int.plus(1).model[Int](modelA).plus(10).model(modelB).toString)
   }
 }

@@ -23,12 +23,12 @@
 package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType,RecType,Type,__}
-import org.mmadt.language.obj.{Int,Obj,Str}
+import org.mmadt.language.obj.`type`.{IntType, RecType, Type, __}
+import org.mmadt.language.obj.{Int, Obj, Str}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.{FunSuite,Matchers}
+import org.scalatest.{FunSuite, Matchers}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -143,13 +143,15 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler with domain rewrites"){
-    val socialToMM:Model            = Model.simple()
-    val mmToSocial:Model            = Model.simple()
+    val socialToMM:Model = Model.simple()
+    val mmToSocial:Model = Model.simple()
     //
-    val nat       :IntType          = mmToSocial.define(int.named("nat") <= int.is(int.gt(0)))
-    val person    :RecType[Str,Obj] = mmToSocial.define(trec(name = "person",Map[Str,Obj](str("name") -> str,str("age") -> nat)) <= trec(str("name") -> str,str("age") -> int))
-    socialToMM.define(int <= nat)
-    socialToMM.define(trec(str("name") -> str,str("age") -> int) <= person)
+    mmToSocial.put(int <= int.is(int.gt(0)),int.named("nat"))
+    val nat:IntType = mmToSocial("nat")
+    mmToSocial.put(trec(str("name") -> str,str("age") -> int),trec(str("name") -> str,str("age") -> nat).named("person"))
+    val person:RecType[Str,Obj] = mmToSocial("person")
+    socialToMM.put(person,trec(str("name") -> str,str("age") -> int))
+    socialToMM.put(nat,int)
     println(mmToSocial + "\n" + socialToMM)
     //
     assertResult("nat")(mmToSocial(int(32)).name)

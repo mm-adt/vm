@@ -333,8 +333,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model inst parsing"){
-    assertResult("int[plus,1][model,rec[int:nat<=int[is,bool<=int[gt,0]]]]")(engine.eval("int[plus,1][model,rec[int:nat<=int[is,[gt,0]]]]").toString)
-    assertResult("nat:11")(engine.eval("10[plus,1][model,rec[int:nat<=int[is,[gt,0]]]]").toString)
+    assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]]")(engine.eval("int[plus,1][model,rec[int<=int[is,[gt,0]]:nat]]").toString)
+    assertResult("nat:11")(engine.eval("10[plus,1][model,rec[int[is,[gt,0]]:nat]]").toString)
   }
 
   /*test("model parsing"){

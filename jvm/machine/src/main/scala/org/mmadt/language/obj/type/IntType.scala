@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -33,6 +33,8 @@ import org.mmadt.storage.StorageFactory._
 trait IntType extends Int
   with Type[Int]
   with ObjType {
+
+  def apply(value:IntValue):IntValue = value.named(this.name)
 
   override def plus(other:Type[Int]):IntType = this.compose(PlusOp(other))
   override def plus(other:Value[Int]):this.type = this.compose(PlusOp(other))

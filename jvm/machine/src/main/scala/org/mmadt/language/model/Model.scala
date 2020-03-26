@@ -23,12 +23,12 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.model.{AsOp, NoOp}
+import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{OType, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -39,20 +39,18 @@ import scala.collection.mutable
  */
 trait Model {
 
+  def apply[B <: Obj](name:String):OType[B] = this.toRec.value().values.find(x => x.name == name).get.asInstanceOf[OType[B]]
   def apply[B <: Obj](obj:B):B = (obj match {
-    case atype:Type[Obj] => this.symbol(atype.name).map(x => atype.asInstanceOf[Type[Obj]].compose(x,NoOp())).getOrElse(this.get(atype).getOrElse(atype))
-    case astrm:Strm[Obj] => strm(astrm.value.map(this.apply)) // TODO: migrate to AsOp?
-    case avalue:Value[Obj] => this.symbol(avalue.name).map(x => AsOp[Obj](x).apply(Traverser.standard(avalue,model = this)).obj()).getOrElse(avalue)
+    case astrm:Strm[Obj] => strm(astrm.value.map(x => this.apply(x))) // TODO: migrate to AsOp?
+    case avalue:Value[Obj] => this.fromValue(avalue).getOrElse(avalue)
+    case atype:Type[Obj] => this.fromType(atype).getOrElse(atype)
   }).asInstanceOf[B]
 
   def put(model:Model):Model
   def put(left:Type[Obj],right:Type[Obj]):Model
-  def get(left:Type[Obj]):Option[Type[Obj]]
-  def symbol(left:String):Option[Type[Obj]]
-  def define[O <: Obj](definition:O with Type[Obj]):O ={
-    this.put(tobj(definition.domain().name),definition)
-    definition.range
-  }
+  def fromType(left:Type[Obj]):Option[Type[Obj]]
+  def fromValue(left:Value[Obj]):Option[Value[Obj]]
+  def fromSymbol(left:String):Option[Type[Obj]]
   def toRec:RecType[Type[Obj],Type[Obj]]
 }
 
@@ -66,13 +64,14 @@ object Model {
   val id:Model = new Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this
     override def put(model:Model):Model = this
-    override def get(left:Type[Obj]):Option[Type[Obj]] = None
-    override def symbol(left:String):Option[Type[Obj]] = None
+    override def fromType(left:Type[Obj]):Option[Type[Obj]] = None
+    override def fromSymbol(left:String):Option[Type[Obj]] = None
     override def toRec:RecType[Type[Obj],Type[Obj]] = rec
+    override def fromValue(left:Value[Obj]):Option[Value[Obj]] = Some(left)
   }
 
   def simple():Model = new Model {
-    val typeMap:mutable.Map[String,mutable.Map[Type[Obj],Type[Obj]]] = mutable.Map()
+    val typeMap:mutable.Map[String,mutable.Map[Type[Obj],Type[Obj]]] = mutable.LinkedHashMap()
     override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).map(x => x.trim).fold(Tokens.empty)((x,y) => x + y + "\n").trim
 
     override def put(model:Model):Model ={
@@ -80,11 +79,11 @@ object Model {
       this
     }
     override def put(left:Type[Obj],right:Type[Obj]):Model ={
-      if (typeMap.get(left.name).isEmpty) typeMap.put(left.name,mutable.Map())
+      if (typeMap.get(left.name).isEmpty) typeMap.put(left.name,mutable.LinkedHashMap())
       typeMap(left.name).put(left,right)
       this
     }
-    override def get(left:Type[Obj]):Option[Type[Obj]] ={
+    override def fromType(left:Type[Obj]):Option[Type[Obj]] ={
       if (left.name.equals(Tokens.model)) return Some(toRec)
       this.typeMap.get(left.name) match {
         case None => None
@@ -117,13 +116,18 @@ object Model {
     override def toRec:RecType[Type[Obj],Type[Obj]] ={
       trec[Type[Obj],Type[Obj]](value = this.typeMap.values.foldRight(mutable.Map[Type[Obj],Type[Obj]]())((a,b) => b ++ a).toMap)
     }
-    override def symbol(left:String):Option[Type[Obj]] ={
+    override def fromSymbol(left:String):Option[Type[Obj]] ={
       if (left.equals(Tokens.model)) return Some(toRec)
       typeMap.get(left) match {
-        case None => None
-        case Some(m) => m.iterator.find(a => isSymbol(a._1) && left.equals(a._1.name)).map(_._2)
+        case None => typeMap.values.flatten.find(x => x._2.insts.isEmpty && left.equals(x._2.name)).map(_._2)
+        case Some(m) => m.iterator.find(a => a._2.insts.isEmpty && left.equals(a._2.name)).map(_._2)
+      }
+    }
+    override def fromValue(left:Value[Obj]):Option[Value[Obj]] ={
+      typeMap.get(left.name) match {
+        case None => typeMap.values.flatten.find(x => x._2.insts.isEmpty && left.test(x._2.name)).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
+        case Some(m) => m.iterator.find(a => a._2.insts.isEmpty && left.test(a._1)).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
       }
     }
   }
-
 }

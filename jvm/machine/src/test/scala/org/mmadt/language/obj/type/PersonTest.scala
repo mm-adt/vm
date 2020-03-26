@@ -67,7 +67,7 @@ class PersonTest extends FunSuite {
       put(int.plus(0),int).
       put(rec.get(str("firstname"),str),rec.get(str("name"),str))
     println(model)
-    println(model.get(rec.get(str("firstname"),str)))
+    println(model.fromType(rec.get(str("firstname"),str)))
     // println(IteratorChainProcessor(marko, rec.get(str("firstname"), str)).toList)
   }
 
