@@ -72,7 +72,7 @@ trait ChooseOp {
     val types = outs.map{
       case atype:Type[Obj] => atype.range.asInstanceOf[OT]
       case avalue:OT => avalue
-    }
+    }.filter(x => x.alive())
     (types.toSet.size match {
       case 1 => types.head
       case _ => new TObj().asInstanceOf[OT]

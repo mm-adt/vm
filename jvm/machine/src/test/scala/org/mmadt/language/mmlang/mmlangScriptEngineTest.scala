@@ -348,6 +348,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertThrows[AssertionError]{engine.eval("-11[plus,1][as,nat]")}
     println(engine.eval("int[plus,10][a,nat]"))
     println(engine.eval("int[plus,1][as,nat][mult,19]").toString)
+    println(engine.eval("int{3}[is[a,nat]->[as,nat][plus,20] | obj->[is,false]]").toString)
+    assertResult(List(int(32).named("nat"),int(44).named("nat")))(engine.eval("12,-4,24[is[a,nat]->[as,nat][plus,20] | int->[is,false]]").toList)
   }
 
   /*test("model parsing"){

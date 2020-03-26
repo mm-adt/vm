@@ -42,7 +42,7 @@ trait IsOp {
   }).asInstanceOf[OType[this.type]]
 
   def is(bool:BoolValue):this.type = this match {
-    case atype:Type[_] => atype.compose(this.q(minZero(this.q)),IsOp(bool))
+    case atype:Type[_] => atype.compose(this.q(minZero(this.q)),IsOp(bool.start()))
     case _ => if (bool.value) this else this.q(0)
   }
 }

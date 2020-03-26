@@ -39,7 +39,7 @@ class IteratorProcessor(model:Model = Model.id) extends Processor {
       case atype:Type[S] with S => atype
       case avalue:Value[S] with S => model[S,S](rangeType.domain[S]())(avalue)
     }*/
-    TypeChecker.typeCheck(domainObj,rangeType.domain())
+    TypeChecker.typeCheck(domainObj,rangeType.domain().q(0,rangeType.domain().q._2))
     var lastStrm:Option[Strm[_]]        = None
     var output  :Iterator[Traverser[E]] = domainObj match {
       case strm:Strm[_] =>

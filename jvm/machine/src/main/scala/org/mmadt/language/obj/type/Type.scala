@@ -136,7 +136,7 @@ object Type {
   }
 
   def resolveAnonymous[R <: Obj](obj:Obj,rangeType:Type[R]):Type[R] = rangeType match {
-    case x:__ => x(obj)
+    case x:__ => x[R](obj)
     case x => x
   }
 
