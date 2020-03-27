@@ -55,7 +55,7 @@ object FoldOp {
         case _:Type[Obj] => Traverser.stateSplit[Obj](this.arg0[StrValue]().value,this.arg1[A]())(trav)
         case _ => trav
       }
-      t.split(t.obj().fold(seed)(Type.resolveAnonymous(t.obj(),reduction)))
+      t.split(t.obj().fold(seed)(Type.resolve(t.obj(),reduction)))
     }
 
     /*private def deduceSeed(defaultSeed:ZeroOp[Type[Obj]],model:Model):Option[Obj] = {

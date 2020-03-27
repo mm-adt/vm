@@ -62,12 +62,12 @@ object AsOp {
                   case kvalue:Value[Obj] => kvalue
                   case ktype:Type[Obj] =>
                     TypeChecker.matchesVT(avalue,ktype)
-                    trav.apply(Type.resolveAnonymous(trav.obj(),ktype)).obj().asInstanceOf[Value[Obj]]
+                    trav.apply(Type.resolve(trav.obj(),ktype)).obj().asInstanceOf[Value[Obj]]
                 }) -> (x._2 match {
                   case vvalue:Value[Obj] => vvalue
                   case vtype:Type[Obj] =>
                     TypeChecker.matchesVT(avalue,vtype)
-                    trav.apply(Type.resolveAnonymous(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
+                    trav.apply(Type.resolve(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
                 })))
             }
           case atype:StrType => trav.split(vstr(name = atype.name,value = trav.obj().asInstanceOf[Value[Obj]].value.toString)).apply(atype).obj()

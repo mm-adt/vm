@@ -33,14 +33,14 @@ import org.scalatest.FunSuite
 class ToFromTest extends FunSuite {
   test("[to][from] w/ values"){
     assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.from[IntType]("x")))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from("x")))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from("x"))
+    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from[IntType]("x")))
+    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from[IntType]("x"))
     /*intercept[NoSuchElementException]{
       assertResult(int(20))(int(1) ==> int.from[Int]("x").plus(1).map(int.mult(10)))
     }*/
   }
   test("[to][from] w/ types"){
-    assertResult(int(5))(int(1) ==> int.plus(1).map(int(5)).to("x").from("x"))
+    assertResult(int(5))(int(1) ==> int.plus(1).map(int(5)).to("x").from[IntType]("x"))
     assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from[IntType]("x").mult(int.from[IntType]("y")))))
     assertResult("int[plus,1][map,int]<x>")(int.plus(1).map(int).to("x").toString)
     /*intercept[NoSuchElementException]{

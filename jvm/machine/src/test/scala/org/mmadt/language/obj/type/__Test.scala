@@ -43,18 +43,18 @@ class __Test extends FunSuite {
   }
 
   test("__ deep nest"){
-    assertResult(int(2))(int(1) ==> __.plus(1))
-    assertResult(int(3))(int(1) ==> __.plus(__.plus(1)))
-    assertResult(int(4))(int(1) ==> __.plus(__.plus(__.plus(1))))
-    assertResult(int(5))(int(1) ==> __.plus(__.plus(__.plus(__.plus(1)))))
-    assertResult(int(6))(int(1) ==> __.plus(__.plus(__.plus(__.plus(__.plus(1))))))
+    assertResult(int(2))(int(1) ===> __.plus(1))
+    assertResult(int(3))(int(1) ===> __.plus(__.plus(1)))
+    assertResult(int(4))(int(1) ===> __.plus(__.plus(__.plus(1))))
+    assertResult(int(5))(int(1) ===> __.plus(__.plus(__.plus(__.plus(1)))))
+    assertResult(int(6))(int(1) ===> __.plus(__.plus(__.plus(__.plus(__.plus(1))))))
   }
 
   test("__ quantifiers"){
     println(__.id().q(2).plus(4))
-    assertResult(int(5))(int(5) ==> __)
-    assertResult(int(5))(int(5) ==> __.id())
-    assertResult(int(5))(int(5) ==> __.id().q(1))
+    assertResult(int(5))(int(5) ===> __)
+    assertResult(int(5))(int(5) ===> __.id())
+    assertResult(int(5))(int(5) ===> __.id().q(1))
     //assertResult(int(5).q(2))(int(5) ==> __.id().q(2))
 
     /*assertResult(int(1).q(10))(int(1) ==> __.q(10))

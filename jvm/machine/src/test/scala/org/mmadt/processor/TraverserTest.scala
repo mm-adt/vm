@@ -70,7 +70,7 @@ class TraverserTest extends FunSuite {
   }
 
   test("multi input"){
-    assertResult(int(90)){
+    assertResult(int(90,100,110)){
       int(1,2,3) ==> int.q(+).plus(2).is(int.plus(55).gt(3)).mult(10).plus(60)
     }
     assertResult(int(30)){

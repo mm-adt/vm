@@ -22,14 +22,13 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.model.Model
-import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
+import org.mmadt.language.obj.op.model.{ModelOp,NoOp}
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageFactory, Tokens}
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.language.obj.{eqQ,_}
+import org.mmadt.language.{LanguageFactory,Tokens}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -77,8 +76,6 @@ trait Type[+T <: Obj] extends Obj
 
   // type specification and compilation
   final def <=[D <: Obj](domainType:Type[D]):this.type = Some(domainType).filter(x => x.insts.isEmpty).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
-  override def ==>[R <: Obj](rangeType:Type[R]):R = Processor.compiler()(this,Type.resolveAnonymous(this,rangeType))
-  def ==>[R <: Obj](model:Model)(rangeType:Type[R]):R = Processor.compiler(model)(this,Type.resolveAnonymous(this,rangeType))
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[R <: Type[Obj]](btype:R):R = btype match {
