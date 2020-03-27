@@ -23,8 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Real
-import org.mmadt.language.obj.`type`.{IntType, RealType, Type}
-import org.mmadt.language.obj.op.initial.StartOp
+import org.mmadt.language.obj.`type`.{RealType, Type}
 import org.mmadt.storage.StorageFactory.vbool
 
 /**
