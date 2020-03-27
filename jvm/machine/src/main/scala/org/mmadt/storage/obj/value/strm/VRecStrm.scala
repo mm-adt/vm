@@ -38,7 +38,6 @@ class VRecStrm[A <: Value[Obj],B <: Value[Obj]](name:String,java:Seq[RecValue[A,
   def this(java:Seq[RecValue[A,B]]) = this(name = Tokens.rec,java)
 
   override val value:Iterator[RecValue[A,B]] = java.iterator
-  override def start():RecType[A,B] = trec(name,Map.empty[A,B],quantifier,List((trec(name,Map.empty[A,B],qZero,Nil),StartOp(this).asInstanceOf[Inst[Obj,Obj]])))
   override def q(quantifier:IntQ):this.type = this
 }
 

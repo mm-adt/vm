@@ -39,6 +39,5 @@ class VRec[A <: Value[Obj],B <: Value[Obj]](name:String,java:Map[A,B],quantifier
 
   override val value:Map[A,B] = java
   override def value(java:Map[A,B]):this.type = new VRec(this.name,java,quantifier).asInstanceOf[this.type]
-  override def start():RecType[A,B] = trec(name,java,quantifier,List((trec(name,java,qZero,Nil),StartOp[Obj](this))))
   override def q(quantifier:IntQ):this.type = new VRec(name,java,quantifier).asInstanceOf[this.type]
 }

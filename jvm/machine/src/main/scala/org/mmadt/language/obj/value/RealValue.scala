@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Real
-import org.mmadt.language.obj.`type`.{RealType, Type}
+import org.mmadt.language.obj.`type`.{IntType, RealType, Type}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.storage.StorageFactory.vbool
 
@@ -32,16 +32,14 @@ import org.mmadt.storage.StorageFactory.vbool
  */
 trait RealValue extends Real
   with ObjValue
-  with Value[Real]
-  with StartOp[RealType] {
+  with Value[Real] {
 
   override val value:Double
-  override def start():RealType
   def value(java:Double):this.type
 
-  override def plus(other:Type[Real]):RealType = this.start().plus(other)
+  override def plus(other:Type[Real]):RealType = this.start[RealType]().plus(other)
   override def plus(other:Value[Real]):this.type = this.value(this.value + other.asInstanceOf[RealValue].value)
-  override def mult(other:Type[Real]):RealType = this.start().mult(other)
+  override def mult(other:Type[Real]):RealType = this.start[RealType]().mult(other)
   override def mult(other:Value[Real]):this.type = this.value(this.value * other.asInstanceOf[RealValue].value)
   override def neg():this.type = this.value(-this.value)
   override def one():RealValue = this.value(1.0d)

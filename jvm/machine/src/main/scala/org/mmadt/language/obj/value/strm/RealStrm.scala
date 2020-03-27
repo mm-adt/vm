@@ -31,5 +31,4 @@ import org.mmadt.language.obj.value.RealValue
  */
 trait RealStrm extends Strm[Real] {
   override val value:Iterator[RealValue]
-  override def start():RealType
 }

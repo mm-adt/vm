@@ -38,7 +38,6 @@ class VBoolStrm(name:String,java:Seq[BoolValue]) extends AbstractVObj(name,java,
   def this(java:Seq[BoolValue]) = this(name = Tokens.bool,java)
 
   override val value:Iterator[BoolValue] = java.iterator
-  override def start():BoolType = tbool(name,quantifier,List((tbool(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = this
 }
 

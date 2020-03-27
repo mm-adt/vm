@@ -32,16 +32,14 @@ import org.mmadt.storage.StorageFactory._
  */
 trait IntValue extends Int
   with ObjValue
-  with Value[Int]
-  with StartOp[IntType] {
+  with Value[Int]{
 
   override val value:Long
-  override def start():IntType
   def value(java:Long):this.type
 
-  override def plus(other:Type[Int]):IntType = this.start().plus(other)
+  override def plus(other:Type[Int]):IntType = this.start[IntType]().plus(other)
   override def plus(other:Value[Int]):this.type = this.value(this.value + other.value.asInstanceOf[Long])
-  override def mult(other:Type[Int]):IntType = this.start().mult(other)
+  override def mult(other:Type[Int]):IntType = this.start[IntType]().mult(other)
   override def mult(other:Value[Int]):this.type = this.value(this.value * other.value.asInstanceOf[Long])
   override def neg():this.type = this.value(-this.value)
   override def one():IntValue = this.value(1L)

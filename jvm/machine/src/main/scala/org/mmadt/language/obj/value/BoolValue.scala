@@ -31,15 +31,13 @@ import org.mmadt.language.obj.op.initial.StartOp
  */
 trait BoolValue extends Bool
   with ObjValue
-  with Value[Bool]
-  with StartOp[BoolType] {
+  with Value[Bool] {
 
   override val value:Boolean
-  override def start():BoolType
   def value(java:Boolean):this.type
 
-  override def and(bool:BoolType):BoolType = this.start().and(bool)
+  override def and(bool:BoolType):BoolType = this.start[Bool]().and(bool)
   override def and(other:BoolValue):this.type = this.value(this.value && other.value)
-  override def or(bool:BoolType):BoolType = this.start().or(bool)
+  override def or(bool:BoolType):BoolType = this.start[Bool]().or(bool)
   override def or(other:BoolValue):this.type = this.value(this.value || other.value)
 }

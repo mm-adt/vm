@@ -39,6 +39,5 @@ class VStr(name:String,java:String,quantifier:IntQ) extends AbstractVObj(name,ja
 
   override val value:String = java
   override def value(java:String):this.type = new VStr(this.name,java,quantifier).asInstanceOf[this.type]
-  override def start():StrType = tstr(name,quantifier,List((tstr(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VStr(name,java,quantifier).asInstanceOf[this.type]
 }

@@ -31,5 +31,4 @@ import org.mmadt.language.obj.value.StrValue
  */
 trait StrStrm extends Strm[Str] {
   override val value:Iterator[StrValue]
-  override def start():StrType
 }

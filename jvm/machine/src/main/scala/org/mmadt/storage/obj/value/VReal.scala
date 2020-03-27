@@ -38,6 +38,5 @@ class VReal(name:String,java:Double,quantifier:IntQ) extends AbstractVObj(name,j
 
   override val value:Double = java
   override def value(java:Double):this.type = new VReal(this.name,java,quantifier).asInstanceOf[this.type]
-  override def start():RealType = treal(name,quantifier,List((treal(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = new VReal(name,java,quantifier).asInstanceOf[this.type]
 }

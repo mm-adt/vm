@@ -38,6 +38,5 @@ class VRealStrm(name:String,java:Seq[RealValue]) extends AbstractVObj(name,java,
   def this(java:Seq[RealValue]) = this(name = Tokens.real,java)
 
   override val value:Iterator[RealValue] = java.iterator
-  override def start():RealType = treal(name,quantifier,List((treal(name,qZero,Nil),StartOp(this))))
   override def q(quantifier:IntQ):this.type = this
 }

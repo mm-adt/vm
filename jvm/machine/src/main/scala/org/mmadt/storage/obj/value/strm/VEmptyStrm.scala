@@ -32,7 +32,6 @@ import org.mmadt.storage.StorageFactory._
  */
 class VEmptyStrm[O <: Obj] extends Strm[O] {
   override val value:Iterator[O] = Iterator.empty
-  override def start():OType[O] = obj.q(0).asInstanceOf[OType[O]]
   override val q:(IntValue,IntValue) = qZero
   override def q(quantifier:(IntValue,IntValue)):this.type = throw new UnsupportedOperationException
   override val name:String = obj.name

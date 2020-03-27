@@ -22,12 +22,12 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.model.{ModelOp,NoOp}
+import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{eqQ,_}
-import org.mmadt.language.{LanguageFactory,Tokens}
+import org.mmadt.language.obj.{eqQ, _}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -133,11 +133,6 @@ object Type {
   def nextInst(atype:Type[_]):Option[Inst[Obj,Obj]] = atype.insts match {
     case Nil => None
     case x => Some(x.head._2)
-  }
-
-  def resolveAnonymous[R <: Obj](obj:Obj,rangeType:Type[R]):Type[R] = rangeType match {
-    case x:__ => x[R](obj)
-    case x => x
   }
 
   def resolve[R <: Obj](objA:Obj,objB:R):R = objB match {

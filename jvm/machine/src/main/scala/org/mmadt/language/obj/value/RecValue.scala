@@ -23,21 +23,18 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecValue[A <: Value[Obj],B <: Value[Obj]] extends Rec[A,B]
-  with Value[Rec[A,B]]
-  with StartOp[RecType[A,B]] {
+  with Value[Rec[A,B]] {
 
   override val value:Map[A,B]
-  override def start():RecType[A,B]
   def value(java:Map[A,B]):this.type
 
-  override def plus(other:Type[Rec[A,B]]):RecType[A,B] = this.start().plus(other)
+  override def plus(other:Type[Rec[A,B]]):RecType[A,B] = this.start[RecType[A,B]]().plus(other)
   override def plus(other:Value[Rec[A,B]]):this.type = this.value(this.value ++ other.asInstanceOf[RecValue[A,B]].value)
   override def get(key:A):B = this.value(key)
   override def get[BB <: Obj](key:A,btype:BB):BB = this.value(key).asInstanceOf[BB]

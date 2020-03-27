@@ -23,8 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.{BoolType,StrType,Type}
-import org.mmadt.language.obj.op.initial.StartOp
+import org.mmadt.language.obj.`type`.{StrType, Type}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -32,14 +31,12 @@ import org.mmadt.storage.StorageFactory._
  */
 trait StrValue extends Str
   with ObjValue
-  with Value[Str]
-  with StartOp[StrType] {
+  with Value[Str] {
 
   override val value:String
-  override def start():StrType
   def value(java:String):this.type
 
-  override def plus(other:Type[Str]):StrType = this.start().plus(other)
+  override def plus(other:Type[Str]):StrType = this.start[StrType]().plus(other)
   override def plus(other:Value[Str]):this.type = this.value(this.value + other.value)
   override def gt(other:Value[Str]):BoolValue = bool(this.value > other.asInstanceOf[StrValue].value).q(this.q)
   override def gte(other:Value[Str]):BoolValue = bool(this.value >= other.asInstanceOf[StrValue].value).q(this.q)

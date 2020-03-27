@@ -25,7 +25,8 @@ package org.mmadt.language.obj.op.initial
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.InitialInstruction
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -33,8 +34,9 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StartOp[+O <: Obj] {
-  def start():O
+trait StartOp {
+  this:Value[Obj] =>
+  def start[O <: Obj]():O with Type[O] = asType(this).q(0).compose(StartOp(this)).q(this.q).asInstanceOf[OType[O]]
 }
 
 object StartOp {
