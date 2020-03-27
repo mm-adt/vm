@@ -28,7 +28,6 @@ import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -36,7 +35,6 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait ToOp[O <: Obj] {
   this:O =>
-  def to(label:String):OType[O] = this.to(str(label))
   def to(label:StrValue):OType[O] = this match {
     case atype:Type[_] => atype.compose(ToOp[O](label)).asInstanceOf[OType[O]]
     case avalue:Value[O] => avalue.start().compose(ToOp[O](label))
