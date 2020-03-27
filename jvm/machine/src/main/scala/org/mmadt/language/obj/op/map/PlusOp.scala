@@ -36,6 +36,11 @@ trait PlusOp[O <: Obj] {
   this:O =>
   def plus(other:Type[O]):OType[O]
   def plus(other:Value[O]):this.type
+  def plus(other:Obj):this.type = (other match {
+    case atype:Type[O] => plus(atype.asInstanceOf[Type[O]])
+    case avalue:Value[O] => this.plus(avalue.asInstanceOf[Value[O]])
+  }).asInstanceOf[this.type]
+
   final def +(other:Type[O]):OType[O] = this.plus(other)
   final def +(other:Value[O]):this.type = this.plus(other)
 }

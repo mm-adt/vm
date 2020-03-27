@@ -40,32 +40,33 @@ trait ChooseOp {
 
   def choose[IT <: Obj,OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(value = branches.toMap))
 
-  def choose[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):OT ={
-    this match {
+  def choose[IT <: Obj,OT <: Obj](branches:RecType[IT,OT],trav:Traverser[IT] = Traverser.standard(this.asInstanceOf[IT])):OT ={
+    trav.obj() match {
       case atype:Type[IT] with IT =>
-        val newBranches:RecType[IT,OT] = applyRec(atype.range,branches) // composed branches given the incoming type
-        val rangeType  :OT             = generalType[OT](newBranches.value().values)
-        atype.compose[OT](rangeType,ChooseOp[IT,OT](newBranches))
+        val newBranches:Traverser[RecType[IT,OT]] = applyRec(trav.split(atype.range),branches) // composed branches given the incoming type
+        val rangeType  :OT                        = generalType[OT](newBranches.obj().value().values)
+        atype.compose[OT](rangeType,ChooseOp[IT,OT](newBranches.obj()))
       case avalue:Value[IT] with IT =>
         branches.value().find(p => p._1 match {
-          case btype:Type[IT] with IT => (avalue ===> btype).toStrm.value.hasNext
+          case btype:Type[IT] with IT => trav.apply(btype).obj().alive()
           case bvalue:Value[IT] with IT => avalue.test(bvalue)
         }).map(_._2.q(avalue.q)).getOrElse(avalue.q(qZero))
         match {
-          case btype:Type[OT] with OT => avalue ===> btype
+          case btype:Type[OT] with OT => trav.apply(btype).obj()
           case bvalue:Value[OT] with OT => bvalue.q(avalue.q)
         }
     }
   }
 
-  private def applyRec[IT <: Obj,OT <: Obj](current:Type[IT] with IT,branches:RecType[IT,OT]):RecType[IT,OT] ={
-    trec(value = branches.value().map(x => (x._1 match {
-      case atype:Type[IT] with IT => current.compose(atype).asInstanceOf[IT]
-      case avalue:Value[IT] with IT => avalue
-    },x._2 match {
-      case atype:Type[OT] with OT => current.compose(atype).asInstanceOf[OT]
-      case avalue:Value[OT] with OT => avalue
-    })))
+  private def applyRec[IT <: Obj,OT <: Obj](current:Traverser[Type[IT] with IT],branches:RecType[IT,OT]):Traverser[RecType[IT,OT]] ={
+    current.split(
+      trec(value = branches.value().map(x => (x._1 match {
+        case atype:Type[IT] with IT => current.obj().compose(atype).asInstanceOf[IT]
+        case avalue:Value[IT] with IT => avalue
+      },x._2 match {
+        case atype:Type[OT] with OT => current.obj().compose(atype).asInstanceOf[OT]
+        case avalue:Value[OT] with OT => avalue
+      }))))
   }
 
   private def generalType[OT <: Obj](outs:Iterable[OT]):OT ={ // TODO: record introspection for type generalization
@@ -86,7 +87,7 @@ object ChooseOp {
   def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):Inst[IT,OT] = new ChooseInst(branches)
 
   class ChooseInst[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]) extends VInst[IT,OT]((Tokens.choose,List(branches))) with BranchInstruction {
-    override def apply(trav:Traverser[IT]):Traverser[OT] = trav.split(trav.obj().choose(branches))
+    override def apply(trav:Traverser[IT]):Traverser[OT] = trav.split(trav.obj().choose(branches,trav)) // TODO: do we maintain the OT branch states?
   }
 
 }

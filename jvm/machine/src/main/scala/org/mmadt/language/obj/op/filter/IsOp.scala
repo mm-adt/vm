@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.op.FilterInstruction
 import org.mmadt.language.obj.value.{BoolValue, Value}
-import org.mmadt.language.obj.{Inst, OType, Obj, minZero}
+import org.mmadt.language.obj.{Bool, Inst, OType, Obj, minZero}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -36,6 +36,12 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait IsOp {
   this:Obj =>
+
+  def is(bool:Bool):OType[this.type] = (this match {
+    case atype:Type[_] => atype.compose(asType(this),IsOp(bool)).q(minZero(this.q))
+    case avalue:Value[_] => avalue.start().is(bool)
+  }).asInstanceOf[OType[this.type]]
+
   def is(bool:BoolType):OType[this.type] = (this match {
     case atype:Type[_] => atype.compose(asType(this),IsOp(bool)).q(minZero(this.q))
     case avalue:Value[_] => avalue.start().is(bool)

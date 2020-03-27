@@ -22,7 +22,8 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{RealType, __}
+import org.mmadt.language.obj.{Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -86,4 +87,13 @@ class ChooseInstTest extends FunSuite {
         int.is(int.gt(20)) -> __.plus(3),
         int.is(int.gt(10)) -> __.plus(4)))
   }
+
+  test("[choose] w/ traverser state"){
+    assertResult(real(2.0,3.0,3.0))(
+      real(0.0,1.0,1.0) ===> real.q(3).to("x").plus(1.0).to("y").choose[__,Real](
+        __.is(__.eqs(1.0)) -> __.from("y"),
+        __.is(__.eqs(2.0)) -> __.from("x")
+      ).plus(real.from[Real]("y")))
+  }
 }
+
