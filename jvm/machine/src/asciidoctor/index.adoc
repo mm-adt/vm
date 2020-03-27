@@ -106,19 +106,71 @@ for migration around a compute cluster.
 
 === Types
 
-mm-ADT types are constructed using a small collection of modifiers. These are written below in an information,
-non-compiling manner.
+mm-ADT types are constructed by composing a set of _fundamental types_ using *instructions* and *quantifiers*.
+Instructions and quantifiers are elements of two independent https://en.wikipedia.org/wiki/Ring_(mathematics)[rings],
+whose direct product is the subject of study in https://zenodo.org/record/2565243[stream ring theory].footnote:[In stream
+ring theory, instructions are called _functions_ and quantifiers are called _coefficients_, where their product as
+mm-ADT types are called _streams_.]
+
+Instructions, quantifiers, and their unification into types are captured in the informative, yet non-compiling type
+definition in pseudo-`mmlang` notation below.
 
 [source]
 ----
-range{q}<=domain{q}[inst]{q}[bran->ch|ing->inst][with[nesting]]
+range{q}<=domain{q}[inst]{q}[bran->ch|ing->inst][allowing,[nesting,[types]]
+|_________________||______________________________________________________|
+  type signature                     type definition
 ----
 
-. *Domain*: Every mm-ADT type has a domain type known as a `ctype` (canonical type). A `ctype` always has a
-_quantifier_ specified in `{ }` (in `mmlang`) denoting the quantify of the values denoted by the type. When the quantifier
-is unity, then `mmlang` does not display it.
-. *Range*: Every mm-ADT type has a range `ctype` with quantifier. The `range<=domain` is written backwards to emphasize
-the signature of the type over the instructions that determine the type definition.
+==== Type Signatures
+
+Every mm-ADT type can be generally understood as a function that maps elements from one type to elements of another
+type. The type signature specifies the source and target types.
+
+. *Domain*: The domain of an mm-ADT type is a `ctype` (or _canonical type_). A `ctype` is one component of
+a product whose other component is a quantifier specified, in `mmmlang`, via `{}`. The semantics of quantification
+vary depending on the chosen quantifier ring, but in general, the intuition is that the quantifier denotes the "number"
+of elements being referred to by the constructed type.
+
+. *Range*: The range of an mm-ADT type is also a quantified `ctype`. The _signature_ of a type is the domain/range
+specification: `range{q}<=domain{q}`. The reasoning behind presenting the range before the domain is that the elements
+drawn from this type are always generally within the range `ctype` as the domain and range of a type can vary.
+
+A few type signature examples are presented which highlight the nuances of an mm-ADT type.
+
+[source]
+----
+mmlang> int{1}                <1>
+==>int
+mmlang> int<=int              <2>
+==>int
+mmlang> int{5}                <3>
+==>int{5}
+mmlang> int{0,5}              <4>
+==>int{0,5}
+mmlang> int{0,5}<=int{0,5}    <5>
+==>int{0,5}
+----
+<1> In most programming languages, a value can be typed `int` as in `val x:int`. Such
+https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declarations] state that the value referred to by `x`
+is a _single_ element within the set of integers. This concept is captured in mm-ADT via quantification, where when the
+quantifier is the https://en.wikipedia.org/wiki/Unit_(ring_theory)[unit] of the underlying quantifier ring, then it is
+simply not displayed in `mmlang`.
+<2> An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] function from `int` to `int`. Given some
+integer, the integer is returned. However, in `mmlang`, when the domain and range are the same, the `<=` and repeated
+`ctype` and quantifier are not displayed.
+<3> A type always refers to an unordered https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) of elements
+known as a _stream_. `int{5}` is a type referring to 5 integer values (with repeats possible). As a point of comparison,
+`int` denotes a stream containing a single integer. This explains why `mmlang` displays `int{1}` as `int`.
+<4> The quantifier ring can be any ring with unity. In the previous examples, the chosen ring's
+https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] was the set of integers. In this example, the
+carrier set is two integers and that are used to capture uncertainty as
+to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
+<5> This example emphasizes the point that every mm-ADT type is ultimately a function with a quantified domain and a
+quantified range.
+
+==== Type Definition
+
 . *Instruction*: The domain type is modified via a single instruction. Types are connected to one another via
 instructions. Instructions are denoted in `[ ]` (in `mmlang`) and form the primary body of knowledge required
 to program the mm-ADT VM.

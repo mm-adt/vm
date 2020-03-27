@@ -56,6 +56,10 @@ class TypeTest extends FunSuite {
     assertResult(types.length * (types.length - 1))(diffCounter)
   }
 
+  test("ctype/inst list structure") {
+    println(int.plus(10).mult(2).is(false).insts)
+  }
+
   test("type structure w/ one canonical type"){
     var tobj:IntType = int.plus(10).mult(1).is(int.gt(20))
     assertResult(int)(tobj.domain())
