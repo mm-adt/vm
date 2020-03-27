@@ -210,6 +210,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("traverser read/write state parsing"){
+    assertResult(real(45.5))(engine.eval("45.0<x>[mult,0.0][plus,<x>][plus,0.5]"))
     assertResult(int.to("a").plus(int(10)).to("b").mult(int(20)))(engine.eval("int<a>[plus,10]<b>[mult,20]"))
     assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,<a>]"))
     assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<a>]"))
