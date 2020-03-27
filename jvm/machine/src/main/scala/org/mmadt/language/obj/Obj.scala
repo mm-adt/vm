@@ -65,7 +65,6 @@ trait Obj
   def toStrm:Strm[this.type] = strm[this.type](Iterator[this.type](this))
   def toList:List[this.type] = toStrm.value.toList
   def toSet:Set[this.type] = toStrm.value.toSet
-  def next():this.type = toStrm.value.next()
   def ==>[E <: Obj](rangeType:Type[E]):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType)).toStrm.value.next()
   def ===>[E <: Obj](rangeType:E,model:Model):E = Processor.iterator(model).apply(this,Type.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: spec'd to R cause of FoldOp
   def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,Type.resolveAnonymous(this,rangeType.asInstanceOf[Type[E]])) // TODO: necessary for __ typecasting -- weird)

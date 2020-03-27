@@ -41,7 +41,7 @@ class mmkvInstTest extends FunSuite {
   val mmkv :String = "=mmkv"
 
   test("mmkv parsing"){
-    println(engine.eval(s"3[=mmkv,'${file1}']").next())
+    println(engine.eval(s"3[=mmkv,'${file1}']"))
   }
 
   test("mmkv choose parsing"){
@@ -51,7 +51,7 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("mmkv file-2 parsing"){
-    assertResult(s"mmkv{*}<=obj[=mmkv,'${file2}']")(engine.eval(s"obj[=mmkv,'${file2}']").next().toString)
+    assertResult(s"mmkv{*}<=obj[=mmkv,'${file2}']")(engine.eval(s"obj[=mmkv,'${file2}']").toString)
     assertResult(List(str("marko!"),str("stephen!")))(engine.eval(s"1[=mmkv,'${file2}'][get,'v'][is,[get,'age',int][gt,28]][get,'name'][plus,'!']").toList)
     assertResult(List(str("marko!"),str("stephen!")))(engine.eval(s"1[=mmkv,'${file2}'].v[is.age>28].name+'!'").toList)
   }
@@ -64,23 +64,23 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("mmkv model"){
-    assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").next().name)
+    assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").name)
     assertThrows[AssertionError]{
-      engine.eval(s"obj[=mmkv,'${file2}'][put,'v',6]").next()
+      engine.eval(s"obj[=mmkv,'${file2}'][put,'v',6]")
     }
     assertThrows[AssertionError]{
-      engine.eval(s"obj[=mmkv,'${file2}'][put,'k',346]").next()
+      engine.eval(s"obj[=mmkv,'${file2}'][put,'k',346]")
     }
-    assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").next().toString)
-    assertResult(str("marko"))(engine.eval(s"'x'[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']").next())
+    assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
+    assertResult(str("marko"))(engine.eval(s"'x'[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
 
     assertResult(vrec[StrValue,Value[Obj]](
       str("k") -> int(200),
       str("v") -> vrec[StrValue,Value[Obj]](
         str("name") -> str("blah"),
-        str("age") -> int(22))))(engine.eval(s"'x'[=mmkv,'${file2}'][add['k':200,'v':['name':'blah','age':22]]]").next())
+        str("age") -> int(22))))(engine.eval(s"'x'[=mmkv,'${file2}'][add['k':200,'v':['name':'blah','age':22]]]"))
 
-    println(engine.eval(s"'x'[=mmkv,'${file2}'][add,['k':200,'v':['name':'blah','age':22]]][=mmkv,'${file2}'][is,[get,'k'][eq,200]][get,'v']").next())
+    println(engine.eval(s"'x'[=mmkv,'${file2}'][add,['k':200,'v':['name':'blah','age':22]]][=mmkv,'${file2}'][is,[get,'k'][eq,200]][get,'v']"))
   }
 
 }

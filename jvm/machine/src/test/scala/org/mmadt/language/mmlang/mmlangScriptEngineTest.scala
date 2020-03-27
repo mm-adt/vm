@@ -26,8 +26,8 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj,Str}
-import org.mmadt.language.{LanguageFactory,Tokens}
+import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 

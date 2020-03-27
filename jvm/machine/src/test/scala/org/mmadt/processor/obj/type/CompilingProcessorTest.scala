@@ -99,8 +99,8 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
         put(int.mult(int(2)).mult(int(2)),int.mult(int(4))). // TODO: mult(x).mult(x) -> mult(x.mult(2))   (variables in patterns)
         put(int.plus(int(1)).plus(int(-1)),int)) // TODO: plus(x).plus(-1) -> id
     /////
-    assertResult(int.mult(2))(processor.apply(int,int.plus(int)).next())
-    assertResult(int.mult(4))(processor.apply(int,int.plus(int).mult(int(2))).next())
+    assertResult(int.mult(2))(processor.apply(int,int.plus(int)))
+    assertResult(int.mult(4))(processor.apply(int,int.plus(int).mult(int(2))))
   }
 
   test("compiler w/ [choose]"){
