@@ -344,7 +344,9 @@ int+---[plus,10]----->int[plus,10]<-------=[id]=-------+
 
 Every path through the graph specifies a particular mm-ADT type construction, where an mm-ADT *program* is simply
 a type denoted by a terminal vertex. Thus, every mm-ADT program is an mm-ADT type. There exists an mm-ADT
-canonical type graph whose vertices are the 6 base types and whose edges are
+canonical type graph derived by from the previous type graph via a
+https://en.wikipedia.org/wiki/Forgetful_functor[forgetful functor], where the vertices
+denote the 6 base types and the edges denote
 https://en.wikipedia.org/wiki/Endomorphism[endomorphisms] of the base type
 monoid or https://en.wikipedia.org/wiki/Homomorphism[homomorphisms] between two type monoids.
 
