@@ -87,17 +87,15 @@ mmlang> 1[plus,2]
 
 == Language Structures
 
-[ditaa,"types-and-values",align="left",float="left"]
-....
- /->obj<-\
- |       |
- |       |
-type   value
-....
+// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYCAIwBWAXxDDS6TLnyEU5UsWp0mrdlx7AcATzQxR4ydjwEiAJgVKGLNok7deV1vqUwoAc3hFQAMwBOEAFskMhAcCCRyAxA-QKRzUPDESMphIA
+image::images/obj-type-value-q.png[float="left",width=300]
 
-The mm-ADT VM operates on _objects_ denoted `obj`. Every mm-ADT `obj` is either a *type* or a *value*.
 
-\[ \texttt{obj} = \texttt{type} + \texttt{value} \]
+The mm-ADT VM operates on quantified objects known as `objs`. Every mm-ADT object is either a *type* or a *value*.
+
+\[ \texttt{obj} = (\texttt{type} + \texttt{value}) * \tt{quantifier}\]
+
+The semantics of quantification varies depending on the user's chosen quantifier (e.g. integers, reals, unitary matrices, etc.), but in general, the intuition is that the quantifier denotes the amount of `objs`.
 
 It is via types and their composition that program
 are specified, sets constructed, functions defined, and mappings between different abstract data types realized.
@@ -105,25 +103,36 @@ Values, on the other hand, are simple datum optimized for migration around a com
 
 === Types
 
-[ditaa,"types-instructions-quantifiers",float="right"]
-....
- /-type-\
- |      |
- v      v
 
-inst    q
-....
+// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYHATzQwAviGGl0mXPkIpypYtTpNW7Ljz6CRYiSAzY8BIgCYFShizaJO3XljBwco4UphQA5vCKgAZgCcIAFskeRAcCCRicV8A4MRQ8KRjF2EgA
+image::images/type-inst.png[float="left",width=220]
 
-The infinite set of all mm-ADT types can be constructed inductively via a finite set of _base types_ composed with
-*instructions* (`inst`) and *quantifiers* (`q`) products. Instructions and quantifiers form the carrier sets of two
-independent https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with unity whose direct product forms the
+mm-ADT *types* are the product of a type and an instruction (`inst`).
+\[ \tt{type} = \tt{type} * \tt{inst}  \]
+This recursive definition is grounded at the 6 *canonical types*: `bool`, `int`, `real`, `str`, `lst`, and `rec`. The type of every canonical type is itself and the instruction of every canonical type is the identity instruction `[id]`.
+
+// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPYACcYTYaPHY8BIuXk0GLNok7deAIwgRGOsSAz6pR0sQVnll1bzgcdSc9SUMUMi9TJQsrNUZAkJcJA2lkOSjFcxVrDRgAYx0FGCgAc3giUAAzdQgAWyRjEBwIRppGezQiYgAOYyqmOBgFRnobGEYABRT3S3UsUoALHBBo7L9rZCwoShFnGvqkOWbWxGOOiC6IvtIBhOH2sYnpt3CQeaWVtd843i2dpIHBqIMgnJCgi5XEg3O5DEZPKYzN4fZarLI-fzAf6UQG1YEAZhoLSQhJAkO6MMGDzJCJeYWk7wWqO+sUx2Nxh0QABYiaceWTOhT+lT4eNEa8GSivujWbl2XtqnikABWXkq9qC67C+6i55IyVM6U+WVqeWCHFAA
+image::images/ctypes.png[align="center",width=225]
+
+From the canonical types, the set of all *derived type* can be constructed.
+
+
+// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgBjHAJ5oYAXxAjS6TLnyEUARnJVajFm07dgUQcLESp2PASIAmJdXrNWiDu15QIOBPpAZDsogGZzKq+q482kKi4sowUADm8ESgAGYAThAAtkhkIDgQqdQMEBBoRPIAHGSxjHAwygx0AEYwDAAK0kZyIPFYEQAWOCAWqta2mshYUBR6kiAJyVnpmYiKvmo2GjhDYHA4FOLjkylz1BlIZiBVtQ1NHjYMMLHdvX5LAcCr66M9x1hg-XAQDMNbcYldkcDohvAt+ssnh8XnpRkA
+image::images/dtype.png[align="center",width=425]
+
+Instructions are https://en.wikipedia.org/wiki/Partial_function#Total_function[total functions] that map mm-ADT `objs` of type `X` to mm-ADT `objs` of type `Y`.
+
+
+
+Instructions and quantifiers are the carrier sets of two independent https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with unity whose https://en.wikipedia.org/wiki/Direct_product[direct product] forms the
 mm-ADT *type ring* and is the subject of study in https://zenodo.org/record/2565243[stream ring theory] (SRT).
 
-\[ \texttt{type} = \texttt{inst} * \texttt{q} \]
+
 
 NOTE: In stream ring theory, instructions are called _functions_ and quantifiers are called _coefficients_.
-A function-coefficient pair is called a _stream_. The equivalence highlights the fact that mm-ADT types are referents
+A function-coefficient pair is called a _stream_. The equivalence highlights the fact that mm-ADT types refer
 to streams of objects (i.e. https://en.wikipedia.org/wiki/Multiset[multi-sets] or bags).
+
 
 An informative, yet non-compiling type is presented below in pseudo-`mmlang` notation. The expression highlights the
 two primary components of an mm-ADT type: _signature_ and _definition_.
@@ -135,24 +144,69 @@ range{q}<=domain{q}[inst]{q}[bran->ch|ing->inst][allows,[nesting,[types]]
   type signature                     type definition
 ----
 
+.Expressions of mmlang
+****
+
+[source]
+----
+obj   := (type | value){q}
+type  := ctype | dtype
+ctype := bool | int | real | str | rec | inst
+q     := int,int
+dtype := ctype<=ctype([inst]+)
+rec   := [:] | [obj:obj(,obj:obj)*]
+inst  := [op(,obj*)]
+op    := a, as, branch, choose, plus, mult, is, ...
+----
+
+The following equations have variables `x`, `y`, and `z` in `ctype` and `[a]` and `[b]` in `inst`.
+
+[source]
+----
+id(x)                      := x<=x[id]
+domain(y<=x[a])            := x
+range(y<=x[a])             := y
+domain(x)                  := x
+range(x)                   := x
+scompose(y<=x[a],z<=y[b])  := z<=x[a][b]
+pcompose(y<=x[a],y<=x[b])  := y<=x[branch,y<=x[a],y<=x[b]]
+pcompose(y<=x[a],z<=x[b])  := obj<=x[branch,y<=x[a],z<=x[b]]
+----
+
+The quantifiers of an `mmlang` program are elements of a ring with unity (the quantifier ring). In the following equations, `*` and `+` refer to the respective monoid and group operations of the program's associated quantifier ring.
+
+[source]
+----
+scompose(y{q1}<=x[a],z{q2}<=y[b]) := z{q1*q2}<=x[a][b]
+pcompose(y{q1}<=x[a],y{q2}<=x[a]) := y{q1+q2}<=x[a]
+pcompose(y{q1}<=x[a],y{q2}<=x[b]) := y{q1+q2}<=x[branch,y{q1}<=x[a],y{q2}<=x[b]]
+pcompose(y{q1}<=x[a],y{q2}<=x[b]) := obj{q1+q2}<=x[branch,y{q1}<=x[a],z{q2}<=x[b]]
+----
+
+The following inference rules reuse the same variables as the equations above.
+
+[source]
+----
+xxx   yyy      xxx   yyy
+_________      _________
+    zz            zz
+----
+
+****
+
 ==== Type Signatures
+
+
+
+Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another (potentially
+equivalent) type. A *type signature* specifies the source and target of this mapping.
 
 [source]
 ----
 range{q}<=domain{q}
 ----
 
-Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another (potentially
-equivalent) type. A *type signature* specifies the source and target of this mapping.
-
-. *Domain*: An mm-ADT type composed of an identity instruction and a quantifier.
-. *Range*: An mm-ADT type composed of an identity instruction and a quantifier.
-
-There are 6 *identity instructions* in mm-ADT: `bool`, `int`, `real`, `str`, `lst`, and `rec`. Each is associated with a
-base type specified outside the mm-ADT VM within the context of the executing environment. For instance, if an mm-ADT
-VM is implemented on the JVM, then `int` is an identity function over `java.math.BigInteger`. The semantics of quantification
-varies depending on the user's chosen quantifier ring, but in general, the intuition is that the quantifier denotes the "number"
-of `objs` being referred to by the type.
+Type's that can be fully specified by the type signature are always canonical types. The examples below demonstrates various expressions in `mmlang`, highlighting various syntax sugars.
 
 [source]
 ----
@@ -160,37 +214,25 @@ mmlang> int{1}                <1>
 ==>int
 mmlang> int<=int              <2>
 ==>int
-mmlang> int{5}                <3>
+mmlang> int<=bool             <3>
+error: bool is not a int
+mmlang> int{5}                <4>
 ==>int{5}
-mmlang> int{0,5}              <4>
+mmlang> int{0,5}              <5>
 ==>int{0,5}
-mmlang> int{0,5}<=int{0,5}    <5>
+mmlang> int{0,5}<=int{0,5}    <6>
 ==>int{0,5}
 ----
-<1> In most programming languages, a value can be typed `int` as in `val x:int`. Such
-https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declarations] state that the value referred to by `x`
-is a _single_ element within the set of integers. The concept of a "single element" is captured in mm-ADT via quantification,
-where when the quantifier is the https://en.wikipedia.org/wiki/Unit_(ring_theory)[unit] of the underlying quantifier ring,
-then it is simply not displayed in `mmlang`.
-<2> An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] identity instruction on the set of integers.
-Given an integer, `int` returns the integer. In `mmlang`, when the domain and range are the same, the `<=` and repeated
-type are not displayed.
-<3> An mm-ADT type always refers to an unordered https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) of elements
-known as a _stream_. `int{5}` is a type referring to 5 integers (with repeats possible). As a point of comparison,
-`int` denotes a stream containing a single integer. This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
-<4> The quantifier ring can be any ring with unity. In the previous examples, the chosen ring's
-https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] was the set of integers. In this example, the
-carrier set is two integers and is used to capture uncertainty as
-to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
-<5> This example emphasizes the point that every mm-ADT type is ultimately a function with a quantified domain and a
-quantified range.
+<1> In most programming languages, a value can be typed `int` as in `val x:int`. Such https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declarations] state that the value referred to by `x` is a _single_ element within the set of integers. The concept of a "single element" is captured in mm-ADT via quantification. When the quantifier is the https://en.wikipedia.org/wiki/Unit_(ring_theory)[unit] of the underlying quantifier ring, then the quantifier is not displayed in `mmlang`.
+<2> An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] identity instruction on the set of integers. Given an integer, `int` returns the integer. In `mmlang`, when the domain and range are the same, the `<=` and repeated type are not displayed.
+<3> Without any instructions, there is no way for a type to legally map a `bool` to an `int`.
+<4> An mm-ADT type always refers to an unordered https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) of elements known as a _stream_. `int{5}` is a type referring to 5 integers (with repeats possible). As a point of comparison, `int` denotes a stream containing a single integer. This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
+<5> The quantifier ring can be any ring with unity. In the previous examples, the chosen ring's https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] was the set of integers. In this example, the carrier set is two integers and is used to capture uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
+<6> This further emphasizes the fact that every mm-ADT type (even canonical types) are functions with a quantified domain and a quantified range.
 
 ==== Type Definition
 
-mm-ADT type signatures specify the base type and quantity of the types domain and range.
-Further specification of the nature of the type's referent values is accomplished
-via the *type definitions*. The following mm-ADT type is a
-https://en.wikipedia.org/wiki/Refinement_type[refinement type] -- it provides further
+mm-ADT type signatures specify the base type and quantity of the type's domain and range. Further specification of the nature of the elements of the type is accomplished via a *type definition*. The following mm-ADT type is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] -- it provides further
 constraint/refinement to `int`. In particular, it is the mm-ADT definition of a natural number in \$\mathbb{N}\$.
 
 [source]
@@ -202,14 +244,9 @@ int[is,[gte,0]]
    instruction
 ----
 
-The structure `[is,[gte,0]]` is an *instruction* with a single argument. mm-ADT instruction opcodes denote specific operations
-explicitly implemented by the mm-ADT virtual machine. The set of all mm-ADT instructions forms the
-machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture].
+The structure `[is,[gte,0]]` is an *instruction* with a single argument. mm-ADT instruction opcodes denote specific operations explicitly implemented by the mm-ADT virtual machine. The set of all mm-ADT instructions forms the machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture].
 
-A type is transformed into another type via an instruction application. Every instruction is able to operate on both
-types and values. In this way, instruction application on types yields program _compilation_ and instruction application
-on values yields _evaluation_. The compilation of a type produces a type, where quantification and domain/range specifications
-are inferred when unspecified by the user.
+A type is transformed into another type via an instruction application. Every instruction is able to operate on both types and values. In this way, instruction application on types yields program _compilation_ and instruction application on values yields _evaluation_. The compilation of a type produces a type, where quantification and domain/range specifications are inferred when unspecified by the user.
 
 [source]
 ----

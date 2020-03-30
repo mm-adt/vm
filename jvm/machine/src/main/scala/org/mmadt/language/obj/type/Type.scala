@@ -75,7 +75,11 @@ trait Type[+T <: Obj] extends Obj
     }).asInstanceOf[R]
 
   // type specification and compilation
-  final def <=[D <: Obj](domainType:Type[D]):this.type = Some(domainType).filter(x => x.insts.isEmpty).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
+  final def <=[D <: Obj](domainType:Type[D]):this.type = {
+    if(!this.canonical.test(domainType.canonical))
+      throw new AssertionError(s"${this} is not a ${domainType}")
+    Some(domainType).filter(x => x.insts.isEmpty).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
+  }
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[R <: Type[Obj]](btype:R):R = btype match {

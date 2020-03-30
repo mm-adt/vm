@@ -37,4 +37,11 @@ class TIntTest extends FunSuite {
     assertResult(int.plus(int.plus(int)))(int + (int + int))
     assertResult(int.plus(int.plus(int.mult(int))))(int + (int + (int * int)))
   }
+
+  test("canonical int type"){
+    assertThrows[AssertionError]{bool <= int}
+    assert(int.q(?).test((int.q(?) <= int.is(int.gt(5))).range))
+    assert(!int.test(bool))
+    assert(!bool.test(int))
+  }
 }
