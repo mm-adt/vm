@@ -323,24 +323,13 @@ image::images/inst-left-distrib.png[width=750,align=center]
 // https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYZAIwBO9MAGMAFqQC+IKaXSZc+QinKli1Ok1bsuPPmhZwKGmXIXY8BImoBMmhizaJO3XsgC2zRjlIBWSjN5EAxLZSJbCgdtZ1d9QNlg0KVrFAAWKJpHHRcuGABHZixaRIsUlWQ-TK0nXTc+IREJaVKQxSsKgDZ1aNrc+uRDZmNyU1bkjqJu+yyYuv1Pb18AoLLJlAB2Htm+uPcAc18NhPM2sNTkLZmanL2+Q9Jj1bPyogAOauzYvV4TpPbwigAMyfOb9BYPJ6yTQwKD7eBEUAAM0EEA8SDIIBwECQ5FOKLRGJo2KQtnxqPRiDUWJxiCB5MJiEiNKQ9OCBMpVRZiE6DM5xNpGz5SG63LewsQW25AE4JdKBbjiBKPtzRhKQaq8YEgA
 image::images/inst-right-distrib.png[width=750,align=center]
 
-
-
 ===== The Quantifier Ring
 
-In the set-theoretic interpretation of types, a type denotes a set in *Set*.
-A set does not contain repeated elements.
-A _stream_ generalizes a set.
-A stream is an unordered collection of `objs` of varying cardinality (a multi-set, or bag).
-In mm-ADT, `int` is shorthand for `int{1}`--a single integer.
-This is analogous to other languages, where when `int` is used to define a value, it is referring to a single integer from the set of all integers--e.g., `val answer:int = 42`.
-Where mm-ADT differs from other languages is that `bool{42}` is a type denoting `42` boolean values.
-All `mmlang` expressions within `{ }` operate on the mm-ADT VM's *_quantifier ring_* (w/ unity).
-Any `obj` that supports `+`/`*`/`0`/`1` and the axioms governing their composition is supported by mm-ADT.
-In mm-ADT, types can be specified to an as accurate or fuzzy degree as computationally and conceptually possible.
+In the https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory[set-theoretic interpretation of types], a type denotes a set in *Set*. A set does not contain repeated elements. A _stream_ generalizes a set. A stream is an unordered collection of `objs` of varying cardinality (a multi-set, or bag). For example, in mm-ADT, `int` is shorthand for `int{1}`--a single integer. This is analogous to other languages, where when `int` is used to define a value, it is referring to a single integer from the set of all integers--e.g., `val answer:int = 42`. Where mm-ADT differs from other languages is that `bool{42}` is a type denoting `42` boolean values.
 
-Typically, the quantifier of choice for most applications is the `int` ring (or `int` range ring -- `{2,13}`).
-Common programming concepts that are usually captured by typeclasses or functors (via
-https://en.wikipedia.org/wiki/Lift_(mathematics)[lifting]) are expressed in mm-ADT via quantification.
+All `mmlang` expressions within `{ }` operate on the mm-ADT VM's *_quantifier ring_* (w/ unity). Any object that supports `+`/`*`/`0`/`1` and the axioms governing their composition can be used as an mm-ADT quantifier. Along with Turing Complete types specifications, type definitions can be specified to as accurate or fuzzy a degree as computationally and conceptually possible.
+
+Typically, the quantifier of choice for most applications is the `int` ring (or `int` range ring -- `{2,13}`). Common programming concepts that are usually captured by typeclasses or functors (via https://en.wikipedia.org/wiki/Lift_(mathematics)[lifting]) are expressed in mm-ADT via quantification.
 
 [source]
 ----
@@ -351,15 +340,28 @@ int{4}<=int{2}[[id]+[id]]    // 4 ints
 int{*}<=[=db][get,'costs']   // 0 or more ints
 ----
 
+.Quantifier Symbols in mmlang
+[width=35%,cols="1,3"]
+|===
+|sugar | unsugared form
+
+|`{0}` | `{0,0}`
+|      | `{1,1}`
+|`{x}` | `{x,x}`
+|`{?}` | `{0,1}`
+|`{+}` | `{1,maxInt}`
+|`{*}` | `{1,maxInt}`
+|===
+
 NOTE: `{?}` is shorthand for `{0,1}`, `{+}` for `{1,+infty}`, `{*}` for `{0,+infty}`, and ` ` (nothing) for `{1}`.
+
+==== Type Ring
 
 The type system of mm-ADT is characterized by a particular formulation of the https://en.wikipedia.org/wiki/Product_ring[direct product of rings]
 over the _quantifier_ and _instruction_ rings.
 The direct product of these two rings is a ring itself.
 Thus, mm-ADT's types are founded on ring theory whose operations are associative w/ identities and therefore,
 also form a category.
-
-==== Type Graphs and their Commutative Diagrams
 
 The mm-ADT *type graph* is composed of _type vertices_ connected by _instruction edges_ referring to a single instruction
 that distinguishes them while ensuring that the https://en.wikipedia.org/wiki/Diagram_(category_theory)[categorical diagram]
