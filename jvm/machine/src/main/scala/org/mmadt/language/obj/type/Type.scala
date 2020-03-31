@@ -52,13 +52,13 @@ trait Type[+T <: Obj] extends Obj
   val insts:List[(Type[Obj],Inst[Obj,Obj])]
   lazy val canonical:this.type = this.range.q(qOne)
   lazy val range    :this.type = (this match {
-    case _:BoolType => tbool(this.name,this.q,Nil)
-    case _:RealType => treal(this.name,this.q,Nil)
-    case _:IntType => tint(this.name,this.q,Nil)
-    case _:StrType => tstr(this.name,this.q,Nil)
-    case arec:RecType[_,_] => trec(this.name,arec.value(),arec.q,Nil)
+    case _:BoolType => tbool(this.name,this.q)
+    case _:RealType => treal(this.name,this.q)
+    case _:IntType => tint(this.name,this.q)
+    case _:StrType => tstr(this.name,this.q)
+    case arec:RecType[_,_] => trec(this.name,arec.value(),arec.q)
     case _:__ => this
-    case _:ObjType => tobj(this.name,this.q,Nil)
+    case _:ObjType => tobj(this.name,this.q)
   }).asInstanceOf[this.type]
 
   def domain[D <: Obj]():Type[D] = if (this.isCanonical) this.asInstanceOf[Type[D]] else this.via._1.domain[D]()
@@ -91,7 +91,7 @@ trait Type[+T <: Obj] extends Obj
     val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]]))
     (nextObj match {
       case _:Bool => tbool(nextObj.name,multQ(this,inst),newInsts)
-      case _:Real => treal(nextObj.name,multQ(this,inst),newInsts)
+      case _:Real => treal(nextObj.name,multQ(this,inst),newInsts.last.asInstanceOf[(Type[Obj],Inst[Obj,Real])])
       case _:Int => tint(nextObj.name,multQ(this,inst),newInsts)
       case _:Str => tstr(nextObj.name,multQ(this,inst),newInsts)
       case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInsts)
@@ -105,7 +105,7 @@ trait Type[+T <: Obj] extends Obj
 
   def named(_name:String):this.type = (this match {
     case _:BoolType => tbool(_name,this.q,this.insts)
-    case _:RealType => treal(_name,this.q,this.insts)
+    case _:RealType => treal(_name,this.q,this.insts.last.asInstanceOf[(Type[Obj],Inst[Obj,Real])])
     case _:IntType => tint(_name,this.q,this.insts)
     case _:StrType => tstr(_name,this.q,this.insts)
     case arec:RecType[_,_] => trec(_name,arec.value(),arec.q,this.insts)

@@ -26,7 +26,7 @@ import java.util.ServiceLoader
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, _}
+import org.mmadt.language.obj.`type`.{BoolType,_}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.storage.StorageFactory.qOne
@@ -49,7 +49,7 @@ trait StorageFactory {
   def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType
   def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil):IntType
-  def treal(name:String = Tokens.real,q:IntQ = qOne,insts:InstList = Nil):RealType
+  def treal(name:String = Tokens.real,q:IntQ = qOne,insts:DomainInst[Real] = base()):RealType
   def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil):StrType
   def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B]
   def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B]
@@ -92,7 +92,7 @@ object StorageFactory {
   def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):ObjType = f.tobj(name,q,insts)
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):BoolType = f.tbool(name,q,insts)
   def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):IntType = f.tint(name,q,insts)
-  def treal(name:String = Tokens.real,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):RealType = f.treal(name,q,insts)
+  def treal(name:String = Tokens.real,q:IntQ = qOne,insts:DomainInst[Real] = base())(implicit f:StorageFactory):RealType = f.treal(name,q,insts)
   def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):StrType = f.tstr(name,q,insts)
   def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil)(implicit f:StorageFactory):RecType[A,B] = f.trec(name,value,q,insts)
   def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*)(implicit f:StorageFactory):RecType[A,B] = f.trec(value,values:_*)
@@ -152,7 +152,7 @@ object StorageFactory {
     override def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:InstList = Nil):ObjType = new TObj(name,q,insts)
     override def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:InstList = Nil):BoolType = new TBool(name,q,insts)
     override def tint(name:String = Tokens.int,q:IntQ = qOne,insts:InstList = Nil):IntType = new TInt(name,q,insts)
-    override def treal(name:String = Tokens.real,q:IntQ = qOne,insts:InstList = Nil):RealType = new TReal(name,q,insts)
+    override def treal(name:String = Tokens.real,q:IntQ = qOne,insts:DomainInst[Real] = base()):RealType = new TReal(name,q,insts)
     override def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:InstList = Nil):StrType = new TStr(name,q,insts)
     override def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:InstList = Nil):RecType[A,B] = new TRec[A,B](name,value,q,insts)
     override def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B]((value +: values).toMap)
