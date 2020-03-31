@@ -23,6 +23,9 @@
 package org.mmadt.processor;
 
 import org.mmadt.VmException;
+import org.mmadt.language.obj.Obj;
+import org.mmadt.language.obj.type.Type;
+import org.mmadt.language.obj.type.__;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,4 +35,13 @@ public class ProcessorException extends VmException {
     public ProcessorException(final String message) {
         super(message);
     }
+
+    public static ProcessorException rootedTypesOnly(final Obj obj, final Processor processor) {
+        return new ProcessorException(processor + " only accepts rooted types: " + obj);
+    }
+
+    public static void testRootedType(final Obj obj, final Processor processor) {
+        if (!(obj instanceof Type) || (obj instanceof __)) throw rootedTypesOnly(obj, processor);
+    }
+
 }

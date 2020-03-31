@@ -25,18 +25,16 @@ package org.mmadt.processor.obj.`type`
 import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
-import org.mmadt.language.obj.`type`.{Type, TypeChecker, __}
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.{OType, Obj}
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.processor.{Processor, ProcessorException, Traverser}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CompilingProcessor(val model:Model = Model.id) extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
-    assert(!domainObj.isInstanceOf[Value[Obj]],"The compiling processor only accepts types: " + domainObj)
-    assert(!rangeType.isInstanceOf[__],"The compiling processor can not compile anonymous types: " + rangeType)
+    ProcessorException.testRootedType(domainObj,this)
     LanguageException.testTypeCheck(domainObj,rangeType.domain())
     if (model == Model.id) Traverser.standard(domainObj).apply(rangeType).obj()
     else {

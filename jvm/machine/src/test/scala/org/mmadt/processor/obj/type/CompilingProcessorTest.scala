@@ -23,12 +23,12 @@
 package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType, RecType, Type, __}
-import org.mmadt.language.obj.{Int, Obj, Str}
-import org.mmadt.processor.Processor
+import org.mmadt.language.obj.`type`.{IntType,RecType,Type,__}
+import org.mmadt.language.obj.{Int,Obj,Str}
+import org.mmadt.processor.{Processor,ProcessorException}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.{FunSuite,Matchers}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -136,10 +136,9 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     assertResult(int.plus(int))(processor.apply(int.plus(int(0)).plus(int.plus(int(1)).plus(int(-1)).plus(int(0)))))
   }
 
-  test("compiler w/ anonymous type"){
-    assertThrows[AssertionError]{
-      processor(__.id().plus(10))
-    }
+  test("compiler w/ non-rooted types and values"){
+    assertThrows[ProcessorException]{processor(__.id().plus(10))}
+    assertThrows[ProcessorException]{processor(int(10),int)}
   }
 
   test("compiler with domain rewrites"){
