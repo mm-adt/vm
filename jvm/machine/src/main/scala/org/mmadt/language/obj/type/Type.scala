@@ -90,13 +90,13 @@ trait Type[+T <: Obj] extends Obj
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={
     val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]]))
     (nextObj match {
-      case _:Bool => tbool(nextObj.name,multQ(this,inst),newInsts)
-      case _:Real => treal(nextObj.name,multQ(this,inst),newInsts.last.asInstanceOf[(Type[Obj],Inst[Obj,Real])])
-      case _:Int => tint(nextObj.name,multQ(this,inst),newInsts)
-      case _:Str => tstr(nextObj.name,multQ(this,inst),newInsts)
-      case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInsts)
+      case _:Bool => tbool(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Bool]])
+      case _:Real => treal(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Real]()).asInstanceOf[DomainInst[Real]])
+      case _:Int => tint(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Int]()).asInstanceOf[DomainInst[Int]])
+      case _:Str => tstr(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Str]])
+      case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInsts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Rec[Obj,Obj]]])
       case _:__ => new __(newInsts)
-      case _ => tobj(nextObj.name,multQ(this,inst),newInsts)
+      case _ => tobj(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Obj]()))
     }).asInstanceOf[R]
   }
 
@@ -104,13 +104,13 @@ trait Type[+T <: Obj] extends Obj
   override def add[O <: Obj](obj:O):O = this.compose(asType(obj).asInstanceOf[O],AddOp(obj))
 
   def named(_name:String):this.type = (this match {
-    case _:BoolType => tbool(_name,this.q,this.insts)
-    case _:RealType => treal(_name,this.q,this.insts.last.asInstanceOf[(Type[Obj],Inst[Obj,Real])])
-    case _:IntType => tint(_name,this.q,this.insts)
-    case _:StrType => tstr(_name,this.q,this.insts)
-    case arec:RecType[_,_] => trec(_name,arec.value(),arec.q,this.insts)
+    case _:BoolType => tbool(_name,this.q,this.insts.lastOption.getOrElse(base[Bool]()).asInstanceOf[DomainInst[Bool]])
+    case _:RealType => treal(_name,this.q,this.insts.lastOption.getOrElse(base[Real]()).asInstanceOf[DomainInst[Real]])
+    case _:IntType => tint(_name,this.q,this.insts.lastOption.getOrElse(base[Int]()).asInstanceOf[DomainInst[Int]])
+    case _:StrType => tstr(_name,this.q,this.insts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Str]])
+    case arec:RecType[Obj,Obj] => trec(_name,arec.value(),arec.q,this.insts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Rec[Obj,Obj]]])
     case _:__ => this
-    case _:ObjType => tobj(_name,this.q,this.insts)
+    case _:ObjType => tobj(_name,this.q,this.insts.lastOption.getOrElse(base[Obj]()))
   }).asInstanceOf[this.type]
 
   // pattern matching methods

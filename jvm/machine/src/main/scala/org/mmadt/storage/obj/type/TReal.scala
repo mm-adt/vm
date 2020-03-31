@@ -35,6 +35,6 @@ class TReal(name:String,quantifier:IntQ,_insts:DomainInst[Real]) extends Abstrac
   def this() = this(Tokens.real,qOne,base())
   def this(name:String) = this(name,qOne,base())
   override def q(quantifier:IntQ):this.type = new TReal(name,quantifier,_insts).asInstanceOf[this.type]
-  override      val insts:InstList                       = if (null == _insts._1) Nil else _insts._1.insts ++ (Nil :+ (_insts._1,_insts._2))
-  override lazy val via  :(Type[Obj],Inst[_,RealType]) = if (null == _insts._1) (this,IdOp[RealType]()) else _insts.asInstanceOf[(Type[Obj],Inst[_,RealType])]
+  override      val insts:InstList                 = if (null == _insts._1) Nil else _insts._1.insts ++ (Nil :+ (_insts._1,_insts._2))
+  override lazy val via  :(Type[Obj],Inst[_,Real]) = if (null == _insts._1) (this,IdOp[Real]()) else _insts.asInstanceOf[(Type[Obj],Inst[_,Real])]
 }

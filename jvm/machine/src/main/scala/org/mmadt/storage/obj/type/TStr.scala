@@ -23,16 +23,20 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.StrType
-import org.mmadt.language.obj.{InstList, IntQ}
+import org.mmadt.language.obj.`type`.{StrType, Type}
+import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.obj._
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TStr(name:String,quantifier:IntQ,insts:InstList) extends AbstractTObj(name,quantifier,insts) with StrType {
-  def this() = this(Tokens.str,qOne,Nil)
-  def this(name:String) = this(name,qOne,Nil)
-  override def q(quantifier:IntQ):this.type = new TStr(name,quantifier,insts).asInstanceOf[this.type]
+class TStr(name:String,quantifier:IntQ,_insts:DomainInst[Str]) extends AbstractTObj(name,quantifier,Nil) with StrType {
+  def this() = this(Tokens.str,qOne,base())
+  def this(name:String) = this(name,qOne,base())
+  override def q(quantifier:IntQ):this.type = new TStr(name,quantifier,_insts).asInstanceOf[this.type]
+
+  override      val insts:InstList                = if (null == _insts._1) Nil else _insts._1.insts ++ (Nil :+ (_insts._1,_insts._2))
+  override lazy val via  :(Type[Obj],Inst[_,Str]) = if (null == _insts._1) (this,IdOp[Str]()) else _insts.asInstanceOf[(Type[Obj],Inst[_,Str])]
 }
 

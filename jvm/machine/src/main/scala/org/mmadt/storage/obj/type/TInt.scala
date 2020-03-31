@@ -23,15 +23,19 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.{InstList, IntQ}
+import org.mmadt.language.obj.`type`.{IntType, Type}
+import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.obj.{DomainInst, Inst, InstList, Int, IntQ, Obj, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(name:String,quantifier:IntQ,insts:InstList) extends AbstractTObj(name,quantifier,insts) with IntType {
-  def this() = this(Tokens.int,qOne,Nil)
-  def this(name:String) = this(name,qOne,Nil)
-  override def q(quantifier:IntQ):this.type = new TInt(name,quantifier,insts).asInstanceOf[this.type]
+class TInt(name:String,quantifier:IntQ,_insts:DomainInst[Int]) extends AbstractTObj(name,quantifier,Nil) with IntType {
+  def this() = this(Tokens.int,qOne,base())
+  def this(name:String) = this(name,qOne,base())
+  override def q(quantifier:IntQ):this.type = new TInt(name,quantifier,_insts).asInstanceOf[this.type]
+
+  override      val insts:InstList                = if (null == _insts._1) Nil else _insts._1.insts ++ (Nil :+ (_insts._1,_insts._2))
+  override lazy val via  :(Type[Obj],Inst[_,Int]) = if (null == _insts._1) (this,IdOp[Int]()) else _insts.asInstanceOf[(Type[Obj],Inst[_,Int])]
 }
