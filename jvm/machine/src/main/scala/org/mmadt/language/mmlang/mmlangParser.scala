@@ -22,7 +22,7 @@
 
 package org.mmadt.language.mmlang
 
-import org.mmadt.language.Tokens
+import org.mmadt.VmException
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
@@ -30,11 +30,12 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
+import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
 import org.mmadt.language.obj.value.strm._
-import org.mmadt.language.obj.value.{strm => _,_}
+import org.mmadt.language.obj.value.{strm => _, _}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.{strm => estrm,_}
+import org.mmadt.storage.StorageFactory.{strm => estrm, _}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -55,7 +56,7 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
 
   // specific to mmlang execution
   lazy val expr       :Parser[Obj] = compilation | evaluation | anonRootType
-  lazy val compilation:Parser[Obj] = aType ^^ (x => (x.domain() ==>  (x,this.model)))
+  lazy val compilation:Parser[Obj] = aType ^^ (x => (x.domain() ==> (x,this.model)))
   lazy val evaluation :Parser[Obj] = (strm | objValue) ~ opt(anonRootType | aType) ^^ (x =>
     x._1 ==>
     ((Type.resolve(x._1,x._2.getOrElse(asType[Obj](x._1))).domain() ==>
@@ -122,5 +123,8 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
 }
 
 object mmlangParser {
-  def parse[O <: Obj](script:String,model:Model):O = new mmlangParser(model).parse[O](script)
+  def parse[O <: Obj](script:String,model:Model):O = try {new mmlangParser(model).parse[O](script)} catch {
+    case e:VmException => throw e
+    case e:Exception => throw new LanguageException(e.getMessage)
+  }
 }

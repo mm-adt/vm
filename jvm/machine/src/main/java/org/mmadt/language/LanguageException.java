@@ -20,41 +20,34 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.jsr223;
+package org.mmadt.language;
 
 import org.mmadt.VmException;
-import org.mmadt.language.LanguageException;
 import org.mmadt.language.obj.Obj;
-
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import java.io.Reader;
+import org.mmadt.language.obj.type.Type;
+import org.mmadt.language.obj.type.__;
+import org.mmadt.language.obj.value.Value;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface mmADTScriptEngine extends ScriptEngine {
+public class LanguageException extends  VmException {
 
-    @Override
-    public default Obj eval(String script) throws VmException {
-            return this.eval(script, this.getContext());
+    public LanguageException(final String message) {
+        super(message);
     }
 
-    @Override
-    public default Obj eval(Reader reader) throws VmException {
-        return this.eval(reader,this.getContext());
+    public static LanguageException typeError(final Obj source, final Type<?> target) {
+        return new LanguageException(target + " is not a " + source);
     }
 
-    @Override
-    public Obj eval(String script, ScriptContext context) throws VmException;
+    public static void testDomainRange(final Type<?> range, final Type<?> domain) {
+        if (!(domain instanceof __) && !range.canonical().test(domain.canonical()))
+            throw LanguageException.typeError(range, domain);
+    }
 
-    @Override
-    public Obj eval(String script, Bindings bindings) throws VmException;
-
-    @Override
-    public Obj eval(Reader reader, ScriptContext context) throws VmException;
-
-
+    public static void testTypeCheck(final Obj obj, Type<Obj> type) {
+        if ((obj instanceof Type && !((Type<Obj>) obj).range().test(type)) || (obj instanceof Value && !obj.test(type)))
+            throw LanguageException.typeError(obj, type);
+    }
 }

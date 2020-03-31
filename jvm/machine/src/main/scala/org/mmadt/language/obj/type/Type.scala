@@ -27,7 +27,7 @@ import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -76,8 +76,7 @@ trait Type[+T <: Obj] extends Obj
 
   // type specification and compilation
   final def <=[D <: Obj](domainType:Type[D]):this.type = {
-    if(!this.canonical.test(domainType.canonical))
-      throw new AssertionError(s"${this} is not a ${domainType}")
+    LanguageException.testDomainRange(this,domainType)
     Some(domainType).filter(x => x.insts.isEmpty).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
   }
 

@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.obj.value
 
+import org.mmadt.language.LanguageException
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -67,22 +68,22 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
   test("process canonical type"){
     int(10) ===> int
     int(1,2,3) ==> int.q(+)
-    assertThrows[AssertionError]{
+    assertThrows[LanguageException]{
       int(10) ===> int.q(0)
     }
-    assertThrows[AssertionError]{
+    assertThrows[LanguageException]{
       int(1,2,3) ==> int.q(0)
     }
-    assertThrows[AssertionError]{
+    assertThrows[LanguageException]{
       int(10) ===> bool.and(bfalse)
     }
-    assertThrows[ClassCastException]{ // TODO: get these to be assertion errors
+    assertThrows[LanguageException]{
       int(10) ===> str
     }
-    assertThrows[ClassCastException]{
+    assertThrows[LanguageException]{
       int(10) ===> str.q(2)
     }
-    assertThrows[ClassCastException]{
+    assertThrows[LanguageException]{
       str("hello") ===> bool
     }
   }

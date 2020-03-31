@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.`type`
 
+import org.mmadt.language.LanguageException
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -39,7 +40,7 @@ class TIntTest extends FunSuite {
   }
 
   test("canonical int type"){
-    assertThrows[AssertionError]{bool <= int}
+    assertThrows[LanguageException]{bool <= int}
     assert(int.q(?).test((int.q(?) <= int.is(int.gt(5))).range))
     assert(!int.test(bool))
     assert(!bool.test(int))

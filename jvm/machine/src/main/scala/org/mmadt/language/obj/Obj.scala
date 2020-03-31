@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.ChooseOp
@@ -69,7 +70,10 @@ trait Obj
     case atype:Type[_] => Processor.compiler(model).apply(atype,Type.resolve(atype,rangeType))
     case avalue:Value[_] => Processor.iterator(model).apply(avalue,Type.resolve(avalue,rangeType))
   }
-  def ===>[E <: Obj](rangeType:E):E = Processor.iterator().apply(this,Type.resolve(this,rangeType.asInstanceOf[Type[E]])) // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
+  def ===>[E <: Obj](rangeType:E):E ={
+    LanguageException.testDomainRange(asType(this),rangeType.asInstanceOf[Type[E]].domain())
+    Processor.iterator().apply(this,Type.resolve(this,rangeType.asInstanceOf[Type[E]]))
+  } // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
 
   // pattern matching methods
   def named(_name:String):this.type

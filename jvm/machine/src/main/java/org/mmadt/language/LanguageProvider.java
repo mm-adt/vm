@@ -22,11 +22,11 @@
 
 package org.mmadt.language;
 
+import org.mmadt.VmException;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
 import org.mmadt.language.model.Model;
 import org.mmadt.language.obj.Obj;
 
-import javax.script.ScriptException;
 import java.util.Optional;
 
 /**
@@ -40,11 +40,13 @@ public interface LanguageProvider {
 
     Optional<mmADTScriptEngine> getEngine();
 
-    default <O extends Obj> O parse(final String script) {
+    default <O extends Obj> O parse(final String script) throws VmException {
         try {
             return (O) getEngine().get().eval(script);
-        } catch (ScriptException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        } catch (VmException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new LanguageException(e.getMessage());
         }
     }
 

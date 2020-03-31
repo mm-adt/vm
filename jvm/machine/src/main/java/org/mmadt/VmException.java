@@ -20,41 +20,29 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.jsr223;
+package org.mmadt;
 
-import org.mmadt.VmException;
 import org.mmadt.language.LanguageException;
-import org.mmadt.language.obj.Obj;
-
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import java.io.Reader;
+import org.mmadt.processor.ProcessorException;
+import org.mmadt.storage.StorageException;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface mmADTScriptEngine extends ScriptEngine {
+public abstract class VmException extends RuntimeException {
 
-    @Override
-    public default Obj eval(String script) throws VmException {
-            return this.eval(script, this.getContext());
+    public VmException(final String message) {
+        super(message);
     }
 
-    @Override
-    public default Obj eval(Reader reader) throws VmException {
-        return this.eval(reader,this.getContext());
+    public String header() {
+        if (this instanceof LanguageException) {
+            return "language";
+        } else if (this instanceof ProcessorException) {
+            return "processor";
+        } else if (this instanceof StorageException) {
+            return "storage";
+        } else
+            throw new IllegalStateException("Unknown exception: " + this);
     }
-
-    @Override
-    public Obj eval(String script, ScriptContext context) throws VmException;
-
-    @Override
-    public Obj eval(String script, Bindings bindings) throws VmException;
-
-    @Override
-    public Obj eval(Reader reader, ScriptContext context) throws VmException;
-
-
 }

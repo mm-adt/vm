@@ -20,41 +20,16 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.jsr223;
+package org.mmadt.storage;
 
 import org.mmadt.VmException;
-import org.mmadt.language.LanguageException;
-import org.mmadt.language.obj.Obj;
-
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import java.io.Reader;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public interface mmADTScriptEngine extends ScriptEngine {
+public class StorageException extends VmException {
 
-    @Override
-    public default Obj eval(String script) throws VmException {
-            return this.eval(script, this.getContext());
+    public StorageException(final String message) {
+        super(message);
     }
-
-    @Override
-    public default Obj eval(Reader reader) throws VmException {
-        return this.eval(reader,this.getContext());
-    }
-
-    @Override
-    public Obj eval(String script, ScriptContext context) throws VmException;
-
-    @Override
-    public Obj eval(String script, Bindings bindings) throws VmException;
-
-    @Override
-    public Obj eval(Reader reader, ScriptContext context) throws VmException;
-
-
 }
