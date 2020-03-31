@@ -24,19 +24,15 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{RecType,Type}
-import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:IntQ,_insts:DomainInst[Rec[A,B]]) extends AbstractTObj(name,quantifier,Nil) with RecType[A,B] {
+class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:IntQ,via:DomainInst[Rec[A,B]]) extends AbstractTObj(name,quantifier,via) with RecType[A,B] {
   def this() = this(Tokens.rec,Map[A,B](),qOne,base())
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne,base())
-  override def q(quantifier:IntQ):this.type = new TRec[A,B](name,java,quantifier,_insts).asInstanceOf[this.type]
+  override def q(quantifier:IntQ):this.type = new TRec[A,B](name,java,quantifier,via).asInstanceOf[this.type]
   override def value():Map[A,B] = java
-  override      val insts:InstList                     = if (null == _insts._1) Nil else _insts._1.insts ++ (Nil :+ (_insts._1,_insts._2))
-  override lazy val via  :(Type[Obj],Inst[_,Rec[A,B]]) = if (null == _insts._1) (this,IdOp[Rec[A,B]]()) else _insts.asInstanceOf[(Type[Obj],Inst[_,Rec[A,B]])]
-
 }

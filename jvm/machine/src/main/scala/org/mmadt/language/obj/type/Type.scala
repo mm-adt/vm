@@ -46,7 +46,7 @@ trait Type[+T <: Obj] extends Obj
 
   // slow refactor to the type data structure without List
   lazy val via:(Type[Obj],Inst[_,T]) = if (insts.isEmpty) (this,IdOp[T]()) else insts.last.asInstanceOf[(Type[Obj],Inst[Obj,T])]
-  def isCanonical:Boolean = via._1 == this && via._2.op().equals(Tokens.id)
+  def isCanonical:Boolean = null == via._1 || ( via._1 == this && via._2.op().equals(Tokens.id))
 
   // type properties
   val insts:List[(Type[Obj],Inst[Obj,Obj])]
