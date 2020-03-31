@@ -22,6 +22,9 @@
 
 package org.mmadt.language.obj.`type`
 
+import java.util.NoSuchElementException
+
+import org.mmadt.language.obj.op.map.IdOp
 import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
@@ -40,6 +43,11 @@ trait Type[+T <: Obj] extends Obj
   with ExplainOp {
   this:T =>
 
+
+  // slow refactor to the type data structure without List
+  lazy val via:(Type[Obj],Inst[_,T]) = if (insts.isEmpty) (this,IdOp[T]()) else insts.last.asInstanceOf[(Type[Obj],Inst[Obj,T])]
+  def isCanonical:Boolean = via._1 == this && via._2.op().equals(Tokens.id)
+
   // type properties
   val insts:List[(Type[Obj],Inst[Obj,Obj])]
   lazy val canonical:this.type = this.range.q(qOne)
@@ -53,10 +61,7 @@ trait Type[+T <: Obj] extends Obj
     case _:ObjType => tobj(this.name,this.q,Nil)
   }).asInstanceOf[this.type]
 
-  def domain[D <: Obj]():Type[D] = (this.insts match {
-    case Nil => this
-    case i:List[(Type[Obj],Inst[_,_])] => i.head._1.range
-  }).asInstanceOf[Type[D]]
+  def domain[D <: Obj]():Type[D] = if (this.isCanonical) this.asInstanceOf[Type[D]] else this.via._1.domain[D]()
 
   // type manipulation functions
   def linvert():this.type ={
@@ -68,14 +73,10 @@ trait Type[+T <: Obj] extends Obj
       case x => x
     }).asInstanceOf[this.type]
   }
-  def rinvert[R <: Type[Obj]]():R =
-    (this.insts.dropRight(1).lastOption match {
-      case Some(prev) => prev._2.apply(Traverser.standard(prev._1)).obj()
-      case None => this.insts.head._1
-    }).asInstanceOf[R]
+  def rinvert[R <: Type[Obj]]():R = if (this.isCanonical) throw new NoSuchElementException else this.via._1.asInstanceOf[R] // TODO: ctypes just return themselves?
 
   // type specification and compilation
-  final def <=[D <: Obj](domainType:Type[D]):this.type = {
+  final def <=[D <: Obj](domainType:Type[D]):this.type ={
     LanguageException.testDomainRange(this,domainType)
     Some(domainType).filter(x => x.insts.isEmpty).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
   }
@@ -94,7 +95,7 @@ trait Type[+T <: Obj] extends Obj
       case _:Int => tint(nextObj.name,multQ(this,inst),newInsts)
       case _:Str => tstr(nextObj.name,multQ(this,inst),newInsts)
       case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInsts)
-      case _:__ => new __(newInsts.asInstanceOf[List[Tuple2[Type[Obj],Inst[Obj,Obj]]]])
+      case _:__ => new __(newInsts)
       case _ => tobj(nextObj.name,multQ(this,inst),newInsts)
     }).asInstanceOf[R]
   }
@@ -122,7 +123,13 @@ trait Type[+T <: Obj] extends Obj
   override def toString:String = LanguageFactory.printType(this)
   override def hashCode:scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.insts.hashCode()
   override def equals(other:Any):Boolean = other match {
-    case atype:Type[_] => this.name == atype.name && eqQ(this,atype) && atype.insts.map(x => (x._1.name,x._2)) == this.insts.map(x => (x._1.name,x._2))
+    case atype:Type[_] =>
+      if (this.insts.isEmpty)
+        atype.insts.isEmpty && atype.name.equals(this.name) && eqQ(atype,this)
+      else if (this.isInstanceOf[__] && atype.isInstanceOf[__]) // TODO: have it work generically with types
+      atype.insts.nonEmpty && atype.name.equals(this.name) && eqQ(atype,this) && this.insts.map(x => x._2) == atype.insts.map(x => x._2)
+      else
+      atype.insts.nonEmpty && atype.name.equals(this.name) && eqQ(atype,this) && (this.via._2 == atype.via._2 && this.via._1 == atype.via._1)
     case _ => false
   }
 }
@@ -130,7 +137,7 @@ trait Type[+T <: Obj] extends Obj
 object Type {
   @scala.annotation.tailrec
   def createInstList(list:List[(Type[Obj],Inst[Obj,Obj])],atype:Type[Obj]):List[(Type[Obj],Inst[Obj,Obj])] ={
-    if (atype.insts.isEmpty) list else createInstList(List((atype.range,atype.insts.last._2)) ::: list,atype.insts.last._1)
+    if (atype.isCanonical) list else createInstList(List((atype.range,atype.insts.last._2)) ::: list,atype.insts.last._1)
   }
 
   def nextInst(atype:Type[_]):Option[Inst[Obj,Obj]] = atype.insts match {

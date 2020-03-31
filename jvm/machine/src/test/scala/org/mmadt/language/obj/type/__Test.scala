@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.map.{GtOp, PlusOp}
+import org.mmadt.language.obj.op.map.{GtOp, MultOp, PlusOp}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -30,6 +30,25 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __Test extends FunSuite {
+
+  test("__ type structure"){
+    assert(__.isCanonical)
+    assert(!__.plus(1).isCanonical)
+    assertResult(__)(__.plus(1).via._1)
+    assertResult(__)(__.plus(1).mult(2).via._1.via._1)
+    assertResult(__)(__.plus(1).mult(2).gt(4).via._1.via._1.via._1)
+// TODO    assertResult(__(List(PlusOp(1),MultOp(2),GtOp(4))))(__.plus(1).mult(2).gt(4))
+    assertResult(__.plus(1).mult(2).gt(4))(__.plus(1).mult(2).gt(4))
+
+    assertResult(PlusOp(1))(__.plus(1).via._2)
+    assertResult(__.plus(1))(__.plus(1).mult(5).via._1)
+    assertResult(MultOp(5))(__.plus(1).mult(5).via._2)
+    assert(__.equals(__))
+
+    assert(__.plus(1).equals(__.plus(1)))
+    assert(!__.plus(1).equals(__.plus(2)))
+    assert(!__.plus(1).equals(__.mult(2)))
+  }
 
   test("__ type in raw form"){
     val x = __(List(PlusOp(int(4)),PlusOp(int.plus(int)),GtOp(__(List(PlusOp(int(2)))))))

@@ -38,8 +38,8 @@ trait StrValue extends Str
 
   override def plus(other:Type[Str]):StrType = this.start[StrType]().plus(other)
   override def plus(other:Value[Str]):this.type = this.value(this.value + other.value)
-  override def gt(other:Value[Str]):BoolValue = bool(this.value > other.asInstanceOf[StrValue].value).q(this.q)
-  override def gte(other:Value[Str]):BoolValue = bool(this.value >= other.asInstanceOf[StrValue].value).q(this.q)
-  override def lt(other:Value[Str]):BoolValue = bool(this.value < other.asInstanceOf[StrValue].value).q(this.q)
-  override def lte(other:Value[Str]):BoolValue = bool(this.value <= other.asInstanceOf[StrValue].value).q(this.q)
+  override def gt(other:Value[Str]):BoolValue = vbool(value = this.value > other.asInstanceOf[StrValue].value,q = this.q)
+  override def gte(other:Value[Str]):BoolValue = vbool(value = this.value >= other.asInstanceOf[StrValue].value,q = this.q)
+  override def lt(other:Value[Str]):BoolValue = vbool(value = this.value < other.asInstanceOf[StrValue].value,q = this.q)
+  override def lte(other:Value[Str]):BoolValue = vbool(value = this.value <= other.asInstanceOf[StrValue].value,q = this.q)
 }

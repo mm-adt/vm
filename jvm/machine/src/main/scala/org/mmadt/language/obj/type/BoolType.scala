@@ -23,20 +23,12 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.op.map.{AndOp, OrOp}
-import org.mmadt.language.obj.value.BoolValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolType extends Bool
   with Type[Bool]
-  with ObjType {
-
-  override def and(bool:BoolType):BoolType = this.compose(AndOp(bool))
-  override def and(bool:BoolValue):this.type = this.compose(AndOp(bool))
-  override def or(bool:BoolType):BoolType = this.compose(OrOp(bool))
-  override def or(bool:BoolValue):this.type = this.compose(OrOp(bool))
-}
+  with ObjType
 
 

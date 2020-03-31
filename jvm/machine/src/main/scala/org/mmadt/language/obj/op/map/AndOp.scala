@@ -28,14 +28,21 @@ import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Bool, Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AndOp {
   this:Bool =>
-  def and(bool:BoolType):BoolType
-  def and(bool:BoolValue):this.type
+  def and(other:BoolType):BoolType = this match {
+    case atype:BoolType => atype.compose(other,AndOp(other))
+    case avalue:BoolValue => avalue.start().compose(other,AndOp(other))
+  }
+  def and(other:BoolValue):this.type = (this match {
+    case atype:BoolType => atype.compose(bool,AndOp(other))
+    case avalue:BoolValue => avalue.value(avalue.value && other.value)
+  }).asInstanceOf[this.type]
   final def &&(bool:BoolType):BoolType = this.and(bool)
   final def &&(bool:BoolValue):this.type = this.and(bool)
 }

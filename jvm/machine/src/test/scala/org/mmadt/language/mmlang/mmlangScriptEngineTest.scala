@@ -240,6 +240,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("get dot-notation parsing"){
+    assertResult(__.get(str("a")))(engine.eval(".a"))
+    assertResult(__.get(str("a")).get(str("b")))(engine.eval(".a.b"))
     assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c"))
     assertResult(int(4))(engine.eval(
       """

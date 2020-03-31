@@ -27,6 +27,7 @@ import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.{Bool, Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -34,8 +35,14 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait OrOp {
   this:Bool =>
-  def or(bool:BoolType):BoolType
-  def or(bool:BoolValue):this.type
+  def or(other:BoolType):BoolType = this match {
+    case atype:BoolType => atype.compose(other,OrOp(other))
+    case avalue:BoolValue => avalue.start().compose(other,OrOp(other))
+  }
+  def or(other:BoolValue):this.type = (this match {
+    case atype:BoolType => atype.compose(bool,OrOp(other))
+    case avalue:BoolValue => avalue.value(avalue.value || other.value)
+  }).asInstanceOf[this.type]
   final def ||(bool:BoolType):BoolType = this.or(bool)
   final def ||(bool:BoolValue):this.type = this.or(bool)
 }

@@ -23,12 +23,14 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.{InstList, IntQ, Obj}
+import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.obj.{Inst, InstList, IntQ, Obj}
 import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 abstract class AbstractTObj(name:String,quantifier:IntQ,_insts:InstList) extends OObj(name,quantifier) with Type[Obj] {
-  override val insts:InstList = _insts
+  override lazy val via  :(Type[Obj],Inst[Obj,Obj]) = if (_insts.isEmpty) (this,IdOp()) else (_insts.last._1,_insts.last._2.asInstanceOf[Inst[Obj,Obj]])
+  override      val insts:InstList                  = if (_insts.isEmpty) Nil else _insts.last._1.insts ++ (Nil :+ (_insts.last._1,_insts.last._2))
 }
