@@ -296,46 +296,34 @@ In the examples below `[a]`, `[b]`, and `[c]` are variable instructions in `inst
 
 IMPORTANT: A known "bug" in stream ring theory is that not all instructions in `inst` have an additive inverse. Thus, it is not the case that every instruction set can serve as the carrier of a ring. Fortunately, in the larger composite type ring (discussed later), which forms the primary algebraic structure in mm-ADT's type system, the quantifier ring's multiplicative inverse can be used to remedy the situation--see the 3rd entry in the table above.
 
-As an example, the types `int[plus,10]` and `bool<=int[gt,5]` can be combined via serial and/or parallel composition.
+As an example, the instructions `[plus,10]` and `[gt,5]` can be combined via serial and/or parallel composition. In general, all serial and parallel compositions are https://en.wikipedia.org/wiki/Associative_property[associative] except for those that use instructions from a particular `inst` subring: _the reduce near-ring_ (discussed later).
 
 [source]
 ----
-int[plus,10] * bool<=int[gt,5]   ==   bool<=int[plus,10][gt,5]
-int[plus,10] + bool<=int[gt,5]   ==    obj<=int[branch,[plus,10],[gt,5]]
+mmlang> [plus,10] ** [gt,5]
+==>[plus,10][gt,5]
+mmlang> [plus,10] ++ [gt,5]
+==>[branch,[plus,10],[gt,5]]
 ----
 
-All serial and parallel compositions are https://en.wikipedia.org/wiki/Associative_property[associative] except for
-those that use instructions from the `inst` sub-ring: _the reduce near-ring_ (discussed later).
-Finally, the https://en.wikipedia.org/wiki/Distributive_property[distributivity] of multiplications over addition
-is made apparent via:
+Finally, the https://en.wikipedia.org/wiki/Distributive_property[distributivity] of multiplications over addition is made apparent with expressions below which have a diagrammatic representation, where the edges/arrows are streams of `objs` that are being operated on by the `insts` vertex/objects they meet along the way. Whenever the diagram branches, the `obj` at the branch is cloned, taking *both* branches.
 
-[source,Delphi]
+[source]
 ----
-[plus,10] * ([gt,5] + [lt,2])     ==   [plus,10][gt,5] + [plus,10][lt,2]
-([plus,10] + [mult,5]) * [gt,7]   ==   [plus,10][gt,7] + [mult,5][gt,7]
+[plus,10][branch,[gt,5],[lt,2]]    ==  [branch,[plus,10][gt,5],[plus,10][lt,2]]
 ----
 
-The above expressions have a diagrammatic representation where the lines are streams of `objs` that are being operated on by the `insts` they meet along the way.
-Whenever the diagram branches, the `obj` at the branch is cloned, taking *both* branches.
+// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBpiBdUkANwEMAbAVxiRAB12cdhkAjAE50wAYwAWpAL4hJpdJlz5CKAEykADFVqMWbTt14BzHKQCsFabPnY8BImpVb6zVog5ceyBiceW5IDBslInVyJx1XdwNkNGY4ck0-a0U7FABmMOpnXTd9HgsZf0CU5WQAFkztFz12GABHJiwaQuTbUtNK7Mi83kFhcSkWgIU2ogA2DXDq3I9eWKZ44kSh4tGUCccsiJro+cXlq2Gg1OQAdkmt6ajPYzMCw9XglHPNqpzr3m9SXxWRp+QABydbYzAz3LQwKCGeBEUAAMwEEAAtkhQiAcBAkMRDgjkajqBikCocYiUYgMujMYh1CS8YgyJSkGVaWS1IzEMz-LiyRN2acWUheYTEACBYhzuyAJxioHspZipYEqnEbFc0lISVKrHYixAA
+image::images/inst-left-distrib.png[width=750,align=center]
 
-[ditaa,"inst-left-distributivity",align="center"]
-....
+[source]
+----
+[branch,[plus,10],[mult,5]][gt,7]  ==  [branch,[plus,10][gt,7],[mult,5][gt,7]]
+----
+// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYZAIwBO9MAGMAFqQC+IKaXSZc+QinKli1Ok1bsuPPmhZwKGmXIXY8BImoBMmhizaJO3XsgC2zRjlIBWSjN5EAxLZSJbCgdtZ1d9QNlg0KVrFAAWKJpHHRcuGABHZixaRIsUlWQ-TK0nXTc+IREJaVKQxSsKgDZ1aNrc+uRDZmNyU1bkjqJu+yyYuv1Pb18AoLLJlAB2Htm+uPcAc18NhPM2sNTkLZmanL2+Q9Jj1bPyogAOauzYvV4TpPbwigAMyfOb9BYPJ6yTQwKD7eBEUAAM0EEA8SDIIBwECQ5FOKLRGJo2KQtnxqPRiDUWJxiCB5MJiEiNKQ9OCBMpVRZiE6DM5xNpGz5SG63LewsQW25AE4JdKBbjiBKPtzRhKQaq8YEgA
+image::images/inst-right-distrib.png[width=750,align=center]
 
-             /--[gt,5]--\                /-[plus,10]--[gt,5]-\
-             |          |                |                   |
---[plus,10]--+          +-->   <--->   --+                   +-->
-             |          |                |                   |
-             \--[lt,2]--/                \-[plus,10]--[lt,2]-/
-....
 
-[ditaa,"inst-right-distributivity",align="center"]
-....
-  /--[plus,10]--\                        /-[plus,10]--[gt,7]-\
-  |             |                        |                   |
---+             +--[gt,7]-->   <--->   --+                   +-->
-  |             |                        |                   |
-  \--[mult,5]---/                        \-[mult,5]---[gt,7]-/
-....
 
 ===== The Quantifier Ring
 
