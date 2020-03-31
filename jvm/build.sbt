@@ -1,5 +1,5 @@
 import com.typesafe.sbt.site.asciidoctor.AsciidoctorPlugin
-import sbt.Keys.{autoScalaLibrary, _}
+import sbt.Keys.{autoScalaLibrary,_}
 import sbt._
 import sbtassembly.AssemblyPlugin.defaultShellScript
 
@@ -22,6 +22,8 @@ lazy val machine = (project in file("machine"))
     libraryDependencies := List(
       "org.jline" % "jline" % "3.13.3",
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+      // tests
+      "org.asciidoctor" % "asciidoctorj" % "2.1.0" % "test",
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:",""),
     scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"),"scm:git:git@github.com:mm-adt/vm.git")),

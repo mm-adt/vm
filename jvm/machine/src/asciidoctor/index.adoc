@@ -275,8 +275,8 @@ over the _quantifier_ and _instruction_ rings. The direct product of these two r
 In mm-ADT, the carrier set of the *instruction ring* is the set of all instructions, where
 
 * `inst` is the carrier set,
-* `*` is _serial composition_,
-* `+` is _parallel composition_,
+* `*` is serial composition,
+* `+` is parallel composition,
 * `0` is `[none]` and
 * `1` is `[all]`.
 
@@ -298,6 +298,10 @@ In the examples below `[a]`, `[b]`, and `[c]` are variable instructions in `inst
 |===
 
 IMPORTANT: A known "bug" in stream ring theory is that not all instructions in `inst` have an additive inverse. Thus, it is not the case that every instruction set can serve as the carrier of a ring. Fortunately, in the larger composite type ring (discussed later), which forms the primary algebraic structure in mm-ADT's type system, the quantifier ring's multiplicative inverse can be used to remedy the situation--see the 3rd entry in the table above.
+
+\[
+\texttt{x[branch,[a],[b]]} = <\texttt{x[a]},\texttt{x[b]}>
+\]
 
 As an example, the instructions `[plus,10]` and `[gt,5]` can be combined via serial and/or parallel composition. In general, all serial and parallel compositions are https://en.wikipedia.org/wiki/Associative_property[associative] except for those that use instructions from a particular `inst` subring: _the reduce near-ring_ (discussed later).
 
@@ -329,19 +333,20 @@ image::images/inst-right-distrib.png[width=750,align=center]
 ===== The Quantifier Ring
 
 .Quantifier Symbols in mmlang
-[width=35%,cols="1,3",float=right]
+[width=35%,cols="1,1,2,float=right]
 |===
-|sugar  | unsugared form
+|usage   |sugar  | unsugared
 
-|`{0}`  | `{0,0}`
-|       | `{1,1}`
-|`{x}`  | `{x,x}`
-|`{x,}` | `{x,max}`
-|`{,x}` | `{min,x}`
-|`{?}`  | `{0,1}`
-|`{+}`  | `{1,max}`
-|`{*}`  | `{1,max}`
+|https://en.wikipedia.org/wiki/Option_type[none]/nothing   |`{0}`  | `{0,0}`
+|https://en.wikipedia.org/wiki/Option_type[some]/just      |       | `{1,1}`
+|exact          |`{x}`  | `{x,x}`
+|least footnote:order[Applicable to quantifier rings with an total order over the carrier.]         |`{x,}` | `{x,max}`
+|most footnote:order[]          |`{,x}` | `{min,x}`
+|https://en.wikipedia.org/wiki/Option_type[option]/maybe   |`{?}`  | `{0,1}`
+|given footnote:order[]         |`{+}`  | `{1,max}`
+|any footnote:order[]           |`{*}`  | `{1,max}`
 |===
+
 
 In the https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory[set-theoretic interpretation of types], a type denotes a set in *Set*. A set does not contain repeated elements. A _stream_ generalizes a set. A stream is an unordered collection of `objs` of varying cardinality (a multi-set, or bag). For example, in mm-ADT, `int` is shorthand for `int{1}`--a single integer. This is analogous to other languages, where when `int` is used to define a value, it is referring to a single integer from the set of all integers--e.g., `val answer:int = 42`. Where mm-ADT differs from other languages is that `bool{42}` is a type denoting `42` boolean values.
 
@@ -351,31 +356,32 @@ Typically, the quantifier of choice for most applications is the `int` ring (or 
 
 [source]
 ----
-int                          // a single int (just/some)
-int{?}<=int[is,[gt,0]]       // 0 or 1 int   (maybe/option)
-int{0}<=int[is,false]        // 0 ints       (none)
-int{4}<=int{2}[[id]+[id]]    // 4 ints
-int{*}<=[=db][get,'costs']   // 0 or more ints
+int                                  // a single int   (some)
+int{?}<=int[is,[gt,0]]               // 0 or 1 int     (option)
+int{0}<=int[is,false]                // 0 ints         (none)
+int{4}<=int{2}[branch,[id],[id]]     // 4 ints         (exact)
+int{*}<=[=db][get,'costs']           // 0 or more ints (any)
 ----
 
-==== The Commutative Type Graph
+==== Type Categories
 
-The mm-ADT *type graph* is composed of _type vertices_ connected by _instruction edges_ referring to a single instruction
-that distinguishes them while ensuring that the https://en.wikipedia.org/wiki/Diagram_(category_theory)[categorical diagram]
-isomorphic to the type graph https://en.wikipedia.org/wiki/Commutative_diagram[commutes]. In the example graph/diagram
-below, a type equivalence is specified via the `[id]`-instruction edge/arrow between `int[plus,10]` and `int[plus,2][plus,8]`.
+--
+.Definition: Type Category
+An mm-ADT *Type* category is composed of `obj` _objects_ denoted `type` and a set of instruction _morphisms_ denoted `inst`. If two types objects are distinct by a single tail instruction, then there exists an `inst` morphism \$\tt{[a]}: X->Y\$ where the \$\mathcal{Dom}(\tt{[a]})\ * \tt{[a]} = \mathcal{Cod}(\tt{[a]})\$. The identity morphism of every `type` object is the `[id]` instruction. Every mm-ADT type category https://en.wikipedia.org/wiki/Commutative_diagram[commutes].
+--
+
+The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] of a simple type category is presented below where:
+
+. _Objects_: `int`, `int[plus,2]`, `int[plus,2][plus,8]`, and `int[plus,2][plus,10]`
+. _Morphisms_: `[plus,2]`, `[plus,8]`, `[plus,10]`, and respective identity instructions.
+
 
 // https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACZSxanSat2XHnwHI0LOKRmVho8djwEiAFgqKGLNok7de-HFp0UFhsSAwmpF+dbKdg7qzq7MuvrhugAcBiJePpJmKGQKNDYq9mpOAoaKMFAA5vBEoABmAE4QALZIZCA4EEhySraqjsDR7vFGIFW1SOQ0TUgAzBlBHerdcZ4V1XWIE43NiK0ARjBgUEgAtGMNmcE5XVhQ8TSM9FuMAAoSptIglVhFABY4CQuD6yNrKy2O32h0m7WynWQ50uIGutwevhSLzen2+-UWSEsqyGYKyIV43X083Rvwao0QWKBu0QByOUwhM2hwiuNxg90efnsrw+Xz6AyWWPJDSpILp4PxZwuzNhrPZiOe3NRggMQA
 image::images/type-equiv.png[width=600,align="center"]
 
+Every path through the diagram specifies a particular type construction
 
-Every path through the graph specifies a particular mm-ADT type construction, where an mm-ADT *program* is simply
-a type denoted by a terminal vertex. Thus, every mm-ADT program is an mm-ADT type. There exists an mm-ADT
-canonical type graph derived by from the previous type graph via a
-https://en.wikipedia.org/wiki/Forgetful_functor[forgetful functor], where the vertices
-denote the 6 base types and the edges denote
-https://en.wikipedia.org/wiki/Endomorphism[endomorphisms] of the base type
-monoid or https://en.wikipedia.org/wiki/Homomorphism[homomorphisms] between two type monoids.
+Thus, every mm-ADT program is an mm-ADT type. There exists an mm-ADT canonical type graph derived by from the previous type graph via a https://en.wikipedia.org/wiki/Forgetful_functor[forgetful functor], where the vertices denote the 6 base types and the edges denote https://en.wikipedia.org/wiki/Endomorphism[endomorphisms] of the base type monoid or https://en.wikipedia.org/wiki/Homomorphism[homomorphisms] between two type monoids.
 
 
 ////
