@@ -46,9 +46,9 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   override def plus(other:Type[Rec[A,B]]):RecType[A,B] = this.compose(trec(name,this.value() ++ other.asInstanceOf[RecType[A,B]].value(),this.q,this.via.asInstanceOf[DomainInst[Rec[A,B]]]),PlusOp(other))
   override def plus(other:Value[Rec[A,B]]):this.type = this.compose(trec(name,this.value() ++ other.asInstanceOf[RecValue[_,_]].value.asInstanceOf[Map[A,B]],this.q,this.via.asInstanceOf[DomainInst[Rec[A,B]]]),PlusOp(other)).asInstanceOf[this.type]
 
-  override def hashCode:scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.insts.hashCode() ^ this.q.hashCode()
+  override lazy val hashCode:scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.insts.hashCode() ^ this.q.hashCode()
   override def equals(other:Any):Boolean = other match {
-    case atype:RecType[A,B] => this.name == atype.name && this.q == atype.q && this.value() == atype.value() && this.insts.map(_._2) == atype.insts.map(_._2)
+    case atype:RecType[A,B] => this.name == atype.name && this.q == atype.q && this.value() == atype.value() && this.via == atype.via
     case _ => false
   }
 }

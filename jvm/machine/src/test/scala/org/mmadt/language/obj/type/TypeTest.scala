@@ -42,12 +42,12 @@ class TypeTest extends FunSuite {
         if (a.name == b.name) {
           sameCounter = sameCounter + 1
           assert(a == b)
-          assert(a.hashCode() == b.hashCode())
+          assert(a.hashCode == b.hashCode)
           assert(a.toString == b.toString)
         } else {
           diffCounter = diffCounter + 1
           assert(a != b)
-          assert(a.hashCode() != b.hashCode())
+          assert(a.hashCode != b.hashCode)
           assert(a.toString != b.toString)
         }
       }

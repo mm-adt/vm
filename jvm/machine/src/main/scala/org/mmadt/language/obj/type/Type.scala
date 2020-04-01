@@ -24,7 +24,6 @@ package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
 
-import org.mmadt.language.obj.op.map.IdOp
 import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
@@ -45,13 +44,14 @@ trait Type[+T <: Obj] extends Obj
 
 
   // slow refactor to the type data structure without List
-  lazy val via:(Type[Obj],Inst[_,T]) = if (insts.isEmpty) (this,IdOp[T]()) else insts.last.asInstanceOf[(Type[Obj],Inst[Obj,T])]
-  def isCanonical:Boolean = null == via._1 || ( via._1 == this && via._2.op().equals(Tokens.id))
+  val via:(Type[Obj],Inst[Obj,T])
+  def isCanonical:Boolean = null == via._1
+  def isDerived:Boolean = !this.isCanonical
 
   // type properties
-  val insts:List[(Type[Obj],Inst[Obj,Obj])]
-  lazy val canonical:this.type = this.range.q(qOne)
-  lazy val range    :this.type = (this match {
+  lazy val insts    :List[(Type[Obj],Inst[Obj,Obj])] = if (this.isCanonical) Nil else this.via._1.insts :+ (this.via._1,this.via._2)
+  lazy val canonical:this.type                       = this.range.q(qOne)
+  lazy val range    :this.type                       = (this match {
     case _:BoolType => tbool(this.name,this.q)
     case _:RealType => treal(this.name,this.q)
     case _:IntType => tint(this.name,this.q)
@@ -78,7 +78,7 @@ trait Type[+T <: Obj] extends Obj
   // type specification and compilation
   final def <=[D <: Obj](domainType:Type[D]):this.type ={
     LanguageException.testDomainRange(this,domainType)
-    Some(domainType).filter(x => x.insts.isEmpty).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
+    Some(domainType).filter(x => x.isCanonical).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
   }
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
@@ -88,15 +88,15 @@ trait Type[+T <: Obj] extends Obj
   }
   def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={
-    val newInsts = if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]]))
+    val newInst:DomainInst[Obj] = (if (inst.op().equals(Tokens.noop)) this.via else (this,inst.asInstanceOf[Inst[Obj,Obj]]))
     (nextObj match {
-      case _:Bool => tbool(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Bool]])
-      case _:Real => treal(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Real]()).asInstanceOf[DomainInst[Real]])
-      case _:Int => tint(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Int]()).asInstanceOf[DomainInst[Int]])
-      case _:Str => tstr(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Str]])
-      case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInsts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Rec[Obj,Obj]]])
-      case _:__ => new __(newInsts)
-      case _ => tobj(nextObj.name,multQ(this,inst),newInsts.lastOption.getOrElse(base[Obj]()))
+      case _:Bool => tbool(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Bool]])
+      case _:Real => treal(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Real]])
+      case _:Int => tint(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Int]])
+      case _:Str => tstr(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Str]])
+      case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInst.asInstanceOf[DomainInst[Rec[Obj,Obj]]])
+      case _:__ => new __(if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]])))
+      case _ => tobj(nextObj.name,multQ(this,inst),newInst)
     }).asInstanceOf[R]
   }
 
@@ -104,13 +104,13 @@ trait Type[+T <: Obj] extends Obj
   override def add[O <: Obj](obj:O):O = this.compose(asType(obj).asInstanceOf[O],AddOp(obj))
 
   def named(_name:String):this.type = (this match {
-    case _:BoolType => tbool(_name,this.q,this.insts.lastOption.getOrElse(base[Bool]()).asInstanceOf[DomainInst[Bool]])
-    case _:RealType => treal(_name,this.q,this.insts.lastOption.getOrElse(base[Real]()).asInstanceOf[DomainInst[Real]])
-    case _:IntType => tint(_name,this.q,this.insts.lastOption.getOrElse(base[Int]()).asInstanceOf[DomainInst[Int]])
-    case _:StrType => tstr(_name,this.q,this.insts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Str]])
-    case arec:RecType[Obj,Obj] => trec(_name,arec.value(),arec.q,this.insts.lastOption.getOrElse(base[Str]()).asInstanceOf[DomainInst[Rec[Obj,Obj]]])
+    case abool:BoolType => tbool(_name,abool.q,abool.via)
+    case areal:RealType => treal(_name,areal.q,areal.via)
+    case aint:IntType => tint(_name,aint.q,aint.via)
+    case astr:StrType => tstr(_name,astr.q,astr.via)
+    case arec:RecType[Obj,Obj] => trec(_name,arec.value(),arec.q,arec.via)
     case _:__ => this
-    case _:ObjType => tobj(_name,this.q,this.insts.lastOption.getOrElse(base[Obj]()))
+    case _:ObjType => tobj(_name,this.q,this.via)
   }).asInstanceOf[this.type]
 
   // pattern matching methods
@@ -121,15 +121,15 @@ trait Type[+T <: Obj] extends Obj
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printType(this)
-  override def hashCode:scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.insts.hashCode()
+  override lazy val hashCode:scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.insts.hashCode()
   override def equals(other:Any):Boolean = other match {
     case atype:Type[_] =>
-      if (this.insts.isEmpty)
-        atype.insts.isEmpty && atype.name.equals(this.name) && eqQ(atype,this)
-      else if (this.isInstanceOf[__] && atype.isInstanceOf[__]) // TODO: have it work generically with types
-      atype.insts.nonEmpty && atype.name.equals(this.name) && eqQ(atype,this) && this.insts.map(x => x._2) == atype.insts.map(x => x._2)
+      if (this.isCanonical)
+        atype.isCanonical && atype.name.equals(this.name) && eqQ(atype,this)
+      else if (this.isInstanceOf[__] && atype.isInstanceOf[__]) // TODO: have it work generically with types (and make it recurssive)
+      atype.isDerived && atype.name.equals(this.name) && eqQ(atype,this) && this.insts.map(x => x._2) == atype.insts.map(x => x._2)
       else
-      atype.insts.nonEmpty && atype.name.equals(this.name) && eqQ(atype,this) && (this.via._2 == atype.via._2 && this.via._1 == atype.via._1)
+      atype.isDerived && atype.name.equals(this.name) && eqQ(atype,this) && (this.via._2 == atype.via._2 && this.via._1 == atype.via._1)
     case _ => false
   }
 }

@@ -57,16 +57,16 @@ object mmlangPrinter {
 
   def typeString(atype:Type[Obj]):String ={
     val range  = (atype match {
-      case arec:RecType[_,_] => if (atype.insts.nonEmpty && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
+      case arec:RecType[_,_] => if (atype.isDerived && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
       case _ => atype.name
     }) + qString(atype.q)
-    val domain = if (atype.insts.isEmpty) Tokens.empty else {
-      (atype.insts.head._1 match {
-        case arec:RecType[_,_] => if (atype.insts.nonEmpty && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
+    val domain = if (atype.isCanonical) Tokens.empty else {
+      (atype.domain() match {
+        case arec:RecType[_,_] => if (!atype.isCanonical && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
         case btype:Type[_] => btype.name
-      }) + qString(atype.insts.head._1.q)
+      }) + qString(atype.domain().q)
     }
-    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.insts.head._1.alive()) domain else Tokens.empty))) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
+    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain().alive()) domain else Tokens.empty))) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
   }
 
   def valueString(avalue:Value[Obj]):String ={

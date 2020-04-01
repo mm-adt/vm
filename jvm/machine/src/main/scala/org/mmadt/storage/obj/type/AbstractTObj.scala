@@ -29,7 +29,6 @@ import org.mmadt.storage.obj.OObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTObj(name:String,quantifier:IntQ,val _insts:DomainInst[Obj]) extends OObj(name,quantifier) with Type[Obj] {
-  override lazy val via  :(Type[Obj],Inst[_,Obj]) = _insts
-  override      val insts:InstList                = if (null == _insts._1) Nil else _insts._1.insts :+ (_insts._1,_insts._2)
+abstract class AbstractTObj[T<:Obj](name:String,quantifier:IntQ,val _via:DomainInst[T]) extends OObj(name,quantifier) with Type[Obj] {
+  override val via:(Type[Obj],Inst[Obj,T]) = _via
 }

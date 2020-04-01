@@ -30,9 +30,8 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(name:String,quantifier:IntQ,via:DomainInst[Int]) extends AbstractTObj(name,quantifier,via) with IntType {
+class TInt(name:String,quantifier:IntQ,via:DomainInst[Int]) extends AbstractTObj[Int](name,quantifier,via) with IntType {
   def this() = this(Tokens.int,qOne,base())
   def this(name:String) = this(name,qOne,base())
   override def q(quantifier:IntQ):this.type = new TInt(name,quantifier,via).asInstanceOf[this.type]
-  override val insts:InstList = if (null == via._1) Nil else via._1.insts ++ (Nil :+ (via._1,via._2))
 }

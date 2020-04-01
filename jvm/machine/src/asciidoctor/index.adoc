@@ -23,8 +23,6 @@ http://mm-adt.org[mm-ADT] is a dual licensed https://www.gnu.org/licenses/agpl-3
 
 == Virtual Machine Components
 
-`a<=b`
-
 [ditaa,"vm-components",align="center",float="right",shadows=false]
 ....
   /---------------------\

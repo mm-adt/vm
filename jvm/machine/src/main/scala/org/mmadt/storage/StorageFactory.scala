@@ -144,7 +144,7 @@ object StorageFactory {
 
   def isSymbol[O <: Obj](obj:O):Boolean = obj match {
     case _:Value[_] => false
-    case atype:Type[_] => atype.insts.isEmpty && atype.getClass.equals(tobj().getClass) && !atype.name.equals(Tokens.obj)
+    case atype:Type[_] => atype.isCanonical && atype.getClass.equals(tobj().getClass) && !atype.name.equals(Tokens.obj)
   }
 
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {

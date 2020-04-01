@@ -37,17 +37,17 @@ import org.mmadt.storage.StorageFactory._
 object LeftRightSweepRewrite {
 
   def rewrite[S <: Obj](model:Model,atype:Type[S],btype:Type[S],traverser:Traverser[S]):Traverser[S] ={
-    if (atype.insts.nonEmpty) {
+    if (atype.isDerived) {
       model.get(atype) match {
         case Some(right:Type[S]) => rewrite(model,right,btype,traverser)
         case None =>
-          val inst:Inst[Obj,Obj] = OpInstResolver.resolve(atype.insts.last._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.insts.last._2,traverser))
+          val inst:Inst[Obj,Obj] = OpInstResolver.resolve(atype.via._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.via._2.asInstanceOf[Inst[Obj,Obj]],traverser))
           rewrite(model,
             atype.rinvert(),
             inst.apply(traverser.split(atype.rinvert[Type[S]]().range)).obj().asInstanceOf[Type[S]].compose(btype), // might need a model.resolve down the road
             traverser)
       }
-    } else if (btype.insts.nonEmpty) {
+    } else if (btype.isDerived) {
       rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),

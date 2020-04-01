@@ -80,7 +80,7 @@ object Model {
     }
     override def get(left:Type[Obj]):Option[Type[Obj]] ={
       if (left.name.equals(Tokens.model)) return Some(toRec)
-      if (isSymbol(left)) return this.typeMap.values.flatten.find(x => x._2.name.equals(left.name) && x._2.insts.isEmpty && x._1.name != x._2.name).map(x => x._1.named(left.name))
+      if (isSymbol(left)) return this.typeMap.values.flatten.find(x => x._2.name.equals(left.name) && x._2.isCanonical && x._1.name != x._2.name).map(x => x._1.named(left.name))
       this.typeMap.get(left.name) match {
         case None => None
         case Some(m) => m.get(left) match {
@@ -114,8 +114,8 @@ object Model {
     }
     override def get(left:Value[Obj]):Option[Value[Obj]] ={
       typeMap.get(left.name) match {
-        case None => typeMap.values.flatten.find(x => x._2.insts.isEmpty && left.test(x._2.name) && x._1.name != x._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
-        case Some(m) => m.iterator.find(a => a._2.insts.isEmpty && left.test(a._1) && a._1.name != a._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
+        case None => typeMap.values.flatten.find(x => x._2.isCanonical && left.test(x._2.name) && x._1.name != x._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
+        case Some(m) => m.iterator.find(a => a._2.isCanonical && left.test(a._1) && a._1.name != a._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
       }
     }
   }

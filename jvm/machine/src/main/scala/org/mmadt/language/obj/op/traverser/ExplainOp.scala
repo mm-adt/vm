@@ -72,7 +72,7 @@ object ExplainOp {
     report
   }
 
-  private def lastRange(atype:Type[Obj]):Type[Obj] = if (atype.insts.isEmpty) atype else atype.linvert().range
+  private def lastRange(atype:Type[Obj]):Type[Obj] = if (atype.isCanonical) atype else atype.linvert().range
   private val MAX_LENGTH_STRING = 40
   private def instMax(inst:Inst[Obj,Obj]):String ={
     val instString = inst.toString.substring(0,Math.min(MAX_LENGTH_STRING,inst.toString.length))
