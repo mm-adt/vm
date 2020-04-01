@@ -1,0 +1,59 @@
+
+
+////////////////////////////////////
+// images/type-inst.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYHATzQwAviGGl0mXPkIpypYtTpNW7Ljz6CRYiSAzY8BIgCYFShizaJO3XljBwco4UphQA5vCKgAZgCcIAFskeRAcCCRicV8A4MRQ8KRjF2EgA
+\begin{tikzcd}
+          & \tt{type} \arrow[ld] \arrow[rd] &           \\
+\tt{type} &                                 & \tt{inst}
+\end{tikzcd}
+
+////////////////////////////////////
+// images/types.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYAYxwBPNDAC+IUaXSZc+QigBMFanSat2XHsChCR4ydOx4CRcqWIqGLNok7deusRJUwoAc3hFQAMwBOEAFskMxAcCCQFAxA-QKQyUPDESMpRIA
+\begin{tikzcd}
+                      & \tt{type} &                       \\
+\tt{ctype} \arrow[ru] &           & \tt{dtype} \arrow[lu]
+\end{tikzcd}
+
+////////////////////////////////////
+// images/ctypes.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPPgORoWcUgBZKw0eOx4CRAMzyaDFm0Sduvfjk3a9lZAFtmjHKRkGImIgGCZSRLpWirYqjuouWsw6+l4+fgHIAOZ+ugGGwaGSZijkUTbK9qq8EABGAFZcwABUXIL5xkXSJKTECuV2Dmo1EBCMhgowUJnwRKAAZgBOEJ5IZCA4EEil0RWDvK5J7sI0jPQ1MIwAChKm0iALWJkAFjhB80sriHLrm4hr-bE1KlfHo8iATmcLtcwsV7o8Xm8QItlkhLD8kN8AZU4lkcmCIecrjdwvZGDA5q8jEiPlsaBtaSBGCM0ERiAAOUpzJhwGAKU6E6GddgPZ6vaxKAZVYDIKDLej8QJU5Gfbb0xDbJkQFklUhcxg8vmQokwu4ihHimLYoELehgaaK4LKhlqyI7SU45yBAlQ4mws2Ux00v5037bc5gKBIXQATgtuylyBtdt57WpKOD6PVNHDkcQAFoY3H3UDZZ55WAvYyjYLbsL4QH3unvmqwzAI0gC7G3YD9qXy5X+T6TXXRYinV8Qwyc1Gu1i9tKk-bU+O0S3s23c52iz3pX2FccqwLfab62OgwBWSeIV1zhPDUYOxufVe-S8gaeIczbW84xcps-pm+apvpq2rIDIADsnLcry3rGkK9j+uC3ZWr2cr7gBnxAa+JzMkQ0H6rBh5DghcKjtuqELraS4iAYQA
+\begin{tikzcd}
+\tt{obj\{*\}} & \tt{int} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=125, out=55] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] \arrow[l, "{\tt{[int]}}"']    & {\tt{int[plus,4]}} \arrow[l, "{\tt{[plus,4]}}"'] \arrow[l, "{\tt{[range]}}", bend left=49] \arrow[l, "{\tt{[domain]}}"', bend right=49] & {\tt{int[plus,4][mult,2]}} \arrow[l, "{\tt{[mult,42]}}"'] \arrow[ll, "{\tt{[domain]}}"', bend right=49] \arrow[ll, "{\tt{[range]}}", bend left=49] & {\tt{int[plus,4][mult,2][gt,42]}} \arrow[l, "{\tt{[gt,42]}}"] \arrow[lll, "{\tt{[domain]}}"', bend right=49] \arrow[llld, "{\tt{[range]}}", bend left] \\
+              & \tt{bool} \arrow[lu, "{\tt{[bool]}}"] \arrow["{\tt{[domain]}}"', loop, distance=2em, in=215, out=145] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] &                                                                                                                                         &                                                                                                                                                    &                                                                                                                                                       
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/dtypes.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYAYxwBPNDAC+IUaXSZc+QigDMFanSat2XHsChCR4ydOx4CRcspoMWbRJ268IAIwBWXYACouo-SphQA5vBEoABmAE4QALZIZCA4EEhmIA4wYFBIComW6jaavMih9GABlPpSIGGR0TRxCTTJqUgAtBkWata2WshQkfRYYCUgNIz0yYwACjLG8iChWH4AFjgSZRVRiDE1iJltGnbAyH1wOANDIzDjk3LsswtLBuXha4mbiYwQEGimpMFMcDAqw1GEyMVxsN0Wg1UVl2nQKRX+pRCj1qsXiWyG70+KGIAA4zD9GH8AWcLiCTGC5hDWtCcnsuj0+gN7qsqqjWW8Pl8CUTTkDLuSZpSltTsh08odjoiHpV0WzEAAmEXtXL7ATCBGQwHnYGyAXgu4lIA
+\begin{tikzcd}
+\tt{obj\{*\}} & \tt{ctype} \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] \arrow["{\tt{[domain]}}"', loop, distance=2em, in=125, out=55] \arrow[l, "{\tt{[ctype]}}"'] &  & \tt{dtype} \arrow[ll, "{\tt{[range]}}", bend left] \arrow[ll, "{\tt{[domain]}}"', bend right] \arrow[ll, "{\tt{[inst]}}"'] \arrow["{\tt{[inst]}}"', loop, distance=2em, in=305, out=235]
+\end{tikzcd}
+
+
+
+
+////////////////////////////////////
+// images/type-data-structure.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPPgORoWcUgBZKw0eOx4CRAMzyaDFm0Sduvfjk3a9lZAFtmjHKRkGImIgGCZSRLpWirYqjuouWsw6+l4+fgHIAOZ+ugGGwaGSZijkUTbK9qq8EABGAFZcwABUXIL5xkXSJKTECuV2Dmo1EBCMhgowUJnwRKAAZgBOEJ5IZCA4EEil0RWDvK5J7sI0jPQ1MIwAChKm0iALWJkAFjhB80sriHLrm4hr-bE1KlfHo8iATmcLtcwsV7o8Xm8QItlkhLD8kN8AZU4lkcmCIecrjdwvZGDA5q8jEiPlsaBtaSBGCM0ERiAAOUpzJhwGAKU6E6GddgPZ6vaxKAZVYDIKDLej8QJU5Gfbb0xDbJkQFklUhcxg8vmQokwu4ihHimLYoELehgaaK4LKhlqyI7SU45yBAlQ4mws2Ux00v5037bc5gKBIXQATgtuylyBtdt57WpKOD6PVNHDkcQAFoY3H3UDZZ55WAvYyjYLbsL4QH3unvmqwzAI0gC7G3YD9qXy5X+T6TXXRYinV8Qwyc1Gu1i9tKk-bU+O0S3s23c52iz3pX2FccqwLfab62OgwBWSeIV1zhPDUYOxufVe-S8gaeIczbW84xcps-pm+apvpq2rIDIADsnLcry3rGkK9j+uC3ZWr2cr7gBnxAa+JzMkQ0H6rBh5DghcKjtuqELraS4iAYQA
+\begin{tikzcd}
+\tt{obj\{*\}} & \tt{int} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=125, out=55] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] \arrow[l, "{\tt{[int]}}"']    & {\tt{int[plus,4]}} \arrow[l, "{\tt{[plus,4]}}"'] \arrow[l, "{\tt{[range]}}", bend left=49] \arrow[l, "{\tt{[domain]}}"', bend right=49] & {\tt{int[plus,4][mult,2]}} \arrow[l, "{\tt{[mult,42]}}"'] \arrow[ll, "{\tt{[domain]}}"', bend right=49] \arrow[ll, "{\tt{[range]}}", bend left=49] & {\tt{int[plus,4][mult,2][gt,42]}} \arrow[l, "{\tt{[gt,42]}}"] \arrow[lll, "{\tt{[domain]}}"', bend right=49] \arrow[llld, "{\tt{[range]}}", bend left] \\
+              & \tt{bool} \arrow[lu, "{\tt{[bool]}}"] \arrow["{\tt{[domain]}}"', loop, distance=2em, in=215, out=145] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] &                                                                                                                                         &                                                                                                                                                    &                                                                                                                                                       
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/type-equiv.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACZSxanSat2XHnwHI0LOKRmVho8djwEiAFgqKGLNok7de-HFp0UFhsSAwmpF+dbKdg7qzq7MuvrhugAcBiJePpJmKGQKNDYq9mpOAoaKMFAA5vBEoABmAE4QALZIZCA4EEhySraqjsDR7vFGIFW1SOQ0TUgAzBlBHerdcZ4V1XWIE43NiK0ARjBgUEgAtGMNmcE5XVhQ8TSM9FuMAAoSptIglVhFABY4CQuD6yNrKy2O32h0m7WynWQ50uIGutwevhSLzen2+-UWSEsqyGYKyIV43X083Rvwao0QWKBu0QByOUwhM2hwiuNxg90efnsrw+Xz6AyWWPJDSpILp4PxZwuzNhrPZiOe3NRggMQA
+\begin{tikzcd}
+\tt{int} \arrow[rr, "{\tt{[plus,2]}}"] \arrow[d, "{\tt{[id]}}"', bend right]    &  & {\tt{int[plus,2]}} \arrow[rr, "{\tt{[plus,8]}}"] &  & {\tt{int[plus,2][plus,8]}} \arrow[d, "{\tt{[id]}}"', bend right] \\
+\tt{int} \arrow[rrrr, "{\tt{[plus,10]}}"] \arrow[u, "{\tt{[id]}}"', bend right] &  &                                                  &  & {\tt{int[plus,10]}} \arrow[u, "{\tt{[id]}}"', bend right]       
+\end{tikzcd}
