@@ -94,11 +94,15 @@ The mm-ADT VM operates on quantified objects known as `objs`. Every object is ei
 \end{split}
 \]
 
-A type denotes a _stream_ (i.e. https://en.wikipedia.org/wiki/Multiset[multi-set] or bag) of `obj` values. Values denote atomic or composite datum existing outside the mm-ADT VM within it's execution environment. For instance, if an mm-ADT VM is implemented on the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM], then the `str` value `'mmadt'` refers to the `java.lang.String` instance `"mmadt"`. Both `obj` types and values have associated *quantifiers* (`q`), where the semantics of quantification depends on the quantifier used across an mm-ADT program (e.g. integers, reals, unitary matrices, etc.). However, in general, the intuition is that the quantifier denotes the _amount_ of objects being referred to.
+A type denotes a _stream_ (i.e. https://en.wikipedia.org/wiki/Multiset[multi-set] or bag) of `obj` values. Values denote atomic or composite datum existing outside the mm-ADT VM within it's execution environment. For instance, if an mm-ADT VM is implemented on the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM], then the `str` value `'mmadt'` refers to the `java.lang.String` instance `"mmadt"`. Both `obj` types and values have associated *quantifiers* (`q`). The meaning of quantification is dependent on the quantifier type used with an mm-ADT program (e.g. integers, reals, unitary matrices, etc.). However, in general, the intuition is that the quantifier denotes the _amount_ of values being referred to.
 
-It is via types and their composition that programs are written, streams are constructed, functions are defined, and functorial mappings between different abstract data types are specified. mm-ADT types serve numerous roles which are realized by many different sorts of objects in traditional abstract computing machines. The reason being is that the fundamental idea of an mm-ADT type is that it refers to a stream of values that when _dereferenced_ (evaluated), those values are returned. Thus, at the level of an mm-ADT program (which is simply a "complex" type), the referent values are the program's results.
+The axioms of https://en.wikipedia.org/wiki/Ring_theory[algebraic ring theory] specify that rules of type composition and thus, how programs are written, streams are constructed, functions are defined, and of particular import to mm-ADT, how functorial mappings between different https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types] are specified.
 
 === Types
+
+image::images/obj-monoid.png[float="right",width=70]
+
+mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system is generated from the https://en.wikipedia.org/wiki/Monoid[monoid] `obj{*}`, where it's elements (i.e. types) ultimately refer to streams of values. mm-ADT program evaluation dereferences the type denoting the program in order to yield referent values -- program results.
 
 image::images/type-inst.png[float="left",width=220]
 
@@ -118,7 +122,7 @@ This recursive definition is grounded at the 6 *canonical types* (called _ctypes
 .Canonical type and derived type morphisms
 [frame=none,halign=center,cols="^m,^m"]
 |===
-| image:images/ctypes.png[] | image:images/dtypes.png[]
+| image:images/ctypes.png[width=350] | image:images/dtypes.png[]
 |===
 
 
