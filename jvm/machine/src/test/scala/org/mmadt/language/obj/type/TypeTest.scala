@@ -65,28 +65,25 @@ class TypeTest extends FunSuite {
     assertResult(int)(tobj.domain())
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(tobj.toString)
     assertResult(int.q(0,1))(tobj.range)
-    assertResult(int)(tobj.canonical)
     assertResult(3)(tobj.insts.length)
     //
     tobj = tobj.rinvert[IntType]()
     assertResult(int)(tobj.domain())
     assertResult("int[plus,10][mult,1]")(tobj.toString)
     assertResult(int)(tobj.range)
-    assertResult(int)(tobj.canonical)
+    assertResult(int)(tobj.range.q(qOne))
     assertResult(2)(tobj.insts.length)
     //
     tobj = tobj.rinvert[IntType]()
     assertResult(int)(tobj.domain())
     assertResult("int[plus,10]")(tobj.toString)
     assertResult(int)(tobj.range)
-    assertResult(int)(tobj.canonical)
     assertResult(1)(tobj.insts.length)
     //
     tobj = tobj.rinvert[IntType]()
     assertResult(int)(tobj.domain())
     assertResult("int")(tobj.toString)
     assertResult(int)(tobj.range)
-    assertResult(int)(tobj.canonical)
     assertResult(0)(tobj.insts.length)
 
     assertThrows[NoSuchElementException]{
@@ -104,35 +101,32 @@ class TypeTest extends FunSuite {
     assertResult(Nil)(boolType.domain[IntType]().insts)
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][gt,100]")(boolType.toString)
     assertResult(bool.q(0,1))(boolType.range)
-    assertResult(bool)(boolType.canonical)
+    assertResult(bool)(boolType.range.q(qOne))
     assertResult(4)(boolType.insts.length)
     //
     var intType = boolType.rinvert[IntType]()
     assertResult(int)(intType.domain())
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(intType.toString)
     assertResult(int.q(0,1))(intType.range)
-    assertResult(int)(intType.canonical)
+    assertResult(int)(intType.range.q(qOne))
     assertResult(3)(intType.insts.length)
     //
     intType = intType.rinvert[IntType]()
     assertResult(int)(intType.domain())
     assertResult("int[plus,10][mult,1]")(intType.toString)
     assertResult(int)(intType.range)
-    assertResult(int)(intType.canonical)
     assertResult(2)(intType.insts.length)
     //
     intType = intType.rinvert[IntType]()
     assertResult(int)(intType.domain())
     assertResult("int[plus,10]")(intType.toString)
     assertResult(int)(intType.range)
-    assertResult(int)(intType.canonical)
     assertResult(1)(intType.insts.length)
     //
     intType = intType.rinvert[IntType]()
     assertResult(int)(intType.domain())
     assertResult("int")(intType.toString)
     assertResult(int)(intType.range)
-    assertResult(int)(intType.canonical)
     assertResult(0)(intType.insts.length)
     //
     assertThrows[NoSuchElementException]{
@@ -159,7 +153,7 @@ class TypeTest extends FunSuite {
     val boolType:BoolType = int.plus(int(10)).mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a")
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=[start,'hello'][plus,str]][gt,'a']")(boolType.toString)
     assertResult(bool.q(0,1))(boolType.range)
-    assertResult(bool)(boolType.canonical)
+    assertResult(bool)(boolType.range.q(qOne))
     assertResult(5)(boolType.insts.length)
     assertResult(int.mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a"))(boolType.linvert())
     assertResult(int.is(int.gt(int(20))).map(str("hello").plus(str)).gt("a"))(boolType.linvert().linvert())
@@ -170,7 +164,7 @@ class TypeTest extends FunSuite {
     assertResult(int)(strType.domain())
     assertResult("str{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=[start,'hello'][plus,str]]")(strType.toString)
     assertResult(str.q(0,1))(strType.range)
-    assertResult(str)(strType.canonical)
+    assertResult(str)(strType.range.q(qOne))
     assertResult(4)(strType.insts.length)
     domainTest(strType)
     //
@@ -178,7 +172,7 @@ class TypeTest extends FunSuite {
     assertResult(int)(intType.domain())
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(intType.toString)
     assertResult(int.q(0,1))(intType.range)
-    assertResult(int)(intType.canonical)
+    assertResult(int)(intType.range.q(qOne))
     assertResult(3)(intType.insts.length)
     domainTest(intType)
     //
@@ -186,7 +180,6 @@ class TypeTest extends FunSuite {
     assertResult(int)(intType.domain())
     assertResult("int[plus,10][mult,1]")(intType.toString)
     assertResult(int)(intType.range)
-    assertResult(int)(intType.canonical)
     assertResult(2)(intType.insts.length)
     domainTest(intType)
     //
@@ -194,7 +187,6 @@ class TypeTest extends FunSuite {
     assertResult(int)(intType.domain())
     assertResult("int[plus,10]")(intType.toString)
     assertResult(int)(intType.range)
-    assertResult(int)(intType.canonical)
     assertResult(1)(intType.insts.length)
     domainTest(intType)
     //
@@ -202,7 +194,6 @@ class TypeTest extends FunSuite {
     assertResult(int)(intType.domain())
     assertResult("int")(intType.toString)
     assertResult(int)(intType.range)
-    assertResult(int)(intType.canonical)
     assertResult(0)(intType.insts.length)
     domainTest(intType)
   }

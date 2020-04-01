@@ -70,13 +70,6 @@ object TypeChecker {
 
   ////////////////////////////////////////////////////////
 
-  def typeCheck[S <: Obj](obj:S,checkType:Type[S]):Unit ={
-    assert(obj match {
-      case atype:Type[_] => atype.range.test(checkType)
-      case avalue:Value[_] => avalue.test(checkType)
-    },obj + " is not in " + checkType)
-  }
-
   private def testRecord(leftMap:Map[Obj,Obj],rightMap:Map[Obj,Obj]):Boolean ={
     if (leftMap.equals(rightMap)) return true
     val typeMap:mutable.Map[Obj,Obj] = mutable.Map() ++ rightMap

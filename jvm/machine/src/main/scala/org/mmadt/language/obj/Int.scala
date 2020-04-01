@@ -41,8 +41,3 @@ trait Int extends Obj
   with OneOp[Int]
   with ToOp[Int]
   with ZeroOp[Int]
-
-object Int {
-  @inline implicit def longToInt(java:Long):IntValue = int(java)
-  @inline implicit def intToInt(java:scala.Int):IntValue = int(java.longValue())
-}

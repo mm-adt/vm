@@ -42,16 +42,13 @@ trait Type[+T <: Obj] extends Obj
   with ExplainOp {
   this:T =>
 
-
-  // slow refactor to the type data structure without List
   val via:(Type[Obj],Inst[Obj,T])
   def isCanonical:Boolean = null == via._1
   def isDerived:Boolean = !this.isCanonical
 
   // type properties
-  lazy val insts    :List[(Type[Obj],Inst[Obj,Obj])] = if (this.isCanonical) Nil else this.via._1.insts :+ (this.via._1,this.via._2)
-  lazy val canonical:this.type                       = this.range.q(qOne)
-  lazy val range    :this.type                       = (this match {
+  lazy val insts:List[(Type[Obj],Inst[Obj,Obj])] = if (this.isCanonical) Nil else this.via._1.insts :+ (this.via._1,this.via._2)
+  lazy val range:this.type                       = (this match {
     case _:BoolType => tbool(this.name,this.q)
     case _:RealType => treal(this.name,this.q)
     case _:IntType => tint(this.name,this.q)
@@ -61,9 +58,7 @@ trait Type[+T <: Obj] extends Obj
     case _:ObjType => tobj(this.name,this.q)
   }).asInstanceOf[this.type]
 
-  def domain[D <: Obj]():Type[D] = {
-    if (this.isCanonical) this.asInstanceOf[Type[D]] else this.via._1.domain[D]()
-  }
+  def domain[D <: Obj]():Type[D] = if (this.isCanonical) this.asInstanceOf[Type[D]] else this.via._1.domain[D]()
 
   // type manipulation functions
   def linvert():this.type ={

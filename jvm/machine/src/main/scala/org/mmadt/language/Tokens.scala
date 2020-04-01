@@ -39,7 +39,6 @@ object Tokens {
   val int  = "int"
   val real = "real"
   val inst = "inst"
-  val __   = "__"
 
   val a          = "a"
   val add        = "add"

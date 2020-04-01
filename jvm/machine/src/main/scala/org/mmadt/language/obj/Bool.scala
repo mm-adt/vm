@@ -34,7 +34,3 @@ trait Bool extends Obj
   with AndOp
   with OrOp
   with ToOp[Bool]
-
-object Bool {
-  @inline implicit def booleanToBool(java:Boolean):BoolValue = bool(java)
-}

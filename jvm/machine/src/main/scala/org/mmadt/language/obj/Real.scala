@@ -41,8 +41,3 @@ trait Real extends Obj
   with OneOp[Real]
   with ToOp[Real]
   with ZeroOp[Real]
-
-object Real {
-  @inline implicit def doubleToReal(java:Double):RealValue = real(java)
-  @inline implicit def floatToReal(java:Float):RealValue = real(java.doubleValue())
-}

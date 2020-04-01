@@ -37,8 +37,3 @@ trait Str extends Obj
   with LtOp[Str]
   with LteOp[Str]
   with ToOp[Str]
-
-
-object Str {
-  @inline implicit def stringToStr(java:String):StrValue = str(java)
-}

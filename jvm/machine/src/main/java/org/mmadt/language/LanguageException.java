@@ -27,11 +27,12 @@ import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
+import org.mmadt.storage.StorageFactory;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-public class LanguageException extends  VmException {
+public class LanguageException extends VmException {
 
     public LanguageException(final String message) {
         super(message);
@@ -42,7 +43,8 @@ public class LanguageException extends  VmException {
     }
 
     public static void testDomainRange(final Type<?> range, final Type<?> domain) {
-        if (!(domain instanceof __) && !range.canonical().test(domain.canonical()))
+        if (!(domain instanceof __) &&
+                !range.range().q(StorageFactory.qOne()).test(domain.range().q(StorageFactory.qOne())))
             throw LanguageException.typeError(range, domain);
     }
 

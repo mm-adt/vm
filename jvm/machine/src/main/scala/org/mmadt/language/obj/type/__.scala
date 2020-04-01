@@ -53,6 +53,7 @@ class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOn
   def plus(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.plus,List(other)))
   def mult(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.mult,List(other)))
   def gt(other:Obj):BoolType = this.compose(bool,OpInstResolver.resolve(Tokens.gt,List(other)))
+  def is(other:Obj):BoolType = this.compose(bool,OpInstResolver.resolve(Tokens.is,List(other)))
   def neg():this.type = this.compose(NegOp())
 }
 
