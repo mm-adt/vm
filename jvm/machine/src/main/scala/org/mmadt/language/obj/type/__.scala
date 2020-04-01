@@ -25,6 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
+import org.mmadt.language.obj.op.initial.{IntOp,StrOp}
 import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{DomainInst,Inst,IntQ,OType,Obj,_}
@@ -34,13 +35,16 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOne) extends Type[__] {
+class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOne) extends Type[__]
+  with IntOp // TODO: persue this path?
+  with StrOp {
   override      val name :String                          = Tokens.empty
   lazy override val insts:List[(Type[Obj],Inst[Obj,Obj])] = this._insts
-  override      val via  :DomainInst[__]                 = (if (_insts.isEmpty) base() else _insts.last).asInstanceOf[DomainInst[__]]
+  override      val via  :DomainInst[__]                  = (if (_insts.isEmpty) base() else _insts.last).asInstanceOf[DomainInst[__]]
   override      val q    :(IntValue,IntValue)             = this._quantifier
   override def q(quantifier:IntQ):this.type = new __(this._insts,quantifier).asInstanceOf[this.type]
 
+  override def domain[D <: Obj]():Type[D] = obj.q(*).asInstanceOf[Type[D]]
 
   def apply[T <: Obj](obj:Obj):OType[T] = _insts.foldLeft[Traverser[Obj]](Traverser.standard(asType(obj)))((a,i) => i._2(a)).obj().asInstanceOf[OType[T]]
   // type-agnostic monoid supporting all instructions

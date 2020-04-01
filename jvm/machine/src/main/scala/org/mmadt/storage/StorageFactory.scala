@@ -25,10 +25,11 @@ package org.mmadt.storage
 import java.util.ServiceLoader
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{BoolType,_}
+import org.mmadt.language.obj.`type`.{BoolType, _}
+import org.mmadt.language.obj.op.initial.{IntOp, StrOp}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
-import org.mmadt.language.obj.{DomainInst,_}
+import org.mmadt.language.obj.{DomainInst, _}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
@@ -48,9 +49,9 @@ trait StorageFactory {
   //
   def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:DomainInst[Obj] = base()):ObjType
   def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:DomainInst[Bool] = base()):BoolType
-  def tint(name:String = Tokens.int,q:IntQ = qOne,insts:DomainInst[Int] = base()):IntType
+  def tint(name:String = Tokens.int,q:IntQ = qOne,insts:DomainInst[Int] = base(IntOp())):IntType
   def treal(name:String = Tokens.real,q:IntQ = qOne,insts:DomainInst[Real] = base()):RealType
-  def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:DomainInst[Str] = base()):StrType
+  def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:DomainInst[Str] = base(StrOp())):StrType
   def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:DomainInst[Rec[A,B]] = base()):RecType[A,B]
   def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B]
   /////////VALUES/////////
@@ -89,12 +90,12 @@ object StorageFactory {
   lazy val str :StrType  = tstr()
   def rec[A <: Obj,B <: Obj]:RecType[A,B] = trec(value = Map.empty[A,B])
   //
-  def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:DomainInst[Obj] = base())(implicit f:StorageFactory):ObjType = f.tobj(name,q,insts)
-  def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:DomainInst[Bool] = base())(implicit f:StorageFactory):BoolType = f.tbool(name,q,insts)
-  def tint(name:String = Tokens.int,q:IntQ = qOne,insts:DomainInst[Int] = base())(implicit f:StorageFactory):IntType = f.tint(name,q,insts)
-  def treal(name:String = Tokens.real,q:IntQ = qOne,insts:DomainInst[Real] = base())(implicit f:StorageFactory):RealType = f.treal(name,q,insts)
-  def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:DomainInst[Str] = base())(implicit f:StorageFactory):StrType = f.tstr(name,q,insts)
-  def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:DomainInst[Rec[A,B]] = base())(implicit f:StorageFactory):RecType[A,B] = f.trec(name,value,q,insts)
+  def tobj(name:String = Tokens.obj,q:IntQ = qOne,via:DomainInst[Obj] = base())(implicit f:StorageFactory):ObjType = f.tobj(name,q,via)
+  def tbool(name:String = Tokens.bool,q:IntQ = qOne,via:DomainInst[Bool] = base())(implicit f:StorageFactory):BoolType = f.tbool(name,q,via)
+  def tint(name:String = Tokens.int,q:IntQ = qOne,via:DomainInst[Int] = (null,IntOp()))(implicit f:StorageFactory):IntType = f.tint(name,q,via)
+  def treal(name:String = Tokens.real,q:IntQ = qOne,via:DomainInst[Real] = base())(implicit f:StorageFactory):RealType = f.treal(name,q,via)
+  def tstr(name:String = Tokens.str,q:IntQ = qOne,via:DomainInst[Str] = (null,StrOp()))(implicit f:StorageFactory):StrType = f.tstr(name,q,via)
+  def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,via:DomainInst[Rec[A,B]] = base())(implicit f:StorageFactory):RecType[A,B] = f.trec(name,value,q,via)
   def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*)(implicit f:StorageFactory):RecType[A,B] = f.trec(value,values:_*)
   /////////VALUES/////////
   def obj(value:Any)(implicit f:StorageFactory):ObjValue = f.obj(value)
@@ -149,12 +150,12 @@ object StorageFactory {
 
   implicit val mmstoreFactory:StorageFactory = new StorageFactory {
     /////////TYPES/////////
-    override def tobj(name:String = Tokens.obj,q:IntQ = qOne,insts:DomainInst[Obj] = base()):ObjType = new TObj(name,q,insts)
-    override def tbool(name:String = Tokens.bool,q:IntQ = qOne,insts:DomainInst[Bool] = base()):BoolType = new TBool(name,q,insts)
-    override def tint(name:String = Tokens.int,q:IntQ = qOne,insts:DomainInst[Int] = base()):IntType = new TInt(name,q,insts)
-    override def treal(name:String = Tokens.real,q:IntQ = qOne,insts:DomainInst[Real] = base()):RealType = new TReal(name,q,insts)
-    override def tstr(name:String = Tokens.str,q:IntQ = qOne,insts:DomainInst[Str] = base()):StrType = new TStr(name,q,insts)
-    override def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,insts:DomainInst[Rec[A,B]] = base()):RecType[A,B] = new TRec[A,B](name,value,q,insts)
+    override def tobj(name:String = Tokens.obj,q:IntQ = qOne,via:DomainInst[Obj] = base()):ObjType = new TObj(name,q,via)
+    override def tbool(name:String = Tokens.bool,q:IntQ = qOne,via:DomainInst[Bool] = base()):BoolType = new TBool(name,q,via)
+    override def tint(name:String = Tokens.int,q:IntQ = qOne,via:DomainInst[Int] = base(IntOp())):IntType = new TInt(name,q,via)
+    override def treal(name:String = Tokens.real,q:IntQ = qOne,via:DomainInst[Real] = base()):RealType = new TReal(name,q,via)
+    override def tstr(name:String = Tokens.str,q:IntQ = qOne,via:DomainInst[Str] = base(StrOp())):StrType = new TStr(name,q,via)
+    override def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,via:DomainInst[Rec[A,B]] = base()):RecType[A,B] = new TRec[A,B](name,value,q,via)
     override def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B]((value +: values).toMap)
     /////////VALUES/////////
     override def obj(value:Any):ObjValue = new VObj(value)

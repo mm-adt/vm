@@ -66,7 +66,7 @@ object mmlangPrinter {
         case btype:Type[_] => btype.name
       }) + qString(atype.domain().q)
     }
-    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain().alive()) domain else Tokens.empty))) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
+    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain().alive() && !atype.domain().equals(obj.q(qStar))) domain else Tokens.empty))) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
   }
 
   def valueString(avalue:Value[Obj]):String ={

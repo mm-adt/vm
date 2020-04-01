@@ -61,7 +61,9 @@ trait Type[+T <: Obj] extends Obj
     case _:ObjType => tobj(this.name,this.q)
   }).asInstanceOf[this.type]
 
-  def domain[D <: Obj]():Type[D] = if (this.isCanonical) this.asInstanceOf[Type[D]] else this.via._1.domain[D]()
+  def domain[D <: Obj]():Type[D] = {
+    if (this.isCanonical) this.asInstanceOf[Type[D]] else this.via._1.domain[D]()
+  }
 
   // type manipulation functions
   def linvert():this.type ={

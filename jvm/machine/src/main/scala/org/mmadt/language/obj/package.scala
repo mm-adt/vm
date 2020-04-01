@@ -22,8 +22,7 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.obj.`type`.{RecType, Type, __}
 import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
 import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 import org.mmadt.storage.StorageFactory._
@@ -37,7 +36,8 @@ package object obj {
   type State = Map[String,Obj]
   type InstList = List[(Type[Obj],Inst[Obj,Obj])]
   type DomainInst[+T <: Obj] = (Type[Obj],Inst[Obj,T])
-  def base[T <:Obj]():DomainInst[T] = (null,IdOp[T]()).asInstanceOf[DomainInst[T]]
+  def base[T <: Obj](inst:Inst[Obj,T]):DomainInst[T] = (null,inst)
+  def base[T <: Obj]():DomainInst[T] = (null,null)
 
   // less typing
   type OType[+O <: Obj] = O with Type[O]

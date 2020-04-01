@@ -23,7 +23,9 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.op.map.{IdOp, MultOp, PlusOp}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.initial.IntOp
+import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -33,9 +35,8 @@ import org.scalatest.FunSuite
 class TIntTest extends FunSuite {
   test("canonical int"){
     assert(int.isCanonical)
-    assertResult(IdOp())(int.via._2)
-    // TODO: assertResult(int)(int.via._1)
-    //assertResult(int)(int.via._1.via._1)
+    assertResult(IntOp())(int.via._2)
+    assertResult(null)(int.via._1)
   }
 
   test("derived int"){

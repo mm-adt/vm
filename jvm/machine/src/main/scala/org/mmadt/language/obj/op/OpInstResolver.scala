@@ -28,14 +28,14 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.initial.StartOp
+import org.mmadt.language.obj.op.initial.{IntOp,StartOp,StrOp}
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.{AsOp, ModelOp, NoOp}
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
+import org.mmadt.language.obj.op.model.{AsOp,ModelOp,NoOp}
+import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.sideeffect.{AddOp,ErrorOp,PutOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst,Obj}
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters
@@ -53,6 +53,9 @@ object OpInstResolver {
 
   def resolve[S <: Obj,E <: Obj](op:String,args:List[Obj]):Inst[S,E] ={
     (op match {
+      case Tokens.int => IntOp()
+      case Tokens.str => StrOp()
+      //
       case Tokens.noop => NoOp()
       case Tokens.add => AddOp(args.head)
       case Tokens.a | Tokens.a_op => AOp(args.head.asInstanceOf[Type[Obj]])

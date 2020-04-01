@@ -123,27 +123,26 @@ An mm-ADT *type* is the product of a type and an instruction (`inst`), where the
 // https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYAYxwBPNDAC+IUaXSZc+QigBMFanSat2XHsChCR4ydOx4CRcqWIqGLNok7deusRJUwoAc3hFQAMwBOEAFskMxAcCCQFAxA-QKQyUPDESMpRIA
 image::images/types.png[float="right"",width=220]
 
-This recursive definition is grounded at the 6 *canonical types* (called _ctypes_): `bool`, `int`, `real`, `str`, `lst`, and `rec`. The type of every canonical type is itself and the instruction of every canonical type is the identity instruction `[id]`.
+This recursive definition is grounded at the 6 *canonical types* (called _ctypes_): `bool`, `int`, `real`, `str`, `lst`, and `rec`. Every canonical type is it's own domain and range, via the respective type generating instruction of the terminal object `obj{*}`.
 
-// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPYACcYTYaPHY8BIuXk0GLNok7deAIwgRGOsSAz6pR0sQVnll1bzgcdSc9SUMUMi9TJQsrNUZAkJcJA2lkOSjFcxVrDRgAYx0FGCgAc3giUAAzdQgAWyRjEBwIRppGezQiYgAOYyqmOBgFRnobGEYABRT3S3UsUoALHBBo7L9rZCwoShFnGvqkOWbWxGOOiC6IvtIBhOH2sYnpt3CQeaWVtd843i2dpIHBqIMgnJCgi5XEg3O5DEZPKYzN4fZarLI-fzAf6UQG1YEAZhoLSQhJAkO6MMGDzJCJeYWk7wWqO+sUx2Nxh0QABYiaceWTOhT+lT4eNEa8GSivujWbl2XtqnikABWXkq9qC67C+6i55IyVM6U+WVqeWCHFAA
 
-// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgBjHAJ5oYAXxAjS6TLnyEUARnJVajFm07dgUQcLESp2PASIAmJdXrNWiDu15QIOBPpAZDsogGZzKq+q482kKi4sowUADm8ESgAGYAThAAtkhkIDgQqdQMEBBoRPIAHGSxjHAwygx0AEYwDAAK0kZyIPFYEQAWOCAWqta2mshYUBR6kiAJyVnpmYiKvmo2GjhDYHA4FOLjkylz1BlIZiBVtQ1NHjYMMLHdvX5LAcCr66M9x1hg-XAQDMNbcYldkcDohvAt+ssnh8XnpRkA
-
+// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPYACcYTYaPHY8BIuXk0GLNok7deAIwgRGOsSAz6pR0jIVnll1bzgcdSc9SUMUMi9TJQsrNUZAkJcJA2lkOSjFcxVrDRgAYyTXMLSyYm8YnLUIGwArLmByLkEdBRgoAHN4IlAAM3UIAFskAGYaHAgkADZo7L9c5ED1SmEaRnobGEYABRT3S35sWBFnfqGkABZxycQZrN843mQEnBWQNY2t3bdwkEOsY66EBnYaIACs12mswe-mAyE0+TeH02Oz2v3+gNOA1BchAEyh91isOQdgcSJA6xR3xK7AxbCBIKQxjxNzuPiJC34r1WFM+qJ+0j+YCO9Kx50QZBZBPZVSemiY5MpXzRgrpIhWQA
+// % https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYAYxwBPNDAC+IUaXSZc+QigDMFanSat2XHsChCR4ydOx4CRcspoMWbRJ268IAIwBWXYACouo-SphQA5vBEoABmAE4QALZIZCA4EEhmIA4wYFBIComW6jaavMih9GABlPpSIGGR0TRxCTTJqUgAtBkWata2WshQkfRYYCUgNIz0yYwACjLG8iChWH4AFjgSZRVRiDE1iJltGnbAyH1wOANDIzDjk3LsswtLBuXha4mbiYwQEGimpMFMcDAqw1GEyMVxsN0Wg1UVl2nQKRX+pRCj1qsXiWyG70+KGIAA4zD9GH8AWcLiCTGC5hDWtCcnsuj0+gN7qsqqjWW8Pl8CUTTkDLuSZpSltTsh08odjoiHpV0WzEAAmEXtXL7ATCBGQwHnYGyAXgu4lIA
 .Canonical type and derived type morphisms
 [frame=none,halign=center,cols="^m,^m"]
 |===
-| image:images/ctypes.png[width=225] | image:images/ctype-dtype.png[width=340]
+// % https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPYACcYTYaPHY8BIuXk0GLNok7deAIwgRGOsSAz6pR0jIVnll1bzgcdSc9SUMUMi9TJQsrNUZAkJcJA2lkOSjFcxVrDRgAYyTXMLSyYm8YnLUIGwArLmByLkEdBRgoAHN4IlAAM3UIAFskAGYaHAgkADZo7L9c5ED1SmEaRnobGEYABRT3S35sWBFnfqGkABZxycQZrN843mQEnBWQNY2t3bdwkEOsY66EBnYaIACs12mswe-mAyE0+TeH02Oz2v3+gNOA1BchAEyh91isOQdgcSJA6xR3xK7AxbCBIKQxjxNzuPiJC34r1WFM+qJ+0j+YCO9Kx50QZBZBPZVSemiY5MpXzRgrpIhWQA
+| image:images/ctypes.png[] | image:images/dtypes.png[]
 |===
 
 
-
-From the canonical types, the set of all *derived type* (called _dtypes_) can be constructed via instruction application. Every mm-ADT `inst` processes both type and value `objs`. When processing a type, the `inst` yields a new `dtype` structurally related to the previous type by the respective `inst`. For instance:
+From the canonical types, the set of all *derived type* (called _dtypes_) can be inductively generated via the application of instructions from the mm-ADT VM instruction set architecture. Every mm-ADT `inst` processes both type and value `objs`. When processing a type, the `inst` yields a new `dtype` structurally related to the previous type by the respective `inst`. For instance:
 
 \[
 \tt{int[plus,4][mult,2][gt,42]}\\
 \]
-// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFOQrU6TVuy48+A5GhZxSAFkrDR47HgJEATHJoMWbRJ269+ODVt2VkAW2aMcpM-pExEAxjKSIAZksFG2UHNWdNZm09T29ff2QAc18dfwMgkMlTFEjieWslOxVHAXyjIulkSP8rRVt7VQAjCAhGOuCJE0aLMtaYqrinfsKh8z9yttjVKcD62Zl5scqOmqFVgdDi5FlR6O3q+IN5GChM+CJQADMAJwgPJFkQHAgkMjP2i4uJJufovN5ICxfH6IT4VAFxVI+XR5fZg96ISJQiFbeGqLI5FGGEBopCY75IHQ4pa8ZBQN70fgBIkkjE0cmIACsVImeOe9DAdwCNEY9E6MEYAAVBmE7M8sJkABY4VGvdGQ9kANm5O2AtPpjNBquxWMQAHZtYC+QKYEKQCKxZLpcUQHLFcrmUaYWzoQAOC0Iq2C4TC0XiqWHaQu+VKlXgr0mgCc-rxdI8DLATKCLL+7L+jB6aHMprIjyYcBtIYd4Ya7FdMeTNNT6czT09OeheYLRBLZYrdtDjojtejyobusDNqugiAA
-image:images/type-datastructure.png[align=center,width=100%]
+//% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBpiBdUkANwEMAbAVxiRAB12cdgswcAviAGl0mXPkIoATOSq1GLNp269+yNMzikALBSEix2PASIBmOdXrNWiDlx58cGrborIAtkwY5S0-cKiIBjGkkQ6lgo2yg5qzppM2nqe3r7+yADmvjr+BkEhEqYoEQAM8tZKdiqO-HlGhVLIEf5Wirb2qgBGEBAMdcHiJo0WZa3RVbFO-QVD5n7lbTGqU4H1szLzY5UdNYKrA6FFyLKjUdvVcdODYSglkRXtFxCdAFacwABUnAIG8jBQGXgRFAADMAE4QDxIMggHAQJB3M6PWIuRJuITUBh0TowBgABWuRRAYKwGQAFjh9uDIUhZLD4YgYQ8ljwUj5dLkQJjsbiCYcpMTSRSqRCoYgLPTaVtkapMtlOdycfjCQKGDAQZTDCBqWKJXCkBEkSzgMgoJC6HwAlqdUg9QyAKzS43IMF0MCAgKK3kqtgk8maoI2xB0-WIABsTomsrNHgtYCtgdFUsliAA7JGdibXe6YJ6QFilXyGr6hQHQUnGdRQwAODMXF1uj0Y-M85X8kv+kU0yspgCcdZRMbjCfL3cRocRDB6aCIxGrdxBjDgua9beLdj9woHsuzTa7YvHDMn06IC6XK5bhZ9G9LXKNUdZu9z-SDh+hiOZD5NTjzBe97ZvTsBH0IA
+image:images/type-data-structure.png[align=center,width=100%]
 
 [source]
 ----
