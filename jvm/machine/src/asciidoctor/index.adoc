@@ -304,7 +304,7 @@ In ring theory, if \$<A,+,\ast>\$ is a ring with \$A\$ the carrier set, \$0 \in 
 
 &nbsp;
 
-The type system of mm-ADT is characterized by a particular formulation of the https://en.wikipedia.org/wiki/Product_ring[direct product of rings] over the _quantifier_ and _instruction_ rings (discussed next). The direct product of these two rings is a ring itself called the _stream ring_. Thus, mm-ADT's types are founded on ring theory in general and stream ring theory in particular.
+The type system of mm-ADT is characterized by a particular formulation of the https://en.wikipedia.org/wiki/Product_ring[direct product of rings] over the _quantifier_ and _instruction_ rings (discussed next). The product of these two rings is a ring itself called the _stream ring_. Thus, mm-ADT's types are founded on ring theory in general and stream ring theory in particular.
 
 image::images/ring-structures.png[align="center",width=80%]
 
@@ -320,16 +320,16 @@ In mm-ADT, the carrier set of the *instruction ring* is the set of all instructi
 * `0` is `[none]` and
 * `1` is `[all]`.
 
-In the examples below `[a]`, `[b]`, and `[c]` are variable instructions in `inst`.
+In the table below `[a]`, `[b]`, and `[c]` are variable instructions in `inst`.
 
-.The Ring Axioms Expressed in mmlang
+.The Ring Axioms in mmlang
 [cols="2,4"]
 |===
 |Ring Axioms                        |Related mmlang Types
 
 |`(a + b) + c = a + (b + c)`        |`[branch,[branch,[a],[b]],[c]] == [branch,[a],[branch,[b],[c]]]`
-|`0 + a = a + 0 = a`                |`[branch,[none],[all]] == [branch,[all],[none]] == [all]`
-|`a - a = a + (-a) = 0`             |`[branch,[id],[id]{-1}] == [none]`
+|`0 + a = a + 0 = a`                |`[branch,[none],[a]] == [branch,[a],[none]] == [a]`
+|`a - a = a + (-a) = 0`             |`[branch,[a],[a]{-1}] == [none]`
 |`a + b = b + a`                    |`[branch,[a],[b]] == [branch,[b],[a]]`
 |`(a * b) * c = a * (b * c)`        |`[map,[a][b]][c] == [a][map,[b][c]]`
 |`1 * a = a * 1 = a`                |`[all][a] == [a][all] == [a]`
@@ -339,25 +339,25 @@ In the examples below `[a]`, `[b]`, and `[c]` are variable instructions in `inst
 
 IMPORTANT: A known "bug" in stream ring theory is that not all instructions in `inst` have an additive inverse. Thus, it is not the case that every instruction set can serve as the carrier of a ring. Fortunately, in the larger composite type ring (discussed later), which forms the primary algebraic structure in mm-ADT's type system, the quantifier ring's multiplicative inverse can be used to remedy the situation--see the 3rd entry in the table above.
 
-\[
-\texttt{x[branch,[a],[b]]} = <\texttt{x[a]},\texttt{x[b]}>
-\]
-
-As an example, the instructions `[plus,10]` and `[gt,5]` can be combined via serial and/or parallel composition. In general, all serial and parallel compositions are https://en.wikipedia.org/wiki/Associative_property[associative] except for those that use instructions from a particular `inst` subring: _the reduce near-ring_ (discussed later).
+As an example, the instructions `[plus,10]` and `[gt,5]` can be combined via serial and/or parallel composition. In general, all serial and parallel compositions are https://en.wikipedia.org/wiki/Associative_property[associative] except for those that use instructions from a particular `inst` subring known as the _the reduce near-ring_ (discussed later).
 
 [source]
 ----
-mmlang> [plus,10] ** [gt,5]
+mmlang> [plus,10] inst[mult,[gt,5]]
 ==>[plus,10][gt,5]
-mmlang> [plus,10] ++ [gt,5]
+mmlang> [plus,10] inst[plus,[gt,5]]
 ==>[branch,[plus,10],[gt,5]]
 ----
 
-Finally, the https://en.wikipedia.org/wiki/Distributive_property[distributivity] of multiplications over addition is made apparent with expressions below which have a diagrammatic representation, where the edges/arrows are streams of `objs` that are being operated on by the `insts` vertex/objects they meet along the way. Whenever the diagram branches, the `obj` at the branch is cloned, taking *both* branches.
+The https://en.wikipedia.org/wiki/Distributive_property[distributivity] of multiplications over addition is made apparent with expressions below which have a diagrammatic representation, where the edges/arrows are streams of `objs` that are being operated on by the `insts` vertex/objects they meet along the way. Whenever the diagram branches, the `obj` at the branch is cloned, taking _both_ branches.
+
+\[
+\texttt{x[branch,[a],[b]]} = \uplus <\texttt{x[a]},\texttt{x[b]}>
+\]
 
 [source]
 ----
-[plus,10][branch,[gt,5],[lt,2]]    ==  [branch,[plus,10][gt,5],[plus,10][lt,2]]
+[plus,10][branch,[gt,5],[lt,2]]  ==  [branch,[plus,10][gt,5],[plus,10][lt,2]]
 ----
 
 // https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBpiBdUkANwEMAbAVxiRAB12cdhkAjAE50wAYwAWpAL4hJpdJlz5CKAEykADFVqMWbTt14BzHKQCsFabPnY8BImpVb6zVog5ceyBiceW5IDBslInVyJx1XdwNkNGY4ck0-a0U7FABmMOpnXTd9HgsZf0CU5WQAFkztFz12GABHJiwaQuTbUtNK7Mi83kFhcSkWgIU2ogA2DXDq3I9eWKZ44kSh4tGUCccsiJro+cXlq2Gg1OQAdkmt6ajPYzMCw9XglHPNqpzr3m9SXxWRp+QABydbYzAz3LQwKCGeBEUAAMwEEAAtkhQiAcBAkMRDgjkajqBikCocYiUYgMujMYh1CS8YgyJSkGVaWS1IzEMz-LiyRN2acWUheYTEACBYhzuyAJxioHspZipYEqnEbFc0lISVKrHYixAA
@@ -403,7 +403,7 @@ int{4}<=int{2}[branch,[id],[id]]     // 4 ints         (exact)
 int{*}<=[=db][get,'costs']           // 0 or more ints (any)
 ----
 
-===== The Type Category
+===== Type Category
 
 --
 .Definition: Type Category
@@ -423,18 +423,28 @@ Every path through the diagram specifies a particular type construction
 Thus, every mm-ADT program is an mm-ADT type. There exists an mm-ADT canonical type graph derived by from the previous type graph via a https://en.wikipedia.org/wiki/Forgetful_functor[forgetful functor], where the vertices denote the 6 base types and the edges denote https://en.wikipedia.org/wiki/Endomorphism[endomorphisms] of the base type monoid or https://en.wikipedia.org/wiki/Homomorphism[homomorphisms] between two type monoids.
 
 
-////
-==== Common Type Classifications in mm-ADT's Type Theory
+==== Type Examples
 
 mm-ADT types differ from convention in that they serve to denote:
 
-* *canonical types*: sets of elements denoted as `int` or `str`, etc.
-* *refined types*: constraints on the canonical set types such as `nat<=int[is,[gt,0]]`
-* *quantified types*: specifying the cardinality of a set via quantification `int{0,5}` (a type of 0 to 5 `int` values).
-* *dependent types*:
-* *translating types*: specify a mapping from a domain set of elements to a range set of elements as in `int[plus,2]`.
-* *recursive types*:
-////
+* *Canonical types*: sets of elements denoted as `int` or `str`, etc.
+* *Refined types*: constraints on the canonical set types such as `nat<=int[is,[gt,0]]`
+* *Quantified types*: specifying the cardinality of a set via quantification `int{0,5}` (a type of 0 to 5 `int` values).
+* *Dependent types*:
+* *Translating types*: specify a mapping from a domain set of elements to a range set of elements as in `int[plus,2]`.
+* *Recursive types*:
+
+===== Canonical Types
+
+===== Refinement Types
+
+===== Quantified Types
+
+===== Dependent Types
+
+===== Translating Types
+
+===== Recursive Types
 
 === Values
 
