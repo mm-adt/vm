@@ -65,3 +65,13 @@
 \tt{int} \arrow[rr, "{\tt{[plus,2]}}"] \arrow[d, "{\tt{[id]}}"', bend right]    &  & {\tt{int[plus,2]}} \arrow[rr, "{\tt{[plus,8]}}"] &  & {\tt{int[plus,2][plus,8]}} \arrow[d, "{\tt{[id]}}"', bend right] \\
 \tt{int} \arrow[rrrr, "{\tt{[plus,10]}}"] \arrow[u, "{\tt{[id]}}"', bend right] &  &                                                  &  & {\tt{int[plus,10]}} \arrow[u, "{\tt{[id]}}"', bend right]       
 \end{tikzcd}
+
+////////////////////////////////////
+// images/ring-structures.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAJgBoAGAXVJADcBDAGwFcYkQAdDnHYCAIwBWXYACouAXy6kATljABzCSAml0mXPkIoAjKR3U6TVuy49gyeXByVpcxctXrseAkQDM+wwxZtEnbl4RAEdJO3klFTUQDBctInJSYm9jPwDzUQACLgBuTIBbAggsKEdo2M03XSSU31NA4ABqbI48gGMIfPzpBRkIZjQy50rtZAAWGpofE38zXmbczI6unr6BoZiNV1HPZKnU+oyWvMLIEsdDGCgFeCJQADM+-KREkBwIJB0nEEfOl5p3khiN9fs9EHo3h9EO4QU9PgCoWNYX9EGRIUgAKzIsFowGIABsEkoEiAA
+\begin{tikzcd}
+                 &                                          & {\tt{obj\{*\}\,ring}} \arrow[ld] \arrow[rd] &                                         &                         \\
+                 & {\tt{[inst]\,ring}} \arrow[ld] \arrow[d] &                                             & {\tt{\{q\}\,ring}} \arrow[rd] \arrow[d] &                         \\
+\tt{* \; monoid} & {\tt{+ \; comm\,group}}                  &                                             & \tt{* \; monoid}                        & {\tt{+ \; comm\,group}}
+\end{tikzcd}

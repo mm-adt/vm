@@ -237,9 +237,14 @@ NOTE: Any `obj` with the the quantifier ring's additive identity (`zero`) is not
 
 mm-ADT types can be understood from the perspective of various mathematical structures. The following subsection will discuss:
 
+. *Type monoid*: types as elements of the `obj{*}` monoid.
 . *Type graph*: types as directed, acyclic, binary multi-graphs.
 . *Type ring*: types as elements of a ring with unity where `*` is serial compose and `+` is parallel compose.
 . *Type category*: types as objects in a category with instruction morphisms and the role of equational reasoning.
+
+===== Type Monoid
+
+The *type monoid* is the universal, terminal type `obj{*}` is the product of the object `obj` and the quantifier `{min,max}`.
 
 ===== Type Graph
 
@@ -301,8 +306,9 @@ In ring theory, if \$<A,+,\ast>\$ is a ring with \$A\$ the carrier set, \$0 \in 
 
 The type system of mm-ADT is characterized by a particular formulation of the https://en.wikipedia.org/wiki/Product_ring[direct product of rings] over the _quantifier_ and _instruction_ rings (discussed next). The direct product of these two rings is a ring itself called the _stream ring_. Thus, mm-ADT's types are founded on ring theory in general and stream ring theory in particular.
 
-NOTE: Instructions and quantifiers are the carrier sets of two independent https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with unity whose https://en.wikipedia.org/wiki/Direct_product[direct product] forms the
-mm-ADT *type ring* and is the subject of study in https://zenodo.org/record/2565243[stream ring theory] (SRT). The type graph structure presented previously is a subgraph of the https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] formed from the multiplicative https://en.wikipedia.org/wiki/Group_(mathematics)[group] component of that ring.
+image::images/ring-structures.png[align="center",width=80%]
+
+NOTE: Instructions and quantifiers are the carrier sets of two independent https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with unity whose https://en.wikipedia.org/wiki/Direct_product[direct product] forms the mm-ADT type ring and is the subject of study in https://zenodo.org/record/2565243[stream ring theory] (SRT). The type graph structure presented previously is a subgraph of a (pseudo) https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] formed from the multiplicative https://en.wikipedia.org/wiki/Group_(mathematics)[monoid] (w/ no multiplicative inverse) component of that ring.
 
 ====== The Instruction Ring
 
