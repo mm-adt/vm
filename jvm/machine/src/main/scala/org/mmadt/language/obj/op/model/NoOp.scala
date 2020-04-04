@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
@@ -38,6 +38,7 @@ object NoOp {
   def apply[O <: Obj]():Inst[O,O] = new NoInst
 
   class NoInst[O <: Obj] extends VInst[O,O]((Tokens.noop,Nil)) {
+    override def q(quantifier:IntQ):this.type = new NoInst[O]().asInstanceOf[this.type]
     override def apply(trav:Traverser[O]):Traverser[O] = trav
   }
 

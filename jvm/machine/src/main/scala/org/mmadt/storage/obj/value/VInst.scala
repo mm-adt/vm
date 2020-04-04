@@ -25,18 +25,14 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst[S,E] {
-  def this(java:InstTuple) = this(java,qOne)
+abstract class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst[S,E] {
   override val value:InstTuple = java
   override def q(quantifier:IntQ):this.type = this
-  override def apply(trav:Traverser[S]):Traverser[E] = trav.asInstanceOf[Traverser[E]]
   override val q:IntQ = quantifier
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
   def test(other:Obj):Boolean = false

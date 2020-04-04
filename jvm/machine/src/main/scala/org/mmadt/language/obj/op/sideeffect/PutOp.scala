@@ -23,8 +23,9 @@
 package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj, Rec, multQ}
+import org.mmadt.language.obj._
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -38,8 +39,9 @@ trait PutOp[A <: Obj,B <: Obj] {
 object PutOp {
   def apply[A <: Obj,B <: Obj](key:A,value:B):Inst[Rec[A,B],Rec[A,B]] = new PutInst[A,B](key,value)
 
-  class PutInst[A <: Obj,B <: Obj](key:A,value:B) extends VInst[Rec[A,B],Rec[A,B]]((Tokens.put,List(key,value))) {
-    override def apply(trav:Traverser[Rec[A,B]]):Traverser[Rec[A,B]] = trav.split(trav.obj().put(key,value).q(multQ(trav.obj().q,this.q)))
+  class PutInst[A <: Obj,B <: Obj](key:A,value:B,q:IntQ = qOne) extends VInst[Rec[A,B],Rec[A,B]]((Tokens.put,List(key,value)),q) {
+    override def q(quantifier:IntQ):this.type = new PutInst[A,B](key,value,quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[Rec[A,B]]):Traverser[Rec[A,B]] = trav.split(trav.obj().put(key,value).q(multQ(trav.obj(),this)._2))
   }
 
 }

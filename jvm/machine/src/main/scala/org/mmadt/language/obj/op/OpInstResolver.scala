@@ -26,16 +26,16 @@ import java.util.ServiceLoader
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.branch.ChooseOp
+import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp}
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.initial.{IntOp,StartOp,StrOp}
+import org.mmadt.language.obj.op.initial.{IntOp, StartOp, StrOp}
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.{AsOp,ModelOp,NoOp}
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
-import org.mmadt.language.obj.op.sideeffect.{AddOp,ErrorOp,PutOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp,FromOp,ToOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp, NoOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
+import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst,Obj}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters
@@ -94,6 +94,7 @@ object OpInstResolver {
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].value)
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
       case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[S,E]])
+      case Tokens.branch => BranchOp(args.head.asInstanceOf[RecType[S,E]])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()
       case Tokens.zero => ZeroOp()

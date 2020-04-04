@@ -23,9 +23,13 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj, multQ}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.map.PlusOp.PlusInst
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, IntQ, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,8 +42,12 @@ trait OneOp[O <: Obj] {
 object OneOp {
   def apply[O <: Obj with OneOp[O]]():Inst[O,O] = new OneInst[O]
 
-  class OneInst[O <: Obj with OneOp[O]] extends VInst[O,O]((Tokens.one,Nil)) {
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().q(multQ(trav.obj().q,this.q)).one())
+  class OneInst[O <: Obj with OneOp[O]](q:IntQ=qOne) extends VInst[O,O]((Tokens.one,Nil),q) {
+    override def q(quantifier:IntQ):this.type = new OneInst[O](quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split((trav.obj() match {
+      case atype:Type[_] => atype.compose(this)
+      case avalue:Value[_] => avalue.one().q(multQ(avalue,this))
+    }).asInstanceOf[O])
   }
 
 }

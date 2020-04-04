@@ -49,8 +49,8 @@ trait AsOp {
 object AsOp {
   def apply[O <: Obj](obj:O):Inst[Obj,O] = new AsInst[O](obj)
 
-  class AsInst[O <: Obj](obj:O) extends VInst[Obj,O]((Tokens.as,List(obj))) {
-
+  class AsInst[O <: Obj](obj:O,q:IntQ = qOne) extends VInst[Obj,O]((Tokens.as,List(obj)),q) {
+    override def q(quantifier:IntQ):this.type = new AsInst[O](obj,quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[Obj]):Traverser[O] ={
       trav.split(testAlive(obj match {
         case atype:Type[Obj] if trav.avalue => atype match {

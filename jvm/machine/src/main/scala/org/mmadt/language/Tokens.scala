@@ -28,7 +28,7 @@ package org.mmadt.language
 object Tokens {
 
   lazy val reserved:Set[String] = Set(
-    Tokens.noop,Tokens.and,Tokens.choose,Tokens.count,Tokens.eqs,Tokens.explain,Tokens.get,Tokens.is,Tokens.mult,
+    Tokens.noop,Tokens.and,Tokens.branch,Tokens.choose,Tokens.count,Tokens.eqs,Tokens.explain,Tokens.get,Tokens.is,Tokens.mult,
     Tokens.plus,Tokens.gt,Tokens.put,Tokens.map,Tokens.from,Tokens.to,Tokens.as,Tokens.a, // Tokens.model (shared with global name)
     Tokens.btrue,Tokens.bfalse)
 
@@ -45,6 +45,7 @@ object Tokens {
   val noop       = "noop"
   val and        = "and"
   val as         = "as"
+  val branch     = "branch"
   val choose     = "choose"
   val count      = "count"
   val error      = "error"

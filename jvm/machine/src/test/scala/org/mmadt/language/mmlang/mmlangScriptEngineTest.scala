@@ -188,6 +188,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("bool<z>"))
   }
 
+  test("branch instruction parsing"){
+    val branchString:String =  "obj{0,2}<=int[plus,2][branch,[int{?}<=int[is,bool<=int[gt,10]]:bool<=int[gt,20]&int:int[plus,10]]]"
+    assertResult(branchString)(engine.eval("int[plus,2][branch,rec[int[is,int[gt,10]]->int[gt,20], int->int[plus,10]]]").toString)
+    assertResult(branchString)(engine.eval("int[plus,2][[is,int[gt,10]]->int[gt,20] & int->int[plus,10]]").toString)
+  }
+
   test("choose instruction parsing"){
     List(
       int.plus(int(2)).choose[IntType,ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10))),

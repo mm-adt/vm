@@ -63,7 +63,7 @@ object LeftRightSweepRewrite {
         case atype:Type[_] if isSymbol(atype) => model(atype)
         case other => other
       }
-      case Tokens.choose =>
+      case x if x == Tokens.choose || x == Tokens.branch =>
         def branching(obj:Obj):Obj ={
           obj match {
             case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
