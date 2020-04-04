@@ -23,10 +23,11 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{Bool, Inst, Obj, multQ}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.bool
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -43,8 +44,12 @@ trait AOp {
 object AOp {
   def apply(other:Type[Obj]):Inst[Obj,Bool] = new AInst(other)
 
-  class AInst(other:Type[Obj]) extends VInst[Obj,Bool]((Tokens.a,List(other))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Bool] = trav.split(trav.obj().a(other).q(multQ(trav.obj().q,this.q)))
+  class AInst(other:Type[Obj],q:IntQ = qOne) extends VInst[Obj,Bool]((Tokens.a,List(other)),q) {
+    override def q(quantifier:IntQ):this.type = new AInst(other,quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[Obj]):Traverser[Bool] = trav.split(trav.obj() match {
+      case atype:Type[_] => atype.compose(bool,this)
+      case avalue:Value[_] => avalue.a(other).q(multQ(avalue,this))
+    })
   }
 
 }

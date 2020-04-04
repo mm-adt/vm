@@ -38,11 +38,11 @@ class VStrTest extends FunSuite {
     assertResult(btrue)(str("m").gt("a"))
     assertResult(bfalse)(str("m").gt("r"))
   }
-  /*test("str value quantifiers"){
+  test("str value quantifiers"){
     assertResult(str("marko").q(2))(str("marko").q(2) ==> str.q(2))
-    assertResult(str("marko").q(4))(str("mar").q(2) ==> str.q(2).plus(str("ko")))
-    assertResult(str("marko").q(4))(str("mar").q(2) ==> str.q(2).plus(str("k")).plus(str("o").q(34)))
-    assertResult(str("marko").q(8))(str("mar").q(2) ==> str.q(2).plus(str("k")).plus(str("o").q(34)).q(2))
-    //assertResult(int(14).q(4))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
-  }*/
+    assertResult(str("marko").q(2))(str("mar").q(2) ==> str.q(2).plus(str("ko")))
+    assertResult(str("marko").q(2))(str("mar").q(2) ==> str.q(2).plus(str("k")).plus(str("o").q(34)))
+    assertResult(str("marko").q(4))(str("mar").q(2) ==> str.q(2).plus(str("k")).plus(str("o").q(34)).q(2))
+    assertResult(str("marko").q(200))(str("mar").q(2) ==> str.q(2).plus(str("k")).q(10).plus(str("o").q(34)).q(10))
+  }
 }

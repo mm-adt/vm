@@ -50,13 +50,16 @@ trait EqsOp {
 object EqsOp {
   def apply(other:Obj):Inst[Obj,Bool] = new EqsInst(other)
 
-  class EqsInst(other:Obj) extends VInst[Obj,Bool]((Tokens.eqs,List(other))) {
-    override def apply(trav:Traverser[Obj]):Traverser[Bool] ={
-      trav.split((Traverser.resolveArg(trav,other) match {
-        case avalue:Value[_] => trav.obj().eqs(avalue)
-        case atype:Type[_] => trav.obj().eqs(atype)
-      }).q(multQ(trav.obj().q,this.q)))
-    }
+
+  class EqsInst[O <: Obj with EqsOp](other:Obj,q:IntQ = qOne) extends VInst[O,Bool]((Tokens.lt,List(other)),q) {
+    override def q(quantifier:IntQ):this.type = new EqsInst[O](other,quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(trav.obj() match {
+      case atype:Type[_] => atype.compose(bool,new EqsInst[O](Traverser.resolveArg(trav,other),q))
+      case avalue:Value[_] => (Traverser.resolveArg(trav,other) match {
+        case btype:O with Type[O] => avalue.eqs(btype)
+        case bvalue:O with Value[O] => avalue.eqs(bvalue)
+      }).q(multQ(avalue,this)._2)
+    })
   }
 
 }

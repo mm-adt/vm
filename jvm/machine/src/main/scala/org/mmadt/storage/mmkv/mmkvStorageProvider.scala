@@ -26,9 +26,9 @@ import java.util
 import java.util.Optional
 
 import org.mmadt.language.model.Model
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value._
-import org.mmadt.language.obj.{Inst, Obj, Rec, Str}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory.{str, _}
 import org.mmadt.storage.StorageProvider
@@ -76,29 +76,32 @@ object mmkvStorageProvider {
     def isGetKeyEq(file:Str,key:Obj):Inst[Obj,Rec[StrValue,Obj]] = new mmkvIsGetKeyEqInst(file,key)
     def strm(file:Str):Inst[Obj,Rec[StrValue,Obj]] = new mmkvInst(file)
 
-    class mmkvInst(fileStr:Str) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr))) {
+    class mmkvInst(fileStr:Str,q:IntQ = qOne) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr)),q) {
+      override def q(quantifier:IntQ):this.type = new mmkvInst(fileStr,quantifier).asInstanceOf[this.type]
       override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
         trav.split((trav.obj() match {
-          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).q(*)
+          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).hardQ(*)
           case _:Value[_] => connect(fileStr).strm()
         }).asInstanceOf[Rec[StrValue,Obj]])
       }
     }
 
-    class mmkvIsGetKeyEqInst(fileStr:Str,key:Obj) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr,str("getByKeyEq"),key))) {
+    class mmkvIsGetKeyEqInst(fileStr:Str,key:Obj,q:IntQ = qOne) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr,str("getByKeyEq"),key)),q) {
+      override def q(quantifier:IntQ):this.type = new mmkvIsGetKeyEqInst(fileStr,key,quantifier).asInstanceOf[this.type]
       override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
         trav.split((trav.obj() match {
-          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).q(*)
+          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).hardQ(*)
           case _ => vrec(K -> key.asInstanceOf[Value[Obj]],V -> connect(fileStr).get(key.asInstanceOf[Value[Obj]]))
         }).asInstanceOf[Rec[StrValue,Obj]])
       }
     }
 
-    class mmkvAddKeyValueInst(fileStr:Str,key:Rec[StrValue,Obj]) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr,str("addKeyValue"),key))) {
+    class mmkvAddKeyValueInst(fileStr:Str,key:Rec[StrValue,Obj],q:IntQ = qOne) extends VInst[Obj,Rec[StrValue,Obj]]((opcode,List(fileStr,str("addKeyValue"),key)),q) {
+      override def q(quantifier:IntQ):this.type = new mmkvAddKeyValueInst(fileStr,key,quantifier).asInstanceOf[this.type]
       override def apply(trav:Traverser[Obj]):Traverser[Rec[StrValue,Obj]] ={
         trav.split((trav.obj() match {
-          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).q(*)
-          case _ => vrec(K ->  Traverser.resolveArg[Obj,Obj](trav,key).asInstanceOf[RecValue[StrValue,ObjValue]].get(str("k")).asInstanceOf[Value[Obj]],V -> connect(fileStr).put(
+          case atype:Type[_] => atype.compose(connect(fileStr).schema,this).hardQ(*)
+          case _ => vrec(K -> Traverser.resolveArg[Obj,Obj](trav,key).asInstanceOf[RecValue[StrValue,ObjValue]].get(str("k")).asInstanceOf[Value[Obj]],V -> connect(fileStr).put(
             Traverser.resolveArg[Obj,Obj](trav,key).asInstanceOf[RecValue[StrValue,ObjValue]].get(str("k")),
             Traverser.resolveArg[Obj,Obj](trav,key).asInstanceOf[RecValue[StrValue,ObjValue]].get(str("v"))))
         }).asInstanceOf[Rec[StrValue,Obj]])

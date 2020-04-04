@@ -23,7 +23,9 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, Obj, Rec, multQ}
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -41,8 +43,12 @@ object GetOp {
   def apply[A <: Obj,B <: Obj](key:A):Inst[Rec[A,B],B] = new GetInst[A,B](key)
   def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst[Rec[A,B],B] = new GetInst(key,typeHint)
 
-  class GetInst[A <: Obj,B <: Obj](key:A,typeHint:B = obj.asInstanceOf[B]) extends VInst[Rec[A,B],B]((Tokens.get,List(key))) {
-    override def apply(trav:Traverser[Rec[A,B]]):Traverser[B] = trav.split(trav.obj().get(key).q(multQ(trav.obj().q,this.q)))
+  class GetInst[A <: Obj,B <: Obj](key:A,typeHint:B = obj.asInstanceOf[B],q:IntQ = qOne) extends VInst[Rec[A,B],B]((Tokens.get,List(key)),q) {
+    override def q(quantifier:IntQ):this.type = new GetInst[A,B](key,typeHint,quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[Rec[A,B]]):Traverser[B] = trav.split(trav.obj() match {
+      case atype:Type[_] => atype.compose(atype.get(key),new GetInst[A,B](key,typeHint,q))
+      case avalue:Value[_] => avalue.get(Traverser.resolveArg(trav,key),typeHint).q(multQ(avalue,this)._2)
+    })
   }
 
 }

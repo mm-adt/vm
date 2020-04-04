@@ -23,8 +23,8 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.ObjType
-import org.mmadt.language.obj.{DomainInst, IntQ, Obj, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -33,5 +33,5 @@ import org.mmadt.storage.StorageFactory._
 class TObj(name:String,quantifier:IntQ,via:DomainInst[Obj]) extends AbstractTObj[Obj](name,quantifier,via) with ObjType {
   def this() = this(Tokens.obj,qOne,base())
   override def hardQ(quantifier:IntQ):this.type = new TObj(name,quantifier,via).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new TObj(name,quantifier,via).asInstanceOf[this.type]
+  override def q(quantifier:IntQ):this.type = new TObj(name,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
 }

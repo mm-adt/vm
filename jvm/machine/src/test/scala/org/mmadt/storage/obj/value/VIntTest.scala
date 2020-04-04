@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.value
 
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -37,7 +38,6 @@ class VIntTest extends FunSuite {
     assertResult(int(-4))(int(3) ==> int.plus(1).neg())
   }
   test("int value quantifiers"){
-    println(int.q(2).plus(int(4)).q(2).gt(int(2).q(34)).q(10))
     assertResult(int(3).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)))
     assertResult(int(7).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)))
     assertResult(int(14).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).mult(int(2).q(int(34))))
@@ -46,6 +46,7 @@ class VIntTest extends FunSuite {
     assertResult(btrue.q(int(3)))(int(5).q(int(3)) ==> int.q(int(3)).plus(int(4)).gt(int(2)))
     assertResult(int(14).q(12))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).gt(int(2).q(34)).q(10))
+    assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).a(int.q(0,4)).q(10).asInstanceOf[BoolType]) // TODO
   }
 }
 

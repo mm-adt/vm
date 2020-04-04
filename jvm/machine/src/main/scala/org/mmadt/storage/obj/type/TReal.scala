@@ -34,6 +34,6 @@ class TReal(name:String,quantifier:IntQ,via:DomainInst[Real]) extends AbstractTO
   def this() = this(Tokens.real,qOne,base())
   def this(name:String) = this(name,qOne,base())
   override def hardQ(quantifier:IntQ):this.type = new TReal(name,quantifier,via).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new TReal(name,quantifier,via).asInstanceOf[this.type]
+  override def q(quantifier:IntQ):this.type = new TReal(name,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
 
 }
