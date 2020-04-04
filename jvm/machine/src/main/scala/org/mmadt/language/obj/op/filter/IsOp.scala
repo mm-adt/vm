@@ -39,7 +39,7 @@ trait IsOp {
   this:Obj =>
 
   def is(bool:BoolType):OType[this.type] = (this match {
-    case atype:Type[_] => atype.compose(this,new IsInst[this.type](bool)).q(minZero(this.q))
+    case atype:Type[_] => atype.compose(this,new IsInst[this.type](bool)).asInstanceOf[Type[Obj]].hardQ(minZero(this.q))
     case avalue:Value[_] => avalue.start().is(bool)
   }).asInstanceOf[OType[this.type]]
 
@@ -49,9 +49,9 @@ trait IsOp {
   }
   /////////////////////////////////////////////////////////////////
   private def is[O <: Obj](inst:IsInst[O]):O = (this match {
-    case atype:Type[_] => atype.compose(this,inst).q(minZero(multQ(this,inst)))
+    case atype:Type[_] => atype.compose(this,inst).asInstanceOf[Type[Obj]].hardQ(minZero(multQ(this,inst)))
     case avalue:Value[_] => inst.arg0[Bool]() match {
-      case boolValue:BoolValue => if (boolValue.value) this.q(multQ(avalue,inst)) else this.q(0)
+      case boolValue:BoolValue => if (boolValue.value) this.q(multQ(avalue,inst)._2) else this.q(0)
       case boolType:BoolType => avalue.start().is(boolType)
     }
   }).asInstanceOf[O]

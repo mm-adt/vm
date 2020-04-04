@@ -23,9 +23,9 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.{Bool, Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -50,13 +50,15 @@ trait OrOp {
 object OrOp {
   def apply(other:Obj):Inst[Bool,Bool] = new OrInst(other)
 
-  class OrInst(other:Obj) extends VInst[Bool,Bool]((Tokens.or,List(other))) {
-    override def apply(trav:Traverser[Bool]):Traverser[Bool] ={
-      trav.split((Traverser.resolveArg(trav,other) match {
-        case avalue:BoolValue => trav.obj().or(avalue)
-        case atype:BoolType => trav.obj().or(atype)
-      }).q(multQ(trav.obj().q,this.q)))
-    }
+  class OrInst(other:Obj,q:IntQ = qOne) extends VInst[Bool,Bool]((Tokens.or,List(other)),q) {
+    override def q(quantifier:IntQ):this.type = new OrInst(other,quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[Bool]):Traverser[Bool] = trav.split(trav.obj() match {
+      case atype:BoolType => atype.compose(new OrInst(Traverser.resolveArg(trav,other),q))
+      case avalue:BoolValue => (Traverser.resolveArg(trav,other) match {
+        case bvalue:BoolValue => avalue.or(bvalue)
+        case btype:BoolType => avalue.or(btype)
+      }).q(multQ(avalue,this))
+    })
   }
 
 }

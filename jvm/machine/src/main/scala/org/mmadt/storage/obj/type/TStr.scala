@@ -33,6 +33,7 @@ import org.mmadt.storage.StorageFactory._
 class TStr(name:String,quantifier:IntQ,via:DomainInst[Str]) extends AbstractTObj[Str](name,quantifier,via) with StrType {
   def this() = this(Tokens.str,qOne,base())
   def this(name:String) = this(name,qOne,base())
+  override def hardQ(quantifier:IntQ):this.type = new TStr(name,quantifier,via).asInstanceOf[this.type]
   override def q(quantifier:IntQ):this.type = new TStr(name,quantifier,via).asInstanceOf[this.type]
 }
 

@@ -24,9 +24,8 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.op.map.IdOp.IdInst
-import org.mmadt.language.obj.op.map.PlusOp.PlusInst
-import org.mmadt.language.obj.{DomainInst, Int, IntQ, base, _}
+import org.mmadt.language.obj.op.initial.StartOp.StartInst
+import org.mmadt.language.obj.{DomainInst,Int,IntQ,base,_}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -35,11 +34,12 @@ import org.mmadt.storage.StorageFactory._
 class TInt(name:String,quantifier:IntQ,via:DomainInst[Int]) extends AbstractTObj[Int](name,quantifier,via) with IntType {
   def this() = this(Tokens.int,qOne,base())
   def this(name:String) = this(name,qOne,base())
+  override def hardQ(quantifier:IntQ):this.type = new TInt(name,quantifier,via).asInstanceOf[this.type]
   override def q(quantifier:IntQ):this.type ={
     this.via._2 match {
-      case _:PlusInst[_] => new TInt(name,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
-      case _:IdInst[_] => new TInt(name,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
-      case _ => new TInt(name,quantifier,via).asInstanceOf[this.type]
+      case _:StartInst[_] => new TInt(name,quantifier,via).asInstanceOf[this.type]
+      case x:Inst[Obj,Obj] if x.op() == "get" => new TInt(name,quantifier,via).asInstanceOf[this.type]
+      case _ => new TInt(name,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
     }
   }
 }

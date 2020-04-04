@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.map.PlusOp.PlusInst
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -34,7 +33,7 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusOp[T<:Type[Obj],V<:Value[Obj]] {
+trait PlusOp[T <: Type[Obj],V <: Value[Obj]] {
   this:Obj =>
   def plus(other:T):T
   def plus(other:V):this.type
@@ -44,11 +43,6 @@ trait PlusOp[T<:Type[Obj],V<:Value[Obj]] {
   }).asInstanceOf[this.type]
   final def +(other:T):T = this.plus(other)
   final def +(other:V):this.type = this.plus(other)
-  /////////////////////////////////////////////////////////////////
-  private def plus(inst:PlusInst[_]):this.type = this match {
-    case atype:T => atype.compose(this,inst)
-    case avalue:V => this.plus(inst.arg0[Obj]()).q(multQ(avalue,inst))
-  }
 }
 
 object PlusOp {
@@ -56,7 +50,10 @@ object PlusOp {
 
   class PlusInst[O <: Obj with PlusOp[Type[O],Value[O]]](other:Obj,q:IntQ = qOne) extends VInst[O,O]((Tokens.plus,List(other)),q) {
     override def q(quantifier:IntQ):this.type = new PlusInst[O](other,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().plus(new PlusInst[O](Traverser.resolveArg(trav,other),q)))
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split((trav.obj() match {
+      case atype:Type[_] => atype.compose(new PlusInst[O](Traverser.resolveArg(trav,other),q))
+      case avalue:Value[_] => avalue.plus(Traverser.resolveArg(trav,other)).q(multQ(avalue,this))
+    }).asInstanceOf[O])
   }
 
 }

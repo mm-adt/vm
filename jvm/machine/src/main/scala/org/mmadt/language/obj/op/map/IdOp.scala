@@ -40,11 +40,6 @@ trait IdOp {
     case atype:Type[_] => atype.compose(this,new IdInst[this.type])
     case _ => this
   }
-  ////////////////////////////////////////////////////
-  protected def id(inst:IdInst[_]):this.type = this match {
-    case atype:Type[_] => atype.compose(this,inst)
-    case avalue:Value[_] => this.q(multQ(avalue,inst))
-  }
 }
 
 object IdOp {
@@ -52,7 +47,10 @@ object IdOp {
 
   class IdInst[O <: Obj](q:IntQ = qOne) extends VInst[O,O]((Tokens.id,Nil),q) {
     override def q(quantifier:IntQ):this.type = new IdInst[O](quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().id(this))
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split((trav.obj() match {
+      case atype:Type[_] => atype.compose(this)
+      case avalue:Value[_] => avalue.q(multQ(avalue,this))
+    }).asInstanceOf[O])
   }
 
 }

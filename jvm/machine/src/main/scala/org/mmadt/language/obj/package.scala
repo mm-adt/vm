@@ -22,7 +22,8 @@
 
 package org.mmadt.language
 
-import org.mmadt.language.obj.`type`.{RecType, Type, __}
+import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.op.map.IdOp
 import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
 import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 import org.mmadt.storage.StorageFactory._
@@ -37,7 +38,7 @@ package object obj {
   type InstList = List[(Type[Obj],Inst[Obj,Obj])]
   type DomainInst[+T <: Obj] = (Type[Obj],Inst[Obj,T])
   def base[T <: Obj](inst:Inst[Obj,T]):DomainInst[T] = (null,inst)
-  def base[T <: Obj]():DomainInst[T] = (null,null)
+  def base[T <: Obj]():DomainInst[T] = (null,IdOp[Obj]().asInstanceOf[Inst[Obj,T]])
 
   // less typing
   type OType[+O <: Obj] = O with Type[O]
@@ -50,6 +51,7 @@ package object obj {
   // quantifier utilities
   private lazy val zero:IntValue = int(0)
   def minZero(quantifier:IntQ):IntQ = (zero,quantifier._2)
+  def maxZero(quantifier:IntQ):IntQ = (quantifier._2,quantifier._2)
   def multQ(objA:Obj,objB:Obj):IntQ = objB.q match {
     case _ if equals(qOne) => objA.q
     case quantifier:IntQ => (objA.q._1 * quantifier._1,objA.q._2 * quantifier._2)
@@ -59,10 +61,7 @@ package object obj {
     case _:IntQ => (qA._1 * qB._1,qA._2 * qB._2)
   }
 
-  def multQ(qA:Type[Obj],qB:IntQ):IntQ = qA match {
-    case null => qB
-    case _ => this.multQ(qA.q,qB)
-  }
+  def multQ(qA:Type[Obj],qB:IntQ):IntQ = if (null == qA) qB else this.multQ(qA.q,qB)
 
   def withinQ(objA:Obj,objB:Obj):Boolean ={
     objA.q._1.value >= objB.q._1.value &&

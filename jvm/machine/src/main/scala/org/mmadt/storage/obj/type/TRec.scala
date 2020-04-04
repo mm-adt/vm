@@ -34,6 +34,7 @@ class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:IntQ,via:Doma
 
   def this() = this(Tokens.rec,Map[A,B](),qOne,base())
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne,base())
+  override def hardQ(quantifier:IntQ):this.type =new TRec[A,B](name,java,quantifier,via).asInstanceOf[this.type]
   override def q(quantifier:IntQ):this.type = new TRec[A,B](name,java,quantifier,via).asInstanceOf[this.type]
   override def value():Map[A,B] = java
 }

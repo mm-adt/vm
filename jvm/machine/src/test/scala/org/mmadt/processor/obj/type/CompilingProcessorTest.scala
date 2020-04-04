@@ -23,12 +23,12 @@
 package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType,RecType,Type,__}
-import org.mmadt.language.obj.{Int,Obj,Str}
-import org.mmadt.processor.{Processor,ProcessorException}
+import org.mmadt.language.obj.`type`.{IntType, RecType, Type}
+import org.mmadt.language.obj.{Int, Obj, Str}
+import org.mmadt.processor.{Processor, ProcessorException}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks
-import org.scalatest.{FunSuite,Matchers}
+import org.scalatest.{FunSuite, Matchers}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -55,12 +55,13 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     result = processor.apply(int.q(2),int.q(1,3).mult(int(2)).plus(int(3))).toList
     assertResult(1)(result.length)
     assertResult(int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
-    // TODO: assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
+    assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
     /////
     result = processor.apply(int.q(int(2)),int.q(2).mult(int(2)).is(int.gt(int(2)))).toList
     assertResult(1)(result.length)
     // int{0,2}<=int{2}[mult,2][is,bool{2}<=int{2}[gt,2]]
-    assertResult(int.q(0,2) <= int.q(2).mult(2).is(bool.q(2) <= int.q(2).gt(2)))(result.head)
+    assertResult(int.q(2).mult(2).is(bool.q(2) <= int.q(2).gt(2)))(result.head)
+    assertResult(int.q(2).mult(2).is(int.q(2).gt(2)))(result.head)
   }
 
   test("compiler w/ linear quantified type and model"){
@@ -137,7 +138,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler w/ non-rooted types and values"){
-// TODO: does __ become the initial type?    assertThrows[ProcessorException]{processor(__.id().plus(10))}
+    // TODO: does __ become the initial type?    assertThrows[ProcessorException]{processor(__.id().plus(10))}
     assertThrows[ProcessorException]{processor(int(10),int)}
   }
 

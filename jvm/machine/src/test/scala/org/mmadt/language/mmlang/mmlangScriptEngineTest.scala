@@ -97,8 +97,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(trec(str("name") -> str,str("age") -> int))(engine.eval("rec[   'name'   ->str ,   'age' ->int]"))
     assertResult(trec(str("name") -> str,str("age") -> int))(engine.eval("rec['name'->str,'age'->int]"))
     assertResult(trec(str("name") -> str,str("age") -> int).q(30))(engine.eval("rec['name'->str,'age'->int]{30}"))
-    assertResult(bool.q(30) <= trec(str("name") -> str,str("age") -> int).q(30).get("age",int).gt(30))(engine.eval("rec['name'->str,'age'->int]{30}[get,'age'][gt,30]"))
-    assertResult(bool.q(30) <= trec(str("name") -> str,str("age") -> int).q(30).get("age",int).gt(30))(engine.eval("bool{30}<=rec['name'->str,'age'->int]{30}[get,'age'][gt,30]"))
+    assertResult(trec(str("name") -> str,str("age") -> int).q(30).get("age",int).gt(30))(engine.eval("rec['name'->str,'age'->int]{30}[get,'age'][gt,30]"))
+    assertResult(trec(str("name") -> str,str("age") -> int).q(30).get("age",int).gt(30))(engine.eval("bool{30}<=rec['name'->str,'age'->int]{30}[get,'age'][gt,30]"))
     assertResult(bool.q(*) <= trec(str("name") -> str,str("age") -> int).q(*).get("age",int).gt(30))(engine.eval("bool{*}<=rec['name'->str,'age'->int]{*}[get,'age'][gt,30]"))
   }
 
@@ -335,7 +335,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(5))(engine.eval("1,3,7,2,1 int{3,100}[plus,2][count]"))
     assertResult(int(6))(engine.eval("1,3,7,2,1,10 [plus,2][count]"))
     assertResult(int(2))(engine.eval("1,3,7,2,1,10 +2[is>5][count]"))
-    //assertResult(real(2.0))(engine.eval("1.0,3.1,7.2,2.5,1.1,10.1 +2.0[is>5.0][count]"))
+    assertResult(int(3))(engine.eval("1.0,3.1,7.2,2.5,1.1,10.1 +2.0[is>5.0][count]"))
     ///
     assertResult(int(7))(engine.eval("1,2,3 int{1,7}[fold,'seed',1,[plus,int<seed>]]"))
   }

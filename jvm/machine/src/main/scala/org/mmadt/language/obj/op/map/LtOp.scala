@@ -47,11 +47,15 @@ trait LtOp[T <: Type[Obj],V <: Value[Obj]] {
 object LtOp {
   def apply[O <: Obj with LtOp[Type[O],Value[O]]](other:Obj):Inst[O,Bool] = new LtInst[O](other.asInstanceOf[O])
 
-  class LtInst[O <: Obj with LtOp[Type[O],Value[O]]](other:O) extends VInst[O,Bool]((Tokens.lt,List(other))) {
-    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split((Traverser.resolveArg(trav,other) match {
-      case avalue:Value[O] => trav.obj().lt(avalue)
-      case atype:Type[O] => trav.obj().lt(atype)
-    }).q(multQ(trav.obj().q,this.q)))
+  class LtInst[O <: Obj with LtOp[Type[O],Value[O]]](other:O,q:IntQ = qOne) extends VInst[O,Bool]((Tokens.lt,List(other)),q) {
+    override def q(quantifier:IntQ):this.type = new LtInst[O](other,quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(trav.obj() match {
+      case atype:Type[_] => atype.compose(bool,new LtInst[O](Traverser.resolveArg(trav,other),q))
+      case avalue:Value[_] => (Traverser.resolveArg(trav,other) match {
+        case btype:O with Type[O] => avalue.lt(btype)
+        case bvalue:O with Value[O] => avalue.lt(bvalue)
+      }).q(multQ(avalue,this)._2)
+    })
   }
 
 }

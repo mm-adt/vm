@@ -27,7 +27,7 @@ import java.util.NoSuchElementException
 import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.processor.Traverser
@@ -45,6 +45,8 @@ trait Type[+T <: Obj] extends Obj
   val via:(Type[Obj],Inst[Obj,T])
   def isCanonical:Boolean = null == via._1
   def isDerived:Boolean = !this.isCanonical
+  def hardQ(quantifier:IntQ):this.type
+  def hardQ(single:IntValue):this.type = this.hardQ(single.q(qOne),single.q(qOne))
 
   // type properties
   lazy val insts:List[(Type[Obj],Inst[Obj,Obj])] = if (this.isCanonical) Nil else this.via._1.insts :+ (this.via._1,this.via._2)
@@ -75,7 +77,7 @@ trait Type[+T <: Obj] extends Obj
   // type specification and compilation
   final def <=[D <: Obj](domainType:Type[D]):this.type ={
     LanguageException.testDomainRange(this,domainType)
-    Some(domainType).filter(x => x.isCanonical).map(_.id()).getOrElse(domainType).compose(this).q(this.q).asInstanceOf[this.type]
+    Some(domainType).filter(x => x.isCanonical).map(_.id()).getOrElse(domainType).compose(this).hardQ(this.q).asInstanceOf[this.type]
   }
 
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
