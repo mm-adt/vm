@@ -29,7 +29,6 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.TObj
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -43,8 +42,8 @@ trait ChooseOp {
   def choose[IT <: Obj,OT <: Obj](branches:RecType[IT,OT],trav:Traverser[IT] = Traverser.standard(this.asInstanceOf[IT])):OT ={
     trav.obj() match {
       case atype:Type[IT] with IT =>
-        val newBranches:Traverser[RecType[IT,OT]] = applyRec(trav.split(atype.range),branches) // composed branches given the incoming type
-        val rangeType  :OT                        = generalType[OT](newBranches.obj().value().values)
+        val newBranches:Traverser[RecType[IT,OT]] = BranchInstruction.applyRec(trav.split(atype.range),branches) // composed branches given the incoming type
+        val rangeType  :OT                        = BranchInstruction.generalType[OT](newBranches.obj().value().values)
         atype.compose[OT](rangeType,ChooseOp[IT,OT](newBranches.obj()))
       case avalue:Value[IT] with IT =>
         branches.value().find(p => p._1 match {
@@ -56,30 +55,6 @@ trait ChooseOp {
           case bvalue:Value[OT] with OT => bvalue.q(avalue.q)
         }
     }
-  }
-
-  private def applyRec[IT <: Obj,OT <: Obj](current:Traverser[Type[IT] with IT],branches:RecType[IT,OT]):Traverser[RecType[IT,OT]] ={
-    current.split(
-      trec(value = branches.value().map(x => (x._1 match {
-        case atype:Type[IT] with IT => current.obj().compose(atype).asInstanceOf[IT]
-        case avalue:Value[IT] with IT => avalue
-      },x._2 match {
-        case atype:Type[OT] with OT => current.obj().compose(atype).asInstanceOf[OT]
-        case avalue:Value[OT] with OT => avalue
-      }))))
-  }
-
-  private def generalType[OT <: Obj](outs:Iterable[OT]):OT ={ // TODO: record introspection for type generalization
-    val types = outs.map{
-      case atype:Type[Obj] => atype.range.asInstanceOf[OT]
-      case avalue:OT => avalue
-    }.filter(x => x.alive())
-    (types.toSet.size match {
-      case 1 => types.head
-      case _ => new TObj().asInstanceOf[OT]
-    }).q(types.map(x => x.q).reduce((a,b) => (
-      int(Math.min(a._1.value,b._1.value)),
-      int(Math.max(a._2.value,b._2.value))))) // the quantification is the largest span of the all the branch ranges
   }
 }
 
