@@ -58,11 +58,6 @@ trait Obj
     with EvalOp
     with EqsOp {
 
-  def either:Either[ObjType,ObjValue] = this match {
-    case atype:ObjType => Left(atype)
-    case avalue:ObjValue => Right(avalue)
-  }
-
   // quantifier methods
   val q:IntQ
   def q(quantifier:IntQ):this.type
