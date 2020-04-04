@@ -23,10 +23,12 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.map.PlusOp.PlusInst
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, OType, Obj, multQ}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -37,24 +39,24 @@ trait PlusOp[O <: Obj] {
   def plus(other:Type[O]):OType[O]
   def plus(other:Value[O]):this.type
   def plus(other:Obj):this.type = (other match {
-    case atype:Type[O] => plus(atype.asInstanceOf[Type[O]])
+    case atype:Type[O] => this.plus(atype.asInstanceOf[Type[O]])
     case avalue:Value[O] => this.plus(avalue.asInstanceOf[Value[O]])
   }).asInstanceOf[this.type]
-
   final def +(other:Type[O]):OType[O] = this.plus(other)
   final def +(other:Value[O]):this.type = this.plus(other)
+  /////////////////////////////////////////////////////////////////
+  private def plus(inst:PlusInst[_]):this.type = this match {
+    case atype:Type[_] => atype.compose(this,inst)
+    case avalue:Value[_] => this.plus(inst.arg0[O]()).q(multQ(avalue,inst))
+  }
 }
 
 object PlusOp {
   def apply[O <: Obj with PlusOp[O]](other:Obj):Inst[O,O] = new PlusInst[O](other)
 
-  class PlusInst[O <: Obj with PlusOp[O]](other:Obj) extends VInst[O,O]((Tokens.plus,List(other))) {
-    override def apply(trav:Traverser[O]):Traverser[O] ={
-      trav.split((Traverser.resolveArg(trav,other) match {
-        case avalue:Value[O] => trav.obj().plus(avalue)
-        case atype:Type[O] => trav.obj().plus(atype)
-      }).q(multQ(trav.obj().q,this.q)))
-    }
+  class PlusInst[O <: Obj with PlusOp[O]](other:Obj,q:IntQ = qOne) extends VInst[O,O]((Tokens.plus,List(other)),q) {
+    override def q(quantifier:IntQ):this.type = new PlusInst[O](other,quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().plus(new PlusInst[O](Traverser.resolveArg(trav,other),q)))
   }
 
 }

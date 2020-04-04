@@ -23,10 +23,11 @@
 package org.mmadt.language.obj.op.filter
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.op.FilterInstruction
+import org.mmadt.language.obj.op.filter.IsOp.IsInst
 import org.mmadt.language.obj.value.{BoolValue, Value}
-import org.mmadt.language.obj.{Bool, Inst, OType, Obj, minZero}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -38,7 +39,7 @@ trait IsOp {
   this:Obj =>
 
   def is(bool:BoolType):OType[this.type] = (this match {
-    case atype:Type[_] => atype.compose(asType(this),IsOp(bool)).q(minZero(this.q))
+    case atype:Type[_] => atype.compose(this,new IsInst[this.type](bool)).q(minZero(this.q))
     case avalue:Value[_] => avalue.start().is(bool)
   }).asInstanceOf[OType[this.type]]
 
@@ -46,16 +47,22 @@ trait IsOp {
     case atype:Type[_] => atype.compose(this.q(minZero(this.q)),IsOp(bool.start()))
     case _ => if (bool.value) this else this.q(0)
   }
+  /////////////////////////////////////////////////////////////////
+  private def is[O <: Obj](inst:IsInst[O]):O = (this match {
+    case atype:Type[_] => atype.compose(this,inst).q(minZero(multQ(this,inst)))
+    case avalue:Value[_] => inst.arg0[Bool]() match {
+      case boolValue:BoolValue => if (boolValue.value) this.q(multQ(avalue,inst)) else this.q(0)
+      case boolType:BoolType => avalue.start().is(boolType)
+    }
+  }).asInstanceOf[O]
 }
 
 object IsOp {
   def apply[O <: Obj with IsOp](other:Obj):Inst[O,O] = new IsInst[O](other)
 
-  class IsInst[O <: Obj with IsOp](other:Obj) extends VInst[O,O]((Tokens.is,List(other))) with FilterInstruction {
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(Traverser.resolveArg(trav,other) match {
-      case avalue:BoolValue => trav.obj().is(avalue)
-      case atype:BoolType => trav.obj().is(atype)
-    })
+  class IsInst[O <: Obj with IsOp](other:Obj,q:IntQ = qOne) extends VInst[O,O]((Tokens.is,List(other)),q) with FilterInstruction {
+    override def q(quantifier:IntQ):this.type = new IsInst[O](other,quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().is(new IsInst[O](Traverser.resolveArg(trav,other),q)))
   }
 
 }

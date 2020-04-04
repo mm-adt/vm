@@ -85,7 +85,7 @@ trait Type[+T <: Obj] extends Obj
   }
   def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={
-    val newInst:DomainInst[Obj] = (if (inst.op().equals(Tokens.noop)) this.via else (this,inst.asInstanceOf[Inst[Obj,Obj]]))
+    val newInst:DomainInst[Obj] = (if (inst.op().equals(Tokens.noop)) this.via else (this,inst.asInstanceOf[Inst[Obj,R]]))
     (nextObj match {
       case _:Bool => tbool(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Bool]])
       case _:Real => treal(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Real]])

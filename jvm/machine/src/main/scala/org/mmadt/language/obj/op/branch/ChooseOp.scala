@@ -50,7 +50,7 @@ trait ChooseOp {
         branches.value().find(p => p._1 match {
           case btype:Type[IT] with IT => trav.apply(btype).obj().alive()
           case bvalue:Value[IT] with IT => avalue.test(bvalue)
-        }).map(_._2.q(avalue.q)).getOrElse(avalue.q(qZero))
+        }).map(_._2).getOrElse(avalue.q(qZero))
         match {
           case btype:Type[OT] with OT => trav.apply(btype).obj()
           case bvalue:Value[OT] with OT => bvalue.q(avalue.q)

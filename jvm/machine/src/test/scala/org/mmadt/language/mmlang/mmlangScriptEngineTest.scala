@@ -137,6 +137,16 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("quantifier inst parsing"){
+    assertResult(int.id().q(2).id().q(4))(engine.eval("int[id]{2}[id]{4}"))
+    assertResult("int{8}<=int[id]{2}[id]{4}")(engine.eval("int[id]{2}[id]{4}").toString)
+    assertResult(int(10).q(8))(engine.eval("10 int[id]{2}[id]{4}"))
+    assertResult(int(10).q(8))(engine.eval("10[id]{2}[id]{4}"))
+    assertResult("int{8}<=int[plus,10]{2}[id]{4}")(engine.eval("int[plus,10]{2}[id]{4}").toString)
+    assertResult(int(15).q(8))(engine.eval("5[plus,10]{2}[id]{4}"))
+    assertResult(int(17).q(8))(engine.eval("5[plus,10]{2}[id]{4}[plus,2]"))
+    assertResult(int(17).q(16))(engine.eval("5{2}[plus,10]{2}[id]{4}[plus,2]"))
+    assertResult(int.q(0,24))(engine.eval("int[plus,10]{2}[id]{4}[is,[gt,2]]{3}").asInstanceOf[IntType].range)
+    assertResult(int(15).q(48))(engine.eval("5{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     // assertResult(true)(engine.eval("[plus,2]{2}[mult,3]{32}[plus,4]")()) // TODO: support instruction quantification (requires a full refactor of the inst obj model)
   }
 
@@ -204,7 +214,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(obj)(engine.eval("int[plus,2][int[is>5]->true|[is==1]->[plus2]|int->20]").asInstanceOf[Type[Obj]].range)
     //
     assertResult(btrue.q(int(3)))(engine.eval("             5{3} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]"))
-    assertResult(int(3).q(int(5)))(engine.eval("           -1{5} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]"))
+    assertResult(int(3).q(5))(engine.eval("           -1{5} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]"))
     assertResult(int(20).q(int(8),int(10)))(engine.eval("1{8,10} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]"))
     assertResult(obj.q(+))(engine.eval("int{+}[plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").asInstanceOf[Type[Obj]].range)
   }
@@ -368,9 +378,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertThrows[AssertionError]{engine.eval("-11[plus,1][as,nat]")}
     println(engine.eval("int[plus,10][a,nat]"))
     println(engine.eval("int[plus,1][as,nat][mult,19]").toString)
-    println(engine.eval("int{3}[is[a,nat]->[as,nat][plus,20] | obj->[is,false]]").toString)
+//TODO    println(engine.eval("int{3}[[is,[a,nat]]->[as,nat][plus,20] | obj->[is,false]]").toString)
     assertResult("nat:32")(engine.eval("32").toString)
-    assertResult(List(int(32).named("nat"),int(44).named("nat")))(engine.eval("12,-4,24[is[a,nat]->[as,nat][plus,20] | int->[is,false]]").toList)
+//TODO    assertResult(List(int(32).named("nat"),int(44).named("nat")))(engine.eval("12,-4,24[is[a,nat]->[as,nat][plus,20] | int->[is,false]]").toList)
   }
 
   /*test("model parsing"){

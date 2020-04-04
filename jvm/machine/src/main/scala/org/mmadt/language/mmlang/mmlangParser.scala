@@ -30,12 +30,12 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
+import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
 import org.mmadt.language.obj.value.strm._
-import org.mmadt.language.obj.value.{strm => _, _}
-import org.mmadt.language.{LanguageException, Tokens}
+import org.mmadt.language.obj.value.{strm => _,_}
+import org.mmadt.language.{LanguageException,Tokens}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.{strm => estrm, _}
+import org.mmadt.storage.StorageFactory.{strm => estrm,_}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -56,8 +56,8 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
 
   // specific to mmlang execution
   lazy val expr       :Parser[Obj] = compilation | evaluation | anonRootType
-  lazy val compilation:Parser[Obj] = aType ^^ (x => (x.domain() ==> (x,this.model)))
-  lazy val evaluation :Parser[Obj] = (strm | objValue) ~ opt(anonRootType | aType) ^^ (x =>
+  lazy val compilation:Parser[Obj] = dType ^^ (x => (x.domain() ==> (x,this.model)))
+  lazy val evaluation :Parser[Obj] = (strm | objValue) ~ opt(anonRootType | dType) ^^ (x =>
     x._1 ==>
     ((Type.resolve(x._1,x._2.getOrElse(asType[Obj](x._1))).domain() ==>
       (x._2.getOrElse(asType[Obj](x._1)),this.model)).asInstanceOf[Type[Obj]],this.model))
@@ -69,7 +69,7 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   lazy val obj:Parser[Obj] = objValue | objType
 
   // type parsing
-  lazy val objType     :Parser[Type[Obj]]    = anonType | aType
+  lazy val objType     :Parser[Type[Obj]]    = anonType | dType
   lazy val boolType    :Parser[BoolType]     = Tokens.bool ^^ (_ => bool)
   lazy val intType     :Parser[IntType]      = Tokens.int ^^ (_ => int)
   lazy val realType    :Parser[RealType]     = Tokens.real ^^ (_ => real)
@@ -81,9 +81,9 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
     case None => tobj(x)
   })
   lazy val cType       :Parser[Type[Obj]]    = (boolType | realType | intType | strType | recType | namedType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val aType       :Parser[Type[Obj]]    = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj,Obj]](stateAccess ^^ (x => ToOp[Obj](str(x._2))) | inst | cType ^^ (t => AsOp(t))) ^^ {
-    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y(Traverser.standard(x,model = this.model)).obj().asInstanceOf[Type[Obj]]))
-    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y(Traverser.standard(x,model = this.model)).obj().asInstanceOf[Type[Obj]])
+  lazy val dType       :Parser[Type[Obj]]    = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj,Obj]](stateAccess ^^ (x => ToOp[Obj](str(x._2))) | inst | cType ^^ (t => AsOp(t))) ^^ {
+    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(Traverser.standard(domain,model = this.model))((x,y) => y(x).asInstanceOf[Traverser[Type[Obj]]]).obj())
+    case None ~ domain ~ insts => insts.foldLeft(Traverser.standard(domain,model = this.model))((x,y) => y(x).asInstanceOf[Traverser[Type[Obj]]]).obj()
   }
   lazy val anonType    :Parser[__]           = (stateAccess ^^ (x => FromOp(str(x._2))) | inst) ~ rep[Inst[Obj,Obj]](stateAccess ^^ (x => ToOp[Obj](str(x._2))) | inst | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))
   lazy val anonRootType:Parser[__]           = (stateAccess ^^ (x => ToOp(str(x._2))) | inst) ~ rep[Inst[Obj,Obj]](stateAccess ^^ (x => ToOp[Obj](str(x._2))) | inst | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))

@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
 class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst[S,E] {
   def this(java:InstTuple) = this(java,qOne)
   override val value:InstTuple = java
-  override def q(quantifier:IntQ):this.type = new VInst(java,quantifier).asInstanceOf[this.type]
+  override def q(quantifier:IntQ):this.type = this
   override def apply(trav:Traverser[S]):Traverser[E] = trav.asInstanceOf[Traverser[E]]
   override val q:IntQ = quantifier
   // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY

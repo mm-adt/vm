@@ -41,7 +41,7 @@ object LeftRightSweepRewrite {
       model.get(atype) match {
         case Some(right:Type[S]) => rewrite(model,right,btype,traverser)
         case None =>
-          val inst:Inst[Obj,Obj] = OpInstResolver.resolve(atype.via._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.via._2.asInstanceOf[Inst[Obj,Obj]],traverser))
+          val inst:Inst[Obj,Obj] = OpInstResolver.resolve(atype.via._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.via._2.asInstanceOf[Inst[Obj,Obj]],traverser)).q(atype.via._2.q)
           rewrite(model,
             atype.rinvert(),
             inst.apply(traverser.split(atype.rinvert[Type[S]]().range)).obj().asInstanceOf[Type[S]].compose(btype), // might need a model.resolve down the road

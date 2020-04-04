@@ -59,6 +59,11 @@ package object obj {
     case _:IntQ => (qA._1 * qB._1,qA._2 * qB._2)
   }
 
+  def multQ(qA:Type[Obj],qB:IntQ):IntQ = qA match {
+    case null => qB
+    case _ => this.multQ(qA.q,qB)
+  }
+
   def withinQ(objA:Obj,objB:Obj):Boolean ={
     objA.q._1.value >= objB.q._1.value &&
     objA.q._2.value <= objB.q._2.value

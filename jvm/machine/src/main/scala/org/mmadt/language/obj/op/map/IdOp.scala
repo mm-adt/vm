@@ -24,9 +24,11 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.map.IdOp.IdInst
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Obj, multQ}
+import org.mmadt.language.obj.{Inst, IntQ, Obj, _}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -34,19 +36,23 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait IdOp {
   this:Obj =>
-  def id():this.type ={
-    this match {
-      case atype:Type[_] => atype.compose(this,IdOp())
-      case _ => this
-    }
+  def id():this.type = this match {
+    case atype:Type[_] => atype.compose(this,new IdInst[this.type])
+    case _ => this
+  }
+  ////////////////////////////////////////////////////
+  protected def id(inst:IdInst[_]):this.type = this match {
+    case atype:Type[_] => atype.compose(this,inst)
+    case avalue:Value[_] => this.q(multQ(avalue,inst))
   }
 }
 
 object IdOp {
   def apply[O <: Obj]():Inst[O,O] = new IdInst
 
-  class IdInst[O <: Obj] extends VInst[O,O]((Tokens.id,Nil)) {
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().id().q(multQ(trav.obj().q,this.q)))
+  class IdInst[O <: Obj](q:IntQ = qOne) extends VInst[O,O]((Tokens.id,Nil),q) {
+    override def q(quantifier:IntQ):this.type = new IdInst[O](quantifier).asInstanceOf[this.type]
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().id(this))
   }
 
 }
