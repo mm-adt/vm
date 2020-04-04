@@ -22,22 +22,22 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.obj.`type`.RealType
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.RealValue
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Real extends Obj
-  with PlusOp[Real]
-  with MultOp[Real]
+  with PlusOp[RealType,RealValue]
+  with MultOp[RealType,RealValue]
   with NegOp
-  with GtOp[Real]
-  with GteOp[Real]
-  with LtOp[Real]
-  with LteOp[Real]
+  with GtOp[RealType,RealValue]
+  with GteOp[RealType,RealValue]
+  with LtOp[RealType,RealValue]
+  with LteOp[RealType,RealValue]
   with OneOp[Real]
-  with ToOp[Real]
+  with ToOp[RealType]
   with ZeroOp[Real]

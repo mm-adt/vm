@@ -33,23 +33,21 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait LtOp[O <: Obj] {
-  this:O =>
-  def lt(other:Value[O]):Bool
-  def lt(other:Type[O]):BoolType = this match {
+trait LtOp[T <: Type[Obj],V <: Value[Obj]] {
+  this:Obj =>
+  def lt(other:V):Bool
+  def lt(other:T):BoolType = this match {
     case atype:Type[_] => atype.compose(bool,LtOp(other))
     case avalue:Value[_] => avalue.start().compose(bool,LtOp(other))
   }
-
-  final def <(other:Value[O]):Bool = this.lt(other)
-  final def <(other:Type[O]):BoolType = this.lt(other)
-
+  final def <(other:V):Bool = this.lt(other)
+  final def <(other:T):BoolType = this.lt(other)
 }
 
 object LtOp {
-  def apply[O <: Obj with LtOp[O]](other:Obj):Inst[O,Bool] = new LtInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj with LtOp[Type[O],Value[O]]](other:Obj):Inst[O,Bool] = new LtInst[O](other.asInstanceOf[O])
 
-  class LtInst[O <: Obj with LtOp[O]](other:O) extends VInst[O,Bool]((Tokens.lt,List(other))) {
+  class LtInst[O <: Obj with LtOp[Type[O],Value[O]]](other:O) extends VInst[O,Bool]((Tokens.lt,List(other))) {
     override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split((Traverser.resolveArg(trav,other) match {
       case avalue:Value[O] => trav.obj().lt(avalue)
       case atype:Type[O] => trav.obj().lt(atype)

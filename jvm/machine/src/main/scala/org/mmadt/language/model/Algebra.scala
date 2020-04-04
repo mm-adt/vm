@@ -35,8 +35,8 @@ object Algebra {
 
   def universal(atype:Type[Obj]):Model = Model.from(atype.id() -> atype)
 
-  type MultOne[T <: Obj] = Type[T] with MultOp[T] with OneOp[T]
-  type PlusZero[T <: Obj] = Type[T] with PlusOp[T] with ZeroOp[T]
+  type MultOne[T <: Obj] = Type[T] with MultOp[Type[T],Value[T]] with OneOp[T]
+  type PlusZero[T <: Obj] = Type[T] with PlusOp[Type[T],Value[T]] with ZeroOp[T]
   def monoid[O <: Type[O]](monoid:Obj)(op:String):Model ={
     op match {
       case "*" =>
@@ -70,7 +70,7 @@ object Algebra {
     }
   }
 
-  def ring[O <: IntType](ring:O):Model ={
+  def ring(ring:IntType):Model ={
     group(ring)("+",int(0)).put(
       group(ring)("*",int(1))).put(
       Model.from(

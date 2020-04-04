@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType,Type}
+import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory.bool
@@ -33,21 +33,21 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtOp[O <: Obj] {
-  this:O =>
-  def gt(other:Value[O]):Bool
-  def gt(other:Type[O]):BoolType = this match {
+trait GtOp[T <: Type[Obj],V <: Value[Obj]] {
+  this:Obj =>
+  def gt(other:V):Bool
+  def gt(other:T):BoolType = this match {
     case atype:Type[_] => atype.compose(bool,GtOp(other))
     case avalue:Value[_] => avalue.start().compose(bool,GtOp(other))
   }
-  final def >(other:Value[O]):Bool = this.gt(other)
-  final def >(other:Type[O]):BoolType = this.gt(other)
+  final def >(other:V):Bool = this.gt(other)
+  final def >(other:T):BoolType = this.gt(other)
 }
 
 object GtOp {
-  def apply[O <: Obj with GtOp[O]](other:Obj):Inst[O,Bool] = new GtInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj with GtOp[Type[O],Value[O]]](other:Obj):Inst[O,Bool] = new GtInst[O](other.asInstanceOf[O])
 
-  class GtInst[O <: Obj with GtOp[O]](other:O) extends VInst[O,Bool]((Tokens.gt,List(other))) {
+  class GtInst[O <: Obj with GtOp[Type[O],Value[O]]](other:O) extends VInst[O,Bool]((Tokens.gt,List(other))) {
     override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split((Traverser.resolveArg(trav,other) match {
       case avalue:Value[O] => trav.obj().gt(avalue)
       case atype:Type[O] => trav.obj().gt(atype)

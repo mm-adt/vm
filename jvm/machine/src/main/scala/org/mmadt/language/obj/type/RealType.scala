@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{Int, Real}
-import org.mmadt.language.obj.op.map.{GtOp, GteOp, LtOp, LteOp, MultOp, NegOp, OneOp, PlusOp, ZeroOp}
-import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
+import org.mmadt.language.obj.Real
+import org.mmadt.language.obj.op.map._
+import org.mmadt.language.obj.value.{RealValue, Value}
 import org.mmadt.storage.StorageFactory.bool
 
 /**
@@ -36,15 +36,15 @@ trait RealType extends Real
 
   def apply(value:RealValue):RealValue = value.named(this.name)
 
-  override def plus(other:Type[Real]):RealType = this.compose(PlusOp(other))
-  override def plus(other:Value[Real]):this.type = this.compose(PlusOp(other))
-  override def mult(other:Type[Real]):RealType = this.compose(MultOp(other))
-  override def mult(other:Value[Real]):this.type = this.compose(MultOp(other))
+  override def plus(other:RealType):RealType = this.compose(PlusOp(other))
+  override def plus(other:RealValue):this.type = this.compose(PlusOp(other))
+  override def mult(other:RealType):RealType = this.compose(MultOp(other))
+  override def mult(other:RealValue):this.type = this.compose(MultOp(other))
   override def neg():this.type = this.compose(NegOp())
   override def one():RealType = this.compose(OneOp())
-  override def gt(other:Value[Real]):BoolType = this.compose(bool,GtOp(other))
-  override def gte(other:Value[Real]):BoolType = this.compose(bool,GteOp(other))
-  override def lt(other:Value[Real]):BoolType = this.compose(bool,LtOp(other))
-  override def lte(other:Value[Real]):BoolType = this.compose(bool,LteOp(other))
+  override def gt(other:RealValue):BoolType = this.compose(bool,GtOp(other))
+  override def gte(other:RealValue):BoolType = this.compose(bool,GteOp(other))
+  override def lt(other:RealValue):BoolType = this.compose(bool,LtOp(other))
+  override def lte(other:RealValue):BoolType = this.compose(bool,LteOp(other))
   override def zero():RealType = this.compose(ZeroOp())
 }

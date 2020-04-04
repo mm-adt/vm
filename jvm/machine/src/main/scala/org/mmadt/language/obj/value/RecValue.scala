@@ -34,8 +34,8 @@ trait RecValue[A <: Value[Obj],B <: Value[Obj]] extends Rec[A,B]
   override val value:Map[A,B]
   def value(java:Map[A,B]):this.type
 
-  override def plus(other:Type[Rec[A,B]]):RecType[A,B] = this.start[RecType[A,B]]().plus(other)
-  override def plus(other:Value[Rec[A,B]]):this.type = this.value(this.value ++ other.asInstanceOf[RecValue[A,B]].value)
+  override def plus(other:RecType[A,B]):RecType[A,B] = this.start[Rec[A,B]]().plus(other)
+  override def plus(other:RecValue[_,_]):this.type = this.value(this.value ++ other.asInstanceOf[RecValue[A,B]].value)
   override def get(key:A):B = this.value(key)
   override def get[BB <: Obj](key:A,btype:BB):BB = this.value(key).asInstanceOf[BB]
   override def put(key:A,value:B):RecValue[A,B] = this.value(this.value + (key -> value))

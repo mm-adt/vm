@@ -33,9 +33,9 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ToOp[O <: Obj] {
-  this:O =>
-  def to(label:StrValue):OType[O] = this match {
+trait ToOp[O <: Type[Obj]] {
+  this:Obj =>
+  def to(label:StrValue):O = this match {
     case atype:Type[_] => atype.compose(ToOp[O](label)).asInstanceOf[OType[O]]
     case avalue:Value[O] => avalue.start().compose(ToOp[O](label))
   }

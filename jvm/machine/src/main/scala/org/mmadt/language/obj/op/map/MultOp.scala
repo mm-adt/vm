@@ -25,30 +25,30 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, OType, Obj, multQ}
+import org.mmadt.language.obj.{Inst, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultOp[O <: Obj] {
-  this:O =>
-  def mult(other:Type[O]):OType[O]
-  def mult(other:Value[O]):this.type
-  final def *(other:Type[O]):OType[O] = this.mult(other)
-  final def *(other:Value[O]):this.type = this.mult(other)
+trait MultOp[T <: Type[Obj],V <: Value[Obj]] {
+  this:Obj =>
+  def mult(other:T):T
+  def mult(other:V):this.type
+  final def *(other:T):T = this.mult(other)
+  final def *(other:V):this.type = this.mult(other)
 }
 
 object MultOp {
-  def apply[O <: Obj with MultOp[O]](other:Obj):Inst[O,O] = new MultInst[O](other)
+  def apply[O <: Obj with MultOp[T,V],T <: Type[O],V <: Value[O]](other:Obj):Inst[O,O] = new MultInst[O,T,V](other)
 
-  class MultInst[O <: Obj with MultOp[O]](other:Obj) extends VInst[O,O]((Tokens.mult,List(other))) {
+  class MultInst[O <: Obj with MultOp[T,V],T <: Type[O],V <: Value[O]](other:Obj) extends VInst[O,O]((Tokens.mult,List(other))) {
     override def apply(trav:Traverser[O]):Traverser[O] ={
       trav.split((Traverser.resolveArg(trav,other) match {
-        case avalue:Value[O] => trav.obj().mult(avalue)
-        case atype:Type[O] => trav.obj().mult(atype)
-      }).q(multQ(trav.obj().q,this.q)))
+        case avalue:V => trav.obj().mult(avalue)
+        case atype:T => trav.obj().mult(atype)
+      }).q(multQ(trav.obj().q,this.q)).asInstanceOf[O])
     }
   }
 

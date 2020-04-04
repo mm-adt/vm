@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.{StrType, Type}
+import org.mmadt.language.obj.`type`.StrType
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -36,10 +36,10 @@ trait StrValue extends Str
   override val value:String
   def value(java:String):this.type
 
-  override def plus(other:Type[Str]):StrType = this.start[StrType]().plus(other)
-  override def plus(other:Value[Str]):this.type = this.value(this.value + other.value)
-  override def gt(other:Value[Str]):BoolValue = vbool(value = this.value > other.asInstanceOf[StrValue].value,q = this.q)
-  override def gte(other:Value[Str]):BoolValue = vbool(value = this.value >= other.asInstanceOf[StrValue].value,q = this.q)
-  override def lt(other:Value[Str]):BoolValue = vbool(value = this.value < other.asInstanceOf[StrValue].value,q = this.q)
-  override def lte(other:Value[Str]):BoolValue = vbool(value = this.value <= other.asInstanceOf[StrValue].value,q = this.q)
+  override def plus(other:StrType):StrType = this.start[Str]().plus(other)
+  override def plus(other:StrValue):this.type = this.value(this.value + other.value)
+  override def gt(other:StrValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
+  override def gte(other:StrValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
+  override def lt(other:StrValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
+  override def lte(other:StrValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
 }

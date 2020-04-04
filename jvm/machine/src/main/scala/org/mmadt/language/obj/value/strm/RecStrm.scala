@@ -32,8 +32,8 @@ import org.mmadt.language.obj.{Obj, Rec}
 trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Strm[Rec[A,B]] with Rec[A,B] {
   override val value:Iterator[RecValue[A,B]]
 
-  override def plus(other:Type[Rec[A,B]]):RecType[A,B] = throw new UnsupportedOperationException
-  override def plus(other:Value[Rec[A,B]]):this.type = throw new UnsupportedOperationException
+  override def plus(other:RecType[A,B]):RecType[A,B] = throw new UnsupportedOperationException
+  override def plus(other:RecValue[_,_]):this.type = throw new UnsupportedOperationException
   override def get(key:A):B = throw new UnsupportedOperationException
   override def get[BB <: Obj](key:A,btype:BB):BB = throw new UnsupportedOperationException
   override def put(key:A,value:B):RecValue[A,B] = throw new UnsupportedOperationException

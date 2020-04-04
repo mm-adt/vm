@@ -33,21 +33,21 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GteOp[O <: Obj] {
-  this:O =>
-  def gte(other:Value[O]):Bool
-  def gte(other:Type[O]):BoolType = this match {
+trait GteOp[T <: Type[Obj],V <: Value[Obj]] {
+  this:Obj =>
+  def gte(other:V):Bool
+  def gte(other:T):BoolType = this match {
     case atype:Type[_] => atype.compose(bool,GteOp(other))
     case avalue:Value[_] => avalue.start().compose(bool,GteOp(other))
   }
-  final def >=(other:Value[O]):Bool = this.gte(other)
-  final def >=(other:Type[O]):BoolType = this.gte(other)
+  final def >=(other:V):Bool = this.gte(other)
+  final def >=(other:T):BoolType = this.gte(other)
 }
 
 object GteOp {
-  def apply[O <: Obj with GteOp[O]](other:Obj):Inst[O,Bool] = new GteInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj with GteOp[Type[O],Value[O]]](other:Obj):Inst[O,Bool] = new GteInst[O](other.asInstanceOf[O])
 
-  class GteInst[O <: Obj with GteOp[O]](other:O) extends VInst[O,Bool]((Tokens.gte,List(other))) {
+  class GteInst[O <: Obj with GteOp[Type[O],Value[O]]](other:O) extends VInst[O,Bool]((Tokens.gte,List(other))) {
     override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split((Traverser.resolveArg(trav,other) match {
       case avalue:Value[O] => trav.obj().gte(avalue)
       case atype:Type[O] => trav.obj().gte(atype)

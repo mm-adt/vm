@@ -24,7 +24,6 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.{IntType, Type}
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -32,20 +31,20 @@ import org.mmadt.storage.StorageFactory._
  */
 trait IntValue extends Int
   with ObjValue
-  with Value[Int]{
+  with Value[Int] {
 
   override val value:Long
   def value(java:Long):this.type
 
-  override def plus(other:Type[Int]):IntType = this.start[IntType]().plus(other)
-  override def plus(other:Value[Int]):this.type = this.value(this.value + other.value.asInstanceOf[Long])
-  override def mult(other:Type[Int]):IntType = this.start[IntType]().mult(other)
-  override def mult(other:Value[Int]):this.type = this.value(this.value * other.value.asInstanceOf[Long])
+  override def plus(other:IntType):IntType = this.start[Int]().plus(other)
+  override def plus(other:IntValue):this.type = this.value(this.value + other.value)
+  override def mult(other:IntType):IntType = this.start[Int]().mult(other)
+  override def mult(other:IntValue):this.type = this.value(this.value * other.value)
   override def neg():this.type = this.value(-this.value)
   override def one():IntValue = this.value(1L)
-  override def gt(other:Value[Int]):BoolValue = vbool(value = this.value > other.value.asInstanceOf[Long],q = this.q)
-  override def gte(other:Value[Int]):BoolValue = vbool(value = this.value >= other.value.asInstanceOf[Long],q = this.q)
-  override def lt(other:Value[Int]):BoolValue = vbool(value = this.value < other.value.asInstanceOf[Long],q = this.q)
-  override def lte(other:Value[Int]):BoolValue = vbool(value = this.value <= other.value.asInstanceOf[Long],q = this.q)
+  override def gt(other:IntValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
+  override def gte(other:IntValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
+  override def lt(other:IntValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
+  override def lte(other:IntValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
   override def zero():IntValue = this.value(0L)
 }

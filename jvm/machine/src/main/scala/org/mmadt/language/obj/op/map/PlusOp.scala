@@ -34,27 +34,27 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusOp[O <: Obj] {
-  this:O =>
-  def plus(other:Type[O]):OType[O]
-  def plus(other:Value[O]):this.type
+trait PlusOp[T<:Type[Obj],V<:Value[Obj]] {
+  this:Obj =>
+  def plus(other:T):T
+  def plus(other:V):this.type
   def plus(other:Obj):this.type = (other match {
-    case atype:Type[O] => this.plus(atype.asInstanceOf[Type[O]])
-    case avalue:Value[O] => this.plus(avalue.asInstanceOf[Value[O]])
+    case atype:T => this.plus(atype)
+    case avalue:V => this.plus(avalue)
   }).asInstanceOf[this.type]
-  final def +(other:Type[O]):OType[O] = this.plus(other)
-  final def +(other:Value[O]):this.type = this.plus(other)
+  final def +(other:T):T = this.plus(other)
+  final def +(other:V):this.type = this.plus(other)
   /////////////////////////////////////////////////////////////////
   private def plus(inst:PlusInst[_]):this.type = this match {
-    case atype:Type[_] => atype.compose(this,inst)
-    case avalue:Value[_] => this.plus(inst.arg0[O]()).q(multQ(avalue,inst))
+    case atype:T => atype.compose(this,inst)
+    case avalue:V => this.plus(inst.arg0[Obj]()).q(multQ(avalue,inst))
   }
 }
 
 object PlusOp {
-  def apply[O <: Obj with PlusOp[O]](other:Obj):Inst[O,O] = new PlusInst[O](other)
+  def apply[O <: Obj with PlusOp[Type[O],Value[O]]](other:Obj):Inst[O,O] = new PlusInst[O](other)
 
-  class PlusInst[O <: Obj with PlusOp[O]](other:Obj,q:IntQ = qOne) extends VInst[O,O]((Tokens.plus,List(other)),q) {
+  class PlusInst[O <: Obj with PlusOp[Type[O],Value[O]]](other:Obj,q:IntQ = qOne) extends VInst[O,O]((Tokens.plus,List(other)),q) {
     override def q(quantifier:IntQ):this.type = new PlusInst[O](other,quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().plus(new PlusInst[O](Traverser.resolveArg(trav,other),q)))
   }

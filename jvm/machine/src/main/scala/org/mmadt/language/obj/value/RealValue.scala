@@ -35,16 +35,15 @@ trait RealValue extends Real
 
   override val value:Double
   def value(java:Double):this.type
-
-  override def plus(other:Type[Real]):RealType = this.start[RealType]().plus(other)
-  override def plus(other:Value[Real]):this.type = this.value(this.value + other.asInstanceOf[RealValue].value)
-  override def mult(other:Type[Real]):RealType = this.start[RealType]().mult(other)
-  override def mult(other:Value[Real]):this.type = this.value(this.value * other.asInstanceOf[RealValue].value)
+  override def plus(other:RealType):RealType = this.start[RealType]().plus(other)
+  override def plus(other:RealValue):this.type = this.value(this.value + other.value)
+  override def mult(other:RealType):RealType = this.start[Real]().mult(other)
+  override def mult(other:RealValue):this.type = this.value(this.value * other.value)
   override def neg():this.type = this.value(-this.value)
   override def one():RealValue = this.value(1.0d)
-  override def gt(other:Value[Real]):BoolValue = vbool(value = this.value > other.asInstanceOf[RealValue].value,q = this.q)
-  override def gte(other:Value[Real]):BoolValue = vbool(value = this.value >= other.asInstanceOf[RealValue].value,q = this.q)
-  override def lt(other:Value[Real]):BoolValue = vbool(value = this.value < other.asInstanceOf[RealValue].value,q = this.q)
-  override def lte(other:Value[Real]):BoolValue = vbool(value = this.value <= other.asInstanceOf[RealValue].value,q = this.q)
+  override def gt(other:RealValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
+  override def gte(other:RealValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
+  override def lt(other:RealValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
+  override def lte(other:RealValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
   override def zero():RealValue = this.value(0.0d)
 }

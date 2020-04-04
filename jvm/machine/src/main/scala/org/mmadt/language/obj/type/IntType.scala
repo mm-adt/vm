@@ -36,16 +36,17 @@ trait IntType extends Int
 
   def apply(value:IntValue):IntValue = value.named(this.name)
 
-  override def plus(other:Type[Int]):IntType = this.compose(PlusOp(other))
-  override def plus(other:Value[Int]):this.type = this.compose(PlusOp(other))
-  override def mult(other:Type[Int]):IntType = this.compose(MultOp(other))
-  override def mult(other:Value[Int]):this.type = this.compose(MultOp(other))
+  override def plus(other:IntType):IntType = this.compose(PlusOp(other))
+  override def plus(other:IntValue):this.type = this.compose(PlusOp(other))
+  override def mult(other:IntType):IntType = this.compose(MultOp(other))
+  override def mult(other:IntValue):this.type = this.compose(MultOp(other))
   override def neg():this.type = this.compose(NegOp())
   override def one():IntType = this.compose(OneOp())
-  override def gt(other:Value[Int]):BoolType = this.compose(bool,GtOp(other))
-  override def gte(other:Value[Int]):BoolType = this.compose(bool,GteOp(other))
-  override def lt(other:Value[Int]):BoolType = this.compose(bool,LtOp(other))
-  override def lte(other:Value[Int]):BoolType = this.compose(bool,LteOp(other))
+  override def gt(other:IntType):BoolType = this.compose(bool,GtOp(other))
+  override def gt(other:IntValue):BoolType = this.compose(bool,GtOp(other))
+  override def gte(other:IntValue):BoolType = this.compose(bool,GteOp(other))
+  override def lt(other:IntValue):BoolType = this.compose(bool,LtOp(other))
+  override def lte(other:IntValue):BoolType = this.compose(bool,LteOp(other))
   override def zero():IntType = this.compose(ZeroOp())
 }
 

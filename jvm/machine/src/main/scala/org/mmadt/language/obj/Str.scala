@@ -22,18 +22,18 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.obj.`type`.StrType
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Str extends Obj
-  with PlusOp[Str]
-  with GtOp[Str]
-  with GteOp[Str]
-  with LtOp[Str]
-  with LteOp[Str]
-  with ToOp[Str]
+  with PlusOp[StrType,StrValue]
+  with GtOp[StrType,StrValue]
+  with GteOp[StrType,StrValue]
+  with LtOp[StrType,StrValue]
+  with LteOp[StrType,StrValue]
+  with ToOp[StrType]

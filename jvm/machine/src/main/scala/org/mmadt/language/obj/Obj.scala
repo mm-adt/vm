@@ -24,19 +24,20 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{ObjType, Type}
 import org.mmadt.language.obj.op.branch.ChooseOp
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.initial.IntOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{strm => _,_}
+import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
+
+import scala.util.Either
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -56,6 +57,11 @@ trait Obj
     with ErrorOp
     with EvalOp
     with EqsOp {
+
+  def either:Either[ObjType,ObjValue] = this match {
+    case atype:ObjType => Left(atype)
+    case avalue:ObjValue => Right(avalue)
+  }
 
   // quantifier methods
   val q:IntQ
