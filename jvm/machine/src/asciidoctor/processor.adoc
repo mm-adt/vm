@@ -16,6 +16,26 @@ A traverser is the product of an `obj` and a random-access finite map called it'
 \texttt{range<=domain[inst]}: T  \rightarrow (T \times \texttt{range})
 \]
 
+==== Applying Instructions
+
+An `inst` can be applied to a traverser via:
+
+\[
+\texttt{b<=a[inst]}: T(A) \rightarrow T(B).
+\]
+
+However, this simple specification is further complicated by instruction arguments. For example, assume the following single instruction type:
+
+[source]
+----
+mmlang> int[plus,[mult,2]]
+==>int[plus,int[mult,2]]
+mmlang> 10[plus,[mult,2]]
+==>30
+----
+
+image::images/instruction-arguments.png[align="center",width=90%]
+
 === Instruction Classes
 
 ==== Branching

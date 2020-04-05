@@ -107,3 +107,26 @@
 \tt{trav} \arrow[rd] \arrow[r, "{\tt{[split]}}"] & \tt{trav} \arrow[rd] \arrow[r, "{\tt{[split]}}"] & \tt{trav} \arrow[rd] \arrow[r, "{\tt{[split]}}"] & \tt{trav} \arrow[rd] \arrow[r, "{\tt{[split]}}"] & \ldots                            \\
 \tt{ctype} \arrow[u]                             & \tt{dtype} \arrow[l, "{\tt{[inst]}}"] \arrow[u]  & \tt{dtype} \arrow[l, "{\tt{[inst]}}"] \arrow[u]  & \tt{dtype} \arrow[l, "{\tt{[inst]}}"] \arrow[u]  & \ldots \arrow[l, "{\tt{[inst]}}"]
 \end{tikzcd}
+
+
+////////////////////////////////////
+// images/branch-prod-coprod.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQBBEAX1PU1z5CKchWp0mrdhwAEAHTl4AtvBmyFy1V179seAkQBMpYuIYs2iTjz4gMeoUdKGzky9Z12B+4cmNUacykrbVt7QQMUABYxQLd2ACEAagBhJIARG10I3wBmE1cLRKyvB0jkfJc4oqtMz3CfInyAiRqQFJKGxxQAVljW4JAecRgoAHN4IlAAMwAnCCUkMhAcCCRRAfcNHGBkACNZ+jAAYwALbhK5hfWaVaRjTfYFNCwAfXJL+cXEDbvEfMeVmeb1yIBojHoexgjAACt5uiBZlgxqccJ9rj9bmtEDFASBga9DOjvg8-gA2aqDba7LBgOA4SgXTxXb4Av4AdkpW0UO2QtPpjOJSFxfwAHFynjyaXSGUzbCykBSVti+niFPgcPR3kLEOLlUhVUFuRqtUTmV8kJz9YhDfEgXITa9QeaMaq-gBOCVWSjDbhAA
+\begin{tikzcd}[row sep=large,column sep=large]
+                            &                                                                                 & A \arrow[r, "{\tt{[inst]}}"] & B \arrow[rd, "\iota_1"] &                        &    \\
+A \arrow[r, "\tt{[branch}"] & A \times A \times A \arrow[ru, "\pi_1"] \arrow[rd, "\pi_3"'] \arrow[r, "\pi_2"] & A \arrow[r, "{\tt{[inst]}}"] & C \arrow[r, "\iota_2"]  & B+C+D \arrow[r, "\tt{]}"] & {} \\
+                            &                                                                                 & A \arrow[r, "{\tt{[inst]}}"] & D \arrow[ru, "\iota_3"] &                        &   
+\end{tikzcd}
+
+
+
+////////////////////////////////////
+// images/instruction-args.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBpiBdUkANwEMAbAVxiRAB12cdgswdkaZnFIBfEKNLpMufIRQAGclVqMWbTt179xk6djwEiAZlIAmFfWatEHLjz4CAtkwY5zFXVJAYDcomakCpZqNnZajl76skYogRbUVuq2mg46Et6+MfLIACzKiaEa9toCQkwiyC5uHp4Z0YY5psGF1sUR6aIqMFAA5vBEoABmAE4QTkhKIDgQSGSqbSklgsKkVa7uFnXUDHQARjAMAAoyjWwjWL0AFjj1IKPjk9QzSKYLyXZoWAD6xHcPE0QUxeiHy7zCnC+3zM-zGgMC01moNaH1SwHWNQs4h2+0OJz8sRAF2utz09zhSARIIArCiIex8Dg6NDYY9EAA2Z5It5JelaZCQCBoOpkgFITmIpC08HFRnMv5dURAA
+\begin{tikzcd}[column sep=large,row sep=large]
+         &  &                                                                                                & \tt{int} & \tt{int} \arrow[l, "{\tt{[noop]}}"'] \arrow[rd, "\iota_1"]             &                           \\
+\tt{int} &  & {\tt{int[plus,}} \arrow[ll, "{\tt{[plus,[mult,2]]}}"'] \arrow[ru, "\pi_1"] \arrow[rd, "\pi_2"] &          &                                                                        & {\tt{int[plus,[mult,2]]}} \\
+         &  &                                                                                                & \tt{int} & {\tt{int[mult,2]}} \arrow[l, "{\tt{[mult,2]}}"'] \arrow[ru, "\iota_2"] &                          
+\end{tikzcd}
