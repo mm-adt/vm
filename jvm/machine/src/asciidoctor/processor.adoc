@@ -6,9 +6,24 @@ image::images/traverser-fold.png[align="center",width=65%]
 
 It is the role of the processor to evaluate programs composed of types to yield streams composed of values. The primary structure of the processor component of mm-ADT is the *traverser*.
 
+.Products and Coproducts
+****
+https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of structure via manipulations that expose (or generate) other structures. Two important category theoretic concepts used throughout this section are *products* and *coproducts*.
+
+image::images/product.png[float="left",width=220]
+
+A https://en.wikipedia.org/wiki/Product_(category_theory)[product] is any object defined in terms of it's accessible component objects. That is, from a single object, via \$\pi_n\$ projection morphisms, a product can be decomposed into it's constituent parts.
+
+image::images/coproduct.png[float="right",width=220]
+
+A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in terms of constructing component objects. That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can be composed from constituent parts.
+
+Along with these decomposition and composition morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects. That is, product and coproduct equality is defined via component equality.
+****
+
 === Traverser
 
-image::images/traverser.png[float="right",width=550]
+image::images/traverser-product.png[float="right",width=350]
 
 A traverser is the product of an `obj` and a random-access finite map called it's `state`. The traverser's `obj` represents the traverser's current location in the language (types) or storage (values) structure. Within the mm-ADT VM, every `inst` has a respective `apply()`, where \$T\$ is the set of all traversers and \$t,t' \in T\$ are traversers, then the instruction's maps \$t\$ to \$t'\$.
 
@@ -16,7 +31,11 @@ A traverser is the product of an `obj` and a random-access finite map called it'
 \texttt{range<=domain[inst]}: T  \rightarrow (T \times \texttt{range})
 \]
 
-==== Applying Instructions
+&nbsp;
+
+image::images/traverser.png[align="center",width=550]
+
+==== Instruction Evaluation
 
 An `inst` can be applied to a traverser via:
 
@@ -24,7 +43,7 @@ An `inst` can be applied to a traverser via:
 \texttt{b<=a[inst]}: T(A) \rightarrow T(B).
 \]
 
-However, this simple specification is further complicated by instruction arguments. For example, assume the following single instruction type:
+However, this simple specification is further complicated by instruction arguments. For example, assume the following dtype generated from the `int` ctype via the single instruction `[plus,[mult,2]]`.
 
 [source]
 ----
@@ -35,6 +54,9 @@ mmlang> 10[plus,[mult,2]]
 ----
 
 image::images/instruction-arguments.png[align="center",width=90%]
+
+Every instruction argument that is a type is first resolved by applying the type. Once all arguments have been evaluated, the parent instruction can execute. In this way, every type-argument instruction has internal blocking branches.
+
 
 === Instruction Classes
 
