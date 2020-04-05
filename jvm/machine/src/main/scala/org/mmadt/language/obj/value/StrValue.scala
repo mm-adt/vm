@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.`type`.StrType
 import org.mmadt.storage.StorageFactory._
@@ -42,4 +43,5 @@ trait StrValue extends Str
   override def gte(other:StrValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
   override def lt(other:StrValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
   override def lte(other:StrValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
+  override def zero():StrValue = this.value(Tokens.empty)
 }

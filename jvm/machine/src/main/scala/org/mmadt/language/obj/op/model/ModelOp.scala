@@ -24,10 +24,13 @@ package org.mmadt.language.obj.op.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
+import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
 import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.op.model.ModelOp.ModelT
+import org.mmadt.language.obj.op.model.ModelOp.{ModelInst, ModelT}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.Traverser
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -37,7 +40,7 @@ trait ModelOp {
   this:Obj =>
 
   def model[E <: Obj](model:ModelT):E = this match {
-    case atype:Type[_] => atype.compose(this,ModelOp(model)).asInstanceOf[E]
+    case atype:Type[_] => new ModelInst[Obj,E](model).apply(Traverser.standard(atype,model=Model.from(model))).obj()
     case other:E => Model.from(model).apply(other)
   }
 }
@@ -47,7 +50,13 @@ object ModelOp {
   def apply[S <: Obj,E <: Obj](model:ModelT):Inst[S,E] = new ModelInst[S,E](model)
 
   class ModelInst[S <: Obj,E <: Obj](model:ModelT) extends VInst[S,E]((Tokens.model,List(model))) {
-    override def apply(trav:Traverser[S]):Traverser[E] = trav.split(trav.obj().model(arg0()).asInstanceOf[E])
+    val m:Model = Model.from(model)
+    override def apply(trav:Traverser[S]):Traverser[E] ={
+      trav.split(LeftRightSweepRewrite.rewrite(m,
+        trav.obj().asInstanceOf[Type[Obj]],
+        trav.obj().asInstanceOf[Type[Obj]].range,
+        Traverser.standard(str,Map.empty,m)).obj().asInstanceOf[E])
+    }
   }
 
 }

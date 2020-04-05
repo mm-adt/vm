@@ -20,18 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.`type`
+package org.mmadt.storage.obj.value
 
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRecTest extends FunSuite {
-
-  test("rec type"){
-    //assertResult(int(6))(trec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(1)))
-    //assertResult(int(200))(trec(int(1) -> int.plus(5),int(2) -> int.mult(100)).get(int(2)))
-    //assertResult(int(200))((trec(int(1) -> int.plus(5),int(2) -> int.mult(100)) ===> rec.get(int(2),int)).next)
+class VRealTest extends FunSuite {
+  test("real value"){
+    assertResult("real<=[start,4.0][plus,real]")((4.0 + real).toString)
+    assertResult(real(3.0))(real(1.0) + real(2.0))
+    assertResult(real(3))(real(1) + 2.0)
+    assertResult(real(-4.0))(-real(4))
+    assertResult(real(-4))(real(3) ==> real.plus(1.0).neg())
   }
 }

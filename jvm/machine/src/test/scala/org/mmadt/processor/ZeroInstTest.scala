@@ -52,4 +52,16 @@ class ZeroInstTest extends FunSuite {
     assertResult("real[zero]")(real.zero().toString)
     assertResult("real{10}[zero]")(real.q(10).zero().toString)
   }
+
+  test("[zero] w/ str value"){
+    assertResult(str(""))(str("").zero())
+    assertResult(str(""))(str("notzero").zero())
+    assertResult(str(""))(str("781").zero())
+    assertResult(str(""))(str("1").plus("100").zero())
+    assertResult(str("").q(10))(str("1").q(10).plus("100").zero())
+  }
+  test("[zero] w/ str type"){
+    assertResult("str[zero]")(str.zero().toString)
+    assertResult("str{10}[zero]")(str.q(10).zero().toString)
+  }
 }

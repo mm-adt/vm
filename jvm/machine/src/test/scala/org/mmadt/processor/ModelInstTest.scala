@@ -22,9 +22,9 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.{RecType, StrType, Type}
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -32,7 +32,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelInstTest extends FunSuite {
-  val modelA:RecType[Type[Obj],Type[Obj]] = trec((int<=int.is(int.gt(0))) -> int.named("nat"))
+  val modelA:RecType[Type[Obj],Type[Obj]] = trec((int <= int.is(int.gt(0))) -> int.named("nat"))
   val modelB:RecType[Type[Obj],Type[Obj]] = trec(int.named("nat") -> int)
 
   test("[model] w/ values"){
@@ -44,7 +44,12 @@ class ModelInstTest extends FunSuite {
 
   }
   test("[map] w/ types"){
-    assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]]")(int.plus(1).model(modelA).toString)
-    assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]][plus,10][model,rec[nat:int]]")(int.plus(1).model[Int](modelA).plus(10).model(modelB).toString)
+    //    assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]]")(int.plus(1).model(modelA).toString)
+    //   assertResult("int[plus,1][model,rec[int[is,bool<=int[gt,0]]:nat]][plus,10][model,rec[nat:int]]")(int.plus(1).model[Int](modelA).plus(10).model(modelB).toString)
+  }
+
+  test("[model] as functor"){
+    val functor:RecType[Type[Obj],Type[Obj]] = trec(int.mult(10) -> str.plus("0"),int.mult(1) -> str)
+    assertResult(str("32002"))(str("32") ===> (int.mult(1).mult(10).mult(10).model[StrType](functor).plus("2")))
   }
 }

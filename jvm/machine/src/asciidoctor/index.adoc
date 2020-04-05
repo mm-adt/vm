@@ -341,7 +341,7 @@ In mm-ADT, the carrier set of the *instruction ring* is the set of all instructi
 * `0` is `[none]` and
 * `1` is `[all]`.
 
-In the table below `[a]`, `[b]`, and `[c]` are variable instructions in `inst`.
+In the table below `[a]`, `[b]`, and `[c]` are variable instructions in `inst`, where `[none] == [is,false]` and `[all] == [is,true]`.
 
 .The Ring Axioms in mmlang
 [cols="2,4"]
@@ -364,7 +364,7 @@ As an example, the instructions `[plus,10]` and `[gt,5]` can be combined via ser
 
 [source]
 ----
-mmlang> [plus,10] inst[mult,[gt,5]]
+mmlang> [plus,10] int[mult,[gt,5]]
 ==>[plus,10][gt,5]
 mmlang> [plus,10] inst[plus,[gt,5]]
 ==>[branch,[plus,10],[gt,5]]
@@ -426,10 +426,16 @@ int{*}<=[=db][get,'costs']           // 0 or more ints (any)
 
 ===== Type Category
 
---
-.Definition: Type Category
+****
+.Definition: Category
+A https://en.wikipedia.org/wiki/Category_(mathematics)[category] is a structure \$C = (Obj,Hom)\$.
+****
+
+===== Model: mmcat
+
+The mm-ADT `mmcat` model-ADT models the structure of mm-ADT using category theoretic structures of objects, morphisms, and functors.
+
 An mm-ADT *Type* category is composed of `obj` _objects_ denoted `type` and a set of instruction _morphisms_ denoted `inst`. If two types objects are distinct by a single tail instruction, then there exists an `inst` morphism \$\tt{[a]}: X->Y\$ where the \$\mathcal{Dom}(\tt{[a]})\ * \tt{[a]} = \mathcal{Cod}(\tt{[a]})\$. The identity morphism of every `type` object is the `[id]` instruction. Every mm-ADT type category https://en.wikipedia.org/wiki/Commutative_diagram[commutes].
---
 
 The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] of a simple type category is presented below where:
 
@@ -443,6 +449,7 @@ Every path through the diagram specifies a particular type construction
 
 Thus, every mm-ADT program is an mm-ADT type. There exists an mm-ADT canonical type graph derived by from the previous type graph via a https://en.wikipedia.org/wiki/Forgetful_functor[forgetful functor], where the vertices denote the 6 base types and the edges denote https://en.wikipedia.org/wiki/Endomorphism[endomorphisms] of the base type monoid or https://en.wikipedia.org/wiki/Homomorphism[homomorphisms] between two type monoids.
 
+image::images/type-equivalence.png[width=100%,align="center"]
 
 ==== Type Examples
 
@@ -457,13 +464,56 @@ mm-ADT types differ from convention in that they serve to denote:
 
 ===== Canonical Types
 
+The _unquantified_ canonical types are the most expressive types of many programing language type systems. For example, the type `int` in mm-ADT is quantified at unity `{1}` and thus, considered unquantified. There are 7 unquantified canonical types in mm-ADT. With _quantification_ these types no longer describe individual objects, but streams of objects.
+
+[source]
+----
+mmlang> 1{3} int{3}
+==>1{3}
+mmlang> 1{3} int{2}
+language error: 1{3} is not a int{2}
+mmlang> 1{3} int{2,10}
+==>1{3}
+----
+
 ===== Refinement Types
+
+In the theory of types as sets, a refinement type is a subset of a larger type set where the subset specification provides more information to the type inference to determine whether the objects created will be within the refined subset.
+
+[source]
+----
+mmlang> int[is,[gt,0]]
+==>int{?}<=int[is,bool<=int[gt,0]]
+mmlang> int<=int[is,[gt,0]]
+==>int[is,bool<=int[gt,0]]
+----
 
 ===== Quantified Types
 
+[source]
+----
+mmlang> int[is>0 -> +1 | is>10 -> +2]
+==>int[choose,[int{?}<=int[is,bool<=int[gt,0]]:int[plus,1]
+              |int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
+mmlang> int[is>0 -> +1 & is>10 -> +2]
+==>int{0,2}<=int[branch,[int{?}<=int[is,bool<=int[gt,0]]:int[plus,1]
+                                    &int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
+----
+
 ===== Dependent Types
 
-===== Translating Types
+===== Translation Types
+
+A translation type maps objects of one type to objects of another type that is neither a sub- or superset of the original type. While having the apperance of a general function, translation types provide a way to reason about the equivalence of two seemingly different mappings.
+
+[source]
+----
+mmlang> int[is,[gt,10][and[lt,100]]][as,str][len]
+==>int{?}<=int[is,bool<=int[gt,10][and,bool[lt,100]]][as,str][len]
+mmlang> int{?}<=int[is,[gt,40][and[lt,50]]][as,str][len]
+==>int{?}<=int[is,bool<=int[gt,40][and,bool[lt,50]]][as,str][len]
+----
+
 
 ===== Recursive Types
 
@@ -579,6 +629,14 @@ int<=int{2}<x>[plus,10]<y>[is.<10 -> <x>
 |===
 ////
 
+== Storage Structures
+
+== Processor Structures
+
+=== Traverser
+
+== Reference Guide
+
 === mmlang Syntax and Semantics
 
 The https://en.wikipedia.org/wiki/Context-free_grammar[context-free grammar] for `mmlang` is presented below.
@@ -628,14 +686,6 @@ _________      _________
     zz            zz
 ----
 
-== Storage Structures
-
-== Processor Structures
-
-=== Traverser
-
-== Reference Guide
-
 === Instructions
 
 The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is itemized below, where the instructions are ordered by their instruction classification and within a classification, alphabetically ordered.
@@ -666,8 +716,8 @@ The `[branch]` instruction takes a single `rec`-type argument. The record keys a
 ----
 mmlang> int[branch,rec[[is,[gt,0]] :[plus,1],
                        [is,[gt,10]]:[plus,2]]]
-==>int{0,2}<=int[branch,[int{?}<=int[is,bool<=int[gt,0]] :int[plus,1]&
-                         int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
+==>int{0,2}<=int[branch,[int{?}<=int[is,bool<=int[gt,0]] :int[plus,1]
+                        &int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
 mmlang> -1,1,11[branch,rec[[is,[gt,0]]:[plus,1],[is,[gt,10]]:[plus,2]]]
 ==>2
 ==>12
@@ -699,8 +749,8 @@ The `[choose]` instruction takes a single `rec`-type argument. The record keys a
 ----
 mmlang> int[choose,rec[[is,[gt,0]] :[plus,1],
                        [is,[gt,10]]:[plus,2]]]
-==>int<=int[choose,[int{?}<=int[is,bool<=int[gt,0]] :int[plus,1]&
-                    int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
+==>int[choose,[int{?}<=int[is,bool<=int[gt,0]] :int[plus,1]
+              |int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
 mmlang> -1,1,11[choose,rec[[is,[gt,0]]:[plus,1],[is,[gt,10]]:[plus,2]]]
 ==>-1
 ==>2

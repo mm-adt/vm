@@ -22,8 +22,9 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.obj.`type`.{RealType, __}
-import org.mmadt.language.obj.{Obj, Real}
+import org.mmadt.language.model.Model
+import org.mmadt.language.obj.`type`.{IntType, RealType, RecType, StrType, Type, __}
+import org.mmadt.language.obj.{Obj, Real, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 

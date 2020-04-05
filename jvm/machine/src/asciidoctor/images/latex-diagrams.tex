@@ -67,7 +67,7 @@
 \end{tikzcd}
 
 ////////////////////////////////////
-// images/ring-structures.png 
+// images/ring-structures.png
 ////////////////////////////////////
 % https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAJgBoAGAXVJADcBDAGwFcYkQAdDnHYCAIwBWXYACouAXy6kATljABzCSAml0mXPkIoAjKR3U6TVuy49gyeXByVpcxctXrseAkQDM+wwxZtEnbl4RAEdJO3klFTUQDBctInJSYm9jPwDzUQACLgBuTIBbAggsKEdo2M03XSSU31NA4ABqbI48gGMIfPzpBRkIZjQy50rtZAAWGpofE38zXmbczI6unr6BoZiNV1HPZKnU+oyWvMLIEsdDGCgFeCJQADM+-KREkBwIJB0nEEfOl5p3khiN9fs9EHo3h9EO4QU9PgCoWNYX9EGRIUgAKzIsFowGIABsEkoEiAA
 \begin{tikzcd}
@@ -75,3 +75,14 @@
                  & {\tt{[inst]\,ring}} \arrow[ld] \arrow[d] &                                             & {\tt{\{q\}\,ring}} \arrow[rd] \arrow[d] &                         \\
 \tt{* \; monoid} & {\tt{+ \; comm\,group}}                  &                                             & \tt{* \; monoid}                        & {\tt{+ \; comm\,group}}
 \end{tikzcd}
+
+////////////////////////////////////
+// images/type-equivalence.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPPgORoWcUgBZKw0eOx4CRAMzyaDFm0Sduvfjk3a9lZAFtmjHKRkGImIgGCZSRLpWirYqjuouWsw6+l4+fgHIAOZ+ugGGwaGSZihkxAo2yvaqvABGEBCM+cZF0sjkURV2DmrOrkmkAByBggowUJnwRKAAZgBOEJ5IZCA4EEjt0ZXdvH3JgTSM9DUwjAAKEqbSILNYmQAWOEEz84uIcitriMudsWqpvno8iADkcTucwsVrrcHk8QHMFkhLB8kO8flU4lkckCQcczhdwvYbvdHkY4S91jRVhSQIx6mgiMQBu1pkw4DAFIdceCWuwiTDrEoutVgMgoAt6PxhsF4a8NlTEBtaRB6Shmaz2TiwfjIXzHgKYui-rN6GAJlLngivpTPhtjmAoEhdABOfVbYXIY2m9lNMmW5by20we1IAC0ztdQoxYs8ErA+xpoLxEKuuthMpR1updodiDDLs2kb+0dj8c5WuTvOhJOl5LemYVNGzjvzaO2Is9Zp96cQSIDjaDObzEd+O2LkuEmqTPMJVbTtd7n0iICbPY2rfdHe9c8tS-lS6VKuQMgA7GrGGyOYnuZdK8TgQWRyKx3Gu7Xd4uDnSiGeL5PrwSoTvYdDR2TdzV9V4AFZ6zXQVH12QZwO7aDkQbZcByQAA2WCDTbUVxXHbcoJg-tg1zcMHxA9sTU7IiM1QlCVyHSi8NmGAAHcbhwLc-21FNZxGQQgA
+\begin{footnotesize}
+\begin{tikzcd}[row sep=large, column sep=large]
+{\tt{int[plus,8]}} \arrow[r, "{\tt{[plus,8]}}"] \arrow[r, "{\tt{[domain]}}", bend left=60] \arrow[r, "{\tt{[range]}}", bend right=49] & \tt{int} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=125, out=55] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235]   & {\tt{int[plus,4]}} \arrow[l, "{\tt{[plus,4]}}"'] \arrow[l, "{\tt{[range]}}", bend left=49] \arrow[l, "{\tt{[domain]}}"', bend right=49] & {\tt{int[plus,4][mult,2]}} \arrow[l, "{\tt{[mult,42]}}"'] \arrow[ll, "{\tt{[domain]}}"', bend right=49] \arrow[ll, "{\tt{[range]}}", bend left=49] \arrow[lll, "{\tt{[rewrite]}}"', bend right=49] & {\tt{int[plus,4][mult,2][gt,42]}} \arrow[l, "{\tt{[gt,42]}}"'] \arrow[lll, "{\tt{[domain]}}"', bend right=49] \arrow[llld, "{\tt{[range]}}", bend left] \\
+                                                                                                                                      & \tt{bool} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=215, out=145] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] &                                                                                                                                         &                                                                                                                                                                                                    &
+\end{tikzcd}
+\end{footnotesize}
