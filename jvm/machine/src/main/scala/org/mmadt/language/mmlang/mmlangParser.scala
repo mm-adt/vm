@@ -126,6 +126,9 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
 object mmlangParser {
   def parse[O <: Obj](script:String,model:Model):O = try {new mmlangParser(model).parse[O](script)} catch {
     case e:VmException => throw e
-    case e:Exception => throw new LanguageException(e.getMessage)
+    case e:Exception => {
+      // e.printStackTrace()
+      throw new LanguageException(e.getMessage)
+    }
   }
 }

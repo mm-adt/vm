@@ -76,7 +76,12 @@ object AsOp {
           case xtype:Type[Obj] => trav.obj().named(xtype.name).asInstanceOf[O]
         }
         case avalue:Value[Obj] => avalue
-        case btype:Type[Obj] if trav.atype => trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
+        case btype:Type[Obj] if trav.atype =>
+          if (btype.isInstanceOf[RecType[Obj,Obj]]) {
+            trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(Type.resolve(trav.obj(),btype)))
+          } else {
+            trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
+          }
       }).q(trav.obj().q)).asInstanceOf[Traverser[O]]
     }
 

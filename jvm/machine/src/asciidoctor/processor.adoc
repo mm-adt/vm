@@ -18,7 +18,7 @@ image::images/coproduct.png[float="right",width=220]
 
 A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in terms of constructing component objects. That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can be composed from constituent parts.
 
-Along with these decomposition and composition morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects. That is, product and coproduct equality is defined via component equality.
+Along with these decomposition (and composition) morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects. That is, product and coproduct equality are defined via component equality.
 ****
 
 === Traverser

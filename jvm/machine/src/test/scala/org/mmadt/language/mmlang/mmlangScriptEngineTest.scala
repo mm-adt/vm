@@ -23,7 +23,6 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Obj, Str}
@@ -168,7 +167,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(vrec(str("x") -> int(7)))(engine.eval("5 int[plus,2][as,rec['x'->int]]"))
     assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'-><x>,'y'-><y>]]"))
     assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>]]"))
-    assertResult(vrec(str("x") -> int(7),str("y") -> int(10),str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>,'z'->[as,rec['a'-><x> + <y>]]]]"))
+    assertResult(int(7))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>]][get,'x']"))
+    // assertResult(vrec(str("x") -> int(7),str("y") -> int(10),str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>,'z'->[as,rec['a'-><x> + <y>]]]]"))
   }
 
   test("a instruction parsing"){
@@ -189,7 +189,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("branch instruction parsing"){
-    val branchString:String =  "obj{0,2}<=int[plus,2][branch,[int{?}<=int[is,bool<=int[gt,10]]:bool<=int[gt,20]&int:int[plus,10]]]"
+    val branchString:String = "obj{0,2}<=int[plus,2][branch,[int{?}<=int[is,bool<=int[gt,10]]:bool<=int[gt,20]&int:int[plus,10]]]"
     assertResult(branchString)(engine.eval("int[plus,2][branch,rec[int[is,int[gt,10]]->int[gt,20], int->int[plus,10]]]").toString)
     assertResult(branchString)(engine.eval("int[plus,2][[is,int[gt,10]]->int[gt,20] & int->int[plus,10]]").toString)
   }
@@ -269,6 +269,8 @@ class mmlangScriptEngineTest extends FunSuite {
         |    'bb':
         |      ['bba':4]]].b.bb.bba""".stripMargin))
     assertResult(int(0))(engine.eval("['a':['b':['c':['d':0]]]].a.b.c.d"))
+
+    assertResult(int(4,12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a':int<x>,'b':int<y>]][branch,rec[[id]->.a,[is,true]->.b]]"))
   }
 
   test("bool strm input parsing"){
