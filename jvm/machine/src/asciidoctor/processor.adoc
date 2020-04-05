@@ -1,0 +1,21 @@
+== Processor Structures
+
+The mm-ADT VM is grounded in a base set of types. Along with the base types, mm-ADT provides a set of instructions and a concise algebra for linking types together via instructions. This graph structure is known as a _type graph_ and forms the internal data structure used by the mm-ADT to represent programs.
+
+image::images/traverser-fold.png[align="center",width=60%]
+
+It is the role of the processor to evaluate programs composed of types to yield streams composed of values. The primary structure of the processor component of mm-ADT is the *traverser*.
+
+=== Traverser
+
+image::images/traverser.png[float="right",width=550]
+
+A traverser is the product of an `obj` and a random-access finite map called it's `state`. The traverser's `obj` represents the traverser's current location in the language (types) or storage (values) structure. Within the mm-ADT VM, every `inst` has a respective `apply()`, where \$T\$ is the set of all traversers and \$t,t' \in T\$ are traversers, then the instruction's maps \$t\$ to \$t'\$.
+
+\[
+\texttt{range<=domain[inst]}: T  \rightarrow (T \times \texttt{range})
+\]
+
+=== Instruction Classes
+
+=== Processor Implementations

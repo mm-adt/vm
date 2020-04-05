@@ -1,0 +1,24 @@
+== Storage Structures
+
+=== Values
+
+There are only two kinds of structures in mm-ADT: _values_ and _types_.
+Values are the elements of standard data type sets such as:
+
+[source,Delphi]
+----
+mmlang> 45[plus,5][plus,[mult,2]]
+==>150
+mmlang> 'a','b','c'[fold,'seed','',[plus,str<seed>]]
+==>'abc'
+mmlang> 1,2,3[plus,2]<x>[plus,3]<y>[as,rec['a':int<x>,'b':int<y>]]
+==>['a':3,'b':6]
+==>['a':4,'b':7]
+==>['a':5,'b':8]
+mmlang> ['a':['b':['c':['d':0]]]]
+==>['a':['b':['c':['d':0]]]]
+mmlang> ['a':['b':['c':['d':0]]]].a.b.c.d
+==>0
+mmlang> .a
+==>[get,'a']
+----

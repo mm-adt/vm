@@ -1,0 +1,49 @@
+=== mmlang Syntax and Semantics
+
+The https://en.wikipedia.org/wiki/Context-free_grammar[context-free grammar] for `mmlang` is presented below.
+
+[source]
+----
+obj   := (type | value){q}
+type  := ctype | dtype
+ctype := bool | int | real | str | rec | inst
+q     := int,int
+dtype := ctype<=ctype([inst]+)
+rec   := [:] | [obj:obj(,obj:obj)*]
+inst  := [op(,obj*)]
+op    := a, as, branch, choose, plus, mult, is, ...
+----
+
+The following https://en.wikipedia.org/wiki/Axiomatic_semantics[language axioms] have variables `x`, `y`, and `z` in `ctype` and `[a]` and `[b]` in `inst`.
+
+[source]
+----
+id(x)                      := x<=x[id]
+domain(y<=x[a])            := x
+range(y<=x[a])             := y
+domain(x)                  := x
+range(x)                   := x
+scompose(y<=x[a],z<=y[b])  := z<=x[a][b]
+pcompose(y<=x[a],y<=x[b])  := y<=x[branch,y<=x[a],y<=x[b]]
+pcompose(y<=x[a],z<=x[b])  := obj<=x[branch,y<=x[a],z<=x[b]]
+----
+
+The quantifiers of an `mmlang` program are elements of a ring with unity (the quantifier ring). In the following equations, `*` and `+` refer to the respective monoid and group operations of the program's associated quantifier ring.
+
+[source]
+----
+scompose(y{q1}<=x[a],z{q2}<=y[b]) := z{q1*q2}<=x[a][b]
+pcompose(y{q1}<=x[a],y{q2}<=x[a]) := y{q1+q2}<=x[a]
+pcompose(y{q1}<=x[a],y{q2}<=x[b]) := y{q1+q2}<=x[branch,y{q1}<=x[a],y{q2}<=x[b]]
+pcompose(y{q1}<=x[a],y{q2}<=x[b]) := obj{q1+q2}<=x[branch,y{q1}<=x[a],z{q2}<=x[b]]
+----
+
+The following inference rules reuse the same variables as the equations above.
+
+[source]
+----
+xxx   yyy      xxx   yyy
+_________      _________
+    zz            zz
+----
+
