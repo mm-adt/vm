@@ -244,7 +244,29 @@ mm-ADT types can be understood from the perspective of various mathematical stru
 
 ===== Type Monoid
 
-The *type monoid* is the universal, terminal type `obj{*}` is the product of the object `obj` and the quantifier `{min,max}`.
+****
+.Definition: Monoid
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the identity such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
+
+.Model: mmmonoid
+
+The `mmmonoid` model-ADT models the mm-ADT VM as a monoid whose carrier set elements are all the inductively derived types of `obj{*}` and where any two types can be composed using `[mult]`.
+
+* \$A\$: types (\$\tt{ctype} \cup \tt{dtypes}\$)
+* \$\ast\:A \times A \rightarrow A \$: `[mult]`-type composition
+* \$1 \in A\$: `[noop]` identity element
+
+[source]
+----
+mmlang> int{2}[plus,4][mult,bool<=int[gt,10]]
+==>bool{2}<=int{2}[plus,4][gt,10]
+mmlang> int{2}[plus,4] * bool<=int[gt,10]
+==>bool{2}<=int{2}[plus,4][gt,10]
+mmlang> int{2} * int[plus,4] * bool<=int[gt,10]
+==>bool{2}<=int{2}[plus,4][gt,10]
+----
+
+****
 
 ===== Type Graph
 
