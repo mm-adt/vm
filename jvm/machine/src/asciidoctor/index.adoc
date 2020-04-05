@@ -26,5 +26,5 @@ include::processor.adoc[]
 include::mmlang.adoc[]
 
 :leveloffset: +1
-include::instructions.adoc
+include::instructions.adoc[]
 :leveloffset: -1

@@ -1,6 +1,22 @@
 === Instructions
 
-The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is itemized below, where the instructions are ordered by their instruction classification and within a classification, alphabetically ordered.
+The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.
+
+.Instruction classes
+[cols="<1h,2,7"]
+|===
+| Class      | Signature            | Description
+
+| Branch     | `y{*}<=x[branch]`    | Instructions for splitting a traverser across parallel sequences
+| Filter     | `x{?}<=x[filter]`    | Instructions for removing traversers from an evaluation
+| Initial    | `obj{0}<=x[initial]` | Instructions for finalizing objects in an evaluation
+| Map        | `y<=x[map]`          | Instructions for moving traversers between objects
+| Model      | `y<=x[model]`        | Instructions for transforming types between model-ADTs
+| Reduce     | `y<=x{*}[reduce]`    | Instructions for funneling traversers down to a single traverser
+| SideEffect | `x<=x[sideeffect]`   | Instructions that yield global state mutations
+| Terminal   | `x{*}<=[terminal]`   | Instructions for generating objects for evaluation
+| Traverser  | `y<=x[traverser]`    | Instructions that operate on the traverser itself
+|===
 
 ==== Branch Instructions
 

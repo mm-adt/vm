@@ -86,3 +86,24 @@
                                                                                                                                       & \tt{bool} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=215, out=145] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] &                                                                                                                                         &                                                                                                                                                                                                    &
 \end{tikzcd}
 \end{footnotesize}
+
+////////////////////////////////////
+// images/traverser.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAmAXVJADcBDAGwFcYkQAdDnHYHAJ3q0AviGGl0mXPkIoyxanSat2XHsDg56OGKPGTseAkXIVFDFm0SduvCACMAVnokgMhmUTIBmc8qs26gDGOACeaLpiru7SxigADKTxfpaqthoCLgaxsiRJKSrWanZOWW5SRrneZjQWhYG8AkIA5GUxlUTVvrX+aepQYRFtFZ4oACw1SqlF6Q6OrVHZHSjVCj3TDRnaus2L5R5xyNXJ6-XFGfzDB7kTJ1Nns6V77aPIAKyTdQFcjFAQOAh9PsckQPt17t8OL9-oDoiNDh81hC0tCAWJFDAoABzeBEUAAM34EAAtkhEiAcBAkGRkTN1MhKZQAPTIQkkyiiGiMej2GCMAAK8NkIEYMHxOD2bNJiHJlKQ5CBUqQ1QpVJlXJ5fMF13Y-CwWIAFhLFUTpaZVcqaLywFAyadITxkFg4KR6JQQBreQKhexReLJabqTQ5YgxiaSUGLYg3uHpQB2YNqlVfPq8J1gTQcj0izXenXWP3G1xKxAANkTSAAHLGqxXEAnaZsnS63Zyc17tSCC2KiwTA-W66Wa2W6wBOe2p4AMiDM1mmrOerU+6x6w29kAl8dR4jxYdbkPEYjDmkhrfcjvLkU97Mpuk4ZBwNCMXDuq0wG3K3fF-uytXlkDWraiDeOSt5No+z44Au7ZLvmV7+seKohg2YHnOmmZlCW-4HuagGfse5oHmG34RogxBIWqxAKiR0r7pREwAe+QEgcIHJAA
+\begin{tikzcd}[row sep=large]
+\tt{str} & \tt{obj}                                                                                    &                                    & \tt{str}                                                                    & \tt{obj}                              &                                              \\
+         & \tt{state} \arrow[lu] \arrow[u] \arrow[rr, "{\tt[split]}", bend left]                       &                                    & \tt{state}' \arrow[u] \arrow[ru] \arrow[rr, bend left]                      &                                       & \ldots                                       \\
+         & \tt{trav} \arrow[u, "{\tt{[to]/[from]}}"] \arrow[r] \arrow[rr, "{\tt{[split]}}", bend left] & \tt{obj} \arrow[ld, "{\tt[is,a]}"] & \tt{trav'} \arrow[r] \arrow[u, "{\tt{[to]/[from]}}"'] \arrow[rr, bend left] & \tt{obj'} \arrow[ld, "{\tt{[is,a]}}"] & \ldots \arrow[u]                             \\
+         & \tt{ctype} \arrow[u]                                                                        &                                    & \tt{dtype} \arrow[ll, "{\tt{[inst]}}"] \arrow[u]                            &                                       & \ldots \arrow[ll, "{\tt{[inst]}}"] \arrow[u]
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/traverser-fold.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYAYxwBPNDAC+IUaXSZc+QinIVqdJq3ZcewKEJHjJ07HgJEATEpoMWbRJ269twsRKkgMhuUQDM5lVfV2tHSd9VxkjeWQAFh9LNRsuRigIHAQQt1ljFDJiZVjrW00cACd6Wj0XdPCiRRyLVXyNXmLS8oMMiLNa3ziCppKy5zaqlG8uvP9C-tbQ90yo0jH6-0Tk1OUYKABzeCJQADMiiABbJEUQHAgkMm6GgOQsMDgcSmmD46Qzc8vEM-H4u4eTxegxAbxOiG8Xw+dT8-0090ez1eh3B0ShEJhPUawARQOR70Q1wuSAArCEwaSaMSfuSUacqd8AGy0gmMhkfFngz7UgDsnKQPPZEP5GPRAA4RWKhZERSShWybhNeMg4GhGLhgSKFbzMbd4ar1UiQRTEILxbqlTiDRr8eCpeiAJwWuHK61G0QvIA
+\begin{tikzcd}
+\tt{trav} \arrow[rd] \arrow[r, "{\tt{[split]}}"] & \tt{trav} \arrow[rd] \arrow[r, "{\tt{[split]}}"] & \tt{trav} \arrow[rd] \arrow[r, "{\tt{[split]}}"] & \tt{trav} \arrow[rd] \arrow[r, "{\tt{[split]}}"] & \ldots                            \\
+\tt{ctype} \arrow[u]                             & \tt{dtype} \arrow[l, "{\tt{[inst]}}"] \arrow[u]  & \tt{dtype} \arrow[l, "{\tt{[inst]}}"] \arrow[u]  & \tt{dtype} \arrow[l, "{\tt{[inst]}}"] \arrow[u]  & \ldots \arrow[l, "{\tt{[inst]}}"]
+\end{tikzcd}
