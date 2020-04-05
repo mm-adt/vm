@@ -247,8 +247,9 @@ mm-ADT types can be understood from the perspective of various mathematical stru
 ****
 .Definition: Monoid
 A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the identity such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
+****
 
-.Model: mmmonoid
+====== Model: mmmonoid
 
 The `mmmonoid` model-ADT models the mm-ADT VM as a monoid whose carrier set elements are all the inductively derived types of `obj{*}` and where any two types can be composed using `[mult]`.
 
@@ -265,8 +266,6 @@ mmlang> int{2}[plus,4] * bool<=int[gt,10]
 mmlang> int{2} * int[plus,4] * bool<=int[gt,10]
 ==>bool{2}<=int{2}[plus,4][gt,10]
 ----
-
-****
 
 ===== Type Graph
 
@@ -633,33 +632,98 @@ _________      _________
 
 == Processor Structures
 
+=== Traverser
+
 == Reference Guide
 
 === Instructions
 
-:leveloffset: +1
+The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is itemized below, where the instructions are ordered by their instruction classification and within a classification, alphabetically ordered.
 
+:leveloffset: +1
 ==== Branch Instructions
+
+The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.
+
+===== [branch]
+
+The `[branch]` instruction takes a single `rec`-type argument. The record keys are `{0}`-predicates where if the incoming `obj` matches the key, then the `obj` is processed by the value. _Every key_ that matches has it's respective value processed for the incoming `obj`.
+
+\[
+\tt x[branch]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow \biguplus_{i \in 1 \to n} x[tv_i] \; \text{iff} \; x[tk_i][q] \neq 0
+\]
+
+[width=50%,cols="1,2"]
+|====
+| branch syntax           | syntax style
+
+| `y<=x[branch,rec[x:y]]` | vm instruction
+| `y<=x[[x->y]+[x->y]]`   | stream addition
+| `y<=x[x->y & x->y]`     | inline aggregate
+|====
+
+[source]
+----
+mmlang> int[branch,rec[[is,[gt,0]] :[plus,1],
+                       [is,[gt,10]]:[plus,2]]]
+==>int{0,2}<=int[branch,[int{?}<=int[is,bool<=int[gt,0]] :int[plus,1]&
+                         int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
+mmlang> -1,1,11[branch,rec[[is,[gt,0]]:[plus,1],[is,[gt,10]]:[plus,2]]]
+==>2
+==>12
+==>13
+mmlang> -1,1,11[is>0->+1 & is>10->+2]
+==>2
+==>12
+==>13
+----
 
 ===== [choose]
 
-```
-y<=x[choose,y<=x:type,(y<=x:type)*]
-```
+The `[choose]` instruction takes a single `rec`-type argument. The record keys are `{0}`-predicates where if the incoming `obj` matches the key, then the `obj` is processed by the value. The _first key_ that matches has it's respective value processed for the incoming `obj`.
+
+\[
+\tt x[choose]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow x[tv_m] : x[tk_m][q] \; \neq \;0
+\]
+
+[width=50%,cols="1,2"]
+|====
+| choose syntax           | syntax style
+
+| `y<=x[choose,rec[x:y]]` | vm instruction
+| `y<=x[[x->y][x->y]]`    | stream division
+| `y<=x[x->y \| x->y]`    | inline selection
+|====
+
+[source]
+----
+mmlang> int[choose,rec[[is,[gt,0]] :[plus,1],
+                       [is,[gt,10]]:[plus,2]]]
+==>int<=int[choose,[int{?}<=int[is,bool<=int[gt,0]] :int[plus,1]&
+                    int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
+mmlang> -1,1,11[choose,rec[[is,[gt,0]]:[plus,1],[is,[gt,10]]:[plus,2]]]
+==>-1
+==>2
+==>12
+mmlang> -1,1,11[is>0->+1 | is>10->+2]
+==>-1
+==>2
+==>12
+----
 
 ==== Filter Instructions
 
 ===== [is]
 
 ```
-obj<=obj[is,bool]
+x<=x[is,bool]
 ```
 
 `[is]` is the canonical filter instruction.
 
 ```
-x:obj[is,y:bool] = [ y[eq,true]  -> x
-                   | y[eq,false] -> x[q,0] ]
+<x>[is,[as,bool][[eq,true]  -> <x>
+                |[eq,false] -> <x>[none] ]
 ```
 
 ```
@@ -690,7 +754,7 @@ mmlang> int{2}[is>10]
 ===== [a]
 
 ```
-bool<=obj[a,type]
+bool<=x[a,y]
 ```
 
 ===== [and]
@@ -702,7 +766,7 @@ bool<=bool[and,bool]
 ===== [eq]
 
 ```
-bool<=obj[as,obj]
+bool<=x[eq,y]
 ```
 
 ===== [get]
@@ -714,13 +778,13 @@ y <= rec[x:y][get,x]
 ===== [gte]
 
 ```
-bool<=x[gte,x:ord]
+bool<=x[gte,y]
 ```
 
 ===== [gt]
 
 ```
-bool<=x[gt,x:ord]
+bool<=x[gt,y]
 ```
 
 ===== [id]
@@ -834,3 +898,5 @@ y<=obj<x:y>[from,x]
 ```
 y<x:y><=y[to,x]
 ```
+
+:leveloffset: -1
