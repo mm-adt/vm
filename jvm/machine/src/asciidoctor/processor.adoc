@@ -2,7 +2,7 @@
 
 The mm-ADT VM is grounded in a base set of types. Along with the base types, mm-ADT provides a set of instructions and a concise algebra for linking types together via instructions. This graph structure is known as a _type graph_ and forms the internal data structure used by the mm-ADT to represent programs.
 
-image::images/traverser-fold.png[align="center",width=60%]
+image::images/traverser-fold.png[align="center",width=65%]
 
 It is the role of the processor to evaluate programs composed of types to yield streams composed of values. The primary structure of the processor component of mm-ADT is the *traverser*.
 
@@ -17,5 +17,45 @@ A traverser is the product of an `obj` and a random-access finite map called it'
 \]
 
 === Instruction Classes
+
+==== Branching
+
+The `[branch]` instruction is a general-purpose instruction for creating and merging parallel streams of objects. All other branching instructions are founded on `[branch]` and extend it with added usability-parametrization. In general, all branching instructions can be understood as generating a product (*splitting*) and then generating a co-product (*merging*).
+
+image::images/branch-prod-coprod.png[align="center",width=75%]
+
+When a traverser at an \$\tt{obj} \in A\$ arrives at `[branch]`, the traverser is split across the respective internal types -- called _branches_. Splitting is a cloning process by which a product is formed and then each component of the product is projected to each respective branch via \$\pi_n\$.
+
+\[\texttt{split}: A \rightarrow A \times \ldots \times A\]
+
+image::images/branch-traversers.png[float="left",width=600]
+
+Every branch can operate independently, where no global communication is required between branches. This is an important feature of `[branch]` and the branch instructions in general because each branch can be isolated and migrated for physical distribution and parallelization. All other instructions that make use of internal types for parametrization do not enjoy this feature.
+
+Finally, the resultant traversers of each individual branch are then summed via \$\iota_n\$ to yield a single stream co-product of outgoing traversers.
+
+\[\texttt{merge}: (B \times \ldots \times D) \rightarrow (B + \ldots + D)\]
+
+===== Branching Specifications
+
+There are two ways of programming a `[branch]` instruction.
+
+. Using a `rec` structure where the keys are `{0}`-predicate filters and the values are the branch transformations.
+. Using a `lst` structure where the values are the branch transformations.
+
+Every `lst`-form can be expressed as a `rec`-form via and every `rec`-form can be expressed as a `lst`-form. The general rule for transformation is detailed in the source fragment below.
+
+[source]
+----
+[branch,[[a];[b];[c]]]    => [branch,[x:a,y:b,z:c]]
+[branch,rec[x:a,y:b,z:c]] => [branch,[[is,x][a];[is,y][b];[is,z][c]]]
+----
+
+The `[branch]` instruction takes a single `rec`-type argument. The record keys are `{0}`-predicates where if the incoming `obj` matches the key, then the `obj` is processed by the value. _Every key_ that matches has it's respective value processed for the incoming `obj`.
+
+\[
+\tt x[branch]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow \biguplus_{i \in 1 \to n} x[tv_i] \; \text{iff} \; x[tk_i][q] \neq 0
+\]
+
 
 === Processor Implementations

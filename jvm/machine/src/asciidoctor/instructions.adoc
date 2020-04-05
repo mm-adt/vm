@@ -3,18 +3,19 @@
 The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.
 
 .Instruction classes
-[cols="<1h,2,7"]
+[cols="^1h,3,7"]
 |===
 | Class      | Signature            | Description
 
-| Branch     | `y{*}<=x[branch]`    | Instructions for splitting a traverser across parallel sequences
+| Branch     | `y{*}<=x[branch]`    | Instructions for splitting traversers across instructions.
 | Filter     | `x{?}<=x[filter]`    | Instructions for removing traversers from an evaluation
+| Flatmap    | `y{*}<=x[flatmap]`   | Instructions for splitting traversers across objects.
 | Initial    | `obj{0}<=x[initial]` | Instructions for finalizing objects in an evaluation
 | Map        | `y<=x[map]`          | Instructions for moving traversers between objects
 | Model      | `y<=x[model]`        | Instructions for transforming types between model-ADTs
 | Reduce     | `y<=x{*}[reduce]`    | Instructions for funneling traversers down to a single traverser
 | SideEffect | `x<=x[sideeffect]`   | Instructions that yield global state mutations
-| Terminal   | `x{*}<=[terminal]`   | Instructions for generating objects for evaluation
+| Terminal   | `x{*}<=obj{0}[terminal]`   | Instructions for generating objects for evaluation
 | Traverser  | `y<=x[traverser]`    | Instructions that operate on the traverser itself
 |===
 
@@ -23,12 +24,6 @@ The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruc
 The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.
 
 ===== [branch]
-
-The `[branch]` instruction takes a single `rec`-type argument. The record keys are `{0}`-predicates where if the incoming `obj` matches the key, then the `obj` is processed by the value. _Every key_ that matches has it's respective value processed for the incoming `obj`.
-
-\[
-\tt x[branch]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow \biguplus_{i \in 1 \to n} x[tv_i] \; \text{iff} \; x[tk_i][q] \neq 0
-\]
 
 [width=50%,cols="1,2"]
 |====
