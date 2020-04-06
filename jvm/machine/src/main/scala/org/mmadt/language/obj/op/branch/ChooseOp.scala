@@ -59,7 +59,7 @@ trait ChooseOp {
 }
 
 object ChooseOp {
-  def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):Inst[IT,OT] = new ChooseInst(branches)
+  def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):ChooseInst[IT,OT] = new ChooseInst(branches)
 
   class ChooseInst[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]) extends VInst[IT,OT]((Tokens.choose,List(branches))) with BranchInstruction {
     override def apply(trav:Traverser[IT]):Traverser[OT] = trav.split(trav.obj().choose(branches,trav)) // TODO: do we maintain the OT branch states?

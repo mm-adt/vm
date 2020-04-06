@@ -52,8 +52,8 @@ object LteOp {
     override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(trav.obj() match {
       case atype:Type[_] => atype.compose(bool,new LteInst[O](Traverser.resolveArg(trav,other),q))
       case avalue:Value[_] => (Traverser.resolveArg(trav,other) match {
-        case btype:O with Type[O] => avalue.lte(btype)
-        case bvalue:O with Value[O] => avalue.lte(bvalue)
+        case btype:Type[O] => avalue.lte(btype)
+        case bvalue:Value[O] => avalue.lte(bvalue)
       }).q(multQ(avalue,this)._2)
     })
   }

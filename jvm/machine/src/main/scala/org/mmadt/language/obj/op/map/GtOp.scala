@@ -52,8 +52,8 @@ object GtOp {
     override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(trav.obj() match {
       case atype:Type[_] => atype.compose(bool,new GtInst[O](Traverser.resolveArg(trav,other),q))
       case avalue:Value[_] => (Traverser.resolveArg(trav,other) match {
-        case btype:O with Type[O] => avalue.gt(btype)
-        case bvalue:O with Value[O] => avalue.gt(bvalue)
+        case btype:Type[O] => avalue.gt(btype)
+        case bvalue:Value[O] => avalue.gt(bvalue)
       }).q(multQ(avalue,this)._2)
     })
   }

@@ -40,8 +40,8 @@ trait GetOp[A <: Obj,B <: Obj] {
 }
 
 object GetOp {
-  def apply[A <: Obj,B <: Obj](key:A):Inst[Rec[A,B],B] = new GetInst[A,B](key)
-  def apply[A <: Obj,B <: Obj](key:A,typeHint:B):Inst[Rec[A,B],B] = new GetInst(key,typeHint)
+  def apply[A <: Obj,B <: Obj](key:A):GetInst[A,B] = new GetInst[A,B](key)
+  def apply[A <: Obj,B <: Obj](key:A,typeHint:B):GetInst[A,B] = new GetInst(key,typeHint)
 
   class GetInst[A <: Obj,B <: Obj](key:A,typeHint:B = obj.asInstanceOf[B],q:IntQ = qOne) extends VInst[Rec[A,B],B]((Tokens.get,List(key)),q) {
     override def q(quantifier:IntQ):this.type = new GetInst[A,B](key,typeHint,quantifier).asInstanceOf[this.type]

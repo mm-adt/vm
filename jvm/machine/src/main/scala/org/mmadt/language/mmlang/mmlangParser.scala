@@ -27,15 +27,20 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.branch.{BranchOp,ChooseOp}
+import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
+import org.mmadt.language.obj.op.branch.ChooseOp.ChooseInst
+import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp}
 import org.mmadt.language.obj.op.map.GetOp
+import org.mmadt.language.obj.op.map.GetOp.GetInst
 import org.mmadt.language.obj.op.model.AsOp
-import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
+import org.mmadt.language.obj.op.traverser.FromOp.FromInst
+import org.mmadt.language.obj.op.traverser.ToOp.ToInst
+import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
 import org.mmadt.language.obj.value.strm._
-import org.mmadt.language.obj.value.{strm => _,_}
-import org.mmadt.language.{LanguageException,Tokens}
+import org.mmadt.language.obj.value.{strm => _, _}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.{strm => estrm,_}
+import org.mmadt.storage.StorageFactory.{strm => estrm, _}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -69,24 +74,24 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   lazy val obj:Parser[Obj] = objValue | objType
 
   // type parsing
-  lazy val objType     :Parser[Type[Obj]]    = anonType | dType
-  lazy val boolType    :Parser[BoolType]     = Tokens.bool ^^ (_ => bool)
-  lazy val intType     :Parser[IntType]      = Tokens.int ^^ (_ => int)
-  lazy val realType    :Parser[RealType]     = Tokens.real ^^ (_ => real)
-  lazy val strType     :Parser[StrType]      = Tokens.str ^^ (_ => str)
-  lazy val recType     :Parser[ORecType]     = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(value = x.getOrElse(Map.empty)))
-  lazy val recStruct   :Parser[Map[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj,(COMMA | PIPE)) <~ RBRACKET) ^^ (x => x.map(o => (o._1,o._2)).toMap)
-  lazy val namedType   :Parser[Type[Obj]]    = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":") ^^ (x => this.model.get(tobj(x)) match {
+  lazy val objType  :Parser[Type[Obj]]    = anonType | dType
+  lazy val boolType :Parser[BoolType]     = Tokens.bool ^^ (_ => bool)
+  lazy val intType  :Parser[IntType]      = Tokens.int ^^ (_ => int)
+  lazy val realType :Parser[RealType]     = Tokens.real ^^ (_ => real)
+  lazy val strType  :Parser[StrType]      = Tokens.str ^^ (_ => str)
+  lazy val recType  :Parser[ORecType]     = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(value = x.getOrElse(Map.empty)))
+  lazy val recStruct:Parser[Map[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj,(COMMA | PIPE)) <~ RBRACKET) ^^ (x => x.map(o => (o._1,o._2)).toMap)
+  lazy val namedType:Parser[Type[Obj]]    = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":") ^^ (x => this.model.get(tobj(x)) match {
     case Some(atype) => atype
     case None => tobj(x)
   })
-  lazy val cType       :Parser[Type[Obj]]    = (boolType | realType | intType | strType | recType | namedType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val dType       :Parser[Type[Obj]]    = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj,Obj]](inst | cType ^^ (t => AsOp(t))) ^^ {
+  lazy val cType    :Parser[Type[Obj]]    = (boolType | realType | intType | strType | recType | namedType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val dType    :Parser[Type[Obj]]    = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj,Obj]](inst | cType ^^ (t => AsOp(t))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(Traverser.standard(domain,model = this.model))((x,y) => y(x).asInstanceOf[Traverser[Type[Obj]]]).obj())
     case None ~ domain ~ insts => insts.foldLeft(Traverser.standard(domain,model = this.model))((x,y) => y(x).asInstanceOf[Traverser[Type[Obj]]]).obj()
   }
-  lazy val anonType    :Parser[__]           = inst ~ rep[Inst[Obj,Obj]](inst | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))
-  lazy val instOp      :String               = Tokens.reserved.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
+  lazy val anonType :Parser[__]           = inst ~ rep[Inst[Obj,Obj]](inst | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))
+  lazy val instOp   :String               = Tokens.reserved.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
 
   // value parsing
   lazy val objValue :Parser[Value[Obj]] = (boolValue | realValue | intValue | strValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
@@ -104,16 +109,14 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   lazy val recStrm  :Parser[ORecStrm]   = (recValue <~ COMMA) ~ rep1sep(recValue,COMMA) ^^ (x => vrec(x._1,x._2.head,x._2.tail:_*))
 
   // instruction parsing
-  lazy val inst         :Parser[Inst[Obj,Obj]]              = (sugarlessInst | fromSugar | toSugar | infixSugar | getSugar | chooseSugar | branchSugar) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Inst[Obj,Obj]]).getOrElse(x._1))
-  lazy val infixSugar   :Parser[Inst[Obj,Obj]]              = (Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op | Tokens.a_op | Tokens.is) ~ obj ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
-  lazy val chooseSugar  :Parser[Inst[Obj,Obj]]              = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(value = x.map(o => (o._1,o._2)).toMap)))
-  lazy val branchSugar  :Parser[Inst[Obj,Obj]]              = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,AMPERSAND)) <~ RBRACKET ^^ (x => BranchOp(trec(value = x.map(o => (o._1,o._2)).toMap)))
-  lazy val getSugar     :Parser[Inst[Obj,Obj]]              = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp[Obj,Obj](str(x)).asInstanceOf[Inst[Obj,Obj]])
-  lazy val toSugar      :Parser[Inst[Obj,Obj]]              = LANGLE ~> "[a-zA-z]+".r <~ RANGLE ^^ (x => ToOp(x))
-  lazy val fromSugar    :Parser[Inst[Obj,Obj]]              = LANGLE ~> PERIOD ~ "[a-zA-z]+".r <~ RANGLE ^^ (x => FromOp(x._2))
-  lazy val sugarlessInst:Parser[Inst[Obj,Obj]]              = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(obj,COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1,x._2))
-  // traverser instruction parsing
-  //lazy val stateAccess  :Parser[Option[Type[Obj]] ~ String] = (opt(cType) <~ LANGLE) ~ "[a-zA-z]+".r <~ RANGLE
+  lazy val inst         :Parser[Inst[Obj,Obj]]       = (sugarlessInst | fromSugar | toSugar | infixSugar | getSugar | chooseSugar | branchSugar) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj,Obj]])
+  lazy val infixSugar   :Parser[Inst[Obj,Obj]]       = (Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op | Tokens.a_op | Tokens.is) ~ obj ^^ (x => OpInstResolver.resolve(x._1,List(x._2)))
+  lazy val chooseSugar  :Parser[ChooseInst[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(value = x.map(o => (o._1,o._2)).toMap)))
+  lazy val branchSugar  :Parser[BranchInst[Obj,Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj,AMPERSAND)) <~ RBRACKET ^^ (x => BranchOp(trec(value = x.map(o => (o._1,o._2)).toMap)))
+  lazy val getSugar     :Parser[GetInst[Obj,Obj]]    = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp[Obj,Obj](str(x)))
+  lazy val toSugar      :Parser[ToInst[Obj]]         = LANGLE ~> "[a-zA-z]+".r <~ RANGLE ^^ (x => ToOp(x))
+  lazy val fromSugar    :Parser[FromInst[Obj]]       = LANGLE ~> PERIOD ~ "[a-zA-z]+".r <~ RANGLE ^^ (x => FromOp(x._2))
+  lazy val sugarlessInst:Parser[Inst[Obj,Obj]]       = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(obj,COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1,x._2))
 
   // quantifier parsing
   lazy val quantifier    :Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1,x._2.getOrElse(x._1)))

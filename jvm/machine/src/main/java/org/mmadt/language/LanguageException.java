@@ -38,18 +38,22 @@ public class LanguageException extends VmException {
         super(message);
     }
 
-    public static LanguageException typeError(final Obj source, final Type<?> target) {
+    public static LanguageException typingError(final Obj source, final Type<?> target) {
         return new LanguageException(target + " is not a " + source);
+    }
+
+    public static LanguageException typeError(final Obj source, final String message) {
+        return new LanguageException(source + " instruction error: " + message);
     }
 
     public static void testDomainRange(final Type<?> range, final Type<?> domain) {
         if (!(domain instanceof __) &&
                 !range.range().q(StorageFactory.qOne()).test(domain.range().q(StorageFactory.qOne())))
-            throw LanguageException.typeError(range, domain);
+            throw LanguageException.typingError(range, domain);
     }
 
     public static void testTypeCheck(final Obj obj, Type<Obj> type) {
         if ((obj instanceof Type && !((Type<Obj>) obj).range().test(type)) || (obj instanceof Value && !obj.test(type)))
-            throw LanguageException.typeError(obj, type);
+            throw LanguageException.typingError(obj, type);
     }
 }

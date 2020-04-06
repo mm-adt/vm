@@ -47,7 +47,7 @@ trait AsOp {
 }
 
 object AsOp {
-  def apply[O <: Obj](obj:O):Inst[Obj,O] = new AsInst[O](obj)
+  def apply[O <: Obj](obj:O):AsInst[O] = new AsInst[O](obj)
 
   class AsInst[O <: Obj](obj:O,q:IntQ = qOne) extends VInst[Obj,O]((Tokens.as,List(obj)),q) {
     override def q(quantifier:IntQ):this.type = new AsInst[O](obj,quantifier).asInstanceOf[this.type]

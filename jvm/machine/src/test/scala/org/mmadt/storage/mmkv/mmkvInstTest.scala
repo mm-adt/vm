@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.mmkv
 
-import org.mmadt.language.LanguageFactory
+import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{ORecType, Obj}
@@ -65,10 +65,10 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv model"){
     assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").name)
-    assertThrows[AssertionError]{
+    assertThrows[LanguageException]{
       engine.eval(s"obj[=mmkv,'${file2}'][put,'v',6]")
     }
-    assertThrows[AssertionError]{
+    assertThrows[LanguageException]{
       engine.eval(s"obj[=mmkv,'${file2}'][put,'k',346]")
     }
     assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)

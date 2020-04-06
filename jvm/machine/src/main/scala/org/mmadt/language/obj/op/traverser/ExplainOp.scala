@@ -46,7 +46,7 @@ trait ExplainOp {
 }
 
 object ExplainOp {
-  def apply():Inst[Obj,Str] = new ExplainInst
+  def apply():ExplainInst = new ExplainInst
 
   class ExplainInst extends VInst[Obj,Str]((Tokens.explain,Nil)) {
     override def apply(trav:Traverser[Obj]):Traverser[Str] ={

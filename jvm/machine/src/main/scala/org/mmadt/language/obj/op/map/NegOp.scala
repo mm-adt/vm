@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
@@ -39,13 +38,13 @@ trait NegOp {
 }
 
 object NegOp {
-  def apply[O <: Obj with NegOp]():Inst[O,O] = new NegInst[O]
+  def apply[O <: Obj with NegOp]():NegInst[O] = new NegInst[O]
 
   class NegInst[O <: Obj with NegOp](q:IntQ = qOne) extends VInst[O,O]((Tokens.neg,Nil),q) {
     override def q(quantifier:IntQ):this.type = new NegInst[O](quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(this).asInstanceOf[O]
-      case avalue:Value[_] => avalue.neg().asInstanceOf[O].q(multQ(avalue,this))
+      case atype:Type[_] => atype.compose(trav.obj(),this)
+      case _ => trav.obj().neg().q(multQ(trav.obj(),this))
     })
   }
 

@@ -48,8 +48,8 @@ trait FromOp {
 }
 
 object FromOp {
-  def apply(label:StrValue):Inst[Obj,Obj] = new FromInst[Obj](label)
-  def apply[O <: Obj](label:StrValue,default:O):Inst[Obj,O] = new FromInst[O](label,default)
+  def apply(label:StrValue):FromInst[Obj] = new FromInst[Obj](label)
+  def apply[O <: Obj](label:StrValue,default:O):FromInst[O] = new FromInst[O](label,default)
 
   class FromInst[O <: Obj](label:StrValue,default:O = null,q:IntQ=qOne) extends VInst[Obj,O]((Tokens.from,List(label)),q) with TraverserInstruction {
     override def q(quantifier:IntQ):this.type = new FromInst[O](label,default,quantifier).asInstanceOf[this.type]

@@ -37,13 +37,13 @@ import org.mmadt.storage.StorageFactory._
 trait ToOp[O <: Type[Obj]] {
   this:Obj =>
   def to(label:StrValue):O = this match {
-    case atype:Type[_] => atype.compose(ToOp[O](label)).asInstanceOf[OType[O]]
-    case avalue:Value[O] => avalue.start().compose(ToOp[O](label))
+    case atype:Type[_] => atype.compose(ToOp[O](label)).asInstanceOf[O]
+    case avalue:Value[_] => avalue.start().compose(ToOp[O](label))
   }
 }
 
 object ToOp {
-  def apply[O <: Obj](label:StrValue):Inst[O,O] = new ToInst(label)
+  def apply[O <: Obj](label:StrValue):ToInst[O] = new ToInst(label)
 
   class ToInst[O <: Obj](label:StrValue,q:IntQ=qOne) extends VInst[O,O]((Tokens.to,List(label)),q) with TraverserInstruction {
     override def q(quantifier:IntQ):this.type = new ToInst[O](label,quantifier).asInstanceOf[this.type]

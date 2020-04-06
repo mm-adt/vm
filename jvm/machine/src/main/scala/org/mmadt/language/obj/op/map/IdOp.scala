@@ -47,10 +47,10 @@ object IdOp {
 
   class IdInst[O <: Obj](q:IntQ = qOne) extends VInst[O,O]((Tokens.id,Nil),q) {
     override def q(quantifier:IntQ):this.type = new IdInst[O](quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split((trav.obj() match {
-      case atype:Type[_] => atype.compose(this)
-      case avalue:Value[_] => avalue.q(multQ(avalue,this))
-    }).asInstanceOf[O])
+    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
+      case atype:Type[_] => atype.compose(trav.obj(),this)
+      case avalue:Value[_] => trav.obj().q(multQ(avalue,this))
+    })
   }
 
 }

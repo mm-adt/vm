@@ -42,7 +42,7 @@ trait AOp {
 }
 
 object AOp {
-  def apply(other:Type[Obj]):Inst[Obj,Bool] = new AInst(other)
+  def apply(other:Type[Obj]):AInst = new AInst(other)
 
   class AInst(other:Type[Obj],q:IntQ = qOne) extends VInst[Obj,Bool]((Tokens.a,List(other)),q) {
     override def q(quantifier:IntQ):this.type = new AInst(other,quantifier).asInstanceOf[this.type]
