@@ -36,7 +36,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait StrOp {
   this:__ =>
-  def str():StrType = this.compose(StorageFactory.str,StrOp())
+  def str():StrType = this.compose(StorageFactory.str,StrOp()).hardQ(qOne)
 }
 
 object StrOp {

@@ -35,15 +35,15 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOne) extends Type[__]
+class __(val _quantifier:IntQ = qStar,_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil) extends Type[__]
   with IntOp // TODO: persue this path?
   with StrOp {
-  override      val name :String                          = Tokens.empty
+  override      val name :String                          = Tokens.obj
   lazy override val insts:List[(Type[Obj],Inst[Obj,Obj])] = this._insts
   override      val via  :DomainInst[__]                  = (if (_insts.isEmpty) base() else _insts.last).asInstanceOf[DomainInst[__]]
   override      val q    :(IntValue,IntValue)             = this._quantifier
-  override def q(quantifier:IntQ):this.type = new __(this._insts,quantifier).asInstanceOf[this.type]
-  override def hardQ(quantifier:IntQ):this.type = this // TODO: this was never settled
+  override def q(quantifier:IntQ):this.type = if (this.isCanonical) this.hardQ(quantifier) else new __(quantifier,(this._insts.head._1,this._insts.head._2.q(quantifier)) :: this._insts.tail).asInstanceOf[this.type]
+  override def hardQ(quantifier:IntQ):this.type = new __(quantifier,this._insts).asInstanceOf[this.type]
 
   override def domain[D <: Obj]():Type[D] = obj.q(*).asInstanceOf[Type[D]]
 
@@ -58,7 +58,7 @@ class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOn
   def neg():this.type = this.compose(NegOp())
 }
 
-object __ extends __(Nil,qOne) {
-  def apply(insts:List[Inst[_,_]]):__ = new __(insts.map(i => (__,i.asInstanceOf[Inst[Obj,Obj]])))
+object __ extends __(qStar,Nil) {
+  def apply(insts:List[Inst[_,_]]):__ = new __(qStar,insts.map(i => (__,i.asInstanceOf[Inst[Obj,Obj]])))
 }
 

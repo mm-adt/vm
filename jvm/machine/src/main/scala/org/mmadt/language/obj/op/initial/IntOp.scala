@@ -36,7 +36,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait IntOp {
   this:__ =>
-  def int():IntType = this.compose(StorageFactory.int,IntOp())
+  def int():IntType = this.compose(StorageFactory.int,IntOp()).hardQ(qOne)
 }
 
 object IntOp {

@@ -39,9 +39,10 @@ class TypeTest extends FunSuite {
     var diffCounter           = 0
     for (a <- types) {
       for (b <- types) {
-        if (a.name == b.name) {
+        if (a.getClass == b.getClass) {
           sameCounter = sameCounter + 1
           assert(a == b)
+          assert(a.name == b.name)
           assert(a.hashCode == b.hashCode)
           assert(a.toString == b.toString)
         } else {
@@ -56,7 +57,7 @@ class TypeTest extends FunSuite {
     assertResult(types.length * (types.length - 1))(diffCounter)
   }
 
-  test("ctype/inst list structure") {
+  test("ctype/inst list structure"){
     println(int.plus(10).mult(2).is(false).insts)
   }
 

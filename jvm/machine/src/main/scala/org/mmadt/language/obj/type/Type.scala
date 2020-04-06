@@ -94,7 +94,7 @@ trait Type[+T <: Obj] extends Obj
       case _:Int => tint(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Int]])
       case _:Str => tstr(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Str]])
       case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInst.asInstanceOf[DomainInst[Rec[Obj,Obj]]])
-      case _:__ => new __(if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]])))
+      case _:__ => new __(multQ(this,inst),if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]])))
       case _ => tobj(nextObj.name,multQ(this,inst),newInst)
     }).asInstanceOf[R]
   }
@@ -147,7 +147,7 @@ object Type {
   // domain/range specifies anonymous types
   def resolve[R <: Obj](objA:Obj,objB:R):R = objB match {
     case x:__ => x(objA)
-    case x:RecType[Obj,Obj] => trec(name=x.name,value = x.value().map(a => resolve(objA,a._1) -> resolve(objA,a._2)),q=x.q,via=x.via).asInstanceOf[R]
+    case x:RecType[Obj,Obj] => trec(name = x.name,value = x.value().map(a => resolve(objA,a._1) -> resolve(objA,a._2)),q = x.q,via = x.via).asInstanceOf[R]
     case _ => objB
   }
 }
