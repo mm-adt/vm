@@ -38,6 +38,6 @@ trait Real extends Obj
   with GteOp[RealType,RealValue]
   with LtOp[RealType,RealValue]
   with LteOp[RealType,RealValue]
-  with OneOp[Real]
+  with OneOp
   with ToOp[RealType]
-  with ZeroOp[Real]
+  with ZeroOp

@@ -32,19 +32,19 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ZeroOp[O <: Obj] {
-  this:O =>
-  def zero():O with ZeroOp[O]
+trait ZeroOp {
+  this:Obj =>
+  def zero():this.type
 }
 
 object ZeroOp {
-  def apply[O <: Obj with ZeroOp[O]]():ZeroInst[O] = new ZeroInst
+  def apply[O <: Obj with ZeroOp]():ZeroInst[O] = new ZeroInst
 
-  class ZeroInst[O <: Obj with ZeroOp[O]](q:IntQ = qOne) extends VInst[O,O]((Tokens.zero,Nil),q) {
+  class ZeroInst[O <: Obj with ZeroOp](q:IntQ = qOne) extends VInst[O,O]((Tokens.zero,Nil),q) {
     override def q(quantifier:IntQ):this.type = new ZeroInst[O](quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
       case atype:Type[_] => atype.compose(trav.obj(),this)
-      case _ => trav.obj().zero().q(multQ(trav.obj(),this)).asInstanceOf[O]
+      case _ => trav.obj().zero().q(multQ(trav.obj(),this))
     })
   }
 

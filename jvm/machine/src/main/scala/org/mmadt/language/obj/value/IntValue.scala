@@ -41,10 +41,10 @@ trait IntValue extends Int
   override def mult(other:IntType):IntType = this.start[Int]().mult(other)
   override def mult(other:IntValue):this.type = this.value(this.value * other.value)
   override def neg():this.type = this.value(-this.value)
-  override def one():IntValue = this.value(1L)
+  override def one():this.type = this.value(1L)
   override def gt(other:IntValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
   override def gte(other:IntValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
   override def lt(other:IntValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
   override def lte(other:IntValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
-  override def zero():IntValue = this.value(0L)
+  override def zero():this.type = this.value(0L)
 }

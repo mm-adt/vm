@@ -25,12 +25,12 @@ package org.mmadt.language.obj.op.traverser
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.op.map.GetOp.GetInst
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, OType, Obj}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.obj.value.VInst
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.VInst
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -45,7 +45,7 @@ trait ToOp[O <: Type[Obj]] {
 object ToOp {
   def apply[O <: Obj](label:StrValue):ToInst[O] = new ToInst(label)
 
-  class ToInst[O <: Obj](label:StrValue,q:IntQ=qOne) extends VInst[O,O]((Tokens.to,List(label)),q) with TraverserInstruction {
+  class ToInst[O <: Obj](label:StrValue,q:IntQ = qOne) extends VInst[O,O]((Tokens.to,List(label)),q) with TraverserInstruction {
     override def q(quantifier:IntQ):this.type = new ToInst[O](label,quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[O]):Traverser[O] ={
       trav.obj() match {

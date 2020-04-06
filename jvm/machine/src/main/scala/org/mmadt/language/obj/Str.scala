@@ -36,5 +36,5 @@ trait Str extends Obj
   with GteOp[StrType,StrValue]
   with LtOp[StrType,StrValue]
   with LteOp[StrType,StrValue]
-  with ZeroOp[Str]
+  with ZeroOp
   with ToOp[StrType]

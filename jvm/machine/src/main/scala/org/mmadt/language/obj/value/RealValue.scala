@@ -40,10 +40,10 @@ trait RealValue extends Real
   override def mult(other:RealType):RealType = this.start[Real]().mult(other)
   override def mult(other:RealValue):this.type = this.value(this.value * other.value)
   override def neg():this.type = this.value(-this.value)
-  override def one():RealValue = this.value(1.0d)
+  override def one():this.type = this.value(1.0d)
   override def gt(other:RealValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
   override def gte(other:RealValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
   override def lt(other:RealValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
   override def lte(other:RealValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
-  override def zero():RealValue = this.value(0.0d)
+  override def zero():this.type = this.value(0.0d)
 }

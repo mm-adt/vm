@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Real
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.{RealValue, Value}
+import org.mmadt.language.obj.value.RealValue
 import org.mmadt.storage.StorageFactory.bool
 
 /**
@@ -41,10 +41,10 @@ trait RealType extends Real
   override def mult(other:RealType):RealType = this.compose(MultOp(other))
   override def mult(other:RealValue):this.type = this.compose(MultOp(other))
   override def neg():this.type = this.compose(NegOp())
-  override def one():RealType = this.compose(OneOp())
+  override def one():this.type = this.compose(OneOp())
   override def gt(other:RealValue):BoolType = this.compose(bool,GtOp(other))
   override def gte(other:RealValue):BoolType = this.compose(bool,GteOp(other))
   override def lt(other:RealValue):BoolType = this.compose(bool,LtOp(other))
   override def lte(other:RealValue):BoolType = this.compose(bool,LteOp(other))
-  override def zero():RealType = this.compose(ZeroOp())
+  override def zero():this.type = this.compose(ZeroOp())
 }

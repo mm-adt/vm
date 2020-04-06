@@ -38,7 +38,7 @@ trait Int extends Obj
   with GteOp[IntType,IntValue]
   with LtOp[IntType,IntValue]
   with LteOp[IntType,IntValue]
-  with OneOp[Int]
+  with OneOp
   with ToOp[IntType]
-  with ZeroOp[Int] {
+  with ZeroOp {
 }

@@ -43,5 +43,5 @@ trait StrValue extends Str
   override def gte(other:StrValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
   override def lt(other:StrValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
   override def lte(other:StrValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
-  override def zero():StrValue = this.value(Tokens.empty)
+  override def zero():this.type = this.value(Tokens.empty)
 }
