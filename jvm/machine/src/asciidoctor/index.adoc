@@ -1,7 +1,7 @@
 = mm-ADT: The Virtual Machine
 Marko A. Rodriguez <marko@rredux.com>
 :project-version: 0.1
-:icons: font
+// :icons: font
 :toc: left
 :toclevels: 4
 :doctype: book

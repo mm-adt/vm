@@ -1,10 +1,12 @@
 == Processor Structures
 
-The mm-ADT VM is grounded in a base set of types. Along with the base types, mm-ADT provides a set of instructions and a concise algebra for linking types together via instructions. This graph structure is known as a _type graph_ and forms the internal data structure used by the mm-ADT to represent programs.
+image::images/processor-stack.png[float="left",width=150]
 
-image::images/traverser-fold.png[align="center",width=65%]
+The mm-ADT VM provides a set of canonical types (_ctypes_) along with a ring theoretic algebra for deriving new types (_dtypes_) via instructions from the virtual machine's instruction set architecture. Type construction yields a graph composed of type vertices and instruction edges called a _type graph_ and it is this graph structure that forms the internal data structure used by the mm-ADT VM to encode, compile, and execute programs.
 
-It is the role of the processor to evaluate programs composed of types to yield streams composed of values. The primary structure of the processor component of mm-ADT is the *traverser*.
+Type compilation and evaluation is enabled by mm-ADT compliant processors that ground the abstract mm-ADT virtual machine to the underlying physical machine (over a single machine, multiple threads, or cross a compute cluster). At the bottom of this "process stack", the natural world's physics provides the baseline dynamics (a "ptype" so to speak). Finally, atop this stack is the mm-ADT VM's abstract, general-purpose, register-based machines known as the *traversers*.
+
+IMPORTANT: Distributed mm-ADT processors can yield on the order of millions of traversers during a single program evaluation. Conceptually, a processor is responsible for coordinating a https://en.wikipedia.org/wiki/Swarm_intelligence[_traverser swarm_], where the result of an mm-ADT program is the aggregate data locations of all the halted traversers.
 
 .Products and Coproducts
 ****
@@ -23,17 +25,22 @@ Along with these decomposition (and composition) morphisms, there exists an http
 
 === Traverser
 
+A traverser (abbreviated `trav`) is a product with three projections:
+
 image::images/traverser-product.png[float="right",width=350]
 
-A traverser is the product of an `obj` and a random-access finite map called it's `state`. The traverser's `obj` represents the traverser's current location in the language (types) or storage (values) structure. Within the mm-ADT VM, every `inst` has a respective `apply()`, where \$T\$ is the set of all traversers and \$t,t' \in T\$ are traversers, then the instruction's maps \$t\$ to \$t'\$.
+. `[dc]`: the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[*data counter*] denotes the traverser's current location in the data.
+. `[pc]`: the https://en.wikipedia.org/wiki/Program_counter[*program counter*] denotes the traverser's current location in the program.
+. `[state]`: the local read/write https://en.wikipedia.org/wiki/Processor_register[*registers*] of the traverser provide a memory stucture that increases general expressivity.
 
-\[
-\texttt{range<=domain[inst]}: T  \rightarrow (T \times \texttt{range})
-\]
+The traverser is _halted_ when the type has no more instructions. A traverser can be understood as implementing the following "fold."
+
+
+image::images/traverser-fold.png[align="center",width=80%]
 
 &nbsp;
 
-image::images/traverser.png[align="center",width=550]
+// image::images/traverser.png[align="center",width=550]
 
 ==== Instruction Evaluation
 

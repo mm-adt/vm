@@ -25,10 +25,10 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.initial.{IntOp,StrOp}
+import org.mmadt.language.obj.op.initial.{IntOp, StrOp}
 import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{DomainInst,Inst,IntQ,OType,Obj,_}
+import org.mmadt.language.obj.{DomainInst, Inst, IntQ, OType, Obj, _}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -43,7 +43,7 @@ class __(_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil,val _quantifier:IntQ = qOn
   override      val via  :DomainInst[__]                  = (if (_insts.isEmpty) base() else _insts.last).asInstanceOf[DomainInst[__]]
   override      val q    :(IntValue,IntValue)             = this._quantifier
   override def q(quantifier:IntQ):this.type = new __(this._insts,quantifier).asInstanceOf[this.type]
-  override def hardQ(quantifier:IntQ):this.type = this
+  override def hardQ(quantifier:IntQ):this.type = this // TODO: this was never settled
 
   override def domain[D <: Obj]():Type[D] = obj.q(*).asInstanceOf[Type[D]]
 
