@@ -81,7 +81,8 @@ object mmlangPrinter {
 
   def instString(inst:Inst[_,_]):String ={
     (inst.op() match {
-      case Tokens.to | Tokens.from => LANGLE + inst.arg0[StrValue]().value + RANGLE
+      case Tokens.to  => LANGLE + inst.arg0[StrValue]().value + RANGLE
+      case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().value + RANGLE
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj,Obj]]().value(),PIPE) + RBRACKET
       case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj,Obj]]().value(),AMPERSAND) + RBRACKET
       case _ => inst.args() match {

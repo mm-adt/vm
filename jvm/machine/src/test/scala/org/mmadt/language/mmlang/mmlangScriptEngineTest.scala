@@ -165,10 +165,11 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str("14hello"))(engine.eval("5 int[plus,2][mult,2]str[plus,'hello']"))
     assertResult(str("14hello"))(engine.eval("5[plus,2][mult,2]str[plus,'hello']"))
     assertResult(vrec(str("x") -> int(7)))(engine.eval("5 int[plus,2][as,rec['x'->int]]"))
-    assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'-><x>,'y'-><y>]]"))
-    assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>]]"))
-    assertResult(int(7))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>]][get,'x']"))
-    // assertResult(vrec(str("x") -> int(7),str("y") -> int(10),str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<x>,'y'->int<y>,'z'->[as,rec['a'-><x> + <y>]]]]"))
+    assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'-><.x>,'y'-><.y>]]"))
+    assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<.x>,'y'->int<.y>]]"))
+    assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['a'->int<.x>,'b'->int<.y>]][get,'b']"))
+    assertResult(int ==> int.to("x").plus(1).to("y").as(trec(str("a")->int.from("x"),str("b")->int.from("y"))).get("b"))(engine.eval("int<x>[plus,1]<y>[as,rec['a'->int<.x>,'b'->int<.y>]].b"))
+    assertResult(vrec(str("x") -> int(7),str("y") -> int(10),str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<.x>,'y'->int<.y>,'z'->[as,rec['a'-><.x> + <.y>]]]]"))
   }
 
   test("a instruction parsing"){
@@ -226,15 +227,15 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("traverser read/write state parsing"){
-    assertResult(real(45.5))(engine.eval("45.0<x>[mult,0.0][plus,<x>][plus,0.5]"))
+    assertResult(real(45.5))(engine.eval("45.0<x>[mult,0.0][plus,<.x>][plus,0.5]"))
     assertResult(int.to("a").plus(int(10)).to("b").mult(int(20)))(engine.eval("int<a>[plus,10]<b>[mult,20]"))
-    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,<a>]"))
-    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<a>]"))
-    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]int<b>[mult,int<a>]"))
-    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,<x>]"))
-    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<x>]"))
-    assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<x>[plus,int<y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<x>[plus,<y>]]").toString)
-    assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<x>[plus,<y>]]"))
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,<.a>]"))
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<.a>]"))
+    // TODO: assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]int<b>[mult,int<.a>]")) (ctype in the middle)
+    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,<.x>]"))
+    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<.x>]"))
+    assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,int<.y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<.x>[plus,<.y>]]").toString)
+    assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,<.y>]]"))
   }
 
   test("infix operator instruction parsing"){
@@ -270,7 +271,7 @@ class mmlangScriptEngineTest extends FunSuite {
         |      ['bba':4]]].b.bb.bba""".stripMargin))
     assertResult(int(0))(engine.eval("['a':['b':['c':['d':0]]]].a.b.c.d"))
 
-    assertResult(int(4,12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a':int<x>,'b':int<y>]][branch,rec[[id]->.a,[is,true]->.b]]"))
+    assertResult(int(4,12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a':int<.x>,'b':int<.y>]][branch,rec[[id]->.a,[is,true]->.b]]"))
   }
 
   test("bool strm input parsing"){
@@ -291,7 +292,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("str strm input parsing"){
-    assertResult(str("marko"))(engine.eval("""'m','a','r','k','o' str{*}[fold,'seed','',str[plus,str<seed>]]"""))
+    assertResult(str("marko"))(engine.eval("""'m','a','r','k','o' str{*}[fold,'seed','',str[plus,str<.seed>]]"""))
     assertResult(int(5))(engine.eval("""'m','a','r','k','o'[count]"""))
   }
 
@@ -345,7 +346,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(2))(engine.eval("1,3,7,2,1,10 +2[is>5][count]"))
     assertResult(int(3))(engine.eval("1.0,3.1,7.2,2.5,1.1,10.1 +2.0[is>5.0][count]"))
     ///
-    assertResult(int(7))(engine.eval("1,2,3 int{1,7}[fold,'seed',1,[plus,int<seed>]]"))
+    assertResult(int(7))(engine.eval("1,2,3 int{1,7}[fold,'seed',1,[plus,int<.seed>]]"))
   }
 
   test("logical expressions"){

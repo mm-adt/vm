@@ -146,7 +146,6 @@ object Type {
 
   def resolve[R <: Obj](objA:Obj,objB:R):R = objB match {
     case x:__ => x(objA)
-    case x:RecType[Obj,Obj] => trec(name=x.name,value = x.value().map(a => resolve(objA,a._1) -> resolve(objA,a._2)),q=x.q,via=x.via).asInstanceOf[R]
     case _ => objB
   }
 }

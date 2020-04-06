@@ -32,7 +32,7 @@ import org.scalatest.FunSuite
  */
 class FoldInstTest extends FunSuite {
   test("[fold] w/ int"){
-    assertResult("int[fold,'seed',0,int[plus,int<seed>]]")(int.fold[Int](int(0))(int.plus(int.from[IntType]("seed"))).toString)
+    assertResult("int[fold,'seed',0,int[plus,int<.seed>]]")(int.fold[Int](int(0))(int.plus(int.from[IntType]("seed"))).toString)
     assertResult(int(2))(int(2).fold[Int](int(1))(int.id()))
     assertResult(int(7))((int(1,2,3) ===> int.q(*).fold[Int](int(1))(int.plus(int.from[IntType]("seed")))))
     assertResult(int(7))((int(1,2,3) ===> int.q(*).fold[Int](int(1))(int.plus(int.from[IntType]("seed")).mult(int(1)))))
