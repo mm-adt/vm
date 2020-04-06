@@ -23,17 +23,16 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.`type`.{Type,TypeChecker}
+import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.language.obj.{Obj,_}
+import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Value[+V <: Obj]
-  extends Obj
-    with StartOp {
+trait Value[+V <: Obj] extends Obj
+  with StartOp {
   val value:Any
 
   override def named(_name:String):this.type = (this match {

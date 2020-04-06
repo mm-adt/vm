@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OrOp {
-  this:Bool =>
+  this:Obj =>
   def or(other:BoolType):BoolType = this match {
     case atype:BoolType => atype.compose(other,OrOp(other))
     case avalue:BoolValue => avalue.start().compose(other,OrOp(other))

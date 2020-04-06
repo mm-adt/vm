@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.language.obj.{Obj, Rec}
 
@@ -36,7 +36,7 @@ trait RecStrm[A <: Value[Obj],B <: Value[Obj]] extends Strm[Rec[A,B]] with Rec[A
   override def plus(other:RecValue[_,_]):this.type = throw new UnsupportedOperationException
   override def get(key:A):B = throw new UnsupportedOperationException
   override def get[BB <: Obj](key:A,btype:BB):BB = throw new UnsupportedOperationException
-  override def put(key:A,value:B):RecValue[A,B] = throw new UnsupportedOperationException
+  override def put(key:A,value:B):this.type = throw new UnsupportedOperationException
 
 }
 

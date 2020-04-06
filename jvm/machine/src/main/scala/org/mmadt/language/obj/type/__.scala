@@ -24,10 +24,11 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.OpInstResolver
+import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.{IntOp, StrOp}
-import org.mmadt.language.obj.op.map.NegOp
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.op.map._
+import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.value.{IntValue, ObjValue}
 import org.mmadt.language.obj.{DomainInst, Inst, IntQ, OType, Obj, _}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -37,7 +38,20 @@ import org.mmadt.storage.StorageFactory._
  */
 class __(val _quantifier:IntQ = qStar,_insts:List[(Type[Obj],Inst[Obj,Obj])] = Nil) extends Type[__]
   with IntOp // TODO: persue this path?
-  with StrOp {
+  with StrOp
+  with PlusOp[__,ObjValue]
+  with MultOp[__,ObjValue]
+  with AndOp
+  with OrOp
+  with GetOp[Obj,Obj]
+  with PutOp[Obj,Obj]
+  with NegOp
+  with GtOp[__,ObjValue]
+  with GteOp[__,ObjValue]
+  with LtOp[__,ObjValue]
+  with LteOp[__,ObjValue]
+  with ZeroOp
+  with OneOp {
   override      val name :String                          = Tokens.obj
   lazy override val insts:List[(Type[Obj],Inst[Obj,Obj])] = this._insts
   override      val via  :DomainInst[__]                  = (if (_insts.isEmpty) base() else _insts.last).asInstanceOf[DomainInst[__]]
@@ -45,17 +59,26 @@ class __(val _quantifier:IntQ = qStar,_insts:List[(Type[Obj],Inst[Obj,Obj])] = N
   override def q(quantifier:IntQ):this.type = if (this.isCanonical) this.hardQ(quantifier) else new __(quantifier,(this._insts.head._1,this._insts.head._2.q(quantifier)) :: this._insts.tail).asInstanceOf[this.type]
   override def hardQ(quantifier:IntQ):this.type = new __(quantifier,this._insts).asInstanceOf[this.type]
 
-  override def domain[D <: Obj]():Type[D] = obj.q(*).asInstanceOf[Type[D]]
+  override def domain[D <: Obj]():Type[D] = obj.q(qStar).asInstanceOf[Type[D]]
 
   def apply[T <: Obj](obj:Obj):OType[T] = _insts.foldLeft[Traverser[Obj]](Traverser.standard(asType(obj)))((a,i) => i._2(a)).obj().asInstanceOf[OType[T]]
+
   // type-agnostic monoid supporting all instructions
-  def get(key:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.get,List(key)))
-  def and(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.and,List(other)))
-  def plus(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.plus,List(other)))
-  def mult(other:Obj):this.type = this.compose(OpInstResolver.resolve(Tokens.mult,List(other)))
-  def gt(other:Obj):BoolType = this.compose(bool,OpInstResolver.resolve(Tokens.gt,List(other)))
-  def is(other:Obj):BoolType = this.compose(bool,OpInstResolver.resolve(Tokens.is,List(other)))
-  def neg():this.type = this.compose(NegOp())
+  override def plus(other:__):this.type = this.compose(PlusOp(other))
+  override def plus(other:ObjValue):this.type = this.compose(PlusOp(other))
+  override def mult(other:__):this.type = this.compose(MultOp(other))
+  override def mult(other:ObjValue):this.type = this.compose(MultOp(other))
+  def is(other:Obj):BoolType = this.compose(bool,IsOp(other))
+  override def neg():this.type = this.compose(NegOp())
+  override def get(key:Obj):this.type = this.compose(GetOp(key))
+  override def get[BB <: Obj](key:Obj,btype:BB):BB = this.compose(btype, GetOp(key,btype))
+  override def put(key:Obj,value:Obj):this.type = this.compose(PutOp(key,value))
+  override def gt(other:ObjValue):BoolType = this.compose(bool,GtOp(other))
+  override def lt(other:ObjValue):BoolType = this.compose(bool,LtOp(other))
+  override def lte(other:ObjValue):BoolType = this.compose(bool,LteOp(other))
+  override def gte(other:ObjValue):BoolType = this.compose(bool,GteOp(other))
+  override def zero():this.type = this.compose(ZeroOp())
+  override def one():this.type = this.compose(OneOp())
 }
 
 object __ extends __(qStar,Nil) {
