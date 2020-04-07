@@ -30,11 +30,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRec[A <: Obj,B <: Obj](name:String,java:Map[A,B],quantifier:IntQ,via:DomainInst[Rec[A,B]]) extends AbstractTObj[Rec[A,B]](name,quantifier,via) with RecType[A,B] {
-
-  def this() = this(Tokens.rec,Map[A,B](),qOne,base())
-  def this(java:Map[A,B]) = this(Tokens.rec,java,qOne,base())
-  override def hardQ(quantifier:IntQ):this.type =new TRec[A,B](name,java,quantifier,via).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new TRec[A,B](name,java,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
+class TRec[A <: Obj,B <: Obj](name:String = Tokens.rec,java:Map[A,B] = Map[A,B](),quantifier:IntQ = qOne,via:DomainInst[Rec[A,B]] = base()) extends AbstractTObj[Rec[A,B]](name,quantifier,via) with RecType[A,B] {
   override def value():Map[A,B] = java
+  override def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TRec[A,B](name,this.java,quantifier,via.asInstanceOf[DomainInst[Rec[A,B]]]).asInstanceOf[this.type]
 }

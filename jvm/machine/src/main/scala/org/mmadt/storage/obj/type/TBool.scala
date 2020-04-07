@@ -30,9 +30,6 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(name:String,quantifier:IntQ,via:DomainInst[Bool]) extends AbstractTObj[Bool](name,quantifier,via) with BoolType {
-  def this() = this(Tokens.bool,qOne,base())
-  def this(name:String) = this(name,qOne,base())
-  override def hardQ(quantifier:IntQ):this.type = new TBool(name,quantifier,via).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new TBool(name,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
+class TBool(name:String=Tokens.bool,quantifier:IntQ=qOne,via:DomainInst[Bool]=base()) extends AbstractTObj[Bool](name,quantifier,via) with BoolType {
+  override def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TBool(name,quantifier,via.asInstanceOf[DomainInst[Bool]]).asInstanceOf[this.type]
 }

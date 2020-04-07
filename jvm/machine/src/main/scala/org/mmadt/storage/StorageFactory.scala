@@ -156,7 +156,7 @@ object StorageFactory {
     override def treal(name:String = Tokens.real,q:IntQ = qOne,via:DomainInst[Real] = base()):RealType = new TReal(name,q,via)
     override def tstr(name:String = Tokens.str,q:IntQ = qOne,via:DomainInst[Str] = base(StrOp())):StrType = new TStr(name,q,via)
     override def trec[A <: Obj,B <: Obj](name:String = Tokens.rec,value:Map[A,B],q:IntQ = qOne,via:DomainInst[Rec[A,B]] = base()):RecType[A,B] = new TRec[A,B](name,value,q,via)
-    override def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B]((value +: values).toMap)
+    override def trec[A <: Obj,B <: Obj](value:(A,B),values:(A,B)*):RecType[A,B] = new TRec[A,B](java=(value +: values).toMap)
     /////////VALUES/////////
     override def obj(value:Any):ObjValue = new VObj(value)
     override def int(value:Long):IntValue = new VInt(value)

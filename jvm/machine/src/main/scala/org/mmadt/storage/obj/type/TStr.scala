@@ -25,17 +25,12 @@ package org.mmadt.storage.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.StrType
-import org.mmadt.language.obj.op.map.PlusOp.PlusInst
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TStr(name:String,quantifier:IntQ,via:DomainInst[Str]) extends AbstractTObj[Str](name,quantifier,via) with StrType {
-  def this() = this(Tokens.str,qOne,base())
-  def this(name:String) = this(name,qOne,base())
-  override def hardQ(quantifier:IntQ):this.type = new TStr(name,quantifier,via).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type =new TStr(name,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
-
+class TStr(name:String = Tokens.str,quantifier:IntQ = qOne,via:DomainInst[Str] = base()) extends AbstractTObj[Str](name,quantifier,via) with StrType {
+  override def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TStr(name,quantifier,via.asInstanceOf[DomainInst[Str]]).asInstanceOf[this.type]
 }
 

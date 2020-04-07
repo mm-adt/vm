@@ -29,6 +29,7 @@ import org.mmadt.storage.obj.OObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTObj[T<:Obj](name:String,quantifier:IntQ,val _via:DomainInst[T]) extends OObj(name,quantifier) with Type[Obj] {
+abstract class AbstractTObj[T <: Obj](name:String,quantifier:IntQ,val _via:DomainInst[T]) extends OObj(name,quantifier) with Type[Obj] {
   override val via:(Type[Obj],Inst[Obj,T]) = _via
+  override def q(_quantifier:IntQ):this.type = this.clone(name,multQ(via._1,_quantifier),(via._1,via._2.q(_quantifier)).asInstanceOf[DomainInst[T]])
 }

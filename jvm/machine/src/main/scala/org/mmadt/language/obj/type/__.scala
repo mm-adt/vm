@@ -32,6 +32,7 @@ import org.mmadt.language.obj.value.{IntValue, ObjValue}
 import org.mmadt.language.obj.{DomainInst, Inst, IntQ, OType, Obj, _}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.`type`.TBool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -57,8 +58,7 @@ class __(val _quantifier:IntQ = qStar,_insts:List[(Type[Obj],Inst[Obj,Obj])] = N
   override      val via  :DomainInst[__]                  = (if (_insts.isEmpty) base() else _insts.last).asInstanceOf[DomainInst[__]]
   override      val q    :(IntValue,IntValue)             = this._quantifier
   override def q(quantifier:IntQ):this.type = if (this.isCanonical) this.hardQ(quantifier) else new __(quantifier,(this._insts.head._1,this._insts.head._2.q(quantifier)) :: this._insts.tail).asInstanceOf[this.type]
-  override def hardQ(quantifier:IntQ):this.type = new __(quantifier,this._insts).asInstanceOf[this.type]
-
+  override def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new __(quantifier,this.insts).asInstanceOf[this.type]
   override def domain[D <: Obj]():Type[D] = obj.q(qStar).asInstanceOf[Type[D]]
 
   def apply[T <: Obj](obj:Obj):OType[T] = _insts.foldLeft[Traverser[Obj]](Traverser.standard(asType(obj)))((a,i) => i._2(a)).obj().asInstanceOf[OType[T]]

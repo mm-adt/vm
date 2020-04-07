@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.{Bool, Int}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.storage.StorageFactory._

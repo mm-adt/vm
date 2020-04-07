@@ -24,12 +24,12 @@ package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
 
-import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
+import org.mmadt.language.obj.op.model.{ModelOp,NoOp}
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
-import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
+import org.mmadt.language.obj.value.{IntValue,Value}
+import org.mmadt.language.obj.{eqQ,_}
+import org.mmadt.language.{LanguageException,LanguageFactory,Tokens}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -45,21 +45,13 @@ trait Type[+T <: Obj] extends Obj
   val via:(Type[Obj],Inst[Obj,T])
   def isCanonical:Boolean = null == via._1
   def isDerived:Boolean = !this.isCanonical
-  def hardQ(quantifier:IntQ):this.type
+  def hardQ(quantifier:IntQ):this.type = this.clone(this.name,quantifier,this.via)
   def hardQ(single:IntValue):this.type = this.hardQ(single.q(qOne),single.q(qOne))
+  def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type
 
   // type properties
   lazy val insts:List[(Type[Obj],Inst[Obj,Obj])] = if (this.isCanonical) Nil else this.via._1.insts :+ (this.via._1,this.via._2)
-  lazy val range:this.type                       = (this match {
-    case _:BoolType => tbool(this.name,this.q)
-    case _:RealType => treal(this.name,this.q)
-    case _:IntType => tint(this.name,this.q)
-    case _:StrType => tstr(this.name,this.q)
-    case arec:RecType[_,_] => trec(this.name,arec.value(),arec.q)
-    case _:__ => this
-    case _:ObjType => tobj(this.name,this.q)
-  }).asInstanceOf[this.type]
-
+  lazy val range:this.type                       = this.clone(this.name,this.q,base())
   def domain[D <: Obj]():Type[D] = if (this.isCanonical) this.asInstanceOf[Type[D]] else this.via._1.domain[D]()
 
   // type manipulation functions
@@ -88,6 +80,7 @@ trait Type[+T <: Obj] extends Obj
   def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={
     val newInst:DomainInst[Obj] = (if (inst.op().equals(Tokens.noop)) this.via else (this,inst.asInstanceOf[Inst[Obj,R]]))
+    this.clone(nextObj.name,multQ(this,inst),newInst)
     (nextObj match {
       case _:Bool => tbool(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Bool]])
       case _:Real => treal(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Real]])
@@ -102,15 +95,7 @@ trait Type[+T <: Obj] extends Obj
   // obj-level operations
   override def add[O <: Obj](obj:O):O = this.compose(asType(obj).asInstanceOf[O],AddOp(obj))
 
-  def named(_name:String):this.type = (this match {
-    case abool:BoolType => tbool(_name,abool.q,abool.via)
-    case areal:RealType => treal(_name,areal.q,areal.via)
-    case aint:IntType => tint(_name,aint.q,aint.via)
-    case astr:StrType => tstr(_name,astr.q,astr.via)
-    case arec:RecType[Obj,Obj] => trec(_name,arec.value(),arec.q,arec.via)
-    case _:__ => this
-    case _:ObjType => tobj(_name,this.q,this.via)
-  }).asInstanceOf[this.type]
+  def named(_name:String):this.type = this.clone(_name,this.q,this.via)
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {

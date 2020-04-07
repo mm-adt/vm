@@ -30,8 +30,6 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TObj(name:String,quantifier:IntQ,via:DomainInst[Obj]) extends AbstractTObj[Obj](name,quantifier,via) with ObjType {
-  def this() = this(Tokens.obj,qOne,base())
-  override def hardQ(quantifier:IntQ):this.type = new TObj(name,quantifier,via).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new TObj(name,multQ(via._1,quantifier),(via._1,via._2.q(quantifier))).asInstanceOf[this.type]
+class TObj(name:String=Tokens.obj,quantifier:IntQ=qOne,via:DomainInst[Obj]=base()) extends AbstractTObj[Obj](name,quantifier,via) with ObjType {
+  override def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TObj(name,quantifier,via).asInstanceOf[this.type]
 }
