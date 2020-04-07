@@ -7,18 +7,22 @@ Marko A. Rodriguez <marko@rredux.com>
 :doctype: book
 :docinfo: shared-head
 :stem: latexmath
-:favicon: ./images/favicon.ico
 :source-highlighter: coderay
 :source-language: Delphi
-:stylesdir: ./css
+:favicon: ./images/favicon.ico
+// :stylesdir: ./css
 // :stylesheet: mmadt.css
 
+:imagesdir: ./images
 include::introduction.adoc[]
 
+:imagesdir: ./images/language
 include::language.adoc[]
 
+:imagesdir: ./images/storage
 include::storage.adoc[]
 
+:imagesdir: ./images/processor
 include::processor.adoc[]
 
 == Reference Guide

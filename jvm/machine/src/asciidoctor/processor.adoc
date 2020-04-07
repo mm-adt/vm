@@ -1,6 +1,6 @@
 == Processor Structures
 
-image::images/processor-stack.png[float="left",width=150]
+image::processor-stack.png[float="left",width=150]
 
 The mm-ADT VM provides a set of canonical types (_ctypes_) along with a ring theoretic algebra for deriving new types (_dtypes_) via instructions from the virtual machine's instruction set architecture. Type construction yields a graph composed of type vertices and instruction edges called a _type graph_ and it is this graph structure that forms the internal data structure used by the mm-ADT VM to encode, compile, and execute programs.
 
@@ -12,11 +12,11 @@ IMPORTANT: Distributed mm-ADT processors can yield on the order of millions of t
 ****
 https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of structure via manipulations that expose (or generate) other structures. Two important category theoretic concepts used throughout this section are *products* and *coproducts*.
 
-image::images/product.png[float="left",width=220]
+image::product.png[float="left",width=220]
 
 A https://en.wikipedia.org/wiki/Product_(category_theory)[product] is any object defined in terms of it's accessible component objects. That is, from a single object, via \$\pi_n\$ projection morphisms, a product can be decomposed into it's constituent parts.
 
-image::images/coproduct.png[float="right",width=220]
+image::coproduct.png[float="right",width=220]
 
 A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in terms of constructing component objects. That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can be composed from constituent parts.
 
@@ -27,7 +27,7 @@ Along with these decomposition (and composition) morphisms, there exists an http
 
 A traverser (abbreviated `trav`) is a product with three projections:
 
-image::images/traverser-product.png[float="right",width=350]
+image::traverser-product.png[float="right",width=350]
 
 . `[dc]`: the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[*data counter*] denotes the traverser's current location in the data.
 . `[pc]`: the https://en.wikipedia.org/wiki/Program_counter[*program counter*] denotes the traverser's current location in the program.
@@ -36,11 +36,11 @@ image::images/traverser-product.png[float="right",width=350]
 The traverser is _halted_ when the type has no more instructions. A traverser can be understood as implementing the following "fold."
 
 
-image::images/traverser-fold.png[align="center",width=80%]
+image::traverser-fold.png[align="center",width=80%]
 
 &nbsp;
 
-// image::images/traverser.png[align="center",width=550]
+// image::traverser.png[align="center",width=550]
 
 ==== Instruction Evaluation
 
@@ -60,7 +60,7 @@ mmlang> 10[plus,[mult,2]]
 ==>30
 ----
 
-image::images/instruction-arguments.png[align="center",width=90%]
+image::instruction-arguments.png[align="center",width=90%]
 
 Every instruction argument that is a type is first resolved by applying the type. Once all arguments have been evaluated, the parent instruction can execute. In this way, every type-argument instruction has internal blocking branches.
 
@@ -71,13 +71,13 @@ Every instruction argument that is a type is first resolved by applying the type
 
 The `[branch]` instruction is a general-purpose instruction for creating and merging parallel streams of objects. All other branching instructions are founded on `[branch]` and extend it with added usability-parametrization. In general, all branching instructions can be understood as generating a product (*splitting*) and then generating a co-product (*merging*).
 
-image::images/branch-prod-coprod.png[align="center",width=75%]
+image::branch-prod-coprod.png[align="center",width=75%]
 
 When a traverser at an \$\tt{obj} \in A\$ arrives at `[branch]`, the traverser is split across the respective internal types -- called _branches_. Splitting is a cloning process by which a product is formed and then each component of the product is projected to each respective branch via \$\pi_n\$.
 
 \[\texttt{split}: A \rightarrow A \times \ldots \times A\]
 
-image::images/branch-traversers.png[float="left",width=600]
+image::branch-traversers.png[float="left",width=600]
 
 Every branch can operate independently, where no global communication is required between branches. This is an important feature of `[branch]` and the branch instructions in general because each branch can be isolated and migrated for physical distribution and parallelization. All other instructions that make use of internal types for parametrization do not enjoy this feature.
 
