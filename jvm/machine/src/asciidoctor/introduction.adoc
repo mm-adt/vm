@@ -54,7 +54,7 @@ mmlang>
 A simple console session is presented below, where the parser expects programs written in the language specified left
 of the `>` prompt. All the examples contained herein are presented using `mmlang`.
 
-[source]
+[source,mmadt]
 ----
 mmlang> 1
 ==>1
