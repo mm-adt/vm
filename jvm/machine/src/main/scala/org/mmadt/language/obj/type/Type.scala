@@ -24,12 +24,12 @@ package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
 
-import org.mmadt.language.obj.op.model.{ModelOp,NoOp}
+import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
-import org.mmadt.language.obj.value.{IntValue,Value}
-import org.mmadt.language.obj.{eqQ,_}
-import org.mmadt.language.{LanguageException,LanguageFactory,Tokens}
+import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.{eqQ, _}
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
@@ -47,7 +47,7 @@ trait Type[+T <: Obj] extends Obj
   def isDerived:Boolean = !this.isCanonical
   def hardQ(quantifier:IntQ):this.type = this.clone(this.name,quantifier,this.via)
   def hardQ(single:IntValue):this.type = this.hardQ(single.q(qOne),single.q(qOne))
-  def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type
+  protected def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type
 
   // type properties
   lazy val insts:List[(Type[Obj],Inst[Obj,Obj])] = if (this.isCanonical) Nil else this.via._1.insts :+ (this.via._1,this.via._2)
@@ -79,17 +79,11 @@ trait Type[+T <: Obj] extends Obj
   }
   def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={
-    val newInst:DomainInst[Obj] = (if (inst.op().equals(Tokens.noop)) this.via else (this,inst.asInstanceOf[Inst[Obj,R]]))
-    this.clone(nextObj.name,multQ(this,inst),newInst)
-    (nextObj match {
-      case _:Bool => tbool(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Bool]])
-      case _:Real => treal(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Real]])
-      case _:Int => tint(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Int]])
-      case _:Str => tstr(nextObj.name,multQ(this,inst),newInst.asInstanceOf[DomainInst[Str]])
-      case arec:Rec[_,_] => trec(arec.name,arec.value().asInstanceOf[Map[Obj,Obj]],multQ(this,inst),newInst.asInstanceOf[DomainInst[Rec[Obj,Obj]]])
-      case _:__ => new __(multQ(this,inst),if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]])))
-      case _ => tobj(nextObj.name,multQ(this,inst),newInst)
-    }).asInstanceOf[R]
+    val newInst:DomainInst[Obj] = if (inst.op().equals(Tokens.noop)) this.via else (this,inst.asInstanceOf[Inst[Obj,R]])
+    (if (nextObj.isInstanceOf[__])
+      new __(multQ(this,inst),if (inst.op().equals(Tokens.noop)) this.insts else this.insts ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]])))
+    else
+      asType(nextObj).clone(nextObj.name,multQ(this,inst),newInst)).asInstanceOf[R]
   }
 
   // obj-level operations

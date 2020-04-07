@@ -32,6 +32,6 @@ import org.mmadt.storage.StorageFactory._
  */
 class VReal(name:String,java:Double,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with RealValue {
   def this(java:Double) = this(Tokens.real,java,qOne)
-  override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VReal(_name,_value.asInstanceOf[Double],_quantifier).asInstanceOf[this.type]
+  override protected def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VReal(_name,_value.asInstanceOf[Double],_quantifier).asInstanceOf[this.type]
   override val value:Double = java
 }

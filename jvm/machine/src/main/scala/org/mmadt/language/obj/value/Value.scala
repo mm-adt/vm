@@ -26,7 +26,6 @@ import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.{Obj, _}
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,7 +34,7 @@ trait Value[+V <: Obj] extends Obj
   with StartOp {
   val value:Any
 
-  def clone(_name:String,_value:Any,_quantifier:IntQ):this.type
+  protected def clone(_name:String,_value:Any,_quantifier:IntQ):this.type
   override def named(_name:String):this.type = this.clone(_name,this.value,this.q)
 
   // pattern matching methods

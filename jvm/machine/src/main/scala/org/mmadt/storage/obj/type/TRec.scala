@@ -32,5 +32,5 @@ import org.mmadt.storage.StorageFactory._
  */
 class TRec[A <: Obj,B <: Obj](name:String = Tokens.rec,java:Map[A,B] = Map[A,B](),quantifier:IntQ = qOne,via:DomainInst[Rec[A,B]] = base()) extends AbstractTObj[Rec[A,B]](name,quantifier,via) with RecType[A,B] {
   override def value():Map[A,B] = java
-  override def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TRec[A,B](name,this.java,quantifier,via.asInstanceOf[DomainInst[Rec[A,B]]]).asInstanceOf[this.type]
+  override protected def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TRec[A,B](name,this.java,quantifier,via.asInstanceOf[DomainInst[Rec[A,B]]]).asInstanceOf[this.type]
 }

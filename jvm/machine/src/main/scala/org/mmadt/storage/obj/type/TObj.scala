@@ -31,5 +31,5 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TObj(name:String=Tokens.obj,quantifier:IntQ=qOne,via:DomainInst[Obj]=base()) extends AbstractTObj[Obj](name,quantifier,via) with ObjType {
-  override def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TObj(name,quantifier,via).asInstanceOf[this.type]
+  override protected def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TObj(name,quantifier,via).asInstanceOf[this.type]
 }

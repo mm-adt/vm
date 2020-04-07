@@ -33,6 +33,6 @@ import org.mmadt.storage.StorageFactory._
 class VRec[A <: Value[Obj],B <: Value[Obj]](name:String,java:Map[A,B],quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with RecValue[A,B] {
 
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne)
-  override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VRec[A,B](_name,_value.asInstanceOf[Map[A,B]],_quantifier).asInstanceOf[this.type]
+  override protected def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VRec[A,B](_name,_value.asInstanceOf[Map[A,B]],_quantifier).asInstanceOf[this.type]
   override val value:Map[A,B] = java
 }

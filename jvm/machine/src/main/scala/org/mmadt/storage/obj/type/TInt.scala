@@ -31,5 +31,5 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TInt(name:String=Tokens.int,quantifier:IntQ=qOne,via:DomainInst[Int]=base()) extends AbstractTObj[Int](name,quantifier,via) with IntType {
-  override def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TInt(name,quantifier,via.asInstanceOf[DomainInst[Int]]).asInstanceOf[this.type]
+  override protected def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TInt(name,quantifier,via.asInstanceOf[DomainInst[Int]]).asInstanceOf[this.type]
 }
