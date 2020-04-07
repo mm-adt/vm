@@ -25,9 +25,9 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.processor.Traverser
-import org.mmadt.storage.StorageFactory.asType
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -47,7 +47,8 @@ trait MapOp {
 object MapOp {
   def apply[O <: Obj](other:O):Inst[Obj,O] = new MapInst[O](other)
 
-  class MapInst[O <: Obj](other:O) extends VInst[Obj,O]((Tokens.map,List(other))) {
+  class MapInst[O <: Obj](other:O,q:IntQ = qOne) extends VInst[Obj,O]((Tokens.map,List(other)),q) {
+    override def q(quantifier:IntQ):this.type = new MapInst[O](other,quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[Obj]):Traverser[O] = (trav.obj(),other) match {
       case (_:Obj,avalue:Value[_] with O) => trav.split[O](avalue)
       case (ttype:Type[_],atype:Type[_] with O) => trav.split(ttype.compose(atype,MapOp(atype)))

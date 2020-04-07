@@ -23,8 +23,8 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.value.{RecValue,Value}
+import org.mmadt.language.obj.{IntQ,Obj}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -33,9 +33,6 @@ import org.mmadt.storage.StorageFactory._
 class VRec[A <: Value[Obj],B <: Value[Obj]](name:String,java:Map[A,B],quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with RecValue[A,B] {
 
   def this(java:Map[A,B]) = this(Tokens.rec,java,qOne)
-  def this(name:String,java:Map[A,B]) = this(name,java,qOne)
-
+  override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VRec[A,B](_name,_value.asInstanceOf[Map[A,B]],_quantifier).asInstanceOf[this.type]
   override val value:Map[A,B] = java
-  override def value(java:Map[A,B]):this.type = new VRec(this.name,java,quantifier).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new VRec(name,java,quantifier).asInstanceOf[this.type]
 }

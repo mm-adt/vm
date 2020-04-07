@@ -24,8 +24,6 @@ package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.IntQ
-import org.mmadt.language.obj.`type`.ObjType
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.ObjValue
 import org.mmadt.storage.StorageFactory._
 
@@ -33,10 +31,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VObj(name:String,java:Any,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with ObjValue {
-
   def this(java:Any) = this(Tokens.obj,java,qOne)
-
   override val value:Any = java
-  def value(java:Any):this.type = new VObj(this.name,java,quantifier).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new VObj(name,java,quantifier).asInstanceOf[this.type]
+  override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VObj(_name,_value,_quantifier).asInstanceOf[this.type]
 }

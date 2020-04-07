@@ -23,12 +23,10 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.op.initial.StartOp
+import org.mmadt.language.obj.IntQ
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.value.strm.BoolStrm
-import org.mmadt.language.obj.{IntQ, Obj}
-import org.mmadt.storage.StorageFactory.{int, qZero, tbool}
+import org.mmadt.storage.StorageFactory.int
 import org.mmadt.storage.obj.value.AbstractVObj
 
 /**

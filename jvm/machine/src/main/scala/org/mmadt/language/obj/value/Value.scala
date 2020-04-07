@@ -35,13 +35,8 @@ trait Value[+V <: Obj] extends Obj
   with StartOp {
   val value:Any
 
-  override def named(_name:String):this.type = (this match {
-    case x:BoolValue => vbool(_name,x.value,x.q)
-    case x:IntValue => vint(_name,x.value,x.q)
-    case x:RealValue => vreal(_name,x.value,x.q)
-    case x:StrValue => vstr(_name,x.value,x.q)
-    case x:RecValue[_,_] => vrec(_name,x.value,x.q)
-  }).asInstanceOf[this.type]
+  def clone(_name:String,_value:Any,_quantifier:IntQ):this.type
+  override def named(_name:String):this.type = this.clone(_name,this.value,this.q)
 
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {

@@ -24,8 +24,9 @@ package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.language.obj.value.Value
+import org.mmadt.storage.obj.value.VStr
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,7 +36,7 @@ trait Strm[+O <: Obj] extends Value[O] {
 
   // utility methods
   override def toStrm:Strm[this.type] = this.asInstanceOf[Strm[this.type]]
-
+  override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = this
   override def named(_name:String):this.type = this
   // standard Java implementations
   override def toString:String = LanguageFactory.printStrm(this)

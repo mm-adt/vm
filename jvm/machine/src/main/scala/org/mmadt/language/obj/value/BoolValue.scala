@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.Bool
+import org.mmadt.language.obj.{Bool, IntQ}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,5 +32,5 @@ trait BoolValue extends Bool
   with Value[Bool] {
 
   override val value:Boolean
-  def value(java:Boolean):this.type
+  def value(java:Boolean):this.type = this.clone(this.name,java,this.q)
 }

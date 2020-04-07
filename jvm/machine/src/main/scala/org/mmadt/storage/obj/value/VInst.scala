@@ -34,14 +34,12 @@ abstract class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) e
   override val value:InstTuple = java
   override def q(quantifier:IntQ):this.type = this
   override val q:IntQ = quantifier
-  // pattern matching methods TODO: GUT WHEN VINST JOINS HEIRARCHY
-  def test(other:Obj):Boolean = false
-
+  def test(other:Obj):Boolean = false //  TODO: GUT WHEN VINST JOINS HEIRARCHY
+  override def named(_name:String):VInst.this.type = this
   def composeInstruction(obj:E):E ={
     obj match {
       case atype:Type[Obj] => atype.compose(this).asInstanceOf[E]
       case _ => obj
     }
   }
-  override def named(_name:String):VInst.this.type = this
 }

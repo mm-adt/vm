@@ -25,8 +25,9 @@ package org.mmadt.language.obj.op.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.BranchInstruction
+import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -61,7 +62,8 @@ trait ChooseOp {
 object ChooseOp {
   def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):ChooseInst[IT,OT] = new ChooseInst(branches)
 
-  class ChooseInst[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]) extends VInst[IT,OT]((Tokens.choose,List(branches))) with BranchInstruction {
+  class ChooseInst[IT <: Obj,OT <: Obj](branches:RecType[IT,OT],q:IntQ=qOne) extends VInst[IT,OT]((Tokens.choose,List(branches)),q) with BranchInstruction {
+    override def q(quantifier:IntQ):this.type = new ChooseInst[IT,OT](branches,quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[IT]):Traverser[OT] = trav.split(trav.obj().choose(branches,trav)) // TODO: do we maintain the OT branch states?
   }
 

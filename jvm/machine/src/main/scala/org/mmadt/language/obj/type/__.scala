@@ -32,7 +32,6 @@ import org.mmadt.language.obj.value.{IntValue, ObjValue}
 import org.mmadt.language.obj.{DomainInst, Inst, IntQ, OType, Obj, _}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.TBool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

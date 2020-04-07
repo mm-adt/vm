@@ -24,8 +24,6 @@ package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.IntQ
-import org.mmadt.language.obj.`type`.RealType
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.RealValue
 import org.mmadt.storage.StorageFactory._
 
@@ -34,9 +32,6 @@ import org.mmadt.storage.StorageFactory._
  */
 class VReal(name:String,java:Double,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with RealValue {
   def this(java:Double) = this(Tokens.real,java,qOne)
-  def this(name:String,java:Double) = this(name,java,qOne)
-
+  override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VReal(_name,_value.asInstanceOf[Double],_quantifier).asInstanceOf[this.type]
   override val value:Double = java
-  override def value(java:Double):this.type = new VReal(this.name,java,quantifier).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new VReal(name,java,quantifier).asInstanceOf[this.type]
 }

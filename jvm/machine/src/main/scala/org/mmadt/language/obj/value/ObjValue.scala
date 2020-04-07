@@ -22,10 +22,12 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.{IntQ, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ObjValue extends Obj
-  with Value[Obj]
+  with Value[Obj]{
+  override def q(quantifier:IntQ):this.type = this.clone(this.name,this.value,quantifier)
+}

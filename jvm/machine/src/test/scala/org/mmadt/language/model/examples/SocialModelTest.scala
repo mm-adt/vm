@@ -70,16 +70,16 @@ class SocialModelTest extends FunSuite {
       val result = socialmm(mmsocial(b))
       assertResult("int")(result.name)
       assertResult(40)(result.value)
-      assertResult(qOne)(result.q)
+      assertResult(qOne)(result.asInstanceOf[Obj].q)
       result
     })
     assertResult("int")(result.name)
     assertResult(40)(result.value)
-    assertResult(qOne)(result.q)
+    assertResult(qOne)(result.asInstanceOf[Obj].q)
     //
     assertResult("nat")(mmsocial(result).name)
     assertResult(40)(mmsocial(result).value)
-    assertResult(qOne)(mmsocial(result).q)
+    assertResult(qOne)(mmsocial(result).asInstanceOf[Obj].q)
   }
 
   test("model composite types"){

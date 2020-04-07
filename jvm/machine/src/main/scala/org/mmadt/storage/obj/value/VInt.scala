@@ -24,8 +24,6 @@ package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.IntQ
-import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 
@@ -35,11 +33,8 @@ import org.mmadt.storage.StorageFactory._
  */
 class VInt(name:String,java:Long,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with IntValue {
   def this(java:Long) = this(Tokens.int,java,VInt.q1)
-  def this(name:String,java:Long) = this(name,java,VInt.q1)
-
+  override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VInt(_name,_value.asInstanceOf[Long],_quantifier).asInstanceOf[this.type]
   override val value:Long = java
-  override def value(java:Long):this.type = new VInt(this.name,java,quantifier).asInstanceOf[this.type]
-  override def q(quantifier:IntQ):this.type = new VInt(name,java,quantifier).asInstanceOf[this.type]
 }
 
 object VInt {

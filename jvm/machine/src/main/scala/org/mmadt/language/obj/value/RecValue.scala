@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.{IntQ, Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,8 +33,7 @@ trait RecValue[A <: Value[Obj],B <: Value[Obj]] extends Rec[A,B]
   with Value[Rec[A,B]] {
 
   override val value:Map[A,B]
-  def value(java:Map[A,B]):this.type
-
+  def value(java:Map[A,B]):this.type = this.clone(this.name,java,this.q)
   override def plus(other:RecType[A,B]):RecType[A,B] = this.start[Rec[A,B]]().plus(other)
   override def plus(other:RecValue[_,_]):this.type = this.value(this.value ++ other.asInstanceOf[RecValue[A,B]].value)
   override def get(key:A):B = this.value(key)

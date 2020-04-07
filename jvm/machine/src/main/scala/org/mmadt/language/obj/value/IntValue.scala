@@ -22,8 +22,8 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.{IntType, Type}
+import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.{Int, IntQ}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -34,8 +34,8 @@ trait IntValue extends Int
   with Value[Int] {
 
   override val value:Long
-  def value(java:Long):this.type
-
+  def value(java:Long):this.type = this.clone(this.name,java,this.q)
+  
   override def plus(other:IntType):IntType = this.start[Int]().plus(other)
   override def plus(other:IntValue):this.type = this.value(this.value + other.value)
   override def mult(other:IntType):IntType = this.start[Int]().mult(other)
