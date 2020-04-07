@@ -2,9 +2,9 @@
 
 image::processor-stack.png[float="left",width=150]
 
-The mm-ADT VM provides a set of canonical types (_ctypes_) along with a ring theoretic algebra for deriving new types (_dtypes_) via instructions from the virtual machine's instruction set architecture. Type construction yields a graph composed of type vertices and instruction edges called a _type graph_ and it is this graph structure that forms the internal data structure used by the mm-ADT VM to encode, compile, and execute programs.
+The programs of the mm-ADT virtual machine are _types_. From a simple set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's instruction set architecture. Type construction yields a https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] containing type vertices and instruction edges called a _type graph_. The type graph is the internal data structure used by the mm-ADT VM to not only encode types, but also to compile (transformation) and execute (enumeration) them.
 
-Type compilation and evaluation is enabled by mm-ADT compliant processors that ground the abstract mm-ADT virtual machine to the underlying physical machine (over a single machine, multiple threads, or cross a compute cluster). At the bottom of this "process stack", the natural world's physics provides the baseline dynamics (a "ptype" so to speak). Finally, atop this stack is the mm-ADT VM's abstract, general-purpose, register-based machines known as the *traversers*.
+mm-ADT compliant *processors* ground the abstract mm-ADT VM to the underlying physical machine (whether on a a single machine, via multiple threads, or across a compute cluster). At the bottom of this "process stack", the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak). Finally, atop this stack of abstraction is the mm-ADT VM's general-purpose, register-based machines known as the *traversers*.
 
 IMPORTANT: Distributed mm-ADT processors can yield on the order of millions of traversers during a single program evaluation. Conceptually, a processor is responsible for coordinating a https://en.wikipedia.org/wiki/Swarm_intelligence[_traverser swarm_], where the result of an mm-ADT program is the aggregate data locations of all the halted traversers.
 
@@ -14,29 +14,40 @@ https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of s
 
 image::product.png[float="left",width=220]
 
-A https://en.wikipedia.org/wiki/Product_(category_theory)[product] is any object defined in terms of it's accessible component objects. That is, from a single object, via \$\pi_n\$ projection morphisms, a product can be decomposed into it's constituent parts.
+A https://en.wikipedia.org/wiki/Product_(category_theory)[product] is any object defined in terms of it's accessible component objects. That is, from a single object, via \$\pi_n\$ projection morphisms, the product is decomposed into it's constituent parts.
 
 image::coproduct.png[float="right",width=220]
 
-A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in terms of constructing component objects. That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can be composed from constituent parts.
+A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in terms the component objects used to construct it. That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can be composed from constituent parts.
 
 Along with these decomposition (and composition) morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects. That is, product and coproduct equality are defined via component equality.
 ****
 
 === Traverser
 
-A traverser (abbreviated `trav`) is a product with three projections:
+A traverser (`trav`) is a _product_ with the following three \$\pi\$-projections:
 
 image::traverser-product.png[float="right",width=350]
 
-. `[dc]`: the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[*data counter*] denotes the traverser's current location in the data.
-. `[pc]`: the https://en.wikipedia.org/wiki/Program_counter[*program counter*] denotes the traverser's current location in the program.
-. `[state]`: the local read/write https://en.wikipedia.org/wiki/Processor_register[*registers*] of the traverser provide a memory stucture that increases general expressivity.
+. `[pc]` (\$\pi_1\$): the https://en.wikipedia.org/wiki/Program_counter[*program counter*] denotes the traverser's current location in the program (type).
+. `[dc]` (\$\pi_2\$): the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[*data counter*] denotes the traverser's current location in the data (value -- or type during compilation).
+. `[state]` (\$\pi_3\$): the local read/write https://en.wikipedia.org/wiki/Processor_register[*registers*] of the traverser provide a memory structure useful when writing more complicated programs.
 
-The traverser is _halted_ when the type has no more instructions. A traverser can be understood as implementing the following "fold."
+Traversers are used in the following two situations:
 
+1. *Compilation*: A traverser walks a type graph as directed by the type graph in order to generate another type graph. The resultant type graph typically contains more information (type inference) and/or more efficient types for expressing the same computation (type optimization).
 
-image::traverser-fold.png[align="center",width=80%]
+image::trav-compilation.png[align="center",width=65%]
+
+2. *Evaluation*: A traverser walks a value graph as directed by a type graph in order to generate another value graph. The resultant values are the referents of the program's specified type.
+
+image::trav-evaluation.png[align="center",width=35%]
+
+Compilation and evaluation are both accomplished using the same graph traversal algorithm.
+
+...
+
+//image::traverser-fold.png[align="center",width=80%]
 
 &nbsp;
 

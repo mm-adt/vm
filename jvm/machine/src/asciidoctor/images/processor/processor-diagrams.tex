@@ -1,0 +1,59 @@
+
+////////////////////////////////////
+// images/traverser.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAmAXVJADcBDAGwFcYkQAdDnHYHAJ3q0AviGGl0mXPkIoyxanSat2XHsDg56OGKPGTseAkXIVFDFm0SduvCACMAVnokgMhmUTIBmc8qs26gDGOACeaLpiru7SxigADKTxfpaqthoCLgaxsiRJKSrWanZOWW5SRrneZjQWhYG8AkIA5GUxlUTVvrX+aepQYRFtFZ4oACw1SqlF6Q6OrVHZHSjVCj3TDRnaus2L5R5xyNXJ6-XFGfzDB7kTJ1Nns6V77aPIAKyTdQFcjFAQOAh9PsckQPt17t8OL9-oDoiNDh81hC0tCAWJFDAoABzeBEUAAM34EAAtkhEiAcBAkGRkTN1MhKZQAPTIQkkyiiGiMej2GCMAAK8NkIEYMHxOD2bNJiHJlKQ5CBUqQ1QpVJlXJ5fMF13Y-CwWIAFhLFUTpaZVcqaLywFAyadITxkFg4KR6JQQBreQKhexReLJabqTQ5YgxiaSUGLYg3uHpQB2YNqlVfPq8J1gTQcj0izXenXWP3G1xKxAANkTSAAHLGqxXEAnaZsnS63Zyc17tSCC2KiwTA-W66Wa2W6wBOe2p4AMiDM1mmrOerU+6x6w29kAl8dR4jxYdbkPEYjDmkhrfcjvLkU97Mpuk4ZBwNCMXDuq0wG3K3fF-uytXlkDWraiDeOSt5No+z44Au7ZLvmV7+seKohg2YHnOmmZlCW-4HuagGfse5oHmG34RogxBIWqxAKiR0r7pREwAe+QEgcIHJAA
+\begin{tikzcd}[row sep=large]
+\tt{str} & \tt{obj}                                                                                    &                                    & \tt{str}                                                                    & \tt{obj}                              &                                              \\
+         & \tt{state} \arrow[lu] \arrow[u] \arrow[rr, "{\tt[split]}", bend left]                       &                                    & \tt{state}' \arrow[u] \arrow[ru] \arrow[rr, bend left]                      &                                       & \ldots                                       \\
+         & \tt{trav} \arrow[u, "{\tt{[to]/[from]}}"] \arrow[r] \arrow[rr, "{\tt{[split]}}", bend left] & \tt{obj} \arrow[ld, "{\tt[is,a]}"] & \tt{trav'} \arrow[r] \arrow[u, "{\tt{[to]/[from]}}"'] \arrow[rr, bend left] & \tt{obj'} \arrow[ld, "{\tt{[is,a]}}"] & \ldots \arrow[u]                             \\
+         & \tt{ctype} \arrow[u]                                                                        &                                    & \tt{dtype} \arrow[ll, "{\tt{[inst]}}"] \arrow[u]                            &                                       & \ldots \arrow[ll, "{\tt{[inst]}}"] \arrow[u]
+\end{tikzcd}
+
+
+
+////////////////////////////////////
+// images/trav-compilation.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgswcAviAGl0mXPkIoAjOSq1GLNp269+yNMzhyhIsdjwEiAJjnV6zVog5cefHBq1zHTbdMq7RIDAclEyxvIWStYqdvye+hJGKKaB5opWNqr2Lm4ewl4+0VLIptJBicq2wDgATnQ0APrGkd7ihrkAzGYKlsUMUBA4CHr1vjHIsgUJ7aEl5ZVV0nXZjf6kI20hyTyT1cSzDX4oLUvBSZyd3b1Z24Mt8cuH7Mc9wvIwUADm8ESgAGZlEAC2SLIgHAQJCbLxfX5IUyA4GIGZg75-RAAFmoQKQTT64MRAFZUTCUddimgsDVMp8EUhcdDIaMVpxidMQNQGHQAEYwBgABXOUhAZSwzwAFjgySAsUgAGx4yGYimIADs0thtJuDOkovFCqVLUJ4wZxg1csV1MQVIYfCSXW4T0NEMQAA4lcbzWBLd0cDbZXaqWjEABOZkWthWj1QW2I9xKpFexGOk1kXU2NVMkAs9lcnlsflCkUxpBx306g5EkkGgQUARAA
+\begin{footnotesize}
+\begin{tikzcd}[column sep=large]
+\tt{int}                                                             & {\tt{int[plus,0]}} \arrow[l]                                         & {\tt{int[plus,0][plus,10]}} \arrow[l]                                & \ldots \arrow[l] \\
+\tt{trav_0} \arrow[r, dotted] \arrow[u, "\pi_1"'] \arrow[d, "\pi_2"] & \tt{trav_1} \arrow[u, "\pi_1"] \arrow[ld, "\pi_2"] \arrow[r, dotted] & \tt{trav_2} \arrow[d, "\pi_2"] \arrow[u, "\pi_1"'] \arrow[r, dotted] & \ldots           \\
+\tt{int}                                                             &                                                                      & {\tt{int[plus,10]}} \arrow[ll]                                       & \ldots \arrow[l]
+\end{tikzcd}
+\end{footnotesize}
+
+
+////////////////////////////////////
+// images/traverser-fold.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgcAnOjQC+IIaXSZc+QigBM5KrUYs2nbrwE0A5CLETseAkXkBGRfWatEHLjwgAjAFY7R4kBgPSiZM9QsrrNTsnXTcPKSMUE1JfJUtVW2AAYxwATzQYUP0ImWRo2XNlKxt1LDA4HCz3SUNcgGYYwvjAxKg0jJc9as9I5AaCvyKE0vKcTrCarxQAFkbB5pLg504AbnHs2qJZynmAxY1BLU5Sde6cogBWObi9oOA29Jgj9hOq8M2UK4Gb4ruyiuer1cGymyAAbApdr92AwoBAcAguu9QRDYv5obD4YiJj1cgB2a7ohKYhHAs4fZAE75ElokxGKGBQADm8CIoAAZnwIABbJBkEA4CBIaI-YY8ZBwNAMXAUKqcnnC6iCpDyUUtdTIKBJWUgagMOj2GAMAAKk0iID4WCZAAscGT5bzEPzlYgGmr9prtSI9QajabcWxLTa7V0HUhZgKhYgLqGuY63S6ru67nQ0FLUt6QPrDSazTILVbbfa40gky7VTT9nx4EwGJVdSBDWAoHyfTn-edrEGi7GFa6lVGI5W7sgsHBSHQdW2-XnA4WQ24w4hVS6IcnEqPx5PM9mZwGu-Pi33nYOoWLgMg0F6j46I6vqE2W67iL3HWuXXjXyqB0gCev1Km6Y7r6ub7gWwY3r+P6IAAHGe6o8NWcC1vWD4wM2rZZiBHYfOBPaLiWiAii6ACc8EepK0o4DqX6IGRkZIHB-7ilqU5Ye2s4HhBtFMS6Jj8sOG5jhObG7qBnZ4QuHKEe+Ub8WhGHPjx0EmCKgkAWmDAZg2Yk4VMkmQXRKkVkMCEXpRMpyoRxFRmu6nileNEEX29F8QJpkeo5Vl9iYK5yXUtGqSpbqPph9nAEhKHARxYHdlJIBLvJDFERGoVKc5jomAmcnTIF2XCjGspAA
+\begin{tikzcd}[row sep=huge]
+\tt{trav} \arrow[rr, "{\tt{[split]}}"] \arrow[d, "{\tt{[dc]}}"'] \arrow[rd, "{\tt{[pc]}}"] &                                            & \tt{trav'} \arrow[d, "{\tt{[dc]}}"'] \arrow[rr, "{\tt{[split]}}"] \arrow[rd, "{\tt{[pc]}}"] &                                             & {\tt{trav'\,'}} \arrow[d, "{\tt{[dc]}}"'] \arrow[rr, "{\tt{[split]}}"] \arrow[rd, "{\tt{[pc]}}"] &                                            & \ldots \arrow[d]            &        \\
+\tt{obj} \arrow[rd, "\tt{apply}"'] \arrow[r, "{\tt{[is,a]}}"']                             & \tt{ctype} \arrow[d] \arrow[rr, bend left] & \tt{obj'} \arrow[r, "{\tt{[is,a]}}"'] \arrow[rd, "\tt{apply}"']                             & \tt{dtype'} \arrow[d] \arrow[rr, bend left] & \tt{obj'\;'} \arrow[r, "{\tt{[is,a]}}"'] \arrow[rd, "\tt{apply}"']                               & {\tt{dtype'\,'}} \arrow[rr, bend left]     & \ldots \arrow[r] \arrow[rd] & \ldots \\
+                                                                                           & \tt{inst} \arrow[ru, "\tt{result}"']       &                                                                                             & \tt{inst'} \arrow[ru, "\tt{result}"']       &                                                                                                  & {\tt{inst'\,'}} \arrow[ru, "\tt{result}"'] &                             & \ldots
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/branch-prod-coprod.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQBBEAX1PU1z5CKchWp0mrdhwAEAHTl4AtvBmyFy1V179seAkQBMpYuIYs2iTjz4gMeoUdKGzky9Z12B+4cmNUacykrbVt7QQMUABYxQLd2ACEAagBhJIARG10I3wBmE1cLRKyvB0jkfJc4oqtMz3CfInyAiRqQFJKGxxQAVljW4JAecRgoAHN4IlAAMwAnCCUkMhAcCCRRAfcNHGBkACNZ+jAAYwALbhK5hfWaVaRjTfYFNCwAfXJL+cXEDbvEfMeVmeb1yIBojHoexgjAACt5uiBZlgxqccJ9rj9bmtEDFASBga9DOjvg8-gA2aqDba7LBgOA4SgXTxXb4Av4AdkpW0UO2QtPpjOJSFxfwAHFynjyaXSGUzbCykBSVti+niFPgcPR3kLEOLlUhVUFuRqtUTmV8kJz9YhDfEgXITa9QeaMaq-gBOCVWSjDbhAA
+\begin{tikzcd}[row sep=large,column sep=large]
+                            &                                                                                 & A \arrow[r, "{\tt{[inst]}}"] & B \arrow[rd, "\iota_1"] &                        &    \\
+A \arrow[r, "\tt{[branch}"] & A \times A \times A \arrow[ru, "\pi_1"] \arrow[rd, "\pi_3"'] \arrow[r, "\pi_2"] & A \arrow[r, "{\tt{[inst]}}"] & C \arrow[r, "\iota_2"]  & B+C+D \arrow[r, "\tt{]}"] & {} \\
+                            &                                                                                 & A \arrow[r, "{\tt{[inst]}}"] & D \arrow[ru, "\iota_3"] &                        &   
+\end{tikzcd}
+
+
+
+////////////////////////////////////
+// images/instruction-args.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBpiBdUkANwEMAbAVxiRAB12cdgswdkaZnFIBfEKNLpMufIRQAGclVqMWbTt179xk6djwEiAZlIAmFfWatEHLjz4CAtkwY5zFXVJAYDcomakCpZqNnZajl76skYogRbUVuq2mg46Et6+MfLIACzKiaEa9toCQkwiyC5uHp4Z0YY5psGF1sUR6aIqMFAA5vBEoABmAE4QTkhKIDgQSGSqbSklgsKkVa7uFnXUDHQARjAMAAoyjWwjWL0AFjj1IKPjk9QzSKYLyXZoWAD6xHcPE0QUxeiHy7zCnC+3zM-zGgMC01moNaH1SwHWNQs4h2+0OJz8sRAF2utz09zhSARIIArCiIex8Dg6NDYY9EAA2Z5It5JelaZCQCBoOpkgFITmIpC08HFRnMv5dURAA
+\begin{tikzcd}[column sep=large,row sep=large]
+         &  &                                                                                                & \tt{int} & \tt{int} \arrow[l, "{\tt{[noop]}}"'] \arrow[rd, "\iota_1"]             &                           \\
+\tt{int} &  & {\tt{int[plus,}} \arrow[ll, "{\tt{[plus,[mult,2]]}}"'] \arrow[ru, "\pi_1"] \arrow[rd, "\pi_2"] &          &                                                                        & {\tt{int[plus,[mult,2]]}} \\
+         &  &                                                                                                & \tt{int} & {\tt{int[mult,2]}} \arrow[l, "{\tt{[mult,2]}}"'] \arrow[ru, "\iota_2"] &                          
+\end{tikzcd}
