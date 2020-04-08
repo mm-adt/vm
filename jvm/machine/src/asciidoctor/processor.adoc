@@ -2,7 +2,7 @@
 
 image::processor-stack.png[float="left",width=150]
 
-The programs of the mm-ADT virtual machine are _types_. From a simple set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's instruction set architecture. Type construction yields a https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] containing type vertices and instruction edges called a _type graph_. The type graph is the internal data structure used by the mm-ADT VM to not only encode types, but also to compile (transformation) and execute (enumeration) them.
+The programs of the mm-ADT virtual machine are _types_. From a simple set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's instruction set architecture. Type construction yields a https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] containing type vertices and instruction edges called a _type graph_. The type graph is the internal data structure used by the mm-ADT VM to not only encode types, but also to compile (transform) and execute (enumerate) them.
 
 mm-ADT compliant *processors* ground the abstract mm-ADT VM to the underlying physical machine (whether on a a single machine, via multiple threads, or across a compute cluster). At the bottom of this "process stack", the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak). Finally, atop this stack of abstraction is the mm-ADT VM's general-purpose, register-based machines known as the *traversers*.
 
