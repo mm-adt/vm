@@ -8,7 +8,7 @@ Marko A. Rodriguez <marko@rredux.com>
 :docinfo: shared-head
 :stem: latexmath
 :source-highlighter: coderay
-:source-language: Delphi
+:source-language: mmadt
 :favicon: ./images/favicon.ico
 // :stylesdir: ./css
 // :stylesheet: mmadt.css
