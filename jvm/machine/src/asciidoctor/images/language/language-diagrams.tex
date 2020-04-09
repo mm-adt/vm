@@ -9,22 +9,15 @@
 
 
 ////////////////////////////////////
-// images/type-inst.png 
+// images/type.png 
 ////////////////////////////////////
-% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYHATzQwAviGGl0mXPkIpypYtTpNW7Ljz6CRYiSAzY8BIgCYFShizaJO3XljBwco4UphQA5vCKgAZgCcIAFskeRAcCCRicV8A4MRQ8KRjF2EgA
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAJgBoAGAXVJADcBDAGwFcYkQAdDnHYHATzQwAviGGl0mXPkIoAjKTnU6TVuy49gUAUNHjJ2PASLlSxZQxZtEnbrx0ixEkBkMyiZczUtqbG3lhgcDh6zq7SxigAzIoWqta2mgDGDnrKMFAA5vBEoABmAE4QALZICiA4EEjk+iCFJWU0lUjEtfWliOXNiFFtRR0ALE1ViDWUwkA
 \begin{tikzcd}
-          & \tt{type} \arrow[ld] \arrow[rd] &           \\
-\tt{type} &                                 & \tt{inst}
+          &                                             & \tt{type} &                       \\
+          & \tt{dtype} \arrow[ru] \arrow[ld] \arrow[rd] &           & \tt{ctype} \arrow[lu] \\
+\tt{type} &                                             & \tt{inst} &                      
 \end{tikzcd}
 
-////////////////////////////////////
-// images/types.png 
-////////////////////////////////////
-% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYAYxwBPNDAC+IUaXSZc+QigBMFanSat2XHsChCR4ydOx4CRcqWIqGLNok7deusRJUwoAc3hFQAMwBOEAFskMxAcCCQFAxA-QKQyUPDESMpRIA
-\begin{tikzcd}
-                      & \tt{type} &                       \\
-\tt{ctype} \arrow[ru] &           & \tt{dtype} \arrow[lu]
-\end{tikzcd}
 
 ////////////////////////////////////
 // images/ctypes.png 
@@ -37,15 +30,25 @@
 
 
 ////////////////////////////////////
-// images/dtypes.png 
+// images/types.png 
 ////////////////////////////////////
-% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYAYxwBPNDAC+IUaXSZc+QigDMFanSat2XHsChCR4ydOx4CRcspoMWbRJ268IAIwBWXYACouo-SphQA5vBEoABmAE4QALZIZCA4EEhmIA4wYFBIComW6jaavMih9GABlPpSIGGR0TRxCTTJqUgAtBkWata2WshQkfRYYCUgNIz0yYwACjLG8iChWH4AFjgSZRVRiDE1iJltGnbAyH1wOANDIzDjk3LsswtLBuXha4mbiYwQEGimpMFMcDAqw1GEyMVxsN0Wg1UVl2nQKRX+pRCj1qsXiWyG70+KGIAA4zD9GH8AWcLiCTGC5hDWtCcnsuj0+gN7qsqqjWW8Pl8CUTTkDLuSZpSltTsh08odjoiHpV0WzEAAmEXtXL7ATCBGQwHnYGyAXgu4lIA
-\begin{tikzcd}
-\tt{obj\{*\}} & \tt{ctype} \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] \arrow["{\tt{[domain]}}"', loop, distance=2em, in=125, out=55] \arrow[l, "{\tt{[ctype]}}"'] &  & \tt{dtype} \arrow[ll, "{\tt{[range]}}", bend left] \arrow[ll, "{\tt{[domain]}}"', bend right] \arrow[ll, "{\tt{[inst]}}"'] \arrow["{\tt{[inst]}}"', loop, distance=2em, in=305, out=235]
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgBjHAJ5oYAXxAjS6TLnyEUAJnJVajFm07dgUQcLEjlMKAHN4RUADMAThAC2SAIzUcEJGRAAjGGChIAzG-pmVkQQSzAjcUkQK1sHJxdEN09vJABaf2pAtRCoWOoGOk8GAAVpPAI2SywjAAscSItrO0RHEGdXfMKYErLZSuq6kEzVYI4uHiwwOBw9KJjmt3bE-IgINCIyc0Y4GGUCotLscrlQgfrhoMrwhuimjraEtwZV9ZR7AA5N7d3Og96KkJVWrnFSXHKxCSNWIteJxEDPNZEACcXwYOz2XR6Rz6gLOQ1B2TGmkm0z0FBEQA
+\begin{tikzcd}[row sep=large,column sep=large]
+\tt{ctype} \arrow["rng"', loop, distance=2em, in=305, out=235] \arrow["dom"', loop, distance=2em, in=125, out=55] &  & \tt{dtype} \arrow[ll, "rng", bend left] \arrow[ll, "dom"', bend right] \arrow[ll, "\tt{inst}"'] \arrow["\tt{inst}"', loop, distance=2em, in=35, out=325]
 \end{tikzcd}
 
 
-
+////////////////////////////////////
+// images/obj-full.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAZgBoAGAXVJADcBDAGwFcYkQAdDnHYCAIwBWAXxDDS6TLnyEUAJlIBGanSat2XHnyEwAxjlHjJ2PASIAWJSoYs2iTt14BHQxJAYTMootJzrauwctHABPNBhXY2kzFDI-Ght1e01eRIixNw9o2WRyUmJ-Ww1HYH0w9KN3KVMchQKEgOKtKFDwyKrPGOQfc0KkoN5Wiszqr1jSXoai5JKsMDgDMRUYKABzeCJQADMAJwgAWyQ8kBwIJEVK3YOjmlOkOUu9w8QyE7PEC7cr58s388frogAKy3d7EAHPABsoKQ4K+TyQ0L+iAA7BDETDEAAOYSUYRAA
+\begin{tikzcd}
+                      &                      &                                             & \tt{obj} \arrow[ld] \arrow[rd] &        \\
+                      &                      & \tt{object}                                 &                                & \tt{q} \\
+                      & \tt{type} \arrow[ru] &                                             & \tt{value} \arrow[lu]          &        \\
+\tt{ctype} \arrow[ru] &                      & \tt{dtype} \arrow[lu] \arrow[ld] \arrow[rd] &                                &        \\
+                      & \tt{type}            &                                             & \tt{inst}                      &       
+\end{tikzcd}
 
 ////////////////////////////////////
 // images/type-data-structure.png 

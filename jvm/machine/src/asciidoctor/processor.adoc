@@ -5,37 +5,19 @@ The programs of the mm-ADT virtual machine are _types_. From a simple set of can
 
 image::processor-stack.png[float="right",width=150]
 
-Type composition, compilation, and execution are carried out by general-purpose, register-based machines called *traversers*. The traverser algorithm is driven by mm-ADT compliant *processors*. Processors grounds the mm-ADT VM to the physical machine (whether on a a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak).
+Type composition, compilation, and execution are carried out by immutable, state-based machines called *traversers*. The traverser algorithm is driven by mm-ADT compliant *processors*. Processors grounds the mm-ADT VM to the physical machine (whether on a a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak).
 
 This section details the specifics of the relationships between types, traversers, and processors.
-&nbsp;
-
-&nbsp;
-
-.Products and Coproducts
-****
-https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of structure via manipulations that expose (or generate) other structures. Two important category theoretic concepts used throughout this section are *products* and *coproducts*.
-
-image::product.png[float="left",width=225]
-
-A https://en.wikipedia.org/wiki/Product_(category_theory)[product] is any object defined in terms of it's accessible component objects. That is, from a single object, via \$\pi_n\$ projection morphisms, the product is decomposed into it's constituent parts.
-
-image::coproduct.png[float="right",width=225]
-
-A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in terms the component objects used to construct it. That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can be composed from constituent parts.
-
-Along with these decomposition (and composition) morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects. That is, product and coproduct equality are defined via component equality.
-****
 
 === Traverser
 
-A traverser (`trav`) is a _product_ with the following three \$\pi\$-projections:
+A traverser (`trav`) is a _product_ with the following three \$\pi\$-projections, where \$\Gamma\$ is the set of all traversers, \$T\$ the set of all types, and \$V\$ the set of all values:
 
 image::trav-product.png[float="right",width=225]
 
-. \$\pi_1: Tr \rightarrow T\$: the https://en.wikipedia.org/wiki/Program_counter[program counter] denotes the traverser's current location in the program (type).
-. \$\pi_2: Tr \rightarrow (T \cup V)\$: the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[data counter] denotes the traverser's current location in the data (value -- or type during compilation).
-. \$\pi_3: Tr \rightarrow Tr\$: the traverser that, via the current instruction, generated the current traverser. Traverser lineage enables the simulation of a mutable read/write https://en.wikipedia.org/wiki/Processor_register[register machine] within an immutable structure.
+. \$\pi_1: \Gamma \rightarrow T\$: the https://en.wikipedia.org/wiki/Program_counter[program counter] denotes the traverser's current location in the program (type).
+. \$\pi_2: \Gamma \rightarrow (T \cup V)\$: the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[data counter] denotes the traverser's current location in the data (value -- or type during compilation).
+. \$\pi_3: \Gamma \rightarrow \Gamma\$: The traverser that was the argument to the previous instruction that generated the current traverser. Traverser lineage enables the simulation of a mutable read/write https://en.wikipedia.org/wiki/Processor_register[register machine] within an immutable structure.
 
 IMPORTANT: An mm-ADT `obj` is the co-product `obj = type + value`. Thus, the \$\pi_2\$-projection entails that traversers can process types as well as values.
 
@@ -101,24 +83,13 @@ denotes the unary function
 \end{array}
 \]
 
-NOTE: Distributed mm-ADT processors can yield on the order of millions of traversers during a single program evaluation. Conceptually, a processor is responsible for coordinating a https://en.wikipedia.org/wiki/Swarm_intelligence[_traverser swarm_], where the result of an mm-ADT program is the aggregate data locations of all the halted traversers.
+The above unary function is evaluated via the nested mm-ADT instruction, where the \$\Delta_n\$ product projections refer to the diagonal of the `obj` (clone) and the \$arg_n\$ products projections denote the arguments to the subsequent instruction.
 
+image::int_gt_plus_id.png[align="center",width=100%]
 
 ===== n-Ary Relations
 
-However, this simple specification is further complicated by instruction arguments. For example, assume the following dtype generated from the `int` ctype via the single instruction `[plus,[mult,2]]`.
-
-[source]
-----
-mmlang> int[plus,[mult,2]]
-==>int[plus,int[mult,2]]
-mmlang> 10[plus,[mult,2]]
-==>30
-----
-
-image::instruction-arguments.png[align="center",width=90%]
-
-Every instruction argument that is a type is first resolved by applying the type. Once all arguments have been evaluated, the parent instruction can execute. In this way, every type-argument instruction has internal blocking branches.
+NOTE: Distributed mm-ADT processors can yield on the order of millions of traversers during a single program evaluation. Conceptually, a processor is responsible for coordinating a https://en.wikipedia.org/wiki/Swarm_intelligence[_traverser swarm_], where the result of an mm-ADT program is the aggregate data locations of all the halted traversers.
 
 
 === Instruction Classes

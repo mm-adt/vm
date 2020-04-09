@@ -58,6 +58,18 @@
                                                                                            & \tt{inst} \arrow[ru, "\tt{result}"']       &                                                                                             & \tt{inst'} \arrow[ru, "\tt{result}"']       &                                                                                                  & {\tt{inst'\,'}} \arrow[ru, "\tt{result}"'] &                             & \ldots
 \end{tikzcd}
 
+////////////////////////////////////
+// images/int_gt_plus_id.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPPgNLIA5jlLDR47HgJE5xBQxZtEnbr35CRYkBiNTTpGRaXXbah-rOrpImKADMnt5WKnbqOMhoLHB6ToYh0sgRVDSWyjaq9gKBacYZEWFReX6FjgYuEqVEACykFTk+Mf4CyFhQlMX1bqHILdmK0fmxAamD6UQArJHtE9VxCUmkDj19-TPBjSiL5stVBXED++4oAGzyJ75nAEYQEIxcADIwAGY49ABOfwgAHcAARbHSbbqJZjJLa9SgI-QKGBQLTwIigL6AgC2SHINBwECQZHGp1i2l06xhmnhiJANEY9EeMEYAAUGlcQH8sFoABY4GZYiC4xD4kCEpByUkPDgAERZvwA+uRBTi8QSiYgItKYvLGEqZPSQIzmWyOaEuTz+arhUgWuLNdrcjK1FTkts6XUhSL7RLEIsdZM9UqVQymSz2UNpMbvgKvWrEL7NbdA7Zg-RFYaw6bI3MbNy+XHnN6kAB2DVIFPOzq8D3CbMR83RgvW+O2xAADgr-vuNeAyEgEDQuwbZqj7BbRcxCa7DqQAE5e5N-lplUaTY3xzZGLGbSLy3PEIvU2cV5n68bw2O85bC3u8SS-VLq5NXYPhxeN9eDrfW8WE8efrkGKL6rGeMifleuY-pO96io+mrAUuYF-Ku5BIoIQA
+\begin{scriptsize}
+\begin{tikzcd}
+         &  & \tt{int}                                                                                            &                                                                                               &                                                                    & \tt{int} \arrow[lll, "{\tt{[noop]}}"'] \arrow[rd, "\tt{arg_1}"] &                                                 \\
+\tt{int} &  & {\tt{int,[gt,}} \arrow[ll, "{\tt{[gt,[plus,[id]]]}}"'] \arrow[u, "\Delta_1"] \arrow[d, "\Delta_2"'] & \tt{int}                                                                                      & \tt{int} \arrow[l, "{\tt{[noop]}}"'] \arrow[rd, "\arg_1"]          &                                                                 & {\tt{bool\Leftarrow int[gt,int[plus,int[id]]]}} \\
+         &  & \tt{int}                                                                                            & {\tt{int[plus,}} \arrow[l, "{\tt{[plus,[id]]}}"] \arrow[u, "\Delta_1"] \arrow[d, "\Delta_2"'] &                                                                    & {\tt{int[plus,int[id]]}} \arrow[ru, "\tt{arg_2}"']              &                                                 \\
+         &  &                                                                                                     & \tt{int}                                                                                      & {\tt{int[id]}} \arrow[l, "{\tt{[id]}}"'] \arrow[ru, "\tt{arg_2}"'] &                                                                 &                                                
+\end{tikzcd}
+\end{scriptsize}
 
 ////////////////////////////////////
 // images/branch-prod-coprod.png
