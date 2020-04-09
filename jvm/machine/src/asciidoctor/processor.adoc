@@ -38,15 +38,15 @@ IMPORTANT: An mm-ADT `obj` is the co-product `obj = type + value`. Thus, the \$\
 
 Traversers are used in the following three situations:
 
-. *Composition*: A traverser with a `lst[inst]`-\$pi_1\$ instruction list and a `ctype`-\$pi_2\$ canonical type, walks the list of instructions to generate a quantified `obj`. Typically, this `obj` is a well-typed and well-quantified (https://en.wikipedia.org/wiki/Type_inference[type inference]), unoptimized mm-ADT program (type).
+. *Composition*: A traverser with an untyped `obj`-\$pi_1\$ (i.e. an instruction list) and a `obj`-\$pi_2\$ (i.e. the terminal object), walks the list of instructions to generate an unoptimized mm-ADT program (type) that is well-typed and well-quantified (https://en.wikipedia.org/wiki/Type_inference[type inference]).
 +
-image::trav-compose.png[align="center",width=80%]
+image::trav-compose.png[align="center",width=85%]
 
 . *Compilation*: A traverser with a `type`-\$pi_1\$ and a `ctype`-\$pi_2\$ evaluates the instructions of the type to generate a potentially more efficient type, with respective storage and processor provide instruction integration (https://en.wikipedia.org/wiki/Program_optimization[type optimization]). This process can happen numerous times as necessary for the resultant type to reach a https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point].
 +
 image::trav-compilation.png[align="center",width=65%]
 
-. *Evaluation*: A traverser walks with a type-\$pi_1\$ and a value-\$pi_2\$ evaluates the type instructions to yield the referent values of the program's specified type (https://en.wikipedia.org/wiki/Execution_(computing)[type enumeration]).
+. *Evaluation*: A traverser with a type-\$pi_1\$ and a value-\$pi_2\$ evaluates the type instructions to yield the referent values of the program's specified type (https://en.wikipedia.org/wiki/Execution_(computing)[type enumeration]).
 +
 image::trav-evaluation.png[align="center",width=40%]
 
