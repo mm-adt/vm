@@ -8,6 +8,9 @@ image::processor-stack.png[float="right",width=150]
 Type composition, compilation, and execution are carried out by general-purpose, register-based machines called *traversers*. The traverser algorithm is driven by mm-ADT compliant *processors*. Processors grounds the mm-ADT VM to the physical machine (whether on a a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak).
 
 This section details the specifics of the relationships between types, traversers, and processors.
+&nbsp;
+
+&nbsp;
 
 .Products and Coproducts
 ****
@@ -30,9 +33,9 @@ A traverser (`trav`) is a _product_ with the following three \$\pi\$-projections
 
 image::trav-product.png[float="right",width=350]
 
-. \$\pi_1: Tr \rightarrow T\$: the https://en.wikipedia.org/wiki/Program_counter[*program counter*] denotes the traverser's current location in the program (type).
-. \$\pi_2: Tr \rightarrow (T \cup V)\$: the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[*data counter*] denotes the traverser's current location in the data (value -- or type during compilation).
-. \$\pi_3: Tr \rightarrow (\Sigma \times (T \cup V))^n\$): the local read/write https://en.wikipedia.org/wiki/Processor_register[*registers*] of the traverser provide a memory structure useful when writing more complicated programs.
+. \$\pi_1: Tr \rightarrow T\$: the https://en.wikipedia.org/wiki/Program_counter[program counter] denotes the traverser's current location in the program (type).
+. \$\pi_2: Tr \rightarrow (T \cup V)\$: the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[data counter] denotes the traverser's current location in the data (value -- or type during compilation).
+. \$\pi_3: Tr \rightarrow (\Sigma \times (T \cup V))^n\$): the local read/write https://en.wikipedia.org/wiki/Processor_register[registers] of the traverser provide a memory structure useful when writing programs that require historic data (value paths), accumulators (mutating seeds), etc.
 
 IMPORTANT: An mm-ADT `obj` is the co-product `obj = type + value`. Thus, the \$\pi_2\$-projection entails that traversers can process types as well as values.
 
@@ -40,11 +43,11 @@ Traversers are used in the following three situations:
 
 . *Composition*: A traverser with an untyped `obj`-\$pi_1\$ (i.e. an instruction list) and a `obj`-\$pi_2\$ (i.e. the terminal object), walks the list of instructions to generate an unoptimized mm-ADT program (type) that is well-typed and well-quantified (https://en.wikipedia.org/wiki/Type_inference[type inference]).
 +
-image::trav-compose.png[align="center",width=85%]
+image::trav-compose.png[align="center",width=90%]
 
-. *Compilation*: A traverser with a `type`-\$pi_1\$ and a `ctype`-\$pi_2\$ evaluates the instructions of the type to generate a potentially more efficient type, with respective storage and processor provide instruction integration (https://en.wikipedia.org/wiki/Program_optimization[type optimization]). This process can happen numerous times as necessary for the resultant type to reach a https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point].
+. *Compilation*: A traverser with a type-\$pi_1\$ and a ctype-\$pi_2\$ evaluates the instructions of the type to generate a potentially more efficient type, with respective storage and processor provide instruction integration (https://en.wikipedia.org/wiki/Program_optimization[type optimization]). This process repeats with the resultant \$\pi_2\$ becoming the \$\pi_1\$ at the next iteration until a type https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point] is reached.
 +
-image::trav-compilation.png[align="center",width=65%]
+image::trav-compilation.png[align="center",width=70%]
 
 . *Evaluation*: A traverser with a type-\$pi_1\$ and a value-\$pi_2\$ evaluates the type instructions to yield the referent values of the program's specified type (https://en.wikipedia.org/wiki/Execution_(computing)[type enumeration]).
 +
