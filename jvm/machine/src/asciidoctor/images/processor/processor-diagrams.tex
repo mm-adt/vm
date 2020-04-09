@@ -11,18 +11,41 @@
 \end{tikzcd}
 
 
+////////////////////////////////////
+// images/trav-composition.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgIAjAFYBfEENLpMufIRQAWclVqMWbTt16DkWMDgrI0zOApFiJ2PASIA2BdXrNWiDlx78BWnXoNM4lfYdIARkoTcRAMc2kiMkDFexUnNR4cACc6GgB9YlCzKUsUMgAmOOVHZ3U3HPDJCxlkeVi7UtUXYFT0jMKqiLy6+WKmhxb1bRx-H2NRMJ7a6yCSocTW9syAZm6aqJQbAaVF8p5R8aM-byNgig3I-OQAdls9hOcGKAgcBFNq67r7xseyzgvN4faabG73XbxAHsIHvKa5WYoQoPKHDVyCIQeXTwr69IjIv6opbqFYZQJXPFI0iQ5rEw46EyKGBQADm8CIoAAZikIABbJCBag4CBIZH-NHAY5BEIgagMOh8GAMAAKYJkIAYME5OBx3L5SFWQpFiDI4qWaCwZN1PP5iENIGFSHkZucFs6so1CqVqu+bBSWBZAAsdZ89baAKxGgWDJ6cN2Ba36xCRh3GmwuuOWwoe+WKlVqv0B4OJ233VOimPQ+MlpBlx2IAAclZabuzcq9+d9Tn9QZDYTDSCb5cQ6aJB0lZ2llxzHZ9lJAPeLoZttajybl2jKcAgDCwUA9Y8zGVWM7zc8RC6Lfa5K8QYvrAE5l0ngmuy7uwFud3ua4hAoLhwbZ9bVNetAjFQ9WixadgIFe9jQAyD1ClGVYL-e0wIg2lXUtBM0MCDCEOdSDW1Pb0C27K9f0CZ162I7CkklUZp3bM8KMvXtf3TMD6P2RiUJYz02K7Dil37W8UzA+0Py-Xd92bc1LRPVjyJExdrxAAd0LXaTNzYbc5IPBj2DdZShNU+d1NES4gA
+\begin{footnotesize}
+\begin{tikzcd}
+\tt{obj} \arrow[rr, "{\tt{[int]}}"]                &  & {\tt{obj}[int]} \arrow[rr, "{\tt{[plus,0]}}"]                           &  & {\tt{obj[int][plus,0]}} \arrow[rr, "{\tt{[plus,10]}}"]                  &  & {\tt{obj[int][plus0][plus,10]}} \arrow[r]                               & \ldots           \\
+\tt{trav_0} \arrow[u, "\pi_1"] \arrow[d, "\pi_2"'] &  & \tt{trav_1} \arrow[u, "\pi_1"] \arrow[d, "\pi_2"'] \arrow[ll, "\pi_3"'] &  & \tt{trav_2} \arrow[u, "\pi_1"] \arrow[d, "\pi_2"'] \arrow[ll, "\pi_3"'] &  & \tt{trav_3} \arrow[u, "\pi_1"] \arrow[d, "\pi_2"'] \arrow[ll, "\pi_3"'] & \ldots \arrow[l] \\
+\tt{obj}                                           &  & \tt{int} \arrow[ll, "{\tt{[int]}}"']                                    &  & {\tt{int[plus,0]}} \arrow[ll, "{\tt{[plus,0]}}"']                       &  & {\tt{int[plus,0][plus,10]}} \arrow[ll, "{\tt{[plus,10]}}"']             & \ldots \arrow[l]
+\end{tikzcd}
+\end{footnotesize}
 
 ////////////////////////////////////
 // images/trav-compilation.png
 ////////////////////////////////////
-% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgswcAviAGl0mXPkIoAjOSq1GLNp269+yNMzhyhIsdjwEiAJjnV6zVog5cefHBq1zHTbdMq7RIDAclEyxvIWStYqdvye+hJGKKaB5opWNqr2Lm4ewl4+0VLIptJBicq2wDgATnQ0APrGkd7ihrkAzGYKlsUMUBA4CHr1vjHIsgUJ7aEl5ZVV0nXZjf6kI20hyTyT1cSzDX4oLUvBSZyd3b1Z24Mt8cuH7Mc9wvIwUADm8ESgAGZlEAC2SLIgHAQJCbLxfX5IUyA4GIGZg75-RAAFmoQKQTT64MRAFZUTCUddimgsDVMp8EUhcdDIaMVpxidMQNQGHQAEYwBgABXOUhAZSwzwAFjgySAsUgAGx4yGYimIADs0thtJuDOkovFCqVLUJ4wZxg1csV1MQVIYfCSXW4T0NEMQAA4lcbzWBLd0cDbZXaqWjEABOZkWthWj1QW2I9xKpFexGOk1kXU2NVMkAs9lcnlsflCkUxpBx306g5EkkGgQUARAA
-\begin{footnotesize}
-\begin{tikzcd}[column sep=large]
-\tt{int}                                                             & {\tt{int[plus,0]}} \arrow[l]                                         & {\tt{int[plus,0][plus,10]}} \arrow[l]                                & \ldots \arrow[l] \\
-\tt{trav_0} \arrow[r, dotted] \arrow[u, "\pi_1"'] \arrow[d, "\pi_2"] & \tt{trav_1} \arrow[u, "\pi_1"] \arrow[ld, "\pi_2"] \arrow[r, dotted] & \tt{trav_2} \arrow[d, "\pi_2"] \arrow[u, "\pi_1"'] \arrow[r, dotted] & \ldots           \\
-\tt{int}                                                             &                                                                      & {\tt{int[plus,10]}} \arrow[ll]                                       & \ldots \arrow[l]
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgswcAviAGl0mXPkIoATOSq1GLNp269+yNMzhyhIsdjwEiAFjnV6zVog5cefHBq1zHTbQEZKu0SAwHJRMml5CyVrFTt+L30JIxRTIPNFKxtVexd3T2FvXxipZFM3YKTlW2AcACc6GgB9AGYon3FDPIBWMwVLEoYoCBwEPUa-WORZQsTOsNKKqurpBpzmgNIxjtCUnmmat3mm-xQ2hNXkzm7e-uzd4baVkOP2U77heRgoAHN4IlAAM3KIAFskGQQDgIEg3OM1uFgOkdCBqAw6AAjGAMAAKlykIAYMC+OCy31+AMQ4OBoMQsiOJVUMI8FCE8KRKPRQ0x2Nx+JAP3+SFMpKQtQhd2pmlcy0yDORaIxbHKWFeAAs8QMuUS2nzELzbiU0FhZhyVUg1SCkBStZMddU3HCsYypSyZXLFfrCSbqMbEAA2ZUuxAAdjdZJJZpsFqt3u5foD-MF2t10mdEf96oAHPC+Mk4BAGFgoNbg5wLbVrQjJczcg6FUrvAbEABOKMa8NE1PqoH59ih4u2suLayyysJ5sNgWU81xwdgoHutXZsAZrM5ieII1kpOz+fZ3Mxsd1Lul6V9x1KulAA
+\begin{tikzcd}
+\tt{int} \arrow[rr, "{\tt{[plus,0]}}"]             &  & {\tt{int[plus,0]}} \arrow[rr, "{\tt{[plus,10]}}"]                        &  & {\tt{int[plus,0][plus,10]}} \arrow[r]                                   & \ldots           \\
+\tt{trav_1} \arrow[u, "\pi_1"'] \arrow[d, "\pi_2"] &  & \tt{trav_2} \arrow[u, "\pi_1"] \arrow[lld, "\pi_2"] \arrow[ll, "\pi_3"'] &  & \tt{trav_3} \arrow[d, "\pi_2"] \arrow[u, "\pi_1"'] \arrow[ll, "\pi_3"'] & \ldots \arrow[l] \\
+\tt{int}                                           &  &                                                                          &  & {\tt{int[plus,10]}} \arrow[llll, "{\tt{[plus,10]}}"']                   & \ldots \arrow[l]
 \end{tikzcd}
-\end{footnotesize}
+
+
+////////////////////////////////////
+// images/trav-evaluation.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgswcAviAGl0mXPkIoAjOSq1GLNp269+yNMzilplISLHY8BIgCY51es1aIO7BlAg4EBkBiOSiZU-KtLbAKzCom7ixlLI5tK+ijZ2Dk4uIe4SJjI6MdbKXDw4AE50NAD6pvrJYZ4oZNGWsdmq+YVF0mWGqRGyPrVZttJBrinhZqRdCj3xjs7C8jBQAObwRKAAZnkQALZIZCA4EEiyY-52qhpaOnrBK2ubiAe7SKUhqxtIAdT3t91HnGhYzSDUBh0ABGMAYAAUKmkQHksHMABY4S4gZ43AAs7z2iDeIAYfDicAgeKgyNRr0xSAAbID8WxCcSAYc4j8-gBmUnXKkUxDbPzM9i-f6AkFgyEeaGwhFI1xkxDUnZY1lffmC0wcl7Y7kAdmV2VV0wEQA
+\begin{tikzcd}
+\tt{int} \arrow[r, "{\tt{[plus,10]}}"]             & {\tt{int[plus,10]}} \arrow[r]                                         & \ldots           \\
+\tt{trav_1} \arrow[u, "\pi_1"'] \arrow[d, "\pi_2"] & \tt{trav_2} \arrow[u, "\pi_1"'] \arrow[l, "\pi_3"] \arrow[d, "\pi_2"] & \ldots \arrow[l] \\
+5                                                  & 15                                                                    & \ldots          
+\end{tikzcd}
+
+
+
 
 
 ////////////////////////////////////
