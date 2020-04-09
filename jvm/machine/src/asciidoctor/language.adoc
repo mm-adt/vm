@@ -1,3 +1,4 @@
+:imagesdir: ./images/language
 == Language Structures
 
 image::obj-type-value-q.png[float="left",width=300]
