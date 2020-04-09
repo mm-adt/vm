@@ -36,7 +36,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait StartOp {
   this:Value[Obj] =>
-  def start[O <: Obj]():O with Type[O] = asType(this).hardQ(0).compose(StartOp(this)).hardQ(this.q).asInstanceOf[OType[O]]
+  def start[O <: Obj]():O with Type[O] = obj.q(0).compose(asType(this),StartOp(this)).hardQ(this.q).asInstanceOf[OType[O]]
 }
 
 object StartOp {
@@ -45,7 +45,7 @@ object StartOp {
   class StartInst[O <: Obj](starts:O,q:IntQ = qOne) extends VInst[O,O]((Tokens.start,List(starts)),q) with InitialInstruction {
     override def q(quantifier:IntQ):this.type = new StartInst[O](starts,quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(asType[O](starts),StartOp(starts)).hardQ(starts.q)
+      case _:Type[_] => obj.q(0).compose(asType(starts),StartOp(starts)).hardQ(starts.q)
       case _ => starts
     })
   }

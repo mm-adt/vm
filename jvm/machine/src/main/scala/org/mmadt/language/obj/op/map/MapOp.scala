@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.processor.Traverser
+import org.mmadt.processor.{ProcessorException, Traverser}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -50,10 +50,12 @@ object MapOp {
   class MapInst[O <: Obj](other:O,q:IntQ = qOne) extends VInst[Obj,O]((Tokens.map,List(other)),q) {
     override def q(quantifier:IntQ):this.type = new MapInst[O](other,quantifier).asInstanceOf[this.type]
     override def apply(trav:Traverser[Obj]):Traverser[O] = (trav.obj(),other) match {
-      case (_:Obj,avalue:Value[_] with O) => trav.split[O](avalue)
-      case (ttype:Type[_],atype:Type[_] with O) => trav.split(ttype.compose(atype,MapOp(atype)))
       case (_:Value[_],atype:Type[O]) => trav.apply(atype)
-      case _ => throw new IllegalStateException
+      case (_:Obj,avalue:Value[_] with O) => trav.split[O](avalue)
+      case (btype:Type[_],atype:Type[_] with O) =>
+        val arg:O = Traverser.resolveArg(trav,atype)
+        trav.split(btype.compose(arg,MapOp(arg)))
+      case _ => throw new ProcessorException(s"unknown state ${trav.obj()}[map,${other}]")
     }
   }
 

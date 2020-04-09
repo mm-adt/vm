@@ -196,6 +196,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(branchString)(engine.eval("int[plus,2][[is,int[gt,10]]->int[gt,20] & int->int[plus,10]]").toString)
   }
 
+  test("map instruction parsing") {
+    assertResult(int.to("x").map(int.from[IntType]("x").plus(int.from[IntType]("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
+  }
+
   test("choose instruction parsing"){
     List(
       int.plus(int(2)).choose[IntType,ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)),int -> int.plus(int(10))),
