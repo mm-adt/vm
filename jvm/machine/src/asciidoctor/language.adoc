@@ -34,33 +34,49 @@ Types denote _streams_ (i.e. https://en.wikipedia.org/wiki/Multiset[multi-set] o
 
 Types are derived from a set of base types via laws of composition that respect the axioms of https://en.wikipedia.org/wiki/Ring_theory[algebraic ring theory]. Type compositions ultimately specify programs, streams, functions, and of particular import, https://en.wikipedia.org/wiki/Functor[functorial] mappings between different https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types].
 
-==== Type Monoid
+==== Instruction Monoid
 
 .Monoids
 ****
 A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
 ****
 
-image::type-monoid.png[float="left",width=40]
+image::inst-monoid.png[float="left",width=50]
 
-mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system is induced from a generating set of types in the https://en.wikipedia.org/wiki/Monoid[monoid]
+mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_  **inst monoid**
 \[
-\langle\texttt{type},\ast\rangle,
+\langle\texttt{inst},\ast\rangle,
 \]
-where \$\tt{type}\$ is the carrier set is the set, \$\ast: \tt{type} \times \tt{type} \rightarrow \tt{type}\$ is the binary operator, and where the subset \$\tt{type} \subset (\tt{ctype} \cup \tt{i\nst})\$ (definitions forthcoming) is the seed set that generates the syntactic structure of all possible mm-ADT types and thus, programs. The example belows demonstrates the type-monoid where \$\ast\$ is juxtaposition or element concatenation.
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is unique identity element.
+
+image::initial-ctypes.png[float="right",width=275]
+
+The initial object of the `inst` monoid is `obj{0}`--from nothing, everything can be generated with the respective https://en.wikipedia.org/wiki/Zero_morphism[constant morphism]/instruction. A unique constant morphism exists from `obj{0}` to each of the 6 *canonical types*. The corresponding instructions are `[bool]`, `[int]`, `[real]`, `[str]`, and `[rec]`, where, for example,
+\[
+\texttt{[bool]}: \texttt{obj\{0\}} \rightarrow \texttt{bool}
+\]
+and in `mmlang` notation
+\[
+\tt{bool\<=[bool]}
+\]
+
+The example belows demonstrates the `inst`-monoid in action, generating types whose domain is `str` and where \$\ast\$ is juxtaposition (i.e. instruction concatenation).
 
 [source]
 ----
-mmlang> str
+mmlang> obj{0}[str]                          <1>
 ==>str
-mmlang> str[plus,'m']
+mmlang> obj{0}[str][plus,'m']                <2>
 ==>str[plus,'m']
-mmlang> [plus,'m']
-==>[plus,'m']
-mmlang> [plus,'m']str
-==>[plus,'m']str
-mmlang>
+mmlang> obj{0}[str][plus,'m'][noop]          <3>
+==>str[plus,'m']
+mmlang> obj{0}[str][plus,'m'][noop][gt,'r']  <4>
+==>bool<=str[plus,'m'][gt,'r']
 ----
+<1> The initial instruction `[str]` that generates the type `str`.
+<2> Composing `[str]` with `[plus,'m']` yields a type whose domain/range are `str`.
+<3> The identity instruction is `[noop]`.
+<4> An instruction composition mapping an `str` to a `bool`.
 
 ==== Type Graph
 
@@ -110,8 +126,9 @@ mmlang> int[plus,4][mult,42][gt,42]
 ==>bool<=int[plus,4][mult,42][gt,42]
 ----
 
+There exists an isomorphism (a https://en.wikipedia.org/wiki/Full_and_faithful_functors[bijective functor]) that maps the `inst` syntactic monoid to the type graph monoid. This should not a surprising bijection--it proves that the syntax of `mmlang` is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in `mmlang`.
 
-
+image::inst-type-functor.png[width=45%,align=center]
 
 
 ==== Type Signatures
