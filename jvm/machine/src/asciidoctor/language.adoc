@@ -16,25 +16,49 @@ A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in te
 Along with these decomposition (and composition) morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects. That is, product and coproduct equality are defined via component equality.
 ****
 
-Every mm-ADT program can be interpreted as a single https://en.wikipedia.org/wiki/Unary_function[unary function] from an `obj` of type \$S\$ (start) to an `obj` of type \$E\$ (end), where
+Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_function[unary function] that maps an object of type \$S\$ (start) to an object of type \$E\$ (end) with the signature
 \[
 f: S \rightarrow E.
 \]
 
-An `obj` is a *quantified* object that is either a *type* or a *value*, where
+image::obj-type-value-q.png[float=right,width=275]
+
+An mm-ADT object is called an `obj`. Every `obj` is the product of a quantifier and a co-coproduct denoting either a *type* or a *value* such that
 \[
-\texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}
+\texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q},
 \]
 
-image::obj-type-value-q.png[float="left",width=300]
+Some example `objs` are presented in `mmlang` below.
 
-Types denote _streams_ (i.e. https://en.wikipedia.org/wiki/Multiset[multi-set] or bag) of values. Values denote datum with a structure pre-defined outside the mm-ADT VM within the VM's larger execution context. For instance, if an mm-ADT VM is implemented on the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM], then the `str` value `'mmadt'` refers to the `java.lang.String` instance `"mmadt"`. Both `obj` types and values have associated quantifiers (`q`). The meaning of quantification is dependent on the quantifier chosen (e.g. integers, reals, unitary matrices, etc.). However, in general, the intuition is that the quantifier denotes the _amount_ of values being referred to. A quantified type states how many values the type refers to. A quantifier value states how many identical values are being denoted by the single value encoding.
+[source]
+----
+mmlang> 1              <1>
+==>1
+mmlang> 1{5}           <2>
+==>1{5}
+mmlang> int            <3>
+==>int
+mmlang> 1{5}[a,int]    <4>
+==>false{5}
+mmlang> 1{5}[a,int{5}] <5>
+==>true{5}
+----
+<1> The `int` value 1.
+<2> 5 1 values.
+<3> An `int` type denoting a single `int` value.
+<4> 5 1s *is not a* single `int`.
+<5> 5 1s *is a* 5 `ints`.
 
 === Types
 
-Types are derived from a set of base types via laws of composition that respect the axioms of https://en.wikipedia.org/wiki/Ring_theory[algebraic ring theory]. Type compositions ultimately specify programs, streams, functions, and of particular import, https://en.wikipedia.org/wiki/Functor[functorial] mappings between different https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types].
+mm-ADT types denote _streams_ (i.e. https://en.wikipedia.org/wiki/Multiset[multi-set] or bag) of values. Values denote datum outside the mm-ADT VM within the VM's larger execution context. If an mm-ADT VM is implemented on the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM], then the mm-ADT `str` value `'mmadt'` denotes the `java.lang.String` instance `"mmadt"`.
 
-==== Instruction Monoid
+Quantifiers (`{q}`) are associated with every `obj` type and value. If the `obj` quantifier is at unity (for `int`, the unit is `{1}`), then the quantifier is not displayed in `mmlang`. Thus, `int` is shorthand for `int{1}`. The meaning of quantification is dependent on the quantifier chosen (e.g. integers, reals, unitary matrices, etc.). However, in general, the intuition is that the quantifier denotes the _amount_ of values being referred to. For example, a quantified type states how many values the type references and a value quantifier states how many identical values are being represented by the single value encoding.
+
+
+Types are derived from a set of base types via laws of composition that obey the axioms and theorems of various algebraic structures such as monoids, groups, categories, where each are contextually-useful, though ultimately lossy representations of a more expressive https://en.wikipedia.org/wiki/Ring_theory[algebraic ring] called a _stream ring_. Via stream ring theory, mm-ADT type compositions enable the specification of programs, streams, functions, and of particular import, https://en.wikipedia.org/wiki/Functor[functorial] mappings between different https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types]. The various algebras of the mm-ADT type system for the primary focus of this section.
+
+==== The Instruction Monoid
 
 .Monoids
 ****
@@ -78,7 +102,7 @@ mmlang> obj{0}[str][plus,'m'][noop][gt,'r']  <4>
 <3> The identity instruction is `[noop]`.
 <4> An instruction composition mapping an `str` to a `bool`.
 
-==== Type Graph
+==== The Type Monoid
 
 .Initial and Terminal Objects
 ****
@@ -106,11 +130,9 @@ The dtypes are generated https://en.wikipedia.org/wiki/Recursive_data_type[induc
 
 image::types.png[align=center,width=35%]
 
-
-
 The dtype's recursive definition is grounded at the 6 ctypes, where every canonical type is it's own domain and range.
 
-image::obj-full.png[float=left,width=300]
+image::obj-full.png[float=right,width=300]
 
 The example below demonstrates how instructions applied to types create new types. The diagram on the right presents the products and co-products that form the general structure of the mm-ADT VM language (which is realized in mmlang).
 
@@ -128,10 +150,10 @@ mmlang> int[plus,4][mult,42][gt,42]
 
 There exists an isomorphism (a https://en.wikipedia.org/wiki/Full_and_faithful_functors[bijective functor]) that maps the `inst` syntactic monoid to the type graph monoid. This should not a surprising bijection--it proves that the syntax of `mmlang` is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in `mmlang`.
 
-image::inst-type-functor.png[width=45%,align=center]
+image::inst-type-functor.png[width=35%,align=center]
 
 
-==== Type Signatures
+===== Type Signatures
 
 [source]
 ----
@@ -180,7 +202,7 @@ mmlang> int{0,5}<=int{0,5}          <6>
 <5> The quantifier ring can be any ring with unity. In the previous examples, the chosen ring's https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] was the set of integers. In this example, the carrier set is two integers and is used to capture uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
 <6> This further emphasizes the fact that every mm-ADT type (even canonical types) are functions with a quantified domain and a quantified range.
 
-==== Type Definitions
+===== Type Definitions
 
 mm-ADT type signatures specify the canonical type and quantity of the type's domain and range. Further specification of the nature of the elements of the type is accomplished via a *type definition*. The following mm-ADT type is known as a https://en.wikipedia.org/wiki/Refinement_type[refinement type] because it provides further
 constraint/refinement on which particular integers in `int` the type is refering to. This particular type is the mm-ADT definition of a natural number in \$\mathbb{N}\$.
@@ -223,40 +245,6 @@ of the quantifier ring -- `{1}`.
 <5> The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
 
 NOTE: Any `obj` with the the quantifier ring's additive identity (`zero`) is not displayed by `mmlang` and can be safely garbage collected by the mm-ADT VM processor at anytime throughout a non-reducing computation without altering the semantics of the computation.
-
-==== Type Structures
-
-mm-ADT types can be understood from the perspective of various mathematical structures. The following subsection will discuss:
-
-. *Type monoid*: types as elements of the `obj{*}` monoid.
-. *Type graph*: types as directed, acyclic, binary multi-graphs.
-. *Type ring*: types as elements of a ring with unity where `*` is serial compose and `+` is parallel compose.
-. *Type category*: types as objects in a category with instruction morphisms and the role of equational reasoning.
-
-===== Type Monoid
-
-****
-.Definition: Monoid
-A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the identity such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
-****
-
-====== Model: mmmonoid
-
-The `mmmonoid` model-ADT models the mm-ADT VM as a monoid whose carrier set elements are all the inductively derived types of `obj{*}` and where any two types can be composed using `[mult]`.
-
-* \$A\$: types (\$\tt{ctype} \cup \tt{dtypes}\$)
-* \$\ast\:A \times A \rightarrow A \$: `[mult]`-type composition
-* \$1 \in A\$: `[noop]` identity element
-
-[source]
-----
-mmlang> int{2}[plus,4][mult,bool<=int[gt,10]]
-==>bool{2}<=int{2}[plus,4][gt,10]
-mmlang> int{2}[plus,4] * bool<=int[gt,10]
-==>bool{2}<=int{2}[plus,4][gt,10]
-mmlang> int{2} * int[plus,4] * bool<=int[gt,10]
-==>bool{2}<=int{2}[plus,4][gt,10]
-----
 
 ===== Type Graph
 
