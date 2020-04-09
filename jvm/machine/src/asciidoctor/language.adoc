@@ -16,47 +16,87 @@ A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in te
 Along with these decomposition (and composition) morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects. That is, product and coproduct equality are defined via component equality.
 ****
 
-image::obj-type-value-q.png[float="left",width=300]
-
-The mm-ADT VM operates on quantified objects known as `objs`. Every object is either a *type* or a *value*.
-
+Every mm-ADT program can be interpreted as a single https://en.wikipedia.org/wiki/Unary_function[unary function] from an `obj` of type \$S\$ (start) to an `obj` of type \$E\$ (end), where
 \[
-\begin{split}
-\tt{obj} &=\;& \tt{object} * \tt{q} \\
-\tt{object} &=\;& \tt{type} + \tt{value}
-\end{split}
+f: S \rightarrow E.
 \]
 
-A type denotes a _stream_ (i.e. https://en.wikipedia.org/wiki/Multiset[multi-set] or bag) of `obj` values. Values denote atomic or composite datum existing outside the mm-ADT VM within it's execution environment. For instance, if an mm-ADT VM is implemented on the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM], then the `str` value `'mmadt'` refers to the `java.lang.String` instance `"mmadt"`. Both `obj` types and values have associated *quantifiers* (`q`). The meaning of quantification is dependent on the quantifier type used with an mm-ADT program (e.g. integers, reals, unitary matrices, etc.). However, in general, the intuition is that the quantifier denotes the _amount_ of values being referred to.
+An `obj` is a *quantified* object that is either a *type* or a *value*, where
+\[
+\texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}
+\]
 
-The axioms of https://en.wikipedia.org/wiki/Ring_theory[algebraic ring theory] specify that rules of type composition and thus, how programs are written, streams are constructed, functions are defined, and of particular import to mm-ADT, how functorial mappings between different https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types] are specified.
+image::obj-type-value-q.png[float="left",width=300]
+
+Types denote _streams_ (i.e. https://en.wikipedia.org/wiki/Multiset[multi-set] or bag) of values. Values denote datum with a structure pre-defined outside the mm-ADT VM within the VM's larger execution context. For instance, if an mm-ADT VM is implemented on the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM], then the `str` value `'mmadt'` refers to the `java.lang.String` instance `"mmadt"`. Both `obj` types and values have associated quantifiers (`q`). The meaning of quantification is dependent on the quantifier chosen (e.g. integers, reals, unitary matrices, etc.). However, in general, the intuition is that the quantifier denotes the _amount_ of values being referred to. A quantified type states how many values the type refers to. A quantifier value states how many identical values are being denoted by the single value encoding.
 
 === Types
 
-image::obj-monoid.png[float="right",width=70]
+Types are derived from a set of base types via laws of composition that respect the axioms of https://en.wikipedia.org/wiki/Ring_theory[algebraic ring theory]. Type compositions ultimately specify programs, streams, functions, and of particular import, https://en.wikipedia.org/wiki/Functor[functorial] mappings between different https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types].
 
-mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system is inductively generated from the https://en.wikipedia.org/wiki/Monoid[monoid] `obj{*}`, where it's elements (i.e. types) ultimately refer to streams of values. mm-ADT program evaluation can be understood as https://en.wikipedia.org/wiki/Dereference_operator[dereferencing] the type denoting the program to yield (itemize) it's referent values -- i.e. program results.
+==== Type Monoid
 
-image::type.png[float="left",width=360]
+.Monoids
+****
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
+****
 
+image::type-monoid.png[float="left",width=40]
+
+mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system is induced from a generating set of types in the https://en.wikipedia.org/wiki/Monoid[monoid]
+\[
+\langle\texttt{type},\ast\rangle,
+\]
+where \$\tt{type}\$ is the carrier set is the set, \$\ast: \tt{type} \times \tt{type} \rightarrow \tt{type}\$ is the binary operator, and where the subset \$\tt{type} \subset (\tt{ctype} \cup \tt{i\nst})\$ (definitions forthcoming) is the seed set that generates the syntactic structure of all possible mm-ADT types and thus, programs. The example belows demonstrates the type-monoid where \$\ast\$ is juxtaposition or element concatenation.
+
+[source]
+----
+mmlang> str
+==>str
+mmlang> str[plus,'m']
+==>str[plus,'m']
+mmlang> [plus,'m']
+==>[plus,'m']
+mmlang> [plus,'m']str
+==>[plus,'m']str
+mmlang>
+----
+
+==== Type Graph
+
+.Initial and Terminal Objects
+****
+image::initial.png[width=130,float=left]
+
+A category may have an https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial and/or terminal] object.
+
+An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.
+
+image::terminal.png[width=130,float=right]
+A *terminal object* \$E\$ is the range of a set of morphisms \$E \rightarrow S_n\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+****
+
+image::type-product.png[float="right",width=250]
 There are two kinds of mm-ADT types: *canonical types* (ctypes) and *derived types* (dtypes). There are 6 ctypes which comprise the fundamental base types of the mm-ADT VM: `bool`, `int`, `real`, `str`, `lst`, or `rec`. A dtype is the product of a type and an instruction (`inst`), where the type component serves as the _domain_, the instruction component the _function_, and the type product as a whole, relative to it's components, the _range_.
 
 \[
 \begin{split}
 \tt{type} &=\;& (\tt{dtype} &\;*\;& \tt{inst}) &\;+\;& \tt{ctype} \\
-\text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{constant"}
+\text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"}
 \end{split}
 \]
 
-The dtype's recursive definition is grounded at the 6 ctypes, where every canonical type is it's own domain and range. The dtypes are generated https://en.wikipedia.org/wiki/Recursive_data_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`). When applied to types, every `inst` yields a distinct dtype that is a structural expansion of the previous type.
+The dtypes are generated https://en.wikipedia.org/wiki/Recursive_data_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`). When applied to types, every `inst` yields a distinct dtype that is a structural expansion of the previous type.
 
-image::types.png[align=center,width=40%]
+image::types.png[align=center,width=35%]
 
-image::obj-full.png[float=right,width=420]
+
+
+The dtype's recursive definition is grounded at the 6 ctypes, where every canonical type is it's own domain and range.
+
+image::obj-full.png[float=left,width=300]
 
 The example below demonstrates how instructions applied to types create new types. The diagram on the right presents the products and co-products that form the general structure of the mm-ADT VM language (which is realized in mmlang).
-
-
 
 [source]
 ----
