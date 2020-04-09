@@ -7,16 +7,16 @@ The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruc
 |===
 | Class      | Signature            | Description
 
-| Branch     | `y{*}<=x[branch]`    | Instructions for splitting traversers across instructions.
-| Filter     | `x{?}<=x[filter]`    | Instructions for removing traversers from an evaluation
-| Flatmap    | `y{*}<=x[flatmap]`   | Instructions for splitting traversers across objects.
-| Initial    | `obj{0}<=x[initial]` | Instructions for finalizing objects in an evaluation
-| Map        | `y<=x[map]`          | Instructions for moving traversers between objects
-| Model      | `y<=x[model]`        | Instructions for transforming types between model-ADTs
-| Reduce     | `y<=x{*}[reduce]`    | Instructions for funneling traversers down to a single traverser
-| SideEffect | `x<=x[sideeffect]`   | Instructions that yield global state mutations
-| Terminal   | `x{*}<=obj{0}[terminal]`   | Instructions for generating objects for evaluation
-| Traverser  | `y<=x[traverser]`    | Instructions that operate on the traverser itself
+| Branch     | `y{*}\<=x[branch]`    | Instructions for splitting traversers across instructions.
+| Filter     | `x{?}\<=x[filter]`    | Instructions for removing traversers from an evaluation
+| Flatmap    | `y{*}\<=x[flatmap]`   | Instructions for splitting traversers across objects.
+| Initial    | `obj{0}\<=x[initial]` | Instructions for finalizing objects in an evaluation
+| Map        | `y\<=x[map]`          | Instructions for moving traversers between objects
+| Model      | `y\<=x[model]`        | Instructions for transforming types between model-ADTs
+| Reduce     | `y\<=x{*}[reduce]`    | Instructions for funneling traversers down to a single traverser
+| SideEffect | `x\<=x[sideeffect]`   | Instructions that yield global state mutations
+| Terminal   | `x{*}\<=obj{0}[terminal]`   | Instructions for generating objects for evaluation
+| Traverser  | `y\<=x[traverser]`    | Instructions that operate on the traverser itself
 |===
 
 ==== Branch Instructions
@@ -62,9 +62,9 @@ The `[choose]` instruction takes a single `rec`-type argument. The record keys a
 |====
 | choose syntax           | syntax style
 
-| `y<=x[choose,rec[x:y]]` | vm instruction
-| `y<=x[[x->y][x->y]]`    | stream division
-| `y<=x[x->y \| x->y]`    | inline selection
+| `y\<=x[choose,rec[x:y]]` | vm instruction
+| `y\<=x[[x->y][x->y]]`    | stream division
+| `y\<=x[x->y \| x->y]`    | inline selection
 |====
 
 [source]

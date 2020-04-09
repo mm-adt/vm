@@ -159,7 +159,7 @@ mmlang>
 ----
 <1> A base type composed with an instruction/quantifier pair, where the quantifier is not displayed as it's the unit
 of the quantifier ring -- `{1}`.
-<2> A compiled type that maps a single integer to zero or one integers. If the internal `bool<=int[gte,0]` type yields
+<2> A compiled type that maps a single integer to zero or one integers. If the internal `bool\<=int[gte,0]` type yields
 `true`, then an `int{1}`, else `int{0}`.
 <3> A type operates on an `int` thus, if supplied "an `int` type", the type operates on it to yield a type. The use of types to process types is a form of compilation generally known as https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation].
 <4> The type maps the positive integer `6{1}` to `6{1}` (_some_).
