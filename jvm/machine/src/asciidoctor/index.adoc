@@ -8,10 +8,10 @@ Marko A. Rodriguez <marko@rredux.com>
 :docinfo: shared-head
 :stem: latexmath
 :source-highlighter: coderay
+:coderay-css: style
 :source-language: mmadt
 :favicon: ./images/favicon.ico
-// :stylesdir: ./css
-// :stylesheet: mmadt.css
+:copyright: 2020
 
 include::introduction.adoc[]
 
