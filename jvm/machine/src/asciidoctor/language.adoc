@@ -28,6 +28,12 @@ An mm-ADT object is called an `obj`. Every `obj` is the product of a quantifier 
 \texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q},
 \]
 
+Products https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over co-products. Therefore, mm-ADT has two sorts of `objs`: _quantified types_ and a _quantified values_.
+
+\[
+\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
+\]
+
 Some example `objs` are presented in `mmlang` below.
 
 [source]
