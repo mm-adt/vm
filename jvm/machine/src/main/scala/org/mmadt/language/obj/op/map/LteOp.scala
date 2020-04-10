@@ -50,10 +50,10 @@ object LteOp {
     override def q(quantifier:IntQ):this.type = new LteInst[O](other,quantifier).asInstanceOf[this.type]
     override def exec(start: O): Bool = start match {
       case atype: Type[_] => atype.compose(bool, new LteInst(Inst.resolveArg(start, other), q))
-      case avalue: Value[_] => (Inst.resolveArg(start, other) match {
+      case avalue: Value[_] => Inst.resolveArg(start, other) match {
         case _: Type[_] => avalue.start[O]().compose(bool, new LteInst(other, q))
-        case bvalue: Value[O] => avalue.lte(bvalue).clone(_via = (avalue,this))
-      }).q(multQ(avalue, this)._2)
+        case bvalue: Value[O] => avalue.lte(bvalue).q(multQ(start, this)).via(start,this)
+      }
     }
   }
 

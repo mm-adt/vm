@@ -50,10 +50,10 @@ object MultOp {
   class MultInst[O <: Obj with MultOp[T, V], T <: Type[O], V <: Value[O]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.mult, List(other)), q) {
     override def q(quantifier: IntQ): this.type = new MultInst[O, T, V](other, quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = {
-      (start match {
+      start match {
         case atype: Type[_] => atype.compose(start, new MultInst[O, T, V](Inst.resolveArg(start, other), q))
         case _ => start.mult(Inst.resolveArg(start, other)).q(multQ(start, this)).via(start, this)
-      })
+      }
     }
   }
 
