@@ -33,13 +33,13 @@ import org.scalatest.FunSuite
  */
 class VTPatternsTest extends FunSuite {
 
-  test("type instructions"){
+/*  test("type instructions"){
     assert(int.plus(1).mult(2).test(int.plus(1).mult(2)))
     assert(int(10).test(int.from[IntType]("x")))
     assert(int.plus(10).test(int.plus(int.from[IntType]("x"))))
     assert(int.plus(10).test(int.plus(int.from[IntType]("x").plus(2))))
     assert(!int.plus(10).test(int.plus(int.from[IntType]("x").plus(2)).mult(20)))
-  }
+  }*/
 
   test("type/type patterns on atomic objs"){
     assert(int.test(int))

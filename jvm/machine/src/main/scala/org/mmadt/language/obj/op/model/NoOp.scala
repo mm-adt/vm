@@ -24,7 +24,6 @@ package org.mmadt.language.obj.op.model
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{IntQ, Obj}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
 /**

@@ -25,34 +25,33 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.op.map.OrOp.OrInst
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AndOp {
-  this:Obj =>
-  def and(other:BoolType):BoolType = this match {
-    case atype:BoolType => atype.compose(other,AndOp(other))
-    case avalue:BoolValue => avalue.start().compose(other,AndOp(other))
+  this: Obj =>
+  def and(other: BoolType): BoolType = this match {
+    case atype: BoolType => atype.compose(other, AndOp(other))
+    case avalue: BoolValue => avalue.start().compose(other, AndOp(other))
   }
-  def and(other:BoolValue):this.type = (this match {
-    case atype:BoolType => atype.compose(bool,AndOp(other))
-    case avalue:BoolValue => avalue.value(avalue.value && other.value)
+  def and(other: BoolValue): this.type = (this match {
+    case atype: BoolType => atype.compose(bool, AndOp(other))
+    case avalue: BoolValue => avalue.value(avalue.value && other.value)
   }).asInstanceOf[this.type]
-  final def &&(bool:BoolType):BoolType = this.and(bool)
-  final def &&(bool:BoolValue):this.type = this.and(bool)
+  final def &&(bool: BoolType): BoolType = this.and(bool)
+  final def &&(bool: BoolValue): this.type = this.and(bool)
 }
 
 object AndOp {
-  def apply(other:Obj):AndInst = new AndInst(other)
+  def apply(other: Obj): AndInst = new AndInst(other)
 
-  class AndInst(other:Obj,q:IntQ = qOne) extends VInst[Bool,Bool]((Tokens.and,List(other)),q) {
-    override def q(quantifier:IntQ):this.type = new AndInst(other,quantifier).asInstanceOf[this.type]
+  class AndInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool]((Tokens.and, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new AndInst(other, quantifier).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = start match {
       case atype: BoolType => atype.compose(new AndInst(Inst.resolveArg(start, other), q))
       case avalue: BoolValue => (Inst.resolveArg(start, other) match {

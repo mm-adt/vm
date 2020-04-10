@@ -39,7 +39,6 @@ import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.value.{strm => _,_}
 import org.mmadt.language.{LanguageException,Tokens}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory.{strm => estrm,_}
 
 import scala.util.matching.Regex
@@ -87,8 +86,8 @@ class mmlangParser(val model:Model) extends JavaTokenParsers {
   })
   lazy val cType    :Parser[Type[Obj]]    = (boolType | realType | intType | strType | recType | namedType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType    :Parser[Type[Obj]]    = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj,Obj]](inst | cType ^^ (t => AsOp(t))) ^^ {
-    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(Traverser.standard(domain,model = this.model))((x,y) => y(x).asInstanceOf[Traverser[Type[Obj]]]).obj())
-    case None ~ domain ~ insts => insts.foldLeft(Traverser.standard(domain,model = this.model))((x,y) => y(x).asInstanceOf[Traverser[Type[Obj]]]).obj()
+    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x,y) => y.exec(x).asInstanceOf[Type[Obj]]))
+    case None ~ domain ~ insts => insts.foldLeft(domain)((x,y) => y.exec(x).asInstanceOf[Type[Obj]])
   }
   lazy val anonType :Parser[__]           = inst ~ rep[Inst[Obj,Obj]](inst | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))
   lazy val instOp   :String               = Tokens.reserved.foldRight(EMPTY)((a,b) => b + PIPE + a).drop(1)
@@ -131,7 +130,7 @@ object mmlangParser {
   def parse[O <: Obj](script:String,model:Model):O = try {new mmlangParser(model).parse[O](script)} catch {
     case e:VmException => throw e
     case e:Exception => {
-      // e.printStackTrace()
+       e.printStackTrace()
       throw new LanguageException(e.getMessage)
     }
   }

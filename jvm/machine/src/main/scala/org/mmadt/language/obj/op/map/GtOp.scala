@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

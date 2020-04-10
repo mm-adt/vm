@@ -25,10 +25,8 @@ package org.mmadt.language.obj.op.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -36,35 +34,34 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ChooseOp {
-  this:Obj =>
-
-  def choose[IT <: Obj,OT <: Obj](branches:(IT,OT)*):OT = this.choose(trec(value = branches.toMap))
-
-  def choose[IT <: Obj,OT <: Obj](branches:RecType[IT,OT],start:IT = this.asInstanceOf[IT]):OT ={
+  this: Obj =>
+  def choose[IT <: Obj, OT <: Obj](branches: (IT, OT)*): OT = this.choose(trec(value = branches.toMap))
+  def choose[IT <: Obj, OT <: Obj](branches: RecType[IT, OT], start: IT = this.asInstanceOf[IT]): OT = {
     start match {
-      case atype:Type[IT] with IT =>
-        val newBranches:RecType[IT,OT] = BranchInstruction.applyRec(atype.range,branches) // composed branches given the incoming type
-        val rangeType  :OT                        = BranchInstruction.generalType[OT](newBranches.value().values)
-        atype.compose[OT](rangeType,ChooseOp[IT,OT](newBranches))
-      case avalue:Value[IT] with IT =>
+      case atype: Type[IT] with IT =>
+        val newBranches: RecType[IT, OT] = BranchInstruction.applyRec(atype.range, branches) // composed branches given the incoming type
+        val rangeType: OT = BranchInstruction.generalType[OT](newBranches.value().values)
+
+        atype.compose[OT](rangeType, ChooseOp[IT, OT](newBranches))
+      case avalue: Value[IT] with IT =>
         branches.value().find(p => p._1 match {
-          case btype:Type[IT] with IT => start.compute(btype).alive()
-          case bvalue:Value[IT] with IT => avalue.test(bvalue)
+          case btype: Type[IT] with IT => start.compute(btype).alive()
+          case bvalue: Value[IT] with IT => avalue.test(bvalue)
         }).map(_._2).getOrElse(avalue.q(qZero))
         match {
-          case btype:Type[OT] with OT => start.compute(btype)
-          case bvalue:Value[OT] with OT => bvalue.q(avalue.q)
+          case btype: Type[OT] with OT => start.compute(btype)
+          case bvalue: Value[OT] with OT => bvalue.q(avalue.q)
         }
     }
   }
 }
 
 object ChooseOp {
-  def apply[IT <: Obj,OT <: Obj](branches:RecType[IT,OT]):ChooseInst[IT,OT] = new ChooseInst(branches)
+  def apply[IT <: Obj, OT <: Obj](branches: RecType[IT, OT]): ChooseInst[IT, OT] = new ChooseInst(branches)
 
-  class ChooseInst[IT <: Obj,OT <: Obj](branches:RecType[IT,OT],q:IntQ=qOne) extends VInst[IT,OT]((Tokens.choose,List(branches)),q) with BranchInstruction {
-    override def q(quantifier:IntQ):this.type = new ChooseInst[IT,OT](branches,quantifier).asInstanceOf[this.type]
-    override def exec(start:IT):OT = start.choose(branches,start) // TODO: do we maintain the OT branch states?
+  class ChooseInst[IT <: Obj, OT <: Obj](branches: RecType[IT, OT], q: IntQ = qOne) extends VInst[IT, OT]((Tokens.choose, List(branches)), q) with BranchInstruction {
+    override def q(quantifier: IntQ): this.type = new ChooseInst[IT, OT](branches, quantifier).asInstanceOf[this.type]
+    override def exec(start: IT): OT = start.choose(branches, start) // TODO: do we maintain the OT branch states?
   }
 
 }

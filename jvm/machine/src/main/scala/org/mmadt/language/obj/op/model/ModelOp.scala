@@ -26,11 +26,8 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
 import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
 import org.mmadt.language.obj.op.model.ModelOp.{ModelInst, ModelT}
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -40,7 +37,7 @@ import org.mmadt.storage.obj.value.VInst
 trait ModelOp {
   this: Obj =>
   def model[E <: Obj](model: ModelT): E = this match {
-    case atype: Type[_] => new ModelInst[Obj, E](model).apply(Traverser.standard(atype, model = Model.from(model))).obj()
+    case atype: Type[_] => new ModelInst[Obj, E](model).exec(atype)
     case other: E => Model.from(model).apply(other)
   }
 }
@@ -56,7 +53,7 @@ object ModelOp {
       LeftRightSweepRewrite.rewrite(m,
         start.asInstanceOf[Type[Obj]],
         start.asInstanceOf[Type[Obj]].range,
-        Traverser.standard(str, Map.empty, m)).obj().asInstanceOf[E]
+        str).asInstanceOf[E]
     }
   }
 

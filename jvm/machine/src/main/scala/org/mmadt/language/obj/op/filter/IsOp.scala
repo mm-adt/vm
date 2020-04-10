@@ -28,7 +28,6 @@ import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.op.FilterInstruction
 import org.mmadt.language.obj.op.filter.IsOp.IsInst
 import org.mmadt.language.obj.value.{BoolValue, Value}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

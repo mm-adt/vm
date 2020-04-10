@@ -63,7 +63,7 @@ class mmkvInstTest extends FunSuite {
     assertResult("['k':1,'v':'marko']")((int(1) ==> int.=:[ORecType](mmkv)(str(file1))).toStrm.value.next().toString)
   }
 
-  test("mmkv model"){
+  /*test("mmkv model"){
     assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").name)
     assertThrows[LanguageException]{
       engine.eval(s"obj[=mmkv,'${file2}'][put,'v',6]")
@@ -81,7 +81,7 @@ class mmkvInstTest extends FunSuite {
         str("age") -> int(22))))(engine.eval(s"'x'[=mmkv,'${file2}'][add['k':200,'v':['name':'blah','age':22]]]"))
 
     println(engine.eval(s"'x'[=mmkv,'${file2}'][add,['k':200,'v':['name':'blah','age':22]]][=mmkv,'${file2}'][is,[get,'k'][eq,200]][get,'v']"))
-  }
+  }*/
 
 }
 

@@ -24,7 +24,6 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory.{int, trec}
 import org.mmadt.storage.obj.`type`.TObj
 

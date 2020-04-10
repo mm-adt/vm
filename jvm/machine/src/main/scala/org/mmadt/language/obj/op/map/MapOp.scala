@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.processor.{ProcessorException, Traverser}
+import org.mmadt.processor.ProcessorException
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

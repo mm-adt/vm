@@ -27,7 +27,6 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.map.IdOp.IdInst
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, IntQ, Obj, _}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

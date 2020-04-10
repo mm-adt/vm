@@ -25,7 +25,6 @@ package org.mmadt.language.obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.{LanguageFactory, Tokens}
-import org.mmadt.processor.Traverser
 
 
 /**
@@ -40,8 +39,7 @@ trait Inst[S <: Obj, +E <: Obj] extends Obj {
   final def arg1[O <: Obj](): O = this.value()._2.tail.head.asInstanceOf[O]
   final def arg2[O <: Obj](): O = this.value()._2.tail.tail.head.asInstanceOf[O]
   final def arg3[O <: Obj](): O = this.value()._2.tail.tail.tail.head.asInstanceOf[O]
-  def apply(trav: Traverser[S]): Traverser[E] = trav.split(this.exec(trav.obj()))
-  def exec(start: S): E = this.apply(Traverser.standard(start)).obj()
+  def exec(start: S): E;
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
   override def hashCode: scala.Int = this.value().hashCode()

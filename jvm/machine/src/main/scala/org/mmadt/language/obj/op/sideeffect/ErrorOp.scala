@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.sideeffect
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

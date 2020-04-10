@@ -30,7 +30,6 @@ import org.mmadt.language.obj.op.traverser.ExplainOp
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -54,7 +53,7 @@ trait Type[+T <: Obj] extends Obj
   def linvert():this.type ={
     ((this.lineage.tail match {
       case Nil => this.range
-      case i => i.foldLeft[Traverser[Obj]](Traverser.standard(i.head._1.asInstanceOf[Type[Obj]].range))((btype,inst) => inst._2.apply(btype)).obj()
+      case i => i.foldLeft[Obj](i.head._1.asInstanceOf[Type[Obj]].range)((btype,inst) => inst._2.exec(btype))
     }) match {
       case vv:Value[_] => vv.start()
       case x => x
@@ -71,7 +70,7 @@ trait Type[+T <: Obj] extends Obj
   // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
   def compose[R <: Type[Obj]](btype:R):R = btype match {
     case anon:__ => anon(this)
-    case atype:Type[Obj] => atype.lineage.seq.foldLeft[Traverser[Obj]](Traverser.standard(this))((b, a) => a._2(b)).obj().asInstanceOf[R].compose(btype.range,NoOp())
+    case atype:Type[Obj] => atype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b)).asInstanceOf[R].compose(btype.range,NoOp())
   }
   def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={

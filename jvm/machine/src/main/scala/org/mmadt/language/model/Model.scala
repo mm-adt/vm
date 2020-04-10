@@ -23,13 +23,12 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{RecType,Type}
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{OType,Obj}
-import org.mmadt.processor.Traverser
+import org.mmadt.language.obj.{Inst, OType, Obj}
 import org.mmadt.storage.StorageFactory._
 
 import scala.collection.mutable
@@ -86,11 +85,11 @@ object Model {
         case Some(m) => m.get(left) match {
           case Some(n) => Some(n)
           case None => m.iterator.find(a => left.test(a._1)).map(a => {
-            val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap // TODO: may need to give model to traverser
+            //val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap // TODO: may need to give model to traverser
             a._2.lineage.map(x =>
               OpInstResolver.resolve[Obj,Obj](
                 x._2.op(),
-                x._2.args().map(i => Traverser.resolveArg[Obj,Obj](Traverser.standard(x._1,state),i)))) // TODO: may need to give model to traverser
+                x._2.args().map(i => Inst.resolveArg[Obj,Obj](x._1,i)))) // TODO: may need to give model to traverser
               .foldRight(a._2.domain[Obj]())((x,z) => z.compose(x))
           })
         }
@@ -114,8 +113,8 @@ object Model {
     }
     override def get(left:Value[Obj]):Option[Value[Obj]] ={
       typeMap.get(left.name) match {
-        case None => typeMap.values.flatten.find(x => x._2.root && left.test(x._2.name) && x._1.name != x._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
-        case Some(m) => m.iterator.find(a => a._2.root && left.test(a._1) && a._1.name != a._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
+        case None => typeMap.values.flatten.find(x => x._2.root && left.test(x._2.name) && x._1.name != x._2.name).map(a => AsOp[Obj](a._2).exec(left).asInstanceOf[Value[Obj]])
+        case Some(m) => m.iterator.find(a => a._2.root && left.test(a._1) && a._1.name != a._2.name).map(a => AsOp[Obj](a._2).exec(left).asInstanceOf[Value[Obj]])
       }
     }
   }

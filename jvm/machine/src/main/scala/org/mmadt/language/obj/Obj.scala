@@ -34,7 +34,7 @@ import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -63,8 +63,8 @@ trait Obj
   def alive(): Boolean = this.q != qZero
   // historic mutations
   def root: Boolean = null == this.via._1
-  val via: ViaTuple= base()
-  def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj,Inst[Obj,Obj])]
+  val via: ViaTuple = base()
+  def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   // utility methods
   def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
   def toList: List[this.type] = toStrm.value.toList
@@ -84,8 +84,9 @@ trait Obj
   val name: String
   def test(other: Obj): Boolean
   def clone(_name: String = this.name, _value: Any = null, _quantifier: IntQ = this.q, _via: ViaTuple = this.via): this.type
+
   def compute[E <: Obj](rangeType: Type[E]): E = {
-    (Type.nextInst(rangeType) match {
+    (rangeType.lineage.headOption.map(x => x._2) match {
       case None => return this.asInstanceOf[E]
       case Some(inst: Inst[_, _]) => inst.exec(this)
     }).compute(rangeType.linvert())

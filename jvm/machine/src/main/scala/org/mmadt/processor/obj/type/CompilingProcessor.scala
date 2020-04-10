@@ -27,7 +27,7 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.{OType, Obj}
-import org.mmadt.processor.{Processor, ProcessorException, Traverser}
+import org.mmadt.processor.{Processor, ProcessorException}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -36,16 +36,16 @@ class CompilingProcessor(val model:Model = Model.id) extends Processor {
   override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
     ProcessorException.testRootedType(domainObj,this)
     LanguageException.testTypeCheck(domainObj,rangeType.domain())
-    if (model == Model.id) Traverser.standard(domainObj).apply(rangeType).obj()
+    if (model == Model.id) domainObj.compute(rangeType)
     else {
       val domainType       :OType[E]     = model(domainObj).asInstanceOf[OType[E]]
-      var mutatingTraverser:Traverser[E] = Traverser.standard(obj = domainType,model = this.model)
-      var previousTraverser:Traverser[E] = Traverser.standard(obj = rangeType.asInstanceOf[E],model = this.model)
-      while (previousTraverser != mutatingTraverser) {
-        mutatingTraverser = previousTraverser
-        previousTraverser = LeftRightSweepRewrite.rewrite(model,mutatingTraverser.obj().asInstanceOf[Type[E]],domainType,Traverser.standard(obj = domainType,model = this.model))
+      var mutating:E = domainType
+      var previous:E = rangeType.asInstanceOf[E]
+      while (previous != mutating) {
+        mutating = previous
+        previous = LeftRightSweepRewrite.rewrite(model,mutating.asInstanceOf[Type[E]],domainType,domainType)
       }
-      mutatingTraverser.obj()
+      mutating
     }
   }
 }

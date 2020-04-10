@@ -25,10 +25,8 @@ package org.mmadt.language.obj.op.traverser
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
-import org.mmadt.language.obj.op.traverser.ToOp.ToInst
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -53,13 +51,14 @@ object FromOp {
 
   class FromInst[O <: Obj](label:StrValue,default:O = null,q:IntQ=qOne) extends VInst[Obj,O]((Tokens.from,List(label)),q) with TraverserInstruction {
     override def q(quantifier:IntQ):this.type = new FromInst[O](label,default,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[Obj]):Traverser[O] ={
-      trav.split(composeInstruction(
+    override def exec(start:Obj):O ={
+      /*trav.split(composeInstruction(
         if (null != default)
           trav.state.getOrElse(arg0[StrValue]().value,default).asInstanceOf[O]
         else {
           trav.state.getOrElse(arg0[StrValue]().value,asType(trav.obj())).asInstanceOf[O]
-        }))
+        }))*/
+      default
     }
   }
 

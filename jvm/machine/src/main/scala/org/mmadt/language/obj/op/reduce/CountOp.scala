@@ -27,7 +27,6 @@ import org.mmadt.language.obj.`type`.{IntType, Type}
 import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Inst, Int, Obj}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -49,7 +48,7 @@ object CountOp {
     lazy     val zero     :IntValue          = int(0)
     override val seed     :(String,IntValue) = ("seed",zero)
     override val reduction:IntType           = int.quant().plus(int.from[IntType](seed._1)).asInstanceOf[IntType]
-    override def apply(trav:Traverser[Obj]):Traverser[Int] = trav.split(trav.obj().count())
+    override def exec(start:Obj):Int = start.count()
   }
 
 }

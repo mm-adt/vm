@@ -29,7 +29,6 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.Value
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -42,7 +41,7 @@ trait AsOp {
   this:Obj =>
   def as[O <: Obj](obj:O):O = this match {
     case atype:Type[_] => atype.compose(obj,AsOp(obj))
-    case _ => AsOp(obj).apply(Traverser.standard(this)).obj()
+    case _ => AsOp(obj).exec(obj)
   }
 }
 

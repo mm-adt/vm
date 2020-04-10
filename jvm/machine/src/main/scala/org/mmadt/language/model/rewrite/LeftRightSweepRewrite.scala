@@ -28,7 +28,6 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.value.Value
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -36,28 +35,28 @@ import org.mmadt.storage.StorageFactory._
  */
 object LeftRightSweepRewrite {
 
-  def rewrite[S <: Obj](model:Model,atype:Type[S],btype:Type[S],traverser:Traverser[S]):Traverser[S] ={
+  def rewrite[S <: Obj](model:Model,atype:Type[S],btype:Type[S],start:S):S ={
     if (atype.isDerived) {
       model.get(atype) match {
-        case Some(right:Type[S]) => rewrite(model,right,btype,traverser)
+        case Some(right:Type[S]) => rewrite(model,right,btype,start)
         case None =>
-          val inst:Inst[Obj,Obj] = OpInstResolver.resolve(atype.via._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.via._2.asInstanceOf[Inst[Obj,Obj]],traverser)).q(atype.via._2.q)
+          val inst:Inst[Obj,Obj] = OpInstResolver.resolve(atype.via._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.via._2.asInstanceOf[Inst[Obj,Obj]],start)).q(atype.via._2.q)
           rewrite(model,
             atype.rinvert(),
-            inst.apply(traverser.split(atype.rinvert[Type[S]]().range)).obj().asInstanceOf[Type[S]].compose(btype), // might need a model.resolve down the road
-            traverser)
+            inst.exec(atype.rinvert[Type[S]]().range).asInstanceOf[Type[S]].compose(btype), // might need a model.resolve down the road
+            start)
       }
     } else if (btype.isDerived) {
       rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),
-        btype.lineage.head._2.apply(traverser)).asInstanceOf[Traverser[S]]
+        btype.lineage.head._2.exec(start)).asInstanceOf[S]
     }
-    else traverser
+    else start
   }
 
   // if no match, then apply the instruction after rewriting its arguments
-  private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst[Obj,Obj],traverser:Traverser[S]):List[Obj] ={
+  private def rewriteArgs[S <: Obj](model:Model,start:Type[S],inst:Inst[Obj,Obj],end:S):List[Obj] ={
     inst.op() match {
       case Tokens.a | Tokens.as | Tokens.map | Tokens.put | Tokens.model => inst.args().map{
         case atype:Type[_] if isSymbol(atype) => model(atype)
@@ -66,13 +65,13 @@ object LeftRightSweepRewrite {
       case x if x == Tokens.choose || x == Tokens.branch =>
         def branching(obj:Obj):Obj ={
           obj match {
-            case branchType:Type[S] => rewrite(model,branchType,start,traverser.split(start)).obj()
+            case branchType:Type[S] => rewrite(model,branchType,start,start)
             case branchValue:Value[_] => branchValue
           }
         }
         List(trec(name = Tokens.rec,inst.arg0[ORecType]().value().map(x => (branching(x._1),branching(x._2)))))
       case _ => inst.args().map{
-        case atype:Type[_] => rewrite(model,atype,start,traverser.split(start)).obj()
+        case atype:Type[_] => rewrite(model,atype,start,start)
         case avalue:Value[_] => avalue
       }
     }

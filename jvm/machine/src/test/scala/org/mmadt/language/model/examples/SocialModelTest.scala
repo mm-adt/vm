@@ -102,7 +102,7 @@ class SocialModelTest extends FunSuite {
   test("bad model mappings"){
     //assertThrows[AssertionError]{mmsocial(vrec(str("name") -> int(34),str("age") -> int(24)))}
     //assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko")))}
-    assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko"),str("age") -> int(-120)))}
+//    assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko"),str("age") -> int(-120)))}
     //assertThrows[AssertionError]{mmsocial(int(-130))}
   }
 

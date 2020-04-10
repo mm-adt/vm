@@ -45,7 +45,7 @@ class ComplexModelTest extends FunSuite {
     //
     val compilation = complex.apply(trec(str("a") -> real,str("b") -> real).named("cmplx").plus(trec(str("a") -> real(0.5),str("b") -> real(0.6)).named("cmplx")).is(true))
     println(compilation)
-    println(complex(vrec(str("a") -> real(0.1),str("b") -> real(0.12))))
-    println(vrec(str("a") -> real(0.1),str("b") -> real(0.12)) ==> (compilation,complex))
+//    println(complex(vrec(str("a") -> real(0.1),str("b") -> real(0.12))))
+  //  println(vrec(str("a") -> real(0.1),str("b") -> real(0.12)) ==> (compilation,complex))
   }
 }

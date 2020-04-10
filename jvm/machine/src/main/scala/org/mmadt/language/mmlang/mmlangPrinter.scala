@@ -27,7 +27,6 @@ import org.mmadt.language.obj.`type`.{RecType,Type}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{ObjValue,RecValue,StrValue,Value}
 import org.mmadt.language.obj.{Inst,IntQ,Obj}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -48,10 +47,6 @@ object mmlangPrinter {
   }
 
   def strmString(strm:Strm[Obj]):String = strm.value.foldLeft(Tokens.empty)((a,b) => a + b + COMMA).dropRight(1)
-
-  def traverserString(trav:Traverser[_]):String ={
-    "[" + trav.obj() + "|" + trav.state.foldLeft(EMPTY)((string,x) => string + x._1.toString.replace("'","") + "->" + x._2 + ",").dropRight(1) + "]"
-  }
 
   private def mapString(map:Map[_,_],sep:String = COMMA):String = if (map.isEmpty) EMPTYREC else map.foldLeft(LBRACKET)((string,kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
 

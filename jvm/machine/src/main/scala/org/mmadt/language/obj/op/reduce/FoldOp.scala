@@ -26,8 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{ReduceInstruction, TraverserInstruction}
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -50,12 +48,12 @@ object FoldOp {
     override val seed     :(String,A) = _seed
     override val reduction:Type[A]    = atype.asInstanceOf[Type[A]]
 
-    override def apply(trav:Traverser[Obj]):Traverser[A] ={
-      val t:Traverser[Obj] = trav.obj() match {
-        case _:Type[Obj] => Traverser.stateSplit[Obj](this.arg0[StrValue]().value,this.arg1[A]())(trav)
-        case _ => trav
+    override def exec(start:Obj):A={
+      val end:Obj = start match {
+        case _:Type[Obj] => start //Traverser.stateSplit[Obj](this.arg0[StrValue]().value,this.arg1[A]())(trav)
+        case _ => start
       }
-      t.split(t.obj().fold(seed)(Type.resolve(t.obj(),reduction)))
+      end.fold(seed)(Type.resolve(end,reduction))
     }
 
     /*private def deduceSeed(defaultSeed:ZeroOp[Type[Obj]],model:Model):Option[Obj] = {

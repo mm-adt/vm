@@ -28,38 +28,38 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.processor.{Processor, Traverser}
+import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class IteratorProcessor(model:Model = Model.id) extends Processor {
-  override def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E ={
+class IteratorProcessor(model: Model = Model.id) extends Processor {
+  override def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E = {
+    LanguageException.testTypeCheck(domainObj.named(rangeType.domain[Obj]().name), rangeType.domain().q(0, rangeType.domain().q._2)) // TODO: don't rename obj (so lame)
 
-    LanguageException.testTypeCheck(domainObj.named(rangeType.domain[Obj]().name),rangeType.domain().q(0,rangeType.domain().q._2)) // TODO: don't rename obj (so lame)
-
-    var output:Iterator[E] = this.model(domainObj) match {
-      case strm:Strm[_] => strm.value.map(x =>x.asInstanceOf[E])
-      case single:E => Iterator(single)
+    var output: Iterator[E] = this.model(domainObj) match {
+      case strm: Strm[_] => strm.value.map(x => x.asInstanceOf[E])
+      case single: E => Iterator(single)
     }
-    for (tt <- Type.createInstList(Nil,rangeType)) {
+
+    for (tt <- Type.createInstList(Nil, rangeType)) {
       output = tt._2 match {
         //////////////REDUCE//////////////
-        case reducer:ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)(
-          (e,mutatingSeed) => Traverser.stateSplit(reducer.seed._1,mutatingSeed)(Traverser.standard(e)).apply(reducer.reduction).obj())).map(e =>e.q(qOne))
+        case reducer: ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)((e, mutatingSeed) => e.compute(reducer.reduction))).map(e => e.q(qOne)) // TODO: need a new seed method other than Traverser
         //////////////FILTER//////////////
-        case filter:FilterInstruction => output.map(_.compute(tt._1.compose(tt._1,tt._2)).asInstanceOf[E]).filter(x => filter.keep(x))
+        case filter: FilterInstruction => output.map(_.compute(tt._1.compose(tt._1, tt._2)).asInstanceOf[E]).filter(x => filter.keep(x))
         //////////////OTHER//////////////
-        case _:Inst[Obj,Obj] => output
-          .map(_.compute(tt._1.compose(tt._1,tt._2)))
+        case _: Inst[Obj, Obj] => output
+          .map(_.compute(tt._1.compose(tt._1, tt._2)))
           .filter(x => x.alive())
           .flatMap(x => x match {
-            case strm:Strm[E] => strm.value.map(x=>x)
-            case single:E => Iterator(single)
+            case strm: Strm[E] => strm.value.map(x => x)
+            case single: E => Iterator(single)
           })
       }
     }
+
     Processor.strmOrSingle(output.map(x => {
       //TypeChecker.typeCheck(x.obj(),if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q._2) else rangeType.range) // iterator processor linearizes the stream
       x

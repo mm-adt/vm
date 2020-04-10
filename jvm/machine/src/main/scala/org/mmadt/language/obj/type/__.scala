@@ -30,7 +30,6 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.{IntValue, ObjValue}
 import org.mmadt.language.obj.{ViaTuple, Inst, IntQ, OType, Obj, _}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -59,7 +58,7 @@ class __(val _quantifier: IntQ = qStar, _insts: List[(Obj, Inst[Obj, Obj])] = Ni
   override def q(quantifier: IntQ): this.type = if (this.root) this.hardQ(quantifier) else new __(quantifier, (this._insts.head._1, this._insts.head._2.q(quantifier)) :: this._insts.tail).asInstanceOf[this.type]
   override def clone(name: String, value: Any, quantifier: IntQ, via: ViaTuple): this.type = new __(quantifier, this.lineage).asInstanceOf[this.type]
   override def domain[D <: Obj](): Type[D] = obj.q(qStar).asInstanceOf[Type[D]]
-  def apply[T <: Obj](obj: Obj): OType[T] = _insts.foldLeft[Traverser[Obj]](Traverser.standard(asType(obj)))((a, i) => i._2(a)).obj().asInstanceOf[OType[T]]
+  def apply[T <: Obj](obj: Obj): OType[T] = _insts.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a)).asInstanceOf[OType[T]]
   // type-agnostic monoid supporting all instructions
   override def plus(other: __): this.type = this.compose(PlusOp(other))
   override def plus(other: ObjValue): this.type = this.compose(PlusOp(other))

@@ -24,8 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{Inst, IntQ, Obj, multQ}
-import org.mmadt.processor.Traverser
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

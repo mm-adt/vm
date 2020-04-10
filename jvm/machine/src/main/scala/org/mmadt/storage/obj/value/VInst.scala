@@ -25,10 +25,7 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
-import org.mmadt.language.obj.op.map.PlusOp.PlusInst
 import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -47,8 +44,8 @@ abstract class VInst[S <: Obj, E <: Obj](java: InstTuple, quantifier: IntQ = qOn
     }
   }
   override def clone(_name: String, _value: Any, _quantifier: (IntValue, IntValue), _via: ViaTuple): this.type = this
-  override def exec(start: S): E = start match {
+  /*override def exec(start: S): E = start match {
     case atype: Type[_] => atype.compose(start.asInstanceOf[E], this.clone(this.name, (java._1, java._2.map(x => Inst.resolveArg(start, x))), q))
-    case _ => this (Traverser.standard(start)).obj()
-  }
+    case _ => this.exec(start)
+  }*/
 }

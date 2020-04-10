@@ -25,8 +25,7 @@ package org.mmadt.language.obj.op.initial
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{IntType, __}
 import org.mmadt.language.obj.op.InitialInstruction
-import org.mmadt.language.obj.{Inst, Int, Obj, Str}
-import org.mmadt.processor.Traverser
+import org.mmadt.language.obj.{Inst, Int, Obj}
 import org.mmadt.storage.StorageFactory
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -35,14 +34,14 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntOp {
-  this:__ =>
-  def int():IntType = this.compose(StorageFactory.int,IntOp()).hardQ(qOne)
+  this: __ =>
+  def int(): IntType = this.compose(StorageFactory.int, IntOp()).hardQ(qOne)
 }
 
 object IntOp {
-  def apply():Inst[Obj,Int] = new IntInst()
+  def apply(): Inst[Obj, Int] = new IntInst()
 
-  class IntInst() extends VInst[Obj,Int]((Tokens.int,Nil)) with InitialInstruction {
+  class IntInst() extends VInst[Obj, Int]((Tokens.int, Nil)) with InitialInstruction {
     override def exec(start: Obj): Int = int
   }
 

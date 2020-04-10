@@ -23,10 +23,8 @@
 package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.SideEffectInstruction
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.obj.value.VInst
 
 /**

@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.QuantifierInstruction
 import org.mmadt.language.obj.{Inst, Int, Obj, multQ}
-import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
