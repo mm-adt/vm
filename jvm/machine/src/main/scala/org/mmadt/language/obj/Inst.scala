@@ -22,6 +22,8 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.processor.Traverser
 
@@ -29,24 +31,35 @@ import org.mmadt.processor.Traverser
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Inst[S <: Obj,+E <: Obj] extends Obj {
-  def value():InstTuple
-
-  override val name:String = Tokens.inst
-
-  final def op():String = this.value()._1
-  final def args():List[Obj] = this.value()._2
-  final def arg0[O <: Obj]():O = this.value()._2.head.asInstanceOf[O]
-  final def arg1[O <: Obj]():O = this.value()._2.tail.head.asInstanceOf[O]
-  final def arg2[O <: Obj]():O = this.value()._2.tail.tail.head.asInstanceOf[O]
-  final def arg3[O <: Obj]():O = this.value()._2.tail.tail.tail.head.asInstanceOf[O]
-  def apply(trav:Traverser[S]):Traverser[E]
-
+trait Inst[S <: Obj, +E <: Obj] extends Obj {
+  def value(): InstTuple
+  override val name: String = Tokens.inst
+  final def op(): String = this.value()._1
+  final def args(): List[Obj] = this.value()._2
+  final def arg0[O <: Obj](): O = this.value()._2.head.asInstanceOf[O]
+  final def arg1[O <: Obj](): O = this.value()._2.tail.head.asInstanceOf[O]
+  final def arg2[O <: Obj](): O = this.value()._2.tail.tail.head.asInstanceOf[O]
+  final def arg3[O <: Obj](): O = this.value()._2.tail.tail.tail.head.asInstanceOf[O]
+  def apply(trav: Traverser[S]): Traverser[E] = trav.split(this.exec(trav.obj()))
+  def exec(start: S): E = this.apply(Traverser.standard(start)).obj()
   // standard Java implementations
-  override def toString:String = LanguageFactory.printInst(this)
-  override def hashCode:scala.Int = this.value().hashCode()
-  override def equals(other:Any):Boolean = other match {
-    case inst:Inst[_,_] => inst.op() == this.op() && inst.args() == this.args()
+  override def toString: String = LanguageFactory.printInst(this)
+  override def hashCode: scala.Int = this.value().hashCode()
+  override def equals(other: Any): Boolean = other match {
+    case inst: Inst[_, _] => inst.op() == this.op() && inst.args() == this.args()
     case _ => false
+  }
+}
+
+object Inst {
+  def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
+    (arg match {
+      case anon: __ => anon(obj.asInstanceOf[Type[Obj]].range)
+      case valueArg: Value[_] => valueArg
+      case typeArg: Type[_] => (obj match {
+        case atype: Type[E] => atype.range.compute(typeArg)
+        case avalue: Value[E] => avalue.compute(typeArg)
+      })
+    }).asInstanceOf[E]
   }
 }

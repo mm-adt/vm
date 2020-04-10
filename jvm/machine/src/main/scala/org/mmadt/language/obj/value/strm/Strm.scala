@@ -34,7 +34,7 @@ trait Strm[+O <: Obj] extends Value[O] {
 
   // utility methods
   override def toStrm:Strm[this.type] = this.asInstanceOf[Strm[this.type]]
-  override def clone(_name:String = this.name, _value:Any = this.value, _quantifier:IntQ = this.q, _via:ViaTuple[this.type] = base()):this.type = this
+  override def clone(_name:String = this.name, _value:Any = this.value, _quantifier:IntQ = this.q, _via:ViaTuple = base()):this.type = this
   override def named(_name:String):this.type = this
 
   // standard Java implementations

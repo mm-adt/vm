@@ -34,7 +34,7 @@ class TraverserTest extends FunSuite {
 
   def trav(obj:Obj):Traverser[Obj] = Traverser.standard(obj)
 
-  test("traverser toString"){
+ /* test("traverser toString"){
     assertResult("[3|a->3]"){
       trav(int(3))(int.to("a")).toString
     }
@@ -76,5 +76,5 @@ class TraverserTest extends FunSuite {
     assertResult(int(30)){
       int(2) ==> int.plus(int.plus(1)).mult(int.plus(1))
     }
-  }
+  }*/
 }

@@ -33,27 +33,27 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusOp[T <: Type[Obj],V <: Value[Obj]] {
-  this:Obj =>
-  def plus(other:T):T
-  def plus(other:V):this.type
-  def plus(other:Obj):this.type = (other match {
-    case atype:T => this.plus(atype)
-    case avalue:V => this.plus(avalue)
+trait PlusOp[T <: Type[Obj], V <: Value[Obj]] {
+  this: Obj =>
+  def plus(other: T): T
+  def plus(other: V): this.type
+  def plus(other: Obj): this.type = (other match {
+    case atype: T => this.plus(atype)
+    case avalue: V => this.plus(avalue)
   }).asInstanceOf[this.type]
-  final def +(other:T):T = this.plus(other)
-  final def +(other:V):this.type = this.plus(other)
+  final def +(other: T): T = this.plus(other)
+  final def +(other: V): this.type = this.plus(other)
 }
 
 object PlusOp {
-  def apply[O <: Obj with PlusOp[Type[O],Value[O]]](other:Obj):PlusInst[O] = new PlusInst[O](other)
+  def apply[O <: Obj with PlusOp[Type[O], Value[O]]](other: Obj): PlusInst[O] = new PlusInst[O](other)
 
-  class PlusInst[O <: Obj with PlusOp[Type[O],Value[O]]](other:Obj,q:IntQ = qOne) extends VInst[O,O]((Tokens.plus,List(other)),q) {
-    override def q(quantifier:IntQ):this.type = new PlusInst[O](other,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(trav.obj(),new PlusInst[O](Traverser.resolveArg(trav,other),q))
-      case _ => trav.obj().plus(Traverser.resolveArg(trav,other)).q(multQ(trav.obj(),this))
-    })
+  class PlusInst[O <: Obj with PlusOp[Type[O], Value[O]]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.plus, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new PlusInst[O](other, quantifier).asInstanceOf[this.type]
+    override def exec(start: O): O = start match {
+      case atype: Type[_] => atype.compose(start, new PlusInst[O](Inst.resolveArg(start, other), q))
+      case avalue: Value[_] => start.plus(Inst.resolveArg(start, other)).clone(_quantifier = multQ(start, this), _via = (avalue, this))
+    }
   }
 
 }

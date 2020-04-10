@@ -22,7 +22,11 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.op.map.{MultOp, NegOp, PlusOp}
+import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.op.map.PlusOp.PlusInst
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -47,6 +51,9 @@ class VIntTest extends FunSuite {
     assertResult(int(14).q(12))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).gt(int(2).q(34)).q(10))
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).a(int.q(0,4)).q(10).asInstanceOf[BoolType]) // TODO
+  }
+  test("") {
+    println(int(5).plus(4).gt(5).lineage)
   }
 }
 

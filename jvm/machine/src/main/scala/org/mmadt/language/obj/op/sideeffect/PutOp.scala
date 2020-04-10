@@ -31,17 +31,17 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PutOp[A <: Obj,B <: Obj] {
-  this:Obj =>
-  def put(key:A,value:B):this.type
+trait PutOp[A <: Obj, B <: Obj] {
+  this: Obj =>
+  def put(key: A, value: B): this.type
 }
 
 object PutOp {
-  def apply[A <: Obj,B <: Obj](key:A,value:B):Inst[Rec[A,B],Rec[A,B]] = new PutInst[A,B](key,value)
+  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[Rec[A, B], Rec[A, B]] = new PutInst[A, B](key, value)
 
-  class PutInst[A <: Obj,B <: Obj](key:A,value:B,q:IntQ = qOne) extends VInst[Rec[A,B],Rec[A,B]]((Tokens.put,List(key,value)),q) {
-    override def q(quantifier:IntQ):this.type = new PutInst[A,B](key,value,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[Rec[A,B]]):Traverser[Rec[A,B]] = trav.split(trav.obj().put(key,value).q(multQ(trav.obj(),this)._2))
+  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Rec[A, B], Rec[A, B]]((Tokens.put, List(key, value)), q) {
+    override def q(quantifier: IntQ): this.type = new PutInst[A, B](key, value, quantifier).asInstanceOf[this.type]
+    override def exec(start: Rec[A, B]): Rec[A, B] = start.put(key, value).q(multQ(start, this)._2)
   }
 
 }

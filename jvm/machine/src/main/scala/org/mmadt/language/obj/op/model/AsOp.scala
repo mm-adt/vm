@@ -51,38 +51,38 @@ object AsOp {
 
   class AsInst[O <: Obj](obj:O,q:IntQ = qOne) extends VInst[Obj,O]((Tokens.as,List(obj)),q) {
     override def q(quantifier:IntQ):this.type = new AsInst[O](obj,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[Obj]):Traverser[O] ={
-      trav.split(testAlive(obj match {
-        case atype:Type[Obj] if trav.avalue => atype match {
+    override def exec(start:Obj):O ={
+      testAlive(obj match {
+        case atype:Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
           case rectype:RecType[Obj,Obj] =>
-            trav.obj() match {
-              case recvalue:ORecValue => vrec(name = rectype.name,value = makeMap(trav.model,recvalue.value,rectype.value()))
+            start match {
+              case recvalue:ORecValue => vrec(name = rectype.name,value = makeMap(Model.id,recvalue.value,rectype.value()))
               case avalue:Value[Obj] => vrec(rectype.name,rectype.value().map(x =>
                 (x._1 match {
                   case kvalue:Value[Obj] => kvalue
                   case ktype:Type[Obj] =>
                     TypeChecker.matchesVT(avalue,ktype)
-                    trav.apply(Type.resolve(trav.obj(),ktype)).obj().asInstanceOf[Value[Obj]]
+                    start.compute(Type.resolve(start,ktype)).asInstanceOf[Value[Obj]]
                 }) -> (x._2 match {
                   case vvalue:Value[Obj] => vvalue
                   case vtype:Type[Obj] =>
                     TypeChecker.matchesVT(avalue,vtype)
-                    trav.apply(Type.resolve(trav.obj(),vtype)).obj().asInstanceOf[Value[Obj]]
+                    start.compute(Type.resolve(start,vtype)).asInstanceOf[Value[Obj]]
                 })))
             }
-          case atype:StrType => trav.split(vstr(name = atype.name,value = trav.obj().asInstanceOf[Value[Obj]].value.toString)).apply(atype).obj()
-          case atype:IntType => trav.split(vint(name = atype.name,value = Integer.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).longValue())).apply(atype).obj()
-          case atype:RealType => trav.split(vreal(name = atype.name,value = JDouble.valueOf(trav.obj().asInstanceOf[Value[Obj]].value.toString).doubleValue())).apply(atype).obj()
-          case xtype:Type[Obj] => trav.obj().named(xtype.name).asInstanceOf[O]
+          case atype:StrType => vstr(name = atype.name,value = start.asInstanceOf[Value[Obj]].value.toString).compute(atype)
+          case atype:IntType => vint(name = atype.name,value = Integer.valueOf(start.asInstanceOf[Value[Obj]].value.toString).longValue()).compute(atype)
+          case atype:RealType =>vreal(name = atype.name,value = JDouble.valueOf(start.asInstanceOf[Value[Obj]].value.toString).doubleValue()).compute(atype)
+          case xtype:Type[Obj] =>start.named(xtype.name).asInstanceOf[O]
         }
         case avalue:Value[Obj] => avalue
-        case btype:Type[Obj] if trav.atype =>
+        case btype:Type[Obj] if start.isInstanceOf[Type[_]] =>
           if (btype.isInstanceOf[RecType[Obj,Obj]]) {
-            trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(Type.resolve(trav.obj(),btype)))
+            start.asInstanceOf[Type[Obj]].compose(btype,AsOp(Type.resolve(start,btype)))
           } else {
-            trav.obj().asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
+            start.asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
           }
-      }).q(trav.obj().q)).asInstanceOf[Traverser[O]]
+      }).q(start.q).asInstanceOf[O]
     }
 
     private def testAlive[X <: Obj](trav:X):X ={

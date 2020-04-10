@@ -40,18 +40,18 @@ trait BranchOp {
 
   def branch[IT <: Obj,OT <: Obj](branches:(IT,OT)*):OT = this.branch(trec(value = branches.toMap))
 
-  def branch[IT <: Obj,OT <: Obj](branches:RecType[IT,OT],trav:Traverser[IT] = Traverser.standard(this.asInstanceOf[IT])):OT ={
-    trav.obj() match {
+  def branch[IT <: Obj,OT <: Obj](branches:RecType[IT,OT],start:IT = this.asInstanceOf[IT]):OT ={
+    start match {
       case atype:Type[IT] with IT =>
-        val newBranches:Traverser[RecType[IT,OT]] = BranchInstruction.applyRec(trav.split(atype.range),branches) // composed branches given the incoming type
-        val rangeType  :OT                        = BranchInstruction.generalType[OT](newBranches.obj().value().values)
-        atype.compose[OT](rangeType,BranchOp[IT,OT](newBranches.obj())).asInstanceOf[Type[Obj]].hardQ(minZero(branches.value().values.map(x => x.q).reduce((a,b) => plusQ(a,b)))).asInstanceOf[OT]
+        val newBranches:RecType[IT,OT] = BranchInstruction.applyRec(atype.range,branches) // composed branches given the incoming type
+        val rangeType  :OT                        = BranchInstruction.generalType[OT](newBranches.value().values)
+        atype.compose[OT](rangeType,BranchOp[IT,OT](newBranches)).asInstanceOf[Type[Obj]].hardQ(minZero(branches.value().values.map(x => x.q).reduce((a,b) => plusQ(a,b)))).asInstanceOf[OT]
       case avalue:Value[IT] with IT =>
         strm[OT](branches.value().filter(p => p._1 match {
-          case btype:Type[IT] with IT => trav.apply(btype).obj().alive()
+          case btype:Type[IT] with IT => start.compute(btype).alive()
           case bvalue:Value[IT] with IT => avalue.test(bvalue)
         }).values.map{
-          case btype:Type[OT] with OT => trav.apply(btype).obj()
+          case btype:Type[OT] with OT => start.compute(btype)
           case bvalue:Value[OT] with OT => bvalue.q(avalue.q)
         }.toList.iterator)
     }
@@ -63,7 +63,7 @@ object BranchOp {
 
   class BranchInst[IT <: Obj,OT <: Obj](branches:RecType[IT,OT],q:IntQ=qOne) extends VInst[IT,OT]((Tokens.branch,List(branches)),q) with BranchInstruction {
     override def q(quantifier:IntQ):this.type = new BranchInst[IT,OT](branches,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[IT]):Traverser[OT] = trav.split(trav.obj().branch(branches,trav)) // TODO: do we maintain the OT branch states?
+    override def exec(start:IT):OT = start.branch(branches,start) // TODO: do we maintain the OT branch states?
   }
 
 }

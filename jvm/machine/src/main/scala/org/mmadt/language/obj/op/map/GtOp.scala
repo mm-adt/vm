@@ -33,29 +33,29 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtOp[T <: Type[Obj],V <: Value[Obj]] {
-  this:Obj =>
-  def gt(other:V):Bool
-  def gt(other:T):BoolType = this match {
-    case atype:Type[_] => atype.compose(bool,GtOp(other))
-    case avalue:Value[_] => avalue.start().compose(bool,GtOp(other))
+trait GtOp[T <: Type[Obj], V <: Value[Obj]] {
+  this: Obj =>
+  def gt(other: V): Bool
+  def gt(other: T): BoolType = this match {
+    case atype: Type[_] => atype.compose(bool, GtOp(other))
+    case avalue: Value[_] => avalue.start().compose(bool, GtOp(other))
   }
-  final def >(other:V):Bool = this.gt(other)
-  final def >(other:T):BoolType = this.gt(other)
+  final def >(other: V): Bool = this.gt(other)
+  final def >(other: T): BoolType = this.gt(other)
 }
 
 object GtOp {
-  def apply[O <: Obj with GtOp[Type[O],Value[O]]](other:Obj):Inst[O,Bool] = new GtInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj with GtOp[Type[O], Value[O]]](other: Obj): Inst[O, Bool] = new GtInst[O](other.asInstanceOf[O])
 
-  class GtInst[O <: Obj with GtOp[Type[O],Value[O]]](other:O,q:IntQ = qOne) extends VInst[O,Bool]((Tokens.gt,List(other)),q) {
-    override def q(quantifier:IntQ):this.type = new GtInst[O](other,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(bool,new GtInst[O](Traverser.resolveArg(trav,other),q))
-      case avalue:Value[_] => (Traverser.resolveArg(trav,other) match {
-        case btype:Type[O] => avalue.gt(btype)
-        case bvalue:Value[O] => avalue.gt(bvalue)
-      }).q(multQ(avalue,this)._2)
-    })
+  class GtInst[O <: Obj with GtOp[Type[O], Value[O]]](other: O, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.gt, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new GtInst[O](other, quantifier).asInstanceOf[this.type]
+    override def exec(start: O): Bool = start match {
+      case atype: Type[_] => atype.compose(bool, new GtInst(Inst.resolveArg(start, other), q))
+      case avalue: Value[_] => (Inst.resolveArg(start, other) match {
+        case _: Type[_] => avalue.start[O]().compose(bool, new GtInst(other, q))
+        case bvalue: Value[O] => avalue.gt(bvalue).clone(_via = (avalue,this))
+      }).q(multQ(avalue, this)._2)
+    }
   }
 
 }

@@ -31,7 +31,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ToFromTest extends FunSuite {
-  test("[to][from] w/ values"){
+ /* test("[to][from] w/ values"){
     assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.from[IntType]("x")))
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from[IntType]("x")))
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from[IntType]("x"))
@@ -46,5 +46,5 @@ class ToFromTest extends FunSuite {
     /*intercept[NoSuchElementException]{
       assertResult(int(20))(int(1) ==> int.plus(1).map(int.mult(10).to("x")).from("x"))
     }*/
-  }
+  }*/
 }

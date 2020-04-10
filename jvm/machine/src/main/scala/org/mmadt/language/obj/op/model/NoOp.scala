@@ -39,7 +39,7 @@ object NoOp {
 
   class NoInst[O <: Obj] extends VInst[O,O]((Tokens.noop,Nil)) {
     override def q(quantifier:IntQ):this.type = new NoInst[O]().asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav
+    override def exec(start:O):O = start
   }
 
 }

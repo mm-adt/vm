@@ -39,30 +39,30 @@ class IteratorProcessor(model:Model = Model.id) extends Processor {
 
     LanguageException.testTypeCheck(domainObj.named(rangeType.domain[Obj]().name),rangeType.domain().q(0,rangeType.domain().q._2)) // TODO: don't rename obj (so lame)
 
-    var output:Iterator[Traverser[E]] = this.model(domainObj) match {
-      case strm:Strm[_] => strm.value.map(x => Traverser.standard(x.asInstanceOf[E],model = this.model))
-      case single:E => Iterator(Traverser.standard(single,model = this.model))
+    var output:Iterator[E] = this.model(domainObj) match {
+      case strm:Strm[_] => strm.value.map(x =>x.asInstanceOf[E])
+      case single:E => Iterator(single)
     }
     for (tt <- Type.createInstList(Nil,rangeType)) {
       output = tt._2 match {
         //////////////REDUCE//////////////
         case reducer:ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)(
-          (traverser,mutatingSeed) => Traverser.stateSplit(reducer.seed._1,mutatingSeed)(traverser).apply(reducer.reduction).obj())).map(e => Traverser.standard(e.q(qOne),model = this.model))
+          (e,mutatingSeed) => Traverser.stateSplit(reducer.seed._1,mutatingSeed)(Traverser.standard(e)).apply(reducer.reduction).obj())).map(e =>e.q(qOne))
         //////////////FILTER//////////////
-        case filter:FilterInstruction => output.map(_.apply(tt._1.compose(tt._1,tt._2)).asInstanceOf[Traverser[E]]).filter(x => filter.keep(x.obj()))
+        case filter:FilterInstruction => output.map(_.compute(tt._1.compose(tt._1,tt._2)).asInstanceOf[E]).filter(x => filter.keep(x))
         //////////////OTHER//////////////
         case _:Inst[Obj,Obj] => output
-          .map(_.apply(tt._1.compose(tt._1,tt._2)))
-          .filter(x => x.obj().alive())
-          .flatMap(x => x.obj() match {
-            case strm:Strm[E] => strm.value.map(y => x.split(y))
-            case single:E => Iterator(x.split(single))
+          .map(_.compute(tt._1.compose(tt._1,tt._2)))
+          .filter(x => x.alive())
+          .flatMap(x => x match {
+            case strm:Strm[E] => strm.value.map(x=>x)
+            case single:E => Iterator(single)
           })
       }
     }
     Processor.strmOrSingle(output.map(x => {
       //TypeChecker.typeCheck(x.obj(),if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q._2) else rangeType.range) // iterator processor linearizes the stream
-      x.obj()
+      x
     }))
   }
 }

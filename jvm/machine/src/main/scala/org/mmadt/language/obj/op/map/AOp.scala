@@ -34,22 +34,22 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AOp {
-  this:Obj =>
-  def a(other:Type[Obj]):Bool = this match {
-    case atype:Type[_] => atype.compose(bool,AOp(other))
+  this: Obj =>
+  def a(other: Type[Obj]): Bool = this match {
+    case atype: Type[_] => atype.compose(bool, AOp(other))
     case _ => bool(this.test(other))
   }
 }
 
 object AOp {
-  def apply(other:Type[Obj]):AInst = new AInst(other)
+  def apply(other: Type[Obj]): AInst = new AInst(other)
 
-  class AInst(other:Type[Obj],q:IntQ = qOne) extends VInst[Obj,Bool]((Tokens.a,List(other)),q) {
-    override def q(quantifier:IntQ):this.type = new AInst(other,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[Obj]):Traverser[Bool] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(bool,this)
-      case avalue:Value[_] => avalue.a(other).q(multQ(avalue,this))
-    })
+  class AInst(other: Type[Obj], q: IntQ = qOne) extends VInst[Obj, Bool]((Tokens.a, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new AInst(other, quantifier).asInstanceOf[this.type]
+    override def exec(start: Obj): Bool = start match {
+      case atype: Type[_] => atype.compose(bool, this)
+      case avalue: Value[_] => avalue.a(other).q(multQ(avalue, this))
+    }
   }
 
 }

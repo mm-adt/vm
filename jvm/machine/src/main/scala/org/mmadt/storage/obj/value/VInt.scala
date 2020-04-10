@@ -31,9 +31,9 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(name:String, java:Long, quantifier:IntQ, via:ViaTuple[IntValue] = base()) extends AbstractVObj(name, java, quantifier, via) with IntValue {
+class VInt(name:String, java:Long, quantifier:IntQ, via:ViaTuple = base()) extends AbstractVObj(name, java, quantifier, via) with IntValue {
   def this(java:Long) = this(Tokens.int, java, VInt.q1)
-  override def clone(_name:String = this.name, _value:Any = this.value, _quantifier:IntQ = this.q, _via:ViaTuple[this.type]):this.type = new VInt(_name, _value.asInstanceOf[Long], _quantifier, _via).asInstanceOf[this.type]
+  override def clone(_name:String = this.name, _value:Any = this.value, _quantifier:IntQ = this.q, _via:ViaTuple):this.type = new VInt(_name, _value.asInstanceOf[Long], _quantifier, _via).asInstanceOf[this.type]
   override val value:Long = java
 }
 

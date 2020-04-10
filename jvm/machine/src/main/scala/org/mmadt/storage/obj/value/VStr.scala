@@ -30,8 +30,8 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VStr(name:String,java:String,quantifier:IntQ,via:ViaTuple[StrValue]=base()) extends AbstractVObj(name,java,quantifier) with StrValue {
-  def this(java:String) = this(Tokens.str,java,qOne)
-  override  def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q,_via:ViaTuple[this.type]=base()):this.type = new VStr(_name,_value.asInstanceOf[String],_quantifier).asInstanceOf[this.type]
-  override val value:String = java
+class VStr(name: String, java: String, quantifier: IntQ, via: ViaTuple= base()) extends AbstractVObj(name, java, quantifier, via) with StrValue {
+  def this(java: String) = this(Tokens.str, java, qOne)
+  override def clone(_name: String = this.name, _value: Any = this.value, _quantifier: IntQ = this.q, _via: ViaTuple = base()): this.type = new VStr(_name, _value.asInstanceOf[String], _quantifier).asInstanceOf[this.type]
+  override val value: String = java
 }

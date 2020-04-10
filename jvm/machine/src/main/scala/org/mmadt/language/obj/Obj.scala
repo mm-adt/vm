@@ -34,7 +34,7 @@ import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
-import org.mmadt.processor.Processor
+import org.mmadt.processor.{Processor, Traverser}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -56,45 +56,49 @@ trait Obj
     with ErrorOp
     with EvalOp
     with EqsOp {
-
   // quantifier methods
-  val q:IntQ
-  def q(quantifier:IntQ):this.type = this.clone(_quantifier=quantifier)
-  def q(single:IntValue):this.type = this.q(single.q(qOne),single.q(qOne))
-  def alive():Boolean = this.q != qZero
-
+  val q: IntQ
+  def q(quantifier: IntQ): this.type = this.clone(_quantifier = quantifier)
+  def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
+  def alive(): Boolean = this.q != qZero
   // historic mutations
-  def root:Boolean = null == this.via._1
-  val via:ViaTuple[this.type] = base()
-  def lineage:List[(Obj,Inst[Obj,Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via
-
+  def root: Boolean = null == this.via._1
+  val via: ViaTuple= base()
+  def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj,Inst[Obj,Obj])]
   // utility methods
-  def toStrm:Strm[this.type] = strm[this.type](Iterator[this.type](this))
-  def toList:List[this.type] = toStrm.value.toList
-  def toSet:Set[this.type] = toStrm.value.toSet
-  def ==>[E <: Obj](rangeType:Type[E],model:Model = Model.id):E = this match {
-    case atype:Type[_] => Processor.compiler(model).apply(atype,Type.resolve(atype,rangeType))
-    case avalue:Value[_] => Processor.iterator(model).apply(avalue,Type.resolve(avalue,rangeType))
+  def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
+  def toList: List[this.type] = toStrm.value.toList
+  def toSet: Set[this.type] = toStrm.value.toSet
+  def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = this match {
+    case atype: Type[_] => Processor.compiler(model).apply(atype, Type.resolve(atype, rangeType))
+    case avalue: Value[_] => Processor.iterator(model).apply(avalue, Type.resolve(avalue, rangeType))
   }
-  def ===>[E <: Obj](rangeType:E):E ={
-    LanguageException.testDomainRange(asType(this),rangeType.asInstanceOf[Type[E]].domain())
-    Processor.iterator().apply(this,Type.resolve(this,rangeType.asInstanceOf[Type[E]]))
+  def ===>[E <: Obj](rangeType: E): E = {
+    LanguageException.testDomainRange(asType(this), rangeType.asInstanceOf[Type[E]].domain())
+
+    Processor.iterator().apply(this, Type.resolve(this, rangeType.asInstanceOf[Type[E]]))
   } // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
 
   // pattern matching methods
-  def named(_name:String):this.type = this.clone(_name=_name)
-  val name:String
-  def test(other:Obj):Boolean
-  def clone(_name:String=this.name,_value:Any=null,_quantifier:IntQ=this.q,_via:ViaTuple[this.type]=this.via):this.type
+  def named(_name: String): this.type = this.clone(_name = _name)
+  val name: String
+  def test(other: Obj): Boolean
+  def clone(_name: String = this.name, _value: Any = null, _quantifier: IntQ = this.q, _via: ViaTuple = this.via): this.type
+  def compute[E <: Obj](rangeType: Type[E]): E = {
+    (Type.nextInst(rangeType) match {
+      case None => return this.asInstanceOf[E]
+      case Some(inst: Inst[_, _]) => inst.exec(this)
+    }).compute(rangeType.linvert())
+  }
 }
 
 object Obj {
-  @inline implicit def booleanToBool(java:Boolean):BoolValue = bool(java)
-  @inline implicit def longToInt(java:Long):IntValue = int(java)
-  @inline implicit def intToInt(java:scala.Int):IntValue = int(java.longValue())
-  @inline implicit def doubleToReal(java:scala.Double):RealValue = real(java)
-  @inline implicit def floatToReal(java:scala.Float):RealValue = real(java)
-  @inline implicit def stringToStr(java:String):StrValue = str(java)
-  @inline implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](java:Map[A,B]):RecValue[A,B] = vrec[A,B](java)
-  @inline implicit def mapToRec[A <: Value[Obj],B <: Value[Obj]](value:(A,B),values:(A,B)*):RecValue[A,B] = vrec(value = value,values = values:_*)
+  @inline implicit def booleanToBool(java: Boolean): BoolValue = bool(java)
+  @inline implicit def longToInt(java: Long): IntValue = int(java)
+  @inline implicit def intToInt(java: scala.Int): IntValue = int(java.longValue())
+  @inline implicit def doubleToReal(java: scala.Double): RealValue = real(java)
+  @inline implicit def floatToReal(java: scala.Float): RealValue = real(java)
+  @inline implicit def stringToStr(java: String): StrValue = str(java)
+  @inline implicit def mapToRec[A <: Value[Obj], B <: Value[Obj]](java: Map[A, B]): RecValue[A, B] = vrec[A, B](java)
+  @inline implicit def mapToRec[A <: Value[Obj], B <: Value[Obj]](value: (A, B), values: (A, B)*): RecValue[A, B] = vrec(value = value, values = values: _*)
 }

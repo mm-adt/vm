@@ -35,22 +35,22 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IdOp {
-  this:Obj =>
-  def id():this.type = this match {
-    case atype:Type[_] => atype.compose(this,new IdInst[this.type])
+  this: Obj =>
+  def id(): this.type = this match {
+    case atype: Type[_] => atype.compose(this, new IdInst[this.type])
     case _ => this
   }
 }
 
 object IdOp {
-  def apply[O <: Obj]():Inst[O,O] = new IdInst
+  def apply[O <: Obj](): Inst[O, O] = new IdInst
 
-  class IdInst[O <: Obj](q:IntQ = qOne) extends VInst[O,O]((Tokens.id,Nil),q) {
-    override def q(quantifier:IntQ):this.type = new IdInst[O](quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(trav.obj(),this)
-      case avalue:Value[_] => trav.obj().q(multQ(avalue,this))
-    })
+  class IdInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.id, Nil), q) {
+    override def q(quantifier: IntQ): this.type = new IdInst[O](quantifier).asInstanceOf[this.type]
+    override def exec(start: O): O = start match {
+      case atype: Type[_] => atype.compose(start, this)
+      case avalue: Value[_] => start.q(multQ(avalue, this))
+    }
   }
 
 }

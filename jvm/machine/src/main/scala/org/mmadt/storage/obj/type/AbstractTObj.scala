@@ -29,7 +29,7 @@ import org.mmadt.storage.obj.OObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractTObj[T <: Obj](name:String,quantifier:IntQ, _via:ViaTuple[T]) extends OObj(name,quantifier) with Type[Obj] {
-  override val via:(Obj,Inst[Obj,this.type]) = _via.asInstanceOf[ViaTuple[this.type]]
-  override def q(_quantifier:IntQ):this.type = this.clone(name,null,multQ(via._1.asInstanceOf[this.type],_quantifier),if(root) base() else (via._1,via._2.q(_quantifier)).asInstanceOf[ViaTuple[this.type]])
+abstract class AbstractTObj[T <: Obj](name:String,quantifier:IntQ, _via:ViaTuple) extends OObj(name,quantifier) with Type[Obj] {
+  override val via:ViaTuple = _via
+  override def q(_quantifier:IntQ):this.type = this.clone(name,null,multQ(via._1.asInstanceOf[this.type],_quantifier),if(root) base() else (via._1,via._2.q(_quantifier)).asInstanceOf[ViaTuple])
 }

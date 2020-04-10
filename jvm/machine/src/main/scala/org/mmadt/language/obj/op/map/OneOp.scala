@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{IntQ, Obj, multQ}
+import org.mmadt.language.obj.{Inst, IntQ, Obj, multQ}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -33,19 +33,19 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OneOp {
-  this:Obj =>
-  def one():this.type
+  this: Obj =>
+  def one(): this.type
 }
 
 object OneOp {
-  def apply[O <: Obj with OneOp]():OneInst[O] = new OneInst[O]
+  def apply[O <: Obj with OneOp](): OneInst[O] = new OneInst[O]
 
-  class OneInst[O <: Obj with OneOp](q:IntQ = qOne) extends VInst[O,O]((Tokens.one,Nil),q) {
-    override def q(quantifier:IntQ):this.type = new OneInst[O](quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(trav.obj(),this)
-      case _ => trav.obj().one().q(multQ(trav.obj(),this))
-    })
+  class OneInst[O <: Obj with OneOp](q: IntQ = qOne) extends VInst[O, O]((Tokens.one, Nil), q) {
+    override def q(quantifier: IntQ): this.type = new OneInst[O](quantifier).asInstanceOf[this.type]
+    override def exec(start: O): O = start match {
+      case atype: Type[_] => atype.compose(start.asInstanceOf[O], this)
+      case _ => start.one().clone(_via = (start,this))
+    }
   }
 
 }

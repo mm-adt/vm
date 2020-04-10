@@ -26,23 +26,29 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.op.map.PlusOp.PlusInst
+import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) extends AbstractVObj(Tokens.inst,java,quantifier) with Inst[S,E] {
-  override val value:InstTuple = java
-  override def q(quantifier:IntQ):this.type = this
-  override val q:IntQ = quantifier
-  def test(other:Obj):Boolean = false //  TODO: GUT WHEN VINST JOINS HEIRARCHY
-  override def named(_name:String):VInst.this.type = this
-  def composeInstruction(obj:E):E ={
+abstract class VInst[S <: Obj, E <: Obj](java: InstTuple, quantifier: IntQ = qOne) extends AbstractVObj(Tokens.inst, java, quantifier) with Inst[S, E] {
+  override val value: InstTuple = java
+  override def q(quantifier: IntQ): this.type = this
+  override val q: IntQ = quantifier
+  def test(other: Obj): Boolean = false //  TODO: GUT WHEN VINST JOINS HEIRARCHY
+  override def named(_name: String): VInst.this.type = this
+  def composeInstruction(obj: E): E = {
     obj match {
-      case atype:Type[Obj] => atype.compose(this).asInstanceOf[E]
+      case atype: Type[Obj] => atype.compose(this).asInstanceOf[E]
       case _ => obj
     }
   }
-  override def clone(_name:String, _value:Any, _quantifier:(IntValue, IntValue), _via:(Obj, Inst[Obj, this.type])):this.type = this
+  override def clone(_name: String, _value: Any, _quantifier: (IntValue, IntValue), _via: ViaTuple): this.type = this
+  override def exec(start: S): E = start match {
+    case atype: Type[_] => atype.compose(start.asInstanceOf[E], this.clone(this.name, (java._1, java._2.map(x => Inst.resolveArg(start, x))), q))
+    case _ => this (Traverser.standard(start)).obj()
+  }
 }

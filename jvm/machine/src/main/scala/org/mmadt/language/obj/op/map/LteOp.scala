@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type}
+import org.mmadt.language.obj.op.map.GtOp.GtInst
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory.{bool, qOne}
@@ -49,13 +50,13 @@ object LteOp {
 
   class LteInst[O <: Obj with LteOp[Type[O],Value[O]]](other:O,q:IntQ = qOne) extends VInst[O,Bool]((Tokens.lte,List(other)),q) {
     override def q(quantifier:IntQ):this.type = new LteInst[O](other,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(bool,new LteInst[O](Traverser.resolveArg(trav,other),q))
-      case avalue:Value[_] => (Traverser.resolveArg(trav,other) match {
-        case btype:Type[O] => avalue.lte(btype)
-        case bvalue:Value[O] => avalue.lte(bvalue)
-      }).q(multQ(avalue,this)._2)
-    })
+    override def exec(start: O): Bool = start match {
+      case atype: Type[_] => atype.compose(bool, new LteInst(Inst.resolveArg(start, other), q))
+      case avalue: Value[_] => (Inst.resolveArg(start, other) match {
+        case _: Type[_] => avalue.start[O]().compose(bool, new LteInst(other, q))
+        case bvalue: Value[O] => avalue.lte(bvalue).clone(_via = (avalue,this))
+      }).q(multQ(avalue, this)._2)
+    }
   }
 
 }

@@ -33,19 +33,19 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ErrorOp {
-  this:Obj =>
-  def error(message:String):this.type = this match {
-    case atype:Type[_] => atype.compose(this,ErrorOp(message))
-    case _ => throw LanguageException.typeError(this,message)
+  this: Obj =>
+  def error(message: String): this.type = this match {
+    case atype: Type[_] => atype.compose(this, ErrorOp(message))
+    case _ => throw LanguageException.typeError(this, message)
   }
 }
 
 object ErrorOp {
-  def apply(message:String):Inst[Obj,Obj] = new ErrorInst(message)
+  def apply(message: String): Inst[Obj, Obj] = new ErrorInst(message)
 
-  class ErrorInst(message:String,q:IntQ = qOne) extends VInst[Obj,Obj]((Tokens.error,List(str(message))),q) {
-    override def q(quantifier:IntQ):this.type = new ErrorInst(message,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[Obj]):Traverser[Obj] = throw LanguageException.typeError(this,message)
+  class ErrorInst(message: String, q: IntQ = qOne) extends VInst[Obj, Obj]((Tokens.error, List(str(message))), q) {
+    override def q(quantifier: IntQ): this.type = new ErrorInst(message, quantifier).asInstanceOf[this.type]
+    override def exec(start: Obj): Obj = throw LanguageException.typeError(this, message)
     //trav.split(trav.obj().error(message)) TODO make a distinction between compile-time and runtime errors (right now they are all compile time errors)
   }
 

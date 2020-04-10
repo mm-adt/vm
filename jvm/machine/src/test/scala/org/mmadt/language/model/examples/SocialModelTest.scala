@@ -82,7 +82,7 @@ class SocialModelTest extends FunSuite {
     assertResult(qOne)(mmsocial(result).asInstanceOf[Obj].q)
   }
 
-  test("model composite types"){
+  /*test("model composite types"){
     // map nat to nat
     val marko:RecValue[StrValue,Value[Obj]] = mmsocial(vrec[StrValue,Value[Obj]](str("name") -> str("marko"),str("age") -> int(29)))
     assertResult("person")(marko.name)
@@ -97,7 +97,7 @@ class SocialModelTest extends FunSuite {
     assertResult(20L)(ryan.get(str("age")).value)
     assertResult("int")(socialmm(ryan.get(str("age"))).name)
     assertResult(20L)(socialmm(ryan.get(str("age"))).value)
-  }
+  }*/
 
   test("bad model mappings"){
     //assertThrows[AssertionError]{mmsocial(vrec(str("name") -> int(34),str("age") -> int(24)))}
@@ -120,7 +120,7 @@ class SocialModelTest extends FunSuite {
     assertResult("int<=rec['name':str,'age':int][get,'age'][plus,int]")(smCompiler(trec[Str,Obj](str("name") -> str,str("age") -> int).get(str("age"),int).plus(int)).toString)
   }
 
-  test("model composite strm"){
+ /* test("model composite strm"){
     val records:RecStrm[Value[Str],Value[Obj]] = vrec(
       rec(str("name") -> str("marko"),str("age") -> int(29)),
       rec(str("name") -> str("kuppitz"),str("age") -> int(28)),
@@ -132,5 +132,5 @@ class SocialModelTest extends FunSuite {
       assertResult("str")(x.get(str("name")).name)
       assertResult("nat")(x.get(str("age")).name)
     })
-  }
+  }*/
 }

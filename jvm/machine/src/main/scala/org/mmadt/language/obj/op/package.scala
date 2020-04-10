@@ -38,33 +38,33 @@ package object op {
   trait BranchInstruction
 
   object BranchInstruction {
-    def applyRec[IT <: Obj,OT <: Obj](current:Traverser[Type[IT] with IT],branches:RecType[IT,OT]):Traverser[RecType[IT,OT]] ={
-      current.split(
-        trec(value = branches.value().map(x => (x._1 match {
-          case atype:Type[IT] with IT => current.obj().compose(atype).asInstanceOf[IT]
-          case avalue:Value[IT] with IT => avalue
-        },x._2 match {
-          case atype:Type[OT] with OT => current.obj().compose(atype).asInstanceOf[OT]
-          case avalue:Value[OT] with OT => avalue
-        }))))
+    def applyRec[IT <: Obj, OT <: Obj](current: Type[IT] with IT, branches: RecType[IT, OT]): RecType[IT, OT] = {
+      trec(value = branches.value().map(x => (x._1 match {
+        case atype: Type[IT] with IT => current.compose(atype).asInstanceOf[IT]
+        case avalue: Value[IT] with IT => avalue
+      }, x._2 match {
+        case atype: Type[OT] with OT => current.compose(atype).asInstanceOf[OT]
+        case avalue: Value[OT] with OT => avalue
+      })))
     }
 
-    def generalType[OT <: Obj](outs:Iterable[OT]):OT ={ // TODO: record introspection for type generalization
-      val types = outs.map{
-        case atype:Type[Obj] => atype.range.asInstanceOf[OT]
-        case avalue:OT => avalue
+    def generalType[OT <: Obj](outs: Iterable[OT]): OT = { // TODO: record introspection for type generalization
+      val types = outs.map {
+        case atype: Type[Obj] => atype.range.asInstanceOf[OT]
+        case avalue: OT => avalue
       }.filter(x => x.alive())
+
       (types.toSet.size match {
         case 1 => types.head
         case _ => new TObj().asInstanceOf[OT]
-      }).q(types.map(x => x.q).reduce((a,b) => (
-        int(Math.min(a._1.value,b._1.value)),
-        int(Math.max(a._2.value,b._2.value))))) // the quantification is the largest span of the all the branch ranges
+      }).q(types.map(x => x.q).reduce((a, b) => (
+        int(Math.min(a._1.value, b._1.value)),
+        int(Math.max(a._2.value, b._2.value))))) // the quantification is the largest span of the all the branch ranges
     }
   }
 
   trait FilterInstruction {
-    def keep(obj:Obj):Boolean = !(obj.q._1.value == 0 && obj.q._2.value == 0)
+    def keep(obj: Obj): Boolean = !(obj.q._1.value == 0 && obj.q._2.value == 0)
   }
 
   trait FlatmapInstruction
@@ -76,8 +76,8 @@ package object op {
   trait QuantifierInstruction
 
   trait ReduceInstruction[O <: Obj] {
-    val seed     :(String,O)
-    val reduction:Type[O]
+    val seed: (String, O)
+    val reduction: Type[O]
   }
 
   trait SideEffectInstruction

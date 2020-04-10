@@ -33,17 +33,15 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AddOp {
-  this:Obj =>
-  def add[O<:Obj](obj:O):O
+  this: Obj =>
+  def add[O <: Obj](obj: O): O
 }
 
 object AddOp {
-  def apply[O <: Obj with AddOp](obj:Obj):Inst[O,O] = new AddInst[O](obj)
+  def apply[O <: Obj with AddOp](obj: Obj): Inst[O, O] = new AddInst[O](obj)
 
-  class AddInst[O <: Obj with AddOp](obj:Obj) extends VInst[O,O]((Tokens.add,List(obj))) with SideEffectInstruction {
-    override def apply(trav:Traverser[O]):Traverser[O] ={
-      trav.split[O](trav.obj().add(Type.resolve(trav.obj(),obj).asInstanceOf[O]))
-    }
+  class AddInst[O <: Obj with AddOp](obj: Obj) extends VInst[O, O]((Tokens.add, List(obj))) with SideEffectInstruction {
+    override def exec(start: O): O = start.add(Inst.resolveArg(start, obj).asInstanceOf[O])
   }
 
 }

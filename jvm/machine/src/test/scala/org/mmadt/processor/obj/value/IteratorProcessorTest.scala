@@ -41,7 +41,7 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
     //   assertResult(List(int(110).q(100)))(Processor.iterator[Int,Int]().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(_.obj()).toList)
   }
 
-  test("process multiple values w/ quantifiers"){
+ /* test("process multiple values w/ quantifiers"){
     assertResult(List(int(102),int(104),int(106)))(Processor.iterator().apply(int(1,2,3),int.q(*).mult(int(2)).plus(int(100))).toStrm.toList)
     assertResult(List(int(102),int(104),int(106)))((int(1,2,3) ===> int.q(1,10).mult(int(2)).plus(int(100))).toList)
     assertResult(List(int(11),int(22),int(33)))((int(10,20,30) ===> int.q(*).choose(
@@ -58,7 +58,7 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
       int.is(int.gt(int(20))) -> int.plus(int(3)).q(300),
       int.is(int.gt(int(10))) -> int.plus(int(2)).q(200),
       int -> int.q(10).plus(int(1)).q(10)).plus(int(0))).toList)*/
-  }
+  }*/
 
   test("process nested single values w/ quantifiers"){
     assertResult(List(int(2)))((int(1) ===> int.mult(int(2)).is(int.gt(int(1)))).toList)

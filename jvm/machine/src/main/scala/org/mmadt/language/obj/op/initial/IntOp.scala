@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.initial
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{IntType, __}
 import org.mmadt.language.obj.op.InitialInstruction
-import org.mmadt.language.obj.{Inst, Int, Obj}
+import org.mmadt.language.obj.{Inst, Int, Obj, Str}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory
 import org.mmadt.storage.StorageFactory._
@@ -43,7 +43,7 @@ object IntOp {
   def apply():Inst[Obj,Int] = new IntInst()
 
   class IntInst() extends VInst[Obj,Int]((Tokens.int,Nil)) with InitialInstruction {
-    override def apply(trav:Traverser[Obj]):Traverser[Int] = trav.split(int)
+    override def exec(start: Obj): Int = int
   }
 
 }

@@ -38,26 +38,25 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ModelOp {
-  this:Obj =>
-
-  def model[E <: Obj](model:ModelT):E = this match {
-    case atype:Type[_] => new ModelInst[Obj,E](model).apply(Traverser.standard(atype,model=Model.from(model))).obj()
-    case other:E => Model.from(model).apply(other)
+  this: Obj =>
+  def model[E <: Obj](model: ModelT): E = this match {
+    case atype: Type[_] => new ModelInst[Obj, E](model).apply(Traverser.standard(atype, model = Model.from(model))).obj()
+    case other: E => Model.from(model).apply(other)
   }
 }
 
 object ModelOp {
-  private type ModelT = RecType[Type[Obj],Type[Obj]]
-  def apply[S <: Obj,E <: Obj](model:ModelT):Inst[S,E] = new ModelInst[S,E](model)
+  private type ModelT = RecType[Type[Obj], Type[Obj]]
+  def apply[S <: Obj, E <: Obj](model: ModelT): Inst[S, E] = new ModelInst[S, E](model)
 
-  class ModelInst[S <: Obj,E <: Obj](model:ModelT,q:IntQ=qOne) extends VInst[S,E]((Tokens.model,List(model)),q) {
-    override def q(quantifier:IntQ):this.type = new ModelInst[S,E](model,quantifier).asInstanceOf[this.type]
-    val m:Model = Model.from(model)
-    override def apply(trav:Traverser[S]):Traverser[E] ={
-      trav.split(LeftRightSweepRewrite.rewrite(m,
-        trav.obj().asInstanceOf[Type[Obj]],
-        trav.obj().asInstanceOf[Type[Obj]].range,
-        Traverser.standard(str,Map.empty,m)).obj().asInstanceOf[E])
+  class ModelInst[S <: Obj, E <: Obj](model: ModelT, q: IntQ = qOne) extends VInst[S, E]((Tokens.model, List(model)), q) {
+    override def q(quantifier: IntQ): this.type = new ModelInst[S, E](model, quantifier).asInstanceOf[this.type]
+    val m: Model = Model.from(model)
+    override def exec(start: S): E = {
+      LeftRightSweepRewrite.rewrite(m,
+        start.asInstanceOf[Type[Obj]],
+        start.asInstanceOf[Type[Obj]].range,
+        Traverser.standard(str, Map.empty, m)).obj().asInstanceOf[E]
     }
   }
 

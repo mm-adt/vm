@@ -33,19 +33,19 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait NegOp {
-  def neg():this.type
-  final def unary_-():this.type = this.neg()
+  def neg(): this.type
+  final def unary_-(): this.type = this.neg()
 }
 
 object NegOp {
-  def apply[O <: Obj with NegOp]():NegInst[O] = new NegInst[O]
+  def apply[O <: Obj with NegOp](): NegInst[O] = new NegInst[O]
 
-  class NegInst[O <: Obj with NegOp](q:IntQ = qOne) extends VInst[O,O]((Tokens.neg,Nil),q) {
-    override def q(quantifier:IntQ):this.type = new NegInst[O](quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(trav.obj(),this)
-      case _ => trav.obj().neg().q(multQ(trav.obj(),this))
-    })
+  class NegInst[O <: Obj with NegOp](q: IntQ = qOne) extends VInst[O, O]((Tokens.neg, Nil), q) {
+    override def q(quantifier: IntQ): this.type = new NegInst[O](quantifier).asInstanceOf[this.type]
+    override def exec(start: O): O = start match {
+      case atype: Type[_] => atype.compose(start.asInstanceOf[O], this)
+      case _ => start.neg()
+    }
   }
 
 }

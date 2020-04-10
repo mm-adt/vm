@@ -45,7 +45,7 @@ object QOp {
   def apply():Inst[Obj,Int] = new QInst
 
   class QInst extends VInst[Obj,Int]((Tokens.q,Nil)) with QuantifierInstruction {
-    override def apply(trav:Traverser[Obj]):Traverser[Int] = trav.split(trav.obj().quant().q(multQ(trav.obj().q,this.q)))
+    override def exec(start:Obj):Int = start.quant().q(multQ(start.q,this.q))
   }
 
 }

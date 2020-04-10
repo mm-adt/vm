@@ -23,9 +23,9 @@
 package org.mmadt.language.obj.op.initial
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{StrType,__}
+import org.mmadt.language.obj.`type`.{StrType, __}
 import org.mmadt.language.obj.op.InitialInstruction
-import org.mmadt.language.obj.{Inst,Obj,Str}
+import org.mmadt.language.obj.{Inst, Obj, Str}
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory
 import org.mmadt.storage.StorageFactory._
@@ -35,15 +35,15 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrOp {
-  this:__ =>
-  def str():StrType = this.compose(StorageFactory.str,StrOp()).hardQ(qOne)
+  this: __ =>
+  def str(): StrType = this.compose(StorageFactory.str, StrOp()).hardQ(qOne)
 }
 
 object StrOp {
-  def apply():Inst[Obj,Str] = new StrInst()
+  def apply(): Inst[Obj, Str] = new StrInst()
 
-  class StrInst() extends VInst[Obj,Str]((Tokens.str,Nil)) with InitialInstruction {
-    override def apply(trav:Traverser[Obj]):Traverser[Str] = trav.split(str)
+  class StrInst() extends VInst[Obj, Str]((Tokens.str, Nil)) with InitialInstruction {
+    override def exec(start: Obj): Str = str
   }
 
 }

@@ -79,11 +79,11 @@ class BranchInstTest extends FunSuite {
         int.is(int.gt(10)) -> __.plus(4)))
   }
 
-  test("[branch] w/ traverser state"){
+  /*test("[branch] w/ traverser state"){
     assertResult(real(2.0,3.0,3.0))(
       real(0.0,1.0,1.0) ===> real.q(3).to("x").plus(1.0).to("y").branch[Obj,Real](
         __.is(__.eqs(1.0)) -> __.from("y"),
         __.is(__.eqs(2.0)) -> __.from("x")
       ).plus(real.from[Real]("y")))
-  }
+  }*/
 }

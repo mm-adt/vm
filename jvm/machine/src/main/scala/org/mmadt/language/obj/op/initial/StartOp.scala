@@ -44,10 +44,10 @@ object StartOp {
 
   class StartInst[O <: Obj](starts:O,q:IntQ = qOne) extends VInst[O,O]((Tokens.start,List(starts)),q) with InitialInstruction {
     override def q(quantifier:IntQ):this.type = new StartInst[O](starts,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj() match {
+    override def exec(start:O):O = start match {
       case _:Type[_] => obj.q(0).compose(asType(starts),StartOp(starts)).hardQ(starts.q)
       case _ => starts
-    })
+    }
   }
 
 }

@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.op.map.{GtOp, PlusOp}
 import org.mmadt.language.obj.{Int, IntQ}
 import org.mmadt.storage.StorageFactory._
 
@@ -37,12 +38,12 @@ trait IntValue extends Int
   def value(java:Long):this.type = this.clone(this.name,java,this.q)
   
   override def plus(other:IntType):IntType = this.start[Int]().plus(other)
-  override def plus(other:IntValue):this.type = this.value(this.value + other.value)
+  override def plus(other:IntValue):this.type = this.value(this.value + other.value).clone(_via = (this,PlusOp(other)))
   override def mult(other:IntType):IntType = this.start[Int]().mult(other)
   override def mult(other:IntValue):this.type = this.value(this.value * other.value)
   override def neg():this.type = this.value(-this.value)
   override def one():this.type = this.value(1L)
-  override def gt(other:IntValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
+  override def gt(other:IntValue):BoolValue = vbool(value = this.value > other.value,q = this.q).clone(_via = (this,GtOp(other)))
   override def gte(other:IntValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
   override def lt(other:IntValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
   override def lte(other:IntValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)

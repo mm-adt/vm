@@ -75,11 +75,11 @@ trait Type[+T <: Obj] extends Obj
   }
   def compose(inst:Inst[_,_]):this.type = this.compose(this,inst)
   def compose[R <: Obj](nextObj:R,inst:Inst[_,_]):R ={
-    val newInst:ViaTuple[Obj] = if (inst.op().equals(Tokens.noop)) this.via else (this,inst.asInstanceOf[Inst[Obj,R]])
+    val newInst:ViaTuple = if (inst.op().equals(Tokens.noop)) this.via else (this,inst.asInstanceOf[Inst[Obj,R]])
     (if (nextObj.isInstanceOf[__])
       new __(multQ(this,inst),if (inst.op().equals(Tokens.noop)) this.lineage else this.lineage ::: List((this,inst.asInstanceOf[Inst[Obj,Obj]])))
     else
-      asType[Obj](nextObj).asInstanceOf[this.type].clone(_name=nextObj.name,_quantifier=multQ(this,inst),_via=newInst.asInstanceOf[ViaTuple[this.type]])).asInstanceOf[R]
+      asType[Obj](nextObj).asInstanceOf[this.type].clone(_name=nextObj.name,_quantifier=multQ(this,inst),_via=newInst)).asInstanceOf[R]
   }
 
   // obj-level operations

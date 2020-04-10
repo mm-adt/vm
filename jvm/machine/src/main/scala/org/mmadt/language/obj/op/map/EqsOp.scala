@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type}
+import org.mmadt.language.obj.op.map.GtOp.GtInst
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.Traverser
 import org.mmadt.storage.StorageFactory._
@@ -53,13 +54,13 @@ object EqsOp {
 
   class EqsInst[O <: Obj with EqsOp](other:Obj,q:IntQ = qOne) extends VInst[O,Bool]((Tokens.lt,List(other)),q) {
     override def q(quantifier:IntQ):this.type = new EqsInst[O](other,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[Bool] = trav.split(trav.obj() match {
-      case atype:Type[_] => atype.compose(bool,new EqsInst[O](Traverser.resolveArg(trav,other),q))
-      case avalue:Value[_] => (Traverser.resolveArg(trav,other) match {
-        case btype:Type[O] => avalue.eqs(btype)
-        case bvalue:Value[O] => avalue.eqs(bvalue)
-      }).q(multQ(avalue,this)._2)
-    })
+    override def exec(start: O): Bool = start match {
+      case atype: Type[_] => atype.compose(bool, new EqsInst[O](Inst.resolveArg(start, other), q))
+      case avalue: Value[_] => (Inst.resolveArg(start, other) match {
+        case btype: Type[_] => avalue.eqs(btype )
+        case bvalue: Value[O] => avalue.eqs(bvalue).clone(_via=(start,this))
+      }).q(multQ(avalue, this)._2)
+    }
   }
 
 }

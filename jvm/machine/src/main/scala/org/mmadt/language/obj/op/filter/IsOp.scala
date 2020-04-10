@@ -62,7 +62,7 @@ object IsOp {
 
   class IsInst[O <: Obj with IsOp](other:Obj,q:IntQ = qOne) extends VInst[O,O]((Tokens.is,List(other)),q) with FilterInstruction {
     override def q(quantifier:IntQ):this.type = new IsInst[O](other,quantifier).asInstanceOf[this.type]
-    override def apply(trav:Traverser[O]):Traverser[O] = trav.split(trav.obj().is(new IsInst[O](Traverser.resolveArg(trav,other),q)))
+    override def exec(start:O):O = start.is(new IsInst[O](Inst.resolveArg(start,other),q))
   }
 
 }
