@@ -34,32 +34,23 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait FromOp {
-  this:Obj =>
-  def from[O <: Obj](label:StrValue):O = this match {
-    case atype:Type[_] => atype.compose(FromOp(label)).asInstanceOf[O]
-    case avalue:Value[_] => avalue.start().from(label)
+  this: Obj =>
+  def from[O <: Obj](label: StrValue): O = this match {
+    case atype: Type[_] => atype.compose(FromOp(label)).asInstanceOf[O]
+    case avalue: Value[_] => avalue.start().from(label)
   }
-  def from[O <: Obj](label:StrValue,default:O):O = this match {
-    case atype:Type[_] => atype.compose(asType[O](default),FromOp(label,default))
-    case avalue:Value[_] => avalue.start().from(label,default)
+  def from[O <: Obj](label: StrValue, default: O): O = this match {
+    case atype: Type[_] => atype.compose(asType[O](default), FromOp(label, default))
+    case avalue: Value[_] => avalue.start().from(label, default)
   }
 }
 
 object FromOp {
-  def apply(label:StrValue):FromInst[Obj] = new FromInst[Obj](label)
-  def apply[O <: Obj](label:StrValue,default:O):FromInst[O] = new FromInst[O](label,default)
+  def apply(label: StrValue): FromInst[Obj] = new FromInst[Obj](label)
+  def apply[O <: Obj](label: StrValue, default: O): FromInst[O] = new FromInst[O](label, default)
 
-  class FromInst[O <: Obj](label:StrValue,default:O = null,q:IntQ=qOne) extends VInst[Obj,O]((Tokens.from,List(label)),q) with TraverserInstruction {
-    override def q(quantifier:IntQ):this.type = new FromInst[O](label,default,quantifier).asInstanceOf[this.type]
-    override def exec(start:Obj):O ={
-      /*trav.split(composeInstruction(
-        if (null != default)
-          trav.state.getOrElse(arg0[StrValue]().value,default).asInstanceOf[O]
-        else {
-          trav.state.getOrElse(arg0[StrValue]().value,asType(trav.obj())).asInstanceOf[O]
-        }))*/
-      default
-    }
+  class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.from, List(label)), q) with TraverserInstruction {
+    override def q(quantifier: IntQ): this.type = new FromInst[O](label, default, quantifier).asInstanceOf[this.type]
+    override def exec(start: Obj): O = start.lineage.find(x => x._2.op() == Tokens.to && x._2.arg0() == label).get._1.via(start, this).asInstanceOf[O]
   }
-
 }

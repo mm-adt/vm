@@ -65,6 +65,7 @@ trait Obj
   def root: Boolean = null == this.via._1
   val via: ViaTuple = base()
   def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
+  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(_via = (obj, inst))
   // utility methods
   def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
   def toList: List[this.type] = toStrm.value.toList
@@ -84,7 +85,6 @@ trait Obj
   val name: String
   def test(other: Obj): Boolean
   def clone(_name: String = this.name, _value: Any = null, _quantifier: IntQ = this.q, _via: ViaTuple = this.via): this.type
-
   def compute[E <: Obj](rangeType: Type[E]): E = {
     (rangeType.lineage.headOption.map(x => x._2) match {
       case None => return this.asInstanceOf[E]

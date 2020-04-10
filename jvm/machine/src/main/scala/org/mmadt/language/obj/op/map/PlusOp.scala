@@ -49,10 +49,10 @@ object PlusOp {
 
   class PlusInst[O <: Obj with PlusOp[Type[O], Value[O]]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.plus, List(other)), q) {
     override def q(quantifier: IntQ): this.type = new PlusInst[O](other, quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start match {
+    override def exec(start: O): O = (start match {
       case atype: Type[_] => atype.compose(start, new PlusInst[O](Inst.resolveArg(start, other), q))
       case avalue: Value[_] => start.plus(Inst.resolveArg(start, other)).clone(_quantifier = multQ(start, this), _via = (avalue, this))
-    }
+    })//.via(start,this)
   }
 
 }

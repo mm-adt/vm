@@ -166,7 +166,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str("14hello"))(engine.eval("5[plus,2][mult,2]str[plus,'hello']"))
     assertResult(vrec(str("x") -> int(7)))(engine.eval("5 int[plus,2][as,rec['x'->int]]"))
 //    assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'-><.x>,'y'-><.y>]]"))
-  //  assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<.x>,'y'->int<.y>]]"))
+ //   assertResult(vrec(str("x") -> int(7),str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<.x>,'y'->int<.y>]]"))
   //  assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['a'->int<.x>,'b'->int<.y>]][get,'b']"))
    // assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['a'-><.x>,'b'-><.y>]][get,'b']"))
     //assertResult(int ==> int.to("x").plus(1).to("y").as(trec(str("a")->int.from("x"),str("b")->int.from("y"))).get("b"))(engine.eval("int<x>[plus,1]<y>[as,rec['a'->int<.x>,'b'->int<.y>]].b"))
@@ -187,7 +187,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
   test("explain instruction parsing"){
     assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("instruction"))
- //   assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("bool<z>"))
+    assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("bool<z>"))
   }
 
   test("branch instruction parsing"){
@@ -197,7 +197,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("map instruction parsing") {
-    // assertResult(int.to("x").map(int.from[IntType]("x").plus(int.from[IntType]("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
+     // assertResult(int.to("x").map(int.from[IntType]("x").plus(int.from[IntType]("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
   }
 
   test("choose instruction parsing"){
@@ -231,17 +231,17 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(obj.q(+))(engine.eval("int{+}[plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").asInstanceOf[Type[Obj]].range)
   }
 
-  /*test("traverser read/write state parsing"){
-    assertResult(real(45.5))(engine.eval("45.0<x>[mult,0.0][plus,<.x>][plus,0.5]"))
+  test("traverser read/write state parsing"){
+//    assertResult(real(45.5))(engine.eval("45.0<x>[mult,0.0][plus,<.x>][plus,0.5]"))
     assertResult(int.to("a").plus(int(10)).to("b").mult(int(20)))(engine.eval("int<a>[plus,10]<b>[mult,20]"))
-    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,<.a>]"))
-    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<.a>]"))
+//    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,<.a>]"))
+//    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<.a>]"))
     // TODO: assertResult(int.to("a").plus(int(10)).to("b").mult(int.from[IntType]("a")))(engine.eval("int<a>[plus,10]int<b>[mult,int<.a>]")) (ctype in the middle)
-    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,<.x>]"))
-    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<.x>]"))
-    assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,int<.y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<.x>[plus,<.y>]]").toString)
-    assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,<.y>]]"))
-  }*/
+ //   assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,<.x>]"))
+   // assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<.x>]"))
+//    assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,int<.y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<.x>[plus,<.y>]]").toString)
+  //  assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,<.y>]]"))
+  }
 
   test("infix operator instruction parsing"){
     assertResult(real.plus(6.0))(real.plus(6.0))
