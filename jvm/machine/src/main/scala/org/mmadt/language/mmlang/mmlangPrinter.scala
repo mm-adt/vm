@@ -60,13 +60,13 @@ object mmlangPrinter {
       case arec:RecType[_,_] => if (atype.isDerived && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
       case _ => atype.name
     }) + qString(atype.q)
-    val domain = if (atype.isCanonical) Tokens.empty else {
+    val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
-        case arec:RecType[_,_] => if (!atype.isCanonical && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
+        case arec:RecType[_,_] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
         case btype:Type[_] => btype.name
       }) + qString(atype.domain().q)
     }
-    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain().alive() && !atype.domain().equals(obj.q(qStar))) domain else Tokens.empty))) + atype.insts.map(_._2.toString()).fold(Tokens.empty)((a,b) => a + b)
+    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain().alive() && !atype.domain().equals(obj.q(qStar))) domain else Tokens.empty))) + atype.lineage.map(_._2.toString()).fold(Tokens.empty)((a, b) => a + b)
   }
 
   def valueString(avalue:Value[Obj]):String ={

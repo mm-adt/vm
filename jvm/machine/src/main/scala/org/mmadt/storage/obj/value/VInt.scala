@@ -23,7 +23,7 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.IntQ
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 
@@ -31,12 +31,12 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(name:String,java:Long,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with IntValue {
-  def this(java:Long) = this(Tokens.int,java,VInt.q1)
-  override protected def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q):this.type = new VInt(_name,_value.asInstanceOf[Long],_quantifier).asInstanceOf[this.type]
+class VInt(name:String, java:Long, quantifier:IntQ, via:ViaTuple[IntValue] = base()) extends AbstractVObj(name, java, quantifier, via) with IntValue {
+  def this(java:Long) = this(Tokens.int, java, VInt.q1)
+  override def clone(_name:String = this.name, _value:Any = this.value, _quantifier:IntQ = this.q, _via:ViaTuple[this.type]):this.type = new VInt(_name, _value.asInstanceOf[Long], _quantifier, _via).asInstanceOf[this.type]
   override val value:Long = java
 }
 
 object VInt {
-  val q1:(IntValue,IntValue) = (int(1),int(1)) // prevent stackoverflow on object construction with int quantifiers
+  val q1:(IntValue, IntValue) = (int(1), int(1)) // prevent stackoverflow on object construction with int quantifiers
 }

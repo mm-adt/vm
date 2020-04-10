@@ -80,14 +80,14 @@ object Model {
     }
     override def get(left:Type[Obj]):Option[Type[Obj]] ={
       if (left.name.equals(Tokens.model)) return Some(toRec)
-      if (isSymbol(left)) return this.typeMap.values.flatten.find(x => x._2.name.equals(left.name) && x._2.isCanonical && x._1.name != x._2.name).map(x => x._1.named(left.name))
+      if (isSymbol(left)) return this.typeMap.values.flatten.find(x => x._2.name.equals(left.name) && x._2.root && x._1.name != x._2.name).map(x => x._1.named(left.name))
       this.typeMap.get(left.name) match {
         case None => None
         case Some(m) => m.get(left) match {
           case Some(n) => Some(n)
           case None => m.iterator.find(a => left.test(a._1)).map(a => {
             val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap // TODO: may need to give model to traverser
-            a._2.insts.map(x =>
+            a._2.lineage.map(x =>
               OpInstResolver.resolve[Obj,Obj](
                 x._2.op(),
                 x._2.args().map(i => Traverser.resolveArg[Obj,Obj](Traverser.standard(x._1,state),i)))) // TODO: may need to give model to traverser
@@ -98,7 +98,7 @@ object Model {
     }
     // generate traverser state
     private def bindLeftValuesToRightVariables(left:Type[Obj],right:Type[Obj]):List[(Obj,Type[Obj])] ={
-      left.insts.map(_._2).zip(right.insts.map(_._2))
+      left.lineage.map(_._2).zip(right.lineage.map(_._2))
         .flatMap(x => x._1.args().zip(x._2.args()))
         .filter(x => x._2.isInstanceOf[Type[Obj]])
         .flatMap(x => {
@@ -114,8 +114,8 @@ object Model {
     }
     override def get(left:Value[Obj]):Option[Value[Obj]] ={
       typeMap.get(left.name) match {
-        case None => typeMap.values.flatten.find(x => x._2.isCanonical && left.test(x._2.name) && x._1.name != x._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
-        case Some(m) => m.iterator.find(a => a._2.isCanonical && left.test(a._1) && a._1.name != a._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
+        case None => typeMap.values.flatten.find(x => x._2.root && left.test(x._2.name) && x._1.name != x._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
+        case Some(m) => m.iterator.find(a => a._2.root && left.test(a._1) && a._1.name != a._2.name).map(a => AsOp[Obj](a._2).apply(Traverser.standard(left,model = this)).obj().asInstanceOf[Value[Obj]])
       }
     }
   }

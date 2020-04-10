@@ -30,6 +30,6 @@ import org.mmadt.storage.StorageFactory.qOne
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TReal(name:String=Tokens.real,quantifier:IntQ=qOne,via:DomainInst[Real]=base()) extends AbstractTObj[Real](name,quantifier,via) with RealType {
-  override protected def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TReal(name,quantifier,via.asInstanceOf[DomainInst[Real]]).asInstanceOf[this.type]
+class TReal(name:String=Tokens.real,quantifier:IntQ=qOne,via:ViaTuple[Real]=base()) extends AbstractTObj[Real](name,quantifier,via) with RealType {
+  override  def clone(name:String,value:Any,quantifier:IntQ,via:ViaTuple[this.type]):this.type = new TReal(name,quantifier,via).asInstanceOf[this.type]
 }

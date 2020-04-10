@@ -34,31 +34,31 @@ import org.scalatest.FunSuite
 class TypeOperatorTest extends FunSuite {
 
   test("insts analysis from type composition"){
-    assertResult(List((int,PlusOp(int(1)))))(int.plus(1).insts)
-    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2)))))(int.plus(1).plus(2).insts)
-    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2))),(int.plus(1).plus(2),PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).insts)
-    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().insts)
-    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2))),(int.plus(1).plus(2),PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().plus(3).insts)
+    assertResult(List((int,PlusOp(int(1)))))(int.plus(1).lineage)
+    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2)))))(int.plus(1).plus(2).lineage)
+    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2))),(int.plus(1).plus(2),PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).lineage)
+    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().lineage)
+    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2))),(int.plus(1).plus(2),PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().plus(3).lineage)
   }
 
   test("insts analysis from type right inverse"){
-    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().insts)
-    assertResult(List((int,PlusOp(int(1)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().insts)
-    assertResult(List())(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]().insts)
+    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(2)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().lineage)
+    assertResult(List((int,PlusOp(int(1)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().lineage)
+    assertResult(List())(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]().lineage)
     assertResult(int)(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]())
     assertThrows[NoSuchElementException]{
       int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]().rinvert()
     }
-    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(4)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().plus(4).insts)
-    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(4))),(int.plus(1).plus(4),PlusOp(int(5)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().plus(4).plus(5).insts)
+    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(4)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().plus(4).lineage)
+    assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(4))),(int.plus(1).plus(4),PlusOp(int(5)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().plus(4).plus(5).lineage)
   }
 
   test("insts analysis from type left inverse"){
-    assertResult(List((int,PlusOp(int(2))),(int.plus(2),PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert().insts)
-    assertResult(List((int,PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert().linvert().insts)
-    assertResult(List())(int.plus(1).plus(2).plus(3).linvert().linvert().linvert().insts)
+    assertResult(List((int,PlusOp(int(2))),(int.plus(2),PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert().lineage)
+    assertResult(List((int,PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert().linvert().lineage)
+    assertResult(List())(int.plus(1).plus(2).plus(3).linvert().linvert().linvert().lineage)
     assertThrows[UnsupportedOperationException]{
-      assertResult(List())(int.plus(1).plus(2).plus(3).linvert().linvert().linvert().linvert().insts)
+      assertResult(List())(int.plus(1).plus(2).plus(3).linvert().linvert().linvert().linvert().lineage)
     }
   }
 }

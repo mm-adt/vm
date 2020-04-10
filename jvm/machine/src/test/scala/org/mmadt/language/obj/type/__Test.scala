@@ -32,8 +32,8 @@ import org.scalatest.FunSuite
 class __Test extends FunSuite {
 
   test("__ type structure"){
-    assert(__.isCanonical)
-    assert(!__.plus(1).isCanonical)
+    assert(__.root)
+    assert(!__.plus(1).root)
     assertResult(__)(__.plus(1).via._1)
     //    assertResult(__)(__.plus(1).mult(2).via._1.via._1)
     //  assertResult(__)(__.plus(1).mult(2).gt(4).via._1.via._1.via._1)

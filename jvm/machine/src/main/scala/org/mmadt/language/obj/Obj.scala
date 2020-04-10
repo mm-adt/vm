@@ -25,15 +25,15 @@ package org.mmadt.language.obj
 import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.branch.{BranchOp,ChooseOp}
+import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.{AsOp,ModelOp}
-import org.mmadt.language.obj.op.reduce.{CountOp,FoldOp}
+import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.FromOp
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{strm => _,_}
+import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 
@@ -59,9 +59,14 @@ trait Obj
 
   // quantifier methods
   val q:IntQ
-  def q(quantifier:IntQ):this.type
+  def q(quantifier:IntQ):this.type = this.clone(_quantifier=quantifier)
   def q(single:IntValue):this.type = this.q(single.q(qOne),single.q(qOne))
   def alive():Boolean = this.q != qZero
+
+  // historic mutations
+  def root:Boolean = null == this.via._1
+  val via:ViaTuple[this.type] = base()
+  def lineage:List[(Obj,Inst[Obj,Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via
 
   // utility methods
   def toStrm:Strm[this.type] = strm[this.type](Iterator[this.type](this))
@@ -77,10 +82,10 @@ trait Obj
   } // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
 
   // pattern matching methods
-  def named(_name:String):this.type
+  def named(_name:String):this.type = this.clone(_name=_name)
   val name:String
   def test(other:Obj):Boolean
-
+  def clone(_name:String=this.name,_value:Any=null,_quantifier:IntQ=this.q,_via:ViaTuple[this.type]=this.via):this.type
 }
 
 object Obj {

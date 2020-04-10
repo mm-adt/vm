@@ -55,14 +55,14 @@ object TypeChecker {
        case recType:ORecType if pattern.isInstanceOf[RecType[_,_]] => testRecord(recType.value(),pattern.asInstanceOf[ORecType].value())
        case _ => false
      })) &&
-    obj.insts
+    obj.lineage
       .map(_._2)
-      .zip(pattern.insts.map(_._2))
+      .zip(pattern.lineage.map(_._2))
       .map(insts => insts._1.op().equals(insts._2.op()) &&
                     insts._1.args().zip(insts._2.args()).
                       map(a => a._1.test(a._2)).
                       fold(insts._1.args().length == insts._2.args().length)(_ && _))
-      .fold(obj.insts.length == pattern.insts.length)(_ && _) &&
+      .fold(obj.lineage.length == pattern.lineage.length)(_ && _) &&
     withinQ(obj,pattern)
   }
 

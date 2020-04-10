@@ -34,9 +34,6 @@ trait Value[+V <: Obj] extends Obj
   with StartOp {
   val value:Any
 
-  protected def clone(_name:String,_value:Any,_quantifier:IntQ):this.type
-  override def named(_name:String):this.type = this.clone(_name,this.value,this.q)
-
   // pattern matching methods
   override def test(other:Obj):Boolean = other match {
     case argValue:Value[_] => TypeChecker.matchesVV(this,argValue)

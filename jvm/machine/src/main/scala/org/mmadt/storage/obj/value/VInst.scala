@@ -25,6 +25,8 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -42,4 +44,5 @@ abstract class VInst[S <: Obj,E <: Obj](java:InstTuple,quantifier:IntQ = qOne) e
       case _ => obj
     }
   }
+  override def clone(_name:String, _value:Any, _quantifier:(IntValue, IntValue), _via:(Obj, Inst[Obj, this.type])):this.type = this
 }

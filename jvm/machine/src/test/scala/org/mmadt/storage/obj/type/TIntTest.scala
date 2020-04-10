@@ -34,17 +34,17 @@ import org.scalatest.FunSuite
  */
 class TIntTest extends FunSuite {
   test("canonical int"){
-    assert(int.isCanonical)
+    assert(int.root)
     assertResult(IntOp())(int.via._2)
     assertResult(null)(int.via._1)
   }
 
   test("derived int"){
-    assert(!int.plus(2).isCanonical)
+    assert(!int.plus(2).root)
     assertResult(int)(int.plus(2).via._1)
     assertResult(PlusOp(2))(int.plus(2).via._2)
     //
-    assert(!int.plus(2).mult(5).isCanonical)
+    assert(!int.plus(2).mult(5).root)
     assertResult(int.plus(2))(int.plus(2).mult(5).via._1)
     assertResult(MultOp(5))(int.plus(2).mult(5).via._2)
   }

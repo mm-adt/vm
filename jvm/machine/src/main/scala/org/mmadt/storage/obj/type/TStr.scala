@@ -30,7 +30,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TStr(name:String = Tokens.str,quantifier:IntQ = qOne,via:DomainInst[Str] = base()) extends AbstractTObj[Str](name,quantifier,via) with StrType {
-  override protected def clone(name:String,quantifier:IntQ,via:DomainInst[Obj]):this.type = new TStr(name,quantifier,via.asInstanceOf[DomainInst[Str]]).asInstanceOf[this.type]
+class TStr(name:String = Tokens.str,quantifier:IntQ = qOne,via:ViaTuple[Str] = base()) extends AbstractTObj[Str](name,quantifier,via) with StrType {
+  override  def clone(name:String,value:Any,quantifier:IntQ,via:ViaTuple[this.type]):this.type = new TStr(name,quantifier,via).asInstanceOf[this.type]
 }
 

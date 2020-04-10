@@ -51,7 +51,7 @@ object LeftRightSweepRewrite {
       rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),
-        btype.insts.head._2.apply(traverser)).asInstanceOf[Traverser[S]]
+        btype.lineage.head._2.apply(traverser)).asInstanceOf[Traverser[S]]
     }
     else traverser
   }

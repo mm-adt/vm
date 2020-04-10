@@ -57,9 +57,9 @@ object ExplainOp {
   private type Row = (Int,Inst[Obj,Obj],Type[Obj],Type[Obj],mutable.LinkedHashMap[String,Obj])
 
   private def explain(atype:Type[Obj],state:mutable.LinkedHashMap[String,Obj],depth:Int = 0):List[Row] ={
-    val report = atype.insts.foldLeft(List[Row]())((a,b) => {
+    val report = atype.lineage.foldLeft(List[Row]())((a, b) => {
       if (b._2.isInstanceOf[TraverserInstruction]) state += (b._2.arg0[StrValue]().value -> b._2.apply(Traverser.standard(b._1)).obj().asInstanceOf[Type[Obj]].range)
-      val temp  = if (b._2.isInstanceOf[TraverserInstruction]) a else a :+ (depth,b._2,lastRange(b._1),b._2.apply(Traverser.standard(b._1)).obj().asInstanceOf[Type[Obj]].range,mutable.LinkedHashMap(state.toSeq:_*))
+      val temp  = if (b._2.isInstanceOf[TraverserInstruction]) a else a :+ (depth,b._2,lastRange(b._1.asInstanceOf[Type[Obj]]),b._2.apply(Traverser.standard(b._1)).obj().asInstanceOf[Type[Obj]].range,mutable.LinkedHashMap(state.toSeq:_*))
       val inner = b._2.args().foldLeft(List[Row]())((x,y) => x ++ (y match {
         case branches:RecType[_,_] if b._2.isInstanceOf[BranchInst[_,_]] => branches.value().flatMap(x => List(x._1,x._2)).map{
           case btype:Type[_] => btype
@@ -73,7 +73,7 @@ object ExplainOp {
     report
   }
 
-  private def lastRange(atype:Type[Obj]):Type[Obj] = if (atype.isCanonical) atype else atype.linvert().range
+  private def lastRange(atype:Type[Obj]):Type[Obj] = if (atype.root) atype else atype.linvert().range
   private val MAX_LENGTH_STRING = 40
   private def instMax(inst:Inst[Obj,Obj]):String ={
     val instString = inst.toString.substring(0,Math.min(MAX_LENGTH_STRING,inst.toString.length))
