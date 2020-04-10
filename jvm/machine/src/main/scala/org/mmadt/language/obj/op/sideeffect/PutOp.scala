@@ -40,7 +40,7 @@ object PutOp {
 
   class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Rec[A, B], Rec[A, B]]((Tokens.put, List(key, value)), q) {
     override def q(quantifier: IntQ): this.type = new PutInst[A, B](key, value, quantifier).asInstanceOf[this.type]
-    override def exec(start: Rec[A, B]): Rec[A, B] = start.put(key, value).q(multQ(start, this)._2)
+    override def exec(start: Rec[A, B]): Rec[A, B] = start.put(key, value).q(multQ(start, this)).via(start,this)
   }
 
 }

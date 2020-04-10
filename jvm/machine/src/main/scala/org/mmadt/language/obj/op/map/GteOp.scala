@@ -52,8 +52,8 @@ object GteOp {
       case atype: Type[_] => atype.compose(bool, new GteInst(Inst.resolveArg(start, other), q))
       case avalue: Value[_] => (Inst.resolveArg(start, other) match {
         case _: Type[_] => avalue.start[O]().compose(bool, new GteInst(other, q))
-        case bvalue: Value[O] => avalue.gte(bvalue).clone(_via = (avalue,this))
-      }).q(multQ(avalue, this)._2)
+        case bvalue: Value[O] => avalue.gte(bvalue).clone(_via = (avalue,this)).q(multQ(start, this)).via(start,this)
+      })
     }
   }
 

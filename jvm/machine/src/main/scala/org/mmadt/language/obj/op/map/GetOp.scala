@@ -46,7 +46,7 @@ object GetOp {
     override def q(quantifier: IntQ): this.type = new GetInst[A, B](key, typeHint, quantifier).asInstanceOf[this.type]
     override def exec(start: Rec[A, B]): B = start match {
       case atype: Type[_] => atype.compose(atype.get(key), new GetInst[A, B](key, typeHint, q))
-      case avalue: Value[_] => avalue.get(Inst.resolveArg(start, key), typeHint).q(multQ(avalue, this)._2)
+      case avalue: Value[_] => avalue.get(Inst.resolveArg(start, key), typeHint).q(multQ(start, this)).via(start,this)
     }
   }
 

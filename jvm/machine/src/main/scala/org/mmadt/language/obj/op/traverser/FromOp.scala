@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, Obj, multQ}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,10 +39,6 @@ trait FromOp {
     case atype: Type[_] => atype.compose(FromOp(label)).asInstanceOf[O]
     case avalue: Value[_] => avalue.start().from(label)
   }
-  def from[O <: Obj](label: StrValue, default: O): O = this match {
-    case atype: Type[_] => atype.compose(asType[O](default), FromOp(label, default))
-    case avalue: Value[_] => avalue.start().from(label, default)
-  }
 }
 
 object FromOp {
@@ -51,6 +47,6 @@ object FromOp {
 
   class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.from, List(label)), q) with TraverserInstruction {
     override def q(quantifier: IntQ): this.type = new FromInst[O](label, default, quantifier).asInstanceOf[this.type]
-    override def exec(start: Obj): O = start.lineage.find(x => x._2.op() == Tokens.to && x._2.arg0() == label).get._1.via(start, this).asInstanceOf[O]
+    override def exec(start: Obj): O = start.lineage.find(x => x._2.op() == Tokens.to && x._2.arg0() == label).get._1.q(multQ(start, this)).via(start,this).asInstanceOf[O]
   }
 }

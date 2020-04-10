@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.{IntQ, Obj, multQ}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -42,8 +42,8 @@ object OneOp {
   class OneInst[O <: Obj with OneOp](q: IntQ = qOne) extends VInst[O, O]((Tokens.one, Nil), q) {
     override def q(quantifier: IntQ): this.type = new OneInst[O](quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = start match {
-      case atype: Type[_] => atype.compose(start.asInstanceOf[O], this)
-      case _ => start.one().clone(_via = (start,this))
+      case atype: Type[_] => atype.compose(start, this)
+      case _ => start.one().q(multQ(start, this)).via(start, this)
     }
   }
 

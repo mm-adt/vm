@@ -32,30 +32,30 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultOp[T <: Type[Obj],V <: Value[Obj]] {
-  this:Obj =>
-  def mult(other:T):T
-  def mult(other:V):this.type
-  final def *(other:T):T = this.mult(other)
-  final def *(other:V):this.type = this.mult(other)
-  def mult(other:Obj):this.type = (other match {
-    case atype:T => this.mult(atype)
-    case avalue:V => this.mult(avalue)
+trait MultOp[T <: Type[Obj], V <: Value[Obj]] {
+  this: Obj =>
+  def mult(other: T): T
+  def mult(other: V): this.type
+  final def *(other: T): T = this.mult(other)
+  final def *(other: V): this.type = this.mult(other)
+  def mult(other: Obj): this.type = (other match {
+    case atype: T => this.mult(atype)
+    case avalue: V => this.mult(avalue)
   }).asInstanceOf[this.type]
 }
 
 object MultOp {
-  def apply[O <: Obj with MultOp[T,V],T <: Type[O],V <: Value[O]](other:Obj):MultInst[O,T,V] = new MultInst[O,T,V](other)
+  def apply[O <: Obj with MultOp[T, V], T <: Type[O], V <: Value[O]](other: Obj): MultInst[O, T, V] = new MultInst[O, T, V](other)
+
   class MultInst[O <: Obj with MultOp[T, V], T <: Type[O], V <: Value[O]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.mult, List(other)), q) {
     override def q(quantifier: IntQ): this.type = new MultInst[O, T, V](other, quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = {
       (start match {
         case atype: Type[_] => atype.compose(start, new MultInst[O, T, V](Inst.resolveArg(start, other), q))
-        case _ => start.mult(Inst.resolveArg(start, other)).q(multQ(start, this))
-      }).via(start,this)
+        case _ => start.mult(Inst.resolveArg(start, other)).q(multQ(start, this)).via(start, this)
+      })
     }
   }
-
 
 }
 

@@ -37,15 +37,5 @@ abstract class VInst[S <: Obj, E <: Obj](java: InstTuple, quantifier: IntQ = qOn
   override val q: IntQ = quantifier
   def test(other: Obj): Boolean = false //  TODO: GUT WHEN VINST JOINS HEIRARCHY
   override def named(_name: String): VInst.this.type = this
-  def composeInstruction(obj: E): E = {
-    obj match {
-      case atype: Type[Obj] => atype.compose(this).asInstanceOf[E]
-      case _ => obj
-    }
-  }
   override def clone(_name: String, _value: Any, _quantifier: (IntValue, IntValue), _via: ViaTuple): this.type = this
-  /*override def exec(start: S): E = start match {
-    case atype: Type[_] => atype.compose(start.asInstanceOf[E], this.clone(this.name, (java._1, java._2.map(x => Inst.resolveArg(start, x))), q))
-    case _ => this.exec(start)
-  }*/
 }

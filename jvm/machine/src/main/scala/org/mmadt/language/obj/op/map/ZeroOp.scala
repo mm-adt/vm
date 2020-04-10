@@ -42,8 +42,8 @@ object ZeroOp {
   class ZeroInst[O <: Obj with ZeroOp](q:IntQ = qOne) extends VInst[O,O]((Tokens.zero,Nil),q) {
     override def q(quantifier:IntQ):this.type = new ZeroInst[O](quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = start match {
-      case atype: Type[_] => atype.compose(start.asInstanceOf[O], this)
-      case _ => start.zero().clone(_via = (start,this))
+      case atype: Type[_] => atype.compose(start, this)
+      case _ => start.zero().q(multQ(start, this)).via(start, this)
     }
   }
 

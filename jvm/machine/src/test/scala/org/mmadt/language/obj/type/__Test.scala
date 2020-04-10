@@ -35,9 +35,9 @@ class __Test extends FunSuite {
     assert(__.root)
     assert(!__.plus(1).root)
     assertResult(__)(__.plus(1).via._1)
-    //    assertResult(__)(__.plus(1).mult(2).via._1.via._1)
-    //  assertResult(__)(__.plus(1).mult(2).gt(4).via._1.via._1.via._1)
-    // TODO    assertResult(__(List(PlusOp(1),MultOp(2),GtOp(4))))(__.plus(1).mult(2).gt(4))
+    assertResult(__)(__.plus(1).mult(2).via._1.via._1)
+    assertResult(__)(__.plus(1).mult(2).gt(4).via._1.via._1.via._1)
+    //assertResult(__(List(PlusOp(1),MultOp(2),GtOp(4))))(__.plus(1).mult(2).gt(4))
     assertResult(__.plus(1).mult(2).gt(4))(__.plus(1).mult(2).gt(4))
 
     assertResult(PlusOp(1))(__.plus(1).via._2)

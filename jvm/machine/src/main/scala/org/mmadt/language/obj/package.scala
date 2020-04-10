@@ -33,60 +33,55 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 package object obj {
-  type IntQ = (IntValue,IntValue)
-  type InstTuple = (String,List[Obj])
-  type State = Map[String,Obj]
-  type InstList = List[(Type[Obj],Inst[Obj,Obj])]
-  type ViaTuple = (Obj,Inst[_,_])
-  def base[T <: Obj](inst:Inst[Obj,T]):ViaTuple = (null,inst)
-  def base[T <: Obj]():ViaTuple = (null,null)
-
+  type IntQ = (IntValue, IntValue)
+  type InstTuple = (String, List[Obj])
+  type State = Map[String, Obj]
+  type InstList = List[(Type[Obj], Inst[Obj, Obj])]
+  type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
+  def base[T <: Obj](inst: Inst[Obj, T]): ViaTuple = (null, inst)
+  def base[T <: Obj](): ViaTuple = (null, null)
   // less typing
   type OType[+O <: Obj] = O with Type[O]
   type OValue[+O <: Obj] = O with Value[O]
-  type ORecType = RecType[Obj,Obj]
-  type ORecValue = RecValue[Value[Obj],Value[Obj]]
-  type ORecStrm = RecStrm[Value[Obj],Value[Obj]]
+  type ORecType = RecType[Obj, Obj]
+  type ORecValue = RecValue[Value[Obj], Value[Obj]]
+  type ORecStrm = RecStrm[Value[Obj], Value[Obj]]
   type OStrm[+O <: Obj] = O with Strm[O]
-
   // quantifier utilities
-  private lazy val zero:IntValue = int(0)
-  def minZero(quantifier:IntQ):IntQ = (zero,quantifier._2)
-  def maxZero(quantifier:IntQ):IntQ = (quantifier._2,quantifier._2)
-  def multQ(objA:Obj,objB:Obj):IntQ = objB.q match {
+  private lazy val zero: IntValue = int(0)
+  def minZero(quantifier: IntQ): IntQ = (zero, quantifier._2)
+  def maxZero(quantifier: IntQ): IntQ = (quantifier._2, quantifier._2)
+  def multQ(objA: Obj, objB: Obj): IntQ = objB.q match {
     case _ if equals(qOne) => objA.q
-    case quantifier:IntQ => (objA.q._1 * quantifier._1,objA.q._2 * quantifier._2)
+    case quantifier: IntQ => (objA.q._1 * quantifier._1, objA.q._2 * quantifier._2)
   }
-  def multQ(qA:IntQ,qB:IntQ):IntQ = qB match {
+  def multQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case _ if equals(qOne) => qA
-    case _:IntQ => (qA._1 * qB._1,qA._2 * qB._2)
+    case _: IntQ => (qA._1 * qB._1, qA._2 * qB._2)
   }
-
-  def multQ(qA:Type[Obj],qB:IntQ):IntQ = if (null == qA) qB else this.multQ(qA.q,qB)
-
-
-  def plusQ(objA:Obj,objB:Obj):IntQ = objB.q match {
+  def multQ(qA: Type[Obj], qB: IntQ): IntQ = if (null == qA) qB else this.multQ(qA.q, qB)
+  def plusQ(objA: Obj, objB: Obj): IntQ = objB.q match {
     case _ if equals(qZero) => objA.q
-    case quantifier:IntQ => (objA.q._1 + quantifier._1,objA.q._2 + quantifier._2)
+    case quantifier: IntQ => (objA.q._1 + quantifier._1, objA.q._2 + quantifier._2)
   }
-  def plusQ(qA:IntQ,qB:IntQ):IntQ = qB match {
+  def plusQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case _ if equals(qZero) => qA
-    case _:IntQ => (qA._1 + qB._1,qA._2 + qB._2)
+    case _: IntQ => (qA._1 + qB._1, qA._2 + qB._2)
   }
-
-
-  def withinQ(objA:Obj,objB:Obj):Boolean ={
+  def withinQ(objA: Obj, objB: Obj): Boolean = {
     objA.q._1.value >= objB.q._1.value &&
-    objA.q._2.value <= objB.q._2.value
+      objA.q._2.value <= objB.q._2.value
   }
-  def eqQ(objA:Obj,objB:Obj):Boolean ={
+  def eqQ(objA: Obj, objB: Obj): Boolean = {
     val aQ = objA.q
+
     val bQ = objB.q
-    (aQ,bQ) match {
-      case (null,null) => true
-      case (null,y) if y._1.value == 1 && y._2.value == 1 => true
-      case (x,null) if x._1.value == 1 && x._2.value == 1 => true
-      case (x,y) if x._1.value == y._1.value && x._2.value == y._2.value => true
+
+    (aQ, bQ) match {
+      case (null, null) => true
+      case (null, y) if y._1.value == 1 && y._2.value == 1 => true
+      case (x, null) if x._1.value == 1 && x._2.value == 1 => true
+      case (x, y) if x._1.value == y._1.value && x._2.value == y._2.value => true
       case _ => false
     }
   }

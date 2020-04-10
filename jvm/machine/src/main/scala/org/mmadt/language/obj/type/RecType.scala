@@ -43,8 +43,8 @@ trait RecType[A <: Obj,B <: Obj] extends Rec[A,B]
   override def get[BB <: Obj](key:A,btype:BB):BB = this.compose(btype,GetOp[A,BB](key,btype))
   override def get(key:A):B = this.compose(this.value()(key),GetOp[A,B](key,asType(this.value()(key))))
   override def put(key:A,value:B):this.type = this.compose(trec(this.name,this.value() + (key -> value),this.q,this.via),PutOp(key,value)).asInstanceOf[this.type]
-  override def plus(other:RecType[A,B]):RecType[A,B] = this.compose(trec(name,this.value() ++ other.asInstanceOf[RecType[A,B]].value(),this.q,this.via),PlusOp(other))
-  override def plus(other:RecValue[_,_]):this.type = this.compose(trec(name,this.value() ++ other.asInstanceOf[RecValue[_,_]].value.asInstanceOf[Map[A,B]],this.q,this.via),PlusOp(other)).asInstanceOf[this.type]
+  override def plus(other:RecType[A,B]):RecType[A,B] = this.compose(trec(name,this.value() ++ other.value(),this.q,this.via),PlusOp(other))
+  override def plus(other:RecValue[_,_]):this.type = this.compose(trec(name,this.value() ++ other.value.asInstanceOf[Map[A,B]],this.q,this.via),PlusOp(other)).asInstanceOf[this.type]
 
   override lazy val hashCode:scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()
   override def equals(other:Any):Boolean = other match {

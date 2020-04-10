@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.{IntQ, Obj, multQ}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -46,7 +46,7 @@ object ToOp {
 
   class ToInst[O <: Obj](label: StrValue, q: IntQ = qOne) extends VInst[O, O]((Tokens.to, List(label)), q) with TraverserInstruction {
     override def q(quantifier: IntQ): this.type = new ToInst[O](label, quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start.via(start,this)
+    override def exec(start: O): O = start.q(multQ(start, this)).via(start,this)
   }
 
 }

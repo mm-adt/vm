@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(val _quantifier: IntQ = qStar, _insts: List[(Obj, Inst[Obj, Obj])] = Nil) extends Type[__]
+class __(val _quantifier: IntQ = qStar, _insts: List[(Obj, Inst[_<:Obj, _<:Obj])] = Nil) extends Type[__]
   with IntOp // TODO: persue this path?
   with StrOp
   with PlusOp[__, ObjValue]
@@ -52,13 +52,13 @@ class __(val _quantifier: IntQ = qStar, _insts: List[(Obj, Inst[Obj, Obj])] = Ni
   with ZeroOp
   with OneOp {
   override val name: String = Tokens.obj
-  lazy override val lineage: List[(Obj, Inst[Obj, Obj])] = this._insts
+  lazy override val lineage: List[(Obj, Inst[Obj, Obj])] = this._insts.asInstanceOf[List[(Obj,Inst[Obj,Obj])]]
   override val via: ViaTuple = (if (_insts.isEmpty) base() else _insts.last)
   override val q: (IntValue, IntValue) = this._quantifier
   override def q(quantifier: IntQ): this.type = if (this.root) this.hardQ(quantifier) else new __(quantifier, (this._insts.head._1, this._insts.head._2.q(quantifier)) :: this._insts.tail).asInstanceOf[this.type]
   override def clone(name: String, value: Any, quantifier: IntQ, via: ViaTuple): this.type = new __(quantifier, this.lineage).asInstanceOf[this.type]
   override def domain[D <: Obj](): Type[D] = obj.q(qStar).asInstanceOf[Type[D]]
-  def apply[T <: Obj](obj: Obj): OType[T] = _insts.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a)).asInstanceOf[OType[T]]
+  def apply[T <: Obj](obj: Obj): OType[T] = this.lineage.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a)).asInstanceOf[OType[T]]
   // type-agnostic monoid supporting all instructions
   override def plus(other: __): this.type = this.compose(PlusOp(other))
   override def plus(other: ObjValue): this.type = this.compose(PlusOp(other))

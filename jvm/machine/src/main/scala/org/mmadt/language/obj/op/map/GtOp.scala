@@ -50,10 +50,10 @@ object GtOp {
     override def q(quantifier: IntQ): this.type = new GtInst[O](other, quantifier).asInstanceOf[this.type]
     override def exec(start: O): Bool = start match {
       case atype: Type[_] => atype.compose(bool, new GtInst(Inst.resolveArg(start, other), q))
-      case avalue: Value[_] => (Inst.resolveArg(start, other) match {
+      case avalue: Value[_] => Inst.resolveArg(start, other) match {
         case _: Type[_] => avalue.start[O]().compose(bool, new GtInst(other, q))
-        case bvalue: Value[O] => avalue.gt(bvalue).clone(_via = (avalue,this))
-      }).q(multQ(avalue, this)._2)
+        case bvalue: Value[O] => avalue.gt(bvalue).q(multQ(start, this)).via(start,this)
+      }
     }
   }
 

@@ -50,10 +50,10 @@ object LtOp {
     override def q(quantifier:IntQ):this.type = new LtInst[O](other,quantifier).asInstanceOf[this.type]
     override def exec(start: O): Bool = start match {
       case atype: Type[_] => atype.compose(bool, new LtInst(Inst.resolveArg(start, other), q))
-      case avalue: Value[_] => (Inst.resolveArg(start, other) match {
+      case avalue: Value[_] => Inst.resolveArg(start, other) match {
         case _: Type[_] => avalue.start[O]().compose(bool, new LtInst(other, q))
-        case bvalue: Value[O] => avalue.lt(bvalue).clone(_via = (avalue,this))
-      }).q(multQ(avalue, this)._2)
+        case bvalue: Value[O] => avalue.lt(bvalue).q(multQ(start, this)).via(start,this)
+      }
     }
   }
 

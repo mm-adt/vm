@@ -48,7 +48,7 @@ object IdOp {
     override def q(quantifier: IntQ): this.type = new IdInst[O](quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = start match {
       case atype: Type[_] => atype.compose(start, this)
-      case avalue: Value[_] => start.q(multQ(avalue, this))
+      case avalue: Value[_] => start.q(multQ(avalue, this)).q(multQ(start, this)).via(start,this)
     }
   }
 

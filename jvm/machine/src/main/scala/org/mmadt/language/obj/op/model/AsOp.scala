@@ -81,7 +81,7 @@ object AsOp {
           } else {
             start.asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
           }
-      }).q(start.q).asInstanceOf[O]
+      }).q(multQ(start, this)).via(start,this).asInstanceOf[O]
     }
 
     private def testAlive[X <: Obj](trav:X):X ={

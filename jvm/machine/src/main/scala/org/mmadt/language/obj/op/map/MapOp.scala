@@ -51,12 +51,12 @@ object MapOp {
     override def q(quantifier:IntQ):this.type = new MapInst[O](other,quantifier).asInstanceOf[this.type]
     override def exec(start:Obj):O = ((start,other) match {
       case (_:Value[_],atype:Type[O]) => start.compute(atype)
-      case (_:Obj,avalue:Value[_] with O) =>  avalue
+      case (_:Obj,avalue:Value[_] with O) =>  avalue.via(start,this)
       case (btype:Type[_],atype:Type[_] with O) =>
         val arg:O = Inst.resolveArg(start,atype)
         btype.compose(arg,MapOp(arg))
       case _ => throw new ProcessorException(s"unknown state ${start}[map,${other}]")
-    }).via(start,this)
+    })
   }
 
 }

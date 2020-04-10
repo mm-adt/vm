@@ -54,10 +54,10 @@ object AndOp {
     override def q(quantifier: IntQ): this.type = new AndInst(other, quantifier).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = start match {
       case atype: BoolType => atype.compose(new AndInst(Inst.resolveArg(start, other), q))
-      case avalue: BoolValue => (Inst.resolveArg(start, other) match {
+      case avalue: BoolValue => Inst.resolveArg(start, other) match {
         case bvalue: BoolValue => avalue.and(bvalue)
-        case btype: BoolType => avalue.and(btype)
-      }).q(multQ(avalue, this))
+        case btype: BoolType => avalue.and(btype).q(multQ(start, this)).via(start,this)
+      }
     }
   }
 
