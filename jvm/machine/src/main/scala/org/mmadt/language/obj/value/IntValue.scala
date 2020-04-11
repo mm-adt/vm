@@ -23,7 +23,8 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.op.map.{GtOp, PlusOp, ZeroOp}
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.op.map.{OneOp, ZeroOp}
 import org.mmadt.language.obj.{Int, IntQ}
 import org.mmadt.storage.StorageFactory._
 
@@ -33,19 +34,17 @@ import org.mmadt.storage.StorageFactory._
 trait IntValue extends Int
   with ObjValue
   with Value[Int] {
-
-  override val value:Long
-  def value(java:Long):this.type = this.clone(_value=java)
-  
-  override def plus(other:IntType):IntType = this.start[Int]().plus(other)
-  override def plus(other:IntValue):this.type = this.value(this.value + other.value)
-  override def mult(other:IntType):IntType = this.start[Int]().mult(other)
-  override def mult(other:IntValue):this.type = this.value(this.value * other.value)
-  override def neg():this.type = this.value(-this.value)
-  override def one():this.type = this.value(1L)
-  override def gt(other:IntValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
-  override def gte(other:IntValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
-  override def lt(other:IntValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
-  override def lte(other:IntValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
-  override def zero():this.type = this.value(0L).clone(_via = (this,ZeroOp()))
+  override val value: Long
+  def value(java: Long): this.type = this.clone(value = java)
+  override def plus(other: IntType): IntType = this.start[Int]().plus(other)
+  override def plus(other: IntValue): this.type = this.value(this.value + other.value)
+  override def mult(other: IntType): IntType = this.start[Int]().mult(other)
+  override def mult(other: IntValue): this.type = this.value(this.value * other.value)
+  override def neg(): this.type = this.value(-this.value)
+  override def one(): this.type = this.clone(name = this.name, value = 1L, q = this.q, via = (this, OneOp()))
+  override def gt(other: IntValue): BoolValue = vbool(value = this.value > other.value, q = this.q)
+  override def gte(other: IntValue): BoolValue = vbool(value = this.value >= other.value, q = this.q)
+  override def lt(other: IntValue): BoolValue = vbool(value = this.value < other.value, q = this.q)
+  override def lte(other: IntValue): BoolValue = vbool(value = this.value <= other.value, q = this.q)
+  override def zero(): this.type = this.clone(name = this.name, value = 0L, q = this.q, via = (this, ZeroOp()))
 }

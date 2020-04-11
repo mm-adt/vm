@@ -25,6 +25,7 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{IntQ, Str}
 import org.mmadt.language.obj.`type`.StrType
+import org.mmadt.language.obj.op.map.ZeroOp
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -33,14 +34,13 @@ import org.mmadt.storage.StorageFactory._
 trait StrValue extends Str
   with ObjValue
   with Value[Str] {
-
-  override val value:String
-  def value(java:String):this.type = this.clone(this.name,java,this.q)
-  override def plus(other:StrType):StrType = this.start[Str]().plus(other)
-  override def plus(other:StrValue):this.type = this.value(this.value + other.value)
-  override def gt(other:StrValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
-  override def gte(other:StrValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
-  override def lt(other:StrValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
-  override def lte(other:StrValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
-  override def zero():this.type = this.value(Tokens.empty)
+  override val value: String
+  def value(java: String): this.type = this.clone(this.name, java, this.q)
+  override def plus(other: StrType): StrType = this.start[Str]().plus(other)
+  override def plus(other: StrValue): this.type = this.value(this.value + other.value)
+  override def gt(other: StrValue): BoolValue = vbool(value = this.value > other.value, q = this.q)
+  override def gte(other: StrValue): BoolValue = vbool(value = this.value >= other.value, q = this.q)
+  override def lt(other: StrValue): BoolValue = vbool(value = this.value < other.value, q = this.q)
+  override def lte(other: StrValue): BoolValue = vbool(value = this.value <= other.value, q = this.q)
+  override def zero(): this.type = this.clone(name = this.name, value = Tokens.empty, q = this.q, via = (this, ZeroOp()))
 }

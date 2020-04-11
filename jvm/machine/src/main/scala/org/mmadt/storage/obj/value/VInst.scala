@@ -31,7 +31,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VInst[S <: Obj, E <: Obj](java: InstTuple, quantifier: IntQ = qOne) extends AbstractVObj(Tokens.inst, java, quantifier,base()) with Inst[S, E] {
+abstract class VInst[S <: Obj, E <: Obj](java: InstTuple, quantifier: IntQ = qOne) extends AbstractVObj(Tokens.inst, quantifier,base()) with Inst[S, E] {
   override val value: InstTuple = java
   override def q(quantifier: IntQ): this.type = this
   override val q: IntQ = quantifier

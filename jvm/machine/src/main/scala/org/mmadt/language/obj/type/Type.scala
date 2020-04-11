@@ -40,10 +40,10 @@ trait Type[+T <: Obj] extends Obj
   with ExplainOp {
   this: T =>
   def isDerived: Boolean = !this.root
-  def hardQ(quantifier: IntQ): this.type = this.clone(_name = this.name, _quantifier = quantifier, _via = this.via)
+  def hardQ(quantifier: IntQ): this.type = this.clone(name = this.name, q = quantifier, via = this.via)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
   // type properties
-  lazy val range: this.type = this.clone(_name = this.name, _quantifier = this.q, _via = base())
+  lazy val range: this.type = this.clone(name = this.name, q = this.q, via = base())
   def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else this.via._1.asInstanceOf[Type[D]].domain[D]()
   // type manipulation functions
   def linvert(): this.type = {
@@ -71,7 +71,7 @@ trait Type[+T <: Obj] extends Obj
   def compose(inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.compose(this, inst)
   def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R = (nextObj match {
     case _: __ => new __(multQ(this, inst), if (inst.op().equals(Tokens.noop)) this.lineage else this.lineage ::: List((this, inst)))
-    case _ => asType[Obj](nextObj).clone(_name = nextObj.name, _quantifier = multQ(this, inst), _via = if (inst.op().equals(Tokens.noop)) this.via else (this, inst))
+    case _ => asType[Obj](nextObj).clone(name = nextObj.name, q = multQ(this, inst), via = if (inst.op().equals(Tokens.noop)) this.via else (this, inst))
   }).asInstanceOf[R]
   // obj-level operations
   override def add[O <: Obj](obj: O): O = this.compose(asType(obj).asInstanceOf[O], AddOp(obj))

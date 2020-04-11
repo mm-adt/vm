@@ -28,6 +28,6 @@ import org.mmadt.storage.obj.OObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class AbstractVObj(_name:String,val java:Any,_q:IntQ,_via:ViaTuple) extends OObj(_name,_q,_via)
+abstract class AbstractVObj(_name:String,_q:IntQ,_via:ViaTuple) extends OObj(_name,_q,_via)
 
 

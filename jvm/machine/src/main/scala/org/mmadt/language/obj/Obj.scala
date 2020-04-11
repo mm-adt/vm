@@ -58,14 +58,14 @@ trait Obj
     with EqsOp {
   // quantifier methods
   val q: IntQ
-  def q(quantifier: IntQ): this.type = this.clone(_quantifier = quantifier)
+  def q(quantifier: IntQ): this.type = this.clone(q = quantifier)
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def alive(): Boolean = this.q != qZero
   // historic mutations
   def root: Boolean = null == this.via._1
   val via: ViaTuple = base()
   def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
-  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(_quantifier = multQ(obj.q, inst.q), _via = (obj, inst))
+  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
   // utility methods
   def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
   def toList: List[this.type] = toStrm.value.toList
@@ -81,10 +81,10 @@ trait Obj
   } // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
 
   // pattern matching methods
-  def named(_name: String): this.type = this.clone(_name = _name)
+  def named(_name: String): this.type = this.clone(name = _name)
   val name: String
   def test(other: Obj): Boolean
-  def clone(_name: String = this.name, _value: Any = null, _quantifier: IntQ = this.q, _via: ViaTuple = this.via): this.type
+  def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def compute[E <: Obj](rangeType: Type[E]): E = rangeType.lineage
     .headOption
     .map(x => x._2.exec(this))

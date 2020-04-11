@@ -32,9 +32,9 @@ import org.mmadt.storage.obj.value.AbstractVObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBoolStrm(name: String, java: Seq[BoolValue],via:ViaTuple) extends AbstractVObj(name, java, (int(java.length), int(java.length)),via) with BoolStrm {
-  def this(java: Seq[BoolValue]) = this(name = Tokens.bool, java,base())
-  override val value: Iterator[BoolValue] = java.iterator
+class VBoolStrm(name: String, _value: Seq[BoolValue], via: ViaTuple) extends AbstractVObj(name, (int(_value.length), int(_value.length)), via) with BoolStrm {
+  def this(java: Seq[BoolValue]) = this(name = Tokens.bool, java, base())
+  override val value: Iterator[BoolValue] = _value.iterator
   override def q(quantifier: IntQ): this.type = this
 }
 

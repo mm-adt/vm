@@ -34,9 +34,9 @@ import org.mmadt.storage.obj.value.AbstractVObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRecStrm[A <: Value[Obj], B <: Value[Obj]](name: String, java: Seq[RecValue[A, B]], via: ViaTuple) extends AbstractVObj(name, java, (int(java.length), int(java.length)), via) with RecStrm[A, B] {
+class VRecStrm[A <: Value[Obj], B <: Value[Obj]](name: String, _value: Seq[RecValue[A, B]], via: ViaTuple) extends AbstractVObj(name, (int(_value.length), int(_value.length)), via) with RecStrm[A, B] {
   def this(java: Seq[RecValue[A, B]]) = this(name = Tokens.rec, java, base())
-  override val value: Iterator[RecValue[A, B]] = java.iterator
+  override val value: Iterator[RecValue[A, B]] = _value.iterator
   override def q(quantifier: IntQ): this.type = this
 }
 

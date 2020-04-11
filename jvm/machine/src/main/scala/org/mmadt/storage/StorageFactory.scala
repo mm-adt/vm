@@ -160,7 +160,7 @@ object StorageFactory {
     override def bool(value1: BoolValue, value2: BoolValue, valuesN: BoolValue*): BoolStrm = new VBoolStrm(value1 +: (value2 +: valuesN))
     override def vint(name: String, value: Long, q: (IntValue, IntValue)): IntValue = new VInt(name, value, q, base())
     override def int(value1: IntValue, value2: IntValue, valuesN: IntValue*): IntStrm = new VIntStrm(value1 +: (value2 +: valuesN))
-    override def vreal(name: String, value: Double, q: (IntValue, IntValue)): RealValue = new VReal(name, value, q)
+    override def vreal(name: String, value: Double, q: (IntValue, IntValue)): RealValue = new VReal(name, value, q,base())
     override def real(value1: RealValue, value2: RealValue, valuesN: RealValue*): RealStrm = new VRealStrm(value1 +: (value2 +: valuesN))
     override def vstr(name: String, value: String, q: (IntValue, IntValue)): StrValue = new VStr(name, value, q, base())
     override def str(value1: StrValue, value2: StrValue, valuesN: StrValue*): StrStrm = new VStrStrm(value1 +: (value2 +: valuesN))

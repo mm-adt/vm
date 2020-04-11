@@ -22,8 +22,10 @@
 
 package org.mmadt.language.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{IntQ, Real}
 import org.mmadt.language.obj.`type`.{RealType, Type}
+import org.mmadt.language.obj.op.map.{OneOp, ZeroOp}
 import org.mmadt.storage.StorageFactory.vbool
 
 /**
@@ -32,18 +34,17 @@ import org.mmadt.storage.StorageFactory.vbool
 trait RealValue extends Real
   with ObjValue
   with Value[Real] {
-
-  override val value:Double
-  def value(java:Double):this.type = this.clone(this.name,java,this.q)
-  override def plus(other:RealType):RealType = this.start[RealType]().plus(other)
-  override def plus(other:RealValue):this.type = this.value(this.value + other.value)
-  override def mult(other:RealType):RealType = this.start[Real]().mult(other)
-  override def mult(other:RealValue):this.type = this.value(this.value * other.value)
-  override def neg():this.type = this.value(-this.value)
-  override def one():this.type = this.value(1.0d)
-  override def gt(other:RealValue):BoolValue = vbool(value = this.value > other.value,q = this.q)
-  override def gte(other:RealValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
-  override def lt(other:RealValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
-  override def lte(other:RealValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
-  override def zero():this.type = this.value(0.0d)
+  override val value: Double
+  def value(java: Double): this.type = this.clone(this.name, java, this.q)
+  override def plus(other: RealType): RealType = this.start[RealType]().plus(other)
+  override def plus(other: RealValue): this.type = this.value(this.value + other.value)
+  override def mult(other: RealType): RealType = this.start[Real]().mult(other)
+  override def mult(other: RealValue): this.type = this.value(this.value * other.value)
+  override def neg(): this.type = this.value(-this.value)
+  override def one(): this.type = this.clone(name = this.name, value = 1.0d, q = this.q, via = (this, OneOp()))
+  override def gt(other: RealValue): BoolValue = vbool(value = this.value > other.value, q = this.q)
+  override def gte(other: RealValue): BoolValue = vbool(value = this.value >= other.value, q = this.q)
+  override def lt(other: RealValue): BoolValue = vbool(value = this.value < other.value, q = this.q)
+  override def lte(other: RealValue): BoolValue = vbool(value = this.value <= other.value, q = this.q)
+  override def zero(): this.type = this.clone(name = this.name, value = 0.0d, q = this.q, via = (this, ZeroOp()))
 }

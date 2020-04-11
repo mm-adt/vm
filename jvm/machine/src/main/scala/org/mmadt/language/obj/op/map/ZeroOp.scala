@@ -37,17 +37,13 @@ trait ZeroOp {
 }
 
 object ZeroOp {
-  //protected type S <: Obj with ZeroOp
-
   def apply[S <: Obj with ZeroOp](): ZeroInst[S] = new ZeroInst[S]
-
   class ZeroInst[S <: Obj with ZeroOp](q: IntQ = qOne) extends VInst[S, S]((Tokens.zero, Nil), q) {
     override def q(quantifier: IntQ): this.type = new ZeroInst(quantifier).asInstanceOf[this.type]
     override def exec(start: S): S = start match {
       case atype: Type[_] => atype.compose(start, this)
       case _ => start.zero().via(start,this)
     }
-
   }
 
 }

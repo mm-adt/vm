@@ -30,8 +30,8 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Value[Obj], B <: Value[Obj]](name: String, java: Map[A, B], quantifier: IntQ, via: ViaTuple = base()) extends AbstractVObj(name, java, quantifier, via) with RecValue[A, B] {
+class VRec[A <: Value[Obj], B <: Value[Obj]](name: String, val _value: Map[A, B], q: IntQ, via: ViaTuple = base()) extends AbstractVObj(name, q, via) with RecValue[A, B] {
   def this(java: Map[A, B]) = this(Tokens.rec, java, qOne)
   override def clone(_name: String = this.name, _value: Any = this.value, _quantifier: IntQ = this.q, _via: ViaTuple= base()): this.type = new VRec[A, B](_name, _value.asInstanceOf[Map[A, B]], _quantifier).asInstanceOf[this.type]
-  override val value: Map[A, B] = java
+  override val value: Map[A, B] = _value
 }

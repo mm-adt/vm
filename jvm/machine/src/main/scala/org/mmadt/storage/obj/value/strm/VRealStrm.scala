@@ -34,8 +34,8 @@ import org.mmadt.storage.obj.value.AbstractVObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRealStrm(name: String, java: Seq[RealValue], via: ViaTuple) extends AbstractVObj(name, java, (int(java.length), int(java.length)), via) with RealStrm {
+class VRealStrm(name: String, _value: Seq[RealValue], via: ViaTuple) extends AbstractVObj(name, (int(_value.length), int(_value.length)), via) with RealStrm {
   def this(java: Seq[RealValue]) = this(name = Tokens.real, java, base())
-  override val value: Iterator[RealValue] = java.iterator
+  override val value: Iterator[RealValue] = _value.iterator
   override def q(quantifier: IntQ): this.type = this
 }

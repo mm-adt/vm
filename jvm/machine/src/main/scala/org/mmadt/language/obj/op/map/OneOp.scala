@@ -38,7 +38,6 @@ trait OneOp {
 
 object OneOp {
   def apply[O <: Obj with OneOp](): OneInst[O] = new OneInst[O]
-
   class OneInst[O <: Obj with OneOp](q: IntQ = qOne) extends VInst[O, O]((Tokens.one, Nil), q) {
     override def q(quantifier: IntQ): this.type = new OneInst[O](quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = start match {
