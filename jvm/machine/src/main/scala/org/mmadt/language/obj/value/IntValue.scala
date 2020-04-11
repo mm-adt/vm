@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.op.map.{GtOp, PlusOp}
+import org.mmadt.language.obj.op.map.{GtOp, PlusOp, ZeroOp}
 import org.mmadt.language.obj.{Int, IntQ}
 import org.mmadt.storage.StorageFactory._
 
@@ -35,7 +35,7 @@ trait IntValue extends Int
   with Value[Int] {
 
   override val value:Long
-  def value(java:Long):this.type = this.clone(this.name,java,this.q)
+  def value(java:Long):this.type = this.clone(_value=java)
   
   override def plus(other:IntType):IntType = this.start[Int]().plus(other)
   override def plus(other:IntValue):this.type = this.value(this.value + other.value)
@@ -47,5 +47,5 @@ trait IntValue extends Int
   override def gte(other:IntValue):BoolValue = vbool(value = this.value >= other.value,q = this.q)
   override def lt(other:IntValue):BoolValue = vbool(value = this.value < other.value,q = this.q)
   override def lte(other:IntValue):BoolValue = vbool(value = this.value <= other.value,q = this.q)
-  override def zero():this.type = this.value(0L)
+  override def zero():this.type = this.value(0L).clone(_via = (this,ZeroOp()))
 }

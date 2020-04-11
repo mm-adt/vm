@@ -52,7 +52,7 @@ object LtOp {
       case atype: Type[_] => atype.compose(bool, new LtInst(Inst.resolveArg(start, other), q))
       case avalue: Value[_] => Inst.resolveArg(start, other) match {
         case _: Type[_] => avalue.start[O]().compose(bool, new LtInst(other, q))
-        case bvalue: Value[O] => avalue.lt(bvalue).q(multQ(start, this)).via(start,this)
+        case bvalue: Value[O] => avalue.lt(bvalue).via(start,this)
       }
     }
   }

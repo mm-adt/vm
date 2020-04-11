@@ -56,7 +56,7 @@ object OrOp {
       case avalue: BoolValue => (Inst.resolveArg(start, other) match {
         case bvalue: BoolValue => avalue.or(bvalue)
         case btype: BoolType => avalue.or(btype)
-      }).q(multQ(avalue, this)).via(start, this)
+      }).via(start,this)
     }
   }
 

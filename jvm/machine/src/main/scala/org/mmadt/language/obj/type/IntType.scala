@@ -22,9 +22,11 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{Bool, Int}
+import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.op.map.LteOp.LteInst
+import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -33,20 +35,19 @@ import org.mmadt.storage.StorageFactory._
 trait IntType extends Int
   with Type[Int]
   with ObjType {
-
-  def apply(value:IntValue):IntValue = value.named(this.name)
-
-  override def plus(other:IntType):IntType = this.compose(PlusOp(other))
-  override def plus(other:IntValue):this.type = this.compose(PlusOp(other))
-  override def mult(other:IntType):IntType = this.compose(MultOp(other))
-  override def mult(other:IntValue):this.type = this.compose(MultOp(other))
-  override def neg():this.type = this.compose(NegOp())
-  override def one():this.type = this.compose(OneOp())
-  override def gt(other:IntType):BoolType = this.compose(bool,GtOp(other))
-  override def gt(other:IntValue):BoolType = this.compose(bool,GtOp(other))
-  override def gte(other:IntValue):BoolType = this.compose(bool,GteOp(other))
-  override def lt(other:IntValue):BoolType = this.compose(bool,LtOp(other))
-  override def lte(other:IntValue):BoolType = this.compose(bool,LteOp(other))
-  override def zero():this.type = this.compose(ZeroOp())
+  def apply(value: IntValue): IntValue = value.named(this.name)
+  override def plus(other: IntType): IntType = this.compose(PlusOp(other))
+  override def plus(other: IntValue): this.type = this.compose(PlusOp(other))
+  override def mult(other: IntType): IntType = this.compose(MultOp(other))
+  override def mult(other: IntValue): this.type = this.compose(MultOp(other))
+  override def neg(): this.type = this.compose(NegOp())
+  override def one(): this.type = this.compose(OneOp())
+  override def gt(other: IntType): BoolType = this.compose(bool, GtOp(other))
+  override def gt(other: IntValue): BoolType = this.compose(bool, GtOp(other))
+  override def gte(other: IntValue): BoolType = this.compose(bool, GteOp(other))
+  override def lt(other: IntValue): BoolType = this.compose(bool, LtOp(other))
+  override def lte(other: IntValue): BoolType = this.compose(bool, LteOp(other))
+  override def zero(): this.type = this.compose(new ZeroInst())
 }
+
 

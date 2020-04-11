@@ -32,20 +32,22 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ZeroOp {
-  this:Obj =>
-  def zero():this.type
+  this: Obj =>
+  def zero(): this.type
 }
 
 object ZeroOp {
-  def apply[O <: Obj with ZeroOp]():ZeroInst[O] = new ZeroInst
+  //protected type S <: Obj with ZeroOp
 
-  class ZeroInst[O <: Obj with ZeroOp](q:IntQ = qOne) extends VInst[O,O]((Tokens.zero,Nil),q) {
-    override def q(quantifier:IntQ):this.type = new ZeroInst[O](quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start match {
+  def apply[S <: Obj with ZeroOp](): ZeroInst[S] = new ZeroInst[S]
+
+  class ZeroInst[S <: Obj with ZeroOp](q: IntQ = qOne) extends VInst[S, S]((Tokens.zero, Nil), q) {
+    override def q(quantifier: IntQ): this.type = new ZeroInst(quantifier).asInstanceOf[this.type]
+    override def exec(start: S): S = start match {
       case atype: Type[_] => atype.compose(start, this)
-      case _ => start.zero().q(multQ(start, this)).via(start, this)
+      case _ => start.zero().via(start,this)
     }
-  }
 
+  }
 
 }

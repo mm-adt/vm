@@ -51,7 +51,7 @@ object PlusOp {
     override def q(quantifier: IntQ): this.type = new PlusInst[O](other, quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = start match {
       case atype: Type[_] => atype.compose(start, new PlusInst[O](Inst.resolveArg(start, other), q))
-      case _ => start.plus(Inst.resolveArg(start, other)).q(multQ(start, this)).via(start, this)
+      case _ => start.plus(Inst.resolveArg(start, other)).via(start,this)
     }
   }
 

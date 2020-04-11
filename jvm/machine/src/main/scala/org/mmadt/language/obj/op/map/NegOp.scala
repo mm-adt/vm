@@ -43,7 +43,7 @@ object NegOp {
     override def q(quantifier: IntQ): this.type = new NegInst[O](quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = start match {
       case atype: Type[_] => atype.compose(start, this)
-      case _ => start.neg().q(multQ(start, this)).via(start, this)
+      case _ => start.neg().via(start,this)
     }
   }
 

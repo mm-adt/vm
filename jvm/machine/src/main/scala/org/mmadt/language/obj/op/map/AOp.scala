@@ -47,7 +47,7 @@ object AOp {
     override def q(quantifier: IntQ): this.type = new AInst(other, quantifier).asInstanceOf[this.type]
     override def exec(start: Obj): Bool = start match {
       case atype: Type[_] => atype.compose(bool, this)
-      case avalue: Value[_] => avalue.a(other).q(multQ(start, this)).via(start,this)
+      case avalue: Value[_] => avalue.a(other).via(start,this)
     }
   }
 

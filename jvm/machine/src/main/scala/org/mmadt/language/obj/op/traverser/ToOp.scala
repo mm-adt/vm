@@ -46,7 +46,7 @@ object ToOp {
 
   class ToInst[O <: Obj](label: StrValue, q: IntQ = qOne) extends VInst[O, O]((Tokens.to, List(label)), q) with TraverserInstruction {
     override def q(quantifier: IntQ): this.type = new ToInst[O](label, quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start.q(multQ(start, this)).via(start,this)
+    override def exec(start: O): O = start.via(start,this)
   }
 
 }

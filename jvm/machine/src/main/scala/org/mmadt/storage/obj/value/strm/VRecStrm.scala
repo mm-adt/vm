@@ -27,17 +27,16 @@ import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.AbstractVObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRecStrm[A <: Value[Obj],B <: Value[Obj]](name:String,java:Seq[RecValue[A,B]]) extends AbstractVObj(name,java,quantifier = (int(java.length),int(java.length))) with RecStrm[A,B] {
-  def this(java:Seq[RecValue[A,B]]) = this(name = Tokens.rec,java)
-
-  override val value:Iterator[RecValue[A,B]] = java.iterator
-  override def q(quantifier:IntQ):this.type = this
+class VRecStrm[A <: Value[Obj], B <: Value[Obj]](name: String, java: Seq[RecValue[A, B]], via: ViaTuple) extends AbstractVObj(name, java, (int(java.length), int(java.length)), via) with RecStrm[A, B] {
+  def this(java: Seq[RecValue[A, B]]) = this(name = Tokens.rec, java, base())
+  override val value: Iterator[RecValue[A, B]] = java.iterator
+  override def q(quantifier: IntQ): this.type = this
 }
 

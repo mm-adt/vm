@@ -52,7 +52,7 @@ object GtOp {
       case atype: Type[_] => atype.compose(bool, new GtInst(Inst.resolveArg(start, other), q))
       case avalue: Value[_] => Inst.resolveArg(start, other) match {
         case _: Type[_] => avalue.start[O]().compose(bool, new GtInst(other, q))
-        case bvalue: Value[O] => avalue.gt(bvalue).q(multQ(start, this)).via(start,this)
+        case bvalue: Value[O] => avalue.gt(bvalue).via(start,this)
       }
     }
   }

@@ -35,7 +35,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FromOp {
   this: Obj =>
-  def from[O <: Obj](label: StrValue): O = this match {
+  def from[O<: Obj](label: StrValue): O = this match {
     case atype: Type[_] => atype.compose(FromOp(label)).asInstanceOf[O]
     case avalue: Value[_] => avalue.start().from(label)
   }

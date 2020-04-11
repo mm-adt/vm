@@ -27,17 +27,16 @@ import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.IntStrm
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.AbstractVObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VIntStrm(name:String,java:Seq[IntValue]) extends AbstractVObj(name,java,quantifier = (int(java.length),int(java.length))) with IntStrm {
-  def this(java:Seq[IntValue]) = this(name = Tokens.int,java)
-
-  override val value:Iterator[IntValue] = java.iterator
-  override def q(quantifier:IntQ):this.type = this
+class VIntStrm(name: String, java: Seq[IntValue], via: ViaTuple) extends AbstractVObj(name, java, (int(java.length), int(java.length)), via) with IntStrm {
+  def this(java: Seq[IntValue]) = this(name = Tokens.int, java, base())
+  override val value: Iterator[IntValue] = java.iterator
+  override def q(quantifier: IntQ): this.type = this
 }
 

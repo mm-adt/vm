@@ -43,7 +43,7 @@ object OneOp {
     override def q(quantifier: IntQ): this.type = new OneInst[O](quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = start match {
       case atype: Type[_] => atype.compose(start, this)
-      case _ => start.one().q(multQ(start, this)).via(start, this)
+      case _ => start.one().via(start,this)
     }
   }
 

@@ -30,8 +30,8 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VObj(name:String,java:Any,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with ObjValue {
-  def this(java:Any) = this(Tokens.obj,java,qOne)
+class VObj(name:String,java:Any,quantifier:IntQ,via:ViaTuple) extends AbstractVObj(name,java,quantifier,via) with ObjValue {
+  def this(java:Any) = this(Tokens.obj,java,qOne,base())
   override val value:Any = java
   override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q,_via:ViaTuple=base()):this.type = new VObj(_name,_value,_quantifier).asInstanceOf[this.type]
 }

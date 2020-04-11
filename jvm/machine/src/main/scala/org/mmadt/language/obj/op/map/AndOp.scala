@@ -56,7 +56,7 @@ object AndOp {
       case atype: BoolType => atype.compose(new AndInst(Inst.resolveArg(start, other), q))
       case avalue: BoolValue => Inst.resolveArg(start, other) match {
         case bvalue: BoolValue => avalue.and(bvalue)
-        case btype: BoolType => avalue.and(btype).q(multQ(start, this)).via(start,this)
+        case btype: BoolType => avalue.and(btype).via(start,this)
       }
     }
   }

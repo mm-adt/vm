@@ -28,9 +28,9 @@ import org.mmadt.language.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class OObj(val _name:String,val quantifier:IntQ,val _via:ViaTuple=base()) extends Obj {
-  override val q:IntQ = quantifier
-  override val name:String = _name
-  override val via:ViaTuple= _via
+abstract class OObj(val _name: String, val _q: IntQ, val _via: ViaTuple) extends Obj {
+  override val q: IntQ = _q
+  override val name: String = _name
+  override val via: ViaTuple = _via
 }
 

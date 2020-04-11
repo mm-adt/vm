@@ -55,7 +55,7 @@ object EqsOp {
       case atype: Type[_] => atype.compose(bool, new EqsInst[O](Inst.resolveArg(start, other), q))
       case avalue: Value[_] => Inst.resolveArg(start, other) match {
         case btype: Type[_] => avalue.eqs(btype)
-        case bvalue: Value[O] => avalue.eqs(bvalue).q(multQ(start, this)).via(start, this)
+        case bvalue: Value[O] => avalue.eqs(bvalue).via(start,this)
       }
     }
   }

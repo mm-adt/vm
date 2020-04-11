@@ -69,13 +69,10 @@ trait Type[+T <: Obj] extends Obj
     case atype: Type[Obj] => atype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b)).asInstanceOf[R].compose(btype.range, NoOp())
   }
   def compose(inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.compose(this, inst)
-  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R = {
-    val newInst: ViaTuple = if (inst.op().equals(Tokens.noop)) this.via else (this, inst)
-    (if (nextObj.isInstanceOf[__])
-      new __(multQ(this, inst), if (inst.op().equals(Tokens.noop)) this.lineage else this.lineage ::: List((this, inst)))
-    else
-      asType[Obj](nextObj).clone(_name = nextObj.name, _quantifier = multQ(this, inst), _via = newInst)).asInstanceOf[R]
-  }
+  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R = (nextObj match {
+    case _: __ => new __(multQ(this, inst), if (inst.op().equals(Tokens.noop)) this.lineage else this.lineage ::: List((this, inst)))
+    case _ => asType[Obj](nextObj).clone(_name = nextObj.name, _quantifier = multQ(this, inst), _via = if (inst.op().equals(Tokens.noop)) this.via else (this, inst))
+  }).asInstanceOf[R]
   // obj-level operations
   override def add[O <: Obj](obj: O): O = this.compose(asType(obj).asInstanceOf[O], AddOp(obj))
   // pattern matching methods

@@ -52,7 +52,7 @@ object MultOp {
     override def exec(start: O): O = {
       start match {
         case atype: Type[_] => atype.compose(start, new MultInst[O, T, V](Inst.resolveArg(start, other), q))
-        case _ => start.mult(Inst.resolveArg(start, other)).q(multQ(start, this)).via(start, this)
+        case _ => start.mult(Inst.resolveArg(start, other)).via(start,this)
       }
     }
   }

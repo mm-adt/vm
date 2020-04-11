@@ -22,6 +22,7 @@
 
 package org.mmadt.processor
 
+import org.mmadt.language.obj.op.map.ZeroOp
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -64,4 +65,5 @@ class ZeroInstTest extends FunSuite {
     assertResult("str[zero]")(str.zero().toString)
     assertResult("str{10}[zero]")(str.q(10).zero().toString)
   }
+
 }
