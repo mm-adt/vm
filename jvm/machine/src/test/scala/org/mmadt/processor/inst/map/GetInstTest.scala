@@ -22,6 +22,8 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.language.obj.Str
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -29,12 +31,17 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class GetInstTest extends FunSuite {
+  test("[get] lineage") {
+    val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
+    assertResult(2)(rec.get(str("name"),str).plus(" rodriguez").lineage.length)
+  }
 
-  test("[get] w/ rec value"){
-    val marko = rec(str("name") -> str("marko"),str("age") -> int(29))
+
+  test("[get] w/ rec value") {
+    val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
     assertResult(str("marko"))(marko.get(str("name")))
     assertResult(int(29))(marko.get(str("age")))
-    assertThrows[NoSuchElementException]{
+    assertThrows[NoSuchElementException] {
       marko.get(str("bad-key"))
     }
   }

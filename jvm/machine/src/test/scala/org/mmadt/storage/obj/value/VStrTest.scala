@@ -59,5 +59,7 @@ class VStrTest extends FunSuite {
           .plus(str.from("c"))
           .plus(str.from("d"))
           .plus(str.from("e"))))
+    assertResult(str("marko"))(str("m") ===> str.plus("a").plus("r").plus("k").plus("o").path().get(5))
+    assertResult(str("marko"))(str("m") ===> str.plus("a").plus("r").plus("k").plus("o").path().get(3, str).plus("k").plus("o").path().get(9))
   }
 }
