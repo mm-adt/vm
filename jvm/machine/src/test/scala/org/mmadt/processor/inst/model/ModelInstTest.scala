@@ -20,10 +20,10 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.model
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{RecType, StrType, Type}
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite

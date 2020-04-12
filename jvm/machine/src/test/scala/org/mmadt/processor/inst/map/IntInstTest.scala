@@ -20,23 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.storage.StorageFactory.int
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class FoldInstTest extends FunSuite {
-  /*test("[fold] w/ int"){
-    assertResult("int[fold,'seed',0,int[plus,int<.seed>]]")(int.fold[Int](int(0))(int.plus(int.from[IntType]("seed"))).toString)
-    assertResult(int(2))(int(2).fold[Int](int(1))(int.id()))
-    assertResult(int(7))((int(1,2,3) ===> int.q(*).fold[Int](int(1))(int.plus(int.from[IntType]("seed")))))
-    assertResult(int(7))((int(1,2,3) ===> int.q(*).fold[Int](int(1))(int.plus(int.from[IntType]("seed")).mult(int(1)))))
-    assertResult(int(8))((int(0,1) ===> int.q(*).fold[Int](int(1))(int.plus(int.from[IntType]("seed")).mult(int(2)))))
-    assertResult(int(0))((int(1,2,3) ===> int.q(+).fold[Int](int(1))(int.plus(int.from[IntType]("seed")).mult(int(1)).mult(int(0)))))
-  }*/
+class IntInstTest extends FunSuite {
+  test("[int] w/ __"){
+    assertResult("int<=[int]")(__.int().toString)
+    assertResult("int<=[int][plus,2]")(__.int().plus(2).toString)
+    assertResult("bool<=[int][plus,2][gt,10]")(__.int().plus(2).gt(10).toString)
+    assertResult(int.plus(6))(int(5) ==> __.int().plus(6))
+    assertResult(int.plus(6))(int(5) ===> __.int().plus(6))
+  }
 }

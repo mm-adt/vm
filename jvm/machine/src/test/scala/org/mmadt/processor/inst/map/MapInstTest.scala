@@ -20,32 +20,26 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class EqInstTest extends FunSuite {
-  test("[eq] w/ int"){
-    assertResult(bfalse)(int(1).eqs(int(3))) // value * value = value
-    assertResult(btrue)(int(1).eqs(int(1)))
-    assertResult(btrue)(int(1).eqs(1))
-    assert(int(1).eqs(int(3)).isInstanceOf[BoolValue])
-    assert(int(1).eqs(int(3)).isInstanceOf[Bool])
-    assertResult(int(1).eqs(int))(int(1).eqs(int)) // value * type = type
-    assert(int(1).eqs(int).isInstanceOf[BoolType])
-    assert(int(1).eqs(int).isInstanceOf[Bool])
-    assertResult(int.eqs(int(3)))(int.eqs(int(3))) // type * value = type
-    assert(int.eqs(int(3)).isInstanceOf[BoolType])
-    assert(int.eqs(int(3)).isInstanceOf[Bool])
-    assertResult(int.eqs(int))(int.eqs(int)) // type * type = type
-    assert(int.eqs(int).isInstanceOf[BoolType])
-    assert(int.eqs(int).isInstanceOf[Bool])
+class MapInstTest extends FunSuite {
+  test("[map] w/ values"){
+    assertResult(int(5))(int(1).plus(1).map(int(5)))
+    assertResult(int(2))(int(1).plus(1).map(int))
+    assertResult(int(20))(int(1).plus(1).map(int.mult(10)))
+  }
+  test("[map] w/ types"){
+    assertResult("int[plus,1][map,int]")(int.plus(1).map(int).toString)
+    assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int.mult(10)).toString)
+    assertResult(int(200))(int(18) ==> int.plus(1).map(int.mult(10)).plus(10))
+    assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int.mult(10)).toString)
+    //
+    assertResult(int(60))(int(5) ==> int.plus(1).map(int.mult(10)))
   }
 }

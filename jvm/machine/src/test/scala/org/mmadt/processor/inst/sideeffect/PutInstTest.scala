@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.sideeffect
 
 import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue}
 import org.mmadt.storage.StorageFactory._

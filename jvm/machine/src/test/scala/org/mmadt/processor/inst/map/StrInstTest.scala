@@ -20,22 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.map
 
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.storage.StorageFactory.str
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class GetInstTest extends FunSuite {
-
-  test("[get] w/ rec value"){
-    val marko = rec(str("name") -> str("marko"),str("age") -> int(29))
-    assertResult(str("marko"))(marko.get(str("name")))
-    assertResult(int(29))(marko.get(str("age")))
-    assertThrows[NoSuchElementException]{
-      marko.get(str("bad-key"))
-    }
+class StrInstTest extends FunSuite {
+  test("[str] w/ __"){
+    assertResult("str<=[str]")(__.str().toString)
+    assertResult("bool<=[str][gt,'a']")(__.str().gt("a").toString)
+    assertResult("str<=[str][plus,'marko']")(__.str().plus("marko").toString)
+    assertResult(str.plus("marko"))(str("hello") ==> __.str().plus("marko"))
+    assertResult(str.plus("marko"))(str("hello") ===> __.str().plus("marko"))
   }
 }

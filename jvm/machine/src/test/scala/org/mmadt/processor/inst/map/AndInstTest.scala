@@ -20,26 +20,30 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.map
 
+import org.mmadt.language.obj.Bool
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class MapInstTest extends FunSuite {
-  test("[map] w/ values"){
-    assertResult(int(5))(int(1).plus(1).map(int(5)))
-    assertResult(int(2))(int(1).plus(1).map(int))
-    assertResult(int(20))(int(1).plus(1).map(int.mult(10)))
-  }
-  test("[map] w/ types"){
-    assertResult("int[plus,1][map,int]")(int.plus(1).map(int).toString)
-    assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int.mult(10)).toString)
-    assertResult(int(200))(int(18) ==> int.plus(1).map(int.mult(10)).plus(10))
-    assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int.mult(10)).toString)
-    //
-    assertResult(int(60))(int(5) ==> int.plus(1).map(int.mult(10)))
+class AndInstTest extends FunSuite {
+  test("[and] w/ bool"){
+    assertResult(btrue)(btrue.and(btrue)) // value * value = value
+    assert(btrue.and(btrue).isInstanceOf[BoolValue])
+    assert(btrue.and(btrue).isInstanceOf[Bool])
+    assertResult(btrue.and(bool))(btrue.and(bool)) // value * type = type
+    assert(btrue.and(bool).isInstanceOf[BoolType])
+    assert(btrue.and(bool).isInstanceOf[Bool])
+    assertResult(bool.and(btrue))(bool.and(btrue)) // type * value = type
+    assert(bool.and(btrue).isInstanceOf[BoolType])
+    assert(bool.and(btrue).isInstanceOf[Bool])
+    assertResult(bool.and(bool))(bool.and(bool)) // type * type = type
+    assert(bool.and(bool).isInstanceOf[BoolType])
+    assert(bool.and(bool).isInstanceOf[Bool])
   }
 }

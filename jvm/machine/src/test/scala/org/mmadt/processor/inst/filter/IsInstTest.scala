@@ -20,21 +20,10 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.filter
 
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.storage.StorageFactory.int
 import org.scalatest.FunSuite
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class IntInstTest extends FunSuite {
-  test("[int] w/ __"){
-    assertResult("int<=[int]")(__.int().toString)
-    assertResult("int<=[int][plus,2]")(__.int().plus(2).toString)
-    assertResult("bool<=[int][plus,2][gt,10]")(__.int().plus(2).gt(10).toString)
-    assertResult(int.plus(6))(int(5) ==> __.int().plus(6))
-    assertResult(int.plus(6))(int(5) ===> __.int().plus(6))
-  }
+class IsInstTest extends FunSuite {
+
 }

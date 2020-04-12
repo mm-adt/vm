@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType

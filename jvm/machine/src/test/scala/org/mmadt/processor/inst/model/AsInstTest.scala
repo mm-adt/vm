@@ -20,21 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.model
 
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.storage.StorageFactory.str
+import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class StrInstTest extends FunSuite {
-  test("[str] w/ __"){
-    assertResult("str<=[str]")(__.str().toString)
-    assertResult("bool<=[str][gt,'a']")(__.str().gt("a").toString)
-    assertResult("str<=[str][plus,'marko']")(__.str().plus("marko").toString)
-    assertResult(str.plus("marko"))(str("hello") ==> __.str().plus("marko"))
-    assertResult(str.plus("marko"))(str("hello") ===> __.str().plus("marko"))
+class AsInstTest extends FunSuite {
+  test("int[as,rec]") {
+    assertResult(vrec(str("age") -> int(5)))(int(5) ===> int.as(trec(str("age") -> int)))
+    assertResult(vrec(str("X") -> int(5), str("Y") -> int(15)))(int(5) ===> int.to("x").plus(10).to("y").as(trec(str("X") -> int.from[IntType]("x"), str("Y") -> int.from[IntType]("y"))))
+    assertResult(str("14hello"))(int(5) ===> int.plus(2).mult(2).as(str).plus("hello"))
   }
 }

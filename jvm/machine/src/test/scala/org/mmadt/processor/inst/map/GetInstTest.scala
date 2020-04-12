@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.map
 
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -28,17 +28,14 @@ import org.scalatest.FunSuite
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class CountInstTest extends FunSuite {
- /* test("[count] w/ int"){
-    assertResult(int(1))(int(2).count())
-    assertResult(int(10))(int(2).q(10).count())
-    assertResult(int(0))((int(1) ===> int.is(int.gt(int(10))).count()))
-    assertResult(int(0))((int(1,2,3) ===> int.q(*).is(int.gt(int(10))).count()))
-    assertResult(int(3))((int(1,2,3) ===> int.q(3).count()))
-    assertResult(int(3))((int(1,2,3) ===> int.q(+).plus(int(10)).count()))
-    assertResult(int(2))((int(0,1) ===> int.q(*).choose(int.is(int.gt(int(0))) -> int,int -> int).count()))
-    assertResult(int(17))((int(int(0).q(int(10)),int(1).q(int(7))) ===> int.q(*).choose(int.q(*).is(int.q(*).gt(int(0))) -> int,int -> int).count())) // TODO: need smarter handling of strm compilations with quantifiers
-    assertResult(int(13))((int(int(0).q(int(10)),int(1).q(int(3))) ===> int.q(*).plus(int(10)).count()))
-    assertResult(int(14))((int(int(0).q(int(10)),int(1).q(int(3)),int(6)) ===> int.q(*).plus(int(10)).count()))
-  }*/
+class GetInstTest extends FunSuite {
+
+  test("[get] w/ rec value"){
+    val marko = rec(str("name") -> str("marko"),str("age") -> int(29))
+    assertResult(str("marko"))(marko.get(str("name")))
+    assertResult(int(29))(marko.get(str("age")))
+    assertThrows[NoSuchElementException]{
+      marko.get(str("bad-key"))
+    }
+  }
 }

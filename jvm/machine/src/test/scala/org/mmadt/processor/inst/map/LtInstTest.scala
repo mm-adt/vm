@@ -20,30 +20,30 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor
+package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.Bool
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.storage.StorageFactory.{btrue, int}
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class MultInstTest extends FunSuite {
-  test("[mult] w/ int"){
-    assertResult(int(3))(int(1).mult(int(3))) // value * value = value
-    assert(int(1).mult(int(3)).isInstanceOf[IntValue])
-    assert(int(1).mult(int(3)).isInstanceOf[Int])
-    assertResult(int(1).mult(int))(int(1).mult(int)) // value * type = type
-    assert(int(1).mult(int).isInstanceOf[IntType])
-    assert(int(1).mult(int).isInstanceOf[Int])
-    assertResult(int.mult(int(3)))(int.mult(int(3))) // type * value = type
-    assert(int.mult(int(3)).isInstanceOf[IntType])
-    assert(int.mult(int(3)).isInstanceOf[Int])
-    assertResult(int.mult(int))(int.mult(int)) // type * type = type
-    assert(int.mult(int).isInstanceOf[IntType])
-    assert(int.mult(int).isInstanceOf[Int])
+class LtInstTest extends FunSuite {
+  test("[gt] w/ int"){
+    assertResult(btrue)(int(1).lt(int(3))) // value * value = value
+    assert(int(1).lt(int(3)).isInstanceOf[BoolValue])
+    assert(int(1).lt(int(3)).isInstanceOf[Bool])
+    assertResult(int(1).lt(int))(int(1).lt(int)) // value * type = type
+    assert(int(1).lt(int).isInstanceOf[BoolType])
+    assert(int(1).lt(int).isInstanceOf[Bool])
+    assertResult(int.lt(int(3)))(int.lt(int(3))) // type * value = type
+    assert(int.lt(int(3)).isInstanceOf[BoolType])
+    assert(int.lt(int(3)).isInstanceOf[Bool])
+    assertResult(int.lt(int))(int.lt(int)) // type * type = type
+    assert(int.lt(int).isInstanceOf[BoolType])
+    assert(int.lt(int).isInstanceOf[Bool])
   }
 }
