@@ -38,7 +38,6 @@ trait GteOp[T <: Type[Obj], V <: Value[Obj]] {
   def gte(other: T): BoolType = this match {
     case avalue: Value[_] => avalue.start().compose(bool, GteOp(other))
     case atype: Type[_] => atype.compose(bool, GteOp(other))
-
   }
   final def >=(other: V): Bool = this.gte(other)
   final def >=(other: T): BoolType = this.gte(other)

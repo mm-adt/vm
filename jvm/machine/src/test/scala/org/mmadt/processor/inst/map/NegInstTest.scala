@@ -23,26 +23,21 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.StorageFactory.{int, real}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[id] lineage") {
-    def maker(x: Obj with IdOp): Obj = x.q(2).id().q(3).id().q(10)
+class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
+  test("[neg] lineage") {
+    def maker(x: Obj with NegOp): Obj = x.q(3).neg().q(2).neg().q(10)
 
-    val starts: TableFor1[Obj with IdOp] =
+    val starts: TableFor1[NegOp with Obj] =
       new TableFor1("obj",
         int,
-        str,
         real,
         int(1),
-        str("a"),
         real(10d))
     forEvery(starts) { obj => {
       val expr = maker(obj)
@@ -53,20 +48,35 @@ class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
       assert(obj.q != expr.q)
       assertResult(2)(expr.lineage.length)
       assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), IdOp().q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).id().q(3), IdOp().q(10)))(expr.lineage.last)
+      assertResult((obj.q(3), NegOp().q(2)))(expr.lineage.head)
+      assertResult((obj.q(3).neg().q(2), NegOp().q(10)))(expr.lineage.last)
     }
     }
   }
   ///////////////////////////////////////////////////////////////////////
-  test("[id] w/ int") {
-    assertResult("int[id]")(int.id().toString)
-    assertResult("int[id][id]")(int.id().id().toString)
-    assertResult("int{6}<=int[id]{2}[id]{3}")(int.q(1).id().q(2).id().q(3).toString)
-    assertResult("2{6}")(int(2).q(1).id().q(2).id().q(3).toString)
-    assertResult(int(2))(int(2).id())
-    assertResult(int(2))(int(2).id().id())
-    assertResult(int(2))(int(2) ==> int.id().id())
-    assert(int.id().id().domain() == int.id().range)
+  test("[neg] w/ int value") {
+    assertResult(int(-1))(int(1).neg())
+    assertResult(int(-2))(int(2).neg())
+    assertResult(int(-781))(int(781).neg())
+    assertResult(int(-101))(int(1).plus(100).neg())
+    assertResult(int(-101).q(10))(int(1).q(10).plus(100).neg())
   }
+  test("[neg] w/ int type") {
+    assertResult("int[neg]")(int.neg().toString)
+    assertResult("int{10}[neg]")(int.q(10).neg().toString)
+    assertResult("int{20}<=int{10}[neg]{2}")(int.q(10).neg().q(2).toString)
+  }
+  test("[neg] w/ real value") {
+    assertResult(real(-1))(real(1).neg())
+    assertResult(real(-2))(real(2).neg())
+    assertResult(real(-781))(real(781).neg())
+    assertResult(real(-101))(real(1).plus(100d).neg())
+    assertResult(real(-101).q(10))(real(1).q(10).plus(100d).neg())
+  }
+  test("[neg] w/ real type") {
+    assertResult("real[neg]")(real.neg().toString)
+    assertResult("real{10}[neg]")(real.q(10).neg().toString)
+    assertResult("real{20}<=real{10}[neg]{2}")(real.q(10).neg().q(2).toString)
+  }
+
 }

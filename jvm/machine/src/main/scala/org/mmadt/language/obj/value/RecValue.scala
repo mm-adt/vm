@@ -22,21 +22,20 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.{IntQ, Obj, Rec}
+import org.mmadt.language.obj.op.map.PlusOp
+import org.mmadt.language.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RecValue[A <: Value[Obj],B <: Value[Obj]] extends Rec[A,B]
+trait RecValue[A <: Value[Obj], B <: Value[Obj]] extends Rec[A, B]
   with ObjValue
-  with Value[Rec[A,B]] {
+  with Value[Rec[A, B]] {
 
-  override val value:Map[A,B]
-  def value(java:Map[A,B]):this.type = this.clone(this.name,java,this.q)
-  override def plus(other:RecType[A,B]):RecType[A,B] = this.start[Rec[A,B]]().plus(other)
-  override def plus(other:RecValue[_,_]):this.type = this.value(this.value ++ other.asInstanceOf[RecValue[A,B]].value)
-  override def get(key:A):B = this.value(key)
-  override def get[BB <: Obj](key:A,btype:BB):BB = this.value(key).asInstanceOf[BB]
-  override def put(key:A,value:B):this.type = this.value(this.value + (key -> value))
+  override val value: Map[A, B]
+  def value(java: Map[A, B]): this.type = this.clone(this.name, java, this.q)
+  override def plus(other: RecValue[_, _]): this.type = this.clone(value = this.value ++ other.asInstanceOf[RecValue[A, B]].value, via = (this, PlusOp(other)))
+  override def get(key: A): B = this.value(key)
+  override def get[BB <: Obj](key: A, btype: BB): BB = this.value(key).asInstanceOf[BB]
+  override def put(key: A, value: B): this.type = this.value(this.value + (key -> value))
 }

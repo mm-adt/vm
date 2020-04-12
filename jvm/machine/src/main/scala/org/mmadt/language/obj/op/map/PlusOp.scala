@@ -34,12 +34,11 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait PlusOp[T <: Type[Obj], V <: Value[Obj]] {
   this: Obj =>
-  def plus(other: T): T
+  def plus(other: T): T = this match {
+    case avalue: Value[_] => avalue.start().compose(PlusOp(other))
+    case atype: T => atype.compose(PlusOp(other))
+  }
   def plus(other: V): this.type
-  def plus(other: Obj): this.type = (other match {
-    case atype: T => this.plus(atype)
-    case avalue: V => this.plus(avalue)
-  }).asInstanceOf[this.type]
   final def +(other: T): T = this.plus(other)
   final def +(other: V): this.type = this.plus(other)
 }
@@ -49,9 +48,12 @@ object PlusOp {
 
   class PlusInst[O <: Obj with PlusOp[Type[O], Value[O]]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.plus, List(other)), q) {
     override def q(quantifier: IntQ): this.type = new PlusInst[O](other, quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start match {
-      case atype: Type[_] => atype.compose(start, new PlusInst[O](Inst.resolveArg(start, other), q))
-      case _ => start.plus(Inst.resolveArg(start, other)).via(start,this)
+    override def exec(start: O): O = {
+      val inst = new PlusInst[O](Inst.resolveArg(start, other), q)
+      inst.arg0[O]() match {
+        case bvalue: Value[O] => start.plus(bvalue).via(start, inst)
+        case btype: Type[O] => start.plus(btype).via(start, inst).asInstanceOf[O]
+      }
     }
   }
 

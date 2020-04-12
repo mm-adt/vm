@@ -35,13 +35,12 @@ trait StrType extends Str
   with Type[Str]
   with ObjType {
 
-  override def plus(other:StrType):StrType = this.compose(PlusOp(other))
-  override def plus(other:StrValue):this.type = this.compose(PlusOp(other))
-  override def gt(other:StrValue):BoolType = this.compose(bool,GtOp(other))
-  override def gte(other:StrValue):BoolType = this.compose(bool,GteOp(other))
-  override def lt(other:StrValue):BoolType = this.compose(bool,LtOp(other))
-  override def lte(other:StrValue):BoolType = this.compose(bool,LteOp(other))
-  override def zero():this.type = this.compose(ZeroOp())
+  override def plus(other: StrValue): this.type = this.compose(PlusOp(other))
+  override def gt(other: StrValue): BoolType = this.compose(bool, GtOp(other))
+  override def gte(other: StrValue): BoolType = this.compose(bool, GteOp(other))
+  override def lt(other: StrValue): BoolType = this.compose(bool, LtOp(other))
+  override def lte(other: StrValue): BoolType = this.compose(bool, LteOp(other))
+  override def zero(): this.type = this.compose(ZeroOp())
 }
 
 

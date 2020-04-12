@@ -33,7 +33,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[one] testing") {
+  test("[one] lineage") {
     def maker(x: Obj with OneOp): Obj = x.q(2).one().q(3).one().q(10)
 
     val starts: TableFor1[OneOp with Obj] =

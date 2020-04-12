@@ -33,7 +33,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[zero] testing") {
+  test("[zero] lineage") {
     def maker(x: Obj with ZeroOp): Obj = x.zero().q(2).zero().q(10)
 
     val starts: TableFor1[ZeroOp with Obj] =

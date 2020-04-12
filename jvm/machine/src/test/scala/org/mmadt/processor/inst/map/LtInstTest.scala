@@ -36,7 +36,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class LtInstTest extends FunSuite with TableDrivenPropertyChecks {
   private type LtType = Obj with LtOp[_ <: Type[_], _ <: Value[Obj]]
   private type LtValue = Value[Obj]
-  test("[lt] testing") {
+  test("[lt] lineage") {
     def maker(x: Obj, y: Value[Obj]): Obj = x.q(2).asInstanceOf[LtOp[Type[Obj], Value[Obj]]].lt(y).q(3).and(btrue).q(10)
 
     val starts: TableFor2[LtType, LtValue] =

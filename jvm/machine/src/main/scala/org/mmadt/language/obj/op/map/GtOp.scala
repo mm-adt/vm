@@ -25,8 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type}
-import org.mmadt.language.obj.op.map.AndOp.AndInst
-import org.mmadt.language.obj.value.{BoolValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,7 +38,6 @@ trait GtOp[T <: Type[Obj], V <: Value[Obj]] {
   def gt(other: T): BoolType = this match {
     case avalue: Value[_] => avalue.start().compose(bool, GtOp(other))
     case atype: Type[_] => atype.compose(bool, GtOp(other))
-
   }
   final def >(other: V): Bool = this.gt(other)
   final def >(other: T): BoolType = this.gt(other)

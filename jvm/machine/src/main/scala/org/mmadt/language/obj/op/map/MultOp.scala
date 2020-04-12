@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, IntQ, Obj, multQ}
+import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -34,25 +34,26 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait MultOp[T <: Type[Obj], V <: Value[Obj]] {
   this: Obj =>
-  def mult(other: T): T
+  def mult(other: T): T = this match {
+    case avalue: Value[_] => avalue.start().compose(MultOp(other))
+    case atype: T => atype.compose(MultOp(other))
+  }
   def mult(other: V): this.type
   final def *(other: T): T = this.mult(other)
   final def *(other: V): this.type = this.mult(other)
-  def mult(other: Obj): this.type = (other match {
-    case atype: T => this.mult(atype)
-    case avalue: V => this.mult(avalue)
-  }).asInstanceOf[this.type]
+
 }
 
 object MultOp {
-  def apply[O <: Obj with MultOp[T, V], T <: Type[O], V <: Value[O]](other: Obj): MultInst[O, T, V] = new MultInst[O, T, V](other)
+  def apply[O <: Obj with MultOp[Type[O], Value[O]]](other: Obj): MultInst[O] = new MultInst[O](other)
 
-  class MultInst[O <: Obj with MultOp[T, V], T <: Type[O], V <: Value[O]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.mult, List(other)), q) {
-    override def q(quantifier: IntQ): this.type = new MultInst[O, T, V](other, quantifier).asInstanceOf[this.type]
+  class MultInst[O <: Obj with MultOp[Type[O], Value[O]]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.mult, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new MultInst[O](other, quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = {
-      start match {
-        case atype: Type[_] => atype.compose(start, new MultInst[O, T, V](Inst.resolveArg(start, other), q))
-        case _ => start.mult(Inst.resolveArg(start, other)).via(start,this)
+      val inst = new MultInst(Inst.resolveArg(start, other), q)
+      inst.arg0[O]() match {
+        case avalue: Value[O] => start.mult(avalue).via(start, inst)
+        case atype: Type[O] => start.mult(atype).via(start, inst).asInstanceOf[O]
       }
     }
   }

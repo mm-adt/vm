@@ -36,7 +36,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
   private type GtType = Obj with GtOp[_<:Type[_], _<:Value[Obj]]
   private type GtValue = Value[Obj]
-  test("[gt] testing") {
+  test("[gt] lineage") {
     def maker(x: Obj, y: Value[Obj]): Obj = x.q(2).asInstanceOf[GtOp[Type[Obj],Value[Obj]]].gt(y).q(3).and(btrue).q(10)
 
     val starts: TableFor2[GtType, GtValue] =

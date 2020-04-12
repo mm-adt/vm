@@ -33,7 +33,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
   private type GteType = Obj with GteOp[_ <: Type[_], _ <: Value[Obj]]
   private type GteValue = Value[Obj]
-  test("[gte] testing") {
+  test("[gte] lineage") {
     def maker(x: Obj, y: Value[Obj]): Obj = x.q(2).asInstanceOf[GteOp[Type[Obj], Value[Obj]]].gte(y).q(3).and(btrue).q(10)
 
     val starts: TableFor2[GteType, GteValue] =
