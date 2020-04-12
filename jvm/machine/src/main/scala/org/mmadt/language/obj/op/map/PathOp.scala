@@ -23,9 +23,9 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.map.PathOp.PathInst
-import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{Inst, IntQ, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -37,29 +37,24 @@ trait PathOp {
   private lazy val inst: Inst[Obj, Rec[IntValue, Obj]] = new PathInst()
 
   def path(): Rec[IntValue, Obj] = this match {
-    case avalue: Value[_] => {
-      var counter: scala.Long = 1
-      var path: RecValue[IntValue, Value[Obj]] = vrec[IntValue, Value[Obj]](mutable.LinkedHashMap[IntValue, Value[Obj]]())
-      this.lineage.foreach(x => {
-        path = path.put(int(counter), x._1.asInstanceOf[Value[Obj]])
-        counter = counter + 1
-      })
-      path.put(int(counter), avalue).via(this, inst).asInstanceOf[Rec[IntValue, Obj]]
-    }
-    case atype: Type[_] => {
-      var counter: scala.Long = 1
-      var path: RecType[IntValue, Obj] = trec(value = mutable.LinkedHashMap.empty[IntValue, Obj])
-      this.lineage.foreach(x => {
-        path = path.put(int(counter), x._1)
-        counter = counter + 1
-      })
-      atype.compose(path.put(int(counter), atype), inst)
-    }
+    case _: Value[_] => makeMap(vrec(mutable.LinkedHashMap.empty[IntValue, Obj with Value[Obj]])).via(this, inst)
+    case atype: Type[_] => atype.compose(makeMap(trec(value = mutable.LinkedHashMap.empty[IntValue, Obj])), inst)
+  }
+  private def makeMap[B <: Obj](rec: Rec[IntValue, B]): Rec[IntValue, Obj] = {
+    var counter: scala.Long = 1
+    var path: Rec[IntValue, Obj] = rec.asInstanceOf[Rec[IntValue, Obj]]
+    this.lineage.foreach(x => {
+      path = path.put(int(counter), x._1)
+      counter = counter + 1
+    })
+    path = path.put(int(counter), this)
+    path
   }
 }
 
 object PathOp {
   def apply(): PathInst = new PathInst
+
   class PathInst(q: IntQ = qOne) extends VInst[Obj, Rec[IntValue, Obj]]((Tokens.path, Nil), q) {
     override def q(quantifier: IntQ): this.type = new PathInst(quantifier).asInstanceOf[this.type]
     override def exec(start: Obj): Rec[IntValue, Obj] = start.path().via(start, this)
