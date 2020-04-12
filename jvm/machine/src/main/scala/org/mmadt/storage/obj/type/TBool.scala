@@ -30,6 +30,9 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(name:String = Tokens.bool, quantifier:IntQ = qOne, via:ViaTuple = base()) extends AbstractTObj[Bool](name, quantifier, via) with BoolType {
-  override def clone(name:String, value:Any, quantifier:IntQ, via:ViaTuple):this.type = new TBool(name, quantifier, via).asInstanceOf[this.type]
+class TBool(val name: String = Tokens.bool, val q: IntQ = qOne, val via: ViaTuple = base()) extends BoolType {
+  override def clone(name: String = this.name,
+                     value: Any = null,
+                     q: IntQ = this.q,
+                     via: ViaTuple = this.via): this.type = new TBool(name, q, via).asInstanceOf[this.type]
 }

@@ -24,12 +24,15 @@ package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.{ViaTuple, Int, IntQ, base, _}
+import org.mmadt.language.obj.{IntQ, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(name:String=Tokens.int,quantifier:IntQ=qOne,via:ViaTuple=base()) extends AbstractTObj[Int](name,quantifier,via) with IntType {
-  override  def clone(name:String,value:Any,quantifier:IntQ,via:ViaTuple):this.type = new TInt(name,quantifier,via).asInstanceOf[this.type]
+class TInt(val name: String = Tokens.int, val q: IntQ = qOne, val via: ViaTuple = base()) extends IntType {
+  override def clone(name: String = this.name,
+                     value: Any = null,
+                     q: IntQ = this.q,
+                     via: ViaTuple = this.via): this.type = new TInt(name, q, via).asInstanceOf[this.type]
 }

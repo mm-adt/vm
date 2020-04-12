@@ -152,7 +152,7 @@ object StorageFactory {
     override def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = base()): RealType = new TReal(name, q, via)
     override def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base(StrOp())): StrType = new TStr(name, q, via)
     override def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecType[A, B] = new TRec[A, B](name, value, q, via)
-    override def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecType[A, B] = new TRec[A, B](java = (value +: values).toMap)
+    override def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecType[A, B] = new TRec[A, B](value = (value +: values).toMap)
     /////////VALUES/////////
     override def obj(value: Any): ObjValue = new VObj(value = value)
     override def bool(value: Boolean): BoolValue = new VBool(value = value)

@@ -33,7 +33,6 @@ trait RealValue extends Real
   with ObjValue
   with Value[Real] {
   override val value: Double
-  def value(java: Double): this.type = this.clone(this.name, java, this.q)
   override def plus(other: RealValue): this.type = this.clone(value = this.value + other.value, via = (this, PlusOp(other)))
   override def mult(other: RealValue): this.type = this.clone(value = this.value * other.value, via = (this, MultOp(other)))
   override def neg(): this.type = this.clone(value = -this.value, via = (this, NegOp()))

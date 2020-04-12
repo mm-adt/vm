@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.op.map.PlusOp
+import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Obj, Rec}
 
 /**
@@ -33,9 +34,8 @@ trait RecValue[A <: Value[Obj], B <: Value[Obj]] extends Rec[A, B]
   with Value[Rec[A, B]] {
 
   override val value: Map[A, B]
-  def value(java: Map[A, B]): this.type = this.clone(this.name, java, this.q)
   override def plus(other: RecValue[_, _]): this.type = this.clone(value = this.value ++ other.asInstanceOf[RecValue[A, B]].value, via = (this, PlusOp(other)))
   override def get(key: A): B = this.value(key)
   override def get[BB <: Obj](key: A, btype: BB): BB = this.value(key).asInstanceOf[BB]
-  override def put(key: A, value: B): this.type = this.value(this.value + (key -> value))
+  override def put(key: A, value: B): this.type = this.clone(value = this.value + (key -> value), via = (this, PutOp(key, value)))
 }

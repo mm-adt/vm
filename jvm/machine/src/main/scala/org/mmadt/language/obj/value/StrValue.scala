@@ -35,7 +35,6 @@ trait StrValue extends Str
   with ObjValue
   with Value[Str] {
   override val value: String
-  def value(java: String): this.type = this.clone(this.name, java, this.q)
   override def plus(other: StrValue): this.type = this.clone(value = this.value + other.value, via = (this, PlusOp(other)))
   override def gt(other: StrValue): BoolValue = vbool(value = this.value > other.value, q = this.q, via = (this, GtOp(other)))
   override def gte(other: StrValue): BoolValue = vbool(value = this.value >= other.value, q = this.q, via = (this, GteOp(other)))
