@@ -22,11 +22,11 @@
 
 package org.mmadt.language.obj.op.traverser
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, Obj, multQ}
+import org.mmadt.language.obj.{IntQ, Obj, Str}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,9 +35,20 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FromOp {
   this: Obj =>
-  def from[O<: Obj](label: StrValue): O = this match {
-    case atype: Type[_] => atype.compose(FromOp(label)).asInstanceOf[O]
-    case avalue: Value[_] => avalue.start().from(label)
+  def from[O <: Obj](label: StrValue): this.type = {
+    this.from(label, asType(this))
+  }
+  def from[O <: Obj](label: StrValue, atype: O): O = {
+    val history = this.lineage
+      .find(x => x._2.op() == Tokens.to && x._2.arg0[StrValue]() == label)
+      .map(x => x._1.via(this.via._1, this.via._2))
+      .getOrElse(atype)
+    if (this.isInstanceOf[Value[_]] && history.isInstanceOf[Type[_]])
+      throw new LanguageException("historic value not available: " + label)
+    (history match {
+      case _: Value[_] => history.via(this, FromOp(label, atype))
+      case atype: Type[_] => atype.compose(atype, FromOp(label, atype))
+    }).asInstanceOf[O]
   }
 }
 
@@ -47,6 +58,7 @@ object FromOp {
 
   class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.from, List(label)), q) with TraverserInstruction {
     override def q(quantifier: IntQ): this.type = new FromInst[O](label, default, quantifier).asInstanceOf[this.type]
-    override def exec(start: Obj): O = start.lineage.find(x => x._2.op() == Tokens.to && x._2.arg0() == label).get._1.q(multQ(start, this)).via(start,this).asInstanceOf[O]
+    override def exec(start: Obj): O = start.from(label, if (null == default) start else default).via(start, this).asInstanceOf[O]
   }
+
 }

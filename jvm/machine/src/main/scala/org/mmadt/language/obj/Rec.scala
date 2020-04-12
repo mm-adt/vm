@@ -25,16 +25,14 @@ package org.mmadt.language.obj
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.op.map.{GetOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.traverser.ToOp
-import org.mmadt.language.obj.value.{RecValue, Value}
+import org.mmadt.language.obj.value.RecValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Rec[A <: Obj,B <: Obj] extends Obj
-  with PlusOp[RecType[A,B],RecValue[_,_]]
-  with ToOp[RecType[A,B]]
-  with GetOp[A,B]
-  with PutOp[A,B] {
-  def value():Any
+trait Rec[A <: Obj, B <: Obj] extends Obj
+  with PlusOp[RecType[A, B], RecValue[_, _]]
+  with GetOp[A, B]
+  with PutOp[A, B] {
+  def value(): Any
 }

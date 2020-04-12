@@ -24,21 +24,18 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.traverser.ToOp
 import org.mmadt.language.obj.value.IntValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Int extends Obj
-  with PlusOp[IntType,IntValue]
-  with MultOp[IntType,IntValue]
+  with PlusOp[IntType, IntValue]
+  with MultOp[IntType, IntValue]
   with NegOp
-  with GtOp[IntType,IntValue]
-  with GteOp[IntType,IntValue]
-  with LtOp[IntType,IntValue]
-  with LteOp[IntType,IntValue]
+  with GtOp[IntType, IntValue]
+  with GteOp[IntType, IntValue]
+  with LtOp[IntType, IntValue]
+  with LteOp[IntType, IntValue]
   with OneOp
-  with ToOp[IntType]
-  with ZeroOp {
-}
+  with ZeroOp

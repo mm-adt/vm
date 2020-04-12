@@ -22,9 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.op.map.{AndOp, OrOp}
-import org.mmadt.language.obj.op.traverser.ToOp
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,4 +30,3 @@ import org.mmadt.language.obj.op.traverser.ToOp
 trait Bool extends Obj
   with AndOp
   with OrOp
-  with ToOp[BoolType]

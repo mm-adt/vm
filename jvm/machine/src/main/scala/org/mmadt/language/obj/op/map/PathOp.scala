@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.map.PathOp.PathInst
 import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -37,7 +37,7 @@ trait PathOp {
   private lazy val inst: Inst[Obj, Rec[IntValue, Obj]] = new PathInst()
 
   def path(): Rec[IntValue, Obj] = this match {
-    case _: Value[_] => makeMap(vrec(mutable.LinkedHashMap.empty[IntValue, Obj with Value[Obj]])).via(this, inst)
+    case _: Value[_] => makeMap(vrec(mutable.LinkedHashMap.empty[IntValue, OValue[Obj]])).via(this, inst)
     case atype: Type[_] => atype.compose(makeMap(trec(value = mutable.LinkedHashMap.empty[IntValue, Obj])), inst)
   }
   private def makeMap[B <: Obj](rec: Rec[IntValue, B]): Rec[IntValue, Obj] = {

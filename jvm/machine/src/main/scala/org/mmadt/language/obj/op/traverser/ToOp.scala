@@ -33,20 +33,20 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ToOp[O <: Type[Obj]] {
+trait ToOp {
   this: Obj =>
-  def to(label: StrValue): O = this match {
-    case atype: Type[_] => atype.compose(ToOp[O](label)).asInstanceOf[O]
-    case avalue: Value[_] => avalue.start().compose(ToOp[O](label))
-  }
+  def to(label: StrValue): this.type = (this match {
+    case avalue: Value[_] => avalue.via(this,ToOp[this.type](label))
+    case atype: Type[_] => atype.compose(this,ToOp[this.type](label))
+  }).asInstanceOf[this.type]
 }
 
 object ToOp {
-  def apply[O <: Obj](label: StrValue): ToInst[O] = new ToInst(label)
+  def apply[O<:Obj](label: StrValue): ToInst[O] = new ToInst(label)
 
   class ToInst[O <: Obj](label: StrValue, q: IntQ = qOne) extends VInst[O, O]((Tokens.to, List(label)), q) with TraverserInstruction {
-    override def q(quantifier: IntQ): this.type = new ToInst[O](label, quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start.via(start,this)
+    override def q(q: IntQ): this.type = new ToInst[O](label, q).asInstanceOf[this.type]
+    override def exec(start: O): O = start.to(label).via(start,this)
   }
 
 }

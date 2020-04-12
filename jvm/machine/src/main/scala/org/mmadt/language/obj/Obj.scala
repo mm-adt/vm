@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
-import org.mmadt.language.obj.op.traverser.FromOp
+import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.processor.Processor
@@ -56,7 +56,9 @@ trait Obj
     with QOp
     with ErrorOp
     with EvalOp
-    with EqsOp {
+    with EqsOp
+    with ToOp {
+
   // quantifier methods
   val q: IntQ
   def q(q: IntQ): this.type = this.clone(
@@ -64,11 +66,13 @@ trait Obj
     via = if (this.root) base() else (this.via._1, this.via._2.q(q)).asInstanceOf[ViaTuple])
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def alive(): Boolean = this.q != qZero
+
   // historic mutations
   def root: Boolean = null == this.via || null == this.via._1
   val via: ViaTuple
   def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = if (inst.q == qOne && via == (obj, inst)) this else this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
+
   // utility methods
   def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
   def toList: List[this.type] = toStrm.value.toList
@@ -88,6 +92,8 @@ trait Obj
   val name: String
   def test(other: Obj): Boolean
   def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
+
+  // type application (simplest processor)
   def compute[E <: Obj](rangeType: Type[E]): E = rangeType.lineage
     .headOption
     .map(x => x._2.exec(this))
