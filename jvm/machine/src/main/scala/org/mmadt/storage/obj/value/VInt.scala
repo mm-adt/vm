@@ -31,9 +31,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(val name: String = Tokens.int, val value: Long, val q: IntQ = qOne, val via: ViaTuple = base()) extends IntValue {
-  def this(java: Long) = this(Tokens.int, java, VInt.q1, base())
-
+class VInt(val name: String = Tokens.int, val value: Long, val q: IntQ = VInt.q1, val via: ViaTuple = base()) extends IntValue {
   override def clone(name: String = this.name,
                      value: Any = this.value,
                      q: IntQ = this.q,

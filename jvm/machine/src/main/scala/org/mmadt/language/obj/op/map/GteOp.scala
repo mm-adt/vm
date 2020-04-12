@@ -32,28 +32,29 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GteOp[T <: Type[Obj],V <: Value[Obj]] {
-  this:Obj =>
-  def gte(other:V):Bool
-  def gte(other:T):BoolType = this match {
-    case atype:Type[_] => atype.compose(bool,GteOp(other))
-    case avalue:Value[_] => avalue.start().compose(bool,GteOp(other))
+trait GteOp[T <: Type[Obj], V <: Value[Obj]] {
+  this: Obj =>
+  def gte(other: V): Bool
+  def gte(other: T): BoolType = this match {
+    case avalue: Value[_] => avalue.start().compose(bool, GteOp(other))
+    case atype: Type[_] => atype.compose(bool, GteOp(other))
+
   }
-  final def >=(other:V):Bool = this.gte(other)
-  final def >=(other:T):BoolType = this.gte(other)
+  final def >=(other: V): Bool = this.gte(other)
+  final def >=(other: T): BoolType = this.gte(other)
 }
 
 object GteOp {
-  def apply[O <: Obj with GteOp[Type[O],Value[O]]](other:Obj):Inst[O,Bool] = new GteInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj with GteOp[Type[O], Value[O]]](other: Obj): Inst[O, Bool] = new GteInst[O](other.asInstanceOf[O])
 
-  class GteInst[O <: Obj with GteOp[Type[O],Value[O]]](other:O,q:IntQ = qOne) extends VInst[O,Bool]((Tokens.gte,List(other)),q) {
-    override def q(quantifier:IntQ):this.type = new GteInst[O](other,quantifier).asInstanceOf[this.type]
-    override def exec(start: O): Bool = start match {
-      case atype: Type[_] => atype.compose(bool, new GteInst(Inst.resolveArg(start, other), q))
-      case avalue: Value[_] => (Inst.resolveArg(start, other) match {
-        case _: Type[_] => avalue.start[O]().compose(bool, new GteInst(other, q))
-        case bvalue: Value[O] => avalue.gte(bvalue).clone(via = (avalue,this)).via(start,this)
-      })
+  class GteInst[O <: Obj with GteOp[Type[O], Value[O]]](other: O, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.gte, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new GteInst[O](other, quantifier).asInstanceOf[this.type]
+    override def exec(start: O): Bool = {
+      val inst = new GteInst(Inst.resolveArg(start, other), q)
+      inst.arg0[O]() match {
+        case bvalue: Value[O] => start.gte(bvalue).via(start, inst)
+        case btype: Type[O] => start.gte(btype).via(start, inst)
+      }
     }
   }
 

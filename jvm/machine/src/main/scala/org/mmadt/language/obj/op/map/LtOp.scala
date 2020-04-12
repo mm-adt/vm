@@ -32,27 +32,27 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait LtOp[T <: Type[Obj],V <: Value[Obj]] {
-  this:Obj =>
-  def lt(other:V):Bool
-  def lt(other:T):BoolType = this match {
-    case atype:Type[_] => atype.compose(bool,LtOp(other))
-    case avalue:Value[_] => avalue.start().compose(bool,LtOp(other))
+trait LtOp[T <: Type[Obj], V <: Value[Obj]] {
+  this: Obj =>
+  def lt(other: V): Bool
+  def lt(other: T): BoolType = this match {
+    case avalue: Value[_] => avalue.start().compose(bool, LtOp(other))
+    case atype: Type[_] => atype.compose(bool, LtOp(other))
   }
-  final def <(other:V):Bool = this.lt(other)
-  final def <(other:T):BoolType = this.lt(other)
+  final def <(other: V): Bool = this.lt(other)
+  final def <(other: T): BoolType = this.lt(other)
 }
 
 object LtOp {
-  def apply[O <: Obj with LtOp[Type[O],Value[O]]](other:Obj):Inst[O,Bool] = new LtInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj with LtOp[Type[O], Value[O]]](other: Obj): Inst[O, Bool] = new LtInst[O](other.asInstanceOf[O])
 
-  class LtInst[O <: Obj with LtOp[Type[O],Value[O]]](other:O,q:IntQ = qOne) extends VInst[O,Bool]((Tokens.lt,List(other)),q) {
-    override def q(quantifier:IntQ):this.type = new LtInst[O](other,quantifier).asInstanceOf[this.type]
-    override def exec(start: O): Bool = start match {
-      case atype: Type[_] => atype.compose(bool, new LtInst(Inst.resolveArg(start, other), q))
-      case avalue: Value[_] => Inst.resolveArg(start, other) match {
-        case _: Type[_] => avalue.start[O]().compose(bool, new LtInst(other, q))
-        case bvalue: Value[O] => avalue.lt(bvalue).via(start,this)
+  class LtInst[O <: Obj with LtOp[Type[O], Value[O]]](other: O, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.lt, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new LtInst[O](other, quantifier).asInstanceOf[this.type]
+    override def exec(start: O): Bool = {
+      val inst = new LtInst(Inst.resolveArg(start, other), q)
+      inst.arg0[O]() match {
+        case bvalue: Value[O] => start.lt(bvalue).via(start, inst)
+        case btype: Type[O] => start.lt(btype).via(start, inst)
       }
     }
   }

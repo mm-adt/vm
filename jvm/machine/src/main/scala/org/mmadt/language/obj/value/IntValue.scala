@@ -24,7 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.op.map.{OneOp, PlusOp, ZeroOp}
+import org.mmadt.language.obj.op.map._
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -41,9 +41,9 @@ trait IntValue extends Int
   override def mult(other: IntValue): this.type = this.value(this.value * other.value)
   override def neg(): this.type = this.value(-this.value)
   override def one(): this.type = this.clone(value = 1L, via = (this, OneOp()))
-  override def gt(other: IntValue): BoolValue = vbool(value = this.value > other.value, q = this.q)
-  override def gte(other: IntValue): BoolValue = vbool(value = this.value >= other.value, q = this.q)
-  override def lt(other: IntValue): BoolValue = vbool(value = this.value < other.value, q = this.q)
-  override def lte(other: IntValue): BoolValue = vbool(value = this.value <= other.value, q = this.q)
+  override def gt(other: IntValue): BoolValue = vbool(value = this.value > other.value, q = this.q, via = (this, GtOp(other)))
+  override def gte(other: IntValue): BoolValue = vbool(value = this.value >= other.value, q = this.q, via = (this, GteOp(other)))
+  override def lt(other: IntValue): BoolValue = vbool(value = this.value < other.value, q = this.q, via = (this, LtOp(other)))
+  override def lte(other: IntValue): BoolValue =  vbool(value = this.value <= other.value, q = this.q, via = (this, LteOp(other)))
   override def zero(): this.type = this.clone(value = 0L, via = (this, ZeroOp()))
 }

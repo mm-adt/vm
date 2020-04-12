@@ -32,27 +32,27 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait LteOp[T <: Type[Obj],V <: Value[Obj]] {
-  this:Obj =>
-  def lte(other:V):Bool
-  def lte(other:T):BoolType = this match {
-    case atype:Type[_] => atype.compose(bool,LteOp(other))
-    case avalue:Value[_] => avalue.start().compose(bool,LteOp(other))
+trait LteOp[T <: Type[Obj], V <: Value[Obj]] {
+  this: Obj =>
+  def lte(other: V): Bool
+  def lte(other: T): BoolType = this match {
+    case avalue: Value[_] => avalue.start().compose(bool, LteOp(other))
+    case atype: Type[_] => atype.compose(bool, LteOp(other))
   }
-  final def =<(other:V):Bool = this.lte(other)
-  final def =<(other:T):BoolType = this.lte(other)
+  final def =<(other: V): Bool = this.lte(other)
+  final def =<(other: T): BoolType = this.lte(other)
 }
 
 object LteOp {
-  def apply[O <: Obj with LteOp[Type[O],Value[O]]](other:Obj):Inst[O,Bool] = new LteInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj with LteOp[Type[O], Value[O]]](other: Obj): Inst[O, Bool] = new LteInst[O](other.asInstanceOf[O])
 
-  class LteInst[O <: Obj with LteOp[Type[O],Value[O]]](other:O,q:IntQ = qOne) extends VInst[O,Bool]((Tokens.lte,List(other)),q) {
-    override def q(quantifier:IntQ):this.type = new LteInst[O](other,quantifier).asInstanceOf[this.type]
-    override def exec(start: O): Bool = start match {
-      case atype: Type[_] => atype.compose(bool, new LteInst(Inst.resolveArg(start, other), q))
-      case avalue: Value[_] => Inst.resolveArg(start, other) match {
-        case _: Type[_] => avalue.start[O]().compose(bool, new LteInst(other, q))
-        case bvalue: Value[O] => avalue.lte(bvalue).via(start,this)
+  class LteInst[O <: Obj with LteOp[Type[O], Value[O]]](other: O, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.lte, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new LteInst[O](other, quantifier).asInstanceOf[this.type]
+    override def exec(start: O): Bool = {
+      val inst = new LteInst(Inst.resolveArg(start, other), q)
+      inst.arg0[O]() match {
+        case bvalue: Value[O] => start.lte(bvalue).via(start, inst)
+        case btype: Type[O] => start.lte(btype).via(start, inst)
       }
     }
   }

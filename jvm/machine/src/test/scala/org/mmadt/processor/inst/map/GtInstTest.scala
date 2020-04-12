@@ -22,17 +22,48 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.language.obj.`type`.{BoolType, IntType, Type}
+import org.mmadt.language.obj.op.map.{AndOp, GtOp}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, Value}
+import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class GtInstTest extends FunSuite {
-  test("[gt] w/ int"){
+class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
+  private type GtType = Obj with GtOp[_<:Type[_], _<:Value[Obj]]
+  private type GtValue = Value[Obj]
+  test("[gt] testing") {
+    def maker(x: Obj, y: Value[Obj]): Obj = x.q(2).asInstanceOf[GtOp[Type[Obj],Value[Obj]]].gt(y).q(3).and(btrue).q(10)
+
+    val starts: TableFor2[GtType, GtValue] =
+      new TableFor2(("obj1", "obj2"),
+        (int, int(2)),
+        (int(4), int(2)),
+        (real,real(342.0)),
+        (real(3.3),real(1346.2)),
+        (str,str("a")),
+        (str("a"),str("b")))
+    forEvery(starts) { (obj, arg) => {
+      val expr = maker(obj, arg)
+      obj match {
+        case value: Value[_] => assert(value.value != expr.asInstanceOf[Value[_]].value)
+        case _ =>
+      }
+      assert(obj.q != expr.q)
+      assertResult(2)(expr.lineage.length)
+      assertResult((int(60), int(60)))(expr.q)
+      assertResult((obj.q(2), GtOp(arg).q(3)))(expr.lineage.head)
+      assertResult((obj.q(2).asInstanceOf[GtOp[Type[Obj],Value[Obj]]].gt(arg).q(3), AndOp(btrue).q(10)))(expr.lineage.last)
+    }
+    }
+  }
+  ///////////////////////////////////////////////////////////////////////
+
+  test("[gt] w/ int") {
     assertResult(bfalse)(int(1).gt(int(3))) // value * value = value
     assert(int(1).gt(int(3)).isInstanceOf[BoolValue])
     assert(int(1).gt(int(3)).isInstanceOf[Bool])
@@ -47,7 +78,7 @@ class GtInstTest extends FunSuite {
     assert(int.gt(int).isInstanceOf[Bool])
   }
 
-  test("[gt] w/ real"){
+  test("[gt] w/ real") {
     assertResult(bfalse)(real(1).gt(real(3))) // value * value = value
     assert(real(1).gt(real(3)).isInstanceOf[BoolValue])
     assert(real(1).gt(real(3)).isInstanceOf[Bool])

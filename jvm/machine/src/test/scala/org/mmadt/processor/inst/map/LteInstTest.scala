@@ -23,23 +23,20 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.`type`.{BoolType, Type}
-import org.mmadt.language.obj.op.map.{AndOp, LtOp}
+import org.mmadt.language.obj.op.map.{AndOp, LteOp}
 import org.mmadt.language.obj.value.{BoolValue, Value}
 import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.storage.StorageFactory.{btrue, int, real, str}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class LtInstTest extends FunSuite with TableDrivenPropertyChecks {
-  private type LtType = Obj with LtOp[_ <: Type[_], _ <: Value[Obj]]
-  private type LtValue = Value[Obj]
-  test("[lt] testing") {
-    def maker(x: Obj, y: Value[Obj]): Obj = x.q(2).asInstanceOf[LtOp[Type[Obj], Value[Obj]]].lt(y).q(3).and(btrue).q(10)
+class LteInstTest extends FunSuite with TableDrivenPropertyChecks {
+  private type LteType = Obj with LteOp[_ <: Type[_], _ <: Value[Obj]]
+  private type LteValue = Value[Obj]
+  test("[lte] testing") {
+    def maker(x: Obj, y: Value[Obj]): Obj = x.q(2).asInstanceOf[LteOp[Type[Obj], Value[Obj]]].lte(y).q(3).and(btrue).q(10)
 
-    val starts: TableFor2[LtType, LtValue] =
+    val starts: TableFor2[LteType, LteValue] =
       new TableFor2(("obj1", "obj2"),
         (int, int(2)),
         (int(4), int(2)),
@@ -56,24 +53,24 @@ class LtInstTest extends FunSuite with TableDrivenPropertyChecks {
       assert(obj.q != expr.q)
       assertResult(2)(expr.lineage.length)
       assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), LtOp(arg).q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).asInstanceOf[LtOp[Type[Obj], Value[Obj]]].lt(arg).q(3), AndOp(btrue).q(10)))(expr.lineage.last)
+      assertResult((obj.q(2), LteOp(arg).q(3)))(expr.lineage.head)
+      assertResult((obj.q(2).asInstanceOf[LteOp[Type[Obj], Value[Obj]]].lte(arg).q(3), AndOp(btrue).q(10)))(expr.lineage.last)
     }
     }
   }
   ///////////////////////////////////////////////////////////////////////
   test("[lt] w/ int") {
-    assertResult(btrue)(int(1).lt(int(3))) // value * value = value
-    assert(int(1).lt(int(3)).isInstanceOf[BoolValue])
-    assert(int(1).lt(int(3)).isInstanceOf[Bool])
-    assertResult(int(1).lt(int))(int(1).lt(int)) // value * type = type
-    assert(int(1).lt(int).isInstanceOf[BoolType])
-    assert(int(1).lt(int).isInstanceOf[Bool])
-    assertResult(int.lt(int(3)))(int.lt(int(3))) // type * value = type
-    assert(int.lt(int(3)).isInstanceOf[BoolType])
-    assert(int.lt(int(3)).isInstanceOf[Bool])
-    assertResult(int.lt(int))(int.lt(int)) // type * type = type
-    assert(int.lt(int).isInstanceOf[BoolType])
-    assert(int.lt(int).isInstanceOf[Bool])
+    assertResult(btrue)(int(1).lte(int(3))) // value * value = value
+    assert(int(1).lte(int(3)).isInstanceOf[BoolValue])
+    assert(int(1).lte(int(3)).isInstanceOf[Bool])
+    assertResult(int(1).lte(int))(int(1).lte(int)) // value * type = type
+    assert(int(1).lte(int).isInstanceOf[BoolType])
+    assert(int(1).lte(int).isInstanceOf[Bool])
+    assertResult(int.lte(int(3)))(int.lte(int(3))) // type * value = type
+    assert(int.lte(int(3)).isInstanceOf[BoolType])
+    assert(int.lte(int(3)).isInstanceOf[Bool])
+    assertResult(int.lte(int))(int.lte(int)) // type * type = type
+    assert(int.lte(int).isInstanceOf[BoolType])
+    assert(int.lte(int).isInstanceOf[Bool])
   }
 }

@@ -24,7 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Real
 import org.mmadt.language.obj.`type`.RealType
-import org.mmadt.language.obj.op.map.{OneOp, ZeroOp}
+import org.mmadt.language.obj.op.map.{GtOp, GteOp, LtOp, LteOp, OneOp, ZeroOp}
 import org.mmadt.storage.StorageFactory.vbool
 
 /**
@@ -41,9 +41,9 @@ trait RealValue extends Real
   override def mult(other: RealValue): this.type = this.value(this.value * other.value)
   override def neg(): this.type = this.value(-this.value)
   override def one(): this.type = this.clone(name = this.name, value = 1.0d, q = this.q, via = (this, OneOp()))
-  override def gt(other: RealValue): BoolValue = vbool(value = this.value > other.value, q = this.q)
-  override def gte(other: RealValue): BoolValue = vbool(value = this.value >= other.value, q = this.q)
-  override def lt(other: RealValue): BoolValue = vbool(value = this.value < other.value, q = this.q)
-  override def lte(other: RealValue): BoolValue = vbool(value = this.value <= other.value, q = this.q)
+  override def gt(other: RealValue): BoolValue = vbool(value = this.value > other.value, q = this.q, via = (this,GtOp(other)))
+  override def gte(other: RealValue): BoolValue = vbool(value = this.value >= other.value, q = this.q, via = (this, GteOp(other)))
+  override def lt(other: RealValue): BoolValue =  vbool(value = this.value < other.value, q = this.q, via = (this, LtOp(other)))
+  override def lte(other: RealValue): BoolValue = vbool(value = this.value <= other.value, q = this.q, via = (this, LteOp(other)))
   override def zero(): this.type = this.clone(name = this.name, value = 0.0d, q = this.q, via = (this, ZeroOp()))
 }
