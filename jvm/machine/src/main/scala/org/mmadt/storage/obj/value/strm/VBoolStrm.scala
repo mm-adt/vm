@@ -27,12 +27,12 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.value.strm.BoolStrm
 import org.mmadt.storage.StorageFactory.int
-import org.mmadt.storage.obj.value.AbstractVObj
+import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBoolStrm(name: String, _value: Seq[BoolValue], via: ViaTuple) extends AbstractVObj(name, (int(_value.length), int(_value.length)), via) with BoolStrm {
+class VBoolStrm(name: String, _value: Seq[BoolValue], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BoolStrm {
   def this(java: Seq[BoolValue]) = this(name = Tokens.bool, java, base())
   override val value: Iterator[BoolValue] = _value.iterator
   override def q(quantifier: IntQ): this.type = this

@@ -58,14 +58,16 @@ trait Obj
     with EqsOp {
   // quantifier methods
   val q: IntQ
-  def q(quantifier: IntQ): this.type = this.clone(q = quantifier)
+  def q(q: IntQ): this.type = this.clone(
+    q = if (this.root) q else multQ(this.via._1, q),
+    via = if (this.root) base() else (this.via._1, this.via._2.q(q)).asInstanceOf[ViaTuple])
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def alive(): Boolean = this.q != qZero
   // historic mutations
-  def root: Boolean = null == this.via._1
-  val via: ViaTuple = base()
+  def root: Boolean = null == this.via || null == this.via._1
+  val via: ViaTuple
   def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
-  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
+  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = if (inst.q == qOne && via == (obj, inst)) this else this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
   // utility methods
   def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
   def toList: List[this.type] = toStrm.value.toList

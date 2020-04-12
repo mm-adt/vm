@@ -23,15 +23,16 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{ViaTuple, IntQ, Obj, base}
 import org.mmadt.language.obj.value.ObjValue
+import org.mmadt.language.obj.{IntQ, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VObj(name:String,val _value:Any,quantifier:IntQ,via:ViaTuple) extends AbstractVObj(name,quantifier,via) with ObjValue {
-  def this(java:Any) = this(Tokens.obj,java,qOne,base())
-  override val value:Any = _value
-  override def clone(_name:String = this.name,_value:Any = this.value,_quantifier:IntQ = this.q,_via:ViaTuple=base()):this.type = new VObj(_name,_value,_quantifier).asInstanceOf[this.type]
+class VObj(val name: String = Tokens.obj, val value: Any, val q: IntQ = qOne, val via: ViaTuple = base()) extends ObjValue {
+  override def clone(name: String = this.name,
+                     value: Any = this.value,
+                     q: IntQ = this.q,
+                     via: ViaTuple = base()): this.type = new VObj(name, value, q, via).asInstanceOf[this.type]
 }

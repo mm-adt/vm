@@ -70,6 +70,7 @@ class __Test extends FunSuite {
   }
 
   test("__ quantifiers"){
+    println(int ==> __.id().q(2))
     assertResult(int(5))(int(5) ===> int.q(10))
     assertResult(int(5))(int(5) ===> __)
     assertResult(int(5))(int(5) ===> __.id())
@@ -82,10 +83,10 @@ class __Test extends FunSuite {
     assertResult(int(2).q(10))(int(1) ==> __.plus(1).q(10).asInstanceOf[__])
     assertResult(int(2).q(20))(int(1).q(2) ==> __.plus(1).q(10).asInstanceOf[__])
     assertResult(int(20).q(20))(int(1).q(2) ==> __.plus(1).q(10).mult(10).asInstanceOf[__])
-    assertResult(int(20).q(200))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).asInstanceOf[__])
-    assertResult(int(21).q(200))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).asInstanceOf[__])
-    assertResult(int(42).q(200))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).plus(__.id().q(1000)).asInstanceOf[__])
-    assertResult(int(45).q(200))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).plus(__.id().q(1000)).plus(3).asInstanceOf[__])
+    assertResult(int(20).q(2000))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).asInstanceOf[__])
+    assertResult(int(21).q(2000))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).asInstanceOf[__])
+    assertResult(int(42).q(2000))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).plus(__.id().q(1000)).asInstanceOf[__])
+    assertResult(int(45).q(2000))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).plus(__.id().q(1000)).plus(3).asInstanceOf[__])
   }
 
 }

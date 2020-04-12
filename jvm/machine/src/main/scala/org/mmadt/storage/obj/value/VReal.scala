@@ -23,16 +23,15 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{IntQ, Obj, Real, ViaTuple, base}
 import org.mmadt.language.obj.value.RealValue
+import org.mmadt.language.obj.{IntQ, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
  *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VReal(name: String, val value: Double, q: IntQ, via: ViaTuple) extends AbstractVObj(name, q, via) with RealValue {
-  def this(java: Double) = this(Tokens.real, java, qOne, base())
+class VReal(val name: String = Tokens.real, val value: Double, val q: IntQ = qOne, val via: ViaTuple = base()) extends RealValue {
   override def clone(name: String = this.name,
                      value: Any = this.value,
                      q: IntQ = this.q,

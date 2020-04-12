@@ -23,20 +23,20 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.StrType
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.value.strm.StrStrm
-import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
+import org.mmadt.language.obj.{IntQ, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.AbstractVObj
+import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VStrStrm(name: String, _value: Seq[StrValue], via: ViaTuple) extends AbstractVObj(name, (int(_value.length), int(_value.length)), via) with StrStrm {
+class VStrStrm(name: String, _value: Seq[StrValue], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with StrStrm {
   def this(java: Seq[StrValue]) = this(name = Tokens.str, java, base())
+
   override val value: Iterator[StrValue] = _value.iterator
+
   override def q(quantifier: IntQ): this.type = this
 }
 

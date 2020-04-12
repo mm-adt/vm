@@ -32,7 +32,6 @@ import org.mmadt.language.{LanguageFactory, Tokens}
  */
 trait Inst[S <: Obj, +E <: Obj] extends Obj {
   def value(): InstTuple
-  override val name: String = Tokens.inst
   final def op(): String = this.value()._1
   final def args(): List[Obj] = this.value()._2
   final def arg0[O <: Obj](): O = this.value()._2.head.asInstanceOf[O]

@@ -23,6 +23,7 @@
 package org.mmadt.storage
 
 import java.util.ServiceLoader
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, _}
 import org.mmadt.language.obj.op.initial.{IntOp, StrOp}
@@ -153,9 +154,9 @@ object StorageFactory {
     override def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecType[A, B] = new TRec[A, B](name, value, q, via)
     override def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecType[A, B] = new TRec[A, B](java = (value +: values).toMap)
     /////////VALUES/////////
-    override def obj(value: Any): ObjValue = new VObj(value)
+    override def obj(value: Any): ObjValue = new VObj(value=value)
     override def int(value: Long): IntValue = new VInt(value)
-    override def real(value: Double): RealValue = new VReal(value)
+    override def real(value: Double): RealValue = new VReal(value= value)
     override def vbool(name: String, value: Boolean, q: (IntValue, IntValue)): BoolValue = new VBool(name, value, q)
     override def bool(value1: BoolValue, value2: BoolValue, valuesN: BoolValue*): BoolStrm = new VBoolStrm(value1 +: (value2 +: valuesN))
     override def vint(name: String, value: Long, q: (IntValue, IntValue)): IntValue = new VInt(name, value, q, base())
@@ -165,7 +166,7 @@ object StorageFactory {
     override def vstr(name: String, value: String, q: (IntValue, IntValue)): StrValue = new VStr(name, value, q, base())
     override def str(value1: StrValue, value2: StrValue, valuesN: StrValue*): StrStrm = new VStrStrm(value1 +: (value2 +: valuesN))
     override def vrec[A <: Value[Obj], B <: Value[Obj]](name: String, value: Map[A, B], q: (IntValue, IntValue)): RecValue[A, B] = new VRec[A, B](name, value, q)
-    override def vrec[A <: Value[Obj], B <: Value[Obj]](value: (A, B), values: (A, B)*): RecValue[A, B] = new VRec[A, B]((value +: values).toMap)
+    override def vrec[A <: Value[Obj], B <: Value[Obj]](value: (A, B), values: (A, B)*): RecValue[A, B] = new VRec[A, B](value=(value +: values).toMap)
     override def vrec[A <: Value[Obj], B <: Value[Obj]](value1: RecValue[A, B], value2: RecValue[A, B], valuesN: RecValue[A, B]*): RecStrm[A, B] = new VRecStrm(value1 +: (value2 +: valuesN))
     override def vrec[A <: Value[Obj], B <: Value[Obj]](value: Iterator[RecValue[A, B]]): RecStrm[A, B] = new VRecStrm(value.toSeq)
     //

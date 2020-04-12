@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
+
 import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
@@ -60,19 +61,19 @@ trait Type[+T <: Obj] extends Obj
   // type specification and compilation
   final def <=[D <: Obj](domainType: Type[D]): this.type = {
     LanguageException.testDomainRange(this, domainType)
-
     Some(domainType).filter(x => x.root).map(_.id()).getOrElse(domainType).compose(this).hardQ(this.q).asInstanceOf[this.type]
   }
-  // type constructors via stream ring theory // TODO: figure out how to get this into [mult][plus] compositions
+  // type constructors via stream ring theory
   def compose[R <: Type[Obj]](btype: R): R = btype match {
-    case anon: __ => anon(this)
+    case anon: __ => anon(this) // TODO: get the domain() correct
     case atype: Type[Obj] => atype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b)).asInstanceOf[R].compose(btype.range, NoOp())
   }
   def compose(inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.compose(this, inst)
-  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R = (nextObj match {
-    case _: __ => new __(multQ(this, inst), if (inst.op().equals(Tokens.noop)) this.lineage else this.lineage ::: List((this, inst)))
-    case _ => asType[Obj](nextObj).clone(name = nextObj.name, q = multQ(this, inst), via = if (inst.op().equals(Tokens.noop)) this.via else (this, inst))
-  }).asInstanceOf[R]
+  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R =
+    asType[Obj](nextObj).clone(
+      name = nextObj.name,
+      q = multQ(this, inst),
+      via = if (inst.op().equals(Tokens.noop)) this.via else (this, inst)).asInstanceOf[R]
   // obj-level operations
   override def add[O <: Obj](obj: O): O = this.compose(asType(obj).asInstanceOf[O], AddOp(obj))
   // pattern matching methods
@@ -84,13 +85,7 @@ trait Type[+T <: Obj] extends Obj
   override def toString: String = LanguageFactory.printType(this)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.lineage.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case atype: Type[_] =>
-      if (this.root)
-        atype.root && atype.name.equals(this.name) && eqQ(atype, this)
-      else if (this.isInstanceOf[__] && atype.isInstanceOf[__]) // TODO: have it work generically with types (and make it recurssive)
-      atype.isDerived && atype.name.equals(this.name) && eqQ(atype, this) && this.lineage.map(x => x._2) == atype.lineage.map(x => x._2)
-        else
-        atype.isDerived && atype.name.equals(this.name) && eqQ(atype, this) && (this.via._2 == atype.via._2 && this.via._1 == atype.via._1)
+    case atype: Type[_] =>  atype.name.equals(this.name) && eqQ(atype, this) && ((this.root && atype.root) || (this.via == atype.via))
     case _ => false
   }
 }

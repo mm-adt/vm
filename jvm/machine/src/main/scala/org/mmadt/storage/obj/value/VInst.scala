@@ -24,23 +24,19 @@ package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VInst[S <: Obj, E <: Obj](java: InstTuple, quantifier: IntQ = qOne) extends AbstractVObj(Tokens.inst, quantifier,base()) with Inst[S, E] {
-  override val value: InstTuple = java
-  override def q(quantifier: IntQ): this.type = this
-  override val q: IntQ = quantifier
+abstract class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val value: InstTuple, val q: IntQ = qOne, val via: ViaTuple = base()) extends Inst[S, E] {
+  def this(value: InstTuple, q: IntQ) = this(Tokens.inst, value, q, base())
+  def this(value: InstTuple) = this(Tokens.inst, value, qOne, base())
   def test(other: Obj): Boolean = false //  TODO: GUT WHEN VINST JOINS HEIRARCHY
-  override def named(_name: String): VInst.this.type = this
   override def clone(_name: String, _value: Any, _quantifier: (IntValue, IntValue), _via: ViaTuple): this.type = this
-
-  override def equals(other:Any):Boolean = other match {
-    case inst:Inst[_,_] => inst.value == this.value && eqQ(this,inst)
+  override def equals(other: Any): Boolean = other match {
+    case inst: Inst[_, _] => inst.value == this.value && eqQ(this, inst)
     case _ => false
   }
 }

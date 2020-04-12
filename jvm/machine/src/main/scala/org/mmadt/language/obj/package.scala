@@ -59,7 +59,7 @@ package object obj {
     case _ if equals(qOne) => qA
     case _: IntQ => (qA._1 * qB._1, qA._2 * qB._2)
   }
-  def multQ(qA: Type[Obj], qB: IntQ): IntQ = if (null == qA) qB else this.multQ(qA.q, qB)
+  def multQ(qA: Obj, qB: IntQ): IntQ = if (null == qA) qB else this.multQ(qA.q, qB)
   def plusQ(objA: Obj, objB: Obj): IntQ = objB.q match {
     case _ if equals(qZero) => objA.q
     case quantifier: IntQ => (objA.q._1 + quantifier._1, objA.q._2 + quantifier._2)

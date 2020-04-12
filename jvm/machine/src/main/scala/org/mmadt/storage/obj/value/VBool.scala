@@ -30,8 +30,9 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBool(name: String, _value: Boolean, q: IntQ, via: ViaTuple = base()) extends AbstractVObj(name, q, via) with BoolValue {
-  def this(java: Boolean) = this(Tokens.bool, java, qOne)
-  override def clone(_name: String = this.name, _value: Any = this.value, _quantifier: IntQ = this.q, _via: ViaTuple = base()): this.type = new VBool(_name, _value.asInstanceOf[Boolean], _quantifier, _via).asInstanceOf[this.type]
-  override val value: Boolean = _value
+class VBool(val name: String = Tokens.bool, val value: Boolean, val q: IntQ = qOne, val via: ViaTuple = base()) extends BoolValue {
+  override def clone(name: String = this.name,
+                     value: Any = this.value,
+                     q: IntQ = this.q,
+                     via: ViaTuple = base()): this.type = new VBool(name, value.asInstanceOf[Boolean], q, via).asInstanceOf[this.type]
 }

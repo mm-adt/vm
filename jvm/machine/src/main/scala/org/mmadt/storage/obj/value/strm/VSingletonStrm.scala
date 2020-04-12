@@ -24,18 +24,20 @@ package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{OStrm, OType, Obj}
+import org.mmadt.language.obj.{OStrm, Obj, ViaTuple, _}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VSingletonStrm[O <: Obj](obj:O) extends Strm[O] {
-  override val value:Iterator[O] = Iterator.single(obj)
-  override val q:(IntValue,IntValue) = obj.q
-  override def q(quantifier:(IntValue,IntValue)):this.type = this
-  override val name:String = obj.name
+class VSingletonStrm[O <: Obj](obj: O) extends Strm[O] {
+  override val value: Iterator[O] = Iterator.single(obj)
+  override val q: (IntValue, IntValue) = obj.q
+  override val via: ViaTuple = base()
+  override val name: String = obj.name
+
+  override def q(quantifier: (IntValue, IntValue)): this.type = this
 }
 
 object VSingletonStrm {
-  def single[O <: Obj](obj:O):OStrm[O] = new VSingletonStrm[O](obj).asInstanceOf[OStrm[O]]
+  def single[O <: Obj](obj: O): OStrm[O] = new VSingletonStrm[O](obj).asInstanceOf[OStrm[O]]
 }

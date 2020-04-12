@@ -24,20 +24,24 @@ package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{OStrm, OType, Obj}
+import org.mmadt.language.obj.{OStrm, Obj, ViaTuple, _}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VEmptyStrm[O <: Obj] extends Strm[O] {
-  override val value:Iterator[O] = Iterator.empty
-  override val q:(IntValue,IntValue) = qZero
-  override def q(quantifier:(IntValue,IntValue)):this.type = throw new UnsupportedOperationException
-  override val name:String = obj.name
+  override val value: Iterator[O] = Iterator.empty
+  override val q: (IntValue, IntValue) = qZero
+  override val name: String = obj.name
+  override val via: ViaTuple = base()
+
+  override def q(quantifier: (IntValue, IntValue)): this.type = throw new UnsupportedOperationException
+
 }
 
 object VEmptyStrm {
-  private val _empty:OStrm[Obj] = new VEmptyStrm[Obj]().asInstanceOf[OStrm[Obj]]
-  def empty[O <: Obj]:OStrm[O] = _empty.asInstanceOf[OStrm[O]]
+  private val _empty: OStrm[Obj] = new VEmptyStrm[Obj]().asInstanceOf[OStrm[Obj]]
+
+  def empty[O <: Obj]: OStrm[O] = _empty.asInstanceOf[OStrm[O]]
 }

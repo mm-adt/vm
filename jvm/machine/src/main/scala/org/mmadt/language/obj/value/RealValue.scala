@@ -22,9 +22,8 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{IntQ, Real}
-import org.mmadt.language.obj.`type`.{RealType, Type}
+import org.mmadt.language.obj.Real
+import org.mmadt.language.obj.`type`.RealType
 import org.mmadt.language.obj.op.map.{OneOp, ZeroOp}
 import org.mmadt.storage.StorageFactory.vbool
 

@@ -24,14 +24,15 @@ package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.language.obj.{Bool, IntQ, Obj, Rec, ViaTuple, base}
+import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Value[Obj], B <: Value[Obj]](name: String, val _value: Map[A, B], q: IntQ, via: ViaTuple = base()) extends AbstractVObj(name, q, via) with RecValue[A, B] {
-  def this(java: Map[A, B]) = this(Tokens.rec, java, qOne)
-  override def clone(_name: String = this.name, _value: Any = this.value, _quantifier: IntQ = this.q, _via: ViaTuple= base()): this.type = new VRec[A, B](_name, _value.asInstanceOf[Map[A, B]], _quantifier).asInstanceOf[this.type]
-  override val value: Map[A, B] = _value
+class VRec[A <: Value[Obj], B <: Value[Obj]](val name: String = Tokens.rec, val value: Map[A, B], val q: IntQ = qOne, val via: ViaTuple = base()) extends RecValue[A, B] {
+  override def clone(name: String = this.name,
+                     value: Any = this.value,
+                     q: IntQ = this.q,
+                     via: ViaTuple = base()): this.type = new VRec[A, B](name, value.asInstanceOf[Map[A, B]], q, via).asInstanceOf[this.type]
 }
