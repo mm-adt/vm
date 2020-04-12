@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.op.FilterInstruction
-import org.mmadt.language.obj.op.filter.IsOp.IsInst
 import org.mmadt.language.obj.value.{BoolValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -35,33 +34,33 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IsOp {
-  this:Obj =>
+  this: Obj =>
 
-  def is(bool:BoolType):OType[this.type] = (this match {
-    case atype:Type[_] => atype.compose(this,new IsInst[this.type](bool)).asInstanceOf[Type[Obj]].hardQ(minZero(this.q))
-    case avalue:Value[_] => avalue.start().is(bool)
-  }).asInstanceOf[OType[this.type]]
-
-  def is(bool:BoolValue):this.type = this match {
-    case atype:Type[_] => atype.compose(this.q(minZero(this.q)),IsOp(bool.start()))
-    case _ => if (bool.value) this else this.q(0)
+  def is(bool: BoolType): OType[this.type] = this match {
+    case avalue: Value[_] => avalue.start().is(bool)
+    case atype: Type[_] => atype.compose(IsOp(bool)).hardQ(0, this.q._2).asInstanceOf[OType[this.type]]
   }
-  /////////////////////////////////////////////////////////////////
-  private def is[O <: Obj](inst:IsInst[O]):O = (this match {
-    case atype:Type[_] => atype.compose(this,inst).asInstanceOf[Type[Obj]].hardQ(minZero(multQ(this,inst)))
-    case avalue:Value[_] => inst.arg0[Bool]() match {
-      case boolValue:BoolValue => if (boolValue.value) this.q(multQ(avalue,inst)._2) else this.q(0)
-      case boolType:BoolType => avalue.start().is(boolType)
-    }
-  }).asInstanceOf[O]
+
+  def is(bool: BoolValue): this.type = this match {
+    case _: Value[_] => if (bool.value) this.via(this, IsOp(bool)) else this.via(this, IsOp(bool)).q(qZero)
+    case atype: Type[_] => atype.compose(IsOp(bool)).hardQ(0, this.q._2).asInstanceOf[this.type]
+  }
 }
 
 object IsOp {
-  def apply[O <: Obj with IsOp](other:Obj):Inst[O,O] = new IsInst[O](other)
+  def apply[O <: Obj with IsOp](other: Obj): Inst[O, O] = new IsInst[O](other)
 
-  class IsInst[O <: Obj with IsOp](other:Obj,q:IntQ = qOne) extends VInst[O,O]((Tokens.is,List(other)),q) with FilterInstruction {
-    override def q(quantifier:IntQ):this.type = new IsInst[O](other,quantifier).asInstanceOf[this.type]
-    override def exec(start:O):O = start.is(new IsInst[O](Inst.resolveArg(start,other),q))
+  class IsInst[O <: Obj with IsOp](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.is, List(other)), q) with FilterInstruction {
+    override def q(q: IntQ): this.type = new IsInst[O](other, q).asInstanceOf[this.type]
+    override def exec(start: O): O = {
+      val inst = new IsInst[O](Inst.resolveArg(start, other), q)
+      inst.arg0[O]() match {
+        case avalue: BoolValue =>
+          val x = start.is(avalue).via(start, inst)
+          if (!avalue.value) x.q(qZero) else x
+        case atype: BoolType => start.is(atype).via(start, inst).hardQ((int(0), multQ(start, inst)._2))
+      }
+    }
   }
 
 }

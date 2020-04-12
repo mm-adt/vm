@@ -68,12 +68,12 @@ class LtInstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(int(1).lt(int(3)).isInstanceOf[Bool])
     assertResult(int(1).lt(int))(int(1).lt(int)) // value * type = type
     assert(int(1).lt(int).isInstanceOf[BoolType])
-    assert(int(1).lt(int).isInstanceOf[Bool])
+    assert(int(1).lt(int).isInstanceOf[BoolType])
     assertResult(int.lt(int(3)))(int.lt(int(3))) // type * value = type
     assert(int.lt(int(3)).isInstanceOf[BoolType])
-    assert(int.lt(int(3)).isInstanceOf[Bool])
+    assert(int.lt(int(3)).isInstanceOf[BoolType])
     assertResult(int.lt(int))(int.lt(int)) // type * type = type
     assert(int.lt(int).isInstanceOf[BoolType])
-    assert(int.lt(int).isInstanceOf[Bool])
+    assert(int.lt(int).isInstanceOf[BoolType])
   }
 }

@@ -61,12 +61,12 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(btrue.or(btrue).isInstanceOf[Bool])
     assertResult(btrue.or(bool))(btrue.or(bool)) // value * type = type
     assert(btrue.or(bool).isInstanceOf[BoolType])
-    assert(btrue.or(bool).isInstanceOf[Bool])
+    assert(btrue.or(bool).isInstanceOf[BoolType])
     assertResult(bool.or(btrue))(bool.or(btrue)) // type * value = type
     assert(bool.or(btrue).isInstanceOf[BoolType])
-    assert(bool.or(btrue).isInstanceOf[Bool])
+    assert(bool.or(btrue).isInstanceOf[BoolType])
     assertResult(bool.or(bool))(bool.or(bool)) // type * type = type
     assert(bool.or(bool).isInstanceOf[BoolType])
-    assert(bool.or(bool).isInstanceOf[Bool])
+    assert(bool.or(bool).isInstanceOf[BoolType])
   }
 }

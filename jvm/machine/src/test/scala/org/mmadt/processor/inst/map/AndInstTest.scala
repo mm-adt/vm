@@ -64,12 +64,12 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(btrue.and(btrue).isInstanceOf[Bool])
     assertResult(btrue.and(bool))(btrue.and(bool)) // value * type = type
     assert(btrue.and(bool).isInstanceOf[BoolType])
-    assert(btrue.and(bool).isInstanceOf[Bool])
+    assert(btrue.and(bool).isInstanceOf[BoolType])
     assertResult(bool.and(btrue))(bool.and(btrue)) // type * value = type
     assert(bool.and(btrue).isInstanceOf[BoolType])
     assert(bool.and(btrue).isInstanceOf[Bool])
     assertResult(bool.and(bool))(bool.and(bool)) // type * type = type
     assert(bool.and(bool).isInstanceOf[BoolType])
-    assert(bool.and(bool).isInstanceOf[Bool])
+    assert(bool.and(bool).isInstanceOf[BoolType])
   }
 }

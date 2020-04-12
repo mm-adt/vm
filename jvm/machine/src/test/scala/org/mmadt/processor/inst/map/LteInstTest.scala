@@ -65,12 +65,12 @@ class LteInstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(int(1).lte(int(3)).isInstanceOf[Bool])
     assertResult(int(1).lte(int))(int(1).lte(int)) // value * type = type
     assert(int(1).lte(int).isInstanceOf[BoolType])
-    assert(int(1).lte(int).isInstanceOf[Bool])
+    assert(int(1).lte(int).isInstanceOf[BoolType])
     assertResult(int.lte(int(3)))(int.lte(int(3))) // type * value = type
     assert(int.lte(int(3)).isInstanceOf[BoolType])
-    assert(int.lte(int(3)).isInstanceOf[Bool])
+    assert(int.lte(int(3)).isInstanceOf[BoolType])
     assertResult(int.lte(int))(int.lte(int)) // type * type = type
     assert(int.lte(int).isInstanceOf[BoolType])
-    assert(int.lte(int).isInstanceOf[Bool])
+    assert(int.lte(int).isInstanceOf[BoolType])
   }
 }

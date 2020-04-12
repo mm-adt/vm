@@ -66,13 +66,13 @@ class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(int(1).gte(int(3)).isInstanceOf[Bool])
     assertResult(int(1).gte(int))(int(1).gte(int)) // value * type = type
     assert(int(1).gte(int).isInstanceOf[BoolType])
-    assert(int(1).gte(int).isInstanceOf[Bool])
+    assert(int(1).gte(int).isInstanceOf[BoolType])
     assertResult(int.gte(int(3)))(int.gte(int(3))) // type * value = type
     assert(int.gte(int(3)).isInstanceOf[BoolType])
-    assert(int.gte(int(3)).isInstanceOf[Bool])
+    assert(int.gte(int(3)).isInstanceOf[BoolType])
     assertResult(int.gte(int))(int.gte(int)) // type * type = type
     assert(int.gte(int).isInstanceOf[BoolType])
-    assert(int.gte(int).isInstanceOf[Bool])
+    assert(int.gte(int).isInstanceOf[BoolType])
   }
 
   test("[gte] w/ real") {
@@ -81,12 +81,12 @@ class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(real(1).gte(real(3)).isInstanceOf[Bool])
     assertResult(real(1).gte(real))(real(1).gte(real)) // value * type = type
     assert(real(1).gte(real).isInstanceOf[BoolType])
-    assert(real(1).gte(real).isInstanceOf[Bool])
+    assert(real(1).gte(real).isInstanceOf[BoolType])
     assertResult(real.gte(real(3)))(real.gte(real(3))) // type * value = type
     assert(real.gte(real(3)).isInstanceOf[BoolType])
-    assert(real.gte(real(3)).isInstanceOf[Bool])
+    assert(real.gte(real(3)).isInstanceOf[BoolType])
     assertResult(real.gte(real))(real.gte(real)) // type * type = type
     assert(real.gte(real).isInstanceOf[BoolType])
-    assert(real.gte(real).isInstanceOf[Bool])
+    assert(real.gte(real).isInstanceOf[BoolType])
   }
 }
