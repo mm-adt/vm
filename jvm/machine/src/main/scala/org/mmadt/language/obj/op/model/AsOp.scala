@@ -38,64 +38,64 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AsOp {
-  this:Obj =>
-  def as[O <: Obj](obj:O):O = this match {
-    case atype:Type[_] => atype.compose(obj,AsOp(obj))
+  this: Obj =>
+  def as[O <: Obj](obj: O): O = this match {
+    case atype: Type[_] => atype.compose(obj, AsOp(obj))
     case _ => AsOp(obj).exec(obj)
   }
 }
 
 object AsOp {
-  def apply[O <: Obj](obj:O):AsInst[O] = new AsInst[O](obj)
+  def apply[O <: Obj](obj: O): AsInst[O] = new AsInst[O](obj)
 
-  class AsInst[O <: Obj](obj:O,q:IntQ = qOne) extends VInst[Obj,O]((Tokens.as,List(obj)),q) {
-    override def q(quantifier:IntQ):this.type = new AsInst[O](obj,quantifier).asInstanceOf[this.type]
-    override def exec(start:Obj):O ={
+  class AsInst[O <: Obj](obj: O, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.as, List(obj)), q) {
+    override def q(quantifier: IntQ): this.type = new AsInst[O](obj, quantifier).asInstanceOf[this.type]
+    override def exec(start: Obj): O = {
       testAlive(obj match {
-        case atype:Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
-          case rectype:RecType[Obj,Obj] =>
+        case atype: Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
+          case rectype: RecType[Obj, Obj] =>
             start match {
-              case recvalue:ORecValue => vrec(name = rectype.name,value = makeMap(Model.id,recvalue.value,rectype.value()))
-              case avalue:Value[Obj] => vrec(rectype.name,rectype.value().map(x =>
+              case recvalue: ORecValue => vrec(name = rectype.name, value = makeMap(Model.id, recvalue.value, rectype.value()))
+              case avalue: Value[Obj] => vrec(rectype.name, rectype.value().map(x =>
                 (x._1 match {
-                  case kvalue:Value[Obj] => kvalue
-                  case ktype:Type[Obj] =>
-                    TypeChecker.matchesVT(avalue,ktype)
-                    start.compute(Type.resolve(start,ktype)).asInstanceOf[Value[Obj]]
+                  case kvalue: Value[Obj] => kvalue
+                  case ktype: Type[Obj] =>
+                    TypeChecker.matchesVT(avalue, ktype)
+                    start.compute(Type.resolve(start, ktype)).asInstanceOf[Value[Obj]]
                 }) -> (x._2 match {
-                  case vvalue:Value[Obj] => vvalue
-                  case vtype:Type[Obj] =>
-                    TypeChecker.matchesVT(avalue,vtype)
-                    start.compute(Type.resolve(start,vtype)).asInstanceOf[Value[Obj]]
+                  case vvalue: Value[Obj] => vvalue
+                  case vtype: Type[Obj] =>
+                    TypeChecker.matchesVT(avalue, vtype)
+                    start.compute(Type.resolve(start, vtype)).asInstanceOf[Value[Obj]]
                 })))
             }
-          case atype:StrType => vstr(name = atype.name,value = start.asInstanceOf[Value[Obj]].value.toString).compute(atype)
-          case atype:IntType => vint(name = atype.name,value = Integer.valueOf(start.asInstanceOf[Value[Obj]].value.toString).longValue()).compute(atype)
-          case atype:RealType =>vreal(name = atype.name,value = JDouble.valueOf(start.asInstanceOf[Value[Obj]].value.toString).doubleValue()).compute(atype)
-          case xtype:Type[Obj] =>start.named(xtype.name).asInstanceOf[O]
+          case atype: StrType => vstr(name = atype.name, value = start.asInstanceOf[Value[Obj]].value.toString).compute(atype)
+          case atype: IntType => vint(name = atype.name, value = Integer.valueOf(start.asInstanceOf[Value[Obj]].value.toString).longValue()).compute(atype)
+          case atype: RealType => vreal(name = atype.name, value = JDouble.valueOf(start.asInstanceOf[Value[Obj]].value.toString).doubleValue()).compute(atype)
+          case xtype: Type[Obj] => start.named(xtype.name).asInstanceOf[O]
         }
-        case avalue:Value[Obj] => avalue
-        case btype:Type[Obj] if start.isInstanceOf[Type[_]] =>
-          if (btype.isInstanceOf[RecType[Obj,Obj]]) {
-            start.asInstanceOf[Type[Obj]].compose(btype,AsOp(Type.resolve(start,btype)))
+        case avalue: Value[Obj] => avalue
+        case btype: Type[Obj] if start.isInstanceOf[Type[_]] =>
+          if (btype.isInstanceOf[RecType[Obj, Obj]]) {
+            start.asInstanceOf[Type[Obj]].compose(btype, AsOp(Type.resolve(start, btype)))
           } else {
-            start.asInstanceOf[Type[Obj]].compose(btype,AsOp(btype))
+            start.asInstanceOf[Type[Obj]].compose(btype, AsOp(btype))
           }
-      }).via(start,this).asInstanceOf[O]
+      }).via(start, this).asInstanceOf[O]
     }
 
-    private def testAlive[X <: Obj](trav:X):X ={
+    private def testAlive[X <: Obj](trav: X): X = {
       assert(trav.alive())
       trav
     }
 
-    private def makeMap(model:Model,leftMap:Map[Value[Obj],Value[Obj]],rightMap:Map[Obj,Obj]):Map[Value[Obj],Value[Obj]] ={
+    private def makeMap(model: Model, leftMap: collection.Map[Value[Obj], Value[Obj]], rightMap: collection.Map[Obj, Obj]): collection.Map[Value[Obj], Value[Obj]] = {
       if (leftMap.equals(rightMap)) return leftMap
-      val typeMap :mutable.Map[Obj,Obj]               = mutable.Map() ++ rightMap
-      var valueMap:mutable.Map[Value[Obj],Value[Obj]] = mutable.Map()
+      val typeMap: mutable.Map[Obj, Obj] = mutable.Map() ++ rightMap
+      var valueMap: mutable.Map[Value[Obj], Value[Obj]] = mutable.Map()
       leftMap.map(a => typeMap.find(k =>
-        model(a._1).test(Type.resolve(a._1,k._1)) &&
-        model(a._2).test(Type.resolve(a._2,k._2))).map(z => {
+        model(a._1).test(Type.resolve(a._1, k._1)) &&
+          model(a._2).test(Type.resolve(a._2, k._2))).map(z => {
         valueMap = valueMap + (a._1 -> a._2.as(z._2).asInstanceOf[Value[Obj]])
         typeMap.remove(z._1)
       }))

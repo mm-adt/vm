@@ -20,27 +20,16 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.value
+package org.mmadt.processor.inst.map
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
+import org.scalatest.FunSuite
+import org.scalatest.prop.TableDrivenPropertyChecks
 
-import scala.collection.mutable
+class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class VRec[A <: Value[Obj], B <: Value[Obj]](val name: String = Tokens.rec, val value: collection.Map[A, B], val q: IntQ = qOne, val via: ViaTuple = base()) extends RecValue[A, B] {
-  def this(seq: Seq[(A, B)]) = {
-    this(name = Tokens.rec, value = seq.foldLeft(new mutable.LinkedHashMap[A, B]())((b, a) => {
-      b.put(a._1, a._2)
-      b
-    }), q = qOne, via = base())
+  test("[path] w/ int value") {
+    assertResult(vrec(int(1)->int(0),int(2)->int(1),int(3)->int(3),int(4)->int(6),int(5)->int(10)))(int(0).plus(1).plus(2).plus(3).plus(4).path())
   }
-  override def clone(name: String = this.name,
-                     value: Any = this.value,
-                     q: IntQ = this.q,
-                     via: ViaTuple = base()): this.type = new VRec[A, B](name, value.asInstanceOf[collection.Map[A, B]], q, via).asInstanceOf[this.type]
+
 }

@@ -45,13 +45,13 @@ import scala.collection.JavaConverters.asScalaIterator
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object OpInstResolver {
-  private val providers:List[StorageProvider] = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toList
-  private def service(op:String,args:List[Obj]):Option[Inst[Obj,Obj]] = providers.iterator
-    .map(_.resolveInstruction(op,JavaConverters.seqAsJavaList(args)))
+  private val providers: List[StorageProvider] = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toList
+  private def service(op: String, args: List[Obj]): Option[Inst[Obj, Obj]] = providers.iterator
+    .map(_.resolveInstruction(op, JavaConverters.seqAsJavaList(args)))
     .find(_.isPresent)
     .map(_.get())
 
-  def resolve[S <: Obj,E <: Obj](op:String,args:List[Obj]):Inst[S,E] ={
+  def resolve[S <: Obj, E <: Obj](op: String, args: List[Obj]): Inst[S, E] = {
     (op match {
       case Tokens.int => IntOp()
       case Tokens.str => StrOp()
@@ -71,30 +71,31 @@ object OpInstResolver {
       case Tokens.eqs | Tokens.eqs_op => EqsOp(args.head)
       case Tokens.is => IsOp(args.head)
       case Tokens.get => args match {
-        case List(key:Obj,typeHint:Type[Obj]) => GetOp(key,typeHint)
-        case List(key:Obj) => GetOp(key)
+        case List(key: Obj, typeHint: Type[Obj]) => GetOp(key, typeHint)
+        case List(key: Obj) => GetOp(key)
       }
       case Tokens.map => MapOp(args.head)
-      case Tokens.model => ModelOp(args.head.asInstanceOf[RecType[Type[Obj],Type[Obj]]])
+      case Tokens.model => ModelOp(args.head.asInstanceOf[RecType[Type[Obj], Type[Obj]]])
       case Tokens.neg => NegOp()
       case Tokens.count => CountOp()
       case Tokens.explain => ExplainOp()
-      case Tokens.put => PutOp(args.head,args.tail.head)
+      case Tokens.path => PathOp()
+      case Tokens.put => PutOp(args.head, args.tail.head)
       case Tokens.from =>
         val label = args.head.asInstanceOf[StrValue]
         args.tail match {
           case Nil => FromOp(label)
-          case obj:Obj => FromOp(label,obj)
+          case obj: Obj => FromOp(label, obj)
           case _ => throw new IllegalStateException
         }
       case Tokens.fold => args.tail.tail.head match {
-        case x:__ => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x)
-        case x:Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value,args.tail.head),x)
+        case x: __ => FoldOp((args.head.asInstanceOf[StrValue].value, args.tail.head), x)
+        case x: Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value, args.tail.head), x)
       }
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].value)
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
-      case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[S,E]])
-      case Tokens.branch => BranchOp(args.head.asInstanceOf[RecType[S,E]])
+      case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[S, E]])
+      case Tokens.branch => BranchOp(args.head.asInstanceOf[RecType[S, E]])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()
       case Tokens.zero => ZeroOp()
@@ -102,11 +103,11 @@ object OpInstResolver {
       case Tokens.start => StartOp(args.head)
       //////////////////////////////////////////////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////////////////////////////
-      case _ => service(op,args) match {
+      case _ => service(op, args) match {
         case Some(inst) => inst
         case None => throw new IllegalArgumentException("Unknown instruction: " + op + "," + args)
       }
-    }).asInstanceOf[Inst[S,E]]
+    }).asInstanceOf[Inst[S, E]]
   }
 
 

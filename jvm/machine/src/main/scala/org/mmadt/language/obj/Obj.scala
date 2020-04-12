@@ -51,6 +51,7 @@ trait Obj
     with FoldOp
     with MapOp
     with ModelOp
+    with PathOp
     with FromOp
     with QOp
     with ErrorOp
