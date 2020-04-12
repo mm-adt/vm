@@ -34,27 +34,31 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait MapOp {
-  this:Obj =>
-  def map[O <: Obj](other:O):O = this match {
-    case atype:Type[_] => atype.compose(asType(other).asInstanceOf[O],MapOp[O](other))
-    case _ => other match {
-      case _:Value[_] => other
-      case atype:Type[O] => this ==> atype
+  this: Obj =>
+  def map[O <: Obj](other: O): O = {
+    this match {
+      case atype: Type[_] =>
+        val otherT: O = Type.resolve(atype.range, other)
+        atype.compose(asType[O](otherT), MapOp[O](otherT))
+      case _ => other match {
+        case _: Value[_] => other
+        case atype: Type[O] => this ==> atype
+      }
     }
   }
 }
 
 object MapOp {
-  def apply[O <: Obj](other:O):Inst[Obj,O] = new MapInst[O](other)
+  def apply[O <: Obj](other: O): Inst[Obj, O] = new MapInst[O](other)
 
-  class MapInst[O <: Obj](other:O,q:IntQ = qOne) extends VInst[Obj,O]((Tokens.map,List(other)),q) {
-    override def q(quantifier:IntQ):this.type = new MapInst[O](other,quantifier).asInstanceOf[this.type]
-    override def exec(start:Obj):O = ((start,other) match {
-      case (_:Value[_],atype:Type[O]) => start.compute(atype)
-      case (_:Obj,avalue:Value[_] with O) =>  avalue.via(start,this)
-      case (btype:Type[_],atype:Type[_] with O) =>
-        val arg:O = Inst.resolveArg(start,atype)
-        btype.compose(arg,MapOp(arg))
+  class MapInst[O <: Obj](other: O, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.map, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new MapInst[O](other, quantifier).asInstanceOf[this.type]
+    override def exec(start: Obj): O = ((start, other) match {
+      case (_: Value[_], atype: Type[O]) => start.compute(atype)
+      case (_: Obj, avalue: Value[_] with O) => avalue.via(start, this)
+      case (btype: Type[_], atype: Type[_] with O) =>
+        val arg: O = Inst.resolveArg(start, atype)
+        btype.compose(arg, MapOp(arg))
       case _ => throw new ProcessorException(s"unknown state ${start}[map,${other}]")
     })
   }
