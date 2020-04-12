@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.filter
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.value.{BoolValue, Value}
@@ -77,5 +78,15 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(bool.is(bool))(bool.is(bool)) // type * type = type
     assert(bool.is(bool).isInstanceOf[BoolType])
     assert(bool.is(bool).isInstanceOf[BoolType])
+  }
+
+  test("[is] w/ int") {
+    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.gt(2)).q(3))
+    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id().q(4).is(int.gt(2)).q(3))
+    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id().q(4).is(int.q(16).gt(2)).q(3))
+    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))
+    assertThrows[LanguageException] {
+      assertResult(int(15).q(48))(int(5).q(2) ==> int.plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))
+    }
   }
 }
