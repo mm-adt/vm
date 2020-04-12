@@ -23,12 +23,10 @@
 package org.mmadt.language.model.examples
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.{IntType,RecType}
-import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{RecValue,StrValue,Value}
-import org.mmadt.language.obj.{Obj,Str}
+import org.mmadt.language.obj.`type`.{IntType, RecType}
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.processor.Processor
-import org.mmadt.storage.StorageFactory.{str,_}
+import org.mmadt.storage.StorageFactory.{str, _}
 import org.scalatest.FunSuite
 
 /**

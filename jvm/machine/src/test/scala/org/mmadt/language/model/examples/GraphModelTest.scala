@@ -23,8 +23,8 @@
 package org.mmadt.language.model.examples
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.value.{RecValue,StrValue,Value}
-import org.mmadt.language.obj.{Obj,Rec}
+import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 

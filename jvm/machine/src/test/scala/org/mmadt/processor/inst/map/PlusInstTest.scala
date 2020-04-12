@@ -22,10 +22,10 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.`type`.{BoolType, IntType, RealType, Type}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.{IntType, RealType, Type}
 import org.mmadt.language.obj.op.map.PlusOp
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RealValue, Value}
-import org.mmadt.language.obj.{Bool, Obj}
+import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}

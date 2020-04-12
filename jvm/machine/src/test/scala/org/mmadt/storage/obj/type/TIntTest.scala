@@ -23,7 +23,6 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.initial.IntOp
 import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.storage.StorageFactory._

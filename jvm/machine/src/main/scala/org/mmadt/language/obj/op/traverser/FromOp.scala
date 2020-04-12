@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.traverser
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{IntQ, Obj, Str}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst

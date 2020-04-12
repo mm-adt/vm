@@ -22,10 +22,8 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{IntQ, ViaTuple, base}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.{IntQ, ViaTuple}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

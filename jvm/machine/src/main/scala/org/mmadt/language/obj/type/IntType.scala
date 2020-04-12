@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.op.map.LteOp.LteInst
 import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.value.IntValue

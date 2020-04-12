@@ -22,10 +22,9 @@
 
 package org.mmadt.storage.mmkv
 
-import org.mmadt.language.{LanguageException, LanguageFactory}
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{ORecType, Obj}
+import org.mmadt.language.obj.ORecType
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite

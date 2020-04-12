@@ -24,7 +24,6 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.StrType
 import org.mmadt.language.obj.op.map._
 import org.mmadt.storage.StorageFactory._
 

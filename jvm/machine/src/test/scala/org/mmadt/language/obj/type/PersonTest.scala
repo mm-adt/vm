@@ -23,12 +23,8 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue}
-import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-
-import scala.collection.immutable.ListMap
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

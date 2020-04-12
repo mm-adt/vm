@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.value.BoolValue
 
 /**

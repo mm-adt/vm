@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.`type`.{BoolType, IntType, Type}
+import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.op.map.{AndOp, GtOp}
-import org.mmadt.language.obj.value.{BoolValue, IntValue, Value}
+import org.mmadt.language.obj.value.{BoolValue, Value}
 import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite

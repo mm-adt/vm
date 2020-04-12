@@ -25,7 +25,7 @@ package org.mmadt.processor.obj.value
 import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.processor.Processor

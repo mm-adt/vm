@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import java.util.{Optional, ServiceLoader}
 
 import javax.script.{Bindings, ScriptEngineManager, SimpleBindings}
-import org.mmadt.language.jsr223.{mmADTScriptEngine, mmADTScriptEngineFactory}
+import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.model.Model
 import org.mmadt.language.{LanguageProvider, Tokens}
 import org.mmadt.storage.StorageProvider

@@ -22,11 +22,7 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.obj.`type`.{BoolType, IntType}
-import org.mmadt.language.obj.op.map.{MultOp, NegOp, PlusOp}
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.op.map.PlusOp.PlusInst
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 

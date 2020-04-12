@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.InitialInstruction
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst,IntQ,OType,Obj}
+import org.mmadt.language.obj.{Inst, IntQ, OType, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.traverser
 
 import java.util
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, StrType, Type}
 import org.mmadt.language.obj.op.TraverserInstruction
@@ -31,6 +32,7 @@ import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
 import scala.collection.mutable
 
 /**

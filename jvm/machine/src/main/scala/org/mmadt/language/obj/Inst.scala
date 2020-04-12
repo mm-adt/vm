@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.{LanguageFactory, Tokens}
 
 
 /**

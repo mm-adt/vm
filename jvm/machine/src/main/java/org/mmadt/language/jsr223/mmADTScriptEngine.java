@@ -23,13 +23,11 @@
 package org.mmadt.language.jsr223;
 
 import org.mmadt.VmException;
-import org.mmadt.language.LanguageException;
 import org.mmadt.language.obj.Obj;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptException;
 import java.io.Reader;
 
 /**

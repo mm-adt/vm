@@ -1,5 +1,5 @@
 import com.typesafe.sbt.site.asciidoctor.AsciidoctorPlugin
-import sbt.Keys.{autoScalaLibrary,_}
+import sbt.Keys.{autoScalaLibrary, _}
 import sbt._
 import sbtassembly.AssemblyPlugin.defaultShellScript
 

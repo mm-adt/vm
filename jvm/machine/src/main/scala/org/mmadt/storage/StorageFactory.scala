@@ -35,8 +35,6 @@ import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm._
 
-import scala.collection.mutable
-
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

@@ -29,7 +29,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VStrTest extends FunSuite {
-  test("str value"){
+  test("str value") {
     assertResult(str("mar"))(str("m").plus("a").plus("r"))
     assertResult(str("mar"))(str("m") + "a" + "r")
     assertResult(btrue)(str("marko").eqs(str("marko")))
@@ -38,11 +38,26 @@ class VStrTest extends FunSuite {
     assertResult(btrue)(str("m").gt("a"))
     assertResult(bfalse)(str("m").gt("r"))
   }
-  test("str value quantifiers"){
+  test("str value quantifiers") {
     assertResult(str("marko").q(2))(str("marko").q(2) ==> str.q(2))
     assertResult(str("marko").q(2))(str("mar").q(2) ==> str.q(2).plus(str("ko")))
     assertResult(str("marko").q(2))(str("mar").q(2) ==> str.q(2).plus(str("k")).plus(str("o").q(34)))
     assertResult(str("marko").q(4))(str("mar").q(2) ==> str.q(2).plus(str("k")).plus(str("o").q(34)).q(2))
     assertResult(str("marko").q(200))(str("mar").q(2) ==> str.q(2).plus(str("k")).q(10).plus(str("o").q(34)).q(10))
+  }
+  test("str compute") {
+    assertResult(str("marko"))(str("m") ==> str.plus("a").plus("r").plus("k").plus("o"))
+    assertResult(str("marko"))(str("m") ==> str.plus(str("a").plus(str("r").plus(str("k").plus("o")))))
+    assertResult(str("mmamarmarkmarko"))(str("m") ==>
+      str.to("a").plus("a")
+        .to("b").plus("r")
+        .to("c").plus("k")
+        .to("d").plus("o")
+        .to("e")
+        .map(str.from("a")
+          .plus(str.from("b"))
+          .plus(str.from("c"))
+          .plus(str.from("d"))
+          .plus(str.from("e"))))
   }
 }

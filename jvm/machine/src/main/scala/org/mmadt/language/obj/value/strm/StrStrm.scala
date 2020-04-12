@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.`type`.StrType
 import org.mmadt.language.obj.value.StrValue
 
 /**

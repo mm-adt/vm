@@ -29,17 +29,17 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
 import org.mmadt.language.obj.op.branch.ChooseOp.ChooseInst
-import org.mmadt.language.obj.op.branch.{BranchOp,ChooseOp}
+import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp}
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.map.GetOp.GetInst
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.op.traverser.FromOp.FromInst
 import org.mmadt.language.obj.op.traverser.ToOp.ToInst
-import org.mmadt.language.obj.op.traverser.{FromOp,ToOp}
+import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
 import org.mmadt.language.obj.value.strm._
-import org.mmadt.language.obj.value.{strm => _,_}
-import org.mmadt.language.{LanguageException,Tokens}
-import org.mmadt.storage.StorageFactory.{strm => estrm,_}
+import org.mmadt.language.obj.value.{strm => _, _}
+import org.mmadt.language.{LanguageException, Tokens}
+import org.mmadt.storage.StorageFactory.{strm => estrm, _}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers

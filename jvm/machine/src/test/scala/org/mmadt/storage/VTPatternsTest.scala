@@ -23,7 +23,6 @@
 package org.mmadt.storage
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
