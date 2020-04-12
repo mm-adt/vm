@@ -24,6 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.op.map.OneOp
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
@@ -33,20 +34,25 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
  */
 class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[one] testing") {
-    def oneMaker(x: Obj with OneOp): Obj = x.one().q(2).one().q(10)
+    def maker(x: Obj with OneOp): Obj = x.q(2).one().q(3).one().q(10)
 
-    val oneExpressions: TableFor1[OneOp with Obj] =
+    val starts: TableFor1[OneOp with Obj] =
       new TableFor1("obj",
         int,
         real,
-        int(1),
+        int(24),
         real(10d))
-    forEvery(oneExpressions) { obj => {
-      val expr = oneMaker(obj)
+    forEvery(starts) { obj => {
+      val expr = maker(obj)
+      obj match {
+        case value: Value[_] => assert(value.value != expr.asInstanceOf[Value[_]].value)
+        case _ =>
+      }
+      assert(obj.q != expr.q)
       assertResult(2)(expr.lineage.length)
-      assertResult((int(20), int(20)))(expr.q)
-      assertResult((obj, OneOp().q(2)))(expr.lineage.head)
-      assertResult((obj.one().q(2), OneOp().q(10)))(expr.lineage.last)
+      assertResult((int(60), int(60)))(expr.q)
+      assertResult((obj.q(2), OneOp().q(3)))(expr.lineage.head)
+      assertResult((obj.q(2).one().q(3), OneOp().q(10)))(expr.lineage.last)
     }
     }
   }

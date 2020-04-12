@@ -22,17 +22,43 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.language.obj.op.map.AndOp
+import org.mmadt.language.obj.value.{BoolValue, Value}
+import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class AndInstTest extends FunSuite {
-  test("[and] w/ bool"){
+class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
+  test("[and] testing") {
+    def maker(x: Obj with AndOp): Obj = x.q(2).and(btrue).q(3).and(btrue).q(10)
+
+    val starts: TableFor1[AndOp with Obj] =
+      new TableFor1("obj",
+        bool,
+        btrue,
+        bfalse)
+    forEvery(starts) { obj => {
+      val expr = maker(obj)
+      obj match {
+        case value: Value[_] => assert(value.value == expr.asInstanceOf[Value[_]].value)
+        case _ =>
+      }
+      assert(obj.q != expr.q)
+      assertResult(2)(expr.lineage.length)
+      assertResult((int(60), int(60)))(expr.q)
+      assertResult((obj.q(2), AndOp(btrue).q(3)))(expr.lineage.head)
+      assertResult((obj.q(2).and(btrue).q(3), AndOp(btrue).q(10)))(expr.lineage.last)
+    }
+    }
+  }
+  ///////////////////////////////////////////////////////////////////////
+
+  test("[and] w/ bool") {
     assertResult(btrue)(btrue.and(btrue)) // value * value = value
     assert(btrue.and(btrue).isInstanceOf[BoolValue])
     assert(btrue.and(btrue).isInstanceOf[Bool])

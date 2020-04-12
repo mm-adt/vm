@@ -22,28 +22,23 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.op.map.IdOp
-import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.op.map.OrOp
+import org.mmadt.language.obj.value.{BoolValue, Value}
+import org.mmadt.language.obj.{Bool, Obj}
+import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[id] testing") {
-    def maker(x: Obj with IdOp): Obj = x.q(2).id().q(3).id().q(10)
+class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
+  test("[or] testing") {
+    def maker(x: Obj with OrOp): Obj = x.q(2).or(bfalse).q(3).or(bfalse).q(10)
 
-    val starts: TableFor1[Obj with IdOp] =
+    val starts: TableFor1[OrOp with Obj] =
       new TableFor1("obj",
-        int,
-        str,
-        real,
-        int(1),
-        str("a"),
-        real(10d))
+        bool,
+        btrue,
+        bfalse)
     forEvery(starts) { obj => {
       val expr = maker(obj)
       obj match {
@@ -53,20 +48,25 @@ class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
       assert(obj.q != expr.q)
       assertResult(2)(expr.lineage.length)
       assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), IdOp().q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).id().q(3), IdOp().q(10)))(expr.lineage.last)
+      assertResult((obj.q(2), OrOp(bfalse).q(3)))(expr.lineage.head)
+      assertResult((obj.q(2).or(bfalse).q(3), OrOp(bfalse).q(10)))(expr.lineage.last)
     }
     }
   }
   ///////////////////////////////////////////////////////////////////////
-  test("[id] w/ int") {
-    assertResult("int[id]")(int.id().toString)
-    assertResult("int[id][id]")(int.id().id().toString)
-    assertResult("int{6}<=int[id]{2}[id]{3}")(int.q(1).id().q(2).id().q(3).toString)
-    assertResult("2{6}")(int(2).q(1).id().q(2).id().q(3).toString)
-    assertResult(int(2))(int(2).id())
-    assertResult(int(2))(int(2).id().id())
-    assertResult(int(2))(int(2) ==> int.id().id())
-    assert(int.id().id().domain() == int.id().range)
+
+  test("[or] w/ bool") {
+    assertResult(btrue)(btrue.or(btrue)) // value * value = value
+    assert(btrue.or(btrue).isInstanceOf[BoolValue])
+    assert(btrue.or(btrue).isInstanceOf[Bool])
+    assertResult(btrue.or(bool))(btrue.or(bool)) // value * type = type
+    assert(btrue.or(bool).isInstanceOf[BoolType])
+    assert(btrue.or(bool).isInstanceOf[Bool])
+    assertResult(bool.or(btrue))(bool.or(btrue)) // type * value = type
+    assert(bool.or(btrue).isInstanceOf[BoolType])
+    assert(bool.or(btrue).isInstanceOf[Bool])
+    assertResult(bool.or(bool))(bool.or(bool)) // type * type = type
+    assert(bool.or(bool).isInstanceOf[BoolType])
+    assert(bool.or(bool).isInstanceOf[Bool])
   }
 }

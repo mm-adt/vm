@@ -359,6 +359,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue.q(3))(engine.eval("true{3}[and,true][or,false]"))
     assertResult(btrue.q(3))(engine.eval("true{3}[and,true][or,[and,bool]]"))
     assertResult(bfalse.q(3, 30))(engine.eval("true{3,30}[and,false][or,[and,bool]]"))
+    assertResult(bfalse.q(3, 30))(engine.eval("true{3,30}[and,false][and,[or,bool]]"))
   }
 
   test("composite expression parsing") {

@@ -24,6 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.op.map.ZeroOp
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
@@ -33,9 +34,9 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
  */
 class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[zero] testing") {
-    def zeroMaker(x: Obj with ZeroOp): Obj = x.zero().q(2).zero().q(10)
+    def maker(x: Obj with ZeroOp): Obj = x.zero().q(2).zero().q(10)
 
-    val zeroExpressions: TableFor1[ZeroOp with Obj] =
+    val starts: TableFor1[ZeroOp with Obj] =
       new TableFor1("obj",
         int,
         str,
@@ -43,8 +44,13 @@ class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
         int(1),
         str("a"),
         real(10d))
-    forEvery(zeroExpressions) { obj => {
-      val expr = zeroMaker(obj)
+    forEvery(starts) { obj => {
+      val expr = maker(obj)
+      obj match {
+        case value: Value[_] => assert(value.value != expr.asInstanceOf[Value[_]].value)
+        case _ =>
+      }
+      assert(obj.q != expr.q)
       assertResult(2)(expr.lineage.length)
       assertResult((int(20), int(20)))(expr.q)
       assertResult((obj, ZeroOp().q(2)))(expr.lineage.head)
