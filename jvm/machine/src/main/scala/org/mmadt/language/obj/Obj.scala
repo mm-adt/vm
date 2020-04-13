@@ -59,21 +59,31 @@ trait Obj
     with EqsOp
     with ToOp {
 
+  //////////////////////////////////////////////////////////////
+  // data associated with every obj
+  val name: String // the obj type name TODO: should be ref to type?
+  val q: IntQ // the obj quantifier
+  val via: ViaTuple // the obj's incoming edge in the obj-graph
+  //////////////////////////////////////////////////////////////
+
+  // type methods
+  def named(_name: String): this.type = this.clone(name = _name)
+  def test(other: Obj): Boolean
+
   // quantifier methods
-  val q: IntQ
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def q(q: IntQ): this.type = this.clone(
     q = if (this.root) q else multQ(this.via._1, q),
     via = if (this.root) base() else (this.via._1, this.via._2.q(q)).asInstanceOf[ViaTuple])
   def alive(): Boolean = this.q != qZero
 
-  // historic mutations
+  // via methods
   def root: Boolean = null == this.via || null == this.via._1
-  val via: ViaTuple
-  def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = if (inst.q == qOne && via == (obj, inst)) this else this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
+  def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
 
   // utility methods
+  def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
   def toList: List[this.type] = toStrm.value.toList
   def toSet: Set[this.type] = toStrm.value.toSet
@@ -85,14 +95,6 @@ trait Obj
     LanguageException.testDomainRange(asType(this), rangeType.asInstanceOf[Type[E]].domain())
     Processor.iterator().apply(this, Type.resolve(this, rangeType.asInstanceOf[Type[E]]))
   } // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
-
-  // pattern matching methods
-  def named(_name: String): this.type = this.clone(name = _name)
-  val name: String
-  def test(other: Obj): Boolean
-  def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
-
-  // type application (simplest processor)
   def compute[E <: Obj](rangeType: Type[E]): E = rangeType.lineage
     .headOption
     .map(x => x._2.exec(this))
