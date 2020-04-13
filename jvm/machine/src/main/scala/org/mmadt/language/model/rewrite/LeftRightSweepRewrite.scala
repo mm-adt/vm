@@ -36,7 +36,7 @@ import org.mmadt.storage.StorageFactory._
 object LeftRightSweepRewrite {
 
   def rewrite[S <: Obj](model:Model,atype:Type[S],btype:Type[S],start:S):S ={
-    if (atype.isDerived) {
+    if (!atype.root) {
       model.get(atype) match {
         case Some(right:Type[S]) => rewrite(model,right,btype,start)
         case None =>
@@ -46,7 +46,7 @@ object LeftRightSweepRewrite {
             inst.exec(atype.rinvert[Type[S]]().range).asInstanceOf[Type[S]].compose(btype), // might need a model.resolve down the road
             start)
       }
-    } else if (btype.isDerived) {
+    } else if (!btype.root) {
       rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),

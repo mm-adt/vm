@@ -61,10 +61,10 @@ trait Obj
 
   // quantifier methods
   val q: IntQ
+  def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def q(q: IntQ): this.type = this.clone(
     q = if (this.root) q else multQ(this.via._1, q),
     via = if (this.root) base() else (this.via._1, this.via._2.q(q)).asInstanceOf[ViaTuple])
-  def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def alive(): Boolean = this.q != qZero
 
   // historic mutations
@@ -83,7 +83,6 @@ trait Obj
   }
   def ===>[E <: Obj](rangeType: E): E = {
     LanguageException.testDomainRange(asType(this), rangeType.asInstanceOf[Type[E]].domain())
-
     Processor.iterator().apply(this, Type.resolve(this, rangeType.asInstanceOf[Type[E]]))
   } // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
 

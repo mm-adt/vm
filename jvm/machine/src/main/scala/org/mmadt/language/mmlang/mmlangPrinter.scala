@@ -52,7 +52,7 @@ object mmlangPrinter {
 
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
-      case arec: RecType[_, _] => if (atype.isDerived && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
+      case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {

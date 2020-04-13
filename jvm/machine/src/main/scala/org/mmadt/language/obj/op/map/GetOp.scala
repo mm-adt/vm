@@ -24,8 +24,6 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -43,11 +41,8 @@ object GetOp {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B): GetInst[A, B] = new GetInst(key, typeHint)
 
   class GetInst[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B], q: IntQ = qOne) extends VInst[Rec[A, B], B]((Tokens.get, List(key)), q) {
-    override def q(quantifier: IntQ): this.type = new GetInst[A, B](key, typeHint, quantifier).asInstanceOf[this.type]
-    override def exec(start: Rec[A, B]): B = start match {
-      case atype: Type[_] => atype.compose(atype.get(key), new GetInst[A, B](key, typeHint, q))
-      case avalue: Value[_] => avalue.get(Inst.resolveArg(start, key), typeHint).via(start,this)
-    }
+    override def q(q: IntQ): this.type = new GetInst[A, B](key, typeHint, q).asInstanceOf[this.type]
+    override def exec(start: Rec[A, B]): B = start.get(Inst.resolveArg(start, key)).via(start, this)
   }
 
 }

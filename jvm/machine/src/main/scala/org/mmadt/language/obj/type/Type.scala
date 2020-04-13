@@ -40,12 +40,19 @@ trait Type[+T <: Obj] extends Obj
   with ModelOp
   with ExplainOp {
   this: T =>
-  def isDerived: Boolean = !this.root
+
+  // quantifier functions
   def hardQ(quantifier: IntQ): this.type = this.clone(name = this.name, q = quantifier, via = this.via)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
-  // type properties
+
+  // type signature properties and functions
   lazy val range: this.type = this.clone(name = this.name, q = this.q, via = base())
   def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else this.via._1.asInstanceOf[Type[D]].domain[D]()
+  final def <=[D <: Obj](domainType: Type[D]): this.type = {
+    LanguageException.testDomainRange(this, domainType)
+    Some(domainType).filter(x => x.root).map(_.id()).getOrElse(domainType).compose(this).hardQ(this.q).asInstanceOf[this.type]
+  }
+
   // type manipulation functions
   def linvert(): this.type = {
     ((this.lineage.tail match {
@@ -58,24 +65,14 @@ trait Type[+T <: Obj] extends Obj
   }
   def rinvert[R <: Type[Obj]](): R = if (this.root) throw new NoSuchElementException else this.via._1.asInstanceOf[R] // TODO: ctypes just return themselves?
 
-  // type specification and compilation
-  final def <=[D <: Obj](domainType: Type[D]): this.type = {
-    LanguageException.testDomainRange(this, domainType)
-    Some(domainType).filter(x => x.root).map(_.id()).getOrElse(domainType).compose(this).hardQ(this.q).asInstanceOf[this.type]
-  }
   // type constructors via stream ring theory
   def compose[R <: Type[Obj]](btype: R): R = btype match {
     case anon: __ => anon(this) // TODO: get the domain() correct
     case atype: Type[Obj] => atype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b)).asInstanceOf[R].compose(btype.range, NoOp())
   }
   def compose(inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.compose(this, inst)
-  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R =
-    asType[Obj](nextObj).clone(
-      name = nextObj.name,
-      q = multQ(this, inst),
-      via = if (inst.op().equals(Tokens.noop)) this.via else (this, inst)).asInstanceOf[R]
-  // obj-level operations
-  override def add[O <: Obj](obj: O): O = this.compose(asType(obj).asInstanceOf[O], AddOp(obj))
+  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R = asType[Obj](nextObj).clone(name = nextObj.name, q = multQ(this, inst), via = if (inst.op().equals(Tokens.noop)) this.via else (this, inst)).asInstanceOf[R]
+
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case argValue: Value[_] => TypeChecker.matchesTV(this, argValue)
@@ -85,9 +82,12 @@ trait Type[+T <: Obj] extends Obj
   override def toString: String = LanguageFactory.printType(this)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.lineage.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case atype: Type[_] =>  atype.name.equals(this.name) && eqQ(atype, this) && ((this.root && atype.root) || (this.via == atype.via))
+    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && ((this.root && atype.root) || (this.via == atype.via))
     case _ => false
   }
+
+  // obj-level operations TODO: remove
+  override def add[O <: Obj](obj: O): O = this.compose(asType(obj).asInstanceOf[O], AddOp(obj))
 }
 
 object Type {

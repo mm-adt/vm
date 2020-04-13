@@ -35,7 +35,7 @@ trait IntType extends Int
   with Type[Int]
   with ObjType {
   def apply(value: IntValue): IntValue = value.named(this.name)
-   override def plus(other: IntValue): this.type = this.compose(PlusOp(other))
+  override def plus(other: IntValue): this.type = this.compose(PlusOp(other))
   override def mult(other: IntValue): this.type = this.compose(MultOp(other))
   override def neg(): this.type = this.compose(NegOp())
   override def one(): this.type = this.compose(OneOp())

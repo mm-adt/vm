@@ -34,8 +34,8 @@ trait RecValue[A <: Value[Obj], B <: Value[Obj]] extends Rec[A, B]
   with Value[Rec[A, B]] {
 
   override val value: collection.Map[A, B]
+  override def put(key: A, value: B): this.type = this.clone(value = this.value + (key -> value), via = (this, PutOp(key, value)))
   override def plus(other: RecValue[_, _]): this.type = this.clone(value = this.value ++ other.asInstanceOf[RecValue[A, B]].value, via = (this, PlusOp(other)))
   override def get(key: A): B = this.value(key).via(this, GetOp(key))
   override def get[BB <: Obj](key: A, btype: BB): BB = this.value(key).via(this, GetOp(key, btype)).asInstanceOf[BB]
-  override def put(key: A, value: B): this.type = this.clone(value = this.value + (key -> value), via = (this, PutOp(key, value)))
 }
