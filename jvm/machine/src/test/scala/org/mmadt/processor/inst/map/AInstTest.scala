@@ -118,10 +118,10 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
       new TableFor3(("computation", "result", "lineage length"),
         (int(20), int(20), 0),
         (int(20).plus(10).a(int).is(btrue), btrue, 3),
-        (int(20).plus(10), int(30), 1),
-        (int(20).plus(10).id(), int(30), 2),
-        (int(20).id().plus(10).id(), int(30), 3),
-        (int(20) ==> int.id().plus(int.plus(5).plus(5)).id(), int(50), 3),
+        (int(20).plus(10).a(real), bfalse, 2),
+        (int(20).plus(10).id().a(int), btrue, 3),
+        (int(20) ===> int.id().plus(10).id().a(bool).and(btrue.or(bool)),bfalse, 5),
+        (int(20) ===> int.id().plus(int.plus(5).plus(5)).a(int.is(int.gt(20))).id(), btrue, 4),
         (btrue, btrue, 0),
       )
     forEvery(check) { (computation, result, length) => {
