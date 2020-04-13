@@ -36,10 +36,10 @@ trait RealValue extends Real
   override def plus(other: RealValue): this.type = this.clone(value = this.value + other.value, via = (this, PlusOp(other)))
   override def mult(other: RealValue): this.type = this.clone(value = this.value * other.value, via = (this, MultOp(other)))
   override def neg(): this.type = this.clone(value = -this.value, via = (this, NegOp()))
-  override def one(): this.type = this.clone(name = this.name, value = 1.0d, via = (this, OneOp()))
+  override def one(): this.type = this.clone(value = 1.0d, via = (this, OneOp()))
   override def gt(other: RealValue): BoolValue = vbool(value = this.value > other.value, q = this.q, via = (this, GtOp(other)))
   override def gte(other: RealValue): BoolValue = vbool(value = this.value >= other.value, q = this.q, via = (this, GteOp(other)))
   override def lt(other: RealValue): BoolValue = vbool(value = this.value < other.value, q = this.q, via = (this, LtOp(other)))
   override def lte(other: RealValue): BoolValue = vbool(value = this.value <= other.value, q = this.q, via = (this, LteOp(other)))
-  override def zero(): this.type = this.clone(name = this.name, value = 0.0d, via = (this, ZeroOp()))
+  override def zero(): this.type = this.clone(value = 0.0d, via = (this, ZeroOp()))
 }

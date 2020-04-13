@@ -39,5 +39,5 @@ trait StrValue extends Str
   override def gte(other: StrValue): BoolValue = vbool(value = this.value >= other.value, q = this.q, via = (this, GteOp(other)))
   override def lt(other: StrValue): BoolValue = vbool(value = this.value < other.value, q = this.q, via = (this, LtOp(other)))
   override def lte(other: StrValue): BoolValue = vbool(value = this.value <= other.value, q = this.q, via = (this, LteOp(other)))
-  override def zero(): this.type = this.clone(name = this.name, value = Tokens.empty, q = this.q, via = (this, ZeroOp()))
+  override def zero(): this.type = this.clone(value = Tokens.empty, via = (this, ZeroOp()))
 }

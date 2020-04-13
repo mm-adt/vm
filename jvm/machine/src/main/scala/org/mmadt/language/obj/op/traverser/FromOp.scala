@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj.op.traverser
 
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{IntQ, Obj}
@@ -39,13 +38,12 @@ trait FromOp {
     this.from[this.type](label, asType(this))
   }
   def from[O <: Obj](label: StrValue, atype: O): O = {
-    val history: O = Obj.fetchOption[O](this, label.value).map(x => x.via(this.via._1, this.via._2)).getOrElse(atype)
-    if (this.isInstanceOf[Value[_]] && history.isInstanceOf[Type[_]])
+    val history: Option[O] = Obj.fetchOption[O](this, label.value)
+      .map(x => x.via(this.via._1, this.via._2))
+      .map(x => x.via(x, FromOp(label, atype)))
+    if (history.isEmpty && this.isInstanceOf[Value[_]])
       throw LanguageException.labelNotFound(this, label.value)
-    history match {
-      case _: Value[_] => history.via(this, FromOp(label, atype))
-      case atype: Type[_] => atype.compose(history, FromOp(label, atype))
-    }
+    history.getOrElse(atype.via(atype, FromOp(label, atype)))
   }
 }
 

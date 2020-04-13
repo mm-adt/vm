@@ -39,8 +39,9 @@ trait EqsOp {
     case avalue: Value[_] => avalue.start().eqs(other)
   }
   def eqs(other: Value[_]): Bool = this match {
+    case avalue: Value[_] => bool(avalue.value.equals(other.value)).via(this, EqsOp(other))
     case atype: Type[_] => atype.compose(bool, EqsOp(other))
-    case avalue: Value[_] => bool(avalue.value.equals(other.value))
+
   }
   // TODO final def ===(other: T): BoolType = this.eq(other)
   // TODO final def ===(other: V): Bool = this.eq(other)
@@ -51,12 +52,13 @@ object EqsOp {
 
   class EqsInst[O <: Obj with EqsOp](other: Obj, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.lt, List(other)), q) {
     override def q(quantifier: IntQ): this.type = new EqsInst[O](other, quantifier).asInstanceOf[this.type]
-    override def exec(start: O): Bool = start match {
-      case atype: Type[_] => atype.compose(bool, new EqsInst[O](Inst.resolveArg(start, other), q))
-      case avalue: Value[_] => Inst.resolveArg(start, other) match {
-        case btype: Type[_] => avalue.eqs(btype)
-        case bvalue: Value[O] => avalue.eqs(bvalue).via(start,this)
+    override def exec(start: O): Bool = {
+      val inst = new EqsInst[O](Inst.resolveArg(start, other), q)
+      inst.arg0[O]() match {
+        case avalue: Value[O] => start.eqs(avalue).via(start, inst)
+        case atype: Type[O] => start.eqs(atype).via(start, inst)
       }
     }
   }
+
 }
