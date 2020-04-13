@@ -45,7 +45,7 @@ class AlgebraTest extends FunSuite {
     assertResult(-int)(compiler(int * -int.one()))
     assertResult(int.one())(compiler(int.one().mult(int.one()).plus(int.zero()).one().one()))
     assertResult(int.zero())(compiler(int.neg().plus(int(0)).neg().mult(int(1)).plus(int(1)).plus(int(0)).plus(int(-1))))
-    assertResult(int.from[IntType]("x").plus(int.from[IntType]("y")).mult(int.from[IntType]("x").plus(int.from[IntType]("z"))))(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
+    assertResult(int.from("x").plus(int.from("y")).mult(int.from("x").plus(int.from("z"))))(compiler(int.to("x").mult(int.to("y").plus(int.to("z")))))
     // assertResult(int.from[IntType]("x").plus(int.from[IntType]("y")).mult(int.from[IntType]("x").plus(int.from[IntType]("z"))))(compiler(int.mult(int.plus(int))))
     //
     assertResult(int(200))(evaluator(int(10), int * (int + int)))

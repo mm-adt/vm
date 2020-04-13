@@ -35,20 +35,17 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FromOp {
   this: Obj =>
-  def from[O <: Obj](label: StrValue): this.type = {
-    this.from(label, asType(this))
+  def from(label: StrValue): this.type = {
+    this.from[this.type](label, asType(this))
   }
   def from[O <: Obj](label: StrValue, atype: O): O = {
-    val history = this.lineage
-      .find(x => x._2.op() == Tokens.to && x._2.arg0[StrValue]() == label)
-      .map(x => x._1.via(this.via._1, this.via._2))
-      .getOrElse(atype)
+    val history: O = Obj.fetchOption[O](this, label.value).map(x => x.via(this.via._1, this.via._2)).getOrElse(atype)
     if (this.isInstanceOf[Value[_]] && history.isInstanceOf[Type[_]])
-      throw new LanguageException("historic value not available: " + label)
-    (history match {
+      throw LanguageException.labelNotFound(this, label.value)
+    history match {
       case _: Value[_] => history.via(this, FromOp(label, atype))
-      case atype: Type[_] => atype.compose(atype, FromOp(label, atype))
-    }).asInstanceOf[O]
+      case atype: Type[_] => atype.compose(history, FromOp(label, atype))
+    }
   }
 }
 

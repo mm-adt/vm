@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp}
@@ -34,6 +33,7 @@ import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 
@@ -103,6 +103,15 @@ trait Obj
 }
 
 object Obj {
+  def fetch[A <: Obj](obj: Obj, label: String): A = {
+    val result: Option[A] = Obj.fetchOption[A](obj, label)
+    if (result.isEmpty) throw LanguageException.labelNotFound(obj, label)
+    result.get
+  }
+  def fetchOption[A <: Obj](obj: Obj, label: String): Option[A] = {
+    obj.lineage.reverse.find(x => x._2.op().equals(Tokens.to) && x._2.arg0[StrValue]().value.equals(label)).map(x => x._1).asInstanceOf[Option[A]]
+  }
+
   @inline implicit def booleanToBool(java: Boolean): BoolValue = bool(java)
   @inline implicit def longToInt(java: Long): IntValue = int(java)
   @inline implicit def intToInt(java: scala.Int): IntValue = int(java.longValue())

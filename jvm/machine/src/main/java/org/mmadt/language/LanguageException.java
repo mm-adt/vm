@@ -46,6 +46,10 @@ public class LanguageException extends VmException {
         return new LanguageException(source + " instruction error: " + message);
     }
 
+    public static LanguageException labelNotFound(final Obj source, final String label) {
+        return new LanguageException(source.lineage() + " does not contain the label '" + label + "'");
+    }
+
     public static void testDomainRange(final Type<?> range, final Type<?> domain) {
         if (!(domain instanceof __) &&
                 !range.range().q(StorageFactory.qOne()).test(domain.range().q(StorageFactory.qOne())))

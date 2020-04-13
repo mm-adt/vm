@@ -47,7 +47,7 @@ class mmkvStorageProvider extends StorageProvider {
     mmkv.put(K,obj) -> mmkv.error("keys are immutable"),
     mmkv.put(V,obj) -> mmkv.error("values are immutable"),
     (mmkv <= obj.q(0).compose(mmkv,mmkvOp.strm(str.to("x"))).is(mmkv.get(K,int).eqs(int.to("y")))) -> (mmkv.q(qMark) <= obj.q(0).compose(mmkvOp.isGetKeyEq(str.from("x"),int.from("y")))),
-    (trec(K -> int,V -> obj).q(*) <= obj.q(0).compose(mmkv,mmkvOp.strm(str.to("x"))).add(trec(K -> int,V -> obj).to("y"))) -> mmkv.compose(mmkvOp.addKeyValue(str.from("x"),rec.from[RecType[StrValue,Obj]]("y"))))
+    (trec(K -> int,V -> obj).q(*) <= obj.q(0).compose(mmkv,mmkvOp.strm(str.to("x"))).add(trec(K -> int,V -> obj).to("y"))) -> mmkv.compose(mmkvOp.addKeyValue(str.from("x"),rec.from("y"))))
 
   val getByKeyEq :StrValue = str("getByKeyEq")
   val addKeyValue:StrValue = str("addKeyValue")

@@ -32,7 +32,7 @@ import org.scalatest.FunSuite
 class AsInstTest extends FunSuite {
   test("int[as,rec]") {
     assertResult(vrec(str("age") -> int(5)))(int(5) ===> int.as(trec(str("age") -> int)))
-    assertResult(vrec(str("X") -> int(5), str("Y") -> int(15)))(int(5) ===> int.to("x").plus(10).to("y").as(trec(str("X") -> int.from[IntType]("x"), str("Y") -> int.from[IntType]("y"))))
+    assertResult(vrec(str("X") -> int(5), str("Y") -> int(15)))(int(5) ===> int.to("x").plus(10).to("y").as(trec(str("X") -> int.from("x"), str("Y") -> int.from("y"))))
     assertResult(str("14hello"))(int(5) ===> int.plus(2).mult(2).as(str).plus("hello"))
   }
 }

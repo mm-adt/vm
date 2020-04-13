@@ -35,9 +35,9 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[to][from] w/ values") {
-    assertResult("int<x>[plus,1]<.x>")(int.to("x").plus(1).from[Int]("x").toString)
     assertResult("int<x>[plus,1]<.x>")(int.to("x").plus(1).from("x").toString)
-    assertResult("int<x>[plus,1][plus,int<.x>]")((int ==> int.to("x").plus(1).plus(int.from[Int]("x"))).toString)
+    assertResult("int<x>[plus,1]<.x>")(int.to("x").plus(1).from("x").toString)
+    assertResult("int<x>[plus,1][plus,int<.x>]")((int ==> int.to("x").plus(1).plus(int.from("x"))).toString)
     assertResult("int<x>[plus,1][plus,int<.x>]")((int ==> int.to("x").plus(1).plus(int.from("x"))).toString)
     assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.from("x", int)))
     assertResult(int(5))(int(1) ==> int.to("x").plus(1).plus(2).plus(int.from("x", int)))
@@ -51,14 +51,14 @@ class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.plus(2).from("x")))
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from("x")))
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).from("x", int))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).from[IntType]("x"))
+    assertResult(int(1))(int(1) ==> int.to("x").plus(1).from("x"))
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from("x", int))
     //
     assertResult(int(5))(int(1) ==> int.plus(1).map(int(5)).to("x").from("x", int))
     assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from("x", int).mult(int.from("y", int)))))
     //
     intercept[LanguageException] {
-      assertResult(int(20))(int(1) ==> int.from[Int]("x").plus(1).map(int.mult(10)))
+      assertResult(int(20))(int(1) ==> int.from("x").plus(1).map(int.mult(10)))
     }
   }
 

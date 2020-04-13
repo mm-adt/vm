@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.branch
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.storage.StorageFactory._
@@ -54,6 +55,45 @@ class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(check) { (branch, range) => {
       assertResult(range)(branch.range)
     }
+    }
+  }
+
+  test("[branch] lineage") {
+    val results = (int(2, 8, 15, 20) ==> int.q(4).to("x").plus(1).branch(
+      int.is(int.gt(10)) -> int.mult(10),
+      int -> int.id().plus(int.from("x")).to("y")
+    )).toList
+    assertResult(6)(results.length)
+    // results.foreach(x => println(x.lineage))
+    results.foreach {
+      case x if x == int(5) =>
+        assertResult(5)(x.lineage.length)
+        assertResult(int(2))(Obj.fetch(x, "x"))
+        assertResult(int(5))(Obj.fetch(x, "y"))
+      case x if x == int(17) =>
+        assertResult(5)(x.lineage.length)
+        assertResult(int(8))(Obj.fetch(x, "x"))
+        assertResult(int(17))(Obj.fetch(x, "y"))
+      case x if x == int(160) =>
+        assertResult(3)(x.lineage.length)
+        assertResult(int(15))(Obj.fetch(x, "x"))
+        assertThrows[LanguageException] {
+          Obj.fetch(x, "y")
+        }
+      case x if x == int(31) =>
+        assertResult(5)(x.lineage.length)
+        assertResult(int(15))(Obj.fetch(x, "x"))
+        assertResult(int(31))(Obj.fetch(x, "y"))
+      case x if x == int(210) =>
+        assertResult(3)(x.lineage.length)
+        assertResult(int(20))(Obj.fetch(x, "x"))
+        assertThrows[LanguageException] {
+          Obj.fetch(x, "y")
+        }
+      case x if x == int(41) =>
+        assertResult(5)(x.lineage.length)
+        assertResult(int(20))(Obj.fetch(x, "x"))
+        assertResult(int(41))(Obj.fetch(x, "y"))
     }
   }
 
