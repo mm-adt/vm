@@ -22,55 +22,81 @@
 
 package org.mmadt.processor.inst.branch
 
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class BranchInstTest extends FunSuite {
+class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("[branch] w/ types"){
+  test("[branch] quantifiers") {
+    val check: TableFor2[Type[Obj], Obj] =
+      new TableFor2[Type[Obj], Obj](("branch", "range"),
+        (int.branch(
+          int -> int.plus(int).q(2),
+          int.plus(2) -> int.plus(int).q(3)), int.q(0, 5)),
+        (int.branch(
+          int -> int.plus(int).q(2),
+          int.plus(2) -> int.plus(int)), int.q(0, 3)),
+        (int.branch(
+          int -> int.plus(int).q(2),
+          int.plus(2) -> str.plus(str)), obj.q(0, 3)),
+        (int.branch(
+          int -> int.plus(int).q(2),
+          int.plus(2) -> int.branch(
+            int -> int.plus(int),
+            int.id() -> int.plus(int).q(10))), int.q(0, 13)),
+      )
+    forEvery(check) { (branch, range) => {
+      assertResult(range)(branch.range)
+    }
+    }
+  }
+
+  test("[branch] w/ types") {
     assertResult("int{0,2}<=int[branch,[int:int[mult,3]&int{?}<=int[is,bool<=int[gt,0]]:int[mult,4]]]")(
       int.branch(
         int -> int.mult(3),
         int.is(int.gt(0)) -> int.mult(4)).toString)
   }
 
-  test("[branch] w/ values"){
+  test("[branch] w/ values") {
     assertResult(strm(Iterator(int(4))))(
       int(0).plus(1).branch(
         int.is(int.gt(2)) -> int.mult(3),
         int -> int.mult(4)))
 
-    assertResult(int(12,16))(
+    assertResult(int(12, 16))(
       int(0).plus(4).branch(
         int.is(int.gt(2)) -> int.mult(3),
         int -> int.mult(4)))
 
-    assertResult(int(42,43,44))(
+    assertResult(int(42, 43, 44))(
       int(0) ==> int.plus(int(39)).branch(
         int.is(int.gt(40)) -> int.plus(1),
         int.is(int.gt(30)) -> int.plus(2),
         int.is(int.gt(20)) -> int.plus(3),
         int.is(int.gt(10)) -> int.plus(4)).plus(1))
 
-    assertResult(int(33,34))(
+    assertResult(int(33, 34))(
       int(0) ==> int.plus(29).branch(
         int.is(int.gt(40)) -> int.plus(1),
         int.is(int.gt(30)) -> int.plus(2),
         int.is(int.gt(20)) -> int.plus(3),
         int.is(int.gt(10)) -> int.plus(4)).plus(1))
 
-    assertResult(int(33,34))(
+    assertResult(int(33, 34))(
       int(0) ==> int.plus(29).branch(
         int.is(__.gt(40)) -> int.plus(1),
         int.is(__.gt(30)) -> int.plus(2),
         int.is(__.gt(20)) -> int.plus(3),
         int.is(__.gt(10)) -> int.plus(4)).plus(int(1)))
 
-    assertResult(int(32,33))(
+    assertResult(int(32, 33))(
       int(0) ===> int.plus(29).branch(
         int.is(int.gt(40)) -> __.plus(1),
         int.is(int.gt(30)) -> __.plus(2),

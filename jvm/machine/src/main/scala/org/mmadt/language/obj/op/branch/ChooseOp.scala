@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.{IntQ, OType, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,10 +39,9 @@ trait ChooseOp {
   def choose[IT <: Obj, OT <: Obj](branches: RecType[IT, OT], start: IT = this.asInstanceOf[IT]): OT = {
     start match {
       case atype: Type[IT] with IT =>
-        val newBranches: RecType[IT, OT] = BranchInstruction.applyRec(atype.range, branches) // composed branches given the incoming type
-        val rangeType: OT = BranchInstruction.generalType[OT](newBranches.value().values)
-
-        atype.compose[OT](rangeType, ChooseOp[IT, OT](newBranches))
+        val branchTypes: RecType[IT, OT] = BranchInstruction.typeInternal(atype.range, branches)
+        val rangeType: OT = BranchInstruction.typeExternal[OT](parallel = false, branchTypes)
+        atype.compose(rangeType, ChooseOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case avalue: Value[IT] with IT =>
         branches.value().find(p => p._1 match {
           case btype: Type[IT] with IT => start.compute(btype).alive()

@@ -39,8 +39,8 @@ package object obj {
   def base[T <: Obj](inst: Inst[Obj, T]): ViaTuple = (null, inst)
   def base[T <: Obj](): ViaTuple = (null, null)
   // less typing
-  type OType[+O <: Obj] = O with Type[O]
-  type OValue[+O <: Obj] = O with Value[O]
+  type OType[+O <: Obj] = Type[O] with O
+  type OValue[+O <: Obj] = Value[O] with O
   type ORecType = RecType[Obj, Obj]
   type ORecValue = RecValue[Value[Obj], Value[Obj]]
   type ORecStrm = RecStrm[Value[Obj], Value[Obj]]
