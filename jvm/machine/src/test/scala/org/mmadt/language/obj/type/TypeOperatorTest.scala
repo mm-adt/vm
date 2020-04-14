@@ -24,6 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -46,7 +47,7 @@ class TypeOperatorTest extends FunSuite {
     assertResult(List((int,PlusOp(int(1)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().lineage)
     assertResult(List())(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]().lineage)
     assertResult(int)(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]())
-    assertThrows[NoSuchElementException]{
+    assertThrows[LanguageException]{
       int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]().rinvert()
     }
     assertResult(List((int,PlusOp(int(1))),(int.plus(1),PlusOp(int(4)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().plus(4).lineage)

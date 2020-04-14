@@ -22,14 +22,12 @@
 
 package org.mmadt.language.obj.`type`
 
-import java.util.NoSuchElementException
-
-import org.mmadt.language.obj.op.model.{ModelOp, NoOp}
+import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
+import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -46,9 +44,9 @@ trait Type[+T <: Obj] extends Obj
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
 
   // type signature properties and functions
-  lazy val range: this.type = this.clone(name = this.name, q = this.q, via = base())
+  def range: this.type = this.clone(via = base())
   def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else this.via._1.asInstanceOf[Type[D]].domain[D]()
-  final def <=[D <: Obj](domainType: Type[D]): this.type = {
+  def <=[D <: Obj](domainType: Type[D]): this.type = {
     LanguageException.testDomainRange(this, domainType)
     Some(domainType).filter(x => x.root).map(_.id()).getOrElse(domainType).compose(this).hardQ(this.q).asInstanceOf[this.type]
   }
@@ -63,15 +61,17 @@ trait Type[+T <: Obj] extends Obj
       case x => x
     }).asInstanceOf[this.type]
   }
-  def rinvert[R <: Type[Obj]](): R = if (this.root) throw new NoSuchElementException else this.via._1.asInstanceOf[R] // TODO: ctypes just return themselves?
+  def rinvert[R <: Type[Obj]](): R = if (this.root) throw LanguageException.typeError(this, "The type can not be decomposed beyond it's canonical form") else this.via._1.asInstanceOf[R]
 
   // type constructors via stream ring theory
   def compose[R <: Type[Obj]](btype: R): R = btype match {
     case anon: __ => anon(this) // TODO: get the domain() correct
-    case atype: Type[Obj] => atype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b)).asInstanceOf[R].compose(btype.range, NoOp())
+    case atype: Type[Obj] =>
+      val composition: Obj = atype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b))
+      btype.range.clone(q = composition.q, via = composition.via)
   }
   def compose(inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.compose(this, inst)
-  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R = asType[Obj](nextObj).clone(name = nextObj.name, q = multQ(this, inst), via = if (inst.op().equals(Tokens.noop)) this.via else (this, inst)).asInstanceOf[R]
+  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R = asType[R](nextObj).clone(name = nextObj.name, q = multQ(this, inst), via = (this, inst))
 
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {

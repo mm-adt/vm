@@ -24,6 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import java.util.NoSuchElementException
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -87,7 +88,7 @@ class TypeTest extends FunSuite {
     assertResult(int)(tobj.range)
     assertResult(0)(tobj.lineage.length)
 
-    assertThrows[NoSuchElementException]{
+    assertThrows[LanguageException]{
       tobj.rinvert[IntType]()
     }
     //
@@ -130,7 +131,7 @@ class TypeTest extends FunSuite {
     assertResult(int)(intType.range)
     assertResult(0)(intType.lineage.length)
     //
-    assertThrows[NoSuchElementException]{
+    assertThrows[LanguageException]{
       intType.rinvert[IntType]()
     }
     //
@@ -141,7 +142,7 @@ class TypeTest extends FunSuite {
 
   def domainTest(atype:Type[_]):Unit ={
     assertResult(int)(atype.domain())
-    assertThrows[NoSuchElementException]{
+    assertThrows[LanguageException]{
       atype.domain[IntType]().rinvert()
     }
     assertThrows[UnsupportedOperationException]{
