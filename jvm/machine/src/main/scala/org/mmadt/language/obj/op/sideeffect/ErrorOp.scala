@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.value.VInst
 trait ErrorOp {
   this: Obj =>
   def error(message: String): this.type = this match {
-    case atype: Type[_] => atype.compose(this, ErrorOp(message))
+    case _: Type[_] => this.via(this, ErrorOp(message))
     case _ => throw LanguageException.typeError(this, message)
   }
 }

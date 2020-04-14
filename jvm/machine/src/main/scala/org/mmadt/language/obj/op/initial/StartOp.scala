@@ -34,17 +34,17 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StartOp {
-  this:Value[Obj] =>
-  def start[O <: Obj]():O with Type[O] = obj.q(0).compose(asType(this),StartOp(this)).hardQ(this.q).asInstanceOf[OType[O]]
+  this: Value[Obj] =>
+  def start[O <: Obj](): O with Type[O] = asType(this).via(obj.q(0), StartOp(this)).hardQ(this.q).asInstanceOf[OType[O]]
 }
 
 object StartOp {
-  def apply[O <: Obj](starts:O):Inst[O,O] = new StartInst(starts)
+  def apply[O <: Obj](starts: O): Inst[O, O] = new StartInst(starts)
 
-  class StartInst[O <: Obj](starts:O,q:IntQ = qOne) extends VInst[O,O]((Tokens.start,List(starts)),q) with InitialInstruction {
-    override def q(quantifier:IntQ):this.type = new StartInst[O](starts,quantifier).asInstanceOf[this.type]
-    override def exec(start:O):O = start match {
-      case _:Type[_] => obj.q(0).compose(asType(starts),StartOp(starts)).hardQ(starts.q)
+  class StartInst[O <: Obj](starts: O, q: IntQ = qOne) extends VInst[O, O]((Tokens.start, List(starts)), q) with InitialInstruction {
+    override def q(quantifier: IntQ): this.type = new StartInst[O](starts, quantifier).asInstanceOf[this.type]
+    override def exec(start: O): O = start match {
+      case _: Type[_] => asType(starts).via(obj.q(0), StartOp(starts)).hardQ(starts.q)
       case _ => starts
     }
   }

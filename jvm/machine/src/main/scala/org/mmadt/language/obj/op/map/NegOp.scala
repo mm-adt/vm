@@ -42,8 +42,8 @@ object NegOp {
   class NegInst[O <: Obj with NegOp](q: IntQ = qOne) extends VInst[O, O]((Tokens.neg, Nil), q) {
     override def q(quantifier: IntQ): this.type = new NegInst[O](quantifier).asInstanceOf[this.type]
     override def exec(start: O): O = start match {
-      case atype: Type[_] => atype.compose(start, this)
-      case _ => start.neg().via(start,this)
+      case atype: Type[_] => start.via(start, this)
+      case _ => start.neg().via(start, this)
     }
   }
 

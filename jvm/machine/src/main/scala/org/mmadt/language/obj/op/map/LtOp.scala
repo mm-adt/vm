@@ -36,8 +36,8 @@ trait LtOp[T <: Type[Obj], V <: Value[Obj]] {
   this: Obj =>
   def lt(other: V): Bool
   def lt(other: T): BoolType = this match {
-    case avalue: Value[_] => avalue.start().compose(bool, LtOp(other))
-    case atype: Type[_] => atype.compose(bool, LtOp(other))
+    case avalue: Value[_] => bool.via(avalue.start(), LtOp(other))
+    case atype: Type[_] => bool.via(atype, LtOp(other))
   }
   final def <(other: V): Bool = this.lt(other)
   final def <(other: T): BoolType = this.lt(other)

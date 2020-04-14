@@ -38,7 +38,7 @@ trait QOp {
 
   def quant(): Int = this match {
     case _: Value[_] => this.q._1.q(qOne).via(this, QOp())
-    case atype: Type[_] => atype.compose(int, QOp())
+    case atype: Type[_] => int.via(this, QOp())
   }
 }
 

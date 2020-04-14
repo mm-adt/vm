@@ -38,12 +38,12 @@ trait IsOp {
 
   def is(bool: BoolType): OType[this.type] = this match {
     case avalue: Value[_] => avalue.start().is(bool)
-    case atype: Type[_] => atype.compose(IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[OType[this.type]]
+    case atype: Type[_] => atype.via(atype,IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[OType[this.type]]
   }
 
   def is(bool: BoolValue): this.type = this match {
     case _: Value[_] => if (bool.value) this.via(this, IsOp(bool)) else this.via(this, IsOp(bool)).q(qZero)
-    case atype: Type[_] => atype.compose(IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[this.type]
+    case atype: Type[_] => atype.via(atype,IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[this.type]
   }
 }
 

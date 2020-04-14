@@ -55,21 +55,21 @@ class __(val name: String = Tokens.empty, val q: IntQ = qStar, val via: ViaTuple
   def apply[T <: Obj](obj: Obj): OType[T] = this.lineage.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a)).asInstanceOf[OType[T]]
   // type-agnostic monoid supporting all instructions
   override def domain[D <: Obj](): Type[D] = obj.q(qStar).asInstanceOf[Type[D]]
-  override def plus(other: __): this.type = this.compose(PlusOp(other))
-  override def plus(other: ObjValue): this.type = this.compose(PlusOp(other))
-  override def mult(other: __): this.type = this.compose(MultOp(other))
-  override def mult(other: ObjValue): this.type = this.compose(MultOp(other))
-  def is(other: Obj): BoolType = this.compose(bool, IsOp(other))
-  override def neg(): this.type = this.compose(NegOp())
-  override def get(key: Obj): this.type = this.compose(GetOp(key))
-  override def get[BB <: Obj](key: Obj, btype: BB): BB = this.compose(btype, GetOp(key, btype))
-  override def put(key: Obj, value: Obj): this.type = this.compose(PutOp(key, value))
-  override def gt(other: ObjValue): BoolType = this.compose(bool, GtOp(other))
-  override def lt(other: ObjValue): BoolType = this.compose(bool, LtOp(other))
-  override def lte(other: ObjValue): BoolType = this.compose(bool, LteOp(other))
-  override def gte(other: ObjValue): BoolType = this.compose(bool, GteOp(other))
-  override def zero(): this.type = this.compose(ZeroOp())
-  override def one(): this.type = this.compose(OneOp())
+  override def plus(other: __): this.type = this.via(this, PlusOp(other))
+  override def plus(other: ObjValue): this.type = this.via(this, PlusOp(other))
+  override def mult(other: __): this.type = this.via(this, MultOp(other))
+  override def mult(other: ObjValue): this.type = this.via(this, MultOp(other))
+  def is(other: Obj): BoolType = bool.via(this, IsOp(other))
+  override def neg(): this.type = this.via(this, NegOp())
+  override def get(key: Obj): this.type = this.via(this, GetOp(key))
+  override def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
+  override def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
+  override def gt(other: ObjValue): BoolType = bool.via(this, GtOp(other))
+  override def lt(other: ObjValue): BoolType = bool.via(this, LtOp(other))
+  override def lte(other: ObjValue): BoolType = bool.via(this, LteOp(other))
+  override def gte(other: ObjValue): BoolType = bool.via(this, GteOp(other))
+  override def zero(): this.type = this.via(this, ZeroOp())
+  override def one(): this.type = this.via(this, OneOp())
 }
 
 object __ extends __(Tokens.empty, qStar, base()) {

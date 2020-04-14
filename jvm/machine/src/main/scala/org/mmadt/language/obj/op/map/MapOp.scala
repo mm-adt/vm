@@ -39,7 +39,7 @@ trait MapOp {
     this match {
       case atype: Type[_] =>
         val otherT: O = Type.resolve(atype.range, other)
-        atype.compose(asType[O](otherT), MapOp[O](otherT))
+        asType[O](otherT).via(this, MapOp[O](otherT))
       case _ => other match {
         case _: Value[_] => other
         case atype: Type[O] => this ==> atype
@@ -58,7 +58,7 @@ object MapOp {
       case (_: Obj, avalue: Value[_] with O) => avalue.via(start, this)
       case (btype: Type[_], atype: Type[_] with O) =>
         val arg: O = Inst.resolveArg(start, atype)
-        btype.compose(arg, MapOp(arg))
+        arg.via(btype, MapOp(arg))
       case _ => throw new ProcessorException(s"unknown state ${start}[map,${other}]")
     })
   }

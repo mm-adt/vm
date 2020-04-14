@@ -38,7 +38,7 @@ trait PathOp {
 
   def path(): Rec[IntValue, Obj] = this match {
     case _: Value[_] => makeMap(vrec(mutable.LinkedHashMap.empty[IntValue, OValue[Obj]])).via(this, inst)
-    case atype: Type[_] => atype.compose(makeMap(trec(value = mutable.LinkedHashMap.empty[IntValue, Obj])), inst)
+    case atype: Type[_] => makeMap(trec(value = mutable.LinkedHashMap.empty[IntValue, Obj])).via(atype, inst)
   }
   private def makeMap[B <: Obj](rec: Rec[IntValue, B]): Rec[IntValue, Obj] = {
     var counter: scala.Long = 1

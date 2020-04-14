@@ -43,7 +43,7 @@ trait BranchOp {
       case atype: Type[IT] with IT =>
         val branchTypes: RecType[IT, OT] = BranchInstruction.typeInternal(atype.range, branches) // composed branches given the incoming type
         val rangeType: OT = BranchInstruction.typeExternal[OT](parallel = true, branchTypes)
-        atype.compose(rangeType, BranchOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
+        rangeType.via(this,BranchOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case _: Value[IT] with IT =>
         strm[OT](branches.value().filter(p => p._1 match {
           case btype: Type[IT] with IT => start.compute(btype).alive()

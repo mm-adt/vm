@@ -43,15 +43,15 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
       case single: E => Iterator(single)
     }
 
-    for (tt <- Type.createInstList(Nil, rangeType)) {
+    for (tt <- IteratorProcessor.createInstList(Nil, rangeType)) {
       output = tt._2 match {
         //////////////REDUCE//////////////
         case reducer: ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)((e, mutatingSeed) => e.compute(reducer.reduction))).map(e => e.q(qOne)) // TODO: need a new seed method other than Traverser
         //////////////FILTER//////////////
-        case filter: FilterInstruction => output.map(_.compute(tt._1.compose(tt._1, tt._2)).asInstanceOf[E]).filter(x => filter.keep(x))
+        case filter: FilterInstruction => output.map(_.compute(tt._1.via(tt._1, tt._2)).asInstanceOf[E]).filter(x => filter.keep(x))
         //////////////OTHER//////////////
         case _: Inst[Obj, Obj] => output
-          .map(_.compute(tt._1.compose(tt._1, tt._2)))
+          .map(_.compute(tt._1.via(tt._1, tt._2)))
           .filter(x => x.alive())
           .flatMap(x => x match {
             case strm: Strm[E] => strm.value.map(x => x)
@@ -64,5 +64,12 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
       // LanguageException.testTypeCheck(x,if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q._2) else rangeType.range) // iterator processor linearizes the stream
       x
     }))
+  }
+}
+
+object IteratorProcessor {
+  @scala.annotation.tailrec
+  private def createInstList(list: List[(Type[Obj], Inst[Obj, Type[Obj]])], atype: Type[Obj]): List[(Type[Obj], Inst[Obj, Type[Obj]])] = {
+    if (atype.root) list else createInstList(List((atype.range, atype.lineage.last._2.asInstanceOf[Inst[Obj, Type[Obj]]])) ::: list, atype.lineage.last._1.asInstanceOf[Type[Obj]])
   }
 }

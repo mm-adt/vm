@@ -35,12 +35,12 @@ import org.mmadt.storage.obj.value.VInst
 trait OrOp {
   this: Obj =>
   def or(other: BoolType): BoolType = this match {
-    case atype: BoolType => atype.compose(OrOp(other))
-    case avalue: BoolValue => avalue.start().compose(OrOp(other))
+    case atype: BoolType => atype.via(atype, OrOp(other))
+    case avalue: BoolValue => avalue.start().via(avalue, OrOp(other))
   }
   def or(other: BoolValue): this.type = (this match {
     case avalue: BoolValue => avalue.clone(value = avalue.value || other.value, via = (this, OrOp(other)))
-    case atype: BoolType => atype.compose(OrOp(other))
+    case atype: BoolType => atype.via(atype, OrOp(other))
   }).asInstanceOf[this.type]
 
   final def ||(bool: BoolType): BoolType = this.or(bool)

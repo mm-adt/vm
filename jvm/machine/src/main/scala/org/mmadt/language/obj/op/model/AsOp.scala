@@ -40,7 +40,7 @@ import scala.collection.mutable
 trait AsOp {
   this: Obj =>
   def as[O <: Obj](obj: O): O = this match {
-    case atype: Type[_] => atype.compose(obj, AsOp(obj))
+    case _: Type[_] => obj.via(this, AsOp(obj))
     case _ => AsOp(obj).exec(obj)
   }
 }
@@ -77,9 +77,9 @@ object AsOp {
         case avalue: Value[Obj] => avalue
         case btype: Type[Obj] if start.isInstanceOf[Type[_]] =>
           if (btype.isInstanceOf[RecType[Obj, Obj]]) {
-            start.asInstanceOf[Type[Obj]].compose(btype, AsOp(Type.resolve(start, btype)))
+            btype.via(start.asInstanceOf[Type[Obj]], AsOp(Type.resolve(start, btype)))
           } else {
-            start.asInstanceOf[Type[Obj]].compose(btype, AsOp(btype))
+            btype.via(start.asInstanceOf[Type[Obj]], AsOp(btype))
           }
       }).via(start, this).asInstanceOf[O]
     }

@@ -40,11 +40,11 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   def apply(value: RecValue[Value[A], Value[B]]): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, value.value, this.q)
   def value(): collection.Map[A, B]
 
-  override def get[BB <: Obj](key: A, btype: BB): BB = this.compose(btype, GetOp[A, BB](key, btype))
-  override def get(key: A): B = this.compose(this.value()(key), GetOp[A, B](key, asType(this.value()(key))))
-  override def put(key: A, value: B): this.type = this.compose(this.clone(value=this.value + (key -> value)), PutOp(key, value))
-  override def plus(other: RecType[A, B]): RecType[A, B] = this.compose(this.clone(value=this.value ++ other.value), PlusOp(other))
-  override def plus(other: RecValue[_, _]): this.type = this.compose(this.clone(value=this.value ++ other.value), PlusOp(other))
+  override def get[BB <: Obj](key: A, btype: BB): BB = btype.via(this, GetOp[A, BB](key, btype))
+  override def get(key: A): B = asType(this.value()(key)).via(this, GetOp[A, B](key, asType(this.value()(key))))
+  override def put(key: A, value: B): this.type = this.clone(value = this.value + (key -> value)).via(this, PutOp(key, value))
+  override def plus(other: RecType[A, B]): RecType[A, B] = this.clone(value = this.value ++ other.value).via(this, PlusOp(other))
+  override def plus(other: RecValue[_, _]): this.type = this.clone(value = this.value ++ other.value).via(this, PlusOp(other))
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {

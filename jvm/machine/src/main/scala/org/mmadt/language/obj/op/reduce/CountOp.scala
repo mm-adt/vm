@@ -34,21 +34,21 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait CountOp {
-  this:Obj =>
-  def count():Int = this match {
-    case atype:Type[_] => atype.compose(asType(this.q._1),CountOp())
+  this: Obj =>
+  def count(): Int = this match {
+    case _: Type[_] => asType(this.q._1).via(this, CountOp())
     case _ => this.q._1
   }
 }
 
 object CountOp {
-  def apply():Inst[Obj,Int] = new CountInst
+  def apply(): Inst[Obj, Int] = new CountInst
 
-  class CountInst extends VInst[Obj,Int]((Tokens.count,Nil)) with ReduceInstruction[Int] {
-    lazy     val zero     :IntValue          = int(0)
-    override val seed     :(String,IntValue) = ("seed",zero)
-    override val reduction:IntType           = int.quant().plus(int.from(seed._1))
-    override def exec(start:Obj):Int = start.count()
+  class CountInst extends VInst[Obj, Int]((Tokens.count, Nil)) with ReduceInstruction[Int] {
+    lazy val zero: IntValue = int(0)
+    override val seed: (String, IntValue) = ("seed", zero)
+    override val reduction: IntType = int.quant().plus(int.from(seed._1))
+    override def exec(start: Obj): Int = start.count()
   }
 
 }

@@ -35,8 +35,8 @@ import org.mmadt.storage.obj.value.VInst
 trait PlusOp[T <: Type[Obj], V <: Value[Obj]] {
   this: Obj =>
   def plus(other: T): T = this match {
-    case avalue: Value[_] => avalue.start().compose(PlusOp(other))
-    case atype: T => atype.compose(PlusOp(other))
+    case avalue: Value[_] => avalue.start().via(avalue.start(), PlusOp(other))
+    case atype: T => atype.via(atype, PlusOp(other))
   }
   def plus(other: V): this.type
   final def +(other: T): T = this.plus(other)

@@ -41,7 +41,7 @@ trait ChooseOp {
       case atype: Type[IT] with IT =>
         val branchTypes: RecType[IT, OT] = BranchInstruction.typeInternal(atype.range, branches)
         val rangeType: OT = BranchInstruction.typeExternal[OT](parallel = false, branchTypes)
-        atype.compose(rangeType, ChooseOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
+        rangeType.via(this, ChooseOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case avalue: Value[IT] with IT =>
         branches.value().find(p => p._1 match {
           case btype: Type[IT] with IT => start.compute(btype).alive()

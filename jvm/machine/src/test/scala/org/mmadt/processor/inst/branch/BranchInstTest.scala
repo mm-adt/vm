@@ -34,6 +34,10 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
  */
 class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
 
+  test("test")  {
+    println(int.q(3))
+  }
+
   test("[branch] quantifiers") {
     val check: TableFor2[Type[Obj], Obj] =
       new TableFor2[Type[Obj], Obj](("branch", "range"),
@@ -45,7 +49,7 @@ class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
           int.plus(2) -> int.plus(int)), int.q(0, 3)),
         (int.branch(
           int -> int.plus(int).q(2),
-          int.plus(2) -> str.plus(str)), obj.q(0, 3)),
+          int.plus(2) -> int.as(str)), obj.q(0, 3)),
         (int.branch(
           int -> int.plus(int).q(2),
           int.plus(2) -> int.branch(

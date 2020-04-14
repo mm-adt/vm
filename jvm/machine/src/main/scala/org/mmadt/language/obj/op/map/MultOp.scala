@@ -35,8 +35,8 @@ import org.mmadt.storage.obj.value.VInst
 trait MultOp[T <: Type[Obj], V <: Value[Obj]] {
   this: Obj =>
   def mult(other: T): T = this match {
-    case avalue: Value[_] => avalue.start().compose(MultOp(other))
-    case atype: T => atype.compose(MultOp(other))
+    case avalue: Value[_] => avalue.start().via(avalue.start(), MultOp(other))
+    case atype: T => atype.via(atype, MultOp(other))
   }
   def mult(other: V): this.type
   final def *(other: T): T = this.mult(other)

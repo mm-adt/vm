@@ -35,12 +35,12 @@ import org.mmadt.storage.obj.value.VInst
 trait EqsOp {
   this: Obj =>
   def eqs(other: Type[_]): BoolType = this match {
-    case atype: Type[_] => atype.compose(bool, EqsOp(other))
+    case atype: Type[_] => bool.via(atype, EqsOp(other))
     case avalue: Value[_] => avalue.start().eqs(other)
   }
   def eqs(other: Value[_]): Bool = this match {
     case avalue: Value[_] => bool(avalue.value.equals(other.value)).via(this, EqsOp(other))
-    case atype: Type[_] => atype.compose(bool, EqsOp(other))
+    case atype: Type[_] => bool.via(atype, EqsOp(other))
 
   }
   // TODO final def ===(other: T): BoolType = this.eq(other)

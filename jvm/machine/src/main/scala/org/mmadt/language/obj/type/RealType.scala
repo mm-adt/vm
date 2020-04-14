@@ -35,13 +35,13 @@ trait RealType extends Real
   with ObjType {
 
   def apply(value: RealValue): RealValue = value.named(this.name)
-  override def plus(other: RealValue): this.type = this.compose(PlusOp(other))
-  override def mult(other: RealValue): this.type = this.compose(MultOp(other))
-  override def neg(): this.type = this.compose(NegOp())
-  override def one(): this.type = this.compose(OneOp())
-  override def gt(other: RealValue): BoolType = this.compose(bool, GtOp(other))
-  override def gte(other: RealValue): BoolType = this.compose(bool, GteOp(other))
-  override def lt(other: RealValue): BoolType = this.compose(bool, LtOp(other))
-  override def lte(other: RealValue): BoolType = this.compose(bool, LteOp(other))
-  override def zero(): this.type = this.compose(ZeroOp())
+  override def plus(other: RealValue): this.type = this.via(this, PlusOp(other))
+  override def mult(other: RealValue): this.type = this.via(this, MultOp(other))
+  override def neg(): this.type = this.via(this, NegOp())
+  override def one(): this.type = this.via(this, OneOp())
+  override def gt(other: RealValue): BoolType = bool.via(this, GtOp(other))
+  override def gte(other: RealValue): BoolType = bool.via(this, GteOp(other))
+  override def lt(other: RealValue): BoolType = bool.via(this, LtOp(other))
+  override def lte(other: RealValue): BoolType = bool.via(this, LteOp(other))
+  override def zero(): this.type = this.via(this, ZeroOp())
 }

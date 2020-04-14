@@ -64,14 +64,7 @@ trait Type[+T <: Obj] extends Obj
   def rinvert[R <: Type[Obj]](): R = if (this.root) throw LanguageException.typeError(this, "The type can not be decomposed beyond it's canonical form") else this.via._1.asInstanceOf[R]
 
   // type constructors via stream ring theory
-  def compose[R <: Type[Obj]](btype: R): R = btype match {
-    case anon: __ => anon(this) // TODO: get the domain() correct
-    case atype: Type[Obj] =>
-      val composition: Obj = atype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b))
-      btype.range.clone(q = composition.q, via = composition.via)
-  }
-  def compose(inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.compose(this, inst)
-  def compose[R <: Obj](nextObj: R, inst: Inst[_ <: Obj, _ <: Obj]): R = asType[R](nextObj).clone(name = nextObj.name, q = multQ(this, inst), via = (this, inst))
+  def compose[R <: Type[Obj]](btype: R): R = btype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b)).asInstanceOf[R]
 
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
@@ -87,14 +80,10 @@ trait Type[+T <: Obj] extends Obj
   }
 
   // obj-level operations TODO: remove
-  override def add[O <: Obj](obj: O): O = this.compose(asType(obj).asInstanceOf[O], AddOp(obj))
+  override def add[O <: Obj](obj: O): O = asType(obj).asInstanceOf[O].via(this, AddOp(obj))
 }
 
 object Type {
-  @scala.annotation.tailrec
-  def createInstList(list: List[(Type[Obj], Inst[Obj, Type[Obj]])], atype: Type[Obj]): List[(Type[Obj], Inst[Obj, Type[Obj]])] = {
-    if (atype.root) list else createInstList(List((atype.range, atype.lineage.last._2.asInstanceOf[Inst[Obj, Type[Obj]]])) ::: list, atype.lineage.last._1.asInstanceOf[Type[Obj]])
-  }
   // domain/range specifies anonymous types
   def resolve[R <: Obj](objA: Obj, objB: R): R = objB match {
     case x: __ => x(objA)

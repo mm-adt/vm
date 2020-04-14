@@ -74,7 +74,7 @@ trait Obj
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def q(q: IntQ): this.type = this.clone(
     q = if (this.root) q else multQ(this.via._1, q),
-    via = if (this.root) base() else (this.via._1, this.via._2.q(q)).asInstanceOf[ViaTuple])
+    via = if (this.root) base() else (this.via._1, this.via._2.q(q)))
   def alive(): Boolean = this.q != qZero
 
   // via methods

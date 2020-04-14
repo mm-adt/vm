@@ -90,7 +90,7 @@ object Model {
               OpInstResolver.resolve[Obj,Obj](
                 x._2.op(),
                 x._2.args().map(i => Inst.resolveArg[Obj,Obj](x._1,i)))) // TODO: may need to give model to traverser
-              .foldRight(a._2.domain[Obj]())((x,z) => z.compose(x))
+              .foldRight(a._2.domain[Obj]())((x,z) => z.via(z,x))
           })
         }
       }

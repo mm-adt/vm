@@ -36,7 +36,7 @@ trait AOp {
   this: Obj =>
   def a(other: Obj): Bool = this match {
     case _: Value[_] => vbool(value = this.test(other), via = (this, AOp(other)))
-    case atype: Type[_] => atype.compose(bool, AOp(other))
+    case atype: Type[_] => bool.via(this, AOp(other))
   }
 }
 

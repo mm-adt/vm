@@ -35,12 +35,12 @@ import org.mmadt.storage.obj.value.VInst
 trait AndOp {
   this: Obj =>
   def and(other: BoolType): BoolType = this match {
-    case atype: BoolType => atype.compose(AndOp(other))
-    case avalue: BoolValue => avalue.start().compose(AndOp(other))
+    case atype: BoolType => atype.via(atype, AndOp(other))
+    case avalue: BoolValue => avalue.start().via(avalue, AndOp(other))
   }
   def and(other: BoolValue): this.type = (this match {
     case avalue: BoolValue => avalue.clone(value = avalue.value && other.value, via = (this, AndOp(other)))
-    case atype: BoolType => atype.compose(AndOp(other))
+    case atype: BoolType => atype.via(atype, AndOp(other))
   }).asInstanceOf[this.type]
 
   final def &&(bool: BoolType): BoolType = this.and(bool)
