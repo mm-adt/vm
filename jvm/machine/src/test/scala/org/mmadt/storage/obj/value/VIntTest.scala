@@ -22,7 +22,8 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -49,9 +50,11 @@ class VIntTest extends FunSuite {
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).a(int.q(0,4)).q(10).asInstanceOf[BoolType]) // TODO
   }
   test("") {
-    // 5{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}
-    println(int(5).q(2).plus(10).q(2).id().q(4))
+    println(int(5).plus(10).id().mult(5).lineage)
+    println(int(5).plus(10).id().mult(5).rinvert[IntValue]().lineage)
+    println(int(5).plus(10).id().mult(5).linvert().lineage)
   }
 }
+
 
 
