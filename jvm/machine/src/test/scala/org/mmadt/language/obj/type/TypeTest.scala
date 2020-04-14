@@ -92,7 +92,7 @@ class TypeTest extends FunSuite {
       tobj.rinvert[IntType]()
     }
     //
-    assertThrows[UnsupportedOperationException]{
+    assertThrows[LanguageException]{
       tobj.linvert()
     }
   }
@@ -135,7 +135,7 @@ class TypeTest extends FunSuite {
       intType.rinvert[IntType]()
     }
     //
-    assertThrows[UnsupportedOperationException]{
+    assertThrows[LanguageException]{
       intType.linvert()
     }
   }
@@ -145,7 +145,7 @@ class TypeTest extends FunSuite {
     assertThrows[LanguageException]{
       atype.domain[IntType]().rinvert()
     }
-    assertThrows[UnsupportedOperationException]{
+    assertThrows[LanguageException]{
       atype.domain[IntType]().linvert()
     }
 

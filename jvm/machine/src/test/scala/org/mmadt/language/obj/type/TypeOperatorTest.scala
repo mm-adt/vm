@@ -58,7 +58,7 @@ class TypeOperatorTest extends FunSuite {
     assertResult(List((int,PlusOp(int(2))),(int.plus(2),PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert().lineage)
     assertResult(List((int,PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert().linvert().lineage)
     assertResult(List())(int.plus(1).plus(2).plus(3).linvert().linvert().linvert().lineage)
-    assertThrows[UnsupportedOperationException]{
+    assertThrows[LanguageException]{
       assertResult(List())(int.plus(1).plus(2).plus(3).linvert().linvert().linvert().linvert().lineage)
     }
   }

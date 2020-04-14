@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.map.{GtOp, MultOp, PlusOp}
+import org.mmadt.language.obj.op.map.{GtOp, IdOp, MultOp, PlusOp}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -37,7 +37,7 @@ class __Test extends FunSuite {
     assertResult(__)(__.plus(1).via._1)
     assertResult(__)(__.plus(1).mult(2).via._1.via._1)
     assertResult(__)(__.plus(1).mult(2).gt(4).via._1.via._1.via._1)
-    //assertResult(__(List(PlusOp(1),MultOp(2),GtOp(4))))(__.plus(1).mult(2).gt(4))
+    assertResult(__(List(PlusOp(1),MultOp(2),IdOp())))(__.plus(1).mult(2).id())
     assertResult(__.plus(1).mult(2).gt(4))(__.plus(1).mult(2).gt(4))
 
     assertResult(PlusOp(1))(__.plus(1).via._2)

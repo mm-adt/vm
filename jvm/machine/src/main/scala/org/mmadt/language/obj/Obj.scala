@@ -87,9 +87,12 @@ trait Obj
   def isolate: this.type = this.clone(via = base())
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = if (inst.q == qOne && via == (obj, inst)) this else this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
   def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
-  def linvert(): this.type = this.lineage.tail match {
-    case Nil => this.isolate
-    case incidentRoot => incidentRoot.foldLeft[Obj](incidentRoot.head._1.isolate)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
+  def linvert(): this.type = {
+    if (this.root) throw LanguageException.typeError(this, "The obj can not be decomposed beyond root")
+    this.lineage.tail match {
+      case Nil => this.isolate
+      case incidentRoot => incidentRoot.foldLeft[Obj](incidentRoot.head._1.isolate)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
+    }
   }
   def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.typeError(this, "The obj can not be decomposed beyond root") else this.via._1.asInstanceOf[R]
 

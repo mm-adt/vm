@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.obj.`type`.{BoolType, IntType}
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -31,14 +31,14 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VIntTest extends FunSuite {
-  test("int value"){
+  test("int value") {
     assertResult("int<=[start,4][plus,int]")((4 + int).toString)
     assertResult(int(3))(int(1) + int(2))
     assertResult(int(3))(int(1) + 2)
     assertResult(int(-4))(-int(4))
     assertResult(int(-4))(int(3) ==> int.plus(1).neg())
   }
-  test("int value quantifiers"){
+  test("int value quantifiers") {
     assertResult(int(3).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)))
     assertResult(int(7).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)))
     assertResult(int(14).q(int(2)))(int(3).q(int(2)) ==> int.q(int(2)).plus(int(4)).mult(int(2).q(int(34))))
@@ -47,12 +47,28 @@ class VIntTest extends FunSuite {
     assertResult(btrue.q(int(3)))(int(5).q(int(3)) ==> int.q(int(3)).plus(int(4)).gt(int(2)))
     assertResult(int(14).q(12))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).gt(int(2).q(34)).q(10))
-    assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).a(int.q(0,4)).q(10).asInstanceOf[BoolType]) // TODO
+    assertResult(btrue.q(40))(int(3).q(2) ===> int.q(2).plus(int(4)).q(2).a(int.q(0, 4)).q(10))
   }
-  test("") {
-    println(int(5).plus(10).id().mult(5).lineage)
-    println(int(5).plus(10).id().mult(5).rinvert[IntValue]().lineage)
-    println(int(5).plus(10).id().mult(5).linvert().lineage)
+  test("int value lineage") {
+    val avalue = int(5).plus(10).id().mult(5).gt(10)
+    assertResult(bool)(asType(avalue))
+    assertResult(4)(avalue.lineage.length)
+    // rinvert
+    assertResult(int(5).plus(10).id().mult(5))(avalue.rinvert[IntValue]())
+    assertResult(int(5).plus(10).id())(avalue.rinvert[IntValue]().rinvert[IntValue]())
+    assertResult(int(5).plus(10))(avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]())
+    assertResult(int(5))(avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]())
+    assertThrows[LanguageException] {
+      avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]()
+    }
+    // linvert
+    assertResult(int(15).id().mult(5).gt(10))(avalue.linvert())
+    assertResult(int(15).mult(5).gt(10))(avalue.linvert().linvert())
+    assertResult(int(75).gt(10))(avalue.linvert().linvert().linvert())
+    assertResult(btrue)(avalue.linvert().linvert().linvert().linvert())
+    assertThrows[LanguageException] {
+      avalue.linvert().linvert().linvert().linvert().linvert()
+    }
   }
 }
 
