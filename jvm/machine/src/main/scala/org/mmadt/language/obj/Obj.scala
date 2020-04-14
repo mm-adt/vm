@@ -92,20 +92,21 @@ trait Obj
   def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
   def toList: List[this.type] = toStrm.value.toList
   def toSet: Set[this.type] = toStrm.value.toSet
-  def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = this match {
-    case atype: Type[_] => Processor.compiler(model).apply(atype, Type.resolve(atype, rangeType))
-    case avalue: Value[_] => Processor.iterator(model).apply(avalue, Type.resolve(avalue, rangeType))
-  }
-  def ===>[E <: Obj](rangeType: E): E = {
-    LanguageException.testDomainRange(asType(this), rangeType.asInstanceOf[Type[E]].domain())
-    Processor.iterator().apply(this, Type.resolve(this, rangeType.asInstanceOf[Type[E]]))
-  } // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
 
   def compute[E <: Obj](rangeType: Type[E]): E = rangeType.lineage
     .headOption
     .map(x => x._2.exec(this))
     .map(x => x.compute(rangeType.linvert()))
     .getOrElse(this.asInstanceOf[E])
+
+  def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = {
+    LanguageException.testDomainRange(asType(this), rangeType.asInstanceOf[Type[E]].domain())
+    this match {
+      case _: Type[_] => Processor.compiler(model).apply(this, Type.resolve(this, rangeType))
+      case _: Value[_] => Processor.iterator(model).apply(this, Type.resolve(this, rangeType))
+    }
+  }
+  def ===>[E <: Obj](rangeType: E): E = {this ==> rangeType.asInstanceOf[Type[E]] }
 }
 
 object Obj {
