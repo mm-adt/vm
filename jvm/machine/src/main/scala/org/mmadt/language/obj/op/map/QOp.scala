@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.QuantifierInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Int, Obj}
@@ -36,10 +35,10 @@ import org.mmadt.storage.obj.value.VInst
 trait QOp {
   this: Obj =>
 
-  def quant(): Int = this match {
-    case _: Value[_] => this.q._1.q(qOne).via(this, QOp())
-    case atype: Type[_] => int.via(this, QOp())
-  }
+  def quant(): Int = (this match {
+    case _: Value[_] => this.q._1.q(qOne)
+    case _ => int
+  }).via(this, QOp())
 }
 
 object QOp {

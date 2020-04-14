@@ -35,10 +35,7 @@ import org.mmadt.storage.obj.value.VInst
 trait GtOp[T <: Type[Obj], V <: Value[Obj]] {
   this: Obj =>
   def gt(other: V): Bool
-  def gt(other: T): BoolType = this match {
-    case avalue: Value[_] => bool.via(avalue.start(), GtOp(other))
-    case atype: Type[_] => bool.via(atype, GtOp(other))
-  }
+  def gt(other: T): BoolType = bool.via(this.start(), GtOp(other))
   final def >(other: V): Bool = this.gt(other)
   final def >(other: T): BoolType = this.gt(other)
 }

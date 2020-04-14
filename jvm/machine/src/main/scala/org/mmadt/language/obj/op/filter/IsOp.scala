@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.filter
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, Type}
+import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.language.obj.op.FilterInstruction
 import org.mmadt.language.obj.value.{BoolValue, Value}
 import org.mmadt.storage.StorageFactory._
@@ -36,15 +36,12 @@ import org.mmadt.storage.obj.value.VInst
 trait IsOp {
   this: Obj =>
 
-  def is(bool: BoolType): OType[this.type] = this match {
-    case avalue: Value[_] => avalue.start().is(bool)
-    case atype: Type[_] => atype.via(atype,IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[OType[this.type]]
-  }
+  def is(bool: BoolType): OType[this.type] = this.start().via(this.start(), IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[OType[this.type]]
 
-  def is(bool: BoolValue): this.type = this match {
-    case _: Value[_] => if (bool.value) this.via(this, IsOp(bool)) else this.via(this, IsOp(bool)).q(qZero)
-    case atype: Type[_] => atype.via(atype,IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[this.type]
-  }
+  def is(bool: BoolValue): this.type = (this match {
+    case _: Value[_] => if (bool.value) this else this.q(qZero)
+    case _ => this.hardQ(minZero(this.q))
+  }).via(this, IsOp(bool)).asInstanceOf[this.type]
 }
 
 object IsOp {

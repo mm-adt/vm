@@ -30,8 +30,7 @@ import org.mmadt.language.obj.{Obj, _}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Value[+V <: Obj] extends Obj
-  with StartOp {
+trait Value[+V <: Obj] extends Obj {
   val value:Any
 
   // pattern matching methods

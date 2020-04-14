@@ -34,10 +34,10 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait AOp {
   this: Obj =>
-  def a(other: Obj): Bool = this match {
-    case _: Value[_] => vbool(value = this.test(other), via = (this, AOp(other)))
-    case atype: Type[_] => bool.via(this, AOp(other))
-  }
+  def a(other: Obj): Bool = (this match {
+    case _: Value[_] => bool(this.test(other))
+    case _: Type[_] => bool
+  }).via(this, AOp(other))
 }
 
 object AOp {

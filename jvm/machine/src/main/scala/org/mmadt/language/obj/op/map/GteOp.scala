@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{BoolType, Type}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory.{bool, qOne}
+import org.mmadt.storage.StorageFactory.{asType, bool, qOne}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -35,10 +35,7 @@ import org.mmadt.storage.obj.value.VInst
 trait GteOp[T <: Type[Obj], V <: Value[Obj]] {
   this: Obj =>
   def gte(other: V): Bool
-  def gte(other: T): BoolType = this match {
-    case avalue: Value[_] => bool.via(avalue.start(), GteOp(other))
-    case atype: Type[_] => bool.via(atype, GteOp(other))
-  }
+  def gte(other: T): BoolType = bool.via(this.start(), GteOp(other))
   final def >=(other: V): Bool = this.gte(other)
   final def >=(other: T): BoolType = this.gte(other)
 }

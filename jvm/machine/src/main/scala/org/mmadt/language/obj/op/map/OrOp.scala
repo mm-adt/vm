@@ -34,17 +34,15 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait OrOp {
   this: Obj =>
-  def or(other: BoolType): BoolType = this match {
-    case atype: BoolType => atype.via(atype, OrOp(other))
-    case avalue: BoolValue => avalue.start().via(avalue, OrOp(other))
-  }
-  def or(other: BoolValue): this.type = (this match {
-    case avalue: BoolValue => avalue.clone(value = avalue.value || other.value, via = (this, OrOp(other)))
-    case atype: BoolType => atype.via(atype, OrOp(other))
-  }).asInstanceOf[this.type]
+  def or(other: BoolType): BoolType = this.start().via(this.start(), OrOp(other))
+
+  def or(other: BoolValue): Bool = (this match {
+    case avalue: BoolValue => bool(avalue.value || other.value)
+    case _ => bool
+  }).via(this, OrOp(other))
 
   final def ||(bool: BoolType): BoolType = this.or(bool)
-  final def ||(bool: BoolValue): this.type = this.or(bool)
+  final def ||(bool: BoolValue): Bool = this.or(bool)
 }
 
 object OrOp {
@@ -54,10 +52,10 @@ object OrOp {
     override def q(q: IntQ): this.type = new OrInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
       val inst = new OrInst(Inst.resolveArg(start, other), q)
-      inst.arg0[Bool]() match {
-        case bvalue: BoolValue => start.or(bvalue).via(start, inst)
-        case btype: BoolType => start.or(btype).via(start, inst)
-      }
+      (inst.arg0[Bool]() match {
+        case bvalue: BoolValue => start.or(bvalue)
+        case btype: BoolType => start.or(btype)
+      }).via(start, inst)
     }
   }
 

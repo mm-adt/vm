@@ -39,10 +39,6 @@ trait Type[+T <: Obj] extends Obj
   with ExplainOp {
   this: T =>
 
-  // quantifier functions
-  def hardQ(quantifier: IntQ): this.type = this.clone(name = this.name, q = quantifier, via = this.via)
-  def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
-
   // type signature properties and functions
   def range: this.type = this.clone(via = base())
   def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else this.via._1.asInstanceOf[Type[D]].domain[D]()

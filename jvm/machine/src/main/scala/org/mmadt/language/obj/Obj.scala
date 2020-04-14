@@ -26,6 +26,7 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp}
 import org.mmadt.language.obj.op.filter.IsOp
+import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
@@ -57,7 +58,8 @@ trait Obj
     with ErrorOp
     with EvalOp
     with EqsOp
-    with ToOp {
+    with ToOp
+    with StartOp {
 
   //////////////////////////////////////////////////////////////
   // data associated with every obj
@@ -75,6 +77,9 @@ trait Obj
   def q(q: IntQ): this.type = this.clone(
     q = if (this.root) q else multQ(this.via._1, q),
     via = if (this.root) base() else (this.via._1, this.via._2.q(q)))
+  // quantifier functions
+  def hardQ(q: IntQ): this.type = this.clone(q = q)
+  def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
   def alive(): Boolean = this.q != qZero
 
   // via methods

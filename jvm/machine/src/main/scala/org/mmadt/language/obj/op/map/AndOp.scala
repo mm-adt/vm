@@ -34,17 +34,14 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait AndOp {
   this: Obj =>
-  def and(other: BoolType): BoolType = this match {
-    case atype: BoolType => atype.via(atype, AndOp(other))
-    case avalue: BoolValue => avalue.start().via(avalue, AndOp(other))
-  }
-  def and(other: BoolValue): this.type = (this match {
-    case avalue: BoolValue => avalue.clone(value = avalue.value && other.value, via = (this, AndOp(other)))
-    case atype: BoolType => atype.via(atype, AndOp(other))
-  }).asInstanceOf[this.type]
+  def and(other: BoolType): BoolType = bool.via(this.start(), AndOp(other))
+  def and(other: BoolValue): Bool = (this match {
+    case avalue: BoolValue => bool(value = avalue.value && other.value)
+    case _ => bool
+  }).via(this, AndOp(other))
 
   final def &&(bool: BoolType): BoolType = this.and(bool)
-  final def &&(bool: BoolValue): this.type = this.and(bool)
+  final def &&(bool: BoolValue): Bool = this.and(bool)
 }
 
 object AndOp {
@@ -54,10 +51,10 @@ object AndOp {
     override def q(q: IntQ): this.type = new AndInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
       val inst = new AndInst(Inst.resolveArg(start, other), q)
-      inst.arg0[Bool]() match {
-        case bvalue: BoolValue => start.and(bvalue).via(start, inst)
-        case btype: BoolType => start.and(btype).via(start, inst)
-      }
+      (inst.arg0[Bool]() match {
+        case bvalue: BoolValue => start.and(bvalue)
+        case btype: BoolType => start.and(btype)
+      }).via(start, inst)
     }
   }
 

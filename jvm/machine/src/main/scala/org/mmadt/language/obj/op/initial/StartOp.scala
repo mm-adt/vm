@@ -34,8 +34,11 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StartOp {
-  this: Value[Obj] =>
-  def start[O <: Obj](): O with Type[O] = asType(this).via(obj.q(0), StartOp(this)).hardQ(this.q).asInstanceOf[OType[O]]
+  this: Obj =>
+  def start[O <: Obj](): O with Type[O] = (this match {
+    case _: Value[_] => asType(this).via(obj.q(0), StartOp(this)).hardQ(this.q)
+    case _: Type[_] => this
+  }).asInstanceOf[OType[O]]
 }
 
 object StartOp {

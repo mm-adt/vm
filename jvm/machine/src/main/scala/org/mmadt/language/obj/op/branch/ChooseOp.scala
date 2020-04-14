@@ -42,14 +42,14 @@ trait ChooseOp {
         val branchTypes: RecType[IT, OT] = BranchInstruction.typeInternal(atype.range, branches)
         val rangeType: OT = BranchInstruction.typeExternal[OT](parallel = false, branchTypes)
         rangeType.via(this, ChooseOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
-      case avalue: Value[IT] with IT =>
+      case _: Value[IT] with IT =>
         branches.value().find(p => p._1 match {
           case btype: Type[IT] with IT => start.compute(btype).alive()
-          case bvalue: Value[IT] with IT => avalue.test(bvalue)
-        }).map(_._2).getOrElse(avalue.q(qZero))
+          case bvalue: Value[IT] with IT => start.test(bvalue)
+        }).map(_._2).getOrElse(start.q(qZero))
         match {
           case btype: Type[OT] with OT => start.compute(btype)
-          case bvalue: Value[OT] with OT => bvalue.q(avalue.q)
+          case bvalue: Value[OT] with OT => bvalue.q(start.q)
         }
     }
   }
@@ -60,7 +60,7 @@ object ChooseOp {
 
   class ChooseInst[IT <: Obj, OT <: Obj](branches: RecType[IT, OT], q: IntQ = qOne) extends VInst[IT, OT]((Tokens.choose, List(branches)), q) with BranchInstruction {
     override def q(quantifier: IntQ): this.type = new ChooseInst[IT, OT](branches, quantifier).asInstanceOf[this.type]
-    override def exec(start: IT): OT = start.choose(branches, start) // TODO: do we maintain the OT branch states?
+    override def exec(start: IT): OT = start.choose(branches, start)
   }
 
 }

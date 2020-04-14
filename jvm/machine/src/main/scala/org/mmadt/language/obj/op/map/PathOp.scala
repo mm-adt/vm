@@ -24,7 +24,6 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.map.PathOp.PathInst
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.storage.StorageFactory._
@@ -36,10 +35,11 @@ trait PathOp {
   this: Obj =>
   private lazy val inst: Inst[Obj, Rec[IntValue, Obj]] = new PathInst()
 
-  def path(): Rec[IntValue, Obj] = this match {
-    case _: Value[_] => makeMap(vrec(mutable.LinkedHashMap.empty[IntValue, OValue[Obj]])).via(this, inst)
-    case atype: Type[_] => makeMap(trec(value = mutable.LinkedHashMap.empty[IntValue, Obj])).via(atype, inst)
-  }
+  def path(): Rec[IntValue, Obj] = (this match {
+    case _: Value[_] => makeMap(vrec(mutable.LinkedHashMap.empty[IntValue, OValue[Obj]]))
+    case _ => makeMap(trec(value = mutable.LinkedHashMap.empty[IntValue, Obj]))
+  }).via(this, inst)
+
   private def makeMap[B <: Obj](rec: Rec[IntValue, B]): Rec[IntValue, Obj] = {
     var counter: scala.Long = 1
     var path: Rec[IntValue, Obj] = rec.asInstanceOf[Rec[IntValue, Obj]]
