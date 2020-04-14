@@ -100,6 +100,7 @@ trait Obj
     LanguageException.testDomainRange(asType(this), rangeType.asInstanceOf[Type[E]].domain())
     Processor.iterator().apply(this, Type.resolve(this, rangeType.asInstanceOf[Type[E]]))
   } // TODO: necessary for __ typecasting -- weird) (get rid of these methods)
+
   def compute[E <: Obj](rangeType: Type[E]): E = rangeType.lineage
     .headOption
     .map(x => x._2.exec(this))

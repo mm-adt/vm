@@ -43,7 +43,7 @@ object LeftRightSweepRewrite {
           val inst:Inst[Obj,Obj] = OpInstResolver.resolve(atype.via._2.op(),rewriteArgs(model,atype.rinvert[Type[S]]().range,atype.via._2.asInstanceOf[Inst[Obj,Obj]],start)).q(atype.via._2.q)
           rewrite(model,
             atype.rinvert(),
-            inst.exec(atype.rinvert[Type[S]]().range).asInstanceOf[Type[S]].compose(btype), // might need a model.resolve down the road
+            inst.exec(atype.rinvert[Type[S]]().range).asInstanceOf[Type[S]].compute(btype).asInstanceOf[Type[S]], // might need a model.resolve down the road
             start)
       }
     } else if (!btype.root) {

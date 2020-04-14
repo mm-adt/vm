@@ -25,7 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
@@ -44,23 +44,14 @@ trait Type[+T <: Obj] extends Obj
   def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else this.via._1.asInstanceOf[Type[D]].domain[D]()
   def <=[D <: Obj](domainType: Type[D]): this.type = {
     LanguageException.testDomainRange(this, domainType)
-    Some(domainType).filter(x => x.root).map(_.id()).getOrElse(domainType).compose(this).hardQ(this.q).asInstanceOf[this.type]
+    Some(domainType).filter(x => x.root).map(_.id()).getOrElse(domainType).compute(this).hardQ(this.q).asInstanceOf[this.type]
   }
-
   // type manipulation functions
-  def linvert(): this.type = {
-    ((this.lineage.tail match {
-      case Nil => this.range
-      case i => i.foldLeft[Obj](i.head._1.asInstanceOf[Type[Obj]].range)((btype, inst) => inst._2.exec(btype))
-    }) match {
-      case vv: Value[_] => vv.start()
-      case x => x
-    }).asInstanceOf[this.type]
+  def linvert(): this.type = this.lineage.tail match {
+    case Nil => this.range
+    case i => i.foldLeft[Obj](i.head._1.asInstanceOf[Type[Obj]].range)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
   }
   def rinvert[R <: Type[Obj]](): R = if (this.root) throw LanguageException.typeError(this, "The type can not be decomposed beyond it's canonical form") else this.via._1.asInstanceOf[R]
-
-  // type constructors via stream ring theory
-  def compose[R <: Type[Obj]](btype: R): R = btype.lineage.seq.foldLeft[Obj](this)((b, a) => a._2.exec(b)).asInstanceOf[R]
 
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {

@@ -40,10 +40,10 @@ package object op {
   object BranchInstruction {
     def typeInternal[IT <: Obj, OT <: Obj](start: OType[IT], branches: RecType[IT, OT]): RecType[IT, OT] = {
       trec(value = branches.value().map(x => (x._1 match {
-        case atype: OType[IT] => start.compose(atype)
+        case atype: OType[IT] => start.compute(atype)
         case avalue: OValue[IT] => avalue
       }, x._2 match {
-        case btype: Type[OT] with OT => start.compose(btype).asInstanceOf[OT]
+        case btype: Type[OT] with OT => start.compute(btype)
         case bvalue: OValue[OT] => bvalue
       })))
     }

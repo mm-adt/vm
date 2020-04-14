@@ -80,7 +80,7 @@ object mmkvStorageProvider {
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
           case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(*)
-          case _: Value[_] => connect(fileStr).strm()
+          case _: Value[_] => connect(fileStr).strm().via(start, this)
         }).asInstanceOf[Rec[StrValue, Obj]]
       }
     }
