@@ -77,7 +77,6 @@ trait Obj
   def q(q: IntQ): this.type = this.clone(
     q = if (this.root) q else multQ(this.via._1, q),
     via = if (this.root) base() else (this.via._1, this.via._2.q(q)))
-  // quantifier functions
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
   def alive(): Boolean = this.q != qZero
@@ -87,14 +86,14 @@ trait Obj
   def isolate: this.type = this.clone(via = base())
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = if (inst.q == qOne && via == (obj, inst)) this else this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
   def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
+  def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
   def linvert(): this.type = {
-    if (this.root) throw LanguageException.typeError(this, "The obj can not be decomposed beyond root")
+    if (this.root) throw LanguageException.zeroLengthPath(this)
     this.lineage.tail match {
       case Nil => this.isolate
       case incidentRoot => incidentRoot.foldLeft[Obj](incidentRoot.head._1.isolate)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
     }
   }
-  def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.typeError(this, "The obj can not be decomposed beyond root") else this.via._1.asInstanceOf[R]
 
   // utility methods
   def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type

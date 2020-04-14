@@ -46,6 +46,15 @@ public class LanguageException extends VmException {
         return new LanguageException(source + " instruction error: " + message);
     }
 
+    public static LanguageException zeroLengthPath(final Obj source) {
+        if (source instanceof Type<?>)
+            return new LanguageException(source + " can not be decomposed beyond canonical form");
+        else {
+            assert (source instanceof Value<?>);
+            return new LanguageException(source + " does not have an earlier computational state");
+        }
+    }
+
     public static LanguageException labelNotFound(final Obj source, final String label) {
         return new LanguageException(source.lineage() + " does not contain the label '" + label + "'");
     }
@@ -56,8 +65,8 @@ public class LanguageException extends VmException {
             throw LanguageException.typingError(range, domain);
     }
 
-    public static void testTypeCheck(final Obj obj, Type<Obj> type) {
-        if ((obj instanceof Type && !((Type<Obj>) obj).range().test(type)) || (obj instanceof Value && !obj.test(type)))
+    public static void testTypeCheck(final Obj obj, Type<?> type) {
+        if ((obj instanceof Type && !((Type<?>) obj).range().test(type)) || (obj instanceof Value && !obj.test(type)))
             throw LanguageException.typingError(obj, type);
     }
 }

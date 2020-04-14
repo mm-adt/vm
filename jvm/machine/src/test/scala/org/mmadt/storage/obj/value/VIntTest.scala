@@ -49,27 +49,6 @@ class VIntTest extends FunSuite {
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).gt(int(2).q(34)).q(10))
     assertResult(btrue.q(40))(int(3).q(2) ===> int.q(2).plus(int(4)).q(2).a(int.q(0, 4)).q(10))
   }
-  test("int value lineage") {
-    val avalue = int(5).plus(10).id().mult(5).gt(10)
-    assertResult(bool)(asType(avalue))
-    assertResult(4)(avalue.lineage.length)
-    // rinvert
-    assertResult(int(5).plus(10).id().mult(5))(avalue.rinvert[IntValue]())
-    assertResult(int(5).plus(10).id())(avalue.rinvert[IntValue]().rinvert[IntValue]())
-    assertResult(int(5).plus(10))(avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]())
-    assertResult(int(5))(avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]())
-    assertThrows[LanguageException] {
-      avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]()
-    }
-    // linvert
-    assertResult(int(15).id().mult(5).gt(10))(avalue.linvert())
-    assertResult(int(15).mult(5).gt(10))(avalue.linvert().linvert())
-    assertResult(int(75).gt(10))(avalue.linvert().linvert().linvert())
-    assertResult(btrue)(avalue.linvert().linvert().linvert().linvert())
-    assertThrows[LanguageException] {
-      avalue.linvert().linvert().linvert().linvert().linvert()
-    }
-  }
 }
 
 

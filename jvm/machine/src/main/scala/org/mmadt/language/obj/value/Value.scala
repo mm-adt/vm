@@ -43,7 +43,7 @@ trait Value[+V <: Obj] extends Obj {
   override def toString:String = LanguageFactory.printValue(this)
   override def hashCode():scala.Int = this.name.hashCode ^ this.value.hashCode()
   override def equals(other:Any):Boolean = other match {
-    case avalue:Value[V] => avalue.value == this.value && eqQ(this,avalue)
+    case avalue:Value[V] => avalue.value.equals(this.value) && eqQ(this,avalue)
     case _ => false
   }
 }

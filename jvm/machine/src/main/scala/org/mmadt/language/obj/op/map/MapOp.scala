@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.processor.ProcessorException
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -36,13 +35,12 @@ import org.mmadt.storage.obj.value.VInst
 trait MapOp {
   this: Obj =>
   def map[O <: Obj](other: O): O = {
+    val inst = MapOp(Inst.resolveArg(this, other))
     this match {
-      case atype: Type[_] =>
-        val otherT: O = Type.resolve(atype.range, other)
-        asType[O](otherT).via(this, MapOp[O](otherT))
+      case _: Type[_] => asType[O](inst.arg0[O]()).via(this, inst)
       case _ => other match {
-        case _: Value[_] => other
-        case atype: Type[O] => this ==> atype
+        case _: Value[_] => inst.arg0[O]().via(this, inst)
+        case atype: Type[O] => this.compute(atype)
       }
     }
   }
@@ -52,15 +50,11 @@ object MapOp {
   def apply[O <: Obj](other: O): Inst[Obj, O] = new MapInst[O](other)
 
   class MapInst[O <: Obj](other: O, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.map, List(other)), q) {
-    override def q(quantifier: IntQ): this.type = new MapInst[O](other, quantifier).asInstanceOf[this.type]
-    override def exec(start: Obj): O = ((start, other) match {
-      case (_: Value[_], atype: Type[O]) => start.compute(atype)
-      case (_: Obj, avalue: Value[_] with O) => avalue.via(start, this)
-      case (btype: Type[_], atype: Type[_] with O) =>
-        val arg: O = Inst.resolveArg(start, atype)
-        arg.via(btype, MapOp(arg))
-      case _ => throw new ProcessorException(s"unknown state ${start}[map,${other}]")
-    })
+    override def q(q: IntQ): this.type = new MapInst[O](other, q).asInstanceOf[this.type]
+    override def exec(start: Obj): O = {
+      val inst = MapOp(Inst.resolveArg(start, other))
+      start.map(inst.arg0[O]()).via(start, inst)
+    }
   }
 
 }

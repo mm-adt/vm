@@ -33,14 +33,14 @@ import org.scalatest.{FunSuite, Matchers}
  */
 class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with Matchers {
   test("process single value w/ quantifiers") {
-    assertResult(List(int(110)))(Processor.iterator().apply(int(5), int.mult(int(2)).plus(int(100))).toStrm.toList)
-    assertResult(List(int(110)))(Processor.iterator()(int(5), int * 2 + 100).toStrm.toList)
-    assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5).q(10), int.q(10).mult(int(2)).plus(int(100))).toStrm.toList)
-    assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5), int.mult(int(2)).plus(int(100)).q(10)).toStrm.toList)
+    assertResult(List(int(110)))(Processor.iterator().apply(int(5), int.mult(int(2)).plus(int(100))).toList)
+    assertResult(List(int(110)))(Processor.iterator()(int(5), int * 2 + 100).toList)
+    assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5).q(10), int.q(10).mult(int(2)).plus(int(100))).toList)
+    assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5), int.mult(int(2)).plus(int(100)).q(10)).toList)
     // assertResult(List(int(110).q(100)))(Processor.iterator().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(int.plus(0)).toList)
   }
   test("process multiple values w/ quantifiers") {
-    assertResult(List(int(102), int(104), int(106)))(Processor.iterator().apply(int(1, 2, 3), int.q(*).mult(int(2)).plus(int(100))).toStrm.toList)
+    assertResult(List(int(102), int(104), int(106)))(Processor.iterator().apply(int(1, 2, 3), int.q(*).mult(int(2)).plus(int(100))).toList)
     assertResult(List(int(102), int(104), int(106)))((int(1, 2, 3) ===> int.q(1, 10).mult(int(2)).plus(int(100))).toList)
     assertResult(List(int(11), int(22), int(33)))((int(10, 20, 30) ===> int.q(*).choose(
       int.is(int.gt(int(20))) -> int.plus(int(3)),
@@ -59,7 +59,6 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
   }
   test("process nested single values w/ quantifiers") {
     assertResult(List(int(2)))((int(1) ===> int.mult(int(2)).is(int.gt(int(1)))).toList)
-
     assertResult(List(int(2)))((int(1) ===> int.mult(int(2)).is(int.plus(int(10)).gt(int(1)))).toList)
   }
   test("process canonical type") {

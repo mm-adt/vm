@@ -23,9 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.Value
-
+import org.mmadt.language.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,14 +47,12 @@ trait Inst[S <: Obj, +E <: Obj] extends Obj {
 }
 
 object Inst {
-  def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
-    (arg match {
-      case _: Value[_] => arg
-      case anon: __ => anon(obj.asInstanceOf[Type[Obj]].range)
-      case typeArg: Type[_] => obj match {
-        case atype: Type[E] => atype.range.compute(typeArg)
-        case _ => obj.compute(typeArg)
-      }
-    }).asInstanceOf[E]
+  def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = arg match {
+    case valueArg: OValue[E] => valueArg
+    // case recArg: ORecType => recArg.clone(value = recArg.value().map(a => resolve(obj, a._1) -> resolve(obj, a._2))).asInstanceOf[E]
+    case typeArg: OType[E] => obj match {
+      case atype: Type[_] => atype.range.compute(typeArg)
+      case _ => obj.compute(typeArg)
+    }
   }
 }

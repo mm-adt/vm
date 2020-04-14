@@ -58,7 +58,7 @@ class mmkvInstTest extends FunSuite {
   test("[=mmkv] with mmkv-1.txt") { // TODO obj.=('mmkv',str(file1))
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
     assertResult("['k':1,'v':'marko'],['k':2,'v':'ryan'],['k':3,'v':'stephen'],['k':4,'v':'kuppitz']")(int(1).=:(mmkv)(str(file1)).toString)
-    assertResult(List(int(1), int(2), int(3), int(4)))(Processor.iterator()(int(4), Processor.compiler().apply(int.=:[ORecType](mmkv)(str(file1)).get(str("k"), int))).toStrm.toList)
+    assertResult(List(int(1), int(2), int(3), int(4)))(Processor.iterator()(int(4), Processor.compiler().apply(int.=:[ORecType](mmkv)(str(file1)).get(str("k"), int))).toList)
     assertResult("['k':1,'v':'marko']")((int(1) ==> int.=:[ORecType](mmkv)(str(file1))).toStrm.value.next().toString)
   }
 
