@@ -39,7 +39,7 @@ public class LanguageException extends VmException {
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
-        return new LanguageException(target + " is not a " + source);
+        return new LanguageException(source + " is not " + (target.toString().matches("^[aeiouAEIOU].*") ? "an " : "a ") + target);
     }
 
     public static LanguageException typeError(final Obj source, final String message) {
