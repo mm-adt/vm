@@ -56,6 +56,10 @@ object OpInstResolver {
       case Tokens.int => IntOp()
       case Tokens.str => StrOp()
       //
+      case Tokens.append => AppendOp(args.head)
+      case Tokens.head => HeadOp()
+      case Tokens.tail => TailOp()
+      //
       case Tokens.noop => NoOp()
       case Tokens.add => AddOp(args.head)
       case Tokens.a | Tokens.a_op => AOp(args.head.asInstanceOf[Type[Obj]])

@@ -34,8 +34,8 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntOp {
-  this: __ =>
-  def int(): IntType = StorageFactory.int.via(this, IntOp()).hardQ(qOne)
+  this: Obj =>
+  def int(): IntType = StorageFactory.int
 }
 
 object IntOp {

@@ -33,7 +33,7 @@ import org.scalatest.FunSuite
 class TypeTest extends FunSuite {
 
   test("type hashCode, equals, toString") {
-    val types: List[Type[Obj]] = List(obj, bool, int, real, str, rec, __)
+    val types: List[Type[Obj]] = List(obj, bool, int, real, str, rec) //, __)
     var sameCounter = 0
     var diffCounter = 0
     for (a <- types) {

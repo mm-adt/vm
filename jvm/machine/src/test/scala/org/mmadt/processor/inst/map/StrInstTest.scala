@@ -31,10 +31,11 @@ import org.scalatest.FunSuite
  */
 class StrInstTest extends FunSuite {
   test("[str] w/ __"){
-    assertResult("str<=[str]")(__.str().toString)
-    assertResult("bool<=[str][gt,'a']")(__.str().gt("a").toString)
-    assertResult("str<=[str][plus,'marko']")(__.str().plus("marko").toString)
-    assertResult(str.plus("marko"))(str("hello") ==> __.str().plus("marko"))
-    assertResult(str.plus("marko"))(str("hello") ===> __.str().plus("marko"))
+    assertResult("str")(__.str().toString)
+    assertResult("bool<=str[gt,'a']")(__.str().gt("a").toString)
+    assertResult("str[plus,'marko']")(__.str().plus("marko").toString)
+    assertResult(str("hello"))(str("hello") ===> __.str())
+    assertResult(str("hellomarko"))(str("hello") ==> __.str().plus("marko"))
+
   }
 }

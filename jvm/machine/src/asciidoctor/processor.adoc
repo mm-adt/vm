@@ -1,29 +1,19 @@
 :imagesdir: ./images/processor
 == Processor Structures
 
-The programs of the mm-ADT virtual machine are _types_. From a simple set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's instruction set architecture. Type construction yields a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] containing type-vertices and instruction-edges called a _type graph_. The type graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) and evaluate (enumerate) them.
+The programs of the mm-ADT virtual machine are _types_. From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's instruction set architecture. Every mm-ADT type is isomorphic to a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] containing type-vertices and instruction-edges called the _type graph_. The type graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) and evaluate (enumerate) them.
 
 image::processor-stack.png[float="right",width=150]
 
-Type composition, compilation, and execution are carried out by immutable, state-based machines called *traversers*. The traverser algorithm is driven by mm-ADT compliant *processors*. Processors grounds the mm-ADT VM to the physical machine (whether on a a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak).
+Type composition, compilation, and execution are carried out a thread of execution called a *process*. All processes are managed by an integerated mm-ADT compliant *processor*.  Processors ground the mm-ADT VM to the physical machine (whether on a a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak).
 
-This section details the specifics of the relationships between types, traversers, and processors.
+This section details the specifics of the relationships between types, values, and processors
 
-=== Traverser
+=== Processes
 
-A traverser (`trav`) is a _product_ with the following three \$\pi\$-projections, where \$\Gamma\$ is the set of all traversers, \$T\$ the set of all types, and \$V\$ the set of all values:
+Processors are used in the following three situations:
 
-image::trav-product.png[float="right",width=225]
-
-. \$\pi_1: \Gamma \rightarrow T\$: the https://en.wikipedia.org/wiki/Program_counter[program counter] denotes the traverser's current location in the program (type).
-. \$\pi_2: \Gamma \rightarrow (T \cup V)\$: the https://en.wikipedia.org/wiki/Pointer_(computer_programming)[data counter] denotes the traverser's current location in the data (value -- or type during compilation).
-. \$\pi_3: \Gamma \rightarrow \Gamma\$: The traverser that was the argument to the previous instruction that generated the current traverser. Traverser lineage enables the simulation of a mutable read/write https://en.wikipedia.org/wiki/Processor_register[register machine] within an immutable structure.
-
-IMPORTANT: An mm-ADT `obj` is the co-product `obj = type + value`. Thus, the \$\pi_2\$-projection entails that traversers can process types as well as values.
-
-Traversers are used in the following three situations:
-
-. *Composition*: A traverser with an untyped `obj`-\$pi_1\$ (i.e. an instruction list) and a `obj`-\$pi_2\$ (i.e. the terminal object), walks the list of instructions to generate an unoptimized mm-ADT program (type) that is well-typed and well-quantified (https://en.wikipedia.org/wiki/Type_inference[type inference]).
+. *Composition*: A process with an untyped `obj`-\$pi_1\$ (i.e. an instruction list) and a `obj`-\$pi_2\$ (i.e. the terminal object), walks the list of instructions to generate an unoptimized mm-ADT program (type) that is well-typed and well-quantified (https://en.wikipedia.org/wiki/Type_inference[type inference]).
 +
 image::trav-composition.png[align="center",width=90%]
 

@@ -23,26 +23,25 @@
 package org.mmadt.language.obj.op.initial
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{StrType, __}
+import org.mmadt.language.obj.`type`.StrType
 import org.mmadt.language.obj.op.InitialInstruction
 import org.mmadt.language.obj.{Inst, Obj, Str}
 import org.mmadt.storage.StorageFactory
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrOp {
-  this: __ =>
-  def str(): StrType = StorageFactory.str.via(this, StrOp()).hardQ(qOne)
+  this: Obj =>
+  def str(): StrType = StorageFactory.str
 }
 
 object StrOp {
   def apply(): Inst[Obj, Str] = new StrInst()
 
   class StrInst() extends VInst[Obj, Str]((Tokens.str, Nil)) with InitialInstruction {
-    override def exec(start: Obj): Str = str
+    override def exec(start: Obj): Str = StorageFactory.str
   }
 
 }

@@ -23,26 +23,24 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.{Inst, IntQ, Lst, Obj}
+import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-trait GetOp[A <: Obj, B <: Obj] {
-  this: Obj =>
-  def get(key: A): B
-  def get[BB <: Obj](key: A, btype: BB): BB
+trait AppendOp[O <: Obj] {
+  this: Lst[O] =>
+  def append(other: O): this.type = this.via(this, AppendOp[O](other))
+  //final def ++(other: Lst[O]): Lst[O] = this.append(other)
 }
 
-object GetOp {
-  def apply[A <: Obj, B <: Obj](key: A): GetInst[A, B] = new GetInst[A, B](key)
-  def apply[A <: Obj, B <: Obj](key: A, typeHint: B): GetInst[A, B] = new GetInst(key, typeHint)
+object AppendOp {
+  def apply[O <: Obj](other: Obj): AppendInst[O] = new AppendInst[O](other)
 
-  class GetInst[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B], q: IntQ = qOne) extends VInst[(Obj with GetOp[A,B]), B]((Tokens.get, List(key)), q) {
-    override def q(q: IntQ): this.type = new GetInst[A, B](key, typeHint, q).asInstanceOf[this.type]
-    override def exec(start: (Obj with GetOp[A,B])): B = start.get(Inst.resolveArg(start, key)).via(start, this)
+  class AppendInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[Lst[O], Lst[O]]((Tokens.append, List(other)), q) {
+    override def q(quantifier: IntQ): this.type = new AppendInst[O](other, quantifier).asInstanceOf[this.type]
+    override def exec(start: Lst[O]): Lst[O] = {
+      val inst = new AppendInst[O](Inst.resolveArg(start, other), q)
+      start.append(inst.arg0[O]()).via(start, inst).asInstanceOf[Lst[O]]
+    }
   }
-
 }

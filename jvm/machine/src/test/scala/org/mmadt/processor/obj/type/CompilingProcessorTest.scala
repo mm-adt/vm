@@ -139,7 +139,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
 
   test("compiler w/ non-rooted types and values"){
     // TODO: does __ become the initial type?    assertThrows[ProcessorException]{processor(__.id().plus(10))}
-    assertThrows[ProcessorException]{processor(int(10),int)}
+    // assertThrows[ProcessorException]{processor(int(10),int)}
   }
 
   test("compiler with domain rewrites"){

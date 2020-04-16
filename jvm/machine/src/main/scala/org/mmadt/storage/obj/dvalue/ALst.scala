@@ -20,21 +20,23 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.inst.map
+package org.mmadt.storage.obj.dvalue
 
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.storage.StorageFactory.int
-import org.scalatest.FunSuite
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.storage.StorageFactory._
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class IntInstTest extends FunSuite {
-  test("[int] w/ __"){
-    assertResult("int")(__.int().toString)
-    assertResult("int[plus,2]")(__.int().plus(2).toString)
-    assertResult("bool<=int[plus,2][gt,10]")(__.int().plus(2).gt(10).toString)
-    assertResult(int(5))(int(5) ==> __.int())
-    assertResult(int(11))(int(5) ===> __.int().plus(6))
+class ALst[A <: Obj](val name: String = Tokens.lst, val value: Lst[A] = null, val q: IntQ = qOne, val via: ViaTuple = base())
+  extends Lst[A]
+    with Type[Lst[A]] {
+
+  override def clone(name: String = this.name,
+    value: Any = this.value,
+    q: IntQ = this.q,
+    via: ViaTuple = this.via): this.type = new ALst[A](name, value.asInstanceOf[Lst[A]], q, via).asInstanceOf[this.type]
+
+  override def test(other: Obj): Boolean = {
+    true
   }
 }

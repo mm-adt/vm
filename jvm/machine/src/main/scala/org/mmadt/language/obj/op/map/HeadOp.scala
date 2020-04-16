@@ -20,21 +20,24 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.inst.map
+package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.storage.StorageFactory.int
-import org.scalatest.FunSuite
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{IntQ, Lst, Obj}
+import org.mmadt.storage.StorageFactory.qOne
+import org.mmadt.storage.obj.value.VInst
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class IntInstTest extends FunSuite {
-  test("[int] w/ __"){
-    assertResult("int")(__.int().toString)
-    assertResult("int[plus,2]")(__.int().plus(2).toString)
-    assertResult("bool<=int[plus,2][gt,10]")(__.int().plus(2).gt(10).toString)
-    assertResult(int(5))(int(5) ==> __.int())
-    assertResult(int(11))(int(5) ===> __.int().plus(6))
+trait HeadOp[O <: Obj] {
+  this: Lst[O] =>
+  def head(): O = Lst.lstRoot(this).via(this, HeadOp())
+}
+
+object HeadOp {
+  def apply[O <: Obj](): HeadInst[O] = new HeadInst[O]
+
+  class HeadInst[O <: Obj](q: IntQ = qOne) extends VInst[Lst[O], O]((Tokens.head, Nil), q) {
+    override def q(quantifier: IntQ): this.type = new HeadInst[O](quantifier).asInstanceOf[this.type]
+    override def exec(start: Lst[O]): O = start.head().via(start, new HeadInst[O](q))
   }
+
 }

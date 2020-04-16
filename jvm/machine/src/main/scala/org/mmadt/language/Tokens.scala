@@ -39,10 +39,14 @@ object Tokens {
   val int = "int"
   val real = "real"
   val inst = "inst"
+  val lst = "lst"
   val __ = "__"
 
   val a = "a"
   val add = "add"
+  val append = "append" // TODO: for demo purposes only
+  val head = "head"
+  val tail = "tail"
   val noop = "noop"
   val and = "and"
   val as = "as"
@@ -99,5 +103,5 @@ object Tokens {
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst).contains(name) // TODO: global immutable set
+  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst, lst).contains(name) // TODO: global immutable set
 }

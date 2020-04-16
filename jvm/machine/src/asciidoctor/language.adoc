@@ -145,59 +145,6 @@ mmlang> int{2}[is>0]                             <3>
 <2> A ctype denoting a stream with two integers.
 <3> A dtype denoting a stream of zero, one, or two integers.
 
-==== The Instruction Monoid
-
-An mm-ADT instruction is a ordered list of `objs` where the first element is the opcode and all subsequent elements are instruction arguments. For instance, `[plus,6]` is an instruction where `plus` is the opcode and `6` is the argument. Instructions can be composed to create longer instruction chains. If \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ is the binary instruction composition operator, then the following instruction chain is created as follows.
-
-\[
-\begin{split}
-\texttt{[plus,4]} &=\;& \texttt{[plus,4]} \\
-\texttt{[plus,4][mult,2]} &=\;& \texttt{[plus,4]} * \texttt{[mult,2]} \\
-\texttt{[plus,4][mult,2][gt,42]} &=\;& \texttt{[plus,4][mult,2]} * \texttt{[gt,42]} \\
-\end{split}
-\]
-
-.Monoids
-****
-A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
-****
-
-image::inst-monoid.png[float="left",width=50]
-
-mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_  **inst monoid**
-\[
-\langle\texttt{inst},\ast\rangle,
-\]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is unique identity element.
-
-image::initial-ctypes.png[float="right",width=275]
-
-The initial object of the `inst` monoid is `obj{0}`--from nothing, everything can be generated with the respective https://en.wikipedia.org/wiki/Zero_morphism[constant morphism]/instruction. A unique constant morphism exists from `obj{0}` to each of the 6 *canonical types*. The corresponding instructions are `[bool]`, `[int]`, `[real]`, `[str]`, and `[rec]`, where, for example,
-\[
-\texttt{[bool]}: \texttt{obj\{0\}} \rightarrow \texttt{bool}
-\]
-and in `mmlang` notation
-\[
-\texttt{bool\<=[bool]}
-\]
-
-The example belows demonstrates the `inst`-monoid in action, generating types whose domain is `str` and where \$\ast\$ is juxtaposition (i.e. instruction concatenation).
-
-[source]
-----
-mmlang> obj{0}[str]                          <1>
-==>str
-mmlang> obj{0}[str][plus,'m']                <2>
-==>str[plus,'m']
-mmlang> obj{0}[str][plus,'m'][noop]          <3>
-==>str[plus,'m']
-mmlang> obj{0}[str][plus,'m'][noop][gt,'r']  <4>
-==>bool<=str[plus,'m'][gt,'r']
-----
-<1> The initial instruction `[str]` that generates the type `str`.
-<2> Composing `[str]` with `[plus,'m']` yields a type whose domain/range are `str`.
-<3> The identity instruction is `[noop]`.
-<4> An instruction composition mapping an `str` to a `bool`.
 
 ==== The Type Monoid
 
@@ -212,6 +159,18 @@ An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n
 image::terminal.png[width=130,float=right]
 A *terminal object* \$E\$ is the range of a set of morphisms \$E \rightarrow S_n\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
 ****
+
+image::initial-ctypes.png[float="right",width=275]
+
+The initial object of the `inst` monoid is `obj{\*}`--from nothing, everything can be generated with the respective https://en.wikipedia.org/wiki/Zero_morphism[constant morphism]/instruction. A unique constant morphism exists from `obj{0}` to each of the 6 *canonical types*. The corresponding instructions are `[bool]`, `[int]`, `[real]`, `[str]`, and `[rec]`, where, for example,
+\[
+\texttt{[bool]}: \texttt{obj\{0\}} \rightarrow \texttt{bool}
+\]
+and in `mmlang` notation
+\[
+\texttt{bool\<=[bool]}
+\]
+
 
 image::type-product.png[float="right",width=250]
 There are two kinds of mm-ADT types: *canonical types* (ctypes) and *derived types* (dtypes). There are 6 ctypes which comprise the fundamental base types of the mm-ADT VM: `bool`, `int`, `real`, `str`, `lst`, or `rec`. A dtype is the product of a type and an instruction (`inst`), where the type component serves as the _domain_, the instruction component the _function_, and the type product as a whole, relative to it's components, the _range_.
@@ -244,11 +203,6 @@ mmlang> int[plus,4][mult,42]
 mmlang> int[plus,4][mult,42][gt,42]
 ==>bool<=int[plus,4][mult,42][gt,42]
 ----
-
-There exists an isomorphism (a https://en.wikipedia.org/wiki/Full_and_faithful_functors[bijective functor]) that maps the `inst` syntactic monoid to the type graph monoid. This should not a surprising bijection--it proves that the syntax of `mmlang` is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in `mmlang`.
-
-image::inst-type-functor.png[width=35%,align=center]
-
 
 ===== Type Signatures
 
@@ -343,16 +297,37 @@ of the quantifier ring -- `{1}`.
 
 NOTE: Any `obj` with the the quantifier ring's additive identity (`zero`) is not displayed by `mmlang` and can be safely garbage collected by the mm-ADT VM processor at anytime throughout a non-reducing computation without altering the semantics of the computation.
 
+==== The Instruction Monoid
+
+.Monoids
+****
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
+****
+
+image::inst-monoid.png[float="left",width=50]
+
+mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_  **inst monoid**
+\[
+\langle\texttt{inst},\ast\rangle,
+\]
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is unique identity element.
+
+An mm-ADT instruction is a ordered list of `objs` where the first element is the opcode and all subsequent elements are instruction arguments. For instance, `[plus,6]` is an instruction where `plus` is the opcode and `6` is the argument. Instructions can be composed to create longer instruction chains.
+
+\[
+\begin{split}
+\texttt{[plus,4]} &=\;& \texttt{[plus,4]} \\
+\texttt{[plus,4][mult,2]} &=\;& \texttt{[plus,4]} * \texttt{[mult,2]} \\
+\texttt{[plus,4][mult,2][gt,42]} &=\;& \texttt{[plus,4][mult,2]} * \texttt{[gt,42]} \\
+\end{split}
+\]
+
+The instruction monoid is the algebraic structure used by `mmlang` to enable users to write expression. The mm-ADT VM processes types, which while composed of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$) are not instructions. There exists an isomorphism (a https://en.wikipedia.org/wiki/Full_and_faithful_functors[bijective functor]) that maps the `inst` syntactic monoid to the type graph monoid. This should not a surprising bijection--it proves that the syntax of `mmlang` is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in `mmlang`.
+
+image::inst-type-functor.png[width=35%,align=center]
+
 ===== Type Graph
 
-The diagram below is a *type graph*. In graph theoretic notation,
-\[
-T = (V,E \subseteq (V \times \texttt{[inst]} \times V))
-\]
-is a directed binary edge-labeled https://en.wikipedia.org/wiki/Multigraph[multi-graph] where \$V\$ is the set of types (`ctypes` and `dtypes`) and \$E\$ is the set of instruction labeled edges between types. The particular type graph below represents the data structure generated by the `mmlang` expression
-\[
-\tt{int[plus,4][mult,2][gt,42]}.
-\]
 
 image:type-data-structure.png[align=center,width=100%]
 
@@ -363,8 +338,6 @@ It is important to note that the type graphs of each subexpression:
 \tt{int[plus,4][mult,2]}
 \]
 remain as subgraphs of the final expression's graph and that _this is the underlying data structure of the type within the mm-ADT VM_.
-
-IMPORTANT: Every mm-ADT program is a type graph. The set of all possible type graphs and thus, all possible programs, can be generated via the aforementioned `[inst]` induction rooted at `obj{*}`. The resultant type graph family is the union of all possible programs and is known as `mm` (the "mm" in mm-ADT).
 
 ===== Type Ring
 
@@ -500,186 +473,3 @@ int{4}<=int{2}[branch,[id],[id]]     // 4 ints         (exact)
 int{*}<=[=db][get,'costs']           // 0 or more ints (any)
 ----
 
-===== Type Category
-
-****
-.Definition: Category
-A https://en.wikipedia.org/wiki/Category_(mathematics)[category] is a structure \$C = (Obj,Hom)\$.
-****
-
-====== Model: mmcat
-
-The mm-ADT `mmcat` model-ADT models the structure of mm-ADT using category theoretic structures of objects, morphisms, and functors.
-
-An mm-ADT *Type* category is composed of `obj` _objects_ denoted `type` and a set of instruction _morphisms_ denoted `inst`. If two types objects are distinct by a single tail instruction, then there exists an `inst` morphism \$\tt{[a]}: X->Y\$ where the \$\mathcal{Dom}(\tt{[a]})\ * \tt{[a]} = \mathcal{Cod}(\tt{[a]})\$. The identity morphism of every `type` object is the `[id]` instruction. Every mm-ADT type category https://en.wikipedia.org/wiki/Commutative_diagram[commutes].
-
-The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] of a simple type category is presented below where:
-
-. _Objects_: `int`, `int[plus,2]`, `int[plus,2][plus,8]`, and `int[plus,2][plus,10]`
-. _Morphisms_: `[plus,2]`, `[plus,8]`, `[plus,10]`, and respective identity instructions.
-
-
-image::type-equiv.png[width=600,align="center"]
-
-Every path through the diagram specifies a particular type construction
-
-Thus, every mm-ADT program is an mm-ADT type. There exists an mm-ADT canonical type graph derived by from the previous type graph via a https://en.wikipedia.org/wiki/Forgetful_functor[forgetful functor], where the vertices denote the 6 base types and the edges denote https://en.wikipedia.org/wiki/Endomorphism[endomorphisms] of the base type monoid or https://en.wikipedia.org/wiki/Homomorphism[homomorphisms] between two type monoids.
-
-image::type-equivalence.png[width=100%,align="center"]
-
-==== Type Examples
-
-mm-ADT types differ from convention in that they serve to denote:
-
-* *Canonical types*: sets of elements denoted as `int` or `str`, etc.
-* *Refined types*: constraints on the canonical set types such as `nat<=int[is,[gt,0]]`
-* *Quantified types*: specifying the cardinality of a set via quantification `int{0,5}` (a type of 0 to 5 `int` values).
-* *Dependent types*:
-* *Translating types*: specify a mapping from a domain set of elements to a range set of elements as in `int[plus,2]`.
-* *Recursive types*:
-
-===== Canonical Types
-
-The _unquantified_ canonical types are the most expressive types of many programing language type systems. For example, the type `int` in mm-ADT is quantified at unity `{1}` and thus, considered unquantified. There are 7 unquantified canonical types in mm-ADT. With _quantification_ these types no longer describe individual objects, but streams of objects.
-
-[source]
-----
-mmlang> 1{3} int{3}
-==>1{3}
-mmlang> 1{3} int{2}
-language error: 1{3} is not a int{2}
-mmlang> 1{3} int{2,10}
-==>1{3}
-----
-
-===== Refinement Types
-
-In the theory of types as sets, a refinement type is a subset of a larger type set where the subset specification provides more information to the type inference to determine whether the objects created will be within the refined subset.
-
-[source]
-----
-mmlang> int[is,[gt,0]]
-==>int{?}<=int[is,bool<=int[gt,0]]
-mmlang> int<=int[is,[gt,0]]
-==>int[is,bool<=int[gt,0]]
-----
-
-===== Quantified Types
-
-[source]
-----
-mmlang> int[is>0 -> +1 | is>10 -> +2]
-==>int[choose,[int{?}<=int[is,bool<=int[gt,0]]:int[plus,1]
-              |int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
-mmlang> int[is>0 -> +1 & is>10 -> +2]
-==>int{0,2}<=int[branch,[int{?}<=int[is,bool<=int[gt,0]]:int[plus,1]
-                                    &int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
-----
-
-===== Dependent Types
-
-===== Translation Types
-
-A translation type maps objects of one type to objects of another type that is neither a sub- or superset of the original type. While having the apperance of a general function, translation types provide a way to reason about the equivalence of two seemingly different mappings.
-
-[source]
-----
-mmlang> int[is,[gt,10][and[lt,100]]][as,str][len]
-==>int{?}<=int[is,bool<=int[gt,10][and,bool[lt,100]]][as,str][len]
-mmlang> int{?}<=int[is,[gt,40][and[lt,50]]][as,str][len]
-==>int{?}<=int[is,bool<=int[gt,40][and,bool[lt,50]]][as,str][len]
-----
-
-
-===== Recursive Types
-
-
-
-////
-=== Model Categories and their Functors
-
-An mm-ADT _model_ specifies relationships between a set of types within a https://en.wikipedia.org/wiki/Domain_of_discourse[_domain of discourse_].
-These relationships are https://en.wikipedia.org/wiki/Path_(topology)[path equations] that specify semantic equivalences between types.
-There are two general classes of models:
-
-. *Category*: A category model has `ctype` and `type` mappings to other `ctypes` and `types` within the category.
-. *Functor*: A functor model maps `ctypes` and `types` from one category model to a `ctypes` and `types` in another category model.
-
-Every mm-ADT model excluding instructions from the reduce near-ring, forms a https://en.wikipedia.org/wiki/Category_(mathematics)[category], where
-the category's _objects_ are the canonical types (`ctypes`) and the _arrows_ are types that span the canonicals.
-mm-ADT models are defined via types that are constructed via the instruction ring where both `+` and `*` are associative
-and the `[id]` instruction serves as the identity as in `int<=int[id]`.
-
-A _model_ is a `rec` that specifies how a "left-hand side" (LHS) type maps to a "right-hand side" (RHS) type.
-Both object and arrow morphisms are captured in this structure.
-The model below is a _functor model_ in that is specifies how to move from the category of `int` to the category of `nat`.
-
-[source]
-----
-rec[
-  int<=int[is,[gte,0]] -> nat,
-  int[plus,[id]]       -> nat[mult,2]]
-----
-
-The above model is diagrammed below where object morphisms are solid lines and the arrow morphism is the dotted line.
-
-[ditaa,"int-nat-functor",align="center"]
-....
-         int---[plus,[id]]--->int
-
-           |         |          |
-           |         |          |
-int[is[gte,0]]       :         int[is[gte,0]]
-           |         |          |
-           v         v          v
-
-         nat-----[mult,2]---->nat
-....
-
-[source]
-----
-mmlang> :model clear
-mmlang> :model rec[int<=int[is>=0] -> nat]
-mmlang> :model rec[int + [id] -> nat * 2]
-mmlang> :model
-int ->
-	int[is,bool<=int[gte,0]] -> nat
-	int[plus,int[id]] -> nat<=int[is,bool<=int[gte,0]][mult,2]
-mmlang> 32
-==>nat:32
-mmlang> 32[plus,[id]]
-==>nat:64
-mmlang> int[plus,[id]][explain]
-==>str<=[start,'
-nat<=int[is,bool<=int[gte,0]][mult,2]
-instruction             domain      range    state
----------------------------------------------------
-[is,bool<=int[gte,0]]    int    =>   int{?}
- [gt,0]                  int   =>    bool
-[mult,2]                nat    =>   nat
-']
-mmlang>
-----
-////
-////
-A complex type definition is provided below that captures a large number of the mm-ADT type constructs.
-
-[source]
-----
-int<=int{2}<x>[plus,10]<y>[is.<10 -> <x>
-                          |is.<20 -> <y>
-                          |int    -> <x>+<y>][count]
-----
-
-.mmlang Language Structures
-[cols="75,1,200"]
-|===
-|Classification          |`mmlang` |Description
-
-|`obj` instruction       |`[ ]`    |The bulk of instructions operate on `objs`.
-|traverser instruction   |`< >`    |Traversers are independent computational contexts that can be programmed.
-|quantifiers             |`{ }`    |Every `obj` has a quantity as specified by the associated algebraic ring w/ unity.
-|branching instructions  |`[->]`   |A `rec` type is used for guarded branching.
-|domain/range specifies  |`<=`     |Every type has a domain and a range. Classic types have are endomorphisms.
-|===
-////

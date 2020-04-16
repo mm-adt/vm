@@ -22,7 +22,8 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.LanguageFactory
+import org.mmadt.language.mmlang.mmlangPrinter.listString
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.language.obj.`type`.Type
 
 /**
@@ -51,6 +52,7 @@ object Inst {
     case valueArg: OValue[E] => valueArg
     // case recArg: ORecType => recArg.clone(value = recArg.value().map(a => resolve(obj, a._1) -> resolve(obj, a._2))).asInstanceOf[E]
     case typeArg: OType[E] => obj match {
+      case alst: Lst[_] => typeArg
       case atype: Type[_] => atype.range.compute(typeArg)
       case _ => obj.compute(typeArg)
     }
