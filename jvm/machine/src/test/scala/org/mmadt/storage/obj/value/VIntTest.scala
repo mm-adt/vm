@@ -22,8 +22,9 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.op.map.{IdOp, PlusOp}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -48,6 +49,23 @@ class VIntTest extends FunSuite {
     assertResult(int(14).q(12))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).gt(int(2).q(34)).q(10))
     assertResult(btrue.q(40))(int(3).q(2) ===> int.q(2).plus(int(4)).q(2).a(int.q(0, 4)).q(10))
+  }
+  test("nested lineages of types") {
+    val atype = int.id().plus(int.plus(2))
+    assertResult(2)(atype.lineage.length)
+    assertResult((int.id(), PlusOp(int.plus(2))))(atype.lineage.last)
+    assertResult(PlusOp(int.plus(2)))(atype.lineage.last._2)
+    assertResult(int.plus(2))(atype.lineage.last._2.arg0[IntType]())
+    assertResult(List((int, PlusOp(2))))(atype.lineage.last._2.arg0[IntType]().lineage)
+  }
+  test("nested lineages of values") {
+    val atype = int.id().plus(int.plus(2))
+    assertResult(int(8))(int(3) ===> atype)
+    assertResult(2)((int(3) ===> atype).lineage.length)
+    assertResult((int(3),PlusOp(5)))((int(3) ===> atype).lineage.last)
+    assertResult(PlusOp(5))((int(3) ===> int.id().plus(int.plus(2))).lineage.last._2)
+    assertResult(int(5))((int(3) ===> int.id().plus(int.plus(2))).lineage.last._2.arg0[Obj]())
+    assertResult(List((int(3),IdOp()),(int(3),PlusOp(2))))((int(3) ===> int.id().plus(int.plus(2))).lineage.last._2.arg0[Obj]().lineage)
   }
 }
 

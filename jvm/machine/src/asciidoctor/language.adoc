@@ -16,7 +16,7 @@ A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in te
 Along with these decomposition (and composition) morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects. That is, product and coproduct equality are defined via component equality.
 ****
 
-Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_function[unary function] that maps an object of type \$S\$ (start) to an object of type \$E\$ (end) with the function signature
+Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_function[unary function] that maps an `obj` of type \$S\$ (start) to an `obj` of type \$E\$ (end) with the function signature
 
 image::obj-type-value-q.png[float=right,width=280]
 
@@ -124,7 +124,7 @@ The implication of the dtype product is that mm-ADT types are generated https://
 
 image::ctype-dtype.png[align=center,width=230]
 
-For example, `int` is a ctype. When the instruction `[is>0]` is applied to `int`, the dtype `int[is>0]` is formed. In particular, this dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type].
+For example, `int` is a ctype. When the instruction `[is>0]` is applied to `int`, the dtype `int[is>0]` is formed. In particular, this dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that denotes a single natural number in \$\mathbb{N}^+\$. In terms of the "range = domain and function" reading, when `int` (domain) is applied to `[is>0]` (function), the result is an integer greater than zero (range).
 
 image::int_isgt0.png[align=center,width=260]
 
@@ -145,11 +145,17 @@ mmlang> int{2}[is>0]                             <3>
 <2> A ctype denoting a stream with two integers.
 <3> A dtype denoting a stream of zero, one, or two integers.
 
-==== Type Graph
-
-The implication of the above type definition is that a type is a path composed of *type vertices* and *instruction edges*.
-
 ==== The Instruction Monoid
+
+An mm-ADT instruction is a ordered list of `objs` where the first element is the opcode and all subsequent elements are instruction arguments. For instance, `[plus,6]` is an instruction where `plus` is the opcode and `6` is the argument. Instructions can be composed to create longer instruction chains. If \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ is the binary instruction composition operator, then the following instruction chain is created as follows.
+
+\[
+\begin{split}
+\texttt{[plus,4]} &=\;& \texttt{[plus,4]} \\
+\texttt{[plus,4][mult,2]} &=\;& \texttt{[plus,4]} * \texttt{[mult,2]} \\
+\texttt{[plus,4][mult,2][gt,42]} &=\;& \texttt{[plus,4][mult,2]} * \texttt{[gt,42]} \\
+\end{split}
+\]
 
 .Monoids
 ****
@@ -172,7 +178,7 @@ The initial object of the `inst` monoid is `obj{0}`--from nothing, everything ca
 \]
 and in `mmlang` notation
 \[
-\tt{bool\<=[bool]}
+\texttt{bool\<=[bool]}
 \]
 
 The example belows demonstrates the `inst`-monoid in action, generating types whose domain is `str` and where \$\ast\$ is juxtaposition (i.e. instruction concatenation).
