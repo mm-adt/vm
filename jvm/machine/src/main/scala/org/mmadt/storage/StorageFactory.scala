@@ -57,7 +57,7 @@ trait StorageFactory {
   def tstr(name: String = Tokens.str, q: IntQ = qOne, insts: ViaTuple = base(StrOp())): StrType
   def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, insts: ViaTuple = base()): RecType[A, B]
   def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecType[A, B]
-  def tlst[A <: Obj](name: String = Tokens.lst, value: Lst[A] = null, q: IntQ = qOne, insts: ViaTuple = base()): Lst[A]
+  def tlst[A <: Obj](name: String = Tokens.lst, value: (Lst[A],A) = null, q: IntQ = qOne, insts: ViaTuple = base()): Lst[A]
   def tlst[A <: Obj](value: A, values: A*): Lst[A] = Lst.encode(value +: values)
   /////////VALUES/////////
   def obj(value: Any): ObjValue
@@ -103,7 +103,7 @@ object StorageFactory {
   def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = (null, StrOp()))(implicit f: StorageFactory): StrType = f.tstr(name, q, via)
   def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RecType[A, B] = f.trec(name, value, q, via)
   def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): RecType[A, B] = f.trec(value, values: _*)
-  def tlst[A <: Obj](name: String = Tokens.lst, value: Lst[A]=null, q: IntQ = qOne, insts: ViaTuple = base())(implicit f: StorageFactory): Lst[A] = f.tlst(name, value, q, insts)
+  def tlst[A <: Obj](name: String = Tokens.lst, value: (Lst[A],A)=null, q: IntQ = qOne, insts: ViaTuple = base())(implicit f: StorageFactory): Lst[A] = f.tlst(name, value, q, insts)
   def tlst[A <: Obj](value: A, values: A*)(implicit f: StorageFactory): Lst[A] = f.tlst(value, values: _*)
   /////////VALUES/////////
   def obj(value: Any)(implicit f: StorageFactory): ObjValue = f.obj(value)
@@ -199,6 +199,6 @@ object StorageFactory {
         strm[O]
       }
     }
-    override def tlst[A <: Obj](name: String, value: Lst[A], q: IntQ, insts: ViaTuple): Lst[A] = new ALst[A](name, value, q, insts)
+    override def tlst[A <: Obj](name: String, value: (Lst[A],A), q: IntQ, insts: ViaTuple): Lst[A] = new ALst[A](name, value, q, insts)
   }
 }

@@ -24,7 +24,6 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.map.{AppendOp, HeadOp, TailOp}
-import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 trait Lst[A <: Obj] extends Obj
@@ -32,28 +31,10 @@ trait Lst[A <: Obj] extends Obj
   with HeadOp[A]
   with TailOp[A]
   with Type[Lst[A]] {
-  def value(): Lst[A]
+  def value(): (Lst[A], A)
 }
 
 object Lst {
-  @scala.annotation.tailrec
-  def lstRoot[A <: Obj](alst: Lst[A]): A = if (alst.root) throw new LanguageException("no head") else if(alst.via._1.root) alst.via._2.arg0[A]() else lstRoot[A](alst.via._1.asInstanceOf[Lst[A]])
-  @scala.annotation.tailrec
-  def lstTail[A <: Obj](alst: Lst[A],build:Lst[A]=lst[A]): Lst[A] =
-    if (alst.root)
-      alst
-    else if (alst.via._1.root)
-      build
-    else
-      lstTail[A](alst.via._1.asInstanceOf[Lst[A]],build.append(alst.via._2.arg0[A]()))
-
-  def encode[A <: Obj](seq: Seq[A]): Lst[A] = seq.foldLeft(lst[A])((b, a) => b.append(a))
-  def decode[A <: Obj](alist: Lst[A]): List[A] = {
-    alist.lineage.foldLeft(List.empty[A])((b, a) => {
-      a._2.op() match {
-        case Tokens.append => b :+ a._2.arg0[A]()
-        case Tokens.tail => b.tail
-      }
-    })
-  }
+  def encode[A <: Obj](seq: Seq[A]): Lst[A] = seq.foldRight(lst[A])((a,b) => b.append(a))
+  def decode[A <: Obj](alist: Lst[A]): List[A] = if (alist.value() == null) List.empty[A] else  alist.value()._2 +: decode(alist.value()._1)
 }

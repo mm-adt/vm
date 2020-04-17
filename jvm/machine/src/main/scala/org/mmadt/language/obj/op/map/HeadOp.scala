@@ -22,14 +22,14 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.language.obj.{IntQ, Lst, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
 trait HeadOp[O <: Obj] {
   this: Lst[O] =>
-  def head(): O = Lst.lstRoot(this).via(this, HeadOp())
+  def head(): O = if(null == this.value()) throw new LanguageException("no head on empty list") else this.value()._2.via(this,HeadOp[O]()).asInstanceOf[O]
 }
 
 object HeadOp {

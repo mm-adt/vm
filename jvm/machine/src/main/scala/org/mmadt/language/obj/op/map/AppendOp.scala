@@ -29,7 +29,7 @@ import org.mmadt.storage.obj.value.VInst
 
 trait AppendOp[O <: Obj] {
   this: Lst[O] =>
-  def append(other: O): this.type = this.via(this, AppendOp[O](other))
+  def append(other: O): this.type = this.clone(value = (this, other), via = (this, AppendOp[O](other)))
   //final def ++(other: Lst[O]): Lst[O] = this.append(other)
 }
 
@@ -43,4 +43,5 @@ object AppendOp {
       start.append(inst.arg0[O]()).via(start, inst).asInstanceOf[Lst[O]]
     }
   }
+
 }

@@ -27,16 +27,17 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.storage.StorageFactory._
 
-class ALst[A <: Obj](val name: String = Tokens.lst, val value: Lst[A] = null, val q: IntQ = qOne, val via: ViaTuple = base())
+class ALst[A <: Obj](val name: String = Tokens.lst, val value: (Lst[A], A) = null, val q: IntQ = qOne, val via: ViaTuple = base())
   extends Lst[A]
     with Type[Lst[A]] {
 
   override def clone(name: String = this.name,
     value: Any = this.value,
     q: IntQ = this.q,
-    via: ViaTuple = this.via): this.type = new ALst[A](name, value.asInstanceOf[Lst[A]], q, via).asInstanceOf[this.type]
+    via: ViaTuple = this.via): this.type = new ALst[A](name, value.asInstanceOf[(Lst[A], A)], q, via).asInstanceOf[this.type]
 
-  override def test(other: Obj): Boolean = {
-    true
+  override def test(other: Obj): Boolean = other match {
+    case alst: Lst[_] => Lst.decode(alst).equals(Lst.decode(this)) && this.lineage.equals(alst.lineage)
+    case _ => false
   }
 }

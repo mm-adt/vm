@@ -30,14 +30,19 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 class ALstTest extends FunSuite with TableDrivenPropertyChecks {
 
+  /*test("...") {
+    println((Nil ++ "a" ++ "b" ++ "c").tail)
+    println(lst[Str].append("a").append("b").append("c").tail())
+  }*/
+
   test("lst encode/decode") {
     val starts: TableFor2[Lst[_ <: Obj], List[_ <: Obj]] =
       new TableFor2(("lst", "list"),
         (lst, List.empty),
         (lst[Str].append("a"), List(str("a"))),
         (lst[Str].append("a").append("a"), List(str("a"), str("a"))),
-        (lst[Str].append("a").append("b").append("c"), List(str("a"), str("b"), str("c"))),
-        (lst[Obj].append("a").append(lst[Str].append("d").append("b")).append("c"), List(str("a"), Lst.encode(List(str("d"), str("b"))), str("c"))),
+        (lst[Str].append("c").append("b").append("a"), List(str("a"), str("b"), str("c"))),
+        (lst[Obj].append("c").append(lst[Str].append("b").append("d")).append("a"), List(str("a"), Lst.encode(List(str("d"), str("b"))), str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
       assertResult(Lst.decode(alst))(blist)
@@ -47,7 +52,6 @@ class ALstTest extends FunSuite with TableDrivenPropertyChecks {
         assertResult(Lst.decode(alst).head)(blist.head)
         assertResult(Lst.decode(alst.tail()))(blist.tail)
         assertResult(Lst.decode(alst).tail)(blist.tail)
-        assertResult(alst.via._1)(Lst.encode(blist.reverse.tail.reverse))
       }
     }
     }
@@ -56,7 +60,7 @@ class ALstTest extends FunSuite with TableDrivenPropertyChecks {
   test("lst head/tail toString") {
     println(List(1, 2, 3).head)
     println(List(1, 2, 3).tail)
-    println(lst[IntValue].append(1).tail())
+    println(lst[IntValue].append(1).append(2).append(3).tail())
   }
 
 }

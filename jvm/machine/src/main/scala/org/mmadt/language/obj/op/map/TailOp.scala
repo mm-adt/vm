@@ -29,7 +29,7 @@ import org.mmadt.storage.obj.value.VInst
 
 trait TailOp[O <: Obj] {
   this: Lst[O] =>
-  def tail(): Lst[O] = Lst.lstTail(this).via(this,TailOp())
+  def tail(): Lst[O] = this.value()._1.via(this, TailOp[O]()).asInstanceOf[this.type]
 }
 
 object TailOp {
@@ -37,7 +37,7 @@ object TailOp {
 
   class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[Lst[O], Lst[O]]((Tokens.tail, Nil), q) {
     override def q(quantifier: IntQ): this.type = new TailInst[O](quantifier).asInstanceOf[this.type]
-    override def exec(start: Lst[O]): Lst[O] = start.tail().via(start,TailOp())
+    override def exec(start: Lst[O]): Lst[O] = start.tail().via(start, new TailInst[O](q))
   }
 
 }
