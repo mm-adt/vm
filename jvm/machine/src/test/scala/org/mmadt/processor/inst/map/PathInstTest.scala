@@ -29,7 +29,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[path] w/ int value") {
-    assertResult(vrec(int(1)->int(0),int(2)->int(1),int(3)->int(3),int(4)->int(6),int(5)->int(10)))(int(0).plus(1).plus(2).plus(3).plus(4).path())
+    assertResult(vlst(int(0),int(1),int(3),int(6),int(10)))(int(0).plus(1).plus(2).plus(3).plus(4).path())
   }
 
 }

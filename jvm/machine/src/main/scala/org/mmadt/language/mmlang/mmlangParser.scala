@@ -40,7 +40,6 @@ import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{strm => estrm, _}
-import org.mmadt.storage.obj.value.VLst
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -102,7 +101,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val realValue: Parser[RealValue] = opt(valueType) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
   lazy val strValue: Parser[StrValue] = opt(valueType) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
   lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ (Tokens.:-> | Tokens.::)) ~ objValue, COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
-  lazy val lstValue: Parser[LstValue[Value[Obj]]] = opt(valueType) ~ (LBRACKET ~> repsep(objValue, SEMICOLON) <~ RBRACKET) ^^ (x => new VLst[Value[Obj]](name = x._1.getOrElse(Tokens.lst), value = x._2))
+  lazy val lstValue: Parser[LstValue[Value[Obj]]] = opt(valueType) ~ (LBRACKET ~> repsep(objValue, SEMICOLON) <~ RBRACKET) ^^ (x => vlst[Value[Obj]](name = x._1.getOrElse(Tokens.lst), value = x._2))
 
   lazy val valueType: Parser[String] = "[a-zA-Z]+".r <~ ":"
   lazy val strm: Parser[Strm[Obj]] = boolStrm | realStrm | intStrm | strStrm | recStrm

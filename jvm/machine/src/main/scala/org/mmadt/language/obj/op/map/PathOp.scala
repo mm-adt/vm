@@ -25,39 +25,27 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.PathOp.PathInst
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
-import scala.collection.mutable
-
 trait PathOp {
   this: Obj =>
-  private lazy val inst: Inst[Obj, Rec[IntValue, Obj]] = new PathInst()
+  private lazy val inst: Inst[Obj, Lst[Obj]] = new PathInst()
 
-  def path(): Rec[IntValue, Obj] = (this match {
-    case _: Value[_] => makeMap(vrec(mutable.LinkedHashMap.empty[IntValue, OValue[Obj]]))
-    case _ => makeMap(trec(value = mutable.LinkedHashMap.empty[IntValue, Obj]))
-  }).via(this, inst)
+  def path(): Lst[Obj] = (this match {
+    case _: Value[_] => vlst[Value[Obj]](value = this.lineage.foldRight(List.empty[Value[Obj]])((a, b) => a._1.asInstanceOf[Value[Obj]] +: b) :+ this.asInstanceOf[Value[Obj]])
+    case _ => tlst[Obj](value = this.lineage.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ this)
+  }).via(this, inst).asInstanceOf[Lst[Obj]]
 
-  private def makeMap[B <: Obj](rec: Rec[IntValue, B]): Rec[IntValue, Obj] = {
-    var counter: scala.Long = 1
-    var path: Rec[IntValue, Obj] = rec.asInstanceOf[Rec[IntValue, Obj]]
-    this.lineage.foreach(x => {
-      path = path.put(int(counter), x._1)
-      counter = counter + 1
-    })
-    path = path.put(int(counter), this)
-    path
-  }
 }
 
 object PathOp {
   def apply(): PathInst = new PathInst
 
-  class PathInst(q: IntQ = qOne) extends VInst[Obj, Rec[IntValue, Obj]]((Tokens.path, Nil), q) {
-    override def q(quantifier: IntQ): this.type = new PathInst(quantifier).asInstanceOf[this.type]
-    override def exec(start: Obj): Rec[IntValue, Obj] = start.path().via(start, this)
+  class PathInst(q: IntQ = qOne) extends VInst[Obj, Lst[Obj]]((Tokens.path, Nil), q) {
+    override def q(q: IntQ): this.type = new PathInst(q).asInstanceOf[this.type]
+    override def exec(start: Obj): Lst[Obj] = start.path().via(start, this)
   }
 
 }

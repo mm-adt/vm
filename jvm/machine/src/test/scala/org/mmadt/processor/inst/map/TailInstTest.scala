@@ -20,24 +20,34 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.`type`
+package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
-class TLstTest extends FunSuite with TableDrivenPropertyChecks {
+class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("...") {
-    println((Nil ++ "a" ++ "b" ++ "c").tail)
-    println(lst[StrValue].append("a").append("b").append("c").tail())
+  test("[tail] w/ values") {
+    val check: TableFor2[Lst[_], Obj] =
+      new TableFor2(("list", "tail"),
+        (vlst[StrValue]("a"), vlst()),
+        (vlst[StrValue]("a", "b"), vlst(str("b"))),
+        (vlst[StrValue]("a", "b", "c"), vlst(str("b"), str("c"))),
+        (vlst[StrValue]("d", "b", "c"), vlst(str("b"), str("c"))),
+      )
+    forEvery(check) { (left, right) => {
+      assertResult(right)(left.tail())
+    }
+    }
   }
 
-  test("lst head/tal toString") {
-    println(List(1, 2, 3).head)
-    println(List(1, 2, 3).tail)
-    println(lst[IntValue].append(1).append(2).append(3).tail())
+  test("[tail] exception") {
+    assertThrows[LanguageException] {
+      vlst().tail()
+    }
   }
-
 }
