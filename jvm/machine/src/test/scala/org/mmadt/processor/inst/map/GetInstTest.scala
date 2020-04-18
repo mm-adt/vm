@@ -22,18 +22,47 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class GetInstTest extends FunSuite {
+class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
+
+  test("[get] w/ lst values") {
+    val check: TableFor3[Lst[_], IntValue, Obj] =
+      new TableFor3[Lst[_], IntValue, Obj](("list", "key", "value"),
+        (vlst[StrValue]("a"), 0, str("a")),
+        (vlst[StrValue]("a", "b"), 0, "a"),
+        (vlst[StrValue]("a", "b", "c"), 1, "b"),
+        (vlst[StrValue]("d", "b", "c"), 2, "c"),
+      )
+    forEvery(check) { (alst, akey, avalue) => {
+      assertResult(avalue)(alst.get(akey))
+    }
+    }
+  }
+
+  test("[get] w/ lst value exception") {
+    assertThrows[LanguageException] {
+      vlst[StrValue]("a", "b", "c").get(-1)
+    }
+    assertThrows[LanguageException] {
+      vlst[StrValue]("a", "b", "c").get(3)
+    }
+    assertThrows[LanguageException] {
+      vlst.get(0)
+    }
+  }
+
   test("[get] lineage") {
     val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
-    assertResult(2)(rec.get(str("name"),str).plus(" rodriguez").lineage.length)
+    assertResult(2)(rec.get(str("name"), str).plus(" rodriguez").lineage.length)
   }
 
 

@@ -22,11 +22,20 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.op.map.{AppendOp, HeadOp, TailOp}
+import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.op.map.{AppendOp, GetOp, HeadOp, TailOp}
 
 trait Lst[A <: Obj] extends Obj
   with HeadOp[A]
   with TailOp
-  with AppendOp[A] {
-  def value(): Any
+  with AppendOp[A]
+  with GetOp[Int, A] {
+  def value(): List[Obj]
+}
+
+object Lst {
+  def checkIndex(alst: Lst[_], index: scala.Int): Unit = {
+    if (index < 0) throw new LanguageException("lst index must be 0 or greater: " + index)
+    if (alst.value().length < (index + 1)) throw new LanguageException("lst index is out of bounds: " + index)
+  }
 }

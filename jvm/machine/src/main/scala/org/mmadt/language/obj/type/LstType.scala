@@ -23,8 +23,9 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.op.map.{AppendOp, HeadOp, TailOp}
-import org.mmadt.language.obj.{Lst, Obj}
+import org.mmadt.language.obj.op.map.{AppendOp, GetOp, HeadOp, TailOp}
+import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.{Int, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 
 trait LstType[A <: Obj] extends Lst[A]
@@ -36,6 +37,16 @@ trait LstType[A <: Obj] extends Lst[A]
   override def head(): A = if (this.value().isEmpty) throw new LanguageException("no head on empty list") else asType(this.value().head).via(this, HeadOp[A]())
   override def tail(): this.type = if (this.value().isEmpty) throw new LanguageException("no tail on empty list") else this.clone(value = this.value().tail, via = (this, TailOp[A]()))
   override def append(element: A): this.type = this.clone(value = this.value() :+ element, via = (this, AppendOp[A](element)))
+  override def get(key: Int): A = {
+    val valueType: A = key match {
+      case avalue: IntValue =>
+        Lst.checkIndex(this, avalue.value.toInt)
+        asType[A](this.value()(avalue.value.toInt))
+      case _ => asType[A](this.value().head)
+    }
+    valueType.via(this, GetOp[Int, A](key, valueType))
+  }
+  override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {

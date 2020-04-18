@@ -23,8 +23,9 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.op.map.{AppendOp, HeadOp, TailOp}
-import org.mmadt.language.obj.{Lst, Obj}
+import org.mmadt.language.obj.`type`.LstType
+import org.mmadt.language.obj.op.map.{AppendOp, GetOp, HeadOp, TailOp}
+import org.mmadt.language.obj.{Int, Lst, Obj}
 
 trait LstValue[A <: Value[Obj]] extends Lst[A]
   with HeadOp[A]
@@ -35,4 +36,16 @@ trait LstValue[A <: Value[Obj]] extends Lst[A]
   override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty lst") else this.value.head.via(this, HeadOp())
   override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty lst") else this.clone(value = this.value.tail, via = (this, TailOp()))
   override def append(element: A): this.type = this.clone(value = this.value :+ element, via = (this, AppendOp[A](element)))
+  override def get(key: Int): A = key match {
+    case avalue: IntValue =>
+      Lst.checkIndex(this, avalue.value.toInt)
+      this.value(avalue.value.toInt).via(this, GetOp[Int, A](key))
+    case _ => this.start[LstType[A]]().get(key)
+  }
+  override def get[BB <: Obj](key: Int, btype: BB): BB = key match {
+    case avalue: IntValue =>
+      Lst.checkIndex(this, avalue.value.toInt)
+      this.value(avalue.value.toInt).via(this, GetOp[Int, BB](key, btype)).asInstanceOf[BB]
+    case _ => this.start[LstType[A]]().get(key, btype)
+  }
 }
