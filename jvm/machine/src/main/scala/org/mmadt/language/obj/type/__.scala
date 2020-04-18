@@ -40,6 +40,8 @@ class __(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = 
   with StrOp
   with PlusOp[__, ObjValue]
   with MultOp[__, ObjValue]
+  with HeadOp[Obj]
+  with TailOp
   with AndOp
   with OrOp
   with GetOp[Obj, Obj]
@@ -70,6 +72,8 @@ class __(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = 
   override def gte(other: ObjValue): BoolType = bool.via(this, GteOp(other))
   override def zero(): this.type = this.via(this, ZeroOp())
   override def one(): this.type = this.via(this, OneOp())
+  override def head(): this.type = this.via(this, HeadOp())
+  override def tail(): this.type = this.via(this, TailOp())
 }
 
 object __ extends __(Tokens.obj, qOne, base()) {

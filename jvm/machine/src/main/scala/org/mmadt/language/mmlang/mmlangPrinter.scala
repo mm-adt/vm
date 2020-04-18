@@ -23,10 +23,10 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.{LstType, RecType, Type}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, Lst, Obj}
+import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -54,13 +54,13 @@ object mmlangPrinter {
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
       case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
-      case alst: Lst[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(Lst.decode(alst))
+      case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value())
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
         case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
-        case alst: Lst[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(Lst.decode(alst))
+        case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value())
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
     }
@@ -72,6 +72,7 @@ object mmlangPrinter {
     (if (named) avalue.name + COLON else EMPTY) + (
       avalue match {
         case arec: RecValue[_, _] => mapString(arec.value)
+        case alst: LstValue[_] => listString(alst.value)
         case astr: StrValue => SQUOTE + astr.value + SQUOTE
         case _ => avalue.value
       }) + qString(avalue.q)

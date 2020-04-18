@@ -391,7 +391,8 @@ class mmlangScriptEngineTest extends FunSuite {
   test("lst") {
     println(engine.eval("lst['c']"))
     println(engine.eval("lst['a';'b';'c']").lineage)
-    println(engine.eval("lst[head]"))
+    println(engine.eval("['a';'b';'c'][tail][head]"))
+    //println(engine.eval("lst[head]"))
     println(engine.eval("lst[append,'a'][append,'b'][tail]"))
     println(engine.eval("lst['a'][append,lst['b']][append,lst['c']]"))
     println(engine.eval("lst['a';lst['b';lst['c']]]"))

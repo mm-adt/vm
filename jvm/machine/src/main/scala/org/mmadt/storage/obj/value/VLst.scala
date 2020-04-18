@@ -20,24 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.dvalue
+package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.value.{LstValue, Value}
+import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
+import org.mmadt.storage.StorageFactory.qOne
 
-class ALst[A <: Obj](val name: String = Tokens.lst, val value: (Lst[A], A) = null, val q: IntQ = qOne, val via: ViaTuple = base())
-  extends Lst[A]
-    with Type[Lst[A]] {
-
+class VLst[A <: Value[Obj]](val name: String = Tokens.lst, val value: List[A] = List.empty[A], val q: IntQ = qOne, val via: ViaTuple = base()) extends LstValue[A] {
+  def this(list: List[A]) = {
+    this(name = Tokens.lst, value = list, q = qOne, via = base())
+  }
   override def clone(name: String = this.name,
     value: Any = this.value,
     q: IntQ = this.q,
-    via: ViaTuple = this.via): this.type = new ALst[A](name, value.asInstanceOf[(Lst[A], A)], q, via).asInstanceOf[this.type]
-
-  override def test(other: Obj): Boolean = other match {
-    case alst: Lst[_] => Lst.decode(alst).equals(Lst.decode(this)) && this.lineage.equals(alst.lineage)
-    case _ => false
-  }
+    via: ViaTuple = this.via): this.type = new VLst[A](name, value.asInstanceOf[List[A]], q, via).asInstanceOf[this.type]
 }

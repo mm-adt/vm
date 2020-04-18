@@ -32,7 +32,6 @@ import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{ViaTuple, _}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
-import org.mmadt.storage.obj.dvalue.ALst
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm._
 
@@ -48,7 +47,7 @@ trait StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
-  def lst[A <: Obj]: Lst[A] = tlst()
+  def lst[A <: Obj]: LstType[A] = tlst()
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, insts: ViaTuple = base()): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, insts: ViaTuple = base()): BoolType
@@ -57,8 +56,8 @@ trait StorageFactory {
   def tstr(name: String = Tokens.str, q: IntQ = qOne, insts: ViaTuple = base(StrOp())): StrType
   def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, insts: ViaTuple = base()): RecType[A, B]
   def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecType[A, B]
-  def tlst[A <: Obj](name: String = Tokens.lst, value: (Lst[A],A) = null, q: IntQ = qOne, insts: ViaTuple = base()): Lst[A]
-  def tlst[A <: Obj](value: A, values: A*): Lst[A] = Lst.encode(value +: values)
+  def tlst[A <: Obj](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, insts: ViaTuple = base()): LstType[A]
+  def tlst[A <: Obj](value: A, values: A*): LstType[A] = tlst[A](value = (value +: values).toList)
   /////////VALUES/////////
   def obj(value: Any): ObjValue
   def bool(value: Boolean): BoolValue
@@ -94,7 +93,7 @@ object StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
-  def lst[A <: Obj]: Lst[A] = tlst()
+  def lst[A <: Obj]: LstType[A] = tlst()
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)
@@ -103,8 +102,8 @@ object StorageFactory {
   def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = (null, StrOp()))(implicit f: StorageFactory): StrType = f.tstr(name, q, via)
   def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RecType[A, B] = f.trec(name, value, q, via)
   def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): RecType[A, B] = f.trec(value, values: _*)
-  def tlst[A <: Obj](name: String = Tokens.lst, value: (Lst[A],A)=null, q: IntQ = qOne, insts: ViaTuple = base())(implicit f: StorageFactory): Lst[A] = f.tlst(name, value, q, insts)
-  def tlst[A <: Obj](value: A, values: A*)(implicit f: StorageFactory): Lst[A] = f.tlst(value, values: _*)
+  def tlst[A <: Obj](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): LstType[A] = f.tlst(name, value, q, via)
+  def tlst[A <: Obj](value: A, values: A*)(implicit f: StorageFactory): LstType[A] = f.tlst(value, values: _*)
   /////////VALUES/////////
   def obj(value: Any)(implicit f: StorageFactory): ObjValue = f.obj(value)
   def bool(value: Boolean)(implicit f: StorageFactory): BoolValue = f.bool(value)
@@ -146,7 +145,8 @@ object StorageFactory {
     case _: StrValue | _: StrStrm => tstr(name = obj.name, q = obj.q)
     case _: BoolValue | _: BoolStrm => tbool(name = obj.name, q = obj.q)
     case _: RecStrm[_, _] => trec(name = obj.name, value = Map.empty, q = obj.q)
-    case recval: RecValue[_, _] => trec(name = recval.name, value = recval.value, q = obj.q)
+    case recval: RecValue[_, _] => trec(name = recval.name, value = recval.value, q = recval.q)
+    case lstval: LstValue[_] => tlst(name = lstval.name, value = lstval.value, q = lstval.q)
   }).asInstanceOf[OType[O]]
   def isSymbol[O <: Obj](obj: O): Boolean = obj match {
     case _: Value[_] => false
@@ -199,6 +199,6 @@ object StorageFactory {
         strm[O]
       }
     }
-    override def tlst[A <: Obj](name: String, value: (Lst[A],A), q: IntQ, insts: ViaTuple): Lst[A] = new ALst[A](name, value, q, insts)
+    override def tlst[A <: Obj](name: String, value: List[A], q: IntQ, insts: ViaTuple): LstType[A] = new TLst[A](name, value, q, insts)
   }
 }

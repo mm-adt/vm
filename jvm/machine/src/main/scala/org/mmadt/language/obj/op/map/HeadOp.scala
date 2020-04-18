@@ -22,22 +22,22 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.language.obj.{IntQ, Lst, Obj}
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
-trait HeadOp[O <: Obj] {
-  this: Lst[O] =>
-  def head(): O = if(null == this.value()) throw new LanguageException("no head on empty list") else this.value()._2.via(this,HeadOp[O]()).asInstanceOf[O]
+trait HeadOp[A <: Obj] {
+  this: Obj =>
+  def head(): A
 }
 
 object HeadOp {
-  def apply[O <: Obj](): HeadInst[O] = new HeadInst[O]
+  def apply[A <: Obj](): HeadInst[A] = new HeadInst[A]
 
-  class HeadInst[O <: Obj](q: IntQ = qOne) extends VInst[Lst[O], O]((Tokens.head, Nil), q) {
-    override def q(quantifier: IntQ): this.type = new HeadInst[O](quantifier).asInstanceOf[this.type]
-    override def exec(start: Lst[O]): O = start.head().via(start, new HeadInst[O](q))
+  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Obj with HeadOp[A], A]((Tokens.head, Nil), q) {
+    override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
+    override def exec(start: Obj with HeadOp[A]): A = start.head().via(start, new HeadInst[A](q))
   }
 
 }

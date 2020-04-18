@@ -20,13 +20,19 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.storage.obj.`type`
 
-import org.mmadt.language.obj.op.map.{AppendOp, HeadOp, TailOp}
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.LstType
+import org.mmadt.storage.StorageFactory.qOne
 
-trait Lst[A <: Obj] extends Obj
-  with HeadOp[A]
-  with TailOp
-  with AppendOp[A] {
-  def value(): Any
+class TLst[A <: Obj](val name: String = Tokens.lst, val value: List[A] = List.empty[A], val q: IntQ = qOne, val via: ViaTuple = base()) extends LstType[A] {
+  def this(list: List[A]) = {
+    this(name = Tokens.lst, value = list, q = qOne, via = base())
+  }
+  override def clone(name: String = this.name,
+    value: Any = this.value,
+    q: IntQ = this.q,
+    via: ViaTuple = this.via): this.type = new TLst[A](name, value.asInstanceOf[List[A]], q, via).asInstanceOf[this.type]
 }

@@ -27,17 +27,17 @@ import org.mmadt.language.obj.{IntQ, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
-trait TailOp[O <: Obj] {
-  this: Lst[O] =>
-  def tail(): Lst[O] = this.value()._1.via(this, TailOp[O]()).asInstanceOf[this.type]
+trait TailOp {
+  this: Obj =>
+  def tail(): this.type
 }
 
 object TailOp {
-  def apply[O <: Obj](): TailInst[O] = new TailInst[O]
+  def apply[A <: Obj](): TailInst[A] = new TailInst[A]
 
-  class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[Lst[O], Lst[O]]((Tokens.tail, Nil), q) {
-    override def q(quantifier: IntQ): this.type = new TailInst[O](quantifier).asInstanceOf[this.type]
-    override def exec(start: Lst[O]): Lst[O] = start.tail().via(start, new TailInst[O](q))
+  class TailInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], Lst[A]]((Tokens.tail, Nil), q) {
+    override def q(q: IntQ): this.type = new TailInst[A](q).asInstanceOf[this.type]
+    override def exec(start: Lst[A]): Lst[A] = start.tail().via(start, new TailInst[A](q))
   }
 
 }

@@ -27,10 +27,10 @@ import org.mmadt.language.obj.{Inst, IntQ, Lst, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
-trait AppendOp[O <: Obj] {
-  this: Lst[O] =>
-  def append(other: O): this.type = this.clone(value = (this, other), via = (this, AppendOp[O](other)))
-  //final def ++(other: Lst[O]): Lst[O] = this.append(other)
+trait AppendOp[A <: Obj] {
+  this: Lst[A] =>
+  def append(other: A): this.type
+  final def +:(other: A): this.type = this.append(other)
 }
 
 object AppendOp {

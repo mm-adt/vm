@@ -20,38 +20,40 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.value.dvalue
+package org.mmadt.storage.obj.`type`
 
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Lst, Obj, Str}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.value.{IntValue, LstValue, StrValue, Value}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.VLst
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
-class ALstTest extends FunSuite with TableDrivenPropertyChecks {
+class TLstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  /*test("...") {
+  test("...") {
     println((Nil ++ "a" ++ "b" ++ "c").tail)
-    println(lst[Str].append("a").append("b").append("c").tail())
-  }*/
+    println(lst[StrValue].append("a").append("b").append("c").tail())
+  }
+
 
   test("lst encode/decode") {
-    val starts: TableFor2[Lst[_ <: Obj], List[_ <: Obj]] =
-      new TableFor2(("lst", "list"),
-        (lst, List.empty),
-        (lst[Str].append("a"), List(str("a"))),
-        (lst[Str].append("a").append("a"), List(str("a"), str("a"))),
-        (lst[Str].append("c").append("b").append("a"), List(str("a"), str("b"), str("c"))),
-        (lst[Obj].append("c").append(lst[Str].append("b").append("d")).append("a"), List(str("a"), Lst.encode(List(str("d"), str("b"))), str("c"))),
+    val starts: TableFor2[LstValue[Value[Obj]], List[Value[Obj]]] =
+      new TableFor2[LstValue[Value[Obj]], List[Value[Obj]]](("lst", "list"),
+        (new VLst[Value[Obj]](), List.empty),
+        (new VLst[Value[Obj]]().append("a"), List(str("a"))),
+        (new VLst[Value[Obj]]().append("a").append("a"), List(str("a"), str("a"))),
+        (new VLst[Value[Obj]]().append("a").append("b").append("c"), List(str("a"), str("b"), str("c"))),
+        (new VLst[Value[Obj]]().append("a").append(new VLst[Value[Obj]]().append("b").append("d")).append("c"), List[Value[Obj]](str("a"), new VLst[Value[Obj]]().append(str("b")).append(str("d")), str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
-      assertResult(Lst.decode(alst))(blist)
-      assertResult(alst)(Lst.encode(blist))
+      assertResult(alst.value)(blist)
+      assertResult(alst)(new VLst[Value[Obj]](blist))
       if (blist.nonEmpty) {
         assertResult(alst.head())(blist.head)
-        assertResult(Lst.decode(alst).head)(blist.head)
-        assertResult(Lst.decode(alst.tail()))(blist.tail)
-        assertResult(Lst.decode(alst).tail)(blist.tail)
+        assertResult(alst.value.head)(blist.head)
+        assertResult(alst.tail().value)(blist.tail)
+        assertResult(alst.value.tail)(blist.tail)
       }
     }
     }

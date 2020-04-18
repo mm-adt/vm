@@ -84,6 +84,7 @@ object Tokens {
   val btrue = "true"
   val bfalse = "false"
 
+  val append_op = ":+"
   val q_mark = "?"
   val plus_op, q_plus = "+"
   val mult_op, q_star = "*"

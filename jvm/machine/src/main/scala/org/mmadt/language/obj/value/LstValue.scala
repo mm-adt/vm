@@ -20,13 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj
+package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.op.map.{AppendOp, HeadOp, TailOp}
+import org.mmadt.language.obj.{Lst, Obj}
 
-trait Lst[A <: Obj] extends Obj
+trait LstValue[A <: Value[Obj]] extends Lst[A]
   with HeadOp[A]
-  with TailOp
-  with AppendOp[A] {
-  def value(): Any
+  with ObjValue
+  with Value[Lst[A]] {
+
+  override val value: List[A]
+  override def head(): A = this.value.head.via(this, HeadOp())
+  override def tail(): this.type = this.clone(value = this.value.tail, via = (this, TailOp()))
+  override def append(element: A): this.type = this.clone(value = this.value :+ element, via = (this, AppendOp[A](element)))
 }
