@@ -22,19 +22,39 @@
 
 package org.mmadt.language.obj.branch
 
-import org.mmadt.language.obj.{InstTuple, Obj}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.branch.MergeOp
+import org.mmadt.language.obj.op.map.GetOp
+import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.{InstTuple, Int, Lst, Obj}
 import org.mmadt.language.{LanguageException, LanguageFactory}
+import org.mmadt.storage.StorageFactory.{asType, obj}
 
 trait Branching[A <: Obj] extends Obj
+  with MergeOp[A]
+  with GetOp[Int, A]
+  with Type[Branching[A]]
+  with Value[Branching[A]]
   //with HeadOp[A]
   //with TailOp
   //with AppendOp[A]
-  //with GetOp[Int, A]
   //with PlusOp[Product[A], Product[A]]
   //with ZeroOp {
 {
   val value: InstTuple
   override def toString: String = LanguageFactory.printBranch(this)
+
+  override def get(key: Int): A = {
+    val valueType: A = key match {
+      case avalue: IntValue if this.value._2.length >= (avalue.value + 1) => asType[A](this.value._2(avalue.value.toInt).asInstanceOf[A])
+      case avalue: IntValue if this.value._2.nonEmpty =>
+        Branching.checkIndex(this, avalue.value.toInt)
+        this.value._2(avalue.value.toInt).asInstanceOf[A]
+      case _ => obj.asInstanceOf[A]
+    }
+    valueType.via(this, GetOp[Int, A](key, valueType))
+  }
+  override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
 }
 

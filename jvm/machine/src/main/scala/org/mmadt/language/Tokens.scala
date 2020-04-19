@@ -80,6 +80,9 @@ object Tokens {
   val q = "q"
   val zero = "zero"
 
+  val merge = "merge"
+  val split = "split"
+
   val empty = ""
   val btrue = "true"
   val bfalse = "false"
@@ -97,6 +100,8 @@ object Tokens {
   val or_op = "||"
   val get_op = "."
   val a_op = "?"
+  val merge_op = ">-"
+  val split_op = "-<"
 
   val :: = ":"
   val :-> = "->"

@@ -396,4 +396,8 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("lst['a'][append,lst['b']][append,lst['c']]"))
     println(engine.eval("lst['a';lst['b';lst['c']]]"))
   }
+  test("product") {
+    println(engine.eval("int[split,[3|int|int[plus,2]]]"))
+    println(engine.eval("4-<[3,int,int[is<0]]>-[plus,1]"))
+  }
 }

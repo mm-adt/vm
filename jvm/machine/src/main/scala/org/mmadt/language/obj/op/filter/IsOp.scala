@@ -40,7 +40,7 @@ trait IsOp {
     case avalue: BoolValue => this.is(avalue)
     case atype: BoolType => this.is(atype)
   }
-  def is(bool: BoolType): OType[this.type] = this.start().via(this.start(), IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[OType[this.type]]
+  def is(bool: BoolType): OType[this.type] = this.start().via(this, IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[OType[this.type]]
   def is(bool: BoolValue): this.type = (this match {
     case _: Value[_] => if (bool.value) this else this.q(qZero)
     case _ => this.hardQ(minZero(this.q))

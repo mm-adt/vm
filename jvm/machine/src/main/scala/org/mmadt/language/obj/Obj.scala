@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp, CoprodOp, ProdOp}
+import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp, SplitOp}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
@@ -60,8 +60,7 @@ trait Obj
     with EqsOp
     with ToOp
     with StartOp
-    with ProdOp
-    with CoprodOp {
+    with SplitOp {
 
   //////////////////////////////////////////////////////////////
   // data associated with every obj

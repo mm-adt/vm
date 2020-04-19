@@ -22,22 +22,24 @@
 
 package org.mmadt.storage.obj.branch
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj._
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 class OProductTest extends FunSuite {
   test("product values") {
-    println(prod(int(2), int.plus(int), int(3))<=int.plus(2).map(prod(int(2), int.plus(int), int(3))))
+
+    println(int(1) ===> int.split(prod(int(2), int.plus(int), int(3))))
+    println(int.split(prod(int(2), int.plus(int), int(3))))
+    println(prod(int(2), int.plus(int), int(3)) <= int.plus(2).map(prod(int(2), int.plus(int), int(3))))
 
     println(prod(int(2), int.plus(int), int(3)).exec(int(4)))
 
     println(coprod(str, int.plus(int), int(3)))
     println(coprod(str, int.plus(int), int(3)).exec(int(4)))
 
-    println(int.prod[Obj](int(3),int.plus(2),int).id().is(__.a(int)))
-    println(int.coprod[Obj](real,str,int).id().is(__.a(int)))
+    println(int.split(prod[Obj](int(3), int.plus(2), int)).id().merge().is(int.gt(0)))
+    println(int.split(coprod(real, str, int)).id().merge())
   }
 
 }

@@ -51,7 +51,10 @@ object mmlangPrinter {
 
   def branchString(branch: Branching[_]): String = {
     if (branch.root) branchList(branch)
-    typeString(branch.asInstanceOf[Type[Obj]])
+    if (branch.value._2.exists(x => x.isInstanceOf[Type[_]]))
+      typeString(branch.asInstanceOf[Type[Obj]])
+    else
+      branchList(branch)
   }
 
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
@@ -96,6 +99,8 @@ object mmlangPrinter {
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().value + RANGLE
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, PIPE) + RBRACKET
       case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, AMPERSAND) + RBRACKET
+      case "split" => "-<" + branchList(inst.arg0[Branching[_]]())
+      case "merge" => ">-"
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET
         case args: List[Obj] => LBRACKET + inst.op() + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET
