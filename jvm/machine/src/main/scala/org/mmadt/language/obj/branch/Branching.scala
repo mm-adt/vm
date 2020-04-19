@@ -20,30 +20,28 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.value
+package org.mmadt.language.obj.branch
 
-import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.language.obj.{Obj, _}
+import org.mmadt.language.obj.{InstTuple, Obj}
+import org.mmadt.language.{LanguageException, LanguageFactory}
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-trait Value[+V <: Obj] extends Obj {
-  val value:Any
+trait Branching[A <: Obj] extends Obj
+  //with HeadOp[A]
+  //with TailOp
+  //with AppendOp[A]
+  //with GetOp[Int, A]
+  //with PlusOp[Product[A], Product[A]]
+  //with ZeroOp {
+{
+  val value: InstTuple
+  override def toString: String = LanguageFactory.printBranch(this)
 
-  // pattern matching methods
-  override def test(other:Obj):Boolean = other match {
-    case argValue:Value[_] => TypeChecker.matchesVV(this,argValue)
-    case argType:Type[_] => TypeChecker.matchesVT(this,argType)
-  }
+}
 
-  // standard Java implementations
-  override def toString:String = LanguageFactory.printValue(this)
-  override lazy val hashCode:scala.Int = this.name.hashCode ^ this.value.hashCode()
-  override def equals(other:Any):Boolean = other match {
-    case avalue:Value[V] => avalue.value.equals(this.value) && eqQ(this,avalue)
-    case _ => false
+object Branching {
+  def checkIndex(alst: Branching[_], index: scala.Int): Unit = {
+    if (index < 0) throw new LanguageException("lst index must be 0 or greater: " + index)
+    if (alst.value._2.length < (index + 1)) throw new LanguageException("lst index is out of bounds: " + index)
   }
 }
+

@@ -23,10 +23,11 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type}
+import org.mmadt.language.obj.branch.{Branching, Product}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -47,6 +48,11 @@ object mmlangPrinter {
   }
 
   def strmString(strm: Strm[Obj]): String = strm.value.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
+
+  def branchString(branch: Branching[_]): String = {
+    val sep = if (branch.isInstanceOf[Product[_]]) "," else "|"
+    branch.value._2.foldLeft(LBRACKET)((a, b) => a + b + sep).dropRight(1) + RBRACKET
+  }
 
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET

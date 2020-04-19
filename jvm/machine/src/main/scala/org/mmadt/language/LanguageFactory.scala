@@ -26,9 +26,10 @@ import java.util.ServiceLoader
 
 import org.mmadt.language.mmlang.mmlangPrinter
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.branch.Branching
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{branch, _}
 
 import scala.collection.JavaConverters
 
@@ -40,6 +41,7 @@ trait LanguageFactory {
   def printType(atype: Type[Obj]): String
   def printInst(inst: Inst[_, _]): String
   def printStrm(strm: Strm[Obj]): String
+  def printBranch(branch: Branching[_]):String
 }
 
 object LanguageFactory {
@@ -51,10 +53,12 @@ object LanguageFactory {
   def printType(atype: Type[Obj])(implicit f: LanguageFactory): String = f.printType(atype)
   def printInst(inst: Inst[_, _])(implicit f: LanguageFactory): String = f.printInst(inst)
   def printStrm(strm: Strm[Obj])(implicit f: LanguageFactory): String = f.printStrm(strm)
+  def printBranch(branch: Branching[_])(implicit f: LanguageFactory): String = f.printBranch(branch)
   implicit val mmlangFactory: LanguageFactory = new LanguageFactory {
     override def printValue(value: Value[Obj]): String = mmlangPrinter.valueString(value)
     override def printType(atype: Type[Obj]): String = mmlangPrinter.typeString(atype)
     override def printInst(inst: Inst[_, _]): String = mmlangPrinter.instString(inst)
     override def printStrm(strm: Strm[Obj]): String = mmlangPrinter.strmString(strm)
+    override def printBranch(branch: Branching[_]): String = mmlangPrinter.branchString(branch)
   }
 }

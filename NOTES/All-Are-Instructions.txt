@@ -1,0 +1,99 @@
+All objs are instructions.
+All types and values are objs.
+There are streams and branches
+
+
+
+x            => x                  => x
+x a          => x a                => x a
+x[a,b]       => xa xb              => a(x) b(x)
+x[a|b]       => xa|xb              => a(x)|b(x)
+[x,y][a,b]   => [x,y]a [x,y]b      => a([x,y]) b([x,y])
+[x,y][[a,b]] => [[x,y]a [x,y]b]    => [a([x,y]),b([x,y])]
+x[[a,b]]     => [xa,xb]            => [a(x),b(x)]
+[x,y][[a|b]] =>  xa|yb             => [a([x,y])|b([x,y])]
+
+
+4                           ==> 4
+
+4 int                       ==> 4 int
+
+4[id]
+  |
+  4                         ==> 4
+
+4[int]
+   |
+   4                        ==> 4
+
+4[[int]]      
+    |
+  [ 4 ]                     ==> [4]
+
+4[plus,2]
+   |   |
+   4 + 2                    ==> 6
+
+4[[plus,2]]
+   |   |
+   4 + 2                    ==> [6]
+
+4[plus,int]
+   |    |
+   4 +  4                   ==> 8
+
+
+
+
+4[int,int]
+  |    |
+  4  , 4                    ==> 4 4
+
+
+4[[int,int]]
+    |    |
+    4  , 4                  ==> [4,4]
+
+4[int|str]
+   |   |
+   4  4{0}                  ==> 4
+
+
+4[[int|str]]
+    |   |
+    4  4{0}                 ==> [4|]
+
+
+4[str|int|int[is>0]]
+   |   |    | 
+  4{0} 4   4{0}             ==> 4
+
+
+4[[str|int|int[is>0]]]
+   |   |    | 
+  4{0} 4   4{0}             ==> [|4|]
+
+
+4[2,[plus,1]]
+  |   |   |
+  |   4 + 1
+ [2,    5   ]               ==> [2,5]
+
+
+[4,4][[int,int]]
+      [ 4 , 4 ]             ==> [4,4]
+
+
+[4,4][int,int]    
+       |   |
+     error error
+
+[4,4][[int,int],[int,int]]    
+       |   |      |   |
+       4   4      4   4     ==> [4,4] [4,4]
+
+ [4,4][[int,int]{2}]    
+       |     |   
+       4     4              ==> [4,4]{2}
+
+

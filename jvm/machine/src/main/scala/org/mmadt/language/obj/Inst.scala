@@ -40,7 +40,7 @@ trait Inst[S <: Obj, +E <: Obj] extends Obj {
   def exec(start: S): E;
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
-  override def hashCode: scala.Int = this.value().hashCode()
+  override lazy val hashCode: scala.Int = this.value().hashCode()
   override def equals(other: Any): Boolean = other match {
     case inst: Inst[_, _] => inst.op() == this.op() && inst.args() == this.args()
     case _ => false

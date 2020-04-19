@@ -20,30 +20,18 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.value
+package org.mmadt.storage.obj.branch
 
-import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.language.obj.{Obj, _}
+import org.mmadt.storage.StorageFactory._
+import org.scalatest.FunSuite
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-trait Value[+V <: Obj] extends Obj {
-  val value:Any
+class OProductTest extends FunSuite {
+  test("product values") {
+    println(prod(int(2), int.plus(int), int(3)))
+    println(prod(int(2), int.plus(int), int(3)).exec(int(4)))
 
-  // pattern matching methods
-  override def test(other:Obj):Boolean = other match {
-    case argValue:Value[_] => TypeChecker.matchesVV(this,argValue)
-    case argType:Type[_] => TypeChecker.matchesVT(this,argType)
+    println(coprod(str, int.plus(int), int(3)))
+    println(coprod(str, int.plus(int), int(3)).exec(int(4)))
   }
 
-  // standard Java implementations
-  override def toString:String = LanguageFactory.printValue(this)
-  override lazy val hashCode:scala.Int = this.name.hashCode ^ this.value.hashCode()
-  override def equals(other:Any):Boolean = other match {
-    case avalue:Value[V] => avalue.value.equals(this.value) && eqQ(this,avalue)
-    case _ => false
-  }
 }

@@ -20,30 +20,28 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.value
+package org.mmadt.language.obj.branch
 
-import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.language.obj.{Obj, _}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, InstTuple, Obj}
+import org.mmadt.storage.StorageFactory._
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-trait Value[+V <: Obj] extends Obj {
-  val value:Any
 
-  // pattern matching methods
-  override def test(other:Obj):Boolean = other match {
-    case argValue:Value[_] => TypeChecker.matchesVV(this,argValue)
-    case argType:Type[_] => TypeChecker.matchesVT(this,argType)
-  }
+trait Product[A <: Obj] extends Branching[A]
+  with Type[Product[A]]
+  with Value[Product[A]]
+  with Inst[A, Product[A]] {
 
-  // standard Java implementations
-  override def toString:String = LanguageFactory.printValue(this)
-  override lazy val hashCode:scala.Int = this.name.hashCode ^ this.value.hashCode()
-  override def equals(other:Any):Boolean = other match {
-    case avalue:Value[V] => avalue.value.equals(this.value) && eqQ(this,avalue)
+  override val value: InstTuple
+
+  override def test(other: Obj): Boolean = other match {
+    case prod: Product[_] =>
+      if (prod.value._2.isEmpty || this.value.equals(prod.value)) return true
+      this.value._2.zip(prod.value._2).foldRight(true)((a, b) => a._1.test(a._2) && b)
     case _ => false
   }
+
+  override def exec(start: A): this.type = this.clone(value = (this.value._1, this.value._2.map(x => Option(Inst.resolveArg(start, x)).filter(x => x.alive()).getOrElse(obj.q(0)))))
+
 }
