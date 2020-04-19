@@ -20,24 +20,21 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.branch
+package org.mmadt.language.obj.op.branch
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
+import org.mmadt.language.obj.branch.Coproduct
+import org.mmadt.language.obj.{OValue, Obj}
+import org.mmadt.storage.StorageFactory
 
-class OProductTest extends FunSuite {
-  test("product values") {
-    println(prod(int(2), int.plus(int), int(3))<=int.plus(2).map(prod(int(2), int.plus(int), int(3))))
+trait CoprodOp {
+  this: Obj =>
+  def coprod[A <: Obj](coproduct: A*): Coproduct[A] = this.coprod(StorageFactory.coprod[A](coproduct: _*))
+  def coprod[A <: Obj](coproduct: Coproduct[A]): Coproduct[A] = (this match {
+    case avalue: OValue[A] => coproduct.exec(avalue)
+    case _ => coproduct
+  }).via(this, coproduct)
+}
 
-    println(prod(int(2), int.plus(int), int(3)).exec(int(4)))
-
-    println(coprod(str, int.plus(int), int(3)))
-    println(coprod(str, int.plus(int), int(3)).exec(int(4)))
-
-    println(int.prod[Obj](int(3),int.plus(2),int).id().is(__.a(int)))
-    println(int.coprod[Obj](real,str,int).id().is(__.a(int)))
-  }
-
+object CoprodOp {
+  def apply[A <: Obj](coproduct: Coproduct[A]): Coproduct[A] = coproduct
 }

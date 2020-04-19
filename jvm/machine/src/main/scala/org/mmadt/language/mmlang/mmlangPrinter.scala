@@ -50,23 +50,29 @@ object mmlangPrinter {
   def strmString(strm: Strm[Obj]): String = strm.value.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
 
   def branchString(branch: Branching[_]): String = {
-    val sep = if (branch.isInstanceOf[Product[_]]) "," else "|"
-    branch.value._2.foldLeft(LBRACKET)((a, b) => a + b + sep).dropRight(1) + RBRACKET
+    if (branch.root) branchList(branch)
+    typeString(branch.asInstanceOf[Type[Obj]])
   }
 
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
+  private def branchList(branch: Branching[_]): String = {
+    val sep = if (branch.isInstanceOf[Product[_]]) "," else "|"
+    branch.value._2.foldLeft(LBRACKET)((a, b) => a + b + sep).dropRight(1) + RBRACKET
+  }
 
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
       case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value)
       case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value)
+      case abrch: Branching[_] => abrch.name + branchList(abrch)
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
         case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value)
         case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value)
+        case abrch: Branching[_] => abrch.name + branchList(abrch)
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
     }

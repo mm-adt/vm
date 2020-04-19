@@ -27,7 +27,6 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, InstTuple, Obj}
 import org.mmadt.storage.StorageFactory._
 
-
 trait Product[A <: Obj] extends Branching[A]
   with Type[Product[A]]
   with Value[Product[A]]
