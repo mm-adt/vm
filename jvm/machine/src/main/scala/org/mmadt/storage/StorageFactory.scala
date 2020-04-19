@@ -60,27 +60,27 @@ trait StorageFactory {
   def tlst[A <: Obj](value: A, values: A*): LstType[A] = tlst[A](value = (value +: values).toList)
   /////////VALUES/////////
   def obj(value: Any): ObjValue
-  def bool(value: Boolean): BoolValue
-  def bool(value1: BoolValue, value2: BoolValue, valuesN: BoolValue*): BoolStrm
-  def int(value: Long): IntValue
-  def int(value1: IntValue, value2: IntValue, valuesN: IntValue*): IntStrm
-  def real(value: Double): RealValue = vreal(Tokens.real, value, qOne)
-  def real(value1: RealValue, value2: RealValue, valuesN: RealValue*): RealStrm
-  def str(value: String): StrValue = vstr(Tokens.str, value, qOne)
-  def str(value1: StrValue, value2: StrValue, valuesN: StrValue*): StrStrm
-  def vrec[A <: Value[Obj], B <: Value[Obj]](value: collection.Map[A, B]): RecValue[A, B] = vrec(Tokens.rec, value, qOne)
+  def bool(value: Boolean): BoolValue = vbool(value = value)
+  def int(value: Long): IntValue = vint(value = value)
+  def real(value: Double): RealValue = vreal(value = value)
+  def str(value: String): StrValue = vstr(value = value)
+  def vrec[A <: Value[Obj], B <: Value[Obj]](_value: collection.Map[A, B]): RecValue[A, B] = vrec(value = _value)
   def vrec[A <: Value[Obj], B <: Value[Obj]](value: (A, B), values: (A, B)*): RecValue[A, B] = vrec(value = (value +: values).toMap)
   def vrec[A <: Value[Obj], B <: Value[Obj]](value1: RecValue[A, B], value2: RecValue[A, B], valuesN: RecValue[A, B]*): RecStrm[A, B] = vrec((List(value1, value2) ++ valuesN).iterator)
-  def vrec[A <: Value[Obj], B <: Value[Obj]](value: Iterator[RecValue[A, B]]): RecStrm[A, B]
-  def vlst[A <: Value[Obj]](): LstValue[A] = vlst(value=List.empty[A])
-  def vlst[A <: Value[Obj]](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, via: ViaTuple = base()): LstValue[A]
+  def vlst[A <: Value[Obj]](): LstValue[A] = vlst(value = List.empty[A])
   def vlst[A <: Value[Obj]](value: A, values: A*): LstValue[A] = vlst(value = (value +: values).toList)
   //
-  def vbool(name: String, value: Boolean, q: IntQ, via: ViaTuple): BoolValue
-  def vint(name: String, value: Long, q: IntQ, via: ViaTuple): IntValue
-  def vreal(name: String, value: Double, q: IntQ): RealValue
-  def vstr(name: String, value: String, q: IntQ): StrValue
-  def vrec[A <: Value[Obj], B <: Value[Obj]](name: String, value: collection.Map[A, B], q: IntQ = qOne): RecValue[A, B]
+  def bool(value1: BoolValue, value2: BoolValue, valuesN: BoolValue*): BoolStrm
+  def int(value1: IntValue, value2: IntValue, valuesN: IntValue*): IntStrm
+  def real(value1: RealValue, value2: RealValue, valuesN: RealValue*): RealStrm
+  def str(value1: StrValue, value2: StrValue, valuesN: StrValue*): StrStrm
+  def vrec[A <: Value[Obj], B <: Value[Obj]](value: Iterator[RecValue[A, B]]): RecStrm[A, B]
+  def vbool(name: String = Tokens.bool, value: Boolean, q: IntQ = qOne, via: ViaTuple = base()): BoolValue
+  def vint(name: String = Tokens.int, value: Long, q: IntQ = qOne, via: ViaTuple = base()): IntValue
+  def vreal(name: String = Tokens.real, value: Double, q: IntQ = qOne, via: ViaTuple = base()): RealValue
+  def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne, via: ViaTuple = base()): StrValue
+  def vlst[A <: Value[Obj]](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, via: ViaTuple = base()): LstValue[A]
+  def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecValue[A, B]
   //
   def strm[O <: Obj](itty: Iterator[O]): OStrm[O]
   def strm[O <: Obj]: OStrm[O]
@@ -122,15 +122,15 @@ object StorageFactory {
   def vrec[A <: Value[Obj], B <: Value[Obj]](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): RecValue[A, B] = f.vrec(value, values: _*)
   def vrec[A <: Value[Obj], B <: Value[Obj]](value1: RecValue[A, B], value2: RecValue[A, B], valuesN: RecValue[A, B]*)(implicit f: StorageFactory): RecStrm[A, B] = f.vrec(value1, value2, valuesN: _*)
   def vrec[A <: Value[Obj], B <: Value[Obj]](value: Iterator[RecValue[A, B]])(implicit f: StorageFactory): RecStrm[A, B] = f.vrec(value)
-  def vlst[A <: Value[Obj]]()(implicit f: StorageFactory): LstValue[A] = f.vlst(value=List.empty[A])
+  def vlst[A <: Value[Obj]]()(implicit f: StorageFactory): LstValue[A] = f.vlst(value = List.empty[A])
   def vlst[A <: Value[Obj]](name: String = Tokens.lst, value: List[A], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): LstValue[A] = f.vlst(name, value, q, via)
   def vlst[A <: Value[Obj]](value: A, values: A*)(implicit f: StorageFactory): LstValue[A] = f.vlst(value = (value +: values).toList)
   //
   def vbool(name: String = Tokens.bool, value: Boolean, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolValue = f.vbool(name, value, q, via)
   def vint(name: String = Tokens.int, value: Long, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): IntValue = f.vint(name, value, q, via)
-  def vreal(name: String = Tokens.real, value: Double, q: IntQ = qOne)(implicit f: StorageFactory): RealValue = f.vreal(name, value, q)
-  def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne)(implicit f: StorageFactory): StrValue = f.vstr(name, value, q)
-  def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne)(implicit f: StorageFactory): RecValue[A, B] = f.vrec(name, value, q)
+  def vreal(name: String = Tokens.real, value: Double, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RealValue = f.vreal(name, value, q, via)
+  def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): StrValue = f.vstr(name, value, q, via)
+  def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RecValue[A, B] = f.vrec(name, value, q, via)
   def strm[O <: Obj](itty: Iterator[O])(implicit f: StorageFactory): OStrm[O] = f.strm[O](itty)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
   /////////CONSTANTS//////
@@ -166,22 +166,19 @@ object StorageFactory {
     override def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = base()): RealType = new TReal(name, q, via)
     override def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base(StrOp())): StrType = new TStr(name, q, via)
     override def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecType[A, B] = new TRec[A, B](name, value, q, via)
-    override def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecType[A, B] = new TRec[A, B](value +: values)
-    override def tlst[A <: Obj](name: String, value: List[A], q: IntQ, via: ViaTuple): LstType[A] = new TLst[A](name, value, q, via)
+    override def tlst[A <: Obj](name: String = Tokens.lst, value: List[A], q: IntQ = qOne, via: ViaTuple = base()): LstType[A] = new TLst[A](name, value, q, via)
     /////////VALUES/////////
+    override def int(value: Long): IntValue = new VInt(value = value) // NECESSARY FOR Q PRELOAD
     override def obj(value: Any): ObjValue = new VObj(value = value)
-    override def bool(value: Boolean): BoolValue = new VBool(value = value)
-    override def int(value: Long): IntValue = new VInt(value = value)
-    override def real(value: Double): RealValue = new VReal(value = value)
     override def vbool(name: String, value: Boolean, q: IntQ, via: ViaTuple): BoolValue = new VBool(name, value, q, via)
     override def bool(value1: BoolValue, value2: BoolValue, valuesN: BoolValue*): BoolStrm = new VBoolStrm(value1 +: (value2 +: valuesN))
     override def vint(name: String, value: Long, q: IntQ, via: ViaTuple): IntValue = new VInt(name, value, q, via)
     override def int(value1: IntValue, value2: IntValue, valuesN: IntValue*): IntStrm = new VIntStrm(value1 +: (value2 +: valuesN))
-    override def vreal(name: String, value: Double, q: (IntValue, IntValue)): RealValue = new VReal(name, value, q, base())
+    override def vreal(name: String, value: Double, q: IntQ, via: ViaTuple): RealValue = new VReal(name, value, q, base())
     override def real(value1: RealValue, value2: RealValue, valuesN: RealValue*): RealStrm = new VRealStrm(value1 +: (value2 +: valuesN))
-    override def vstr(name: String, value: String, q: (IntValue, IntValue)): StrValue = new VStr(name, value, q, base())
+    override def vstr(name: String, value: String, q: IntQ, via: ViaTuple): StrValue = new VStr(name, value, q, base())
     override def str(value1: StrValue, value2: StrValue, valuesN: StrValue*): StrStrm = new VStrStrm(value1 +: (value2 +: valuesN))
-    override def vrec[A <: Value[Obj], B <: Value[Obj]](name: String, value: collection.Map[A, B], q: (IntValue, IntValue)): RecValue[A, B] = new VRec[A, B](name, value, q)
+    override def vrec[A <: Value[Obj], B <: Value[Obj]](name: String, value: collection.Map[A, B], q: IntQ, via: ViaTuple): RecValue[A, B] = new VRec[A, B](name, value, q, via)
     override def vrec[A <: Value[Obj], B <: Value[Obj]](value: Iterator[RecValue[A, B]]): RecStrm[A, B] = new VRecStrm(value.toSeq)
     override def vlst[A <: Value[Obj]](name: String, value: List[A], q: IntQ, via: ViaTuple): LstValue[A] = new VLst[A](name, value, q, via)
     //

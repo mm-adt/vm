@@ -37,6 +37,7 @@ trait RecStrm[A <: Value[Obj], B <: Value[Obj]] extends Strm[Rec[A, B]] with Rec
   override def get(key: A): B = throw new UnsupportedOperationException
   override def get[BB <: Obj](key: A, btype: BB): BB = throw new UnsupportedOperationException
   override def put(key: A, value: B): this.type = throw new UnsupportedOperationException
+  override def zero(): this.type = throw new UnsupportedOperationException
 
 }
 

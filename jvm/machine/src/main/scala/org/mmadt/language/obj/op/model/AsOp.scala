@@ -55,8 +55,8 @@ object AsOp {
         case atype: Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
           case rectype: RecType[Obj, Obj] =>
             start match {
-              case recvalue: ORecValue => vrec(name = rectype.name, value = makeMap(Model.id, recvalue.value, rectype.value()))
-              case avalue: Value[Obj] => vrec(rectype.name, rectype.value().map(x =>
+              case recvalue: ORecValue => vrec(name = rectype.name, value = makeMap(Model.id, recvalue.value, rectype.value))
+              case avalue: Value[Obj] => vrec(rectype.name, rectype.value.map(x =>
                 (x._1 match {
                   case kvalue: Value[Obj] => kvalue
                   case ktype: Type[Obj] =>

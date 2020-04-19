@@ -25,7 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{RecValue, Value}
+import org.mmadt.language.obj.value.{LstValue, RecValue, Value}
 import org.mmadt.storage.StorageFactory._
 
 import scala.collection.mutable
@@ -36,10 +36,12 @@ import scala.collection.mutable
 object TypeChecker {
   def matchesVT[O <: Obj](obj: Value[O], pattern: Type[O]): Boolean = {
     (pattern.name.equals(Tokens.obj) || // all objects are obj
-      (!obj.name.equals(Tokens.rec) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || obj.compute(pattern).alive())) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
+      (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || obj.compute(pattern).alive())) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
       obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
-      (obj.isInstanceOf[RecValue[_, _]] && pattern.isInstanceOf[RecType[_, _]] &&
-        testRecord(obj.value.asInstanceOf[collection.Map[Obj, Obj]], pattern.asInstanceOf[ORecType].value()) && obj.compute(pattern).alive())) && // structural type checking on records
+      ((obj.isInstanceOf[LstValue[_]] && pattern.isInstanceOf[LstType[_]] &&
+        testList(obj.value.asInstanceOf[List[Obj]], pattern.asInstanceOf[LstType[Obj]].value) && obj.compute(pattern).alive()) || // structural type checking on records
+        (obj.isInstanceOf[RecValue[_, _]] && pattern.isInstanceOf[RecType[_, _]] &&
+          testRecord(obj.value.asInstanceOf[collection.Map[Obj, Obj]], pattern.asInstanceOf[ORecType].value) && obj.compute(pattern).alive()))) && // structural type checking on records
       withinQ(obj, pattern) // must be within the type's quantified window
   }
   def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean =
@@ -47,9 +49,10 @@ object TypeChecker {
       withinQ(obj, pattern)
   def matchesTT[O <: Obj](obj: Type[O], pattern: Type[O]): Boolean = {
     ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj)) || // all objects are obj
-      (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) ||
+      (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && obj.name.equals(pattern.name)) ||
       (obj match {
-        case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.value(), pattern.asInstanceOf[ORecType].value())
+        case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.value, pattern.asInstanceOf[ORecType].value)
+        case lstType: LstType[_] if pattern.isInstanceOf[LstType[_]] => testList(lstType.value, pattern.asInstanceOf[LstType[Obj]].value)
         case _ => false
       })) &&
       obj.lineage
@@ -75,5 +78,10 @@ object TypeChecker {
         a._2.test(Type.resolve(a._2, k._2))).map(z => typeMap.remove(z._1))).toList
 
     typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.value != 0)
+  }
+
+  private def testList(leftList: List[Obj], rightList: List[Obj]): Boolean = {
+    if (rightList.isEmpty || leftList.equals(rightList)) return true
+    leftList.zip(rightList).foldRight(true)((a, b) => a._1.test(a._2) && b)
   }
 }

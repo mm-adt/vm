@@ -69,7 +69,7 @@ object LeftRightSweepRewrite {
             case branchValue:Value[_] => branchValue
           }
         }
-        List(trec(name = Tokens.rec,inst.arg0[ORecType]().value().map(x => (branching(x._1),branching(x._2)))))
+        List(trec(name = Tokens.rec,inst.arg0[ORecType]().value.map(x => (branching(x._1),branching(x._2)))))
       case _ => inst.args().map{
         case atype:Type[_] => rewrite(model,atype,start,start)
         case avalue:Value[_] => avalue

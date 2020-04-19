@@ -58,7 +58,7 @@ object ExplainOp {
       val temp = if (b._2.isInstanceOf[TraverserInstruction]) a else a :+ (depth, b._2, lastRange(b._1.asInstanceOf[Type[Obj]]), b._2.exec(b._1).asInstanceOf[Type[Obj]].range, mutable.LinkedHashMap(state.toSeq: _*))
 
       val inner = b._2.args().foldLeft(List[Row]())((x, y) => x ++ (y match {
-        case branches: RecType[_, _] if b._2.isInstanceOf[BranchInst[_, _]] => branches.value().flatMap(x => List(x._1, x._2)).map {
+        case branches: RecType[_, _] if b._2.isInstanceOf[BranchInst[_, _]] => branches.value.flatMap(x => List(x._1, x._2)).map {
           case btype: Type[_] => btype
           case bvalue: Value[_] => bvalue.start()
         }.flatMap(x => explain(x, mutable.LinkedHashMap(state.toSeq: _*), depth + 1))

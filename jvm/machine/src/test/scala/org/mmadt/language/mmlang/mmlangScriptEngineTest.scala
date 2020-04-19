@@ -39,7 +39,6 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("empty space parsing") {
-
     assert(!engine.eval("").alive())
     assert(!engine.eval("    ").alive())
     assert(!engine.eval("  \n  ").alive())

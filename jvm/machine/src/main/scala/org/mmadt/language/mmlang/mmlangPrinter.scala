@@ -48,19 +48,19 @@ object mmlangPrinter {
 
   def strmString(strm: Strm[Obj]): String = strm.value.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
 
-  private def mapString(map: collection.Map[_, _], sep: String = COMMA): String = if (map.isEmpty) EMPTYREC else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
-  private def listString(list: List[_], sep: String = SEMICOLON): String = if (list.isEmpty) Tokens.empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
+  private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
+  private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
 
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
-      case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
-      case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value())
+      case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value)
+      case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value)
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
-        case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value())
-        case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value())
+        case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value)
+        case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value)
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
     }
@@ -71,8 +71,8 @@ object mmlangPrinter {
     val named = Tokens.named(avalue.name)
     (if (named) avalue.name + COLON else EMPTY) + (
       avalue match {
-        case arec: RecValue[_, _] => mapString(arec.value)
-        case alst: LstValue[_] => listString(alst.value)
+        case arec: RecValue[_, _] => mapString(arec.value, empty = EMPTYREC)
+        case alst: LstValue[_] => listString(alst.value, empty = EMPTYLST)
         case astr: StrValue => SQUOTE + astr.value + SQUOTE
         case _ => avalue.value
       }) + qString(avalue.q)
@@ -82,8 +82,8 @@ object mmlangPrinter {
     (inst.op() match {
       case Tokens.to => LANGLE + inst.arg0[StrValue]().value + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().value + RANGLE
-      case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value(), PIPE) + RBRACKET
-      case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value(), AMPERSAND) + RBRACKET
+      case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, PIPE) + RBRACKET
+      case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, AMPERSAND) + RBRACKET
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET
         case args: List[Obj] => LBRACKET + inst.op() + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET

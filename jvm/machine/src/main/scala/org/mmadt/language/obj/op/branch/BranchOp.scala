@@ -43,7 +43,7 @@ trait BranchOp {
         val rangeType: OT = BranchInstruction.typeExternal[OT](parallel = true, branchTypes)
         rangeType.via(this, BranchOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case _: Value[IT] with IT =>
-        strm[OT](branches.value().filter(p => p._1 match {
+        strm[OT](branches.value.filter(p => p._1 match {
           case btype: Type[IT] with IT => start.compute(btype).alive()
           case bvalue: Value[IT] with IT => start.test(bvalue)
         }).values.map {

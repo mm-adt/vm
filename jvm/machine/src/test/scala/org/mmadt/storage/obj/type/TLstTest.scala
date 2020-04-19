@@ -22,22 +22,30 @@
 
 package org.mmadt.storage.obj.`type`
 
-import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.obj.Obj
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class TLstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("...") {
-    println((Nil ++ "a" ++ "b" ++ "c").tail)
-    println(lst[StrValue].append("a").append("b").append("c").tail())
+  test("lst type w/ [head][tail]") {
+    assertResult(obj)(lst.head().range)
+    assertResult(obj.q(10))(lst.q(10).head().range)
+    assertResult(str.q(1, 6))(tlst(str).q(1, 6).head().range)
+    assertResult(str.q(1, 6))(tlst(str, int).q(1, 6).head().range)
+    assertResult(int.q(1, 6))(tlst(str, int).q(1, 6).tail().head().range)
   }
 
-  test("lst head/tal toString") {
-    println(List(1, 2, 3).head)
-    println(List(1, 2, 3).tail)
-    println(lst[IntValue].append(1).append(2).append(3).tail())
+  test("lst type w/ lst value") {
+    assert(vlst(str("a")).test(lst))
+    assert(vlst(str("a")).test(tlst(str("a"))))
+    assert(vlst(str("a"), str("b")).test(tlst(str("a"), str("b"))))
+    assert(vlst(str("a"), str("b")).test(tlst(str("a"), str)))
+    assert(vlst(str("a"), str("b")).test(lst[Obj].is(lst[Obj].get(int).a(str))))
+    assert(!vlst(str("a")).test(tlst(str("b"))))
+    assert(!vlst(str("a"), str("b")).test(tlst(str("a"), str("c"))))
+    // println(tlst(int) ==> lst[Obj].is(lst[Obj].get(1).a(str))) // TODO
   }
 
 }

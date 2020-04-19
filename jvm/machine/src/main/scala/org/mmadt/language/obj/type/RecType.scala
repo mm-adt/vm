@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
 import org.mmadt.language.obj.op.map.{GetOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.{RecValue, Value}
@@ -38,17 +39,18 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
 
   def apply(value: (Value[A], Value[B])*): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, value.toMap, this.q)
   def apply(value: RecValue[Value[A], Value[B]]): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, value.value, this.q)
-  def value(): collection.Map[A, B]
+  val value: collection.Map[A, B]
 
   override def get[BB <: Obj](key: A, btype: BB): BB = btype.via(this, GetOp[A, BB](key, btype))
-  override def get(key: A): B = asType(this.value()(key)).via(this, GetOp[A, B](key, asType(this.value()(key))))
+  override def get(key: A): B = asType(this.value(key)).via(this, GetOp[A, B](key, asType(this.value(key))))
   override def put(key: A, value: B): this.type = this.clone(value = this.value + (key -> value)).via(this, PutOp(key, value))
   override def plus(other: RecType[A, B]): RecType[A, B] = this.clone(value = this.value ++ other.value).via(this, PlusOp(other))
   override def plus(other: RecValue[_, _]): this.type = this.clone(value = this.value ++ other.value).via(this, PlusOp(other))
+  override def zero(): this.type = this.via(this, new ZeroInst())
 
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value().toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case atype: RecType[A, B] => this.name == atype.name && this.q == atype.q && this.value() == atype.value() && this.via == atype.via
+    case atype: RecType[A, B] => this.name == atype.name && this.q == atype.q && this.value == atype.value && this.via == atype.via
     case _ => false
   }
 }

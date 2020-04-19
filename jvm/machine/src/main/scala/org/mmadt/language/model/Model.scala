@@ -38,7 +38,7 @@ import scala.collection.mutable
  */
 trait Model {
 
-  def apply[B <: Obj](name:String):OType[B] = this.toRec.value().values.find(x => x.name == name).get.asInstanceOf[OType[B]]
+  def apply[B <: Obj](name:String):OType[B] = this.toRec.value.values.find(x => x.name == name).get.asInstanceOf[OType[B]]
   def apply[B <: Obj](obj:B):B = (obj match {
     case astrm:Strm[Obj] => strm(astrm.value.map(x => this.apply(x))) // TODO: migrate to AsOp?
     case avalue:Value[Obj] => this.get(avalue).getOrElse(avalue)
@@ -54,7 +54,7 @@ trait Model {
 
 object Model {
   def from(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
-  def from(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value().iterator.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
+  def from(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value.iterator.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
 
   val id:Model = new Model {
     override def put(left:Type[Obj],right:Type[Obj]):Model = this

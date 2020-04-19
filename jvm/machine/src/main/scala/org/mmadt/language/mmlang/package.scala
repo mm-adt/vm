@@ -43,6 +43,7 @@ package object mmlang {
   lazy val RRDARROW  = "==>"
   lazy val RSARROW   = "->"
   lazy val EMPTYREC  = "[:]"
+  lazy val EMPTYLST  = "[ ]"
   lazy val COLON     = ":"
   lazy val PERIOD    = "."
   lazy val SEMICOLON = ";"

@@ -26,11 +26,15 @@ import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.value.{LstValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3}
 
 class VLstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("lst encode/decode") {
+  test("lst value toString") {
+    assertResult("[ ]")(vlst.toString)
+  }
+
+  test("lst [tail][head] values") {
     val starts: TableFor2[LstValue[Value[Obj]], List[Value[Obj]]] =
       new TableFor2[LstValue[Value[Obj]], List[Value[Obj]]](("lst", "list"),
         (vlst(), List.empty),
@@ -48,6 +52,24 @@ class VLstTest extends FunSuite with TableDrivenPropertyChecks {
         assertResult(alst.tail().value)(blist.tail)
         assertResult(alst.value.tail)(blist.tail)
       }
+    }
+    }
+  }
+
+  test("lst [plus] values") {
+    val starts: TableFor3[LstValue[Value[Obj]], LstValue[Value[Obj]], List[Value[Obj]]] =
+      new TableFor3[LstValue[Value[Obj]], LstValue[Value[Obj]], List[Value[Obj]]](("lstA", "lstB", "list"),
+        (vlst(), vlst(), List.empty),
+        (vlst(), vlst().zero(), List.empty),
+        (vlst().zero(), vlst().zero(), List.empty),
+        (vlst(str("a")), vlst(str("b")), List(str("a"), str("b"))),
+        (vlst(), vlst(str("b")), List(str("b"))),
+        (vlst(str("a")), vlst(), List(str("a"))),
+        (vlst(str("a")), vlst(), List(str("a"))),
+        (vlst(str("a"), str("b")), vlst(str("c")), List(str("a"), str("b"), str("c"))),
+      )
+    forEvery(starts) { (alst, blst, list) => {
+      assertResult(list)(alst.plus(blst).value)
     }
     }
   }

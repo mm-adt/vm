@@ -24,7 +24,7 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.LstType
-import org.mmadt.language.obj.op.map.{AppendOp, GetOp, HeadOp, TailOp}
+import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.{Int, Lst, Obj}
 
 trait LstValue[A <: Value[Obj]] extends Lst[A]
@@ -48,4 +48,6 @@ trait LstValue[A <: Value[Obj]] extends Lst[A]
       this.value(avalue.value.toInt).via(this, GetOp[Int, BB](key, btype)).asInstanceOf[BB]
     case _ => this.start[LstType[A]]().get(key, btype)
   }
+  override def plus(other: LstValue[_]): this.type = this.clone(value = this.value ++ other.asInstanceOf[LstValue[A]].value, via = (this, PlusOp(other)))
+  override def zero(): this.type = this.clone(value = List.empty[A], via = (this, ZeroOp()))
 }
