@@ -391,8 +391,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("[1|2|3]")(engine.eval("[1|2|3]").toString)
     assertResult("[1;2;3]")(engine.eval("[1;2;3]").toString)
     assertResult("[1;[2|3]]")(engine.eval("[1;[2|3]]").toString)
+    assertResult("'a'")(engine.eval("['a'].0").toString)
     assertResult("[2|3]")(engine.eval("[1;[2|3]][get,1]").toString)
-    // assertResult("3")(engine.eval("[1,[2|3]][get,1][get,1]").toString)
+    assertResult("3")(engine.eval("[1;[2|3]][get,1][get,1]").toString)
+    assertResult("6")(engine.eval("[1;[2;[3|[4|5|6]]]].1.1.1.2").toString)
     //////
     assertResult("[str||]<=str-<[str|int|int[plus,2]]")(engine.eval("str-<[str|int|int[plus,2]]").toString)
     //assertResult("obj<=[str|int|int[plus,2]]>-[is,true]")(engine.eval("[str|int|int[plus,2]]>-[is,true]").toString)

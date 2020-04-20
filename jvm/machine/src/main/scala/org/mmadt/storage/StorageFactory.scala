@@ -151,6 +151,7 @@ object StorageFactory {
   lazy val ? : (IntValue, IntValue) = qMark
   lazy val + : (IntValue, IntValue) = qPlus
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
+    case branching: Brch[_] if branching.isValue => branching.clone(value = branching.value.map(x => asType[Obj](x)))
     case atype: Type[_] => atype
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
@@ -159,7 +160,7 @@ object StorageFactory {
     case _: RecStrm[_, _] => trec(name = obj.name, value = Map.empty, q = obj.q)
     case recval: RecValue[_, _] => trec(name = recval.name, value = recval.value, q = recval.q)
     case lstval: LstValue[_] => tlst(name = lstval.name, value = lstval.value, q = lstval.q)
-    case branching: Brch[_] => branching
+
   }).asInstanceOf[OType[O]]
   def isSymbol[O <: Obj](obj: O): Boolean = obj match {
     case _: Value[_] => false
@@ -201,7 +202,7 @@ object StorageFactory {
             case realValue: RealValue => real(value1 = realValue, value2 = second.asInstanceOf[RealValue], valuesN = itty.asInstanceOf[Iterator[RealValue]].toSeq: _*)
             case strValue: StrValue => str(value1 = strValue, value2 = second.asInstanceOf[StrValue], valuesN = itty.asInstanceOf[Iterator[StrValue]].toList: _*)
             case recValue: RecValue[_, _] => vrec(value1 = recValue.asInstanceOf[ORecValue], value2 = second.asInstanceOf[ORecValue], valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList: _*)
-            case brchValue: Brch[_] => new VBranchingStrm[Obj]((List(first,second) ++ itty.toList).asInstanceOf[List[Brch[Obj]]])
+            case brchValue: Brch[_] => new VBranchingStrm[Obj]((List(first, second) ++ itty.toList).asInstanceOf[List[Brch[Obj]]])
           }).asInstanceOf[OStrm[O]]
         } else VSingletonStrm.single(first)
       } else {

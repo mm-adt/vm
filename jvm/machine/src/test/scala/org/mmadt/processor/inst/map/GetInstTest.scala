@@ -74,4 +74,8 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
       marko.get(str("bad-key"))
     }
   }
+
+  test("[get] w/ product") {
+    // assertResult(str("a"))(prod(str("a")) ===> prod(str("a")).get(int(0)))
+  }
 }

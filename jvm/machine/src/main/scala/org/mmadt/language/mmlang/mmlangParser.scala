@@ -63,11 +63,12 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // specific to mmlang execution
   lazy val expr: Parser[Obj] = evaluation | compilation
   lazy val compilation: Parser[Obj] = objType ^^ (x => x.domain() ==> (x, this.model))
-  lazy val evaluation: Parser[Obj] = (strm | objValue | branching) ~ opt(objType) ^^ (x =>
-    x._1 ==>
-      ((Type.resolve(x._1, x._2.getOrElse(asType[Obj](x._1))).domain() ==>
-        (x._2.getOrElse(asType[Obj](x._1)), this.model)).asInstanceOf[Type[Obj]], this.model))
-
+  lazy val evaluation: Parser[Obj] = (strm | objValue | branching) ~ opt(objType) ^^ (x => {
+    x._2 match {
+      case None => x._1 // value only, return value
+      case Some(y) => x._1 ==> (asType(x._1) ==> y).asInstanceOf[Type[Obj]] // compile type with value's type, then execute
+    }
+  })
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -106,7 +107,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val realValue: Parser[RealValue] = opt(valueType) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
   lazy val strValue: Parser[StrValue] = opt(valueType) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
   lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ (Tokens.:-> | Tokens.::)) ~ objValue, COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
- 
+
   lazy val valueType: Parser[String] = "[a-zA-Z]+".r <~ ":"
   lazy val strm: Parser[Strm[Obj]] = boolStrm | realStrm | intStrm | strStrm | recStrm
   lazy val boolStrm: Parser[BoolStrm] = (boolValue <~ COMMA) ~ rep1sep(boolValue, COMMA) ^^ (x => bool(x._1, x._2.head, x._2.tail: _*))
