@@ -27,20 +27,21 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.branch._
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.storage.StorageFactory.{obj, qOne}
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
   this: Obj =>
   def split[A <: Obj](coproduct: Coprod[A]): Branching[A] = {
-    var found = false
-    Type.resolve(this, coproduct).clone(value = coproduct.value.map(x => Option(
+    val branches: Coprod[A] = coproduct.clone(value = coproduct.value.map(x => if(this.test(x))Inst.resolveArg(this, x) else obj.q(0) ))
+    var qTest = qOne
+    branches.clone(value = branches.value.map(x => Option(
       if (this.test(x)) Inst.resolveArg(this, x)
-      else obj.q(0)).filter(x => x.alive() && !found).map(x => {found = true; x }).getOrElse(obj.q(0)))).via(this, SplitOp(coproduct))
+      else obj.q(0)).filter(x => x.alive()).map(x => x.q(multQ(x.q, qTest))).map(x => {qTest = qZero; x }).getOrElse(obj.q(0)))).via(this, SplitOp(coproduct))
   }
 
   def split[A <: Obj](product: Prod[A]): Branching[A] = {
-    val branches: Prod[A]= product.clone(value=product.value.map(x => Inst.resolveArg(this, x)))
+    val branches: Prod[A] = product.clone(value = product.value.map(x => Inst.resolveArg(this, x)))
     branches.via(this, SplitOp(branches))
   }
 }

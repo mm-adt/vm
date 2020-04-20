@@ -42,7 +42,7 @@ trait Type[+T <: Obj] extends Obj
 
   // type signature properties and functions
   def range: this.type = this.isolate
-  def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else this.via._1.asInstanceOf[Type[D]].domain[D]()
+  def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else asType[Obj](this.via._1).asInstanceOf[Type[D]].domain[D]()
   def <=[D <: Obj](domainType: Type[D]): this.type = {
     LanguageException.testDomainRange(this, domainType)
     domainType.compute(this).hardQ(this.q).asInstanceOf[this.type]
@@ -69,7 +69,7 @@ object Type {
   def resolve[R <: Obj](objA: Obj, objB: R): R = {
     objB match {
       case x: __ => x(objA)
-      //case x: Branching[Obj] => x.clone(value = x.value.map(a => resolve(asType(objA).range, a))).asInstanceOf[R]
+//      case x: Branching[Obj] => x.clone(value = x.value.map(a => resolve(asType(objA).range, a))).asInstanceOf[R]
       case x: LstType[Obj] => tlst(name = x.name, value = x.value.map(a => resolve(objA, a)), q = x.q, via = x.via).asInstanceOf[R]
       case x: RecType[Obj, Obj] => trec(name = x.name, value = x.value.map(a => resolve(objA, a._1) -> resolve(objA, a._2)), q = x.q, via = x.via).asInstanceOf[R]
       case _ => objB

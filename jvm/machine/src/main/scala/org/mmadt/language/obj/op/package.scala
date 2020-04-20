@@ -49,10 +49,10 @@ package object op {
     }
 
     def typeExternal[OT <: Obj](parallel: Boolean, branches: RecType[_, OT]): OT = {
-      val types = branches.value.values.map {
+      val types = branches.value.values.filter(x => x.alive()).map {
         case atype: Type[OT] => atype.hardQ(1).range
         case avalue: Value[OT] => asType(avalue)
-      }.filter(x => x.alive()).asInstanceOf[Iterable[OType[OT]]]
+      }.asInstanceOf[Iterable[OType[OT]]]
 
       val result:OType[OT] = types.toSet.size match {
         case 1 => types.head
@@ -62,7 +62,7 @@ package object op {
         result.hardQ(minZero(branches.value.values.map(x => x.q).reduce((a, b) => plusQ(a,b))))
       }
       else { // [choose] select min/max quantification
-        result.hardQ(branches.value.values.map(x => x.q).reduce((a, b) => (
+        result.hardQ(branches.value.values.filter(x=>x.alive()).map(x => x.q).reduce((a, b) => (
           int(Math.min(a._1.value, b._1.value)),
           int(Math.max(a._2.value, b._2.value)))))
       }

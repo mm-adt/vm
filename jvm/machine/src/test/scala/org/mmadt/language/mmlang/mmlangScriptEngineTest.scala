@@ -202,7 +202,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("map instruction parsing") {
-//  assertResult(int.to("x").map(int.from("x").plus(int.from("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
+    //  assertResult(int.to("x").map(int.from("x").plus(int.from("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
     assertResult(int(10))(engine.eval("5<x>[map,<.x>+<.x>]"))
   }
 
@@ -396,8 +396,21 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("lst['a'][append,lst['b']][append,lst['c']]"))
     println(engine.eval("lst['a';lst['b';lst['c']]]"))
   }
-  test("product") {
-    println(engine.eval("int[split,[3|int|int[plus,2]]]"))
-    println(engine.eval("4-<[3,int,int[is<0]]>-[plus,1]"))
+  test("product and coproduct") {
+    assertResult("[str||]<=str-<[str|int|int[plus,2]]")(engine.eval("str-<[str|int|int[plus,2]]").toString)
+    //assertResult("obj<=[str|int|int[plus,2]]>-[is,true]")(engine.eval("[str|int|int[plus,2]]>-[is,true]").toString)
+    assertResult("[||str]<=str-<[int|bool|str]")(engine.eval("str-<[int|bool|str]").toString)
+    assertResult("str-<[str|int|int[plus,2]]>-[plus,'hello']")(engine.eval("str-<[str|int|int[plus,2]]>-[plus,'hello']").toString)
+    assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<[str|int|int[plus,2]]>-[plus,'hello']").toString)
+    assertResult("'kuppitzhello'")(engine.eval("'kuppitz'-<[str|int|int[plus,2]]>-[plus,'hello']").toString)
+    assertResult("[|int|]<=int-<[3|int|int[plus,2]]")(engine.eval("int-<[3|int|int[plus,2]]").toString)
+    assertResult("int{0,3}<=int-<[3,int,int{?}<=int[is,bool<=int[lt,0]]]>-[plus,1]")(engine.eval("int-<[3,int,int[is<0]]>-[plus,1]").toString)
+    /////
+    assertResult(coprod(obj.q(0),int(10)))(engine.eval("10-<[bool|int]"))
+    assertResult(coprod(obj.q(0),int(10)))(engine.eval("10 int[id]-<[bool|int]"))
+    assertResult(int(10))(engine.eval("10-<[bool|int]>-"))
+    assertResult(int(10))(engine.eval("10-<[bool|int]>-[id]"))
+    assertResult(int(110))(engine.eval("10-<[bool|int]>-[plus,100]"))
+
   }
 }

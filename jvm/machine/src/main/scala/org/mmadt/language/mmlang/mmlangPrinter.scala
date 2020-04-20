@@ -60,8 +60,8 @@ object mmlangPrinter {
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
   private def branchList(branch: Branching[_]): String = {
-    val sep = if (branch.isInstanceOf[Prod[_]]) "," else "|"
-    branch.value.foldLeft(LBRACKET)((a, b) => a + b + sep).dropRight(1) + RBRACKET
+    val sep = if (branch.isInstanceOf[Prod[Obj]]) COMMA else PIPE
+    branch.value.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + sep).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {
@@ -99,8 +99,8 @@ object mmlangPrinter {
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().value + RANGLE
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, PIPE) + RBRACKET
       case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, AMPERSAND) + RBRACKET
-      case "split" => "-<" + branchList(inst.arg0[Branching[_]]())
-      case "merge" => ">-"
+      case Tokens.split => Tokens.split_op + branchList(inst.arg0[Branching[_]]())
+      case Tokens.merge => Tokens.merge_op
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET
         case args: List[Obj] => LBRACKET + inst.op() + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET

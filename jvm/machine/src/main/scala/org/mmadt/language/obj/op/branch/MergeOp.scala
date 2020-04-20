@@ -33,10 +33,10 @@ import org.mmadt.storage.obj.value.VInst
 trait MergeOp[A <: Obj] {
   this: Branching[A] =>
   def merge(): A =
-    (if (this.value.exists(x => x.isInstanceOf[Type[Obj]])) {
+    (if (this.value.filter(x => x.alive()).exists(x => x.isInstanceOf[Type[Obj]])) {
       val rangeType = BranchInstruction.typeExternal(this.isInstanceOf[Prod[A]], trec(value = this.value.map(x => (str(x.toString), x)).toMap[Str, Obj]))
       rangeType.via(this, MergeOp()).hardQ(rangeType.q)
-    } else strm(this.value.flatMap(x => x.toList).toIterator).via(this, MergeOp())).asInstanceOf[A]
+    } else strm(this.value.filter(x => x.alive()).flatMap(x => x.toList).toIterator).via(this, MergeOp())).asInstanceOf[A]
 }
 
 object MergeOp {
