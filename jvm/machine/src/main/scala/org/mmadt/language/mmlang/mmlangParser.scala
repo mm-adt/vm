@@ -76,7 +76,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 
   // composite parsing
   lazy val branching: Parser[Branching[Obj]] = product | coproduct
-  lazy val product: Parser[Prod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, COMMA) <~ RBRACKET) ^^ (x => prod(x._2: _*))
+  lazy val product: Parser[Prod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, SEMICOLON) <~ RBRACKET) ^^ (x => prod(x._2: _*))
   lazy val coproduct: Parser[Coprod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, PIPE) <~ RBRACKET) ^^ (x => coprod(x._2: _*))
 
   // type parsing
@@ -85,15 +85,13 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val intType: Parser[IntType] = Tokens.int ^^ (_ => int)
   lazy val realType: Parser[RealType] = Tokens.real ^^ (_ => real)
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
-  lazy val lstType: Parser[LstType[Obj]] = (Tokens.lst ~> opt(lstStruct)) ^^ (x => tlst[Obj](value = x.getOrElse(List.empty)))
-  lazy val lstStruct: Parser[List[Obj]] = (LBRACKET ~> repsep(obj, SEMICOLON) <~ RBRACKET) ^^ (x => x)
   lazy val recType: Parser[ORecType] = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(value = x.getOrElse(Map.empty)))
   lazy val recStruct: Parser[Map[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj, (COMMA | PIPE)) <~ RBRACKET) ^^ (x => x.map(o => (o._1, o._2)).toMap)
   lazy val namedType: Parser[Type[Obj]] = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":") ^^ (x => this.model.get(tobj(x)) match {
     case Some(atype) => atype
     case None => tobj(x)
   })
-  lazy val cType: Parser[Type[Obj]] = (boolType | realType | intType | strType | recType | lstType | namedType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val cType: Parser[Type[Obj]] = (boolType | realType | intType | strType | recType | namedType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Type[Obj]] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj, Obj]](inst | cType ^^ (t => AsOp(t))) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x, y) => y.exec(x).asInstanceOf[Type[Obj]]))
     case None ~ domain ~ insts => insts.foldLeft(domain)((x, y) => y.exec(x).asInstanceOf[Type[Obj]])

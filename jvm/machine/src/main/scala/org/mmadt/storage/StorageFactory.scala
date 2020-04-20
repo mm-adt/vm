@@ -193,20 +193,19 @@ object StorageFactory {
     override def strm[O <: Obj](itty: Iterator[O]): OStrm[O] = {
       if (itty.hasNext) {
         val first: O = itty.next()
-
         if (itty.hasNext) {
           val second: O = itty.next()
-
           (first match {
             case boolValue: BoolValue => bool(value1 = boolValue, value2 = second.asInstanceOf[BoolValue], valuesN = itty.asInstanceOf[Iterator[BoolValue]].toSeq: _*)
             case intValue: IntValue => int(value1 = intValue, value2 = second.asInstanceOf[IntValue], valuesN = itty.asInstanceOf[Iterator[IntValue]].toSeq: _*)
             case realValue: RealValue => real(value1 = realValue, value2 = second.asInstanceOf[RealValue], valuesN = itty.asInstanceOf[Iterator[RealValue]].toSeq: _*)
             case strValue: StrValue => str(value1 = strValue, value2 = second.asInstanceOf[StrValue], valuesN = itty.asInstanceOf[Iterator[StrValue]].toList: _*)
             case recValue: RecValue[_, _] => vrec(value1 = recValue.asInstanceOf[ORecValue], value2 = second.asInstanceOf[ORecValue], valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList: _*)
+            case brchValue: Branching[_] => new VBranchingStrm[Obj]((List(first,second) ++ itty.toList).asInstanceOf[List[Branching[Obj]]])
           }).asInstanceOf[OStrm[O]]
         } else VSingletonStrm.single(first)
       } else {
-        strm[O]
+        strm
       }
     }
   }

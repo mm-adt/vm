@@ -64,6 +64,7 @@ trait Branching[A <: Obj] extends Obj
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
+  def isValue:Boolean = !this.value.exists(x => x.alive() && x.isInstanceOf[Type[_]] && (!x.isInstanceOf[Branching[_]] || !x.asInstanceOf[Branching[_]].isValue))
 }
 
 object Branching {

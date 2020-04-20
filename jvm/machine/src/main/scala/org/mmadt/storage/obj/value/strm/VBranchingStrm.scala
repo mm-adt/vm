@@ -20,28 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.map
+package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
-import org.mmadt.language.obj.branch.Prod
-import org.mmadt.language.obj.op.map.PathOp.{Path, PathInst}
-import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.language.obj.branch.Branching
+import org.mmadt.language.obj.value.strm.BranchingStrm
+import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
+import org.mmadt.storage.StorageFactory.int
+import org.mmadt.storage.obj.OObj
 
-trait PathOp {
-  this: Obj =>
-  private lazy val inst: Inst[Obj, Path] = new PathInst()
-  def path(): Path = prod[Obj](this.lineage.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ this: _*).via(this, inst)
+class VBranchingStrm[A <: Obj](name: String, _value: Seq[Branching[A]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BranchingStrm[A] {
+  def this(java: Seq[Branching[A]]) = this(name = Tokens.empty, java, base())
+
+  override val value: Iterator[Branching[A]] = _value.iterator
+
+  override def q(quantifier: IntQ): this.type = this
 }
 
-object PathOp {
-  private type Path = Prod[Obj]
-  def apply(): PathInst = new PathInst
-
-  class PathInst(q: IntQ = qOne) extends VInst[Obj, Path]((Tokens.path, Nil), q) {
-    override def q(q: IntQ): this.type = new PathInst(q).asInstanceOf[this.type]
-    override def exec(start: Obj): Path = start.path().via(start, this)
-  }
-
-}

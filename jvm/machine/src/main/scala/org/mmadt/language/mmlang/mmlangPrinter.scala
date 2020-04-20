@@ -51,8 +51,8 @@ object mmlangPrinter {
 
   def branchString(branch: Branching[_]): String = {
     if (branch.root) branchList(branch)
-    if (branch.value.filter(x=>x.asInstanceOf[Obj].alive()).exists(x => x.isInstanceOf[Type[_]]))
-      typeString(branch.asInstanceOf[Type[Obj]])
+    if (!branch.isValue)
+      typeString (branch.asInstanceOf[Type[Obj]])
     else
       branchList(branch)
   }
@@ -60,7 +60,7 @@ object mmlangPrinter {
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
   private def branchList(branch: Branching[_]): String = {
-    val sep = if (branch.isInstanceOf[Prod[Obj]]) COMMA else PIPE
+    val sep = if (branch.isInstanceOf[Prod[Obj]]) SEMICOLON else PIPE
     branch.value.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + sep).dropRight(1) + RBRACKET
   }
 

@@ -37,6 +37,7 @@ class VEmptyStrm[O <: Obj] extends Strm[O] {
   override val via: ViaTuple = base()
 
   override def q(quantifier: (IntValue, IntValue)): this.type = throw new UnsupportedOperationException
+  override def alive(): Boolean = false
 
 }
 

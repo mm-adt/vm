@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.obj.branch
 
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.branch.Prod
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Int, Obj, Str}
@@ -65,15 +65,16 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(str("b"))(prod[Str]("a", "b").get(1))
     assertResult(str("b"))(prod[Str]("a", "b", "c").get(1))
     assertResult(prod[Str]("b", "d"))(prod[Obj]("a", prod[Str]("b", "d"), "c").get(1))
+    // assertResult(prod[Str]("b", "d"))(prod[Obj]("a", prod[Str]("b", "d"), "c").get(1,prod()).get(0))
   }
 
   test("product [get] types") {
-    assertResult(str)(prod[Str](str.plus("a"),str).get(0,str).range)
+    assertResult(str)(prod[Str](str.plus("a"), str).get(0, str).range)
   }
 
-  test("product structure]") {
+  test("product structure") {
     val product = int.mult(8).split(prod[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int[id],int[plus,2],3]<=int[mult,8]-<[int[id],int[plus,2],3]")(product.toString)
+    assertResult("[int[id];int[plus,2];3]<=int[mult,8]-<[int[id];int[plus,2];3]")(product.toString)
     assertResult(int.id())(product.value(0))
     assertResult(int.plus(2))(product.value(1))
     assertResult(int(3))(product.value(2))
@@ -83,9 +84,9 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(prod[Int](int.id(), int.plus(2), int(3)))(product.range)
   }
 
-  test("product quantifier]") {
+  test("product quantifier") {
     val product = int.q(2).mult(8).split(prod[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int{2}[id],int{2}[plus,2],3]{2}<=int{2}[mult,8]-<[int{2}[id],int{2}[plus,2],3]")(product.toString)
+    assertResult("[int{2}[id];int{2}[plus,2];3]{2}<=int{2}[mult,8]-<[int{2}[id];int{2}[plus,2];3]")(product.toString)
     assertResult(int.q(2).id())(product.value(0))
     assertResult(int.q(2).plus(2))(product.value(1))
     assertResult(int(3))(product.value(2))
@@ -96,9 +97,9 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("product [split] quantification") {
-    assertResult(int.q(0, 3))(int.mult(8).split(prod(__.id(), __.plus(8).mult(2), int(56))).merge().id().isolate)
-    assertResult(int.q(0, 23))(int.mult(8).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge().id().isolate)
-    assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge().id().isolate)
+    assertResult(int.q(0, 3))(int.mult(8).split(prod(__.id(), __.plus(8).mult(2), int(56))).merge[Int]().id().isolate)
+    assertResult(int.q(0, 23))(int.mult(8).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
+    assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
     // assertResult(int.q(0))(int.q(2).mult(8).q(0).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge().id().isolate)
   }
 
