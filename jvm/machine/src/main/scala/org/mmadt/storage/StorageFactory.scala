@@ -26,13 +26,14 @@ import java.util.ServiceLoader
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, _}
+import org.mmadt.language.obj.branch.{Branching, Coprod, Prod}
 import org.mmadt.language.obj.op.initial.{IntOp, StrOp}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{ViaTuple, branch, _}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
-import org.mmadt.storage.obj.branch.{OCoproduct, OProduct}
+import org.mmadt.storage.obj.branch.{OCoprod, OProd}
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm._
 
@@ -49,8 +50,8 @@ trait StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst()
-  def prod[A <: Obj](values: A*): branch.Product[A] = new OProduct[A](value = values.toList)
-  def coprod[A <: Obj](values: A*): branch.Coproduct[A] = new OCoproduct[A](value = values.toList)
+  def prod[A <: Obj](values: A*): branch.Prod[A] = new OProd[A](value = values.toList)
+  def coprod[A <: Obj](values: A*): branch.Coprod[A] = new OCoprod[A](value = values.toList)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType
@@ -100,8 +101,8 @@ object StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst(value = List.empty[A])
-  def prod[A <: Obj](values: A*): branch.Product[A] = new OProduct[A](value = values.toList)
-  def coprod[A <: Obj](values: A*): branch.Coproduct[A] = new OCoproduct[A](value = values.toList)
+  def prod[A <: Obj](values: A*): Prod[A] = new OProd[A](value = values.toList)
+  def coprod[A <: Obj](values: A*): Coprod[A] = new OCoprod[A](value = values.toList)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)
@@ -158,6 +159,7 @@ object StorageFactory {
     case _: RecStrm[_, _] => trec(name = obj.name, value = Map.empty, q = obj.q)
     case recval: RecValue[_, _] => trec(name = recval.name, value = recval.value, q = recval.q)
     case lstval: LstValue[_] => tlst(name = lstval.name, value = lstval.value, q = lstval.q)
+    case branching: Branching[_] => branching
   }).asInstanceOf[OType[O]]
   def isSymbol[O <: Obj](obj: O): Boolean = obj match {
     case _: Value[_] => false

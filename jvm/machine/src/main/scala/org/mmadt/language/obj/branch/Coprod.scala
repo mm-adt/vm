@@ -26,14 +26,14 @@ import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 
-trait Coproduct[A <: Obj] extends Branching[A]
-  with Type[Coproduct[A]]
-  with Value[Coproduct[A]] {
+trait Coprod[A <: Obj] extends Branching[A]
+  with Type[Coprod[A]]
+  with Value[Coprod[A]] {
 
   override def test(other: Obj): Boolean = other match {
-    case prod: Coproduct[_] =>
+    case prod: Coprod[_] =>
       if (prod.value.isEmpty || this.value.equals(prod.value)) return true
-      this.value.zip(prod.value).foldRight(true)((a, b) => a._1.test(a._2) && b)
+      this.value.zip(prod.value).foldRight(false)((a, b) => a._1.test(a._2) || b)
     case _ => false
   }
 

@@ -103,8 +103,8 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val strValue: Parser[StrValue] = opt(valueType) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
   lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ (Tokens.:-> | Tokens.::)) ~ objValue, COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
   lazy val lstValue: Parser[LstValue[Value[Obj]]] = opt(valueType) ~ (LBRACKET ~> repsep(objValue, SEMICOLON) <~ RBRACKET) ^^ (x => vlst[Value[Obj]](name = x._1.getOrElse(Tokens.lst), value = x._2))
-  lazy val product: Parser[Product[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, COMMA) <~ RBRACKET) ^^ (x => prod(x._2: _*))
-  lazy val coproduct: Parser[Coproduct[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, PIPE) <~ RBRACKET) ^^ (x => coprod(x._2: _*))
+  lazy val product: Parser[Prod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, COMMA) <~ RBRACKET) ^^ (x => prod(x._2: _*))
+  lazy val coproduct: Parser[Coprod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, PIPE) <~ RBRACKET) ^^ (x => coprod(x._2: _*))
 
 
   lazy val valueType: Parser[String] = "[a-zA-Z]+".r <~ ":"

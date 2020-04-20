@@ -20,21 +20,20 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.branch
+package org.mmadt.storage.obj.branch
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{branch, _}
+import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.storage.StorageFactory._
 
-trait Product[A <: Obj] extends Branching[A]
-  with Type[Product[A]]
-  with Value[Product[A]] {
+class OProd[A <: Obj](val name: String = Tokens.empty, val value: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
+  extends branch.Prod[A] {
 
-  override def test(other: Obj): Boolean = other match {
-    case prod: Product[_] =>
-      if (prod.value.isEmpty || this.value.equals(prod.value)) return true
-      this.value.zip(prod.value).foldRight(true)((a, b) => a._1.test(a._2) && b)
-    case _ => false
-  }
+  override def clone(name: String = this.name,
+    value: Any = this.value,
+    q: IntQ = this.q,
+    via: ViaTuple = this.via): this.type = new OProd[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
+
+  override def toString: String = LanguageFactory.printBranch(this)
 
 }

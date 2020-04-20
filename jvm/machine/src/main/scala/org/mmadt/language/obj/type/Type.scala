@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.obj.branch.Branching
 import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
@@ -68,6 +69,7 @@ object Type {
   def resolve[R <: Obj](objA: Obj, objB: R): R = {
     objB match {
       case x: __ => x(objA)
+      //case x: Branching[Obj] => x.clone(value = x.value.map(a => resolve(asType(objA).range, a))).asInstanceOf[R]
       case x: LstType[Obj] => tlst(name = x.name, value = x.value.map(a => resolve(objA, a)), q = x.q, via = x.via).asInstanceOf[R]
       case x: RecType[Obj, Obj] => trec(name = x.name, value = x.value.map(a => resolve(objA, a._1) -> resolve(objA, a._2)), q = x.q, via = x.via).asInstanceOf[R]
       case _ => objB
