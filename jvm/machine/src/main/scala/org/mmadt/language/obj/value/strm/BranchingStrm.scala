@@ -23,8 +23,8 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.branch.Branching
+import org.mmadt.language.obj.branch.Brch
 
-trait BranchingStrm[A <: Obj] extends Strm[Branching[A]] {
-  override val value: Iterator[Branching[A]]
+trait BranchingStrm[A <: Obj] extends Strm[Brch[A]] {
+  override val value: Iterator[Brch[A]]
 }

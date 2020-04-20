@@ -32,7 +32,7 @@ import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
   this: Obj =>
-  def split[A <: Obj](coproduct: Coprod[A]): Branching[A] = {
+  def split[A <: Obj](coproduct: Coprod[A]): Brch[A] = {
     val branches: Coprod[A] = coproduct.clone(value = coproduct.value.map(x => if(asType(this).range.test(x))Inst.resolveArg(x, this) else obj.q(0)))
     var qTest = qOne
     branches.clone(value = branches.value.map(x => Option(
@@ -40,18 +40,18 @@ trait SplitOp {
       else obj.q(0)).filter(x => x.alive()).map(x => x.q(multQ(x.q, qTest))).map(x => {qTest = qZero; x }).getOrElse(obj.q(0)))).via(this, SplitOp(coproduct))
   }
 
-  def split[A <: Obj](product: Prod[A]): Branching[A] = {
+  def split[A <: Obj](product: Prod[A]): Brch[A] = {
     val branches: Prod[A] = product.clone(value = product.value.map(x => Inst.resolveArg(this, x)))
     branches.via(this, SplitOp(branches))
   }
 }
 
 object SplitOp {
-  def apply[A <: Obj](branches: Branching[A]): SplitInst[A] = new SplitInst[A](branches)
+  def apply[A <: Obj](branches: Brch[A]): SplitInst[A] = new SplitInst[A](branches)
 
-  class SplitInst[A <: Obj](branches: Branching[A], q: IntQ = qOne) extends VInst[A, Branching[A]]((Tokens.split, List(branches)), q) with BranchInstruction {
+  class SplitInst[A <: Obj](branches: Brch[A], q: IntQ = qOne) extends VInst[A, Brch[A]]((Tokens.split, List(branches)), q) with BranchInstruction {
     override def q(quantifier: IntQ): this.type = new SplitInst[A](branches, quantifier).asInstanceOf[this.type]
-    override def exec(start: A): Branching[A] = {
+    override def exec(start: A): Brch[A] = {
       (branches match {
         case coprod: Coprod[A] => start.split(Type.resolve(this, coprod))
         case prod: Prod[A] => start.split(Type.resolve(this, prod))

@@ -30,16 +30,16 @@ import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 
-trait Branching[A <: Obj] extends Obj
-  with Type[Branching[A]]
-  with Value[Branching[A]]
+trait Brch[A <: Obj] extends Obj
+  with Type[Brch[A]]
+  with Value[Brch[A]]
   with MergeOp[A]
   with GetOp[Int, A]
   with HeadOp[A]
   with TailOp
   //with AppendOp[A]
-  with PlusOp[Branching[A], Branching[A]]
-  with MultOp[Branching[A], Branching[A]]
+  with PlusOp[Brch[A], Brch[A]]
+  with MultOp[Brch[A], Brch[A]]
   with OneOp
   with ZeroOp {
   val value: List[A]
@@ -49,14 +49,14 @@ trait Branching[A <: Obj] extends Obj
   override def zero(): this.type = this.clone(value = List(), via = (this, ZeroOp()))
   override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty lst") else this.value.head.via(this, HeadOp()) // TODO: check process trace for type or value
   override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty lst") else this.clone(value = this.value.tail, via = (this, TailOp()))
-  override def plus(other: Branching[A]): this.type = this.clone(value = this.value :+ other, via = (this, PlusOp(other)))
-  override def mult(other: Branching[A]): this.type = this.clone(value = this.value :+ other, via = (this, MultOp(other)))
+  override def plus(other: Brch[A]): this.type = this.clone(value = this.value :+ other, via = (this, PlusOp(other)))
+  override def mult(other: Brch[A]): this.type = this.clone(value = this.value :+ other, via = (this, MultOp(other)))
 
   override def get(key: Int): A = {
     val valueType: A = key match {
       case avalue: IntValue if this.value.length >= (avalue.value + 1) => this.value(avalue.value.toInt)
       case avalue: IntValue if this.value.nonEmpty =>
-        Branching.checkIndex(this, avalue.value.toInt)
+        Brch.checkIndex(this, avalue.value.toInt)
         this.value(avalue.value.toInt)
       case _ => obj.asInstanceOf[A]
     }
@@ -64,11 +64,11 @@ trait Branching[A <: Obj] extends Obj
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
-  def isValue:Boolean = !this.value.exists(x => x.alive() && x.isInstanceOf[Type[_]] && (!x.isInstanceOf[Branching[_]] || !x.asInstanceOf[Branching[_]].isValue))
+  def isValue:Boolean = !this.value.exists(x => x.alive() && x.isInstanceOf[Type[_]] && (!x.isInstanceOf[Brch[_]] || !x.asInstanceOf[Brch[_]].isValue))
 }
 
-object Branching {
-  def checkIndex(alst: Branching[_], index: scala.Int): Unit = {
+object Brch {
+  def checkIndex(alst: Brch[_], index: scala.Int): Unit = {
     if (index < 0) throw new LanguageException("lst index must be 0 or greater: " + index)
     if (alst.value.length < (index + 1)) throw new LanguageException("lst index is out of bounds: " + index)
   }

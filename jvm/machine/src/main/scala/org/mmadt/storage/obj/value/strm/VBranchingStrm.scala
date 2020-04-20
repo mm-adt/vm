@@ -23,16 +23,16 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.branch.Branching
+import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.value.strm.BranchingStrm
 import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory.int
 import org.mmadt.storage.obj.OObj
 
-class VBranchingStrm[A <: Obj](name: String, _value: Seq[Branching[A]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BranchingStrm[A] {
-  def this(java: Seq[Branching[A]]) = this(name = Tokens.empty, java, base())
+class VBranchingStrm[A <: Obj](name: String, _value: Seq[Brch[A]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BranchingStrm[A] {
+  def this(java: Seq[Brch[A]]) = this(name = Tokens.empty, java, base())
 
-  override val value: Iterator[Branching[A]] = _value.iterator
+  override val value: Iterator[Brch[A]] = _value.iterator
 
   override def q(quantifier: IntQ): this.type = this
 }

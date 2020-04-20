@@ -24,14 +24,14 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.branch.{Branching, Prod}
+import org.mmadt.language.obj.branch.{Brch, Prod}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.{IntQ, Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait MergeOp[A <: Obj] {
-  this: Branching[A] =>
+  this: Brch[A] =>
   def merge[B <: Obj](): B =
     (if (this.value.filter(x => x.alive()).exists(x => x.isInstanceOf[Type[Obj]])) {
       val rangeType = BranchInstruction.typeExternal(this.isInstanceOf[Prod[B]], trec(value = this.value.map(x => (str(x.toString), x)).toMap[Str, Obj]))
@@ -46,9 +46,9 @@ trait MergeOp[A <: Obj] {
 object MergeOp {
   def apply[A <: Obj](): MergeInst[A] = new MergeInst[A]()
 
-  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Branching[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
+  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Brch[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Branching[A]): A = start.merge[A]().via(start, this)
+    override def exec(start: Brch[A]): A = start.merge[A]().via(start, this)
   }
 
 }

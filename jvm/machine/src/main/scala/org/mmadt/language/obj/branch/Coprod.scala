@@ -26,7 +26,7 @@ import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 
-trait Coprod[A <: Obj] extends Branching[A]
+trait Coprod[A <: Obj] extends Brch[A]
   with Type[Coprod[A]]
   with Value[Coprod[A]] {
 

@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type}
-import org.mmadt.language.obj.branch.{Branching, Prod}
+import org.mmadt.language.obj.branch.{Brch, Prod}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
 import org.mmadt.storage.StorageFactory._
@@ -49,7 +49,7 @@ object mmlangPrinter {
 
   def strmString(strm: Strm[Obj]): String = strm.value.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
 
-  def branchString(branch: Branching[_]): String = {
+  def branchString(branch: Brch[_]): String = {
     if (branch.root) branchList(branch)
     if (!branch.isValue)
       typeString (branch.asInstanceOf[Type[Obj]])
@@ -59,7 +59,7 @@ object mmlangPrinter {
 
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
-  private def branchList(branch: Branching[_]): String = {
+  private def branchList(branch: Brch[_]): String = {
     val sep = if (branch.isInstanceOf[Prod[Obj]]) SEMICOLON else PIPE
     branch.value.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + sep).dropRight(1) + RBRACKET
   }
@@ -68,14 +68,14 @@ object mmlangPrinter {
     val range = (atype match {
       case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value)
       case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value)
-      case abrch: Branching[_] => abrch.name + branchList(abrch)
+      case abrch: Brch[_] => abrch.name + branchList(abrch)
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
         case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value)
         case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value)
-        case abrch: Branching[_] => abrch.name + branchList(abrch)
+        case abrch: Brch[_] => abrch.name + branchList(abrch)
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
     }
@@ -99,7 +99,7 @@ object mmlangPrinter {
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().value + RANGLE
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, PIPE) + RBRACKET
       case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, AMPERSAND) + RBRACKET
-      case Tokens.split => Tokens.split_op + branchList(inst.arg0[Branching[_]]())
+      case Tokens.split => Tokens.split_op + branchList(inst.arg0[Brch[_]]())
       case Tokens.merge => Tokens.merge_op
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET

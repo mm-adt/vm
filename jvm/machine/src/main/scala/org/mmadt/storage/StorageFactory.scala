@@ -26,7 +26,7 @@ import java.util.ServiceLoader
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, _}
-import org.mmadt.language.obj.branch.{Branching, Coprod, Prod}
+import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
 import org.mmadt.language.obj.op.initial.{IntOp, StrOp}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
@@ -159,7 +159,7 @@ object StorageFactory {
     case _: RecStrm[_, _] => trec(name = obj.name, value = Map.empty, q = obj.q)
     case recval: RecValue[_, _] => trec(name = recval.name, value = recval.value, q = recval.q)
     case lstval: LstValue[_] => tlst(name = lstval.name, value = lstval.value, q = lstval.q)
-    case branching: Branching[_] => branching
+    case branching: Brch[_] => branching
   }).asInstanceOf[OType[O]]
   def isSymbol[O <: Obj](obj: O): Boolean = obj match {
     case _: Value[_] => false
@@ -201,7 +201,7 @@ object StorageFactory {
             case realValue: RealValue => real(value1 = realValue, value2 = second.asInstanceOf[RealValue], valuesN = itty.asInstanceOf[Iterator[RealValue]].toSeq: _*)
             case strValue: StrValue => str(value1 = strValue, value2 = second.asInstanceOf[StrValue], valuesN = itty.asInstanceOf[Iterator[StrValue]].toList: _*)
             case recValue: RecValue[_, _] => vrec(value1 = recValue.asInstanceOf[ORecValue], value2 = second.asInstanceOf[ORecValue], valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList: _*)
-            case brchValue: Branching[_] => new VBranchingStrm[Obj]((List(first,second) ++ itty.toList).asInstanceOf[List[Branching[Obj]]])
+            case brchValue: Brch[_] => new VBranchingStrm[Obj]((List(first,second) ++ itty.toList).asInstanceOf[List[Brch[Obj]]])
           }).asInstanceOf[OStrm[O]]
         } else VSingletonStrm.single(first)
       } else {
