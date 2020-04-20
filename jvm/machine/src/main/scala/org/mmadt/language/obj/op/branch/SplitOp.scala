@@ -23,9 +23,9 @@
 package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.branch._
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj._
 import org.mmadt.storage.StorageFactory.{obj, qOne}
 import org.mmadt.storage.obj.value.VInst
 
@@ -33,12 +33,14 @@ trait SplitOp {
   this: Obj =>
   def split[A <: Obj](coproduct: Coproduct[A]): Branching[A] = {
     var found = false
-    coproduct.clone(value = (coproduct.value._1, coproduct.value._2.map(x => Option(if (this.test(x)) Inst.resolveArg(this, x) else obj.q(0)).filter(x => x.alive() && !found).map(x => {found = true; x }).getOrElse(obj.q(0))))).via(this, SplitOp(coproduct))
+    coproduct.clone(value = coproduct.value.map(x => Option(
+      if (this.test(x)) Inst.resolveArg(this, x)
+      else obj.q(0)).filter(x => x.alive() && !found).map(x => {found = true; x }).getOrElse(obj.q(0)))).via(this, SplitOp(coproduct))
   }
 
   def split[A <: Obj](product: Product[A]): Branching[A] = (this match {
-    case avalue: OValue[A] => product.clone(value = (product.value._1, product.value._2.map(x => Inst.resolveArg(avalue, x))))
-    case atype: OType[A] => product.clone(value = (product.value._1, product.value._2.map(x => x.compute(atype))))
+    case avalue: OValue[A] => product.clone(value = product.value.map(x => Inst.resolveArg(avalue, x)))
+    case atype: OType[A] => product.clone(value = product.value.map(x => x.compute(atype)))
   }).via(this, SplitOp(product))
 }
 
@@ -48,8 +50,8 @@ object SplitOp {
   class SplitInst[A <: Obj](branches: Branching[A], q: IntQ = qOne) extends VInst[A, Branching[A]]((Tokens.split, List(branches)), q) with BranchInstruction {
     override def q(quantifier: IntQ): this.type = new SplitInst[A](branches, quantifier).asInstanceOf[this.type]
     override def exec(start: A): Branching[A] = (branches match {
-      case coprod:Coproduct[A] => start.split(coprod)
-      case prod:Product[A] => start.split(prod)
+      case coprod: Coproduct[A] => start.split(coprod)
+      case prod: Product[A] => start.split(prod)
     }).via(start, this)
   }
 

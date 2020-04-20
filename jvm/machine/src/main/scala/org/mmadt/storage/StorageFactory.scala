@@ -49,8 +49,8 @@ trait StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst()
-  def prod[A <: Obj](values: A*): branch.Product[A] = new OProduct[A](value = (Tokens.empty, values.toList))
-  def coprod[A <: Obj](values: A*): branch.Coproduct[A] = new OCoproduct[A](value = (Tokens.empty, values.toList))
+  def prod[A <: Obj](values: A*): branch.Product[A] = new OProduct[A](value = values.toList)
+  def coprod[A <: Obj](values: A*): branch.Coproduct[A] = new OCoproduct[A](value = values.toList)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType
@@ -100,8 +100,8 @@ object StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst(value = List.empty[A])
-  def prod[A <: Obj](values: A*): branch.Product[A] = new OProduct[A](value = (Tokens.empty, values.toList))
-  def coprod[A <: Obj](values: A*): branch.Coproduct[A] = new OCoproduct[A](value = (Tokens.empty, values.toList))
+  def prod[A <: Obj](values: A*): branch.Product[A] = new OProduct[A](value = values.toList)
+  def coprod[A <: Obj](values: A*): branch.Coproduct[A] = new OCoproduct[A](value = values.toList)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)

@@ -24,9 +24,9 @@ package org.mmadt.language.obj.branch
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.MergeOp
-import org.mmadt.language.obj.op.map.GetOp
+import org.mmadt.language.obj.op.map.{GetOp, ZeroOp}
 import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.language.obj.{InstTuple, Int, Lst, Obj}
+import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory.{asType, obj}
 
@@ -39,17 +39,18 @@ trait Branching[A <: Obj] extends Obj
   //with TailOp
   //with AppendOp[A]
   //with PlusOp[Product[A], Product[A]]
-  //with ZeroOp {
-{
-  val value: InstTuple
+  with ZeroOp {
+  val value: List[A]
   override def toString: String = LanguageFactory.printBranch(this)
+
+  def zero(): this.type = this.clone(value = List.empty[A], via = (this, ZeroOp()))
 
   override def get(key: Int): A = {
     val valueType: A = key match {
-      case avalue: IntValue if this.value._2.length >= (avalue.value + 1) => asType[A](this.value._2(avalue.value.toInt).asInstanceOf[A])
-      case avalue: IntValue if this.value._2.nonEmpty =>
+      case avalue: IntValue if this.value.length >= (avalue.value + 1) => asType[A](this.value(avalue.value.toInt))
+      case avalue: IntValue if this.value.nonEmpty =>
         Branching.checkIndex(this, avalue.value.toInt)
-        this.value._2(avalue.value.toInt).asInstanceOf[A]
+        this.value(avalue.value.toInt)
       case _ => obj.asInstanceOf[A]
     }
     valueType.via(this, GetOp[Int, A](key, valueType))
@@ -61,7 +62,7 @@ trait Branching[A <: Obj] extends Obj
 object Branching {
   def checkIndex(alst: Branching[_], index: scala.Int): Unit = {
     if (index < 0) throw new LanguageException("lst index must be 0 or greater: " + index)
-    if (alst.value._2.length < (index + 1)) throw new LanguageException("lst index is out of bounds: " + index)
+    if (alst.value.length < (index + 1)) throw new LanguageException("lst index is out of bounds: " + index)
   }
 }
 

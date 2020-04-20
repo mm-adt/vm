@@ -22,25 +22,19 @@
 
 package org.mmadt.language.obj.branch
 
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, InstTuple, Obj}
-import org.mmadt.storage.StorageFactory._
 
 trait Product[A <: Obj] extends Branching[A]
   with Type[Product[A]]
-  with Value[Product[A]]
-  with Inst[A, Product[A]] {
-
-  override val value: InstTuple
+  with Value[Product[A]] {
 
   override def test(other: Obj): Boolean = other match {
     case prod: Product[_] =>
-      if (prod.value._2.isEmpty || this.value.equals(prod.value)) return true
-      this.value._2.zip(prod.value._2).foldRight(true)((a, b) => a._1.test(a._2) && b)
+      if (prod.value.isEmpty || this.value.equals(prod.value)) return true
+      this.value.zip(prod.value).foldRight(true)((a, b) => a._1.test(a._2) && b)
     case _ => false
   }
-
-  override def exec(start: A): this.type = this.clone(value = (this.value._1, this.value._2.map(x => Option(Inst.resolveArg(start, x)).filter(x => x.alive()).getOrElse(obj.q(0)))))
 
 }

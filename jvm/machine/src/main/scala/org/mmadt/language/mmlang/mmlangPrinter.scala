@@ -51,7 +51,7 @@ object mmlangPrinter {
 
   def branchString(branch: Branching[_]): String = {
     if (branch.root) branchList(branch)
-    if (branch.value._2.exists(x => x.isInstanceOf[Type[_]]))
+    if (branch.value.exists(x => x.isInstanceOf[Type[_]]))
       typeString(branch.asInstanceOf[Type[Obj]])
     else
       branchList(branch)
@@ -61,7 +61,7 @@ object mmlangPrinter {
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
   private def branchList(branch: Branching[_]): String = {
     val sep = if (branch.isInstanceOf[Product[_]]) "," else "|"
-    branch.value._2.foldLeft(LBRACKET)((a, b) => a + b + sep).dropRight(1) + RBRACKET
+    branch.value.foldLeft(LBRACKET)((a, b) => a + b + sep).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {

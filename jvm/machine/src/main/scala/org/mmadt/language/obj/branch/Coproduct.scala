@@ -22,30 +22,20 @@
 
 package org.mmadt.language.obj.branch
 
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, InstTuple, Obj}
-import org.mmadt.storage.StorageFactory.obj
 
 trait Coproduct[A <: Obj] extends Branching[A]
   with Type[Coproduct[A]]
-  with Value[Coproduct[A]]
-  with Inst[A, Coproduct[A]] {
-
-  override val value: InstTuple
+  with Value[Coproduct[A]] {
 
   override def test(other: Obj): Boolean = other match {
     case prod: Coproduct[_] =>
-      if (prod.value._2.isEmpty || this.value.equals(prod.value)) return true
-      this.value._2.zip(prod.value._2).foldRight(true)((a, b) => a._1.test(a._2) && b)
+      if (prod.value.isEmpty || this.value.equals(prod.value)) return true
+      this.value.zip(prod.value).foldRight(true)((a, b) => a._1.test(a._2) && b)
     case _ => false
   }
-
-  override def exec(start: A): this.type = {
-    var found = false
-    this.clone(value = (this.value._1, this.value._2.map(x => Option(if(start.test(x)) Inst.resolveArg(start, x) else obj.q(0)).filter(x => x.alive() && !found).map(x => {found = true; x }).getOrElse(obj.q(0)))))
-  }
-
 
 }
 
