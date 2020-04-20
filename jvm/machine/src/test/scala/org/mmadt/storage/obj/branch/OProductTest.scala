@@ -23,24 +23,46 @@
 package org.mmadt.storage.obj.branch
 
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.branch._
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
-class OProductTest extends FunSuite {
+class OProductTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("product [zero]") {
-    assertResult(List.empty[Obj])(prod(str("a"),str("b")).zero().value)
-    assertResult(prod())(prod(str("a"),str("b")).zero())
+    assertResult(List.empty[Obj])(prod(str("a"), str("b")).zero().value)
+    assertResult(prod())(prod(str("a"), str("b")).zero())
   }
 
-  test("product values") {
+  test("product [tail][head] values") {
+    val starts: TableFor2[Product[Obj], List[Value[Obj]]] =
+      new TableFor2[Product[Obj], List[Value[Obj]]](("lst", "list"),
+        (prod(), List.empty),
+        (prod("a"), List(str("a"))),
+        (prod("a", "b"), List(str("a"), str("b"))),
+        (prod("a", "b", "c"), List(str("a"), str("b"), str("c"))),
+        (prod("a", prod[Str]("b", "d"), "c"), List(str("a"), prod[Str]("b", "d"), str("c"))),
+      )
+    forEvery(starts) { (alst, blist) => {
+      assertResult(alst.value)(blist)
+      assertResult(alst)(vlst[Value[Obj]](value = blist))
+      if (blist.nonEmpty) {
+        assertResult(alst.head())(blist.head)
+        assertResult(alst.value.head)(blist.head)
+        assertResult(alst.tail().value)(blist.tail)
+        assertResult(alst.value.tail)(blist.tail)
+      }
+    }
+    }
+  }
 
+  test("product play") {
     println(int(1) ===> int.split(prod(int(2), int.plus(int), int(3))))
     println(int.split(prod(int(2), int.plus(int), int(3))))
     println(prod(int(2), int.plus(int), int(3)) <= int.plus(2).map(prod(int(2), int.plus(int), int(3))))
-
     println(coprod(str, int.plus(int), int(3)))
-
     println(int.split(prod[Obj](int(3), int.plus(2), int)).id().merge().is(int.gt(0)))
     println(int.split(coprod(real, str, int)).id().merge())
   }

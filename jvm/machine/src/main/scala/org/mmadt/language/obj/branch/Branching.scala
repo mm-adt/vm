@@ -24,26 +24,28 @@ package org.mmadt.language.obj.branch
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.MergeOp
-import org.mmadt.language.obj.op.map.{GetOp, ZeroOp}
+import org.mmadt.language.obj.op.map.{GetOp, HeadOp, TailOp, ZeroOp}
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory.{asType, obj}
 
 trait Branching[A <: Obj] extends Obj
-  with MergeOp[A]
-  with GetOp[Int, A]
   with Type[Branching[A]]
   with Value[Branching[A]]
-  //with HeadOp[A]
-  //with TailOp
+  with MergeOp[A]
+  with GetOp[Int, A]
+  with HeadOp[A]
+  with TailOp
   //with AppendOp[A]
   //with PlusOp[Product[A], Product[A]]
   with ZeroOp {
   val value: List[A]
   override def toString: String = LanguageFactory.printBranch(this)
 
-  def zero(): this.type = this.clone(value = List.empty[A], via = (this, ZeroOp()))
+  override def zero(): this.type = this.clone(value = List.empty[A], via = (this, ZeroOp()))
+  override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty lst") else this.value.head.via(this, HeadOp()) // TODO: check process trace for type or value
+  override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty lst") else this.clone(value = this.value.tail, via = (this, TailOp()))
 
   override def get(key: Int): A = {
     val valueType: A = key match {
