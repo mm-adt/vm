@@ -44,7 +44,10 @@ object GetOp {
 
   class GetInst[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B], q: IntQ = qOne) extends VInst[GetType[A, B], B]((Tokens.get, List(key)), q) {
     override def q(q: IntQ): this.type = new GetInst[A, B](key, typeHint, q).asInstanceOf[this.type]
-    override def exec(start: GetType[A, B]): B = start.get(Inst.resolveArg(start, key)).via(start, this)
+    override def exec(start: GetType[A, B]): B = {
+      val inst = new GetInst[A, B](Inst.resolveArg(start, key), typeHint, q)
+      start.get(inst.arg0[A]()).via(start, inst)
+    }
   }
 
 }

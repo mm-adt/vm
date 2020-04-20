@@ -63,7 +63,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // specific to mmlang execution
   lazy val expr: Parser[Obj] = evaluation | compilation
   lazy val compilation: Parser[Obj] = objType ^^ (x => x.domain() ==> (x, this.model))
-  lazy val evaluation: Parser[Obj] = (strm | objValue) ~ opt(objType) ^^ (x =>
+  lazy val evaluation: Parser[Obj] = (strm | objValue | branching) ~ opt(objType) ^^ (x =>
     x._1 ==>
       ((Type.resolve(x._1, x._2.getOrElse(asType[Obj](x._1))).domain() ==>
         (x._2.getOrElse(asType[Obj](x._1)), this.model)).asInstanceOf[Type[Obj]], this.model))

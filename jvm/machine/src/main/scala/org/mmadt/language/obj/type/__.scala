@@ -54,7 +54,7 @@ class __(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = 
   with ZeroOp
   with OneOp {
   override def clone(name: String = Tokens.obj, value: Any, quantifier: IntQ = qOne, via: ViaTuple = base()): this.type = new __(name, quantifier, via).asInstanceOf[this.type]
-  def apply[T <: Obj](obj: Obj): OType[T] = this.lineage.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a)).asInstanceOf[OType[T]]
+  def apply[T <: Obj](obj: Obj): OType[T] = asType(this.lineage.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
   // type-agnostic monoid supporting all instructions
   //override def domain[D <: Obj](): Type[D] = obj.q(qStar).asInstanceOf[Type[D]]
   override def plus(other: __): this.type = this.via(this, PlusOp(other))

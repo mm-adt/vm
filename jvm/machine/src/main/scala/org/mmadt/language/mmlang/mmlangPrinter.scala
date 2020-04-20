@@ -51,7 +51,7 @@ object mmlangPrinter {
 
   def branchString(branch: Branching[_]): String = {
     if (branch.root) branchList(branch)
-    if (branch.value.exists(x => x.isInstanceOf[Type[_]]))
+    if (branch.value.filter(x=>x.asInstanceOf[Obj].alive()).exists(x => x.isInstanceOf[Type[_]]))
       typeString(branch.asInstanceOf[Type[Obj]])
     else
       branchList(branch)

@@ -397,6 +397,12 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("lst['a';lst['b';lst['c']]]"))
   }
   test("product and coproduct") {
+    assertResult("[1|2|3]")(engine.eval("[1|2|3]").toString)
+    assertResult("[1,2,3]")(engine.eval("[1,2,3]").toString)
+    assertResult("[1,[2|3]]")(engine.eval("[1,[2|3]]").toString)
+    assertResult("[2|3]")(engine.eval("[1,[2|3]][get,1]").toString)
+    // assertResult("3")(engine.eval("[1,[2|3]][get,1][get,1]").toString)
+   //////
     assertResult("[str||]<=str-<[str|int|int[plus,2]]")(engine.eval("str-<[str|int|int[plus,2]]").toString)
     //assertResult("obj<=[str|int|int[plus,2]]>-[is,true]")(engine.eval("[str|int|int[plus,2]]>-[is,true]").toString)
     assertResult("[||str]<=str-<[int|bool|str]")(engine.eval("str-<[int|bool|str]").toString)
@@ -406,11 +412,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("[|int|]<=int-<[3|int|int[plus,2]]")(engine.eval("int-<[3|int|int[plus,2]]").toString)
     assertResult("int{0,3}<=int-<[3,int,int{?}<=int[is,bool<=int[lt,0]]]>-[plus,1]")(engine.eval("int-<[3,int,int[is<0]]>-[plus,1]").toString)
     /////
-    assertResult(coprod(obj.q(0),int(10)))(engine.eval("10-<[bool|int]"))
-    assertResult(coprod(obj.q(0),int(10)))(engine.eval("10 int[id]-<[bool|int]"))
+    assertResult(coprod(obj.q(0), int(10)))(engine.eval("10-<[bool|int]"))
+    assertResult(coprod(obj.q(0), int(10)))(engine.eval("10 int[id]-<[bool|int]"))
     assertResult(int(10))(engine.eval("10-<[bool|int]>-"))
     assertResult(int(10))(engine.eval("10-<[bool|int]>-[id]"))
     assertResult(int(110))(engine.eval("10-<[bool|int]>-[plus,100]"))
-
+    //
+    assertResult("[10;[|10];10;11]")(engine.eval("10-<[bool|int]>-[plus,1][path]").toString)
+    assertResult("[1,2,3]")(engine.eval("[1,2,3]").toString)
   }
 }

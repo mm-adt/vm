@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.obj.branch
 
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.branch.Prod
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Int, Obj, Str}
@@ -68,7 +68,7 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("product [get] types") {
-    assertResult(str.plus("a"))(prod[Str](str.plus("a")).get(0))
+    assertResult(str)(prod[Str](str.plus("a"),str).get(0,str).range)
   }
 
   test("product structure]") {

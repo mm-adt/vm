@@ -36,7 +36,7 @@ trait MergeOp[A <: Obj] {
     (if (this.value.filter(x => x.alive()).exists(x => x.isInstanceOf[Type[Obj]])) {
       val rangeType = BranchInstruction.typeExternal(this.isInstanceOf[Prod[A]], trec(value = this.value.map(x => (str(x.toString), x)).toMap[Str, Obj]))
       rangeType.via(this, MergeOp()).hardQ(rangeType.q)
-    } else strm(this.value.filter(x => x.alive()).flatMap(x => x.toList).toIterator).via(this, MergeOp())).asInstanceOf[A]
+    } else strm(this.value.filter(x => x.alive()).map(x=>x.via(this, MergeOp())).flatMap(x => x.toList).toIterator)).asInstanceOf[A]
 }
 
 object MergeOp {

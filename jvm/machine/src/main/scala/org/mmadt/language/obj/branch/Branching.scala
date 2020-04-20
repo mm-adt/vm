@@ -60,7 +60,7 @@ trait Branching[A <: Obj] extends Obj
         this.value(avalue.value.toInt)
       case _ => obj.asInstanceOf[A]
     }
-    valueType //.via(this, GetOp[Int, A](key, valueType))
+    valueType.via(this, GetOp[Int, A](key, valueType))
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
