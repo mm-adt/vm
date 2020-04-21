@@ -24,7 +24,6 @@ package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.strm.VBranchingStrm
 import org.scalatest.FunSuite
 import org.scalatest.prop.TableDrivenPropertyChecks
 
@@ -40,9 +39,9 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     println(int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20))
     assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20))
     assertResult(int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20))(int ===> int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20))
-    /*assertResult(new VBranchingStrm[Obj](List(
-      prod[Obj](1, 101, 301, 301, 321),
-      prod[Obj](1, 101, 301, 303, 323))))(int(1) ===> int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20).path())*/
+    assertResult(strm(
+      prod[Obj](1, 101, 301, 321),
+      prod[Obj](1, 101, 301, 303, 323)))(int(1) ===> int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20).path())
   }
 
 }

@@ -86,6 +86,7 @@ trait StorageFactory {
   def vlst[A <: Value[Obj]](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, via: ViaTuple = base()): LstValue[A]
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecValue[A, B]
   //
+  def strm[O <: Obj](values:O*): OStrm[O] = strm[O](values.toList.iterator)
   def strm[O <: Obj](itty: Iterator[O]): OStrm[O]
   def strm[O <: Obj]: OStrm[O]
 }
@@ -137,6 +138,7 @@ object StorageFactory {
   def vreal(name: String = Tokens.real, value: Double, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RealValue = f.vreal(name, value, q, via)
   def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): StrValue = f.vstr(name, value, q, via)
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RecValue[A, B] = f.vrec(name, value, q, via)
+  def strm[O <: Obj](values:O*)(implicit f: StorageFactory): OStrm[O] = f.strm[O](values.toList.iterator)
   def strm[O <: Obj](itty: Iterator[O])(implicit f: StorageFactory): OStrm[O] = f.strm[O](itty)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
   /////////CONSTANTS//////
@@ -202,7 +204,7 @@ object StorageFactory {
             case realValue: RealValue => real(value1 = realValue, value2 = second.asInstanceOf[RealValue], valuesN = itty.asInstanceOf[Iterator[RealValue]].toSeq: _*)
             case strValue: StrValue => str(value1 = strValue, value2 = second.asInstanceOf[StrValue], valuesN = itty.asInstanceOf[Iterator[StrValue]].toList: _*)
             case recValue: RecValue[_, _] => vrec(value1 = recValue.asInstanceOf[ORecValue], value2 = second.asInstanceOf[ORecValue], valuesN = itty.asInstanceOf[Iterator[ORecValue]].toList: _*)
-            case brchValue: Brch[_] => new VBranchingStrm[Obj]((List(first, second) ++ itty.toList).asInstanceOf[List[Brch[Obj]]])
+            case brchValue: Brch[_] => new VBrchStrm[Obj]((List(first, second) ++ itty.toList).asInstanceOf[List[Brch[Obj]]])
           }).asInstanceOf[OStrm[O]]
         } else VSingletonStrm.single(first)
       } else {

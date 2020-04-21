@@ -29,7 +29,7 @@ import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory.int
 import org.mmadt.storage.obj.OObj
 
-class VBranchingStrm[A <: Obj](name: String, _value: Seq[Brch[A]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BranchingStrm[A] {
+class VBrchStrm[A <: Obj](name: String, _value: Seq[Brch[A]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BranchingStrm[A] {
   def this(java: Seq[Brch[A]]) = this(name = Tokens.empty, java, base())
 
   override val value: Iterator[Brch[A]] = _value.iterator
