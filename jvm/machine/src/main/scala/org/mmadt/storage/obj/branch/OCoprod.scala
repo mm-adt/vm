@@ -22,18 +22,16 @@
 
 package org.mmadt.storage.obj.branch
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.obj.branch.Coprod
 import org.mmadt.storage.StorageFactory.qOne
 
 class OCoprod[A <: Obj](val name: String = Tokens.empty, val value: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
-  extends branch.Coprod[A] {
+  extends Coprod[A] {
 
   override def clone(name: String = this.name,
     value: Any = this.value,
     q: IntQ = this.q,
     via: ViaTuple = this.via): this.type = new OCoprod[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
-
-  override def toString: String = LanguageFactory.printBranch(this)
-
 }

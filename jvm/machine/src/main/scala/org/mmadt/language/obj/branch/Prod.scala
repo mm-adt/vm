@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.branch
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.Value
@@ -35,6 +36,7 @@ trait Prod[A <: Obj] extends Brch[A]
   override def plus(other: Prod[A]): this.type = this.clone(value = this.value ++ other.value, via = (this, PlusOp(other))) // [a;b] + [c;d] = [a;b;c;d]
   //override def plus(other: Coprod[A]): this.type = this.clone(value = List(this, other), via = (this, PlusOp(other))) // [a;b] + [c|d]
 
+  // TODO: hashcode
   override def equals(other: Any): Boolean = other match {
     case brch: Prod[_] =>
       brch.name.equals(this.name) &&
@@ -51,4 +53,5 @@ trait Prod[A <: Obj] extends Brch[A]
     case _ => false
   }
 
+  override def toString: String = LanguageFactory.printBrch(this)
 }

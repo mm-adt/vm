@@ -42,7 +42,7 @@ trait Brch[A <: Obj] extends Obj
   with OneOp
   with ZeroOp {
   val value: List[A]
-  override def toString: String = LanguageFactory.printBranch(this)
+  override def toString: String = LanguageFactory.printBrch(this)
 
   override def one(): this.type = this.clone(value = this.value :+ this.via(this, IdOp()), via = (this, OneOp()))
   override def zero(): this.type = this.clone(value = List(), via = (this, ZeroOp()))

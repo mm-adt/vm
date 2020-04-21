@@ -22,18 +22,16 @@
 
 package org.mmadt.storage.obj.branch
 
-import org.mmadt.language.obj.{branch, _}
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.branch.Prod
 import org.mmadt.storage.StorageFactory._
 
 class OProd[A <: Obj](val name: String = Tokens.empty, val value: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
-  extends branch.Prod[A] {
+  extends Prod[A] {
 
   override def clone(name: String = this.name,
     value: Any = this.value,
     q: IntQ = this.q,
     via: ViaTuple = this.via): this.type = new OProd[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
-
-  override def toString: String = LanguageFactory.printBranch(this)
-
 }
