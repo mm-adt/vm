@@ -22,24 +22,23 @@
 
 package org.mmadt.language.obj.branch
 
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.{Obj, eqQ}
 
 trait Coprod[A <: Obj] extends Brch[A]
   //with PlusOp[Coprod[A], Prod[A]]
   with Type[Coprod[A]]
   with Value[Coprod[A]] {
 
-  /*override def plus(other: Coprod[A]): this.type = {
-    prod[A]().clone(value = List(this, other), via = (this, PlusOp(other))).asInstanceOf[this.type] // [a|b] + [c;d]
+  override def equals(other: Any): Boolean = other match {
+    case brch: Coprod[_] =>
+      brch.name.equals(this.name) &&
+        eqQ(brch, this) &&
+        ((this.isValue && brch.isValue && this.value.zip(brch.value).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
+          (this.value == brch.value && this.via == brch.via))
+    case _ => false
   }
-
-  override def plus(other: Prod[A]): this.type = {
-    prod[A]().clone(value = List(this, other), via = (this, PlusOp(other))).asInstanceOf[this.type] // [a|b] + [c|d] = [a;b;c;d]
-  }*/
 
   override def test(other: Obj): Boolean = other match {
     case prod: Coprod[_] =>

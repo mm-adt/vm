@@ -62,7 +62,8 @@ trait Brch[A <: Obj] extends Obj
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
-  def isValue:Boolean = !this.value.exists(x => x.alive() && x.isInstanceOf[Type[_]] && (!x.isInstanceOf[Brch[_]] || !x.asInstanceOf[Brch[_]].isValue))
+  def isValue: Boolean = !this.value.exists(x => x.alive() && x.isInstanceOf[Type[_]] && (!x.isInstanceOf[Brch[_]] || !x.asInstanceOf[Brch[_]].isValue))
+
 }
 
 object Brch {

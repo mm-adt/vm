@@ -32,24 +32,29 @@ import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
   this: Obj =>
-  def split[A <: Obj](coproduct: Coprod[A]): Brch[A] = {
-    val branches: Coprod[A] = coproduct.clone(value = coproduct.value.map {
-      case atype: Type[_] => Option(this)
-        .filter(asType(_).range.test(atype.range)) // this is generally needed (find a more core home)
-        .map(_.compute(atype))
-        .getOrElse(obj.q(qZero))
-      case x => x
-    }).via(this, SplitOp(coproduct))
 
+  // COPRODUCT [split]
+  def split[A <: Obj](coproduct: Coprod[A]): Brch[A] = {
     var qTest = qOne
-    branches.clone(value = branches.value.map(x =>
-      Option(x.q(if (this.test(x)) x.q else qZero))
-        .filter(_.alive())
+    coproduct.clone(value = coproduct.value.map(y =>
+      Option(this)
+        .filter(x => asType(x).range.test(asType(y).range)) // this is generally needed (find a more core home)
+        .map(_ => y match {
+          case atype: Type[_] => this ==> atype // COMPILE
+          case _ => y
+        })
+        .map {
+          case atype: Type[_] => this ==> atype // EXECUTE
+          case x => x
+        }
+        .filter(x => x.alive())
         .map(x => x.q(multQ(x.q, qTest)))
         .map(x => {qTest = qZero; x })
         .getOrElse(obj.q(0))))
+      .via(this, SplitOp(coproduct))
   }
 
+  // PRODUCT [split]
   def split[A <: Obj](product: Prod[A]): Brch[A] = {
     val branches: Prod[A] = product.clone(value = product.value.map(x => Inst.resolveArg(this, x)))
     branches.via(this, SplitOp(branches))
@@ -59,12 +64,12 @@ trait SplitOp {
 object SplitOp {
   def apply[A <: Obj](branches: Brch[A]): SplitInst[A] = new SplitInst[A](branches)
 
-  class SplitInst[A <: Obj](branches: Brch[A], q: IntQ = qOne) extends VInst[A, Brch[A]]((Tokens.split, List(branches)), q) with BranchInstruction {
-    override def q(quantifier: IntQ): this.type = new SplitInst[A](branches, quantifier).asInstanceOf[this.type]
+  class SplitInst[A <: Obj](brchs: Brch[A], q: IntQ = qOne) extends VInst[A, Brch[A]]((Tokens.split, List(brchs)), q) with BranchInstruction {
+    override def q(q: IntQ): this.type = new SplitInst[A](brchs, q).asInstanceOf[this.type]
     override def exec(start: A): Brch[A] = {
-      (branches match {
-        case coprod: Coprod[A] => start.split(Type.resolve(this, coprod))
-        case prod: Prod[A] => start.split(Type.resolve(this, prod))
+      (brchs match {
+        case coprod: Coprod[_] => start.split(coprod)
+        case prod: Prod[_] => start.split(prod)
       }).via(start, this)
     }
   }

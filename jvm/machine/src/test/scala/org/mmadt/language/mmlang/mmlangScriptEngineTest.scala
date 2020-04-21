@@ -410,7 +410,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("str-<[str|int|int[plus,2]]>-[plus,'hello']")(engine.eval("str-<[str|int|int[plus,2]]>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<[str|int|int[plus,2]]>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz'-<[str|int|int[plus,2]]>-[plus,'hello']").toString)
-    assertResult("[|int|]<=int-<[3|int|int[plus,2]]")(engine.eval("int-<[3|int|int[plus,2]]").toString)
+    assertResult("[3||]")(engine.eval("int-<[3|int|int[plus,2]]").toString)
     assertResult("int{0,3}<=int-<[3;int;int{?}<=int[is,bool<=int[lt,0]]]>-[plus,1]")(engine.eval("int-<[3;int;int[is<0]]>-[plus,1]").toString)
     /////
     assertResult(coprod(obj.q(0), int(10)))(engine.eval("10-<[bool|int]"))
