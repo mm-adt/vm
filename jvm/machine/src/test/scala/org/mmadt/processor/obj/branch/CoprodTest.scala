@@ -38,7 +38,7 @@ class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
     //assertResult(prod())(prod(str("a"), str("b")).zero())
   }
 
-  test("product [tail][head] values") {
+  test("coproduct [tail][head] values") {
     val starts: TableFor2[Coprod[Obj], List[Value[Obj]]] =
       new TableFor2[Coprod[Obj], List[Value[Obj]]](("prod", "projections"),
         (coprod(), List.empty),
@@ -60,7 +60,7 @@ class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  test("product [get] values") {
+  test("coproduct [get] values") {
     assertResult(str("a"))(coprod[Str]("a").get(0))
     assertResult(str("b"))(coprod[Str]("a", "b").get(1))
     assertResult(str("b"))(coprod[Str]("a", "b", "c").get(1))
@@ -68,35 +68,35 @@ class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
     // assertResult(prod[Str]("b", "d"))(prod[Obj]("a", prod[Str]("b", "d"), "c").get(1,prod()).get(0))
   }
 
-  test("product [get] types") {
+  test("coproduct [get] types") {
     assertResult(str)(coprod[Str](str.plus("a"), str).get(0, str).range)
   }
 
   test("coproduct structure") {
-    val product = int.mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(product.toString)
-    assertResult(int.id())(product.value(0))
-    assertResult(int.plus(2))(product.value(1))
-    assertResult(int(3))(product.value(2))
-    assertResult(int)(product.value(0).via._1)
-    assertResult(int)(product.value(1).via._1)
-    assert(product.value(2).root)
-    assertResult(coprod[Int](int.id(), int.plus(2), int(3)))(product.range)
+    val coproduct = int.mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
+    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(coproduct.toString)
+    assertResult(int.id())(coproduct.value(0))
+    assertResult(int.plus(2))(coproduct.value(1))
+    assertResult(int(3))(coproduct.value(2))
+    assertResult(int)(coproduct.value(0).via._1)
+    assertResult(int)(coproduct.value(1).via._1)
+    assert(coproduct.value(2).root)
+    assertResult(coprod[Int](int.id(), int.plus(2), int(3)))(coproduct.range)
   }
 
-  test("product quantifier") {
-    val product = int.q(2).mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int{2}[id]|int{2}[plus,2]|3]{2}<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(product.toString)
-    assertResult(int.q(2).id())(product.value(0))
-    assertResult(int.q(2).plus(2))(product.value(1))
-    assertResult(int(3))(product.value(2))
-    assertResult(int.q(2))(product.value(0).via._1)
-    assertResult(int.q(2))(product.value(1).via._1)
-    assert(product.value(2).root)
-    assertResult(coprod[Int](int.q(2).id(), int.q(2).plus(2), int(3)).q(2))(product.range)
+  test("coproduct quantifier") {
+    val coproduct = int.q(2).mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
+    assertResult("[int{2}[id]|int{2}[plus,2]|3]{2}<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(coproduct.toString)
+    assertResult(int.q(2).id())(coproduct.value(0))
+    assertResult(int.q(2).plus(2))(coproduct.value(1))
+    assertResult(int(3))(coproduct.value(2))
+    assertResult(int.q(2))(coproduct.value(0).via._1)
+    assertResult(int.q(2))(coproduct.value(1).via._1)
+    assert(coproduct.value(2).root)
+    assertResult(coprod[Int](int.q(2).id(), int.q(2).plus(2), int(3)).q(2))(coproduct.range)
   }
 
-  test("product [split] quantification") {
+  test("coproduct [split] quantification") {
     assertResult(int.q(0, 3))(int.mult(8).split(coprod(__.id(), __.plus(8).mult(2), int(56))).merge[Int]().id().isolate)
     assertResult(int.q(0, 23))(int.mult(8).split(coprod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
     assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(coprod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
