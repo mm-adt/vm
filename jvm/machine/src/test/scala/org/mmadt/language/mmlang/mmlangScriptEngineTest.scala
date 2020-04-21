@@ -369,9 +369,11 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("variables") {
     assertResult(int(3))(engine.eval("1<x>[plus,1][plus,x]"))
-    assertResult(int(5,23))(engine.eval("1-<[[plus,1]<x>;[plus,10]<x>]>-[plus,1][plus,x]"))
-    assertResult(int(3,1))(engine.eval("1<x>[plus,2]-<[x[plus,2];x]>-"))
-    assertResult(int(3,1))(engine.eval("1<x><y>[plus,2]-<[y[plus,2];x]>-"))
+    assertResult(int(5, 23))(engine.eval("1-<[[plus,1]<x>;[plus,10]<x>]>-[plus,1][plus,x]"))
+    assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<[x[plus,2];x]>-"))
+    assertResult(int(3, 1))(engine.eval("1<x><y>[plus,2]-<[y[plus,2];x]>-"))
+    assertResult(int(3))(engine.eval("1<x>[plus,2]-<[x[plus,2]|x]>-"))
+    assertResult(coprod(obj.q(qZero), int(3), obj.q(qZero)))(engine.eval("1<x>[plus,2]-<[x[is>100]|x[plus,2]|x]"))
     assertThrows[LanguageException] {
       engine.eval("1[plus,1][plus,x]")
     }
@@ -403,7 +405,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("6")(engine.eval("[1;[2;[3|[4|5|6]]]].1.1.1.2").toString)
     //////
     assertResult("[str||]<=str-<[str|int|int[plus,2]]")(engine.eval("str-<[str|int|int[plus,2]]").toString)
-    //assertResult("obj<=[str|int|int[plus,2]]>-[is,true]")(engine.eval("[str|int|int[plus,2]]>-[is,true]").toString)
+    assertResult("obj{1,12}<=[str|int{2}|int{12}<=int{3}[plus,2]{4}]>-[is,true][id]")(engine.eval("[str{1}|int{2}|int{3}[plus,2]{4}]>-[is,true][id]").toString)
     assertResult("[||str]<=str-<[int|bool|str]")(engine.eval("str-<[int|bool|str]").toString)
     assertResult("str-<[str|int|int[plus,2]]>-[plus,'hello']")(engine.eval("str-<[str|int|int[plus,2]]>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<[str|int|int[plus,2]]>-[plus,'hello']").toString)

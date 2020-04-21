@@ -33,11 +33,21 @@ import org.mmadt.storage.obj.value.VInst
 trait SplitOp {
   this: Obj =>
   def split[A <: Obj](coproduct: Coprod[A]): Brch[A] = {
-    val branches: Coprod[A] = coproduct.clone(value = coproduct.value.map(x => if(asType(this).range.test(x))Inst.resolveArg(x, this) else obj.q(0)))
+    val branches: Coprod[A] = coproduct.clone(value = coproduct.value.map {
+      case atype: Type[_] => Option(this)
+        .filter(asType(_).range.test(atype.range)) // this is generally needed (find a more core home)
+        .map(_.compute(atype))
+        .getOrElse(obj.q(qZero))
+      case x => x
+    }).via(this, SplitOp(coproduct))
+
     var qTest = qOne
-    branches.clone(value = branches.value.map(x => Option(
-      if (this.test(x)) Inst.resolveArg(this, x)
-      else obj.q(0)).filter(x => x.alive()).map(x => x.q(multQ(x.q, qTest))).map(x => {qTest = qZero; x }).getOrElse(obj.q(0)))).via(this, SplitOp(coproduct))
+    branches.clone(value = branches.value.map(x =>
+      Option(x.q(if (this.test(x)) x.q else qZero))
+        .filter(_.alive())
+        .map(x => x.q(multQ(x.q, qTest)))
+        .map(x => {qTest = qZero; x })
+        .getOrElse(obj.q(0))))
   }
 
   def split[A <: Obj](product: Prod[A]): Brch[A] = {

@@ -47,12 +47,12 @@ trait Inst[S <: Obj, +E <: Obj] extends Obj {
 }
 
 object Inst {
-  def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = arg match {
-    case valueArg: OValue[E] => valueArg
-    case typeArg: OType[E] => obj match {
-      case alst: Lst[_] => typeArg
-      case atype: Type[_] => atype.range.compute(typeArg)
-      case _ => obj.compute(typeArg)
+  def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E =
+    arg match {
+      case valueArg: OValue[E] => valueArg
+      case typeArg: OType[E] => obj match {
+        case atype: Type[_] => atype.range.compute(typeArg)
+        case _ => obj.compute(typeArg)
+      }
     }
-  }
 }
