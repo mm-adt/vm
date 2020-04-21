@@ -46,8 +46,8 @@ trait Brch[A <: Obj] extends Obj
 
   override def one(): this.type = this.clone(value = this.value :+ this.via(this, IdOp()), via = (this, OneOp()))
   override def zero(): this.type = this.clone(value = List(), via = (this, ZeroOp()))
-  override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty lst") else this.value.head.via(this, HeadOp()) // TODO: check process trace for type or value
-  override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty lst") else this.clone(value = this.value.tail, via = (this, TailOp()))
+  override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty brch") else this.value.head.via(this, HeadOp()) // TODO: check process trace for type or value
+  override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty brch") else this.clone(value = this.value.tail, via = (this, TailOp()))
   override def mult(other: Brch[A]): this.type = this.clone(value = this.value :+ other, via = (this, MultOp(other)))
 
   override def get(key: Int): A = {
@@ -67,8 +67,8 @@ trait Brch[A <: Obj] extends Obj
 
 object Brch {
   def checkIndex(alst: Brch[_], index: scala.Int): Unit = {
-    if (index < 0) throw new LanguageException("lst index must be 0 or greater: " + index)
-    if (alst.value.length < (index + 1)) throw new LanguageException("lst index is out of bounds: " + index)
+    if (index < 0) throw new LanguageException("brch index must be 0 or greater: " + index)
+    if (alst.value.length < (index + 1)) throw new LanguageException("brch index is out of bounds: " + index)
   }
 }
 

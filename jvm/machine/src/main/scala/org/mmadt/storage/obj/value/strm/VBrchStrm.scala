@@ -24,12 +24,12 @@ package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.branch.Brch
-import org.mmadt.language.obj.value.strm.BranchingStrm
+import org.mmadt.language.obj.value.strm.BrchStrm
 import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory.int
 import org.mmadt.storage.obj.OObj
 
-class VBrchStrm[A <: Obj](name: String, _value: Seq[Brch[A]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BranchingStrm[A] {
+class VBrchStrm[A <: Obj](name: String, _value: Seq[Brch[A]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BrchStrm[A] {
   def this(java: Seq[Brch[A]]) = this(name = Tokens.empty, java, base())
 
   override val value: Iterator[Brch[A]] = _value.iterator
