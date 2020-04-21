@@ -49,7 +49,6 @@ trait Inst[S <: Obj, +E <: Obj] extends Obj {
 object Inst {
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = arg match {
     case valueArg: OValue[E] => valueArg
-    // case recArg: ORecType => recArg.clone(value = recArg.value().map(a => resolve(obj, a._1) -> resolve(obj, a._2))).asInstanceOf[E]
     case typeArg: OType[E] => obj match {
       case alst: Lst[_] => typeArg
       case atype: Type[_] => atype.range.compute(typeArg)

@@ -39,7 +39,7 @@ trait LstType[A <: Obj] extends Lst[A]
   override def append(element: A): this.type = this.clone(value = this.value :+ element, via = (this, AppendOp[A](element)))
   override def get(key: Int): A = {
     val valueType: A = key match {
-      case avalue: IntValue if this.value.length >= (avalue.value + 1) => asType[A](this.value(avalue.value.toInt))
+      case avalue: IntValue if this.value.length > avalue.value => asType[A](this.value(avalue.value.toInt))
       case avalue: IntValue if this.value.nonEmpty =>
         Lst.checkIndex(this, avalue.value.toInt)
         this.value(avalue.value.toInt)

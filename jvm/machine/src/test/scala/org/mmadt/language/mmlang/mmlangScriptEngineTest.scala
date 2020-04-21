@@ -26,7 +26,7 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Obj, Str}
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -367,6 +367,16 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse.q(3, 30))(engine.eval("true{3,30}[and,false][and,[or,bool]]"))
   }
 
+  test("variables") {
+    assertResult(int(3))(engine.eval("1<x>[plus,1][plus,x]"))
+    assertResult(int(5,23))(engine.eval("1-<[[plus,1]<x>;[plus,10]<x>]>-[plus,1][plus,x]"))
+    assertResult(int(3,1))(engine.eval("1<x>[plus,2]-<[x[plus,2];x]>-"))
+    assertResult(int(3,1))(engine.eval("1<x><y>[plus,2]-<[y[plus,2];x]>-"))
+    assertThrows[LanguageException] {
+      engine.eval("1[plus,1][plus,x]")
+    }
+  }
+
   test("composite expression parsing") {
     assertResult(trec(str("age") -> int).id())(engine.eval("rec['age'->int][id]"))
     assertResult(vrec(str("age") -> int(29)))(engine.eval("['age'->29] rec['age'->int][id]"))
@@ -381,10 +391,6 @@ class mmlangScriptEngineTest extends FunSuite {
         |['age'->29] rec['age'->int][
         |  is.age>30  -> [put,'name','bill'] |
         |  rec        -> [put,'name','marko']]""".stripMargin))
-  }
-
-  test("global model") {
-    println(engine.eval("model"))
   }
 
   test("product and coproduct") {
@@ -413,7 +419,7 @@ class mmlangScriptEngineTest extends FunSuite {
     //
     assertResult("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]").toString)
     assertResult("int{0,2}<=int[plus,100][plus,200]-<[int;int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int;int[plus,2]]>-[plus,20]").toString)
-    assertResult("[10;[|10];10;11]")(engine.eval("10-<[bool|int]>-[plus,1][path]").toString)
+    assertResult("[10;11]")(engine.eval("10-<[bool|int]>-[plus,1][path]").toString)
     assertResult("12,14")(engine.eval("1[plus,1]-<[int;int[plus,2]]>-[plus,10]").toString)
   }
 }

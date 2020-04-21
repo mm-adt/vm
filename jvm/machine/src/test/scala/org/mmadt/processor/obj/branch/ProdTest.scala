@@ -102,5 +102,4 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
     // assertResult(int.q(0))(int.q(2).mult(8).q(0).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge().id().isolate)
   }
-
 }
