@@ -102,6 +102,7 @@ object Tokens {
   val a_op = "?"
   val merge_op = ">-"
   val split_op = "-<"
+  val id_op = "_"
 
   val :: = ":"
   val :-> = "->"

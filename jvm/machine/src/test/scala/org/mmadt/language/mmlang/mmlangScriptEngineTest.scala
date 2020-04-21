@@ -395,6 +395,12 @@ class mmlangScriptEngineTest extends FunSuite {
         |  rec        -> [put,'name','marko']]""".stripMargin))
   }
 
+  test("product/coproduct basics") {
+    assertResult("['a'|'a']")(engine.eval("'a'-<[_|_]").toString)
+    assertResult("['b'|'a']")(engine.eval("['a'|'b']-<[.1|.0]").toString)
+    // assertResult("['b'|'a']")(engine.eval("['a'<x>|'b'<y>]-<[y|x]").toString)
+  }
+
   test("product and coproduct") {
     assertResult("[1|2|3]")(engine.eval("[1|2|3]").toString)
     assertResult("[1;2;3]")(engine.eval("[1;2;3]").toString)
