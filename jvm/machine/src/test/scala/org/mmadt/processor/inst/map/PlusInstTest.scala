@@ -22,13 +22,14 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.language.obj.`type`.{IntType, RealType, Type}
+import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3}
 
 class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
   private type PlusObj = Obj with PlusOp[Type[Obj], Value[Obj]]
@@ -90,5 +91,18 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(real.plus(real))(real.plus(real)) // type * type = type
     assert(real.plus(real).isInstanceOf[RealType])
     assert(real.plus(real).isInstanceOf[RealType])
+  }
+  test("[plus] w/ products and coproducts") {
+    val starts: TableFor3[Prod[Str], Prod[Str], Prod[Obj]] =
+      new TableFor3[Prod[Str],Prod[Str],Prod[Obj]](("a", "b", "c"),
+        (prod("a", "b"), prod("c", "d"), prod("a", "b", "c", "d")),
+        (prod("a", "b"), prod("c"), prod("a", "b", "c")),
+        //(coprod("a", "b"), coprod("c", "d"), prod(coprod[Str]("a", "b"), coprod[Str]("c", "d"))),
+      )
+    forEvery(starts) { (a, b, c) => {
+      assertResult(c)(a.plus(b))
+      //assertResult(c)(PlusOp[Prod[Str]](b).exec(a))
+    }
+    }
   }
 }

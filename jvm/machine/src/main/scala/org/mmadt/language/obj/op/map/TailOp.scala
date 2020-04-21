@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{IntQ, Lst, Obj}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -33,11 +33,12 @@ trait TailOp {
 }
 
 object TailOp {
+  private type TailObj = Obj with TailOp
   def apply[A <: Obj](): TailInst[A] = new TailInst[A]
 
-  class TailInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], Lst[A]]((Tokens.tail, Nil), q) {
+  class TailInst[A <: Obj](q: IntQ = qOne) extends VInst[TailObj, TailObj]((Tokens.tail, Nil), q) {
     override def q(q: IntQ): this.type = new TailInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Lst[A]): Lst[A] = start.tail().via(start, new TailInst[A](q))
+    override def exec(start: TailObj): TailObj = start.tail().via(start, new TailInst[A](q))
   }
 
 }

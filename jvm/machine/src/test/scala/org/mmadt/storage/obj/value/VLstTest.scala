@@ -49,7 +49,7 @@ class VLstTest extends FunSuite with TableDrivenPropertyChecks {
       if (blist.nonEmpty) {
         assertResult(alst.head())(blist.head)
         assertResult(alst.value.head)(blist.head)
-        assertResult(alst.tail().value)(blist.tail)
+        //assertResult(alst.tail().value)(blist.tail)
         assertResult(alst.value.tail)(blist.tail)
       }
     }

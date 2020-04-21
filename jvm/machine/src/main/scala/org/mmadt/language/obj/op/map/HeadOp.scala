@@ -33,11 +33,12 @@ trait HeadOp[A <: Obj] {
 }
 
 object HeadOp {
+  private type HeadObj[A <: Obj] = Obj with HeadOp[A]
   def apply[A <: Obj](): HeadInst[A] = new HeadInst[A]
 
-  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Obj with HeadOp[A], A]((Tokens.head, Nil), q) {
+  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[HeadObj[A], A]((Tokens.head, Nil), q) {
     override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Obj with HeadOp[A]): A = start.head().via(start, new HeadInst[A](q))
+    override def exec(start: HeadObj[A]): A = start.head().via(start, new HeadInst[A](q))
   }
 
 }

@@ -38,7 +38,6 @@ trait Brch[A <: Obj] extends Obj
   with HeadOp[A]
   with TailOp
   //with AppendOp[A]
-  with PlusOp[Brch[A], Brch[A]]
   with MultOp[Brch[A], Brch[A]]
   with OneOp
   with ZeroOp {
@@ -49,7 +48,6 @@ trait Brch[A <: Obj] extends Obj
   override def zero(): this.type = this.clone(value = List(), via = (this, ZeroOp()))
   override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty lst") else this.value.head.via(this, HeadOp()) // TODO: check process trace for type or value
   override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty lst") else this.clone(value = this.value.tail, via = (this, TailOp()))
-  override def plus(other: Brch[A]): this.type = this.clone(value = this.value :+ other, via = (this, PlusOp(other)))
   override def mult(other: Brch[A]): this.type = this.clone(value = this.value :+ other, via = (this, MultOp(other)))
 
   override def get(key: Int): A = {
