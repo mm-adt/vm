@@ -33,10 +33,10 @@ import org.mmadt.storage.obj.value.VInst
 trait SplitOp {
   this: Obj =>
 
-  // COPRODUCT [split]
-  def split[A <: Obj](coproduct: Coprod[A]): Brch[A] = {
+  // PRODUCT [split]
+  def split[A <: Obj](product: Prod[A]): Brch[A] = {
     var qTest = qOne
-    coproduct.clone(value = coproduct.value.map(y =>
+    product.clone(value = product.value.map(y =>
       Option(this)
         .filter(x => asType(x).range.test(asType(y).range)) // this is generally needed (find a more core home)
         .map(_ => y match {
@@ -51,12 +51,12 @@ trait SplitOp {
         .map(x => x.q(multQ(x.q, qTest)))
         .map(x => {qTest = qZero; x })
         .getOrElse(obj.q(0))))
-      .via(this, SplitOp(coproduct))
+      .via(this, SplitOp(product))
   }
 
-  // PRODUCT [split]
-  def split[A <: Obj](product: Prod[A]): Brch[A] = {
-    val branches: Prod[A] = product.clone(value = product.value.map(x => Inst.resolveArg(this, x)))
+  // COPRODUCT [split]
+  def split[A <: Obj](coproduct: Coprod[A]): Brch[A] = {
+    val branches: Coprod[A] = coproduct.clone(value = coproduct.value.map(x => Inst.resolveArg(this, x)))
     branches.via(this, SplitOp(branches))
   }
 }
@@ -68,8 +68,8 @@ object SplitOp {
     override def q(q: IntQ): this.type = new SplitInst[A](brchs, q).asInstanceOf[this.type]
     override def exec(start: A): Brch[A] = {
       (brchs match {
-        case coprod: Coprod[_] => start.split(coprod)
         case prod: Prod[_] => start.split(prod)
+        case coprod: Coprod[_] => start.split(coprod)
       }).via(start, this)
     }
   }

@@ -23,14 +23,14 @@
 package org.mmadt.processor.obj.branch
 
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.branch.Prod
+import org.mmadt.language.obj.branch.Coprod
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Int, Obj, Str}
-import org.mmadt.storage.StorageFactory.{int, prod, str, vlst}
+import org.mmadt.storage.StorageFactory.{int, coprod, str, vlst}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
-class ProdTest extends FunSuite with TableDrivenPropertyChecks {
+class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("product [zero][one]") {
     //assertResult(List.empty[Obj])(prod(str("a"), str("b")).zero().value)
@@ -39,13 +39,13 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("product [tail][head] values") {
-    val starts: TableFor2[Prod[Obj], List[Value[Obj]]] =
-      new TableFor2[Prod[Obj], List[Value[Obj]]](("prod", "projections"),
-        (prod(), List.empty),
-        (prod("a"), List(str("a"))),
-        (prod("a", "b"), List(str("a"), str("b"))),
-        (prod("a", "b", "c"), List(str("a"), str("b"), str("c"))),
-        (prod("a", prod[Str]("b", "d"), "c"), List(str("a"), prod[Str]("b", "d"), str("c"))),
+    val starts: TableFor2[Coprod[Obj], List[Value[Obj]]] =
+      new TableFor2[Coprod[Obj], List[Value[Obj]]](("prod", "projections"),
+        (coprod(), List.empty),
+        (coprod("a"), List(str("a"))),
+        (coprod("a", "b"), List(str("a"), str("b"))),
+        (coprod("a", "b", "c"), List(str("a"), str("b"), str("c"))),
+        (coprod("a", coprod[Str]("b", "d"), "c"), List(str("a"), coprod[Str]("b", "d"), str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
       assertResult(alst.value)(blist)
@@ -61,45 +61,45 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("product [get] values") {
-    assertResult(str("a"))(prod[Str]("a").get(0))
-    assertResult(str("b"))(prod[Str]("a", "b").get(1))
-    assertResult(str("b"))(prod[Str]("a", "b", "c").get(1))
-    assertResult(prod[Str]("b", "d"))(prod[Obj]("a", prod[Str]("b", "d"), "c").get(1))
+    assertResult(str("a"))(coprod[Str]("a").get(0))
+    assertResult(str("b"))(coprod[Str]("a", "b").get(1))
+    assertResult(str("b"))(coprod[Str]("a", "b", "c").get(1))
+    assertResult(coprod[Str]("b", "d"))(coprod[Obj]("a", coprod[Str]("b", "d"), "c").get(1))
     // assertResult(prod[Str]("b", "d"))(prod[Obj]("a", prod[Str]("b", "d"), "c").get(1,prod()).get(0))
   }
 
   test("product [get] types") {
-    assertResult(str)(prod[Str](str.plus("a"), str).get(0, str).range)
+    assertResult(str)(coprod[Str](str.plus("a"), str).get(0, str).range)
   }
 
-  test("product structure") {
-    val product = int.mult(8).split(prod[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int[id];int[plus,2];3]<=int[mult,8]-<[int[id];int[plus,2];3]")(product.toString)
+  test("coproduct structure") {
+    val product = int.mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
+    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(product.toString)
     assertResult(int.id())(product.value(0))
     assertResult(int.plus(2))(product.value(1))
     assertResult(int(3))(product.value(2))
     assertResult(int)(product.value(0).via._1)
     assertResult(int)(product.value(1).via._1)
     assert(product.value(2).root)
-    assertResult(prod[Int](int.id(), int.plus(2), int(3)))(product.range)
+    assertResult(coprod[Int](int.id(), int.plus(2), int(3)))(product.range)
   }
 
   test("product quantifier") {
-    val product = int.q(2).mult(8).split(prod[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int{2}[id];int{2}[plus,2];3]{2}<=int{2}[mult,8]-<[int{2}[id];int{2}[plus,2];3]")(product.toString)
+    val product = int.q(2).mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
+    assertResult("[int{2}[id]|int{2}[plus,2]|3]{2}<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(product.toString)
     assertResult(int.q(2).id())(product.value(0))
     assertResult(int.q(2).plus(2))(product.value(1))
     assertResult(int(3))(product.value(2))
     assertResult(int.q(2))(product.value(0).via._1)
     assertResult(int.q(2))(product.value(1).via._1)
     assert(product.value(2).root)
-    assertResult(prod[Int](int.q(2).id(), int.q(2).plus(2), int(3)).q(2))(product.range)
+    assertResult(coprod[Int](int.q(2).id(), int.q(2).plus(2), int(3)).q(2))(product.range)
   }
 
   test("product [split] quantification") {
-    assertResult(int.q(0, 3))(int.mult(8).split(prod(__.id(), __.plus(8).mult(2), int(56))).merge[Int]().id().isolate)
-    assertResult(int.q(0, 23))(int.mult(8).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
-    assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
+    assertResult(int.q(0, 3))(int.mult(8).split(coprod(__.id(), __.plus(8).mult(2), int(56))).merge[Int]().id().isolate)
+    assertResult(int.q(0, 23))(int.mult(8).split(coprod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
+    assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(coprod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
     // assertResult(int.q(0))(int.q(2).mult(8).q(0).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge().id().isolate)
   }
 }

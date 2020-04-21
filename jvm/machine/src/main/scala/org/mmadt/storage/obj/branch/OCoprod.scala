@@ -25,7 +25,7 @@ package org.mmadt.storage.obj.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.branch.Coprod
-import org.mmadt.storage.StorageFactory.qOne
+import org.mmadt.storage.StorageFactory._
 
 class OCoprod[A <: Obj](val name: String = Tokens.empty, val value: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
   extends Coprod[A] {

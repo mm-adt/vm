@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.branch.{Coprod, Prod}
+import org.mmadt.language.obj.branch.{Prod, Coprod}
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -33,12 +33,12 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[head] w/ products") {
-    val check: TableFor2[Prod[_], Obj] =
+    val check: TableFor2[Coprod[_], Obj] =
       new TableFor2(("product", "head"),
-        (prod[StrValue]("a"), "a"),
-        (prod[StrValue]("a", "b"), "a"),
-        (prod[StrValue]("a", "b", "c"), "a"),
-        (prod[StrValue]("d", "b", "c"), "d"),
+        (coprod[StrValue]("a"), "a"),
+        (coprod[StrValue]("a", "b"), "a"),
+        (coprod[StrValue]("a", "b", "c"), "a"),
+        (coprod[StrValue]("d", "b", "c"), "d"),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.head())
@@ -47,12 +47,12 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[head] w/ coproducts") {
-    val check: TableFor2[Coprod[_], Obj] =
+    val check: TableFor2[Prod[_], Obj] =
       new TableFor2(("product", "head"),
-        (coprod[StrValue]("a"), "a"),
-        (coprod[StrValue]("a", "b"), "a"),
-        (coprod[StrValue]("a", "b", "c"), "a"),
-        (coprod[StrValue]("d", "b", "c"), "d"),
+        (prod[StrValue]("a"), "a"),
+        (prod[StrValue]("a", "b"), "a"),
+        (prod[StrValue]("a", "b", "c"), "a"),
+        (prod[StrValue]("d", "b", "c"), "d"),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.head())
@@ -79,10 +79,10 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
       vlst().head()
     }
     assertThrows[LanguageException] {
-      prod().head()
+      coprod().head()
     }
     assertThrows[LanguageException] {
-      coprod().head()
+      prod().head()
     }
   }
 }

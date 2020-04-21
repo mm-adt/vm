@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type}
-import org.mmadt.language.obj.branch.{Brch, Prod}
+import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
 import org.mmadt.storage.StorageFactory._

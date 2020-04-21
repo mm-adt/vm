@@ -29,19 +29,19 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("lineage preservation (coproducts)") {
-    assertResult(int(321))(int(1) ===> int.plus(100).plus(200).split(coprod(int, bool)).merge[Int]().plus(20))
+  test("lineage preservation (products)") {
+    assertResult(int(321))(int(1) ===> int.plus(100).plus(200).split(prod(int, bool)).merge[Int]().plus(20))
     assertResult(int.plus(100).plus(200).split(coprod(int, bool)).merge[Int]().plus(20))(int ===> int.plus(100).plus(200).split(coprod(int, bool)).merge[Int]().plus(20))
-    assertResult(prod[Obj](1, 101, 301, 321))((int(1) ===> int.plus(100).plus(200).split(coprod(int, bool)).merge[Int]().plus(20)).path())
+    assertResult(prod[Obj](1, 101, 301, 321))((int(1) ===> int.plus(100).plus(200).split(prod(int, bool)).merge[Int]().plus(20)).path())
   }
 
-  test("lineage preservation (products)") {
-    println(int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20))
-    assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20))
-    assertResult(int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20))(int ===> int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20))
+  test("lineage preservation (coproducts)") {
+    println(int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
+    assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
+    assertResult(int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))(int ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
     assertResult(strm(
       prod[Obj](1, 101, 301, 321),
-      prod[Obj](1, 101, 301, 303, 323)))(int(1) ===> int.plus(100).plus(200).split(prod(int, int.plus(2))).merge[Int]().plus(20).path())
+      prod[Obj](1, 101, 301, 303, 323)))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20).path())
   }
 
 }

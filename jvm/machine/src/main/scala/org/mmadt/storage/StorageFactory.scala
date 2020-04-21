@@ -50,8 +50,8 @@ trait StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst()
-  def prod[A <: Obj](values: A*): branch.Prod[A] = new OProd[A](value = values.toList)
   def coprod[A <: Obj](values: A*): branch.Coprod[A] = new OCoprod[A](value = values.toList)
+  def prod[A <: Obj](values: A*): branch.Prod[A] = new OProd[A](value = values.toList)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType
@@ -86,7 +86,7 @@ trait StorageFactory {
   def vlst[A <: Value[Obj]](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, via: ViaTuple = base()): LstValue[A]
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecValue[A, B]
   //
-  def strm[O <: Obj](values:O*): OStrm[O] = strm[O](values.toList.iterator)
+  def strm[O <: Obj](values: O*): OStrm[O] = strm[O](values.toList.iterator)
   def strm[O <: Obj](itty: Iterator[O]): OStrm[O]
   def strm[O <: Obj]: OStrm[O]
 }
@@ -102,8 +102,8 @@ object StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst(value = List.empty[A])
-  def prod[A <: Obj](values: A*): Prod[A] = new OProd[A](value = values.toList)
-  def coprod[A <: Obj](values: A*): Coprod[A] = new OCoprod[A](value = values.toList)
+  def coprod[A <: Obj](values: A*)(implicit f: StorageFactory): Coprod[A] = f.coprod[A](values:_*)
+  def prod[A <: Obj](values: A*)(implicit f: StorageFactory): Prod[A] = f.prod[A](values:_*)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)
@@ -138,7 +138,7 @@ object StorageFactory {
   def vreal(name: String = Tokens.real, value: Double, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RealValue = f.vreal(name, value, q, via)
   def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): StrValue = f.vstr(name, value, q, via)
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RecValue[A, B] = f.vrec(name, value, q, via)
-  def strm[O <: Obj](values:O*)(implicit f: StorageFactory): OStrm[O] = f.strm[O](values.toList.iterator)
+  def strm[O <: Obj](values: O*)(implicit f: StorageFactory): OStrm[O] = f.strm[O](values.toList.iterator)
   def strm[O <: Obj](itty: Iterator[O])(implicit f: StorageFactory): OStrm[O] = f.strm[O](itty)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
   /////////CONSTANTS//////
@@ -169,6 +169,8 @@ object StorageFactory {
     case atype: Type[_] => atype.root && atype.getClass.equals(tobj().getClass) && !atype.name.equals(Tokens.obj)
   }
   implicit val mmstoreFactory: StorageFactory = new StorageFactory {
+    override def coprod[A <: Obj](values: A*): Coprod[A] = new OCoprod[A](value = values.toList)
+    override def prod[A <: Obj](values: A*): Prod[A] = new OProd[A](value = values.toList)
     /////////TYPES/////////
     override def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType = new TObj(name, q, via)
     override def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType = new TBool(name, q, via)

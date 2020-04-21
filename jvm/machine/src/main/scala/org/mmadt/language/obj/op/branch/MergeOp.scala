@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.branch.{Brch, Prod}
+import org.mmadt.language.obj.branch.{Brch, Coprod}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.{IntQ, Obj, Str}
 import org.mmadt.storage.StorageFactory._
@@ -34,7 +34,7 @@ trait MergeOp[A <: Obj] {
   this: Brch[A] =>
   def merge[B <: Obj](): B =
     (if (this.value.filter(x => x.alive()).exists(x => x.isInstanceOf[Type[Obj]])) {
-      val rangeType = BranchInstruction.typeExternal(this.isInstanceOf[Prod[B]], trec(value = this.value.map(x => (str(x.toString), x)).toMap[Str, Obj]))
+      val rangeType = BranchInstruction.typeExternal(this.isInstanceOf[Coprod[B]], trec(value = this.value.map(x => (str(x.toString), x)).toMap[Str, Obj]))
       rangeType.via(this, MergeOp()).hardQ(rangeType.q)
     } else {
       val y = strm(this.value.filter(x => x.alive()).flatMap(x => x.toList).toIterator)

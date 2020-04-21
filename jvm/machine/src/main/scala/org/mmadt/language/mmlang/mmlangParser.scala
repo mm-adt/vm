@@ -82,8 +82,8 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 
   // composite parsing
   lazy val branching: Parser[Brch[Obj]] = product | coproduct
-  lazy val product: Parser[Prod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, SEMICOLON) <~ RBRACKET) ^^ (x => prod(x._2: _*))
   lazy val coproduct: Parser[Coprod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, PIPE) <~ RBRACKET) ^^ (x => coprod(x._2: _*))
+  lazy val product: Parser[Prod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, SEMICOLON) <~ RBRACKET) ^^ (x => prod(x._2: _*))
 
   // type parsing
   lazy val objType: Parser[Type[Obj]] =  dType  | anonType

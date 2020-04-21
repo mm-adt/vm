@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.branch.{Coprod, Prod}
+import org.mmadt.language.obj.branch.{Prod, Coprod}
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -33,12 +33,12 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[tail] w/ products") {
-    val check: TableFor2[Prod[_], Obj] =
+    val check: TableFor2[Coprod[_], Obj] =
       new TableFor2(("prod", "tail"),
-        (prod[StrValue]("a"), prod()),
-        (prod[StrValue]("a", "b"), prod(str("b"))),
-        (prod[StrValue]("a", "b", "c"), prod(str("b"), str("c"))),
-        (prod[StrValue]("d", "b", "c"), prod(str("b"), str("c"))),
+        (coprod[StrValue]("a"), coprod()),
+        (coprod[StrValue]("a", "b"), coprod(str("b"))),
+        (coprod[StrValue]("a", "b", "c"), coprod(str("b"), str("c"))),
+        (coprod[StrValue]("d", "b", "c"), coprod(str("b"), str("c"))),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.tail())
@@ -48,20 +48,20 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[tail] exception") {
     assertThrows[LanguageException] {
-      prod().tail()
+      coprod().tail()
     }
     assertThrows[LanguageException] {
-      coprod().tail()
+      prod().tail()
     }
   }
 
   test("[tail] w/ coproducts") {
-    val check: TableFor2[Coprod[_], Obj] =
+    val check: TableFor2[Prod[_], Obj] =
       new TableFor2(("prod", "tail"),
-        (coprod[StrValue]("a"), coprod()),
-        (coprod[StrValue]("a", "b"), coprod(str("b"))),
-        (coprod[StrValue]("a", "b", "c"), coprod(str("b"), str("c"))),
-        (coprod[StrValue]("d", "b", "c"), coprod(str("b"), str("c"))),
+        (prod[StrValue]("a"), prod()),
+        (prod[StrValue]("a", "b"), prod(str("b"))),
+        (prod[StrValue]("a", "b", "c"), prod(str("b"), str("c"))),
+        (prod[StrValue]("d", "b", "c"), prod(str("b"), str("c"))),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.tail())
