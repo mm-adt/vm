@@ -398,7 +398,19 @@ class mmlangScriptEngineTest extends FunSuite {
   test("product/coproduct basics") {
     assertResult("['a'|'a']")(engine.eval("'a'-<[_|_]").toString)
     assertResult("['b'|'a']")(engine.eval("['a'|'b']-<[.1|.0]").toString)
-    // assertResult("['b'|'a']")(engine.eval("['a'<x>|'b'<y>]-<[y|x]").toString)
+    // mult
+    assertResult("['a';'b';'c';'d']")(engine.eval("['a';'b'][mult,['c';'d']]").toString)
+    assertResult("[['a';'b';'c']|['a';'b';'d']]")(engine.eval("['a';'b'][mult,['c'|'d']]").toString)
+    assertResult("[['a';'c']|['a';'d']|['b';'c']|['b';'d']]")(engine.eval("['a'|'b'][mult,['c'|'d']]").toString)
+    assertResult("[['a';'c';'d']|['b';'c';'d']]")(engine.eval("['a'|'b'][mult,['c';'d']]").toString)
+    // plus
+    assertResult("['a'|'b'|'c'|'d']")(engine.eval("['a'|'b'][plus,['c'|'d']]").toString)
+    assertResult("[['a';'b']|['c';'d']]")(engine.eval("['a';'b'][plus,['c';'d']]").toString)
+    assertResult("[['a';'b']|['c'|'d']]")(engine.eval("['a';'b'][plus,['c'|'d']]").toString)
+    // mult w/ types
+    assertResult("[int[plus,2][plus,5][id]]<=[int;[plus,2]][mult,[[plus,5];[id]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[id]]]").toString)
+    println(engine.eval("[int;[plus,2]][mult,[[plus,5];[id]]]"))
+    assertResult("[int{?}<=int[plus,2][plus,5][is,bool<=int[gt,0]]]<=[int;[plus,2]][mult,[[plus,5];[is,[gt,0]]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[is>0]]]").toString)
   }
 
   test("product and coproduct") {

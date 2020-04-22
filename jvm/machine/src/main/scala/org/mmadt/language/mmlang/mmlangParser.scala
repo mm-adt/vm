@@ -67,7 +67,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val evaluation: Parser[Obj] = (strm | objValue | brchObj) ~ opt(objType) ^^ (x => {
     x._2 match {
       case None => x._1 // value only, return value
-      case Some(y) => x._1 ==> (asType(x._1) ==> y).asInstanceOf[Type[Obj]] // compile type with value's type, then execute
+      case Some(y) => x._1 ===> y.asInstanceOf[Type[Obj]] // compile type with value's type, then execute
     }
   })
   /////////////////////////////////////////////////////////////////////////////////////////////////////////

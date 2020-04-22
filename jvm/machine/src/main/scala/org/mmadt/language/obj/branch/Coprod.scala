@@ -24,17 +24,12 @@ package org.mmadt.language.obj.branch
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Obj, eqQ}
 
 trait Coprod[A <: Obj] extends Brch[A]
-  with PlusOp[Coprod[A], Coprod[A]]
   with Type[Coprod[A]]
   with Value[Coprod[A]] {
-
-  override def plus(other: Coprod[A]): this.type = this.clone(value = this.value ++ other.value, via = (this, PlusOp(other))) // [a;b] + [c;d] = [a;b;c;d]
-  //override def plus(other: Coprod[A]): this.type = this.clone(value = List(this, other), via = (this, PlusOp(other))) // [a;b] + [c|d]
 
   // TODO: hashcode
   override def equals(other: Any): Boolean = other match {

@@ -28,7 +28,6 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Obj, eqQ}
 
 trait Prod[A <: Obj] extends Brch[A]
-  //with PlusOp[Coprod[A], Prod[A]]
   with Type[Prod[A]]
   with Value[Prod[A]] {
 

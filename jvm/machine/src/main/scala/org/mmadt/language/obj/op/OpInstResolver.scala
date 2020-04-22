@@ -47,6 +47,7 @@ import scala.collection.JavaConverters.asScalaIterator
  */
 object OpInstResolver {
   private val providers: List[StorageProvider] = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toList
+
   private def service(op: String, args: List[Obj]): Option[Inst[Obj, Obj]] = providers.iterator
     .map(_.resolveInstruction(op, JavaConverters.seqAsJavaList(args)))
     .find(_.isPresent)
@@ -69,8 +70,16 @@ object OpInstResolver {
       case Tokens.as => AsOp(args.head)
       case Tokens.and | Tokens.and_op => AndOp(args.head)
       case Tokens.or | Tokens.or_op => OrOp(args.head)
-      case Tokens.plus | Tokens.plus_op => PlusOp(args.head)
-      case Tokens.mult | Tokens.mult_op => MultOp(args.head)
+      case Tokens.plus | Tokens.plus_op =>
+        args.head match {
+          case brch: Brch[_] => PlusBOp(brch)
+          case x => PlusOp(x)
+        }
+      case Tokens.mult | Tokens.mult_op =>
+        args.head match {
+          case brch: Brch[_] => MultBOp(brch)
+          case x => MultOp(x)
+        }
       case Tokens.gt | Tokens.gt_op => GtOp(args.head)
       case Tokens.gte | Tokens.gte_op => GteOp(args.head)
       case Tokens.lt | Tokens.lt_op => LtOp(args.head)

@@ -35,7 +35,7 @@ import scala.collection.mutable
  */
 object TypeChecker {
   def matchesVT[O <: Obj](obj: Value[O], pattern: Type[O]): Boolean = {
-    (pattern.name.equals(Tokens.obj) || // all objects are obj
+    (pattern.name.equals(Tokens.obj) || pattern.name.equals(Tokens.empty) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || obj.compute(pattern).alive())) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
       obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
       ((obj.isInstanceOf[LstValue[_]] && pattern.isInstanceOf[LstType[_]] &&
@@ -44,11 +44,13 @@ object TypeChecker {
           testRecord(obj.value.asInstanceOf[collection.Map[Obj, Obj]], pattern.asInstanceOf[ORecType].value) && obj.compute(pattern).alive()))) && // structural type checking on records
       withinQ(obj, pattern) // must be within the type's quantified window
   }
+
   def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean =
     obj.value.equals(pattern.value) &&
       withinQ(obj, pattern)
+
   def matchesTT[O <: Obj](obj: Type[O], pattern: Type[O]): Boolean = {
-    ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj)) || // all objects are obj
+    ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj) || obj.name.equals(Tokens.empty) || pattern.name.equals(Tokens.empty)) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && obj.name.equals(pattern.name)) ||
       (obj match {
         case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.value, pattern.asInstanceOf[ORecType].value)
@@ -65,7 +67,9 @@ object TypeChecker {
         .fold(obj.lineage.length == pattern.lineage.length)(_ && _) &&
       withinQ(obj, pattern)
   }
+
   def matchesTV[O <: Obj](obj: Type[O], pattern: Value[O]): Boolean = false
+
   ////////////////////////////////////////////////////////
 
   private def testRecord(leftMap: collection.Map[Obj, Obj], rightMap: collection.Map[Obj, Obj]): Boolean = {

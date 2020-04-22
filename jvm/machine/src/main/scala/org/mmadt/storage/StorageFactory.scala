@@ -102,8 +102,8 @@ object StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst(value = List.empty[A])
-  def coprod[A <: Obj](values: A*)(implicit f: StorageFactory): Coprod[A] = f.coprod[A](values:_*)
-  def prod[A <: Obj](values: A*)(implicit f: StorageFactory): Prod[A] = f.prod[A](values:_*)
+  def coprod[A <: Obj](values: A*)(implicit f: StorageFactory): Coprod[A] = f.coprod[A](values: _*)
+  def prod[A <: Obj](values: A*)(implicit f: StorageFactory): Prod[A] = f.prod[A](values: _*)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)
@@ -166,7 +166,7 @@ object StorageFactory {
   }).asInstanceOf[OType[O]]
   def isSymbol[O <: Obj](obj: O): Boolean = obj match {
     case _: Value[_] => false
-    case atype: Type[_] => atype.root && atype.getClass.equals(tobj().getClass) && !atype.name.equals(Tokens.obj)
+    case atype: Type[_] => atype.root && atype.getClass.equals(tobj().getClass) && !atype.name.equals(Tokens.obj) && !atype.name.equals(Tokens.empty)
   }
   implicit val mmstoreFactory: StorageFactory = new StorageFactory {
     override def coprod[A <: Obj](values: A*): Coprod[A] = new OCoprod[A](value = values.toList)

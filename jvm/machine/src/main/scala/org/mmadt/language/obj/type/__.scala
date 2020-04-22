@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = base()) extends Type[__]
+class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple = base()) extends Type[__]
   with IntOp // TODO: persue this path?
   with StrOp
   with PlusOp[__, ObjValue]
@@ -53,7 +53,7 @@ class __(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = 
   with LteOp[__, ObjValue]
   with ZeroOp
   with OneOp {
-  override def clone(name: String = Tokens.obj, value: Any, quantifier: IntQ = qOne, via: ViaTuple = base()): this.type = new __(name, quantifier, via).asInstanceOf[this.type]
+  override def clone(name: String = Tokens.empty, value: Any, quantifier: IntQ = qOne, via: ViaTuple = base()): this.type = new __(name, quantifier, via).asInstanceOf[this.type]
   def apply[T <: Obj](obj: Obj): OType[T] = asType(this.lineage.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
   // type-agnostic monoid supporting all instructions
   //override def domain[D <: Obj](): Type[D] = obj.q(qStar).asInstanceOf[Type[D]]
@@ -76,7 +76,7 @@ class __(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = 
   override def tail(): this.type = this.via(this, TailOp())
 }
 
-object __ extends __(Tokens.obj, qOne, base()) {
+object __ extends __(Tokens.empty, qOne, base()) {
   def apply(insts: List[Inst[_, _]]): __ = insts.foldLeft(new __())((a, b) => a.via(a, b.asInstanceOf[Inst[Obj, Obj]]))
 }
 

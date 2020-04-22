@@ -37,18 +37,18 @@ trait Brch[A <: Obj] extends Obj
   with GetOp[Int, A]
   with HeadOp[A]
   with TailOp
+  with PlusBOp[A] // TODO: experimental
+  with MultBOp[A] // TODO: experimental
   //with AppendOp[A]
-  with MultOp[Brch[A], Brch[A]]
   with OneOp
   with ZeroOp {
   val value: List[A]
-  override def toString: String = LanguageFactory.printBrch(this)
 
+  override def toString: String = LanguageFactory.printBrch(this)
   override def one(): this.type = this.clone(value = this.value :+ this.via(this, IdOp()), via = (this, OneOp()))
   override def zero(): this.type = this.clone(value = List(), via = (this, ZeroOp()))
   override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty brch") else this.value.head.via(this, HeadOp()) // TODO: check process trace for type or value
   override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty brch") else this.clone(value = this.value.tail, via = (this, TailOp()))
-  override def mult(other: Brch[A]): this.type = this.clone(value = this.value :+ other, via = (this, MultOp(other)))
 
   override def get(key: Int): A = {
     val valueType: A = key match {
@@ -60,9 +60,11 @@ trait Brch[A <: Obj] extends Obj
     }
     valueType.via(this, GetOp[Int, A](key, valueType))
   }
+
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
-  def isValue: Boolean = !this.value.exists(x => x.alive() && x.isInstanceOf[Type[_]] && (!x.isInstanceOf[Brch[_]] || !x.asInstanceOf[Brch[_]].isValue))
+  def isValue: Boolean = !this.value.exists(x => x.alive() && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isValue)))
+  def isType: Boolean = !this.value.exists(x => x.alive() && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isType)))
 
 }
 
