@@ -23,24 +23,20 @@
 package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.branch.{Brch, Coprod}
+import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.{IntQ, Obj, Str}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait MergeOp[A <: Obj] {
   this: Brch[A] =>
-  def merge[B <: Obj](): B =
-    (if (this.value.filter(x => x.alive()).exists(x => x.isInstanceOf[Type[Obj]])) {
-      val rangeType = BranchInstruction.typeExternal(this.isInstanceOf[Coprod[B]], trec(value = this.value.map(x => (str(x.toString), x)).toMap[Str, Obj]))
-      rangeType.via(this, MergeOp()).hardQ(rangeType.q)
-    } else {
-      val y = strm(this.value.filter(x => x.alive()).flatMap(x => x.toList).toIterator)
-      if (!y.alive()) return __.q(qZero).asInstanceOf[B] // this should be handled in StorageFactory
-      y
-    }).asInstanceOf[B]
+  def merge[B <: Obj](): B = {
+    if (this.isValue)
+      strm(this.value.filter(x => x.alive()).flatMap(x => x.toList).toIterator).asInstanceOf[B]
+    else
+      BranchInstruction.brchType[B](this).clone(via = (this, MergeOp()))
+  }
 }
 
 object MergeOp {

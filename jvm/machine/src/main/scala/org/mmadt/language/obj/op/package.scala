@@ -23,6 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.branch.{Brch, Coprod}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, trec}
 import org.mmadt.storage.obj.`type`.TObj
@@ -63,6 +64,26 @@ package object op {
       }
       else { // [choose] select min/max quantification
         result.hardQ(branches.value.values.filter(x=>x.alive()).map(x => x.q).reduce((a, b) => (
+          int(Math.min(a._1.value, b._1.value)),
+          int(Math.max(a._2.value, b._2.value)))))
+      }
+    }
+
+    def brchType[OT <: Obj](brch:Brch[_ <: Obj]): OT = {
+      val types = brch.value.filter(x => x.alive()).map {
+        case atype: Type[OT] => atype.hardQ(1).range
+        case avalue: Value[OT] => asType(avalue)
+      }.asInstanceOf[Iterable[OType[OT]]]
+
+      val result:OType[OT] = types.toSet.size match {
+        case 1 => types.head
+        case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
+      }
+      if (brch.isInstanceOf[Coprod[Obj]]) { // [branch] sum the min/max quantification
+        result.hardQ(minZero(brch.value.map(x => x.q).reduce((a, b) => plusQ(a,b))))
+      }
+      else { // [choose] select min/max quantification
+        result.hardQ(brch.value.filter(x=>x.alive()).map(x => x.q).reduce((a, b) => (
           int(Math.min(a._1.value, b._1.value)),
           int(Math.max(a._2.value, b._2.value)))))
       }
