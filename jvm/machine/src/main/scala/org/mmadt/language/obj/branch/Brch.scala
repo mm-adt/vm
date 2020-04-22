@@ -25,6 +25,7 @@ package org.mmadt.language.obj.branch
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.op.map._
+import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.language.{LanguageException, LanguageFactory}
@@ -35,6 +36,7 @@ trait Brch[A <: Obj] extends Obj
   with Value[Brch[A]]
   with MergeOp[A]
   with GetOp[Int, A]
+  with PutOp[Int, A]
   with HeadOp[A]
   with TailOp
   with PlusBOp[A] // TODO: experimental
@@ -46,13 +48,20 @@ trait Brch[A <: Obj] extends Obj
 
   override def toString: String = LanguageFactory.printBrch(this)
   override def one(): this.type = this.clone(value = this.value :+ this.via(this, IdOp()), via = (this, OneOp()))
-  override def zero(): this.type = this.clone(value = List(), via = (this, ZeroOp()))
+  override def zero(): this.type = this.clone(value = List.empty[A], via = (this, ZeroOp()))
   override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty brch") else this.value.head.via(this, HeadOp()) // TODO: check process trace for type or value
   override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty brch") else this.clone(value = this.value.tail, via = (this, TailOp()))
 
+  override def put(key: Int, value: A): this.type = key match {
+    case avalue: IntValue =>
+      val (front, back) = this.value.splitAt(avalue.value.toInt)
+      this.clone(value = (front :+ value) ++ back, via = (this, PutOp(key, value)))
+    case _ => this.via(this, PutOp(key, value))
+  }
+
   override def get(key: Int): A = {
     val valueType: A = key match {
-      case avalue: IntValue if this.value.length >= (avalue.value + 1) => this.value(avalue.value.toInt)
+      case avalue: IntValue if this.value.length > avalue.value => this.value(avalue.value.toInt)
       case avalue: IntValue if this.value.nonEmpty =>
         Brch.checkIndex(this, avalue.value.toInt)
         this.value(avalue.value.toInt)
@@ -65,7 +74,6 @@ trait Brch[A <: Obj] extends Obj
 
   def isValue: Boolean = !this.value.exists(x => x.alive() && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isValue)))
   def isType: Boolean = !this.value.exists(x => x.alive() && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isType)))
-
 }
 
 object Brch {

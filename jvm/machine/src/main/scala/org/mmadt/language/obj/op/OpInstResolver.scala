@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp, MergeOp, SplitOp}
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.initial.{IntOp, StartOp, StrOp}
+import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
@@ -55,9 +55,6 @@ object OpInstResolver {
 
   def resolve[S <: Obj, E <: Obj](op: String, args: List[Obj]): Inst[S, E] = {
     (op match {
-      case Tokens.int => IntOp()
-      case Tokens.str => StrOp()
-      //
       case Tokens.append | Tokens.append_op => AppendOp(args.head)
       case Tokens.head => HeadOp()
       case Tokens.tail => TailOp()

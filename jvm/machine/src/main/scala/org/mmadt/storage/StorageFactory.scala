@@ -27,7 +27,6 @@ import java.util.ServiceLoader
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, _}
 import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
-import org.mmadt.language.obj.op.initial.{IntOp, StrOp}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{ViaTuple, branch, _}
@@ -55,9 +54,9 @@ trait StorageFactory {
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType
-  def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = base(IntOp())): IntType
+  def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = base()): IntType
   def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = base()): RealType
-  def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base(StrOp())): StrType
+  def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base()): StrType
   def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecType[A, B]
   def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecType[A, B] = trec[A, B](value = (value +: values).toMap)
   def tlst[A <: Obj](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, via: ViaTuple = base()): LstType[A]
@@ -107,9 +106,9 @@ object StorageFactory {
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)
-  def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = (null, IntOp()))(implicit f: StorageFactory): IntType = f.tint(name, q, via)
+  def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): IntType = f.tint(name, q, via)
   def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RealType = f.treal(name, q, via)
-  def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = (null, StrOp()))(implicit f: StorageFactory): StrType = f.tstr(name, q, via)
+  def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): StrType = f.tstr(name, q, via)
   def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RecType[A, B] = f.trec(name, value, q, via)
   def trec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): RecType[A, B] = f.trec(value, values: _*)
   def tlst[A <: Obj](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): LstType[A] = f.tlst(name, value, q, via)
@@ -174,9 +173,9 @@ object StorageFactory {
     /////////TYPES/////////
     override def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType = new TObj(name, q, via)
     override def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType = new TBool(name, q, via)
-    override def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = base(IntOp())): IntType = new TInt(name, q, via)
+    override def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = base()): IntType = new TInt(name, q, via)
     override def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = base()): RealType = new TReal(name, q, via)
-    override def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base(StrOp())): StrType = new TStr(name, q, via)
+    override def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base()): StrType = new TStr(name, q, via)
     override def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecType[A, B] = new TRec[A, B](name, value, q, via)
     override def tlst[A <: Obj](name: String = Tokens.lst, value: List[A], q: IntQ = qOne, via: ViaTuple = base()): LstType[A] = new TLst[A](name, value, q, via)
     /////////VALUES/////////

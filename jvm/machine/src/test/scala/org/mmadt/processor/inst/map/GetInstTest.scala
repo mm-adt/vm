@@ -23,6 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -35,8 +36,8 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[get] w/ lst values") {
-    val check: TableFor3[Lst[_], IntValue, Obj] =
-      new TableFor3[Lst[_], IntValue, Obj](("list", "key", "value"),
+    val check: TableFor3[Lst[StrValue], IntValue, StrValue] =
+      new TableFor3[Lst[StrValue], IntValue, StrValue](("list", "key", "value"),
         (vlst[StrValue]("a"), 0, str("a")),
         (vlst[StrValue]("a", "b"), 0, "a"),
         (vlst[StrValue]("a", "b", "c"), 1, "b"),
@@ -44,6 +45,7 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(check) { (alst, akey, avalue) => {
       assertResult(avalue)(alst.get(akey))
+      assertResult(avalue)(GetOp(akey).exec(alst.asInstanceOf[GetOp.GetType[IntValue, StrValue]]))
     }
     }
   }
@@ -73,9 +75,5 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertThrows[NoSuchElementException] {
       marko.get(str("bad-key"))
     }
-  }
-
-  test("[get] w/ product") {
-    // assertResult(str("a"))(prod(str("a")) ===> prod(str("a")).get(int(0)))
   }
 }

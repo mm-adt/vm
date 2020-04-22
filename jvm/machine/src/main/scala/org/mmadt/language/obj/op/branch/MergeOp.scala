@@ -31,12 +31,11 @@ import org.mmadt.storage.obj.value.VInst
 
 trait MergeOp[A <: Obj] {
   this: Brch[A] =>
-  def merge[B <: Obj](): B = {
+  def merge[B <: Obj](): B =
     if (this.isValue)
       strm(this.value.filter(x => x.alive()).flatMap(x => x.toList).toIterator).asInstanceOf[B]
     else
       BranchInstruction.brchType[B](this).clone(via = (this, MergeOp()))
-  }
 }
 
 object MergeOp {
@@ -44,6 +43,7 @@ object MergeOp {
 
   class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Brch[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
+
     override def exec(start: Brch[A]): A = start.merge[A]().via(start, this)
   }
 

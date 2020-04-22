@@ -36,11 +36,13 @@ trait PutOp[A <: Obj, B <: Obj] {
 }
 
 object PutOp {
-  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[Rec[A, B], Rec[A, B]] = new PutInst[A, B](key, value)
+  private type PutType[A <: Obj, B <: Obj] = Obj with PutOp[A, B]
 
-  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Rec[A, B], Rec[A, B]]((Tokens.put, List(key, value)), q) {
-    override def q(quantifier: IntQ): this.type = new PutInst[A, B](key, value, quantifier).asInstanceOf[this.type]
-    override def exec(start: Rec[A, B]): Rec[A, B] = start.put(key, value).via(start,this)
+  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[PutType[A, B], PutType[A, B]] = new PutInst[A, B](key, value)
+
+  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[PutType[A, B], PutType[A, B]]((Tokens.put, List(key, value)), q) {
+    override def q(q: IntQ): this.type = new PutInst[A, B](key, value, q).asInstanceOf[this.type]
+    override def exec(start: PutType[A, B]): PutType[A, B] = start.put(key, value) // arguments not resolved
   }
 
 }

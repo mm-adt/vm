@@ -31,16 +31,6 @@ trait Prod[A <: Obj] extends Brch[A]
   with Type[Prod[A]]
   with Value[Prod[A]] {
 
-  // TODO: hashcode
-  override def equals(other: Any): Boolean = other match {
-    case brch: Prod[_] =>
-      brch.name.equals(this.name) &&
-        eqQ(brch, this) &&
-        ((this.isValue && brch.isValue && this.value.zip(brch.value).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
-          (this.value == brch.value && this.via == brch.via))
-    case _ => false
-  }
-
   override def test(other: Obj): Boolean = other match {
     case prod: Prod[_] =>
       if (prod.value.isEmpty || this.value.equals(prod.value)) return true
@@ -49,6 +39,14 @@ trait Prod[A <: Obj] extends Brch[A]
   }
 
   override def toString: String = LanguageFactory.printBrch(this)
-
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.hashCode()
+  override def equals(other: Any): Boolean = other match {
+    case brch: Prod[_] =>
+      brch.name.equals(this.name) &&
+        eqQ(brch, this) &&
+        ((this.isValue && brch.isValue && this.value.zip(brch.value).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
+          (this.value == brch.value && this.via == brch.via))
+    case _ => false
+  }
 }
 

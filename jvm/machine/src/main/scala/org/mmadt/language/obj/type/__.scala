@@ -25,7 +25,6 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.op.initial.{IntOp, StrOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.ObjValue
@@ -36,8 +35,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple = base()) extends Type[__]
-  with IntOp // TODO: persue this path?
-  with StrOp
   with PlusOp[__, ObjValue]
   with MultOp[__, ObjValue]
   with HeadOp[Obj]
