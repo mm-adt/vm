@@ -116,7 +116,9 @@ trait Obj
       case _: Value[_] => Processor.iterator(model).apply(this, Type.resolve(this, rangeType))
     }
   }
-  def ===>[E <: Obj](rangeType: E): E = {this ==> rangeType.asInstanceOf[Type[E]] }
+  def ===>[E <: Obj](rangeType: E): E = {
+    this ==> rangeType.asInstanceOf[Type[E]]
+  }
 }
 
 object Obj {
@@ -125,8 +127,14 @@ object Obj {
     if (result.isEmpty) throw LanguageException.labelNotFound(obj, label)
     result.get
   }
+
+  @scala.annotation.tailrec
   def fetchOption[A <: Obj](obj: Obj, label: String): Option[A] = {
-    obj.lineage.reverse.find(x => x._2.op().equals(Tokens.to) && x._2.arg0[StrValue]().value.equals(label)).map(x => x._1).asInstanceOf[Option[A]]
+    obj match {
+      case x if x.root => None
+      case x if x.via._2.op() == Tokens.to && x.via._2.arg0[StrValue]().value == label => Some(x.via._1.asInstanceOf[A])
+      case x => fetchOption(x.via._1, label)
+    }
   }
 
   @inline implicit def booleanToBool(java: Boolean): BoolValue = bool(java)

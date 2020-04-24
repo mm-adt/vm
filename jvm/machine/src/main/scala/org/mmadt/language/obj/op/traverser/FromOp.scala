@@ -39,11 +39,9 @@ trait FromOp {
   }
   def from[O <: Obj](label: StrValue, atype: O): O = {
     val history: Option[O] = Obj.fetchOption[O](this, label.value)
-      .map(x => x.via(this.via._1, this.via._2))
-      .map(x => x.via(x, FromOp(label, atype)))
     if (history.isEmpty && this.isInstanceOf[Value[_]])
       throw LanguageException.labelNotFound(this, label.value)
-    history.getOrElse(atype.via(atype, FromOp(label, atype)))
+    history.getOrElse(atype).via(this, FromOp(label, atype))
   }
 }
 
@@ -52,7 +50,7 @@ object FromOp {
   def apply[O <: Obj](label: StrValue, default: O): FromInst[O] = new FromInst[O](label, default)
 
   class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.from, List(label)), q) with TraverserInstruction {
-    override def q(quantifier: IntQ): this.type = new FromInst[O](label, default, quantifier).asInstanceOf[this.type]
+    override def q(q: IntQ): this.type = new FromInst[O](label, default, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = start.from(label, if (null == default) start else default).via(start, this).asInstanceOf[O]
   }
 
