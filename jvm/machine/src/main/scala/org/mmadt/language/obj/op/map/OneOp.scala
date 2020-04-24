@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.op.map.OneOp.OneType
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -31,16 +32,18 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OneOp {
-  this: Obj =>
+  this: OneType =>
   def one(): this.type
 }
 
 object OneOp {
-  def apply[O <: Obj with OneOp](): OneInst[O] = new OneInst[O]
+  private type OneType = Obj with OneOp
 
-  class OneInst[O <: Obj with OneOp](q: IntQ = qOne) extends VInst[O, O]((Tokens.one, Nil), q) {
-    override def q(quantifier: IntQ): this.type = new OneInst[O](quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start.one().via(start, this)
+  def apply(): OneInst = new OneInst
+
+  class OneInst(q: IntQ = qOne) extends VInst[OneType,OneType]((Tokens.one, Nil), q) {
+    override def q(q: IntQ): this.type = new OneInst(q).asInstanceOf[this.type]
+    override def exec(start: OneType): OneType = start.one().via(start, this)
   }
 
 }

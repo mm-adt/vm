@@ -32,7 +32,7 @@ import org.mmadt.storage.obj.value.VInst
 trait PathOp {
   this: Obj =>
   private lazy val inst: Inst[Obj, Path] = new PathInst()
-  def path(): Path = prod[Obj](this.lineage.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ this: _*).via(this, inst)
+  def path(): Path = prod(this.lineage.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ this: _*).via(this, inst)
 }
 
 object PathOp {

@@ -23,22 +23,23 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.op.map.TailOp.TailType
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait TailOp {
-  this: Obj =>
+  this: TailType =>
   def tail(): this.type
 }
 
 object TailOp {
-  private type TailObj = Obj with TailOp
-  def apply[A <: Obj](): TailInst[A] = new TailInst[A]
+  private type TailType = Obj with TailOp
+  def apply(): TailInst = new TailInst
 
-  class TailInst[A <: Obj](q: IntQ = qOne) extends VInst[TailObj, TailObj]((Tokens.tail, Nil), q) {
-    override def q(q: IntQ): this.type = new TailInst[A](q).asInstanceOf[this.type]
-    override def exec(start: TailObj): TailObj = start.tail().via(start, new TailInst[A](q))
+  class TailInst(q: IntQ = qOne) extends VInst[TailType, TailType]((Tokens.tail, Nil), q) {
+    override def q(q: IntQ): this.type = new TailInst(q).asInstanceOf[this.type]
+    override def exec(start: TailType): TailType = start.tail().via(start, new TailInst(q))
   }
 
 }

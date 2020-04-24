@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.op.map.ZeroOp.ZeroType
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
@@ -31,16 +32,18 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ZeroOp {
-  this: Obj =>
+  this: ZeroType =>
   def zero(): this.type
 }
 
 object ZeroOp {
-  def apply[S <: Obj with ZeroOp](): ZeroInst[S] = new ZeroInst[S]
+  private type ZeroType = Obj with ZeroOp
 
-  class ZeroInst[S <: Obj with ZeroOp](q: IntQ = qOne) extends VInst[S, S]((Tokens.zero, Nil), q) {
-    override def q(quantifier: IntQ): this.type = new ZeroInst(quantifier).asInstanceOf[this.type]
-    override def exec(start: S): S = start.zero().via(start, this)
+  def apply(): ZeroInst = new ZeroInst
+
+  class ZeroInst(q: IntQ = qOne) extends VInst[ZeroType, ZeroType]((Tokens.zero, Nil), q) {
+    override def q(q: IntQ): this.type = new ZeroInst(q).asInstanceOf[this.type]
+    override def exec(start: ZeroType): ZeroType = start.zero().via(start, this)
   }
 
 }

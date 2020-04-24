@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.op.map.NegOp.NegType
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -31,16 +32,19 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait NegOp {
+  this: NegType=>
   def neg(): this.type
   final def unary_-(): this.type = this.neg()
 }
 
 object NegOp {
-  def apply[O <: Obj with NegOp](): NegInst[O] = new NegInst[O]
+  private type NegType = Obj with NegOp
 
-  class NegInst[O <: Obj with NegOp](q: IntQ = qOne) extends VInst[O, O]((Tokens.neg, Nil), q) {
-    override def q(quantifier: IntQ): this.type = new NegInst[O](quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start.neg().via(start, this)
+  def apply(): NegInst = new NegInst
+
+  class NegInst(q: IntQ = qOne) extends VInst[NegType,NegType]((Tokens.neg, Nil), q) {
+    override def q(q: IntQ): this.type = new NegInst(q).asInstanceOf[this.type]
+    override def exec(start: NegType): NegType = start.neg().via(start, this)
   }
 
 }
