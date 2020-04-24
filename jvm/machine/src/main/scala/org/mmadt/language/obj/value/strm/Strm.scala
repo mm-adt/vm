@@ -30,18 +30,18 @@ import org.mmadt.language.obj.value.Value
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Strm[+O <: Obj] extends Value[O] {
-  override val value:Iterator[O]
+  override val value: Iterator[O]
 
   // utility methods
-  override def toStrm:Strm[this.type] = this.asInstanceOf[Strm[this.type]]
-  override def clone(name:String = this.name, value:Any = this.value, q:IntQ = this.q, via:ViaTuple = base()):this.type = this
-  override def named(_name:String):this.type = this
+  override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]
+  override def clone(name: String = this.name, value: Any = this.value, q: IntQ = this.q, via: ViaTuple = base()): this.type = this
+  override def named(_name: String): this.type = this
 
   // standard Java implementations
-  override def toString:String = LanguageFactory.printStrm(this)
-  override lazy val hashCode:scala.Int = this.value.toList.hashCode() // TODO: sketchy on large streams
-  override def equals(other:Any):Boolean = other match {
-    case strm:Strm[O] => this.value.sameElements(strm.value)
+  override def toString: String = LanguageFactory.printStrm(this)
+  override lazy val hashCode: scala.Int = this.value.toList.hashCode() // TODO: sketchy on large streams
+  override def equals(other: Any): Boolean = other match {
+    case strm: Strm[O] => this.value.sameElements(strm.value)
     case _ => false
   }
 }

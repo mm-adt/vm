@@ -53,7 +53,7 @@ object FoldOp {
         case _: Type[Obj] => start //Traverser.stateSplit[Obj](this.arg0[StrValue]().value,this.arg1[A]())(trav)
         case _ => start
       }
-      end.fold(seed)(Type.resolve(end, reduction))
+      end.fold(seed)(reduction)
     }
 
     /*private def deduceSeed(defaultSeed:ZeroOp[Type[Obj]],model:Model):Option[Obj] = {

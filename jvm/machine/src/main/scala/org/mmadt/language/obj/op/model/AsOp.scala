@@ -61,12 +61,12 @@ object AsOp {
                   case kvalue: Value[Obj] => kvalue
                   case ktype: Type[Obj] =>
                     TypeChecker.matchesVT(avalue, ktype)
-                    start.compute(Type.resolve(start, ktype)).asInstanceOf[Value[Obj]]
+                    start.compute(ktype).asInstanceOf[Value[Obj]]
                 }) -> (x._2 match {
                   case vvalue: Value[Obj] => vvalue
                   case vtype: Type[Obj] =>
                     TypeChecker.matchesVT(avalue, vtype)
-                    start.compute(Type.resolve(start, vtype)).asInstanceOf[Value[Obj]]
+                    start.compute(vtype).asInstanceOf[Value[Obj]]
                 })))
             }
           case atype: StrType => vstr(name = atype.name, value = start.asInstanceOf[Value[Obj]].value.toString).compute(atype)
@@ -75,12 +75,7 @@ object AsOp {
           case xtype: Type[Obj] => start.named(xtype.name).asInstanceOf[O]
         }
         case avalue: Value[Obj] => avalue
-        case btype: Type[Obj] if start.isInstanceOf[Type[_]] =>
-          if (btype.isInstanceOf[RecType[Obj, Obj]]) {
-            btype.via(start.asInstanceOf[Type[Obj]], AsOp(Type.resolve(start, btype)))
-          } else {
-            btype.via(start.asInstanceOf[Type[Obj]], AsOp(btype))
-          }
+        case btype: Type[Obj] if start.isInstanceOf[Type[_]] => btype.via(start.asInstanceOf[Type[Obj]], AsOp(btype))
       }).via(start, this).asInstanceOf[O]
     }
 
@@ -94,8 +89,7 @@ object AsOp {
       val typeMap: mutable.Map[Obj, Obj] = mutable.Map() ++ rightMap
       var valueMap: mutable.Map[Value[Obj], Value[Obj]] = mutable.Map()
       leftMap.map(a => typeMap.find(k =>
-        model(a._1).test(Type.resolve(a._1, k._1)) &&
-          model(a._2).test(Type.resolve(a._2, k._2))).map(z => {
+        model(a._1).test(k._1) && model(a._2).test(k._2)).map(z => {
         valueMap = valueMap + (a._1 -> a._2.as(z._2).asInstanceOf[Value[Obj]])
         typeMap.remove(z._1)
       }))

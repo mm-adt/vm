@@ -66,6 +66,7 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
+        if (type instanceof __) type = ((__) type).apply(obj);
         if ((obj instanceof Type && !((Type<?>) obj).range().test(type)) || (obj instanceof Value && !obj.test(type)))
             throw LanguageException.typingError(obj, type);
     }
