@@ -83,7 +83,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // lazy val varSet: Parser[Type[Obj]] = (objValue | brchObj) ~ (LANGLE ~> varName <~ RANGLE) ^^ (x => (x._1.start[Obj]().to(x._2)))
 
   // product and coproduct parsing
-  lazy val brchObj: Parser[Brch[Obj]] = prodObj | coprodObj
+  lazy val brchObj: Parser[Brch[Obj]] = (prodObj | coprodObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Brch[Obj]]).getOrElse(x._1))
   lazy val coprodObj: Parser[Coprod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, PIPE) <~ RBRACKET) ^^ (x => coprod(x._2: _*))
   lazy val prodObj: Parser[Prod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, SEMICOLON) <~ RBRACKET) ^^ (x => prod(x._2: _*))
 
@@ -144,7 +144,9 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 }
 
 object mmlangParser {
-  def parse[O <: Obj](script: String, model: Model): O = try {new mmlangParser(model).parse[O](script) } catch {
+  def parse[O <: Obj](script: String, model: Model): O = try {
+    new mmlangParser(model).parse[O](script)
+  } catch {
     case e: VmException => throw e
     case e: Exception => {
       e.printStackTrace()

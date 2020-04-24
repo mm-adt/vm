@@ -27,13 +27,14 @@ import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj._
 import org.mmadt.storage.obj.value.VInst
 
 trait MergeOp[A <: Obj] {
   this: Brch[A] =>
   def merge[B <: Obj](): B =
     if (this.isValue)
-      strm(this.value.filter(x => x.alive()).flatMap(x => x.toList).toIterator).asInstanceOf[B]
+      strm(this.value.filter(x => x.alive()).map(x => x.q(multQ(this,x))).toIterator).asInstanceOf[B]
     else
       BranchInstruction.brchType[B](this).clone(via = (this, MergeOp()))
 }

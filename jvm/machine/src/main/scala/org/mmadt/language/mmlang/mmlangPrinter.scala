@@ -54,7 +54,7 @@ object mmlangPrinter {
     if (!branch.isValue)
       typeString (branch.asInstanceOf[Type[Obj]])
     else
-      branchList(branch)
+      branchList(branch) + qString(branch.q)
   }
 
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
