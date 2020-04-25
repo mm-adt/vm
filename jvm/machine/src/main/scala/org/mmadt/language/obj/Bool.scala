@@ -29,4 +29,7 @@ import org.mmadt.language.obj.op.map.{AndOp, OrOp}
  */
 trait Bool extends Obj
   with AndOp
-  with OrOp
+  with OrOp {
+
+  def value: Boolean
+}

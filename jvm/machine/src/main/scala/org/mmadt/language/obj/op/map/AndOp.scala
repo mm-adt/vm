@@ -24,24 +24,26 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.`type`.{BoolType, __}
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AndOp {
-  this: Obj =>
-  def and(other: BoolType): BoolType = bool.via(this.start(), AndOp(other))
-  def and(other: BoolValue): Bool = (this match {
-    case avalue: BoolValue => bool(value = avalue.value && other.value)
-    case _ => bool
-  }).via(this, AndOp(other))
+  this: Bool =>
 
-  final def &&(bool: BoolType): BoolType = this.and(bool)
-  final def &&(bool: BoolValue): Bool = this.and(bool)
+  def and(anon: __): Bool = this.and(anon[Bool](this))
+  def and(other: Bool): Bool = {
+    val otherBool: Bool = Inst.resolveArg(this, other)
+    Try.apply(this.clone(value = this.value && otherBool.value, via = (this, AndOp(otherBool))))
+      .getOrElse(this.clone(via = (this, AndOp(otherBool))))
+  }
+  final def &&(bool: Bool): Bool = this.and(bool)
 }
 
 object AndOp {
@@ -49,13 +51,10 @@ object AndOp {
 
   class AndInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool]((Tokens.and, List(other)), q) {
     override def q(q: IntQ): this.type = new AndInst(other, q).asInstanceOf[this.type]
-    override def exec(start: Bool): Bool = {
-      val inst = new AndInst(Inst.resolveArg(start, other), q)
-      (inst.arg0[Bool]() match {
-        case bvalue: BoolValue => start.and(bvalue)
-        case btype: BoolType => start.and(btype)
-      }).via(start, inst)
-    }
+    override def exec(start: Bool): Bool = (other match {
+      case bool: Bool => start.and(bool)
+      case anon: __ => start.and(anon)
+    }).via(start, this)
   }
 
 }

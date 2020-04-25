@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Bool
 
 /**
@@ -29,6 +30,9 @@ import org.mmadt.language.obj.Bool
  */
 trait BoolType extends Bool
   with Type[Bool]
-  with ObjType
+  with ObjType {
+
+  def value: Boolean = throw LanguageException.typesNoValue(this)
+}
 
 

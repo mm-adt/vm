@@ -24,25 +24,25 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait OrOp {
-  this: Obj =>
-  def or(other: BoolType): BoolType = this.start().via(this.start(), OrOp(other))
+  this: Bool =>
 
-  def or(other: BoolValue): Bool = (this match {
-    case avalue: BoolValue => bool(avalue.value || other.value)
-    case _ => bool
-  }).via(this, OrOp(other))
-
-  final def ||(bool: BoolType): BoolType = this.or(bool)
-  final def ||(bool: BoolValue): Bool = this.or(bool)
+  def or(anon: __): Bool = this.or(anon[Bool](this))
+  def or(other: Bool): Bool = {
+    val otherBool: Bool = Inst.resolveArg(this, other)
+    Try.apply(this.clone(value = this.value || otherBool.value, via = (this, OrOp(otherBool))))
+      .getOrElse(this.clone(via = (this, OrOp(otherBool))))
+  }
+  final def ||(bool: Bool): Bool = this.or(bool)
 }
 
 object OrOp {
@@ -50,13 +50,10 @@ object OrOp {
 
   class OrInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool]((Tokens.or, List(other)), q) {
     override def q(q: IntQ): this.type = new OrInst(other, q).asInstanceOf[this.type]
-    override def exec(start: Bool): Bool = {
-      val inst = new OrInst(Inst.resolveArg(start, other), q)
-      (inst.arg0[Bool]() match {
-        case bvalue: BoolValue => start.or(bvalue)
-        case btype: BoolType => start.or(btype)
-      }).via(start, inst)
-    }
+    override def exec(start: Bool): Bool = (other match {
+      case bool: Bool => start.or(bool)
+      case anon: __ => start.or(anon)
+    }).via(start, this)
   }
 
 }

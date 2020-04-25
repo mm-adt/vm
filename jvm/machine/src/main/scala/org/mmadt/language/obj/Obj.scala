@@ -62,6 +62,7 @@ trait Obj
     with StartOp
     with SplitOp {
 
+
   //////////////////////////////////////////////////////////////
   // data associated with every obj
   val name: String // the obj type name TODO: should be ref to type?
@@ -72,7 +73,6 @@ trait Obj
   // type methods
   def named(_name: String): this.type = this.clone(name = _name)
   def test(other: Obj): Boolean
-
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))

@@ -30,7 +30,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBool(val name: String = Tokens.bool, val value: Boolean, val q: IntQ = qOne, val via: ViaTuple = base()) extends BoolValue {
+class VBool(val name: String = Tokens.bool, override val value: Boolean, val q: IntQ = qOne, val via: ViaTuple = base()) extends BoolValue {
   override def clone(name: String = this.name,
                      value: Any = this.value,
                      q: IntQ = this.q,

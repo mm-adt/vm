@@ -39,8 +39,6 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   with MultOp[__, ObjValue]
   with HeadOp[Obj]
   with TailOp
-  with AndOp
-  with OrOp
   with GetOp[Obj, Obj]
   with PutOp[Obj, Obj]
   with NegOp
@@ -58,6 +56,8 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   override def plus(other: ObjValue): this.type = this.via(this, PlusOp(other))
   override def mult(other: __): this.type = this.via(this, MultOp(other))
   override def mult(other: ObjValue): this.type = this.via(this, MultOp(other))
+  def or(other:Obj): Bool = bool.via(this,OrOp(other))
+  def and(other:Obj): Bool = bool.via(this,OrOp(other))
   def is(other: Obj): BoolType = bool.via(this, IsOp(other))
   override def neg(): this.type = this.via(this, NegOp())
   override def get(key: Obj): this.type = this.via(this, GetOp(key))

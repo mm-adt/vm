@@ -46,6 +46,10 @@ public class LanguageException extends VmException {
         return new LanguageException(source + " instruction error: " + message);
     }
 
+    public static LanguageException typesNoValue(final Obj source) {
+        return new LanguageException("Types do note contain values: " + source);
+    }
+
     public static LanguageException zeroLengthPath(final Obj source) {
         if (source instanceof Type<?>)
             return new LanguageException(source + " can not be decomposed beyond canonical form");
