@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type}
-import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
+import org.mmadt.language.obj.branch.{Brch, Prod}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
 import org.mmadt.storage.StorageFactory._
@@ -47,12 +47,12 @@ object mmlangPrinter {
     case _ => "{" + x._1.value + "," + x._2.value + "}"
   }
 
-  def strmString(strm: Strm[Obj]): String = strm.value.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
+  def strmString(strm: Strm[Obj]): String = strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
 
   def branchString(branch: Brch[_]): String = {
     if (branch.root) branchList(branch)
     if (!branch.isValue)
-      typeString (branch.asInstanceOf[Type[Obj]])
+      typeString(branch.asInstanceOf[Type[Obj]])
     else
       branchList(branch) + qString(branch.q)
   }

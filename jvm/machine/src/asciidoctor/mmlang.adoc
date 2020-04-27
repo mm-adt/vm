@@ -28,7 +28,8 @@ pcompose(y<=x[a],y<=x[b])  := y<=x[branch,y<=x[a],y<=x[b]]
 pcompose(y<=x[a],z<=x[b])  := obj<=x[branch,y<=x[a],z<=x[b]]
 ----
 
-The quantifiers of an `mmlang` program are elements of a ring with unity (the quantifier ring). In the following equations, `*` and `+` refer to the respective monoid and group operations of the program's associated quantifier ring.
+The quantifiers of an `mmlang` program are elements of a ring with unity (the quantifier ring).
+In the following equations, `*` and `+` refer to the respective monoid and group operations of the program's associated quantifier ring.
 
 [source]
 ----

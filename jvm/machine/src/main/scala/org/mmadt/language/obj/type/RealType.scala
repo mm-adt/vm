@@ -22,10 +22,10 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Real
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.value.RealValue
-import org.mmadt.storage.StorageFactory.bool
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,15 +33,7 @@ import org.mmadt.storage.StorageFactory.bool
 trait RealType extends Real
   with Type[Real]
   with ObjType {
-
+  def value: Double = throw LanguageException.typesNoValue(this)
   def apply(value: RealValue): RealValue = value.named(this.name)
   override def plus(other: RealValue): this.type = this.via(this, PlusOp(other))
-  override def mult(other: RealValue): this.type = this.via(this, MultOp(other))
-  override def neg(): this.type = this.via(this, NegOp())
-  override def one(): this.type = this.via(this, OneOp())
-  override def gt(other: RealValue): BoolType = bool.via(this, GtOp(other))
-  override def gte(other: RealValue): BoolType = bool.via(this, GteOp(other))
-  override def lt(other: RealValue): BoolType = bool.via(this, LtOp(other))
-  override def lte(other: RealValue): BoolType = bool.via(this, LteOp(other))
-  override def zero(): this.type = this.via(this, ZeroOp())
 }

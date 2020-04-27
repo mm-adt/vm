@@ -22,20 +22,14 @@
 
 package org.mmadt.language.model
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{IntType, Type}
-import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory._
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object Algebra {
 
-  def universal(atype:Type[Obj]):Model = Model.from(atype.id() -> atype)
+  /*def universal(atype:Type[Obj]):Model = Model.from(atype.id() -> atype)
 
-  type MultOne[T <: Obj] = Type[T] with MultOp[Type[T],Value[T]] with OneOp
+  type MultOne[T <: Obj] = Type[T] with MultOp[T] with OneOp
   type PlusZero[T <: Obj] = Type[T] with PlusOp[Type[T],Value[T]] with ZeroOp
   def monoid[O <: Type[O]](monoid:Obj)(op:String):Model ={
     op match {
@@ -77,5 +71,5 @@ object Algebra {
         ring.mult(ring.one().neg()) -> ring.neg(),
         ring.to("x").mult(ring.to("y").plus(ring.to("z"))) -> ring.from("x").plus(ring.from("y")).mult(ring.from("x").plus(ring.from("z")))
       ))
-  }
+  }*/
 }

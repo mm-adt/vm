@@ -29,11 +29,11 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class IntTypeTest extends FunSuite {
-  test("int infix operators"){
+  test("int infix operators") {
     assertResult("bool<=int[plus,2][gt,4]")((int + 2 > 4).toString)
     assertResult("int{?}<=int[plus,2][is,bool<=int[gt,4]]")((int + 2 is int.gt(4)).toString)
   }
-  test("int: refinement types"){
+  test("int: refinement types") {
     assertResult("int[is,bool<=int[gt,5]]")((int <= int.is(int.gt(5))).toString())
     // TODO: When the stream goes from parallel to serial, quantifiers are not predictable
     /*intercept[IllegalArgumentException]{
@@ -46,7 +46,7 @@ class IntTypeTest extends FunSuite {
       println(int(6) ==> int.q(0) <= int.is(int.gt(5)))
     }*/
   }
-  test("int: deep nest"){
+  test("int: deep nest") {
     assertResult(int(2))(int(1) ==> int.plus(1))
     assertResult(int(3))(int(1) ==> int.plus(int.plus(1)))
     assertResult(int(4))(int(1) ==> int.plus(int.plus(int.plus(1))))
@@ -54,11 +54,11 @@ class IntTypeTest extends FunSuite {
     assertResult(int(6))(int(1) ==> int.plus(int.plus(int.plus(int.plus(int.plus(1))))))
   }
 
-  test("int: type structure"){
+  test("int: type structure") {
     println(int.plus(int(2)).mult(int(5)).lineage)
   }
 
-  test("int: pattern matching"){
+  test("int: pattern matching") {
     assert(int.test(int))
     assert(!int.test(str))
   }

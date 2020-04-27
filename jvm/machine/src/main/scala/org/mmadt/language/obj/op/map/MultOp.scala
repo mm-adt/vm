@@ -23,35 +23,35 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.{Inst, Int, IntQ, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait MultOp[T <: Type[Obj], V <: Value[Obj]] {
-  this: Obj =>
-  def mult(other: T): T = this.start().via(this.start(), MultOp(other))
-  def mult(other: V): this.type
-  final def *(other: T): T = this.mult(other)
-  final def *(other: V): this.type = this.mult(other)
-
+trait MultOp[O <: Obj] {
+  this: O =>
+  def mult(anon: __): this.type = MultOp(anon).exec(this)
+  def mult(arg: O): this.type = MultOp(arg).exec(this)
+  final def *(anon: __): this.type = this.mult(anon)
+  final def *(arg: O): this.type = this.mult(arg)
 }
 
 object MultOp {
-  def apply[O <: Obj with MultOp[Type[O], Value[O]]](other: Obj): MultInst[O] = new MultInst[O](other)
+  def apply[O <: Obj](obj: Obj): MultInst[O] = new MultInst[O](obj)
 
-  class MultInst[O <: Obj with MultOp[Type[O], Value[O]]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.mult, List(other)), q) {
-    override def q(quantifier: IntQ): this.type = new MultInst[O](other, quantifier).asInstanceOf[this.type]
+  class MultInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.mult, List(arg)), q) {
+    override def q(q: IntQ): this.type = new MultInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
-      val inst = new MultInst(Inst.resolveArg(start, other), q)
-      (inst.arg0[O]() match {
-        case avalue: Value[O] => start.mult(avalue)
-        case atype: Type[O] => start.mult(atype)
-      }).via(start, inst).asInstanceOf[O]
+      val resolvedArg: Obj = Inst.resolveArg(start, arg)
+      Try(start match {
+        case aint: Int => start.clone(value = aint.value * resolvedArg.asInstanceOf[Int].value)
+        case areal: Real => start.clone(value = areal.value * resolvedArg.asInstanceOf[Real].value)
+      }).getOrElse(start).via(start, new MultInst(resolvedArg, this.q))
     }
   }
 

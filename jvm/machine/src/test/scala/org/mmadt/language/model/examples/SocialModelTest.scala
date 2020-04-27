@@ -34,24 +34,24 @@ import org.scalatest.FunSuite
  */
 class SocialModelTest extends FunSuite {
 
-  val mmsocial  :Model     = Model.simple()
-  val socialmm  :Model     = Model.simple()
-  val msCompiler:Processor = Processor.compiler(mmsocial)
-  val smCompiler:Processor = Processor.compiler(socialmm)
-  val msIterator:Processor = Processor.iterator(mmsocial)
-  val smIterator:Processor = Processor.iterator(socialmm)
+  val mmsocial: Model = Model.simple()
+  val socialmm: Model = Model.simple()
+  val msCompiler: Processor = Processor.compiler(mmsocial)
+  val smCompiler: Processor = Processor.compiler(socialmm)
+  val msIterator: Processor = Processor.iterator(mmsocial)
+  val smIterator: Processor = Processor.iterator(socialmm)
 
-  mmsocial.put(int <= int.is(int.gt(0)),int.named("nat"))
-  val nat:IntType = mmsocial("nat")
-  mmsocial.put(trec[Str,Obj](str("name") -> str,str("age") -> int),trec[Str,Obj](str("name") -> str,str("age") -> nat).named("person"))
-  val person:RecType[Str,Obj] = mmsocial("person")
+  mmsocial.put(int <= int.is(int.gt(0)), int.named("nat"))
+  val nat: IntType = mmsocial("nat")
+  mmsocial.put(trec[Str, Obj](str("name") -> str, str("age") -> int), trec[Str, Obj](str("name") -> str, str("age") -> nat).named("person"))
+  val person: RecType[Str, Obj] = mmsocial("person")
   println("mm=>social\n" + mmsocial)
 
-  socialmm.put(nat,int)
-  socialmm.put(person,trec(str("name") -> str,str("age") -> int))
+  socialmm.put(nat, int)
+  socialmm.put(person, trec(str("name") -> str, str("age") -> int))
   println("social=>mm\n" + socialmm)
 
-  test("model atomic types"){
+  test("model atomic types") {
     assertResult(int.getClass)(mmsocial.get(tobj("nat")).get.getClass)
     assertResult("nat")(nat.name)
     assertResult(nat(34))(nat(34))
@@ -63,8 +63,8 @@ class SocialModelTest extends FunSuite {
     assertResult("nat[plus,nat]")(nat.plus(nat).toString)
   }
 
-  test("model mapping and inverse mapping"){
-    val result = (1 to 100).foldRight(int(40))((_,b) => {
+  test("model mapping and inverse mapping") {
+    val result = (1 to 100).foldRight(int(40))((_, b) => {
       val result = socialmm(mmsocial(b))
       assertResult("int")(result.name)
       assertResult(40)(result.value)
@@ -97,38 +97,38 @@ class SocialModelTest extends FunSuite {
     assertResult(20L)(socialmm(ryan.get(str("age"))).value)
   }*/
 
-  test("bad model mappings"){
+  test("bad model mappings") {
     //assertThrows[AssertionError]{mmsocial(vrec(str("name") -> int(34),str("age") -> int(24)))}
     //assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko")))}
-//    assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko"),str("age") -> int(-120)))}
+    //    assertThrows[AssertionError]{mmsocial(vrec(str("name") -> str("marko"),str("age") -> int(-120)))}
     //assertThrows[AssertionError]{mmsocial(int(-130))}
   }
 
-  test("model compilation and evaluation"){
-    val toSocial = msCompiler(trec[Str,Obj](str("name") -> str,str("age") -> int).get(str("age"),int).plus(int))
+  test("model compilation and evaluation") {
+    val toSocial = msCompiler(trec[Str, Obj](str("name") -> str, str("age") -> int).get(str("age"), int).plus(int))
     assertResult("nat<=person[get,'age'][plus,nat]")(toSocial.toString)
     assertResult("nat")(toSocial.range.name)
     assertResult("person")(toSocial.domain().name)
     assertResult("int<=rec['name':str,'age':int][get,'age'][plus,int]")(smCompiler(toSocial).toString)
-    assertResult(int(40))(smIterator(vrec(str("name") -> str("ryan"),str("age") -> int(20)),smCompiler(toSocial)))
+    assertResult(int(40))(smIterator(vrec(str("name") -> str("ryan"), str("age") -> int(20)), smCompiler(toSocial)))
   }
 
-  test("model compilation already in model"){
-    assertResult("nat<=person[get,'age'][plus,nat]")(msCompiler(person.get(str("age"),nat).plus(nat)).toString)
-    assertResult("int<=rec['name':str,'age':int][get,'age'][plus,int]")(smCompiler(trec[Str,Obj](str("name") -> str,str("age") -> int).get(str("age"),int).plus(int)).toString)
+  test("model compilation already in model") {
+    assertResult("nat<=person[get,'age'][plus,nat]")(msCompiler(person.get(str("age"), nat).plus(nat)).toString)
+    assertResult("int<=rec['name':str,'age':int][get,'age'][plus,int]")(smCompiler(trec[Str, Obj](str("name") -> str, str("age") -> int).get(str("age"), int).plus(int)).toString)
   }
 
- /* test("model composite strm"){
-    val records:RecStrm[Value[Str],Value[Obj]] = vrec(
-      rec(str("name") -> str("marko"),str("age") -> int(29)),
-      rec(str("name") -> str("kuppitz"),str("age") -> int(28)),
-      rec(str("name") -> str("ryan"),str("age") -> int(27)),
-      rec(str("name") -> str("stephen"),str("age") -> int(26)))
-    val people :RecStrm[Value[Str],Value[Obj]] = mmsocial(records)
-    people.value.foreach(x => {
-      assertResult("person")(x.name)
-      assertResult("str")(x.get(str("name")).name)
-      assertResult("nat")(x.get(str("age")).name)
-    })
-  }*/
+  /* test("model composite strm"){
+     val records:RecStrm[Value[Str],Value[Obj]] = vrec(
+       rec(str("name") -> str("marko"),str("age") -> int(29)),
+       rec(str("name") -> str("kuppitz"),str("age") -> int(28)),
+       rec(str("name") -> str("ryan"),str("age") -> int(27)),
+       rec(str("name") -> str("stephen"),str("age") -> int(26)))
+     val people :RecStrm[Value[Str],Value[Obj]] = mmsocial(records)
+     people.value.foreach(x => {
+       assertResult("person")(x.name)
+       assertResult("str")(x.get(str("name")).name)
+       assertResult("nat")(x.get(str("age")).name)
+     })
+   }*/
 }

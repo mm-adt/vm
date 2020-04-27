@@ -24,8 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, __}
-import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -36,13 +35,9 @@ import scala.util.Try
  */
 trait AndOp {
   this: Bool =>
-
-  def and(anon: __): Bool = this.and(anon[Bool](this))
-  def and(other: Bool): Bool = {
-    val otherBool: Bool = Inst.resolveArg(this, other)
-    Try.apply(this.clone(value = this.value && otherBool.value, via = (this, AndOp(otherBool))))
-      .getOrElse(this.clone(via = (this, AndOp(otherBool))))
-  }
+  def and(anon: __): Bool = AndOp(anon).exec(this)
+  def and(other: Bool): Bool = AndOp(other).exec(this)
+  final def &&(anon: __): Bool = this.and(anon)
   final def &&(bool: Bool): Bool = this.and(bool)
 }
 
@@ -51,10 +46,10 @@ object AndOp {
 
   class AndInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool]((Tokens.and, List(other)), q) {
     override def q(q: IntQ): this.type = new AndInst(other, q).asInstanceOf[this.type]
-    override def exec(start: Bool): Bool = (other match {
-      case bool: Bool => start.and(bool)
-      case anon: __ => start.and(anon)
-    }).via(start, this)
+    override def exec(start: Bool): Bool = {
+      val otherBool: Bool = Inst.resolveArg(start, other).asInstanceOf[Bool]
+      Try[Bool](start.clone(value = start.value && otherBool.value)).getOrElse(start).via(start, new AndInst(otherBool, this.q))
+    }
   }
 
 }

@@ -22,26 +22,30 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.{LanguageException, LanguageFactory}
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Strm[+O <: Obj] extends Value[O] {
-  override val value: Iterator[O]
-
+  def values: Seq[O]
+  override def value: Any = throw LanguageException.typesNoValue(this)
+  override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(x => x.alive())).asInstanceOf[this.type]
+  override def q(q: IntQ): this.type = strm(this.values.map(x => x.q(q)).filter(x => x.alive())).asInstanceOf[this.type]
+  // override def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   // utility methods
   override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]
   override def clone(name: String = this.name, value: Any = this.value, q: IntQ = this.q, via: ViaTuple = base()): this.type = this
-  override def named(_name: String): this.type = this
+  override def named(name: String): this.type = this
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printStrm(this)
-  override lazy val hashCode: scala.Int = this.value.toList.hashCode() // TODO: sketchy on large streams
+  override lazy val hashCode: scala.Int = this.values.toList.hashCode() // TODO: sketchy on large streams
   override def equals(other: Any): Boolean = other match {
-    case strm: Strm[O] => this.value.sameElements(strm.value)
+    case strm: Strm[O] => this.values.sameElements(strm.values)
     case _ => false
   }
 }

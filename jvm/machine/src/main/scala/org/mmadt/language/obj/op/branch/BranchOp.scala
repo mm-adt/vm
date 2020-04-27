@@ -49,7 +49,7 @@ trait BranchOp {
         }).values.map {
           case btype: Type[OT] with OT => start.compute(btype)
           case bvalue: Value[OT] with OT => bvalue.q(start.q)
-        }.toList.iterator)
+        }.toList)
     }
   }
 }

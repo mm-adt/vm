@@ -31,7 +31,7 @@ class OProd[A <: Obj](val name: String = Tokens.empty, val value: List[A], val q
   extends Prod[A] {
 
   override def clone(name: String = this.name,
-    value: Any = this.value,
-    q: IntQ = this.q,
-    via: ViaTuple = this.via): this.type = new OProd[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
+                     value: Any = this.value,
+                     q: IntQ = this.q,
+                     via: ViaTuple = this.via): this.type = new OProd[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
 }

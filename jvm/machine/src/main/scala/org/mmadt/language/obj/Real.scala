@@ -31,11 +31,13 @@ import org.mmadt.language.obj.value.RealValue
  */
 trait Real extends Obj
   with PlusOp[RealType, RealValue]
-  with MultOp[RealType, RealValue]
-  with NegOp
-  with GtOp[RealType, RealValue]
-  with GteOp[RealType, RealValue]
-  with LtOp[RealType, RealValue]
-  with LteOp[RealType, RealValue]
-  with OneOp
-  with ZeroOp
+  with MultOp[Real]
+  with NegOp[Real]
+  with GtOp[Real]
+  with GteOp[Real]
+  with LtOp[Real]
+  with LteOp[Real]
+  with OneOp[Real]
+  with ZeroOp[Real] {
+  def value: Double
+}

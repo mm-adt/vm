@@ -24,6 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.strm.Strm
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,6 +53,7 @@ object Inst {
       case valueArg: OValue[E] => valueArg
       case typeArg: OType[E] => obj match {
         case atype: Type[_] => atype.range.compute(typeArg)
+        case _: Strm[_] => arg
         case _ => obj.compute(typeArg)
       }
     }

@@ -31,7 +31,7 @@ import org.scalatest.FunSuite
  */
 class TypeUtilTest extends FunSuite {
 
-  test("report printing"){
+  test("report printing") {
     val atype = int.q(int(10)).to("x").plus(int(2)).mult(int.plus(int(4))).is(int.gt(int(20)))
     val btype = int.q(int(10)).to("x").plus(int(2)).plus(int.plus(int(4))).is(int.gt(int(20)))
     println(ExplainOp.printableTable(atype))

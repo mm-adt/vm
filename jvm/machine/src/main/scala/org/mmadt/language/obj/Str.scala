@@ -31,8 +31,10 @@ import org.mmadt.language.obj.value.StrValue
  */
 trait Str extends Obj
   with PlusOp[StrType, StrValue]
-  with GtOp[StrType, StrValue]
-  with GteOp[StrType, StrValue]
-  with LtOp[StrType, StrValue]
-  with LteOp[StrType, StrValue]
-  with ZeroOp
+  with GtOp[Str]
+  with GteOp[Str]
+  with LtOp[Str]
+  with LteOp[Str]
+  with ZeroOp[Str] {
+  def value: String
+}

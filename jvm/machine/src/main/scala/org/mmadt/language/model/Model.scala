@@ -38,46 +38,46 @@ import scala.collection.mutable
  */
 trait Model {
 
-  def apply[B <: Obj](name:String):OType[B] = this.toRec.value.values.find(x => x.name == name).get.asInstanceOf[OType[B]]
-  def apply[B <: Obj](obj:B):B = (obj match {
-    case astrm:Strm[Obj] => strm(astrm.value.map(x => this.apply(x))) // TODO: migrate to AsOp?
-    case avalue:Value[Obj] => this.get(avalue).getOrElse(avalue)
-    case atype:Type[Obj] => this.get(atype).getOrElse(atype)
+  def apply[B <: Obj](name: String): OType[B] = this.toRec.value.values.find(x => x.name == name).get.asInstanceOf[OType[B]]
+  def apply[B <: Obj](obj: B): B = (obj match {
+    case astrm: Strm[Obj] => strm(astrm.values.map(x => this.apply(x))) // TODO: migrate to AsOp?
+    case avalue: Value[Obj] => this.get(avalue).getOrElse(avalue)
+    case atype: Type[Obj] => this.get(atype).getOrElse(atype)
   }).asInstanceOf[B]
 
-  def put(model:Model):Model
-  def put(left:Type[Obj],right:Type[Obj]):Model
-  def get(left:Type[Obj]):Option[Type[Obj]]
-  def get(left:Value[Obj]):Option[Value[Obj]]
-  def toRec:RecType[Type[Obj],Type[Obj]]
+  def put(model: Model): Model
+  def put(left: Type[Obj], right: Type[Obj]): Model
+  def get(left: Type[Obj]): Option[Type[Obj]]
+  def get(left: Value[Obj]): Option[Value[Obj]]
+  def toRec: RecType[Type[Obj], Type[Obj]]
 }
 
 object Model {
-  def from(args:(Type[Obj],Type[Obj])*):Model = args.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
-  def from(arg:RecType[Type[Obj],Type[Obj]]):Model = arg.value.iterator.foldRight(this.simple())((a,b) => b.put(a._1,a._2))
+  def from(args: (Type[Obj], Type[Obj])*): Model = args.foldRight(this.simple())((a, b) => b.put(a._1, a._2))
+  def from(arg: RecType[Type[Obj], Type[Obj]]): Model = arg.value.iterator.foldRight(this.simple())((a, b) => b.put(a._1, a._2))
 
-  val id:Model = new Model {
-    override def put(left:Type[Obj],right:Type[Obj]):Model = this
-    override def put(model:Model):Model = this
-    override def get(left:Type[Obj]):Option[Type[Obj]] = None
-    override def get(left:Value[Obj]):Option[Value[Obj]] = None
-    override def toRec:RecType[Type[Obj],Type[Obj]] = rec
+  val id: Model = new Model {
+    override def put(left: Type[Obj], right: Type[Obj]): Model = this
+    override def put(model: Model): Model = this
+    override def get(left: Type[Obj]): Option[Type[Obj]] = None
+    override def get(left: Value[Obj]): Option[Value[Obj]] = None
+    override def toRec: RecType[Type[Obj], Type[Obj]] = rec
   }
 
-  def simple():Model = new Model {
-    val typeMap:mutable.Map[String,mutable.Map[Type[Obj],Type[Obj]]] = mutable.LinkedHashMap()
-    override def toString:String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x,y) => x + y + "\n\t")).map(x => x.trim).fold(Tokens.empty)((x,y) => x + y + "\n").trim
+  def simple(): Model = new Model {
+    val typeMap: mutable.Map[String, mutable.Map[Type[Obj], Type[Obj]]] = mutable.LinkedHashMap()
+    override def toString: String = typeMap.map(a => a._1 + " ->\n\t" + a._2.map(b => b._1.toString + " -> " + b._2).fold(Tokens.empty)((x, y) => x + y + "\n\t")).map(x => x.trim).fold(Tokens.empty)((x, y) => x + y + "\n").trim
 
-    override def put(model:Model):Model ={
-      model.asInstanceOf[this.type].typeMap.foreach(x => x._2.foreach(y => this.put(y._1,y._2)))
+    override def put(model: Model): Model = {
+      model.asInstanceOf[this.type].typeMap.foreach(x => x._2.foreach(y => this.put(y._1, y._2)))
       this
     }
-    override def put(left:Type[Obj],right:Type[Obj]):Model ={
-      if (typeMap.get(left.name).isEmpty) typeMap.put(left.name,mutable.LinkedHashMap())
-      typeMap(left.name).put(left,right)
+    override def put(left: Type[Obj], right: Type[Obj]): Model = {
+      if (typeMap.get(left.name).isEmpty) typeMap.put(left.name, mutable.LinkedHashMap())
+      typeMap(left.name).put(left, right)
       this
     }
-    override def get(left:Type[Obj]):Option[Type[Obj]] ={
+    override def get(left: Type[Obj]): Option[Type[Obj]] = {
       if (left.name.equals(Tokens.model)) return Some(toRec)
       if (isSymbol(left)) return this.typeMap.values.flatten.find(x => x._2.name.equals(left.name) && x._2.root && x._1.name != x._2.name).map(x => x._1.named(left.name))
       this.typeMap.get(left.name) match {
@@ -87,31 +87,31 @@ object Model {
           case None => m.iterator.find(a => left.test(a._1)).map(a => {
             //val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap // TODO: may need to give model to traverser
             a._2.lineage.map(x =>
-              OpInstResolver.resolve[Obj,Obj](
+              OpInstResolver.resolve[Obj, Obj](
                 x._2.op(),
-                x._2.args().map(i => Inst.resolveArg[Obj,Obj](x._1,i)))) // TODO: may need to give model to traverser
-              .foldRight(a._2.domain[Obj]())((x,z) => z.via(z,x))
+                x._2.args().map(i => Inst.resolveArg[Obj, Obj](x._1, i)))) // TODO: may need to give model to traverser
+              .foldRight(a._2.domain[Obj]())((x, z) => z.via(z, x))
           })
         }
       }
     }
     // generate traverser state
-    private def bindLeftValuesToRightVariables(left:Type[Obj],right:Type[Obj]):List[(Obj,Type[Obj])] ={
+    private def bindLeftValuesToRightVariables(left: Type[Obj], right: Type[Obj]): List[(Obj, Type[Obj])] = {
       left.lineage.map(_._2).zip(right.lineage.map(_._2))
         .flatMap(x => x._1.args().zip(x._2.args()))
         .filter(x => x._2.isInstanceOf[Type[Obj]])
         .flatMap(x => {
           x._1 match {
-            case left1:Type[Obj] => bindLeftValuesToRightVariables(left1,x._2.asInstanceOf[Type[Obj]])
+            case left1: Type[Obj] => bindLeftValuesToRightVariables(left1, x._2.asInstanceOf[Type[Obj]])
             case _ => List(x)
           }
         })
-        .map(x => (x._1,x._2.asInstanceOf[Type[Obj]]))
+        .map(x => (x._1, x._2.asInstanceOf[Type[Obj]]))
     }
-    override def toRec:RecType[Type[Obj],Type[Obj]] ={
-      trec[Type[Obj],Type[Obj]](value = this.typeMap.values.foldRight(mutable.Map[Type[Obj],Type[Obj]]())((a,b) => b ++ a).toMap)
+    override def toRec: RecType[Type[Obj], Type[Obj]] = {
+      trec[Type[Obj], Type[Obj]](value = this.typeMap.values.foldRight(mutable.Map[Type[Obj], Type[Obj]]())((a, b) => b ++ a).toMap)
     }
-    override def get(left:Value[Obj]):Option[Value[Obj]] ={
+    override def get(left: Value[Obj]): Option[Value[Obj]] = {
       typeMap.get(left.name) match {
         case None => typeMap.values.flatten.find(x => x._2.root && left.test(x._2.name) && x._1.name != x._2.name).map(a => AsOp[Obj](a._2).exec(left).asInstanceOf[Value[Obj]])
         case Some(m) => m.iterator.find(a => a._2.root && left.test(a._1) && a._1.name != a._2.name).map(a => AsOp[Obj](a._2).exec(left).asInstanceOf[Value[Obj]])

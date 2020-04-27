@@ -70,6 +70,11 @@ trait Obj
   val via: ViaTuple // the obj's incoming edge in the obj-graph
   //////////////////////////////////////////////////////////////
 
+  def <=[D <: Obj](domainType: D): this.type = {
+    LanguageException.testDomainRange(asType(this), asType(domainType))
+    domainType.compute(asType(this)).hardQ(this.q).asInstanceOf[this.type]
+  }
+
   // type methods
   def named(_name: String): this.type = this.clone(name = _name)
   def test(other: Obj): Boolean
@@ -99,9 +104,9 @@ trait Obj
 
   // utility methods
   def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
-  def toStrm: Strm[this.type] = strm[this.type](Iterator[this.type](this))
-  def toList: List[this.type] = toStrm.value.toList
-  def toSet: Set[this.type] = toStrm.value.toSet
+  def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this))
+  def toList: List[this.type] = toStrm.values.toList
+  def toSet: Set[this.type] = toStrm.values.toSet
 
   def compute[E <: Obj](rangeType: Type[E]): E = rangeType.lineage
     .headOption

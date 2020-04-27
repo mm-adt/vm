@@ -33,15 +33,15 @@ import org.scalatest.FunSuite
  */
 class ModelTest extends FunSuite {
 
-  test("simulating model values"){
+  test("simulating model values") {
     // TODO: this needs a lot of work (seeing if I can get away with variables stored in the model as named types)
-    val model  :Model     = Model.from(tstr("x") -> str.plus("hello"))
-    val program:Type[Str] = str.plus(tstr("x"))
+    val model: Model = Model.from(tstr("x") -> str.plus("hello"))
+    val program: Type[Str] = str.plus(tstr("x"))
     println(model)
     // println(model.resolve(tstr("x")) + "!!")
     println(program)
     println(Processor.compiler(model)(program))
-    println(Processor.iterator(model)(str("say "),program))
+    println(Processor.iterator(model)(str("say "), program))
   }
 
 }

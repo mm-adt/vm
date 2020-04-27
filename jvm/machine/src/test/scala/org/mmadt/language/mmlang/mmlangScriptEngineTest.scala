@@ -208,9 +208,9 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("choose instruction parsing") {
     List(
-      int.plus(int(2)).choose[IntType, ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10))),
-      int.plus(int(2)).choose[IntType, ObjType](trec[IntType, ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10)))),
-      int.plus(int(2)).choose[IntType, ObjType](trec[IntType, ObjType](name = Tokens.rec, value = Map[IntType, ObjType](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10)))))).
+      int.plus(int(2)).choose[IntType, Obj](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10))),
+      int.plus(int(2)).choose[IntType, Obj](trec[IntType, Obj](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10)))),
+      int.plus(int(2)).choose[IntType, Obj](trec[IntType, Obj](name = Tokens.rec, value = Map[IntType, Obj](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10)))))).
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,rec[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]"))
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]"))
@@ -331,8 +331,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("5[plus,1][[is>5] -> true | int -> false]"))
     assertResult(btrue)(engine.eval("true[bool -> bool | int -> int]"))
     assertResult(int(10))(engine.eval("10[bool -> bool | int -> int]"))
-//    assertResult(int(10))(engine.eval("10[bool -> true | int -> int]"))
-//    assertResult(int(11))(engine.eval("10[bool -> true | int -> int[plus,1]]"))
+    //    assertResult(int(10))(engine.eval("10[bool -> true | int -> int]"))
+    //    assertResult(int(11))(engine.eval("10[bool -> true | int -> int[plus,1]]"))
   }
 
   test("expression parsing") {

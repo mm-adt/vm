@@ -38,7 +38,7 @@ class VEmptyStrm[O <: Obj] extends Strm[O] {
 
   override def q(quantifier: (IntValue, IntValue)): this.type = throw new UnsupportedOperationException
   override def alive(): Boolean = false
-
+  override def values: Seq[O] = List.empty[O]
 }
 
 object VEmptyStrm {

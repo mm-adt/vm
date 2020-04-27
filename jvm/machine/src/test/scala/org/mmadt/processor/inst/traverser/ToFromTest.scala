@@ -23,8 +23,7 @@
 package org.mmadt.processor.inst.traverser
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.`type`.{IntType, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.TableDrivenPropertyChecks

@@ -33,19 +33,19 @@ import org.scalatest.FunSuite
  */
 class ComplexModelTest extends FunSuite {
 
-  private type Complex = RecType[StrValue,RealValue]
-  val complex:Model = Model.simple()
+  private type Complex = RecType[StrValue, RealValue]
+  val complex: Model = Model.simple()
 
-  complex.put(trec(str("a") -> real,str("b") -> real),trec(str("a") -> real,str("b") -> real).named("cmplx"))
-  val cmplx:Complex = complex("cmplx")
-  complex.put(cmplx.plus(cmplx),trec(str("a") -> real(1.0),str("b") -> real(2.0)).named("cmplx"))
+  complex.put(trec(str("a") -> real, str("b") -> real), trec(str("a") -> real, str("b") -> real).named("cmplx"))
+  val cmplx: Complex = complex("cmplx")
+  complex.put(cmplx.plus(cmplx), trec(str("a") -> real(1.0), str("b") -> real(2.0)).named("cmplx"))
   println(complex)
 
-  test("model atomic types"){
+  test("model atomic types") {
     //
     //val compilation = complex.apply(trec(str("a") -> real,str("b") -> real).named("cmplx").plus(trec(str("a") -> real(0.5),str("b") -> real(0.6)).named("cmplx")).is(true))
- //   println(compilation)
-//    println(complex(vrec(str("a") -> real(0.1),str("b") -> real(0.12))))
-  //  println(vrec(str("a") -> real(0.1),str("b") -> real(0.12)) ==> (compilation,complex))
+    //   println(compilation)
+    //    println(complex(vrec(str("a") -> real(0.1),str("b") -> real(0.12))))
+    //  println(vrec(str("a") -> real(0.1),str("b") -> real(0.12)) ==> (compilation,complex))
   }
 }

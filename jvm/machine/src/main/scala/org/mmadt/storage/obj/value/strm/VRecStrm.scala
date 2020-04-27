@@ -35,7 +35,7 @@ import org.mmadt.storage.obj.OObj
 class VRecStrm[A <: Value[Obj], B <: Value[Obj]](name: String, _value: Seq[RecValue[A, B]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with RecStrm[A, B] {
   def this(java: Seq[RecValue[A, B]]) = this(name = Tokens.rec, java, base())
 
-  override val value: Iterator[RecValue[A, B]] = _value.iterator
+  override val values: Seq[RecValue[A, B]] = _value
 
   override def q(quantifier: IntQ): this.type = this
 }

@@ -34,7 +34,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
  */
 class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("test")  {
+  test("test") {
     println(int.q(3))
   }
 
@@ -109,7 +109,7 @@ class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[branch] w/ values") {
-    assertResult(strm(Iterator(int(4))))(
+    assertResult(strm(List(int(4))))(
       int(0).plus(1).branch(
         int.is(int.gt(2)) -> int.mult(3),
         int -> int.mult(4)))

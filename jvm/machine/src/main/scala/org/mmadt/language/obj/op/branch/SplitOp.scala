@@ -49,7 +49,9 @@ trait SplitOp {
         }
         .filter(x => x.alive())
         .map(x => x.q(multQ(x.q, qTest)))
-        .map(x => {qTest = qZero; x })
+        .map(x => {
+          qTest = qZero; x
+        })
         .getOrElse(obj.q(0))))
       .via(this, SplitOp(product))
   }

@@ -22,10 +22,10 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.storage.StorageFactory._
 
 
 /**
@@ -34,13 +34,8 @@ import org.mmadt.storage.StorageFactory._
 trait StrType extends Str
   with Type[Str]
   with ObjType {
-
+  def value: String = throw LanguageException.typesNoValue(this)
   override def plus(other: StrValue): this.type = this.via(this, PlusOp(other))
-  override def gt(other: StrValue): BoolType = bool.via(this, GtOp(other))
-  override def gte(other: StrValue): BoolType = bool.via(this, GteOp(other))
-  override def lt(other: StrValue): BoolType = bool.via(this, LtOp(other))
-  override def lte(other: StrValue): BoolType = bool.via(this, LteOp(other))
-  override def zero(): this.type = this.via(this, ZeroOp())
 }
 
 

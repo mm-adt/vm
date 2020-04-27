@@ -22,11 +22,10 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -34,16 +33,11 @@ import org.mmadt.storage.StorageFactory._
 trait IntType extends Int
   with Type[Int]
   with ObjType {
+
+  def value: Long = throw LanguageException.typesNoValue(this)
+
   def apply(value: IntValue): IntValue = value.named(this.name)
   override def plus(other: IntValue): this.type = this.via(this, PlusOp(other))
-  override def mult(other: IntValue): this.type = this.via(this, MultOp(other))
-  override def neg(): this.type = this.via(this, NegOp())
-  override def one(): this.type = this.via(this, OneOp())
-  override def gt(other: IntValue): BoolType = bool.via(this, GtOp(other))
-  override def gte(other: IntValue): BoolType = bool.via(this, GteOp(other))
-  override def lt(other: IntValue): BoolType = bool.via(this, LtOp(other))
-  override def lte(other: IntValue): BoolType = bool.via(this, LteOp(other))
-  override def zero(): this.type = this.via(this, new ZeroInst())
 }
 
 

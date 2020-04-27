@@ -52,11 +52,12 @@ mmlang> -1,1,11[is>0->+1 & is>10->+2]
 
 ===== [choose]
 
-The `[choose]` instruction takes a single `rec`-type argument. The record keys are `{0}`-predicates where if the incoming `obj` matches the key, then the `obj` is processed by the value. The _first key_ that matches has it's respective value processed for the incoming `obj`.
+The `[choose]` instruction takes a single `rec`-type argument.
+The record keys are `{0}`-predicates where if the incoming `obj` matches the key, then the `obj` is processed by the value.
+The _first key_ that matches has it's respective value processed for the incoming `obj`.
 
 \[
-\tt x[choose]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow x[tv_m] : x[tk_m][q] \; \neq \;0
-\]
+\tt x[choose]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow x[tv_m] : x[tk_m][q] \; \neq \;0 \]
 
 [width=50%,cols="1,2"]
 |====

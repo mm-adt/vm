@@ -31,13 +31,13 @@ import org.scalatest.FunSuite
  */
 class __Test extends FunSuite {
 
-  test("__ type structure"){
+  test("__ type structure") {
     assert(__.root)
     assert(!__.plus(1).root)
     assertResult(__)(__.plus(1).via._1)
     assertResult(__)(__.plus(1).mult(2).via._1.via._1)
     assertResult(__)(__.plus(1).mult(2).gt(4).via._1.via._1.via._1)
-    assertResult(__(List(PlusOp(1),MultOp(2),IdOp())))(__.plus(1).mult(2).id())
+    assertResult(__(List(PlusOp(1), MultOp(2), IdOp())))(__.plus(1).mult(2).id())
     assertResult(__.plus(1).mult(2).gt(4))(__.plus(1).mult(2).gt(4))
 
     assertResult(PlusOp(1))(__.plus(1).via._2)
@@ -50,18 +50,18 @@ class __Test extends FunSuite {
     assert(!__.plus(1).equals(__.mult(2)))
   }
 
-  test("__ type in raw form"){
-    val x = __(List(PlusOp(int(4)),PlusOp(int.plus(int)),GtOp(__(List(PlusOp(int(2)))))))
+  test("__ type in raw form") {
+    val x = __(List(PlusOp(int(4)), PlusOp(int.plus(int)), GtOp(__(List(PlusOp(int(2)))))))
     assertResult(int.plus(int(4)).plus(int.plus(int)).gt(int.plus(int(2))))(x(int))
   }
 
-  test("__  type fluency"){
+  test("__  type fluency") {
     assertResult(List(str("marko!")))((vrec(str("name") -> str("marko")) ===> __.id().get(str("name")).plus(str("!"))).toList)
     assertResult(List(int(12)))((int(5) ===> __.plus(2).plus(5).id()).toList)
     assertResult(List(int(120)))((int(5) ===> __.plus(2).plus(5).id().mult(10)).toList)
   }
 
-  test("__ deep nest"){
+  test("__ deep nest") {
     assertResult(int(2))(int(1) ===> __.plus(1))
     assertResult(int(3))(int(1) ===> __.plus(__.plus(1)))
     assertResult(int(4))(int(1) ===> __.plus(__.plus(__.plus(1))))
@@ -69,7 +69,7 @@ class __Test extends FunSuite {
     assertResult(int(6))(int(1) ===> __.plus(__.plus(__.plus(__.plus(__.plus(1))))))
   }
 
-  test("__ quantifiers"){
+  test("__ quantifiers") {
     println(int ==> __.id().q(2))
     assertResult(int(5))(int(5) ===> int.q(10))
     assertResult(int(5))(int(5) ===> __)

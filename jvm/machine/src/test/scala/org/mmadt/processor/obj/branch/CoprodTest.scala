@@ -26,7 +26,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.branch.Coprod
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Int, Obj, Str}
-import org.mmadt.storage.StorageFactory.{int, coprod, str, vlst}
+import org.mmadt.storage.StorageFactory.{coprod, int, str, vlst}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 

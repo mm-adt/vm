@@ -32,15 +32,15 @@ import org.scalatest.FunSuite
  */
 class VTPatternsTest extends FunSuite {
 
-/*  test("type instructions"){
-    assert(int.plus(1).mult(2).test(int.plus(1).mult(2)))
-    assert(int(10).test(int.from[IntType]("x")))
-    assert(int.plus(10).test(int.plus(int.from[IntType]("x"))))
-    assert(int.plus(10).test(int.plus(int.from[IntType]("x").plus(2))))
-    assert(!int.plus(10).test(int.plus(int.from[IntType]("x").plus(2)).mult(20)))
-  }*/
+  /*  test("type instructions"){
+      assert(int.plus(1).mult(2).test(int.plus(1).mult(2)))
+      assert(int(10).test(int.from[IntType]("x")))
+      assert(int.plus(10).test(int.plus(int.from[IntType]("x"))))
+      assert(int.plus(10).test(int.plus(int.from[IntType]("x").plus(2))))
+      assert(!int.plus(10).test(int.plus(int.from[IntType]("x").plus(2)).mult(20)))
+    }*/
 
-  test("type/type patterns on atomic objs"){
+  test("type/type patterns on atomic objs") {
     assert(int.test(int))
     assert(bool.test(bool))
     assert(str.test(str))
@@ -57,7 +57,7 @@ class VTPatternsTest extends FunSuite {
     assert(!int.named("nat").test(int.named("nat").is(int.gt(0))))
   }
 
-  test("value/type patterns on atomic objs"){
+  test("value/type patterns on atomic objs") {
     assert(str("m").test(str("m")))
     assert(!str("m").test(int(2)))
     assert(str("m").test(str))
@@ -65,23 +65,23 @@ class VTPatternsTest extends FunSuite {
     assert(int(3).test(int))
   }
 
-  test("value/type patterns on refinement types"){
+  test("value/type patterns on refinement types") {
     assert(int(6).test(int))
     assert(!int(6).test(int.q(0)))
     assert(int.plus(2).test(int.plus(2)))
     assert(!int.plus(2).test(int.plus(3)))
   }
 
-  test("record value/type checking"){
-    val markoLess     = vrec(str("name") -> str("marko"))
-    val marko         = vrec(str("name") -> str("marko"),str("age") -> int(29))
-    val markoMore     = vrec(str("name") -> str("marko"),str("age") -> int(29),str("alive") -> bfalse)
-    val person        = trec(str("name") -> str,str("age") -> int)
-    val personLess    = trec(str("age") -> int)
-    val markoLessName = vrec(name = "person",Map(str("name") -> str("marko")))
-    val markoName     = vrec(name = "person",Map(str("name") -> str("marko"),str("age") -> int(29)))
-    val markoMoreName = vrec(name = "person",Map(str("name") -> str("marko"),str("age") -> int(29),str("alive") -> bfalse))
-    val personName    = trec(name = "person",Map(str("name") -> str,str("age") -> int))
+  test("record value/type checking") {
+    val markoLess = vrec(str("name") -> str("marko"))
+    val marko = vrec(str("name") -> str("marko"), str("age") -> int(29))
+    val markoMore = vrec(str("name") -> str("marko"), str("age") -> int(29), str("alive") -> bfalse)
+    val person = trec(str("name") -> str, str("age") -> int)
+    val personLess = trec(str("age") -> int)
+    val markoLessName = vrec(name = "person", Map(str("name") -> str("marko")))
+    val markoName = vrec(name = "person", Map(str("name") -> str("marko"), str("age") -> int(29)))
+    val markoMoreName = vrec(name = "person", Map(str("name") -> str("marko"), str("age") -> int(29), str("alive") -> bfalse))
+    val personName = trec(name = "person", Map(str("name") -> str, str("age") -> int))
     assert(marko.test(marko))
     assert(markoMore.test(markoMore))
     assert(markoLess.test(markoLess))
@@ -117,6 +117,6 @@ class VTPatternsTest extends FunSuite {
     assert(!rec.test(personLess))
     assert(!rec.test(person))
     assert(rec.test(rec))
-    assert(vrec(Map.empty[Value[Obj],Value[Obj]]).test(rec))
+    assert(vrec(Map.empty[Value[Obj], Value[Obj]]).test(rec))
   }
 }

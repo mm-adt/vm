@@ -35,7 +35,7 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
         (prod("a", "b"), 2, "c", prod("a", "b", "c")),
         (prod("a", "b"), 2, prod[Str]("c", "d"), prod("a", "b", prod[Str]("c", "d"))),
         //
-        (prod(), 0, str, prod[Obj](str).via(prod(),PutOp[Int,Str](0, str))),
+        (prod(), 0, str, prod[Obj](str).via(prod(), PutOp[Int, Str](0, str))),
         (prod(), int.is(int.gt(0)), "a", prod().via(prod(), PutOp[Int, Str](int.is(int.gt(0)), "a"))),
       )
     forEvery(starts) { (product, key, value, newProduct) => {

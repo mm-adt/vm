@@ -24,26 +24,32 @@ package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
-import org.mmadt.language.obj.op.initial.StartOp
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Obj, _}
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Value[+V <: Obj] extends Obj {
-  val value:Any
+  def value: Any
 
   // pattern matching methods
-  override def test(other:Obj):Boolean = other match {
-    case argValue:Value[_] => TypeChecker.matchesVV(this,argValue)
-    case argType:Type[_] => TypeChecker.matchesVT(this,argType)
+  override def test(other: Obj): Boolean = other match {
+    case argValue: Value[_] => TypeChecker.matchesVV(this, argValue)
+    case argType: Type[_] => TypeChecker.matchesVT(this, argType)
   }
 
   // standard Java implementations
-  override def toString:String = LanguageFactory.printValue(this)
-  override lazy val hashCode:scala.Int = this.name.hashCode ^ this.value.hashCode()
-  override def equals(other:Any):Boolean = other match {
-    case avalue:Value[V] => avalue.value.equals(this.value) && eqQ(this,avalue)
+  override def toString: String = LanguageFactory.printValue(this)
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.hashCode()
+  override def equals(other: Any): Boolean = other match {
+    case astrm: Strm[V] => astrm.values
+      .filter(x => !this.q(1).equals(x.q(1))) // cheesy
+      .map(x => x.q)
+      .fold(qZero)((a, b) => plusQ(a, b))
+      .equals(this.q)
+    case avalue: Value[V] => avalue.value.equals(this.value) && eqQ(this, avalue)
     case _ => false
   }
 }

@@ -29,6 +29,6 @@ import org.mmadt.language.obj.op.OpInstResolver
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait EvalOp {
-  this:Obj =>
-  def =:[O <: Obj](op:String)(args:Obj*):O =  OpInstResolver.resolve(op,args.toList).exec(this)
+  this: Obj =>
+  def =:[O <: Obj](op: String)(args: Obj*): O = OpInstResolver.resolve(op, args.toList).exec(this)
 }

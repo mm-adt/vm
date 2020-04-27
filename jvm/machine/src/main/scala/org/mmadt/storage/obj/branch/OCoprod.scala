@@ -31,7 +31,7 @@ class OCoprod[A <: Obj](val name: String = Tokens.empty, val value: List[A], val
   extends Coprod[A] {
 
   override def clone(name: String = this.name,
-    value: Any = this.value,
-    q: IntQ = this.q,
-    via: ViaTuple = this.via): this.type = new OCoprod[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
+                     value: Any = this.value,
+                     q: IntQ = this.q,
+                     via: ViaTuple = this.via): this.type = new OCoprod[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
 }

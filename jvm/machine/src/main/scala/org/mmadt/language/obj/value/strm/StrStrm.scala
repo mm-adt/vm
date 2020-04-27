@@ -22,12 +22,15 @@
 
 package org.mmadt.language.obj.value.strm
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Str
+import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.StrValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StrStrm extends Strm[Str] {
-  override val value:Iterator[StrValue]
+trait StrStrm extends Strm[Str] with Str {
+  override def value: String = throw LanguageException.typesNoValue(this)
+  override def plus(other: StrValue): this.type = this.clone(value = this.value + other.value, via = (this, PlusOp(other)))
 }

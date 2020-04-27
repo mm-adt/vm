@@ -22,10 +22,8 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.op.map._
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,9 +33,4 @@ trait StrValue extends Str
   with Value[Str] {
   override val value: String
   override def plus(other: StrValue): this.type = this.clone(value = this.value + other.value, via = (this, PlusOp(other)))
-  override def gt(other: StrValue): BoolValue = vbool(value = this.value > other.value, q = this.q, via = (this, GtOp(other)))
-  override def gte(other: StrValue): BoolValue = vbool(value = this.value >= other.value, q = this.q, via = (this, GteOp(other)))
-  override def lt(other: StrValue): BoolValue = vbool(value = this.value < other.value, q = this.q, via = (this, LtOp(other)))
-  override def lte(other: StrValue): BoolValue = vbool(value = this.value <= other.value, q = this.q, via = (this, LteOp(other)))
-  override def zero(): this.type = this.clone(value = Tokens.empty, via = (this, ZeroOp()))
 }

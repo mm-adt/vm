@@ -24,27 +24,31 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.NegOp.NegType
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait NegOp {
-  this: NegType=>
-  def neg(): this.type
+trait NegOp[O <: Obj] {
+  this: O =>
+  def neg(): this.type = NegOp().exec(this)
   final def unary_-(): this.type = this.neg()
 }
 
 object NegOp {
-  private type NegType = Obj with NegOp
+  def apply[O <: Obj](): NegInst[O] = new NegInst[O]
 
-  def apply(): NegInst = new NegInst
-
-  class NegInst(q: IntQ = qOne) extends VInst[NegType,NegType]((Tokens.neg, Nil), q) {
+  class NegInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.neg, Nil), q) {
     override def q(q: IntQ): this.type = new NegInst(q).asInstanceOf[this.type]
-    override def exec(start: NegType): NegType = start.neg().via(start, this)
+    override def exec(start: O): O = {
+      Try(start match {
+        case aint: Int => start.clone(value = -aint.value)
+        case areal: Real => start.clone(value = -areal.value)
+      }).getOrElse(start).via(start, new NegInst[O](this.q))
+    }
   }
 
 }

@@ -22,7 +22,6 @@
 
 package org.mmadt.storage.obj.`type`
 
-import org.mmadt.language.obj.Obj
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -42,7 +41,7 @@ class TLstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(vlst(str("a")).test(tlst(str("a"))))
     assert(vlst(str("a"), str("b")).test(tlst(str("a"), str("b"))))
     assert(vlst(str("a"), str("b")).test(tlst(str("a"), str)))
-//    assert(vlst(str("a"), str("b")).test(lst[Obj].is(lst[Obj].get(int).a(str))))
+    //    assert(vlst(str("a"), str("b")).test(lst[Obj].is(lst[Obj].get(int).a(str))))
     assert(!vlst(str("a")).test(tlst(str("b"))))
     assert(!vlst(str("a"), str("b")).test(tlst(str("a"), str("c"))))
     // println(tlst(int) ==> lst[Obj].is(lst[Obj].get(1).a(str))) // TODO

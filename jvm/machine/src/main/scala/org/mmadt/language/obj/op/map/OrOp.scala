@@ -35,13 +35,9 @@ import scala.util.Try
  */
 trait OrOp {
   this: Bool =>
-
-  def or(anon: __): Bool = this.or(anon[Bool](this))
-  def or(other: Bool): Bool = {
-    val otherBool: Bool = Inst.resolveArg(this, other)
-    Try.apply(this.clone(value = this.value || otherBool.value, via = (this, OrOp(otherBool))))
-      .getOrElse(this.clone(via = (this, OrOp(otherBool))))
-  }
+  def or(anon: __): Bool = OrOp(anon).exec(this)
+  def or(other: Bool): Bool = OrOp(other).exec(this)
+  final def ||(anon: __): Bool = this.or(anon)
   final def ||(bool: Bool): Bool = this.or(bool)
 }
 
@@ -50,10 +46,10 @@ object OrOp {
 
   class OrInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool]((Tokens.or, List(other)), q) {
     override def q(q: IntQ): this.type = new OrInst(other, q).asInstanceOf[this.type]
-    override def exec(start: Bool): Bool = (other match {
-      case bool: Bool => start.or(bool)
-      case anon: __ => start.or(anon)
-    }).via(start, this)
+    override def exec(start: Bool): Bool = {
+      val otherBool: Bool = Inst.resolveArg(start, other).asInstanceOf[Bool]
+      Try[Bool](start.clone(value = start.value || otherBool.value)).getOrElse(start).via(start, new OrInst(otherBool, this.q))
+    }
   }
 
 }

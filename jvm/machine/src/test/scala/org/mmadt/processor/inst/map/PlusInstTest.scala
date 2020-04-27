@@ -22,11 +22,11 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.language.obj.`type`.{IntType, RealType, Type}
-import org.mmadt.language.obj.branch.{Brch, Prod, Coprod}
+import org.mmadt.language.obj.branch.Coprod
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3}
@@ -94,7 +94,7 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
   test("[plus] w/ products and coproducts") {
     val starts: TableFor3[Coprod[Str], Coprod[Str], Coprod[Obj]] =
-      new TableFor3[Coprod[Str],Coprod[Str],Coprod[Obj]](("a", "b", "c"),
+      new TableFor3[Coprod[Str], Coprod[Str], Coprod[Obj]](("a", "b", "c"),
         (coprod("a", "b"), coprod("c", "d"), coprod("a", "b", "c", "d")),
         (coprod("a", "b"), coprod("c"), coprod("a", "b", "c")),
         //(coprod("a", "b"), coprod("c", "d"), prod(coprod[Str]("a", "b"), coprod[Str]("c", "d"))),

@@ -33,18 +33,18 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Processor {
-  def apply[S <: Obj,E <: Obj](domainObj:S,rangeType:Type[E]):E
-  def apply[S <: Obj,E <: Obj](rangeType:Type[E]):Type[E] = this.apply(rangeType.domain[S](),rangeType).asInstanceOf[Type[E]]
+  def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E
+  def apply[S <: Obj, E <: Obj](rangeType: Type[E]): Type[E] = this.apply(rangeType.domain[S](), rangeType).asInstanceOf[Type[E]]
 }
 
 object Processor {
-  def compiler(model:Model = Model.id):Processor = new CompilingProcessor(model)
-  def iterator(model:Model = Model.id):Processor = new IteratorProcessor(model)
+  def compiler(model: Model = Model.id): Processor = new CompilingProcessor(model)
+  def iterator(model: Model = Model.id): Processor = new IteratorProcessor(model)
 
-  def strmOrSingle[O <: Obj](itty:Iterator[O]):O ={
+  def strmOrSingle[O <: Obj](itty: Iterator[O]): O = {
     if (itty.hasNext) {
       val first = itty.next()
-      if (itty.hasNext) strm[O]((first +: itty.toList).iterator) else first
+      if (itty.hasNext) strm[O]((first +: itty.toList)) else first
     } else
       strm
   }

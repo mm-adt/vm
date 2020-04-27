@@ -24,33 +24,39 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, Type}
-import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory.{bool, qOne}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.storage.StorageFactory.{bool, qOne, strm}
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait LteOp[T <: Type[Obj], V <: Value[Obj]] {
-  this: Obj =>
-  def lte(other: V): Bool
-  def lte(other: T): BoolType = bool.via(this.start(), LteOp(other))
-  final def =<(other: V): Bool = this.lte(other)
-  final def =<(other: T): BoolType = this.lte(other)
+trait LteOp[O <: Obj] {
+  this: O =>
+  def lte(anon: __): Bool = LteOp(anon).exec(this)
+  def lte(other: O): Bool = LteOp(other).exec(this)
+  final def =<(other: O): Bool = this.lte(other)
+  final def =<(anon: __): Bool = this.lte(anon)
 }
 
 object LteOp {
-  def apply[O <: Obj with LteOp[Type[O], Value[O]]](other: Obj): Inst[O, Bool] = new LteInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj](other: Obj): Inst[O, Bool] = new LteInst[O](other)
 
-  class LteInst[O <: Obj with LteOp[Type[O], Value[O]]](other: O, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.lte, List(other)), q) {
-    override def q(quantifier: IntQ): this.type = new LteInst[O](other, quantifier).asInstanceOf[this.type]
+  class LteInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.lte, List(other)), q) {
+    override def q(q: IntQ): this.type = new LteInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
-      val inst = new LteInst(Inst.resolveArg(start, other), q)
-      inst.arg0[O]() match {
-        case bvalue: Value[O] => start.lte(bvalue).via(start, inst)
-        case btype: Type[O] => start.lte(btype).via(start, inst)
-      }
+      val inst = new LteInst[O](Inst.resolveArg(start, other), q)
+      Try((start match {
+        case aint: Int => bool(value = aint.value <= inst.arg0[Int]().value)
+        case areal: Real => bool(value = areal.value <= inst.arg0[Real]().value)
+        case astr: Str => bool(value = astr.value <= inst.arg0[Str]().value)
+      }).via(start, inst)).getOrElse(start match {
+        case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))
+        case _ => bool.via(start, inst)
+      }).asInstanceOf[Bool]
     }
   }
 

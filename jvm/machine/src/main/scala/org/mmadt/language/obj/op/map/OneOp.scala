@@ -23,27 +23,29 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.map.OneOp.OneType
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.{Int, IntQ, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait OneOp {
-  this: OneType =>
-  def one(): this.type
+trait OneOp[O <: Obj] {
+  this: O =>
+  def one(): this.type = OneOp().exec(this)
 }
 
 object OneOp {
-  private type OneType = Obj with OneOp
+  def apply[O <: Obj](): OneInst[O] = new OneInst[O]
 
-  def apply(): OneInst = new OneInst
-
-  class OneInst(q: IntQ = qOne) extends VInst[OneType,OneType]((Tokens.one, Nil), q) {
-    override def q(q: IntQ): this.type = new OneInst(q).asInstanceOf[this.type]
-    override def exec(start: OneType): OneType = start.one().via(start, this)
+  class OneInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.one, Nil), q) {
+    override def q(q: IntQ): this.type = new OneInst[O](q).asInstanceOf[this.type]
+    override def exec(start: O): O = {
+      (start match {
+        case _: Int => int(1).q(start.q)
+        case _: Real => real(1.0).q(start.q)
+      }).asInstanceOf[O].via(start, new OneInst[O](this.q))
+    }
   }
 
 }

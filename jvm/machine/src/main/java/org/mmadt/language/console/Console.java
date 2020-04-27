@@ -104,7 +104,7 @@ public class Console {
                 else if (line.startsWith(MODEL_OP))
                     engine.put(MODEL, Model.from((RecType) engine.eval(Tokens.model())).put(Model.from((RecType) engine.eval(line.substring(6)))));
                 else
-                    JavaConverters.asJavaIterator(engine.eval(line).toStrm().value()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
+                    JavaConverters.asJavaIterator(engine.eval(line).toStrm().values().iterator()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {
                 break;
             } catch (final VmException e) {

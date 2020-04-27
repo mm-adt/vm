@@ -39,7 +39,7 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
     LanguageException.testTypeCheck(domainObj.named(rangeType.domain[Obj]().name), rangeType.domain().q(0, rangeType.domain().q._2)) // TODO: don't rename obj (so lame)
 
     var output: Iterator[E] = this.model(domainObj) match {
-      case strm: Strm[_] => strm.value.map(x => x.asInstanceOf[E])
+      case strm: Strm[_] => strm.values.map(x => x.asInstanceOf[E]).iterator
       case single: E => Iterator(single)
     }
 
@@ -54,7 +54,7 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
           .map(_.compute(tt._1.via(tt._1, tt._2)))
           .filter(x => x.alive())
           .flatMap(x => x match {
-            case strm: Strm[E] => strm.value.map(x => x)
+            case strm: Strm[E] => strm.values.map(x => x)
             case single: E => Iterator(single)
           })
       }

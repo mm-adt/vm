@@ -22,12 +22,12 @@
 
 package org.mmadt.language.obj.value.strm
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Bool
-import org.mmadt.language.obj.value.BoolValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait BoolStrm extends Strm[Bool] {
-  override val value:Iterator[BoolValue]
+trait BoolStrm extends Strm[Bool] with Bool {
+  override def value: Boolean = throw LanguageException.typesNoValue(this)
 }

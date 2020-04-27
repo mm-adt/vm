@@ -36,39 +36,31 @@ import org.mmadt.storage.StorageFactory._
  */
 class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple = base()) extends Type[__]
   with PlusOp[__, ObjValue]
-  with MultOp[__, ObjValue]
   with HeadOp[Obj]
   with TailOp
   with GetOp[Obj, Obj]
-  with PutOp[Obj, Obj]
-  with NegOp
-  with GtOp[__, ObjValue]
-  with GteOp[__, ObjValue]
-  with LtOp[__, ObjValue]
-  with LteOp[__, ObjValue]
-  with ZeroOp
-  with OneOp {
+  with PutOp[Obj, Obj] {
   override def clone(name: String = Tokens.empty, value: Any, quantifier: IntQ = qOne, via: ViaTuple = base()): this.type = new __(name, quantifier, via).asInstanceOf[this.type]
   def apply[T <: Obj](obj: Obj): OType[T] = asType(this.lineage.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
-  // type-agnostic monoid supporting all instructions
-  //override def domain[D <: Obj](): Type[D] = obj.q(qStar).asInstanceOf[Type[D]]
   override def plus(other: __): this.type = this.via(this, PlusOp(other))
   override def plus(other: ObjValue): this.type = this.via(this, PlusOp(other))
-  override def mult(other: __): this.type = this.via(this, MultOp(other))
-  override def mult(other: ObjValue): this.type = this.via(this, MultOp(other))
-  def or(other:Obj): Bool = bool.via(this,OrOp(other))
-  def and(other:Obj): Bool = bool.via(this,OrOp(other))
+  def mult(other: Obj): this.type = this.via(this, MultOp(other))
+  def neg(): this.type = this.via(this, NegOp())
+  def or(other: Obj): Bool = bool.via(this, OrOp(other))
+  def and(other: Obj): Bool = bool.via(this, OrOp(other))
   def is(other: Obj): BoolType = bool.via(this, IsOp(other))
-  override def neg(): this.type = this.via(this, NegOp())
+  def one(): this.type = this.via(this, OneOp())
+  def zero(): this.type = this.via(this, ZeroOp())
+  def gt(other: Obj): BoolType = bool.via(this, GtOp(other))
+  def gte(other: Obj): BoolType = bool.via(this, GteOp(other))
+  def lt(other: Obj): BoolType = bool.via(this, LtOp(other))
+  def lte(other: Obj): BoolType = bool.via(this, LteOp(other))
+  ///
   override def get(key: Obj): this.type = this.via(this, GetOp(key))
   override def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
   override def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
-  override def gt(other: ObjValue): BoolType = bool.via(this, GtOp(other))
-  override def lt(other: ObjValue): BoolType = bool.via(this, LtOp(other))
-  override def lte(other: ObjValue): BoolType = bool.via(this, LteOp(other))
-  override def gte(other: ObjValue): BoolType = bool.via(this, GteOp(other))
-  override def zero(): this.type = this.via(this, ZeroOp())
-  override def one(): this.type = this.via(this, OneOp())
+
+
   override def head(): this.type = this.via(this, HeadOp())
   override def tail(): this.type = this.via(this, TailOp())
 }

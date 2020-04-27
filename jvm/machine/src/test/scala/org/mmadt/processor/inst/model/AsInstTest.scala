@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.inst.model
 
-import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 

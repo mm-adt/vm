@@ -31,11 +31,14 @@ import org.mmadt.language.obj.value.IntValue
  */
 trait Int extends Obj
   with PlusOp[IntType, IntValue]
-  with MultOp[IntType, IntValue]
-  with NegOp
-  with GtOp[IntType, IntValue]
-  with GteOp[IntType, IntValue]
-  with LtOp[IntType, IntValue]
-  with LteOp[IntType, IntValue]
-  with OneOp
-  with ZeroOp
+  with MultOp[Int]
+  with NegOp[Int]
+  with GtOp[Int]
+  with GteOp[Int]
+  with LtOp[Int]
+  with LteOp[Int]
+  with OneOp[Int]
+  with ZeroOp[Int] {
+
+  def value: Long
+}

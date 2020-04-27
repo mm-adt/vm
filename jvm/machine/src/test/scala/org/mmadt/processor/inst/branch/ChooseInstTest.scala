@@ -31,7 +31,7 @@ import org.scalatest.FunSuite
  */
 class ChooseInstTest extends FunSuite {
 
-  test("[choose] w/ types"){
+  test("[choose] w/ types") {
     assertResult("int[choose,[int:int[mult,3]|int[mult,1]:int[mult,4]]]")(
       int.choose(
         int -> int.mult(3),
@@ -47,7 +47,7 @@ class ChooseInstTest extends FunSuite {
         int.mult(1) -> int.mult(4)).is(int.gt(20)).toString)
   }
 
-  test("[choose] w/ values"){
+  test("[choose] w/ values") {
     assertResult(int(4))(
       int(0).plus(1).choose(
         int.is(int.gt(2)) -> int.mult(3),

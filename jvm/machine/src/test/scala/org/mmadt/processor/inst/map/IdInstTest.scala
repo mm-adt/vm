@@ -23,50 +23,43 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[id] lineage") {
-    def maker(x: Obj with IdOp): Obj = x.q(2).id().q(3).id().q(10)
-
-    val starts: TableFor1[Obj with IdOp] =
-      new TableFor1("obj",
-        int,
-        str,
-        real,
-        int(1),
-        str("a"),
-        real(10d))
-    forEvery(starts) { obj => {
-      val expr = maker(obj)
-      obj match {
-        case value: Value[_] => assert(value.value == expr.asInstanceOf[Value[_]].value)
-        case _ =>
+  test("[id] value, type, strm") {
+    val starts: TableFor3[Obj, Obj, String] =
+      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+        //////// INT
+        (int(2).id(), int(2), "value"),
+        (int(-2).id(), int(-2), "value"),
+        (int.id(), int.id(), "type"),
+        (int(1, 2, 3).id(), int(1, 2, 3), "strm"),
+        //////// REAL
+        (real(2.0).id(), real(2.0), "value"),
+        (real(-2.0).one(), real(1.0), "value"),
+        (real.id(), real.id(), "type"),
+        (real(1.0, 2.0, 3.0).id(), real(1.0, 2.0, 3.0), "strm"),
+        //////// STR
+        (str("a").id(), str("a"), "value"),
+        (str.id(), str.id(), "type"),
+        (str("a", "b", "c").id(), str("a", "b", "c"), "strm"),
+      )
+    forEvery(starts) { (query, result, atype) => {
+      assertResult(result)(query)
+      atype match {
+        case "value" => assert(query.isInstanceOf[Value[_]])
+        case "type" => assert(query.isInstanceOf[Type[_]])
+        case "strm" => assert(query.isInstanceOf[Strm[_]])
       }
-      assert(obj.q != expr.q)
-      assertResult(2)(expr.lineage.length)
-      assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), IdOp().q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).id().q(3), IdOp().q(10)))(expr.lineage.last)
     }
     }
-  }
-  ///////////////////////////////////////////////////////////////////////
-  test("[id] w/ int") {
-    assertResult("int[id]")(int.id().toString)
-    assertResult("int[id][id]")(int.id().id().toString)
-    assertResult("int{6}<=int[id]{2}[id]{3}")(int.q(1).id().q(2).id().q(3).toString)
-    assertResult("2{6}")(int(2).q(1).id().q(2).id().q(3).toString)
-    assertResult(int(2))(int(2).id())
-    assertResult(int(2))(int(2).id().id())
-    assertResult(int(2))(int(2) ==> int.id().id())
-    assert(int.id().id().domain() == int.id().range)
   }
 }

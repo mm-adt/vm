@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.map.IdOp.IdInst
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -33,17 +32,15 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait IdOp {
   this: Obj =>
-  private lazy val inst: Inst[this.type, this.type] = new IdInst[this.type]()
-
-  def id(): this.type = this.via(this, inst)
+  def id(): this.type = IdOp[this.type]().exec(this)
 }
 
 object IdOp {
   def apply[O <: Obj](): Inst[O, O] = new IdInst
 
   class IdInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.id, Nil), q) {
-    override def q(quantifier: IntQ): this.type = new IdInst[O](quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start.id().via(start, this)
+    override def q(q: IntQ): this.type = new IdInst[O](q).asInstanceOf[this.type]
+    override def exec(start: O): O = start.via(start, this)
   }
 
 }

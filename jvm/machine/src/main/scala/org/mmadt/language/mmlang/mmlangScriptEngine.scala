@@ -33,16 +33,16 @@ import org.mmadt.language.obj.Obj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class mmlangScriptEngine(factory:mmlangScriptEngineFactory) extends AbstractScriptEngine with mmADTScriptEngine {
-  override def eval(script:String):Obj = super.eval(script)
-  override def eval(script:String,context:ScriptContext):Obj = mmlangParser.parse[Obj](script,getModel(context))
-  override def eval(script:String,bindings:Bindings):Obj = mmlangParser.parse[Obj](script,getModel(bindings))
-  override def eval(reader:Reader,context:ScriptContext):Obj = eval(new BufferedReader(reader).readLine(),context)
-  override def eval(reader:Reader):Obj = eval(new BufferedReader(reader).readLine(),this.getContext)
-  override def createBindings():Bindings = new SimpleBindings()
-  override def getFactory:ScriptEngineFactory = factory
+class mmlangScriptEngine(factory: mmlangScriptEngineFactory) extends AbstractScriptEngine with mmADTScriptEngine {
+  override def eval(script: String): Obj = super.eval(script)
+  override def eval(script: String, context: ScriptContext): Obj = mmlangParser.parse[Obj](script, getModel(context))
+  override def eval(script: String, bindings: Bindings): Obj = mmlangParser.parse[Obj](script, getModel(bindings))
+  override def eval(reader: Reader, context: ScriptContext): Obj = eval(new BufferedReader(reader).readLine(), context)
+  override def eval(reader: Reader): Obj = eval(new BufferedReader(reader).readLine(), this.getContext)
+  override def createBindings(): Bindings = new SimpleBindings()
+  override def getFactory: ScriptEngineFactory = factory
 
-  private def getModel(bindings:Bindings):Model = if (bindings.containsKey(Tokens.model)) bindings.get(Tokens.model).asInstanceOf[Model] else Model.id
-  private def getModel(context:ScriptContext):Model = Option(context.getAttribute(Tokens.model).asInstanceOf[Model]).getOrElse(Model.id)
+  private def getModel(bindings: Bindings): Model = if (bindings.containsKey(Tokens.model)) bindings.get(Tokens.model).asInstanceOf[Model] else Model.id
+  private def getModel(context: ScriptContext): Model = Option(context.getAttribute(Tokens.model).asInstanceOf[Model]).getOrElse(Model.id)
 }
 

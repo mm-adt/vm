@@ -22,9 +22,6 @@
 
 package org.mmadt.language.model
 
-import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.processor.Processor
-import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
@@ -32,7 +29,7 @@ import org.scalatest.FunSuite
  */
 class AlgebraTest extends FunSuite {
 
-  test("int ring rewrites") {
+  /*test("int ring rewrites") {
     val model = Algebra.ring(int)
     val compiler = Processor.compiler(model)
     val evaluator = Processor.iterator(model)
@@ -57,6 +54,6 @@ class AlgebraTest extends FunSuite {
     val model = Algebra.ring(int)
     //assertResult(int(0))(Traverser.standard(int(0))(model.get(int.zero()).get).obj())
     //assertResult(int(1))(Traverser.standard(int(0))(model.get(int.one()).get).obj())
-  }
+  }*/
 
 }

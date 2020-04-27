@@ -22,12 +22,14 @@
 
 package org.mmadt.language.obj.value.strm
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Real
 import org.mmadt.language.obj.value.RealValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RealStrm extends Strm[Real] {
-  override val value:Iterator[RealValue]
+trait RealStrm extends Strm[Real] with Real {
+  override def value: Double = throw LanguageException.typesNoValue(this)
+  override def plus(other: RealValue): this.type = this.clone(value = this.values.map(x => x.plus(other)))
 }

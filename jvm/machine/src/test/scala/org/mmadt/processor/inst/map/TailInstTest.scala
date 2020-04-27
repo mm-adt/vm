@@ -23,9 +23,9 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.branch.{Prod, Coprod}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.branch.{Coprod, Prod}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}

@@ -85,8 +85,7 @@ trait StorageFactory {
   def vlst[A <: Value[Obj]](name: String = Tokens.lst, value: List[A] = List.empty[A], q: IntQ = qOne, via: ViaTuple = base()): LstValue[A]
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base()): RecValue[A, B]
   //
-  def strm[O <: Obj](values: O*): OStrm[O] = strm[O](values.toList.iterator)
-  def strm[O <: Obj](itty: Iterator[O]): OStrm[O]
+  def strm[O <: Obj](itty: Seq[O]): OStrm[O]
   def strm[O <: Obj]: OStrm[O]
 }
 
@@ -137,8 +136,8 @@ object StorageFactory {
   def vreal(name: String = Tokens.real, value: Double, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RealValue = f.vreal(name, value, q, via)
   def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): StrValue = f.vstr(name, value, q, via)
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RecValue[A, B] = f.vrec(name, value, q, via)
-  def strm[O <: Obj](values: O*)(implicit f: StorageFactory): OStrm[O] = f.strm[O](values.toList.iterator)
-  def strm[O <: Obj](itty: Iterator[O])(implicit f: StorageFactory): OStrm[O] = f.strm[O](itty)
+  //def strm[O <: Obj](values: O*)(implicit f: StorageFactory): OStrm[O] = f.strm[O](values.toList)
+  def strm[O <: Obj](itty: Seq[O])(implicit f: StorageFactory): OStrm[O] = f.strm[O](itty)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
   /////////CONSTANTS//////
   lazy val btrue: BoolValue = bool(value = true)
@@ -194,7 +193,8 @@ object StorageFactory {
     override def vlst[A <: Value[Obj]](name: String, value: List[A], q: IntQ, via: ViaTuple): LstValue[A] = new VLst[A](name, value, q, via)
     //
     override def strm[O <: Obj]: OStrm[O] = VEmptyStrm.empty[O]
-    override def strm[O <: Obj](itty: Iterator[O]): OStrm[O] = {
+    override def strm[O <: Obj](ittys: Seq[O]): OStrm[O] = {
+      val itty: Iterator[O] = ittys.iterator
       if (itty.hasNext) {
         val first: O = itty.next()
         if (itty.hasNext) {

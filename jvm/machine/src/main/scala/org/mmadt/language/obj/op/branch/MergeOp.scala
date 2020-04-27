@@ -25,16 +25,15 @@ package org.mmadt.language.obj.op.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.{IntQ, Obj, _}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.language.obj._
 import org.mmadt.storage.obj.value.VInst
 
 trait MergeOp[A <: Obj] {
   this: Brch[A] =>
   def merge[B <: Obj](): B =
     if (this.isValue)
-      strm(this.value.filter(x => x.alive()).map(x => x.q(multQ(this,x))).toIterator).asInstanceOf[B]
+      strm(this.value.filter(x => x.alive()).map(x => x.q(multQ(this, x)))).asInstanceOf[B]
     else
       BranchInstruction.brchType[B](this).clone(via = (this, MergeOp()))
 }
@@ -45,7 +44,7 @@ object MergeOp {
   class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Brch[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
 
-    override def exec(start: Brch[A]): A = start.merge[A]().via(start, this)
+    override def exec(start: Brch[A]): A = start.merge[A]() //.via(start, this)
   }
 
 }

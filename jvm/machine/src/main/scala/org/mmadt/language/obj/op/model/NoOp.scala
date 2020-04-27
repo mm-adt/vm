@@ -30,15 +30,15 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait NoOp {
-  this:Obj =>
+  this: Obj =>
 }
 
 object NoOp {
-  def apply[O <: Obj]():NoInst[O] = new NoInst[O]
+  def apply[O <: Obj](): NoInst[O] = new NoInst[O]
 
-  class NoInst[O <: Obj] extends VInst[O,O]((Tokens.noop,Nil)) {
-    override def q(quantifier:IntQ):this.type = new NoInst[O]().asInstanceOf[this.type]
-    override def exec(start:O):O = start
+  class NoInst[O <: Obj] extends VInst[O, O]((Tokens.noop, Nil)) {
+    override def q(quantifier: IntQ): this.type = new NoInst[O]().asInstanceOf[this.type]
+    override def exec(start: O): O = start
   }
 
 }

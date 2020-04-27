@@ -24,9 +24,6 @@ package org.mmadt.storage.mmkv
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.obj.ORecType
-import org.mmadt.processor.Processor
-import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
@@ -39,11 +36,11 @@ class mmkvInstTest extends FunSuite {
   val file2: String = getClass.getResource("/mmkv/mmkv-2.txt").getPath
   val mmkv: String = "=mmkv"
 
-  test("mmkv parsing") {
+  /*test("mmkv parsing") {
     println(engine.eval(s"3[=mmkv,'${file1}']"))
-  }
+  }*/
 
-  test("mmkv choose parsing") {
+  /*test("mmkv choose parsing") {
     //assertResult(List(int(1),int(1),int(1),int(0)))(engine.eval(s"1[=mmkv,'${file1}'][[get,'k'][is>3]->0 | rec -> 1]").toList)
     // assertResult(List(int(1),int(2),int(3),int(4)))(engine.eval(s"1[1->[=mmkv,'${file1}'][get,'k'] | int -> 100]").toList) // TODO: need to pass the processor into the [choose]
     assertResult(List(int(2), int(3), int(4), int(5)))(engine.eval(s"1[=mmkv,'${file1}'][get,'k'][plus,1]").toList)
@@ -59,8 +56,8 @@ class mmkvInstTest extends FunSuite {
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
     assertResult("['k':1,'v':'marko'],['k':2,'v':'ryan'],['k':3,'v':'stephen'],['k':4,'v':'kuppitz']")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(List(int(1), int(2), int(3), int(4)))(Processor.iterator()(int(4), Processor.compiler().apply(int.=:[ORecType](mmkv)(str(file1)).get(str("k"), int))).toList)
-    assertResult("['k':1,'v':'marko']")((int(1) ==> int.=:[ORecType](mmkv)(str(file1))).toStrm.value.next().toString)
-  }
+    assertResult("['k':1,'v':'marko']")((int(1) ==> int.=:[ORecType](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
+  }*/
 
   /*test("mmkv model"){
     assertResult("int")(engine.eval(s"obj{0}[=mmkv,'${file2}'][get,'k']").name)

@@ -23,27 +23,35 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.map.ZeroOp.ZeroType
-import org.mmadt.language.obj.{IntQ, Obj}
-import org.mmadt.storage.StorageFactory.qOne
+import org.mmadt.language.obj.branch.{Coprod, Prod}
+import org.mmadt.language.obj.{Int, IntQ, Lst, Obj, Real, Rec, Str}
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait ZeroOp {
-  this: ZeroType =>
-  def zero(): this.type
+trait ZeroOp[O <: Obj] {
+  this: O =>
+  def zero(): this.type = ZeroOp().exec(this)
 }
 
 object ZeroOp {
-  private type ZeroType = Obj with ZeroOp
+  def apply[O <: Obj](): ZeroInst[O] = new ZeroInst[O]
 
-  def apply(): ZeroInst = new ZeroInst
-
-  class ZeroInst(q: IntQ = qOne) extends VInst[ZeroType, ZeroType]((Tokens.zero, Nil), q) {
-    override def q(q: IntQ): this.type = new ZeroInst(q).asInstanceOf[this.type]
-    override def exec(start: ZeroType): ZeroType = start.zero().via(start, this)
+  class ZeroInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.zero, Nil), q) {
+    override def q(q: IntQ): this.type = new ZeroInst[O](q).asInstanceOf[this.type]
+    override def exec(start: O): O = {
+      (start match {
+        case _: Int => int(0)
+        case _: Real => real(0.0)
+        case _: Str => str(Tokens.empty)
+        case alst: Lst[Obj] => alst.clone(value = List.empty[Obj])
+        case arec: Rec[Obj, Obj] => arec.clone(value = Map.empty[Obj, Obj])
+        case _: Prod[Obj] => prod()
+        case _: Coprod[Obj] => coprod()
+      }).asInstanceOf[O].q(start.q).via(start, new ZeroInst[O](this.q))
+    }
   }
 
 }

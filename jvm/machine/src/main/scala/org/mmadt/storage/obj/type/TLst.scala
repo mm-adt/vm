@@ -32,7 +32,7 @@ class TLst[A <: Obj](val name: String = Tokens.lst, val value: List[A] = List.em
     this(name = Tokens.lst, value = list, q = qOne, via = base())
   }
   override def clone(name: String = this.name,
-    value: Any = this.value,
-    q: IntQ = this.q,
-    via: ViaTuple = this.via): this.type = new TLst[A](name, value.asInstanceOf[List[A]], q, via).asInstanceOf[this.type]
+                     value: Any = this.value,
+                     q: IntQ = this.q,
+                     via: ViaTuple = this.via): this.type = new TLst[A](name, value.asInstanceOf[List[A]], q, via).asInstanceOf[this.type]
 }

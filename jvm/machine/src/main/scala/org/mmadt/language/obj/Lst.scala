@@ -33,7 +33,7 @@ trait Lst[A <: Obj] extends Obj
   with AppendOp[A]
   with GetOp[Int, A]
   with PlusOp[LstType[A], LstValue[_]]
-  with ZeroOp {
+  with ZeroOp[Lst[A]] {
   val value: List[Obj]
 }
 

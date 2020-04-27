@@ -39,16 +39,16 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     println(int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
     assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
     assertResult(int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))(int ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
-    assertResult(strm(
+    assertResult(strm(List(
       prod[Obj](1, 101, 301, 321),
-      prod[Obj](1, 101, 301, 303, 323)))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20).path())
+      prod[Obj](1, 101, 301, 303, 323))))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20).path())
   }
 
   test("quantifiers") {
-    assertResult(int(int(1),int(2)))(coprod[Int](1,2).merge())
-    assertResult(int(int(1).q(10),int(2).q(10)))(coprod[Int](1,2).q(10).merge())
-    assertResult(int(int(1).q(10),int(2).q(50)))(coprod[Int](1,int(2).q(5)).q(10).merge())
-    assertResult(int(int(1).q(4,10),int(2).q(20,50)))(coprod[Int](1,int(2).q(5)).q(4,10).merge())
+    assertResult(int(int(1), int(2)))(coprod[Int](1, 2).merge())
+    assertResult(int(int(1).q(10), int(2).q(10)))(coprod[Int](1, 2).q(10).merge())
+    assertResult(int(int(1).q(10), int(2).q(50)))(coprod[Int](1, int(2).q(5)).q(10).merge())
+    assertResult(int(int(1).q(4, 10), int(2).q(20, 50)))(coprod[Int](1, int(2).q(5)).q(4, 10).merge())
   }
 
 }

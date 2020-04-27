@@ -22,71 +22,52 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.`type`.{BoolType, Type}
-import org.mmadt.language.obj.op.map.{AndOp, GteOp}
-import org.mmadt.language.obj.value.{BoolValue, Value}
-import org.mmadt.language.obj.{Bool, Obj}
-import org.mmadt.storage.StorageFactory.{bfalse, btrue, int, real, str}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
-  private type GteType = Obj with GteOp[_ <: Type[_], _ <: Value[Obj]]
-  private type GteValue = Value[Obj]
-  test("[gte] lineage") {
-    def maker(x: Obj, y: Value[Obj]): Obj = x.q(2).asInstanceOf[GteOp[Type[Obj], Value[Obj]]].gte(y).q(3).and(btrue).q(10)
 
-    val starts: TableFor2[GteType, GteValue] =
-      new TableFor2(("obj1", "obj2"),
-        (int, int(2)),
-        (int(4), int(2)),
-        (real, real(342.0)),
-        (real(3.3), real(1346.2)),
-        (str, str("a")),
-        (str("a"), str("b")))
-    forEvery(starts) { (obj, arg) => {
-      val expr = maker(obj, arg)
-      obj match {
-        case value: Value[_] => assert(value.value != expr.asInstanceOf[Value[_]].value)
-        case _ =>
+  test("[gte] value, type, strm, anon combinations") {
+    val starts: TableFor3[Obj, Obj, String] =
+      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+        //////// INT
+        (int(2).gte(1), btrue, "value"), // value * value = value
+        (int(2).q(10).gte(1), btrue.q(10), "value"), // value * value = value
+        (int(2).q(10).gte(1).q(20), btrue.q(200), "value"), // value * value = value
+        (int(2).gte(int(1).q(10)), btrue, "value"), // value * value = value
+        (int(2).gte(int), btrue, "value"), // value * type = value
+        (int(2).gte(__.mult(int)), bfalse, "value"), // value * anon = value
+        (int.gte(int(2)), int.gte(int(2)), "type"), // type * value = type
+        (int.q(10).gte(int(2)), int.q(10).gte(2), "type"), // type * value = type
+        (int.gte(int), int.gte(int), "type"), // type * type = type
+        (int(1, 2, 3).gte(2), bool(false, true, true), "strm"), // strm * value = strm
+        (int(1, 2, 3).gte(int(2).q(10)), bool(false, true, true), "strm"), // strm * value = strm
+        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).gte(int), bool(true, true, true), "strm"), // strm * type = strm
+        (int(1, 2, 3).gte(__.mult(int)), bool(true, false, false), "strm"), // strm * anon = strm
+        //////// REAL
+        (real(2.0).gte(1.0), btrue, "value"), // value * value = value
+        (real(2.0).gte(real), btrue, "value"), // value * type = value
+        (real(2.0).gte(__.mult(real)), bfalse, "value"), // value * anon = value
+        (real.gte(real(2.0)), real.gte(2.0), "type"), // type * value = type
+        (real.gte(real), real.gte(real), "type"), // type * type = type
+        (real(1.0, 2.0, 3.0).gte(2.0), bool(false, true, true), "strm"), // strm * value = strm
+        (real(1.0, 2.0, 3.0).gte(real), bool(true, true, true), "strm"), // strm * type = strm
+        (real(1.0, 2.0, 3.0).gte(__.mult(real)), bool(true, false, false), "strm"), // strm * anon = strm
+      )
+    forEvery(starts) { (query, result, atype) => {
+      assertResult(result)(query)
+      atype match {
+        case "value" => assert(query.isInstanceOf[Value[_]])
+        case "type" => assert(query.isInstanceOf[Type[_]])
+        case "strm" => assert(query.isInstanceOf[Strm[_]])
       }
-      assert(obj.q != expr.q)
-      assertResult(2)(expr.lineage.length)
-      assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), GteOp(arg).q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).asInstanceOf[GteOp[Type[Obj], Value[Obj]]].gte(arg).q(3), AndOp(btrue).q(10)))(expr.lineage.last)
     }
     }
-  }
-  ///////////////////////////////////////////////////////////////////////
-
-  test("[gte] w/ int") {
-    assertResult(bfalse)(int(1).gte(int(3))) // value * value = value
-    assert(int(1).gte(int(3)).isInstanceOf[BoolValue])
-    assert(int(1).gte(int(3)).isInstanceOf[Bool])
-    assertResult(int(1).gte(int))(int(1).gte(int)) // value * type = type
-    assert(int(1).gte(int).isInstanceOf[BoolType])
-    assert(int(1).gte(int).isInstanceOf[BoolType])
-    assertResult(int.gte(int(3)))(int.gte(int(3))) // type * value = type
-    assert(int.gte(int(3)).isInstanceOf[BoolType])
-    assert(int.gte(int(3)).isInstanceOf[BoolType])
-    assertResult(int.gte(int))(int.gte(int)) // type * type = type
-    assert(int.gte(int).isInstanceOf[BoolType])
-    assert(int.gte(int).isInstanceOf[BoolType])
-  }
-
-  test("[gte] w/ real") {
-    assertResult(bfalse)(real(1).gte(real(3))) // value * value = value
-    assert(real(1).gte(real(3)).isInstanceOf[BoolValue])
-    assert(real(1).gte(real(3)).isInstanceOf[Bool])
-    assertResult(real(1).gte(real))(real(1).gte(real)) // value * type = type
-    assert(real(1).gte(real).isInstanceOf[BoolType])
-    assert(real(1).gte(real).isInstanceOf[BoolType])
-    assertResult(real.gte(real(3)))(real.gte(real(3))) // type * value = type
-    assert(real.gte(real(3)).isInstanceOf[BoolType])
-    assert(real.gte(real(3)).isInstanceOf[BoolType])
-    assertResult(real.gte(real))(real.gte(real)) // type * type = type
-    assert(real.gte(real).isInstanceOf[BoolType])
-    assert(real.gte(real).isInstanceOf[BoolType])
   }
 }

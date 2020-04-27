@@ -34,6 +34,6 @@ trait Rec[A <: Obj, B <: Obj] extends Obj
   with PlusOp[RecType[A, B], RecValue[_, _]]
   with GetOp[A, B]
   with PutOp[A, B]
-  with ZeroOp {
+  with ZeroOp[Rec[A, B]] {
   def value(): Any
 }

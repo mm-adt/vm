@@ -93,7 +93,7 @@ class TypeTest extends FunSuite {
   }
 
   test("type structure w/ two canonical types") {
-    val boolType: BoolType = int.plus(10).mult(1).is(int.gt(20)).gt(100)
+    val boolType: BoolType = int.plus(10).mult(1).is(int.gt(20)).gt(100).asInstanceOf[BoolType]
     assertResult(int)(boolType.domain())
     assertResult(Nil)(boolType.domain[IntType]().lineage)
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][gt,100]")(boolType.toString)
@@ -147,7 +147,7 @@ class TypeTest extends FunSuite {
   }
 
   test("type structure w/ three canonical types") {
-    val boolType: BoolType = int.plus(int(10)).mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a")
+    val boolType: BoolType = int.plus(int(10)).mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a").asInstanceOf[BoolType]
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,str<=[start,'hello'][plus,str]][gt,'a']")(boolType.toString)
     assertResult(bool.q(0, 1))(boolType.range)
     assertResult(bool)(boolType.range.q(qOne))

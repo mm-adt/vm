@@ -23,60 +23,36 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.op.map.NegOp
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory.{int, real}
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[neg] lineage") {
-    def maker(x: Obj with NegOp): Obj = x.q(3).neg().q(2).neg().q(10)
-
-    val starts: TableFor1[NegOp with Obj] =
-      new TableFor1("obj",
-        int,
-        real,
-        int(1),
-        real(10d))
-    forEvery(starts) { obj => {
-      val expr = maker(obj)
-      obj match {
-        case value: Value[_] => assert(value.value == expr.asInstanceOf[Value[_]].value)
-        case _ =>
+  test("[neg] value, type, strm") {
+    val starts: TableFor3[Obj, Obj, String] =
+      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+        //////// INT
+        (int(2).neg(), int(-2), "value"),
+        (int(-2).neg(), int(2), "value"),
+        (int.neg(), int.neg(), "type"),
+        (int(-1, -2, -3).neg(), int(1, 2, 3), "strm"),
+        //////// REAL
+        (real(2.0).neg(), real(-2.0), "value"),
+        (real(-2.0).neg(), real(2.0), "value"),
+        (real.neg(), real.neg(), "type"),
+        (real(-1.0, -2.0, -3.0).neg(), real(1.0, 2.0, 3.0), "strm"),
+      )
+    forEvery(starts) { (query, result, atype) => {
+      assertResult(result)(query)
+      atype match {
+        case "value" => assert(query.isInstanceOf[Value[_]])
+        case "type" => assert(query.isInstanceOf[Type[_]])
+        case "strm" => assert(query.isInstanceOf[Strm[_]])
       }
-      assert(obj.q != expr.q)
-      assertResult(2)(expr.lineage.length)
-      assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(3), NegOp().q(2)))(expr.lineage.head)
-      assertResult((obj.q(3).neg().q(2), NegOp().q(10)))(expr.lineage.last)
     }
     }
   }
-  ///////////////////////////////////////////////////////////////////////
-  test("[neg] w/ int value") {
-    assertResult(int(-1))(int(1).neg())
-    assertResult(int(-2))(int(2).neg())
-    assertResult(int(-781))(int(781).neg())
-    assertResult(int(-101))(int(1).plus(100).neg())
-    assertResult(int(-101).q(10))(int(1).q(10).plus(100).neg())
-  }
-  test("[neg] w/ int type") {
-    assertResult("int[neg]")(int.neg().toString)
-    assertResult("int{10}[neg]")(int.q(10).neg().toString)
-    assertResult("int{20}<=int{10}[neg]{2}")(int.q(10).neg().q(2).toString)
-  }
-  test("[neg] w/ real value") {
-    assertResult(real(-1))(real(1).neg())
-    assertResult(real(-2))(real(2).neg())
-    assertResult(real(-781))(real(781).neg())
-    assertResult(real(-101))(real(1).plus(100d).neg())
-    assertResult(real(-101).q(10))(real(1).q(10).plus(100d).neg())
-  }
-  test("[neg] w/ real type") {
-    assertResult("real[neg]")(real.neg().toString)
-    assertResult("real{10}[neg]")(real.q(10).neg().toString)
-    assertResult("real{20}<=real{10}[neg]{2}")(real.q(10).neg().q(2).toString)
-  }
-
 }

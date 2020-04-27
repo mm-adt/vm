@@ -24,33 +24,39 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, Type}
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GtOp[T <: Type[Obj], V <: Value[Obj]] {
-  this: Obj =>
-  def gt(other: V): Bool
-  def gt(other: T): BoolType = bool.via(this.start(), GtOp(other))
-  final def >(other: V): Bool = this.gt(other)
-  final def >(other: T): BoolType = this.gt(other)
+trait GtOp[O <: Obj] {
+  this: O =>
+  def gt(anon: __): Bool = GtOp(anon).exec(this)
+  def gt(other: O): Bool = GtOp(other).exec(this)
+  final def >(other: O): Bool = this.gt(other)
+  final def >(anon: __): Bool = this.gt(anon)
 }
 
 object GtOp {
-  def apply[O <: Obj with GtOp[Type[O], Value[O]]](other: Obj): Inst[O, Bool] = new GtInst[O](other.asInstanceOf[O])
+  def apply[O <: Obj](other: Obj): Inst[O, Bool] = new GtInst[O](other)
 
-  class GtInst[O <: Obj with GtOp[Type[O], Value[O]]](other: O, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.gt, List(other)), q) {
-    override def q(quantifier: IntQ): this.type = new GtInst[O](other, quantifier).asInstanceOf[this.type]
+  class GtInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.gt, List(other)), q) {
+    override def q(q: IntQ): this.type = new GtInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
-      val inst = new GtInst(Inst.resolveArg(start, other), q)
-      inst.arg0[O]() match {
-        case bvalue: Value[O] => start.gt(bvalue).via(start, inst)
-        case btype: Type[O] => start.gt(btype).via(start, inst)
-      }
+      val inst = new GtInst[O](Inst.resolveArg(start, other), q)
+      Try((start match {
+        case aint: Int => bool(value = aint.value > inst.arg0[Int]().value)
+        case areal: Real => bool(value = areal.value > inst.arg0[Real]().value)
+        case astr: Str => bool(value = astr.value > inst.arg0[Str]().value)
+      }).via(start, inst)).getOrElse(start match {
+        case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))
+        case _ => bool.via(start, inst)
+      }).asInstanceOf[Bool]
     }
   }
 

@@ -22,9 +22,10 @@
 
 package org.mmadt.language.obj.value.strm
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.branch.Brch
 
 trait BrchStrm[A <: Obj] extends Strm[Brch[A]] {
-  override val value: Iterator[Brch[A]]
+  override def value: List[A] = throw LanguageException.typesNoValue(this)
 }

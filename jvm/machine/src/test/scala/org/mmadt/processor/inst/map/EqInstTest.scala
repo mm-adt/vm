@@ -32,7 +32,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class EqInstTest extends FunSuite {
-  test("[eq] w/ int"){
+  test("[eq] w/ int") {
     assertResult(bfalse)(int(1).eqs(int(3))) // value * value = value
     assertResult(btrue)(int(1).eqs(int(1)))
     assertResult(btrue)(int(1).eqs(1))

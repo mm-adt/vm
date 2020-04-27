@@ -23,57 +23,37 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.op.map.OneOp
-import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[one] lineage") {
-    def maker(x: Obj with OneOp): Obj = x.q(2).one().q(3).one().q(10)
-
-    val starts: TableFor1[OneOp with Obj] =
-      new TableFor1("obj",
-        int,
-        real,
-        int(24),
-        real(10d))
-    forEvery(starts) { obj => {
-      val expr = maker(obj)
-      obj match {
-        case value: Value[_] => assert(value.value != expr.asInstanceOf[Value[_]].value)
-        case _ =>
-      }
-      assert(obj.q != expr.q)
-      assertResult(2)(expr.lineage.length)
-      assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), OneOp().q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).one().q(3), OneOp().q(10)))(expr.lineage.last)
+  test("[one] value, type, strm") {
+    val starts: TableFor2[Obj, Obj] =
+      new TableFor2[Obj, Obj](("query", "result"),
+        //////// INT
+        (int(2).one(), int(1)),
+        (int(2).one().q(10), int(1).q(10)),
+        (int(2).q(10).one(), int(1).q(10)),
+        (int(2).q(10).one().q(20), int(1).q(200)),
+        (int(-2).one(), int(1)),
+        (int.one(), int(1)),
+        (int.one().q(10), int(1).q(10)),
+        (int.q(10).one(), int(1).q(10)),
+        (int.q(10).one().q(20), int(1).q(200)),
+        (int(1, 2, 3).one(), int(1, 1, 1)),
+        //////// REAL
+        (real(2.0).one(), real(1.0)),
+        (real(-2.0).one(), real(1.0)),
+        (real.one(), real(1.0)),
+        (real(-1.0, -2.0, -3.0).one(), real(1.0, 1.0, 1.0)),
+      )
+    forEvery(starts) { (query, result) => {
+      assertResult(result)(query)
     }
     }
-  }
-  test("[one] w/ int value") {
-    assertResult(int(1))(int(0).one())
-    assertResult(int(1))(int(1).one())
-    assertResult(int(1))(int(1).plus(100).one())
-    assertResult(int(1).q(10))(int(1).q(10).plus(100).one())
-  }
-  test("[one] w/ int type") {
-    assertResult("int[one]")(int.one().toString)
-    assertResult("int{10}[one]")(int.q(10).one().toString)
-  }
-  test("[one] w/ real value") {
-    assertResult(real(1.0))(real(0.0).one())
-    assertResult(real(1.0))(real(1.0).one())
-    assertResult(real(1.0))(real(1.0).plus(100.0).one())
-    assertResult(real(1.0).q(10))(real(1.0).q(10).plus(100.0).one())
-  }
-  test("[one] w/ real type") {
-    assertResult("real[one]")(real.one().toString)
-    assertResult("real{10}[one]")(real.q(10).one().toString)
   }
 }

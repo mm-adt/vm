@@ -37,41 +37,41 @@ import scala.io.{BufferedSource, Source}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
+class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
 
-  private lazy val mmlang:LanguageProvider = LanguageFactory.getLanguage("mmlang")
-  private      val MMKV  :String           = "mmkv"
-  private      val K     :StrValue         = str("k")
-  private      val V     :StrValue         = str("v")
+  private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
+  private val MMKV: String = "mmkv"
+  private val K: StrValue = str("k")
+  private val V: StrValue = str("v")
 
-  val schema:RecType[StrValue,Obj] = {
+  val schema: RecType[StrValue, Obj] = {
     val source = Source.fromFile(file)
-    try source.getLines().take(1).map(line => mmlang.parse[RecType[StrValue,Obj]](line)).next().named(MMKV)
+    try source.getLines().take(1).map(line => mmlang.parse[RecType[StrValue, Obj]](line)).next().named(MMKV)
     finally source.close();
   }
 
-  private val store:mutable.Map[K,V] = {
-    val source:BufferedSource = Source.fromFile(file)
+  private val store: mutable.Map[K, V] = {
+    val source: BufferedSource = Source.fromFile(file)
     try source.getLines().drop(1)
-      .map(k => mmlang.parse[RecValue[StrValue,Value[Obj]]](k).value.values)
-      .foldLeft(new mutable.LinkedHashMap[K,V])((b,a) => b ++ Map(a.head.asInstanceOf[K] -> a.tail.head.asInstanceOf[V]))
+      .map(k => mmlang.parse[RecValue[StrValue, Value[Obj]]](k).value.values)
+      .foldLeft(new mutable.LinkedHashMap[K, V])((b, a) => b ++ Map(a.head.asInstanceOf[K] -> a.tail.head.asInstanceOf[V]))
     finally source.close()
   }
 
-  private val counter:AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].value).max)
+  private val counter: AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].value).max)
 
-  def get(key:K):V = store(key)
-  def put(key:K,value:V):V = store.put(key,value).getOrElse(value)
-  def put(value:V):V = store.put(int(counter.get()).asInstanceOf[K],value).getOrElse(value)
-  def remove(key:K):V = store.remove(key).get
-  def strm():RecStrm[StrValue,Value[Obj]] = vrec(value = store.iterator.map(x => vrec(K -> x._1.asInstanceOf[Value[V]],V -> x._2.asInstanceOf[Value[V]])))
-  def clear():Unit ={
+  def get(key: K): V = store(key)
+  def put(key: K, value: V): V = store.put(key, value).getOrElse(value)
+  def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
+  def remove(key: K): V = store.remove(key).get
+  def strm(): RecStrm[StrValue, Value[Obj]] = vrec(value = store.iterator.map(x => vrec(K -> x._1.asInstanceOf[Value[V]], V -> x._2.asInstanceOf[Value[V]])))
+  def clear(): Unit = {
     counter.set(0L)
     store.clear()
   }
-  def count():Long = this.store.size
+  def count(): Long = this.store.size
 
-  override def close():Unit ={
+  override def close(): Unit = {
     /*val writer = new PrintWriter(new File(file))
     try {
       writer.println(schema.toString)
@@ -85,12 +85,12 @@ class mmkvStore[K <: Obj,V <: Obj](file:String) extends AutoCloseable {
 }
 
 object mmkvStore extends AutoCloseable {
-  private val dbs:mutable.Map[String,mmkvStore[Obj,Obj]] = new mutable.HashMap
+  private val dbs: mutable.Map[String, mmkvStore[Obj, Obj]] = new mutable.HashMap
 
-  def open[K <: Obj,V <: Obj](file:String):mmkvStore[K,V] =
-    dbs.getOrElseUpdate(file,new mmkvStore(file)).asInstanceOf[mmkvStore[K,V]]
+  def open[K <: Obj, V <: Obj](file: String): mmkvStore[K, V] =
+    dbs.getOrElseUpdate(file, new mmkvStore(file)).asInstanceOf[mmkvStore[K, V]]
 
-  override def close():Unit ={
+  override def close(): Unit = {
     dbs.values.foreach(m => m.close())
     dbs.clear()
   }

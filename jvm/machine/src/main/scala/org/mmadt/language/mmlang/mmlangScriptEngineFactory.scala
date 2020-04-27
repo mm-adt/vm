@@ -32,16 +32,16 @@ import scala.collection.JavaConverters._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class mmlangScriptEngineFactory extends mmADTScriptEngineFactory {
-  override def getEngineName:String = "mmlang"
-  override def getEngineVersion:String = "0.1-alpha"
-  override def getExtensions:util.List[String] = seqAsJavaList(List("mm"))
-  override def getMimeTypes:util.List[String] = seqAsJavaList(List("mm"))
-  override def getNames:util.List[String] = seqAsJavaList(List("mmlang"))
-  override def getLanguageName:String = "mmlang"
-  override def getLanguageVersion:String = "0.1-alpha"
-  override def getParameter(key:String):AnyRef = null
-  override def getMethodCallSyntax(obj:String,m:String,args:String*):String = obj + " => " + " [" + m + "," + args + "]";
-  override def getOutputStatement(toDisplay:String):String = toDisplay
-  override def getProgram(statements:String*):String = statements.foldLeft("")((a,b) => a + " " + b).trim();
-  override def getScriptEngine:mmADTScriptEngine = new mmlangScriptEngine(this)
+  override def getEngineName: String = "mmlang"
+  override def getEngineVersion: String = "0.1-alpha"
+  override def getExtensions: util.List[String] = seqAsJavaList(List("mm"))
+  override def getMimeTypes: util.List[String] = seqAsJavaList(List("mm"))
+  override def getNames: util.List[String] = seqAsJavaList(List("mmlang"))
+  override def getLanguageName: String = "mmlang"
+  override def getLanguageVersion: String = "0.1-alpha"
+  override def getParameter(key: String): AnyRef = null
+  override def getMethodCallSyntax(obj: String, m: String, args: String*): String = obj + " => " + " [" + m + "," + args + "]";
+  override def getOutputStatement(toDisplay: String): String = toDisplay
+  override def getProgram(statements: String*): String = statements.foldLeft("")((a, b) => a + " " + b).trim();
+  override def getScriptEngine: mmADTScriptEngine = new mmlangScriptEngine(this)
 }

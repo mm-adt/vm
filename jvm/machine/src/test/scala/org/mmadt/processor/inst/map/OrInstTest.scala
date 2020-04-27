@@ -22,15 +22,40 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map.OrOp
-import org.mmadt.language.obj.value.{BoolValue, Value}
-import org.mmadt.language.obj.{Bool, Obj}
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int}
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor3}
 
 class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
+
+  test("[or] value, type, strm, anon combinations") {
+    val starts: TableFor3[Obj, Obj, String] =
+      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+        (bfalse.or(btrue), btrue, "value"), // value * value = value
+        (bfalse.or(bool), bfalse, "value"), // value * type = value
+        (bfalse.or(__.or(bool)), bfalse, "value"), // value * anon = value
+        (bool.or(btrue), bool.or(btrue), "type"), // type * value = type
+        (bool.or(bool), bool.or(bool), "type"), // type * type = type
+        (bool(true, true, false).or(btrue), bool(true, true, true), "strm"), // strm * value = strm
+        (bool(true, true, false).or(bool), bool(true, true, false), "strm"), // strm * type = strm
+        (bool(true, true, false).or(__.or(bool)), bool(true, true, false), "strm"), // strm * anon = strm
+      )
+    forEvery(starts) { (query, result, atype) => {
+      assertResult(result)(query)
+      atype match {
+        case "value" => assert(query.isInstanceOf[Value[_]])
+        case "type" => assert(query.isInstanceOf[Type[_]])
+        case "strm" => assert(query.isInstanceOf[Strm[_]])
+      }
+    }
+    }
+  }
+
   test("[or] testing") {
     def maker(x: Obj with OrOp): Obj = x.q(2).or(bfalse).q(3).or(bfalse).q(10)
 
@@ -52,21 +77,5 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
       assertResult((obj.q(2).or(bfalse).q(3), OrOp(bfalse).q(10)))(expr.lineage.last)
     }
     }
-  }
-  ///////////////////////////////////////////////////////////////////////
-
-  test("[or] w/ bool") {
-    assertResult(btrue)(btrue.or(btrue)) // value * value = value
-    assert(btrue.or(btrue).isInstanceOf[BoolValue])
-    assert(btrue.or(btrue).isInstanceOf[Bool])
-    assertResult(btrue.or(bool))(btrue.or(bool)) // value * type = value
-    assertResult(btrue)(btrue.or(bool))
-    assert(btrue.or(bool).isInstanceOf[BoolValue])
-    assertResult(bool.or(btrue))(bool.or(btrue)) // type * value = type
-    assert(bool.or(btrue).isInstanceOf[BoolType])
-    assert(bool.or(btrue).isInstanceOf[BoolType])
-    assertResult(bool.or(bool))(bool.or(bool)) // type * type = type
-    assert(bool.or(bool).isInstanceOf[BoolType])
-    assert(bool.or(bool).isInstanceOf[BoolType])
   }
 }

@@ -32,16 +32,16 @@ import scala.collection.immutable.ListMap
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class PutInstTest extends FunSuite {
-  test("[put] w/ rec value"){
-    val marko:RecValue[StrValue,ObjValue] = vrec(str("name") -> str("marko"))
-    val markoFull                         = marko.put(str("age"),int(29))
-    assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(markoFull)
-    assertResult(rec(str("name") -> str("marko"),str("age") -> int(29)))(markoFull.put(str("name"),str("marko")))
-    assertResult(rec(str("name") -> str("kuppitz"),str("age") -> int(29)))(markoFull.put(str("name"),str("kuppitz")))
-    assertResult(rec(str("name") -> str("marko"),str("age") -> int(28)))(markoFull.put(str("age"),int(28)))
+  test("[put] w/ rec value") {
+    val marko: RecValue[StrValue, ObjValue] = vrec(str("name") -> str("marko"))
+    val markoFull = marko.put(str("age"), int(29))
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(markoFull)
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(markoFull.put(str("name"), str("marko")))
+    assertResult(rec(str("name") -> str("kuppitz"), str("age") -> int(29)))(markoFull.put(str("name"), str("kuppitz")))
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(28)))(markoFull.put(str("age"), int(28)))
     // test rec key/value ordering
-    assertResult(ListMap(str("name") -> str("kuppitz"),str("age") -> int(29)))(markoFull.put(str("name"),str("kuppitz")).value)
-    assertResult(ListMap(str("name") -> str("marko"),str("age") -> int(28)))(markoFull.put(str("age"),int(28)).value)
+    assertResult(ListMap(str("name") -> str("kuppitz"), str("age") -> int(29)))(markoFull.put(str("name"), str("kuppitz")).value)
+    assertResult(ListMap(str("name") -> str("marko"), str("age") -> int(28)))(markoFull.put(str("age"), int(28)).value)
     assertResult(int(29))(markoFull.get(str("age")))
   }
 }

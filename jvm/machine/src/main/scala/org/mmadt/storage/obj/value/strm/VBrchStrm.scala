@@ -32,7 +32,7 @@ import org.mmadt.storage.obj.OObj
 class VBrchStrm[A <: Obj](name: String, _value: Seq[Brch[A]], via: ViaTuple) extends OObj(name, (int(_value.length), int(_value.length)), via) with BrchStrm[A] {
   def this(java: Seq[Brch[A]]) = this(name = Tokens.empty, java, base())
 
-  override val value: Iterator[Brch[A]] = _value.iterator
+  override val values: Seq[Brch[A]] = _value
 
   override def q(quantifier: IntQ): this.type = this
 }

@@ -22,23 +22,14 @@
 
 package org.mmadt.language.obj.value.strm
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.value.{BoolValue, IntValue}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.value.IntValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntStrm extends Strm[Int] with Int {
-  override val value: Iterator[IntValue]
-
-  override def plus(other: IntValue): this.type = this.clone(value = this.value.map(x => x.plus(other)))
-  override def mult(other: IntValue): this.type = this.clone(value = this.value.map(x => x.mult(other)))
-  override def neg(): this.type = this.clone(value = this.value.map(x => x.neg()))
-  override def one(): this.type = this.clone(value = this.value.map(x => x.one()))
-  override def gt(other: IntValue): BoolValue = strm[BoolValue](this.value.map(x => x.gt(other)))
-  override def gte(other: IntValue): BoolValue = strm[BoolValue](this.value.map(x => x.gte(other)))
-  override def lt(other: IntValue): BoolValue = strm[BoolValue](this.value.map(x => x.lt(other)))
-  override def lte(other: IntValue): BoolValue = strm[BoolValue](this.value.map(x => x.lte(other)))
-  override def zero(): this.type = this.clone(value = this.value.map(x => x.zero()))
+  override def value: Long = throw LanguageException.typesNoValue(this)
+  override def plus(other: IntValue): this.type = this.clone(value = this.values.map(x => x.plus(other)))
 }
