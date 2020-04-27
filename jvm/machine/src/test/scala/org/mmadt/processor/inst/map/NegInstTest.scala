@@ -36,7 +36,9 @@ class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
       new TableFor3[Obj, Obj, String](("query", "result", "type"),
         //////// INT
         (int(2).neg(), int(-2), "value"),
+        (int(2).q(2).neg(), int(-2).q(2), "value"),
         (int(-2).neg(), int(2), "value"),
+        (int(-2).neg().q(4).neg().q(2), int(-2).q(8), "value"),
         (int.neg(), int.neg(), "type"),
         (int(-1, -2, -3).neg(), int(1, 2, 3), "strm"),
         //////// REAL

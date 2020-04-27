@@ -33,6 +33,7 @@ import org.mmadt.storage.obj.value.VInst
 trait SplitOp {
   this: Obj =>
   def split[A <: Obj](brch: Brch[A]): Brch[A] = SplitOp(brch).exec(this.asInstanceOf[A])
+  final def -<[A <: Obj](brch: Brch[A]): Brch[A] = this.split(brch)
 }
 
 object SplitOp {
@@ -65,7 +66,7 @@ object SplitOp {
             .via(start, this)
         case _: Coprod[_] =>
           val inst = new SplitInst[A](brchs.clone(value = brchs.value.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
-          inst.arg0[Coprod[A]]().via(start, inst)
+          inst.arg0[Coprod[A]]().clone(via = (start, inst)) // the incoming quantifer effect slot quantification, not product quantification
       }
     }
   }

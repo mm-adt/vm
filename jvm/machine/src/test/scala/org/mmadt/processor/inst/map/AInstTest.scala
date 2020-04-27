@@ -42,25 +42,36 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
       new TableFor3[Obj, Obj, Bool](("value", "type", "bool"),
         // bool
         (btrue, btrue, btrue),
+        (btrue, btrue.q(1), btrue),
+        (btrue, btrue.q(2), bfalse),
+        (btrue, btrue.q(?), btrue),
+        (btrue.q(2), btrue.q(?), bfalse.q(2)),
+        (btrue.q(2), btrue.q(1, 3), btrue.q(2)),
+        (btrue.q(2), btrue.q(2), btrue.q(2)),
         (btrue, bfalse, bfalse),
-        // (btrue, bool.is(bool.eqs(bfalse)), bfalse),
+        (btrue, bool.is(bool.eqs(bfalse)), bfalse),
+        (btrue, bool.is(bool.eqs(btrue)), btrue),
         (btrue, bool, btrue),
         (btrue, int, bfalse),
         (btrue, real, bfalse),
         (btrue, str, bfalse),
+        (btrue, str.is(__.gt("a")), bfalse),
         (btrue, rec, bfalse),
         (bool, btrue, bool.a(btrue)),
         // int
         (int(20), int(20), btrue),
         (int(20), int(30), bfalse),
+        (int(20), int.is(__.gt(10)), btrue),
+        //(int.is(__.gt(9)),int.is(__.gte(10)),btrue),
         (int(20), int.is(int.lt(0)), bfalse),
         (int(20), int.is(int.gt(0)), btrue),
         (int(20), int.mult(int.neg()).is(int.lt(0)), btrue),
         (int(20), int.is(__.lt(0)), bfalse),
         (int(20), int.is(__.gt(0)), btrue),
         (int(20), int.mult(int.neg()).is(__.lt(0)), btrue),
-        (int(20), bool, bfalse),
-        (int(20), int, btrue),
+        (int(20).q(2), bool, bfalse.q(2)),
+        (int(20).q(3), int.q(1, 4), btrue.q(3)),
+        (int(20).q(3), int, bfalse.q(3)),
         (int(20), real, bfalse),
         (int(20), str, bfalse),
         (int(20), rec, bfalse),
@@ -115,6 +126,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (person, marko, person.a(marko)),
       )
     forEvery(check) { (left, right, result) => {
+      assertResult(result)(left.compute(asType(__.a(right))))
       assertResult(result)(left.a(right))
       assertResult(result)(AOp(right).exec(left))
       assertResult(result)(left ===> left.range.a(right))

@@ -118,8 +118,8 @@ trait Obj
   def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = {
     LanguageException.testDomainRange(asType(this), rangeType.asInstanceOf[Type[E]].domain())
     this match {
-      case _: Type[_] => Processor.compiler(model).apply(this, rangeType)
       case _: Value[_] => Processor.iterator(model).apply(this, rangeType)
+      case _: Type[_] => Processor.compiler(model).apply(this, rangeType)
     }
   }
   def ===>[E <: Obj](rangeType: E): E = {

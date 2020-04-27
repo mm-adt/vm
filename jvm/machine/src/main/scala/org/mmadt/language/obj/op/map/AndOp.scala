@@ -25,6 +25,8 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.{BoolValue, Value}
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -48,7 +50,12 @@ object AndOp {
     override def q(q: IntQ): this.type = new AndInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
       val inst = new AndInst(Inst.resolveArg(start, other), q)
-      Try[Bool](start.clone(value = start.value && inst.arg0[Bool]().value)).getOrElse(start).via(start, inst)
+      (start match {
+        case _:Strm[_] => start
+        case _:BoolValue => start.clone(value = start.value && inst.arg0[Bool]().value)
+        case _ => start
+      }).via(start, inst)
+
     }
   }
 

@@ -22,33 +22,55 @@
 
 package org.mmadt.processor.inst.branch
 
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.TableDrivenPropertyChecks
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
 
+
+  test("[split] value, type, strm") {
+    val check: TableFor3[Obj, Type[Obj], Obj] =
+      new TableFor3[Obj, Type[Obj], Obj](("input", "type", "result"),
+        (int(1), int.-<(coprod(int, int)), coprod(int(1), int(1))),
+        // (int(1,2,3), int.q(3).-<(coprod(int.q(3), int.q(3))), coprod(int(1,2,3), int(1,2,3))),
+        //(int(2), __.-<(coprod(int, str)), coprod(int(2), obj.q(qZero))),
+        //(int(2).q(2), int.q(5).-<(coprod(int, int.is(__.gt(10)))), coprod(int(2), obj.q(qZero))),
+        (int(2).q(2), int.q(2).-<(coprod(int, int.is(__.gt(10)))), coprod(int(2).q(2), obj.q(qZero))),
+        (int(2), int.-<(coprod(int, int.is(__.gt(10)))), coprod(int(2), obj.q(qZero))),
+        // (int(2), int.-<(coprod(int.-<(coprod(int, int.is(__.gt(11)))), int.is(__.gt(10)))), coprod(coprod(int(2), obj.q(qZero)), obj.q(qZero))),
+      )
+    forEvery(check) { (input, atype, result) => {
+      assertResult(result)(input.compute(atype))
+      assertResult(result)(input ==> atype)
+      assertResult(result)(input ===> atype)
+      assertResult(result)(input ===> (input.range ==> atype))
+    }
+    }
+  }
+
   test("lineage preservation (products)") {
-    assertResult(int(321))(int(1) ===> int.plus(100).plus(200).split(prod(int, bool)).merge[Int]().plus(20))
-    assertResult(int.plus(100).plus(200).split(coprod(int, bool)).merge[Int]().plus(20))(int ===> int.plus(100).plus(200).split(coprod(int, bool)).merge[Int]().plus(20))
-    assertResult(prod[Obj](1, 101, 301, 321))((int(1) ===> int.plus(100).plus(200).split(prod(int, bool)).merge[Int]().plus(20)).path())
+    assertResult(int(321))(int(1) ===> int.plus(100).plus(200).split(prod(int, bool)).merge[Int].plus(20))
+    assertResult(int.plus(100).plus(200).split(coprod(int, bool)).merge[Int].plus(20))(int ===> int.plus(100).plus(200).split(coprod(int, bool)).merge[Int].plus(20))
+    assertResult(prod[Obj](1, 101, 301, 321))((int(1) ===> int.plus(100).plus(200).split(prod(int, bool)).merge[Int].plus(20)).path())
   }
 
   test("lineage preservation (coproducts)") {
-    println(int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
-    assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
-    assertResult(int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))(int ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20))
+    println(int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int].plus(20))
+    assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int].plus(20))
+    assertResult(int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int].plus(20))(int ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int].plus(20))
     assertResult(strm(List(
       prod[Obj](1, 101, 301, 321),
-      prod[Obj](1, 101, 301, 303, 323))))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int]().plus(20).path())
+      prod[Obj](1, 101, 301, 303, 323))))(int(1) ===> int.plus(100).plus(200).split(coprod(int, int.plus(2))).merge[Int].plus(20).path())
   }
 
   test("quantifiers") {
-    assertResult(int(int(1), int(2)))(coprod[Int](1, 2).merge())
-    assertResult(int(int(1).q(10), int(2).q(10)))(coprod[Int](1, 2).q(10).merge())
-    assertResult(int(int(1).q(10), int(2).q(50)))(coprod[Int](1, int(2).q(5)).q(10).merge())
-    assertResult(int(int(1).q(4, 10), int(2).q(20, 50)))(coprod[Int](1, int(2).q(5)).q(4, 10).merge())
+    assertResult(int(int(1), int(2)))(coprod[Int](1, 2).merge)
+    assertResult(int(int(1).q(10), int(2).q(10)))(coprod[Int](1, 2).q(10).merge)
+    assertResult(int(int(1).q(10), int(2).q(50)))(coprod[Int](1, int(2).q(5)).q(10).merge)
+    assertResult(int(int(1).q(4, 10), int(2).q(20, 50)))(coprod[Int](1, int(2).q(5)).q(4, 10).merge)
   }
 
 }

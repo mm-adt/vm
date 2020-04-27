@@ -32,12 +32,6 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("product [zero][one]") {
-    //assertResult(List.empty[Obj])(prod(str("a"), str("b")).zero().value)
-    //    assertResult(List.empty[Obj])(prod(str("a"), str("b")).one().value)
-    //assertResult(prod())(prod(str("a"), str("b")).zero())
-  }
-
   test("coproduct [tail][head] values") {
     val starts: TableFor2[Coprod[Obj], List[Value[Obj]]] =
       new TableFor2[Coprod[Obj], List[Value[Obj]]](("prod", "projections"),
@@ -86,20 +80,20 @@ class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("coproduct quantifier") {
     val coproduct = int.q(2).mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int{2}[id]|int{2}[plus,2]|3]{2}<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(coproduct.toString)
+    assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(coproduct.toString)
     assertResult(int.q(2).id())(coproduct.value(0))
     assertResult(int.q(2).plus(2))(coproduct.value(1))
     assertResult(int(3))(coproduct.value(2))
     assertResult(int.q(2))(coproduct.value(0).via._1)
     assertResult(int.q(2))(coproduct.value(1).via._1)
     assert(coproduct.value(2).root)
-    assertResult(coprod[Int](int.q(2).id(), int.q(2).plus(2), int(3)).q(2))(coproduct.range)
+    assertResult(coprod[Int](int.q(2).id(), int.q(2).plus(2), int(3)))(coproduct.range)
   }
 
   test("coproduct [split] quantification") {
-    assertResult(int.q(0, 3))(int.mult(8).split(coprod(__.id(), __.plus(8).mult(2), int(56))).merge[Int]().id().isolate)
-    assertResult(int.q(0, 23))(int.mult(8).split(coprod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
-    assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(coprod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int]().id().isolate)
-    // assertResult(int.q(0))(int.q(2).mult(8).q(0).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge().id().isolate)
+    assertResult(int.q(0, 3))(int.mult(8).split(coprod(__.id(), __.plus(8).mult(2), int(56))).merge[Int].id().isolate)
+    assertResult(int.q(0, 23))(int.mult(8).split(coprod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
+    assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(coprod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
+    // assertResult(__)(int.q(2).mult(8).q(0).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Obj]().id().isolate)
   }
 }
