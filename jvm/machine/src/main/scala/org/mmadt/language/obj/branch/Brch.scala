@@ -48,13 +48,6 @@ trait Brch[A <: Obj] extends Obj
 
   override def toString: String = LanguageFactory.printBrch(this)
 
-  override def put(key: Int, value: A): this.type = key match {
-    case avalue: IntValue =>
-      val (front, back) = this.value.splitAt(avalue.value.toInt)
-      this.clone(value = (front :+ value) ++ back, via = (this, PutOp(key, value)))
-    case _ => this.via(this, PutOp(key, value))
-  }
-
   override def get(key: Int): A = {
     val valueType: A = key match {
       case avalue: IntValue if this.value.length > avalue.value => this.value(avalue.value.toInt)

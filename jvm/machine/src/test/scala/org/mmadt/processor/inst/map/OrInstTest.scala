@@ -22,36 +22,43 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.map.OrOp
+import org.mmadt.language.obj.op.map.{AndOp, OrOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int}
+import org.mmadt.storage.StorageFactory.{asType, bfalse, bool, btrue, int}
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor3}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor4}
 
 class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[or] value, type, strm, anon combinations") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
-        (bfalse.or(btrue), btrue, "value"), // value * value = value
-        (bfalse.or(bool), bfalse, "value"), // value * type = value
-        (bfalse.or(__.or(bool)), bfalse, "value"), // value * anon = value
-        (bool.or(btrue), bool.or(btrue), "type"), // type * value = type
-        (bool.or(bool), bool.or(bool), "type"), // type * type = type
-        (bool(true, true, false).or(btrue), bool(true, true, true), "strm"), // strm * value = strm
-        (bool(true, true, false).or(bool), bool(true, true, false), "strm"), // strm * type = strm
-        (bool(true, true, false).or(__.or(bool)), bool(true, true, false), "strm"), // strm * anon = strm
+    val starts: TableFor4[Obj, Obj, Obj, String] =
+      new TableFor4[Obj, Obj, Obj, String](("input", "type", "result", "kind"),
+        (bfalse, __.or(btrue), btrue, "value"), // value * value = value
+        (bfalse, __.or(bool), bfalse, "value"), // value * type = value
+        (bfalse, __.or(__.or(bool)), bfalse, "value"), // value * anon = value
+        (bool, __.or(btrue), bool.or(btrue), "type"), // type * value = type
+        (bool, __.or(bool), bool.or(bool), "type"), // type * type = type
+        (bool(true, true, false), __.or(btrue), bool(true, true, true), "strm"), // strm * value = strm
+        (bool(true, true, false), __.or(bool), bool(true, true, false), "strm"), // strm * type = strm
+        (bool(true, true, false), __.or(__.or(bool)), bool(true, true, false), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (query, result, atype) => {
-      assertResult(result)(query)
-      atype match {
-        case "value" => assert(query.isInstanceOf[Value[_]])
-        case "type" => assert(query.isInstanceOf[Type[_]])
-        case "strm" => assert(query.isInstanceOf[Strm[_]])
-      }
+    forEvery(starts) { (input, atype, result, kind) => {
+      List(
+        OrOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input.asInstanceOf[Bool]),
+        input.compute(asType(atype)),
+        input ===> (input.range ===> atype),
+        input ===> atype,
+        input ==> asType(atype)).foreach(x => {
+        assertResult(result)(x)
+        kind match {
+          case "value" => assert(x.isInstanceOf[Value[_]])
+          case "type" => assert(x.isInstanceOf[Type[_]])
+          case "strm" => assert(x.isInstanceOf[Strm[_]])
+        }
+      })
     }
     }
   }

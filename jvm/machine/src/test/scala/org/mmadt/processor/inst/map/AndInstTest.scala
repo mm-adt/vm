@@ -22,50 +22,57 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map.AndOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor3}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor4}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[and] value, type, strm, anon combinations") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
-        (btrue.and(btrue), btrue, "value"), // value * value = value
-        (btrue.q(10).and(btrue), btrue.q(10), "value"), // value * value = value
-        (btrue.q(10).and(btrue).q(10), btrue.q(100), "value"), // value * value = value
-        (btrue.and(btrue.q(10)), btrue, "value"), // value * value = value
-        (btrue.and(bool), btrue, "value"), // value * type = value
-        (btrue.q(10).and(bool), btrue.q(10), "value"), // value * type = value
-        (btrue.q(10).and(bool).q(10), btrue.q(100), "value"), // value * type = value
-        (btrue.and(bool.q(10)), btrue, "value"), // value * type = value
-        (btrue.and(__.and(bool)), btrue, "value"), // value * anon = value
-        (btrue.q(10).and(__.and(bool)), btrue.q(10), "value"), // value * anon = value
-        (btrue.and(__.and(bool.q(10))), btrue, "value"), // value * anon = value
-        (bool.and(btrue), bool.and(btrue), "type"), // type * value = type
-        (bool.and(bool), bool.and(bool), "type"), // type * type = type
-        (bool(true, true, false).and(bfalse), bool(false, false, false), "strm"), // strm * value = strm
-        (bool(true, true, false).and(bfalse.q(10)), bool(false, false, false), "strm"), // strm * value = strm
-        (bool(true, true, false).and(bool), bool(true, true, false), "strm"), // strm * type = strm
-        (bool(true, true, false).and(bool).q(10), bool(btrue.q(10), btrue.q(10), bfalse.q(10)), "strm"), // strm * type = strm
-        (bool(true, true, false).and(bool.q(10)), bool(true, true, false), "strm"), // strm * type = strm
-        (bool(true, true, false).and(__.and(bool)), bool(true, true, false), "strm"), // strm * anon = strm
-        (bool(true, true, false).and(__.and(bool.q(10))), bool(true, true, false), "strm"), // strm * anon = strm
+    val starts: TableFor4[Obj, Obj, Obj, String] =
+      new TableFor4[Obj, Obj, Obj, String](("input", "type", "result", "kind"),
+        (btrue, __.and(btrue), btrue, "value"), // value * value = value
+        (btrue.q(10), __.and(btrue), btrue.q(10), "value"), // value * value = value
+        (btrue.q(10), __.and(btrue).q(10), btrue.q(100), "value"), // value * value = value
+        (btrue, __.and(btrue.q(10)), btrue, "value"), // value * value = value
+        (btrue, __.and(bool), btrue, "value"), // value * type = value
+        (btrue.q(10), __.and(bool), btrue.q(10), "value"), // value * type = value
+        (btrue.q(10), __.and(bool).q(10), btrue.q(100), "value"), // value * type = value
+        (btrue, __.and(bool.q(10)), btrue, "value"), // value * type = value
+        (btrue, __.and(__.and(bool)), btrue, "value"), // value * anon = value
+        (btrue.q(10), __.and(__.and(bool)), btrue.q(10), "value"), // value * anon = value
+        (btrue, __.and(__.and(bool.q(10))), btrue, "value"), // value * anon = value
+        (bool, __.and(btrue), bool.and(btrue), "type"), // type * value = type
+        (bool, __.and(bool), bool.and(bool), "type"), // type * type = type
+        (bool(true, true, false), __.and(bfalse), bool(false, false, false), "strm"), // strm * value = strm
+        (bool(true, true, false), __.and(bfalse.q(10)), bool(false, false, false), "strm"), // strm * value = strm
+        (bool(true, true, false), __.and(bool), bool(true, true, false), "strm"), // strm * type = strm
+        (bool(true, true, false), __.and(bool).q(10), bool(btrue.q(10), btrue.q(10), bfalse.q(10)), "strm"), // strm * type = strm
+        (bool(true, true, false), __.and(bool.q(10)), bool(true, true, false), "strm"), // strm * type = strm
+        (bool(true, true, false), __.and(__.and(bool)), bool(true, true, false), "strm"), // strm * anon = strm
+        (bool(true, true, false), __.and(__.and(bool.q(10))), bool(true, true, false), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (query, result, atype) => {
-      assertResult(result)(query)
-      atype match {
-        case "value" => assert(query.isInstanceOf[Value[_]])
-        case "type" => assert(query.isInstanceOf[Type[_]])
-        case "strm" => assert(query.isInstanceOf[Strm[_]])
-      }
+    forEvery(starts) { (input, atype, result, kind) => {
+      List(
+        AndOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input.asInstanceOf[Bool]),
+        input.compute(asType(atype)),
+        input ===> (input.range ===> atype),
+        input ===> atype,
+        input ==> asType(atype)).foreach(x => {
+        assertResult(result)(x)
+        kind match {
+          case "value" => assert(x.isInstanceOf[Value[_]])
+          case "type" => assert(x.isInstanceOf[Type[_]])
+          case "strm" => assert(x.isInstanceOf[Strm[_]])
+        }
+      })
     }
     }
   }

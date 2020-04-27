@@ -24,7 +24,6 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Inst, IntQ, OType, Obj, ViaTuple, _}
@@ -42,8 +41,7 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
   def neg(): this.type = this.via(this, NegOp())
   def or(other: Obj): Bool = bool.via(this, OrOp(other))
-  def and(other: Obj): Bool = bool.via(this, OrOp(other))
-  def is(other: Obj): Bool = bool.via(this, IsOp(other))
+  def and(other: Obj): Bool = bool.via(this, AndOp(other))
   def one(): this.type = this.via(this, OneOp())
   def zero(): this.type = this.via(this, ZeroOp())
   def gt(other: Obj): BoolType = bool.via(this, GtOp(other))

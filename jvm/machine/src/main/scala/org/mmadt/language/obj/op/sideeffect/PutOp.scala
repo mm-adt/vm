@@ -24,6 +24,8 @@ package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.branch.Brch
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -32,17 +34,25 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait PutOp[A <: Obj, B <: Obj] {
   this: Obj =>
-  def put(key: A, value: B): this.type
+  def put(key: A, value: B): this.type = PutOp(key, value).exec(this).asInstanceOf[this.type]
 }
 
 object PutOp {
-  private type PutType[A <: Obj, B <: Obj] = Obj with PutOp[A, B]
+  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[Obj, Obj] = new PutInst[A, B](key, value)
 
-  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[PutType[A, B], PutType[A, B]] = new PutInst[A, B](key, value)
-
-  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[PutType[A, B], PutType[A, B]]((Tokens.put, List(key, value)), q) {
+  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Obj, Obj]((Tokens.put, List(key, value)), q) {
     override def q(q: IntQ): this.type = new PutInst[A, B](key, value, q).asInstanceOf[this.type]
-    override def exec(start: PutType[A, B]): PutType[A, B] = start.put(key, value) // arguments not resolved
+    override def exec(start: Obj): Obj = {
+      start match {
+        case brch: Brch[_] => key match {
+          case avalue: IntValue =>
+            val (front, back) = brch.value.splitAt(avalue.value.toInt)
+            brch.clone(value = (front :+ value) ++ back, via = (brch, this))
+          case _ => brch.via(brch, this)
+        }
+        case rec: Rec[_, _] => rec.clone(value = rec.value().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))
+      }
+    }
   }
 
 }

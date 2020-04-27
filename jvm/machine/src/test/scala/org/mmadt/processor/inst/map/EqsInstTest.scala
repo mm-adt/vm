@@ -24,6 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.map.EqsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
@@ -65,6 +66,7 @@ class EqsInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(starts) { (input, atype, result, kind) => {
       List(
+        EqsOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),
         input ===> atype,
