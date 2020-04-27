@@ -292,6 +292,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("int strm input parsing") {
     assertResult(Set(int(-1), int(0)))(engine.eval("0,1 int{+}[plus,-1]").toSet)
     assertResult(Set(int(1), int(2), int(3)))(engine.eval("0,1,2[plus,1]").toSet)
+    assertResult(Set(int(1).q(3), int(2).q(10), int(3)))(engine.eval("0{3},1{10},2[plus,1]").toSet)
     assertResult(Set(int(30), int(40)))(engine.eval("0,1,2,3 int{2,5}[plus,1][is,int[gt,2]][mult,10]").toSet)
     assertResult(Set(int(300), int(40)))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]").toSet)
     // assertResult(Set(int(30),int(40)))(engine.eval("0,1,2,3 ==> (int{3}=>int[plus,1][is,int[gt,2]][mult,10])")).toSet)

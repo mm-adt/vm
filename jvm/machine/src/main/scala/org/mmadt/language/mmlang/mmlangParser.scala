@@ -106,20 +106,14 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val instOp: String = Tokens.reserved.foldRight(EMPTY)((a, b) => b + PIPE + a).drop(1)
 
   // value parsing
+  lazy val valueType: Parser[String] = "[a-zA-Z]+".r <~ ":"
   lazy val objValue: Parser[Value[Obj]] = (boolValue | realValue | intValue | strValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val boolValue: Parser[BoolValue] = opt(valueType) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => vbool(x._1.getOrElse(Tokens.bool), x._2.toBoolean, qOne))
   lazy val intValue: Parser[IntValue] = opt(valueType) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
   lazy val realValue: Parser[RealValue] = opt(valueType) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
   lazy val strValue: Parser[StrValue] = opt(valueType) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
   lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ (Tokens.:-> | Tokens.::)) ~ objValue, COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
-
-  lazy val valueType: Parser[String] = "[a-zA-Z]+".r <~ ":"
-  lazy val strm: Parser[Strm[Obj]] = boolStrm | realStrm | intStrm | strStrm | recStrm
-  lazy val boolStrm: Parser[BoolStrm] = (boolValue <~ COMMA) ~ rep1sep(boolValue, COMMA) ^^ (x => bool(x._1, x._2.head, x._2.tail: _*))
-  lazy val intStrm: Parser[IntStrm] = (intValue <~ COMMA) ~ rep1sep(intValue, COMMA) ^^ (x => int(x._1, x._2.head, x._2.tail: _*))
-  lazy val realStrm: Parser[RealStrm] = (realValue <~ COMMA) ~ rep1sep(realValue, COMMA) ^^ (x => real(x._1, x._2.head, x._2.tail: _*))
-  lazy val strStrm: Parser[StrStrm] = (strValue <~ COMMA) ~ rep1sep(strValue, COMMA) ^^ (x => str(x._1, x._2.head, x._2.tail: _*))
-  lazy val recStrm: Parser[ORecStrm] = (recValue <~ COMMA) ~ rep1sep(recValue, COMMA) ^^ (x => vrec(x._1, x._2.head, x._2.tail: _*))
+  lazy val strm: Parser[Strm[Obj]] = (objValue <~ COMMA) ~ rep1sep(objValue, COMMA) ^^ (x => estrm((List(x._1) :+ x._2.head) ++ x._2.tail))
 
   // instruction parsing
   lazy val inst: Parser[Inst[Obj, Obj]] = (sugarlessInst | idSugar | fromSugar | toSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar | chooseSugar | branchSugar) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
