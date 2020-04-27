@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait ToOp {
   this: Obj =>
-  def to(label: StrValue): this.type = this.via(this, ToOp[this.type](label))
+  def to(label: StrValue): this.type = ToOp(label).exec(this)
 }
 
 object ToOp {
@@ -42,7 +42,7 @@ object ToOp {
 
   class ToInst[O <: Obj](label: StrValue, q: IntQ = qOne) extends VInst[O, O]((Tokens.to, List(label)), q) with TraverserInstruction {
     override def q(q: IntQ): this.type = new ToInst[O](label, q).asInstanceOf[this.type]
-    override def exec(start: O): O = start.to(label).via(start, this)
+    override def exec(start: O): O = start.via(start, this)
   }
 
 }

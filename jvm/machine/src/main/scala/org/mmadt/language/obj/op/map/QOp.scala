@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.QuantifierInstruction
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Int, Obj}
+import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -34,19 +34,17 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait QOp {
   this: Obj =>
-
-  def quant(): Int = (this match {
-    case _: Value[_] => this.q._1.q(qOne)
-    case _ => int
-  }).via(this, QOp())
+  def quant(): Int = QOp().exec(this)
 }
 
 object QOp {
-  private lazy val INST: Inst[Obj, Int] = new QInst()
-  def apply(): Inst[Obj, Int] = INST
+  def apply(): QInst = new QInst
 
   class QInst extends VInst[Obj, Int]((Tokens.q, Nil)) with QuantifierInstruction {
-    override def exec(start: Obj): Int = start.quant().via(start, this)
+    override def exec(start: Obj): Int = (start match {
+      case _: Value[_] => this.q._1.q(qOne)
+      case _ => int
+    }).via(start, this).asInstanceOf[Int]
   }
 
 }

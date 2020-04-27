@@ -61,7 +61,7 @@ object SplitOp {
                 qTest = qZero;
                 x
               })
-              .getOrElse(obj.q(0))))
+              .getOrElse(obj.q(qZero))))
             .via(start, this)
         case _: Coprod[_] =>
           val inst = new SplitInst[A](brchs.clone(value = brchs.value.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
