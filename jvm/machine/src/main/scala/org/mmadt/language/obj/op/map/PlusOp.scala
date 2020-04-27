@@ -24,35 +24,41 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.`type`.{LstType, __}
+import org.mmadt.language.obj.value.{LstValue, RecValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait PlusOp[T <: Type[Obj], V <: Value[Obj]] {
-  this: Obj =>
-  def plus(other: T): T = this.start().via(this.start(), PlusOp(other))
-  def plus(other: V): this.type
-  final def +(other: T): T = this.plus(other)
-  final def +(other: V): this.type = this.plus(other)
+trait PlusOp[O <: Obj] {
+  this: O =>
+  def plus(anon: __): this.type = PlusOp(anon).exec(this)
+  def plus(arg: O): this.type = PlusOp(arg).exec(this)
+  final def +(anon: __): this.type = this.plus(anon)
+  final def +(arg: O): this.type = this.plus(arg)
 }
 
 object PlusOp {
-  def apply[O <: Obj with PlusOp[Type[O], Value[O]]](other: Obj): PlusInst[O] = new PlusInst[O](other)
+  def apply[O <: Obj](obj: Obj): PlusInst[O] = new PlusInst[O](obj)
 
-  class PlusInst[O <: Obj with PlusOp[Type[O], Value[O]]](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.plus, List(other)), q) {
-    override def q(quantifier: IntQ): this.type = new PlusInst[O](other, quantifier).asInstanceOf[this.type]
+  class PlusInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.plus, List(arg)), q) {
+    override def q(q: IntQ): this.type = new PlusInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
-      val inst = new PlusInst[O](Inst.resolveArg(start, other), q)
-      (inst.arg0[O]() match {
-        case bvalue: Value[O] => start.plus(bvalue)
-        case btype: Type[O] => start.plus(btype)
-      }).via(start, inst).asInstanceOf[O]
+      val inst = new PlusInst(Inst.resolveArg(start, arg), q)
+      Try(start match {
+        case aint: Int => start.clone(value = aint.value + inst.arg0[Int]().value)
+        case areal: Real => start.clone(value = areal.value + inst.arg0[Real]().value)
+        case astr: Str => start.clone(value = astr.value + inst.arg0[Str]().value)
+        case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(value = arec.value ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().value)
+        case arec: ORecType => start.clone(value = arec.value ++ inst.arg0[ORecType]().value)
+        case alst: LstValue[Value[Obj]] => start.clone(value = alst.value ++ inst.arg0[LstValue[Value[Obj]]]().value)
+        case alst: LstType[Obj] => start.clone(value = alst.value ++ inst.arg0[LstType[Obj]]().value)
+      }).getOrElse(start).via(start, inst)
     }
   }
 
 }
-

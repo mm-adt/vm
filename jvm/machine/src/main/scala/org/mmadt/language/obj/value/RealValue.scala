@@ -32,5 +32,4 @@ trait RealValue extends Real
   with ObjValue
   with Value[Real] {
   override val value: Double
-  override def plus(other: RealValue): this.type = this.clone(value = this.value + other.value, via = (this, PlusOp(other)))
 }

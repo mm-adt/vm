@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.{IntValue, LstValue}
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Int, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 
@@ -48,8 +48,6 @@ trait LstType[A <: Obj] extends Lst[A]
     valueType.via(this, GetOp[Int, A](key, valueType))
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
-  override def plus(other: LstType[A]): LstType[A] = this.clone(value = this.value ++ other.value).via(this, PlusOp(other))
-  override def plus(other: LstValue[_]): this.type = this.clone(value = this.value ++ other.value).via(this, PlusOp(other))
   override def zero(): this.type = this.via(this, new ZeroInst())
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()

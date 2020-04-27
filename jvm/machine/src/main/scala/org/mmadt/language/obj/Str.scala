@@ -22,15 +22,13 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.StrType
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.StrValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Str extends Obj
-  with PlusOp[StrType, StrValue]
+  with PlusOp[Str]
   with GtOp[Str]
   with GteOp[Str]
   with LtOp[Str]

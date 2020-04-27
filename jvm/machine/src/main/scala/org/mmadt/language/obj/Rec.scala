@@ -31,7 +31,7 @@ import org.mmadt.language.obj.value.RecValue
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj, B <: Obj] extends Obj
-  with PlusOp[RecType[A, B], RecValue[_, _]]
+  with PlusOp[Rec[A,B]]
   with GetOp[A, B]
   with PutOp[A, B]
   with ZeroOp[Rec[A, B]] {

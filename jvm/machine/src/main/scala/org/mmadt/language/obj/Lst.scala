@@ -23,16 +23,14 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.`type`.LstType
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.LstValue
 
 trait Lst[A <: Obj] extends Obj
   with HeadOp[A]
   with TailOp
   with AppendOp[A]
   with GetOp[Int, A]
-  with PlusOp[LstType[A], LstValue[_]]
+  with PlusOp[Lst[A]]
   with ZeroOp[Lst[A]] {
   val value: List[Obj]
 }

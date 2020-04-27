@@ -30,7 +30,7 @@ import org.scalatest.FunSuite
  */
 class VRealTest extends FunSuite {
   test("real value") {
-    assertResult("real<=[start,4.0][plus,real]")((4.0 + real).toString)
+    assertResult(real(8.0))(4.0 + real)
     assertResult(real(3.0))(real(1.0) + real(2.0))
     assertResult(real(3))(real(1) + 2.0)
     assertResult(real(-4.0))(-real(4))

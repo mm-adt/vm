@@ -35,7 +35,6 @@ trait StrType extends Str
   with Type[Str]
   with ObjType {
   def value: String = throw LanguageException.typesNoValue(this)
-  override def plus(other: StrValue): this.type = this.via(this, PlusOp(other))
 }
 
 

@@ -35,5 +35,4 @@ trait RealType extends Real
   with ObjType {
   def value: Double = throw LanguageException.typesNoValue(this)
   def apply(value: RealValue): RealValue = value.named(this.name)
-  override def plus(other: RealValue): this.type = this.via(this, PlusOp(other))
 }

@@ -33,7 +33,7 @@ import org.scalatest.FunSuite
  */
 class VIntTest extends FunSuite {
   test("int value") {
-    assertResult("int<=[start,4][plus,int]")((4 + int).toString)
+    assertResult(int(8))(4 + int)
     assertResult(int(3))(int(1) + int(2))
     assertResult(int(3))(int(1) + 2)
     assertResult(int(-4))(-int(4))

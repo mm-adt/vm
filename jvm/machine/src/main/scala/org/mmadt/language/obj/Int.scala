@@ -22,15 +22,13 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.IntValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Int extends Obj
-  with PlusOp[IntType, IntValue]
+  with PlusOp[Int]
   with MultOp[Int]
   with NegOp[Int]
   with GtOp[Int]
@@ -39,6 +37,5 @@ trait Int extends Obj
   with LteOp[Int]
   with OneOp[Int]
   with ZeroOp[Int] {
-
   def value: Long
 }

@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Str
-import org.mmadt.language.obj.op.map._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,5 +31,4 @@ trait StrValue extends Str
   with ObjValue
   with Value[Str] {
   override val value: String
-  override def plus(other: StrValue): this.type = this.clone(value = this.value + other.value, via = (this, PlusOp(other)))
 }

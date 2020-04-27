@@ -24,7 +24,6 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.value.IntValue
 
 /**
@@ -33,11 +32,8 @@ import org.mmadt.language.obj.value.IntValue
 trait IntType extends Int
   with Type[Int]
   with ObjType {
-
   def value: Long = throw LanguageException.typesNoValue(this)
-
   def apply(value: IntValue): IntValue = value.named(this.name)
-  override def plus(other: IntValue): this.type = this.via(this, PlusOp(other))
 }
 
 

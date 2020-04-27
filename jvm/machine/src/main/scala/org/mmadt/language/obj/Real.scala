@@ -22,15 +22,13 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.RealType
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.value.RealValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Real extends Obj
-  with PlusOp[RealType, RealValue]
+  with PlusOp[Real]
   with MultOp[Real]
   with NegOp[Real]
   with GtOp[Real]

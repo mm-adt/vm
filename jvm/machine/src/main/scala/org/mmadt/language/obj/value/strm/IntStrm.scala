@@ -31,5 +31,4 @@ import org.mmadt.language.obj.value.IntValue
  */
 trait IntStrm extends Strm[Int] with Int {
   override def value: Long = throw LanguageException.typesNoValue(this)
-  override def plus(other: IntValue): this.type = this.clone(value = this.values.map(x => x.plus(other)))
 }

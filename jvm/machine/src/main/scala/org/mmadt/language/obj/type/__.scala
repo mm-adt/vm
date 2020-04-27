@@ -27,7 +27,6 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.value.ObjValue
 import org.mmadt.language.obj.{Inst, IntQ, OType, Obj, ViaTuple, _}
 import org.mmadt.storage.StorageFactory._
 
@@ -35,15 +34,13 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple = base()) extends Type[__]
-  with PlusOp[__, ObjValue]
   with HeadOp[Obj]
   with TailOp
   with GetOp[Obj, Obj]
   with PutOp[Obj, Obj] {
   override def clone(name: String = Tokens.empty, value: Any, quantifier: IntQ = qOne, via: ViaTuple = base()): this.type = new __(name, quantifier, via).asInstanceOf[this.type]
   def apply[T <: Obj](obj: Obj): OType[T] = asType(this.lineage.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
-  override def plus(other: __): this.type = this.via(this, PlusOp(other))
-  override def plus(other: ObjValue): this.type = this.via(this, PlusOp(other))
+  def plus(other: Obj): this.type = this.via(this, PlusOp(other))
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
   def neg(): this.type = this.via(this, NegOp())
   def or(other: Obj): Bool = bool.via(this, OrOp(other))

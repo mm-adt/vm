@@ -22,42 +22,51 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.`type`.{IntType, RealType, Type}
+import org.mmadt.language.obj.`type`.{IntType, RealType, Type, __}
 import org.mmadt.language.obj.branch.Coprod
-import org.mmadt.language.obj.op.map.PlusOp
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
-import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.obj.{Int, Obj, Real, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
-  private type PlusObj = Obj with PlusOp[Type[Obj], Value[Obj]]
-  private type PlusValue = Value[Obj] with PlusOp[Type[Obj], Value[Obj]]
-  test("[plus] lineage") {
-    def maker(x: PlusObj, y: PlusValue): Obj = x.q(2).plus(y).q(3).plus(y.plus(y)).q(10)
-
-    val starts: TableFor2[Obj, Value[Obj]] =
-      new TableFor2(("obj1", "obj2"),
-        (int, int(2)),
-        (int(4), int(2)),
-        (real, real(342.0)),
-        (real(3.3), real(1346.2)),
-        (str, str("a")),
-        (str("a"), str("b")),
-        (rec, vrec(str("a") -> int(1), str("b") -> int(2))),
-        (vrec(str("a") -> int(23), str("b") -> int(1)), vrec(str("a") -> int(1), str("b") -> int(2))))
-    forEvery(starts) { (obj, arg) => {
-      val expr = maker(obj.asInstanceOf[PlusObj], arg.asInstanceOf[PlusValue])
-      obj match {
-        case value: Value[_] => assert(value.value != expr.asInstanceOf[Value[_]].value)
-        case _ =>
+  test("[plus] value, type, strm, anon combinations") {
+    val starts: TableFor3[Obj, Obj, String] =
+      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+        //////// INT
+        (int(2).plus(2), int(4), "value"), // value * value = value
+        (int(2).q(10).plus(2), int(4).q(10), "value"), // value * value = value
+        (int(2).q(10).plus(2).q(20), int(4).q(200), "value"), // value * value = value
+        (int(2).plus(int(2).q(10)), int(4), "value"), // value * value = value
+        (int(2).plus(int), int(4), "value"), // value * type = value
+        (int(2).plus(__.plus(int)), int(6), "value"), // value * anon = value
+        (int.plus(int(2)), int.plus(int(2)), "type"), // type * value = type
+        (int.q(10).plus(int(2)), int.q(10).plus(int(2)), "type"), // type * value = type
+        (int.plus(int), int.plus(int), "type"), // type * type = type
+        (int(1, 2, 3).plus(2), int(3, 4, 5), "strm"), // strm * value = strm
+        (int(1, 2, 3).plus(int(2).q(10)), int(3, 4, 5), "strm"), // strm * value = strm
+        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).plus(int), int(2, 4, 6), "strm"), // strm * type = strm
+        (int(1, 2, 3).plus(__.plus(int)), int(3, 6, 9), "strm"), // strm * anon = strm
+        //////// REAL
+        (real(2.0).plus(2.0), real(4), "value"), // value * value = value
+        (real(2.0).plus(real), real(4.0), "value"), // value * type = value
+        (real(2.0).plus(__.plus(real)), real(6.0), "value"), // value * anon = value
+        (real.plus(real(2.0)), real.plus(real(2.0)), "type"), // type * value = type
+        (real.plus(real), real.plus(real), "type"), // type * type = type
+        (real(1.0, 2.0, 3.0).plus(2.0), real(3.0, 4.0, 5.0), "strm"), // strm * value = strm
+        (real(1.0, 2.0, 3.0).plus(real), real(2.0, 4.0, 6.0), "strm"), // strm * type = strm
+        (real(1.0, 2.0, 3.0).plus(__.plus(real)), real(3.0, 6.0, 9.0), "strm"), // strm * anon = strm
+      )
+    forEvery(starts) { (query, result, atype) => {
+      assertResult(result)(query)
+      atype match {
+        case "value" => assert(query.isInstanceOf[Value[_]])
+        case "type" => assert(query.isInstanceOf[Type[_]])
+        case "strm" => assert(query.isInstanceOf[Strm[_]])
       }
-      assert(obj.q != expr.q)
-      assertResult(2)(expr.lineage.length)
-      assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), PlusOp(arg).q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).asInstanceOf[PlusObj].plus(arg).q(3), PlusOp(arg.asInstanceOf[PlusValue].plus(arg)).q(10)))(expr.lineage.last)
     }
     }
   }
@@ -66,31 +75,31 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[plus] w/ int") {
     assertResult(int(4))(int(1).plus(int(3))) // value * value = value
     assert(int(1).plus(int(3)).isInstanceOf[IntValue])
-    assert(int(1).plus(int(3)).isInstanceOf[IntValue])
-    assertResult(int(1).plus(int))(int(1).plus(int)) // value * type = type
-    assert(int(1).plus(int).isInstanceOf[IntType])
-    assert(int(1).plus(int).isInstanceOf[IntType])
+    assert(int(1).plus(int(3)).isInstanceOf[Int])
+    assertResult(int(2))(int(1).plus(int)) // value * type = value
+    assert(int(1).plus(int).isInstanceOf[IntValue])
+    assert(int(1).plus(int).isInstanceOf[Int])
     assertResult(int.plus(int(3)))(int.plus(int(3))) // type * value = type
     assert(int.plus(int(3)).isInstanceOf[IntType])
-    assert(int.plus(int(3)).isInstanceOf[IntType])
+    assert(int.plus(int(3)).isInstanceOf[Int])
     assertResult(int.plus(int))(int.plus(int)) // type * type = type
     assert(int.plus(int).isInstanceOf[IntType])
-    assert(int.plus(int).isInstanceOf[IntType])
+    assert(int.plus(int).isInstanceOf[Int])
   }
 
   test("[plus] w/ real") {
     assertResult(real(4.0))(real(1).plus(real(3))) // value * value = value
     assert(real(1).plus(real(3)).isInstanceOf[RealValue])
-    assert(real(1).plus(real(3)).isInstanceOf[RealValue])
-    assertResult(real(1).plus(real))(real(1).plus(real)) // value * type = type
-    assert(real(1).plus(real).isInstanceOf[RealType])
-    assert(real(1).plus(real).isInstanceOf[RealType])
+    assert(real(1).plus(real(3)).isInstanceOf[Real])
+    assertResult(real(2))(real(1).plus(real)) // value * type = value
+    assert(real(1).plus(real).isInstanceOf[RealValue])
+    assert(real(1).plus(real).isInstanceOf[Real])
     assertResult(real.plus(real(3)))(real.plus(real(3))) // type * value = type
     assert(real.plus(real(3)).isInstanceOf[RealType])
-    assert(real.plus(real(3)).isInstanceOf[RealType])
+    assert(real.plus(real(3)).isInstanceOf[Real])
     assertResult(real.plus(real))(real.plus(real)) // type * type = type
     assert(real.plus(real).isInstanceOf[RealType])
-    assert(real.plus(real).isInstanceOf[RealType])
+    assert(real.plus(real).isInstanceOf[Real])
   }
   test("[plus] w/ products and coproducts") {
     val starts: TableFor3[Coprod[Str], Coprod[Str], Coprod[Obj]] =

@@ -32,5 +32,4 @@ trait IntValue extends Int
   with ObjValue
   with Value[Int] {
   override val value: Long
-  override def plus(other: IntValue): this.type = this.clone(value = this.value + other.value, via = (this, PlusOp(other)))
 }
