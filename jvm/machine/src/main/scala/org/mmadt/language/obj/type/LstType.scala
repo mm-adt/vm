@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.{Int, Lst, Obj}
@@ -34,8 +33,6 @@ trait LstType[A <: Obj] extends Lst[A]
 
   val value: List[A]
 
-  override def tail(): this.type = if (this.value.isEmpty) this.clone(via = (this, TailOp())) else this.clone(value = this.value.tail, via = (this, TailOp()))
-  override def append(element: A): this.type = this.clone(value = this.value :+ element, via = (this, AppendOp[A](element)))
   override def get(key: Int): A = {
     val valueType: A = key match {
       case avalue: IntValue if this.value.length > avalue.value => asType[A](this.value(avalue.value.toInt))
@@ -47,7 +44,6 @@ trait LstType[A <: Obj] extends Lst[A]
     valueType.via(this, GetOp[Int, A](key, valueType))
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
-  override def zero(): this.type = this.via(this, new ZeroInst())
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {

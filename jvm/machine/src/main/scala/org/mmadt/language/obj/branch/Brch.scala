@@ -47,7 +47,6 @@ trait Brch[A <: Obj] extends Obj
   val value: List[A]
 
   override def toString: String = LanguageFactory.printBrch(this)
-  override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty brch") else this.clone(value = this.value.tail, via = (this, TailOp()))
 
   override def put(key: Int, value: A): this.type = key match {
     case avalue: IntValue =>

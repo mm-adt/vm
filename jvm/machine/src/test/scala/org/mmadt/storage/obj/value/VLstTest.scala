@@ -38,7 +38,7 @@ class VLstTest extends FunSuite with TableDrivenPropertyChecks {
     val starts: TableFor2[LstValue[Value[Obj]], List[Value[Obj]]] =
       new TableFor2[LstValue[Value[Obj]], List[Value[Obj]]](("lst", "list"),
         (vlst(), List.empty),
-        (vlst().append("a"), List(str("a"))),
+        (vlst[Value[Obj]]().append("a"), List(str("a"))),
         (vlst[Value[Obj]]().append("a").append("a"), List(str("a"), str("a"))),
         (vlst[Value[Obj]]().append("a").append("b").append("c"), List(str("a"), str("b"), str("c"))),
         (vlst[Value[Obj]]().append("a").append(vlst[Value[Obj]]().append("b").append("d")).append("c"), List[Value[Obj]](str("a"), vlst().append(str("b")).append(str("d")), str("c"))),

@@ -30,6 +30,5 @@ import org.mmadt.language.obj.Bool
 trait BoolValue extends Bool
   with ObjValue
   with Value[Bool] {
-
   override val value: Boolean
 }

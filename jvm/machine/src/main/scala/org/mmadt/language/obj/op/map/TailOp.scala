@@ -22,24 +22,30 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.map.TailOp.TailType
+import org.mmadt.language.obj.`type`.LstType
+import org.mmadt.language.obj.branch.Brch
+import org.mmadt.language.obj.value.LstValue
 import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait TailOp {
-  this: TailType =>
-  def tail(): this.type
+  this: Obj =>
+  def tail(): this.type = TailOp().exec(this)
 }
 
 object TailOp {
-  private type TailType = Obj with TailOp
-  def apply(): TailInst = new TailInst
+  def apply[O <: Obj](): TailInst[O] = new TailInst[O]
 
-  class TailInst(q: IntQ = qOne) extends VInst[TailType, TailType]((Tokens.tail, Nil), q) {
+  class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.tail, Nil), q) {
     override def q(q: IntQ): this.type = new TailInst(q).asInstanceOf[this.type]
-    override def exec(start: TailType): TailType = start.tail().via(start, new TailInst(q))
+    override def exec(start: O): O = (start match {
+      case alst: LstValue[_] => if (alst.value.isEmpty) throw new LanguageException("no tail on empty lst") else alst.clone(value = alst.value.tail)
+      case alst: LstType[_] => if (alst.value.isEmpty) alst else alst.clone(value = alst.value.tail)
+      case abrch: Brch[_] => if (abrch.value.isEmpty) throw new LanguageException("no tail on empty brch") else abrch.clone(value = abrch.value.tail)
+    }).asInstanceOf[O].via(start, this)
+
   }
 
 }

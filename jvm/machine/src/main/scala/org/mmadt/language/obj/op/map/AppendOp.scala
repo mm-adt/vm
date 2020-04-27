@@ -23,14 +23,17 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.{Inst, IntQ, Lst, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
 trait AppendOp[A <: Obj] {
   this: Lst[A] =>
-  def append(other: A): this.type
+  def append(anon: __): this.type = AppendOp(anon).exec(this).asInstanceOf[this.type]
+  def append(other: A): this.type = AppendOp(other).exec(this).asInstanceOf[this.type]
   final def +:(other: A): this.type = this.append(other)
+  final def +:(anon: __): this.type = this.append(anon)
 }
 
 object AppendOp {
@@ -40,7 +43,7 @@ object AppendOp {
     override def q(quantifier: IntQ): this.type = new AppendInst[O](other, quantifier).asInstanceOf[this.type]
     override def exec(start: Lst[O]): Lst[O] = {
       val inst = new AppendInst[O](Inst.resolveArg(start, other), q)
-      start.append(inst.arg0[O]()).via(start, inst).asInstanceOf[Lst[O]]
+      start.clone(value = start.value :+ inst.arg0[O]()).via(start, inst)
     }
   }
 

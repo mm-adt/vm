@@ -22,10 +22,10 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.obj.`type`.{LstType, Type}
+import org.mmadt.language.obj.`type`.LstType
 import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.value.LstValue
-import org.mmadt.language.obj.{IntQ, Lst, Obj}
+import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{asType, obj, qOne}
 import org.mmadt.storage.obj.value.VInst
@@ -36,14 +36,13 @@ trait HeadOp[A <: Obj] {
 }
 
 object HeadOp {
-  private type HeadObj[A <: Obj] = Obj with HeadOp[A]
   def apply[A <: Obj](): HeadInst[A] = new HeadInst[A]
 
-  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[HeadObj[A], A]((Tokens.head, Nil), q) {
+  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Obj, A]((Tokens.head, Nil), q) {
     override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
-    override def exec(start: HeadObj[A]): A = (start match {
+    override def exec(start: Obj): A = (start match {
       case alst: LstValue[A] => if (alst.value.isEmpty) throw new LanguageException("no head on empty lst") else alst.value.head
-      case alst: LstType[A] =>  if (alst.value.isEmpty) obj.asInstanceOf[A] else asType(alst.value.head)
+      case alst: LstType[A] => if (alst.value.isEmpty) obj.asInstanceOf[A] else asType(alst.value.head)
       case abrch: Brch[A] => if (abrch.value.isEmpty) throw new LanguageException("no head on empty brch") else abrch.value.head
     }).via(start, this)
   }

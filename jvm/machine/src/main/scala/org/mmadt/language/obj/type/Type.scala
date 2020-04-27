@@ -22,12 +22,12 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.traverser.ExplainOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -40,6 +40,7 @@ trait Type[+T <: Obj] extends Obj
   this: T =>
 
   // type signature properties and functions
+  //def value: Any = throw LanguageException.typesNoValue(this)
   override def range: this.type = this.isolate
 
   // pattern matching methods

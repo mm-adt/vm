@@ -25,14 +25,13 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.branch.Prod
-import org.mmadt.language.obj.op.map.PathOp.{Path, PathInst}
+import org.mmadt.language.obj.op.map.PathOp.Path
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait PathOp {
   this: Obj =>
-  private lazy val inst: Inst[Obj, Path] = new PathInst()
-  def path(): Path = prod(this.lineage.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ this: _*).via(this, inst)
+  def path(): Path = PathOp().exec(this)
 }
 
 object PathOp {
@@ -41,7 +40,7 @@ object PathOp {
 
   class PathInst(q: IntQ = qOne) extends VInst[Obj, Path]((Tokens.path, Nil), q) {
     override def q(q: IntQ): this.type = new PathInst(q).asInstanceOf[this.type]
-    override def exec(start: Obj): Path = start.path().via(start, this)
+    override def exec(start: Obj): Path = prod(start.lineage.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*).via(start, this)
   }
 
 }
