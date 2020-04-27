@@ -44,7 +44,6 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   override def get[BB <: Obj](key: A, btype: BB): BB = btype.via(this, GetOp[A, BB](key, btype))
   override def get(key: A): B = asType(this.value(key)).via(this, GetOp[A, B](key, asType(this.value(key))))
   override def put(key: A, value: B): this.type = this.clone(value = this.value + (key -> value)).via(this, PutOp(key, value))
-  override def zero(): this.type = this.via(this, new ZeroInst())
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {

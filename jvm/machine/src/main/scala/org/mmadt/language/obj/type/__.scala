@@ -34,8 +34,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple = base()) extends Type[__]
-  with HeadOp[Obj]
-  with TailOp
   with GetOp[Obj, Obj]
   with PutOp[Obj, Obj] {
   override def clone(name: String = Tokens.empty, value: Any, quantifier: IntQ = qOne, via: ViaTuple = base()): this.type = new __(name, quantifier, via).asInstanceOf[this.type]
@@ -52,14 +50,12 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   def gte(other: Obj): BoolType = bool.via(this, GteOp(other))
   def lt(other: Obj): BoolType = bool.via(this, LtOp(other))
   def lte(other: Obj): BoolType = bool.via(this, LteOp(other))
+  def head(): this.type = this.via(this, HeadOp())
+  def tail(): this.type = this.via(this, TailOp())
   ///
   override def get(key: Obj): this.type = this.via(this, GetOp(key))
   override def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
   override def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
-
-
-  override def head(): this.type = this.via(this, HeadOp())
-  override def tail(): this.type = this.via(this, TailOp())
 }
 
 object __ extends __(Tokens.empty, qOne, base()) {
