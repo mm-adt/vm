@@ -49,7 +49,7 @@ class MultInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.mult(int), int.mult(int), "type"), // type * type = type
         (int(1, 2, 3).mult(2), int(2, 4, 6), "strm"), // strm * value = strm
         (int(1, 2, 3).mult(int(2).q(10)), int(2, 4, 6), "strm"), // strm * value = strm
-        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3).mult(int), int(1, 4, 9), "strm"), // strm * type = strm
         (int(1, 2, 3).mult(__.mult(int)), int(1, 8, 27), "strm"), // strm * anon = strm
         //////// REAL

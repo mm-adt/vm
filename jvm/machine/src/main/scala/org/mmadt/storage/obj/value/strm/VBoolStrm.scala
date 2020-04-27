@@ -32,9 +32,6 @@ import org.mmadt.storage.obj.OObj
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBoolStrm(name: String = Tokens.bool, _value: Seq[BoolValue], via: ViaTuple = base()) extends OObj(name, (int(_value.length), int(_value.length)), via) with BoolStrm {
-  def this(java: Seq[BoolValue]) = this(name = Tokens.bool, java, base())
-  override val values: Seq[BoolValue] = _value
-  override def q(quantifier: IntQ): this.type = this
-}
-
+class VBoolStrm(name: String = Tokens.bool, val values: Seq[BoolValue], via: ViaTuple = base())
+  extends OObj(name, (int(values.length), int(values.length)), via)
+    with BoolStrm

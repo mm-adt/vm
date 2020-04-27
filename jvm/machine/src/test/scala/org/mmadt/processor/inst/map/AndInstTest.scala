@@ -54,7 +54,7 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
         (bool(true, true, false).and(bfalse), bool(false, false, false), "strm"), // strm * value = strm
         (bool(true, true, false).and(bfalse.q(10)), bool(false, false, false), "strm"), // strm * value = strm
         (bool(true, true, false).and(bool), bool(true, true, false), "strm"), // strm * type = strm
-        //(bool(true, true, false).and(bool).q(10), bool(btrue.q(10), btrue.q(10), bfalse.q(10)), "strm"), // strm * type = strm
+        (bool(true, true, false).and(bool).q(10), bool(btrue.q(10), btrue.q(10), bfalse.q(10)), "strm"), // strm * type = strm
         (bool(true, true, false).and(bool.q(10)), bool(true, true, false), "strm"), // strm * type = strm
         (bool(true, true, false).and(__.and(bool)), bool(true, true, false), "strm"), // strm * anon = strm
         (bool(true, true, false).and(__.and(bool.q(10))), bool(true, true, false), "strm"), // strm * anon = strm

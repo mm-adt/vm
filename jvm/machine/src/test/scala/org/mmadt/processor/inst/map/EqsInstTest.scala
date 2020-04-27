@@ -50,7 +50,7 @@ class EqsInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.eqs(int), int.eqs(int), "type"), // type * type = type
         (int(1, 2, 3).eqs(2), bool(false, true, false), "strm"), // strm * value = strm
         (int(1, 2, 3).eqs(int(2).q(10)), bool(false, true, false), "strm"), // strm * value = strm
-        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).eqs(int(2)).q(10), bool(bfalse.q(10), btrue.q(10), bfalse.q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3).eqs(int), bool(true, true, true), "strm"), // strm * type = strm
         (int(1, 2, 3).eqs(__.mult(int)), bool(true, false, false), "strm"), // strm * anon = strm
         //////// REAL

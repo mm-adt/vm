@@ -52,7 +52,7 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2, 3).is(btrue), int(1, 2, 3), "strm"), // strm * value = strm
         (int(1, 2, 3).is(bfalse), strm, "strm"), // strm * value = strm
         (int(1, 2, 3).is(int.gt(int(2).q(10))), strm(List(int(3))), "strm"), // strm * value = strm
-        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).is(int.gte(int(2))).q(10), int(int(2).q(10), int(3).q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3).is(int.gt(int)), strm, "strm"), // strm * type = strm
         (int(1, 2, 3).is(__.gte(__.mult(int))), strm(List(int(1))), "strm"), // strm * anon = strm
         //////// REAL

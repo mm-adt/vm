@@ -50,7 +50,7 @@ class LtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.lt(int), int.lt(int), "type"), // type * type = type
         (int(1, 2, 3).lt(2), bool(true, false, false), "strm"), // strm * value = strm
         (int(1, 2, 3).lt(int(2).q(10)), bool(true, false, false), "strm"), // strm * value = strm
-        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).lt(int(2)).q(10), bool(btrue.q(10), bfalse.q(10), bfalse.q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3).lt(int), bool(false, false, false), "strm"), // strm * type = strm
         (int(1, 2, 3).lt(__.mult(int)), bool(false, true, true), "strm"), // strm * anon = strm
         //////// REAL

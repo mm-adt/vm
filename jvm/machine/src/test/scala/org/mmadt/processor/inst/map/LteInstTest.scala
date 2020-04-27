@@ -47,7 +47,7 @@ class LteInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.lte(int), int.lte(int), "type"), // type * type = type
         (int(1, 2, 3).lte(2), bool(true, true, false), "strm"), // strm * value = strm
         (int(1, 2, 3).lte(int(2).q(10)), bool(true, true, false), "strm"), // strm * value = strm
-        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).lte(int(2)).q(10), bool(btrue.q(10), btrue.q(10), bfalse.q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3).lte(int), bool(true, true, true), "strm"), // strm * type = strm
         (int(1, 2, 3).lte(__.mult(int)), bool(true, true, true), "strm"), // strm * anon = strm
         //////// REAL

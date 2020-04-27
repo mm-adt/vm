@@ -25,11 +25,11 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Int, IntQ, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
-
-import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,19 +49,23 @@ object MultOp {
     override def q(q: IntQ): this.type = new MultInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       val inst = new MultInst(Inst.resolveArg(start, arg), q)
-      Try(start match {
-        case aint: Int => start.clone(value = aint.value * inst.arg0[Int]().value)
-        case areal: Real => start.clone(value = areal.value * inst.arg0[Real]().value)
-        //////// EXPERIMENTAL
-        case prodA: Prod[O] => multObj[O](arg match {
-          case prodB: Prod[O] => prod[O]().clone(value = prodA.value ++ prodB.value)
-          case coprodB: Coprod[O] => coprod[O]().clone(value = coprodB.value.map(a => prod().clone(value = prodA.value :+ a)))
-        })
-        case coprodA: Coprod[O] => multObj[O](arg match {
-          case prodB: Prod[O] => coprod[O]().clone(value = coprodA.value.map(a => prod().clone(value = a +: prodB.value)))
-          case coprodB: Coprod[O] => coprod[O]().clone(value = coprodA.value.flatMap(a => coprodB.value.map(b => prod(a, b))))
-        })
-      }).getOrElse(start).via(start, inst).asInstanceOf[O]
+      (start match {
+        case _: Strm[_] => start
+        case _: Value[_] => start match {
+          case aint: Int => start.clone(value = aint.value * inst.arg0[Int]().value)
+          case areal: Real => start.clone(value = areal.value * inst.arg0[Real]().value)
+          //////// EXPERIMENTAL
+          case prodA: Prod[O] => multObj[O](arg match {
+            case prodB: Prod[O] => prod[O]().clone(value = prodA.value ++ prodB.value)
+            case coprodB: Coprod[O] => coprod[O]().clone(value = coprodB.value.map(a => prod().clone(value = prodA.value :+ a)))
+          })
+          case coprodA: Coprod[O] => multObj[O](arg match {
+            case prodB: Prod[O] => coprod[O]().clone(value = coprodA.value.map(a => prod().clone(value = a +: prodB.value)))
+            case coprodB: Coprod[O] => coprod[O]().clone(value = coprodA.value.flatMap(a => coprodB.value.map(b => prod(a, b))))
+          })
+        }
+        case _ => start
+      }).via(start, inst).asInstanceOf[O]
     }
   }
 

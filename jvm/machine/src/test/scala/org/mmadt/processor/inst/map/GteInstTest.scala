@@ -47,7 +47,7 @@ class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.gte(int), int.gte(int), "type"), // type * type = type
         (int(1, 2, 3).gte(2), bool(false, true, true), "strm"), // strm * value = strm
         (int(1, 2, 3).gte(int(2).q(10)), bool(false, true, true), "strm"), // strm * value = strm
-        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).gte(int(2)).q(10), bool(bfalse.q(10), btrue.q(10), btrue.q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3).gte(int), bool(true, true, true), "strm"), // strm * type = strm
         (int(1, 2, 3).gte(__.mult(int)), bool(true, false, false), "strm"), // strm * anon = strm
         //////// REAL
