@@ -32,35 +32,7 @@ import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
   this: Obj =>
-
-  // PRODUCT [split]
-  def split[A <: Obj](product: Prod[A]): Brch[A] = {
-    var qTest = qOne
-    product.clone(value = product.value.map(y =>
-      Option(this)
-        .filter(x => asType(x).range.test(asType(y).range)) // this is generally needed (find a more core home)
-        .map(_ => y match {
-          case atype: Type[_] => this ==> atype // COMPILE
-          case _ => y
-        })
-        .map {
-          case atype: Type[_] => this ==> atype // EXECUTE
-          case x => x
-        }
-        .filter(x => x.alive())
-        .map(x => x.q(multQ(x.q, qTest)))
-        .map(x => {
-          qTest = qZero; x
-        })
-        .getOrElse(obj.q(0))))
-      .via(this, SplitOp(product))
-  }
-
-  // COPRODUCT [split]
-  def split[A <: Obj](coproduct: Coprod[A]): Brch[A] = {
-    val branches: Coprod[A] = coproduct.clone(value = coproduct.value.map(x => Inst.resolveArg(this, x)))
-    branches.via(this, SplitOp(branches))
-  }
+  def split[A <: Obj](brch: Brch[A]): Brch[A] = SplitOp(brch).exec(this.asInstanceOf[A])
 }
 
 object SplitOp {
@@ -69,10 +41,32 @@ object SplitOp {
   class SplitInst[A <: Obj](brchs: Brch[A], q: IntQ = qOne) extends VInst[A, Brch[A]]((Tokens.split, List(brchs)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](brchs, q).asInstanceOf[this.type]
     override def exec(start: A): Brch[A] = {
-      (brchs match {
-        case prod: Prod[_] => start.split(prod)
-        case coprod: Coprod[_] => start.split(coprod)
-      }).via(start, this)
+      brchs match {
+        case product: Prod[_] =>
+          var qTest = qOne
+          product.clone(value = product.value.map(y =>
+            Option(start)
+              .filter(x => asType(x).range.test(asType(y).range)) // this is generally needed (find a more core home)
+              .map(_ => y match {
+                case atype: Type[_] => start ==> atype // COMPILE
+                case _ => y
+              })
+              .map {
+                case atype: Type[_] => start ==> atype // EXECUTE
+                case x => x
+              }
+              .filter(x => x.alive())
+              .map(x => x.q(multQ(x.q, qTest)))
+              .map(x => {
+                qTest = qZero;
+                x
+              })
+              .getOrElse(obj.q(0))))
+            .via(start, this)
+        case _: Coprod[_] =>
+          val inst = new SplitInst[A](brchs.clone(value = brchs.value.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
+          inst.arg0[Coprod[A]]().via(start, inst)
+      }
     }
   }
 
