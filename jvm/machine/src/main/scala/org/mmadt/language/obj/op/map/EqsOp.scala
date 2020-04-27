@@ -22,38 +22,41 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{BoolType, Type}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait EqsOp {
   this: Obj =>
-  def eqs(other: Type[_]): BoolType = bool.via(asType(this), EqsOp(other))
-  def eqs(other: Value[_]): Bool = (this match {
-    case avalue: Value[_] => bool(avalue.value.equals(other.value))
-    case _: Type[_] => bool
-  }).via(this, EqsOp(other))
-  // TODO final def ===(other: T): BoolType = this.eq(other)
-  // TODO final def ===(other: V): Bool = this.eq(other)
+  def eqs(anon: __): Bool = EqsOp(anon).exec(this)
+  def eqs(other: Obj): Bool = EqsOp(other).exec(this)
+  final def ===(other: Obj): Bool = this.eqs(other)
+  final def ===(anon: __): Bool = this.eqs(anon)
 }
 
 object EqsOp {
-  def apply(other: Obj): Inst[Obj, Bool] = new EqsInst(other)
+  def apply[O <: Obj](other: Obj): Inst[O, Bool] = new EqsInst[O](other)
 
-  class EqsInst[O <: Obj with EqsOp](other: Obj, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.lt, List(other)), q) {
-    override def q(quantifier: IntQ): this.type = new EqsInst[O](other, quantifier).asInstanceOf[this.type]
+  class EqsInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.eqs, List(other)), q) {
+    override def q(q: IntQ): this.type = new EqsInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
       val inst = new EqsInst[O](Inst.resolveArg(start, other), q)
-      (inst.arg0[O]() match {
-        case avalue: Value[O] => start.eqs(avalue)
-        case atype: Type[O] => start.eqs(atype)
-      }).via(start, inst)
+      Try[Bool]((start match {
+        case avalue: Value[_] => bool(value = avalue.value == inst.arg0[Value[_]]().value)
+        case _ => throw new LanguageException("")
+      }).via(start, inst)).getOrElse(start match {
+        case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))
+        case _ => bool.via(start, inst)
+      })
     }
   }
 

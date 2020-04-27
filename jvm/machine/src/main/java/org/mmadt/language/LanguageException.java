@@ -47,7 +47,7 @@ public class LanguageException extends VmException {
     }
 
     public static LanguageException typesNoValue(final Obj source) {
-        return new LanguageException("Types do note contain values: " + source);
+        return new LanguageException("Types do not contain values: " + source);
     }
 
     public static LanguageException zeroLengthPath(final Obj source) {

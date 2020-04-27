@@ -49,14 +49,14 @@ object GteOp {
     override def q(q: IntQ): this.type = new GteInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
       val inst = new GteInst[O](Inst.resolveArg(start, other), q)
-      Try((start match {
+      Try[Bool]((start match {
         case aint: Int => bool(value = aint.value >= inst.arg0[Int]().value)
         case areal: Real => bool(value = areal.value >= inst.arg0[Real]().value)
         case astr: Str => bool(value = astr.value >= inst.arg0[Str]().value)
       }).via(start, inst)).getOrElse(start match {
         case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))
         case _ => bool.via(start, inst)
-      }).asInstanceOf[Bool]
+      })
     }
   }
 

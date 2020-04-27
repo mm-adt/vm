@@ -39,7 +39,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[a] w/ values") {
     val check: TableFor3[Obj, Obj, Bool] =
-      new TableFor3(("value", "type", "bool"),
+      new TableFor3[Obj, Obj, Bool](("value", "type", "bool"),
         // bool
         (btrue, btrue, btrue),
         (btrue, bfalse, bfalse),

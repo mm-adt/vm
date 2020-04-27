@@ -23,16 +23,64 @@
 package org.mmadt.processor.inst.filter
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.value.{BoolValue, Value}
-import org.mmadt.language.obj.{Bool, Obj}
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor3}
 
 class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[is] testing") {
+  test("[is] value, type, strm, anon combinations") {
+    val starts: TableFor3[Obj, Obj, String] =
+      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+        //////// INT
+        (int(2).is(true), int(2), "value"), // value * value = value
+        (int(2).q(10).is(true), int(2).q(10), "value"), // value * value = value
+        (int(2).q(10).is(true).q(20), int(2).q(200), "value"), // value * value = value
+        (int(2).is(btrue.q(10)), int(2), "value"), // value * value = value
+        (int(2).is(bool), int(2).is(bool), "value"), // value * type = value
+        (int(2).is(__.gt(int)), int(2).q(qZero), "value"), // value * anon = value
+        (int(2).is(__.gte(int)), int(2), "value"), // value * anon = value
+        (int(2).q(10).is(__.gte(int)), int(2).q(10), "value"), // value * anon = value
+        (int(2).is(__.gte(int)).q(10), int(2).q(10), "value"), // value * anon = value
+        (int(2).q(10).is(__.gte(int)).q(20), int(2).q(200), "value"), // value * anon = value
+        (int.is(btrue), int.is(btrue), "type"), // type * value = type
+        (int.q(10).is(btrue), int.q(10).is(btrue), "type"), // type * value = type
+        (int(1, 2, 3).is(btrue), int(1, 2, 3), "strm"), // strm * value = strm
+        (int(1, 2, 3).is(bfalse), strm, "strm"), // strm * value = strm
+        (int(1, 2, 3).is(int.gt(int(2).q(10))), strm(List(int(3))), "strm"), // strm * value = strm
+        //(int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).is(int.gt(int)), strm, "strm"), // strm * type = strm
+        (int(1, 2, 3).is(__.gte(__.mult(int))), strm(List(int(1))), "strm"), // strm * anon = strm
+        //////// REAL
+        (real(2.0).is(btrue), 2.0, "value"), // value * value = value
+        (real(2.0).is(bfalse), real(2.0).q(qZero), "value"), // value * value = value
+        (real(2.0).is(real.gt(real.mult(real))), real(2.0).q(qZero), "value"), // value * type = value
+        (real(2.0).is(__.gt(__.mult(real))), real(2.0).q(qZero), "value"), // value * anon = value
+        (real.is(real.gt(real(2.0))), real.is(real.gt(2.0)), "type"), // type * value = type
+        (real.is(__.gt(real(2.0))), real.is(real.gt(2.0)), "type"), // type * anon = type
+        (real.is(bool), real.is(bool), "type"), // type * type = type
+        (real(1.0, 2.0, 3.0).is(real.gt(2.0)), strm(List(real(3.0))), "strm"), // strm * value = strm
+        (real(1.0, 2.0, 3.0).is(real.gt(real)), strm, "strm"), // strm * type = strm
+        (real(1.0, 2.0, 3.0).is(__.gt(__.mult(real))), strm, "strm"), // strm * anon = strm
+        (real(1.0, 2.0, 3.0).is(__.lte(__.mult(real))), real(1.0, 2.0, 3.0), "strm"), // strm * anon = strm
+
+      )
+    forEvery(starts) { (query, result, atype) => {
+      assertResult(result)(query)
+      atype match {
+        case "value" => assert(query.isInstanceOf[Value[_]])
+        case "type" => assert(query.isInstanceOf[Type[_]])
+        case "strm" => assert(query.isInstanceOf[Strm[_]])
+      }
+    }
+    }
+  }
+
+  test("[is] lineage") {
     def maker(x: Obj): Obj = x.q(2).is(btrue).q(3).is(btrue).q(10)
 
     val starts: TableFor1[Obj] =
@@ -62,22 +110,6 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
       assertResult((obj.q(2).is(btrue).q(3), IsOp(btrue).q(10)))(expr.lineage.last)
     }
     }
-  }
-  ///////////////////////////////////////////////////////////////////////
-
-  test("[is] w/ bool") {
-    assertResult(btrue)(btrue.is(btrue)) // value * value = value
-    assert(btrue.is(btrue).isInstanceOf[BoolValue])
-    assert(btrue.is(btrue).isInstanceOf[Bool])
-    assertResult(btrue.is(bool))(btrue.is(bool)) // value * type = type
-    //    assert(btrue.is(bool).isInstanceOf[BoolType]) TODO: this is because the value becomes a type (unique to [is])
-    //    assert(btrue.is(bool).isInstanceOf[BoolType])
-    assertResult(bool.is(btrue))(bool.is(btrue)) // type * value = type
-    assert(bool.is(btrue).isInstanceOf[BoolType])
-    assert(bool.is(btrue).isInstanceOf[BoolType])
-    assertResult(bool.is(bool))(bool.is(bool)) // type * type = type
-    assert(bool.is(bool).isInstanceOf[BoolType])
-    assert(bool.is(bool).isInstanceOf[BoolType])
   }
 
   test("[is] w/ int") {
