@@ -29,44 +29,50 @@ import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
 import org.mmadt.language.obj.{Int, Obj, Real, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3, TableFor4}
 
 class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[plus] value, type, strm, anon combinations") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+    val starts: TableFor4[Obj, Obj, Obj, String] =
+      new TableFor4[Obj, Obj, Obj, String](("input", "type", "result", "kind"),
         //////// INT
-        (int(2).plus(2), int(4), "value"), // value * value = value
-        (int(2).q(10).plus(2), int(4).q(10), "value"), // value * value = value
-        (int(2).q(10).plus(2).q(20), int(4).q(200), "value"), // value * value = value
-        (int(2).plus(int(2).q(10)), int(4), "value"), // value * value = value
-        (int(2).plus(int), int(4), "value"), // value * type = value
-        (int(2).plus(__.plus(int)), int(6), "value"), // value * anon = value
-        (int.plus(int(2)), int.plus(int(2)), "type"), // type * value = type
-        (int.q(10).plus(int(2)), int.q(10).plus(int(2)), "type"), // type * value = type
-        (int.plus(int), int.plus(int), "type"), // type * type = type
-        (int(1, 2, 3).plus(2), int(3, 4, 5), "strm"), // strm * value = strm
-        (int(1, 2, 3).plus(int(2).q(10)), int(3, 4, 5), "strm"), // strm * value = strm
-        (int(1, 2, 3).plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3).plus(int), int(2, 4, 6), "strm"), // strm * type = strm
-        (int(1, 2, 3).plus(__.plus(int)), int(3, 6, 9), "strm"), // strm * anon = strm
+        (int(2), __.plus(2), int(4), "value"), // value * value = value
+        (int(2).q(10), __.plus(2), int(4).q(10), "value"), // value * value = value
+        (int(2).q(10), __.plus(2).q(20), int(4).q(200), "value"), // value * value = value
+        (int(2), __.plus(int(2).q(10)), int(4), "value"), // value * value = value
+        (int(2), __.plus(int), int(4), "value"), // value * type = value
+        (int(2), __.plus(__.plus(int)), int(6), "value"), // value * anon = value
+        (int, __.plus(int(2)), int.plus(int(2)), "type"), // type * value = type
+        (int.q(10), __.plus(int(2)), int.q(10).plus(int(2)), "type"), // type * value = type
+        (int, __.plus(int), int.plus(int), "type"), // type * type = type
+        (int(1, 2, 3), __.plus(2), int(3, 4, 5), "strm"), // strm * value = strm
+        (int(1, 2, 3), __.plus(int(2).q(10)), int(3, 4, 5), "strm"), // strm * value = strm
+        (int(1, 2, 3), __.plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3), __.plus(int), int(2, 4, 6), "strm"), // strm * type = strm
+        (int(1, 2, 3), __.plus(__.plus(int)), int(3, 6, 9), "strm"), // strm * anon = strm
         //////// REAL
-        (real(2.0).plus(2.0), real(4), "value"), // value * value = value
-        (real(2.0).plus(real), real(4.0), "value"), // value * type = value
-        (real(2.0).plus(__.plus(real)), real(6.0), "value"), // value * anon = value
-        (real.plus(real(2.0)), real.plus(real(2.0)), "type"), // type * value = type
-        (real.plus(real), real.plus(real), "type"), // type * type = type
-        (real(1.0, 2.0, 3.0).plus(2.0), real(3.0, 4.0, 5.0), "strm"), // strm * value = strm
-        (real(1.0, 2.0, 3.0).plus(real), real(2.0, 4.0, 6.0), "strm"), // strm * type = strm
-        (real(1.0, 2.0, 3.0).plus(__.plus(real)), real(3.0, 6.0, 9.0), "strm"), // strm * anon = strm
+        (real(2.0), __.plus(2.0), real(4), "value"), // value * value = value
+        (real(2.0), __.plus(real), real(4.0), "value"), // value * type = value
+        (real(2.0), __.plus(__.plus(real)), real(6.0), "value"), // value * anon = value
+        (real, __.plus(real(2.0)), real.plus(real(2.0)), "type"), // type * value = type
+        (real, __.plus(real), real.plus(real), "type"), // type * type = type
+        (real(1.0, 2.0, 3.0), __.plus(2.0), real(3.0, 4.0, 5.0), "strm"), // strm * value = strm
+        (real(1.0, 2.0, 3.0), __.plus(real), real(2.0, 4.0, 6.0), "strm"), // strm * type = strm
+        (real(1.0, 2.0, 3.0), __.plus(__.plus(real)), real(3.0, 6.0, 9.0), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (query, result, atype) => {
-      assertResult(result)(query)
-      atype match {
-        case "value" => assert(query.isInstanceOf[Value[_]])
-        case "type" => assert(query.isInstanceOf[Type[_]])
-        case "strm" => assert(query.isInstanceOf[Strm[_]])
-      }
+    forEvery(starts) { (input, atype, result, kind) => {
+      List(
+        input.compute(asType(atype)),
+        input ===> (input.range ===> atype),
+        input ===> atype,
+        input ==> asType(atype)).foreach(x => {
+        assertResult(result)(x)
+        kind match {
+          case "value" => assert(x.isInstanceOf[Value[_]])
+          case "type" => assert(x.isInstanceOf[Type[_]])
+          case "strm" => assert(x.isInstanceOf[Strm[_]])
+        }
+      })
     }
     }
   }

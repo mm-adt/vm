@@ -62,6 +62,19 @@ class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).gt(2.0), bool(false, false, true), "strm"), // strm * value = strm
         (real(1.0, 2.0, 3.0).gt(real), bool(false, false, false), "strm"), // strm * type = strm
         (real(1.0, 2.0, 3.0).gt(__.mult(real)), bool(false, false, false), "strm"), // strm * anon = strm
+        //////// STR
+        (str("b").gt("a"), btrue, "value"), // value * value = value
+        (str("b").q(10).gt("a"), btrue.q(10), "value"), // value * value = value
+        (str("b").q(10).gt("a").q(20), btrue.q(200), "value"), // value * value = value
+        (str("b").gt(str("a").q(10)), btrue, "value"), // value * value = value
+        (str("b").gt(str), bfalse, "value"), // value * type = value
+        (str.gt("b"), str.gt("b"), "type"), // type * value = type
+        (str.q(10).gt("b"), str.q(10).gt("b"), "type"), // type * value = type
+        (str.gt(str), str.gt(str), "type"), // type * type = type
+        (str("a", "b", "c").gt("b"), bool(false, false, true), "strm"), // strm * value = strm
+        (str("a", "b", "c").gt(str("b").q(10)), bool(false, false, true), "strm"), // strm * value = strm
+        (str("a", "b", "c").gt("b").q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10)), "strm"), // strm * value = strm
+        (str("a", "b", "c").gt(str), bool(false, false, false), "strm"), // strm * type = strm
       )
     forEvery(starts) { (query, result, atype) => {
       assertResult(result)(query)

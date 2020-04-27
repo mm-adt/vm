@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -42,10 +43,11 @@ object AOp {
 
   class AInst(other: Obj, q: IntQ = qOne) extends VInst[Obj, Bool]((Tokens.a, List(other)), q) {
     override def q(q: IntQ): this.type = new AInst(other, q).asInstanceOf[this.type]
-    override def exec(start: Obj): Bool = (start match {
-      case _: Value[_] => bool(start.test(other))
-      case _: Type[_] => bool
-    }).via(start, this)
+    override def exec(start: Obj): Bool = start match {
+      case astrm: Strm[_] => strm[Bool](astrm.values.map(x => this.exec(x)))
+      case _: Value[_] => bool(start.test(other)).via(start, this)
+      case _: Type[_] => bool.via(start, this)
+    }
   }
 
 }
