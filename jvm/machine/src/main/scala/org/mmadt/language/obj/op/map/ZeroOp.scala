@@ -50,7 +50,7 @@ object ZeroOp {
         case arec: Rec[Obj, Obj] => arec.clone(value = Map.empty[Obj, Obj])
         case _: Prod[Obj] => prod()
         case _: Coprod[Obj] => coprod()
-      }).asInstanceOf[O].q(start.q).via(start, new ZeroInst[O](this.q))
+      }).asInstanceOf[O].q(start.q).via(start, this)
     }
   }
 

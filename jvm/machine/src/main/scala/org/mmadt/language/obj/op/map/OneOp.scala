@@ -44,7 +44,7 @@ object OneOp {
       (start match {
         case _: Int => int(1).q(start.q)
         case _: Real => real(1.0).q(start.q)
-      }).asInstanceOf[O].via(start, new OneInst[O](this.q))
+      }).asInstanceOf[O].via(start, this)
     }
   }
 

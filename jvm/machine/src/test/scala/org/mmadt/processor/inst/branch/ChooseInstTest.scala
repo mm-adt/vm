@@ -41,7 +41,7 @@ class ChooseInstTest extends FunSuite {
         int -> int.mult(3),
         int.mult(1) -> int.mult(4)).is(int.gt(20)).toString)
 
-    assertResult("int{0,30}<=int{30}[choose,[int{30}:int{30}[mult,3]|int{30}[mult,1]:int{30}[mult,4]]][is,bool<=int[gt,20]]")( // TODO: why is {30} not at is?
+    assertResult("int{0,30}<=int{30}[choose,[int{30}:int{30}[mult,3]|int{30}[mult,1]:int{30}[mult,4]]][is,bool{30}<=int{30}[gt,20]]")(
       int.q(30).choose(
         int -> int.mult(3),
         int.mult(1) -> int.mult(4)).is(int.gt(20)).toString)

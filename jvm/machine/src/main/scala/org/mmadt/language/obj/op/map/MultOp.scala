@@ -47,11 +47,11 @@ object MultOp {
   class MultInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.mult, List(arg)), q) {
     override def q(q: IntQ): this.type = new MultInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
-      val resolvedArg: Obj = Inst.resolveArg(start, arg)
+      val inst = new MultInst(Inst.resolveArg(start, arg), q)
       Try(start match {
-        case aint: Int => start.clone(value = aint.value * resolvedArg.asInstanceOf[Int].value)
-        case areal: Real => start.clone(value = areal.value * resolvedArg.asInstanceOf[Real].value)
-      }).getOrElse(start).via(start, new MultInst(resolvedArg, this.q))
+        case aint: Int => start.clone(value = aint.value * inst.arg0[Int]().value)
+        case areal: Real => start.clone(value = areal.value * inst.arg0[Real]().value)
+      }).getOrElse(start).via(start, inst)
     }
   }
 

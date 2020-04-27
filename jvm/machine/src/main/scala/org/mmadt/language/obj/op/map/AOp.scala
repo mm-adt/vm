@@ -34,18 +34,18 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait AOp {
   this: Obj =>
-  def a(other: Obj): Bool = (this match {
-    case _: Value[_] => bool(this.test(other))
-    case _: Type[_] => bool
-  }).via(this, AOp(other))
+  def a(other: Obj): Bool = AOp(other).exec(this)
 }
 
 object AOp {
   def apply(other: Obj): AInst = new AInst(other)
 
   class AInst(other: Obj, q: IntQ = qOne) extends VInst[Obj, Bool]((Tokens.a, List(other)), q) {
-    override def q(quantifier: IntQ): this.type = new AInst(other, quantifier).asInstanceOf[this.type]
-    override def exec(start: Obj): Bool = start.a(other).via(start, this)
+    override def q(q: IntQ): this.type = new AInst(other, q).asInstanceOf[this.type]
+    override def exec(start: Obj): Bool = (start match {
+      case _: Value[_] => bool(start.test(other))
+      case _: Type[_] => bool
+    }).via(start, this)
   }
 
 }

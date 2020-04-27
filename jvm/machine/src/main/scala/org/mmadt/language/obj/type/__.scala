@@ -48,7 +48,7 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   def neg(): this.type = this.via(this, NegOp())
   def or(other: Obj): Bool = bool.via(this, OrOp(other))
   def and(other: Obj): Bool = bool.via(this, OrOp(other))
-  def is(other: Obj): BoolType = bool.via(this, IsOp(other))
+  def is(other: Obj): Bool = bool.via(this, IsOp(other))
   def one(): this.type = this.via(this, OneOp())
   def zero(): this.type = this.via(this, ZeroOp())
   def gt(other: Obj): BoolType = bool.via(this, GtOp(other))

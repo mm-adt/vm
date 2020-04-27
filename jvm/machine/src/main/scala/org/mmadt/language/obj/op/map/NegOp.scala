@@ -47,7 +47,7 @@ object NegOp {
       Try(start match {
         case aint: Int => start.clone(value = -aint.value)
         case areal: Real => start.clone(value = -areal.value)
-      }).getOrElse(start).via(start, new NegInst[O](this.q))
+      }).getOrElse(start).via(start, this)
     }
   }
 

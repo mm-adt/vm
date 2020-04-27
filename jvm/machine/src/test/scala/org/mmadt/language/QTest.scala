@@ -50,6 +50,6 @@ class QTest extends FunSuite {
     assertResult("bool{3}<=int{3}[gt,5]")(int.q(3).gt(5).toString)
     assertResult("int{?}<=int[is,bool<=int[gt,5]]")(int.is(int.gt(5)).toString)
     assertResult("int{?}<=int[is,bool<=int[gt,5]][plus,10]")(int.is(int.gt(5)).plus(10).toString)
-    assertResult("int{0}[is,bool<=int[gt,5]][plus,10]")(int.q(0).is(int.gt(5)).plus(10).toString)
+    assertResult("int{0}[is,bool{0}<=[gt,5]][plus,10]")(int.q(0).is(int.gt(5)).plus(10).toString)
   }
 }

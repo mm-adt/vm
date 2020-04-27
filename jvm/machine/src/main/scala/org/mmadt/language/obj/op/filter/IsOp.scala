@@ -24,42 +24,33 @@ package org.mmadt.language.obj.op.filter
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.BoolType
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.FilterInstruction
-import org.mmadt.language.obj.value.{BoolValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IsOp {
   this: Obj =>
-
-  def is(bool: Bool): this.type = bool match {
-    case avalue: BoolValue => this.is(avalue)
-    case atype: BoolType => this.is(atype)
-  }
-  def is(bool: BoolType): OType[this.type] = this.start().via(this, IsOp(bool)).hardQ(minZero(this.q)).asInstanceOf[OType[this.type]]
-  def is(bool: BoolValue): this.type = (this match {
-    case _: Value[_] => if (bool.value) this else this.q(qZero)
-    case _ => this.hardQ(minZero(this.q))
-  }).via(this, IsOp(bool)).asInstanceOf[this.type]
+  def is(anon: __): this.type = IsOp(anon).exec(this)
+  def is(bool: Bool): this.type = IsOp(bool).exec(this)
 }
 
 object IsOp {
-  def apply[O <: Obj with IsOp](other: Obj): Inst[O, O] = new IsInst[O](other)
+  def apply[O <: Obj](other: Obj): Inst[O, O] = new IsInst[O](other)
 
-  class IsInst[O <: Obj with IsOp](other: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.is, List(other)), q) with FilterInstruction {
-    override def q(q: IntQ): this.type = new IsInst[O](other, q).asInstanceOf[this.type]
+  class IsInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.is, List(arg)), q) with FilterInstruction {
+    override def q(q: IntQ): this.type = new IsInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
-      val inst = new IsInst[O](Inst.resolveArg(start, other), q)
-      inst.arg0[O]() match {
-        case avalue: BoolValue =>
-          val x = start.is(avalue).via(start, inst)
-          if (!avalue.value) x.q(qZero) else x
-        case atype: BoolType => start.is(atype).via(start, inst).hardQ(minZero(multQ(start, inst)))
-      }
+      val inst = new IsInst(Inst.resolveArg(start, arg), q)
+      Try[O](
+        if (inst.arg0[Bool]().value) start.via(start, inst)
+        else start.via(start, inst).q(qZero))
+        .getOrElse(start.via(start, inst).hardQ(minZero(multQ(start, inst))))
     }
   }
 

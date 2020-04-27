@@ -47,8 +47,8 @@ object OrOp {
   class OrInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool]((Tokens.or, List(other)), q) {
     override def q(q: IntQ): this.type = new OrInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
-      val otherBool: Bool = Inst.resolveArg(start, other).asInstanceOf[Bool]
-      Try[Bool](start.clone(value = start.value || otherBool.value)).getOrElse(start).via(start, new OrInst(otherBool, this.q))
+      val inst = new OrInst(Inst.resolveArg(start, other), q)
+      Try[Bool](start.clone(value = start.value || inst.arg0[Bool]().value)).getOrElse(start).via(start, inst)
     }
   }
 
