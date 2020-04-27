@@ -62,12 +62,10 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
 
   // specific to mmlang execution
-  lazy val expr: Parser[Obj] = evaluation | compilation
-  lazy val compilation: Parser[Obj] = objType ^^ (x => x.domain() ==> (x, this.model))
-  lazy val evaluation: Parser[Obj] = (strm | objValue | brchObj) ~ opt(objType) ^^ (x => {
+  lazy val expr: Parser[Obj] = (strm | obj) ~ opt(objType) ^^ (x => {
     x._2 match {
-      case None => x._1 // value only, return value
-      case Some(y) => x._1 ===> y.asInstanceOf[Type[Obj]] // compile type with value's type, then execute
+      case None => x._1 // left hand side only, return it
+      case Some(y) => x._1 ===> y // process left with right
     }
   })
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +121,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val chooseSugar: Parser[ChooseInst[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj, PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(value = x.map(o => (o._1, o._2)).toMap)))
   lazy val branchSugar: Parser[BranchInst[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj, AMPERSAND)) <~ RBRACKET ^^ (x => BranchOp(trec(value = x.map(o => (o._1, o._2)).toMap)))
   lazy val getStrSugar: Parser[GetInst[Obj, Obj]] = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp[Obj, Obj](str(x)))
-  lazy val getIntSugar: Parser[GetInst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(Integer.valueOf(x).intValue())))
+  lazy val getIntSugar: Parser[GetInst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
   lazy val toSugar: Parser[ToInst[Obj]] = LANGLE ~> "[a-zA-z]+".r <~ RANGLE ^^ (x => ToOp(x))
   lazy val fromSugar: Parser[FromInst[Obj]] = LANGLE ~> PERIOD ~ "[a-zA-z]+".r <~ RANGLE ^^ (x => FromOp(x._2))
   lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
