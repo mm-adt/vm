@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -34,16 +35,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait MapOp {
   this: Obj =>
-  def map[O <: Obj](other: O): O = {
-    val inst = MapOp(Inst.resolveArg(this, other))
-    this match {
-      case _: Type[_] => asType[O](inst.arg0[O]()).via(this, inst)
-      case _ => other match {
-        case _: Value[_] => inst.arg0[O]().via(this, inst)
-        case atype: Type[O] => this.compute(atype)
-      }
-    }
-  }
+  def map[O <: Obj](other: O): O = MapOp[O](other).exec(this)
 }
 
 object MapOp {
@@ -52,8 +44,15 @@ object MapOp {
   class MapInst[O <: Obj](other: O, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.map, List(other)), q) {
     override def q(q: IntQ): this.type = new MapInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
-      val inst = MapOp(Inst.resolveArg(start, other))
-      start.map(inst.arg0[O]()).via(start, inst)
+      val inst = new MapInst(Inst.resolveArg(start, other), this.q)
+      start match {
+        case astrm: Strm[_] => strm[O](astrm.values.map(x => inst.exec(x)))
+        case _: Type[_] => asType[O](inst.arg0[O]()).via(start, inst)
+        case _ => (other match { // Value[_]
+          case _: Value[_] => inst.arg0[O]()
+          case atype: Type[O] => start.compute(atype)
+        }).via(start, inst)
+      }
     }
   }
 
