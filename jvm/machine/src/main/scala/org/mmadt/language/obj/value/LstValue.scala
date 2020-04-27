@@ -33,7 +33,6 @@ trait LstValue[A <: Value[Obj]] extends Lst[A]
   with Value[Lst[A]] {
 
   override val value: List[A]
-  override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty lst") else this.value.head.via(this, HeadOp())
   override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty lst") else this.clone(value = this.value.tail, via = (this, TailOp()))
   override def append(element: A): this.type = this.clone(value = this.value :+ element, via = (this, AppendOp[A](element)))
   override def get(key: Int): A = key match {

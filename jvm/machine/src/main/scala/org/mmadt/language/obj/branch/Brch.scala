@@ -39,15 +39,14 @@ trait Brch[A <: Obj] extends Obj
   with PutOp[Int, A]
   with HeadOp[A]
   with TailOp
-  with PlusBOp[A] // TODO: experimental
-  with MultBOp[A] // TODO: experimental
+  with PlusOp[Brch[A]] // TODO: experimental
+  with MultOp[Brch[A]] // TODO: experimental
   //with AppendOp[A]
   //with OneOp
   with ZeroOp[Brch[A]] {
   val value: List[A]
 
   override def toString: String = LanguageFactory.printBrch(this)
-  override def head(): A = if (this.value.isEmpty) throw new LanguageException("no head on empty brch") else this.value.head.via(this, HeadOp()) // TODO: check process trace for type or value
   override def tail(): this.type = if (this.value.isEmpty) throw new LanguageException("no tail on empty brch") else this.clone(value = this.value.tail, via = (this, TailOp()))
 
   override def put(key: Int, value: A): this.type = key match {

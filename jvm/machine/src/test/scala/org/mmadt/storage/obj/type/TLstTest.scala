@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.`type`
 
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -29,8 +30,8 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 class TLstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("lst type w/ [head][tail]") {
-    assertResult(obj)(lst.head().range)
-    assertResult(obj.q(10))(lst.q(10).head().range)
+    assertResult(obj)(lst.head().asInstanceOf[Type[_]].range)
+   assertResult(obj.q(10))(lst.q(10).head().asInstanceOf[Type[_]].range)
     assertResult(str.q(1, 6))(tlst(str).q(1, 6).head().range)
     assertResult(str.q(1, 6))(tlst(str, int).q(1, 6).head().range)
     assertResult(int.q(1, 6))(tlst(str, int).q(1, 6).tail().head().range)

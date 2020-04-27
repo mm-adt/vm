@@ -39,7 +39,7 @@ trait BranchOp {
   def branch[IT <: Obj, OT <: Obj](branches: RecType[IT, OT], start: IT = this.asInstanceOf[IT]): OT = {
     start match {
       case atype: Type[IT] with IT =>
-        val branchTypes: RecType[IT, OT] = BranchInstruction.typeInternal(atype.range, branches) // composed branches given the incoming type
+        val branchTypes: RecType[IT, OT] = BranchInstruction.typeInternal(atype.range.asInstanceOf[OType[IT]], branches) // composed branches given the incoming type
         val rangeType: OT = BranchInstruction.typeExternal[OT](parallel = true, branchTypes)
         rangeType.via(this, BranchOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case _: Value[IT] with IT =>

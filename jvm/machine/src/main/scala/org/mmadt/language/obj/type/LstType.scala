@@ -34,7 +34,6 @@ trait LstType[A <: Obj] extends Lst[A]
 
   val value: List[A]
 
-  override def head(): A with Type[A] = (if (this.value.isEmpty) obj.asInstanceOf[A] else asType(this.value.head)).via(this, HeadOp[A]()).asInstanceOf[A with Type[A]]
   override def tail(): this.type = if (this.value.isEmpty) this.clone(via = (this, TailOp())) else this.clone(value = this.value.tail, via = (this, TailOp()))
   override def append(element: A): this.type = this.clone(value = this.value :+ element, via = (this, AppendOp[A](element)))
   override def get(key: Int): A = {

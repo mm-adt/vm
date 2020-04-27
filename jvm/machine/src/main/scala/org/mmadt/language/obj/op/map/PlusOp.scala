@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, __}
+import org.mmadt.language.obj.branch.{Coprod, Prod}
 import org.mmadt.language.obj.value.{LstValue, RecValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -57,7 +58,16 @@ object PlusOp {
         case arec: ORecType => start.clone(value = arec.value ++ inst.arg0[ORecType]().value)
         case alst: LstValue[Value[Obj]] => start.clone(value = alst.value ++ inst.arg0[LstValue[Value[Obj]]]().value)
         case alst: LstType[Obj] => start.clone(value = alst.value ++ inst.arg0[LstType[Obj]]().value)
-      }).getOrElse(start).via(start, inst)
+        //////// EXPERIMENTAL
+        case prodA: Prod[O] => arg match {
+          case prodB: Prod[O] => coprod(prodA, prodB)
+          case coprodB: Coprod[O] => coprod(prodA, coprodB)
+        }
+        case coprodA: Coprod[O] => arg match {
+          case prodB: Prod[O] => coprod(coprodA, prodB)
+          case coprodB: Coprod[O] => coprod().clone(value = coprodA.value ++ coprodB.value)
+        }
+      }).getOrElse(start).via(start, inst).asInstanceOf[O]
     }
   }
 

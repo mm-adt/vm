@@ -40,12 +40,8 @@ trait Type[+T <: Obj] extends Obj
   this: T =>
 
   // type signature properties and functions
-  def range: this.type = this.isolate
-  def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else asType[Obj](this.via._1).asInstanceOf[Type[D]].domain[D]()
-  def <=[D <: Obj](domainType: Type[D]): this.type = {
-    LanguageException.testDomainRange(this, domainType)
-    domainType.compute(this).hardQ(this.q).asInstanceOf[this.type]
-  }
+  override def range: this.type = this.isolate
+
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case argValue: Value[_] => TypeChecker.matchesTV(this, argValue)

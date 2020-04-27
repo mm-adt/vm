@@ -1,7 +1,7 @@
 package org.mmadt.processor.obj.branch
 
 import org.mmadt.language.obj.branch.{Brch, Prod}
-import org.mmadt.language.obj.op.map.MultBOp
+import org.mmadt.language.obj.op.map.MultOp
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Int, Obj, Str}
 import org.mmadt.storage.StorageFactory._
@@ -16,8 +16,8 @@ class ProdTest extends FunSuite with TableDrivenPropertyChecks {
         (prod(), true),
         (prod("a", "b"), true),
         (prod("a", "b", "c", "d"), true),
-        (prod[Obj]("a", "b").mult(prod("c", "d")), true),
-        (MultBOp[Obj](prod("c", "d")).exec(prod("a", "b")), true),
+        (prod[Obj]("a", "b").mult(prod[Obj]("c", "d")), true),
+        (MultOp[Brch[Obj]](prod[Obj]("c", "d")).exec(prod[Obj]("a", "b")), true),
         (prod(str, "b"), false),
       )
     forEvery(starts) { (prod, bool) => {

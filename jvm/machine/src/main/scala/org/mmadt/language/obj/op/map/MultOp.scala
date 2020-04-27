@@ -23,7 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
 import org.mmadt.language.obj.{Inst, Int, IntQ, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -51,8 +52,22 @@ object MultOp {
       Try(start match {
         case aint: Int => start.clone(value = aint.value * inst.arg0[Int]().value)
         case areal: Real => start.clone(value = areal.value * inst.arg0[Real]().value)
-      }).getOrElse(start).via(start, inst)
+        //////// EXPERIMENTAL
+        case prodA: Prod[O] => multObj[O](arg match {
+          case prodB: Prod[O] => prod[O]().clone(value = prodA.value ++ prodB.value)
+          case coprodB: Coprod[O] => coprod[O]().clone(value = coprodB.value.map(a => prod().clone(value = prodA.value :+ a)))
+        })
+        case coprodA: Coprod[O] => multObj[O](arg match {
+          case prodB: Prod[O] => coprod[O]().clone(value = coprodA.value.map(a => prod().clone(value = a +: prodB.value)))
+          case coprodB: Coprod[O] => coprod[O]().clone(value = coprodA.value.flatMap(a => coprodB.value.map(b => prod(a, b))))
+        })
+      }).getOrElse(start).via(start, inst).asInstanceOf[O]
     }
+  }
+
+  def multObj[O <: Obj](brch: Brch[O]): Brch[O] = {
+    if (!brch.isType) return brch
+    brch.clone(value = List(brch.value.foldLeft(brch.value.head.asInstanceOf[Type[Obj]].domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])))
   }
 
 }

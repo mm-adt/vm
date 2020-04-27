@@ -70,14 +70,16 @@ trait Obj
   val via: ViaTuple // the obj's incoming edge in the obj-graph
   //////////////////////////////////////////////////////////////
 
+  // type methods
+  def named(_name: String): this.type = this.clone(name = _name)
+  def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type = {
     LanguageException.testDomainRange(asType(this), asType(domainType))
     domainType.compute(asType(this)).hardQ(this.q).asInstanceOf[this.type]
   }
+  def range: Type[Obj] = asType(this.isolate)
+  def domain[D <: Obj](): Type[D] = if (this.root) this.asInstanceOf[Type[D]] else asType[Obj](this.via._1).asInstanceOf[Type[D]].domain[D]()
 
-  // type methods
-  def named(_name: String): this.type = this.clone(name = _name)
-  def test(other: Obj): Boolean
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))

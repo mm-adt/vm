@@ -39,7 +39,7 @@ trait ChooseOp {
   def choose[IT <: Obj, OT <: Obj](branches: RecType[IT, OT], start: IT = this.asInstanceOf[IT]): OT = {
     start match {
       case atype: Type[IT] with IT =>
-        val branchTypes: RecType[IT, OT] = BranchInstruction.typeInternal(atype.range, branches)
+        val branchTypes: RecType[IT, OT] = BranchInstruction.typeInternal(atype.range.asInstanceOf[OType[IT]], branches)
         val rangeType: OT = BranchInstruction.typeExternal[OT](parallel = false, branchTypes)
         rangeType.via(this, ChooseOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case _: Value[IT] with IT =>
