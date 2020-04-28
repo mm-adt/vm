@@ -43,6 +43,7 @@ class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
         // (int(int(1).q(5), int(100)).-<(coprod(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
         // (int(int(1), int(2)).-<(coprod(int, int -< (coprod(int, int)))), coprod(strm(List(int(1), int(2))), strm(List(coprod(int(1), int(1)), coprod(int(2), int(2)))))),
         (int(1) -< coprod(str, int), coprod(obj.q(0), int(1))),
+        (strm(List(int(1), str("a"))) -< coprod(str, int), strm(List(coprod(obj.q(0), int(1)), coprod(str("a"), obj.q(0))))),
       )
     forEvery(starts) { (query, result) => {
       println(s"${query}")

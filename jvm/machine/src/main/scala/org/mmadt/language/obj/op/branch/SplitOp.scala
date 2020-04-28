@@ -29,6 +29,7 @@ import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.obj.value.strm.VBrchStrm
 
 trait SplitOp {
   this: Obj =>
@@ -66,10 +67,14 @@ object SplitOp {
             .via(start, this)
         case _: Coprod[_] =>
           val inst = start match {
-            case astrm: Strm[A] => new SplitInst[A](brchs.clone(value = brchs.value.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x))))).asInstanceOf[Brch[A]], q)
+            case astrm: Strm[A] => new SplitInst[A](brchs.clone(value = brchs.value.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(y => y.alive())))).asInstanceOf[Brch[A]], q)
             case _ => new SplitInst[A](brchs.clone(value = brchs.value.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
           }
-          inst.arg0[Coprod[A]]().clone(via = (start, inst))
+          val output = start match {
+            case astrm: Strm[A] => new VBrchStrm[A](values = astrm.values.map(x => coprod(inst.arg0[Coprod[A]]().value.map(y => Inst.resolveArg(x, y)).filter(y => y.alive()): _*)))
+            case _ => inst.arg0[Coprod[A]]()
+          }
+          output.clone(via = (start, inst)).asInstanceOf[Brch[A]]
       }
     }
   }

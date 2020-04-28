@@ -26,6 +26,7 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
@@ -38,12 +39,10 @@ trait Brch[A <: Obj] extends Obj
   with PutOp[Int, A]
   with HeadOp[A]
   with TailOp
-  with PlusOp[Brch[A]] // TODO: experimental
-  with MultOp[Brch[A]] // TODO: experimental
-  //with AppendOp[A]
-  //with OneOp
+  with PlusOp[Brch[A]]
+  with MultOp[Brch[A]]
   with ZeroOp[Brch[A]] {
-  val value: List[A]
+  def value: List[A]
 
   override def toString: String = LanguageFactory.printBrch(this)
 
@@ -60,7 +59,7 @@ trait Brch[A <: Obj] extends Obj
 
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
-  def isValue: Boolean = !this.value.exists(x => x.alive() && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isValue)))
+  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.value.exists(x => x.alive() && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isValue))))
   def isType: Boolean = !this.value.exists(x => x.alive() && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isType)))
 }
 

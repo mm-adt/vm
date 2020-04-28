@@ -60,6 +60,7 @@ object mmlangPrinter {
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
   private def branchList(branch: Brch[_]): String = {
+    if (branch.isInstanceOf[Strm[_]]) return strmString(branch.asInstanceOf[Strm[Obj]])
     val sep = if (branch.isInstanceOf[Prod[Obj]]) SEMICOLON else PIPE
     branch.value.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + sep).dropRight(1) + RBRACKET
   }

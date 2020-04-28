@@ -25,6 +25,6 @@ package org.mmadt.language.obj.value.strm
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.{Brch, Obj}
 
-trait BrchStrm[A <: Obj] extends Strm[Brch[A]] {
+trait BrchStrm[A <: Obj] extends Strm[Brch[A]] with Brch[A] {
   override def value: List[A] = throw LanguageException.typesNoValue(this)
 }
