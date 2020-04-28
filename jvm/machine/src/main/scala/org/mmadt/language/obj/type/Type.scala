@@ -59,3 +59,7 @@ trait Type[+T <: Obj] extends Obj
   // obj-level operations TODO: remove
   override def add[O <: Obj](obj: O): O = asType(obj).asInstanceOf[O].via(this, AddOp(obj))
 }
+
+object Type {
+  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = atype.domain().isInstanceOf[__] || obj.q(1).range.test(atype.domain().q(1))
+}

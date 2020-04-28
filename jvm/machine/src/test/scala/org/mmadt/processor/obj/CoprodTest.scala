@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.obj
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Coprod, Int, Obj, Str}
@@ -40,14 +39,15 @@ class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1).-<(coprod(int, int.plus(2).q(10))), coprod(int(1), int(3).q(10))),
         (int(1).q(5).-<(coprod(int, int.plus(2).q(10))), coprod(int(1).q(5), int(3).q(50))),
         (int(1).q(5).-<(coprod(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50))),
-        (int(int(1), int(100)).-<(coprod(int, int)) >-, int(int(1), int(1), int(100), int(100))),
-        (int(int(1).q(5), int(100)).-<(coprod(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
-        //(int(int(1), int(2)).-<(coprod(int, int -< (coprod(int, int)))), coprod(strm(List(int(1), int(2))), strm(List(coprod(int(1), int(1)), coprod(int(2), int(2)))))),
+        // (int(int(1), int(100)).-<(coprod(int, int)) >-, int(int(1), int(1), int(100), int(100))),
+        // (int(int(1).q(5), int(100)).-<(coprod(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
+        // (int(int(1), int(2)).-<(coprod(int, int -< (coprod(int, int)))), coprod(strm(List(int(1), int(2))), strm(List(coprod(int(1), int(1)), coprod(int(2), int(2)))))),
+        (int(1) -< coprod(str, int), coprod(obj.q(0), int(1))),
       )
     forEvery(starts) { (query, result) => {
       println(s"${query}")
-      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
-      //assertResult(result)(query)
+      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
+      assertResult(result)(query)
     }
     }
   }

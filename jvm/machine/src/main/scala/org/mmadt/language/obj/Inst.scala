@@ -53,7 +53,7 @@ object Inst {
     arg match {
       case typeArg: OType[E] => obj match {
         case _: Strm[_] => arg
-        case _: Value[_] => obj.compute(typeArg)
+        case _: Value[_] => if (Type.ctypeCheck(obj, typeArg)) obj.compute(typeArg) else obj.q(0).asInstanceOf[E]
         case atype: Type[_] => atype.range.compute(typeArg)
       }
       case valueArg: OValue[E] => valueArg
