@@ -1,9 +1,8 @@
-package org.mmadt.processor.obj.branch
+package org.mmadt.processor.obj
 
-import org.mmadt.language.obj.branch.{Brch, Prod}
 import org.mmadt.language.obj.op.map.MultOp
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.{Int, Obj, Str}
+import org.mmadt.language.obj.{Brch, Int, Obj, Prod, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}

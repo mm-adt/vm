@@ -26,16 +26,15 @@ import java.util.ServiceLoader
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{BoolType, _}
-import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
-import org.mmadt.language.obj.{ViaTuple, branch, _}
+import org.mmadt.language.obj.{ViaTuple, _}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`._
-import org.mmadt.storage.obj.branch.{OCoprod, OProd}
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
+import org.mmadt.storage.obj.{OCoprod, OProd}
 
 
 /**
@@ -50,8 +49,8 @@ trait StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst()
-  def coprod[A <: Obj](values: A*): branch.Coprod[A] = new OCoprod[A](value = values.toList)
-  def prod[A <: Obj](values: A*): branch.Prod[A] = new OProd[A](value = values.toList)
+  def coprod[A <: Obj](values: A*): Coprod[A] = new OCoprod[A](value = values.toList)
+  def prod[A <: Obj](values: A*): Prod[A] = new OProd[A](value = values.toList)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType
@@ -137,7 +136,6 @@ object StorageFactory {
   def vreal(name: String = Tokens.real, value: Double, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RealValue = f.vreal(name, value, q, via)
   def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): StrValue = f.vstr(name, value, q, via)
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): RecValue[A, B] = f.vrec(name, value, q, via)
-  //def strm[O <: Obj](values: O*)(implicit f: StorageFactory): OStrm[O] = f.strm[O](values.toList)
   def strm[O <: Obj](seq: Seq[O])(implicit f: StorageFactory): OStrm[O] = f.strm[O](seq)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
   /////////CONSTANTS//////

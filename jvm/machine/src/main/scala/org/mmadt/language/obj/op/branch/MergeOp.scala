@@ -23,9 +23,8 @@
 package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.{IntQ, Obj, _}
+import org.mmadt.language.obj.{Brch, IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -42,7 +41,7 @@ object MergeOp {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
     override def exec(start: Brch[A]): A = {
       if (start.isValue)
-        strm(start.value.filter(x => x.alive()).map(x => x.q(multQ(start, x)))).asInstanceOf[A]
+        strm(start.value.filter(x => x.alive())).asInstanceOf[A] // .map(x => x.q(multQ(start, x)))
       else
         BranchInstruction.brchType[A](start).clone(via = (start, this))
     }

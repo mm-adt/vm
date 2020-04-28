@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, Type, __}
-import org.mmadt.language.obj.branch.{Coprod, Prod}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{LstValue, RecValue, Value}
 import org.mmadt.storage.StorageFactory._

@@ -23,9 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.`type`.LstType
-import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.value.LstValue
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.{Brch, IntQ, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{asType, obj, qOne}
 import org.mmadt.storage.obj.value.VInst

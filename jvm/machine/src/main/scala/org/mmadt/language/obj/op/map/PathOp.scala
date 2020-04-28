@@ -23,9 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
-import org.mmadt.language.obj.branch.Prod
 import org.mmadt.language.obj.op.map.PathOp.Path
+import org.mmadt.language.obj.{Prod, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

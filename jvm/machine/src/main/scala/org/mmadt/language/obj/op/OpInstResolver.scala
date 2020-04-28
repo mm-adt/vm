@@ -26,7 +26,6 @@ import java.util.ServiceLoader
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp, MergeOp, SplitOp}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
@@ -36,7 +35,7 @@ import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Brch, Inst, Obj}
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters

@@ -23,9 +23,8 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.branch.Brch
 import org.mmadt.language.obj.value.strm.BrchStrm
-import org.mmadt.language.obj.{Obj, ViaTuple, base}
+import org.mmadt.language.obj.{Brch, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory.int
 import org.mmadt.storage.obj.OObj
 

@@ -24,6 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 
 /**
@@ -50,11 +51,11 @@ trait Inst[S <: Obj, +E <: Obj] extends Obj {
 object Inst {
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E =
     arg match {
-      case valueArg: OValue[E] => valueArg
       case typeArg: OType[E] => obj match {
-        case atype: Type[_] => atype.range.compute(typeArg)
         case _: Strm[_] => arg
-        case _ => obj.compute(typeArg)
+        case _: Value[_] => obj.compute(typeArg)
+        case atype: Type[_] => atype.range.compute(typeArg)
       }
+      case valueArg: OValue[E] => valueArg
     }
 }

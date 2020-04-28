@@ -26,7 +26,6 @@ import org.mmadt.VmException
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.branch._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
 import org.mmadt.language.obj.op.branch.ChooseOp.ChooseInst

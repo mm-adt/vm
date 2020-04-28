@@ -24,10 +24,9 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.branch.{Brch, Coprod, Prod}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Int, IntQ, Obj, Real}
+import org.mmadt.language.obj.{Brch, Coprod, Inst, Int, IntQ, Obj, Prod, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -71,7 +70,7 @@ object MultOp {
 
   def multObj[O <: Obj](brch: Brch[O]): Brch[O] = {
     if (!brch.isType) return brch
-    brch.clone(value = List(brch.value.foldLeft(brch.value.head.asInstanceOf[Type[Obj]].domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])))
+    brch.clone(value = List(brch.value.foldLeft(brch.value.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])))
   }
 
 }

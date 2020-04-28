@@ -20,14 +20,13 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.branch
+package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.language.obj.{Int, Obj}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 

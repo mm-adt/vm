@@ -23,7 +23,6 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.branch.{Brch, Coprod}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, trec, _}
 import org.mmadt.storage.obj.`type`.TObj

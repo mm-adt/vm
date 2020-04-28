@@ -24,11 +24,10 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{IntType, RealType, Type, __}
-import org.mmadt.language.obj.branch.Coprod
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
-import org.mmadt.language.obj.{Int, Obj, Real, Str}
+import org.mmadt.language.obj.{Coprod, Int, Obj, Real, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3, TableFor4}

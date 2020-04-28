@@ -20,18 +20,17 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.branch
+package org.mmadt.storage.obj
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
-import org.mmadt.language.obj.branch.Prod
-import org.mmadt.storage.StorageFactory.qOne
+import org.mmadt.language.obj.{Coprod, _}
+import org.mmadt.storage.StorageFactory._
 
-class OProd[A <: Obj](val name: String = Tokens.empty, val value: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
-  extends Prod[A] {
+class OCoprod[A <: Obj](val name: String = Tokens.empty, val value: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
+  extends Coprod[A] {
 
   override def clone(name: String = this.name,
                      value: Any = this.value,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new OProd[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = new OCoprod[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
 }

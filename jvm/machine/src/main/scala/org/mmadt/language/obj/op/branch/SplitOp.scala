@@ -25,8 +25,8 @@ package org.mmadt.language.obj.op.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.branch._
 import org.mmadt.language.obj.op.BranchInstruction
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -47,7 +47,7 @@ object SplitOp {
           var qTest = qOne
           product.clone(value = product.value.map(y =>
             Option(start)
-              .filter(x => asType(x).range.test(asType(y).range)) // this is generally needed (find a more core home)
+              .filter(x => x.range.test(y.range)) // this is generally needed (find a more core home)
               .map(_ => y match {
                 case atype: Type[_] => start ==> atype // COMPILE
                 case _ => y
@@ -65,8 +65,11 @@ object SplitOp {
               .getOrElse(obj.q(qZero))))
             .via(start, this)
         case _: Coprod[_] =>
-          val inst = new SplitInst[A](brchs.clone(value = brchs.value.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
-          inst.arg0[Coprod[A]]().clone(via = (start, inst)) // the incoming quantifer effect slot quantification, not product quantification
+          val inst = start match {
+            case astrm: Strm[A] => new SplitInst[A](brchs.clone(value = brchs.value.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x))))).asInstanceOf[Brch[A]], q)
+            case _ => new SplitInst[A](brchs.clone(value = brchs.value.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
+          }
+          inst.arg0[Coprod[A]]().clone(via = (start, inst))
       }
     }
   }
