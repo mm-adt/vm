@@ -49,7 +49,7 @@ trait Value[+V <: Obj] extends Obj {
       .map(x => x.q)
       .fold(qZero)((a, b) => plusQ(a, b))
       .equals(this.q)
-    case avalue: Value[V] => avalue.value.equals(this.value) && eqQ(this, avalue)
+    case avalue: Value[V] => avalue.value.equals(this.value) //&& eqQ(this, avalue)
     case _ => false
   }
 }

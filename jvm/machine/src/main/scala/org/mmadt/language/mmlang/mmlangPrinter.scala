@@ -44,6 +44,7 @@ object mmlangPrinter {
     case (x, y) if x == y => s"${LCURL}${x}${RCURL}"
     case (x, y) if y == int(Long.MaxValue) => "{" + x + ",}"
     case (x, y) if x == int(Long.MinValue) => "{," + y + "}"
+    case x if null == x => Tokens.empty
     case _ => "{" + x._1.value + "," + x._2.value + "}"
   }
 

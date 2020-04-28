@@ -23,6 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -39,11 +40,14 @@ class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(-2).zero(), int(0)),
         (int.zero(), int(0)),
         (int(1, 2, 3).zero(), int(0).q(3)),
+        (int(1, 2).plus(1).q(10).zero(), int(0).q(20)),
         //////// REAL
         (real(2.0).zero(), real(0.0)),
         (real(-2.0).zero(), real(0.0)),
         (real.zero(), real(0.0)),
         (real(-1.0, -2.0, -3.0).zero(), real(0.0).q(3)),
+        (real(-1.0, -2.0, -3.0).plus(1.0).q(10).zero(), real(0.0).q(30)),
+        // (real(-1.0, -2.0, -3.0) ===> __.plus(1.0).q(10).zero(), real(0.0).q(30)),
         //////// STR
         (str("a").zero(), str("")),
         (str("b").zero(), str("")),

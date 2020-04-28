@@ -44,12 +44,14 @@ class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.one().q(10), int(1).q(10)),
         (int.q(10).one(), int(1).q(10)),
         (int.q(10).one().q(20), int(1).q(200)),
-        (int(1, 2, 3).one(), int(1, 1, 1)),
+        (int(1, 2, 3).one(), int(1).q(3)),
         //////// REAL
         (real(2.0).one(), real(1.0)),
         (real(-2.0).one(), real(1.0)),
         (real.one(), real(1.0)),
-        (real(-1.0, -2.0, -3.0).one(), real(1.0, 1.0, 1.0)),
+        (real(-1.0, -2.0, -3.0).one(), real(1.0).q(3)),
+        (real(-1.0, -2.0, -3.0).id().q(10).one(), real(1.0).q(30)),
+        // (real(-1.0, -2.0, -3.0) ===> __.id().q(10).one(), real(1.0).q(30)),
       )
     forEvery(starts) { (query, result) => {
       assertResult(result)(query)

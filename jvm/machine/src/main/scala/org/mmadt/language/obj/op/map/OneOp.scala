@@ -42,9 +42,9 @@ object OneOp {
     override def q(q: IntQ): this.type = new OneInst[O](q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       (start match {
-        case _: Int => int(1).q(start.q)
-        case _: Real => real(1.0).q(start.q)
-      }).asInstanceOf[O].via(start, this)
+        case _: Int => int(1)
+        case _: Real => real(1.0)
+      }).clone(q=start.q,via=(start, this)).asInstanceOf[O]
     }
   }
 
