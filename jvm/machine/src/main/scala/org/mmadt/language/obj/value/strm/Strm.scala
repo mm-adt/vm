@@ -26,6 +26,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -42,9 +43,10 @@ trait Strm[+O <: Obj] extends Value[O] {
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printStrm(this)
-  override lazy val hashCode: scala.Int = this.values.toList.hashCode() // TODO: sketchy on large streams
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.values.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case strm: Strm[O] => this.values.sameElements(strm.values)
+    case strm: Strm[O] => MultiSet.test(this, strm)
+    case value: Value[O] => this.values == MultiSet.put(value)
     case _ => false
   }
 }

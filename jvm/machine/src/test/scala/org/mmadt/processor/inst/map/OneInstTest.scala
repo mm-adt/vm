@@ -22,7 +22,9 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -51,10 +53,11 @@ class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real.one(), real(1.0)),
         (real(-1.0, -2.0, -3.0).one(), real(1.0).q(3)),
         (real(-1.0, -2.0, -3.0).id().q(10).one(), real(1.0).q(30)),
-        // (real(-1.0, -2.0, -3.0) ===> __.id().q(10).one(), real(1.0).q(30)),
+        (real(-1.0, -2.0, -3.0) ===> __.id().q(10).one(), real(1.0).q(30)),
       )
     forEvery(starts) { (query, result) => {
       assertResult(result)(query)
+      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
     }
     }
   }

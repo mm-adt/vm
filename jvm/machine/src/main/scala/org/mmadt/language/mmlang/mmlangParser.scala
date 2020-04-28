@@ -86,7 +86,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val prodObj: Parser[Prod[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, SEMICOLON) <~ RBRACKET) ^^ (x => prod(x._2: _*))
 
   // type parsing
-  lazy val objType: Parser[Type[Obj]] = dType | anonType
+  lazy val objType: Parser[Obj] = dType | anonType
   lazy val tobjType: Parser[Type[Obj]] = Tokens.obj ^^ (_ => StorageFactory.obj)
   lazy val boolType: Parser[BoolType] = Tokens.bool ^^ (_ => bool)
   lazy val intType: Parser[IntType] = Tokens.int ^^ (_ => int)
@@ -95,9 +95,9 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val recType: Parser[ORecType] = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(value = x.getOrElse(Map.empty)))
   lazy val recStruct: Parser[Map[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj, COMMA | PIPE) <~ RBRACKET) ^^ (x => x.map(o => (o._1, o._2)).toMap)
   lazy val cType: Parser[Type[Obj]] = (tobjType | boolType | realType | intType | strType | recType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val dType: Parser[Type[Obj]] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj, Obj]](inst | cType ^^ (t => AsOp(t))) ^^ {
-    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain)((x, y) => y.exec(x).asInstanceOf[Type[Obj]]))
-    case None ~ domain ~ insts => insts.foldLeft(domain)((x, y) => y.exec(x).asInstanceOf[Type[Obj]])
+  lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj, Obj]](inst | cType ^^ (t => AsOp(t))) ^^ {
+    case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x)))
+    case None ~ domain ~ insts => insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
   }
 
   lazy val anonType: Parser[__] = inst ~ rep[Inst[Obj, Obj]](inst | cType ^^ (t => AsOp(t))) ^^ (x => __(x._1 :: x._2))

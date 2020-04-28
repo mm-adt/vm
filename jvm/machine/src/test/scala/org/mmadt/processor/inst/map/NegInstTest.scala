@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
@@ -48,6 +49,7 @@ class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(-1.0, -2.0, -3.0).neg(), real(1.0, 2.0, 3.0), "strm"),
       )
     forEvery(starts) { (query, result, atype) => {
+      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
       assertResult(result)(query)
       atype match {
         case "value" => assert(query.isInstanceOf[Value[_]])

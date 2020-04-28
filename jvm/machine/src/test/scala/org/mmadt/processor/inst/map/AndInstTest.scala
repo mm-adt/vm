@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map.AndOp
 import org.mmadt.language.obj.value.Value
@@ -60,7 +61,9 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
         (bool(true, true, false), __.and(__.and(bool.q(10))), bool(true, true, false), "strm"), // strm * anon = strm
       )
     forEvery(starts) { (input, atype, result, kind) => {
+     //println(s"${input} ${atype.toString.substring(4)}")
       List(
+        //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input} ${atype.toString.substring(4)}"),
         AndOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input.asInstanceOf[Bool]),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),

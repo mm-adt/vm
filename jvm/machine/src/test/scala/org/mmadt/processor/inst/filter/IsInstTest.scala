@@ -23,6 +23,7 @@
 package org.mmadt.processor.inst.filter
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.filter.IsOp
@@ -69,12 +70,13 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).is(__.lte(__.mult(real))), real(1.0, 2.0, 3.0), "strm"), // strm * anon = strm
 
       )
-    forEvery(starts) { (query, result, atype) => {
-      assertResult(result)(query)
+    forEvery(starts) { (expr, result, atype) => {
+      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${expr}"))
+      assertResult(result)(expr)
       atype match {
-        case "value" => assert(query.isInstanceOf[Value[_]])
-        case "type" => assert(query.isInstanceOf[Type[_]])
-        case "strm" => assert(query.isInstanceOf[Strm[_]])
+        case "value" => assert(expr.isInstanceOf[Value[_]])
+        case "type" => assert(expr.isInstanceOf[Type[_]])
+        case "strm" => assert(expr.isInstanceOf[Strm[_]])
       }
     }
     }

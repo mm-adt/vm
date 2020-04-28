@@ -23,10 +23,13 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.branch.{Coprod, Prod}
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Int, IntQ, Lst, Obj, Real, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,6 +46,7 @@ object ZeroOp {
     override def q(q: IntQ): this.type = new ZeroInst[O](q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       (start match {
+        case _:__ => __.zero()
         case _: Int => int(0)
         case _: Real => real(0.0)
         case _: Str => str(Tokens.empty)

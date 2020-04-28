@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map.{AndOp, OrOp}
@@ -47,6 +48,7 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(starts) { (input, atype, result, kind) => {
       List(
+        //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype.toString}"),
         OrOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input.asInstanceOf[Bool]),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),

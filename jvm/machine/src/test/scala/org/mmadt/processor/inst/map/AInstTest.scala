@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{ObjType, RecType, __}
 import org.mmadt.language.obj.op.map.AOp
 import org.mmadt.language.obj.value.{ObjValue, RecValue, StrValue}
@@ -146,9 +147,10 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(20) ===> int.id().plus(int.plus(5).plus(5)).a(int.is(int.gt(20))).id(), btrue, 4),
         (btrue, btrue, 0),
       )
-    forEvery(check) { (computation, result, length) => {
-      assertResult(result)(computation)
-      assertResult(length)(computation.lineage.length)
+    forEvery(check) { (expr, result, length) => {
+      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${expr}"))
+      assertResult(result)(expr)
+      assertResult(length)(expr.lineage.length)
     }
     }
   }
