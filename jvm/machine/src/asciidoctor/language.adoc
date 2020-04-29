@@ -26,14 +26,14 @@ Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_functi
 f: S \rightarrow E.
 \]
 
----
+The complexities of mm-ADT are realized in the definition of an `obj` (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are https://en.wikipedia.org/wiki/Currying[curried] at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield \$f : S \rightarrow E\$.
 
-image::obj-type-value-q.png[float=right,width=280]
+image::obj-type-value-q.png[role=left,padding-left=303,width=280]
 
-Every mm-ADT `obj` is the product with two sub-structures:
+Every mm-ADT `obj` is the product of
 
-. An *object* co-product being either a *type* or a *value*
-. A *quantifier* specifying the "amount" of objects.
+. An *object* co-product that is either a *type* or a *value* and
+. A *quantifier* specifying the "amount" of objects being denoted.
 
 \[
 \texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}.
@@ -43,44 +43,64 @@ image::obj-type-q-value-q.png[float=right,width=450]
 
 From this vantage point, mm-ADT's `obj` structure forms an https://en.wikipedia.org/wiki/Ring_%28mathematics%29[algebraic ring].
 The https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition[ring axioms] specify how the elements of it's https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] can be combined using the two binary operators \$\times\$ and \$\+\$ . One particular ring axiom states that products  https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over co-products.
-Thus,
+Thus, the previous formula can be rewritten as
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation of `obj`, which is isomorphic to the previous, declares two kinds of mm-ADT `objs`: *quantified types* and *quantified values*. Some example mm-ADT `objs` are presented below using `mmlang`.
+This representation of `obj`, which is isomorphic to the previous, declares two kinds of mm-ADT `objs`: *quantified types* and *quantified values*. It is through a particular subset of `objs` called _instructions_ (\$ \tt{i\nst} \subset \tt{obj} \$) that types and values are linked to one another -- yielding the primary data structure used for all mm-ADT operations from compilation to execution: *the trace graph*.
+
+Some example mm-ADT `objs` are presented below using `mmlang`.
 
 [source]
 ----
-mmlang> 1              <1>
-==>1
-mmlang> 1{5}           <2>
-==>1{5}
-mmlang> int            <3>
+mmlang> int            <1>
 ==>int
-mmlang> 1int           <4>
+mmlang> 1              <2>
 ==>1
-mmlang> 1{5}int        <5>
-language error: 1{5} is not an int
-mmlang> 1{5}int{5}     <6>
+mmlang> int{5}         <3>
+==>int{5}
+mmlang> 1{5}           <4>
 ==>1{5}
+mmlang> 'a','b','a'    <5>
+==>'a'{2}
+==>'b'
 ----
-<1> The `int` value 1.
-<2> Five 1 values, where `{ }` is the associated `q`.
-<3> An `int` type denoting a single `int` value.
-<4> One 1 is a single `int`.
-<5> Five 1s is not a single `int`.
-<6> Five 1s is 5 `ints`.
+<1> A single `int` type.
+<2> A single `int` value of `1`.
+<3> Five `int` types.
+<4> Five `1` `int` values.
+<5> A _stream_ of `'a'`,`'b'`, and `'a'` `str` values.
+
+It is through "_quantified objects_" that mm-ADT types and values, which are typically disjoint structures in most programming environments, co-exist at the same level of abstraction (within the same category).
+
+* A type refers to values.
+* A value is a type that only refers to itself.
+
+From the unification of types and values, many other seemingly disparates aspects of computing blend together naturally. The particulars of the unifications itemized below will be detailed in respective sections of this document.
+
+.Conceptual Consequences of mm-ADT Quantification
+[cols="2,2,10"]
+|===
+|structure A | structure B | unification
+
+|types       | values     | quantifiers expand the cardinality of values and constrain the cardinality of types
+|compilation | evaluation | compilations are evaluations with types, where a compilation error is a "runtime" compile-time error.
+|AST         | bytecode   | the definition of a type specifies the context-free grammar of an mm-ADT language.
+|state       | functions  | 'mutable' state is realized as values of a "proto"-type of the current value's type.
+|functions   | types      | functions are types whose values are realized at runtime.
+|program     | type       | a program is "complicated" type.
+|classical   | quantum    | quantum computing is classical computing with unitary matrix quantifiers.
+|===
 
 === Types
 
-In the https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory[set-theoretic interpretation of types], a type denotes a set in *Set*. In the mm-ADT interpretation of types, a type denotes a _stream_.
-A stream is a https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) of objects with the following properties:
+In the https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory[set-theoretic interpretation of types], a type is a _set_ of values, where, for example, `int` denotes the set of all integer values \$n \in \mathbb{N}\$. In the mm-ADT interpretation of types, a type denotes a *stream* of values. A stream is a https://en.wikipedia.org/wiki/Multiset[__multi-set__] (or bag) with the following properties:
 
-* Streams can have objects inserted and removed (a collection).
-* Streams do not preserve insert nor removal order (not a queue).
-* Streams may contain duplicate objects (not a set).
+* Streams can have values inserted and removed (like a collection).
+* Streams do not preserve insert nor removal order (not like a queue).
+* Streams may contain duplicate objects (not like a set).
 
-A type's definition encodes both the type's semantics (compile-time type inference/reasoning) and a tree of virtual machine instructions that, when evaluated, will yield an enumeration of the type's elements via a stream of values (runtime evaluation).
+Every stream of values has a corresponding type that was constructed and it is through type construction that values are implicitly created (at compile-time) and explicitly enumerated (at runtime).
 
 ==== Type Structure
 
