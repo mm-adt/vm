@@ -476,7 +476,7 @@ f: S \rightarrow E.
 \]</p>
 </div>
 <div class="paragraph">
-<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are <a href="https://en.wikipedia.org/wiki/Currying">curried</a> at either compile-time or runtime).</p>
+<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are <a href="https://en.wikipedia.org/wiki/Currying">curried</a> at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield \$f : S \rightarrow E\$.</p>
 </div>
 <div class="imageblock left">
 <div class="content">
@@ -513,7 +513,10 @@ Thus, the previous formula can be rewritten as
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation of <code>obj</code>, which is isomorphic to the previous, declares two kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. It is through a particular subset of <code>objs</code> called <em>instructions</em> (\$ \tt{i\nst} \subset \tt{obj} \$) that types and values are linked to one another&#8201;&#8212;&#8201;yielding the primary data structure used for all mm-ADT operations from compilation to execution: <em>the trace graph</em>. Some example mm-ADT <code>objs</code> are presented below using <code>mmlang</code>.</p>
+This representation of <code>obj</code>, which is isomorphic to the previous, declares two kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. It is through a particular subset of <code>objs</code> called <em>instructions</em> (\$ \tt{i\nst} \subset \tt{obj} \$) that types and values are linked to one another&#8201;&#8212;&#8201;yielding the primary data structure used for all mm-ADT operations from compilation to execution: <strong>the trace graph</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Some example mm-ADT <code>objs</code> are presented below using <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -549,27 +552,94 @@ mmlang&gt; 'a','b','a'    <b class="conum">(5)</b>
 </li>
 </ol>
 </div>
-<div class="sect2">
-<h3 id="_types">Types</h3>
 <div class="paragraph">
-<p>In the <a href="https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory">set-theoretic interpretation of types</a>, a type denotes a set in <strong>Set</strong>. In the mm-ADT interpretation of types, a type denotes a <em>stream</em>.
-A stream is a <a href="https://en.wikipedia.org/wiki/Multiset">multi-set</a> (or bag) of objects with the following properties:</p>
+<p>It is through "<em>quantified objects</em>" that mm-ADT types and values, which are typically disjoint structures in most programming environments, co-exist at the same level of abstraction (within the same category).</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Streams can have objects inserted and removed (a collection).</p>
+<p>A type refers to values.</p>
 </li>
 <li>
-<p>Streams do not preserve insert nor removal order (not a queue).</p>
-</li>
-<li>
-<p>Streams may contain duplicate objects (not a set).</p>
+<p>A value is a type that only refers to itself.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>A type&#8217;s definition encodes both the type&#8217;s semantics (compile-time type inference/reasoning) and a tree of virtual machine instructions that, when evaluated, will yield an enumeration of the type&#8217;s elements via a stream of values (runtime evaluation).</p>
+<p>From the unification of types and values, many other seemingly disparates aspects of computing blend together naturally. The particulars of the unifications itemized below will be detailed in respective sections of this document.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Conceptual Consequences of mm-ADT Quantification</caption>
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 71.4286%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">structure A</th>
+<th class="tableblock halign-left valign-top">structure B</th>
+<th class="tableblock halign-left valign-top">unification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">values</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quantifiers expand the cardinality of values and constrain the cardinality of types</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compilation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compilations are evaluations with types, where a compilation error is a "runtime" compile-time error.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bytecode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the definition of a type specifies the context-free grammar of an mm-ADT language.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">state</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">functions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">'mutable' state is realized as values of a "proto"-type of the current value&#8217;s type.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">functions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">functions are types whose values are realized at runtime.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">program</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a program is "complicated" type.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">classical</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quantum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quantum computing is classical computing with unitary matrix quantifiers.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="_types">Types</h3>
+<div class="paragraph">
+<p>In the <a href="https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory">set-theoretic interpretation of types</a>, a type is a <em>set</em> of values, where, for example, <code>int</code> denotes the set of all integer values \$n \in \mathbb{N}\$. In the mm-ADT interpretation of types, a type denotes a <strong>stream</strong> of values. A stream is a <a href="https://en.wikipedia.org/wiki/Multiset"><em>multi-set</em></a> (or bag) with the following properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Streams can have values inserted and removed (like a collection).</p>
+</li>
+<li>
+<p>Streams do not preserve insert nor removal order (not like a queue).</p>
+</li>
+<li>
+<p>Streams may contain duplicate objects (not like a set).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Every stream of values has a corresponding type that was constructed and it is through type construction that values are implicitly created (at compile-time) and explicitly enumerated (at runtime).</p>
 </div>
 <div class="sect3">
 <h4 id="_type_structure">Type Structure</h4>
@@ -825,7 +895,7 @@ mmlang&gt;</code></pre>
 <p>In order to quantify the <em>amount</em> of objects in a stream, every mm-ADT type has an associated quantifier <code>q</code>. Quantifiers are typically integers, but are generally any element from an ordered algebraic ring (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, unitary matrices, etc.). Moreover, while integer quantifiers signify "amount," other quantifiers such as unitary matrices denoting a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description of what a quantifier represents.</p>
 </div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
-<caption class="title">Table 1. Quantifier Symbols in mmlang</caption>
+<caption class="title">Table 2. Quantifier Symbols in mmlang</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1080,7 +1150,7 @@ The equivalence highlights the fact that mm-ADT types refer to streams of object
 Every ring benefits from the theorems itemized on the right which are (the most popularly used) logical entailments of the axioms.</p>
 </div>
 <table class="tableblock frame-all grid-all left" style="width: 50%;">
-<caption class="title">Table 2. Ring with Unity Axioms</caption>
+<caption class="title">Table 3. Ring with Unity Axioms</caption>
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -1112,7 +1182,7 @@ Every ring benefits from the theorems itemized on the right which are (the most 
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all right" style="width: 50%;">
-<caption class="title">Table 3. Ring Axiom Entailments</caption>
+<caption class="title">Table 4. Ring Axiom Entailments</caption>
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -1194,7 +1264,7 @@ The type graph structure presented previously is a subgraph of a (pseudo) <a hre
 <p>In the table below <code>[a]</code>, <code>[b]</code>, and <code>[c]</code> are variable instructions in <code>inst</code>, where <code>[none] == [is,false]</code> and <code>[all] == [is,true]</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. The Ring Axioms in mmlang</caption>
+<caption class="title">Table 5. The Ring Axioms in mmlang</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 66.6667%;">
@@ -1308,7 +1378,7 @@ Whenever the diagram branches, the <code>obj</code> at the branch is cloned, tak
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-29 12:03:59 -0600
+Last updated 2020-04-29 14:18:59 -0600
 </div>
 </div>
 </body>
