@@ -32,8 +32,7 @@ The mm-ADT VM is the integration point for the following data processing technol
 * *Storage Systems*: Storage engineers can embed their systems using _model-ADT_ functors expressed in mm-ADT's dependent type system that enable the lossless encoding of key/value store, document store, wide-column store, graph store, relational store, and other novel or hybrid structures such as hypergraph, docu-graph, and quantum data structures.
 * *Processing Engines*: Processor developers enable their push- or pull-based execution engines to be programmed by any mm-ADT language for evaluation via mm-ADT's abstract execution model for processing data structures via single-machine, multi-threaded, agent-based, distributed near-time, and/or cluster-oriented, batch-analytic processors.
 
-[quote, The mm-ADT VM Research and Development Group]
-The mm-ADT VM enables the intermingling of any language, any storage system, and any processor that can faithfully implement the core language semantics (*types and values*), storage semantics (*data structure streams*), and/or processor semantics (*process trace graphs*) up to the limits of the expressiveness of the components themselves.
+The mm-ADT VM enables the intermingling of any language, any storage system, and any processor that can faithfully implement the core language semantics (__types and values__), storage semantics (__data structure streams__), and/or processor semantics (__process trace graphs__) up to the limits of the expressiveness of the components themselves.
 
 
 === The mm-ADT Console
