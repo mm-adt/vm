@@ -4,8 +4,7 @@
 
 .Products and Coproducts
 ****
-https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of structure via manipulations that expose (or generate) other structures.
-Two important category theoretic concepts used throughout this section are *products* and *coproducts*.
+https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of structure via manipulations that expose (or generate) other structures. Two important category theoretic concepts used throughout this section are *products* and *coproducts*.
 
 image::product.png[float="left",width=225]
 
@@ -23,11 +22,13 @@ That is, product and coproduct equality are defined via component equality.
 
 Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_function[unary function] that maps an `obj` of type \$S\$ (start) to an `obj` of type \$E\$ (end) with the function signature
 
-image::obj-type-value-q.png[float=right,width=280]
-
 \[
 f: S \rightarrow E.
 \]
+
+---
+
+image::obj-type-value-q.png[float=right,width=280]
 
 Every mm-ADT `obj` is the product with two sub-structures:
 
@@ -72,35 +73,12 @@ mmlang> 1{5}int{5}     <6>
 
 === Types
 
-mm-ADT types denote _streams_.
+In the https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory[set-theoretic interpretation of types], a type denotes a set in *Set*. In the mm-ADT interpretation of types, a type denotes a _stream_.
 A stream is a https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) of objects with the following properties:
 
 * Streams can have objects inserted and removed (a collection).
 * Streams do not preserve insert nor removal order (not a queue).
 * Streams may contain duplicate objects (not a set).
-
-In order to quantify the _amount_ of objects in a stream, every mm-ADT type has an associated quantifier `q`.
-Quantifiers are typically integers, but are generally any element from an ordered algebraic ring (e.g. integers, reals, unitary matrices, etc.).
-Moreover, while integer quantifiers signify "amount," other quantifiers such as unitary matrices denoting a quantum wave function, "amount" is a less accurate description of what a quantifier represents.
-
-NOTE: The default quantifier ring of the mm-ADT VM is \[
-\langle \mathbb{N}^+ \times \mathbb{N}^+, \cdot, + \rangle, \]
-where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity.
-The \$\cdot\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively.
-In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`.
-Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`.
-
-A few example expressions using type quantifiers are presented below in `mmlang`.
-
-[cols="2m,5" width=70%]
-|===
-|type|description
-
-|int|a single integer (_some/just_)
-|int{0}|zero integers (_none_)
-|int{1,5}|one to five integers
-|int{0,1}[is>42]|zero or one integer greater than 42 (_option/maybe_)
-|===
 
 ==== Type Induction
 
@@ -157,6 +135,133 @@ mmlang> int{2}[is>0]                             <3>
 <1> A ctype denoting a single integer stream.
 <2> A ctype denoting a stream with two integers.
 <3> A dtype denoting a stream of zero, one, or two integers.
+
+===== Type Signatures
+
+image::type-signature-definition.png[align=center,width=650]
+
+The expression above highlights two important components of a type: _signature_ and _definition_.
+
+Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another (potentially equivalent) type. A *type signature* specifies the source and target of this mapping, where the "domain" is the source type and the "range" is the target type. Both the domain and range type specifications include a respective quantification denoted `{q}`.
+
+Type's that are fully specified by their type signature are always canonical types.
+The examples below demonstrates various `ctype` expressions in order to highlighting various `mmlang` syntax sugars.
+
+[source]
+----
+mmlang> int{1}                      <1>
+==>int
+mmlang> int<=int                    <2>
+==>int
+mmlang> int<=bool                   <3>
+language error: bool is not of int
+mmlang> int{5}                      <4>
+==>int{5}
+mmlang> int{0,5}                    <5>
+==>int{0,5}
+mmlang> int{0,5}<=int{0,5}          <6>
+==>int{0,5}
+----
+<1> In most programming languages, a value can be typed `int` as in `val x:int = 10`.
+Such https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declarations] state that the value referred to by `x` is a _single_ element within the set of integers.
+The concept of a "single element" is captured in mm-ADT via quantification.
+When the quantifier is the https://en.wikipedia.org/wiki/Unit_(ring_theory)[unit] of the underlying quantifier ring, then the quantifier is not displayed in `mmlang`.
+<2> From the perspective of a function, An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers.
+Given any integer, `int` returns that integer.
+In `mmlang`, when the domain and range are the same, the `<=` and repeated type are not displayed.
+<3> Without any instructions, there is no way for a type to legally map a `bool` to an `int`.
+<4> An mm-ADT type always refers to an unordered https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) of elements known as a _stream_. `int{5}` is a type referring to 5 integers (with repeats possible).
+As a point of comparison, `int` denotes a stream containing a single integer.
+This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
+<5> The quantifier ring can be any ring with unity.
+In the previous examples, the chosen ring's https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] was the set of integers.
+In this example, the carrier set is two integers and is used to capture uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
+<6> This further emphasizes the fact that every mm-ADT type (even canonical types) are functions with a quantified domain and a quantified range.
+
+===== Type Definitions
+
+mm-ADT type signatures specify the canonical type and quantity of the type's domain and range. Further specification of the nature of the elements of the type is accomplished via a *type definition*. The following mm-ADT type is known as a https://en.wikipedia.org/wiki/Refinement_type[refinement type] because it provides further constraint/refinement on which particular integers in `int` the type is refering to.
+This particular type is the mm-ADT definition of a natural number in \$\mathbb{N}\$.
+\[
+\tt{int[is,[gte,0]]} \equiv \mathbb{N}
+\]
+An itemization of the structural components of the written form of this type in `mmlang` is presented below, where `r/d` refers to range/domain, `op` the instruction opcode, `arg` the instruction argument, and `inst` the instruction as a whole, where in this particular example, the argument to the instruction is a type (whose structure is inferred from the provided instruction).
+
+
+The structure `[is,[gte,0]]` is an *instruction* with a single argument. mm-ADT instruction opcodes denote specific operations explicitly implemented by the mm-ADT virtual machine.
+The set of all mm-ADT instructions forms the machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture].
+
+A type is transformed into another type via an instruction application.
+Every instruction is able to operate on both types and values.
+In this way, instruction application on types yields program _compilation_ and instruction application on values yields _evaluation_.
+The compilation of a type produces a type, where quantification and domain/range specifications are inferred when unspecified by the user.
+
+[source]
+----
+mmlang> int[is,[gte,0]]                      <1>
+==>int{?}<=int[is,bool<=int[gte,0]]          <2>
+mmlang> int int[is,[gte,0]]                  <3>
+==>int{?}<=int[as,int][is,bool<=int[gte,0]]
+mmlang> 6 int{?}<=int[is,bool<=int[gte,0]]
+==>6                                         <4>
+mmlang> -6 int{?}<=int[is,bool<=int[gte,0]]  <5>
+mmlang>
+----
+<1> A base type composed with an instruction/quantifier pair, where the quantifier is not displayed as it's the unit of the quantifier ring -- `{1}`.
+<2> A compiled type that maps a single integer to zero or one integers.
+If the internal `bool\<=int[gte,0]` type yields
+`true`, then an `int{1}`, else `int{0}`.
+<3> A type operates on an `int` thus, if supplied "an `int` type", the type operates on it to yield a type.
+The use of types to process types is a form of compilation generally known as https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation].
+<4> The type maps the positive integer `6{1}` to `6{1}` (_some_).
+<5> The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
+
+NOTE: Any `obj` with the the quantifier ring's additive identity (`zero`) is not displayed by `mmlang` and can be safely garbage collected by the mm-ADT VM processor at anytime throughout a non-reducing computation without altering the semantics of the computation.
+
+==== Type Quantification
+
+In order to quantify the _amount_ of objects in a stream, every mm-ADT type has an associated quantifier `q`.
+Quantifiers are typically integers, but are generally any element from an ordered algebraic ring (e.g. integers, reals, unitary matrices, etc.).
+Moreover, while integer quantifiers signify "amount," other quantifiers such as unitary matrices denoting a quantum wave function, "amount" is a less accurate description of what a quantifier represents.
+
+.Quantifier Symbols in mmlang
+[width=35%,cols="1,1,2,float=right]
+|===
+|usage   |sugar  | unsugared
+
+|https://en.wikipedia.org/wiki/Option_type[none]/nothing   |`{0}`  | `{0,0}`
+|https://en.wikipedia.org/wiki/Option_type[some]/just      |       | `{1,1}`
+|exact          |`{x}`  | `{x,x}`
+|least footnote:order[Applicable to quantifier rings with an total order over the carrier.]         |`{x,}` | `{x,max}`
+|most footnote:order[]          |`{,x}` | `{min,x}`
+|https://en.wikipedia.org/wiki/Option_type[option]/maybe   |`{?}`  | `{0,1}`
+|given footnote:order[]         |`{+}`  | `{1,max}`
+|any footnote:order[]           |`{*}`  | `{1,max}`
+|===
+
+All `mmlang` expressions within `{ }` operate on the mm-ADT VM's *_quantifier ring_* (w/ unity).
+Any object that supports `+`/`*`/`0`/`1` and the axioms governing their composition can be used as an mm-ADT quantifier.
+Along with Turing Complete types specifications, type definitions can be specified to as accurate or fuzzy a degree as computationally and conceptually possible.
+
+Typically, the quantifier of choice for most applications is the `int` ring (or `int` range ring -- `{2,13}`).
+Common programming concepts that are usually captured by typeclasses or functors (via https://en.wikipedia.org/wiki/Lift_(mathematics)[lifting]) are expressed in mm-ADT via quantification.
+
+[source]
+----
+int                                  // a single int   (some)
+int{?}<=int[is,[gt,0]]               // 0 or 1 int     (option)
+int{0}<=int[is,false]                // 0 ints         (none)
+int{4}<=int{2}[branch,[id],[id]]     // 4 ints         (exact)
+int{*}<=[=db][get,'costs']           // 0 or more ints (any)
+----
+
+NOTE: The default quantifier ring of the mm-ADT VM is \[
+\langle \mathbb{N}^+ \times \mathbb{N}^+, \cdot, + \rangle, \]
+where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity.
+The \$\cdot\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively.
+In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`.
+Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`.
+
 
 ==== The Type Monoid
 
@@ -221,119 +326,6 @@ mmlang> int[plus,4][mult,42]
 mmlang> int[plus,4][mult,42][gt,42]
 ==>bool<=int[plus,4][mult,42][gt,42]
 ----
-
-===== Type Signatures
-
-[source]
-----
-mmlang> int[plus,4][mult,42][gt,42]
-==>bool<=int[plus,4][mult,42][gt,42]
-----
-
-The expression above highlights two important components of a type: _signature_ and _definition_.
-These two concepts are presented below in pseudo-`mmlang` notation.
-
-[source]
-----
-range{q}<=domain{q}([inst]{q})*
-|_________________||__________|
-     signature      definition
-----
-
-Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another (potentially equivalent) type.
-A *type signature* specifies the source and target of this mapping, where the "domain" is the source type and the "range" is the target type.
-Both the domain and range type specifications include a respective quantification denoted `{q}`.
-
-[source]
-----
-range{q}<=domain{q}
-----
-
-Type's that are fully specified by their type signature are always canonical types.
-The examples below demonstrates various `ctype` expressions in order to highlighting various `mmlang` syntax sugars.
-
-[source]
-----
-mmlang> int{1}                      <1>
-==>int
-mmlang> int<=int                    <2>
-==>int
-mmlang> int<=bool                   <3>
-language error: bool is not of int
-mmlang> int{5}                      <4>
-==>int{5}
-mmlang> int{0,5}                    <5>
-==>int{0,5}
-mmlang> int{0,5}<=int{0,5}          <6>
-==>int{0,5}
-----
-<1> In most programming languages, a value can be typed `int` as in `val x:int = 10`.
-Such https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declarations] state that the value referred to by `x` is a _single_ element within the set of integers.
-The concept of a "single element" is captured in mm-ADT via quantification.
-When the quantifier is the https://en.wikipedia.org/wiki/Unit_(ring_theory)[unit] of the underlying quantifier ring, then the quantifier is not displayed in `mmlang`.
-<2> From the perspective of a function, An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers.
-Given any integer, `int` returns that integer.
-In `mmlang`, when the domain and range are the same, the `<=` and repeated type are not displayed.
-<3> Without any instructions, there is no way for a type to legally map a `bool` to an `int`.
-<4> An mm-ADT type always refers to an unordered https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) of elements known as a _stream_. `int{5}` is a type referring to 5 integers (with repeats possible).
-As a point of comparison, `int` denotes a stream containing a single integer.
-This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
-<5> The quantifier ring can be any ring with unity.
-In the previous examples, the chosen ring's https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] was the set of integers.
-In this example, the carrier set is two integers and is used to capture uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
-<6> This further emphasizes the fact that every mm-ADT type (even canonical types) are functions with a quantified domain and a quantified range.
-
-===== Type Definitions
-
-mm-ADT type signatures specify the canonical type and quantity of the type's domain and range.
-Further specification of the nature of the elements of the type is accomplished via a *type definition*.
-The following mm-ADT type is known as a https://en.wikipedia.org/wiki/Refinement_type[refinement type] because it provides further constraint/refinement on which particular integers in `int` the type is refering to.
-This particular type is the mm-ADT definition of a natural number in \$\mathbb{N}\$.
-\[
-\tt{int[is,[gte,0]]} \equiv \mathbb{N}
-\]
-An itemization of the structural components of the written form of this type in `mmlang` is presented below, where `r/d` refers to range/domain, `op` the instruction opcode, `arg` the instruction argument, and `inst` the instruction as a whole, where in this particular example, the argument to the instruction is a type (whose structure is inferred from the provided instruction).
-
-[source]
-----
-int[is,[gte,0]]
-|_|||_||_____||
-r/d|op | arg ||
-   |   |_____||
-   |     type |
-   |__________|
-       inst
-----
-
-The structure `[is,[gte,0]]` is an *instruction* with a single argument. mm-ADT instruction opcodes denote specific operations explicitly implemented by the mm-ADT virtual machine.
-The set of all mm-ADT instructions forms the machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture].
-
-A type is transformed into another type via an instruction application.
-Every instruction is able to operate on both types and values.
-In this way, instruction application on types yields program _compilation_ and instruction application on values yields _evaluation_.
-The compilation of a type produces a type, where quantification and domain/range specifications are inferred when unspecified by the user.
-
-[source]
-----
-mmlang> int[is,[gte,0]]                      <1>
-==>int{?}<=int[is,bool<=int[gte,0]]          <2>
-mmlang> int int[is,[gte,0]]                  <3>
-==>int{?}<=int[as,int][is,bool<=int[gte,0]]
-mmlang> 6 int{?}<=int[is,bool<=int[gte,0]]
-==>6                                         <4>
-mmlang> -6 int{?}<=int[is,bool<=int[gte,0]]  <5>
-mmlang>
-----
-<1> A base type composed with an instruction/quantifier pair, where the quantifier is not displayed as it's the unit of the quantifier ring -- `{1}`.
-<2> A compiled type that maps a single integer to zero or one integers.
-If the internal `bool\<=int[gte,0]` type yields
-`true`, then an `int{1}`, else `int{0}`.
-<3> A type operates on an `int` thus, if supplied "an `int` type", the type operates on it to yield a type.
-The use of types to process types is a form of compilation generally known as https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation].
-<4> The type maps the positive integer `6{1}` to `6{1}` (_some_).
-<5> The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
-
-NOTE: Any `obj` with the the quantifier ring's additive identity (`zero`) is not displayed by `mmlang` and can be safely garbage collected by the mm-ADT VM processor at anytime throughout a non-reducing computation without altering the semantics of the computation.
 
 ==== The Instruction Monoid
 
@@ -484,44 +476,4 @@ image::inst-left-distrib.png[width=750,align=center]
 // https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYZAIwBO9MAGMAFqQC+IKaXSZc+QinKli1Ok1bsuPPmhZwKGmXIXY8BImoBMmhizaJO3XsgC2zRjlIBWSjN5EAxLZSJbCgdtZ1d9QNlg0KVrFAAWKJpHHRcuGABHZixaRIsUlWQ-TK0nXTc+IREJaVKQxSsKgDZ1aNrc+uRDZmNyU1bkjqJu+yyYuv1Pb18AoLLJlAB2Htm+uPcAc18NhPM2sNTkLZmanL2+Q9Jj1bPyogAOauzYvV4TpPbwigAMyfOb9BYPJ6yTQwKD7eBEUAAM0EEA8SDIIBwECQ5FOKLRGJo2KQtnxqPRiDUWJxiCB5MJiEiNKQ9OCBMpVRZiE6DM5xNpGz5SG63LewsQW25AE4JdKBbjiBKPtzRhKQaq8YEgA
 image::inst-right-distrib.png[width=750,align=center]
 
-====== The Quantifier Ring
-
-.Quantifier Symbols in mmlang
-[width=35%,cols="1,1,2,float=right]
-|===
-|usage   |sugar  | unsugared
-
-|https://en.wikipedia.org/wiki/Option_type[none]/nothing   |`{0}`  | `{0,0}`
-|https://en.wikipedia.org/wiki/Option_type[some]/just      |       | `{1,1}`
-|exact          |`{x}`  | `{x,x}`
-|least footnote:order[Applicable to quantifier rings with an total order over the carrier.]         |`{x,}` | `{x,max}`
-|most footnote:order[]          |`{,x}` | `{min,x}`
-|https://en.wikipedia.org/wiki/Option_type[option]/maybe   |`{?}`  | `{0,1}`
-|given footnote:order[]         |`{+}`  | `{1,max}`
-|any footnote:order[]           |`{*}`  | `{1,max}`
-|===
-
-In the https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory[set-theoretic interpretation of types], a type denotes a set in *Set*.
-A set does not contain repeated elements.
-A _stream_ generalizes a set.
-A stream is an unordered collection of `objs` of varying cardinality (a multi-set, or bag).
-For example, in mm-ADT, `int` is shorthand for `int{1}`--a single integer.
-This is analogous to other languages, where when `int` is used to define a value, it is referring to a single integer from the set of all integers--e.g., `val answer:int = 42`.
-Where mm-ADT differs from other languages is that `bool{42}` is a type denoting `42` boolean values.
-
-All `mmlang` expressions within `{ }` operate on the mm-ADT VM's *_quantifier ring_* (w/ unity).
-Any object that supports `+`/`*`/`0`/`1` and the axioms governing their composition can be used as an mm-ADT quantifier.
-Along with Turing Complete types specifications, type definitions can be specified to as accurate or fuzzy a degree as computationally and conceptually possible.
-
-Typically, the quantifier of choice for most applications is the `int` ring (or `int` range ring -- `{2,13}`).
-Common programming concepts that are usually captured by typeclasses or functors (via https://en.wikipedia.org/wiki/Lift_(mathematics)[lifting]) are expressed in mm-ADT via quantification.
-
-[source]
-----
-int                                  // a single int   (some)
-int{?}<=int[is,[gt,0]]               // 0 or 1 int     (option)
-int{0}<=int[is,false]                // 0 ints         (none)
-int{4}<=int{2}[branch,[id],[id]]     // 4 ints         (exact)
-int{*}<=[=db][get,'costs']           // 0 or more ints (any)
-----
 
