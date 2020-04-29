@@ -1,0 +1,160 @@
+
+////////////////////////////////////
+// images/obj-monoid.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgIAjAFadgAKk4BfcSHFUQMKAHN4RUADMAThAC2SMiBwRd1BhAhoiZVYzgxZDOnxgMACplz5CiEOqwKAFjgg1PTMrF6c3MDIWGBwOBRSMuJAA
+\begin{tikzcd}
+\tt{obj\{*\}} \arrow["{\tt{[inst]}}"', loop, distance=2em, in=305, out=235]
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/type.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAJgBoAGAXVJADcBDAGwFcYkQAdDnHYHATzQwAviGGl0mXPkIoAjKTnU6TVuy49gUAUNHjJ2PASLlSxZQxZtEnbrx0ixEkBkMyiZczUtqbG3lhgcDh6zq7SxigAzIoWqta2mgDGDnrKMFAA5vBEoABmAE4QALZICiA4EEjk+iCFJWU0lUjEtfWliOXNiFFtRR0ALE1ViDWUwkA
+\begin{tikzcd}
+          &                                             & \tt{type} &                       \\
+          & \tt{dtype} \arrow[ru] \arrow[ld] \arrow[rd] &           & \tt{ctype} \arrow[lu] \\
+\tt{type} &                                             & \tt{inst} &                      
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/ctypes.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPPgORoWcUgBZKw0eOx4CRAMzyaDFm0Sduvfjk3a9lZAFtmjHKRkGImIgGCZSRLpWirYqjuouWsw6+l4+fgHIAOZ+ugGGwaGSZijkUTbK9qq8EABGAFZcwABUXIL5xkXSJKTECuV2Dmo1EBCMhgowUJnwRKAAZgBOEJ5IZCA4EEil0RWDvK5J7sI0jPQ1MIwAChKm0iALWJkAFjhB80sriHLrm4hr-bE1KlfHo8iATmcLtcwsV7o8Xm8QItlkhLD8kN8AZU4lkcmCIecrjdwvZGDA5q8jEiPlsaBtaSBGCM0ERiAAOUpzJhwGAKU6E6GddgPZ6vaxKAZVYDIKDLej8QJU5Gfbb0xDbJkQFklUhcxg8vmQokwu4ihHimLYoELehgaaK4LKhlqyI7SU45yBAlQ4mws2Ux00v5037bc5gKBIXQATgtuylyBtdt57WpKOD6PVNHDkcQAFoY3H3UDZZ55WAvYyjYLbsL4QH3unvmqwzAI0gC7G3YD9qXy5X+T6TXXRYinV8Qwyc1Gu1i9tKk-bU+O0S3s23c52iz3pX2FccqwLfab62OgwBWSeIV1zhPDUYOxufVe-S8gaeIczbW84xcps-pm+apvpq2rIDIADsnLcry3rGkK9j+uC3ZWr2cr7gBnxAa+JzMkQ0H6rBh5DghcKjtuqELraS4iAYQA
+\begin{tikzcd}
+\tt{obj\{*\}} & \tt{int} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=125, out=55] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] \arrow[l, "{\tt{[int]}}"']    & {\tt{int[plus,4]}} \arrow[l, "{\tt{[plus,4]}}"'] \arrow[l, "{\tt{[range]}}", bend left=49] \arrow[l, "{\tt{[domain]}}"', bend right=49] & {\tt{int[plus,4][mult,2]}} \arrow[l, "{\tt{[mult,42]}}"'] \arrow[ll, "{\tt{[domain]}}"', bend right=49] \arrow[ll, "{\tt{[range]}}", bend left=49] & {\tt{int[plus,4][mult,2][gt,42]}} \arrow[l, "{\tt{[gt,42]}}"] \arrow[lll, "{\tt{[domain]}}"', bend right=49] \arrow[llld, "{\tt{[range]}}", bend left] \\
+              & \tt{bool} \arrow[lu, "{\tt{[bool]}}"] \arrow["{\tt{[domain]}}"', loop, distance=2em, in=215, out=145] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] &                                                                                                                                         &                                                                                                                                                    &                                                                                                                                                       
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/types.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgBjHAJ5oYAXxAjS6TLnyEUAJnJVajFm07dgUQcLEjlMKAHN4RUADMAThAC2SAIzUcEJGRAAjGGChIAzG-pmVkQQSzAjcUkQK1sHJxdEN09vJABaf2pAtRCoWOoGOk8GAAVpPAI2SywjAAscSItrO0RHEGdXfMKYErLZSuq6kEzVYI4uHiwwOBw9KJjmt3bE-IgINCIyc0Y4GGUCotLscrlQgfrhoMrwhuimjraEtwZV9ZR7AA5N7d3Og96KkJVWrnFSXHKxCSNWIteJxEDPNZEACcXwYOz2XR6Rz6gLOQ1B2TGmkm0z0FBEQA
+\begin{tikzcd}[row sep=large,column sep=large]
+\tt{ctype} \arrow["rng"', loop, distance=2em, in=305, out=235] \arrow["dom"', loop, distance=2em, in=125, out=55] &  & \tt{dtype} \arrow[ll, "rng", bend left] \arrow[ll, "dom"', bend right] \arrow[ll, "\tt{inst}"'] \arrow["\tt{inst}"', loop, distance=2em, in=35, out=325]
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/initial.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoAmAXVJADcBDAGwFcYkQBlEAX1PU1z5CKAIyli1Ok1bsAogH0RPPiAzY8BImJGSGLNohALyy-uqFbSAFl3SDR+YV5nBm0RVv658gMynVAhrCyGI+njKGADqRjFAQOAjckjBQAObwRKAAZgBOEAC2SGQgOBBIYlJehjCKIDSM9ABGMIwACoEWhowwWTj+uQVFNKVI5DR6ESA1JvVNLe3mbiA5WKkAFn3OIAOFiMUjiD7jduw1hLPNbR1LK+ubKjtDJWV79RAQaETkAOxkODmsSQNS4LVzCEDdXp1SqTLBQfp5Xb7F5WY5VKa+aHA+bXcG3DYIwavZ5IACsSW4QA
+\begin{tikzcd}
+                                                                                                                                           & E_1    \\
+                                                                                                                                           & E_2    \\
+S \arrow[ruu, "e_1"] \arrow[ru, "e_2"'] \arrow[rdd, "e_n"'] \arrow["id", loop, distance=2em, in=145, out=215] \arrow[r, "e_3"'] \arrow[rd] & E_3    \\
+                                                                                                                                           & \ldots \\
+                                                                                                                                           & E_n   
+\end{tikzcd}
+
+////////////////////////////////////
+// images/terminal.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAmAXVJADcBDAGwFcYkQBREAX1PU1z5CKAAykR1Ok1bsAygH1iPPiAzY8BImOKSGLNohALyy-uqFbSAFl3SDR+YV5nBm0RVv658gMynVAhrCyGI+njKGADqRjFAQOAjckjBQAObwRKAAZgBOEAC2SGQgOBBIYlJehnCKIDSM9ABGMIwACoEWhowwWTj+uQVI5DSl5TR6ESA1JvVNLe3mbiA5WKkAFn3OIAOFiD4jZYgVE-Y1hLPNbR1LK+ubKjtjJYcVjBAQaEQAnGI4OaySBqXBauYQgbq9OqVSZYKD9PK7KwHJ4ndg1PwXebXMG3DbwwaIACsyKOSW4QA
+\begin{tikzcd}[row sep=small]
+S_1 \arrow[rdd, "s_1"]  &                                                    \\
+S_2 \arrow[rd, "s_2"']  &                                                    \\
+S_3 \arrow[r, "s_3"']   & E \arrow["id", loop, distance=2em, in=325, out=35] \\
+\ldots \arrow[ru]       &                                                    \\
+S_n \arrow[ruu, "s_n"'] &                                                   
+\end{tikzcd}
+
+////////////////////////////////////
+// images/obj-full.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAZgBoAGAXVJADcBDAGwFcYkQAdDnHYCAIwBWAXxDDS6TLnyEUAJlIBGanSat2XHnyEwAxjlHjJ2PASIAWJSoYs2iTt14BHQxJAYTMootJzrauwctHABPNBhXY2kzFDI-Ght1e01eRIixNw9o2WRyUmJ-Ww1HYH0w9KN3KVMchQKEgOKtKFDwyKrPGOQfc0KkoN5Wiszqr1jSXoai5JKsMDgDMRUYKABzeCJQADMAJwgAWyQ8kBwIJEVK3YOjmlOkOUu9w8QyE7PEC7cr58s388frogAKy3d7EAHPABsoKQ4K+TyQ0L+iAA7BDETDEAAOYSUYRAA
+\begin{tikzcd}
+                      &                      &                                             & \tt{obj} \arrow[ld] \arrow[rd] &        \\
+                      &                      & \tt{object}                                 &                                & \tt{q} \\
+                      & \tt{type} \arrow[ru] &                                             & \tt{value} \arrow[lu]          &        \\
+\tt{ctype} \arrow[ru] &                      & \tt{dtype} \arrow[lu] \arrow[ld] \arrow[rd] &                                &        \\
+                      & \tt{type}            &                                             & \tt{inst}                      &       
+\end{tikzcd}
+
+////////////////////////////////////
+// images/type-data-structure.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPPgORoWcUgBZKw0eOx4CRAMzyaDFm0Sduvfjk3a9lZAFtmjHKRkGImIgGCZSRLpWirYqjuouWsw6+l4+fgHIAOZ+ugGGwaGSZijkUTbK9qq8EABGAFZcwABUXIL5xkXSJKTECuV2Dmo1EBCMhgowUJnwRKAAZgBOEJ5IZCA4EEil0RWDvK5J7sI0jPQ1MIwAChKm0iALWJkAFjhB80sriHLrm4hr-bE1KlfHo8iATmcLtcwsV7o8Xm8QItlkhLD8kN8AZU4lkcmCIecrjdwvZGDA5q8jEiPlsaBtaSBGCM0ERiAAOUpzJhwGAKU6E6GddgPZ6vaxKAZVYDIKDLej8QJU5Gfbb0xDbJkQFklUhcxg8vmQokwu4ihHimLYoELehgaaK4LKhlqyI7SU45yBAlQ4mws2Ux00v5037bc5gKBIXQATgtuylyBtdt57WpKOD6PVNHDkcQAFoY3H3UDZZ55WAvYyjYLbsL4QH3unvmqwzAI0gC7G3YD9qXy5X+T6TXXRYinV8Qwyc1Gu1i9tKk-bU+O0S3s23c52iz3pX2FccqwLfab62OgwBWSeIV1zhPDUYOxufVe-S8gaeIczbW84xcps-pm+apvpq2rIDIADsnLcry3rGkK9j+uC3ZWr2cr7gBnxAa+JzMkQ0H6rBh5DghcKjtuqELraS4iAYQA
+\begin{tikzcd}
+\tt{obj\{*\}} & \tt{int} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=125, out=55] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] \arrow[l, "{\tt{[int]}}"']    & {\tt{int[plus,4]}} \arrow[l, "{\tt{[plus,4]}}"'] \arrow[l, "{\tt{[range]}}", bend left=49] \arrow[l, "{\tt{[domain]}}"', bend right=49] & {\tt{int[plus,4][mult,2]}} \arrow[l, "{\tt{[mult,42]}}"'] \arrow[ll, "{\tt{[domain]}}"', bend right=49] \arrow[ll, "{\tt{[range]}}", bend left=49] & {\tt{int[plus,4][mult,2][gt,42]}} \arrow[l, "{\tt{[gt,42]}}"] \arrow[lll, "{\tt{[domain]}}"', bend right=49] \arrow[llld, "{\tt{[range]}}", bend left] \\
+              & \tt{bool} \arrow[lu, "{\tt{[bool]}}"] \arrow["{\tt{[domain]}}"', loop, distance=2em, in=215, out=145] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] &                                                                                                                                         &                                                                                                                                                    &                                                                                                                                                       
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/type-equiv.png 
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACZSxanSat2XHnwHI0LOKRmVho8djwEiAFgqKGLNok7de-HFp0UFhsSAwmpF+dbKdg7qzq7MuvrhugAcBiJePpJmKGQKNDYq9mpOAoaKMFAA5vBEoABmAE4QALZIZCA4EEhySraqjsDR7vFGIFW1SOQ0TUgAzBlBHerdcZ4V1XWIE43NiK0ARjBgUEgAtGMNmcE5XVhQ8TSM9FuMAAoSptIglVhFABY4CQuD6yNrKy2O32h0m7WynWQ50uIGutwevhSLzen2+-UWSEsqyGYKyIV43X083Rvwao0QWKBu0QByOUwhM2hwiuNxg90efnsrw+Xz6AyWWPJDSpILp4PxZwuzNhrPZiOe3NRggMQA
+\begin{tikzcd}
+\tt{int} \arrow[rr, "{\tt{[plus,2]}}"] \arrow[d, "{\tt{[id]}}"', bend right]    &  & {\tt{int[plus,2]}} \arrow[rr, "{\tt{[plus,8]}}"] &  & {\tt{int[plus,2][plus,8]}} \arrow[d, "{\tt{[id]}}"', bend right] \\
+\tt{int} \arrow[rrrr, "{\tt{[plus,10]}}"] \arrow[u, "{\tt{[id]}}"', bend right] &  &                                                  &  & {\tt{int[plus,10]}} \arrow[u, "{\tt{[id]}}"', bend right]       
+\end{tikzcd}
+
+////////////////////////////////////
+// images/ring-structures.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZAJgBoAGAXVJADcBDAGwFcYkQAdDnHYCAIwBWXYACouAXy6kATljABzCSAml0mXPkIoAjKR3U6TVuy49gyeXByVpcxctXrseAkQDM+wwxZtEnbl4RAEdJO3klFTUQDBctInJSYm9jPwDzUQACLgBuTIBbAggsKEdo2M03XSSU31NA4ABqbI48gGMIfPzpBRkIZjQy50rtZAAWGpofE38zXmbczI6unr6BoZiNV1HPZKnU+oyWvMLIEsdDGCgFeCJQADM+-KREkBwIJB0nEEfOl5p3khiN9fs9EHo3h9EO4QU9PgCoWNYX9EGRIUgAKzIsFowGIABsEkoEiAA
+\begin{tikzcd}
+                 &                                          & {\tt{obj\{*\}\,ring}} \arrow[ld] \arrow[rd] &                                         &                         \\
+                 & {\tt{[inst]\,ring}} \arrow[ld] \arrow[d] &                                             & {\tt{\{q\}\,ring}} \arrow[rd] \arrow[d] &                         \\
+\tt{* \; monoid} & {\tt{+ \; comm\,group}}                  &                                             & \tt{* \; monoid}                        & {\tt{+ \; comm\,group}}
+\end{tikzcd}
+
+////////////////////////////////////
+// images/type-equivalence.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAGAXVJADcBDAGwFcYkQAdDnHYLMHAF8Qg0uky58hFACYK1Ok1bsuPPgORoWcUgBZKw0eOx4CRAMzyaDFm0Sduvfjk3a9lZAFtmjHKRkGImIgGCZSRLpWirYqjuouWsw6+l4+fgHIAOZ+ugGGwaGSZihkxAo2yvaqvABGEBCM+cZF0sjkURV2DmrOrkmkAByBggowUJnwRKAAZgBOEJ5IZCA4EEjt0ZXdvH3JgTSM9DUwjAAKEqbSILNYmQAWOEEz84uIcitriMudsWqpvno8iADkcTucwsVrrcHk8QHMFkhLB8kO8flU4lkckCQcczhdwvYbvdHkY4S91jRVhSQIx6mgiMQBu1pkw4DAFIdceCWuwiTDrEoutVgMgoAt6PxhsF4a8NlTEBtaRB6Shmaz2TiwfjIXzHgKYui-rN6GAJlLngivpTPhtjmAoEhdABOfVbYXIY2m9lNMmW5by20we1IAC0ztdQoxYs8ErA+xpoLxEKuuthMpR1updodiDDLs2kb+0dj8c5WuTvOhJOl5LemYVNGzjvzaO2Is9Zp96cQSIDjaDObzEd+O2LkuEmqTPMJVbTtd7n0iICbPY2rfdHe9c8tS-lS6VKuQMgA7GrGGyOYnuZdK8TgQWRyKx3Gu7Xd4uDnSiGeL5PrwSoTvYdDR2TdzV9V4AFZ6zXQVH12QZwO7aDkQbZcByQAA2WCDTbUVxXHbcoJg-tg1zcMHxA9sTU7IiM1QlCVyHSi8NmGAAHcbhwLc-21FNZxGQQgA
+\begin{footnotesize}
+\begin{tikzcd}[row sep=large, column sep=large]
+{\tt{int[plus,8]}} \arrow[r, "{\tt{[plus,8]}}"] \arrow[r, "{\tt{[domain]}}", bend left=60] \arrow[r, "{\tt{[range]}}", bend right=49] & \tt{int} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=125, out=55] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235]   & {\tt{int[plus,4]}} \arrow[l, "{\tt{[plus,4]}}"'] \arrow[l, "{\tt{[range]}}", bend left=49] \arrow[l, "{\tt{[domain]}}"', bend right=49] & {\tt{int[plus,4][mult,2]}} \arrow[l, "{\tt{[mult,42]}}"'] \arrow[ll, "{\tt{[domain]}}"', bend right=49] \arrow[ll, "{\tt{[range]}}", bend left=49] \arrow[lll, "{\tt{[rewrite]}}"', bend right=49] & {\tt{int[plus,4][mult,2][gt,42]}} \arrow[l, "{\tt{[gt,42]}}"'] \arrow[lll, "{\tt{[domain]}}"', bend right=49] \arrow[llld, "{\tt{[range]}}", bend left] \\
+                                                                                                                                      & \tt{bool} \arrow["{\tt{[domain]}}"', loop, distance=2em, in=215, out=145] \arrow["{\tt{[range]}}"', loop, distance=2em, in=305, out=235] &                                                                                                                                         &                                                                                                                                                                                                    &
+\end{tikzcd}
+\end{footnotesize}
+
+////////////////////////////////////
+// images/traverser.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBoAmAXVJADcBDAGwFcYkQAdDnHYHAJ3q0AviGGl0mXPkIoyxanSat2XHsDg56OGKPGTseAkXIVFDFm0SduvCACMAVnokgMhmUTIBmc8qs26gDGOACeaLpiru7SxigADKTxfpaqthoCLgaxsiRJKSrWanZOWW5SRrneZjQWhYG8AkIA5GUxlUTVvrX+aepQYRFtFZ4oACw1SqlF6Q6OrVHZHSjVCj3TDRnaus2L5R5xyNXJ6-XFGfzDB7kTJ1Nns6V77aPIAKyTdQFcjFAQOAh9PsckQPt17t8OL9-oDoiNDh81hC0tCAWJFDAoABzeBEUAAM34EAAtkhEiAcBAkGRkTN1MhKZQAPTIQkkyiiGiMej2GCMAAK8NkIEYMHxOD2bNJiHJlKQ5CBUqQ1QpVJlXJ5fMF13Y-CwWIAFhLFUTpaZVcqaLywFAyadITxkFg4KR6JQQBreQKhexReLJabqTQ5YgxiaSUGLYg3uHpQB2YNqlVfPq8J1gTQcj0izXenXWP3G1xKxAANkTSAAHLGqxXEAnaZsnS63Zyc17tSCC2KiwTA-W66Wa2W6wBOe2p4AMiDM1mmrOerU+6x6w29kAl8dR4jxYdbkPEYjDmkhrfcjvLkU97Mpuk4ZBwNCMXDuq0wG3K3fF-uytXlkDWraiDeOSt5No+z44Au7ZLvmV7+seKohg2YHnOmmZlCW-4HuagGfse5oHmG34RogxBIWqxAKiR0r7pREwAe+QEgcIHJAA
+\begin{tikzcd}[row sep=large]
+\tt{str} & \tt{obj}                                                                                    &                                    & \tt{str}                                                                    & \tt{obj}                              &                                              \\
+         & \tt{state} \arrow[lu] \arrow[u] \arrow[rr, "{\tt[split]}", bend left]                       &                                    & \tt{state}' \arrow[u] \arrow[ru] \arrow[rr, bend left]                      &                                       & \ldots                                       \\
+         & \tt{trav} \arrow[u, "{\tt{[to]/[from]}}"] \arrow[r] \arrow[rr, "{\tt{[split]}}", bend left] & \tt{obj} \arrow[ld, "{\tt[is,a]}"] & \tt{trav'} \arrow[r] \arrow[u, "{\tt{[to]/[from]}}"'] \arrow[rr, bend left] & \tt{obj'} \arrow[ld, "{\tt{[is,a]}}"] & \ldots \arrow[u]                             \\
+         & \tt{ctype} \arrow[u]                                                                        &                                    & \tt{dtype} \arrow[ll, "{\tt{[inst]}}"] \arrow[u]                            &                                       & \ldots \arrow[ll, "{\tt{[inst]}}"] \arrow[u]
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/traverser-fold.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBpiBdUkANwEMAbAVxiRAB12cdgcAnOjQC+IIaXSZc+QigBM5KrUYs2nbrwE0A5CLETseAkXkBGRfWatEHLjwgAjAFY7R4kBgPSiZM9QsrrNTsnXTcPKSMUE1JfJUtVW2AAYxwATzQYUP0ImWRo2XNlKxt1LDA4HCz3SUNcgGYYwvjAxKg0jJc9as9I5AaCvyKE0vKcTrCarxQAFkbB5pLg504AbnHs2qJZynmAxY1BLU5Sde6cogBWObi9oOA29Jgj9hOq8M2UK4Gb4ruyiuer1cGymyAAbApdr92AwoBAcAguu9QRDYv5obD4YiJj1cgB2a7ohKYhHAs4fZAE75ElokxGKGBQADm8CIoAAZnwIABbJBkEA4CBIaI-YY8ZBwNAMXAUKqcnnC6iCpDyUUtdTIKBJWUgagMOj2GAMAAKk0iID4WCZAAscGT5bzEPzlYgGmr9prtSI9QajabcWxLTa7V0HUhZgKhYgLqGuY63S6ru67nQ0FLUt6QPrDSazTILVbbfa40gky7VTT9nx4EwGJVdSBDWAoHyfTn-edrEGi7GFa6lVGI5W7sgsHBSHQdW2-XnA4WQ24w4hVS6IcnEqPx5PM9mZwGu-Pi33nYOoWLgMg0F6j46I6vqE2W67iL3HWuXXjXyqB0gCev1Km6Y7r6ub7gWwY3r+P6IAAHGe6o8NWcC1vWD4wM2rZZiBHYfOBPaLiWiAii6ACc8EepK0o4DqX6IGRkZIHB-7ilqU5Ye2s4HhBtFMS6Jj8sOG5jhObG7qBnZ4QuHKEe+Ub8WhGHPjx0EmCKgkAWmDAZg2Yk4VMkmQXRKkVkMCEXpRMpyoRxFRmu6nileNEEX29F8QJpkeo5Vl9iYK5yXUtGqSpbqPph9nAEhKHARxYHdlJIBLvJDFERGoVKc5jomAmcnTIF2XCjGspAA
+\begin{tikzcd}[row sep=huge]
+\tt{trav} \arrow[rr, "{\tt{[split]}}"] \arrow[d, "{\tt{[dc]}}"'] \arrow[rd, "{\tt{[pc]}}"] &                                            & \tt{trav'} \arrow[d, "{\tt{[dc]}}"'] \arrow[rr, "{\tt{[split]}}"] \arrow[rd, "{\tt{[pc]}}"] &                                             & {\tt{trav'\,'}} \arrow[d, "{\tt{[dc]}}"'] \arrow[rr, "{\tt{[split]}}"] \arrow[rd, "{\tt{[pc]}}"] &                                            & \ldots \arrow[d]            &        \\
+\tt{obj} \arrow[rd, "\tt{apply}"'] \arrow[r, "{\tt{[is,a]}}"']                             & \tt{ctype} \arrow[d] \arrow[rr, bend left] & \tt{obj'} \arrow[r, "{\tt{[is,a]}}"'] \arrow[rd, "\tt{apply}"']                             & \tt{dtype'} \arrow[d] \arrow[rr, bend left] & \tt{obj'\;'} \arrow[r, "{\tt{[is,a]}}"'] \arrow[rd, "\tt{apply}"']                               & {\tt{dtype'\,'}} \arrow[rr, bend left]     & \ldots \arrow[r] \arrow[rd] & \ldots \\
+                                                                                           & \tt{inst} \arrow[ru, "\tt{result}"']       &                                                                                             & \tt{inst'} \arrow[ru, "\tt{result}"']       &                                                                                                  & {\tt{inst'\,'}} \arrow[ru, "\tt{result}"'] &                             & \ldots
+\end{tikzcd}
+
+
+////////////////////////////////////
+// images/branch-prod-coprod.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQBBEAX1PU1z5CKchWp0mrdhwAEAHTl4AtvBmyFy1V179seAkQBMpYuIYs2iTjz4gMeoUdKGzky9Z12B+4cmNUacykrbVt7QQMUABYxQLd2ACEAagBhJIARG10I3wBmE1cLRKyvB0jkfJc4oqtMz3CfInyAiRqQFJKGxxQAVljW4JAecRgoAHN4IlAAMwAnCCUkMhAcCCRRAfcNHGBkACNZ+jAAYwALbhK5hfWaVaRjTfYFNCwAfXJL+cXEDbvEfMeVmeb1yIBojHoexgjAACt5uiBZlgxqccJ9rj9bmtEDFASBga9DOjvg8-gA2aqDba7LBgOA4SgXTxXb4Av4AdkpW0UO2QtPpjOJSFxfwAHFynjyaXSGUzbCykBSVti+niFPgcPR3kLEOLlUhVUFuRqtUTmV8kJz9YhDfEgXITa9QeaMaq-gBOCVWSjDbhAA
+\begin{tikzcd}[row sep=large,column sep=large]
+                            &                                                                                 & A \arrow[r, "{\tt{[inst]}}"] & B \arrow[rd, "\iota_1"] &                        &    \\
+A \arrow[r, "\tt{[branch}"] & A \times A \times A \arrow[ru, "\pi_1"] \arrow[rd, "\pi_3"'] \arrow[r, "\pi_2"] & A \arrow[r, "{\tt{[inst]}}"] & C \arrow[r, "\iota_2"]  & B+C+D \arrow[r, "\tt{]}"] & {} \\
+                            &                                                                                 & A \arrow[r, "{\tt{[inst]}}"] & D \arrow[ru, "\iota_3"] &                        &   
+\end{tikzcd}
+
+
+
+////////////////////////////////////
+// images/instruction-args.png
+////////////////////////////////////
+% https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBpiBdUkANwEMAbAVxiRAB12cdgswdkaZnFIBfEKNLpMufIRQAGclVqMWbTt179xk6djwEiAZlIAmFfWatEHLjz4CAtkwY5zFXVJAYDcomakCpZqNnZajl76skYogRbUVuq2mg46Et6+MfLIACzKiaEa9toCQkwiyC5uHp4Z0YY5psGF1sUR6aIqMFAA5vBEoABmAE4QTkhKIDgQSGSqbSklgsKkVa7uFnXUDHQARjAMAAoyjWwjWL0AFjj1IKPjk9QzSKYLyXZoWAD6xHcPE0QUxeiHy7zCnC+3zM-zGgMC01moNaH1SwHWNQs4h2+0OJz8sRAF2utz09zhSARIIArCiIex8Dg6NDYY9EAA2Z5It5JelaZCQCBoOpkgFITmIpC08HFRnMv5dURAA
+\begin{tikzcd}[column sep=large,row sep=large]
+         &  &                                                                                                & \tt{int} & \tt{int} \arrow[l, "{\tt{[noop]}}"'] \arrow[rd, "\iota_1"]             &                           \\
+\tt{int} &  & {\tt{int[plus,}} \arrow[ll, "{\tt{[plus,[mult,2]]}}"'] \arrow[ru, "\pi_1"] \arrow[rd, "\pi_2"] &          &                                                                        & {\tt{int[plus,[mult,2]]}} \\
+         &  &                                                                                                & \tt{int} & {\tt{int[mult,2]}} \arrow[l, "{\tt{[mult,2]}}"'] \arrow[ru, "\iota_2"] &                          
+\end{tikzcd}
