@@ -2,13 +2,11 @@
 
 == Language Structures
 
-Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_function[unary function] that maps an `obj` of type \$S\$ (start) to an `obj` of type \$E\$ (end) with the function signature
+image::compiling-languages.png[float="right",width=300]
 
-\[
-f: S \rightarrow E.
-\]
+The mm-ADT virtual machine is programmed by composing objects (`obj`) via instructions (`inst`) that are parameterized by other objects as outlined by the VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The mm-ADT VM is written in https://scala-lang.org/[Scala] and the core package exposes a fluent https://en.wikipedia.org/wiki/Application_programming_interface[API] for writing mm-ADT programs called `mmscala`. Most compiler designers should avoid `mmscala` as it's tight coupling with Scala (and the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM] in general) makes it difficult to properly constrain what can be expressed. Instead, `mmlang` should be the target language of most compilers.
 
-The complexities of mm-ADT are realized in the definition of an `obj` (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are https://en.wikipedia.org/wiki/Currying[curried] at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield \$f : S \rightarrow E\$.
+IMPORTANT: The recommended target language for all higher-level language compilations is `mmlang`.
 
 .Products and Coproducts
 ****
@@ -28,9 +26,11 @@ Along with these decomposition (and composition) morphisms, there exists an http
 That is, product and coproduct equality are defined via component equality.
 ****
 
+=== The Obj
+
 image::obj-type-value-q.png[role=left,padding-left=303,width=280]
 
-Every mm-ADT `obj` is the product of
+Everything that can be denoted in `mmlang` is an `obj`. Internal to the VM, every `obj` is the product of
 
 . An *object* co-product that is either a *type* or a *value* and
 . A *quantifier* specifying the "amount" of objects being denoted.
@@ -41,13 +41,12 @@ Every mm-ADT `obj` is the product of
 
 image::obj-type-q-value-q.png[float=right,width=450]
 
-From this vantage point, mm-ADT's `obj` structure forms an https://en.wikipedia.org/wiki/Ring_%28mathematics%29[algebraic ring].
-The https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition[ring axioms] specify how the elements of it's https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] can be combined using the two binary operators \$\times\$ and \$\+\$ . One particular ring axiom states that products  https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over co-products.
+The internal structure of an `obj` is well-defined as an https://en.wikipedia.org/wiki/Ring_%28mathematics%29[algebraic ring]. The https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition[ring axioms] specify the ways in which an `objs` internals can be combined using two binary operators: \$\times\$ and \$\+\$ . One particular ring axiom states that products https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over co-products.
 Thus, the previous formula can be rewritten as
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation of `obj`, which is isomorphic to the previous, declares two kinds of mm-ADT `objs`: *quantified types* and *quantified values*. It is through a particular subset of `objs` called _instructions_ (\$ \tt{i\nst} \subset \tt{obj} \$) that types and values are linked to one another -- yielding the primary data structure used for all mm-ADT operations from compilation to execution: *the trace graph*.
+    This representation, which is isomorphic to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*. It is through the `inst` instruction subset (\$ \tt{i\nst} \subset \tt{obj} \$) that types and values are linked to one another -- yielding the primary language structure for programming the mm-ADT VM: the *inst monoid*.
 
 Some example mm-ADT `objs` are presented below using `mmlang`.
 
