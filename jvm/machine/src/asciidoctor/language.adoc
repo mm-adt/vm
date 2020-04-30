@@ -248,7 +248,6 @@ mmlang>
 <4> The type maps the positive integer `6{1}` to `6{1}` (_some_).
 <5> The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
 
-
 ==== Type Quantification
 
 In order to quantify the _amount_ of objects in a stream, every mm-ADT type has an associated quantifier `q`. Quantifiers are typically integers, but are generally any element from an ordered algebraic ring (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, unitary matrices, etc.). Moreover, while integer quantifiers signify "amount," other quantifiers such as unitary matrices denoting a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description of what a quantifier represents.
@@ -291,8 +290,9 @@ The \$\cdot\$ and \$ +\$ binary operators are pairwise integer multiplication an
 In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`.
 Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`.
 
+=== The Instruction Set Architecture
 
-==== The Type Monoid
+==== The Inst Monoid
 
 .Initial and Terminal Objects
 ****
