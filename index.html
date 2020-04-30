@@ -450,6 +450,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_virtual_machine_components">Virtual Machine Components</a>
 <ul class="sectlevel2">
+<li><a href="#_the_mm_adt_algebras">The mm-ADT Algebras</a></li>
 <li><a href="#_the_mm_adt_console">The mm-ADT Console</a></li>
 </ul>
 </li>
@@ -464,7 +465,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_type_quantification">Type Quantification</a></li>
-<li><a href="#_the_type_monoid">The Type Monoid</a></li>
+</ul>
+</li>
+<li><a href="#_the_instruction_set_architecture">The Instruction Set Architecture</a>
+<ul class="sectlevel3">
+<li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 <li><a href="#_the_instruction_monoid">The Instruction Monoid</a></li>
 <li><a href="#_type_ring">Type Ring</a>
 <ul class="sectlevel5">
@@ -531,7 +536,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="imageblock left">
 <div class="content">
-<img src="./images/mm-adt-logo.png" alt="mm-ADT Logo" width="150">
+<img src="./images/introduction/mm-adt-logo.png" alt="mm-ADT Logo" width="150">
 </div>
 </div>
 <div class="paragraph">
@@ -544,7 +549,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="imageblock right text-center">
 <div class="content">
-<img src="./images/vm-components.png" alt="vm components" width="360" height="294">
+<img src="./images/introduction/vm-components.png" alt="vm components" width="360" height="294">
 </div>
 </div>
 <div class="paragraph">
@@ -565,6 +570,49 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="paragraph">
 <p>The mm-ADT VM enables the intermingling of any language, any storage system, and any processor that can faithfully implement the core language semantics (<em>types and values</em>), storage semantics (<em>data structure streams</em>), and/or processor semantics (<em>process trace graphs</em>) up to the limits of the expressiveness of the components themselves.</p>
+</div>
+<div class="sect2">
+<h3 id="_the_mm_adt_algebras">The mm-ADT Algebras</h3>
+<table class="tableblock frame-all grid-all right" style="width: 40%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Component</th>
+<th class="tableblock halign-left valign-top">Algebra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instruction monoid</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ADT functors</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">stream ring</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Each of the three aforementioned mm-ADT VM components has an associated axiomatic algebra that most natural describes its structures and processes. The language component&#8217;s algebra is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> capturing the serial composition of instructions from the mm-ADT instruction set architecture. The storage component&#8217;s algebra is a collection of categorical <a href="https://en.wikipedia.org/wiki/Functor">functors</a> that map the internal representation of the mm-ADT VM to common abstract data types (key/value, graph, relational, etc.) that most naturally represent the interfacing storage system. Finally, the processor component&#8217;s algebra (which supports both compilation and evaluation) is a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> capturing serial and parallel function evaluation on objects that represent types and values.</p>
+</div>
+<div class="paragraph">
+<p>Each of these algebraic structures has a respective categorical encoding and, for each category, there exists a bijective functor to the other two categories such that diagram below commutes.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/introduction/mmadt-algebras.png" alt="mmadt algebras" width="25%">
+</div>
+</div>
+<div class="paragraph">
+<p>The primary purpose of this documentation is to explain these categories algebraically, their intra-category functors, and the respective software technology that enables their real-world manifestation. Data technology developers will learn how to integrate their technology with any of the aforementioned categories so end users may compose their system with other systems to create mathematically sound <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_the_mm_adt_console">The mm-ADT Console</h3>
@@ -1156,8 +1204,11 @@ Moreover, if a single value is provided, it is assumed to be repeated where <cod
 </table>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_the_instruction_set_architecture">The Instruction Set Architecture</h3>
 <div class="sect3">
-<h4 id="_the_type_monoid">The Type Monoid</h4>
+<h4 id="_the_inst_monoid">The Inst Monoid</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Initial and Terminal Objects</div>
