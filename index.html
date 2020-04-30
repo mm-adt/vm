@@ -735,7 +735,7 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Everything that can be denoted in <code>mmlang</code> is an <code>obj</code>. Internal to the VM, every <code>obj</code> is the product of</p>
+<p>Everything that can be denoted in <code>mmlang</code> is an <code>obj</code>. Within the VM and outside the referential purview of an interfacing language, every <code>obj</code> is the product of</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -758,12 +758,12 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The internal structure of an <code>obj</code> is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">algebraic ring</a>. The <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a> specify the ways in which an <code>objs</code> internals can be combined using two binary operators: \$\times\$ and \$\+\$ . One particular ring axiom states that products <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over co-products.
+<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">algebraic ring</a>. The <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a> specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular ring axiom states that products <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over co-products.
 Thus, the previous formula can be rewritten as
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-    This representation, which is isomorphic to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. It is through the <code>inst</code> instruction subset (\$ \tt{i\nst} \subset \tt{obj} \$) that types and values are linked to one another&#8201;&#8212;&#8201;yielding the primary language structure for programming the mm-ADT VM: the <strong>inst monoid</strong>.</p>
+This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. The mm-ADT VM is programmed by linking types and values via instructions in <code>inst</code> (\$ \tt{i\nst} \subset \tt{obj} \$). The abstract algebra axiomatizing <code>obj</code> graph construction is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. In particular, the <strong>inst monoid</strong>.</p>
 </div>
 <div class="paragraph">
 <p>Some example mm-ADT <code>objs</code> are presented below using <code>mmlang</code>.</p>
