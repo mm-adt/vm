@@ -459,18 +459,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><strong>Programming Languages</strong>: Language designers can create custom languages or develop parsers for existing languages that compile to mm-ADT VM bytecode (binary machine code) or unicode (text assembly code).</p>
 </li>
 <li>
-<p><strong>Storage Systems</strong>: Storage engineers can embed their systems using <em>model-ADT</em> functors expressed in mm-ADT&#8217;s dependent type system that enable the lossless encoding of key/value store, document store, wide-column store, graph store, relational store, and other novel or hybrid structures such as hypergraph, docu-graph, and quantum data structures.</p>
+<p><strong>Processing Engines</strong>: Processor developers enable their push- or pull-based execution engines to be programmed by any mm-ADT language for evaluation via mm-ADT&#8217;s abstract execution model for processing data structures via single-machine, multi-threaded, agent-based, distributed near-time, and/or cluster-oriented, batch-analytic processors.</p>
 </li>
 <li>
-<p><strong>Processing Engines</strong>: Processor developers enable their push- or pull-based execution engines to be programmed by any mm-ADT language for evaluation via mm-ADT&#8217;s abstract execution model for processing data structures via single-machine, multi-threaded, agent-based, distributed near-time, and/or cluster-oriented, batch-analytic processors.</p>
+<p><strong>Storage Systems</strong>: Storage engineers can embed their systems using <em>model-ADT</em> functors expressed in mm-ADT&#8217;s dependent type system that enable the lossless encoding of key/value store, document store, wide-column store, graph store, relational store, and other novel or hybrid structures such as hypergraph, docu-graph, and quantum data structures.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The mm-ADT VM enables the intermingling of any language, any storage system, and any processor that can faithfully implement the core language semantics (<em>types and values</em>), storage semantics (<em>data structure streams</em>), and/or processor semantics (<em>process trace graphs</em>) up to the limits of the expressiveness of the components themselves.</p>
+<p>The mm-ADT VM enables the intermingling of any language, any processor, and any storage system, that can faithfully implement the core language semantics (<em>types and values</em>), processor semantics (<em>process trace graphs</em>), and/or storage semantics (<em>data structure streams</em>).</p>
 </div>
 <div class="sect2">
 <h3 id="_the_mm_adt_algebras">The mm-ADT Algebras</h3>
+<div class="sect3">
+<h4 id="_the_universal_unary_function">The Universal Unary Function</h4>
+<div class="paragraph">
+<p>Every mm-ADT program denotes a single <a href="https://en.wikipedia.org/wiki/Unary_function">unary function</a> that maps an <code>obj</code> of type \$S\$ (start) to an <code>obj</code> of type \$E\$ (end) with the function signature</p>
+</div>
+<div class="paragraph">
+<p>\[
+f: S \rightarrow E.
+\]</p>
+</div>
+<div class="paragraph">
+<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are <a href="https://en.wikipedia.org/wiki/Currying">curried</a> at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_component_categories_and_their_functors">Component Categories and their Functors</h4>
 <table class="tableblock frame-all grid-all right" style="width: 40%;">
 <colgroup>
 <col style="width: 50%;">
@@ -498,18 +514,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </tbody>
 </table>
 <div class="paragraph">
-<p>Each of the three aforementioned mm-ADT VM components has an associated axiomatic algebra that most natural describes its structures and processes. The language component&#8217;s algebra is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> capturing the serial composition of instructions from the mm-ADT instruction set architecture. The storage component&#8217;s algebra is a collection of categorical <a href="https://en.wikipedia.org/wiki/Functor">functors</a> that map the internal representation of the mm-ADT VM to common abstract data types (key/value, graph, relational, etc.) that most naturally represent the interfacing storage system. Finally, the processor component&#8217;s algebra (which supports both compilation and evaluation) is a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> capturing serial and parallel function evaluation on objects that represent types and values.</p>
+<p>Each of the three aforementioned mm-ADT VM components has an associated axiomatic algebra that best describes it&#8217;s structures and processes. The <strong>language algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> that captures the serial composition of instructions from the mm-ADT instruction set architecture. The <strong>processor algebra</strong> (for both compilation and evaluation) is a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> capturing serial and parallel function evaluation on objects that represent types and values. Finally, the <strong>storage algebra</strong> is a suite of categorical <a href="https://en.wikipedia.org/wiki/Functor">functors</a> that map the mm-ADT VM&#8217;s language and processing algebras to common abstract data types that best represent the interfacing storage systems (e.g. key/value, graph, relational, etc.).</p>
 </div>
 <div class="paragraph">
 <p>Each of these algebraic structures has a respective categorical encoding and, for each category, there exists a bijective functor to the other two categories such that diagram below commutes.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/introduction/mmadt-algebras.png" alt="mmadt algebras" width="25%">
+<img src="./images/introduction/mmadt-algebras.png" alt="mmadt algebras" width="250">
 </div>
 </div>
 <div class="paragraph">
 <p>The primary purpose of this documentation is to explain these categories algebraically, their intra-category functors, and the respective software technology that enables their real-world manifestation. Data technology developers will learn how to integrate their technology with any of the aforementioned categories so end users may compose their system with other systems to create mathematically sound <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -552,7 +569,7 @@ mmlang&gt; 1[plus,2]
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-30 11:06:50 -0600
+Last updated 2020-04-30 15:14:15 -0600
 </div>
 </div>
 </body>

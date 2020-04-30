@@ -437,16 +437,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_language_structures">Language Structures</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Every mm-ADT program denotes a single <a href="https://en.wikipedia.org/wiki/Unary_function">unary function</a> that maps an <code>obj</code> of type \$S\$ (start) to an <code>obj</code> of type \$E\$ (end) with the function signature</p>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/compiling-languages.png" alt="compiling languages" width="300">
+</div>
 </div>
 <div class="paragraph">
-<p>\[
-f: S \rightarrow E.
-\]</p>
+<p>The mm-ADT virtual machine is programmed by composing objects (<code>obj</code>) via instructions (<code>inst</code>) that are parameterized by other objects as outlined by the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a> and the core package exposes a fluent <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> for writing mm-ADT programs called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> as it&#8217;s tight coupling with Scala (and the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> in general) makes it difficult to properly constrain what can be expressed. Instead, <code>mmscala</code> should the target language of most compilers.</p>
 </div>
-<div class="paragraph">
-<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are <a href="https://en.wikipedia.org/wiki/Currying">curried</a> at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield \$f : S \rightarrow E\$.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The recommended target language for all higher-level language compilations is <code>mmlang</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -1368,7 +1377,7 @@ Whenever the diagram branches, the <code>obj</code> at the branch is cloned, tak
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-30 10:28:58 -0600
+Last updated 2020-04-30 15:51:05 -0600
 </div>
 </div>
 </body>
