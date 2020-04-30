@@ -443,7 +443,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>The mm-ADT virtual machine is programmed by composing objects (<code>obj</code>) via instructions (<code>inst</code>) that are parameterized by other objects as outlined by the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a> and the core package exposes a fluent <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> for writing mm-ADT programs called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> as it&#8217;s tight coupling with Scala (and the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> in general) makes it difficult to properly constrain what can be expressed. Instead, <code>mmscala</code> should the target language of most compilers.</p>
+<p>The mm-ADT virtual machine is programmed by composing objects (<code>obj</code>) via instructions (<code>inst</code>) that are parameterized by other objects as outlined by the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a> and the core package exposes a fluent <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> for writing mm-ADT programs called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> as it&#8217;s tight coupling with Scala (and the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> in general) makes it difficult to properly constrain what can be expressed. Instead, <code>mmlang</code> should be the target language of most compilers.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -487,13 +487,15 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_the_obj">The Obj</h3>
 <div class="imageblock left">
 <div class="content">
 <img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="280">
 </div>
 </div>
 <div class="paragraph">
-<p>Every mm-ADT <code>obj</code> is the product of</p>
+<p>Everything that can be denoted in <code>mmlang</code> is an <code>obj</code>. Internal to the VM, every <code>obj</code> is the product of</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -516,13 +518,12 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>From this vantage point, mm-ADT&#8217;s <code>obj</code> structure forms an <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">algebraic ring</a>.
-The <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a> specify how the elements of it&#8217;s <a href="https://en.wikipedia.org/wiki/Algebraic_structure">carrier set</a> can be combined using the two binary operators \$\times\$ and \$\+\$ . One particular ring axiom states that products  <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over co-products.
+<p>The internal structure of an <code>obj</code> is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">algebraic ring</a>. The <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a> specify the ways in which an <code>objs</code> internals can be combined using two binary operators: \$\times\$ and \$\+\$ . One particular ring axiom states that products <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over co-products.
 Thus, the previous formula can be rewritten as
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation of <code>obj</code>, which is isomorphic to the previous, declares two kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. It is through a particular subset of <code>objs</code> called <em>instructions</em> (\$ \tt{i\nst} \subset \tt{obj} \$) that types and values are linked to one another&#8201;&#8212;&#8201;yielding the primary data structure used for all mm-ADT operations from compilation to execution: <strong>the trace graph</strong>.</p>
+    This representation, which is isomorphic to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. It is through the <code>inst</code> instruction subset (\$ \tt{i\nst} \subset \tt{obj} \$) that types and values are linked to one another&#8201;&#8212;&#8201;yielding the primary language structure for programming the mm-ADT VM: the <strong>inst monoid</strong>.</p>
 </div>
 <div class="paragraph">
 <p>Some example mm-ADT <code>objs</code> are presented below using <code>mmlang</code>.</p>
@@ -634,6 +635,7 @@ mmlang&gt; 'a','b','a'    <b class="conum">(5)</b>
 </tr>
 </tbody>
 </table>
+</div>
 <div class="sect2">
 <h3 id="_types">Types</h3>
 <div class="paragraph">
@@ -1377,7 +1379,7 @@ Whenever the diagram branches, the <code>obj</code> at the branch is cloned, tak
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-30 15:51:05 -0600
+Last updated 2020-04-30 16:21:46 -0600
 </div>
 </div>
 </body>
