@@ -44,7 +44,7 @@ trait ChooseOp {
         rangeType.via(this, ChooseOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case _: Value[IT] with IT =>
         branches.value.find(p => p._1 match {
-          case btype: Type[IT] with IT => start.compute(btype).alive()
+          case btype: Type[IT] with IT => Type.ctypeCheck(start, btype) && start.compute(btype).alive()
           case bvalue: Value[IT] with IT => start.test(bvalue)
         }).map(_._2).getOrElse(start.q(qZero))
         match {

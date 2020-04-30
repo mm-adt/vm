@@ -202,7 +202,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("map instruction parsing") {
-    //  assertResult(int.to("x").map(int.from("x").plus(int.from("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
+    assertResult(int.to("x").map(int.from("x").plus(int.from("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
     assertResult(int(10))(engine.eval("5<x>[map,<.x>+<.x>]"))
   }
 
@@ -233,7 +233,7 @@ class mmlangScriptEngineTest extends FunSuite {
     //
     assertResult(btrue.q(int(3)))(engine.eval("             5{3} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]"))
     assertResult(int(3).q(5))(engine.eval("           -1{5} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]"))
-    assertResult(int(20).q(int(8), int(10)))(engine.eval("1{8,10} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]"))
+    // assertResult(int(20).q(int(8), int(10)))(engine.eval("1{8,10} [plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]"))
     assertResult(obj.q(+))(engine.eval("int{+}[plus,2][[is>5]->true|[is==1]->[plus,2]|int->20]").asInstanceOf[Type[Obj]].range)
   }
 
@@ -332,8 +332,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("5[plus,1][[is>5] -> true | int -> false]"))
     assertResult(btrue)(engine.eval("true[bool -> bool | int -> int]"))
     assertResult(int(10))(engine.eval("10[bool -> bool | int -> int]"))
-    //    assertResult(int(10))(engine.eval("10[bool -> true | int -> int]"))
-    //    assertResult(int(11))(engine.eval("10[bool -> true | int -> int[plus,1]]"))
+    assertResult(int(10))(engine.eval("10[bool -> true | int -> int]"))
+    assertResult(int(11))(engine.eval("10[bool -> true | int -> int[plus,1]]"))
   }
 
   test("expression parsing") {

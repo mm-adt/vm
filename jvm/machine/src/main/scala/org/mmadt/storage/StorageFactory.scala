@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`.{BoolType, _}
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{ViaTuple, _}
-import org.mmadt.storage.StorageFactory.qOne
+import org.mmadt.storage.StorageFactory.{qOne, qZero}
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm._
@@ -42,6 +42,7 @@ import org.mmadt.storage.obj.{OCoprod, OProd}
  */
 trait StorageFactory {
   /////////TYPES/////////
+  lazy val zeroObj: ObjType = tobj().q(qZero)
   lazy val obj: ObjType = tobj()
   lazy val bool: BoolType = tbool()
   lazy val int: IntType = tint()
@@ -93,6 +94,7 @@ object StorageFactory {
   ///////PROVIDERS///////
   val providers: ServiceLoader[StorageProvider] = ServiceLoader.load(classOf[StorageProvider])
   /////////TYPES/////////
+  lazy val zeroObj: ObjType = tobj().q(qZero)
   lazy val obj: ObjType = tobj()
   lazy val bool: BoolType = tbool()
   lazy val int: IntType = tint()
