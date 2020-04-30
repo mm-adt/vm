@@ -632,6 +632,246 @@ The record keys are <code>{0}</code>-predicates where if the incoming <code>obj<
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_type_ring">Type Ring</h4>
+<div class="paragraph">
+<p>mm-ADT&#8217;s type theory has a rich axiomatic semantics founded on <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring theory</a> and in particular, on <a href="https://zenodo.org/record/2565243">stream ring theory</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+In stream ring theory, instructions are called <em>functions</em> and quantifiers are called <em>coefficients</em>.
+A function-coefficient pair is called a <em>stream</em>.
+The equivalence highlights the fact that mm-ADT types refer to streams of objects (i.e. <a href="https://en.wikipedia.org/wiki/Multiset">multi-sets</a> or bags).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In ring theory, if \$&lt;A,+,\ast&gt;\$ is a ring with \$A\$ the carrier set, \$0 \in A\$ the additive identity, \$1 \in A\$ the multiplicative identity, and \$a,b,c \in A\$, then the ring must obey the axioms itemized on the left.
+Every ring benefits from the theorems itemized on the right which are (the most popularly used) logical entailments of the axioms.</p>
+</div>
+<table class="tableblock frame-all grid-all left" style="width: 50%;">
+<caption class="title">Table 1. Ring with Unity Axioms</caption>
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all right" style="width: 50%;">
+<caption class="title">Table 2. Ring Axiom Entailments</caption>
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = a + c &#8658; b = c</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = 0 &#8658; a = -b &amp; b = -a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-(-a) = a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a*0 = 0 = 0*a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (-b) = -a * b = -(a * b)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(-a) * (-b) = a * b</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>&nbsp;</p>
+</div>
+<div class="paragraph">
+<p>The type system of mm-ADT is characterized by a particular formulation of the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product of rings</a> over the <em>quantifier</em> and <em>instruction</em> rings (discussed next).
+The product of these two rings is a ring itself called the <em>stream ring</em>.
+Thus, mm-ADT&#8217;s types are founded on ring theory in general and stream ring theory in particular.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/ring-structures.png" alt="ring structures" width="80%">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Instructions and quantifiers are the carrier sets of two independent <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with unity whose <a href="https://en.wikipedia.org/wiki/Direct_product">direct product</a> forms the mm-ADT type ring and is the subject of study in <a href="https://zenodo.org/record/2565243">stream ring theory</a> (SRT).
+The type graph structure presented previously is a subgraph of a (pseudo) <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> formed from the multiplicative <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">monoid</a> (w/ no multiplicative inverse) component of that ring.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_the_instruction_ring">The Instruction Ring</h5>
+<div class="paragraph">
+<p>In mm-ADT, the carrier set of the <strong>instruction ring</strong> is the set of all instructions, where</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>inst</code> is the carrier set,</p>
+</li>
+<li>
+<p><code>*</code> is serial composition,</p>
+</li>
+<li>
+<p><code>+</code> is parallel composition,</p>
+</li>
+<li>
+<p><code>0</code> is <code>[none]</code> and</p>
+</li>
+<li>
+<p><code>1</code> is <code>[all]</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the table below <code>[a]</code>, <code>[b]</code>, and <code>[c]</code> are variable instructions in <code>inst</code>, where <code>[none] == [is,false]</code> and <code>[all] == [is,true]</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. The Ring Axioms in mmlang</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Ring Axioms</th>
+<th class="tableblock halign-left valign-top">Related mmlang Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[branch,[a],[b]],[c]] == [branch,[a],[branch,[b],[c]]]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[none],[a]] == [branch,[a],[none]] == [a]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[a],[a]{-1}] == [none]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[a],[b]] == [branch,[b],[a]]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[map,[a][b]][c] == [a][map,[b][c]]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[all][a] == [a][all] == [a]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[a],[b]][c] == [branch,[a][c],[b][c]]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a][branch,[b],[c]] == [branch,[a][b],[a][c]]</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+A known "bug" in stream ring theory is that not all instructions in <code>inst</code> have an additive inverse.
+Thus, it is not the case that every instruction set can serve as the carrier of a ring.
+Fortunately, in the larger composite type ring (discussed later), which forms the primary algebraic structure in mm-ADT&#8217;s type system, the quantifier ring&#8217;s multiplicative inverse can be used to remedy the situation&#8212;&#8203;see the 3rd entry in the table above.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As an example, the instructions <code>[plus,10]</code> and <code>[gt,5]</code> can be combined via serial and/or parallel composition.
+In general, all serial and parallel compositions are <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> except for those that use instructions from a particular <code>inst</code> subring known as the <em>the reduce near-ring</em> (discussed later).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; [plus,10] int[mult,[gt,5]]
+==&gt;[plus,10][gt,5]
+mmlang&gt; [plus,10] inst[plus,[gt,5]]
+==&gt;[branch,[plus,10],[gt,5]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Distributive_property">distributivity</a> of multiplications over addition is made apparent with expressions below which have a diagrammatic representation, where the edges/arrows are streams of <code>objs</code> that are being operated on by the <code>insts</code> vertex/objects they meet along the way.
+Whenever the diagram branches, the <code>obj</code> at the branch is cloned, taking <em>both</em> branches.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{x[branch,[a],[b]]} = \uplus &lt;\texttt{x[a]},\texttt{x[b]}&gt; \]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[plus,10][branch,[gt,5],[lt,2]]  ==  [branch,[plus,10][gt,5],[plus,10][lt,2]]</code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/inst-left-distrib.png" alt="inst left distrib" width="750">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[branch,[plus,10],[mult,5]][gt,7]  ==  [branch,[plus,10][gt,7],[mult,5][gt,7]]</code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/inst-right-distrib.png" alt="inst right distrib" width="750">
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_processor_implementations">Processor Implementations</h3>
@@ -642,7 +882,7 @@ The record keys are <code>{0}</code>-predicates where if the incoming <code>obj<
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-28 23:01:26 -0600
+Last updated 2020-04-30 16:50:38 -0600
 </div>
 </div>
 </body>
