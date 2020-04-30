@@ -46,11 +46,14 @@ object IsOp {
   class IsInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.is, List(arg)), q) with FilterInstruction {
     override def q(q: IntQ): this.type = new IsInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
-      val inst = new IsInst(Inst.resolveArg(start, arg), q)
+      val inst: Inst[O, O] = new IsInst(Inst.resolveArg(start, arg), q)
       Try[O](
-        if (inst.arg0[Bool]().value) start.via(start, inst)
+        if (inst.arg0[Bool]().value) start.clone(via = (start, inst))
         else start.via(start, inst).q(qZero))
-        .getOrElse(start.via(start, inst).hardQ(minZero(multQ(start, inst))))
+        .getOrElse(start match {
+          case _: __ => start.via(start, inst).q(minZero(multQ(start, inst)))
+          case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
+        })
     }
   }
 

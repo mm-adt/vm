@@ -9,7 +9,7 @@ Marko A. Rodriguez <marko@rredux.com>
 :stem: latexmath
 :source-highlighter: coderay
 :coderay-css: style
-:source-language: mmadt
+:source-language: python
 :favicon: ./images/favicon.ico
 :copyright: 2020
 

@@ -2,6 +2,14 @@
 
 == Language Structures
 
+Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_function[unary function] that maps an `obj` of type \$S\$ (start) to an `obj` of type \$E\$ (end) with the function signature
+
+\[
+f: S \rightarrow E.
+\]
+
+The complexities of mm-ADT are realized in the definition of an `obj` (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are https://en.wikipedia.org/wiki/Currying[curried] at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield \$f : S \rightarrow E\$.
+
 .Products and Coproducts
 ****
 https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of structure via manipulations that expose (or generate) other structures. Two important category theoretic concepts used throughout this section are *products* and *coproducts*.
@@ -19,14 +27,6 @@ That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can
 Along with these decomposition (and composition) morphisms, there exists an https://en.wikipedia.org/wiki/Isomorphism[isomorphism] between any two products (or coproducts) should they project (or inject) to the same component objects.
 That is, product and coproduct equality are defined via component equality.
 ****
-
-Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_function[unary function] that maps an `obj` of type \$S\$ (start) to an `obj` of type \$E\$ (end) with the function signature
-
-\[
-f: S \rightarrow E.
-\]
-
-The complexities of mm-ADT are realized in the definition of an `obj` (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are https://en.wikipedia.org/wiki/Currying[curried] at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield \$f : S \rightarrow E\$.
 
 image::obj-type-value-q.png[role=left,padding-left=303,width=280]
 
@@ -71,12 +71,12 @@ mmlang> 'a','b','a'    <5>
 <4> Five `1` `int` values.
 <5> A _stream_ of `'a'`,`'b'`, and `'a'` `str` values.
 
-It is through "_quantified objects_" that mm-ADT types and values, which are typically disjoint structures in most programming environments, co-exist at the same level of abstraction (within the same category).
+It is through "_quantified objects_" that mm-ADT types and values, which are typically isolated structures in most programming runtime environments, are able to co-exist (within the same category).
 
 * A type refers to values.
 * A value is a type that only refers to itself.
 
-From the unification of types and values, many other seemingly disparates aspects of computing blend together naturally. The particulars of the unifications itemized below will be detailed in respective sections of this document.
+From the unification of types and values, various seemingly disconnected aspects of computing blend together naturally. The particulars of these integrations (which are itemized below) will be discussed at length in respective forthcoming sections of this documentation.
 
 .Conceptual Consequences of mm-ADT Quantification
 [cols="2,2,10"]
@@ -84,12 +84,13 @@ From the unification of types and values, many other seemingly disparates aspect
 |structure A | structure B | unification
 
 |types       | values     | quantifiers expand the cardinality of values and constrain the cardinality of types
-|compilation | evaluation | compilations are evaluations with types, where a compilation error is a "runtime" compile-time error.
+|compilation | evaluation | compilations are evaluations with types, where a compilation error is a "runtime compile-time" error.
 |AST         | bytecode   | the definition of a type specifies the context-free grammar of an mm-ADT language.
 |state       | functions  | 'mutable' state is realized as values of a "proto"-type of the current value's type.
-|functions   | types      | functions are types whose values are realized at runtime.
-|program     | type       | a program is "complicated" type.
+|functions   | types      | functions are (dependent) types whose values are realized during evaluation.
+|programs    | types      | a program is a "complicated" type.
 |classical   | quantum    | quantum computing is classical computing with unitary matrix quantifiers.
+|canonical   | dependent  | canonical types are constants and dependent types are dynamically defined "constants."
 |===
 
 === Types
@@ -98,7 +99,7 @@ In the https://en.wikipedia.org/wiki/Type_theory#Difference_from_set_theory[set-
 
 * Streams can have values inserted and removed (like a collection).
 * Streams do not preserve insert nor removal order (not like a queue).
-* Streams may contain duplicate objects (not like a set).
+* Streams may contain duplicate values (not like a set).
 
 Every stream of values has a corresponding type that was constructed and it is through type construction that values are implicitly created (at compile-time) and explicitly enumerated (at runtime).
 
@@ -108,7 +109,7 @@ An `obj` was previously defined as \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
 
-This definition specifies no internal structure to a type or value. If this definition was complete, then types and values would be isomorphic and thus, indistinguishable. This is not the case. mm-ADT types form a coproduct where every type is either a
+This definition specifies no internal structure to a type or value. If this definition was complete, then types and values would be isomorphic and thus, indistinguishable. This is not the case. mm-ADT types are a coproduct where every type is either a
 
 image::type-product.png[float=right,width=295]
 
@@ -121,7 +122,7 @@ The ctypes are https://en.wikipedia.org/wiki/Nominal_type_system[nominal types] 
 \texttt{type} &=\;& (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{rec})) + (\texttt{type} \times \texttt{inst})\\ \texttt{type} &=\;& \texttt{ctype} + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &=\;& \texttt{ctype} + \texttt{dtype},
 \end{split}\]
 
-where each component of the coproduct also has a respective quantifier as defined by the type component of an `obj`: \$(\tt{type} \times \tt{q})\$.
+where each component of the coproduct also has a respective quantifier as previously defined for `obj`: \$(\tt{object} \times \tt{q})\$.
 
 A dtype has two \$pi\$-projections. The type projection denotes the _domain_ and the instruction projection denotes the _function_, where the type product as a whole, relative to the component projections, is the _range_.
 \[
@@ -129,8 +130,7 @@ A dtype has two \$pi\$-projections. The type projection denotes the _domain_ and
 \tt{type} &=\;& (\tt{type} &\;\times\;& \tt{inst}) &\;+\;& \tt{ctype} \\ \text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"} \end{split}
 \]
 
-The implication of the dtype product is that mm-ADT types are generated https://en.wikipedia.org/wiki/Inductive_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`).
-The application of an `inst` to a `type` (ctype or dtype) yields a dtype that is a structural expansion of the previous type.
+The implication of the dtype product is that mm-ADT types are generated https://en.wikipedia.org/wiki/Inductive_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`). The application of an `inst` to a type (ctype or dtype) yields a dtype that is a structural expansion of the previous type.
 
 image::ctype-dtype.png[align=center,width=230]
 
@@ -157,10 +157,8 @@ mmlang> int{2}[is>0]                             <3>
 
 The salient features of the `int{2}[is>0]` compilation are captured in the psuedo-`mmlang` expression below, where the three projections are conviently understood as encoding a type's
 
-. *Type signature*: the ctype specification of a type's domain and range.
-* The \$ \pi_\tt{domai\n} \$ and \$ \pi_\tt{rang\e} \$ projection form the signature.
-. *Type definition*: an instruction tree specifying type element enumeration.
-* The \$ \pi_\tt{i\nsts} \$ projection forms the definition.
+. *Type signature*: the ctype specification of a type's domain and range (via the \$ \pi_\tt{domai\n} \$ and \$ \pi_\tt{rang\e} \$ projections), and
+. *Type definition*: an instruction tree specifying type element enumeration (via the \$ \pi_\tt{i\nsts} \$ projection).
 
 image::type-signature-definition.png[align=center,width=650]
 
@@ -168,41 +166,44 @@ image::type-signature-definition.png[align=center,width=650]
 
 Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another (potentially equivalent) type. A *type signature* specifies the source and target of this mapping, where the "domain" is the source type and the "range" is the target type. Both the domain and range type specifications include a respective quantification denoted `{q}` in `mmlang`.
 
-'''
+[cols="5,10"]
+|===
+|mmlang Expression |Description
+
+a|
 [source]
 ----
 mmlang> int{1}
 ==>int
 ----
-In most programming languages, a value can be typed `int` as in `val x:int = 10`.
+|In most programming languages, a value can be typed `int` as in `val x:int = 10`.
 Such https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declarations] state that the value referred to by `x` is a _single_ element within the set of integers. The concept of a "single element" is captured in mm-ADT via quantification, where a https://en.wikipedia.org/wiki/Unit_(ring_theory)[unit] quantifier is not displayed in `mmlang`.
 
-'''
+a|
 [source]
 ----
 mmlang> int<=int
 ==>int
 ----
-From the perspective of a function, An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `<=` and repeated type are not displayed.
+|From the perspective of a function, An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `<=` and repeated type are not displayed.
 
-'''
+a|
 [source]
 ----
 mmlang> int<=bool
-language error: bool is not an int
+error: bool is not an int
 ----
-Without any instructions, there is no way for a type to legally map a `bool` to an `int`.
+|Without any instructions, there is no way for a type to legally map a `bool` to an `int`. Type's that are fully specified by their type signature are always canonical types. Said another way, the types' definitions are "no-ops."
 
-'''
+a|
 [source]
 ----
 mmlang> int{5}
 ==>int{5}
 ----
-`int{5}` is a type referring to 5 integers (with repeats possible according to stream semantics). As a point of comparison, `int` denotes a stream containing a single integer. This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
+|`int{5}` is a type referring to 5 integers (with repeats possible according to stream semantics). As a point of comparison, `int` denotes a stream containing a single integer. This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
 
-
-'''
+a|
 [source]
 ----
 mmlang> int{0,5}
@@ -210,11 +211,8 @@ mmlang> int{0,5}
 mmlang> int{0,5}<=int{0,5}
 ==>int{0,5}
 ----
-The quantifier ring can be any ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] is two integers and represents uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
-
-
-NOTE: Type's that are fully specified by their type signature are always canonical types. Said another way, the types' definitions are "no-ops."
-
+|The quantifier ring can be any ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] is two integers and represents uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
+|===
 
 ===== Type Definitions
 

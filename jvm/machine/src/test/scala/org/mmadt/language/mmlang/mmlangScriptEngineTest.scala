@@ -415,6 +415,10 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("product and coproduct") {
+    assertResult("[1|]")(engine.eval("1-<[_[is>0]|_[is<0]]").toString)
+    assertResult("[1|]")(engine.eval("1-<[[is>0]|[is<0]]").toString)
+    assertResult("[1|]")(engine.eval("1-<[_[is>0]|int[is<0]]").toString)
+    assertResult("[1|]")(engine.eval("1-<[int[is>0]|_[is<0]]").toString)
     assertResult("[1|2|3]")(engine.eval("[1|2|3]").toString)
     assertResult("[1;2;3]")(engine.eval("[1;2;3]").toString)
     assertResult("[1;[2|3]]")(engine.eval("[1;[2|3]]").toString)
