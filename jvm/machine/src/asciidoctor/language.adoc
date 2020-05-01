@@ -4,7 +4,7 @@
 
 image::compiling-languages.png[float="right",width=300]
 
-The mm-ADT virtual machine is programmed by composing objects (`obj`) using instructions (`inst`) parameterized by objects. The mm-ADT VM is written in https://scala-lang.org/[Scala]. The core library exposes a fluent program builder https://en.wikipedia.org/wiki/Application_programming_interface[API] called `mmscala`. Most compiler designers should avoid `mmscala` due to the complexities that may ensue given direct access to the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]. Instead, `mmlang` should be the target language for most compilers.
+The mm-ADT VM is written in https://scala-lang.org/[Scala]. The core library exposes a fluent program builder https://en.wikipedia.org/wiki/Application_programming_interface[API] called `mmscala`. Most compiler designers should avoid `mmscala` as direct access to the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM] can create unsafe mm-ADT programs. Instead, `mmlang` should be the target language for most compilers.
 
 IMPORTANT: The recommended target language for all higher-level language compilations is `mmlang`.
 
@@ -45,9 +45,7 @@ This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*. The mm-ADT VM is programmed by linking types and values via instructions in `inst` (\$ \tt{i\nst} \subset \tt{obj} \$). The abstract algebra axiomatizing `obj` graph construction is a https://en.wikipedia.org/wiki/Monoid[monoid]. This particular monoid is called the *inst monoid*.
-
-Some example mm-ADT `objs` are presented below in `mmlang`.
+This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*. Some example mm-ADT `objs` (types and values) are presented below in `mmlang`.
 
 [source]
 ----
@@ -68,6 +66,7 @@ mmlang> 'a','b','a'    <5>
 <3> Five `int` types.
 <4> Five `1` `int` values.
 <5> A _stream_ of `'a'`,`'b'`, and `'a'` `str` values.
+
 
 ==== Types and Values
 
@@ -216,37 +215,53 @@ mmlang> int{0,5}<=int{0,5}
 
 ===== Type Definitions
 
-mm-ADT type signatures specify the canonical type and quantity of the type's domain and range. Further specification of the nature of the elements of the type is accomplished via a *type definition*. The following mm-ADT type is known as a https://en.wikipedia.org/wiki/Refinement_type[refinement type] because it provides further constraint/refinement on which particular integers in `int` the type is refering to.
-This particular type is the mm-ADT definition of a natural number in \$\mathbb{N}\$.
+Types and values both have a *ground* that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground as the previous type. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to get from `int` to `int[plus,2]`. For a type, this history is called the *type definition*.
 
-\[
-\tt{int[is,[gte,0]]} \equiv \mathbb{N}
-\]
+NOTE: In practice,the string representation of a value is it's ground and the string representation of a type is it's instruction history.
 
-The structure `[is,[gte,0]]` is an *instruction* with a single argument. mm-ADT instruction opcodes denote specific operations explicitly implemented by the mm-ADT virtual machine.
-The set of all mm-ADT instructions forms the machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] as well as the https://ncatlab.org/nlab/show/Ab-enriched+category[*instruction ringoid*] (w/ unity).
+image::type-value-trace.png[align=center,width=550]
 
-A type is transformed into another type via an instruction application.
+Both types and values exist in a larger graph called a *process trace graph*. In theory, the complete history of an mm-ADT program from compilation to execution is stored in this graph. However, in practice, the mm-ADT VM removes an `obj` trace (a path in the graph) when the program will not require it in the future.
+
 Every instruction is able to operate on both types and values.
-In this way, instruction application on types yields program _compilation_ and instruction application on values yields _evaluation_. The compilation of a type produces a type, where quantification and domain/range specifications are inferred when unspecified by the user.
+Instructions applied to types is program _compilation_ and instructions applied to values is program _evaluation_.
 
+[cols="10,10"]
+|===
+|mmlang Expression |Description
+
+a|
 [source]
 ----
-mmlang> int[is,[gte,0]]                      <1>
-==>int{?}<=int[is,bool<=int[gte,0]]          <2>
-mmlang> int int[is,[gte,0]]                  <3>
+mmlang> int[is,[gte,0]]
+==>int{?}<=int[is,bool<=int[gte,0]]
+----
+|A base type composed with an instruction/quantifier pair, where the quantifier is not displayed as it's the unit of the quantifier ring -- `{1}`. The result is a compiled type that maps a single integer to zero or one integers. If the internal `bool\<=int[gte,0]` type yields `true`, then an `int{1}`, else `int{0}`.
+
+a|
+[source]
+----
+mmlang> int int[is,[gte,0]]
 ==>int{?}<=int[as,int][is,bool<=int[gte,0]]
+----
+|A type operates on an `int` thus, if supplied "an `int` type", the type operates on it to yield a type. The use of types to process types is a form of compilation generally known as https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation].
+
+a|
+[source]
+----
 mmlang> 6 int{?}<=int[is,bool<=int[gte,0]]
-==>6                                         <4>
+==>6
+----
+|The type maps the positive integer `6{1}` to `6{1}` (_some_).
+
+a|
+[source]
+----
 mmlang> -6 int{?}<=int[is,bool<=int[gte,0]]  <5>
 mmlang>
 ----
-<1> A base type composed with an instruction/quantifier pair, where the quantifier is not displayed as it's the unit of the quantifier ring -- `{1}`.
-<2> A compiled type that maps a single integer to zero or one integers. If the internal `bool\<=int[gte,0]` type yields
-`true`, then an `int{1}`, else `int{0}`.
-<3> A type operates on an `int` thus, if supplied "an `int` type", the type operates on it to yield a type. The use of types to process types is a form of compilation generally known as https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation].
-<4> The type maps the positive integer `6{1}` to `6{1}` (_some_).
-<5> The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
+|The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
+|===
 
 ==== Type Quantification
 
@@ -291,7 +306,7 @@ In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assu
 Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`.
 
 === The Instruction Set Architecture
-
+ The abstract algebra axiomatizing this process is best captured as a https://en.wikipedia.org/wiki/Monoid[monoid] called the *inst monoid*.
 ==== The Inst Monoid
 
 .Initial and Terminal Objects
