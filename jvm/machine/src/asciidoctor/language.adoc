@@ -4,7 +4,7 @@
 
 image::compiling-languages.png[float="right",width=300]
 
-The mm-ADT virtual machine is programmed by composing objects (`obj`) via instructions (`inst`) that are parameterized by other objects as outlined by the VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The mm-ADT VM is written in https://scala-lang.org/[Scala] and the core package exposes a fluent https://en.wikipedia.org/wiki/Application_programming_interface[API] for writing mm-ADT programs called `mmscala`. Most compiler designers should avoid `mmscala` as it's tight coupling with Scala (and the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM] in general) makes it difficult to properly constrain what can be expressed. Instead, `mmlang` should be the target language of most compilers.
+The mm-ADT virtual machine is programmed by composing objects (`obj`) using instructions (`inst`) parameterized by objects. The mm-ADT VM is written in https://scala-lang.org/[Scala]. The core library exposes a fluent program builder https://en.wikipedia.org/wiki/Application_programming_interface[API] called `mmscala`. Most compiler designers should avoid `mmscala` due to the complexities that may ensue given direct access to the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]. Instead, `mmlang` should be the target language for most compilers.
 
 IMPORTANT: The recommended target language for all higher-level language compilations is `mmlang`.
 
@@ -32,7 +32,7 @@ image::obj-type-value-q.png[role=left,padding-left=303,width=280]
 
 Everything that can be denoted in `mmlang` is an `obj`. Within the VM and outside the referential purview of an interfacing language, every `obj` is the product of
 
-. An *object* co-product that is either a *type* or a *value* and
+. An *object* that is either a *type* or a *value* and
 . A *quantifier* specifying the "amount" of objects being denoted.
 
 \[
@@ -41,14 +41,13 @@ Everything that can be denoted in `mmlang` is an `obj`. Within the VM and outsid
 
 image::obj-type-q-value-q.png[float=right,width=450]
 
-This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_%28mathematics%29[algebraic ring]. The https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition[ring axioms] specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular ring axiom states that products https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over co-products.
-Thus, the previous formula can be rewritten as
+This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_%28mathematics%29[algebraic ring]. The https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition[ring axioms] specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular ring axiom states that products https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over co-products. Thus, the previous formula can be rewritten as
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*. The mm-ADT VM is programmed by linking types and values via instructions in `inst` (\$ \tt{i\nst} \subset \tt{obj} \$). The abstract algebra axiomatizing `obj` graph construction is a https://en.wikipedia.org/wiki/Monoid[monoid]. In particular, the *inst monoid*.
+This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*. The mm-ADT VM is programmed by linking types and values via instructions in `inst` (\$ \tt{i\nst} \subset \tt{obj} \$). The abstract algebra axiomatizing `obj` graph construction is a https://en.wikipedia.org/wiki/Monoid[monoid]. This particular monoid is called the *inst monoid*.
 
-Some example mm-ADT `objs` are presented below using `mmlang`.
+Some example mm-ADT `objs` are presented below in `mmlang`.
 
 [source]
 ----
@@ -72,26 +71,26 @@ mmlang> 'a','b','a'    <5>
 
 ==== Types and Values
 
-It is through "_quantified objects_" that mm-ADT types and values, which are typically isolated structures in most programming runtime environments, are able to co-exist (within the same category).
+Many modern programming environments make a sharp distinction between types and values. Each finds its prominent use in either compilation (types) or evaluation (values). In mm-ADT, at the highest level, there are `objs` and they __refer to__ other `objs` such that
 
-* A type refers to values.
-* A value is a type that only refers to itself.
+* *Types* refer to values and
+* *Values* refer to themselves.
 
-From the unification of types and values, various seemingly disconnected aspects of computing blend together naturally. The particulars of these integrations (which are itemized below) will be discussed at length in respective forthcoming sections of this documentation.
+This definition eases many longstanding distinctions in computer science. The table below presents a collection of the more interesting conceptual blurs that mm-ADT introduces. The particulars of each will be discussed over the course of this documentation.
 
-.Conceptual Consequences of mm-ADT Quantification
+.Consequences of Type/Value Unification
 [cols="2,2,10"]
 |===
 |structure A | structure B | unification
 
 |types       | values     | quantifiers expand the cardinality of values and constrain the cardinality of types
 |compilation | evaluation | compilations are evaluations with types, where a compilation error is a "runtime compile-time" error.
-|AST         | bytecode   | the definition of a type specifies the context-free grammar of an mm-ADT language.
-|state       | functions  | 'mutable' state is realized as values of a "proto"-type of the current value's type.
-|functions   | types      | functions are (dependent) types whose values are realized during evaluation.
+|AST         | bytecode   | the algebra of type construction relaxes the necessity for different program encodings.
+|state       | values     | 'mutable' state are values from historic types contained within the structure of the current type.
+|functions   | types      | functions are (dependent) types with value references generated at evaluation.
 |programs    | types      | a program is a "complicated" type.
 |classical   | quantum    | quantum computing is classical computing with unitary matrix quantifiers.
-|canonical   | dependent  | canonical types are constants and dependent types are dynamically defined "constants."
+|canonical   | atomics    | atomic values and canonical types are both "tokens" by which all constructions are built.
 |===
 
 === The Type
