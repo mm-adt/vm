@@ -443,7 +443,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>The mm-ADT virtual machine is programmed by composing objects (<code>obj</code>) using instructions (<code>inst</code>) parameterized by objects. The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a>. The core library exposes a fluent program builder <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> due to the complexities that may ensue given direct access to the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>. Instead, <code>mmlang</code> should be the target language for most compilers.</p>
+<p>The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a>. The core library exposes a fluent program builder <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> as direct access to the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> can create unsafe mm-ADT programs. Instead, <code>mmlang</code> should be the target language for most compilers.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -522,10 +522,7 @@ That is, product and coproduct equality are defined via component equality.</p>
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. The mm-ADT VM is programmed by linking types and values via instructions in <code>inst</code> (\$ \tt{i\nst} \subset \tt{obj} \$). The abstract algebra axiomatizing <code>obj</code> graph construction is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. This particular monoid is called the <strong>inst monoid</strong>.</p>
-</div>
-<div class="paragraph">
-<p>Some example mm-ADT <code>objs</code> are presented below in <code>mmlang</code>.</p>
+This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. Some example mm-ADT <code>objs</code> (types and values) are presented below in <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -838,55 +835,82 @@ mmlang&gt; int{0,5}&lt;=int{0,5}
 <div class="sect4">
 <h5 id="_type_definitions">Type Definitions</h5>
 <div class="paragraph">
-<p>mm-ADT type signatures specify the canonical type and quantity of the type&#8217;s domain and range. Further specification of the nature of the elements of the type is accomplished via a <strong>type definition</strong>. The following mm-ADT type is known as a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement type</a> because it provides further constraint/refinement on which particular integers in <code>int</code> the type is refering to.
-This particular type is the mm-ADT definition of a natural number in \$\mathbb{N}\$.</p>
+<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground as the previous type. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to get from <code>int</code> to <code>int[plus,2]</code>. For a type, this history is called the <strong>type definition</strong>.</p>
 </div>
-<div class="paragraph">
-<p>\[
-\tt{int[is,[gte,0]]} \equiv \mathbb{N}
-\]</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+In practice,the string representation of a value is it&#8217;s ground and the string representation of a type is it&#8217;s instruction history.
+</td>
+</tr>
+</table>
 </div>
-<div class="paragraph">
-<p>The structure <code>[is,[gte,0]]</code> is an <strong>instruction</strong> with a single argument. mm-ADT instruction opcodes denote specific operations explicitly implemented by the mm-ADT virtual machine.
-The set of all mm-ADT instructions forms the machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> as well as the <a href="https://ncatlab.org/nlab/show/Ab-enriched+category"><strong>instruction ringoid</strong></a> (w/ unity).</p>
-</div>
-<div class="paragraph">
-<p>A type is transformed into another type via an instruction application.
-Every instruction is able to operate on both types and values.
-In this way, instruction application on types yields program <em>compilation</em> and instruction application on values yields <em>evaluation</em>. The compilation of a type produces a type, where quantification and domain/range specifications are inferred when unspecified by the user.</p>
-</div>
-<div class="listingblock">
+<div class="imageblock text-center">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; int[is,[gte,0]]                      <b class="conum">(1)</b>
-==&gt;int{?}&lt;=int[is,bool&lt;=int[gte,0]]          <b class="conum">(2)</b>
-mmlang&gt; int int[is,[gte,0]]                  <b class="conum">(3)</b>
-==&gt;int{?}&lt;=int[as,int][is,bool&lt;=int[gte,0]]
-mmlang&gt; 6 int{?}&lt;=int[is,bool&lt;=int[gte,0]]
-==&gt;6                                         <b class="conum">(4)</b>
-mmlang&gt; -6 int{?}&lt;=int[is,bool&lt;=int[gte,0]]  <b class="conum">(5)</b>
+<img src="./images/language/type-value-trace.png" alt="type value trace" width="550">
+</div>
+</div>
+<div class="paragraph">
+<p>Both types and values exist in a larger graph called a <strong>process trace graph</strong>. In theory, the complete history of an mm-ADT program from compilation to execution is stored in this graph. However, in practice, the mm-ADT VM removes an <code>obj</code> trace (a path in the graph) when the program will not require it in the future.</p>
+</div>
+<div class="paragraph">
+<p>Every instruction is able to operate on both types and values.
+Instructions applied to types is program <em>compilation</em> and instructions applied to values is program <em>evaluation</em>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">mmlang Expression</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; int[is,[gte,0]]
+==&gt;int{?}&lt;=int[is,bool&lt;=int[gte,0]]</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A base type composed with an instruction/quantifier pair, where the quantifier is not displayed as it&#8217;s the unit of the quantifier ring&#8201;&#8212;&#8201;<code>{1}</code>. The result is a compiled type that maps a single integer to zero or one integers. If the internal <code>bool&lt;=int[gte,0]</code> type yields <code>true</code>, then an <code>int{1}</code>, else <code>int{0}</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; int int[is,[gte,0]]
+==&gt;int{?}&lt;=int[as,int][is,bool&lt;=int[gte,0]]</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A type operates on an <code>int</code> thus, if supplied "an <code>int</code> type", the type operates on it to yield a type. The use of types to process types is a form of compilation generally known as <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 6 int{?}&lt;=int[is,bool&lt;=int[gte,0]]
+==&gt;6</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type maps the positive integer <code>6{1}</code> to <code>6{1}</code> (<em>some</em>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; -6 int{?}&lt;=int[is,bool&lt;=int[gte,0]]  <b class="conum">(5)</b>
 mmlang&gt;</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>A base type composed with an instruction/quantifier pair, where the quantifier is not displayed as it&#8217;s the unit of the quantifier ring&#8201;&#8212;&#8201;<code>{1}</code>.</p>
-</li>
-<li>
-<p>A compiled type that maps a single integer to zero or one integers. If the internal <code>bool&lt;=int[gte,0]</code> type yields
-<code>true</code>, then an <code>int{1}</code>, else <code>int{0}</code>.</p>
-</li>
-<li>
-<p>A type operates on an <code>int</code> thus, if supplied "an <code>int</code> type", the type operates on it to yield a type. The use of types to process types is a form of compilation generally known as <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a>.</p>
-</li>
-<li>
-<p>The type maps the positive integer <code>6{1}</code> to <code>6{1}</code> (<em>some</em>).</p>
-</li>
-<li>
-<p>The type maps the negative integer <code>-6{1}</code> to <code>-6{0}</code> (<em>none</em>).</p>
-</li>
-</ol>
-</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The type maps the negative integer <code>-6{1}</code> to <code>-6{0}</code> (<em>none</em>).</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -990,8 +1014,12 @@ Moreover, if a single value is provided, it is assumed to be repeated where <cod
 </div>
 <div class="sect2">
 <h3 id="_the_instruction_set_architecture">The Instruction Set Architecture</h3>
-<div class="sect3">
-<h4 id="_the_inst_monoid">The Inst Monoid</h4>
+<div class="literalblock">
+<div class="content">
+<pre> The abstract algebra axiomatizing this process is best captured as a https://en.wikipedia.org/wiki/Monoid[monoid] called the *inst monoid*.
+==== The Inst Monoid</pre>
+</div>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Initial and Terminal Objects</div>
@@ -1084,7 +1112,6 @@ mmlang&gt; int[plus,4][mult,42][gt,42]
 ==&gt;bool&lt;=int[plus,4][mult,42][gt,42]</code></pre>
 </div>
 </div>
-</div>
 <div class="sect3">
 <h4 id="_the_instruction_monoid">The Instruction Monoid</h4>
 <div class="sidebarblock">
@@ -1141,7 +1168,7 @@ This should not a surprising bijection&#8212;&#8203;it proves that the syntax of
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-30 23:10:32 -0600
+Last updated 2020-05-01 13:23:17 -0600
 </div>
 </div>
 </body>
