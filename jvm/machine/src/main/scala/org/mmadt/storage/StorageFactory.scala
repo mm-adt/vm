@@ -196,7 +196,7 @@ object StorageFactory {
     override def strm[O <: Obj]: OStrm[O] = VEmptyStrm.empty[O]
     override def strm[O <: Obj](seq: Seq[O]): OStrm[O] = {
       (seq.headOption.getOrElse(null) match {
-        case _: Bool => new VBoolStrm(values = MultiSet(seq.asInstanceOf[Seq[BoolValue]]))
+        case _: Bool => new VBoolStrm(values = MultiSet[BoolValue](seq.asInstanceOf[Seq[BoolValue]]))
         case _: Int => new VIntStrm(values = MultiSet(seq.asInstanceOf[Seq[IntValue]]))
         case _: Real => new VRealStrm(values = MultiSet(seq.asInstanceOf[Seq[RealValue]]))
         case _: Str => new VStrStrm(values = MultiSet(seq.asInstanceOf[Seq[StrValue]]))

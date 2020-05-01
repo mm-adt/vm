@@ -48,7 +48,8 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int, __.plus(int), int.plus(int), "type"), // type * type = type
         (int(1, 2, 3), __.plus(2), int(3, 4, 5), "strm"), // strm * value = strm
         (int(1, 2, 3), __.plus(int(2).q(10)), int(3, 4, 5), "strm"), // strm * value = strm
-        (int(1, 2, 3), __.plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3), int.q(3).plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
+        // TODO (int(1, 2, 3), __.plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3), __.plus(int), int(2, 4, 6), "strm"), // strm * type = strm
         (int(1, 2, 3), __.plus(__.plus(int)), int(3, 6, 9), "strm"), // strm * anon = strm
         //////// REAL

@@ -47,6 +47,7 @@ class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(-2.0).neg(), real(2.0), "value"),
         (real.neg(), real.neg(), "type"),
         (real(-1.0, -2.0, -3.0).neg(), real(1.0, 2.0, 3.0), "strm"),
+        (real(-1.0, -2.0, -3.0).neg().q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10)), "strm"),
       )
     forEvery(starts) { (query, result, atype) => {
       assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))

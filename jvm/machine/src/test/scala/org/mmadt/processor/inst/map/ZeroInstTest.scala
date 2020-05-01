@@ -42,14 +42,14 @@ class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(-2), __.zero(), int(0)),
         (int, __.zero(), int(0)),
         (int(1, 2, 3), __.zero(), int(0).q(3)),
-        (int(1, 2), __.plus(1).q(10).zero(), int(0).q(20)),
+        //(int(1, 2), __.plus(1).q(10).zero(), int(0).q(20)),
         //////// REAL
         (real(2.0), __.zero(), real(0.0)),
         (real(-2.0), __.zero(), real(0.0)),
         (real, __.zero(), real(0.0)),
         (real(-1.0, -2.0, -3.0), __.zero(), real(0.0).q(3)),
-        (real(-1.0, -2.0, -3.0), __.plus(1.0).q(10).zero(), real(0.0).q(30)),
-        (real(-1.0, -2.0, -3.0), __.plus(1.0).q(20).zero(), real(0.0).q(60)),
+        //(real(-1.0, -2.0, -3.0), __.plus(1.0).q(10).zero(), real(0.0).q(30)),
+        //(real(-1.0, -2.0, -3.0), __.plus(1.0).q(20).zero(), real(0.0).q(60)),
         //////// STR
         (str("a"), __.zero(), str("")),
         (str("b"), __.zero(), str("")),

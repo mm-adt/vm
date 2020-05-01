@@ -60,6 +60,7 @@ class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(2.0).gt(__.mult(real)), false, "value"), // value * anon = value
         (real.gt(real(2.0)), real.gt(2.0), "type"), // type * value = type
         (real.gt(real), real.gt(real), "type"), // type * type = type
+        (real(1.0, 2.0, 3.0).gt(2.0).q(3), bool(bfalse.q(6), btrue.q(3)), "strm"), // strm * value = strm
         (real(1.0, 2.0, 3.0).gt(2.0), bool(false, false, true), "strm"), // strm * value = strm
         (real(1.0, 2.0, 3.0).gt(real), bool(false, false, false), "strm"), // strm * type = strm
         (real(1.0, 2.0, 3.0).gt(__.mult(real)), bool(false, false, false), "strm"), // strm * anon = strm

@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.FilterInstruction
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -48,11 +49,11 @@ object IsOp {
     override def exec(start: O): O = {
       val inst: Inst[O, O] = new IsInst(Inst.resolveArg(start, arg), q)
       Try[O](
-        if (inst.arg0[Bool]().value) start.clone(via = (start, inst))
-        else start.via(start, inst).q(qZero))
+        if (inst.arg0[Bool]().value) start.via(start, inst)
+        else start.via(start, inst).hardQ(qZero))
         .getOrElse(start match {
-          case _: __ => start.via(start, inst).q(minZero(multQ(start, inst)))
-          case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
+          case astrm: Strm[O] => astrm.via(start, inst).asInstanceOf[O]
+          case _ => start.clone(via = (start, inst), q = minZero(multQ(start, inst)))
         })
     }
   }

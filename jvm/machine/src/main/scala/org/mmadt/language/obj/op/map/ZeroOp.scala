@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Coprod, Int, IntQ, Lst, Obj, Prod, Real, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -43,6 +44,7 @@ object ZeroOp {
     override def q(q: IntQ): this.type = new ZeroInst[O](q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       (start match {
+        case _: Strm[_] => start
         case _: __ => __.zero()
         case _: Int => int(0)
         case _: Real => real(0.0)
@@ -51,7 +53,7 @@ object ZeroOp {
         case arec: Rec[Obj, Obj] => arec.clone(value = Map.empty[Obj, Obj])
         case _: Prod[Obj] => prod()
         case _: Coprod[Obj] => coprod()
-      }).asInstanceOf[O].clone(q = start.q, via = (start, this))
+      }).asInstanceOf[O].via(start, this)
     }
   }
 

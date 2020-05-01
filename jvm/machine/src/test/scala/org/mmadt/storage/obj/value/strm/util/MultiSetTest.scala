@@ -21,6 +21,11 @@ class MultiSetTest extends FunSuite {
     //
     assertResult(1L)(MultiSet.put(int(2)).put(int(2)).put(int(2).q(1, 2)).objSize)
     assertResult(qmaker(3, 4))(MultiSet.put(int(2)).put(int(2)).put(int(2).q(1, 2)).qSize)
+    //
+    assertResult(2L)(MultiSet.put(btrue).put(btrue.q(10)).put(bfalse.q(1, 2)).objSize)
+    assertResult(qmaker(12, 13))(MultiSet.put(btrue).put(btrue.q(10)).put(bfalse.q(1, 2)).qSize)
+
+    println(int(1).q(20) ===> int.q(20).plus(10).q(2).plus(1))
   }
 
   test("multiset seq") {

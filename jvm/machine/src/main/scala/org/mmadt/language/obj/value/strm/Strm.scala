@@ -36,7 +36,7 @@ trait Strm[+O <: Obj] extends Value[O] {
 
   override def value: Any = throw LanguageException.typesNoValue(this)
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(x => x.alive())).asInstanceOf[this.type]
-  override def q(q: IntQ): this.type = strm(this.values.map(x => x.q(q)).filter(x => x.alive())).asInstanceOf[this.type]
+  override def q(q: IntQ): this.type = strm(this.values.map(x => x.q(multQ(x, q))).filter(x => x.alive())).asInstanceOf[this.type]
   // utility methods
   override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]
   override def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = base()): this.type = this
@@ -45,8 +45,7 @@ trait Strm[+O <: Obj] extends Value[O] {
   override def toString: String = LanguageFactory.printStrm(this)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.values.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case strm: Strm[O] => MultiSet.test(this, strm)
-    case value: Value[O] => this.values == MultiSet.put(value)
+    case avalue: Value[O] => MultiSet.test(this, avalue.toStrm)
     case _ => false
   }
 }

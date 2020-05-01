@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.obj.value.strm.util.MultiSet
@@ -44,8 +44,8 @@ trait Value[+V <: Obj] extends Obj {
   override def toString: String = LanguageFactory.printValue(this)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case astrm: Strm[V] => MultiSet(astrm.values) == MultiSet.put(this)
-    case avalue: Value[V] => avalue.value.equals(this.value) //&& eqQ(this, avalue)
+    case astrm: Strm[V] => MultiSet.test(astrm,this.toStrm)
+    case avalue: Value[V] => avalue.value.equals(this.value) && eqQ(this, avalue)
     case _ => false
   }
 }

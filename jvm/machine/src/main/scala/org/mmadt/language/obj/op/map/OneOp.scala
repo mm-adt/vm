@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Int, IntQ, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -42,9 +43,10 @@ object OneOp {
     override def q(q: IntQ): this.type = new OneInst[O](q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       (start match {
+        case _: Strm[_] => start
         case _: Int => int(1)
         case _: Real => real(1.0)
-      }).clone(q=start.q,via=(start, this)).asInstanceOf[O]
+      }).via(start, this).asInstanceOf[O]
     }
   }
 
