@@ -443,7 +443,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>The mm-ADT virtual machine is programmed by composing objects (<code>obj</code>) via instructions (<code>inst</code>) that are parameterized by other objects as outlined by the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a> and the core package exposes a fluent <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> for writing mm-ADT programs called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> as it&#8217;s tight coupling with Scala (and the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> in general) makes it difficult to properly constrain what can be expressed. Instead, <code>mmlang</code> should be the target language of most compilers.</p>
+<p>The mm-ADT virtual machine is programmed by composing objects (<code>obj</code>) using instructions (<code>inst</code>) parameterized by objects. The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a>. The core library exposes a fluent program builder <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> due to the complexities that may ensue given direct access to the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>. Instead, <code>mmlang</code> should be the target language for most compilers.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -500,7 +500,7 @@ That is, product and coproduct equality are defined via component equality.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>An <strong>object</strong> co-product that is either a <strong>type</strong> or a <strong>value</strong> and</p>
+<p>An <strong>object</strong> that is either a <strong>type</strong> or a <strong>value</strong> and</p>
 </li>
 <li>
 <p>A <strong>quantifier</strong> specifying the "amount" of objects being denoted.</p>
@@ -518,15 +518,14 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">algebraic ring</a>. The <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a> specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular ring axiom states that products <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over co-products.
-Thus, the previous formula can be rewritten as
+<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">algebraic ring</a>. The <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a> specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular ring axiom states that products <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over co-products. Thus, the previous formula can be rewritten as
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. The mm-ADT VM is programmed by linking types and values via instructions in <code>inst</code> (\$ \tt{i\nst} \subset \tt{obj} \$). The abstract algebra axiomatizing <code>obj</code> graph construction is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. In particular, the <strong>inst monoid</strong>.</p>
+This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. The mm-ADT VM is programmed by linking types and values via instructions in <code>inst</code> (\$ \tt{i\nst} \subset \tt{obj} \$). The abstract algebra axiomatizing <code>obj</code> graph construction is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. This particular monoid is called the <strong>inst monoid</strong>.</p>
 </div>
 <div class="paragraph">
-<p>Some example mm-ADT <code>objs</code> are presented below using <code>mmlang</code>.</p>
+<p>Some example mm-ADT <code>objs</code> are presented below in <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -565,23 +564,23 @@ mmlang&gt; 'a','b','a'    <b class="conum">(5)</b>
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
 <div class="paragraph">
-<p>It is through "<em>quantified objects</em>" that mm-ADT types and values, which are typically isolated structures in most programming runtime environments, are able to co-exist (within the same category).</p>
+<p>In most modern programming environments, types and values are distinct structures whose use is oriented towards either compilation (types) or evaluation (values). At the highest level of conceptualization, there are <code>objs</code> and their "refer to" other <code>objs</code> such that</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>A type refers to values.</p>
+<p>Types refer to values and</p>
 </li>
 <li>
-<p>A value is a type that only refers to itself.</p>
+<p>Values refer to themselves.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>From the unification of types and values, various seemingly disconnected aspects of computing blend together naturally. The particulars of these integrations (which are itemized below) will be discussed at length in respective forthcoming sections of this documentation.</p>
+<p>This definition eases many longheld distinctions in computer science. The table below presents a collection of the more interesting conceptual blurs that mm-ADT&#8217;s premises have introduced. Each will be further discussed over the course of this documentation.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Conceptual Consequences of mm-ADT Quantification</caption>
+<caption class="title">Table 1. Consequences of Type/Value Unification</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 14.2857%;">
@@ -608,17 +607,17 @@ mmlang&gt; 'a','b','a'    <b class="conum">(5)</b>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AST</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">bytecode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the definition of a type specifies the context-free grammar of an mm-ADT language.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the algebra of type construction relaxes the necessity for different program encodings.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">state</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">functions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">'mutable' state is realized as values of a "proto"-type of the current value&#8217;s type.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">values</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">'mutable' state are values from historic types contained within the structure of the current type.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">functions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">functions are (dependent) types whose values are realized during evaluation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">functions are (dependent) types with value references generated at evaluation.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">programs</p></td>
@@ -632,8 +631,8 @@ mmlang&gt; 'a','b','a'    <b class="conum">(5)</b>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">canonical</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">dependent</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">canonical types are constants and dependent types are dynamically defined "constants."</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">atomics</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">atomic values and canonical types are both "tokens" by which all constructions are built.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1142,7 +1141,7 @@ This should not a surprising bijection&#8212;&#8203;it proves that the syntax of
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-30 16:51:31 -0600
+Last updated 2020-04-30 22:59:21 -0600
 </div>
 </div>
 </body>
