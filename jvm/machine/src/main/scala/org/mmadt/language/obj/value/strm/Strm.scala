@@ -36,10 +36,16 @@ trait Strm[+O <: Obj] extends Value[O] {
 
   override def ground: Any = throw LanguageException.typeNoGround(this)
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(x => x.alive())).asInstanceOf[this.type]
-  override def q(q: IntQ): this.type = strm(this.values.map(x => x.q(q)).filter(x => x.alive())).asInstanceOf[this.type]
+  override def q(q: IntQ): this.type = {
+    strm(this.values.map(x => {
+      x.clone(
+        q = if (x.root) multQ(x.q, q) else multQ(x.via._1.q, q),
+        via = if (x.root) base() else (x.via._1, x.via._2.q(q).asInstanceOf[Inst[Obj, Obj]])).asInstanceOf[O]
+    }).filter(x => x.alive())).asInstanceOf[this.type]
+  }
   override def hardQ(q: IntQ): this.type = strm(this.values.map(x => x.hardQ(q)).filter(x => x.alive())).asInstanceOf[this.type]
   override def root: Boolean = false
-  override val q: IntQ = this.values.foldLeft(qZero)((a,b) => plusQ(a,b.q))
+  override val q: IntQ = this.values.foldLeft(qZero)((a, b) => plusQ(a, b.q))
   // utility methods
   override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]
   override def clone(name: String = this.name, ground: Any = null, q: IntQ = this.q, via: ViaTuple = base()): this.type = this
