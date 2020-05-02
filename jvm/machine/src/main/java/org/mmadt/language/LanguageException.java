@@ -46,8 +46,8 @@ public class LanguageException extends VmException {
         return new LanguageException(source + " instruction error: " + message);
     }
 
-    public static LanguageException typesNoValue(final Obj source) {
-        return new LanguageException("Types do not contain values: " + source);
+    public static LanguageException typeNoGround(final Obj source) {
+        return new LanguageException("Types are not grounded: " + source);
     }
 
     public static LanguageException zeroLengthPath(final Obj source) {

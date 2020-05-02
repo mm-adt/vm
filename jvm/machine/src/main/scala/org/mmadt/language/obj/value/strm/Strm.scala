@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 trait Strm[+O <: Obj] extends Value[O] {
   def values: Seq[O]
 
-  override def ground: Any = throw LanguageException.typesNoValue(this)
+  override def ground: Any = throw LanguageException.typeNoGround(this)
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(x => x.alive())).asInstanceOf[this.type]
   override def q(q: IntQ): this.type = strm(this.values.map(x => x.q(q)).filter(x => x.alive())).asInstanceOf[this.type]
   override def hardQ(q: IntQ): this.type = strm(this.values.map(x => x.hardQ(q)).filter(x => x.alive())).asInstanceOf[this.type]

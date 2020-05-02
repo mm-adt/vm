@@ -30,5 +30,5 @@ import org.mmadt.language.obj.value.RealValue
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RealStrm extends Strm[Real] with Real {
-  override def ground: Double = throw LanguageException.typesNoValue(this)
+  override def ground: Double = throw LanguageException.typeNoGround(this)
 }

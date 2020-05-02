@@ -30,5 +30,5 @@ import org.mmadt.language.obj.value.IntValue
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntStrm extends Strm[Int] with Int {
-  override def ground: Long = throw LanguageException.typesNoValue(this)
+  override def ground: Long = throw LanguageException.typeNoGround(this)
 }

@@ -29,5 +29,5 @@ import org.mmadt.language.obj.Bool
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolStrm extends Strm[Bool] with Bool {
-  override def ground: Boolean = throw LanguageException.typesNoValue(this)
+  override def ground: Boolean = throw LanguageException.typeNoGround(this)
 }
