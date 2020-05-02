@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
@@ -47,7 +46,7 @@ object MapOp {
     override def exec(start: Obj): O = {
       val inst = new MapInst(Inst.resolveArg(start, other), this.q)
       start match {
-        case astrm: Strm[_] => strm[O](astrm.values.map(x => inst.exec(x)))
+        case astrm: Strm[_] => strm[O](astrm.values.map(x => this.exec(x)))
         case _: Type[_] => asType[O](inst.arg0[O]()).via(start, inst)
         case _ => (other match { // Value[_]
           case _: Value[_] => inst.arg0[O]()

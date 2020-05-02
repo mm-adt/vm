@@ -25,6 +25,7 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.op.map.{IdOp, PlusOp}
+import org.mmadt.language.obj.value.strm.IntStrm
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -49,6 +50,10 @@ class VIntTest extends FunSuite {
     assertResult(int(14).q(12))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).mult(int(2).q(34)).q(3))
     assertResult(btrue.q(40))(int(3).q(2) ===> int.q(2).plus(int(4)).q(2).gt(int(2).q(34)).q(10))
     assertResult(btrue.q(40))(int(3).q(2) ===> int.q(2).plus(int(4)).q(2).a(int.q(0, 4)).q(10))
+    //
+    println(int(1, 2, 3).map(int(2)).asInstanceOf[IntStrm].values.map(x => x.trace))
+    assertResult(int(int(3).q(50), int(4).q(100)))(int(int(3).q(10), int(4).q(20)).q(5))
+    assertResult(int(int(3).q(500), int(4).q(1000)))(int(int(3).q(10), int(4).q(20)).q(5).q(10))
   }
   test("nested lineages of types") {
     val atype = int.id().plus(int.plus(2))
