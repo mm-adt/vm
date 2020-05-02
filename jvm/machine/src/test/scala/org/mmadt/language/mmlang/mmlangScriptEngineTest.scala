@@ -24,10 +24,11 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.strm.util.MultiSet
 import org.scalatest.FunSuite
 
 
@@ -285,21 +286,22 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("bool strm input parsing") {
-    assertResult(Set(btrue))(engine.eval("true,false bool{*}[is,[id]]").toSet)
-    assertResult(Set(btrue))(engine.eval("true,false[is,[id]]").toSet)
+    assertResult(btrue)(engine.eval("true,false bool{*}[is,[id]]"))
+    assertResult(btrue)(engine.eval("true,false[is,[id]]"))
   }
 
   test("int strm input parsing") {
-    assertResult(Set(int(-1), int(0)))(engine.eval("0,1 int{+}[plus,-1]").toSet)
-    assertResult(Set(int(1), int(2), int(3)))(engine.eval("0,1,2[plus,1]").toSet)
-    assertResult(Set(int(1).q(3), int(2).q(10), int(3)))(engine.eval("0{3},1{10},2[plus,1]").toSet)
-    assertResult(Set(int(30), int(40)))(engine.eval("0,1,2,3 int{2,5}[plus,1][is,int[gt,2]][mult,10]").toSet)
-    assertResult(Set(int(300), int(40)))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]").toSet)
-    // assertResult(Set(int(30),int(40)))(engine.eval("0,1,2,3 ==> (int{3}=>int[plus,1][is,int[gt,2]][mult,10])")).toSet)
+    assertResult(int(-1,0))(engine.eval("0,1 int{+}[plus,-1]"))
+    assertResult(int(-1,0))(engine.eval("0,1 int{+}[plus,-1]"))
+    assertResult(int(1,2,3))(engine.eval("0,1,2[plus,1]"))
+    assertResult(int(int(1).q(3), int(2).q(10), int(3)))(engine.eval("0{3},1{10},2[plus,1]"))
+    assertResult(int(30,40))(engine.eval("0,1,2,3 int{2,5}[plus,1][is,int[gt,2]][mult,10]"))
+    assertResult(int(300,40))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]][int[is,int[gt,3]] -> int[mult,10] | int -> int[mult,100]]"))
+    assertResult(int(30,40))(engine.eval("0,1,2,3 int{4}[plus,1][is,int[gt,2]][mult,10]"))
   }
 
   test("real strm input parsing") {
-    assertResult(Set(real(-1.2), real(0.0)))(engine.eval("0.0,1.2 real{+}[plus,-1.2]").toSet)
+    assertResult(real(-1.2,0.0))(engine.eval("0.0,1.2 real{+}[plus,-1.2]"))
   }
 
   /*test("str strm input parsing"){
@@ -308,7 +310,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }*/
 
   test("rec strm input parsing") {
-    assertResult(Set(vrec(str("a") -> int(1), str("b") -> int(0)), vrec(str("a") -> int(2), str("b") -> int(0))))(engine.eval("""['a'->1],['a'->2][plus,['b'->0]]""").toSet)
+    assertResult(vrec(vrec(str("a") -> int(1), str("b") -> int(0)), vrec(str("a") -> int(2), str("b") -> int(0))))(engine.eval("""['a'->1],['a'->2][plus,['b'->0]]"""))
   }
 
   test("anonymous expression parsing") {
@@ -323,11 +325,11 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.choose(int.is(int.gt(int(5))) -> int(1), int -> int(2)))(engine.eval(" int[[is>5] -> 1 | int -> 2]"))
     assertResult(int.plus(int(10)).choose[Obj, Obj](trec[Obj, Obj](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10)))))(engine.eval(" int[plus,10][[is,[gt,10]]->[gt,20] | int->[plus,10]]"))
     assertResult(int.plus(int(10)).choose(int.is(int.gt(int(5))) -> int(1), int -> int(2)))(engine.eval(" int[plus,10][[is>5] -> 1 | int -> 2]"))
-    assertResult(Set(int(302), int(42)))(engine.eval(
+    assertResult(int(302,42))(engine.eval(
       """ 0,1,2,3
         | [plus,1][is>2]
         |   [ is>3 -> [mult,10]
-        |   | int  -> [mult,100]][plus,2]""".stripMargin).toSet)
+        |   | int  -> [mult,100]][plus,2]""".stripMargin))
     assertResult(bfalse)(engine.eval("4[plus,1][[is>5] -> true | int -> false]"))
     assertResult(btrue)(engine.eval("5[plus,1][[is>5] -> true | int -> false]"))
     assertResult(btrue)(engine.eval("true[bool -> bool | int -> int]"))

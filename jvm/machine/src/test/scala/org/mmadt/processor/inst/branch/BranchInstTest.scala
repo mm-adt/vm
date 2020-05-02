@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.{Obj, Real}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -66,10 +66,9 @@ class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
     val results = (int(2, 8, 15, 20) ==> int.q(4).to("x").plus(1).branch(
       int.is(int.gt(10)) -> int.mult(10),
       int -> int.id().plus(int.from("x")).to("y")
-    )).toList
-    assertResult(6)(results.length)
-    // results.foreach(x => println(x.lineage))
-    results.foreach {
+    ))
+    assertResult(6)(results.toStrm.values.length)
+    results.toStrm.values.foreach {
       case x if x == int(5) =>
         assertResult(5)(x.trace.length)
         assertResult(int(2))(Obj.fetch(x, "x"))
@@ -109,7 +108,7 @@ class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[branch] w/ values") {
-    assertResult(strm(List(int(4))))(
+    assertResult(int(4))(
       int(0).plus(1).branch(
         int.is(int.gt(2)) -> int.mult(3),
         int -> int.mult(4)))
@@ -150,9 +149,9 @@ class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   /*test("[branch] w/ traverser state"){
     assertResult(real(2.0,3.0,3.0))(
-      real(0.0,1.0,1.0) ===> real.q(3).to("x").plus(1.0).to("y").branch[Obj,Real](
+      real(0.0,1.0,1.0) ===> real.q(3).to("x").plus(1.0).to("y").branch(
         __.is(__.eqs(1.0)) -> __.from("y"),
         __.is(__.eqs(2.0)) -> __.from("x")
-      ).plus(real.from[Real]("y")))
+      ).plus(real.from("y")))
   }*/
 }

@@ -37,31 +37,19 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   final var processor: Processor = Processor.compiler()
 
   test("compiler w/ linear singleton type") {
-    var result: List[Int] = processor.apply(int, int.mult(int(2))).toList
-    assertResult(1)(result.length)
-    assertResult(int.mult(int(2)))(result.head)
-    /////
-    result = processor.apply(int, int.mult(int(2)).plus(int(3))).toList
-    assertResult(1)(result.length)
-    assertResult(int.mult(int(2)).plus(int(3)))(result.head)
+    assertResult(int.mult(int(2)))(processor.apply(int, int.mult(int(2))))
+    assertResult(int.mult(int(2)).plus(int(3)))(processor.apply(int, int.mult(int(2)).plus(int(3))))
   }
 
   test("compiler w/ linear quantified type") {
-    var result: List[Int] = processor.apply(int.q(int(2)), int.q(*).mult(int(2))).toList
-    assertResult(1)(result.length)
-    assertResult(int.q(int(2)).mult(int(2)))(result.head)
-    assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)))(result.head)
+    assertResult(int.q(int(2)).mult(int(2)))(processor.apply(int.q(int(2)), int.q(*).mult(int(2))))
+    assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)))(processor.apply(int.q(int(2)), int.q(*).mult(int(2))))
     /////
-    result = processor.apply(int.q(2), int.q(1, 3).mult(int(2)).plus(int(3))).toList
-    assertResult(1)(result.length)
-    assertResult(int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
-    assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)).plus(int(3)))(result.head)
+    assertResult(int.q(int(2)).mult(int(2)).plus(int(3)))(processor.apply(int.q(2), int.q(1, 3).mult(int(2)).plus(int(3))))
+    assertResult(int.q(int(2)) <= int.q(int(2)).mult(int(2)).plus(int(3)))(processor.apply(int.q(2), int.q(1, 3).mult(int(2)).plus(int(3))))
     /////
-    result = processor.apply(int.q(int(2)), int.q(2).mult(int(2)).is(int.gt(int(2)))).toList
-    assertResult(1)(result.length)
-    // int{0,2}<=int{2}[mult,2][is,bool{2}<=int{2}[gt,2]]
-    assertResult(int.q(2).mult(2).is(bool.q(2) <= int.q(2).gt(2)))(result.head)
-    assertResult(int.q(2).mult(2).is(int.q(2).gt(2)))(result.head)
+    assertResult(int.q(2).mult(2).is(bool.q(2) <= int.q(2).gt(2)))(processor.apply(int.q(int(2)), int.q(2).mult(int(2)).is(int.gt(int(2)))))
+    assertResult(int.q(2).mult(2).is(int.q(2).gt(2)))(processor.apply(int.q(int(2)), int.q(2).mult(int(2)).is(int.gt(int(2)))))
   }
 
   test("compiler w/ linear quantified type and model") {
@@ -87,10 +75,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
       int.plus(0).plus(1).plus(-1).plus(0).plus(0).plus(1).plus(-1).plus(0).plus(0),
       int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(0),
       int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(1).plus(-1))) {
-      i =>
-        val result = processor.apply(int, i).toList
-        assertResult(1)(result.length)
-        assertResult(int)(result.head)
+      i => assertResult(int)(processor.apply(int, i))
     }
   }
   test("compiler w/ model") {
@@ -106,9 +91,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
 
   test("compiler w/ [choose]") {
     processor = Processor.compiler()
-    var result: List[Int] = processor.apply(int, int.mult(1).choose(int.is(int.gt(5)) -> int.plus(2), int -> int.plus(1)).is(int.gt(3))).toList
-    assertResult(1)(result.length)
-    assertResult("int{?}<=int[mult,1][choose,[int{?}<=int[is,bool<=int[gt,5]]:int[plus,2]|int:int[plus,1]]][is,bool<=int[gt,3]]")(result.head.toString)
+    assertResult("int{?}<=int[mult,1][choose,[int{?}<=int[is,bool<=int[gt,5]]:int[plus,2]|int:int[plus,1]]][is,bool<=int[gt,3]]")(processor.apply(int, int.mult(1).choose(int.is(int.gt(5)) -> int.plus(2), int -> int.plus(1)).is(int.gt(3))).toString)
   }
 
   /*test("compiler w/ multi-types"){

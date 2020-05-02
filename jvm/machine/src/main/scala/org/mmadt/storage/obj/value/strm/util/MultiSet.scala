@@ -30,5 +30,5 @@ class MultiSet[A <: Obj](val baseSet: Set[A] = Set.empty[A]) extends Seq[A] {
 object MultiSet {
   def put[A <: Obj](objs: A*): MultiSet[A] = objs.foldLeft(new MultiSet[A])((a, b) => a.put(b))
   def apply[A <: Obj](objs: Seq[A]): MultiSet[A] = objs.foldLeft(new MultiSet[A])((a, b) => a.put(b))
-  def test(a: Strm[Obj], b: Strm[Obj]): Boolean = MultiSet(a.values) == MultiSet(b.values)
+  def test(a: Obj, b:Obj):Boolean = MultiSet(a.toStrm.values) == MultiSet(b.toStrm.values)
 }

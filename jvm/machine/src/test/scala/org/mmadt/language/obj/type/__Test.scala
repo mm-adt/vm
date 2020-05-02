@@ -56,9 +56,9 @@ class __Test extends FunSuite {
   }
 
   test("__  type fluency") {
-    assertResult(List(str("marko!")))((vrec(str("name") -> str("marko")) ===> __.id().get(str("name")).plus(str("!"))).toList)
-    assertResult(List(int(12)))((int(5) ===> __.plus(2).plus(5).id()).toList)
-    assertResult(List(int(120)))((int(5) ===> __.plus(2).plus(5).id().mult(10)).toList)
+    assertResult(str("marko!"))(vrec(str("name") -> str("marko")) ===> __.id().get(str("name")).plus(str("!")))
+    assertResult(int(12))(int(5) ===> __.plus(2).plus(5).id())
+    assertResult(int(120))(int(5) ===> __.plus(2).plus(5).id().mult(10))
   }
 
   test("__ deep nest") {

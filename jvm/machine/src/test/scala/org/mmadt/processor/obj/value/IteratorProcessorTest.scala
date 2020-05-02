@@ -33,19 +33,19 @@ import org.scalatest.{FunSuite, Matchers}
  */
 class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with Matchers {
   test("process single value w/ quantifiers") {
-    assertResult(List(int(110)))(Processor.iterator().apply(int(5), int.mult(int(2)).plus(int(100))).toList)
-    assertResult(List(int(110)))(Processor.iterator()(int(5), int * 2 + 100).toList)
-    assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5).q(10), int.q(10).mult(int(2)).plus(int(100))).toList)
-    assertResult(List(int(110).q(10)))(Processor.iterator().apply(int(5), int.mult(int(2)).plus(int(100)).q(10)).toList)
+    assertResult(int(110))(Processor.iterator().apply(int(5), int.mult(int(2)).plus(int(100))))
+    assertResult(int(110))(Processor.iterator()(int(5), int * 2 + 100))
+    assertResult(int(110).q(10))(Processor.iterator().apply(int(5).q(10), int.q(10).mult(int(2)).plus(int(100))))
+    assertResult(int(110).q(10))(Processor.iterator().apply(int(5), int.mult(int(2)).plus(int(100)).q(10)))
     // assertResult(List(int(110).q(100)))(Processor.iterator().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(int.plus(0)).toList)
   }
   test("process multiple values w/ quantifiers") {
-    assertResult(List(int(102), int(104), int(106)))(Processor.iterator().apply(int(1, 2, 3), int.q(*).mult(int(2)).plus(int(100))).toList)
-    assertResult(List(int(102), int(104), int(106)))((int(1, 2, 3) ===> int.q(1, 10).mult(int(2)).plus(int(100))).toList)
-    assertResult(List(int(11), int(22), int(33)))((int(10, 20, 30) ===> int.q(*).choose(
+    assertResult(int(102,104,106))(Processor.iterator().apply(int(1, 2, 3), int.q(*).mult(int(2)).plus(int(100))))
+    assertResult(int(102,104,106))((int(1, 2, 3) ===> int.q(1, 10).mult(int(2)).plus(int(100))))
+    assertResult(int(11,22,33))((int(10, 20, 30) ===> int.q(*).choose(
       int.is(int.gt(int(20))) -> int.plus(int(3)),
       int.is(int.gt(int(10))) -> int.plus(int(2)),
-      int -> int.plus(int(1))).plus(int(0))).toList)
+      int -> int.plus(int(1))).plus(int(0))))
     /*    assertResult(int(50))((int(10).q(int(50)) ===> int.q(50).plus(int(2)).count()))
         assertResult(int(3))((int(10,20,30) ===> int.q(+).plus(int(2)).count()))
         assertResult(int(4))((int(10,20,30,40) ===> int.q(*).plus(int(2)).mult(int(100)).count()))
@@ -58,8 +58,8 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
       int -> int.q(10).plus(int(1)).q(10)).plus(int(0))).toList)*/
   }
   test("process nested single values w/ quantifiers") {
-    assertResult(List(int(2)))((int(1) ===> int.mult(int(2)).is(int.gt(int(1)))).toList)
-    assertResult(List(int(2)))((int(1) ===> int.mult(int(2)).is(int.plus(int(10)).gt(int(1)))).toList)
+    assertResult(int(2))(int(1) ===> int.mult(int(2)).is(int.gt(int(1))))
+    assertResult(int(2))(int(1) ===> int.mult(int(2)).is(int.plus(int(10)).gt(int(1))))
   }
   test("process canonical type") {
     int(10) ===> int

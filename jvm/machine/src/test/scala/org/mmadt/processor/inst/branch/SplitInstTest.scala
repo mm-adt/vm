@@ -72,5 +72,4 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(int(int(1).q(10), int(2).q(50)))(coprod[Int](1, int(2).q(5)).q(10).merge)
     assertResult(int(int(1).q(4, 10), int(2).q(20, 50)))(coprod[Int](1, int(2).q(5)).q(4, 10).merge)
   }
-
 }
