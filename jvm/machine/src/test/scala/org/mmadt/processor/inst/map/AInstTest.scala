@@ -63,7 +63,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(20), int(20), btrue),
         (int(20), int(30), bfalse),
         (int(20), int.is(__.gt(10)), btrue),
-        //(int.is(__.gt(9)),int.is(__.gte(10)),btrue),
+        // (int.is(__.gt(9)),int.is(__.gte(10)),btrue),
         (int(20), int.is(int.lt(0)), bfalse),
         (int(20), int.is(int.gt(0)), btrue),
         (int(20), int.mult(int.neg()).is(int.lt(0)), btrue),

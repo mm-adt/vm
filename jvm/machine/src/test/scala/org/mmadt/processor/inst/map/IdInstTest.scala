@@ -45,9 +45,14 @@ class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2, 3).id(), int(1, 2, 3), "strm"),
         //////// REAL
         (real(2.0).id(), real(2.0), "value"),
+        (real(2.0).id().q(10), real(2.0).q(10), "value"),
+        (real(2.0).q(5).id().q(10), real(2.0).q(50), "value"),
         (real(-2.0).one(), real(1.0), "value"),
         (real.id(), real.id(), "type"),
         (real(1.0, 2.0, 3.0).id(), real(1.0, 2.0, 3.0), "strm"),
+        (real(1.0, 2.0, 3.0).id().q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10)), "strm"),
+        (real(1.0, 2.0, 3.0).id().q(10).id(), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10)), "strm"),
+        (real(1.0, 2.0, 3.0).id().q(10).id().q(5), real(real(1.0).q(50), real(2.0).q(50), real(3.0).q(50)), "strm"),
         //////// STR
         (str("a").id(), str("a"), "value"),
         (str.id(), str.id(), "type"),
