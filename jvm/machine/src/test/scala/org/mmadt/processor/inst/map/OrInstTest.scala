@@ -49,7 +49,7 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { (input, atype, result, kind) => {
       List(
         //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype.toString}"),
-        OrOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input.asInstanceOf[Bool]),
+        OrOp(atype.trace.head._2.arg0()).q(atype.trace.head._2.q).exec(input.asInstanceOf[Bool]),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),
         input ===> atype,
@@ -80,10 +80,10 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
         case _ =>
       }
       assert(obj.q != expr.q)
-      assertResult(2)(expr.lineage.length)
+      assertResult(2)(expr.trace.length)
       assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), OrOp(bfalse).q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).or(bfalse).q(3), OrOp(bfalse).q(10)))(expr.lineage.last)
+      assertResult((obj.q(2), OrOp(bfalse).q(3)))(expr.trace.head)
+      assertResult((obj.q(2).or(bfalse).q(3), OrOp(bfalse).q(10)))(expr.trace.last)
     }
     }
   }

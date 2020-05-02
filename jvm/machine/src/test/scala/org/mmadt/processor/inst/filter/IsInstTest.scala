@@ -106,10 +106,10 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
         case _ =>
       }
       assert(obj.q != expr.q)
-      assertResult(2)(expr.lineage.length)
+      assertResult(2)(expr.trace.length)
       assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), IsOp(btrue).q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).is(btrue).q(3), IsOp(btrue).q(10)))(expr.lineage.last)
+      assertResult((obj.q(2), IsOp(btrue).q(3)))(expr.trace.head)
+      assertResult((obj.q(2).is(btrue).q(3), IsOp(btrue).q(10)))(expr.trace.last)
     }
     }
   }

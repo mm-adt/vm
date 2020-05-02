@@ -62,7 +62,7 @@ class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { (input, atype, result) => {
       List(
         new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
-        ZeroOp().q(atype.lineage.head._2.q).exec(input),
+        ZeroOp().q(atype.trace.head._2.q).exec(input),
         input.compute(asType(atype)),
         input ===> atype.start(),
       ).foreach(x => {

@@ -70,6 +70,6 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
 object IteratorProcessor {
   @scala.annotation.tailrec
   private def createInstList(list: List[(Type[Obj], Inst[Obj, Type[Obj]])], atype: Type[Obj]): List[(Type[Obj], Inst[Obj, Type[Obj]])] = {
-    if (atype.root) list else createInstList(List((atype.range, atype.lineage.last._2.asInstanceOf[Inst[Obj, Type[Obj]]])) ::: list, atype.lineage.last._1.asInstanceOf[Type[Obj]])
+    if (atype.root) list else createInstList(List((atype.range, atype.trace.last._2.asInstanceOf[Inst[Obj, Type[Obj]]])) ::: list, atype.trace.last._1.asInstanceOf[Type[Obj]])
   }
 }

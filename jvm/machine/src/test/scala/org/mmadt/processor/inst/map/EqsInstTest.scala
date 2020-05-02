@@ -68,7 +68,7 @@ class EqsInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { (input, atype, result, kind) => {
       List(
         //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
-        EqsOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input),
+        EqsOp(atype.trace.head._2.arg0()).q(atype.trace.head._2.q).exec(input),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),
         input ===> atype,

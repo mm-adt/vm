@@ -71,31 +71,31 @@ class BranchInstTest extends FunSuite with TableDrivenPropertyChecks {
     // results.foreach(x => println(x.lineage))
     results.foreach {
       case x if x == int(5) =>
-        assertResult(5)(x.lineage.length)
+        assertResult(5)(x.trace.length)
         assertResult(int(2))(Obj.fetch(x, "x"))
         assertResult(int(5))(Obj.fetch(x, "y"))
       case x if x == int(17) =>
-        assertResult(5)(x.lineage.length)
+        assertResult(5)(x.trace.length)
         assertResult(int(8))(Obj.fetch(x, "x"))
         assertResult(int(17))(Obj.fetch(x, "y"))
       case x if x == int(160) =>
-        assertResult(3)(x.lineage.length)
+        assertResult(3)(x.trace.length)
         assertResult(int(15))(Obj.fetch(x, "x"))
         assertThrows[LanguageException] {
           Obj.fetch(x, "y")
         }
       case x if x == int(31) =>
-        assertResult(5)(x.lineage.length)
+        assertResult(5)(x.trace.length)
         assertResult(int(15))(Obj.fetch(x, "x"))
         assertResult(int(31))(Obj.fetch(x, "y"))
       case x if x == int(210) =>
-        assertResult(3)(x.lineage.length)
+        assertResult(3)(x.trace.length)
         assertResult(int(20))(Obj.fetch(x, "x"))
         assertThrows[LanguageException] {
           Obj.fetch(x, "y")
         }
       case x if x == int(41) =>
-        assertResult(5)(x.lineage.length)
+        assertResult(5)(x.trace.length)
         assertResult(int(20))(Obj.fetch(x, "x"))
         assertResult(int(41))(Obj.fetch(x, "y"))
     }

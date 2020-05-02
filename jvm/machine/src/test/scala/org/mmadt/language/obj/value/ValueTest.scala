@@ -59,7 +59,7 @@ class ValueTest extends FunSuite {
   test("value structure w/ two canonical types") {
     val avalue = int(5).plus(10).id().mult(5).gt(10)
     assertResult(bool)(asType(avalue))
-    assertResult(4)(avalue.lineage.length)
+    assertResult(4)(avalue.trace.length)
     // rinvert
     assertResult(int(5).plus(10).id().mult(5))(avalue.rinvert[IntValue]())
     assertResult(int(5).plus(10).id())(avalue.rinvert[IntValue]().rinvert[IntValue]())

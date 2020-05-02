@@ -37,7 +37,7 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   with GetOp[Obj, Obj]
   with PutOp[Obj, Obj] {
   override def clone(name: String = Tokens.empty, value: Any, q: IntQ = qOne, via: ViaTuple = base()): this.type = new __(name, q, via).asInstanceOf[this.type]
-  def apply[T <: Obj](obj: Obj): OType[T] = asType(this.lineage.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
+  def apply[T <: Obj](obj: Obj): OType[T] = asType(this.trace.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
   def neg(): this.type = this.via(this, NegOp())

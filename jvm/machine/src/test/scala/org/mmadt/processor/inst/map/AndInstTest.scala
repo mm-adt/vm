@@ -64,7 +64,7 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
      //println(s"${input} ${atype.toString.substring(4)}")
       List(
         //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input} ${atype.toString.substring(4)}"),
-        AndOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input.asInstanceOf[Bool]),
+        AndOp(atype.trace.head._2.arg0()).q(atype.trace.head._2.q).exec(input.asInstanceOf[Bool]),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),
         input ===> atype,
@@ -95,10 +95,10 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
         case _ =>
       }
       assert(obj.q != expr.q)
-      assertResult(2)(expr.lineage.length)
+      assertResult(2)(expr.trace.length)
       assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), AndOp(btrue).q(3)))(expr.lineage.head)
-      assertResult((obj.q(2).and(btrue).q(3), AndOp(btrue).q(10)))(expr.lineage.last)
+      assertResult((obj.q(2), AndOp(btrue).q(3)))(expr.trace.head)
+      assertResult((obj.q(2).and(btrue).q(3), AndOp(btrue).q(10)))(expr.trace.last)
     }
     }
   }

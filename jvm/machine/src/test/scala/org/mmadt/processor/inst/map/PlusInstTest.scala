@@ -66,7 +66,7 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
       //println(s"${input}${atype}")
       List(
         new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
-        PlusOp(atype.lineage.head._2.arg0()).q(atype.lineage.head._2.q).exec(input),
+        PlusOp(atype.trace.head._2.arg0()).q(atype.trace.head._2.q).exec(input),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),
         input ===> atype,

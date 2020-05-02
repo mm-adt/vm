@@ -39,7 +39,7 @@ object PathOp {
 
   class PathInst(q: IntQ = qOne) extends VInst[Obj, Path]((Tokens.path, Nil), q) {
     override def q(q: IntQ): this.type = new PathInst(q).asInstanceOf[this.type]
-    override def exec(start: Obj): Path = prod(start.lineage.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*).via(start, this)
+    override def exec(start: Obj): Path = prod(start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*).via(start, this)
   }
 
 }

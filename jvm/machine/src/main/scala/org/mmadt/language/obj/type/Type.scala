@@ -50,7 +50,7 @@ trait Type[+T <: Obj] extends Obj
   }
   // standard Java implementations
   override def toString: String = LanguageFactory.printType(this)
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.lineage.hashCode()
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode()
   override def equals(other: Any): Boolean = other match {
     case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && ((this.root && atype.root) || (this.via == atype.via))
     case _ => false

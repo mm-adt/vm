@@ -93,11 +93,11 @@ trait Obj
   def root: Boolean = null == this.via || null == this.via._1
   def isolate: this.type = this.clone(via = base())
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = if (inst.q == qOne && via == (obj, inst)) this else this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
-  def lineage: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.lineage :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
+  def trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
   def linvert(): this.type = {
     if (this.root) throw LanguageException.zeroLengthPath(this)
-    this.lineage.tail match {
+    this.trace.tail match {
       case Nil => this.isolate
       case incidentRoot => incidentRoot.foldLeft[Obj](incidentRoot.head._1.isolate)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
     }
@@ -109,7 +109,7 @@ trait Obj
   def toList: List[this.type] = toStrm.values.toList
   def toSet: Set[this.type] = toStrm.values.toSet
 
-  def compute[E <: Obj](rangeType: Type[E]): E = rangeType.lineage
+  def compute[E <: Obj](rangeType: Type[E]): E = rangeType.trace
     .headOption
     .map(x => x._2.exec(this))
     .map(x => x.compute(rangeType.linvert()))

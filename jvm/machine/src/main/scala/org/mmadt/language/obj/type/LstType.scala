@@ -45,7 +45,7 @@ trait LstType[A <: Obj] extends Lst[A]
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.toString().hashCode() ^ this.lineage.hashCode() ^ this.q.hashCode()
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.toString().hashCode() ^ this.trace.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {
     case atype: LstType[A] => this.name == atype.name && this.q == atype.q && this.value == atype.value && this.via == atype.via
     case _ => false

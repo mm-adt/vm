@@ -55,7 +55,7 @@ class IntTypeTest extends FunSuite {
   }
 
   test("int: type structure") {
-    println(int.plus(int(2)).mult(int(5)).lineage)
+    println(int.plus(int(2)).mult(int(5)).trace)
   }
 
   test("int: pattern matching") {

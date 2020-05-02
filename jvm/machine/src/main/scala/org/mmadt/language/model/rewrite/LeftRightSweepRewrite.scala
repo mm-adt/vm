@@ -50,7 +50,7 @@ object LeftRightSweepRewrite {
       rewrite(model,
         btype.linvert(),
         btype.linvert().domain(),
-        btype.lineage.head._2.exec(start)).asInstanceOf[S]
+        btype.trace.head._2.exec(start)).asInstanceOf[S]
     }
     else start
   }

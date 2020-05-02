@@ -150,7 +150,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(check) { (expr, result, length) => {
       assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${expr}"))
       assertResult(result)(expr)
-      assertResult(length)(expr.lineage.length)
+      assertResult(length)(expr.trace.length)
     }
     }
   }
