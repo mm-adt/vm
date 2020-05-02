@@ -31,7 +31,7 @@ import org.mmadt.language.obj.Bool
 trait BoolType extends Bool
   with Type[Bool]
   with ObjType {
-  def value: Boolean = throw LanguageException.typesNoValue(this)
+  def ground: Boolean = throw LanguageException.typesNoValue(this)
 }
 
 

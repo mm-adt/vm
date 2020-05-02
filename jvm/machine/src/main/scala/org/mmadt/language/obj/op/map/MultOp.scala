@@ -51,16 +51,16 @@ object MultOp {
       (start match {
         case _: Strm[_] => start
         case _: Value[_] => start match {
-          case aint: Int => start.clone(value = aint.value * inst.arg0[Int]().value)
-          case areal: Real => start.clone(value = areal.value * inst.arg0[Real]().value)
+          case aint: Int => start.clone(ground = aint.ground * inst.arg0[Int]().ground)
+          case areal: Real => start.clone(ground = areal.ground * inst.arg0[Real]().ground)
           //////// EXPERIMENTAL
           case prodA: Prod[O] => multObj[O](arg match {
-            case prodB: Prod[O] => prod[O]().clone(value = prodA.value ++ prodB.value)
-            case coprodB: Coprod[O] => coprod[O]().clone(value = coprodB.value.map(a => prod().clone(value = prodA.value :+ a)))
+            case prodB: Prod[O] => prod[O]().clone(ground = prodA.ground ++ prodB.ground)
+            case coprodB: Coprod[O] => coprod[O]().clone(ground = coprodB.ground.map(a => prod().clone(ground = prodA.ground :+ a)))
           })
           case coprodA: Coprod[O] => multObj[O](arg match {
-            case prodB: Prod[O] => coprod[O]().clone(value = coprodA.value.map(a => prod().clone(value = a +: prodB.value)))
-            case coprodB: Coprod[O] => coprod[O]().clone(value = coprodA.value.flatMap(a => coprodB.value.map(b => prod(a, b))))
+            case prodB: Prod[O] => coprod[O]().clone(ground = coprodA.ground.map(a => prod().clone(ground = a +: prodB.ground)))
+            case coprodB: Coprod[O] => coprod[O]().clone(ground = coprodA.ground.flatMap(a => coprodB.ground.map(b => prod(a, b))))
           })
         }
         case _ => start
@@ -70,7 +70,7 @@ object MultOp {
 
   def multObj[O <: Obj](brch: Brch[O]): Brch[O] = {
     if (!brch.isType) return brch
-    brch.clone(value = List(brch.value.foldLeft(brch.value.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])))
+    brch.clone(ground = List(brch.ground.foldLeft(brch.ground.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])))
   }
 
 }

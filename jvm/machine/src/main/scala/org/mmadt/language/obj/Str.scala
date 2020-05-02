@@ -34,5 +34,5 @@ trait Str extends Obj
   with LtOp[Str]
   with LteOp[Str]
   with ZeroOp[Str] {
-  def value: String
+  def ground: String
 }

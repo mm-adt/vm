@@ -52,7 +52,7 @@ object AndOp {
       val inst = new AndInst(Inst.resolveArg(start, other), q)
       (start match {
         case _:Strm[_] => start
-        case _:BoolValue => start.clone(value = start.value && inst.arg0[Bool]().value)
+        case _:BoolValue => start.clone(ground = start.ground && inst.arg0[Bool]().ground)
         case _ => start
       }).via(start, inst)
 

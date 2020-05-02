@@ -42,16 +42,16 @@ trait Brch[A <: Obj] extends Obj
   with PlusOp[Brch[A]]
   with MultOp[Brch[A]]
   with ZeroOp[Brch[A]] {
-  def value: List[A]
+  def ground: List[A]
 
   override def toString: String = LanguageFactory.printBrch(this)
 
   override def get(key: Int): A = {
     val valueType: A = key match {
-      case avalue: IntValue if this.value.length > avalue.value => this.value(avalue.value.toInt)
-      case avalue: IntValue if this.value.nonEmpty =>
-        Brch.checkIndex(this, avalue.value.toInt)
-        this.value(avalue.value.toInt)
+      case avalue: IntValue if this.ground.length > avalue.ground => this.ground(avalue.ground.toInt)
+      case avalue: IntValue if this.ground.nonEmpty =>
+        Brch.checkIndex(this, avalue.ground.toInt)
+        this.ground(avalue.ground.toInt)
       case _ => obj.asInstanceOf[A]
     }
     valueType.via(this, GetOp[Int, A](key, valueType))
@@ -59,14 +59,14 @@ trait Brch[A <: Obj] extends Obj
 
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
-  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.value.exists(x => x.alive() && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isValue))))
-  def isType: Boolean = !this.value.exists(x => x.alive() && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isType)))
+  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.ground.exists(x => x.alive() && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isValue))))
+  def isType: Boolean = !this.ground.exists(x => x.alive() && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Brch[_]]) || (x.isInstanceOf[Brch[_]] && !x.asInstanceOf[Brch[_]].isType)))
 }
 
 object Brch {
   def checkIndex(alst: Brch[_], index: scala.Int): Unit = {
     if (index < 0) throw new LanguageException("brch index must be 0 or greater: " + index)
-    if (alst.value.length < (index + 1)) throw new LanguageException("brch index is out of bounds: " + index)
+    if (alst.ground.length < (index + 1)) throw new LanguageException("brch index is out of bounds: " + index)
   }
 }
 

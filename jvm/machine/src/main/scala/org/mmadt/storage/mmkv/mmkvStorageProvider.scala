@@ -110,7 +110,7 @@ object mmkvStorageProvider {
     private def connect(file: Str): mmkvStore[Value[Obj], Value[Obj]] = {
       file match {
         case _: Type[_] => throw new UnsupportedOperationException
-        case avalue: StrValue => mmkvStore.open(avalue.value)
+        case avalue: StrValue => mmkvStore.open(avalue.ground)
       }
     }
 

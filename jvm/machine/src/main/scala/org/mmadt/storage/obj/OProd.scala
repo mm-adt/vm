@@ -26,11 +26,11 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Prod, _}
 import org.mmadt.storage.StorageFactory.qOne
 
-class OProd[A <: Obj](val name: String = Tokens.empty, val value: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
+class OProd[A <: Obj](val name: String = Tokens.empty, val ground: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
   extends Prod[A] {
 
   override def clone(name: String = this.name,
-                     value: Any = this.value,
+                     ground: Any = this.ground,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new OProd[A](name = name, value = value.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = new OProd[A](name = name, ground = ground.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
 }

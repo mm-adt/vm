@@ -8,7 +8,7 @@ import org.mmadt.storage.StorageFactory._
 
 
 class MultiSet[A <: Obj](val baseSet: Set[A] = Set.empty[A]) extends Seq[A] {
-  def get(a: A): Option[A] = baseSet.find(b => a.asInstanceOf[Value[_]].value.equals(b.asInstanceOf[Value[_]].value))
+  def get(a: A): Option[A] = baseSet.find(b => a.asInstanceOf[Value[_]].ground.equals(b.asInstanceOf[Value[_]].ground))
   def put(a: A): MultiSet[A] = {
     val oldObj:Option[A] = this.get(a)
     new MultiSet[A](oldObj.map(x => baseSet-x).getOrElse(baseSet) + oldObj.map(x => x.clone(q=plusQ(a, x))).getOrElse(a))

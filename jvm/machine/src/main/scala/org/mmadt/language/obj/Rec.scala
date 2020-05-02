@@ -35,5 +35,5 @@ trait Rec[A <: Obj, B <: Obj] extends Obj
   with GetOp[A, B]
   with PutOp[A, B]
   with ZeroOp[Rec[A, B]] {
-  def value(): Any
+  def ground(): Any
 }

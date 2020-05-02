@@ -64,13 +64,13 @@ class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
         (coprod("a", coprod[Str]("b", "d"), "c"), List(str("a"), coprod[Str]("b", "d"), str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
-      assertResult(alst.value)(blist)
-      assertResult(alst)(vlst[Value[Obj]](value = blist))
+      assertResult(alst.ground)(blist)
+      assertResult(alst)(vlst[Value[Obj]](ground = blist))
       if (blist.nonEmpty) {
         assertResult(alst.head())(blist.head)
-        assertResult(alst.value.head)(blist.head)
-        assertResult(alst.tail().value)(blist.tail)
-        assertResult(alst.value.tail)(blist.tail)
+        assertResult(alst.ground.head)(blist.head)
+        assertResult(alst.tail().ground)(blist.tail)
+        assertResult(alst.ground.tail)(blist.tail)
       }
     }
     }
@@ -91,24 +91,24 @@ class CoprodTest extends FunSuite with TableDrivenPropertyChecks {
   test("coproduct structure") {
     val coproduct = int.mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
     assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(coproduct.toString)
-    assertResult(int.id())(coproduct.value(0))
-    assertResult(int.plus(2))(coproduct.value(1))
-    assertResult(int(3))(coproduct.value(2))
-    assertResult(int)(coproduct.value(0).via._1)
-    assertResult(int)(coproduct.value(1).via._1)
-    assert(coproduct.value(2).root)
+    assertResult(int.id())(coproduct.ground(0))
+    assertResult(int.plus(2))(coproduct.ground(1))
+    assertResult(int(3))(coproduct.ground(2))
+    assertResult(int)(coproduct.ground(0).via._1)
+    assertResult(int)(coproduct.ground(1).via._1)
+    assert(coproduct.ground(2).root)
     assertResult(coprod[Int](int.id(), int.plus(2), int(3)))(coproduct.range)
   }
 
   test("coproduct quantifier") {
     val coproduct = int.q(2).mult(8).split(coprod[Obj](__.id(), __.plus(2), 3))
     assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(coproduct.toString)
-    assertResult(int.q(2).id())(coproduct.value(0))
-    assertResult(int.q(2).plus(2))(coproduct.value(1))
-    assertResult(int(3))(coproduct.value(2))
-    assertResult(int.q(2))(coproduct.value(0).via._1)
-    assertResult(int.q(2))(coproduct.value(1).via._1)
-    assert(coproduct.value(2).root)
+    assertResult(int.q(2).id())(coproduct.ground(0))
+    assertResult(int.q(2).plus(2))(coproduct.ground(1))
+    assertResult(int(3))(coproduct.ground(2))
+    assertResult(int.q(2))(coproduct.ground(0).via._1)
+    assertResult(int.q(2))(coproduct.ground(1).via._1)
+    assert(coproduct.ground(2).root)
     assertResult(coprod[Int](int.q(2).id(), int.q(2).plus(2), int(3)))(coproduct.range)
   }
 

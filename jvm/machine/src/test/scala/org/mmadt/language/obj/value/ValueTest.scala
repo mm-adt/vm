@@ -39,14 +39,14 @@ class ValueTest extends FunSuite {
           sameCounter = sameCounter + 1
           assert(a == b)
           assert(a.name == b.name)
-          assert(a.value == b.value)
+          assert(a.ground == b.ground)
           assert(a.hashCode == b.hashCode)
           assert(a.toString == b.toString)
         } else {
           diffCounter = diffCounter + 1
           assert(a != b)
           assert(a.name != b.name)
-          assert(!a.value.equals(b.value)) // == in Scala converts numbers
+          assert(!a.ground.equals(b.ground)) // == in Scala converts numbers
           assert(a.hashCode != b.hashCode)
           assert(a.toString != b.toString)
         }

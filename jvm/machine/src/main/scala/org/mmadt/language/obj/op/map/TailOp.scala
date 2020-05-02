@@ -40,9 +40,9 @@ object TailOp {
   class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.tail, Nil), q) {
     override def q(q: IntQ): this.type = new TailInst(q).asInstanceOf[this.type]
     override def exec(start: O): O = (start match {
-      case abrch: Brch[_] => if (abrch.value.isEmpty) throw new LanguageException("no tail on empty brch") else abrch.clone(value = abrch.value.tail)
-      case alst: LstValue[_] => if (alst.value.isEmpty) throw new LanguageException("no tail on empty lst") else alst.clone(value = alst.value.tail)
-      case alst: LstType[_] => if (alst.value.isEmpty) alst else alst.clone(value = alst.value.tail)
+      case abrch: Brch[_] => if (abrch.ground.isEmpty) throw new LanguageException("no tail on empty brch") else abrch.clone(ground = abrch.ground.tail)
+      case alst: LstValue[_] => if (alst.ground.isEmpty) throw new LanguageException("no tail on empty lst") else alst.clone(ground = alst.ground.tail)
+      case alst: LstType[_] => if (alst.ground.isEmpty) alst else alst.clone(ground = alst.ground.tail)
     }).asInstanceOf[O].via(start, this)
 
   }

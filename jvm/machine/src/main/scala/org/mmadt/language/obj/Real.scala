@@ -37,5 +37,5 @@ trait Real extends Obj
   with LteOp[Real]
   with OneOp[Real]
   with ZeroOp[Real] {
-  def value: Double
+  def ground: Double
 }

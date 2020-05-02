@@ -35,7 +35,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait ChooseOp {
   this: Obj =>
-  def choose[IT <: Obj, OT <: Obj](branches: (IT, OT)*): OT = this.choose(trec(value = branches.toMap))
+  def choose[IT <: Obj, OT <: Obj](branches: (IT, OT)*): OT = this.choose(trec(ground = branches.toMap))
   def choose[IT <: Obj, OT <: Obj](branches: RecType[IT, OT], start: IT = this.asInstanceOf[IT]): OT = {
     start match {
       case atype: Type[IT] with IT =>
@@ -43,7 +43,7 @@ trait ChooseOp {
         val rangeType: OT = BranchInstruction.typeExternal[OT](parallel = false, branchTypes)
         rangeType.via(this, ChooseOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case _: Value[IT] with IT =>
-        branches.value.find(p => p._1 match {
+        branches.ground.find(p => p._1 match {
           case btype: Type[IT] with IT => Type.ctypeCheck(start, btype) && start.compute(btype).alive()
           case bvalue: Value[IT] with IT => start.test(bvalue)
         }).map(_._2).getOrElse(start.q(qZero))

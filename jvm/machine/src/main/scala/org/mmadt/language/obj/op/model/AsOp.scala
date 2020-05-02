@@ -55,8 +55,8 @@ object AsOp {
         case atype: Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
           case rectype: RecType[Obj, Obj] =>
             start match {
-              case recvalue: ORecValue => vrec(name = rectype.name, value = makeMap(Model.id, recvalue.value, rectype.value))
-              case avalue: Value[Obj] => vrec(rectype.name, rectype.value.map(x =>
+              case recvalue: ORecValue => vrec(name = rectype.name, ground = makeMap(Model.id, recvalue.ground, rectype.ground))
+              case avalue: Value[Obj] => vrec(rectype.name, rectype.ground.map(x =>
                 (x._1 match {
                   case kvalue: Value[Obj] => kvalue
                   case ktype: Type[Obj] =>
@@ -69,9 +69,9 @@ object AsOp {
                     start.compute(vtype).asInstanceOf[Value[Obj]]
                 })))
             }
-          case atype: StrType => vstr(name = atype.name, value = start.asInstanceOf[Value[Obj]].value.toString).compute(atype)
-          case atype: IntType => vint(name = atype.name, value = Integer.valueOf(start.asInstanceOf[Value[Obj]].value.toString).longValue()).compute(atype)
-          case atype: RealType => vreal(name = atype.name, value = JDouble.valueOf(start.asInstanceOf[Value[Obj]].value.toString).doubleValue()).compute(atype)
+          case atype: StrType => vstr(name = atype.name, ground = start.asInstanceOf[Value[Obj]].ground.toString).compute(atype)
+          case atype: IntType => vint(name = atype.name, ground = Integer.valueOf(start.asInstanceOf[Value[Obj]].ground.toString).longValue()).compute(atype)
+          case atype: RealType => vreal(name = atype.name, ground = JDouble.valueOf(start.asInstanceOf[Value[Obj]].ground.toString).doubleValue()).compute(atype)
           case xtype: Type[Obj] => start.named(xtype.name).asInstanceOf[O]
         }
         case avalue: Value[Obj] => avalue
@@ -93,7 +93,7 @@ object AsOp {
         valueMap = valueMap + (a._1 -> a._2.as(z._2).asInstanceOf[Value[Obj]])
         typeMap.remove(z._1)
       }))
-      assert(typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.value != 0))
+      assert(typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.ground != 0))
       valueMap.toMap
     }
   }

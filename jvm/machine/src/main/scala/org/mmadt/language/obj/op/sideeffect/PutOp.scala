@@ -45,11 +45,11 @@ object PutOp {
       start match {
         case brch: Brch[_] => key match {
           case avalue: IntValue =>
-            val (front, back) = brch.value.splitAt(avalue.value.toInt)
-            brch.clone(value = (front :+ value) ++ back, via = (brch, this))
+            val (front, back) = brch.ground.splitAt(avalue.ground.toInt)
+            brch.clone(ground = (front :+ value) ++ back, via = (brch, this))
           case _ => brch.via(brch, this)
         }
-        case rec: Rec[_, _] => rec.clone(value = rec.value().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))
+        case rec: Rec[_, _] => rec.clone(ground = rec.ground().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))
       }
     }
   }

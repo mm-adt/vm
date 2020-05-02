@@ -53,18 +53,18 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
   private val store: mutable.Map[K, V] = {
     val source: BufferedSource = Source.fromFile(file)
     try source.getLines().drop(1)
-      .map(k => mmlang.parse[RecValue[StrValue, Value[Obj]]](k).value.values)
+      .map(k => mmlang.parse[RecValue[StrValue, Value[Obj]]](k).ground.values)
       .foldLeft(new mutable.LinkedHashMap[K, V])((b, a) => b ++ Map(a.head.asInstanceOf[K] -> a.tail.head.asInstanceOf[V]))
     finally source.close()
   }
 
-  private val counter: AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].value).max)
+  private val counter: AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].ground).max)
 
   def get(key: K): V = store(key)
   def put(key: K, value: V): V = store.put(key, value).getOrElse(value)
   def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
   def remove(key: K): V = store.remove(key).get
-  def strm(): RecStrm[StrValue, Value[Obj]] = vrec(value = store.iterator.map(x => vrec(K -> x._1.asInstanceOf[Value[V]], V -> x._2.asInstanceOf[Value[V]])))
+  def strm(): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => vrec(K -> x._1.asInstanceOf[Value[V]], V -> x._2.asInstanceOf[Value[V]])))
   def clear(): Unit = {
     counter.set(0L)
     store.clear()

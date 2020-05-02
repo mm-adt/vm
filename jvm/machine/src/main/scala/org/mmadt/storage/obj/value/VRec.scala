@@ -32,15 +32,15 @@ import scala.collection.mutable
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Value[Obj], B <: Value[Obj]](val name: String = Tokens.rec, val value: collection.Map[A, B], val q: IntQ = qOne, val via: ViaTuple = base()) extends RecValue[A, B] {
+class VRec[A <: Value[Obj], B <: Value[Obj]](val name: String = Tokens.rec, val ground: collection.Map[A, B], val q: IntQ = qOne, val via: ViaTuple = base()) extends RecValue[A, B] {
   def this(seq: Seq[(A, B)]) = {
-    this(name = Tokens.rec, value = seq.foldLeft(new mutable.LinkedHashMap[A, B]())((b, a) => {
+    this(name = Tokens.rec, ground = seq.foldLeft(new mutable.LinkedHashMap[A, B]())((b, a) => {
       b.put(a._1, a._2)
       b
     }), q = qOne, via = base())
   }
   override def clone(name: String = this.name,
-                     value: Any = this.value,
+                     ground: Any = this.ground,
                      q: IntQ = this.q,
-                     via: ViaTuple = base()): this.type = new VRec[A, B](name, value.asInstanceOf[collection.Map[A, B]], q, via).asInstanceOf[this.type]
+                     via: ViaTuple = base()): this.type = new VRec[A, B](name, ground.asInstanceOf[collection.Map[A, B]], q, via).asInstanceOf[this.type]
 }

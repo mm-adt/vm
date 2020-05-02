@@ -38,7 +38,7 @@ package object op {
 
   object BranchInstruction {
     def typeInternal[IT <: Obj, OT <: Obj](start: OType[IT], branches: RecType[IT, OT]): RecType[IT, OT] = {
-      trec(value = branches.value.map(x => (x._1 match {
+      trec(ground = branches.ground.map(x => (x._1 match {
         case atype: OType[IT] => start.compute(atype)
         case avalue: OValue[IT] => avalue
       }, x._2 match {
@@ -48,7 +48,7 @@ package object op {
     }
 
     def typeExternal[OT <: Obj](parallel: Boolean, branches: RecType[_, OT]): OT = {
-      val types = branches.value.values.filter(x => x.alive()).map {
+      val types = branches.ground.values.filter(x => x.alive()).map {
         case atype: Type[OT] => atype.hardQ(1).range
         case avalue: Value[OT] => asType(avalue)
       }.asInstanceOf[Iterable[OType[OT]]]
@@ -58,17 +58,17 @@ package object op {
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
       if (parallel) { // [branch] sum the min/max quantification
-        result.hardQ(minZero(branches.value.values.map(x => x.q).reduce((a, b) => plusQ(a, b))))
+        result.hardQ(minZero(branches.ground.values.map(x => x.q).reduce((a, b) => plusQ(a, b))))
       }
       else { // [choose] select min/max quantification
-        result.hardQ(branches.value.values.filter(x => x.alive()).map(x => x.q).reduce((a, b) => (
-          int(Math.min(a._1.value, b._1.value)),
-          int(Math.max(a._2.value, b._2.value)))))
+        result.hardQ(branches.ground.values.filter(x => x.alive()).map(x => x.q).reduce((a, b) => (
+          int(Math.min(a._1.ground, b._1.ground)),
+          int(Math.max(a._2.ground, b._2.ground)))))
       }
     }
 
     def brchType[OT <: Obj](brch: Brch[_ <: Obj]): OT = {
-      val types = brch.value.filter(x => x.alive()).map {
+      val types = brch.ground.filter(x => x.alive()).map {
         case atype: Type[OT] => atype.hardQ(1).range
         case avalue: Value[OT] => asType(avalue)
       }.asInstanceOf[Iterable[OType[OT]]]
@@ -78,18 +78,18 @@ package object op {
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
       if (brch.isInstanceOf[Coprod[Obj]]) { // [branch] sum the min/max quantification
-        result.hardQ(minZero(brch.value.map(x => x.q).reduce((a, b) => plusQ(a, b))))
+        result.hardQ(minZero(brch.ground.map(x => x.q).reduce((a, b) => plusQ(a, b))))
       }
       else { // [choose] select min/max quantification
-        result.hardQ(brch.value.filter(x => x.alive()).map(x => x.q).reduce((a, b) => (
-          int(Math.min(a._1.value, b._1.value)),
-          int(Math.max(a._2.value, b._2.value)))))
+        result.hardQ(brch.ground.filter(x => x.alive()).map(x => x.q).reduce((a, b) => (
+          int(Math.min(a._1.ground, b._1.ground)),
+          int(Math.max(a._2.ground, b._2.ground)))))
       }
     }
   }
 
   trait FilterInstruction {
-    def keep(obj: Obj): Boolean = !(obj.q._1.value == 0 && obj.q._2.value == 0)
+    def keep(obj: Obj): Boolean = !(obj.q._1.ground == 0 && obj.q._2.ground == 0)
   }
 
   trait FlatmapInstruction

@@ -79,11 +79,11 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("atomic named value parsing") {
-    assertResult(vbool(name = "keep", value = true))(engine.eval("keep:true"))
-    assertResult(vint(name = "nat", value = 5))(engine.eval("nat:5"))
-    assertResult(vint(name = "score", value = -51))(engine.eval("score:-51"))
-    assertResult(vstr(name = "fname", value = "marko"))(engine.eval("fname:'marko'"))
-    assertResult(vstr(name = "garbage", value = "marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("garbage:'marko comp3 45AHA\"\"\\'-%^&'"))
+    assertResult(vbool(name = "keep", ground = true))(engine.eval("keep:true"))
+    assertResult(vint(name = "nat", ground = 5))(engine.eval("nat:5"))
+    assertResult(vint(name = "score", ground = -51))(engine.eval("score:-51"))
+    assertResult(vstr(name = "fname", ground = "marko"))(engine.eval("fname:'marko'"))
+    assertResult(vstr(name = "garbage", ground = "marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("garbage:'marko comp3 45AHA\"\"\\'-%^&'"))
   }
 
   test("rec value parsing") {
@@ -211,7 +211,7 @@ class mmlangScriptEngineTest extends FunSuite {
     List(
       int.plus(int(2)).choose[IntType, Obj](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10))),
       int.plus(int(2)).choose[IntType, Obj](trec[IntType, Obj](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10)))),
-      int.plus(int(2)).choose[IntType, Obj](trec[IntType, Obj](name = Tokens.rec, value = Map[IntType, Obj](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10)))))).
+      int.plus(int(2)).choose[IntType, Obj](trec[IntType, Obj](name = Tokens.rec, ground = Map[IntType, Obj](int.is(int.gt(int(10))) -> int.gt(int(20)), int -> int.plus(int(10)))))).
       foreach(chooseInst => {
         assertResult(chooseInst)(engine.eval("int[plus,2][choose,rec[int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]]"))
         assertResult(chooseInst)(engine.eval("int[plus,2][int[is,int[gt,10]]->int[gt,20] | int->int[plus,10]]"))

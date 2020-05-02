@@ -34,12 +34,12 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 trait Strm[+O <: Obj] extends Value[O] {
   def values: Seq[O]
 
-  override def value: Any = throw LanguageException.typesNoValue(this)
+  override def ground: Any = throw LanguageException.typesNoValue(this)
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(x => x.alive())).asInstanceOf[this.type]
   override def q(q: IntQ): this.type = strm(this.values.map(x => x.q(multQ(x, q))).filter(x => x.alive())).asInstanceOf[this.type]
   // utility methods
   override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]
-  override def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = base()): this.type = this
+  override def clone(name: String = this.name, ground: Any = null, q: IntQ = this.q, via: ViaTuple = base()): this.type = this
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printStrm(this)

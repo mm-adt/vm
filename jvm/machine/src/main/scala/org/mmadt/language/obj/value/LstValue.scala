@@ -30,17 +30,17 @@ trait LstValue[A <: Value[Obj]] extends Lst[A]
   with Value[Lst[A]]
   with ObjValue {
 
-  override val value: List[A]
+  override val ground: List[A]
   override def get(key: Int): A = key match {
     case avalue: IntValue =>
-      Lst.checkIndex(this, avalue.value.toInt)
-      this.value(avalue.value.toInt).via(this, GetOp[Int, A](key))
+      Lst.checkIndex(this, avalue.ground.toInt)
+      this.ground(avalue.ground.toInt).via(this, GetOp[Int, A](key))
     case _ => this.start[LstType[A]]().get(key)
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = key match {
     case avalue: IntValue =>
-      Lst.checkIndex(this, avalue.value.toInt)
-      this.value(avalue.value.toInt).via(this, GetOp[Int, BB](key, btype)).asInstanceOf[BB]
+      Lst.checkIndex(this, avalue.ground.toInt)
+      this.ground(avalue.ground.toInt).via(this, GetOp[Int, BB](key, btype)).asInstanceOf[BB]
     case _ => this.start[LstType[A]]().get(key, btype)
   }
 }

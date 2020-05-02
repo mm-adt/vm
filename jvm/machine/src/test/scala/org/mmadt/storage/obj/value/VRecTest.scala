@@ -56,36 +56,36 @@ class VRecTest extends FunSuite {
 
   test("rec value via varargs construction") {
     // forwards keys
-    assertResult(ListMap(X, Y))(rec(X, Y).value)
-    assertResult(ListMap(X, Y))(rec(X).plus(rec(Y)).value)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y, Z).value)
-    assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).value)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).value)
+    assertResult(ListMap(X, Y))(rec(X, Y).ground)
+    assertResult(ListMap(X, Y))(rec(X).plus(rec(Y)).ground)
+    assertResult(ListMap(X, Y, Z))(rec(X, Y, Z).ground)
+    assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).ground)
+    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).ground)
     // backwards keys
-    assertResult(ListMap(Y, X))(rec(Y, X).value)
-    assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).value)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y, X).value)
-    assertResult(ListMap(Z, Y, X))(rec(Z).plus(rec(Y, X)).value)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y).plus(rec(X)).value)
+    assertResult(ListMap(Y, X))(rec(Y, X).ground)
+    assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).ground)
+    assertResult(ListMap(Z, Y, X))(rec(Z, Y, X).ground)
+    assertResult(ListMap(Z, Y, X))(rec(Z).plus(rec(Y, X)).ground)
+    assertResult(ListMap(Z, Y, X))(rec(Z, Y).plus(rec(X)).ground)
     // overwrite orderings
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).value) // TODO: determine overwrite order
+    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).ground) // TODO: determine overwrite order
   }
 
   test("rec value via map construction") {
     // forwards keys
-    assertResult(ListMap(X, Y))(vrec(Map(X, Y)).value)
-    assertResult(ListMap(X, Y))(vrec(Map(X)).plus(vrec(Map(Y))).value)
-    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y, Z)).value)
-    assertResult(ListMap(X, Y, Z))(vrec(Map(X)).plus(vrec(Map(Y, Z))).value)
-    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y)).plus(vrec(Map(Z))).value)
+    assertResult(ListMap(X, Y))(vrec(Map(X, Y)).ground)
+    assertResult(ListMap(X, Y))(vrec(Map(X)).plus(vrec(Map(Y))).ground)
+    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y, Z)).ground)
+    assertResult(ListMap(X, Y, Z))(vrec(Map(X)).plus(vrec(Map(Y, Z))).ground)
+    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y)).plus(vrec(Map(Z))).ground)
     // backwards keys
-    assertResult(ListMap(Y, X))(vrec(Map(Y, X)).value)
-    assertResult(ListMap(Y, X))(vrec(Map(Y)).plus(vrec(Map(X))).value)
-    assertResult(ListMap(Z, Y, X))(vrec(Map(Z, Y, X)).value)
-    assertResult(ListMap(Z, Y, X))(vrec(Map(Z)).plus(vrec(Map(Y, X))).value)
-    assertResult(ListMap(Z, Y, X))(vrec(Map(Z, Y)).plus(vrec(Map(X))).value)
+    assertResult(ListMap(Y, X))(vrec(Map(Y, X)).ground)
+    assertResult(ListMap(Y, X))(vrec(Map(Y)).plus(vrec(Map(X))).ground)
+    assertResult(ListMap(Z, Y, X))(vrec(Map(Z, Y, X)).ground)
+    assertResult(ListMap(Z, Y, X))(vrec(Map(Z)).plus(vrec(Map(Y, X))).ground)
+    assertResult(ListMap(Z, Y, X))(vrec(Map(Z, Y)).plus(vrec(Map(X))).ground)
     // overwrite orderings
-    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y)).plus(vrec(Map(X, Z))).value) // TODO: determine overwrite order
+    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y)).plus(vrec(Map(X, Z))).ground) // TODO: determine overwrite order
   }
 
   test("rec value quantifiers") {

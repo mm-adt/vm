@@ -44,13 +44,13 @@ class VLstTest extends FunSuite with TableDrivenPropertyChecks {
         (vlst[Value[Obj]]().append("a").append(vlst[Value[Obj]]().append("b").append("d")).append("c"), List[Value[Obj]](str("a"), vlst().append(str("b")).append(str("d")), str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
-      assertResult(alst.value)(blist)
-      assertResult(alst)(vlst[Value[Obj]](value = blist))
+      assertResult(alst.ground)(blist)
+      assertResult(alst)(vlst[Value[Obj]](ground = blist))
       if (blist.nonEmpty) {
         assertResult(alst.head())(blist.head)
-        assertResult(alst.value.head)(blist.head)
+        assertResult(alst.ground.head)(blist.head)
         //assertResult(alst.tail().value)(blist.tail)
-        assertResult(alst.value.tail)(blist.tail)
+        assertResult(alst.ground.tail)(blist.tail)
       }
     }
     }
@@ -69,7 +69,7 @@ class VLstTest extends FunSuite with TableDrivenPropertyChecks {
         (vlst(str("a"), str("b")), vlst(str("c")), List(str("a"), str("b"), str("c"))),
       )
     forEvery(starts) { (alst, blst, list) => {
-      assertResult(list)(alst.plus(blst).value)
+      assertResult(list)(alst.plus(blst).ground)
     }
     }
   }

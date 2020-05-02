@@ -104,7 +104,7 @@ trait Obj
   }
 
   // utility methods
-  def clone(name: String = this.name, value: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
+  def clone(name: String = this.name, ground: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this))
 
   def compute[E <: Obj](rangeType: Type[E]): E = rangeType.trace
@@ -136,7 +136,7 @@ object Obj {
   def fetchOption[A <: Obj](obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => None
-      case x if x.via._2.op() == Tokens.to && x.via._2.arg0[StrValue]().value == label => Some(x.via._1.asInstanceOf[A])
+      case x if x.via._2.op() == Tokens.to && x.via._2.arg0[StrValue]().ground == label => Some(x.via._1.asInstanceOf[A])
       case x => fetchOption(x.via._1, label)
     }
   }
@@ -148,5 +148,5 @@ object Obj {
   @inline implicit def floatToReal(java: scala.Float): RealValue = real(java)
   @inline implicit def stringToStr(java: String): StrValue = str(java)
   @inline implicit def mapToRec[A <: Value[Obj], B <: Value[Obj]](java: Map[A, B]): RecValue[A, B] = vrec[A, B](java)
-  @inline implicit def mapToRec[A <: Value[Obj], B <: Value[Obj]](value: (A, B), values: (A, B)*): RecValue[A, B] = vrec(value = value, values = values: _*)
+  @inline implicit def mapToRec[A <: Value[Obj], B <: Value[Obj]](value: (A, B), values: (A, B)*): RecValue[A, B] = vrec(ground = value, grounds = values: _*)
 }

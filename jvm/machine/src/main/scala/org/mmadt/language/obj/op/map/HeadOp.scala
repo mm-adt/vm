@@ -40,9 +40,9 @@ object HeadOp {
   class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Obj, A]((Tokens.head, Nil), q) {
     override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
     override def exec(start: Obj): A = (start match {
-      case alst: LstValue[A] => if (alst.value.isEmpty) throw new LanguageException("no head on empty lst") else alst.value.head
-      case alst: LstType[A] => if (alst.value.isEmpty) obj.asInstanceOf[A] else asType(alst.value.head)
-      case abrch: Brch[A] => if (abrch.value.isEmpty) throw new LanguageException("no head on empty brch") else abrch.value.head
+      case alst: LstValue[A] => if (alst.ground.isEmpty) throw new LanguageException("no head on empty lst") else alst.ground.head
+      case alst: LstType[A] => if (alst.ground.isEmpty) obj.asInstanceOf[A] else asType(alst.ground.head)
+      case abrch: Brch[A] => if (abrch.ground.isEmpty) throw new LanguageException("no head on empty brch") else abrch.ground.head
     }).via(start, this)
   }
 

@@ -58,7 +58,7 @@ class SocialModelTest extends FunSuite {
     assertResult("nat")(nat(int(34)).name)
     assertResult("int")(socialmm(nat(34)).name)
     assertResult("int")(socialmm(mmsocial(int(34))).name)
-    assertResult(34)(mmsocial(int(34)).value)
+    assertResult(34)(mmsocial(int(34)).ground)
     // assertThrows[AssertionError]{mmsocial(int(-34))}
     assertResult("nat[plus,nat]")(nat.plus(nat).toString)
   }
@@ -67,16 +67,16 @@ class SocialModelTest extends FunSuite {
     val result = (1 to 100).foldRight(int(40))((_, b) => {
       val result = socialmm(mmsocial(b))
       assertResult("int")(result.name)
-      assertResult(40)(result.value)
+      assertResult(40)(result.ground)
       assertResult(qOne)(result.asInstanceOf[Obj].q)
       result
     })
     assertResult("int")(result.name)
-    assertResult(40)(result.value)
+    assertResult(40)(result.ground)
     assertResult(qOne)(result.asInstanceOf[Obj].q)
     //
     assertResult("nat")(mmsocial(result).name)
-    assertResult(40)(mmsocial(result).value)
+    assertResult(40)(mmsocial(result).ground)
     assertResult(qOne)(mmsocial(result).asInstanceOf[Obj].q)
   }
 

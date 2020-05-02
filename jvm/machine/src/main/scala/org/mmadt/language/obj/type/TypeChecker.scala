@@ -39,22 +39,22 @@ object TypeChecker {
       (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || obj.compute(pattern).alive())) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
       obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
       ((obj.isInstanceOf[LstValue[_]] && pattern.isInstanceOf[LstType[_]] &&
-        testList(obj.value.asInstanceOf[List[Obj]], pattern.asInstanceOf[LstType[Obj]].value) && obj.compute(pattern).alive()) || // structural type checking on records
+        testList(obj.ground.asInstanceOf[List[Obj]], pattern.asInstanceOf[LstType[Obj]].ground) && obj.compute(pattern).alive()) || // structural type checking on records
         (obj.isInstanceOf[RecValue[_, _]] && pattern.isInstanceOf[RecType[_, _]] &&
-          testRecord(obj.value.asInstanceOf[collection.Map[Obj, Obj]], pattern.asInstanceOf[ORecType].value) && obj.compute(pattern).alive()))) && // structural type checking on records
+          testRecord(obj.ground.asInstanceOf[collection.Map[Obj, Obj]], pattern.asInstanceOf[ORecType].ground) && obj.compute(pattern).alive()))) && // structural type checking on records
       withinQ(obj, pattern) // must be within the type's quantified window
   }
 
   def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean =
-    obj.value.equals(pattern.value) &&
+    obj.ground.equals(pattern.ground) &&
       withinQ(obj, pattern)
 
   def matchesTT[O <: Obj](obj: Type[O], pattern: Type[O]): Boolean = {
     ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj) || obj.name.equals(Tokens.empty) || pattern.name.equals(Tokens.empty)) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && obj.name.equals(pattern.name)) ||
       (obj match {
-        case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.value, pattern.asInstanceOf[ORecType].value)
-        case lstType: LstType[_] if pattern.isInstanceOf[LstType[_]] => testList(lstType.value, pattern.asInstanceOf[LstType[Obj]].value)
+        case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.ground, pattern.asInstanceOf[ORecType].ground)
+        case lstType: LstType[_] if pattern.isInstanceOf[LstType[_]] => testList(lstType.ground, pattern.asInstanceOf[LstType[Obj]].ground)
         case _ => false
       })) &&
       obj.trace
@@ -80,7 +80,7 @@ object TypeChecker {
     leftMap.map(a => typeMap.find(k =>
       a._1.test(k._1) && a._2.test(k._2)).map(z => typeMap.remove(z._1))).toList
 
-    typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.value != 0)
+    typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.ground != 0)
   }
 
   private def testList(leftList: List[Obj], rightList: List[Obj]): Boolean = {

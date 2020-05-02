@@ -46,8 +46,8 @@ object NegOp {
     override def q(q: IntQ): this.type = new NegInst(q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       Try(start match {
-        case aint: Int => start.clone(value = -aint.value)
-        case areal: Real => start.clone(value = -areal.value)
+        case aint: Int => start.clone(ground = -aint.ground)
+        case areal: Real => start.clone(ground = -areal.ground)
       }).getOrElse(start).via(start, this)
     }
   }

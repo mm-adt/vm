@@ -31,23 +31,23 @@ trait LstType[A <: Obj] extends Lst[A]
   with Type[Lst[A]]
   with ObjType {
 
-  val value: List[A]
+  val ground: List[A]
 
   override def get(key: Int): A = {
     val valueType: A = key match {
-      case avalue: IntValue if this.value.length > avalue.value => asType[A](this.value(avalue.value.toInt))
-      case avalue: IntValue if this.value.nonEmpty =>
-        Lst.checkIndex(this, avalue.value.toInt)
-        this.value(avalue.value.toInt)
+      case avalue: IntValue if this.ground.length > avalue.ground => asType[A](this.ground(avalue.ground.toInt))
+      case avalue: IntValue if this.ground.nonEmpty =>
+        Lst.checkIndex(this, avalue.ground.toInt)
+        this.ground(avalue.ground.toInt)
       case _ => obj.asInstanceOf[A]
     }
     valueType.via(this, GetOp[Int, A](key, valueType))
   }
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
 
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.value.toString().hashCode() ^ this.trace.hashCode() ^ this.q.hashCode()
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.ground.toString().hashCode() ^ this.trace.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case atype: LstType[A] => this.name == atype.name && this.q == atype.q && this.value == atype.value && this.via == atype.via
+    case atype: LstType[A] => this.name == atype.name && this.q == atype.q && this.ground == atype.ground && this.via == atype.via
     case _ => false
   }
 }

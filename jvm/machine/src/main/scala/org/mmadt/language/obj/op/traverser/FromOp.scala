@@ -45,9 +45,9 @@ object FromOp {
   class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.from, List(label)), q) with TraverserInstruction {
     override def q(q: IntQ): this.type = new FromInst[O](label, default, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
-      val history: Option[O] = Obj.fetchOption[O](start, label.value)
+      val history: Option[O] = Obj.fetchOption[O](start, label.ground)
       if (history.isEmpty && start.isInstanceOf[Value[_]])
-        throw LanguageException.labelNotFound(start, label.value)
+        throw LanguageException.labelNotFound(start, label.ground)
       history.getOrElse(if (null == default) asType(start).asInstanceOf[O] else default).via(start, this)
     }
   }

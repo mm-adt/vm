@@ -27,12 +27,12 @@ import org.mmadt.language.obj.value.{LstValue, Value}
 import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory.qOne
 
-class VLst[A <: Value[Obj]](val name: String = Tokens.lst, val value: List[A] = List.empty[A], val q: IntQ = qOne, val via: ViaTuple = base()) extends LstValue[A] {
+class VLst[A <: Value[Obj]](val name: String = Tokens.lst, val ground: List[A] = List.empty[A], val q: IntQ = qOne, val via: ViaTuple = base()) extends LstValue[A] {
   def this(list: List[A]) = {
-    this(name = Tokens.lst, value = list, q = qOne, via = base())
+    this(name = Tokens.lst, ground = list, q = qOne, via = base())
   }
   override def clone(name: String = this.name,
-                     value: Any = this.value,
+                     ground: Any = this.ground,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new VLst[A](name, value.asInstanceOf[List[A]], q, via).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = new VLst[A](name, ground.asInstanceOf[List[A]], q, via).asInstanceOf[this.type]
 }

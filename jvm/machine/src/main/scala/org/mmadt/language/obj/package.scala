@@ -67,15 +67,15 @@ package object obj {
     case _: IntQ => (qA._1 + qB._1, qA._2 + qB._2)
   }
   def withinQ(objA: Obj, objB: Obj): Boolean = {
-    objA.q._1.value >= objB.q._1.value &&
-      objA.q._2.value <= objB.q._2.value
+    objA.q._1.ground >= objB.q._1.ground &&
+      objA.q._2.ground <= objB.q._2.ground
   }
   def eqQ(objA: Obj, objB: Obj): Boolean = {
     (objA.q, objB.q) match {
       case (null, null) => true
-      case (null, y) if y._1.value == 1 && y._2.value == 1 => true
-      case (x, null) if x._1.value == 1 && x._2.value == 1 => true
-      case (x, y) if x._1.value == y._1.value && x._2.value == y._2.value => true
+      case (null, y) if y._1.ground == 1 && y._2.ground == 1 => true
+      case (x, null) if x._1.ground == 1 && x._2.ground == 1 => true
+      case (x, y) if x._1.ground == y._1.ground && x._2.ground == y._2.ground => true
       case _ => false
     }
   }

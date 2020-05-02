@@ -31,5 +31,5 @@ import org.mmadt.language.obj.op.map._
 trait RealValue extends Real
   with ObjValue
   with Value[Real] {
-  override val value: Double
+  override val ground: Double
 }

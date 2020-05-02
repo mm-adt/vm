@@ -44,7 +44,7 @@ object mmlangPrinter {
     case (x, y) if y == int(Long.MaxValue) => "{" + x + ",}"
     case (x, y) if x == int(Long.MinValue) => "{," + y + "}"
     case x if null == x => Tokens.empty
-    case _ => "{" + x._1.value + "," + x._2.value + "}"
+    case _ => "{" + x._1.ground + "," + x._2.ground + "}"
   }
 
   def strmString(strm: Strm[Obj]): String = strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
@@ -62,20 +62,20 @@ object mmlangPrinter {
   private def branchList(branch: Brch[_]): String = {
     if (branch.isInstanceOf[Strm[_]]) return strmString(branch.asInstanceOf[Strm[Obj]])
     val sep = if (branch.isInstanceOf[Prod[Obj]]) SEMICOLON else PIPE
-    branch.value.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + sep).dropRight(1) + RBRACKET
+    branch.ground.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + sep).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
-      case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value)
-      case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value)
+      case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.ground)
+      case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.ground)
       case abrch: Brch[_] => abrch.name + branchList(abrch)
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
-        case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.value)
-        case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.value)
+        case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.ground)
+        case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.ground)
         case abrch: Brch[_] => abrch.name + branchList(abrch)
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
@@ -87,19 +87,19 @@ object mmlangPrinter {
     val named = Tokens.named(avalue.name)
     (if (named) avalue.name + COLON else EMPTY) + (
       avalue match {
-        case arec: RecValue[_, _] => mapString(arec.value, empty = EMPTYREC)
-        case alst: LstValue[_] => listString(alst.value, empty = EMPTYLST)
-        case astr: StrValue => SQUOTE + astr.value + SQUOTE
-        case _ => avalue.value
+        case arec: RecValue[_, _] => mapString(arec.ground, empty = EMPTYREC)
+        case alst: LstValue[_] => listString(alst.ground, empty = EMPTYLST)
+        case astr: StrValue => SQUOTE + astr.ground + SQUOTE
+        case _ => avalue.ground
       }) + qString(avalue.q)
   }
 
   def instString(inst: Inst[_, _]): String = {
     (inst.op() match {
-      case Tokens.to => LANGLE + inst.arg0[StrValue]().value + RANGLE
-      case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().value + RANGLE
-      case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, PIPE) + RBRACKET
-      case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().value, AMPERSAND) + RBRACKET
+      case Tokens.to => LANGLE + inst.arg0[StrValue]().ground + RANGLE
+      case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().ground + RANGLE
+      case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().ground, PIPE) + RBRACKET
+      case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().ground, AMPERSAND) + RBRACKET
       case Tokens.split => Tokens.split_op + branchList(inst.arg0[Brch[_]]())
       case Tokens.merge => Tokens.merge_op
       case _ => inst.args() match {

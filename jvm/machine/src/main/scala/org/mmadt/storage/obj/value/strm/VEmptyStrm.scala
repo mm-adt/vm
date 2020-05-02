@@ -31,7 +31,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VEmptyStrm[O <: Obj] extends Strm[O] {
-  override val value: Iterator[O] = Iterator.empty
+  override val ground: Iterator[O] = Iterator.empty
   override val q: (IntValue, IntValue) = qZero
   override val name: String = obj.name
   override val via: ViaTuple = base()

@@ -32,12 +32,12 @@ trait Lst[A <: Obj] extends Obj
   with GetOp[Int, A]
   with PlusOp[Lst[A]]
   with ZeroOp[Lst[A]] {
-  val value: List[Obj]
+  val ground: List[A]
 }
 
 object Lst {
   def checkIndex(alst: Lst[_], index: scala.Int): Unit = {
     if (index < 0) throw new LanguageException("lst index must be 0 or greater: " + index)
-    if (alst.value.length < (index + 1)) throw new LanguageException("lst index is out of bounds: " + index)
+    if (alst.ground.length < (index + 1)) throw new LanguageException("lst index is out of bounds: " + index)
   }
 }

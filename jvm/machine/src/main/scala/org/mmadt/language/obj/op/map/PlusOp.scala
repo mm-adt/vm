@@ -51,13 +51,13 @@ object PlusOp {
       (start match {
         case _: Strm[_] => start
         case _: Value[_] => start match {
-          case aint: Int => start.clone(value = aint.value + inst.arg0[Int]().value)
-          case areal: Real => start.clone(value = areal.value + inst.arg0[Real]().value)
-          case astr: Str => start.clone(value = astr.value + inst.arg0[Str]().value)
-          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(value = arec.value ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().value)
-          case arec: ORecType => start.clone(value = arec.value ++ inst.arg0[ORecType]().value)
-          case alst: LstValue[Value[Obj]] => start.clone(value = alst.value ++ inst.arg0[LstValue[Value[Obj]]]().value)
-          case alst: LstType[Obj] => start.clone(value = alst.value ++ inst.arg0[LstType[Obj]]().value)
+          case aint: Int => start.clone(ground = aint.ground + inst.arg0[Int]().ground)
+          case areal: Real => start.clone(ground = areal.ground + inst.arg0[Real]().ground)
+          case astr: Str => start.clone(ground = astr.ground + inst.arg0[Str]().ground)
+          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = arec.ground ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().ground)
+          case arec: ORecType => start.clone(ground = arec.ground ++ inst.arg0[ORecType]().ground)
+          case alst: LstValue[Value[Obj]] => start.clone(ground = alst.ground ++ inst.arg0[LstValue[Value[Obj]]]().ground)
+          case alst: LstType[Obj] => start.clone(ground = alst.ground ++ inst.arg0[LstType[Obj]]().ground)
           //////// EXPERIMENTAL
           case prodA: Prod[O] => arg match {
             case prodB: Prod[O] => coprod(prodA, prodB)
@@ -65,7 +65,7 @@ object PlusOp {
           }
           case coprodA: Coprod[O] => arg match {
             case prodB: Prod[O] => coprod(coprodA, prodB)
-            case coprodB: Coprod[O] => coprod().clone(value = coprodA.value ++ coprodB.value)
+            case coprodB: Coprod[O] => coprod().clone(ground = coprodA.ground ++ coprodB.ground)
           }
         }
         case _: Type[_] => start

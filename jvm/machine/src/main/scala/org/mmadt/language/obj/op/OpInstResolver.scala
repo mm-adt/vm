@@ -93,10 +93,10 @@ object OpInstResolver {
           case _ => throw new IllegalStateException
         }
       case Tokens.fold => args.tail.tail.head match {
-        case x: __ => FoldOp((args.head.asInstanceOf[StrValue].value, args.tail.head), x)
-        case x: Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].value, args.tail.head), x)
+        case x: __ => FoldOp((args.head.asInstanceOf[StrValue].ground, args.tail.head), x)
+        case x: Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].ground, args.tail.head), x)
       }
-      case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].value)
+      case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].ground)
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
       case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[S, E]])
       case Tokens.branch => BranchOp(args.head.asInstanceOf[RecType[S, E]])

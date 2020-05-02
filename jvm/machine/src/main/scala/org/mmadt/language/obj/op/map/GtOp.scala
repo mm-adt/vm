@@ -50,9 +50,9 @@ object GtOp {
     override def exec(start: O): Bool = {
       val inst = new GtInst[O](Inst.resolveArg(start, other), q)
       Try[Bool]((start match {
-        case aint: Int => bool(value = aint.value > inst.arg0[Int]().value)
-        case areal: Real => bool(value = areal.value > inst.arg0[Real]().value)
-        case astr: Str => bool(value = astr.value > inst.arg0[Str]().value)
+        case aint: Int => bool(ground = aint.ground > inst.arg0[Int]().ground)
+        case areal: Real => bool(ground = areal.ground > inst.arg0[Real]().ground)
+        case astr: Str => bool(ground = astr.ground > inst.arg0[Str]().ground)
       }).via(start, inst)).getOrElse(start match {
         case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))
         case _ => bool.via(start, inst)

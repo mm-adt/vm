@@ -46,7 +46,7 @@ object SplitOp {
       brchs match {
         case product: Prod[_] =>
           var qTest = qOne
-          product.clone(value = product.value.map(y =>
+          product.clone(ground = product.ground.map(y =>
             Option(start)
               .filter(x => x.range.test(y.range)) // this is generally needed (find a more core home)
               .map(_ => y match {
@@ -67,11 +67,11 @@ object SplitOp {
             .via(start, this)
         case _: Coprod[_] =>
           val inst = start match {
-            case astrm: Strm[A] => new SplitInst[A](brchs.clone(value = brchs.value.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(y => y.alive())))).asInstanceOf[Brch[A]], q)
-            case _ => new SplitInst[A](brchs.clone(value = brchs.value.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
+            case astrm: Strm[A] => new SplitInst[A](brchs.clone(ground = brchs.ground.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(y => y.alive())))).asInstanceOf[Brch[A]], q)
+            case _ => new SplitInst[A](brchs.clone(ground = brchs.ground.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
           }
           val output = start match {
-            case astrm: Strm[A] => new VBrchStrm[A](values = astrm.values.map(x => coprod(inst.arg0[Coprod[A]]().value.map(y => Inst.resolveArg(x, y)).filter(y => y.alive()): _*)))
+            case astrm: Strm[A] => new VBrchStrm[A](values = astrm.values.map(x => coprod(inst.arg0[Coprod[A]]().ground.map(y => Inst.resolveArg(x, y)).filter(y => y.alive()): _*)))
             case _ => inst.arg0[Coprod[A]]()
           }
           output.clone(via = (start, inst)).asInstanceOf[Brch[A]]
