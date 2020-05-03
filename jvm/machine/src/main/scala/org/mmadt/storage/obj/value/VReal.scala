@@ -28,7 +28,6 @@ import org.mmadt.language.obj.{IntQ, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
- *
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VReal(val name: String = Tokens.real, val ground: Double, val q: IntQ = qOne, val via: ViaTuple = base()) extends RealValue {

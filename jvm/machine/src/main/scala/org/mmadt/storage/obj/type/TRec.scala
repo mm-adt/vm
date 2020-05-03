@@ -27,18 +27,10 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.storage.StorageFactory._
 
-import scala.collection.mutable
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TRec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val ground: collection.Map[A, B] = Map[A, B](), val q: IntQ = qOne, val via: ViaTuple = base[Rec[A, B]]()) extends RecType[A, B] {
-  def this(seq: Seq[(A, B)]) = {
-    this(name = Tokens.rec, ground = seq.foldLeft(new mutable.LinkedHashMap[A, B]())((b, a) => {
-      b.put(a._1, a._2)
-      b
-    }), q = qOne, via = base())
-  }
   override def clone(name: String = this.name,
                      ground: Any = this.ground,
                      q: IntQ = this.q,

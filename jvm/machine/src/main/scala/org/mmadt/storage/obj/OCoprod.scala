@@ -26,9 +26,10 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{Coprod, _}
 import org.mmadt.storage.StorageFactory._
 
-class OCoprod[A <: Obj](val name: String = Tokens.empty, val ground: List[A], val q: IntQ = qOne, val via: ViaTuple = base())
-  extends Coprod[A] {
-
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+class OCoprod[A <: Obj](val name: String = Tokens.empty, val ground: List[A], val q: IntQ = qOne, val via: ViaTuple = base()) extends Coprod[A] {
   override def clone(name: String = this.name,
                      ground: Any = this.ground,
                      q: IntQ = this.q,

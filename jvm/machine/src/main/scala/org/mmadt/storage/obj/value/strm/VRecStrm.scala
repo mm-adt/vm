@@ -26,12 +26,8 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.language.obj.{Obj, ViaTuple, base}
-import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRecStrm[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, val values: Seq[RecValue[A, B]], via: ViaTuple = base())
-  extends OObj(name, (int(values.length), int(values.length)), via)
-    with RecStrm[A, B]
+class VRecStrm[A <: Value[Obj], B <: Value[Obj]](val name: String = Tokens.rec, val values: Seq[RecValue[A, B]], val via: ViaTuple = base()) extends RecStrm[A, B]

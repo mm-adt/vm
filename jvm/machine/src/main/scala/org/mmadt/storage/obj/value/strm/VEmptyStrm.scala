@@ -43,6 +43,5 @@ class VEmptyStrm[O <: Obj] extends Strm[O] {
 
 object VEmptyStrm {
   private val _empty: OStrm[Obj] = new VEmptyStrm[Obj]().asInstanceOf[OStrm[Obj]]
-
   def empty[O <: Obj]: OStrm[O] = _empty.asInstanceOf[OStrm[O]]
 }

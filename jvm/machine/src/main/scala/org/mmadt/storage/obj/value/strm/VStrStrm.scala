@@ -26,12 +26,8 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.value.strm.StrStrm
 import org.mmadt.language.obj.{ViaTuple, base}
-import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VStrStrm(name: String = Tokens.str, val values: Seq[StrValue], via: ViaTuple = base())
-  extends OObj(name, (int(values.length), int(values.length)), via)
-    with StrStrm
+class VStrStrm(val name: String = Tokens.str, val values: Seq[StrValue], val via: ViaTuple = base()) extends StrStrm

@@ -25,9 +25,5 @@ package org.mmadt.storage.obj.value.strm
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.strm.BrchStrm
 import org.mmadt.language.obj.{Brch, Obj, ViaTuple, base}
-import org.mmadt.storage.StorageFactory.int
-import org.mmadt.storage.obj.OObj
 
-class VBrchStrm[A <: Obj](name: String = Tokens.empty, val values: Seq[Brch[A]], via: ViaTuple = base())
-  extends OObj(name, (int(values.length), int(values.length)), via)
-    with BrchStrm[A]
+class VBrchStrm[A <: Obj](val name: String = Tokens.empty, val values: Seq[Brch[A]], val via: ViaTuple = base()) extends BrchStrm[A]

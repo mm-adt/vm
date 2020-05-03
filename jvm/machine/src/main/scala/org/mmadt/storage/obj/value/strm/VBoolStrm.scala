@@ -26,12 +26,8 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.value.strm.BoolStrm
-import org.mmadt.storage.StorageFactory.int
-import org.mmadt.storage.obj.OObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBoolStrm(name: String = Tokens.bool, val values: Seq[BoolValue], via: ViaTuple = base())
-  extends OObj(name, (int(values.length), int(values.length)), via)
-    with BoolStrm
+class VBoolStrm(val name: String = Tokens.bool, val values: Seq[BoolValue], val via: ViaTuple = base()) extends BoolStrm

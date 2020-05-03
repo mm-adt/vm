@@ -27,10 +27,10 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.LstType
 import org.mmadt.storage.StorageFactory.qOne
 
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 class TLst[A <: Obj](val name: String = Tokens.lst, val ground: List[A] = List.empty[A], val q: IntQ = qOne, val via: ViaTuple = base()) extends LstType[A] {
-  def this(list: List[A]) = {
-    this(name = Tokens.lst, ground = list, q = qOne, via = base())
-  }
   override def clone(name: String = this.name,
                      ground: Any = this.ground,
                      q: IntQ = this.q,
