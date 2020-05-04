@@ -25,7 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, RecValue, Value}
+import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.storage.StorageFactory._
 
 import scala.collection.mutable
@@ -38,8 +38,8 @@ object TypeChecker {
     (pattern.name.equals(Tokens.obj) || pattern.name.equals(Tokens.empty) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || obj.compute(pattern).alive())) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
       obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
-      ((obj.isInstanceOf[LstValue[_]] && pattern.isInstanceOf[LstType[_]] &&
-        testList(obj.ground.asInstanceOf[List[Obj]], pattern.asInstanceOf[LstType[Obj]].ground) && obj.compute(pattern).alive()) || // structural type checking on records
+      ((obj.isInstanceOf[Poly[_]] && pattern.isInstanceOf[Poly[_]] &&
+        testList(obj.asInstanceOf[Poly[Obj]], pattern.asInstanceOf[Poly[Obj]]) && obj.compute(pattern).alive()) || // structural type checking on records
         (obj.isInstanceOf[RecValue[_, _]] && pattern.isInstanceOf[RecType[_, _]] &&
           testRecord(obj.ground.asInstanceOf[collection.Map[Obj, Obj]], pattern.asInstanceOf[ORecType].ground) && obj.compute(pattern).alive()))) && // structural type checking on records
       withinQ(obj, pattern) // must be within the type's quantified window
@@ -54,7 +54,7 @@ object TypeChecker {
       (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && obj.name.equals(pattern.name)) ||
       (obj match {
         case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.ground, pattern.asInstanceOf[ORecType].ground)
-        case lstType: LstType[_] if pattern.isInstanceOf[LstType[_]] => testList(lstType.ground, pattern.asInstanceOf[LstType[Obj]].ground)
+        case lstType: Poly[Obj] => testList(lstType, pattern.asInstanceOf[Poly[Obj]])
         case _ => false
       })) &&
       obj.trace
@@ -83,8 +83,8 @@ object TypeChecker {
     typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.ground != 0)
   }
 
-  private def testList(leftList: List[Obj], rightList: List[Obj]): Boolean = {
-    if (rightList.isEmpty || leftList.equals(rightList)) return true
-    leftList.zip(rightList).foldRight(true)((a, b) => a._1.test(a._2) && b)
+  private def testList(leftList: Poly[Obj], rightList: Poly[Obj]): Boolean = {
+    if (rightList.groundList.isEmpty || leftList.groundList.equals(rightList.groundList)) return true
+    leftList.groundList.zip(rightList.groundList).foldRight(true)((a, b) => a._1.test(a._2) && b)
   }
 }

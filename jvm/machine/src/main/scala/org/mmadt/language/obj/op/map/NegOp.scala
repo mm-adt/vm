@@ -24,7 +24,6 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 

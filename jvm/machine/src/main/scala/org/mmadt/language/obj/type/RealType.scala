@@ -24,7 +24,6 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Real
-import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.value.RealValue
 
 /**

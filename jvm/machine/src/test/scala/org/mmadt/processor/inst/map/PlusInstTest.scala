@@ -27,10 +27,10 @@ import org.mmadt.language.obj.`type`.{IntType, RealType, Type, __}
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
-import org.mmadt.language.obj.{Int, Obj, Poly, Real, Str}
+import org.mmadt.language.obj.{Int, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3, TableFor4}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
 
 class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[plus] value, type, strm, anon combinations") {
@@ -112,17 +112,17 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(real.plus(real).isInstanceOf[RealType])
     assert(real.plus(real).isInstanceOf[Real])
   }
- /*test("[plus] w/ serial and parallel poly") {
-    val starts: TableFor3[Poly[Str], Poly[Str], Poly[Obj]] =
-      new TableFor3[Poly[Str], Poly[Str], Poly[Obj]](("a", "b", "c"),
-        (`|`("a", "b"), `|`("c", "d"), `|`("a", "b", "c", "d")),
-        (`|`("a", "b"), `|`("c"), `|`("a", "b", "c")),
-        //(coprod("a", "b"), coprod("c", "d"), prod(coprod[Str]("a", "b"), coprod[Str]("c", "d"))),
-      )
-    forEvery(starts) { (a, b, c) => {
-      assertResult(c)(a.plus(b))
-      //assertResult(c)(PlusOp[Prod[Str]](b).exec(a))
-    }
-    }
-  }*/
+  /*test("[plus] w/ serial and parallel poly") {
+     val starts: TableFor3[Poly[Str], Poly[Str], Poly[Obj]] =
+       new TableFor3[Poly[Str], Poly[Str], Poly[Obj]](("a", "b", "c"),
+         (`|`("a", "b"), `|`("c", "d"), `|`("a", "b", "c", "d")),
+         (`|`("a", "b"), `|`("c"), `|`("a", "b", "c")),
+         //(coprod("a", "b"), coprod("c", "d"), prod(coprod[Str]("a", "b"), coprod[Str]("c", "d"))),
+       )
+     forEvery(starts) { (a, b, c) => {
+       assertResult(c)(a.plus(b))
+       //assertResult(c)(PlusOp[Prod[Str]](b).exec(a))
+     }
+     }
+   }*/
 }

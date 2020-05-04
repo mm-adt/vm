@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{_}
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -46,7 +46,7 @@ object PutOp {
         case apoly: Poly[_] => key match {
           case avalue: IntValue =>
             val (front, back) = apoly.groundList.splitAt(avalue.ground.toInt)
-            apoly.clone(ground = (apoly.groundConnective, (front :+ value) ++ back,apoly.groundKeys), via = (start, this))
+            apoly.clone(ground = (apoly.groundConnective, (front :+ value) ++ back, apoly.groundKeys), via = (start, this))
           case _ => apoly.via(start, this)
         }
         case rec: Rec[_, _] => rec.clone(ground = rec.ground().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))

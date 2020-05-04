@@ -40,9 +40,9 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
     // assertResult(List(int(110).q(100)))(Processor.iterator().apply(int(5).q(10),int.mult(int(2)).plus(int(100)).q(10)).map(int.plus(0)).toList)
   }
   test("process multiple values w/ quantifiers") {
-    assertResult(int(102,104,106))(Processor.iterator().apply(int(1, 2, 3), int.q(*).mult(int(2)).plus(int(100))))
-    assertResult(int(102,104,106))((int(1, 2, 3) ===> int.q(1, 10).mult(int(2)).plus(int(100))))
-    assertResult(int(11,22,33))((int(10, 20, 30) ===> int.q(*).choose(
+    assertResult(int(102, 104, 106))(Processor.iterator().apply(int(1, 2, 3), int.q(*).mult(int(2)).plus(int(100))))
+    assertResult(int(102, 104, 106))((int(1, 2, 3) ===> int.q(1, 10).mult(int(2)).plus(int(100))))
+    assertResult(int(11, 22, 33))((int(10, 20, 30) ===> int.q(*).choose(
       int.is(int.gt(int(20))) -> int.plus(int(3)),
       int.is(int.gt(int(10))) -> int.plus(int(2)),
       int -> int.plus(int(1))).plus(int(0))))

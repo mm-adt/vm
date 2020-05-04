@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.{Obj, Real}
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite

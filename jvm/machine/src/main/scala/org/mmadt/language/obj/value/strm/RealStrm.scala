@@ -24,7 +24,6 @@ package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Real
-import org.mmadt.language.obj.value.RealValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

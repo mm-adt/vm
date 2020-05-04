@@ -239,7 +239,4 @@ image::inst-left-distrib.png[width=750,align=center]
 // https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYZAIwBO9MAGMAFqQC+IKaXSZc+QinKli1Ok1bsuPPmhZwKGmXIXY8BImoBMmhizaJO3XsgC2zRjlIBWSjN5EAxLZSJbCgdtZ1d9QNlg0KVrFAAWKJpHHRcuGABHZixaRIsUlWQ-TK0nXTc+IREJaVKQxSsKgDZ1aNrc+uRDZmNyU1bkjqJu+yyYuv1Pb18AoLLJlAB2Htm+uPcAc18NhPM2sNTkLZmanL2+Q9Jj1bPyogAOauzYvV4TpPbwigAMyfOb9BYPJ6yTQwKD7eBEUAAM0EEA8SDIIBwECQ5FOKLRGJo2KQtnxqPRiDUWJxiCB5MJiEiNKQ9OCBMpVRZiE6DM5xNpGz5SG63LewsQW25AE4JdKBbjiBKPtzRhKQaq8YEgA
 image::inst-right-distrib.png[width=750,align=center]
 
-
-
-
 === Processor Implementations

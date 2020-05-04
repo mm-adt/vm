@@ -22,12 +22,11 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
-import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.map.{AndOp, OrOp}
+import org.mmadt.language.obj.op.map.OrOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.storage.StorageFactory.{asType, bfalse, bool, btrue, int}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor4}

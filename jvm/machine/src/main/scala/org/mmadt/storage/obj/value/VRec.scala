@@ -27,8 +27,6 @@ import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 
-import scala.collection.mutable
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */

@@ -22,8 +22,7 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.value.{RecValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Obj, Rec}
 
 /**

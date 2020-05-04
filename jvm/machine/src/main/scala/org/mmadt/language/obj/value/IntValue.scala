@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.op.map._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

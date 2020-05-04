@@ -24,9 +24,9 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{LstType, Type, __}
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, RecValue, Value}
+import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -56,8 +56,6 @@ object PlusOp {
           case astr: Str => start.clone(ground = astr.ground + inst.arg0[Str]().ground)
           case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = arec.ground ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().ground)
           case arec: ORecType => start.clone(ground = arec.ground ++ inst.arg0[ORecType]().ground)
-          case alst: LstValue[Value[Obj]] => start.clone(ground = alst.ground ++ inst.arg0[LstValue[Value[Obj]]]().ground)
-          case alst: LstType[Obj] => start.clone(ground = alst.ground ++ inst.arg0[LstType[Obj]]().ground)
           //////// EXPERIMENTAL
           case prodA: Poly[O] if prodA.ground._1 == ";" => arg match {
             case prodB: Poly[O] if prodB.ground._1 == ";" => `|`(prodA, prodB)

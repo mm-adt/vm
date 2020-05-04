@@ -41,7 +41,7 @@ object MergeOp {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
     override def exec(start: Poly[A]): A = {
       if (start.isValue)
-        strm(start.ground._2.map(x => x.clone(q=multQ(start, x))).filter(x => x.alive())).asInstanceOf[A]
+        strm(start.ground._2.map(x => x.clone(q = multQ(start, x))).filter(x => x.alive())).asInstanceOf[A]
       else
         BranchInstruction.brchType[A](start).clone(via = (start, this))
     }

@@ -22,9 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
-import org.mmadt.language.obj.op.map.{GetOp, PlusOp}
-import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory._

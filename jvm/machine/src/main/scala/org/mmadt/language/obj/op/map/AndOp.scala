@@ -25,12 +25,10 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.value.{BoolValue, Value}
+import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
-
-import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -51,8 +49,8 @@ object AndOp {
     override def exec(start: Bool): Bool = {
       val inst = new AndInst(Inst.resolveArg(start, other), q)
       (start match {
-        case _:Strm[_] => start
-        case _:BoolValue => start.clone(ground = start.ground && inst.arg0[Bool]().ground)
+        case _: Strm[_] => start
+        case _: BoolValue => start.clone(ground = start.ground && inst.arg0[Bool]().ground)
         case _ => start
       }).via(start, inst)
 

@@ -22,28 +22,22 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.obj.`type`.LstType
-import org.mmadt.language.obj.value.LstValue
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{IntQ, Obj, Poly}
-import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory.{asType, obj, qOne}
+import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
 trait HeadOp[A <: Obj] {
-  this: Obj =>
+  this: Poly[A] =>
   def head(): A = HeadOp().exec(this)
 }
 
 object HeadOp {
   def apply[A <: Obj](): HeadInst[A] = new HeadInst[A]
 
-  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Obj, A]((Tokens.head, Nil), q) {
+  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A]((Tokens.head, Nil), q) {
     override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Obj): A = (start match {
-      case alst: LstValue[A] => if (alst.ground.isEmpty) throw new LanguageException("no head on empty lst") else alst.ground.head
-      case alst: LstType[A] => if (alst.ground.isEmpty) obj.asInstanceOf[A] else asType(alst.ground.head)
-      case apoly:Poly[A] => apoly.headOp(this)
-    }).via(start, this)
+    override def exec(start: Poly[A]): A = start.headOp(this).via(start, this)
   }
 
 }

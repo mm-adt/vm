@@ -24,12 +24,12 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.{Inst, IntQ, Lst, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, Obj, Poly}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
 trait AppendOp[A <: Obj] {
-  this: Lst[A] =>
+  this: Poly[A] =>
   def append(anon: __): this.type = AppendOp(anon).exec(this).asInstanceOf[this.type]
   def append(other: A): this.type = AppendOp(other).exec(this).asInstanceOf[this.type]
   final def +:(other: A): this.type = this.append(other)
@@ -39,11 +39,11 @@ trait AppendOp[A <: Obj] {
 object AppendOp {
   def apply[O <: Obj](other: Obj): AppendInst[O] = new AppendInst[O](other)
 
-  class AppendInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[Lst[O], Lst[O]]((Tokens.append, List(other)), q) {
+  class AppendInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[Poly[O], Poly[O]]((Tokens.append, List(other)), q) {
     override def q(quantifier: IntQ): this.type = new AppendInst[O](other, quantifier).asInstanceOf[this.type]
-    override def exec(start: Lst[O]): Lst[O] = {
+    override def exec(start: Poly[O]): Poly[O] = {
       val inst = new AppendInst[O](Inst.resolveArg(start, other), q)
-      start.clone(ground = start.ground :+ inst.arg0[O]()).via(start, inst)
+      start.clone(start.groundList :+ inst.arg0[O]()).via(start, inst)
     }
   }
 

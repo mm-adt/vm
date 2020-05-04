@@ -1,17 +1,15 @@
 package org.mmadt.storage.obj.value.strm.util
 
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage.StorageFactory._
-
 
 
 class MultiSet[A <: Obj](val baseSet: Set[A] = Set.empty[A]) extends Seq[A] {
   def get(a: A): Option[A] = baseSet.find(b => a.asInstanceOf[Value[_]].ground.equals(b.asInstanceOf[Value[_]].ground))
   def put(a: A): MultiSet[A] = {
-    val oldObj:Option[A] = this.get(a)
-    new MultiSet[A](oldObj.map(x => baseSet-x).getOrElse(baseSet) + oldObj.map(x => x.hardQ(plusQ(a, x))).getOrElse(a))
+    val oldObj: Option[A] = this.get(a)
+    new MultiSet[A](oldObj.map(x => baseSet - x).getOrElse(baseSet) + oldObj.map(x => x.hardQ(plusQ(a, x))).getOrElse(a))
   }
   def objSize: Long = baseSet.size
   def qSize: IntQ = baseSet.foldRight(qZero)((a, b) => plusQ(a.q, b))
@@ -30,5 +28,5 @@ class MultiSet[A <: Obj](val baseSet: Set[A] = Set.empty[A]) extends Seq[A] {
 object MultiSet {
   def put[A <: Obj](objs: A*): MultiSet[A] = objs.foldLeft(new MultiSet[A])((a, b) => a.put(b))
   def apply[A <: Obj](objs: Seq[A]): MultiSet[A] = objs.foldLeft(new MultiSet[A])((a, b) => a.put(b))
-  def test(a: Obj, b:Obj):Boolean = MultiSet(a.toStrm.values) == MultiSet(b.toStrm.values)
+  def test(a: Obj, b: Obj): Boolean = MultiSet(a.toStrm.values) == MultiSet(b.toStrm.values)
 }

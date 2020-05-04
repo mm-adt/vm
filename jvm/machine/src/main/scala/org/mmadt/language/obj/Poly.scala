@@ -47,9 +47,10 @@ trait Poly[A <: Obj] extends Obj
 
   override def get(key: Obj): A = {
     val valueType: A = key match {
-      case avalue: StrValue if this.groundList.length > groundKeys.indexOf(avalue.ground) => this.groundList(groundKeys.indexOf(avalue.ground))
-      case avalue: IntValue if this.groundList.length > avalue.ground => this.groundList(avalue.ground.toInt)
-      case avalue: IntValue if this.groundList.nonEmpty =>
+      case avalue: StrValue =>
+        Poly.checkIndex(this, groundKeys.indexOf(avalue.ground))
+        this.groundList(groundKeys.indexOf(avalue.ground))
+      case avalue: IntValue =>
         Poly.checkIndex(this, avalue.ground.toInt)
         this.groundList(avalue.ground.toInt)
       case _ => obj.asInstanceOf[A]

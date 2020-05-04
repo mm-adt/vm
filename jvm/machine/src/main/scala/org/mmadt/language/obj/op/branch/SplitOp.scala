@@ -29,7 +29,6 @@ import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
-import org.mmadt.storage.obj.value.strm.VPolyStrm
 
 trait SplitOp {
   this: Obj =>

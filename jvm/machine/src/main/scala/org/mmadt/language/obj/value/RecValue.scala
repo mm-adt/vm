@@ -22,8 +22,7 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.obj.op.map.{GetOp, PlusOp, ZeroOp}
-import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.{Obj, Rec}
 
 /**

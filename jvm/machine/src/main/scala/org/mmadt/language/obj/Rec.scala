@@ -22,16 +22,14 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.op.map.{GetOp, PlusOp, ZeroOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.value.RecValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj, B <: Obj] extends Obj
-  with PlusOp[Rec[A,B]]
+  with PlusOp[Rec[A, B]]
   with GetOp[A, B]
   with PutOp[A, B]
   with ZeroOp[Rec[A, B]] {

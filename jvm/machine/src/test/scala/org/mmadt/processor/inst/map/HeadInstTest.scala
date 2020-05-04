@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Lst, Obj, Poly}
+import org.mmadt.language.obj.{Obj, Poly}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -59,24 +59,7 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  test("[head] w/ values") {
-    val check: TableFor2[Lst[_], Obj] =
-      new TableFor2(("list", "head"),
-        (vlst[StrValue]("a"), "a"),
-        (vlst[StrValue]("a", "b"), "a"),
-        (vlst[StrValue]("a", "b", "c"), "a"),
-        (vlst[StrValue]("d", "b", "c"), "d"),
-      )
-    forEvery(check) { (left, right) => {
-      assertResult(right)(left.head())
-    }
-    }
-  }
-
   test("[head] exception") {
-    assertThrows[LanguageException] {
-      vlst().head()
-    }
     assertThrows[LanguageException] {
       `;`().head()
     }

@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Lst
+import org.mmadt.language.obj.Poly
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.storage.StorageFactory._
@@ -36,12 +36,12 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[get] w/ lst values") {
-    val check: TableFor3[Lst[StrValue], IntValue, StrValue] =
-      new TableFor3[Lst[StrValue], IntValue, StrValue](("list", "key", "value"),
-        (vlst[StrValue]("a"), 0, str("a")),
-        (vlst[StrValue]("a", "b"), 0, "a"),
-        (vlst[StrValue]("a", "b", "c"), 1, "b"),
-        (vlst[StrValue]("d", "b", "c"), 2, "c"),
+    val check: TableFor3[Poly[StrValue], IntValue, StrValue] =
+      new TableFor3[Poly[StrValue], IntValue, StrValue](("list", "key", "value"),
+        (`|`[StrValue]("a"), 0, str("a")),
+        (`|`[StrValue]("a", "b"), 0, "a"),
+        (`|`[StrValue]("a", "b", "c"), 1, "b"),
+        (`|`[StrValue]("d", "b", "c"), 2, "c"),
       )
     forEvery(check) { (alst, akey, avalue) => {
       assertResult(avalue)(alst.get(akey))
@@ -52,13 +52,13 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[get] w/ lst value exception") {
     assertThrows[LanguageException] {
-      vlst[StrValue]("a", "b", "c").get(-1)
+      `|`[StrValue]("a", "b", "c").get(-1)
     }
     assertThrows[LanguageException] {
-      vlst[StrValue]("a", "b", "c").get(3)
+      `|`[StrValue]("a", "b", "c").get(3)
     }
     assertThrows[LanguageException] {
-      vlst.get(0)
+      `|`().get(0)
     }
   }
 

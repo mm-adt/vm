@@ -8,7 +8,9 @@ ThisBuild / scalaVersion := "2.12.10"
 ThisBuild / version := "0.1-SNAPSHOT"
 Compile / compileOrder := CompileOrder.JavaThenScala
 
-makeSite := {(makeSite in machine).value}
+makeSite := {
+  (makeSite in machine).value
+}
 lazy val machine = (project in file("machine"))
   .settings(
     name := "machine",
@@ -24,9 +26,9 @@ lazy val machine = (project in file("machine"))
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
       // tests
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
-    git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:",""),
-    scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"),"scm:git:git@github.com:mm-adt/vm.git")),
-    excludeFilter in ghpagesCleanSite := ((_:File) => true)
+    git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
+    scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"), "scm:git:git@github.com:mm-adt/vm.git")),
+    excludeFilter in ghpagesCleanSite := ((_: File) => true)
   )
   .enablePlugins(AssemblyPlugin)
   .enablePlugins(AsciidoctorPlugin)

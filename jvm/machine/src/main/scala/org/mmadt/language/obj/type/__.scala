@@ -24,7 +24,6 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Inst, IntQ, OType, Obj, ViaTuple, _}

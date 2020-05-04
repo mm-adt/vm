@@ -44,7 +44,7 @@ trait Value[+V <: Obj] extends Obj {
   override def toString: String = LanguageFactory.printValue(this)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.ground.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case astrm: Strm[V] => MultiSet.test(astrm,this.toStrm)
+    case astrm: Strm[V] => MultiSet.test(astrm, this.toStrm)
     case avalue: Value[V] => avalue.ground.equals(this.ground) && eqQ(this, avalue)
     case _ => false
   }

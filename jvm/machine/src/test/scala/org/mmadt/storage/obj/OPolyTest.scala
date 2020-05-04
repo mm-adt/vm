@@ -4,7 +4,6 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.MultOp
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Int, Obj, Poly, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -66,7 +65,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }*/
 
   test("parallel keys") {
-    assertResult("[name->'marko'|age->29]")(`|`("name"->str("marko"),"age"->int(29)).toString)
+    assertResult("[name->'marko'|age->29]")(`|`("name" -> str("marko"), "age" -> int(29)).toString)
   }
 
   test("parallel [get] values") {

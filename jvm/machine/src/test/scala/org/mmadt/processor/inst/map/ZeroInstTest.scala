@@ -56,7 +56,7 @@ class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str, __.zero(), str("")),
         (str("a", "b", "c"), __.zero(), str("").q(3)),
         //////// PROD
-//        (`;`(str("a")), __.zero(), `;`()),
+        //        (`;`(str("a")), __.zero(), `;`()),
         //(prod(prod(str("a")), prod(str("b")), prod(str("c"))).zero(), prod().q(3)),
       )
     forEvery(starts) { (input, atype, result) => {
