@@ -40,13 +40,13 @@ trait SplitOp {
 object SplitOp {
   def apply[A <: Obj](branches: Poly[A]): SplitInst[A] = new SplitInst[A](branches)
 
-  class SplitInst[A <: Obj](brchs: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(brchs)), q) with BranchInstruction {
-    override def q(q: IntQ): this.type = new SplitInst[A](brchs, q).asInstanceOf[this.type]
+  class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
+    override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
-      brchs.ground._1 match {
+      apoly.ground._1 match {
         case ";" =>
           var qTest = qOne
-          brchs.clone(ground = (brchs.ground._1,brchs.ground._2.map(y =>
+          apoly.clone(apoly.groundList.map(y =>
             Option(start)
               .filter(x => x.range.test(y.range)) // this is generally needed (find a more core home)
               .map(_ => y match {
@@ -63,15 +63,15 @@ object SplitOp {
                 qTest = qZero;
                 x
               })
-              .getOrElse(obj.q(qZero)))))
+              .getOrElse(obj.q(qZero))).asInstanceOf[List[A]])
             .via(start, this)
         case "|" =>
           val inst = start match {
-            case astrm: Strm[A] => new SplitInst[A](brchs.clone(ground = (brchs.ground._1, brchs.ground._2.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(y => y.alive()))))).asInstanceOf[Poly[A]], q)
-            case _ => new SplitInst[A](brchs.clone(ground = (brchs.ground._1, brchs.ground._2.map(x => Inst.resolveArg(start, x)))).asInstanceOf[Poly[A]], q)
+            case astrm: Strm[A] => new SplitInst[A](apoly.clone(ground = (apoly.ground._1, apoly.ground._2.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(y => y.alive()))))).asInstanceOf[Poly[A]], q)
+            case _ => new SplitInst[A](apoly.clone(apoly.ground._2.map(x => Inst.resolveArg(start, x))).asInstanceOf[Poly[A]], q)
           }
           val output = start match {
-            case astrm: Strm[A] => new VPolyStrm[A](values = astrm.values.map(x => inst.arg0[Poly[A]]().clone(ground = (inst.arg0[Poly[A]]().ground._1, inst.arg0[Poly[A]]().ground._2.map(y => Inst.resolveArg(x, y)).filter(y => y.alive())))))
+            case astrm: Strm[A] => strm(astrm.values.map(x => inst.arg0[Poly[A]]().clone(inst.arg0[Poly[A]]().ground._2.map(y => Inst.resolveArg(x, y)).filter(y => y.alive()))))
             case _ => inst.arg0[Poly[A]]()
           }
           output.clone(via = (start, inst)).asInstanceOf[Poly[A]]

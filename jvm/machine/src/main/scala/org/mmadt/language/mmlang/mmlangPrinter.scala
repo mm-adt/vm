@@ -61,7 +61,7 @@ object mmlangPrinter {
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
   private def polyList(poly: Poly[_]): String = {
     if (poly.isInstanceOf[Strm[_]]) return strmString(poly.asInstanceOf[Strm[Obj]])
-    poly.groundList.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + poly.ground._1).dropRight(1) + RBRACKET
+    poly.groundList.zip(if (poly.hasKeys) poly.groundKeys else List.fill(poly.groundList.length)(() => "")).foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x._1.asInstanceOf[Obj].alive()).map(x => (if (poly.hasKeys) (x._2 + Tokens.:->) else Tokens.empty) + x._1).getOrElse(Tokens.empty) + poly.ground._1).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {

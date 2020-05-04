@@ -43,7 +43,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
 
-  test("parallel [tail][head] values") {
+  /*test("parallel [tail][head] values") {
     val starts: TableFor2[Poly[Obj], List[Value[Obj]]] =
       new TableFor2[Poly[Obj], List[Value[Obj]]](("parallel", "projections"),
         (`|`(), List.empty),
@@ -63,6 +63,10 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
       }
     }
     }
+  }*/
+
+  test("parallel keys") {
+    assertResult("[name->'marko'|age->29]")(`|`("name"->str("marko"),"age"->int(29)).toString)
   }
 
   test("parallel [get] values") {

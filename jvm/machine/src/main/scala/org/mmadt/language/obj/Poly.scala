@@ -9,7 +9,7 @@ import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory.obj
 import org.mmadt.storage.obj.value.strm.util.MultiSet
@@ -18,7 +18,7 @@ trait Poly[A <: Obj] extends Obj
   with Type[Poly[A]]
   with Value[Poly[A]]
   with MergeOp[A]
-  with GetOp[Int, A]
+  with GetOp[Obj, A]
   with PutOp[Int, A]
   with HeadOp[A]
   with TailOp
@@ -27,31 +27,37 @@ trait Poly[A <: Obj] extends Obj
   with ZeroOp[Poly[A]] {
 
   def ground: PolyTuple[A]
+  def groundConnective: String = ground._1
   def groundList: List[A] = ground._2
+  def groundKeys: List[String] = ground._3
+  def hasKeys: Boolean = groundKeys.nonEmpty
 
-  def zeroOp(inst: ZeroInst[A]): this.type = this.clone(ground = (this.ground._1, List.empty[A])).via(this, inst)
-  def tailOp(inst: TailInst[Poly[A]]): this.type = if (this.groundList.isEmpty) throw new LanguageException("no tail on empty poly") else this.clone(ground = (this.ground._1, this.ground._2.tail)).via(this, inst)
+  def zeroOp(inst: ZeroInst[A]): this.type = this.clone(List.empty[A]).via(this, inst)
+  def tailOp(inst: TailInst[Poly[A]]): this.type = if (this.groundList.isEmpty) throw new LanguageException("no tail on empty poly") else this.clone(this.groundList.tail).via(this, inst)
   def headOp(inst: HeadInst[A]): A = if (this.groundList.isEmpty) throw new LanguageException("no head on empty poly") else this.ground._2.head.via(this, inst)
 
   def plusOp(inst: PlusInst[Poly[A]]): this.type = {
     this.ground._1 match {
-      case "|" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2)).via(this, inst)
-      case ";" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2)).via(this, inst)
+      case "|" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2, ground._3)).via(this, inst)
+      case ";" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2, ground._3)).via(this, inst)
     }
   }
 
-  override def get(key: Int): A = {
+  def clone(values: List[A]): this.type = this.clone(ground = (groundConnective, values, groundKeys))
+
+  override def get(key: Obj): A = {
     val valueType: A = key match {
+      case avalue: StrValue if this.groundList.length > groundKeys.indexOf(avalue.ground) => this.groundList(groundKeys.indexOf(avalue.ground))
       case avalue: IntValue if this.groundList.length > avalue.ground => this.groundList(avalue.ground.toInt)
       case avalue: IntValue if this.groundList.nonEmpty =>
         Poly.checkIndex(this, avalue.ground.toInt)
         this.groundList(avalue.ground.toInt)
       case _ => obj.asInstanceOf[A]
     }
-    valueType.via(this, GetOp[Int, A](key, valueType))
+    valueType.via(this, GetOp[Obj, A](key, valueType))
   }
 
-  override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Int, BB](key, btype))
+  override def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp[Obj, BB](key, btype))
 
   def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.ground._2.exists(x => x.alive() && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
   def isType: Boolean = !this.ground._2.exists(x => x.alive() && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))

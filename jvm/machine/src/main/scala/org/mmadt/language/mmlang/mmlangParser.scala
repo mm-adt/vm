@@ -57,8 +57,8 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // all mm-ADT languages must be able to accept a string representation of an expression in the language and return an Obj
   private def parse[O <: Obj](input: String): O = {
     this.parseAll(expr | emptySpace, input.trim) match {
-      case Success(result,_) => result.asInstanceOf[O]
-      case NoSuccess(y) => throw new LanguageException(y._1)
+      case Success(result, _) => result.asInstanceOf[O]
+      case NoSuccess(y) => throw new LanguageException(y._1 + ":" + y._2.first + y._2.pos + y._2.source)
     }
   }
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
@@ -83,9 +83,11 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // lazy val varSet: Parser[Type[Obj]] = (objValue | brchObj) ~ (LANGLE ~> varName <~ RANGLE) ^^ (x => (x._1.start[Obj]().to(x._2)))
 
   // product and coproduct parsing
-  lazy val brchObj: Parser[Poly[Obj]] = (prodObj | coprodObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
+  lazy val brchObj: Parser[Poly[Obj]] = (polyKeyObj | prodObj | coprodObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
   lazy val coprodObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, PIPE) <~ RBRACKET) ^^ (x => `|`(x._2: _*))
+  lazy val polyKeyObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(opt("[a-zA-Z]+".r <~ Tokens.:->) ~ obj, PIPE) <~ RBRACKET) ^^ (x => `|`[Obj]().clone(ground = ("|", x._2.map(y => y._2), x._2.filter(y => y._1.isDefined).map(y => y._1.getOrElse("")))))
   lazy val prodObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, SEMICOLON) <~ RBRACKET) ^^ (x => `;`(x._2: _*))
+
 
   // type parsing
   lazy val objType: Parser[Obj] = dType | anonType

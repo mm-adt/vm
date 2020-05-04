@@ -50,8 +50,9 @@ trait StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst()
-  def `|`[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = ("|", values.toList))
-  def `;`[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = (";", values.toList))
+  def `|`[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = ("|", values.toList, List.empty))
+  def `|`[A <: Obj](value: (String, A), values: (String, A)*): Poly[A] = new OPoly[A](ground = ("|", (value +: values).map(x => x._2).toList, (value +: values).map(x => x._1).toList))
+  def `;`[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = (";", values.toList, List.empty))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType
@@ -103,7 +104,9 @@ object StorageFactory {
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(ground = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst(ground = List.empty[A])
   def `|`[A <: Obj](values: A*)(implicit f: StorageFactory): Poly[A] = f.`|`[A](values: _*)
+  def `|`[A <: Obj](value: (String, A), values: (String, A)*)(implicit f: StorageFactory): Poly[A] = f.`|`[A](value, values: _*)
   def `;`[A <: Obj](values: A*)(implicit f: StorageFactory): Poly[A] = f.`;`[A](values: _*)
+
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)
@@ -152,7 +155,7 @@ object StorageFactory {
   lazy val ? : (IntValue, IntValue) = qMark
   lazy val + : (IntValue, IntValue) = qPlus
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
-    case apoly: Poly[_] if apoly.isValue => apoly.clone(ground = (apoly.ground._1, apoly.groundList.map(x => asType[Obj](x))))
+    case apoly: Poly[Obj] if apoly.isValue => apoly.clone(apoly.groundList.map(x => asType[Obj](x)))
     case atype: Type[_] => atype
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)

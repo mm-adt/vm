@@ -55,12 +55,12 @@ object MultOp {
           case areal: Real => start.clone(ground = areal.ground * inst.arg0[Real]().ground)
           //////// EXPERIMENTAL
           case prodA: Poly[O] if prodA.ground._1 == ";" => multObj[O](arg match {
-            case prodB: Poly[O] if prodB.ground._1 == ";" => `;`[O]().clone(ground = (";", prodA.groundList ++ prodB.groundList))
-            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`[O]().clone(ground = ("|", coprodB.groundList.map(a => `;`().clone(ground = (";", prodA.groundList :+ a)))))
+            case prodB: Poly[O] if prodB.ground._1 == ";" => `;`[O]().clone(prodA.groundList ++ prodB.groundList)
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`[O]().clone(coprodB.groundList.map(a => `;`().clone(prodA.groundList :+ a)).asInstanceOf[List[O]])
           })
           case coprodA: Poly[O] if coprodA.ground._1 == "|" => multObj[O](arg match {
-            case prodB: Poly[O] if prodB.ground._1 == ";" => `|`[O]().clone(ground = ("|", coprodA.groundList.map(a => `;`().clone(ground = (";", a +: prodB.groundList)))))
-            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`[O]().clone(ground = ("|", coprodA.groundList.flatMap(a => coprodB.groundList.map(b => `;`(a, b)))))
+            case prodB: Poly[O] if prodB.ground._1 == ";" => `|`[O]().clone(coprodA.groundList.map(a => `;`().clone(a +: prodB.groundList)).asInstanceOf[List[O]])
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`[O]().clone(coprodA.groundList.flatMap(a => coprodB.groundList.map(b => `;`(a, b))).asInstanceOf[List[O]])
           })
         }
         case _ => start
@@ -68,9 +68,9 @@ object MultOp {
     }
   }
 
-  def multObj[O <: Obj](brch: Poly[O]): Poly[O] = {
-    if (!brch.isType) return brch
-    brch.clone(ground = (brch.ground._1, List(brch.ground._2.foldLeft(brch.ground._2.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]]))))
+  def multObj[O <: Obj](poly: Poly[O]): Poly[O] = {
+    if (!poly.isType) return poly
+    poly.clone(List(poly.groundList.foldLeft(poly.groundList.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])).asInstanceOf[List[O]])
   }
 
 }

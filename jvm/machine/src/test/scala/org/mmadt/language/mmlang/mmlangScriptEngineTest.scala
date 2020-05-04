@@ -397,7 +397,10 @@ class mmlangScriptEngineTest extends FunSuite {
         |  rec        -> [put,'name','marko']]""".stripMargin))
   }
 
-  test("product/coproduct basics") {
+  test("poly basics") {
+    assertResult("[name->'marko'|age->29]")(engine.eval("[name->'marko'|age->29]").toString)
+    assertResult("29")(engine.eval("[name->'marko'|age->29].1").toString)
+    assertResult("29")(engine.eval("[name->'marko'|age->29].age").toString)
     assertResult("['a'|'a']")(engine.eval("'a'-<[_|_]").toString)
     assertResult("['b'|'a']")(engine.eval("['a'|'b']-<[.1|.0]").toString)
     // mult
@@ -415,7 +418,7 @@ class mmlangScriptEngineTest extends FunSuite {
     // assertResult("[int{?}<=int[plus,2][plus,5][is,bool<=int[gt,0]]]<=[int;[plus,2]][mult,[[plus,5];[is,[gt,0]]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[is>0]]]").toString)
   }
 
-  test("product and coproduct") {
+  test("poly split/merge/get") {
     assertResult("[1|]")(engine.eval("1-<[_[is>0]|_[is<0]]").toString)
     assertResult("[1|]")(engine.eval("1-<[[is>0]|[is<0]]").toString)
     assertResult("[1|]")(engine.eval("1-<[_[is>0]|int[is<0]]").toString)

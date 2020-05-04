@@ -46,7 +46,7 @@ object PutOp {
         case apoly: Poly[_] => key match {
           case avalue: IntValue =>
             val (front, back) = apoly.groundList.splitAt(avalue.ground.toInt)
-            apoly.clone(ground = (apoly.ground._1, (front :+ value) ++ back), via = (start, this))
+            apoly.clone(ground = (apoly.groundConnective, (front :+ value) ++ back,apoly.groundKeys), via = (start, this))
           case _ => apoly.via(start, this)
         }
         case rec: Rec[_, _] => rec.clone(ground = rec.ground().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))

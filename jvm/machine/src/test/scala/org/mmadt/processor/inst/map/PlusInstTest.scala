@@ -112,7 +112,7 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
     assert(real.plus(real).isInstanceOf[RealType])
     assert(real.plus(real).isInstanceOf[Real])
   }
-  test("[plus] w/ serial and parallel poly") {
+ /*test("[plus] w/ serial and parallel poly") {
     val starts: TableFor3[Poly[Str], Poly[Str], Poly[Obj]] =
       new TableFor3[Poly[Str], Poly[Str], Poly[Obj]](("a", "b", "c"),
         (`|`("a", "b"), `|`("c", "d"), `|`("a", "b", "c", "d")),
@@ -124,5 +124,5 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
       //assertResult(c)(PlusOp[Prod[Str]](b).exec(a))
     }
     }
-  }
+  }*/
 }
