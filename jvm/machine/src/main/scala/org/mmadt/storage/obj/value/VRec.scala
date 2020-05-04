@@ -33,12 +33,6 @@ import scala.collection.mutable
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VRec[A <: Value[Obj], B <: Value[Obj]](val name: String = Tokens.rec, val ground: collection.Map[A, B], val q: IntQ = qOne, val via: ViaTuple = base()) extends RecValue[A, B] {
-  def this(seq: Seq[(A, B)]) = {
-    this(name = Tokens.rec, ground = seq.foldLeft(new mutable.LinkedHashMap[A, B]())((b, a) => {
-      b.put(a._1, a._2)
-      b
-    }), q = qOne, via = base())
-  }
   override def clone(name: String = this.name,
                      ground: Any = this.ground,
                      q: IntQ = this.q,

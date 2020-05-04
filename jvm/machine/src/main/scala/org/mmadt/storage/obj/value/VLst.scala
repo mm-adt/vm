@@ -28,9 +28,6 @@ import org.mmadt.language.obj.{IntQ, Obj, ViaTuple, base}
 import org.mmadt.storage.StorageFactory.qOne
 
 class VLst[A <: Value[Obj]](val name: String = Tokens.lst, val ground: List[A] = List.empty[A], val q: IntQ = qOne, val via: ViaTuple = base()) extends LstValue[A] {
-  def this(list: List[A]) = {
-    this(name = Tokens.lst, ground = list, q = qOne, via = base())
-  }
   override def clone(name: String = this.name,
                      ground: Any = this.ground,
                      q: IntQ = this.q,
