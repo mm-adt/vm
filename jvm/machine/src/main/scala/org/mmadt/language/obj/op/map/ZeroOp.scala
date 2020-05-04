@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Coprod, Int, IntQ, Lst, Obj, Prod, Real, Rec, Str}
+import org.mmadt.language.obj.{Int, IntQ, Lst, Obj, Poly, Real, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -51,8 +51,7 @@ object ZeroOp {
         case _: Str => str(Tokens.empty)
         case alst: Lst[Obj] => alst.clone(ground = List.empty[Obj])
         case arec: Rec[Obj, Obj] => arec.clone(ground = Map.empty[Obj, Obj])
-        case _: Prod[Obj] => prod()
-        case _: Coprod[Obj] => coprod()
+        case apoly: Poly[O] => apoly.zeroOp(this)
       }).asInstanceOf[O].via(start, this)
     }
   }

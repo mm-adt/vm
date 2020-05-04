@@ -29,24 +29,24 @@ import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
-import org.mmadt.storage.obj.value.strm.VBrchStrm
+import org.mmadt.storage.obj.value.strm.VPolyStrm
 
 trait SplitOp {
   this: Obj =>
-  def split[A <: Obj](brch: Brch[A]): Brch[A] = SplitOp(brch).exec(this.asInstanceOf[A])
-  final def -<[A <: Obj](brch: Brch[A]): Brch[A] = this.split(brch)
+  def split[A <: Obj](brch: Poly[A]): Poly[A] = SplitOp(brch).exec(this.asInstanceOf[A])
+  final def -<[A <: Obj](brch: Poly[A]): Poly[A] = this.split(brch)
 }
 
 object SplitOp {
-  def apply[A <: Obj](branches: Brch[A]): SplitInst[A] = new SplitInst[A](branches)
+  def apply[A <: Obj](branches: Poly[A]): SplitInst[A] = new SplitInst[A](branches)
 
-  class SplitInst[A <: Obj](brchs: Brch[A], q: IntQ = qOne) extends VInst[A, Brch[A]]((Tokens.split, List(brchs)), q) with BranchInstruction {
+  class SplitInst[A <: Obj](brchs: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(brchs)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](brchs, q).asInstanceOf[this.type]
-    override def exec(start: A): Brch[A] = {
-      brchs match {
-        case product: Prod[_] =>
+    override def exec(start: A): Poly[A] = {
+      brchs.ground._1 match {
+        case ";" =>
           var qTest = qOne
-          product.clone(ground = product.ground.map(y =>
+          brchs.clone(ground = (brchs.ground._1,brchs.ground._2.map(y =>
             Option(start)
               .filter(x => x.range.test(y.range)) // this is generally needed (find a more core home)
               .map(_ => y match {
@@ -63,18 +63,18 @@ object SplitOp {
                 qTest = qZero;
                 x
               })
-              .getOrElse(obj.q(qZero))))
+              .getOrElse(obj.q(qZero)))))
             .via(start, this)
-        case _: Coprod[_] =>
+        case "|" =>
           val inst = start match {
-            case astrm: Strm[A] => new SplitInst[A](brchs.clone(ground = brchs.ground.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(y => y.alive())))).asInstanceOf[Brch[A]], q)
-            case _ => new SplitInst[A](brchs.clone(ground = brchs.ground.map(x => Inst.resolveArg(start, x))).asInstanceOf[Brch[A]], q)
+            case astrm: Strm[A] => new SplitInst[A](brchs.clone(ground = (brchs.ground._1, brchs.ground._2.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(y => y.alive()))))).asInstanceOf[Poly[A]], q)
+            case _ => new SplitInst[A](brchs.clone(ground = (brchs.ground._1, brchs.ground._2.map(x => Inst.resolveArg(start, x)))).asInstanceOf[Poly[A]], q)
           }
           val output = start match {
-            case astrm: Strm[A] => new VBrchStrm[A](values = astrm.values.map(x => coprod(inst.arg0[Coprod[A]]().ground.map(y => Inst.resolveArg(x, y)).filter(y => y.alive()): _*)))
-            case _ => inst.arg0[Coprod[A]]()
+            case astrm: Strm[A] => new VPolyStrm[A](values = astrm.values.map(x => inst.arg0[Poly[A]]().clone(ground = (inst.arg0[Poly[A]]().ground._1, inst.arg0[Poly[A]]().ground._2.map(y => Inst.resolveArg(x, y)).filter(y => y.alive())))))
+            case _ => inst.arg0[Poly[A]]()
           }
-          output.clone(via = (start, inst)).asInstanceOf[Brch[A]]
+          output.clone(via = (start, inst)).asInstanceOf[Poly[A]]
       }
     }
   }

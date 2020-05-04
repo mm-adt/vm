@@ -20,18 +20,10 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj
+package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Coprod, _}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.value.strm.PolyStrm
+import org.mmadt.language.obj.{Obj, Poly, ViaTuple, base}
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class OCoprod[A <: Obj](val name: String = Tokens.empty, val ground: List[A], val q: IntQ = qOne, val via: ViaTuple = base()) extends Coprod[A] {
-  override def clone(name: String = this.name,
-                     ground: Any = this.ground,
-                     q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new OCoprod[A](name = name, ground = ground.asInstanceOf[List[A]], q = q, via = via).asInstanceOf[this.type]
-}
+class VPolyStrm[A <: Obj](val name: String = Tokens.empty, val values: Seq[Poly[A]], val via: ViaTuple = base()) extends PolyStrm[A]

@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Brch, Coprod, Inst, Int, IntQ, Obj, Prod, Real}
+import org.mmadt.language.obj.{Inst, Int, IntQ, Obj, Poly, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -54,13 +54,13 @@ object MultOp {
           case aint: Int => start.clone(ground = aint.ground * inst.arg0[Int]().ground)
           case areal: Real => start.clone(ground = areal.ground * inst.arg0[Real]().ground)
           //////// EXPERIMENTAL
-          case prodA: Prod[O] => multObj[O](arg match {
-            case prodB: Prod[O] => prod[O]().clone(ground = prodA.ground ++ prodB.ground)
-            case coprodB: Coprod[O] => coprod[O]().clone(ground = coprodB.ground.map(a => prod().clone(ground = prodA.ground :+ a)))
+          case prodA: Poly[O] if prodA.ground._1 == ";" => multObj[O](arg match {
+            case prodB: Poly[O] if prodB.ground._1 == ";" => `;`[O]().clone(ground = (";", prodA.groundList ++ prodB.groundList))
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`[O]().clone(ground = ("|", coprodB.groundList.map(a => `;`().clone(ground = (";", prodA.groundList :+ a)))))
           })
-          case coprodA: Coprod[O] => multObj[O](arg match {
-            case prodB: Prod[O] => coprod[O]().clone(ground = coprodA.ground.map(a => prod().clone(ground = a +: prodB.ground)))
-            case coprodB: Coprod[O] => coprod[O]().clone(ground = coprodA.ground.flatMap(a => coprodB.ground.map(b => prod(a, b))))
+          case coprodA: Poly[O] if coprodA.ground._1 == "|" => multObj[O](arg match {
+            case prodB: Poly[O] if prodB.ground._1 == ";" => `|`[O]().clone(ground = ("|", coprodA.groundList.map(a => `;`().clone(ground = (";", a +: prodB.groundList)))))
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`[O]().clone(ground = ("|", coprodA.groundList.flatMap(a => coprodB.groundList.map(b => `;`(a, b)))))
           })
         }
         case _ => start
@@ -68,9 +68,9 @@ object MultOp {
     }
   }
 
-  def multObj[O <: Obj](brch: Brch[O]): Brch[O] = {
+  def multObj[O <: Obj](brch: Poly[O]): Poly[O] = {
     if (!brch.isType) return brch
-    brch.clone(ground = List(brch.ground.foldLeft(brch.ground.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])))
+    brch.clone(ground = (brch.ground._1, List(brch.ground._2.foldLeft(brch.ground._2.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]]))))
   }
 
 }

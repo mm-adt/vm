@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.`type`.LstType
 import org.mmadt.language.obj.value.LstValue
-import org.mmadt.language.obj.{Brch, IntQ, Obj}
+import org.mmadt.language.obj.{IntQ, Obj, Poly}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -40,9 +40,9 @@ object TailOp {
   class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.tail, Nil), q) {
     override def q(q: IntQ): this.type = new TailInst(q).asInstanceOf[this.type]
     override def exec(start: O): O = (start match {
-      case abrch: Brch[_] => if (abrch.ground.isEmpty) throw new LanguageException("no tail on empty brch") else abrch.clone(ground = abrch.ground.tail)
       case alst: LstValue[_] => if (alst.ground.isEmpty) throw new LanguageException("no tail on empty lst") else alst.clone(ground = alst.ground.tail)
       case alst: LstType[_] => if (alst.ground.isEmpty) alst else alst.clone(ground = alst.ground.tail)
+      case apoly: Poly[Obj] => apoly.tailOp(this.asInstanceOf[TailInst[Poly[Obj]]])
     }).asInstanceOf[O].via(start, this)
 
   }

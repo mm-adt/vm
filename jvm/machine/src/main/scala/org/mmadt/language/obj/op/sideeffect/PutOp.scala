@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Brch, _}
+import org.mmadt.language.obj.{_}
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -43,11 +43,11 @@ object PutOp {
     override def q(q: IntQ): this.type = new PutInst[A, B](key, value, q).asInstanceOf[this.type]
     override def exec(start: Obj): Obj = {
       start match {
-        case brch: Brch[_] => key match {
+        case apoly: Poly[_] => key match {
           case avalue: IntValue =>
-            val (front, back) = brch.ground.splitAt(avalue.ground.toInt)
-            brch.clone(ground = (front :+ value) ++ back, via = (brch, this))
-          case _ => brch.via(brch, this)
+            val (front, back) = apoly.groundList.splitAt(avalue.ground.toInt)
+            apoly.clone(ground = (apoly.ground._1, (front :+ value) ++ back), via = (start, this))
+          case _ => apoly.via(start, this)
         }
         case rec: Rec[_, _] => rec.clone(ground = rec.ground().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))
       }

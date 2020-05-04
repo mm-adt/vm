@@ -49,34 +49,33 @@ object mmlangPrinter {
 
   def strmString(strm: Strm[Obj]): String = strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
 
-  def branchString(branch: Brch[_]): String = {
-    if (branch.root) branchList(branch)
-    if (!branch.isValue)
-      typeString(branch.asInstanceOf[Type[Obj]])
+  def polyString(poly: Poly[_]): String = {
+    if (poly.root) polyList(poly)
+    if (!poly.isValue)
+      typeString(poly.asInstanceOf[Type[Obj]])
     else
-      branchList(branch) + qString(branch.q)
+      polyList(poly) + qString(poly.q)
   }
 
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def listString(list: List[_], sep: String = SEMICOLON, empty: String = Tokens.empty): String = if (list.isEmpty) empty else list.foldLeft(LBRACKET)((string, kv) => string + kv + sep).dropRight(1) + RBRACKET
-  private def branchList(branch: Brch[_]): String = {
-    if (branch.isInstanceOf[Strm[_]]) return strmString(branch.asInstanceOf[Strm[Obj]])
-    val sep = if (branch.isInstanceOf[Prod[Obj]]) SEMICOLON else PIPE
-    branch.ground.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + sep).dropRight(1) + RBRACKET
+  private def polyList(poly: Poly[_]): String = {
+    if (poly.isInstanceOf[Strm[_]]) return strmString(poly.asInstanceOf[Strm[Obj]])
+    poly.groundList.foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x.asInstanceOf[Obj].alive()).map(x => x.toString).getOrElse(Tokens.empty) + poly.ground._1).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
       case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.ground)
       case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.ground)
-      case abrch: Brch[_] => abrch.name + branchList(abrch)
+      case apoly: Poly[_] => apoly.name + polyList(apoly)
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
         case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.ground)
         case alst: LstType[_] => if (!atype.root && Tokens.named(alst.name)) alst.name else alst.name + listString(alst.ground)
-        case abrch: Brch[_] => abrch.name + branchList(abrch)
+        case apoly: Poly[_] => apoly.name + polyList(apoly)
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
     }
@@ -100,7 +99,7 @@ object mmlangPrinter {
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().ground + RANGLE
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().ground, PIPE) + RBRACKET
       case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().ground, AMPERSAND) + RBRACKET
-      case Tokens.split => Tokens.split_op + branchList(inst.arg0[Brch[_]]())
+      case Tokens.split => Tokens.split_op + polyList(inst.arg0[Poly[_]]())
       case Tokens.merge => Tokens.merge_op
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET

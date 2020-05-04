@@ -24,12 +24,12 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.{Brch, IntQ, Obj, _}
+import org.mmadt.language.obj.{IntQ, Obj, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait MergeOp[A <: Obj] {
-  this: Brch[A] =>
+  this: Poly[A] =>
   def merge[B <: Obj]: B = MergeOp[A]().exec(this).asInstanceOf[B]
   final def >-[B <: Obj]: B = this.merge[B]
 }
@@ -37,11 +37,11 @@ trait MergeOp[A <: Obj] {
 object MergeOp {
   def apply[A <: Obj](): MergeInst[A] = new MergeInst[A]()
 
-  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Brch[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
+  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Brch[A]): A = {
+    override def exec(start: Poly[A]): A = {
       if (start.isValue)
-        strm(start.ground.map(x => x.clone(q=multQ(start, x))).filter(x => x.alive())).asInstanceOf[A]
+        strm(start.ground._2.map(x => x.clone(q=multQ(start, x))).filter(x => x.alive())).asInstanceOf[A]
       else
         BranchInstruction.brchType[A](start).clone(via = (start, this))
     }

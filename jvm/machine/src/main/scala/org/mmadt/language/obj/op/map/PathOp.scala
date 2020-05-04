@@ -23,8 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.PathOp.Path
-import org.mmadt.language.obj.{Prod, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -34,12 +34,12 @@ trait PathOp {
 }
 
 object PathOp {
-  private type Path = Prod[Obj]
+  private type Path = Poly[Obj]
   def apply(): PathInst = new PathInst
 
   class PathInst(q: IntQ = qOne) extends VInst[Obj, Path]((Tokens.path, Nil), q) {
     override def q(q: IntQ): this.type = new PathInst(q).asInstanceOf[this.type]
-    override def exec(start: Obj): Path = prod(start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*).via(start, this)
+    override def exec(start: Obj): Path = `;`(start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*).via(start, this)
   }
 
 }

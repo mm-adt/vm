@@ -67,8 +67,8 @@ package object op {
       }
     }
 
-    def brchType[OT <: Obj](brch: Brch[_ <: Obj]): OT = {
-      val types = brch.ground.filter(x => x.alive()).map {
+    def brchType[OT <: Obj](brch: Poly[_ <: Obj]): OT = {
+      val types = brch.ground._2.filter(x => x.alive()).map {
         case atype: Type[OT] => atype.hardQ(1).range
         case avalue: Value[OT] => asType(avalue)
       }.asInstanceOf[Iterable[OType[OT]]]
@@ -77,11 +77,11 @@ package object op {
         case 1 => types.head
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
-      if (brch.isInstanceOf[Coprod[Obj]]) { // [branch] sum the min/max quantification
-        result.hardQ(minZero(brch.ground.map(x => x.q).reduce((a, b) => plusQ(a, b))))
+      if (brch.ground._1 == "|") { // [branch] sum the min/max quantification
+        result.hardQ(minZero(brch.ground._2.map(x => x.q).reduce((a, b) => plusQ(a, b))))
       }
       else { // [choose] select min/max quantification
-        result.hardQ(brch.ground.filter(x => x.alive()).map(x => x.q).reduce((a, b) => (
+        result.hardQ(brch.ground._2.filter(x => x.alive()).map(x => x.q).reduce((a, b) => (
           int(Math.min(a._1.ground, b._1.ground)),
           int(Math.max(a._2.ground, b._2.ground)))))
       }

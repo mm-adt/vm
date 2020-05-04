@@ -59,13 +59,13 @@ object PlusOp {
           case alst: LstValue[Value[Obj]] => start.clone(ground = alst.ground ++ inst.arg0[LstValue[Value[Obj]]]().ground)
           case alst: LstType[Obj] => start.clone(ground = alst.ground ++ inst.arg0[LstType[Obj]]().ground)
           //////// EXPERIMENTAL
-          case prodA: Prod[O] => arg match {
-            case prodB: Prod[O] => coprod(prodA, prodB)
-            case coprodB: Coprod[O] => coprod(prodA, coprodB)
+          case prodA: Poly[O] if prodA.ground._1 == ";" => arg match {
+            case prodB: Poly[O] if prodB.ground._1 == ";" => `|`(prodA, prodB)
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`(prodA, coprodB)
           }
-          case coprodA: Coprod[O] => arg match {
-            case prodB: Prod[O] => coprod(coprodA, prodB)
-            case coprodB: Coprod[O] => coprod().clone(ground = coprodA.ground ++ coprodB.ground)
+          case coprodA: Poly[O] if coprodA.ground._1 == "|" => arg match {
+            case prodB: Poly[O] if prodB.ground._1 == ";" => `|`(coprodA, prodB)
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`().clone(ground = ("|",coprodA.ground._2 ++ coprodB.ground._2))
           }
         }
         case _: Type[_] => start

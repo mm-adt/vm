@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.`type`.LstType
 import org.mmadt.language.obj.value.LstValue
-import org.mmadt.language.obj.{Brch, IntQ, Obj}
+import org.mmadt.language.obj.{IntQ, Obj, Poly}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{asType, obj, qOne}
 import org.mmadt.storage.obj.value.VInst
@@ -42,7 +42,7 @@ object HeadOp {
     override def exec(start: Obj): A = (start match {
       case alst: LstValue[A] => if (alst.ground.isEmpty) throw new LanguageException("no head on empty lst") else alst.ground.head
       case alst: LstType[A] => if (alst.ground.isEmpty) obj.asInstanceOf[A] else asType(alst.ground.head)
-      case abrch: Brch[A] => if (abrch.ground.isEmpty) throw new LanguageException("no head on empty brch") else abrch.ground.head
+      case apoly:Poly[A] => apoly.headOp(this)
     }).via(start, this)
   }
 

@@ -30,11 +30,11 @@ import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{ViaTuple, _}
 import org.mmadt.storage.StorageFactory.{qOne, qZero}
+import org.mmadt.storage.obj.OPoly
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
-import org.mmadt.storage.obj.{OCoprod, OProd}
 
 
 /**
@@ -50,8 +50,8 @@ trait StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst()
-  def coprod[A <: Obj](values: A*): Coprod[A] = new OCoprod[A](ground = values.toList)
-  def prod[A <: Obj](values: A*): Prod[A] = new OProd[A](ground = values.toList)
+  def `|`[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = ("|", values.toList))
+  def `;`[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = (";", values.toList))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType
@@ -102,8 +102,8 @@ object StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(ground = Map.empty[A, B])
   def lst[A <: Obj]: LstType[A] = tlst(ground = List.empty[A])
-  def coprod[A <: Obj](values: A*)(implicit f: StorageFactory): Coprod[A] = f.coprod[A](values: _*)
-  def prod[A <: Obj](values: A*)(implicit f: StorageFactory): Prod[A] = f.prod[A](values: _*)
+  def `|`[A <: Obj](values: A*)(implicit f: StorageFactory): Poly[A] = f.`|`[A](values: _*)
+  def `;`[A <: Obj](values: A*)(implicit f: StorageFactory): Poly[A] = f.`;`[A](values: _*)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base())(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)
@@ -152,7 +152,7 @@ object StorageFactory {
   lazy val ? : (IntValue, IntValue) = qMark
   lazy val + : (IntValue, IntValue) = qPlus
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
-    case branching: Brch[_] if branching.isValue => branching.clone(ground = branching.ground.map(x => asType[Obj](x)))
+    case apoly: Poly[_] if apoly.isValue => apoly.clone(ground = (apoly.ground._1, apoly.groundList.map(x => asType[Obj](x))))
     case atype: Type[_] => atype
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
@@ -168,8 +168,7 @@ object StorageFactory {
     case atype: Type[_] => atype.root && atype.getClass.equals(tobj().getClass) && !atype.name.equals(Tokens.obj) && !atype.name.equals(Tokens.empty)
   }
   implicit val mmstoreFactory: StorageFactory = new StorageFactory {
-    override def coprod[A <: Obj](values: A*): Coprod[A] = new OCoprod[A](ground = values.toList)
-    override def prod[A <: Obj](values: A*): Prod[A] = new OProd[A](ground = values.toList)
+    //override def :|[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = values.toList)
     /////////TYPES/////////
     override def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base()): ObjType = new TObj(name, q, via)
     override def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base()): BoolType = new TBool(name, q, via)
@@ -201,7 +200,7 @@ object StorageFactory {
         case _: Real => new VRealStrm(values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
         case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
         case _: Rec[_, _] => new VRecStrm[Value[Obj], Value[Obj]](values = MultiSet(values.asInstanceOf[Seq[RecValue[Value[Obj], Value[Obj]]]]))
-        case _: Brch[_] => new VBrchStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Brch[Obj]]]))
+        case _: Poly[_] => new VPolyStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Poly[Obj]]]))
         case _ => VEmptyStrm.empty[O]
       }).asInstanceOf[OStrm[O]]
     }

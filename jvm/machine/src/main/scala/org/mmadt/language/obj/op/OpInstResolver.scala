@@ -35,7 +35,7 @@ import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Brch, Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, Poly}
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters
@@ -57,7 +57,7 @@ object OpInstResolver {
       case Tokens.append | Tokens.append_op => AppendOp(args.head)
       case Tokens.head => HeadOp()
       case Tokens.tail => TailOp()
-      case Tokens.split | Tokens.split_op => SplitOp(args.head.asInstanceOf[Brch[Obj]])
+      case Tokens.split | Tokens.split_op => SplitOp(args.head.asInstanceOf[Poly[Obj]])
       case Tokens.merge | Tokens.merge_op => MergeOp()
       //
       case Tokens.noop => NoOp()
