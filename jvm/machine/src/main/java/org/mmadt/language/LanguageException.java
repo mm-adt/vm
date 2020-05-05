@@ -29,6 +29,8 @@ import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
 import org.mmadt.storage.StorageFactory;
 
+import java.util.stream.Stream;
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -36,6 +38,13 @@ public class LanguageException extends VmException {
 
     public LanguageException(final String message) {
         super(message);
+    }
+
+    public static LanguageException parseError(final String message, final String source, final int row, final int column) {
+        final String rowString = source.split("\n")[row - 1];
+        final String rowSubstring = rowString.substring(Math.max(0, column - 10), Math.min(rowString.length(), column + 10));
+        final String prefix = message + " at " + row + ":" + column;
+        return new LanguageException(prefix + "\n" + rowSubstring + "\n" + Stream.generate(() -> " ").limit(column - 1).reduce((a, b) -> a + b).orElse("") + "^ near here");
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {

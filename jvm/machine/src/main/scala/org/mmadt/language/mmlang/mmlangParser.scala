@@ -58,7 +58,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   private def parse[O <: Obj](input: String): O = {
     this.parseAll(expr | emptySpace, input.trim) match {
       case Success(result, _) => result.asInstanceOf[O]
-      case NoSuccess(y) => throw new LanguageException(y._1 + ":" + y._2.first + y._2.pos + y._2.source)
+      case NoSuccess(y) => throw LanguageException.parseError(y._1, y._2.source.toString, y._2.pos.line.asInstanceOf[java.lang.Integer], y._2.pos.column.asInstanceOf[java.lang.Integer])
     }
   }
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
@@ -74,7 +74,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // mmlang's language structure
-  lazy val obj: Parser[Obj] = varGet | objValue | objType | brchObj
+  lazy val obj: Parser[Obj] = varGet | objValue | objType | polyObj
 
   // variable parsing
   lazy val varName: Parser[String] = (("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":"))
@@ -83,11 +83,11 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // lazy val varSet: Parser[Type[Obj]] = (objValue | brchObj) ~ (LANGLE ~> varName <~ RANGLE) ^^ (x => (x._1.start[Obj]().to(x._2)))
 
   // product and coproduct parsing
-  lazy val brchObj: Parser[Poly[Obj]] = (polyKeyObj | prodObj | coprodObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
-  lazy val coprodObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, PIPE) <~ RBRACKET) ^^ (x => `|`(x._2: _*))
-  lazy val polyKeyObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(opt("[a-zA-Z]+".r <~ Tokens.:->) ~ obj, PIPE) <~ RBRACKET) ^^ (x => `|`[Obj]().clone(ground = ("|", x._2.map(y => y._2), x._2.filter(y => y._1.isDefined).map(y => y._1.getOrElse("")))))
-  lazy val prodObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, SEMICOLON) <~ RBRACKET) ^^ (x => `;`(x._2: _*))
-
+  lazy val polyObj: Parser[Poly[Obj]] = (polyRecObj | polyLstObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
+  var z: String = ""
+  lazy val polyLstObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, (PIPE | SEMICOLON) ^^ (y => z = y)) <~ RBRACKET) ^^ (x => poly(z, x._2: _*))
+  lazy val polyRecObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(opt("[a-zA-Z]+".r <~ Tokens.:->) ~ obj, PIPE) <~ RBRACKET) ^^
+    (x => `|`[Obj]().clone(ground = ("|", x._2.map(y => y._2), x._2.filter(y => y._1.isDefined).map(y => y._1.getOrElse("")))))
 
   // type parsing
   lazy val objType: Parser[Obj] = dType | anonType
@@ -119,8 +119,16 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val strm: Parser[Strm[Obj]] = (objValue <~ COMMA) ~ rep1sep(objValue, COMMA) ^^ (x => estrm((List(x._1) :+ x._2.head) ++ x._2.tail))
 
   // instruction parsing
-  lazy val inst: Parser[Inst[Obj, Obj]] = (sugarlessInst | fromSugar | toSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar | chooseSugar | branchSugar) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
-  lazy val infixSugar: Parser[Inst[Obj, Obj]] = (Tokens.split_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op | Tokens.a_op | Tokens.is | Tokens.append_op) ~ obj ^^ (x => OpInstResolver.resolve(x._1, List(x._2)))
+  lazy val inst: Parser[Inst[Obj, Obj]] = (
+    sugarlessInst | fromSugar | toSugar |
+      mergeSugar | infixSugar | getStrSugar |
+      getIntSugar | chooseSugar | branchSugar) ~ opt(quantifier) ^^
+    (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
+  lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
+    Tokens.split_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op |
+      Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op |
+      Tokens.combine_op | Tokens.a_op | Tokens.is | Tokens.append_op) ~ obj ^^
+    (x => OpInstResolver.resolve(x._1, List(x._2)))
   lazy val mergeSugar: Parser[MergeInst[Obj]] = Tokens.merge_op ^^ (_ => MergeOp())
   lazy val chooseSugar: Parser[ChooseInst[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj, PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(ground = x.map(o => (o._1, o._2)).toMap)))
   lazy val branchSugar: Parser[BranchInst[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj, AMPERSAND)) <~ RBRACKET ^^ (x => BranchOp(trec(ground = x.map(o => (o._1, o._2)).toMap)))

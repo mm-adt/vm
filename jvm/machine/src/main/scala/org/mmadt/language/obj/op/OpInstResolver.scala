@@ -26,7 +26,7 @@ import java.util.ServiceLoader
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp, MergeOp, SplitOp}
+import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
@@ -58,6 +58,7 @@ object OpInstResolver {
       case Tokens.head => HeadOp()
       case Tokens.tail => TailOp()
       case Tokens.split | Tokens.split_op => SplitOp(args.head.asInstanceOf[Poly[Obj]])
+      case Tokens.combine | Tokens.combine_op => CombineOp(args.head.asInstanceOf[Poly[Obj]])
       case Tokens.merge | Tokens.merge_op => MergeOp()
       //
       case Tokens.noop => NoOp()

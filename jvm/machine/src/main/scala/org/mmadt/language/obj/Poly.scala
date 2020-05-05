@@ -1,7 +1,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.branch.MergeOp
+import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map.HeadOp.HeadInst
 import org.mmadt.language.obj.op.map.PlusOp.PlusInst
 import org.mmadt.language.obj.op.map.TailOp.TailInst
@@ -17,6 +17,7 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 trait Poly[A <: Obj] extends Obj
   with Type[Poly[A]]
   with Value[Poly[A]]
+  with CombineOp[A]
   with MergeOp[A]
   with GetOp[Obj, A]
   with PutOp[Int, A]
@@ -47,12 +48,12 @@ trait Poly[A <: Obj] extends Obj
 
   override def get(key: Obj): A = {
     val valueType: A = key match {
-      case avalue: StrValue =>
-        Poly.checkIndex(this, groundKeys.indexOf(avalue.ground))
-        this.groundList(groundKeys.indexOf(avalue.ground))
-      case avalue: IntValue =>
-        Poly.checkIndex(this, avalue.ground.toInt)
-        this.groundList(avalue.ground.toInt)
+      case astr: StrValue =>
+        Poly.checkIndex(this, groundKeys.indexOf(astr.ground))
+        this.groundList(groundKeys.indexOf(astr.ground))
+      case aint: IntValue =>
+        Poly.checkIndex(this, aint.ground.toInt)
+        this.groundList(aint.ground.toInt)
       case _ => obj.asInstanceOf[A]
     }
     valueType.via(this, GetOp[Obj, A](key, valueType))
