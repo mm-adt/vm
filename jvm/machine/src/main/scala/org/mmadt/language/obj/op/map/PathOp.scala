@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.PathOp.Path
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,7 +40,12 @@ object PathOp {
 
   class PathInst(q: IntQ = qOne) extends VInst[Obj, Path]((Tokens.path, Nil), q) {
     override def q(q: IntQ): this.type = new PathInst(q).asInstanceOf[this.type]
-    override def exec(start: Obj): Path = `;`(start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*).via(start, this)
+    override def exec(start: Obj): Path = {
+      (start match {
+        case _: Strm[_] => start
+        case _ => `;`(start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*)
+      }).via(start, this).asInstanceOf[Path]
+    }
   }
 
 }
