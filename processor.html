@@ -438,20 +438,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_processor_structures">Processor Structures</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The programs of the mm-ADT virtual machine are <em>types</em>.
-From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s instruction set architecture.
-Every mm-ADT type is isomorphic to a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> containing type-vertices and instruction-edges called the <em>type graph</em>.
-The type graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) and evaluate (enumerate) them.</p>
+<p>The programs of the mm-ADT virtual machine are <em>types</em>. From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s instruction set architecture.
+Every mm-ADT type is isomorphic to a directed labeled <strong>type trace graph</strong> containing type-vertices and instruction-edges called.
+The program&#8217;s type trace graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) types. At execution time, values propagate through the type trace graph of the program and generate a parallel, homomorphic image of the types' manifestations as values in the <strong>value trace graph</strong>, where the resultant struture of an mm-ADT computation is the <strong>obj trace graph</strong></p>
+</div>
+<div class="paragraph">
+<p>\[
+G(\texttt{obj}) = ( V = \texttt{values} \cup \texttt{types}, E \subseteq (V \times \texttt{inst} \times V) ).
+\]</p>
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/processor/processor-stack.png" alt="processor stack" width="150">
+<img src="./images/processor/process-stack.png" alt="process stack" width="200">
 </div>
 </div>
 <div class="paragraph">
-<p>Type composition, compilation, and execution are carried out a thread of execution called a <strong>process</strong>.
-All processes are managed by an integerated mm-ADT compliant <strong>processor</strong>.
-Processors ground the mm-ADT VM to the physical machine (whether on a a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world&#8217;s physics provides the baseline dynamics (a "<em>ptype</em>" so to speak).</p>
+<p>Type composition, compilation, and ultimate evaluation are carried out by mm-ADT compliant <strong>processors</strong>. Processors ground the mm-ADT VM to the physical machine (whether on a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world&#8217;s physics provides the baseline dynamics (a "<em>ptype</em>" so to speak).</p>
 </div>
 <div class="paragraph">
 <p>This section details the specifics of the relationships between types, values, and processors</p>
@@ -464,29 +466,13 @@ Processors ground the mm-ADT VM to the physical machine (whether on a a single m
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Composition</strong>: A process with an untyped <code>obj</code>-\$pi_1\$ (i.e. an instruction list) and a <code>obj</code>-\$pi_2\$ (i.e. the terminal object), walks the list of instructions to generate an unoptimized mm-ADT program (type) that is well-typed and well-quantified (<a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>).</p>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/trav-composition.png" alt="trav composition" width="90%">
-</div>
-</div>
+<p><strong>Composition</strong>: (<a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>).</p>
 </li>
 <li>
-<p><strong>Compilation</strong>: A traverser with a type-\$pi_1\$ and a ctype-\$pi_2\$ evaluates the instructions of the type to generate a potentially more efficient type, with respective storage and processor provide instruction integration (<a href="https://en.wikipedia.org/wiki/Program_optimization">type optimization</a>).
-This process repeats with the resultant \$\pi_2\$ becoming the \$\pi_1\$ at the next iteration until a type <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fix point</a> is reached.</p>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/trav-compilation.png" alt="trav compilation" width="70%">
-</div>
-</div>
+<p><strong>Compilation</strong>: (<a href="https://en.wikipedia.org/wiki/Program_optimization">type optimization</a>). <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fix point</a>.</p>
 </li>
 <li>
-<p><strong>Evaluation</strong>: A traverser with a type-\$pi_1\$ and a value-\$pi_2\$ evaluates the type instructions to yield the referent values of the program&#8217;s specified type (<a href="https://en.wikipedia.org/wiki/Execution_(computing)">type enumeration</a>).</p>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/trav-evaluation.png" alt="trav evaluation" width="40%">
-</div>
-</div>
+<p><strong>Evaluation</strong>: (<a href="https://en.wikipedia.org/wiki/Execution_(computing)">type enumeration</a>).</p>
 </li>
 </ol>
 </div>
@@ -882,7 +868,7 @@ Whenever the diagram branches, the <code>obj</code> at the branch is cloned, tak
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-04 16:54:39 -0600
+Last updated 2020-05-05 13:21:07 -0600
 </div>
 </div>
 </body>

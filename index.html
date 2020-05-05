@@ -476,18 +476,25 @@ table.tableblock{max-width:100%;border-collapse:separate; margin:0.25em 1em 0.25
 <li><a href="#_type_compilation">Type Compilation</a></li>
 </ul>
 </li>
-<li><a href="#_language_categories">Language Categories</a>
+<li><a href="#_language_algebras">Language Algebras</a>
 <ul class="sectlevel3">
 <li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
+<li><a href="#_the_type_trace_graph">The Type Trace Graph</a></li>
+<li><a href="#_the_type_ring">The Type Ring</a></li>
+</ul>
+</li>
+<li><a href="#_objs_in_practice">Objs in Practice</a>
+<ul class="sectlevel3">
+<li><a href="#_bool_examples">Bool Examples</a></li>
+<li><a href="#_int_examples">Int Examples</a></li>
+<li><a href="#_real_examples">Real Examples</a></li>
+<li><a href="#_str_examples">Str Examples</a></li>
+<li><a href="#_poly_examples">Poly Examples</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_storage_structures">Storage Structures</a>
-<ul class="sectlevel2">
-<li><a href="#_values">Values</a></li>
-</ul>
-</li>
+<li><a href="#_storage_structures">Storage Structures</a></li>
 <li><a href="#_processor_structures">Processor Structures</a>
 <ul class="sectlevel2">
 <li><a href="#_processes">Processes</a>
@@ -1290,7 +1297,7 @@ mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_language_categories">Language Categories</h3>
+<h3 id="_language_algebras">Language Algebras</h3>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Initial and Terminal Objects</div>
@@ -1334,7 +1341,7 @@ mmlang&gt;</code></pre>
 <div class="paragraph">
 <p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
 \langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is a <code>[start]</code> instruction. The <code>x&#8656;[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (hence the lack of a domain ctype in the type signatures of those instructions who type definitions begin with <code>[start]</code>).</p>
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is <code>obj{0}</code> (i.e. nothing). The <code>x&#8656;[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1342,7 +1349,7 @@ where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast
 \]</p>
 </div>
 <div class="paragraph">
-<p>An mm-ADT program is a <em>type</em>, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$). The way in which a dtype can be ground to a ctype using instructions only is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a ctype founded type trace.</p>
+<p>An mm-ADT program is a <em>type</em>, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$). The way in which a dtype can be ground to a ctype using instructions only is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
@@ -1351,12 +1358,11 @@ where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; obj{<span style="color:#00D">0</span>}
-mmlang&gt; obj{<span style="color:#00D">0</span>}[start,<span style="color:#369;font-weight:bold">int</span>]
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>]
 ==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; obj{<span style="color:#00D">0</span>}[start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>]
+mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>]
 ==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>]
-mmlang&gt; obj{<span style="color:#00D">0</span>}[start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
+mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
 ==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
 mmlang&gt;</code></pre>
 </div>
@@ -1384,57 +1390,80 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 <p>The <code>inst</code>-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile. The benefit of the <code>inst</code>-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_the_type_ring">The Type Ring</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_objs_in_practice">Objs in Practice</h3>
+<div class="paragraph">
+<p>The mm-ADT type system is realized in real-world programs.</p>
+</div>
+<div class="sect3">
+<h4 id="_bool_examples">Bool Examples</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; false[<span style="color:#080;font-weight:bold">and</span>,true]
+==&gt;false
+mmlang&gt; false[<span style="color:#080;font-weight:bold">or</span>,true]
+==&gt;true
+mmlang&gt; false &amp;&amp; true
+==&gt;false
+mmlang&gt; false || true
+==&gt;true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_int_examples">Int Examples</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_real_examples">Real Examples</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_str_examples">Str Examples</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_poly_examples">Poly Examples</h4>
+
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_storage_structures">Storage Structures</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_values">Values</h3>
-<div class="paragraph">
-<p>There are only two kinds of structures in mm-ADT: <em>values</em> and <em>types</em>.
-Values are the elements of standard data type sets such as:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="Delphi">mmlang&gt; <span style="color:#00D">45</span>[plus,<span style="color:#00D">5</span>][plus,[mult,<span style="color:#00D">2</span>]]
-==&gt;<span style="color:#00D">150</span>
-mmlang&gt; <span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>[fold,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">seed</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>,[plus,str&lt;seed&gt;]]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">abc</span><span style="color:#710">'</span></span>
-mmlang&gt; <span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>[plus,<span style="color:#00D">2</span>]&lt;x&gt;[plus,<span style="color:#00D">3</span>]&lt;y&gt;[<span style="color:#080;font-weight:bold">as</span>,rec[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>:int&lt;x&gt;,<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>:int&lt;y&gt;]]
-==&gt;[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>:<span style="color:#00D">3</span>,<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>:<span style="color:#00D">6</span>]
-==&gt;[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>:<span style="color:#00D">4</span>,<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>:<span style="color:#00D">7</span>]
-==&gt;[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>:<span style="color:#00D">5</span>,<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>:<span style="color:#00D">8</span>]
-mmlang&gt; [<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>:<span style="color:#00D">0</span>]]]]
-==&gt;[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>:<span style="color:#00D">0</span>]]]]
-mmlang&gt; [<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>:[<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>:<span style="color:#00D">0</span>]]]].a.b.c.d
-==&gt;<span style="color:#00D">0</span>
-mmlang&gt; .a
-==&gt;[get,<span style="color:#D20"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>]</code></pre>
-</div>
-</div>
-</div>
+
 </div>
 </div>
 <div class="sect1">
 <h2 id="_processor_structures">Processor Structures</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The programs of the mm-ADT virtual machine are <em>types</em>.
-From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s instruction set architecture.
-Every mm-ADT type is isomorphic to a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> containing type-vertices and instruction-edges called the <em>type graph</em>.
-The type graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) and evaluate (enumerate) them.</p>
+<p>The programs of the mm-ADT virtual machine are <em>types</em>. From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s instruction set architecture.
+Every mm-ADT type is isomorphic to a directed labeled <strong>type trace graph</strong> containing type-vertices and instruction-edges called.
+The program&#8217;s type trace graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) types. At execution time, values propagate through the type trace graph of the program and generate a parallel, homomorphic image of the types' manifestations as values in the <strong>value trace graph</strong>, where the resultant struture of an mm-ADT computation is the <strong>obj trace graph</strong></p>
+</div>
+<div class="paragraph">
+<p>\[
+G(\texttt{obj}) = ( V = \texttt{values} \cup \texttt{types}, E \subseteq (V \times \texttt{inst} \times V) ).
+\]</p>
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/processor/processor-stack.png" alt="processor stack" width="150">
+<img src="./images/processor/process-stack.png" alt="process stack" width="200">
 </div>
 </div>
 <div class="paragraph">
-<p>Type composition, compilation, and execution are carried out a thread of execution called a <strong>process</strong>.
-All processes are managed by an integerated mm-ADT compliant <strong>processor</strong>.
-Processors ground the mm-ADT VM to the physical machine (whether on a a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world&#8217;s physics provides the baseline dynamics (a "<em>ptype</em>" so to speak).</p>
+<p>Type composition, compilation, and ultimate evaluation are carried out by mm-ADT compliant <strong>processors</strong>. Processors ground the mm-ADT VM to the physical machine (whether on a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world&#8217;s physics provides the baseline dynamics (a "<em>ptype</em>" so to speak).</p>
 </div>
 <div class="paragraph">
 <p>This section details the specifics of the relationships between types, values, and processors</p>
@@ -1447,29 +1476,13 @@ Processors ground the mm-ADT VM to the physical machine (whether on a a single m
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Composition</strong>: A process with an untyped <code>obj</code>-\$pi_1\$ (i.e. an instruction list) and a <code>obj</code>-\$pi_2\$ (i.e. the terminal object), walks the list of instructions to generate an unoptimized mm-ADT program (type) that is well-typed and well-quantified (<a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>).</p>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/trav-composition.png" alt="trav composition" width="90%">
-</div>
-</div>
+<p><strong>Composition</strong>: (<a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>).</p>
 </li>
 <li>
-<p><strong>Compilation</strong>: A traverser with a type-\$pi_1\$ and a ctype-\$pi_2\$ evaluates the instructions of the type to generate a potentially more efficient type, with respective storage and processor provide instruction integration (<a href="https://en.wikipedia.org/wiki/Program_optimization">type optimization</a>).
-This process repeats with the resultant \$\pi_2\$ becoming the \$\pi_1\$ at the next iteration until a type <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fix point</a> is reached.</p>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/trav-compilation.png" alt="trav compilation" width="70%">
-</div>
-</div>
+<p><strong>Compilation</strong>: (<a href="https://en.wikipedia.org/wiki/Program_optimization">type optimization</a>). <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fix point</a>.</p>
 </li>
 <li>
-<p><strong>Evaluation</strong>: A traverser with a type-\$pi_1\$ and a value-\$pi_2\$ evaluates the type instructions to yield the referent values of the program&#8217;s specified type (<a href="https://en.wikipedia.org/wiki/Execution_(computing)">type enumeration</a>).</p>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/trav-evaluation.png" alt="trav evaluation" width="40%">
-</div>
-</div>
+<p><strong>Evaluation</strong>: (<a href="https://en.wikipedia.org/wiki/Execution_(computing)">type enumeration</a>).</p>
 </li>
 </ol>
 </div>

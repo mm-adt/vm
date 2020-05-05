@@ -1029,7 +1029,7 @@ mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_language_categories">Language Categories</h3>
+<h3 id="_language_algebras">Language Algebras</h3>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Initial and Terminal Objects</div>
@@ -1073,7 +1073,7 @@ mmlang&gt;</code></pre>
 <div class="paragraph">
 <p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
 \langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is a <code>[start]</code> instruction. The <code>x&#8656;[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (hence the lack of a domain ctype in the type signatures of those instructions who type definitions begin with <code>[start]</code>).</p>
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is <code>obj{0}</code> (i.e. nothing). The <code>x&#8656;[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1081,7 +1081,7 @@ where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast
 \]</p>
 </div>
 <div class="paragraph">
-<p>An mm-ADT program is a <em>type</em>, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$). The way in which a dtype can be ground to a ctype using instructions only is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a ctype founded type trace.</p>
+<p>An mm-ADT program is a <em>type</em>, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$). The way in which a dtype can be ground to a ctype using instructions only is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
@@ -1090,12 +1090,11 @@ where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; obj{0}
-mmlang&gt; obj{0}[start,int]
+<pre class="highlight"><code>mmlang&gt; [start,int]
 ==&gt;int
-mmlang&gt; obj{0}[start,int][plus,5]
+mmlang&gt; [start,int][plus,5]
 ==&gt;int[plus,5]
-mmlang&gt; obj{0}[start,int][plus,5][gt,10]
+mmlang&gt; [start,int][plus,5][gt,10]
 ==&gt;bool&lt;=int[plus,5][gt,10]
 mmlang&gt;</code></pre>
 </div>
@@ -1123,6 +1122,51 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 <p>The <code>inst</code>-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile. The benefit of the <code>inst</code>-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.</p>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_the_type_ring">The Type Ring</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_objs_in_practice">Objs in Practice</h3>
+<div class="paragraph">
+<p>The mm-ADT type system is realized in real-world programs.</p>
+</div>
+<div class="sect3">
+<h4 id="_bool_examples">Bool Examples</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; false[and,true]
+==&gt;false
+mmlang&gt; false[or,true]
+==&gt;true
+mmlang&gt; false &amp;&amp; true
+==&gt;false
+mmlang&gt; false || true
+==&gt;true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_int_examples">Int Examples</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_real_examples">Real Examples</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_str_examples">Str Examples</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_poly_examples">Poly Examples</h4>
+
+</div>
 </div>
 </div>
 </div>
@@ -1135,7 +1179,7 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-05 12:05:44 -0600
+Last updated 2020-05-05 13:27:45 -0600
 </div>
 </div>
 </body>
