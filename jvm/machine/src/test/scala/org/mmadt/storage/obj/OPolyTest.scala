@@ -82,7 +82,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel structure") {
     val poly = int.mult(8).split(`|`[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
+    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[[id]|[plus,2]|3]")(poly.toString)
     assertResult(int.id())(poly.groundList(0))
     assertResult(int.plus(2))(poly.groundList(1))
     assertResult(int(3))(poly.groundList(2))
@@ -94,7 +94,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel quantifier") {
     val poly = int.q(2).mult(8).split(`|`[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
+    assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[[id]|[plus,2]|3]")(poly.toString)
     assertResult(int.q(2).id())(poly.groundList(0))
     assertResult(int.q(2).plus(2))(poly.groundList(1))
     assertResult(int(3))(poly.groundList(2))

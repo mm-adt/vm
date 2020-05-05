@@ -59,6 +59,7 @@ object OpInstResolver {
       case Tokens.head => HeadOp()
       case Tokens.tail => TailOp()
       case Tokens.split | Tokens.split_op => SplitOp(args.head.asInstanceOf[Poly[Obj]])
+      case Tokens.choice | Tokens.choice_op => ChoiceOp(args.head.asInstanceOf[Poly[Obj]])
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head.asInstanceOf[Poly[Obj]])
       case Tokens.merge | Tokens.merge_op => MergeOp()
       //

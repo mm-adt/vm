@@ -96,6 +96,7 @@ object mmlangPrinter {
       case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().ground, PIPE) + RBRACKET
       case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().ground, AMPERSAND) + RBRACKET
       case Tokens.split => Tokens.split_op + polyList(inst.arg0[Poly[_]]())
+      case Tokens.choice => Tokens.choice_op + polyList(inst.arg0[Poly[_]]())
       case Tokens.merge => Tokens.merge_op
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET

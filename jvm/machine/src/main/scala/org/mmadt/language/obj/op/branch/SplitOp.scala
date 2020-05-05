@@ -24,7 +24,6 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
@@ -42,38 +41,9 @@ object SplitOp {
   class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
-      apoly.ground._1 match {
-        case ";" =>
-          var qTest = qOne
-          apoly.clone(apoly.groundList.map(y =>
-            Option(start)
-              .filter(x => x.range.test(y.range)) // this is generally needed (find a more core home)
-              .map(_ => y match {
-                case atype: Type[_] => start ==> atype // COMPILE
-                case _ => y
-              })
-              .map {
-                case atype: Type[_] => start ==> atype // EXECUTE
-                case x => x
-              }
-              .filter(_.alive)
-              .map(x => x.q(multQ(x.q, qTest)))
-              .map(x => {
-                qTest = qZero;
-                x
-              })
-              .getOrElse(obj.q(qZero))).asInstanceOf[List[A]])
-            .via(start, this)
-        case "|" =>
-          val inst = start match {
-            case astrm: Strm[A] => new SplitInst[A](apoly.clone(ground = (apoly.ground._1, apoly.ground._2.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(_.alive))))).asInstanceOf[Poly[A]], q)
-            case _ => new SplitInst[A](apoly.clone(apoly.ground._2.map(x => Inst.resolveArg(start, x))).asInstanceOf[Poly[A]], q)
-          }
-          val output = start match {
-            case astrm: Strm[A] => strm(astrm.values.map(x => inst.arg0[Poly[A]]().clone(inst.arg0[Poly[A]]().ground._2.map(y => Inst.resolveArg(x, y)).filter(_.alive))))
-            case _ => inst.arg0[Poly[A]]()
-          }
-          output.clone(via = (start, inst)).asInstanceOf[Poly[A]]
+      start match {
+        case astrm: Strm[A] => strm(astrm.values.map(x => apoly.clone(apoly.ground._2.map(y => Inst.resolveArg(x, y)).filter(_.alive)))).clone(via = (start, this))
+        case _ => apoly.clone(apoly.ground._2.map(x => Inst.resolveArg(start, x))).clone(via = (start, this))
       }
     }
   }

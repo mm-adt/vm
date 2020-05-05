@@ -30,6 +30,8 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
+import scala.util.Try
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -48,12 +50,11 @@ object AndOp {
     override def q(q: IntQ): this.type = new AndInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
       val inst = new AndInst(Inst.resolveArg(start, other), q)
-      (start match {
+      Try[Bool](start match {
         case _: Strm[_] => start
         case _: BoolValue => start.clone(ground = start.ground && inst.arg0[Bool]().ground)
         case _ => start
-      }).via(start, inst)
-
+      }).getOrElse(start).via(start, inst)
     }
   }
 

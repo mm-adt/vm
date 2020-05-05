@@ -26,6 +26,7 @@ import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -53,8 +54,8 @@ object Inst {
     arg match {
       case typeArg: OType[E] => obj match {
         case _: Strm[_] => arg
-        case _: Value[_] => if (Type.ctypeCheck(obj, typeArg)) obj.compute(typeArg) else obj.q(0).asInstanceOf[E]
-        case atype: Type[_] => atype.range.compute(typeArg)
+        case _: Value[_] => if (Type.ctypeCheck(obj, typeArg)) obj.compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
+        case atype: Type[_] => if (Type.checkCanonical(atype.range, typeArg)) atype.range.compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
       }
       case valueArg: OValue[E] => valueArg
     }

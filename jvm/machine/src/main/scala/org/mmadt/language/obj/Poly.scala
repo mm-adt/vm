@@ -11,7 +11,7 @@ import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
 import org.mmadt.language.{LanguageException, LanguageFactory}
-import org.mmadt.storage.StorageFactory.obj
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 trait Poly[A <: Obj] extends Obj
@@ -97,5 +97,9 @@ object Poly {
   def checkIndex(apoly: Poly[_], index: scala.Int): Unit = {
     if (index < 0) throw new LanguageException("poly index must be 0 or greater: " + index)
     if (apoly.groundList.length < (index + 1)) throw new LanguageException("poly index is out of bounds: " + index)
+  }
+  def keepFirst[A <: Obj](apoly: Poly[A]): Poly[A] = {
+    val first: scala.Int = apoly.groundList.indexWhere(x => x.alive)
+    apoly.clone(apoly.groundList.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
   }
 }

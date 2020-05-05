@@ -38,8 +38,8 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
         // (int(1,2,3), int.q(3).-<(coprod(int.q(3), int.q(3))), coprod(int(1,2,3), int(1,2,3))),
         //(int(2), __.-<(coprod(int, str)), coprod(int(2), obj.q(qZero))),
         //(int(2).q(2), int.q(5).-<(coprod(int, int.is(__.gt(10)))), coprod(int(2), obj.q(qZero))),
-        (int(2).q(2), int.q(2).-<(`|`(int, int.is(__.gt(10)))), `|`(int(2).q(2), obj.q(qZero))),
-        (int(2), int.-<(`|`(int, int.is(__.gt(10)))), `|`(int(2), obj.q(qZero))),
+        (int(2).q(2), int.q(2).-<(`|`(int, int.is(__.gt(10)))), `|`[Obj](int(2).q(2), obj.q(qZero))),
+        (int(2), int.-<(`|`(int, int.is(__.gt(10)))), `|`[Obj](int(2), obj.q(qZero))),
         // (int(2), int.-<(coprod(int.-<(coprod(int, int.is(__.gt(11)))), int.is(__.gt(10)))), coprod(coprod(int(2), obj.q(qZero)), obj.q(qZero))),
       )
     forEvery(check) { (input, atype, result) => {

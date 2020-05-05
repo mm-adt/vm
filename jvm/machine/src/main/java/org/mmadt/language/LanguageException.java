@@ -44,7 +44,7 @@ public class LanguageException extends VmException {
         final String rowString = source.split("\n")[row - 1];
         final String rowSubstring = rowString.substring(Math.max(0, column - 10), Math.min(rowString.length(), column + 10));
         final String prefix = message + " at " + row + ":" + column;
-        return new LanguageException(prefix + "\n" + rowSubstring + "\n" + Stream.generate(() -> " ").limit(column - 1).reduce((a, b) -> a + b).orElse("") + "^ near here");
+        return new LanguageException(prefix + "\n" + rowSubstring + "\n" + Stream.generate(() -> " ").limit(Math.min(rowSubstring.length(),column) - 1).reduce((a, b) -> a + b).orElse("") + "^ near here");
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
