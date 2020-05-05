@@ -476,9 +476,9 @@ table.tableblock{max-width:100%;border-collapse:separate; margin:0.25em 1em 0.25
 <li><a href="#_type_compilation">Type Compilation</a></li>
 </ul>
 </li>
-<li><a href="#_the_inst_monoid">The Inst Monoid</a>
+<li><a href="#_language_categories">Language Categories</a>
 <ul class="sectlevel3">
-<li><a href="#_the_instruction_monoid">The Instruction Monoid</a></li>
+<li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 </ul>
 </li>
 </ul>
@@ -832,7 +832,7 @@ mmlang&gt;</code></pre>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The type <code>[is&gt;0]</code> serves as a lambda of the form \[ \lambda x: \begin{cases} x &amp; \text{if } x &gt; 0 \\ \emptyset &amp; \text{otherwise.} \end{cases} \]</td>
+<td>The type <code>[is&gt;0]</code> serves as a lambda of the form \[ \lambda x = \begin{cases} x &amp; \text{if } x &gt; 0 \\ \emptyset &amp; \text{otherwise.} \end{cases} \]</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -1290,7 +1290,7 @@ mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_inst_monoid">The Inst Monoid</h3>
+<h3 id="_language_categories">Language Categories</h3>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Initial and Terminal Objects</div>
@@ -1303,10 +1303,7 @@ mmlang&gt;</code></pre>
 <p>A category may have an <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial and/or terminal</a> object.</p>
 </div>
 <div class="paragraph">
-<p>An <strong>initial object</strong> \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
-Initial objects, via their morphisms, generate all the objects of the category.
-If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity.
-Thus, besides labels, two initials are isomorphic.</p>
+<p>An <strong>initial object</strong> \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
@@ -1314,117 +1311,77 @@ Thus, besides labels, two initials are isomorphic.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$E \rightarrow S_n\$.
-Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
-Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
+<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
 </div>
+<div class="paragraph">
+<p>&nbsp;</p>
 </div>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/initial-ctypes.png" alt="initial ctypes" width="275">
 </div>
 </div>
 <div class="paragraph">
-<p>The initial object of the <code>inst</code> monoid is <code>obj{*}</code>--from nothing, everything can be generated with the respective <a href="https://en.wikipedia.org/wiki/Zero_morphism">constant morphism</a>/instruction.
-A unique constant morphism exists from <code>obj{0}</code> to each of the 6 *canonical types*.
-The corresponding instructions are <code>[bool]</code>, <code>[int]</code>, <code>[real]</code>, <code>[str]</code>, and <code>[rec]</code>, where, for example, \[
-\texttt{[bool]}: \texttt{obj{0}} \rightarrow \texttt{bool}
-\]
-and in <code>mmlang</code> notation \[
-\texttt{bool&lt;=[bool]} \]</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/type-product.png" alt="type product" width="250">
-</div>
-</div>
-<div class="paragraph">
-<p>There are two kinds of mm-ADT types: <strong>canonical types</strong> (ctypes) and <strong>derived types</strong> (dtypes).
-There are 6 ctypes which comprise the fundamental base types of the mm-ADT VM: <code>bool</code>, <code>int</code>, <code>real</code>, <code>str</code>, <code>lst</code>, or <code>rec</code>.
-A dtype is the product of a type and an instruction (<code>inst</code>), where the type component serves as the <em>domain</em>, the instruction component the <em>function</em>, and the type product as a whole, relative to it&#8217;s components, the <em>range</em>.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\tt{type} &amp;=\;&amp; (\tt{dtype} &amp;\;*\;&amp; \tt{inst}) &amp;\;+\;&amp; \tt{ctype} \\ \text{“range} &amp;=\;&amp; (\text{domain} &amp;\;\text{and}\;&amp; \text{function}) &amp;\;\text{or}\;&amp; \text{base"} \end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>The dtypes are generated <a href="https://en.wikipedia.org/wiki/Recursive_data_type">inductively</a> by applying instructions from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>).
-When applied to types, every <code>inst</code> yields a distinct dtype that is a structural expansion of the previous type.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/types.png" alt="types" width="35%">
-</div>
-</div>
-<div class="paragraph">
-<p>The dtype&#8217;s recursive definition is grounded at the 6 ctypes, where every canonical type is it&#8217;s own domain and range.</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/obj-full.png" alt="obj full" width="300">
-</div>
-</div>
-<div class="paragraph">
-<p>The example below demonstrates how instructions applied to types create new types.
-The diagram on the right presents the products and co-products that form the general structure of the mm-ADT VM language (which is realized in mmlang).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
-==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">4</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">4</span>]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">4</span>][mult,<span style="color:#00D">42</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">4</span>][mult,<span style="color:#00D">42</span>]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">4</span>][mult,<span style="color:#00D">42</span>][gt,<span style="color:#00D">42</span>]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">4</span>][mult,<span style="color:#00D">42</span>][gt,<span style="color:#00D">42</span>]</code></pre>
-</div>
+<p>The program the mm-ADT VM, there must exist a functor from the source language to the logical structure of types and values within the mm-ADT.</p>
 </div>
 <div class="sect3">
-<h4 id="_the_instruction_monoid">The Instruction Monoid</h4>
+<h4 id="_the_inst_monoid">The Inst Monoid</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Monoids</div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.</p>
 </div>
-</div>
-</div>
-<div class="imageblock left">
-<div class="content">
-<img src="./images/language/inst-monoid.png" alt="inst monoid" width="50">
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems.
-The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
+<p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
 \langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is unique identity element.</p>
-</div>
-<div class="paragraph">
-<p>An mm-ADT instruction is a ordered list of <code>objs</code> where the first element is the opcode and all subsequent elements are instruction arguments.
-For instance, <code>[plus,6]</code> is an instruction where <code>plus</code> is the opcode and <code>6</code> is the argument.
-Instructions can be composed to create longer instruction chains.</p>
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is a <code>[start]</code> instruction. The <code>x&#8656;[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (hence the lack of a domain ctype in the type signatures of those instructions who type definitions begin with <code>[start]</code>).</p>
 </div>
 <div class="paragraph">
 <p>\[
-\begin{split}
-\texttt{[plus,4]} &amp;=\;&amp; \texttt{[plus,4]} \\ \texttt{[plus,4][mult,2]} &amp;=\;&amp; \texttt{[plus,4]} * \texttt{[mult,2]} \\ \texttt{[plus,4][mult,2][gt,42]} &amp;=\;&amp; \texttt{[plus,4][mult,2]} * \texttt{[gt,42]} \\ \end{split}
+\texttt{[start,x]}: \texttt{obj{0}} \rightarrow \texttt{x}
 \]</p>
 </div>
 <div class="paragraph">
-<p>The instruction monoid is the algebraic structure used by <code>mmlang</code> to enable users to write expression.
-The mm-ADT VM processes types, which while composed of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$) are not instructions.
-There exists an isomorphism (a <a href="https://en.wikipedia.org/wiki/Full_and_faithful_functors">bijective functor</a>) that maps the <code>inst</code> syntactic monoid to the type graph monoid.
-This should not a surprising bijection&#8212;&#8203;it proves that the syntax of <code>mmlang</code> is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in <code>mmlang</code>.</p>
+<p>An mm-ADT program is a <em>type</em>, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$). The way in which a dtype can be ground to a ctype using instructions only is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a ctype founded type trace.</p>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/start-ctypes.png" alt="start ctypes" width="315">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; obj{<span style="color:#00D">0</span>}
+mmlang&gt; obj{<span style="color:#00D">0</span>}[start,<span style="color:#369;font-weight:bold">int</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>
+mmlang&gt; obj{<span style="color:#00D">0</span>}[start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>]
+mmlang&gt; obj{<span style="color:#00D">0</span>}[start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
+==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>[noop]</code> instruction is the only mm-ADT instruction that does not alter the state of the <code>obj</code> trace graph and thus, the state of the computation. The instruction <code>[id]</code>, on the other hand, does.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][noop]
+==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
+mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][<span style="color:#369;font-weight:bold">id</span>]
+==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][<span style="color:#369;font-weight:bold">id</span>]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There exists an isomorphism (a <a href="https://en.wikipedia.org/wiki/Full_and_faithful_functors">bijective functor</a>) that maps the <code>inst</code> syntactic monoid to the type trace graph. This bijection proves that the syntax of <code>mmlang</code> is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in <code>mmlang</code>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
 <img src="./images/language/inst-type-functor.png" alt="inst type functor" width="35%">
 </div>
+</div>
+<div class="paragraph">
+<p>The <code>inst</code>-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile. The benefit of the <code>inst</code>-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.</p>
 </div>
 </div>
 </div>
