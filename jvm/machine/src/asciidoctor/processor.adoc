@@ -2,16 +2,17 @@
 
 == Processor Structures
 
-The programs of the mm-ADT virtual machine are _types_.
-From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's instruction set architecture.
-Every mm-ADT type is isomorphic to a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] containing type-vertices and instruction-edges called the _type graph_.
-The type graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) and evaluate (enumerate) them.
+The programs of the mm-ADT virtual machine are _types_. From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's instruction set architecture.
+Every mm-ADT type is isomorphic to a directed labeled *type trace graph* containing type-vertices and instruction-edges called.
+The program's type trace graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) types. At execution time, values propagate through the type trace graph of the program and generate a parallel, homomorphic image of the types' manifestations as values in the *value trace graph*, where the resultant struture of an mm-ADT computation is the *obj trace graph*
 
-image::processor-stack.png[float="right",width=150]
+\[
+G(\texttt{obj}) = ( V = \texttt{values} \cup \texttt{types}, E \subseteq (V \times \texttt{inst} \times V) ).
+\]
 
-Type composition, compilation, and execution are carried out a thread of execution called a *process*.
-All processes are managed by an integerated mm-ADT compliant *processor*.
-Processors ground the mm-ADT VM to the physical machine (whether on a a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak).
+image::process-stack.png[float="right",width=200]
+
+Type composition, compilation, and ultimate evaluation are carried out by mm-ADT compliant *processors*. Processors ground the mm-ADT VM to the physical machine (whether on a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak).
 
 This section details the specifics of the relationships between types, values, and processors
 
@@ -19,24 +20,18 @@ This section details the specifics of the relationships between types, values, a
 
 Processors are used in the following three situations:
 
-. *Composition*: A process with an untyped `obj`-\$pi_1\$ (i.e. an instruction list) and a `obj`-\$pi_2\$ (i.e. the terminal object), walks the list of instructions to generate an unoptimized mm-ADT program (type) that is well-typed and well-quantified (https://en.wikipedia.org/wiki/Type_inference[type inference]).
+. *Composition*: (https://en.wikipedia.org/wiki/Type_inference[type inference]).
 +
-image::trav-composition.png[align="center",width=90%]
 
-. *Compilation*: A traverser with a type-\$pi_1\$ and a ctype-\$pi_2\$ evaluates the instructions of the type to generate a potentially more efficient type, with respective storage and processor provide instruction integration (https://en.wikipedia.org/wiki/Program_optimization[type optimization]).
-This process repeats with the resultant \$\pi_2\$ becoming the \$\pi_1\$ at the next iteration until a type https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point] is reached.
+. *Compilation*: (https://en.wikipedia.org/wiki/Program_optimization[type optimization]). https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point].
 +
-image::trav-compilation.png[align="center",width=70%]
 
-. *Evaluation*: A traverser with a type-\$pi_1\$ and a value-\$pi_2\$ evaluates the type instructions to yield the referent values of the program's specified type (https://en.wikipedia.org/wiki/Execution_(computing)[type enumeration]).
+. *Evaluation*: (https://en.wikipedia.org/wiki/Execution_(computing)[type enumeration]).
 +
-image::trav-evaluation.png[align="center",width=40%]
 
-//image::traverser-fold.png[align="center",width=80%]
 
 &nbsp;
 
-// image::traverser.png[align="center",width=550]
 
 ==== Instruction Evaluation
 

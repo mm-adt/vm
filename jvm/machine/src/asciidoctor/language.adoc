@@ -314,8 +314,7 @@ mmlang>
 |The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
 |===
 
-
-=== Language Categories
+=== Language Algebras
 
 .Initial and Terminal Objects
 ****
@@ -343,24 +342,23 @@ A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\lan
 
 mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_ **inst monoid** \[
 \langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where `S` is a `[start]` instruction. The `x<=[start,x]` instruction is an *initial instruction* in that it returns it's arguments regardless of the input `obj` (hence the lack of a domain ctype in the type signatures of those instructions who type definitions begin with `[start]`).
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where `S` is `obj{0}` (i.e. nothing). The `x<=[start,x]` instruction is an *initial instruction* in that it returns it's arguments regardless of the input `obj` (or lack thereof).
 
 \[
 \texttt{[start,x]}: \texttt{obj\{0\}} \rightarrow \texttt{x}
 \]
 
-An mm-ADT program is a _type_, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$). The way in which a dtype can be ground to a ctype using instructions only is via the `[start]` instruction. A single pass through the mm-ADT compiler yields a ctype founded type trace.
+An mm-ADT program is a _type_, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$). The way in which a dtype can be ground to a ctype using instructions only is via the `[start]` instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.
 
 image::start-ctypes.png[float="right",width=315]
 
 [source]
 ----
-mmlang> obj{0}
-mmlang> obj{0}[start,int]
+mmlang> [start,int]
 ==>int
-mmlang> obj{0}[start,int][plus,5]
+mmlang> [start,int][plus,5]
 ==>int[plus,5]
-mmlang> obj{0}[start,int][plus,5][gt,10]
+mmlang> [start,int][plus,5][gt,10]
 ==>bool<=int[plus,5][gt,10]
 mmlang>
 ----
@@ -380,3 +378,33 @@ There exists an isomorphism (a https://en.wikipedia.org/wiki/Full_and_faithful_f
 image::inst-type-functor.png[width=35%,align=center]
 
 The `inst`-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile. The benefit of the `inst`-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.
+
+==== The Type Trace Graph
+
+==== The Type Ring
+
+=== Objs in Practice
+
+The mm-ADT type system is realized in real-world programs.
+
+==== Bool Examples
+
+[source]
+----
+mmlang> false[and,true]
+==>false
+mmlang> false[or,true]
+==>true
+mmlang> false && true
+==>false
+mmlang> false || true
+==>true
+----
+
+==== Int Examples
+
+==== Real Examples
+
+==== Str Examples
+
+==== Poly Examples

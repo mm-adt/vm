@@ -66,8 +66,11 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // specific to mmlang execution
   lazy val expr: Parser[Obj] = (strm | obj) ~ opt(objType) ^^ (x => {
     x._2 match {
-      case None => x._1 // left hand side only, return it
-      case Some(y) => x._1 ===> y // process left with right
+      case None => x._1 match {
+        case _: Value[_] => x._1 // left hand value only, return it
+        case _: Type[_] => x._1.domain() ===> x._1 // left hand type only, compile it with it's domain
+      }
+      case Some(y) => x._1 ===> y // left and right hand, evaluate right type with left obj
     }
   })
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,6 +130,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
     Tokens.split_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op |
       Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op |
+      Tokens.and_op | Tokens.or_op |
       Tokens.combine_op | Tokens.a_op | Tokens.is | Tokens.append_op) ~ obj ^^
     (x => OpInstResolver.resolve(x._1, List(x._2)))
   lazy val mergeSugar: Parser[MergeInst[Obj]] = Tokens.merge_op ^^ (_ => MergeOp())

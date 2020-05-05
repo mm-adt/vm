@@ -156,7 +156,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("refinement type parsing") {
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is,int[gt,10]]"))
-    assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]")) //TODO: when a range is specified by the user, use that during compilation
+//    assertResult(int <= int.is(int.gt(int(10))))(engine.eval("int<=int[is,int[gt,10]]")) //TODO: when a range is specified by the user, use that during compilation
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is>10]"))
   }
 
@@ -176,6 +176,16 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['a'-><.x>,'b'-><.y>]][get,'b']"))
     assertResult(int ==> int.to("x").plus(1).to("y").as(trec(str("a") -> int.from("x"), str("b") -> int.from("y"))).get("b"))(engine.eval("int<x>[plus,1]<y>[as,rec['a'->int<.x>,'b'->int<.y>]].b"))
     assertResult(vrec(str("x") -> int(7), str("y") -> int(10), str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<.x>,'y'->int<.y>,'z'->[as,rec['a'-><.x> + <.y>]]]]"))
+  }
+
+  test("start instruction initial") {
+    assertResult(int(1,2,3))(engine.eval("[start,1,2,3]"))
+    assertResult(int)(engine.eval("[start,int]"))
+    assertResult(int)(engine.eval("int{20}[start,int]"))
+    assertResult(int)(engine.eval("2[start,int]"))
+    assertResult(str.plus("a"))(engine.eval("2[start,str[plus,'a']]"))
+    assertResult(int)(engine.eval("'a'{4}[start,int]"))
+    assertResult(str.plus("a"))(engine.eval("obj{0}[start,str[plus,'a']]"))
   }
 
   test("a instruction parsing") {

@@ -34,8 +34,9 @@ import org.mmadt.language.obj.op.model.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
-import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj, Poly}
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters
@@ -105,7 +106,7 @@ object OpInstResolver {
       case Tokens.q => QOp()
       case Tokens.zero => ZeroOp()
       case Tokens.one => OneOp()
-      case Tokens.start => StartOp(args.head)
+      case Tokens.start => StartOp(if (args.head.isInstanceOf[Value[_]]) strm(args) else args.head)
       //////////////////////////////////////////////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////////////////////////////
       case _ => service(op, args) match {
