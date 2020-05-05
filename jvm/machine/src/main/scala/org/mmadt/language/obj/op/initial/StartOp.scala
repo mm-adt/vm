@@ -23,10 +23,8 @@
 package org.mmadt.language.obj.op.initial
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.InitialInstruction
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, IntQ, OType, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,21 +33,15 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait StartOp {
   this: Obj =>
-  def start[O <: Obj](): O with Type[O] = (this match {
-    case _: Type[_] => this
-    case _: Value[_] => asType(this).via(obj.q(0), StartOp(this)).hardQ(this.q)
-  }).asInstanceOf[OType[O]]
+  def start[O <: Obj](): O = StartOp(this).exec(zeroObj).asInstanceOf[O]
 }
 
 object StartOp {
-  def apply[O <: Obj](starts: O): Inst[O, O] = new StartInst(starts)
+  def apply[O <: Obj](starts: O): Inst[Obj, O] = new StartInst(starts)
 
-  class StartInst[O <: Obj](starts: O, q: IntQ = qOne) extends VInst[O, O]((Tokens.start, List(starts)), q) with InitialInstruction {
+  class StartInst[O <: Obj](starts: O, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.start, List(starts)), q) with InitialInstruction {
     override def q(quantifier: IntQ): this.type = new StartInst[O](starts, quantifier).asInstanceOf[this.type]
-    override def exec(start: O): O = start match {
-      case _: Type[_] => asType(starts).via(obj.q(0), StartOp(starts)).hardQ(starts.q)
-      case _ => starts
-    }
+    override def exec(start: Obj): O = starts
   }
 
 }

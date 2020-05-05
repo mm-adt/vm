@@ -77,7 +77,7 @@ mmlang> -1 int[is>0]                  <3>
 mmlang>
 ----
 <1> The `int` type is passed to the `int[is>0]`-type to yield an either 0 or 1 `int` (compilation)
-<2> The type `[is>0]` serves as a lambda of the form \[ \lambda x: \begin{cases} x & \text{if } x > 0 \\ \emptyset & \text{otherwise.} \end{cases} \]
+<2> The type `[is>0]` serves as a lambda of the form \[ \lambda x = \begin{cases} x & \text{if } x > 0 \\ \emptyset & \text{otherwise.} \end{cases} \]
 <3> The type `[is>0]` filtering the `int` value -1.
 
 
@@ -314,7 +314,8 @@ mmlang>
 |The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
 |===
 
-=== The Inst Monoid
+
+=== Language Categories
 
 .Initial and Terminal Objects
 ****
@@ -322,88 +323,60 @@ image::initial.png[width=130,float=left]
 
 A category may have an https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial and/or terminal] object.
 
-An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
-Initial objects, via their morphisms, generate all the objects of the category.
-If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity.
-Thus, besides labels, two initials are isomorphic.
+An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.
 
 image::terminal.png[width=130,float=right]
-A *terminal object* \$E\$ is the range of a set of morphisms \$E \rightarrow S_n\$.
-Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
-Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+
+A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+
+&nbsp;
 ****
 
-image::initial-ctypes.png[float="right",width=275]
+The program the mm-ADT VM, there must exist a functor from the source language to the logical structure of types and values within the mm-ADT.
 
-The initial object of the `inst` monoid is `obj{\*}`--from nothing, everything can be generated with the respective https://en.wikipedia.org/wiki/Zero_morphism[constant morphism]/instruction.
-A unique constant morphism exists from `obj{0}` to each of the 6 *canonical types*.
-The corresponding instructions are `[bool]`, `[int]`, `[real]`, `[str]`, and `[rec]`, where, for example, \[
-\texttt{[bool]}: \texttt{obj\{0\}} \rightarrow \texttt{bool}
-\]
-and in `mmlang` notation \[
-\texttt{bool\<=[bool]} \]
-
-
-image::type-product.png[float="right",width=250]
-There are two kinds of mm-ADT types: *canonical types* (ctypes) and *derived types* (dtypes).
-There are 6 ctypes which comprise the fundamental base types of the mm-ADT VM: `bool`, `int`, `real`, `str`, `lst`, or `rec`.
-A dtype is the product of a type and an instruction (`inst`), where the type component serves as the _domain_, the instruction component the _function_, and the type product as a whole, relative to it's components, the _range_.
-
-\[
-\begin{split}
-\tt{type} &=\;& (\tt{dtype} &\;*\;& \tt{inst}) &\;+\;& \tt{ctype} \\ \text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"} \end{split}
-\]
-
-The dtypes are generated https://en.wikipedia.org/wiki/Recursive_data_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`).
-When applied to types, every `inst` yields a distinct dtype that is a structural expansion of the previous type.
-
-image::types.png[align=center,width=35%]
-
-The dtype's recursive definition is grounded at the 6 ctypes, where every canonical type is it's own domain and range.
-
-image::obj-full.png[float=right,width=300]
-
-The example below demonstrates how instructions applied to types create new types.
-The diagram on the right presents the products and co-products that form the general structure of the mm-ADT VM language (which is realized in mmlang).
-
-[source]
-----
-mmlang> int
-==>int
-mmlang> int[plus,4]
-==>int[plus,4]
-mmlang> int[plus,4][mult,42]
-==>int[plus,4][mult,42]
-mmlang> int[plus,4][mult,42][gt,42]
-==>bool<=int[plus,4][mult,42][gt,42]
-----
-
-==== The Instruction Monoid
+==== The Inst Monoid
 
 .Monoids
 ****
-A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langleA,\ast\rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
 ****
 
-image::inst-monoid.png[float="left",width=50]
-
-mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems.
-The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_ **inst monoid** \[
+mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_ **inst monoid** \[
 \langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is unique identity element.
-
-An mm-ADT instruction is a ordered list of `objs` where the first element is the opcode and all subsequent elements are instruction arguments.
-For instance, `[plus,6]` is an instruction where `plus` is the opcode and `6` is the argument.
-Instructions can be composed to create longer instruction chains.
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where `S` is a `[start]` instruction. The `x<=[start,x]` instruction is an *initial instruction* in that it returns it's arguments regardless of the input `obj` (hence the lack of a domain ctype in the type signatures of those instructions who type definitions begin with `[start]`).
 
 \[
-\begin{split}
-\texttt{[plus,4]} &=\;& \texttt{[plus,4]} \\ \texttt{[plus,4][mult,2]} &=\;& \texttt{[plus,4]} * \texttt{[mult,2]} \\ \texttt{[plus,4][mult,2][gt,42]} &=\;& \texttt{[plus,4][mult,2]} * \texttt{[gt,42]} \\ \end{split}
+\texttt{[start,x]}: \texttt{obj\{0\}} \rightarrow \texttt{x}
 \]
 
-The instruction monoid is the algebraic structure used by `mmlang` to enable users to write expression.
-The mm-ADT VM processes types, which while composed of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$) are not instructions.
-There exists an isomorphism (a https://en.wikipedia.org/wiki/Full_and_faithful_functors[bijective functor]) that maps the `inst` syntactic monoid to the type graph monoid.
-This should not a surprising bijection--it proves that the syntax of `mmlang` is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in `mmlang`.
+An mm-ADT program is a _type_, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$). The way in which a dtype can be ground to a ctype using instructions only is via the `[start]` instruction. A single pass through the mm-ADT compiler yields a ctype founded type trace.
+
+image::start-ctypes.png[float="right",width=315]
+
+[source]
+----
+mmlang> obj{0}
+mmlang> obj{0}[start,int]
+==>int
+mmlang> obj{0}[start,int][plus,5]
+==>int[plus,5]
+mmlang> obj{0}[start,int][plus,5][gt,10]
+==>bool<=int[plus,5][gt,10]
+mmlang>
+----
+
+The `[noop]` instruction is the only mm-ADT instruction that does not alter the state of the `obj` trace graph and thus, the state of the computation. The instruction `[id]`, on the other hand, does.
+
+[source]
+----
+mmlang> [start,int][plus,5][gt,10][noop]
+==>bool<=int[plus,5][gt,10]
+mmlang> [start,int][plus,5][gt,10][id]
+==>bool<=int[plus,5][gt,10][id]
+----
+
+There exists an isomorphism (a https://en.wikipedia.org/wiki/Full_and_faithful_functors[bijective functor]) that maps the `inst` syntactic monoid to the type trace graph. This bijection proves that the syntax of `mmlang` is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in `mmlang`.
 
 image::inst-type-functor.png[width=35%,align=center]
+
+The `inst`-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile. The benefit of the `inst`-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.
