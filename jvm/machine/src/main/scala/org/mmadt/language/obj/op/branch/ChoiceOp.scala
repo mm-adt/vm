@@ -3,7 +3,7 @@ package org.mmadt.language.obj.op.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, IntQ, Obj, Poly}
+import org.mmadt.language.obj.{IntQ, Obj, Poly}
 import org.mmadt.storage.StorageFactory.{qOne, strm}
 import org.mmadt.storage.obj.value.VInst
 
@@ -20,10 +20,11 @@ object ChoiceOp {
     override def q(q: IntQ): this.type = new ChoiceInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
       start match {
-        case astrm: Strm[A] => strm(astrm.values.map(x => Poly.keepFirst(apoly.clone(apoly.ground._2.map(y => Inst.resolveArg(x, y)).filter(_.alive))))).clone(via = (start, this))
-        case _ => Poly.keepFirst(apoly.clone(apoly.ground._2.map(x => Inst.resolveArg(start, x))).clone(via = (start, this)))
+        case astrm: Strm[A] => strm(astrm.values.map(x => Poly.keepFirst(Poly.resolveSlots(x, apoly))).filter(_.alive)).clone(via = (start, this))
+        case _ => Poly.keepFirst(Poly.resolveSlots(start, apoly)).clone(via = (start, this))
       }
     }
   }
+
 
 }

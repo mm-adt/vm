@@ -42,8 +42,8 @@ object SplitOp {
     override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
       start match {
-        case astrm: Strm[A] => strm(astrm.values.map(x => apoly.clone(apoly.ground._2.map(y => Inst.resolveArg(x, y)).filter(_.alive)))).clone(via = (start, this))
-        case _ => apoly.clone(apoly.ground._2.map(x => Inst.resolveArg(start, x))).clone(via = (start, this))
+        case astrm: Strm[A] => strm(astrm.values.map(x => Poly.resolveSlots(x, apoly)).filter(_.alive)).clone(via = (start, this))
+        case _ => Poly.resolveSlots(start, apoly).clone(via = (start, this))
       }
     }
   }
