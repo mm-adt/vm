@@ -87,7 +87,7 @@ trait Obj
     via = if (this.root) base() else (this.via._1, this.via._2.q(q)))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
-  def alive(): Boolean = this.q != qZero
+  def alive: Boolean = this.q != qZero
 
   // via methods
   def root: Boolean = null == this.via || null == this.via._1

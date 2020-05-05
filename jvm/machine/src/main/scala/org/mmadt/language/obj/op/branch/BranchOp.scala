@@ -44,7 +44,7 @@ trait BranchOp {
         rangeType.via(this, BranchOp[IT, OT](branchTypes)).asInstanceOf[OType[OT]].hardQ(rangeType.q)
       case _: Value[IT] with IT =>
         strm[OT](branches.ground.filter(p => p._1 match {
-          case btype: Type[IT] with IT => Type.ctypeCheck(start, btype) && start.compute(btype).alive()
+          case btype: Type[IT] with IT => Type.ctypeCheck(start, btype) && start.compute(btype).alive
           case bvalue: Value[IT] with IT => start.test(bvalue)
         }).values.map {
           case btype: Type[OT] with OT => start.compute(btype)

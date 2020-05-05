@@ -35,7 +35,7 @@ trait Poly[A <: Obj] extends Obj
 
   def zeroOp(inst: ZeroInst[A]): this.type = this.clone(List.empty[A]).via(this, inst)
   def tailOp(inst: TailInst[Poly[A]]): this.type = if (this.groundList.isEmpty) throw new LanguageException("no tail on empty poly") else this.clone(this.groundList.tail).via(this, inst)
-  def headOp(inst: HeadInst[A]): A = if (this.groundList.isEmpty) throw new LanguageException("no head on empty poly") else this.ground._2.head.via(this, inst)
+  def headOp(inst: HeadInst[A]): A = if (!this.groundList.exists(_.alive)) throw new LanguageException("no head on empty poly") else this.groundList.filter(_.alive).head.via(this, inst)
 
   def plusOp(inst: PlusInst[Poly[A]]): this.type = {
     this.ground._1 match {
@@ -61,8 +61,8 @@ trait Poly[A <: Obj] extends Obj
 
   override def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp[Obj, BB](key, btype))
 
-  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.ground._2.exists(x => x.alive() && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
-  def isType: Boolean = !this.ground._2.exists(x => x.alive() && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))
+  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.ground._2.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
+  def isType: Boolean = !this.ground._2.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))
 
   override def test(other: Obj): Boolean = other match {
     case _: Strm[_] => false // case astrm: Strm[_] => MultiSet.test(this,astrm)

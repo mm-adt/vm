@@ -60,7 +60,7 @@ object mmlangPrinter {
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def polyList(poly: Poly[_]): String = {
     if (poly.isInstanceOf[Strm[_]]) return strmString(poly.asInstanceOf[Strm[Obj]])
-    poly.groundList.zip(if (poly.hasKeys) poly.groundKeys else List.fill(poly.groundList.length)(() => "")).foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x._1.asInstanceOf[Obj].alive()).map(x => (if (poly.hasKeys) (x._2 + Tokens.:->) else Tokens.empty) + x._1).getOrElse(Tokens.empty) + poly.ground._1).dropRight(1) + RBRACKET
+    poly.groundList.zip(if (poly.hasKeys) poly.groundKeys else List.fill(poly.groundList.length)(() => "")).foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x._1.asInstanceOf[Obj].alive).map(x => (if (poly.hasKeys) (x._2 + Tokens.:->) else Tokens.empty) + x._1).getOrElse(Tokens.empty) + poly.ground._1).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {
@@ -76,7 +76,7 @@ object mmlangPrinter {
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
     }
-    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain().alive() && !atype.domain().equals(obj.q(qStar))) domain else Tokens.empty))) + atype.trace.map(_._2.toString()).fold(Tokens.empty)((a, b) => a + b)
+    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain().alive && !atype.domain().equals(obj.q(qStar))) domain else Tokens.empty))) + atype.trace.map(_._2.toString()).fold(Tokens.empty)((a, b) => a + b)
   }
 
   def valueString(avalue: Value[Obj]): String = {

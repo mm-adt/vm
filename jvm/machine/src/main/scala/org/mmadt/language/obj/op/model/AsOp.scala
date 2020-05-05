@@ -80,7 +80,7 @@ object AsOp {
     }
 
     private def testAlive[X <: Obj](trav: X): X = {
-      assert(trav.alive())
+      assert(trav.alive)
       trav
     }
 

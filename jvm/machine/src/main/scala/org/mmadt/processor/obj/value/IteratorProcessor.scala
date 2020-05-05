@@ -52,7 +52,7 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
         //////////////OTHER//////////////
         case _: Inst[Obj, Obj] => output
           .map(_.compute(tt._1.via(tt._1, tt._2)))
-          .filter(x => x.alive())
+          .filter(_.alive)
           .flatMap(x => x match {
             case strm: Strm[E] => strm.values.map(x => x)
             case single: E => Iterator(single)

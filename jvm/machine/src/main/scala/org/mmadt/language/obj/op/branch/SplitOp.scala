@@ -56,7 +56,7 @@ object SplitOp {
                 case atype: Type[_] => start ==> atype // EXECUTE
                 case x => x
               }
-              .filter(x => x.alive())
+              .filter(_.alive)
               .map(x => x.q(multQ(x.q, qTest)))
               .map(x => {
                 qTest = qZero;
@@ -66,11 +66,11 @@ object SplitOp {
             .via(start, this)
         case "|" =>
           val inst = start match {
-            case astrm: Strm[A] => new SplitInst[A](apoly.clone(ground = (apoly.ground._1, apoly.ground._2.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(y => y.alive()))))).asInstanceOf[Poly[A]], q)
+            case astrm: Strm[A] => new SplitInst[A](apoly.clone(ground = (apoly.ground._1, apoly.ground._2.map(x => strm(astrm.values.map(y => Inst.resolveArg(y, x)).filter(_.alive))))).asInstanceOf[Poly[A]], q)
             case _ => new SplitInst[A](apoly.clone(apoly.ground._2.map(x => Inst.resolveArg(start, x))).asInstanceOf[Poly[A]], q)
           }
           val output = start match {
-            case astrm: Strm[A] => strm(astrm.values.map(x => inst.arg0[Poly[A]]().clone(inst.arg0[Poly[A]]().ground._2.map(y => Inst.resolveArg(x, y)).filter(y => y.alive()))))
+            case astrm: Strm[A] => strm(astrm.values.map(x => inst.arg0[Poly[A]]().clone(inst.arg0[Poly[A]]().ground._2.map(y => Inst.resolveArg(x, y)).filter(_.alive))))
             case _ => inst.arg0[Poly[A]]()
           }
           output.clone(via = (start, inst)).asInstanceOf[Poly[A]]
