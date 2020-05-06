@@ -381,9 +381,40 @@ The `inst`-monoid is an algebraic structure that can be used by all untyped lang
 
 ==== The Type Trace Graph
 
-Every mm-ADT program is a _type_. Every type is created by a https://en.wikipedia.org/wiki/Type_constructor[type constructor]. The ctypes are degenerate _nullary_ constructors. The dtypes are `n`-ary constructor with the arity being the number of instructions applied to the base ctype. That number ultimately becomes the path length of the type's definition within a directed labeled graph called a *type trace graph*.
+Every mm-ADT program is a _type_. Every type is created by a https://en.wikipedia.org/wiki/Type_constructor[type constructor]. The ctypes are degenerate _nullary_ constructors. The dtypes are `n`-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the type's definition within a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] called a *type trace graph*.
+
+===== Linear Type Traces
+
+Any type constructed with instructions contain argument values (not types) generates a *linear type trace*.
+
+[source]
+----
+mmlang> int
+==>int
+mmlang> int[id]
+==>int[id]
+mmlang> int[id][gt,0]
+==>bool<=int[id][gt,0]
+----
+
+===== Nested Type Traces
+
+Any type constructed with instructions that contain an argument type generates a *nested type trace*.
+
+[source]
+----
+mmlang> int
+==>int
+mmlang> int[id]
+==>int[id]
+mmlang> int[id][is,[gt,0]]
+==>int{?}<=int[id][is,bool<=int[gt,0]]
+mmlang>
+----
 
 ===== Branching Type Traces
+
+Nested types are examples of _inter-instruction branching_. The more general form is _intra-instruction branching_. Any instruction that forks an `obj` into a `poly` or joins the `objs` of a `poly` into a stream are *branch instructions*. They generate *branching type traces*.
 
 A https://en.wikipedia.org/wiki/Tagged_union[*sum type*] (tagged union) can be constructed from a ctype.
 
@@ -424,8 +455,6 @@ mmlang> 10~<[int[is>0] | int[neg]]=[_|[neg]]>-
 mmlang> -10~<[int[is>0] | int[neg]]=[_|[neg]]>-
 ==>-10
 ----
-
-===== Accessing Type Traces
 
 ==== The Type Ring
 
