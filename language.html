@@ -1125,10 +1125,46 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 <div class="sect3">
 <h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
 <div class="paragraph">
-<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructor with the arity being the number of instructions applied to the base ctype. That number ultimately becomes the path length of the type&#8217;s definition within a directed labeled graph called a <strong>type trace graph</strong>.</p>
+<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the type&#8217;s definition within a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> called a <strong>type trace graph</strong>.</p>
+</div>
+<div class="sect4">
+<h5 id="_linear_type_traces">Linear Type Traces</h5>
+<div class="paragraph">
+<p>Any type constructed with instructions contain argument values (not types) generates a <strong>linear type trace</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; int
+==&gt;int
+mmlang&gt; int[id]
+==&gt;int[id]
+mmlang&gt; int[id][gt,0]
+==&gt;bool&lt;=int[id][gt,0]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_nested_type_traces">Nested Type Traces</h5>
+<div class="paragraph">
+<p>Any type constructed with instructions that contain an argument type generates a <strong>nested type trace</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; int
+==&gt;int
+mmlang&gt; int[id]
+==&gt;int[id]
+mmlang&gt; int[id][is,[gt,0]]
+==&gt;int{?}&lt;=int[id][is,bool&lt;=int[gt,0]]
+mmlang&gt;</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_branching_type_traces">Branching Type Traces</h5>
+<div class="paragraph">
+<p>Nested types are examples of <em>inter-instruction branching</em>. The more general form is <em>intra-instruction branching</em>. Any instruction that forks an <code>obj</code> into a <code>poly</code> or joins the <code>objs</code> of a <code>poly</code> into a stream are <strong>branch instructions</strong>. They generate <strong>branching type traces</strong>.</p>
+</div>
 <div class="paragraph">
 <p>A <a href="https://en.wikipedia.org/wiki/Tagged_union"><strong>sum type</strong></a> (tagged union) can be constructed from a ctype.</p>
 </div>
@@ -1177,10 +1213,6 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_accessing_type_traces">Accessing Type Traces</h5>
-
-</div>
 </div>
 <div class="sect3">
 <h4 id="_the_type_ring">The Type Ring</h4>
@@ -1212,7 +1244,7 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-06 13:06:13 -0600
+Last updated 2020-05-06 13:29:14 -0600
 </div>
 </div>
 </body>

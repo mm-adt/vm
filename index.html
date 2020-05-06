@@ -481,8 +481,9 @@ table.tableblock{max-width:100%;border-collapse:separate; margin:0.25em 1em 0.25
 <li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 <li><a href="#_the_type_trace_graph">The Type Trace Graph</a>
 <ul class="sectlevel4">
+<li><a href="#_linear_type_traces">Linear Type Traces</a></li>
+<li><a href="#_nested_type_traces">Nested Type Traces</a></li>
 <li><a href="#_branching_type_traces">Branching Type Traces</a></li>
-<li><a href="#_accessing_type_traces">Accessing Type Traces</a></li>
 </ul>
 </li>
 <li><a href="#_the_type_ring">The Type Ring</a></li>
@@ -1395,10 +1396,46 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 <div class="sect3">
 <h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
 <div class="paragraph">
-<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructor with the arity being the number of instructions applied to the base ctype. That number ultimately becomes the path length of the type&#8217;s definition within a directed labeled graph called a <strong>type trace graph</strong>.</p>
+<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the type&#8217;s definition within a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> called a <strong>type trace graph</strong>.</p>
+</div>
+<div class="sect4">
+<h5 id="_linear_type_traces">Linear Type Traces</h5>
+<div class="paragraph">
+<p>Any type constructed with instructions contain argument values (not types) generates a <strong>linear type trace</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
+==&gt;<span style="color:#369;font-weight:bold">int</span>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][gt,<span style="color:#00D">0</span>]
+==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][gt,<span style="color:#00D">0</span>]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_nested_type_traces">Nested Type Traces</h5>
+<div class="paragraph">
+<p>Any type constructed with instructions that contain an argument type generates a <strong>nested type trace</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
+==&gt;<span style="color:#369;font-weight:bold">int</span>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]
+mmlang&gt;</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_branching_type_traces">Branching Type Traces</h5>
+<div class="paragraph">
+<p>Nested types are examples of <em>inter-instruction branching</em>. The more general form is <em>intra-instruction branching</em>. Any instruction that forks an <code>obj</code> into a <code>poly</code> or joins the <code>objs</code> of a <code>poly</code> into a stream are <strong>branch instructions</strong>. They generate <strong>branching type traces</strong>.</p>
+</div>
 <div class="paragraph">
 <p>A <a href="https://en.wikipedia.org/wiki/Tagged_union"><strong>sum type</strong></a> (tagged union) can be constructed from a ctype.</p>
 </div>
@@ -1446,10 +1483,6 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 ==&gt;-<span style="color:#00D">10</span></code></pre>
 </div>
 </div>
-</div>
-<div class="sect4">
-<h5 id="_accessing_type_traces">Accessing Type Traces</h5>
-
 </div>
 </div>
 <div class="sect3">
