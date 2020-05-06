@@ -1124,7 +1124,63 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 </div>
 <div class="sect3">
 <h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
+<div class="paragraph">
+<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructor with the arity being the number of instructions applied to the base ctype. That number ultimately becomes the path length of the type&#8217;s definition within a directed labeled graph called a <strong>type trace graph</strong>.</p>
+</div>
+<div class="sect4">
+<h5 id="_branching_type_traces">Branching Type Traces</h5>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Tagged_union"><strong>sum type</strong></a> (tagged union) can be constructed from a ctype.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/sum-type-constructor.png" alt="sum type constructor" width="600">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; int~&lt;[int[is&gt;0] | int[neg]]
+==&gt;[int{?}&lt;=int[is,bool&lt;=int[gt,0]]|int[neg]]&lt;=int~&lt;[int{?}&lt;=int[is,bool&lt;=int[gt,0]]|int[neg]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example above, a <code>int</code> is the ctype that is split across two branches via <code>[choice]</code> (with a sugar of <code>~&lt;</code>). Given an <code>int</code> value, that <code>int</code> value will either be greater than 0 or it will be negated.  In other words, the type maps an <code>int</code> to a coproduct containing it&#8217;s <a href="https://en.wikipedia.org/wiki/Absolute_value">absolute value</a> as determined either from the first or the second branch.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 10~&lt;[int[is&gt;0] | int[neg]]
+==&gt;[10|]
+mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]
+==&gt;[|10]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain <code>int</code>. For example, should the coproduct undergo a <code>[merge]</code> (with a sugar of <code>&gt;-</code>), then the above type yields the same range value for two different <code>int</code> domains.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 10~&lt;[int[is&gt;0] | int[neg]]&gt;-
+==&gt;10
+mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]&gt;-
+==&gt;10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Without the merge, the branch that the incoming <code>int</code> took is preserved in the coproduct&#8217;s <code>poly</code> structure and can be inverted.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
+==&gt;10
+mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
+==&gt;-10</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_accessing_type_traces">Accessing Type Traces</h5>
 
+</div>
 </div>
 <div class="sect3">
 <h4 id="_the_type_ring">The Type Ring</h4>
@@ -1132,39 +1188,16 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 </div>
 </div>
 <div class="sect2">
-<h3 id="_objs_in_practice">Objs in Practice</h3>
+<h3 id="_the_value">The Value</h3>
 <div class="paragraph">
 <p>The mm-ADT type system is realized in real-world programs.</p>
 </div>
 <div class="sect3">
-<h4 id="_bool_examples">Bool Examples</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; false[and,true]
-==&gt;false
-mmlang&gt; false[or,true]
-==&gt;true
-mmlang&gt; false &amp;&amp; true
-==&gt;false
-mmlang&gt; false || true
-==&gt;true</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_int_examples">Int Examples</h4>
+<h4 id="_uni_values">Uni Values</h4>
 
 </div>
 <div class="sect3">
-<h4 id="_real_examples">Real Examples</h4>
-
-</div>
-<div class="sect3">
-<h4 id="_str_examples">Str Examples</h4>
-
-</div>
-<div class="sect3">
-<h4 id="_poly_examples">Poly Examples</h4>
+<h4 id="_poly_values">Poly Values</h4>
 
 </div>
 </div>
@@ -1179,7 +1212,7 @@ mmlang&gt; false || true
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-05 13:27:45 -0600
+Last updated 2020-05-06 13:06:13 -0600
 </div>
 </div>
 </body>
