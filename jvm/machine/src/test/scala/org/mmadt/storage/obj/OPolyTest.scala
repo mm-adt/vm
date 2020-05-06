@@ -4,6 +4,7 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.MultOp
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Int, Obj, Poly, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -12,8 +13,8 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
 class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("basic poly") {
-    assertResult(str("a"))(`|`[Str]("a", "b", "c").head())
-    assertResult(`|`[Str]("b", "c"))(`|`[Str]("a", "b", "c").tail())
+    assertResult(str("a"))(|[Str]("a", "b", "c").head())
+    assertResult(|[Str]("b", "c"))(|[Str]("a", "b", "c").tail())
 
     assertResult(str("a"))(`;`[Str]("a", "b", "c").head())
     assertResult(`;`[Str]("b", "c"))(`;`[Str]("a", "b", "c").tail())
@@ -27,11 +28,11 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1).-<(`|`(int, int.plus(2).q(10))), `|`(int(1), int(3).q(10))),
         (int(1).q(5).-<(`|`(int, int.plus(2).q(10))), `|`(int(1).q(5), int(3).q(50))),
         (int(1).q(5).-<(`|`(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50))),
-        // (int(int(1), int(100)).-<(coprod(int, int)) >-, int(int(1), int(1), int(100), int(100))),
-        // (int(int(1).q(5), int(100)).-<(coprod(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
-        // (int(int(1), int(2)).-<(coprod(int, int -< (coprod(int, int)))), coprod(strm(List(int(1), int(2))), strm(List(coprod(int(1), int(1)), coprod(int(2), int(2)))))),
-        //  (int(1) -< `|`(str, int), `|`(obj.q(0), int(1))),
-        // (strm(List(int(1), str("a"))) -< `|`(str, int), strm(List(`|`(obj.q(0), int(1)), `|`(str("a"), obj.q(0))))),
+        // (int(int(1), int(100)).-<(|(int, int)) >-, int(int(1), int(1), int(100), int(100))),
+        //(int(int(1).q(5), int(100)).-<(|(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
+        //(int(int(1), int(2)).-<(|(int, int -< (|(int, int)))), |(strm(List(int(1), int(2))), strm(List(|(int(1), int(1)), |(int(2), int(2)))))),
+        //(int(1) -< |(str, int), |[Obj](obj.q(0), int(1))),
+        // (strm(List(int(1), str("a"))) -< `|`(str, int), strm(List(`|`[Obj](obj.q(0), int(1)), `|`[Obj](str("a"), obj.q(0))))),
       )
     forEvery(starts) { (query, result) => {
       println(s"${query}")
@@ -42,18 +43,17 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
 
-  /*test("parallel [tail][head] values") {
+  test("parallel [tail][head] values") {
     val starts: TableFor2[Poly[Obj], List[Value[Obj]]] =
       new TableFor2[Poly[Obj], List[Value[Obj]]](("parallel", "projections"),
-        (`|`(), List.empty),
-        (`|`("a"), List(str("a"))),
-        (`|`("a", "b"), List(str("a"), str("b"))),
-        (`|`("a", "b", "c"), List(str("a"), str("b"), str("c"))),
-        (`|`("a", `|`[Str]("b", "d"), "c"), List(str("a"), `|`[Str]("b", "d"), str("c"))),
+        (|(), List.empty),
+        (|[Obj]("a"), List(str("a"))),
+        (|[Obj]("a", "b"), List(str("a"), str("b"))),
+        (|[Obj]("a", "b", "c"), List(str("a"), str("b"), str("c"))),
+        (|[Obj]("a", `|`[Str]("b", "d"), "c"), List(str("a"), `|`[Str]("b", "d"), str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
       assertResult(alst.groundList)(blist)
-      assertResult(alst.groundList)(vlst[Value[Obj]](ground = blist).ground)
       if (blist.nonEmpty) {
         assertResult(alst.head())(blist.head)
         assertResult(alst.ground._2.head)(blist.head)
@@ -62,7 +62,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
       }
     }
     }
-  }*/
+  }
 
   test("parallel keys") {
     assertResult("[name->'marko'|age->29]")(`|`("name" -> str("marko"), "age" -> int(29)).toString)
@@ -108,7 +108,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(int.q(3))(int.mult(8).split(`|`(__.id(), __.plus(8).mult(2), int(56))).merge[Int].id().isolate)
     assertResult(int.q(13, 23))(int.mult(8).split(`|`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
     assertResult(int.q(25, 45))(int.q(2).mult(8).q(1).split(`|`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
-    // assertResult(__)(int.q(2).mult(8).q(0).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Obj]().id().isolate)
+    // assertResult(__)(int.q(2).mult(8).q(0).split(`;`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Obj].id().isolate)
   }
 
   test("serial value/type checking") {
@@ -118,7 +118,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
         (`;`("a", "b"), true),
         (`;`("a", "b", "c", "d"), true),
         //(`;`[Obj]("a", "b").mult(prod[Obj]("c", "d")), true),
-        //(MultOp[Poly[Obj]](`;`[Obj]("c", "d")).exec(`;`[Obj]("a", "b")), true),
+        (MultOp[Poly[Obj]](`;`[Obj]("c", "d")).exec(`;`[Obj]("a", "b")), true),
         (`;`(str, "b"), false),
       )
     forEvery(starts) { (serial, bool) => {
