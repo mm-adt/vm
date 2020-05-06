@@ -37,6 +37,7 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.OPoly
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -63,24 +64,6 @@ trait Obj
     with ToOp
     with StartOp
     with SplitOp {
-
-
-  /*final def `|`[A<:Obj](key:String,obj:A):Poly[A] = {
-    new OPoly[A](ground=(Tokens.empty,List[A](this.asInstanceOf[A],obj),List.empty))
-  }*/
-
-  final def |[A <: Obj](obj: scala.Int): Poly[A] = this.|(int(obj).asInstanceOf[A])
-  final def |[A <: Obj](obj: String): Poly[A] = this.|(str(obj).asInstanceOf[A])
-  final def |[A <: Obj]: Poly[A] = poly(Tokens.:|, this.asInstanceOf[A])
-  final def |[A <: Obj](obj: A): Poly[A] = {
-    this match {
-      case apoly: Poly[A] => obj match {
-        case _: Poly[A] => poly(Tokens.:|, List(this.asInstanceOf[A], obj): _*)
-        case _ => apoly.clone(apoly.groundList :+ obj)
-      }
-      case _ => poly(Tokens.:|, this.asInstanceOf[A], obj)
-    }
-  }
 
   //////////////////////////////////////////////////////////////
   // data associated with every obj
@@ -122,6 +105,31 @@ trait Obj
     }
   }
 
+  // poly fluent methods
+  final def |[A <: Obj](obj: scala.Double): Poly[A] = this.|(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def |[A <: Obj](obj: scala.Long): Poly[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def |[A <: Obj](obj: scala.Int): Poly[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def |[A <: Obj](obj: String): Poly[A] = this.|(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def |[A <: Obj]: Poly[A] = poly(Tokens.:|, this.asInstanceOf[A])
+  final def |[A <: Obj](obj: A): Poly[A] = {
+    this match {
+      case apoly: Poly[A] => obj match {
+        case _: Poly[A] => poly(Tokens.:|, List(this.asInstanceOf[A], obj): _*)
+        case _ => apoly.clone(apoly.groundList :+ obj)
+      }
+      case _ => poly(Tokens.:|, this.asInstanceOf[A], obj)
+    }
+  }
+  final def |[A <: Obj](obj: (String, A)): Poly[A] = {
+    this match {
+      case apoly: Poly[A] => obj._2 match {
+        case _: Poly[A] => poly(Tokens.:|, List(this.asInstanceOf[A], obj._2): _*)
+        case _ => apoly.clone(ground = (Tokens.:|, apoly.groundList :+ obj._2, apoly.groundKeys :+ obj._1))
+      }
+      case _ => poly[A](Tokens.:|).clone(ground = (Tokens.:|, List(this.asInstanceOf[A], obj._2), List(null, obj._1)))
+    }
+  }
+
   // utility methods
   def clone(name: String = this.name, ground: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this))
@@ -160,12 +168,11 @@ object Obj {
     }
   }
 
-  @inline implicit def booleanToBool(java: Boolean): BoolValue = bool(java)
-  @inline implicit def longToInt(java: Long): IntValue = int(java)
-  @inline implicit def intToInt(java: scala.Int): IntValue = int(java.longValue())
-  @inline implicit def doubleToReal(java: scala.Double): RealValue = real(java)
-  @inline implicit def floatToReal(java: scala.Float): RealValue = real(java)
-  @inline implicit def stringToStr(java: String): StrValue = str(java)
-  @inline implicit def mapToRec[A <: Value[Obj], B <: Value[Obj]](java: Map[A, B]): RecValue[A, B] = vrec[A, B](java)
-  @inline implicit def mapToRec[A <: Value[Obj], B <: Value[Obj]](value: (A, B), values: (A, B)*): RecValue[A, B] = vrec(ground = value, grounds = values: _*)
+  @inline implicit def tupleToPoly[A <: Obj](keyObj: (String, A)): Poly[A] = new OPoly[A](ground = (Tokens.:|, List(keyObj._2), List(keyObj._1)))
+  @inline implicit def booleanToBool(ground: Boolean): BoolValue = bool(ground)
+  @inline implicit def longToInt(ground: Long): IntValue = int(ground)
+  @inline implicit def intToInt(ground: scala.Int): IntValue = int(ground.longValue())
+  @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
+  @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
+  @inline implicit def stringToStr(ground: String): StrValue = str(ground)
 }
