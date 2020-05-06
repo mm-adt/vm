@@ -381,30 +381,58 @@ The `inst`-monoid is an algebraic structure that can be used by all untyped lang
 
 ==== The Type Trace Graph
 
-==== The Type Ring
+Every mm-ADT program is a _type_. Every type is created by a https://en.wikipedia.org/wiki/Type_constructor[type constructor]. The ctypes are degenerate _nullary_ constructors. The dtypes are `n`-ary constructor with the arity being the number of instructions applied to the base ctype. That number ultimately becomes the path length of the type's definition within a directed labeled graph called a *type trace graph*.
 
-=== Objs in Practice
+===== Branching Type Traces
 
-The mm-ADT type system is realized in real-world programs.
+A https://en.wikipedia.org/wiki/Tagged_union[*sum type*] (tagged union) can be constructed from a ctype.
 
-==== Bool Examples
+image::sum-type-constructor.png[width=600,align=center]
 
 [source]
 ----
-mmlang> false[and,true]
-==>false
-mmlang> false[or,true]
-==>true
-mmlang> false && true
-==>false
-mmlang> false || true
-==>true
+mmlang> int~<[int[is>0] | int[neg]]
+==>[int{?}<=int[is,bool<=int[gt,0]]|int[neg]]<=int~<[int{?}<=int[is,bool<=int[gt,0]]|int[neg]]
 ----
 
-==== Int Examples
+In the example above, a `int` is the ctype that is split across two branches via `[choice]` (with a sugar of `~<`). Given an `int` value, that `int` value will either be greater than 0 or it will be negated.  In other words, the type maps an `int` to a coproduct containing it's https://en.wikipedia.org/wiki/Absolute_value[absolute value] as determined either from the first or the second branch.
 
-==== Real Examples
+[source]
+----
+mmlang> 10~<[int[is>0] | int[neg]]
+==>[10|]
+mmlang> -10~<[int[is>0] | int[neg]]
+==>[|10]
+----
 
-==== Str Examples
+While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain `int`. For example, should the coproduct undergo a `[merge]` (with a sugar of `>-`), then the above type yields the same range value for two different `int` domains.
 
-==== Poly Examples
+[source]
+----
+mmlang> 10~<[int[is>0] | int[neg]]>-
+==>10
+mmlang> -10~<[int[is>0] | int[neg]]>-
+==>10
+----
+
+Without the merge, the branch that the incoming `int` took is preserved in the coproduct's `poly` structure and can be inverted.
+
+[source]
+----
+mmlang> 10~<[int[is>0] | int[neg]]=[_|[neg]]>-
+==>10
+mmlang> -10~<[int[is>0] | int[neg]]=[_|[neg]]>-
+==>-10
+----
+
+===== Accessing Type Traces
+
+==== The Type Ring
+
+=== The Value
+
+The mm-ADT type system is realized in real-world programs.
+
+==== Uni Values
+
+==== Poly Values
