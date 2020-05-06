@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp, SplitOp}
+import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp, GivenOp, SplitOp}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
@@ -52,6 +52,7 @@ trait Obj
     with FoldOp
     with MapOp
     with ModelOp
+    with GivenOp
     with PathOp
     with FromOp
     with QOp
@@ -82,7 +83,7 @@ trait Obj
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
-  def q(q: IntQ): this.type = this.clone(
+  def q(q: IntQ): this.type = if (q.equals(qZero)) this.isolate.clone(q = qZero) else this.clone(
     q = if (this.root) q else multQ(this.via._1, q),
     via = if (this.root) base else (this.via._1, this.via._2.q(q)))
   def hardQ(q: IntQ): this.type = this.clone(q = q)

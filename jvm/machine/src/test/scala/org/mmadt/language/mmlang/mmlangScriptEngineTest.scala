@@ -236,6 +236,12 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("choose with mixed end types") {
+    assertResult("[15|]")(engine.eval("5-<[int+1[is>0] --> +10 | str --> +'a']").toString)
+    assertResult("[|'aa']")(engine.eval("'a'-<[int+1[is>0] --> +10 | str --> +'a']").toString)
+    assertResult("[15|100]")(engine.eval("5-<[int+1[is>0] --> +10 | int --> 100]").toString)
+    assertResult("[15|]")(engine.eval("5~<[int+1[is>0] --> +10 | int --> 100]").toString)
+    assertResult("15")(engine.eval("5~<[int+1[is>0] --> +10 | int --> 100]>-").toString)
+
     assertResult(btrue)(engine.eval("  5 [plus,2][[is>5]->true|[is==1]->[plus 2]|int->20]"))
     assertResult(int(3))(engine.eval("-1 [plus,2][[is>5]->true|[is==1]->[plus2]|int->20]"))
     assertResult(int(20))(engine.eval("1 [plus,2][[is>5]->true|[is==1]->[plus 2]|int->20]"))

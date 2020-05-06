@@ -62,6 +62,7 @@ object OpInstResolver {
       case Tokens.choice | Tokens.choice_op => ChoiceOp(args.head.asInstanceOf[Poly[Obj]])
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head.asInstanceOf[Poly[Obj]])
       case Tokens.merge | Tokens.merge_op => MergeOp()
+      case Tokens.given | Tokens.given_op => GivenOp(args.head)
       //
       case Tokens.noop => NoOp()
       case Tokens.add => AddOp(args.head)

@@ -33,6 +33,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class VIntTest extends FunSuite {
+
   test("int value") {
     assertResult(int(8))(4 + int)
     assertResult(int(3))(int(1) + int(2))

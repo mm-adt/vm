@@ -130,7 +130,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
     Tokens.split_op | Tokens.choice_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op |
       Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op |
-      Tokens.and_op | Tokens.or_op |
+      Tokens.and_op | Tokens.or_op | Tokens.given_op |
       Tokens.combine_op | Tokens.a_op | Tokens.is | Tokens.append_op) ~ obj ^^
     (x => OpInstResolver.resolve(x._1, List(x._2)))
   lazy val mergeSugar: Parser[MergeInst[Obj]] = Tokens.merge_op ^^ (_ => MergeOp())

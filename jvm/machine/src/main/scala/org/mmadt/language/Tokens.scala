@@ -30,7 +30,7 @@ object Tokens {
   lazy val reserved: Set[String] = Set(
     Tokens.noop, Tokens.and, Tokens.branch, Tokens.choose, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
     Tokens.plus, Tokens.gt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as, Tokens.a, // Tokens.model (shared with global name)
-    Tokens.split, Tokens.combine, Tokens.merge,
+    Tokens.split, Tokens.combine, Tokens.merge, Tokens.given,
     Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.rec, Tokens.lst, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
 
   val anon = "_"
@@ -59,6 +59,7 @@ object Tokens {
   val eqs = "eq"
   val explain = "explain"
   val get = "get"
+  val given = "given"
   val id = "id"
   val is = "is"
   val lt = "lt"
@@ -109,6 +110,7 @@ object Tokens {
   val choice_op = "~<"
   val combine_op = "="
   val merge_op = ">-"
+  val given_op = "-->"
 
 
   val :: = ":"
