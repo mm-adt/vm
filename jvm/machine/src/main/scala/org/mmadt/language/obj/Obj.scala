@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.branch.{BranchOp, ChooseOp, GivenOp, SplitOp}
+import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
@@ -46,6 +46,7 @@ trait Obj
     with AsOp
     with BranchOp
     with CountOp
+    with ChoiceOp
     with ChooseOp
     with IdOp
     with IsOp

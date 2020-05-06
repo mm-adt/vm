@@ -82,7 +82,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel structure") {
     val poly = int.mult(8).split(`|`[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[[id]|[plus,2]|3]")(poly.toString)
+    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
     assertResult(int.id())(poly.groundList(0))
     assertResult(int.plus(2))(poly.groundList(1))
     assertResult(int(3))(poly.groundList(2))
@@ -94,7 +94,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel quantifier") {
     val poly = int.q(2).mult(8).split(`|`[Obj](__.id(), __.plus(2), 3))
-    assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[[id]|[plus,2]|3]")(poly.toString)
+    assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
     assertResult(int.q(2).id())(poly.groundList(0))
     assertResult(int.q(2).plus(2))(poly.groundList(1))
     assertResult(int(3))(poly.groundList(2))
@@ -105,9 +105,9 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel [split] quantification") {
-    assertResult(int.q(0, 3))(int.mult(8).split(`|`(__.id(), __.plus(8).mult(2), int(56))).merge[Int].id().isolate)
-    assertResult(int.q(0, 23))(int.mult(8).split(`|`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
-    assertResult(int.q(0, 45))(int.q(2).mult(8).q(1).split(`|`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
+    assertResult(int.q(3))(int.mult(8).split(`|`(__.id(), __.plus(8).mult(2), int(56))).merge[Int].id().isolate)
+    assertResult(int.q(13, 23))(int.mult(8).split(`|`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
+    assertResult(int.q(25, 45))(int.q(2).mult(8).q(1).split(`|`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
     // assertResult(__)(int.q(2).mult(8).q(0).split(prod(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Obj]().id().isolate)
   }
 

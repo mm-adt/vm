@@ -1,6 +1,7 @@
 package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{IntQ, Obj, Poly}
@@ -19,10 +20,12 @@ object ChoiceOp {
   class ChoiceInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.choice, List(apoly)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new ChoiceInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
-      start match {
-        case astrm: Strm[A] => strm(astrm.values.map(x => Poly.keepFirst(Poly.resolveSlots(x, apoly))).filter(_.alive)).clone(via = (start, this))
-        case _ => Poly.keepFirst(Poly.resolveSlots(start, apoly)).clone(via = (start, this))
-      }
+      val inst = new ChoiceInst[A](Poly.resolveSlots(start, apoly))
+      (start match {
+        case astrm: Strm[A] => strm(astrm.values.map(x => Poly.keepFirst(Poly.resolveSlots(x, apoly))).filter(_.alive))
+        case _: Type[_] => inst.arg0[Poly[A]]()
+        case _ => Poly.keepFirst(inst.arg0[Poly[A]]())
+      }).clone(via = (start, inst))
     }
   }
 

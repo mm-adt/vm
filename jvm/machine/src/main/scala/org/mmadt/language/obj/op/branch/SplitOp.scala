@@ -41,10 +41,11 @@ object SplitOp {
   class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
-      start match {
-        case astrm: Strm[A] => strm(astrm.values.map(x => Poly.resolveSlots(x, apoly)).filter(_.alive)).clone(via = (start, this))
-        case _ => Poly.resolveSlots(start, apoly).clone(via = (start, this))
-      }
+      val inst = new SplitInst[A](Poly.resolveSlots(start, apoly))
+      (start match {
+        case astrm: Strm[A] => strm(astrm.values.map(x => Poly.resolveSlots(x, apoly)).filter(_.alive))
+        case _ => inst.arg0[Poly[A]]()
+      }).clone(via = (start, inst))
     }
   }
 

@@ -26,10 +26,10 @@ import java.util
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{RecType, Type}
-import org.mmadt.language.obj.op.TraverserInstruction
 import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
+import org.mmadt.language.obj.op.{BranchInstruction, TraverserInstruction}
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Obj, Str}
+import org.mmadt.language.obj.{Inst, Obj, Poly, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -60,6 +60,10 @@ object ExplainOp {
           case btype: Type[_] => btype
           case bvalue: Value[_] => bvalue.start()
         }.flatMap(x => explain(x, mutable.LinkedHashMap(state.toSeq: _*), depth + 1))
+        case branches: Poly[_] if b._2.isInstanceOf[BranchInstruction] => branches.ground._2.flatMap(x => List(x)).map {
+          case btype: Type[_] => btype
+          case bvalue: Value[_] => bvalue.start()
+        }.flatMap(x => explain(x, mutable.LinkedHashMap(state.toSeq: _*), depth + 1))
         case btype: Type[Obj] => explain(btype, mutable.LinkedHashMap(state.toSeq: _*), depth + 1)
         case _ => Nil
       }))
@@ -69,15 +73,15 @@ object ExplainOp {
   }
   private def lastRange(atype: Type[Obj]): Type[Obj] = if (atype.root) atype else atype.linvert().range
   private val MAX_LENGTH_STRING = 40
-  private def instMax(inst: Inst[Obj, Obj]): String = {
+  private def objStringClip(inst: Obj): String = {
     val instString = inst.toString.substring(0, Math.min(MAX_LENGTH_STRING, inst.toString.length))
     if (instString.length == MAX_LENGTH_STRING) instString + "..." else instString
   }
   def printableTable(atype: Type[Obj]): String = {
     val report = explain(atype, mutable.LinkedHashMap.empty[String, Obj])
-    val c1 = report.map(x => instMax(x._2).length).max + 4
-    val c2 = report.map(x => x._3.toString.length).max + 4
-    val c3 = report.map(x => x._4.toString.length).max + 4
+    val c1 = report.map(x => objStringClip(x._2).length).max + 4
+    val c2 = report.map(x => objStringClip(x._3).length).max + 4
+    val c3 = report.map(x => objStringClip(x._4).length).max + 4
     val builder: StringBuilder = new StringBuilder()
 
     builder
@@ -89,10 +93,10 @@ object ExplainOp {
     builder.append(stolenRepeat("-", builder.length)).append("\n")
     report.foldLeft(builder)((a, b) => a
       .append(stolenRepeat(" ", b._1))
-      .append(instMax(b._2)).append(stolenRepeat(" ", Math.abs(c1 - (instMax(b._2).length))))
-      .append(b._3).append(stolenRepeat(" ", Math.abs(c2 - (b._3.toString.length) - (b._1))))
+      .append(objStringClip(b._2)).append(stolenRepeat(" ", Math.abs(c1 - (objStringClip(b._2).length))))
+      .append(objStringClip(b._3)).append(stolenRepeat(" ", Math.abs(c2 - (objStringClip(b._3).length) - (b._1))))
       .append("=>").append(stolenRepeat(" ", 3)).append(stolenRepeat(" ", b._1))
-      .append(b._4).append(stolenRepeat(" ", Math.abs(c3 - (b._4.toString.length) - (b._1))))
+      .append(objStringClip(b._4)).append(stolenRepeat(" ", Math.abs(c3 - (objStringClip(b._4).length) - (b._1))))
       .append(b._5.foldLeft("")((x, y) => x + (y._2 + "<" + y._1 + "> "))).append("\n"))
     "\n" + atype.toString + "\n\n" + builder.toString()
   }
