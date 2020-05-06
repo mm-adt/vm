@@ -56,11 +56,11 @@ object MultOp {
           //////// EXPERIMENTAL
           case prodA: Poly[O] if prodA.ground._1 == ";" => multObj[O](arg match {
             case prodB: Poly[O] if prodB.ground._1 == ";" => `;`[O]().clone(prodA.groundList ++ prodB.groundList)
-            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`[O]().clone(coprodB.groundList.map(a => `;`().clone(prodA.groundList :+ a)).asInstanceOf[List[O]])
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => poly[O](sep="|").clone(coprodB.groundList.map(a => `;`().clone(prodA.groundList :+ a)).asInstanceOf[List[O]])
           })
           case coprodA: Poly[O] if coprodA.ground._1 == "|" => multObj[O](arg match {
-            case prodB: Poly[O] if prodB.ground._1 == ";" => `|`[O]().clone(coprodA.groundList.map(a => `;`().clone(a +: prodB.groundList)).asInstanceOf[List[O]])
-            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`[O]().clone(coprodA.groundList.flatMap(a => coprodB.groundList.map(b => `;`(a, b))).asInstanceOf[List[O]])
+            case prodB: Poly[O] if prodB.ground._1 == ";" => poly[O](sep="|").clone(coprodA.groundList.map(a => `;`().clone(a +: prodB.groundList)).asInstanceOf[List[O]])
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => poly[O](sep="|").clone(coprodA.groundList.flatMap(a => coprodB.groundList.map(b => `;`(a, b))).asInstanceOf[List[O]])
           })
         }
         case _ => start

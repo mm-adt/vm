@@ -91,7 +91,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   var z: String = ""
   lazy val polyLstObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(obj, (PIPE | SEMICOLON) ^^ (y => z = y)) <~ RBRACKET) ^^ (x => poly(z, x._2: _*))
   lazy val polyRecObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> repsep(opt("[a-zA-Z]+".r <~ Tokens.:->) ~ obj, PIPE) <~ RBRACKET) ^^
-    (x => `|`[Obj]().clone(ground = ("|", x._2.map(y => y._2), x._2.filter(y => y._1.isDefined).map(y => y._1.getOrElse("")))))
+    (x => poly[Obj](sep="|").clone(ground = ("|", x._2.map(y => y._2), x._2.filter(y => y._1.isDefined).map(y => y._1.getOrElse("")))))
 
   // type parsing
   lazy val objType: Parser[Obj] = dType | anonType
@@ -135,7 +135,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
       Tokens.combine_op | Tokens.a_op | Tokens.is | Tokens.append_op) ~ obj ^^
     (x => OpInstResolver.resolve(x._1, List(x._2)))
   lazy val mergeSugar: Parser[MergeInst[Obj]] = Tokens.merge_op ^^ (_ => MergeOp())
-  lazy val choiceSugar: Parser[ChoiceInst[Obj]] = (LBRACKET ~> repsep((obj <~ "--->") ~ obj, PIPE)) <~ RBRACKET ^^ (x => ChoiceOp(`|`(x.map(o => o._1.given(o._2)): _*)))
+  lazy val choiceSugar: Parser[ChoiceInst[Obj]] = (LBRACKET ~> repsep((obj <~ "--->") ~ obj, PIPE)) <~ RBRACKET ^^ (x => ChoiceOp(poly("|", x.map(o => o._1.given(o._2)): _*)))
   lazy val chooseSugar: Parser[ChooseInst[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj, PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(ground = x.map(o => (o._1, o._2)).toMap)))
   lazy val branchSugar: Parser[BranchInst[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.:->) ~ obj, AMPERSAND)) <~ RBRACKET ^^ (x => BranchOp(trec(ground = x.map(o => (o._1, o._2)).toMap)))
   lazy val getStrSugar: Parser[GetInst[Obj, Obj]] = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp[Obj, Obj](str(x)))

@@ -58,12 +58,12 @@ object PlusOp {
           case arec: ORecType => start.clone(ground = arec.ground ++ inst.arg0[ORecType]().ground)
           //////// EXPERIMENTAL
           case prodA: Poly[O] if prodA.ground._1 == ";" => arg match {
-            case prodB: Poly[O] if prodB.ground._1 == ";" => `|`(prodA, prodB)
-            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`(prodA, coprodB)
+            case prodB: Poly[O] if prodB.ground._1 == ";" => prodA | prodB
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => prodA | coprodB
           }
           case coprodA: Poly[O] if coprodA.ground._1 == "|" => arg match {
-            case prodB: Poly[O] if prodB.ground._1 == ";" => `|`(coprodA, prodB)
-            case coprodB: Poly[O] if coprodB.ground._1 == "|" => `|`().clone(coprodA.ground._2 ++ coprodB.ground._2)
+            case prodB: Poly[O] if prodB.ground._1 == ";" => coprodA | prodB
+            case coprodB: Poly[O] if coprodB.ground._1 == "|" => poly(sep="|").clone(coprodA.ground._2 ++ coprodB.ground._2)
           }
         }
         case _: Type[_] => start

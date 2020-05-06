@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Poly
+import org.mmadt.language.obj.{Obj, Poly}
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.storage.StorageFactory._
@@ -38,10 +38,10 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[get] w/ lst values") {
     val check: TableFor3[Poly[StrValue], IntValue, StrValue] =
       new TableFor3[Poly[StrValue], IntValue, StrValue](("list", "key", "value"),
-        (`|`[StrValue]("a"), 0, str("a")),
-        (`|`[StrValue]("a", "b"), 0, "a"),
-        (`|`[StrValue]("a", "b", "c"), 1, "b"),
-        (`|`[StrValue]("d", "b", "c"), 2, "c"),
+        (str("a") |, 0, str("a")),
+        (str("a") | "b", 0, "a"),
+        (str("a") | "b" | "c", 1, "b"),
+        (str("d") | "b" | "c", 2, "c"),
       )
     forEvery(check) { (alst, akey, avalue) => {
       assertResult(avalue)(alst.get(akey))
@@ -52,13 +52,13 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[get] w/ lst value exception") {
     assertThrows[LanguageException] {
-      `|`[StrValue]("a", "b", "c").get(-1)
+      (str("a") | "b" | "c").get(-1)
     }
     assertThrows[LanguageException] {
-      `|`[StrValue]("a", "b", "c").get(3)
+      (str("a") | "b" | "c").get(3)
     }
     assertThrows[LanguageException] {
-      `|`().get(0)
+      poly("|").get(0)
     }
   }
 

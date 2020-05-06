@@ -34,10 +34,10 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[tail] w/ parallel poly]") {
     val check: TableFor2[Poly[_], Obj] =
       new TableFor2(("parallel", "tail"),
-        (`|`[StrValue]("a"), `|`()),
-        (`|`[StrValue]("a", "b"), `|`(str("b"))),
-        (`|`[StrValue]("a", "b", "c"), `|`(str("b"), str("c"))),
-        (`|`[StrValue]("d", "b", "c"), `|`(str("b"), str("c"))),
+        (str("a") |, poly("|")),
+        (str("a") | "b", str("b") |),
+        (str("a") | "b" | "c", str("b") | str("c")),
+        (str("d") | "b" | "c", str("b") | str("c")),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.tail())
@@ -47,7 +47,7 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[tail] exception") {
     assertThrows[LanguageException] {
-      `|`().tail()
+      poly("|").tail()
     }
     assertThrows[LanguageException] {
       `;`().tail()

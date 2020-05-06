@@ -13,8 +13,8 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
 class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("basic poly") {
-    assertResult(str("a"))(|[Str]("a", "b", "c").head())
-    assertResult(|[Str]("b", "c"))(|[Str]("a", "b", "c").tail())
+    assertResult(str("a"))((str("a") | "b" | "c").head())
+    assertResult(str("b") | "c")((str("a") | "b" | "c").tail())
 
     assertResult(str("a"))(`;`[Str]("a", "b", "c").head())
     assertResult(`;`[Str]("b", "c"))(`;`[Str]("a", "b", "c").tail())
@@ -23,11 +23,11 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   test("parallel expressions") {
     val starts: TableFor2[Obj, Obj] =
       new TableFor2[Obj, Obj](("expr", "result"),
-        (int(1).-<(`|`(int, int)), `|`(int(1), int(1))),
-        (int(1).-<(`|`(int, int.plus(2))), `|`(int(1), int(3))),
-        (int(1).-<(`|`(int, int.plus(2).q(10))), `|`(int(1), int(3).q(10))),
-        (int(1).q(5).-<(`|`(int, int.plus(2).q(10))), `|`(int(1).q(5), int(3).q(50))),
-        (int(1).q(5).-<(`|`(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50))),
+        (int(1).-<(int | int), int(1) | int(1)),
+        (int(1).-<(int | int.plus(2)), int(1) | int(3)),
+        (int(1).-<(int | int.plus(2).q(10)), int(1) | int(3).q(10)),
+        (int(1).q(5).-<(int | int.plus(2).q(10)), int(1).q(5) | int(3).q(50)),
+        (int(1).q(5).-<(int | int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
         // (int(int(1), int(100)).-<(|(int, int)) >-, int(int(1), int(1), int(100), int(100))),
         //(int(int(1).q(5), int(100)).-<(|(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
         //(int(int(1), int(2)).-<(|(int, int -< (|(int, int)))), |(strm(List(int(1), int(2))), strm(List(|(int(1), int(1)), |(int(2), int(2)))))),
@@ -46,11 +46,11 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   test("parallel [tail][head] values") {
     val starts: TableFor2[Poly[Obj], List[Value[Obj]]] =
       new TableFor2[Poly[Obj], List[Value[Obj]]](("parallel", "projections"),
-        (|(), List.empty),
-        (|[Obj]("a"), List(str("a"))),
-        (|[Obj]("a", "b"), List(str("a"), str("b"))),
-        (|[Obj]("a", "b", "c"), List(str("a"), str("b"), str("c"))),
-        (|[Obj]("a", `|`[Str]("b", "d"), "c"), List(str("a"), `|`[Str]("b", "d"), str("c"))),
+        (poly("|"), List.empty),
+        (str("a") |, List(str("a"))),
+        (str("a") | "b", List(str("a"), str("b"))),
+        (str("a") | "b" | "c", List(str("a"), str("b"), str("c"))),
+        ((str("a") | (str("b") | "d") | "c"), List(str("a"), (str("b") | "d"), str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
       assertResult(alst.groundList)(blist)
@@ -64,50 +64,54 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
     }
   }
 
+  test("scala type constructor") {
+    assertResult("['a'|'b']")((str("a") | "b").toString())
+  }
+
   test("parallel keys") {
-    assertResult("[name->'marko'|age->29]")(`|`("name" -> str("marko"), "age" -> int(29)).toString)
+    //assertResult("[name->'marko'|age->29]")(`|`("name" -> str("marko"), "age" -> int(29)).toString)
+    //assertResult()(("name" -> str("marko") `/` "age" -> int(29)))
   }
 
   test("parallel [get] values") {
-    assertResult(str("a"))(`|`[Str]("a").get(0))
-    assertResult(str("b"))(`|`[Str]("a", "b").get(1))
-    assertResult(str("b"))(`|`[Str]("a", "b", "c").get(1))
-    assertResult(`|`[Str]("b", "d"))(`|`[Obj]("a", `|`[Str]("b", "d"), "c").get(1))
-    // assertResult(prod[Str]("b", "d"))(prod[Obj]("a", prod[Str]("b", "d"), "c").get(1,prod()).get(0))
+    assertResult(str("a"))((str("a") |).get(0))
+    assertResult(str("b"))((str("a") | "b").get(1))
+    assertResult(str("b"))((str("a") | "b" | "c").get(1))
+    assertResult(str("b") | "d")((str("a") | (str("b") | "d") | "c").get(1))
   }
 
   test("parallel [get] types") {
-    assertResult(str)(`|`[Str](str.plus("a"), str).get(0, str).range)
+    assertResult(str)((str.plus("a") | str).get(0, str).range)
   }
 
   test("parallel structure") {
-    val poly = int.mult(8).split(`|`[Obj](__.id(), __.plus(2), 3))
+    val poly: Poly[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3)
     assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
-    assertResult(int.id())(poly.groundList(0))
+    assertResult(int.id())(poly.groundList.head)
     assertResult(int.plus(2))(poly.groundList(1))
     assertResult(int(3))(poly.groundList(2))
-    assertResult(int)(poly.groundList(0).via._1)
+    assertResult(int)(poly.groundList.head.via._1)
     assertResult(int)(poly.groundList(1).via._1)
     assert(poly.groundList(2).root)
-    assertResult(`|`[Int](int.id(), int.plus(2), int(3)))(poly.range)
+    assertResult(int.id() | int.plus(2) | int(3))(poly.range)
   }
 
   test("parallel quantifier") {
-    val poly = int.q(2).mult(8).split(`|`[Obj](__.id(), __.plus(2), 3))
+    val poly: Poly[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3)
     assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
-    assertResult(int.q(2).id())(poly.groundList(0))
+    assertResult(int.q(2).id())(poly.groundList.head)
     assertResult(int.q(2).plus(2))(poly.groundList(1))
     assertResult(int(3))(poly.groundList(2))
-    assertResult(int.q(2))(poly.groundList(0).via._1)
+    assertResult(int.q(2))(poly.groundList.head.via._1)
     assertResult(int.q(2))(poly.groundList(1).via._1)
     assert(poly.groundList(2).root)
-    assertResult(`|`[Int](int.q(2).id(), int.q(2).plus(2), int(3)))(poly.range)
+    assertResult(int.q(2).id() | int.q(2).plus(2) | int(3))(poly.range)
   }
 
   test("parallel [split] quantification") {
-    assertResult(int.q(3))(int.mult(8).split(`|`(__.id(), __.plus(8).mult(2), int(56))).merge[Int].id().isolate)
-    assertResult(int.q(13, 23))(int.mult(8).split(`|`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
-    assertResult(int.q(25, 45))(int.q(2).mult(8).q(1).split(`|`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Int].id().isolate)
+    assertResult(int.q(3))(int.mult(8).split(__.id() | __.plus(8).mult(2) | int(56)).merge[Int].id().isolate)
+    assertResult(int.q(13, 23))(int.mult(8).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
+    assertResult(int.q(25, 45))(int.q(2).mult(8).q(1).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
     // assertResult(__)(int.q(2).mult(8).q(0).split(`;`(__.id().q(10, 20), __.plus(8).mult(2).q(2), int(56))).merge[Obj].id().isolate)
   }
 

@@ -50,8 +50,6 @@ trait StorageFactory {
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
   def poly[A <: Obj](sep: String, values: A*): Poly[A] = new OPoly[A](ground = (sep, values.toList, List.empty))
-  def `|`[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = ("|", values.toList, List.empty))
-  def `|`[A <: Obj](value: (String, A), values: (String, A)*): Poly[A] = new OPoly[A](ground = ("|", (value +: values).map(x => x._2).toList, (value +: values).map(x => x._1).toList))
   def `;`[A <: Obj](values: A*): Poly[A] = new OPoly[A](ground = (";", values.toList, List.empty))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base): ObjType
@@ -97,9 +95,7 @@ object StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(ground = Map.empty[A, B])
-  def poly[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Poly[A] = f.poly[A](sep, values:_*)
-  def `|`[A <: Obj](values: A*)(implicit f: StorageFactory): Poly[A] = f.`|`[A](values: _*)
-  def `|`[A <: Obj](value: (String, A), values: (String, A)*)(implicit f: StorageFactory): Poly[A] = f.`|`[A](value, values: _*)
+  def poly[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Poly[A] = f.poly[A](sep, values: _*)
   def `;`[A <: Obj](values: A*)(implicit f: StorageFactory): Poly[A] = f.`;`[A](values: _*)
 
   //

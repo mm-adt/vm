@@ -65,6 +65,23 @@ trait Obj
     with SplitOp {
 
 
+  /*final def `|`[A<:Obj](key:String,obj:A):Poly[A] = {
+    new OPoly[A](ground=(Tokens.empty,List[A](this.asInstanceOf[A],obj),List.empty))
+  }*/
+
+  final def |[A <: Obj](obj: scala.Int): Poly[A] = this.|(int(obj).asInstanceOf[A])
+  final def |[A <: Obj](obj: String): Poly[A] = this.|(str(obj).asInstanceOf[A])
+  final def |[A <: Obj]: Poly[A] = poly(Tokens.:|, this.asInstanceOf[A])
+  final def |[A <: Obj](obj: A): Poly[A] = {
+    this match {
+      case apoly: Poly[A] => obj match {
+        case _: Poly[A] => poly(Tokens.:|, List(this.asInstanceOf[A], obj): _*)
+        case _ => apoly.clone(apoly.groundList :+ obj)
+      }
+      case _ => poly(Tokens.:|, this.asInstanceOf[A], obj)
+    }
+  }
+
   //////////////////////////////////////////////////////////////
   // data associated with every obj
   val name: String // the obj type name TODO: should be ref to type?
