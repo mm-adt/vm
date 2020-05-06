@@ -34,7 +34,7 @@ import org.scalatest.FunSuite
 class TIntTest extends FunSuite {
   test("canonical int") {
     assert(int.root)
-    assertResult(base())(int.via)
+    assertResult(base)(int.via)
   }
 
   test("derived int") {

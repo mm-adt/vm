@@ -30,7 +30,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TObj(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = base()) extends ObjType {
+class TObj(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = base) extends ObjType {
   override def clone(name: String = this.name,
                      ground: Any = null,
                      q: IntQ = this.q,

@@ -30,7 +30,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(val name: String = Tokens.bool, val q: IntQ = qOne, val via: ViaTuple = base()) extends BoolType {
+class TBool(val name: String = Tokens.bool, val q: IntQ = qOne, val via: ViaTuple = base) extends BoolType {
   override def clone(name: String = this.name,
                      ground: Any = null,
                      q: IntQ = this.q,

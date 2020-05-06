@@ -30,9 +30,9 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val ground: InstTuple, val q: IntQ = qOne, val via: ViaTuple = base()) extends Inst[S, E] {
-  def this(value: InstTuple, q: IntQ) = this(Tokens.inst, value, q, base())
-  def this(value: InstTuple) = this(Tokens.inst, value, qOne, base())
+abstract class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val ground: InstTuple, val q: IntQ = qOne, val via: ViaTuple = base) extends Inst[S, E] {
+  def this(value: InstTuple, q: IntQ) = this(Tokens.inst, value, q, base)
+  def this(value: InstTuple) = this(Tokens.inst, value, qOne, base)
   def test(other: Obj): Boolean = false //  TODO: GUT WHEN VINST JOINS HEIRARCHY
   override def clone(_name: String, ground: Any, _quantifier: (IntValue, IntValue), _via: ViaTuple): this.type = this
   override def equals(other: Any): Boolean = other match {

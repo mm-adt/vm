@@ -37,8 +37,7 @@ package object obj {
   type InstList = List[(Type[Obj], Inst[Obj, Obj])]
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   type PolyTuple[A <: Obj] = (String, List[A], List[String])
-  def base[T <: Obj](inst: Inst[Obj, T]): ViaTuple = (null, inst)
-  def base[T <: Obj](): ViaTuple = (null, null)
+  val base : ViaTuple = (null, null)
   // less typing
   type OType[+O <: Obj] = Type[O] with O
   type OValue[+O <: Obj] = Value[O] with O

@@ -32,10 +32,10 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple = base()) extends Type[__]
+class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple = base) extends Type[__]
   with GetOp[Obj, Obj]
   with PutOp[Obj, Obj] {
-  override def clone(name: String = Tokens.empty, ground: Any, q: IntQ = qOne, via: ViaTuple = base()): this.type = new __(name, q, via).asInstanceOf[this.type]
+  override def clone(name: String = Tokens.empty, ground: Any, q: IntQ = qOne, via: ViaTuple = base): this.type = new __(name, q, via).asInstanceOf[this.type]
   def apply[T <: Obj](obj: Obj): OType[T] = asType(this.trace.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
@@ -56,7 +56,7 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   override def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
 }
 
-object __ extends __(Tokens.empty, qOne, base()) {
+object __ extends __(Tokens.empty, qOne, base) {
   def apply(insts: List[Inst[_, _]]): __ = insts.foldLeft(new __())((a, b) => a.via(a, b.asInstanceOf[Inst[Obj, Obj]]))
 }
 

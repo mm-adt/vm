@@ -30,7 +30,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TStr(val name: String = Tokens.str, val q: IntQ = qOne, val via: ViaTuple = base()) extends StrType {
+class TStr(val name: String = Tokens.str, val q: IntQ = qOne, val via: ViaTuple = base) extends StrType {
   override def clone(name: String = this.name,
                      ground: Any = null,
                      q: IntQ = this.q,

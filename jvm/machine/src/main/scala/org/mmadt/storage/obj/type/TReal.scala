@@ -30,7 +30,7 @@ import org.mmadt.storage.StorageFactory.qOne
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TReal(val name: String = Tokens.real, val q: IntQ = qOne, val via: ViaTuple = base()) extends RealType {
+class TReal(val name: String = Tokens.real, val q: IntQ = qOne, val via: ViaTuple = base) extends RealType {
   override def clone(name: String = this.name,
                      ground: Any = null,
                      q: IntQ = this.q,

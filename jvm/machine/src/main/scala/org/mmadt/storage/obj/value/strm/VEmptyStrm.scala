@@ -34,10 +34,10 @@ class VEmptyStrm[O <: Obj] extends Strm[O] {
   override val ground: Iterator[O] = Iterator.empty
   override val q: (IntValue, IntValue) = qZero
   override val name: String = obj.name
-  override val via: ViaTuple = base()
+  override val via: ViaTuple = base
 
   override def q(quantifier: (IntValue, IntValue)): this.type = throw new UnsupportedOperationException
-  override def alive(): Boolean = false
+  override val alive: Boolean = false
   override def values: Seq[O] = List.empty[O]
 }
 

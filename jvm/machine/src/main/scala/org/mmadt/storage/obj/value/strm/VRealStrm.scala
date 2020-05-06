@@ -30,4 +30,4 @@ import org.mmadt.language.obj.{ViaTuple, base}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRealStrm(val name: String = Tokens.real, val values: Seq[RealValue], val via: ViaTuple = base()) extends RealStrm
+class VRealStrm(val name: String = Tokens.real, val values: Seq[RealValue], val via: ViaTuple = base) extends RealStrm

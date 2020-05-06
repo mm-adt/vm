@@ -26,4 +26,4 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.strm.PolyStrm
 import org.mmadt.language.obj.{Obj, Poly, ViaTuple, base}
 
-class VPolyStrm[A <: Obj](val name: String = Tokens.empty, val values: Seq[Poly[A]], val via: ViaTuple = base()) extends PolyStrm[A]
+class VPolyStrm[A <: Obj](val name: String = Tokens.empty, val values: Seq[Poly[A]], val via: ViaTuple = base) extends PolyStrm[A]

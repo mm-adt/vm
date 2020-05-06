@@ -30,4 +30,4 @@ import org.mmadt.language.obj.value.strm.BoolStrm
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBoolStrm(val name: String = Tokens.bool, val values: Seq[BoolValue], val via: ViaTuple = base()) extends BoolStrm
+class VBoolStrm(val name: String = Tokens.bool, val values: Seq[BoolValue], val via: ViaTuple = base) extends BoolStrm

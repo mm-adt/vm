@@ -30,7 +30,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(val name: String = Tokens.int, val q: IntQ = qOne, val via: ViaTuple = base()) extends IntType {
+class TInt(val name: String = Tokens.int, val q: IntQ = qOne, val via: ViaTuple = base) extends IntType {
   override def clone(name: String = this.name,
                      ground: Any = null,
                      q: IntQ = this.q,

@@ -84,14 +84,14 @@ trait Obj
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def q(q: IntQ): this.type = this.clone(
     q = if (this.root) q else multQ(this.via._1, q),
-    via = if (this.root) base() else (this.via._1, this.via._2.q(q)))
+    via = if (this.root) base else (this.via._1, this.via._2.q(q)))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
   def alive: Boolean = this.q != qZero
 
   // via methods
   def root: Boolean = null == this.via || null == this.via._1
-  def isolate: this.type = this.clone(via = base())
+  def isolate: this.type = this.clone(via = base)
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
   def trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]

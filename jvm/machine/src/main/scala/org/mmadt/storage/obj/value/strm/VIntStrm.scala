@@ -30,5 +30,5 @@ import org.mmadt.language.obj.{ViaTuple, base}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VIntStrm(val name: String = Tokens.int, val values: Seq[IntValue], val via: ViaTuple = base()) extends IntStrm
+class VIntStrm(val name: String = Tokens.int, val values: Seq[IntValue], val via: ViaTuple = base) extends IntStrm
 
