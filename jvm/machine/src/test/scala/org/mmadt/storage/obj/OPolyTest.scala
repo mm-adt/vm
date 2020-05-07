@@ -69,7 +69,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel keys") {
-    assertResult("[name->'marko'|age->29]")((("name" -> str("marko")) | ("age" -> int(29))).toString)
+    assertResult("[name->'marko'|age->29]")(("name" -> str("marko") | "age" -> int(29)).toString)
   }
 
   test("parallel [get] values") {

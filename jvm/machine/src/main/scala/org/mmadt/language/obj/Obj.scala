@@ -81,6 +81,7 @@ trait Obj
   }
   def range: Type[Obj] = asType(this.isolate)
   def domain[D <: Obj](): Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]()
+  def domainObj[D <: Obj](): D = if (this.root) this.asInstanceOf[D] else this.via._1.domainObj[D]()
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))

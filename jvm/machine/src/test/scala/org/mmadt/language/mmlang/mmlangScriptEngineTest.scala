@@ -235,8 +235,12 @@ class mmlangScriptEngineTest extends FunSuite {
       })
   }
 
+  test("poly instructions") {
+    println(engine.eval("int[+1|+2][_|_]"))
+  }
+
   test("choose with mixed end types") {
-    assertResult(int~<(int.plus(1) | int.plus(2)))(engine.eval("int[+1|+2]"))
+//    assertResult(int~<(int.plus(1) | int.plus(2)))(engine.eval("int[+1|+2]"))
     assertResult(int(6) | zeroObj)(engine.eval("5 int[+1|+2]"))
     assertResult("[15|]")(engine.eval("5 [int+1[is>0] ---> +10 | str ---> +'a']").toString)
     assertResult("[|'aa']")(engine.eval("'a'-<[int+1[is>0] --> +10 | str --> +'a']").toString)
@@ -269,7 +273,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(10))(engine.eval("10~<[bool --> bool | int --> int]>-"))
     assertResult(int(10))(engine.eval("10~<[bool --> true | int --> int]>-"))
     assertResult(int(11))(engine.eval("10~<[bool --> true | int --> int[plus,1]]>-"))
-    assertResult(int(11, 51, 51, 61))(engine.eval("10,50{-1},50{3},60~<[bool --> true | int --> int[plus,1]]>-"))
+    assertResult(int(11, 51, 61))(engine.eval("10,50,60-<[bool --> true | int --> int[plus,1]]>-"))
+    assertResult(int(11, 51, 61))(engine.eval("10,50,60~<[bool --> true | int --> int[plus,1]]>-"))
+    assertResult(int(11, 51, 51, 61))(engine.eval("10,50{2},60-<[bool --> true | int --> int[plus,1]]>-"))
+    assertResult(int(11, 51, 51, 61))(engine.eval("10,50{2},60~<[bool --> true | int --> int[plus,1]]>-"))
     assertResult(int(11).q(2))(engine.eval("10,10~<[bool --> true | int --> int[plus,1]]>-"))
     assertResult(int(11).q(2))(engine.eval("10{2}~<[bool --> true | int --> int[plus,1]]>-"))
     /*    assertResult(int(302, 42))(engine.eval(
@@ -525,7 +532,7 @@ class mmlangScriptEngineTest extends FunSuite {
     //
     assertResult("int[plus,100][plus,200]-<[int;int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int;int[plus,2]]>-[plus,20]").toString)
     assertResult("int{2}<=int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]").toString)
-    assertResult("[10;11]")(engine.eval("10-<[bool;int]>-[plus,1][path]").toString)
+    assertResult("[10;10;11]")(engine.eval("10-<[bool;int]>-[plus,1][path]").toString)
     assertResult("12,14")(engine.eval("1[plus,1]-<[int|int[plus,2]]>-[plus,10]").toString)
   }
 }

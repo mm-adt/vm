@@ -31,8 +31,8 @@ import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
   this: Obj =>
-  def split[A <: Obj](brch: Poly[A]): Poly[A] = SplitOp(brch).exec(this.asInstanceOf[A])
-  final def -<[A <: Obj](brch: Poly[A]): Poly[A] = this.split(brch)
+  def split[A <: Obj](branches: Poly[A]): Poly[A] = SplitOp(branches).exec(this.asInstanceOf[A])
+  final def -<[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
 }
 
 object SplitOp {
@@ -41,11 +41,11 @@ object SplitOp {
   class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
-      val inst = new SplitInst[A](Poly.resolveSlots(start, apoly))
-      (start match {
-        case astrm: Strm[A] => strm(astrm.values.map(x => Poly.resolveSlots(x, apoly)).filter(_.alive))
-        case _ => inst.arg0[Poly[A]]()
-      }).clone(via = (start, inst))
+      val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
+      start match {
+        case astrm: Strm[A] => astrm.via(start, this).asInstanceOf[Poly[A]]
+        case _ => inst.arg0[Poly[A]]().clone(via = (start, inst))
+      }
     }
   }
 

@@ -102,5 +102,11 @@ object Poly {
     val first: scala.Int = apoly.groundList.indexWhere(x => x.alive)
     apoly.clone(apoly.groundList.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
   }
-  def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = apoly.clone(apoly.ground._2.map(slot => Inst.resolveArg(start, slot)))
+  def resolveSlots[A <: Obj](start: A, apoly: Poly[A], inst:Inst[A,Poly[A]]): Poly[A] = {
+    val arg = start match {
+      case _:Value[_] => start.clone(via=(start,inst))
+      case _ => start
+    }
+    apoly.clone(apoly.ground._2.map(slot => Inst.resolveArg(arg, slot)))
+  }
 }

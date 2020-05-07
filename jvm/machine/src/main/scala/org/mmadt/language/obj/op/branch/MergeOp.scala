@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.BranchInstruction
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{IntQ, Obj, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -40,10 +41,12 @@ object MergeOp {
   class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
     override def exec(start: Poly[A]): A = {
-      if (start.isValue)
-        strm(start.ground._2.map(x => x.clone(q = multQ(start, x))).filter(_.alive)).asInstanceOf[A]
-      else
-        BranchInstruction.brchType[A](start).clone(via = (start, this))
+      start match {
+        case astrm: Strm[Poly[A]] => strm[A](astrm.values.map(x => this.exec(x))) // TODO: why does via() not work here? (nested streams?)
+        case _ if start.isValue => strm(start.ground._2.map(x => x.clone(q = multQ(start, x))).filter(_.alive)).asInstanceOf[A]
+        case _ => BranchInstruction.brchType[A](start).clone(via = (start, this))
+      }
+
     }
   }
 

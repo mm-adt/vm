@@ -1,6 +1,7 @@
 package org.mmadt.storage.obj.value.strm.util
 
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage.StorageFactory._
 
@@ -8,6 +9,9 @@ import org.mmadt.storage.StorageFactory._
 class MultiSet[A <: Obj](val baseSet: Set[A] = Set.empty[A]) extends Seq[A] {
   def get(a: A): Option[A] = baseSet.find(b => a.asInstanceOf[Value[_]].ground.equals(b.asInstanceOf[Value[_]].ground))
   def put(a: A): MultiSet[A] = {
+    if (a.isInstanceOf[Strm[_]]) {
+      return a.asInstanceOf[Strm[A]].values.foldLeft(this)((a, b) => a.put(b))
+    } // TODO: THIS SHOULDN'T BE THE CASE
     val oldObj: Option[A] = this.get(a)
     new MultiSet[A](oldObj.map(x => baseSet - x).getOrElse(baseSet) + oldObj.map(x => x.hardQ(plusQ(a, x))).getOrElse(a))
   }

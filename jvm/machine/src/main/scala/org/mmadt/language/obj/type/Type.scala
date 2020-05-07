@@ -61,6 +61,5 @@ trait Type[+T <: Obj] extends Obj
 }
 
 object Type {
-  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (atype.isInstanceOf[__] || obj.q(1).range.test(atype.domain().q(1)))
-  def checkCanonical(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.isInstanceOf[__] || obj.q(1).range.test(atype.q(1).domain().q(1))
+  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (atype.isInstanceOf[__] || obj.range.hardQ(qOne).test(atype.domain().hardQ(qOne)))
 }
