@@ -25,6 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Obj, Poly}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -113,6 +114,19 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[][put,'age',int][get,'age'][plus,10]"))
     assertResult(int(20))(engine.eval("['name'->'marko'] rec[][put,'age',10][get,'age'][plus,10]"))
     assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[][put,'age',10][get,'age'][plus,10]"))
+  }
+
+  test("poly get/put") {
+    val person: Poly[Obj] = "name" -> str | "age" -> int
+    assertResult(str <= person.get("name"))(engine.eval("[name->str|age->int][get,'name']"))
+    assertResult(int <= person.get("age"))(engine.eval("[name->str|age->int][get,'age']"))
+    //    assertResult(str <= person.get("name"))(engine.eval("str<=[name->str|age->int][get,'name']"))
+    //    assertResult(int <= person.get("age"))(engine.eval("int<=[name->str|age->int][get,'age']"))
+    //assertResult(int <= poly[Int]("|").put(str("age"), int).get(str("age")))(engine.eval("rec[][put,'age',int][get,'age']"))
+    //assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("rec[][put,'age',int][get,'age'][plus,10]"))
+    //assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[][put,'age',int][get,'age'][plus,10]"))
+    //assertResult(int(20))(engine.eval("['name'->'marko'] rec[][put,'age',10][get,'age'][plus,10]"))
+    //assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[][put,'age',10][get,'age'][plus,10]"))
   }
 
   test("quantified value parsing") {
@@ -204,11 +218,11 @@ class mmlangScriptEngineTest extends FunSuite {
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("bool<z>"))
   }
 
-  test("branch instruction parsing") {
+  /*test("branch instruction parsing") {
     val branchString: String = "obj{0,2}<=int[plus,2][branch,[int{?}<=int[is,bool<=int[gt,10]]:bool<=int[gt,20]&int:int[plus,10]]]"
     assertResult(branchString)(engine.eval("int[plus,2][branch,rec[int[is,int[gt,10]]->int[gt,20], int->int[plus,10]]]").toString)
     assertResult(branchString)(engine.eval("int[plus,2][[is,int[gt,10]]->int[gt,20] & int->int[plus,10]]").toString)
-  }
+  }*/
 
   test("map instruction parsing") {
     assertResult(int.to("x").map(int.from("x").plus(int.from("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
@@ -239,7 +253,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("split instruction parsing") {
     val branchString: String = int.plus(2).-<(int.is(int.gt(10)) --> int.gt(20) | int --> int.plus(10)).toString
     assertResult(branchString)(engine.eval("int[plus,2]-<[int[is,int[gt,10]]-->int[gt,20]|int --> int[plus,10]]").toString)
-    // assertResult(branchString)(engine.eval("int[plus,2][[is,int[gt,10]]-->int[gt,20] | int-->int[plus,10]]").toString) // TODO: choice generalization
+     assertResult(branchString)(engine.eval("int[plus,2][[is,int[gt,10]]---->int[gt,20] | int---->int[plus,10]]").toString) // TODO: choice generalization
   }
 
   test("poly instructions") {

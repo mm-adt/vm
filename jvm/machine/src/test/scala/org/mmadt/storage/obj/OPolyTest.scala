@@ -50,7 +50,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
         (str("a") |, List(str("a"))),
         (str("a") | "b", List(str("a"), str("b"))),
         (str("a") | "b" | "c", List(str("a"), str("b"), str("c"))),
-        ((str("a") | (str("b") | "d") | "c"), List(str("a"), (str("b") | "d"), str("c"))),
+        (str("a") | (str("b") | "d") | "c", List(str("a"), (str("b") | "d"), str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
       assertResult(alst.groundList)(blist)
@@ -70,6 +70,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel keys") {
     assertResult("[name->'marko'|age->29]")(("name" -> str("marko") | "age" -> int(29)).toString)
+    assertResult(str("marko"))(("name" -> str("marko") | "age" -> int(29)).get("name"))
   }
 
   test("parallel [get] values") {
