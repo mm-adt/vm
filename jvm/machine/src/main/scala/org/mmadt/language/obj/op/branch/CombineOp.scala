@@ -18,7 +18,11 @@ object CombineOp {
   class CombineInst[A <: Obj, B <: Obj](other: Poly[B], q: IntQ = qOne) extends VInst[Poly[A], Poly[B]]((Tokens.combine, Nil), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new CombineInst[A, B](other, q).asInstanceOf[this.type]
     override def exec(start: Poly[A]): Poly[B] = {
-      other.clone(start.groundList.zip(other.groundList).map(a => Inst.resolveArg(a._1, a._2))).via(start, this)
+      val combinedPoly = other.clone(start.groundList.zip(other.groundList).map(a => Inst.resolveArg(a._1, a._2))).via(start, this)
+      other.groundConnective match {
+        case Tokens.:| => Poly.keepFirst(combinedPoly)
+        case _ => combinedPoly
+      }
     }
   }
 
