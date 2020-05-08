@@ -111,22 +111,33 @@ trait Obj
   final def |[A <: Obj](obj: scala.Int): Poly[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def |[A <: Obj](obj: String): Poly[A] = this.|(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def |[A <: Obj]: Poly[A] = poly(Tokens.:|, this.asInstanceOf[A])
-  final def |[A <: Obj](obj: A): Poly[A] = {
+  final def |[A <: Obj](obj: A): Poly[A] = this.polyMaker(Tokens.:|, obj)
+  final def |[A <: Obj](obj: (String, A)): Poly[A] = this.polyMaker(Tokens.:|, obj)
+  //
+  final def /[A <: Obj](obj: scala.Double): Poly[A] = this./(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def /[A <: Obj](obj: scala.Long): Poly[A] = this./(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def /[A <: Obj](obj: scala.Int): Poly[A] = this./(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def /[A <: Obj](obj: String): Poly[A] = this./(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def /[A <: Obj]: Poly[A] = poly(Tokens.:/, this.asInstanceOf[A])
+  final def /[A <: Obj](obj: (String, A)): Poly[A] = this.polyMaker(Tokens.:/, obj)
+  final def /[A <: Obj](obj: A): Poly[A] = this.polyMaker(Tokens.:/, obj)
+  /////////////////
+  private final def polyMaker[A <: Obj](sep: String, obj: A): Poly[A] = {
     this match {
       case apoly: Poly[A] => obj match {
-        case _: Poly[A] => poly(Tokens.:|, List(this.asInstanceOf[A], obj): _*)
+        case _: Poly[A] => poly(sep, List(this.asInstanceOf[A], obj): _*)
         case _ => apoly.clone(apoly.groundList :+ obj)
       }
-      case _ => poly(Tokens.:|, this.asInstanceOf[A], obj)
+      case _ => poly(sep, this.asInstanceOf[A], obj)
     }
   }
-  final def |[A <: Obj](obj: (String, A)): Poly[A] = {
+  private def polyMaker[A <: Obj](sep: String, obj: (String, A)): Poly[A] = {
     this match {
       case apoly: Poly[A] => obj._2 match {
-        case _: Poly[A] => poly(Tokens.:|, List(this.asInstanceOf[A], obj._2): _*)
-        case _ => apoly.clone(ground = (Tokens.:|, apoly.groundList :+ obj._2, apoly.groundKeys :+ obj._1))
+        case _: Poly[A] => poly(sep, List(this.asInstanceOf[A], obj._2): _*)
+        case _ => apoly.clone(ground = (sep, apoly.groundList :+ obj._2, apoly.groundKeys :+ obj._1))
       }
-      case _ => poly[A](Tokens.:|).clone(ground = (Tokens.:|, List(this.asInstanceOf[A], obj._2), List(null, obj._1)))
+      case _ => poly[A](sep).clone(ground = (sep, List(this.asInstanceOf[A], obj._2), List(null, obj._1)))
     }
   }
 

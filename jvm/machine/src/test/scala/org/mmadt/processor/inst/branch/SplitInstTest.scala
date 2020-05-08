@@ -35,7 +35,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     val check: TableFor3[Obj, Type[Obj], Obj] =
       new TableFor3[Obj, Type[Obj], Obj](("input", "type", "result"),
         (int(1), int.-<(int | int), int(1) | int(1)),
-        // (int(1,2,3), int.q(3).-<(coprod(int.q(3), int.q(3))), coprod(int(1,2,3), int(1,2,3))),
+        //(int(1,2,3), int.q(3).-<(int.q(3) / int.q(3)), int(1,2,3)/ int(1,2,3)),
         //(int(2), __.-<(coprod(int, str)), coprod(int(2), obj.q(qZero))),
         //(int(2).q(2), int.q(5).-<(coprod(int, int.is(__.gt(10)))), coprod(int(2), obj.q(qZero))),
         (int(2).q(2), int.q(2).-<(int | int.is(__.gt(10))), int(2).q(2) | obj.q(qZero)),
@@ -52,9 +52,9 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("lineage preservation (products)") {
-    assertResult(int(321))(int(1) ===> int.plus(100).plus(200).split(`;`(int, bool)).merge[Int].plus(20))
+    assertResult(int(321))(int(1) ===> int.plus(100).plus(200).split(int/ bool).merge[Int].plus(20))
     assertResult(int.plus(100).plus(200).split(int | bool).merge[Int].plus(20))(int ===> int.plus(100).plus(200).split(int | bool).merge[Int].plus(20))
-    assertResult(`;`[Obj](1, 101, 301, 301, 321))((int(1) ===> int.plus(100).plus(200).split(`;`(int, bool)).merge[Int].plus(20)).path())
+    assertResult(int(1) / 101 / 301 / 301 / 321)((int(1) ===> int.plus(100).plus(200).split(int / bool).merge[Int].plus(20)).path())
   }
 
   test("lineage preservation (coproducts)") {
@@ -62,8 +62,8 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(int | int.plus(2)).merge[Int].plus(20))
     assertResult(int.plus(100).plus(200).split(int | int.plus(2)).merge[Int].plus(20))(int ===> int.plus(100).plus(200).split(int | int.plus(2)).merge[Int].plus(20))
     assertResult(strm(List(
-      `;`[Obj](1, 101, 301, 301, 321),
-      `;`[Obj](1, 101, 301, 301, 303, 323))))(int(1) ===> int.plus(100).plus(200).split(int | int.plus(2)).merge[Int].plus(20).path())
+      int(1) / 101 / 301 / 301 / 321,
+      int(1) / 101 / 301 / 301 / 303 / 323)))(int(1) ===> int.plus(100).plus(200).split(int | int.plus(2)).merge[Int].plus(20).path())
   }
 
   test("quantifiers") {

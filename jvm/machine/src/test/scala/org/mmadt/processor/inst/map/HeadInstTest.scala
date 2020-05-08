@@ -48,10 +48,10 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[head] w/ serial poly") {
     val check: TableFor2[Poly[_], Obj] =
       new TableFor2(("serial", "head"),
-        (`;`[StrValue]("a"), "a"),
-        (`;`[StrValue]("a", "b"), "a"),
-        (`;`[StrValue]("a", "b", "c"), "a"),
-        (`;`[StrValue]("d", "b", "c"), "d"),
+        (str("a")/, "a"),
+        (str("a")/ "b", "a"),
+        (str("a")/ "b"/ "c", "a"),
+        (str("d")/ "b"/ "c", "d"),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.head())
@@ -61,10 +61,10 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[head] exception") {
     assertThrows[LanguageException] {
-      `;`().head()
+      /.head()
     }
     assertThrows[LanguageException] {
-      poly("|").head()
+      |.head()
     }
   }
 }

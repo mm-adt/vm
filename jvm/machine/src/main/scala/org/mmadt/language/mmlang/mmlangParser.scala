@@ -88,9 +88,9 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // product and coproduct parsing
   lazy val polyObj: Parser[Poly[Obj]] = (polyRecObj | polyLstObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
   var z: String = ""
-  lazy val polyLstObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> rep1sep(obj, (Tokens.:| | SEMICOLON) ^^ (y => z = y)) <~ RBRACKET) ^^ (x => poly(z, x._2: _*))
+  lazy val polyLstObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> rep1sep(obj, (Tokens.:| | Tokens.:/) ^^ (y => z = y)) <~ RBRACKET) ^^ (x => poly(z, x._2: _*))
   lazy val polyRecObj: Parser[Poly[Obj]] = opt(valueType) ~ (LBRACKET ~> rep1sep(opt("[a-zA-Z]+".r <~ Tokens.:->) ~ obj, Tokens.:|) <~ RBRACKET) ^^
-    (x => poly[Obj](sep = Tokens.:|).clone(ground = (Tokens.:|, x._2.map(y => y._2), x._2.filter(y => y._1.isDefined).map(y => y._1.getOrElse("")))))
+    (x => |[Obj].clone(ground = (Tokens.:|, x._2.map(y => y._2), x._2.filter(y => y._1.isDefined).map(y => y._1.getOrElse("")))))
 
   // type parsing
   lazy val objType: Parser[Obj] = dType | anonType

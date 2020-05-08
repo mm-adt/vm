@@ -93,7 +93,6 @@ object mmlangPrinter {
     (inst.op() match {
       case Tokens.to => LANGLE + inst.arg0[StrValue]().ground + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().ground + RANGLE
-      case Tokens.choose => LBRACKET + Tokens.choose + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().ground, PIPE) + RBRACKET
       case Tokens.branch => LBRACKET + Tokens.branch + COMMA + mapString(inst.arg0[RecType[Obj, Obj]]().ground, AMPERSAND) + RBRACKET
       case Tokens.split => Tokens.split_op + polyList(inst.arg0[Poly[_]]())
       case Tokens.choice => Tokens.choice_op + polyList(inst.arg0[Poly[_]]())

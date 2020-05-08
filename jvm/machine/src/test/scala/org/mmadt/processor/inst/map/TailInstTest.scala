@@ -23,7 +23,6 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Obj, Poly}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -47,20 +46,20 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[tail] exception") {
     assertThrows[LanguageException] {
-      poly("|").tail()
+      |.tail()
     }
     assertThrows[LanguageException] {
-      `;`().tail()
+      /.tail()
     }
   }
 
   test("[tail] w/ serial poly") {
     val check: TableFor2[Poly[_], Obj] =
       new TableFor2(("serial", "tail"),
-        (`;`[StrValue]("a"), `;`()),
-        (`;`[StrValue]("a", "b"), `;`(str("b"))),
-        (`;`[StrValue]("a", "b", "c"), `;`(str("b"), str("c"))),
-        (`;`[StrValue]("d", "b", "c"), `;`(str("b"), str("c"))),
+        //(str("a") /, /),
+        (str("a") / "b", str("b") /),
+        (str("a") / "b" / "c", str("b") / "c"),
+        (str("d") / "b" / "c", str("b") / "c"),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.tail())

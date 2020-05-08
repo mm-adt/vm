@@ -10,7 +10,7 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
-import org.mmadt.language.{LanguageException, LanguageFactory}
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
@@ -41,6 +41,7 @@ trait Poly[A <: Obj] extends Obj
     this.ground._1 match {
       case "|" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2, ground._3)).via(this, inst)
       case ";" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2, ground._3)).via(this, inst)
+      case "/" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2, ground._3)).via(this, inst)
     }
   }
 
@@ -69,7 +70,10 @@ trait Poly[A <: Obj] extends Obj
     case serial: Poly[_] if this.ground._1 == ";" && serial.ground._1 == ";" =>
       if (serial.groundList.isEmpty || this.groundList.equals(serial.groundList)) return true
       this.groundList.zip(serial.groundList).foldRight(true)((a, b) => a._1.test(a._2) && b)
-    case parallel: Poly[_] if this.ground._1 == "|" && parallel.ground._1 == "|" =>
+    case serial: Poly[_] if this.ground._1 == Tokens.:/ && serial.ground._1 == Tokens.:/ =>
+      if (serial.groundList.isEmpty || this.groundList.equals(serial.groundList)) return true
+      this.groundList.zip(serial.groundList).foldRight(true)((a, b) => a._1.test(a._2) && b)
+    case parallel: Poly[_] if this.ground._1 == Tokens.:| && parallel.ground._1 == Tokens.:| =>
       if (parallel.groundList.isEmpty || this.groundList.equals(parallel.groundList)) return true
       this.groundList.zip(parallel.groundList).foldRight(false)((a, b) => a._1.test(a._2) || b)
     case _ => false
@@ -84,7 +88,12 @@ trait Poly[A <: Obj] extends Obj
         eqQ(serial, this) &&
         ((this.isValue && serial.isValue && this.groundList.zip(serial.groundList).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
           (this.groundList == serial.groundList && this.via == serial.via))
-    case parallel: Poly[_] if this.ground._1 == "|" && parallel.ground._1 == "|" =>
+    case serial: Poly[_] if this.ground._1 == Tokens.:/ && serial.ground._1 == Tokens.:/ =>
+      serial.name.equals(this.name) &&
+        eqQ(serial, this) &&
+        ((this.isValue && serial.isValue && this.groundList.zip(serial.groundList).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
+          (this.groundList == serial.groundList && this.via == serial.via))
+    case parallel: Poly[_] if this.ground._1 == Tokens.:| && parallel.ground._1 == Tokens.:| =>
       parallel.name.equals(this.name) &&
         eqQ(parallel, this) &&
         ((this.isValue && parallel.isValue && this.groundList.zip(parallel.groundList).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
