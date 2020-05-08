@@ -25,7 +25,7 @@ object ChoiceOp {
         case astrm: Strm[A] => return astrm.via(start, inst).asInstanceOf[Poly[A]]
         case _: Type[_] => inst.arg0[Poly[A]]()
         case _ => Poly.keepFirst(inst.arg0[Poly[A]]())
-      }).clone(via = (start, this))
+      }).clone(via = (start, inst))
     }
   }
 

@@ -29,9 +29,8 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.BranchOp.BranchInst
 import org.mmadt.language.obj.op.branch.ChoiceOp.ChoiceInst
-import org.mmadt.language.obj.op.branch.ChooseOp.ChooseInst
 import org.mmadt.language.obj.op.branch.MergeOp.MergeInst
-import org.mmadt.language.obj.op.branch.{BranchOp, ChoiceOp, ChooseOp, MergeOp}
+import org.mmadt.language.obj.op.branch.{BranchOp, ChoiceOp, MergeOp}
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.map.GetOp.GetInst
 import org.mmadt.language.obj.op.model.AsOp
@@ -126,7 +125,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val inst: Parser[Inst[Obj, Obj]] = (
     sugarlessInst | fromSugar | toSugar |
       mergeSugar | infixSugar | getStrSugar |
-      getIntSugar |  choiceSugar | chooseSugar | branchSugar ) ~ opt(quantifier) ^^
+      getIntSugar | choiceSugar | branchSugar) ~ opt(quantifier) ^^
     (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
     Tokens.split_op | Tokens.choice_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op |
@@ -135,9 +134,8 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
       Tokens.combine_op | Tokens.a_op | Tokens.is | Tokens.append_op) ~ obj ^^
     (x => OpInstResolver.resolve(x._1, List(x._2)))
   lazy val mergeSugar: Parser[MergeInst[Obj]] = Tokens.merge_op ^^ (_ => MergeOp())
-  lazy val polyInst: Parser[ChoiceInst[Obj]] = LBRACKET ~> rep1sep(obj, PIPE) <~ RBRACKET ^^ (x => ChoiceOp(poly[Obj]("|", x:_*)))
+  lazy val polyInst: Parser[ChoiceInst[Obj]] = LBRACKET ~> rep1sep(obj, PIPE) <~ RBRACKET ^^ (x => ChoiceOp(poly[Obj]("|", x: _*)))
   lazy val choiceSugar: Parser[ChoiceInst[Obj]] = (LBRACKET ~> rep1sep((obj <~ "--->") ~ obj, PIPE)) <~ RBRACKET ^^ (x => ChoiceOp(poly("|", x.map(o => o._1.given(o._2)): _*)))
-  lazy val chooseSugar: Parser[ChooseInst[Obj, Obj]] = (LBRACKET ~> rep1sep((obj <~ Tokens.:->) ~ obj, PIPE)) <~ RBRACKET ^^ (x => ChooseOp(trec(ground = x.map(o => (o._1, o._2)).toMap)))
   lazy val branchSugar: Parser[BranchInst[Obj, Obj]] = (LBRACKET ~> rep1sep((obj <~ Tokens.:->) ~ obj, AMPERSAND)) <~ RBRACKET ^^ (x => BranchOp(trec(ground = x.map(o => (o._1, o._2)).toMap)))
   lazy val getStrSugar: Parser[GetInst[Obj, Obj]] = Tokens.get_op ~> "[a-zA-Z]+".r ^^ (x => GetOp[Obj, Obj](str(x)))
   lazy val getIntSugar: Parser[GetInst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))

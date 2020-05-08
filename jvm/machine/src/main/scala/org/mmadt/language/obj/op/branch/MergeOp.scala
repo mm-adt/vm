@@ -32,7 +32,7 @@ import org.mmadt.storage.obj.value.VInst
 trait MergeOp[A <: Obj] {
   this: Poly[A] =>
   def merge[B <: Obj]: B = MergeOp[A]().exec(this).asInstanceOf[B]
-  final def >-[B <: Obj]: B = this.merge[B]
+  final def `>-`: A = this.merge[A]
 }
 
 object MergeOp {

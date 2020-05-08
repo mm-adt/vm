@@ -48,7 +48,6 @@ trait Obj
     with BranchOp
     with CountOp
     with ChoiceOp
-    with ChooseOp
     with IdOp
     with IsOp
     with FoldOp

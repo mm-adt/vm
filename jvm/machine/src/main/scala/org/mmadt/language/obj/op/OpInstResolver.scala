@@ -102,7 +102,6 @@ object OpInstResolver {
       }
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].ground)
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
-      case Tokens.choose => ChooseOp(args.head.asInstanceOf[RecType[S, E]])
       case Tokens.branch => BranchOp(args.head.asInstanceOf[RecType[S, E]])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()

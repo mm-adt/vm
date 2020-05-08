@@ -107,6 +107,6 @@ object Poly {
       case _:Value[_] => start.clone(via=(start,inst))
       case _ => start
     }
-    apoly.clone(apoly.ground._2.map(slot => Inst.resolveArg(arg, slot)))
+    apoly.clone(apoly.groundList.map(slot => Inst.resolveArg(arg, slot)))
   }
 }

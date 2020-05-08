@@ -89,24 +89,6 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     assertResult(int.mult(4))(processor.apply(int, int.plus(int).mult(int(2))))
   }
 
-  test("compiler w/ [choose]") {
-    processor = Processor.compiler()
-    assertResult("int{?}<=int[mult,1][choose,[int{?}<=int[is,bool<=int[gt,5]]:int[plus,2]|int:int[plus,1]]][is,bool<=int[gt,3]]")(processor.apply(int, int.mult(1).choose(int.is(int.gt(5)) -> int.plus(2), int -> int.plus(1)).is(int.gt(3))).toString)
-  }
-
-  /*test("compiler w/ multi-types"){
-    val processor:Processor = Processor.compiler(
-      Model.simple().
-        put(int.plus(int(0)),int).
-        put(int.gt(int(0)),int.eqs(int(0))))
-
-    assertResult(int.eqs(int(0)))(processor.apply(int.plus(int(0)).gt(int(0))))
-    assertResult(int.gt(int(20)))(processor.apply(int.plus(int(0)).gt(int(20))))
-    assertResult(int.plus(int(10)).gt(int(20)))(processor.apply(int.plus(int(10)).gt(int(20))))
-    assertResult(int.plus(int(10)).gt(int(20)).and(bool))(processor.apply(int.plus(int(10)).gt(int(20)).and(bool)))
-    assertResult(int.plus(int(10)).gt(int(20)).and(bool))(processor.apply(int.plus(int(0)).plus(int(10)).plus(int(0)).gt(int(20)).and(bool)))
-  }*/
-
   test("compiler w/ nested instructions") {
     processor = Processor.compiler(
       Model.simple().
@@ -118,11 +100,6 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     assertResult(int.plus(int.plus(int(2)).plus(int(3)).plus(int(4))))(processor.apply(int.plus(int(0)).plus(int.plus(int(2)).plus(int(3)).plus(int(4))).asInstanceOf[Type[Int]]))
     assertResult(int.plus(int))(processor.apply(int.plus(0).plus(int.plus(0))))
     assertResult(int.plus(int))(processor.apply(int.plus(int(0)).plus(int.plus(int(1)).plus(int(-1)).plus(int(0)))))
-  }
-
-  test("compiler w/ non-rooted types and values") {
-    // TODO: does __ become the initial type?    assertThrows[ProcessorException]{processor(__.id().plus(10))}
-    // assertThrows[ProcessorException]{processor(int(10),int)}
   }
 
   test("compiler with domain rewrites") {
