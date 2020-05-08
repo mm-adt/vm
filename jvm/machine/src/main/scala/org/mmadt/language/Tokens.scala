@@ -86,7 +86,6 @@ object Tokens {
   val combine = "combine"
   val merge = "merge"
   val split = "split"
-  val choice = "choice"
 
   val empty = ""
   val btrue = "true"
@@ -107,7 +106,6 @@ object Tokens {
   val a_op = "?"
 
   val split_op = "-<"
-  val choice_op = "~<"
   val combine_op = "="
   val merge_op = ">-"
   val given_op = "-->"

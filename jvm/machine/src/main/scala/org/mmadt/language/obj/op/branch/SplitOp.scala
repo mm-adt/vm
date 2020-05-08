@@ -22,10 +22,11 @@
 
 package org.mmadt.language.obj.op.branch
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,11 +42,28 @@ object SplitOp {
   class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
+      apoly.groundConnective match {
+        case Tokens.:/ => processAll(start)
+        case Tokens.:| => processFirst(start)
+        case _ => throw new LanguageException("Unknown poly connective: " + start)
+      }
+    }
+
+    private def processAll(start: A): Poly[A] = {
       val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
       start match {
         case astrm: Strm[A] => astrm.via(start, this).asInstanceOf[Poly[A]]
         case _ => inst.arg0[Poly[A]]().clone(via = (start, inst))
       }
+    }
+
+    private def processFirst(start: A): Poly[A] = {
+      val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
+      (start match {
+        case astrm: Strm[A] => return astrm.via(start, inst).asInstanceOf[Poly[A]]
+        case _: Type[_] => inst.arg0[Poly[A]]()
+        case _ => Poly.keepFirst(inst.arg0[Poly[A]]())
+      }).clone(via = (start, inst))
     }
   }
 

@@ -22,11 +22,11 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   test("parallel expressions") {
     val starts: TableFor2[Obj, Obj] =
       new TableFor2[Obj, Obj](("expr", "result"),
-        (int(1).-<(int | int), int(1) | int(1)),
-        (int(1).-<(int | int.plus(2)), int(1) | int(3)),
-        (int(1).-<(int | int.plus(2).q(10)), int(1) | int(3).q(10)),
-        (int(1).q(5).-<(int | int.plus(2).q(10)), int(1).q(5) | int(3).q(50)),
-        (int(1).q(5).-<(int | int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
+        (int(1).-<(int / int), int(1) / int(1)),
+        (int(1).-<(int / int.plus(2)), int(1) / int(3)),
+        (int(1).-<(int / int.plus(2).q(10)), int(1) / int(3).q(10)),
+        (int(1).q(5).-<(int / int.plus(2).q(10)), int(1).q(5) / int(3).q(50)),
+        (int(1).q(5).-<(int / int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
         // (int(int(1), int(100)).-<(|(int, int)) >-, int(int(1), int(1), int(100), int(100))),
         //(int(int(1).q(5), int(100)).-<(|(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
         //(int(int(1), int(2)).-<(|(int, int -< (|(int, int)))), |(strm(List(int(1), int(2))), strm(List(|(int(1), int(1)), |(int(2), int(2)))))),
