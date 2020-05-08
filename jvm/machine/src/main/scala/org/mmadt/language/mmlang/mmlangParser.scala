@@ -79,15 +79,15 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 
   // variable parsing
   lazy val symbolName: Regex = "[a-zA-Z]+".r
-  lazy val varName: Parser[String] = ("^(?!(" + instOp + "))([a-zA-Z]+)").r <~ not(":")
+  lazy val varName: Parser[String] = ("^(?!(" + instOp + s"))(${symbolName})").r <~ not(":")
   lazy val varGet: Parser[Type[Obj]] = varName ~ rep(inst) ^^
     (x => this.model.get(tobj(x._1)).getOrElse(__.apply(List[Inst[_, _]](FromOp(x._1)) ++ x._2)))
-  // lazy val varSet: Parser[Type[Obj]] = (objValue | brchObj) ~ (LANGLE ~> varName <~ RANGLE) ^^ (x => (x._1.start[Obj]().to(x._2)))
 
   // product and coproduct parsing
   lazy val polyObj: Parser[Poly[Obj]] = (polyRecObj | polyLstObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
-  lazy val polyLstObj: Parser[Poly[Obj]] = (LBRACKET ~> (obj ~ (Tokens.:| | Tokens.:/)) ~ rep1sep(obj, Tokens.:| | Tokens.:/) <~ RBRACKET) ^^ (x => poly(x._1._2, x._1._1 +: x._2: _*))
-  lazy val polyRecObj: Parser[Poly[Obj]] = (LBRACKET ~> ((symbolName <~ Tokens.:->) ~ obj ~ (Tokens.:| | Tokens.:/)) ~ rep1sep((symbolName <~ Tokens.:->) ~ obj, Tokens.:| | Tokens.:/) <~ RBRACKET) ^^
+  lazy val polySep: Parser[String] = Tokens.:/ | Tokens.:|
+  lazy val polyLstObj: Parser[Poly[Obj]] = (LBRACKET ~> (obj ~ polySep) ~ rep1sep(obj, polySep) <~ RBRACKET) ^^ (x => poly(x._1._2, x._1._1 +: x._2: _*))
+  lazy val polyRecObj: Parser[Poly[Obj]] = (LBRACKET ~> ((symbolName <~ Tokens.:->) ~ obj ~ polySep) ~ rep1sep((symbolName <~ Tokens.:->) ~ obj, polySep) <~ RBRACKET) ^^
     (x => poly[Obj](x._1._2).clone(ground = (x._1._2, x._1._1._2 +: x._2.map(y => y._2), x._1._1._1 +: x._2.map(y => y._1))))
 
   // type parsing
@@ -100,7 +100,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
   lazy val recType: Parser[ORecType] = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(ground = x.getOrElse(Map.empty)))
   lazy val recStruct: Parser[Map[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj, COMMA | PIPE) <~ RBRACKET) ^^ (x => x.map(o => (o._1, o._2)).toMap)
-  lazy val cType: Parser[Type[Obj]] = (tobjType | anonKind | boolType | realType | intType | strType | recType /* | polyObj */) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val cType: Parser[Type[Obj]] = (anonKind | tobjType | boolType | realType | intType | strType | recType /* | polyObj */) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj, Obj]](inst | polyInst) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x)))
     case None ~ domain ~ insts => insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
@@ -115,7 +115,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val boolValue: Parser[BoolValue] = opt(valueType) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => vbool(x._1.getOrElse(Tokens.bool), x._2.toBoolean, qOne))
   lazy val intValue: Parser[IntValue] = opt(valueType) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
   lazy val realValue: Parser[RealValue] = opt(valueType) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
-  lazy val strValue: Parser[StrValue] = opt(valueType) ~ ("""'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""").r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
+  lazy val strValue: Parser[StrValue] = opt(valueType) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
   lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ (Tokens.:-> | Tokens.::)) ~ objValue, COMMA) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
   lazy val strm: Parser[Strm[Obj]] = (objValue <~ COMMA) ~ rep1sep(objValue, COMMA) ^^ (x => estrm((List(x._1) :+ x._2.head) ++ x._2.tail))
 
