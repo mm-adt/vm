@@ -62,14 +62,6 @@ object LeftRightSweepRewrite {
         case atype: Type[_] if isSymbol(atype) => model(atype)
         case other => other
       }
-      case x if x == Tokens.choose || x == Tokens.branch =>
-        def branching(obj: Obj): Obj = {
-          obj match {
-            case branchType: Type[S] => rewrite(model, branchType, start, start)
-            case branchValue: Value[_] => branchValue
-          }
-        }
-        List(trec(name = Tokens.rec, inst.arg0[ORecType]().ground.map(x => (branching(x._1), branching(x._2)))))
       case _ => inst.args().map {
         case atype: Type[_] => rewrite(model, atype, start, start)
         case avalue: Value[_] => avalue

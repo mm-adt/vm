@@ -25,7 +25,7 @@ object GivenOp {
       val inst = new GivenInst[O](rangeObj, q)
       (start match {
         case astrm: Strm[_] => return astrm.via(start, inst).asInstanceOf[O]
-        case _: Value[_] => rangeObj
+        case _: Value[_] => rangeObj // TODO: look at split test and to/from in branch
         case _: Type[_] =>
           rangeObj match {
             case _: Strm[_] => rangeObj

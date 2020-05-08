@@ -352,7 +352,7 @@ class mmlangScriptEngineTest extends FunSuite {
         |    'bb':
         |      ['bba':4]]].b.bb.bba""".stripMargin))
     assertResult(int(0))(engine.eval("['a':['b':['c':['d':0]]]].a.b.c.d"))
-    assertResult(int(4, 12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a':int<.x>,'b':int<.y>]][branch,rec[[id]->.a,[is,true]->.b]]"))
+    assertResult(int(4, 12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a':int<.x>,'b':int<.y>]]-<[[id]-->.a/[is,true]-->.b]>-"))
   }
 
   test("bool strm input parsing") {

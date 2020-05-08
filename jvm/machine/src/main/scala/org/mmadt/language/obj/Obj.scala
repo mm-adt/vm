@@ -45,7 +45,6 @@ import org.mmadt.storage.obj.OPoly
 trait Obj
   extends AOp
     with AsOp
-    with BranchOp
     with CountOp
     with IdOp
     with IsOp

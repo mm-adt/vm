@@ -28,10 +28,10 @@ package org.mmadt.language
 object Tokens {
 
   lazy val reserved: Set[String] = Set(
-    Tokens.noop, Tokens.and, Tokens.branch, Tokens.choose, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
+    Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
     Tokens.plus, Tokens.gt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as, Tokens.a, // Tokens.model (shared with global name)
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.given,
-    Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.rec, Tokens.lst, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
+    Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
 
   val anon = "_"
   val obj = "obj"
@@ -41,8 +41,6 @@ object Tokens {
   val int = "int"
   val real = "real"
   val inst = "inst"
-  val lst = "lst"
-  val __ = "__"
 
   val a = "a"
   val add = "add"
@@ -52,8 +50,6 @@ object Tokens {
   val noop = "noop"
   val and = "and"
   val as = "as"
-  val branch = "branch"
-  val choose = "choose"
   val count = "count"
   val error = "error"
   val eqs = "eq"
@@ -118,5 +114,5 @@ object Tokens {
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst, lst).contains(name) // TODO: global immutable set
+  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst).contains(name) // TODO: global immutable set
 }
