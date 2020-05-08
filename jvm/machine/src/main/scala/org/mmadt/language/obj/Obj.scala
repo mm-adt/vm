@@ -59,6 +59,7 @@ trait Obj
     with EvalOp
     with EqsOp
     with ToOp
+    with TraceOp
     with StartOp
     with SplitOp {
 

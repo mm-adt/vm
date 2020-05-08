@@ -78,6 +78,7 @@ object Tokens {
   val model = "model"
   val q = "q"
   val zero = "zero"
+  val tracer = "tracer"
 
   val combine = "combine"
   val merge = "merge"
