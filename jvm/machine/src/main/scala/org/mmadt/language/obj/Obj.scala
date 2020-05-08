@@ -79,7 +79,6 @@ trait Obj
   }
   def range: Type[Obj] = asType(this.isolate)
   def domain[D <: Obj](): Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]()
-  def domainObj[D <: Obj](): D = if (this.root) this.asInstanceOf[D] else this.via._1.domainObj[D]()
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
@@ -92,7 +91,8 @@ trait Obj
 
   // via methods
   def root: Boolean = null == this.via || null == this.via._1
-  def isolate: this.type = this.clone(via = base)
+  def isolate: this.type = this.clone(via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
+  def domainObj[D <: Obj](): D = if (this.root) this.asInstanceOf[D] else this.via._1.domainObj[D]() // TODO: rename to like start/end (the non-typed versions of domain/range)
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
   def trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
@@ -151,7 +151,7 @@ trait Obj
     .getOrElse(this.asInstanceOf[E])
 
   def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = {
-    LanguageException.testDomainRange(asType(this), rangeType.asInstanceOf[Type[E]].domain())
+    LanguageException.testTypeCheck(range.range, rangeType.asInstanceOf[Type[E]].domain())
     this match {
       case _: Value[_] => Processor.iterator(model).apply(this, rangeType)
       case _: Type[_] => Processor.compiler(model).apply(this, rangeType)

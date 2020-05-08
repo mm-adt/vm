@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.traverser
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.TraverserInstruction
+import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -40,7 +40,7 @@ trait ToOp {
 object ToOp {
   def apply[O <: Obj](label: StrValue): ToInst[O] = new ToInst(label)
 
-  class ToInst[O <: Obj](label: StrValue, q: IntQ = qOne) extends VInst[O, O]((Tokens.to, List(label)), q) with TraverserInstruction {
+  class ToInst[O <: Obj](label: StrValue, q: IntQ = qOne) extends VInst[O, O]((Tokens.to, List(label)), q) with TraceInstruction {
     override def q(q: IntQ): this.type = new ToInst[O](label, q).asInstanceOf[this.type]
     override def exec(start: O): O = start.via(start, this)
   }

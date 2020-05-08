@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.op.map.{GtOp, IdOp, MultOp, PlusOp}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -30,6 +31,21 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class __Test extends FunSuite {
+
+  test("__ compute on ctype") {
+    assertResult(int(4))(int(4).compute(__))
+    assertResult(int)(int.compute(__))
+    assertResult(btrue)(btrue.compute(__))
+    assertResult(bool)(bool.compute(__))
+    assertResult(str("marko"))(str("marko").compute(__))
+    assertResult(0)(str("marko").compute(__).trace.length)
+    assert(str("marko").test(__))
+    assert(!str("marko").test(__.q(10)))
+    assert(str("marko").q(10).test(__.q(10)))
+    assert(str("marko").q(5, 10).test(__.q(*)))
+    assert(str("marko").q(10).test(__.q(3, 11)))
+    assertResult(0)(str("marko").q(10).compute(__.q(+)).trace.length)
+  }
 
   test("__ type structure") {
     assert(__.root)
@@ -71,7 +87,12 @@ class __Test extends FunSuite {
 
   test("__ quantifiers") {
     println(int ==> __.id().q(2))
-    assertResult(int(5))(int(5) ===> int.q(10))
+    assertThrows[LanguageException] {
+      int(5) ===> int.q(10)
+    }
+    assertResult(bfalse)(int(5) ===> __.gt(16))
+    assertResult(bfalse.q(*))(int(5).q(*) ===> __.q(0).gt(16))
+    assertResult(zeroObj)(int(5).q(0) ===> __.q(*).gt(16))
     assertResult(int(5))(int(5) ===> __)
     assertResult(int(5))(int(5) ===> __.id())
     assertResult(int(5))(int(5) ===> __.id().q(1))

@@ -44,7 +44,7 @@ public class LanguageException extends VmException {
         final String rowString = source.split("\n")[row - 1];
         final String rowSubstring = rowString.substring(Math.max(0, column - 10), Math.min(rowString.length(), column + 10));
         final String prefix = message + " at " + row + ":" + column;
-        return new LanguageException(prefix + "\n" + rowSubstring + "\n" + Stream.generate(() -> " ").limit(Math.min(rowSubstring.length(),column) - 1).reduce((a, b) -> a + b).orElse("") + "^ near here");
+        return new LanguageException(prefix + "\n" + rowSubstring + "\n" + Stream.generate(() -> " ").limit(Math.min(rowSubstring.length(), column) - 1).reduce((a, b) -> a + b).orElse("") + "^ near here");
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
@@ -79,8 +79,7 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (type instanceof __) type = ((__) type).apply(obj);
-        if ((obj instanceof Type && !((Type<?>) obj).range().test(type)) || (obj instanceof Value && !obj.test(type)))
+        if (!StorageFactory.asType(obj).range().test(((type instanceof __) ? ((__) type).apply(obj) : type).domain()))
             throw LanguageException.typingError(obj, type);
     }
 }

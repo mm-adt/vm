@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.reduce
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.{ReduceInstruction, TraverserInstruction}
+import org.mmadt.language.obj.op.{ReduceInstruction, TraceInstruction}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -44,7 +44,7 @@ trait FoldOp {
 object FoldOp {
   def apply[A <: Obj](_seed: (String, A), atype: A): Inst[Obj, A] = new FoldInst[A](_seed, atype)
 
-  class FoldInst[A <: Obj](_seed: (String, A), atype: Obj) extends VInst[Obj, A]((Tokens.fold, List(str(_seed._1), _seed._2, atype))) with ReduceInstruction[A] with TraverserInstruction {
+  class FoldInst[A <: Obj](_seed: (String, A), atype: Obj) extends VInst[Obj, A]((Tokens.fold, List(str(_seed._1), _seed._2, atype))) with ReduceInstruction[A] with TraceInstruction {
     override val seed: (String, A) = _seed
     override val reduction: Type[A] = atype.asInstanceOf[Type[A]]
 

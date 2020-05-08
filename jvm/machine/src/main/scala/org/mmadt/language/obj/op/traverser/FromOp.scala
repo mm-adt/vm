@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.op.traverser
 
-import org.mmadt.language.obj.op.TraverserInstruction
+import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{IntQ, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -42,7 +42,7 @@ object FromOp {
   def apply(label: StrValue): FromInst[Obj] = new FromInst[Obj](label)
   def apply[O <: Obj](label: StrValue, default: O): FromInst[O] = new FromInst[O](label, default)
 
-  class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.from, List(label)), q) with TraverserInstruction {
+  class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.from, List(label)), q) with TraceInstruction {
     override def q(q: IntQ): this.type = new FromInst[O](label, default, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
       val history: Option[O] = Obj.fetchOption[O](start, label.ground)

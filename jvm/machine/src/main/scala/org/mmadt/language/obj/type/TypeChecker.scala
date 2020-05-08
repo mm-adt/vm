@@ -35,6 +35,7 @@ import scala.collection.mutable
  */
 object TypeChecker {
   def matchesVT[O <: Obj](obj: Value[O], pattern: Type[O]): Boolean = {
+    if(!obj.alive && !pattern.alive) return true
     (pattern.name.equals(Tokens.obj) || pattern.name.equals(Tokens.empty) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || obj.compute(pattern).alive)) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
       obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
@@ -45,11 +46,14 @@ object TypeChecker {
       withinQ(obj, pattern) // must be within the type's quantified window
   }
 
-  def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean =
+  def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean = {
+    if (!obj.alive && !pattern.alive) return true
     obj.ground.equals(pattern.ground) &&
       withinQ(obj, pattern)
+  }
 
   def matchesTT[O <: Obj](obj: Type[O], pattern: Type[O]): Boolean = {
+    if (!obj.alive && !pattern.alive) return true
     ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj) || obj.name.equals(Tokens.empty) || pattern.name.equals(Tokens.empty)) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) ||
       (obj match {
@@ -68,7 +72,7 @@ object TypeChecker {
       withinQ(obj, pattern)
   }
 
-  def matchesTV[O <: Obj](obj: Type[O], pattern: Value[O]): Boolean = false
+  def matchesTV[O <: Obj](obj: Type[O], pattern: Value[O]): Boolean = !obj.alive && !pattern.alive
 
   ////////////////////////////////////////////////////////
 

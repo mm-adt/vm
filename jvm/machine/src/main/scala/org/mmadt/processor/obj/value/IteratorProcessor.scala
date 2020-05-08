@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.obj.value
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
@@ -36,21 +35,18 @@ import org.mmadt.storage.StorageFactory._
  */
 class IteratorProcessor(model: Model = Model.id) extends Processor {
   override def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E = {
-    LanguageException.testTypeCheck(domainObj.named(rangeType.domain[Obj]().name), rangeType.domain().q(0, rangeType.domain().q._2)) // TODO: don't rename obj (so lame)
-
     var output: Iterator[E] = this.model(domainObj) match {
       case strm: Strm[_] => strm.values.map(x => x.asInstanceOf[E]).iterator
       case single: E => Iterator(single)
     }
-
     for (tt <- IteratorProcessor.createInstList(Nil, rangeType)) {
       output = tt._2 match {
         //////////////REDUCE//////////////
         case reducer: ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)((e, mutatingSeed) => e.compute(reducer.reduction))).map(e => e.q(qOne)) // TODO: need a new seed method other than Traverser
         //////////////FILTER//////////////
-        case filter: FilterInstruction => output.map(_.compute(tt._1.via(tt._1, tt._2)).asInstanceOf[E]).filter(x => filter.keep(x))
+        case _: FilterInstruction => output.map(_.compute(tt._1.via(tt._1, tt._2)).asInstanceOf[E]).filter(_.alive)
         //////////////OTHER//////////////
-        case _: Inst[Obj, Obj] => output
+        case _ => output
           .map(_.compute(tt._1.via(tt._1, tt._2)))
           .filter(_.alive)
           .flatMap(x => x match {
@@ -59,9 +55,7 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
           })
       }
     }
-
-    Processor.strmOrSingle(output.map(x => {
-      // LanguageException.testTypeCheck(x,if (rangeType.range.alive()) rangeType.range.q(1,rangeType.range.q._2) else rangeType.range) // iterator processor linearizes the stream
+    Processor.strmOrSingle(output.map(x => { //LanguageException.testTypeCheck(x,rangeType.hardQ(x.q)) // iterator processor linearizes the stream
       x
     }))
   }

@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory.{int, trec, _}
+import org.mmadt.storage.StorageFactory.{int, _}
 import org.mmadt.storage.obj.`type`.TObj
 
 /**
@@ -37,36 +37,6 @@ package object op {
   trait BranchInstruction
 
   object BranchInstruction {
-    def typeInternal[IT <: Obj, OT <: Obj](start: OType[IT], branches: RecType[IT, OT]): RecType[IT, OT] = {
-      trec(ground = branches.ground.map(x => (x._1 match {
-        case atype: OType[IT] => start.compute(atype)
-        case avalue: OValue[IT] => avalue
-      }, x._2 match {
-        case btype: Type[OT] with OT => start.compute(btype)
-        case bvalue: OValue[OT] => bvalue
-      })))
-    }
-
-    def typeExternal[OT <: Obj](parallel: Boolean, branches: RecType[_, OT]): OT = {
-      val types = branches.ground.values.filter(_.alive).map {
-        case atype: Type[OT] => atype.hardQ(1).range
-        case avalue: Value[OT] => asType(avalue)
-      }.asInstanceOf[Iterable[OType[OT]]]
-
-      val result: OType[OT] = types.toSet.size match {
-        case 1 => types.head
-        case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
-      }
-      if (parallel) { // [branch] sum the min/max quantification
-        result.hardQ(minZero(branches.ground.values.map(x => x.q).reduce((a, b) => plusQ(a, b))))
-      }
-      else { // [choose] select min/max quantification
-        result.hardQ(branches.ground.values.filter(_.alive).map(x => x.q).reduce((a, b) => (
-          int(Math.min(a._1.ground, b._1.ground)),
-          int(Math.max(a._2.ground, b._2.ground)))))
-      }
-    }
-
     def brchType[OT <: Obj](brch: Poly[_ <: Obj]): OT = {
       val types = brch.ground._2.filter(_.alive).map {
         case atype: Type[OT] => atype.hardQ(1).range
@@ -88,9 +58,7 @@ package object op {
     }
   }
 
-  trait FilterInstruction {
-    def keep(obj: Obj): Boolean = !(obj.q._1.ground == 0 && obj.q._2.ground == 0)
-  }
+  trait FilterInstruction
 
   trait FlatmapInstruction
 
@@ -109,6 +77,6 @@ package object op {
 
   trait TerminalInstruction
 
-  trait TraverserInstruction
+  trait TraceInstruction
 
 }

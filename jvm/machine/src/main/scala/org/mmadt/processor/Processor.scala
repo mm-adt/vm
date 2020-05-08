@@ -46,6 +46,6 @@ object Processor {
       val first = itty.next()
       if (itty.hasNext) strm[O]((first +: itty.toList)) else first
     } else
-      strm
+      zeroObj.asInstanceOf[O]
   }
 }
