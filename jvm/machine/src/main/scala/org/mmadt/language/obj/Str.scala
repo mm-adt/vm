@@ -23,6 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.op.map._
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

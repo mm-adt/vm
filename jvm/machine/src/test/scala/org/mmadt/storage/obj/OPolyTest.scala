@@ -1,10 +1,11 @@
 package org.mmadt.storage.obj
 
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Int, Obj, Poly, Str}
+import org.mmadt.language.obj.{Int, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
@@ -12,11 +13,11 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
 class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("basic poly") {
-    assertResult(str("a"))((str("a") | "b" | "c").head())
-    assertResult(str("b") | "c")((str("a") | "b" | "c").tail())
+    assertResult(str("a"))(("a" | "b" | "c").head())
+    assertResult(str("b") | "c")(("a" | "b" | "c").tail())
 
-    assertResult(str("a"))((str("a") / "b" / "c").head())
-    assertResult(str("b") / "c")((str("a") / "b" / "c").tail())
+    assertResult(str("a"))(("a" / "b" / "c").head())
+    assertResult(str("b") / "c")(("a" / "b" / "c").tail())
   }
 
   test("parallel expressions") {
@@ -46,10 +47,10 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
     val starts: TableFor2[Poly[Obj], List[Value[Obj]]] =
       new TableFor2[Poly[Obj], List[Value[Obj]]](("parallel", "projections"),
         (|, List.empty),
-        (str("a") |, List(str("a"))),
-        (str("a") | "b", List(str("a"), str("b"))),
-        (str("a") | "b" | "c", List(str("a"), str("b"), str("c"))),
-        (str("a") | (str("b") | "d") | "c", List(str("a"), (str("b") | "d"), str("c"))),
+        ("a" |, List(str("a"))),
+        ("a" | "b", List(str("a"), str("b"))),
+        ("a" | "b" | "c", List(str("a"), str("b"), str("c"))),
+        ("a" | ("b" | "d") | "c", List(str("a"), "b" | "d", str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
       assertResult(alst.groundList)(blist)
@@ -64,7 +65,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("scala type constructor") {
-    assertResult("['a'|'b']")((str("a") | "b").toString())
+    assertResult("['a'|'b']")(("a" | "b").toString())
   }
 
   test("parallel keys") {
@@ -76,7 +77,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(str("a"))((str("a") |).get(0))
     assertResult(str("b"))((str("a") | "b").get(1))
     assertResult(str("b"))((str("a") | "b" | "c").get(1))
-    assertResult(str("b") | "d")((str("a") | (str("b") | "d") | "c").get(1))
+    assertResult("b" | "d")(("a" | ("b" | "d") | "c").get(1))
   }
 
   test("parallel [get] types") {
@@ -118,8 +119,8 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
     val starts: TableFor2[Poly[Obj], Boolean] =
       new TableFor2[Poly[Obj], Boolean](("serial", "isValue"),
         (/, true),
-        (str("a") / "b", true),
-        (str("a") / "b" / "c" / "d", true),
+        ("a" / "b", true),
+        ("a" / "b" / "c" / "d", true),
         (str / "b", false),
       )
     forEvery(starts) { (serial, bool) => {
@@ -131,10 +132,10 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   test("serial [put]") {
     val starts: TableFor4[Poly[Obj], Int, Obj, Poly[Obj]] =
       new TableFor4[Poly[Obj], Int, Obj, Poly[Obj]](("serial", "key", "value", "newProd"),
-        (/, 0, "a", str("a") /),
-        (str("b") /, 0, "a", str("a") / "b"),
-        (str("a") / "c", 1, "b", str("a") / "b" / "c"),
-        (str("a") / "b", 2, "c", str("a") / "b" / "c"),
+        (/, 0, "a", "a" /),
+        ("b" /, 0, "a", "a" / "b"),
+        ("a" / "c", 1, "b", "a" / "b" / "c"),
+        ("a" / "b", 2, "c", "a" / "b" / "c"),
         //(str("a")/"b", 2, str("c")/ "d", str("a")/ "b"/ (str("c")/ "d")),
         //
         //(`/x`, 0, str, (str /).via(/, PutOp[Int, Str](0, str))),

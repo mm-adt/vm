@@ -185,4 +185,12 @@ object Obj {
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
+
+  @inline implicit class BooleanExtensions(b: Boolean)
+  @inline implicit class StringExtensions(s: String)
+  @inline implicit class IntegerExtensions(i: scala.Int)
+  @inline implicit class LongExtensions(l: Long)
+  @inline implicit class FloatExtensions(f: Float)
+  @inline implicit class DoubleExtensions(d: Double)
+
 }
