@@ -14,10 +14,10 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("basic poly") {
     assertResult(str("a"))(("a" | "b" | "c").head())
-    assertResult(str("b") | "c")(("a" | "b" | "c").tail())
+    assertResult("b" | "c")(("a" | "b" | "c").tail())
 
     assertResult(str("a"))(("a" / "b" / "c").head())
-    assertResult(str("b") / "c")(("a" / "b" / "c").tail())
+    assertResult("b" / "c")(("a" / "b" / "c").tail())
   }
 
   test("parallel expressions") {

@@ -55,6 +55,8 @@ class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
         //(int(1, 2, 3).gt(int(2)).q(10), bool(bfalse.q(20), btrue.q(10)), "strm"), // strm * value = strm
         //(int(1, 2, 3).gt(int(2)).q(10).id(), bool(bfalse.q(10), bfalse.q(10), btrue.q(10)), "strm"), // strm * value = strm
         //(int(1, 2, 3).gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50)), "strm"), // strm * value = strm
+        //(int(1, 2, 3).id().gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50)), "strm"), // strm * value = strm
+        (int(1, 2, 3).gt(int(2)).id().q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50)), "strm"), // strm * value = strm
         (int(1, 2, 3).gt(int), bool(false, false, false), "strm"), // strm * type = strm
         (int(1, 2, 3).gt(__.mult(int)), bool(false, false, false), "strm"), // strm * anon = strm
         //////// REAL

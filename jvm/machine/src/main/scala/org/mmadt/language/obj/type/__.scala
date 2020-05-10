@@ -36,6 +36,7 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   with GetOp[Obj, Obj]
   with PutOp[Obj, Obj] {
   override def clone(name: String = Tokens.empty, ground: Any, q: IntQ = qOne, via: ViaTuple = base): this.type = new __(name, q, via).asInstanceOf[this.type]
+  override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(via = (obj, inst))
   def apply[T <: Obj](obj: Obj): OType[T] = asType(this.trace.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
@@ -54,6 +55,11 @@ class __(val name: String = Tokens.empty, val q: IntQ = qOne, val via: ViaTuple 
   override def get(key: Obj): this.type = this.via(this, GetOp(key))
   override def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
   override def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
+  //
+  override def equals(other: Any): Boolean = other match {
+    case anon: __ => ((this.root && anon.root) || (this.via == anon.via))
+    case _ => false
+  }
 }
 
 object __ extends __(Tokens.empty, qOne, base) {
