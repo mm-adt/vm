@@ -54,13 +54,13 @@ object MultOp {
           case aint: Int => start.clone(ground = aint.ground * inst.arg0[Int]().ground)
           case areal: Real => start.clone(ground = areal.ground * inst.arg0[Real]().ground)
           //////// EXPERIMENTAL
-          case prodA: Poly[O] if prodA.ground._1 == Tokens.:/ => multObj[O](arg match {
-            case prodB: Poly[O] if prodB.ground._1 == Tokens.:/ => /[O].clone(prodA.groundList ++ prodB.groundList)
-            case coprodB: Poly[O] if coprodB.ground._1 == Tokens.:| => |[O].clone(coprodB.groundList.map(a => /.clone(prodA.groundList :+ a)).asInstanceOf[List[O]])
+          case serialA: Poly[O] if serialA.isSerial => multObj[O](arg match {
+            case serialB: Poly[O] if serialB.isSerial => serialA.clone(serialA.groundList ++ serialB.groundList)
+            case choiceB: Poly[O] if choiceB.isChoice => choiceB.clone(choiceB.groundList.map(a => /.clone(serialA.groundList :+ a)).asInstanceOf[List[O]])
           })
-          case coprodA: Poly[O] if coprodA.ground._1 == Tokens.:| => multObj[O](arg match {
-            case prodB: Poly[O] if prodB.ground._1 == Tokens.:/ => |[O].clone(coprodA.groundList.map(a => /.clone(a +: prodB.groundList)).asInstanceOf[List[O]])
-            case coprodB: Poly[O] if coprodB.ground._1 == Tokens.:| => /[O].clone(coprodA.groundList.flatMap(a => coprodB.groundList.map(b => a/b)).asInstanceOf[List[O]])
+          case choiceA: Poly[O] if choiceA.isChoice => multObj[O](arg match {
+            case serialB: Poly[O] if serialB.isSerial => choiceA.clone(choiceA.groundList.map(a => /.clone(a +: serialB.groundList)).asInstanceOf[List[O]])
+            case choiceB: Poly[O] if choiceB.isChoice => /[O].clone(choiceA.groundList.flatMap(a => choiceB.groundList.map(b => a / b)).asInstanceOf[List[O]])
           })
         }
         case _ => start

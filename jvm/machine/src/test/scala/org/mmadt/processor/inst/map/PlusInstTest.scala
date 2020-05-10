@@ -23,6 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.{IntType, RealType, Type, __}
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.strm.Strm

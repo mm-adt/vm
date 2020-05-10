@@ -124,7 +124,7 @@ trait Obj
   private final def polyMaker[A <: Obj](sep: String, obj: A): Poly[A] = {
     this match {
       case apoly: Poly[A] => obj match {
-        case _: Poly[A] => poly(sep, List(this.asInstanceOf[A], obj): _*)
+        case bpoly: Poly[A] => poly(sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A]): _*)
         case _ => apoly.clone(apoly.groundList :+ obj)
       }
       case _ => poly(sep, this.asInstanceOf[A], obj)

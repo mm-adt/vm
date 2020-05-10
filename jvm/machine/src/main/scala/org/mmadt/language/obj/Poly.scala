@@ -10,7 +10,7 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
-import org.mmadt.language.{LanguageException, LanguageFactory}
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
@@ -32,6 +32,8 @@ trait Poly[A <: Obj] extends Obj
   def groundList: List[A] = ground._2
   def groundKeys: List[String] = ground._3
   def hasKeys: Boolean = groundKeys.nonEmpty
+  def isSerial: Boolean = this.groundConnective == Tokens.:/
+  def isChoice: Boolean = this.groundConnective == Tokens.:|
 
   def zeroOp(inst: ZeroInst[A]): this.type = this.clone(List.empty[A]).via(this, inst)
   def tailOp(inst: TailInst[Poly[A]]): this.type = if (this.groundList.isEmpty) throw new LanguageException("no tail on empty poly") else this.clone(this.groundList.tail).via(this, inst)
