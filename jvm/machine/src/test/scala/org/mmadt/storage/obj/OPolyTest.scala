@@ -5,7 +5,7 @@ import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Int, Obj, Poly}
+import org.mmadt.language.obj.{Int, Obj, Poly, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
@@ -72,6 +72,46 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult("[name->'marko'|age->29]")(("name" -> str("marko") | "age" -> int(29)).toString)
     assertResult(str("marko"))(("name" -> str("marko") | "age" -> int(29)).get("name"))
   }
+
+  test("parallel [put] values") {
+    assertResult(("name" -> str("marko")) | ("age" -> int(29)) | ("year" -> int(2020)))(("name" -> str("marko") | "age" -> int(29)).put("year", 2020))
+    assertResult(("name" -> str("marko")) | ("age" -> int(40)))(("name" -> str("marko") | "age" -> int(29)).put("age", 40))
+    assertResult(("name" -> str("marko")) | ("age" -> int(41)))(("name" -> str("marko") | "age" -> int(29)).put("age", 40).put("age", 41))
+
+    //assertResult("[1->true]")(("1" -> btrue)|().toString)
+    assertResult("[1->true|2->false]")((("1" -> btrue) | ("2" -> bfalse)).toString)
+    assertResult("[1->true|2->false|3->false]")((("1" -> btrue) | ("2" -> bfalse)).put("3", bfalse).toString)
+    //assertResult("[1->true|2->false]")((("1" -> btrue)|).put("2",bfalse).toString)
+    //assertResult("[1->true|2->false]")((("1" -> btrue)|).plus(("2" -> bfalse)|).toString)
+    //assertResult(bfalse)("1" -> btrue ==> poly("|").plus("2" -> bfalse).get("2", bool))
+    /*assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
+    assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
+    assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))
+    intercept[NoSuchElementException] {
+      rec(int(1) -> btrue, int(2) -> bfalse).get(int(3))
+    }*/
+
+    val X: Poly[Str] = "1" -> str("a")
+    val Y: Poly[Str] = "2" -> str("b")
+    val Z: Poly[Str] = "3" -> str("c")
+    // forwards keys
+    assertResult(List(str("a"), str("b")))(X.plus(Y).groundList)
+    assertResult(List(str("a"), str("b"), str("c")))(X.plus(Y).plus(Z).groundList)
+    /*assertResult(ListMap(X, Y))(rec(X).plus(rec(Y)).ground)
+    assertResult(ListMap(X, Y, Z))(rec(X, Y, Z).ground)
+    assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).ground)
+    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).ground)
+    // backwards keys
+    assertResult(ListMap(Y, X))(rec(Y, X).ground)
+    assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).ground)
+    assertResult(ListMap(Z, Y, X))(rec(Z, Y, X).ground)
+    assertResult(ListMap(Z, Y, X))(rec(Z).plus(rec(Y, X)).ground)
+    assertResult(ListMap(Z, Y, X))(rec(Z, Y).plus(rec(X)).ground)
+    // overwrite orderings
+    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).ground) // TODO: determine overwrite order*/
+
+  }
+
 
   test("parallel [get] values") {
     assertResult(str("a"))((str("a") |).get(0))

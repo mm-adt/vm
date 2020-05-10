@@ -56,7 +56,11 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   private def parse[O <: Obj](input: String): O = {
     this.parseAll(expr | emptySpace, input.trim) match {
       case Success(result, _) => result.asInstanceOf[O]
-      case NoSuccess(y) => throw LanguageException.parseError(y._1, y._2.source.toString, y._2.pos.line.asInstanceOf[java.lang.Integer], y._2.pos.column.asInstanceOf[java.lang.Integer])
+      case NoSuccess(y) => throw LanguageException.parseError(
+        y._1,
+        y._2.source.toString,
+        y._2.pos.line.asInstanceOf[java.lang.Integer],
+        y._2.pos.column.asInstanceOf[java.lang.Integer])
     }
   }
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])

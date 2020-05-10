@@ -111,7 +111,7 @@ trait Obj
   final def |[A <: Obj](obj: String): Poly[A] = this.|(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def |[A <: Obj]: Poly[A] = poly(Tokens.:|, this.asInstanceOf[A])
   final def |[A <: Obj](obj: A): Poly[A] = this.polyMaker(Tokens.:|, obj)
-  final def |[A <: Obj](obj: (String, A)): Poly[A] = this.polyMaker(Tokens.:|, obj)
+  final def |[A <: Obj](obj: Tuple2[String, A]): Poly[A] = this.polyMaker(Tokens.:|, obj)
   //
   final def /[A <: Obj](obj: scala.Double): Poly[A] = this./(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def /[A <: Obj](obj: scala.Long): Poly[A] = this./(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
