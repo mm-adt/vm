@@ -68,7 +68,9 @@ class MultInstTest extends FunSuite with TableDrivenPropertyChecks {
         (("a" /).mult(("1" /).asInstanceOf[Poly[Obj]]), "a" / "1", "value"),
         (("a" /).mult("1" |[Obj] "2"), ("a" / "1") | ("a" / "2"), "value"),
         (("a" / "b" / "c").mult("1" |[Obj] "2"), ("a" / "b" / "c" / "1") | ("a" / "b" / "c" / "2"), "value"),
-        (("a" | "b" | "c").mult("1" /[Obj] "2"), poly[Obj]("|", values = List(("a" / "1" / "2"), ("b" / "1" / "2"), ("c" / "1" / "2")): _*), "value")
+        (("a" / "b" / "c").mult("1" /[Obj] "2"), "a" / "b" / "c" / "1" / "2", "value"),
+        (("a" | "b" | "c").mult("1" /[Obj] "2"), poly[Obj]("|", values = List(("a" / "1" / "2"), ("b" / "1" / "2"), ("c" / "1" / "2")): _*), "value"),
+        (("a" | "b" | "c").mult("1" |[Obj] "2"), poly[Obj]("|", values = List(("a" | "1" | "2"), ("b" | "1" | "2"), ("c" | "1" | "2")): _*), "value")
       )
     forEvery(starts) { (query, result, atype) => {
       assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))

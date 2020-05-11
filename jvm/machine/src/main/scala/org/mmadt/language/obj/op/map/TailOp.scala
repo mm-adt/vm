@@ -22,8 +22,8 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{IntQ, Obj, Poly}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -38,7 +38,11 @@ object TailOp {
   class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.tail, Nil), q) {
     override def q(q: IntQ): this.type = new TailInst(q).asInstanceOf[this.type]
     override def exec(start: O): O = (start match {
-      case apoly: Poly[Obj] => apoly.tailOp(this.asInstanceOf[TailInst[Poly[Obj]]])
+      case apoly: Poly[Obj] =>
+        if (apoly.groundList.isEmpty)
+          throw new LanguageException("no tail on empty poly")
+        else
+          apoly.clone(apoly.groundList.tail)
     }).asInstanceOf[O].via(start, this)
 
   }

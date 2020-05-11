@@ -480,8 +480,11 @@ class mmlangScriptEngineTest extends FunSuite {
     // mult
     assertResult("['a'/'b'/'c'/'d']")(engine.eval("['a'/'b'][mult,['c'/'d']]").toString)
     assertResult("[['a'/'b'/'c']|['a'/'b'/'d']]")(engine.eval("['a'/'b'][mult,['c'|'d']]").toString)
-    //assertResult("[['a'/'c']|['a'/'d']|['b'/'c']|['b'/'d']]")(engine.eval("['a'|'b'][mult,['c'|'d']]").toString)
+    assertResult("[['a'/'b'/'c']|['a'/'b'/'d']]")(engine.eval("['a'/'b']*['c'|'d']").toString)
+    assertResult("[['a'|'c'|'d']|['b'|'c'|'d']]")(engine.eval("['a'|'b'][mult,['c'|'d']]").toString)
+    assertResult("[['a'|'c'|'d']|['b'|'c'|'d']]")(engine.eval("['a'|'b']*['c'|'d']").toString)
     assertResult("[['a'/'c'/'d']|['b'/'c'/'d']]")(engine.eval("['a'|'b'][mult,['c'/'d']]").toString)
+    assertResult("[['a'/'c'/'d']|['b'/'c'/'d']]")(engine.eval("['a'|'b']*['c'/'d']").toString)
     // plus
     assertResult("['a'|'b'|'c'|'d']")(engine.eval("['a'|'b'][plus,['c'|'d']]").toString)
     assertResult("[['a'/'b']|['c'/'d']]")(engine.eval("['a'/'b'][plus,['c'/'d']]").toString)

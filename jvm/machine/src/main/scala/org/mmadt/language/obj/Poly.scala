@@ -2,10 +2,6 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
-import org.mmadt.language.obj.op.map.HeadOp.HeadInst
-import org.mmadt.language.obj.op.map.PlusOp.PlusInst
-import org.mmadt.language.obj.op.map.TailOp.TailInst
-import org.mmadt.language.obj.op.map.ZeroOp.ZeroInst
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
@@ -34,18 +30,6 @@ trait Poly[A <: Obj] extends Obj
   def hasKeys: Boolean = groundKeys.nonEmpty
   def isSerial: Boolean = this.groundConnective == Tokens.:/
   def isChoice: Boolean = this.groundConnective == Tokens.:|
-
-  def zeroOp(inst: ZeroInst[A]): this.type = this.clone(List.empty[A]).via(this, inst)
-  def tailOp(inst: TailInst[Poly[A]]): this.type = if (this.groundList.isEmpty) throw new LanguageException("no tail on empty poly") else this.clone(this.groundList.tail).via(this, inst)
-  def headOp(inst: HeadInst[A]): A = if (!this.groundList.exists(_.alive)) throw new LanguageException("no head on empty poly") else this.groundList.filter(_.alive).head.via(this, inst)
-
-  def plusOp(inst: PlusInst[Poly[A]]): this.type = {
-    this.ground._1 match {
-      case "|" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2, ground._3)).via(this, inst)
-      case ";" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2, ground._3)).via(this, inst)
-      case "/" => this.clone(ground = (ground._1, ground._2 ++ inst.arg0[Poly[A]]().ground._2, ground._3)).via(this, inst)
-    }
-  }
 
   def clone(values: List[A]): this.type = this.clone(ground = (groundConnective, values, groundKeys))
 

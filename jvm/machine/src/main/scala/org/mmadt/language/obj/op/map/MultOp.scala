@@ -60,7 +60,7 @@ object MultOp {
           })
           case choiceA: Poly[O] if choiceA.isChoice => multObj[O](arg match {
             case serialB: Poly[O] if serialB.isSerial => choiceA.clone(choiceA.groundList.map(a => /.clone(a +: serialB.groundList)).asInstanceOf[List[O]])
-            case choiceB: Poly[O] if choiceB.isChoice => /[O].clone(choiceA.groundList.flatMap(a => choiceB.groundList.map(b => a / b)).asInstanceOf[List[O]])
+            case choiceB: Poly[O] if choiceB.isChoice => choiceA.clone(choiceA.groundList.map(a => |.clone(a +: choiceB.groundList)).asInstanceOf[List[O]])
           })
         }
         case _ => start

@@ -22,8 +22,8 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.{IntQ, Obj, Poly}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -37,7 +37,11 @@ object HeadOp {
 
   class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A]((Tokens.head, Nil), q) {
     override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Poly[A]): A = start.headOp(this).via(start, this)
+    override def exec(start: Poly[A]): A =
+      if (!start.groundList.exists(_.alive))
+        throw new LanguageException("no head on empty poly")
+      else
+        start.groundList.filter(_.alive).head.via(start, this)
   }
 
 }
