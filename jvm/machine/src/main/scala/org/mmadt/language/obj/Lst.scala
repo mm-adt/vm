@@ -78,9 +78,10 @@ object Lst {
     if (apoly.isSerial) {
       var local = arg
       apoly.clone(apoly.gvalues.map(slot => {
-        val x = Inst.resolveArg(local, slot)
-        local = local.via(x, IdOp())
-        x
+        local = Inst.resolveArg(local, slot)
+        local
+        //local = local.via(x, IdOp())
+       // x
       }))
     } else
       apoly.clone(apoly.gvalues.map(slot => Inst.resolveArg(arg, slot)))

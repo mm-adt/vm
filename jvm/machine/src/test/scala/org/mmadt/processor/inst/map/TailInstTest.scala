@@ -49,7 +49,7 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
       |.tail()
     }
     assertThrows[LanguageException] {
-      /.tail()
+      `;`.tail()
     }
   }
 
@@ -57,9 +57,9 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
     val check: TableFor2[Lst[_], Obj] =
       new TableFor2(("serial", "tail"),
         //(str("a") /, /),
-        (str("a") / "b", str("b") /),
-        (str("a") / "b" / "c", str("b") / "c"),
-        (str("d") / "b" / "c", str("b") / "c"),
+        (str("a") `;` "b", str("b") `;`),
+        (str("a") `;` "b" `;` "c", str("b") `;` "c"),
+        (str("d") `;` "b" `;` "c", str("b") `;` "c"),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.tail())

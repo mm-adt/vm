@@ -36,7 +36,7 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   with Type[Rec[A, B]]
   with ObjType {
 
-  def apply(value: (Value[A], Value[B])*): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, (Tokens./, value.toMap), this.q)
+  def apply(value: (Value[A], Value[B])*): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, (Tokens.`;`, value.toMap), this.q)
   def apply(value: RecValue[Value[A], Value[B]]): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, value.ground, this.q)
 
   override def get[BB <: Obj](key: A, btype: BB): BB = btype.via(this, GetOp[A, BB](key, btype))

@@ -62,7 +62,7 @@ object OpInstResolver {
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head.asInstanceOf[Lst[Obj]])
       case Tokens.merge | Tokens.merge_op => MergeOp()
       case Tokens.given | Tokens.given_op => GivenOp(args.head)
-      case Tokens.tracer => args.headOption.map(x => TraceOp(x.asInstanceOf[Lst[Obj]])).getOrElse(TraceOp())
+      case Tokens.`trace` => args.headOption.map(x => TraceOp(x.asInstanceOf[Lst[Obj]])).getOrElse(TraceOp())
       //
       case Tokens.noop => NoOp()
       case Tokens.add => AddOp(args.head)

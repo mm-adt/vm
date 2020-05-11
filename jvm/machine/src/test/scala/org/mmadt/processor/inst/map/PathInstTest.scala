@@ -35,11 +35,11 @@ class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[path] value, type, strm") {
     val starts: TableFor3[Obj, Obj, Obj] =
       new TableFor3[Obj, Obj, Obj](("input", "type", "result"),
-        (str("a"), __.plus("b").plus("c").path(), str("a") / "ab" / "abc"),
-        (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(), str("a") / "ab" / "ababcd" / "ababcde"),
+        (str("a"), __.plus("b").plus("c").path(), str("a") `;` "ab" `;` "abc"),
+        (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(), str("a") `;` "ab" `;` "ababcd" `;` "ababcde"),
         //(str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path().get(1).path(), `;`[Str]("a", "ab", "ababcd", "ababcde")), TODO: branch to historic paths
-        (int(1, 2, 3), __.plus(1).path(), strm(List[Lst[IntValue]](int(1) / 2, int(2) / 3, int(3) / 4))),
-        (int(1, 2, 3), __.plus(1).plus(2).path(), strm(List[Lst[IntValue]](int(1) / 2 / 4, int(2) / 3 / 5, int(3) / 4 / 6))),
+        (int(1, 2, 3), __.plus(1).path(), strm(List[Lst[IntValue]](int(1) `;` 2, int(2) `;` 3, int(3) `;` 4))),
+        (int(1, 2, 3), __.plus(1).plus(2).path(), strm(List[Lst[IntValue]](int(1) `;` 2 `;` 4, int(2) `;` 3 `;` 5, int(3) `;` 4 `;` 6))),
       )
     forEvery(starts) { (input, atype, result) => {
       List(
@@ -54,7 +54,7 @@ class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
     }
   }
   test("[path] w/ int value") {
-    assertResult(int(0) / int(1) / int(3) / int(6) / int(10))(int(0).plus(1).plus(2).plus(3).plus(4).path())
+    assertResult(int(0) `;` int(1) `;` int(3) `;` int(6) `;` int(10))(int(0).plus(1).plus(2).plus(3).plus(4).path())
   }
 
 }

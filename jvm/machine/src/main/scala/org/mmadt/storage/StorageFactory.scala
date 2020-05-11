@@ -49,9 +49,10 @@ trait StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
-  def poly[A <: Obj](sep: String, values: A*): Lst[A] = new OLst[A](ground = (sep, values.toList))
+  def lst[A <: Obj](sep: String, values: A*): Lst[A] = new OLst[A](ground = (sep, values.toList))
   def |[A <: Obj]: Lst[A] = new OLst[A](ground = (Tokens.|, List.empty))
-  def /[A <: Obj]: Lst[A] = new OLst[A](ground = (Tokens./, List.empty))
+  def `;`[A <: Obj]: Lst[A] = new OLst[A](ground = (Tokens.`;`, List.empty))
+  def `,`[A <: Obj]: Lst[A] = new OLst[A](ground = (Tokens.`,`, List.empty))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base): BoolType
@@ -96,9 +97,10 @@ object StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(gmap = Map.empty[A, B])
-  def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Lst[A] = f.poly[A](sep, values: _*)
+  def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Lst[A] = f.lst[A](sep, values: _*)
   def |[A <: Obj](implicit f: StorageFactory): Lst[A] = f.|
-  def /[A <: Obj](implicit f: StorageFactory): Lst[A] = f./
+  def `;`[A <: Obj](implicit f: StorageFactory): Lst[A] = f.`;`
+  def `,`[A <: Obj](implicit f: StorageFactory): Lst[A] = f.`,`
 
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
@@ -165,7 +167,7 @@ object StorageFactory {
     override def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = base): IntType = new TInt(name, q, via)
     override def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = base): RealType = new TReal(name, q, via)
     override def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base): StrType = new TStr(name, q, via)
-    override def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, gmap: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base): RecType[A, B] = new TRec[A, B](name, (Tokens./, gmap), q, via)
+    override def trec[A <: Obj, B <: Obj](name: String = Tokens.rec, gmap: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base): RecType[A, B] = new TRec[A, B](name, (Tokens.`;`, gmap), q, via)
     /////////VALUES/////////
     override def int(ground: Long): IntValue = new VInt(ground = ground) // NECESSARY FOR Q PRELOAD
     override def obj(ground: Any): ObjValue = new VObj(ground = ground)
@@ -177,7 +179,7 @@ object StorageFactory {
     override def real(value1: RealValue, value2: RealValue, valuesN: RealValue*): RealStrm = new VRealStrm(values = MultiSet(value1 +: (value2 +: valuesN)))
     override def vstr(name: String, ground: String, q: IntQ, via: ViaTuple): StrValue = new VStr(name, ground, q, base)
     override def str(value1: StrValue, value2: StrValue, valuesN: StrValue*): StrStrm = new VStrStrm(values = MultiSet(value1 +: (value2 +: valuesN)))
-    override def vrec[A <: Value[Obj], B <: Value[Obj]](name: String, ground: collection.Map[A, B], q: IntQ, via: ViaTuple): RecValue[A, B] = new VRec[A, B](name, (Tokens./, ground), q, via)
+    override def vrec[A <: Value[Obj], B <: Value[Obj]](name: String, ground: collection.Map[A, B], q: IntQ, via: ViaTuple): RecValue[A, B] = new VRec[A, B](name, (Tokens.`;`, ground), q, via)
     override def vrec[A <: Value[Obj], B <: Value[Obj]](values: Iterator[RecValue[A, B]]): RecStrm[A, B] = new VRecStrm(values = MultiSet(values.toSeq))
     //
     override def strm[O <: Obj]: OStrm[O] = VEmptyStrm.empty[O]

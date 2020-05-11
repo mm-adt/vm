@@ -65,11 +65,11 @@ class MultInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).mult(__.mult(real)), real(1.0, 8.0, 27.0), "strm"), // strm * anon = strm
         //////// POLY
         //(("a" |).mult(("1" /).asInstanceOf[Poly[Obj]]), "a" / "1", "value"),
-        (("a" /).mult(("1" /).asInstanceOf[Lst[Obj]]), "a" / "1", "value"),
-        (("a" /).mult("1" |[Obj] "2"), ("a" / "1") | ("a" / "2"), "value"),
-        (("a" / "b" / "c").mult("1" |[Obj] "2"), ("a" / "b" / "c" / "1") | ("a" / "b" / "c" / "2"), "value"),
-        (("a" / "b" / "c").mult("1" /[Obj] "2"), "a" / "b" / "c" / "1" / "2", "value"),
-        (("a" | "b" | "c").mult("1" /[Obj] "2"), lst[Obj]("|", values = List(("a" / "1" / "2"), ("b" / "1" / "2"), ("c" / "1" / "2")): _*), "value"),
+        (("a" `;`).mult(("1" `;`).asInstanceOf[Lst[Obj]]), "a" `;` "1", "value"),
+        (("a" `;`).mult("1" |[Obj] "2"), ("a" `;` "1") | ("a" `;` "2"), "value"),
+        (("a" `;` "b" `;` "c").mult("1" |[Obj] "2"), ("a" `;` "b" `;` "c" `;` "1") | ("a" `;` "b" `;` "c" `;` "2"), "value"),
+        (("a" `;` "b" `;` "c").mult("1" `;`[Obj] "2"), "a" `;` "b" `;` "c" `;` "1" `;` "2", "value"),
+        (("a" | "b" | "c").mult("1" `;`[Obj] "2"), lst[Obj]("|", values = List(("a" `;` "1" `;` "2"), ("b" `;` "1" `;` "2"), ("c" `;` "1" `;` "2")): _*), "value"),
         (("a" | "b" | "c").mult("1" |[Obj] "2"), lst[Obj]("|", values = List(("a" | "1" | "2"), ("b" | "1" | "2"), ("c" | "1" | "2")): _*), "value")
       )
     forEvery(starts) { (query, result, atype) => {

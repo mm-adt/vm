@@ -90,7 +90,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 
   // poly parsing
   lazy val polyObj: Parser[Lst[Obj]] = lstObj ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Lst[Obj]]).getOrElse(x._1))
-  lazy val polySep: Parser[String] = Tokens./ | Tokens.| | Tokens.\ | Tokens.`;` | Tokens.`,`
+  lazy val polySep: Parser[String] = Tokens.| | Tokens.`;` | Tokens.`,`
   lazy val lstObj: Parser[Lst[Obj]] = (LBRACKET ~> (opt(obj) ~ polySep) ~ rep1sep(opt(obj), polySep) <~ RBRACKET) ^^ (x => lst(x._1._2, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)): _*))
   //lazy val polyRecObj: Parser[Poly[Obj]] = (LBRACKET ~> ((symbolName <~ Tokens.:->) ~ obj ~ polySep) ~ rep1sep((symbolName <~ Tokens.:->) ~ obj, polySep) <~ RBRACKET) ^^
   //  (x => poly[Obj](x._1._2).clone(ground = (x._1._2, x._1._1._2 +: x._2.map(y => y._2), x._1._1._1 +: x._2.map(y => y._1))))
@@ -103,10 +103,10 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val intType: Parser[IntType] = Tokens.int ^^ (_ => int)
   lazy val realType: Parser[RealType] = Tokens.real ^^ (_ => real)
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
-  lazy val lstType: Parser[Lst[Obj]] = Tokens.lst ~> opt(lstObj) ^^ (x => x.getOrElse(lst(Tokens./)))
+  lazy val lstType: Parser[Lst[Obj]] = Tokens.lst ~> opt(lstObj) ^^ (x => x.getOrElse(lst(Tokens.`;`)))
   lazy val recType: Parser[ORecType] = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(gmap = x.map(_._2).getOrElse(Map.empty[Obj, Obj])))
   lazy val recTypeNoPrefix: Parser[ORecType] = recStruct ^^ (x => trec(gmap = x._2))
-  lazy val recStruct: Parser[RecTuple[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj, polySep) <~ RBRACKET) ^^ (x => (Tokens./, x.map(o => (o._1, o._2)).toMap))
+  lazy val recStruct: Parser[RecTuple[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj, polySep) <~ RBRACKET) ^^ (x => (Tokens.`;`, x.map(o => (o._1, o._2)).toMap))
 
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))

@@ -23,8 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, Lst}
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -48,10 +47,10 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[head] w/ serial poly") {
     val check: TableFor2[Lst[_], Obj] =
       new TableFor2(("serial", "head"),
-        (str("a")/, "a"),
-        (str("a")/ "b", "a"),
-        (str("a")/ "b"/ "c", "a"),
-        (str("d")/ "b"/ "c", "d"),
+        (str("a") `;`, "a"),
+        (str("a") `;` "b", "a"),
+        (str("a") `;` "b" `;` "c", "a"),
+        (str("d") `;` "b" `;` "c", "d"),
       )
     forEvery(check) { (left, right) => {
       assertResult(right)(left.head())
@@ -61,7 +60,7 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[head] exception") {
     assertThrows[LanguageException] {
-      /.head()
+      `;`.head()
     }
     assertThrows[LanguageException] {
       |.head()

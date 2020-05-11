@@ -49,7 +49,7 @@ object PutOp {
             apoly.clone(ground = (apoly.gsep, (front :+ value) ++ back), via = (start, this))
           case _ => apoly.via(start, this)
         }
-        case rec: Rec[A, B] => rec.clone(ground = (Tokens./, rec.gmap + (key -> value)), via = (rec, this))
+        case rec: Rec[A, B] => rec.clone(ground = (Tokens.`;`, rec.gmap + (key -> value)), via = (rec, this))
       }
     }
   }

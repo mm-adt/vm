@@ -56,10 +56,10 @@ object MultOp {
           //////// EXPERIMENTAL
           case serialA: Lst[O] if serialA.isSerial => multObj[O](arg match {
             case serialB: Lst[O] if serialB.isSerial => serialA.clone(serialA.gvalues ++ serialB.gvalues)
-            case choiceB: Lst[O] if choiceB.isChoice => choiceB.clone(choiceB.gvalues.map(a => /.clone(serialA.gvalues :+ a)).asInstanceOf[List[O]])
+            case choiceB: Lst[O] if choiceB.isChoice => choiceB.clone(choiceB.gvalues.map(a => `;`.clone(serialA.gvalues :+ a)).asInstanceOf[List[O]])
           })
           case choiceA: Lst[O] if choiceA.isChoice => multObj[O](arg match {
-            case serialB: Lst[O] if serialB.isSerial => choiceA.clone(choiceA.gvalues.map(a => /.clone(a +: serialB.gvalues)).asInstanceOf[List[O]])
+            case serialB: Lst[O] if serialB.isSerial => choiceA.clone(choiceA.gvalues.map(a => `;`.clone(a +: serialB.gvalues)).asInstanceOf[List[O]])
             case choiceB: Lst[O] if choiceB.isChoice => choiceA.clone(choiceA.gvalues.map(a => |.clone(a +: choiceB.gvalues)).asInstanceOf[List[O]])
           })
         }

@@ -34,12 +34,12 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[split] value, type, strm") {
     val check: TableFor3[Obj, Poly[Obj], Obj] =
       new TableFor3[Obj, Poly[Obj], Obj](("input", "type", "result"),
-        (int(1), int.-<(int / int), int(1) / int(1)),
+        (int(1), int.-<(int `;` int), int(1) `;` int(1)),
         //(int(1,2,3), int.q(3).-<(int.q(3) / int.q(3)), int(1,2,3)/ int(1,2,3)),
         //(int(2), __.-<(coprod(int, str)), coprod(int(2), obj.q(qZero))),
         //(int(2).q(2), int.q(5).-<(coprod(int, int.is(__.gt(10)))), coprod(int(2), obj.q(qZero))),
-        (int(2).q(2), int.q(2).-<(int / int.is(__.gt(10))), int(2).q(2) / obj.q(qZero)),
-        (int(2), int.-<(int / int.is(__.gt(10))), int(2) / obj.q(qZero)),
+        (int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), int(2).q(2) `;` obj.q(qZero)),
+        (int(2), int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)),
         // (int(2), int.-<(coprod(int.-<(coprod(int, int.is(__.gt(11)))), int.is(__.gt(10)))), coprod(coprod(int(2), obj.q(qZero)), obj.q(qZero))),
       )
     forEvery(check) { (input, atype, result) => {
@@ -53,18 +53,18 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("lineage preservation (products)") {
-    assertResult(int(321))(int(1) ===> int.plus(100).plus(200).split(int \ bool).merge[Int].plus(20))
+    assertResult(int(321))(int(1) ===> int.plus(100).plus(200).split(int `,` bool).merge[Int].plus(20))
     assertResult(int.plus(100).plus(200).split(int | bool).merge[Int].plus(20))(int ===> int.plus(100).plus(200).split(int | bool).merge[Int].plus(20))
-    assertResult(int(1) / 101 / 301 / 301 / 321)((int(1) ===> int.plus(100).plus(200).split(int \ bool).merge[Int].plus(20)).path())
+    assertResult(int(1) `;` 101 `;` 301 `;` 301 `;` 321)((int(1) ===> int.plus(100).plus(200).split(int `,` bool).merge[Int].plus(20)).path())
   }
 
   test("lineage preservation (coproducts)") {
-    println(int.plus(100).plus(200).split(int \ int.plus(2)).merge[Int].plus(20))
-    assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(int \ int.plus(2)).merge[Int].plus(20))
-    assertResult(int.plus(100).plus(200).split(int \ int.plus(2)).merge[Int].plus(20))(int ===> int.plus(100).plus(200).split(int \ int.plus(2)).merge[Int].plus(20))
+    println(int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
+    assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
+    assertResult(int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))(int ===> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
     assertResult(strm(List(
-      int(1) / 101 / 301 / 301 / 321,
-      int(1) / 101 / 301 / 301 / 303 / 323)))(int(1) ===> int.plus(100).plus(200).split(int \ int.plus(2)).merge[Int].plus(20).path())
+      int(1) `;` 101 `;` 301 `;` 301 `;` 321,
+      int(1) `;` 101 `;` 301 `;` 301 `;` 303 `;` 323)))(int(1) ===> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20).path())
   }
 
   test("quantifiers") {
@@ -118,47 +118,47 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[\\] w/ values") {
     assertResult(int(4))(
       int(0).plus(1).-<(
-        (int.is(int.gt(2)) --> int.mult(3)) \
+        (int.is(int.gt(2)) --> int.mult(3)) `,`
           (int --> int.mult(4))) >-)
 
     assertResult(int(12, 16))(
       int(0).plus(4).-<(
-        (int.is(int.gt(2)) --> int.mult(3))\
+        (int.is(int.gt(2)) --> int.mult(3))`,`
           (int --> int.mult(4))) >-)
 
     assertResult(int(42, 43, 44))(
       int(0) ==> int.plus(int(39)).-<(
-        (int.is(int.gt(40)) --> int.plus(1)) \
-          (int.is(int.gt(30)) --> int.plus(2)) \
-          (int.is(int.gt(20)) --> int.plus(3)) \
+        (int.is(int.gt(40)) --> int.plus(1)) `,`
+          (int.is(int.gt(30)) --> int.plus(2)) `,`
+          (int.is(int.gt(20)) --> int.plus(3)) `,`
           (int.is(int.gt(10)) --> int.plus(4))).>-.plus(1))
 
     assertResult(int(33, 34))(
       int(0) ==> int.plus(29).-<(
-        (int.is(int.gt(40)) --> int.plus(1)) \
-          (int.is(int.gt(30)) --> int.plus(2)) \
-          (int.is(int.gt(20)) --> int.plus(3)) \
+        (int.is(int.gt(40)) --> int.plus(1)) `,`
+          (int.is(int.gt(30)) --> int.plus(2)) `,`
+          (int.is(int.gt(20)) --> int.plus(3)) `,`
           (int.is(int.gt(10)) --> int.plus(4))).>-.plus(1))
 
     assertResult(int(33, 34))(
       int(0) ==> int.plus(29).-<[IntType](
-        (int.is(__.gt(40)) --> int.plus(1)) \
-          (int.is(__.gt(30)) --> int.plus(2)) \
-          (int.is(__.gt(20)) --> int.plus(3)) \
+        (int.is(__.gt(40)) --> int.plus(1)) `,`
+          (int.is(__.gt(30)) --> int.plus(2)) `,`
+          (int.is(__.gt(20)) --> int.plus(3)) `,`
           (int.is(__.gt(10)) --> int.plus(4))).>-.plus(int(1)))
 
     assertResult(int(32, 33))(
       int(0) ===> int.plus(29).-<(
-        (int.is(int.gt(40)) --> __.plus(1)) \
-          (int.is(int.gt(30)) --> __.plus(2)) \
-          (int.is(int.gt(20)) --> __.plus(3)) \
+        (int.is(int.gt(40)) --> __.plus(1)) `,`
+          (int.is(int.gt(30)) --> __.plus(2)) `,`
+          (int.is(int.gt(20)) --> __.plus(3)) `,`
           (int.is(int.gt(10)) --> __.plus(4))).>-)
   }
 
   test("[//] w/ state") {
     assertResult(real(2.0, 3.0, 3.0))(
       real(0.0, 1.0, 1.0) ===> real.q(3).to("x").plus(1.0).to("y").-<(
-        (__.is(__.eqs(1.0)) --> __.from("y")) \
+        (__.is(__.eqs(1.0)) --> __.from("y")) `,`
           (__.is(__.eqs(2.0)) --> __.from("x"))
       ).>-.plus(real.from("y")))
   }

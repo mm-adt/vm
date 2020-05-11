@@ -16,18 +16,18 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(str("a"))(("a" | "b" | "c").head())
     assertResult("b" | "c")(("a" | "b" | "c").tail())
 
-    assertResult(str("a"))(("a" / "b" / "c").head())
-    assertResult("b" / "c")(("a" / "b" / "c").tail())
+    assertResult(str("a"))(("a" `;` "b" `;` "c").head())
+    assertResult("b" `;` "c")(("a" `;` "b" `;` "c").tail())
   }
 
   test("parallel expressions") {
     val starts: TableFor2[Obj, Obj] =
       new TableFor2[Obj, Obj](("expr", "result"),
-        (int(1).-<(int \ int), int(1) \ int(1)),
-        (int(1).-<(int \ int.plus(2)), int(1) \ int(3)),
-        (int(1).-<(int \ int.plus(2).q(10)), int(1) \ int(3).q(10)),
-        (int(1).q(5).-<(int \ int.plus(2).q(10)), int(1).q(5) \ int(3).q(50)),
-        (int(1).q(5).-<(int \ int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
+        (int(1).-<(int `,` int), int(1) `,` int(1)),
+        (int(1).-<(int `,` int.plus(2)), int(1) `,` int(3)),
+        (int(1).-<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
+        (int(1).q(5).-<(int `,` int.plus(2).q(10)), int(1).q(5) `,` int(3).q(50)),
+        (int(1).q(5).-<(int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
         // (int(int(1), int(100)).-<(|(int, int)) >-, int(int(1), int(1), int(100), int(100))),
         //(int(int(1).q(5), int(100)).-<(|(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
         //(int(int(1), int(2)).-<(|(int, int -< (|(int, int)))), |(strm(List(int(1), int(2))), strm(List(|(int(1), int(1)), |(int(2), int(2)))))),
@@ -113,10 +113,10 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
   test("serial value/type checking") {
     val starts: TableFor2[Lst[Obj], Boolean] =
       new TableFor2[Lst[Obj], Boolean](("serial", "isValue"),
-        (/, true),
-        ("a" / "b", true),
-        ("a" / "b" / "c" / "d", true),
-        (str / "b", false),
+        (`;`, true),
+        ("a" `;` "b", true),
+        ("a" `;` "b" `;` "c" `;` "d", true),
+        (str `;` "b", false),
       )
     forEvery(starts) { (serial, bool) => {
       assertResult(bool)(serial.isValue)
@@ -127,10 +127,10 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
   test("serial [put]") {
     val starts: TableFor4[Lst[Obj], Int, Obj, Lst[Obj]] =
       new TableFor4[Lst[Obj], Int, Obj, Lst[Obj]](("serial", "key", "value", "newProd"),
-        (/, 0, "a", "a" /),
-        ("b" /, 0, "a", "a" / "b"),
-        ("a" / "c", 1, "b", "a" / "b" / "c"),
-        ("a" / "b", 2, "c", "a" / "b" / "c"),
+        (`;`, 0, "a", "a" `;`),
+        ("b" `;`, 0, "a", "a" `;` "b"),
+        ("a" `;` "c", 1, "b", "a" `;` "b" `;` "c"),
+        ("a" `;` "b", 2, "c", "a" `;` "b" `;` "c"),
         //(str("a")/"b", 2, str("c")/ "d", str("a")/ "b"/ (str("c")/ "d")),
         //
         //(`/x`, 0, str, (str /).via(/, PutOp[Int, Str](0, str))),
