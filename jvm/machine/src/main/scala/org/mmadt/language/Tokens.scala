@@ -111,7 +111,7 @@ object Tokens {
 
 
   val :: = ":"
-  val :-> = "->"
+  val -> = "->"
   val | = "|"
   val `;` = ";"
   val `,` = ","

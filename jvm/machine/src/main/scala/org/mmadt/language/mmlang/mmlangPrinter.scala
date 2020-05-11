@@ -58,7 +58,7 @@ object mmlangPrinter {
   }
 
   private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else Tokens.empty
-  private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (aliveString(kv._1) + COLON + aliveString(kv._2) + sep)).dropRight(1) + RBRACKET
+  private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) + RBRACKET
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
     if (lst.gvalues.isEmpty)

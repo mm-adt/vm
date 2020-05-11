@@ -38,13 +38,13 @@ class VRecTest extends FunSuite {
   val Z: (IntValue, StrValue) = int(3) -> str("c")
 
   test("rec value toString") {
-    assertResult("[:]")(rec().toString)
+    assertResult("[->]")(rec().toString)
   }
 
   test("rec values") {
-    assertResult("[1:true]")(rec(int(1) -> btrue).toString)
-    assertResult("[1:true;2:false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
-    assertResult("[1:true;2:false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
+    assertResult("[1->true]")(rec(int(1) -> btrue).toString)
+    assertResult("[1->true;2->false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
+    assertResult("[1->true;2->false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
     assertResult(bfalse)(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)).get(int(2), bool))
     assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))

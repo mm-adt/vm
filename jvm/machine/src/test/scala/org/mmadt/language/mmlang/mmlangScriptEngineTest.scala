@@ -364,15 +364,15 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(__.get(str("a")).get(str("b")).get(str("c")))(engine.eval(".a.b.c"))
     assertResult(int(4))(engine.eval(
       """
-        |['a':
-        |  ['aa':1,
-        |   'ab':2],
-        | 'b':
-        |   ['ba':3,
-        |    'bb':
-        |      ['bba':4]]].b.bb.bba""".stripMargin))
-    assertResult(int(0))(engine.eval("['a':['b':['c':['d':0]]]].a.b.c.d"))
-    assertResult(int(4, 12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a':int<.x>,'b':int<.y>]]-<[[id]-->.a,[is,true]-->.b]>-"))
+        |['a'->
+        |  ['aa'->1,
+        |   'ab'->2],
+        | 'b'->
+        |   ['ba'->3,
+        |    'bb'->
+        |      ['bba'->4]]].b.bb.bba""".stripMargin))
+    assertResult(int(0))(engine.eval("['a'->['b'->['c'->['d'->0]]]].a.b.c.d"))
+    assertResult(int(4, 12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a'->int<.x>,'b'->int<.y>]]-<[[id]-->.a,[is,true]-->.b]>-"))
   }
 
   test("rec poly") {

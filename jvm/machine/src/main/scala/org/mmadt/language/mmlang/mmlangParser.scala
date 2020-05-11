@@ -106,7 +106,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val lstType: Parser[Lst[Obj]] = Tokens.lst ~> opt(lstObj) ^^ (x => x.getOrElse(lst(Tokens.`;`)))
   lazy val recType: Parser[ORecType] = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(gmap = x.map(_._2).getOrElse(Map.empty[Obj, Obj])))
   lazy val recTypeNoPrefix: Parser[ORecType] = recStruct ^^ (x => trec(gmap = x._2))
-  lazy val recStruct: Parser[RecTuple[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj, polySep) <~ RBRACKET) ^^ (x => (Tokens.`;`, x.map(o => (o._1, o._2)).toMap))
+  lazy val recStruct: Parser[RecTuple[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.->) ~ obj, polySep) <~ RBRACKET) ^^ (x => (Tokens.`;`, x.map(o => (o._1, o._2)).toMap))
 
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
@@ -125,7 +125,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val intValue: Parser[IntValue] = opt(valueType) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
   lazy val realValue: Parser[RealValue] = opt(valueType) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
   lazy val strValue: Parser[StrValue] = opt(valueType) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
-  lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ (Tokens.:-> | Tokens.::)) ~ objValue, polySep) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
+  lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ Tokens.-> ) ~ objValue, polySep) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
   lazy val strm: Parser[Strm[Obj]] = (objValue <~ COMMA) ~ rep1sep(objValue, COMMA) ^^ (x => estrm((List(x._1) :+ x._2.head) ++ x._2.tail))
 
   // instruction parsing
