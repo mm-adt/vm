@@ -21,6 +21,7 @@ trait Lst[A <: Obj] extends Poly[A]
   with TailOp
   with PlusOp[Lst[A]]
   with MultOp[Lst[A]]
+  //with OneOp[Lst[A]]
   with ZeroOp[Lst[A]] {
 
   def ground: LstTuple[A]
@@ -81,7 +82,7 @@ object Lst {
         local = Inst.resolveArg(local, slot)
         local
         //local = local.via(x, IdOp())
-       // x
+        // x
       }))
     } else
       apoly.clone(apoly.gvalues.map(slot => Inst.resolveArg(arg, slot)))

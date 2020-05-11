@@ -210,9 +210,6 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(1))(engine.eval("1is?int"))
   }
 
-  test("endomorphic type parsing") {
-    assertResult(int.plus(int.mult(int(6))))(engine.eval("int[plus,int[mult,6]]"))
-  }
   test("explain instruction parsing") {
     assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("instruction"))
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("bool<z>"))
@@ -515,14 +512,19 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("['a';'b';'c';'d']")(engine.eval("['a';'b'][mult,['c';'d']]").toString)
     assertResult("[['a';'b';'c']|['a';'b';'d']]")(engine.eval("['a';'b'][mult,['c'|'d']]").toString)
     assertResult("[['a';'b';'c']|['a';'b';'d']]")(engine.eval("['a';'b']*['c'|'d']").toString)
-    assertResult("[['a'|'c'|'d']|['b'|'c'|'d']]")(engine.eval("['a'|'b'][mult,['c'|'d']]").toString)
-    assertResult("[['a'|'c'|'d']|['b'|'c'|'d']]")(engine.eval("['a'|'b']*['c'|'d']").toString)
-    assertResult("[['a';'c';'d']|['b';'c';'d']]")(engine.eval("['a'|'b'][mult,['c';'d']]").toString)
+    assertResult("[['a'|'c']|['a'|'d']|['b'|'c']|['b'|'d']]")(engine.eval("['a'|'b'][mult,['c'|'d']]").toString) // ac+ad + bc+bd
+    assertResult("[['a'|'c']|['a'|'d']|['b'|'c']|['b'|'d']]")(engine.eval("['a'|'b']*['c'|'d']").toString)
+    assertResult("[['a';'c';'d']|['b';'c';'d']]")(engine.eval("['a'|'b'][mult,['c';'d']]").toString) // (a*c*d)+(b*c*d)
     assertResult("[['a';'c';'d']|['b';'c';'d']]")(engine.eval("['a'|'b']*['c';'d']").toString)
+    //assertResult("['a'|'b']")(engine.eval("['a'|'b'][mult,[one]]").toString)
     // plus
     assertResult("['a'|'b'|'c'|'d']")(engine.eval("['a'|'b'][plus,['c'|'d']]").toString)
     assertResult("[['a';'b']|['c';'d']]")(engine.eval("['a';'b'][plus,['c';'d']]").toString)
     assertResult("[['a';'b']|['c'|'d']]")(engine.eval("['a';'b'][plus,['c'|'d']]").toString)
+    assertResult("[['a'|'b']|['c';'d']]")(engine.eval("['a'|'b'][plus,['c';'d']]").toString)
+    assertResult("['a'|'b']")(engine.eval("['a'|'b'][plus,[zero]]").toString)
+    assertResult("[['a';'b']|[ ]]")(engine.eval("['a';'b'][plus,[zero]]").toString)
+    // assertResult("['a','b']")(engine.eval("['a','b'][plus,[zero]]").toString)
     // mult w; types
     //assertResult("[int[plus,2][plus,5][id]]<=[int;[plus,2]][mult,[[plus,5];[id]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[id]]]").toString)
     println(engine.eval("[int;[plus,2]][mult,[[plus,5];[id]]]"))

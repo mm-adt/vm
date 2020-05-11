@@ -23,8 +23,9 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Int, IntQ, Obj, Real}
+import org.mmadt.language.obj.{Int, IntQ, Lst, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 

@@ -12,6 +12,7 @@ trait Poly[A <: Obj] extends Obj with MergeOp[A] {
   def isSerial: Boolean = this.gsep == Tokens.`;`
   def isParallel: Boolean = this.gsep == Tokens.`,`
   def isChoice: Boolean = this.gsep == Tokens.|
+  def isEmpty: Boolean = this.gvalues.isEmpty
 
   def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.gvalues.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
   def isType: Boolean = !this.gvalues.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))

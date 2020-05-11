@@ -57,13 +57,13 @@ object PlusOp {
           case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = (arec.ground._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().gmap))
           case arec: ORecType => start.clone(ground = arec.gmap ++ inst.arg0[ORecType]().gmap)
           //////// EXPERIMENTAL
-          case prodA: Lst[O] if prodA.isSerial => arg match {
-            case prodB: Lst[O] if prodB.isSerial => prodA | prodB
-            case coprodB: Lst[O] if coprodB.isChoice => prodA | coprodB
+          case serialA: Poly[O] if serialA.isSerial => inst.arg0[Poly[O]]() match {
+            case serialB: Poly[O] if serialB.isSerial => serialA | serialB
+            case choiceB: Poly[O] if choiceB.isChoice => serialA | choiceB
           }
-          case coprodA: Lst[O] if coprodA.isChoice  => arg match {
-            case prodB: Lst[O] if prodB.isSerial  => coprodA | prodB
-            case coprodB: Lst[O] if coprodB.isChoice => |.clone(coprodA.ground._2 ++ coprodB.ground._2)
+          case choiceA: Poly[O] if choiceA.isChoice => inst.arg0[Poly[O]]() match {
+            case serialB: Poly[O] if serialB.isSerial => if (serialB.isEmpty) choiceA else choiceA | serialB
+            case choice: Poly[O] if choice.isChoice => |.clone((choiceA.gvalues ++ choice.gvalues).toList)
           }
         }
         case _: Type[_] => start
