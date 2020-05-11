@@ -59,7 +59,8 @@ object mmlangPrinter {
 
   private def separatorString(sep: String): String = {
     sep match {
-      case Tokens.`;` | Tokens./ => Tokens.`;`
+      case Tokens./ => Tokens.`;`
+      case Tokens.\ => Tokens.`,`
       case _ => sep
     }
   }
