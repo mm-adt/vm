@@ -307,6 +307,26 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("5[plus,1]-<[[is>5] --> true | int --> false]>-"))
   }
 
+  test("parallel with rec types") {
+    assertResult("rec[:/'a':'aa']<=str-<rec[:/'a':'aa']")(engine.eval("'a'-<rec[int+1[is>0] -> +10 / str -> +'a']").toString)
+    assertResult(btrue)(engine.eval("true-<[bool -> bool / int -> int]>-"))
+    assertResult(int(10))(engine.eval("10-<[bool -> bool / int -> int]>-"))
+    assertResult(int(10))(engine.eval("10-<[bool -> true / int -> int]>-"))
+    assertResult(int(11))(engine.eval("10-<[bool -> true / int -> int[plus,1]]>-"))
+    assertResult(int(11, 51, 61))(engine.eval("10,50,60-<[bool -> true / int -> int[plus,1]]>-"))
+    assertResult(int(11, 51, 61))(engine.eval("10,50,60-<[bool -> true / int -> int[plus,1]]>-"))
+    assertResult(int(11, 51, 51, 61))(engine.eval("10,50{2},60-<[bool -> true / int -> int[plus,1]]>-"))
+    assertResult(int(11).q(2))(engine.eval("10,10-<[bool -> true / int -> int[plus,1]]>-"))
+    assertResult(int(11).q(2))(engine.eval("10{2}-<[bool -> true / int -> int[plus,1]]>-"))
+    assertResult(int(302, 42))(engine.eval(
+      """ 0,1,2,3
+        | [plus,1][is>2]-<
+        |   [ int[is>3] -> int[mult,10]
+        |   / is<4      -> int[mult,100]]>-[plus,2]""".stripMargin))
+    //assertResult(bfalse)(engine.eval("4[plus,1]-<[[is>5] --> true | int --> false]>-"))
+    //assertResult(btrue)(engine.eval("5[plus,1]-<[[is>5] --> true | int --> false]>-"))
+  }
+
   test("to/from state parsing") {
     assertResult(real(45.5))(engine.eval("45.0<x>[mult,0.0][plus,<.x>][plus,0.5]"))
     assertResult(int.to("a").plus(int(10)).to("b").mult(int(20)))(engine.eval("int<a>[plus,10]<b>[mult,20]"))
@@ -352,6 +372,10 @@ class mmlangScriptEngineTest extends FunSuite {
         |      ['bba':4]]].b.bb.bba""".stripMargin))
     assertResult(int(0))(engine.eval("['a':['b':['c':['d':0]]]].a.b.c.d"))
     assertResult(int(4, 12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a':int<.x>,'b':int<.y>]]-<[[id]-->.a/[is,true]-->.b]>-"))
+  }
+
+  test("rec poly") {
+    assertResult(int(14))(engine.eval("4-<rec[str->'x'/int->+10]>-"))
   }
 
   test("bool strm input parsing") {

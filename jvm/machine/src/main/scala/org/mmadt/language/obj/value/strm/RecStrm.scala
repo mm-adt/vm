@@ -22,13 +22,15 @@
 
 package org.mmadt.language.obj.value.strm
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.{Obj, Rec, RecTuple}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecStrm[A <: Value[Obj], B <: Value[Obj]] extends Strm[Rec[A, B]] with Rec[A, B] {
+  override def ground: RecTuple[A,B] = throw LanguageException.typeNoGround(this)
   override def get(key: A): B = throw new UnsupportedOperationException
   override def get[BB <: Obj](key: A, btype: BB): BB = throw new UnsupportedOperationException
 }

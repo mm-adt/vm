@@ -38,10 +38,10 @@ object HeadOp {
   class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], A]((Tokens.head, Nil), q) {
     override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
     override def exec(start: Lst[A]): A =
-      if (!start.elements.exists(_.alive))
+      if (!start.gvalues.exists(_.alive))
         throw new LanguageException("no head on empty poly")
       else
-        start.elements.filter(_.alive).head.via(start, this)
+        start.gvalues.filter(_.alive).head.via(start, this)
   }
 
 }

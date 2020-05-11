@@ -24,14 +24,37 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.op.map.{GetOp, PlusOp, ZeroOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.value.Value
+import org.mmadt.storage.StorageFactory.zeroObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Rec[A <: Obj, B <: Obj] extends Obj
+trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   with PlusOp[Rec[A, B]]
   with GetOp[A, B]
   with PutOp[A, B]
   with ZeroOp[Rec[A, B]] {
-  def ground(): Any
+
+  def ground: RecTuple[A, B]
+  def gmap: collection.Map[A, B] = ground._2
+  def gvalues: Seq[B] = gmap.values.toSeq
+  def connective: String = ground._1
+  def clone(values: collection.Map[A, B]): this.type = this.clone(ground = (connective, values))
+}
+object Rec {
+  def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B], inst: Inst[A, Rec[A, B]]): Rec[A, B] = {
+    val arg = start match {
+      case _: Value[_] => start.clone(via = (start, inst))
+      case _ => start
+    }
+    arec.clone(arec.gmap.map(slot => {
+      val key = Inst.resolveArg(arg, slot._1)
+      (key, if (key.alive) Inst.resolveArg(arg, slot._2) else zeroObj.asInstanceOf[B])
+    }))
+  }
+  def keepFirst[A <: Obj, B <: Obj](arec: Rec[A, B]): Rec[A, B] = {
+    val first: (A, B) = arec.gmap.find(x => x._1.alive).getOrElse((zeroObj.asInstanceOf[A], zeroObj.asInstanceOf[B]))
+    arec.clone(arec.gmap.map(a => if (a == first) a else (zeroObj.asInstanceOf[A], zeroObj.asInstanceOf[B])).toMap[A, B])
+  }
 }

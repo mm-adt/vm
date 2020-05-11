@@ -32,16 +32,16 @@ import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
   this: Obj =>
-  def split[A <: Obj](branches: Lst[A]): Lst[A] = SplitOp(branches).exec(this.asInstanceOf[A])
-  final def -<[A <: Obj](branches: Lst[A]): Lst[A] = this.split(branches)
+  def split[A <: Obj](branches: Poly[A]): Poly[A] = SplitOp(branches).exec(this.asInstanceOf[A])
+  final def -<[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
 }
 
 object SplitOp {
-  def apply[A <: Obj](branches: Lst[A]): SplitInst[A] = new SplitInst[A](branches)
+  def apply[A <: Obj](branches: Poly[A]): SplitInst[A] = new SplitInst[A](branches)
 
-  class SplitInst[A <: Obj](apoly: Lst[A], q: IntQ = qOne) extends VInst[A, Lst[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
+  class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
-    override def exec(start: A): Lst[A] = {
+    override def exec(start: A): Poly[A] = {
       apoly.connective match {
         case Tokens.:/ | Tokens.:\ => processAll(start)
         case Tokens.:| => processFirst(start)
@@ -49,20 +49,20 @@ object SplitOp {
       }
     }
 
-    private def processAll(start: A): Lst[A] = {
-      val inst = new SplitInst[A](Lst.resolveSlots(start, apoly, this))
+    private def processAll(start: A): Poly[A] = {
+      val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
       start match {
         case astrm: Strm[A] => astrm.via(start, this).asInstanceOf[Lst[A]]
-        case _ => inst.arg0[Lst[A]]().clone(via = (start, inst))
+        case _ => inst.arg0[Poly[A]]().clone(via = (start, inst))
       }
     }
 
-    private def processFirst(start: A): Lst[A] = {
-      val inst = new SplitInst[A](Lst.resolveSlots(start, apoly, this))
+    private def processFirst(start: A): Poly[A] = {
+      val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
       (start match {
         case astrm: Strm[A] => return astrm.via(start, inst).asInstanceOf[Lst[A]]
-        case _: Type[_] => inst.arg0[Lst[A]]()
-        case _ => Lst.keepFirst(inst.arg0[Lst[A]]())
+        case _: Type[_] => inst.arg0[Poly[A]]()
+        case _ => Poly.keepFirst(inst.arg0[Poly[A]]())
       }).clone(via = (start, inst))
     }
   }

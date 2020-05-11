@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.op.map.GetOp
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.{Obj, Rec, RecTuple}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,7 +32,8 @@ trait RecValue[A <: Value[Obj], B <: Value[Obj]] extends Rec[A, B]
   with ObjValue
   with Value[Rec[A, B]] {
 
-  override val ground: collection.Map[A, B]
-  override def get(key: A): B = this.ground(key).via(this, GetOp(key))
-  override def get[BB <: Obj](key: A, btype: BB): BB = this.ground(key).via(this, GetOp(key, btype)).asInstanceOf[BB]
+  override val ground: RecTuple[A, B]
+  override def gmap: collection.Map[A,B] = ground._2
+  override def get(key: A): B = this.gmap(key).via(this, GetOp(key))
+  override def get[BB <: Obj](key: A, btype: BB): BB = this.gmap(key).via(this, GetOp(key, btype)).asInstanceOf[BB]
 }

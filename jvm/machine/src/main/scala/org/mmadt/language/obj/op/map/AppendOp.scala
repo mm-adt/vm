@@ -43,7 +43,7 @@ object AppendOp {
     override def q(quantifier: IntQ): this.type = new AppendInst[O](other, quantifier).asInstanceOf[this.type]
     override def exec(start: Lst[O]): Lst[O] = {
       val inst = new AppendInst[O](Inst.resolveArg(start, other), q)
-      start.clone(start.elements :+ inst.arg0[O]()).via(start, inst)
+      start.clone(start.gvalues :+ inst.arg0[O]()).via(start, inst)
     }
   }
 

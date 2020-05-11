@@ -125,7 +125,7 @@ trait Obj
     this match {
       case apoly: Lst[A] => obj match {
         case bpoly: Lst[A] => lst(sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A]): _*)
-        case _ => apoly.clone(apoly.elements :+ obj)
+        case _ => apoly.clone(apoly.gvalues :+ obj)
       }
       case _ => lst(sep, this.asInstanceOf[A], obj)
     }

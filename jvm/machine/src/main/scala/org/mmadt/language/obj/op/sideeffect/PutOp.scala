@@ -45,11 +45,11 @@ object PutOp {
       start match {
         case apoly: Lst[_] => key match {
           case avalue: IntValue =>
-            val (front, back) = apoly.elements.splitAt(avalue.ground.toInt)
+            val (front, back) = apoly.gvalues.splitAt(avalue.ground.toInt)
             apoly.clone(ground = (apoly.connective, (front :+ value) ++ back), via = (start, this))
           case _ => apoly.via(start, this)
         }
-        case rec: Rec[_, _] => rec.clone(ground = rec.ground().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))
+        case rec: Rec[A, B] => rec.clone(ground = (Tokens.:/, rec.gmap + (key -> value)), via = (rec, this))
       }
     }
   }

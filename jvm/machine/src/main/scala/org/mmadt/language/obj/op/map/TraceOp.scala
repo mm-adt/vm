@@ -3,7 +3,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{IntQ, Obj, Lst}
+import org.mmadt.language.obj.{IntQ, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -22,7 +22,7 @@ object TraceOp {
     override def exec(start: Obj): Lst[Obj] = {
       (start match {
         case _: Strm[_] => start
-        case _ => lst(Tokens.:/, start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 / b._2).combine(pattern).elements) ++ (start / this).combine(pattern).elements: _*)
+        case _ => lst(Tokens.:/, start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 / b._2).combine(pattern).gvalues) ++ (start / this).combine(pattern).gvalues: _*)
       }).via(start, this).asInstanceOf[Lst[Obj]]
     }
   }

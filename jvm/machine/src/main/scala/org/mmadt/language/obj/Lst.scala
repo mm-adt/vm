@@ -6,11 +6,11 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
+import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
-trait Lst[A <: Obj] extends Obj
+trait Lst[A <: Obj] extends Poly[A]
   with Type[Lst[A]]
   with Value[Lst[A]]
   with CombineOp[A]
@@ -25,10 +25,7 @@ trait Lst[A <: Obj] extends Obj
 
   def ground: LstTuple[A]
   def connective: String = ground._1
-  def elements: List[A] = ground._2
-  def isSerial: Boolean = this.connective == Tokens.:/
-  def isParallel: Boolean = this.connective == Tokens.:\
-  def isChoice: Boolean = this.connective == Tokens.:|
+  override def gvalues: List[A] = ground._2
 
   def clone(values: List[A]): this.type = this.clone(ground = (connective, values))
 
@@ -36,7 +33,7 @@ trait Lst[A <: Obj] extends Obj
     val valueType: A = key match {
       case aint: IntValue =>
         Lst.checkIndex(this, aint.ground.toInt)
-        this.elements(aint.ground.toInt)
+        this.gvalues(aint.ground.toInt)
       case _ => obj.asInstanceOf[A]
     }
     valueType.via(this, GetOp[Obj, A](key, valueType))
@@ -44,15 +41,12 @@ trait Lst[A <: Obj] extends Obj
 
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Obj, BB](key, btype))
 
-  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.ground._2.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Lst[_]]) || (x.isInstanceOf[Lst[_]] && !x.asInstanceOf[Lst[_]].isValue))))
-  def isType: Boolean = !this.ground._2.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Lst[_]]) || (x.isInstanceOf[Lst[_]] && !x.asInstanceOf[Lst[_]].isType)))
-
   override def test(other: Obj): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] =>
-      if (alst.elements.isEmpty || this.elements.equals(alst.elements)) return true
+      if (alst.gvalues.isEmpty || this.gvalues.equals(alst.gvalues)) return true
       alst.connective == this.connective &&
-        this.elements.zip(alst.elements).foldRight(true)((a, b) => a._1.test(a._2) && b)
+        this.gvalues.zip(alst.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)
     case _ => false
   }
 
@@ -62,8 +56,8 @@ trait Lst[A <: Obj] extends Obj
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case apoly: Lst[_] =>
       apoly.connective == this.connective && apoly.name.equals(this.name) && eqQ(apoly, this) &&
-        ((this.isValue && apoly.isValue && this.elements.zip(apoly.elements).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
-          (this.elements == apoly.elements && this.via == apoly.via))
+        ((this.isValue && apoly.isValue && this.gvalues.zip(apoly.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
+          (this.gvalues == apoly.gvalues && this.via == apoly.via))
     case _ => false
   }
 }
@@ -71,17 +65,17 @@ trait Lst[A <: Obj] extends Obj
 object Lst {
   def checkIndex(apoly: Lst[_], index: scala.Int): Unit = {
     if (index < 0) throw new LanguageException("poly index must be 0 or greater: " + index)
-    if (apoly.elements.length < (index + 1)) throw new LanguageException("poly index is out of bounds: " + index)
+    if (apoly.gvalues.length < (index + 1)) throw new LanguageException("poly index is out of bounds: " + index)
   }
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
-    val first: scala.Int = apoly.elements.indexWhere(x => x.alive)
-    apoly.clone(apoly.elements.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
+    val first: scala.Int = apoly.gvalues.indexWhere(x => x.alive)
+    apoly.clone(apoly.gvalues.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
   }
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A], inst: Inst[A, Lst[A]]): Lst[A] = {
     val arg = start match {
       case _: Value[_] => start.clone(via = (start, inst))
       case _ => start
     }
-    apoly.clone(apoly.elements.map(slot => Inst.resolveArg(arg, slot)))
+    apoly.clone(apoly.gvalues.map(slot => Inst.resolveArg(arg, slot)))
   }
 }

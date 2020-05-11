@@ -22,9 +22,10 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VRec
 
@@ -35,12 +36,11 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   with Type[Rec[A, B]]
   with ObjType {
 
-  def apply(value: (Value[A], Value[B])*): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, value.toMap, this.q)
+  def apply(value: (Value[A], Value[B])*): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, (Tokens.:/, value.toMap), this.q)
   def apply(value: RecValue[Value[A], Value[B]]): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, value.ground, this.q)
-  val ground: collection.Map[A, B]
 
   override def get[BB <: Obj](key: A, btype: BB): BB = btype.via(this, GetOp[A, BB](key, btype))
-  override def get(key: A): B = asType(this.ground(key)).via(this, GetOp[A, B](key, asType(this.ground(key))))
+  override def get(key: A): B = asType(this.ground._2(key)).via(this, GetOp[A, B](key, asType(this.ground._2(key))))
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.ground.toString().hashCode() ^ this.trace.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {

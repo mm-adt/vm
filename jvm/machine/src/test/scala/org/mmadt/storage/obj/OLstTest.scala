@@ -5,7 +5,7 @@ import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Int, Obj, Lst, Str}
+import org.mmadt.language.obj.{Int, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
@@ -53,7 +53,7 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
         ("a" | ("b" | "d") | "c", List(str("a"), "b" | "d", str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
-      assertResult(alst.elements)(blist)
+      assertResult(alst.gvalues)(blist)
       if (blist.nonEmpty) {
         assertResult(alst.head())(blist.head)
         assertResult(alst.ground._2.head)(blist.head)
@@ -68,51 +68,6 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult("['a'|'b']")(("a" | "b").toString())
   }
 
-  /*test("parallel keys") {
-    assertResult("[name->'marko'|age->29]")(("name" -> str("marko") | "age" -> int(29)).toString)
-    assertResult(str("marko"))(("name" -> str("marko") | "age" -> int(29)).get("name"))
-  }
-
-  test("parallel [put] values") {
-    assertResult(("name" -> str("marko")) | ("age" -> int(29)) | ("year" -> int(2020)))(("name" -> str("marko") | "age" -> int(29)).put("year", 2020))
-    assertResult(("name" -> str("marko")) | ("age" -> int(40)))(("name" -> str("marko") | "age" -> int(29)).put("age", 40))
-    assertResult(("name" -> str("marko")) | ("age" -> int(41)))(("name" -> str("marko") | "age" -> int(29)).put("age", 40).put("age", 41))
-
-    //assertResult("[1->true]")(("1" -> btrue)|().toString)
-    assertResult("[1->true|2->false]")((("1" -> btrue) | ("2" -> bfalse)).toString)
-    assertResult("[1->true|2->false|3->false]")((("1" -> btrue) | ("2" -> bfalse)).put("3", bfalse).toString)
-    //assertResult("[1->true|2->false]")((("1" -> btrue)|).put("2",bfalse).toString)
-    //assertResult("[1->true|2->false]")((("1" -> btrue)|).plus(("2" -> bfalse)|).toString)
-    //assertResult(bfalse)("1" -> btrue ==> poly("|").plus("2" -> bfalse).get("2", bool))
-    /*assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
-    assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
-    assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))
-    intercept[NoSuchElementException] {
-      rec(int(1) -> btrue, int(2) -> bfalse).get(int(3))
-    }*/
-
-    val X: Poly[Str] = "1" -> str("a")
-    val Y: Poly[Str] = "2" -> str("b")
-    val Z: Poly[Str] = "3" -> str("c")
-    // forwards keys
-    assertResult(List(str("a"), str("b")))(X.plus(Y).groundList)
-    assertResult(List(str("a"), str("b"), str("c")))(X.plus(Y).plus(Z).groundList)
-    /*assertResult(ListMap(X, Y))(rec(X).plus(rec(Y)).ground)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y, Z).ground)
-    assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).ground)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).ground)
-    // backwards keys
-    assertResult(ListMap(Y, X))(rec(Y, X).ground)
-    assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).ground)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y, X).ground)
-    assertResult(ListMap(Z, Y, X))(rec(Z).plus(rec(Y, X)).ground)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y).plus(rec(X)).ground)
-    // overwrite orderings
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).ground) // TODO: determine overwrite order*/
-
-  }*/
-
-
   test("parallel [get] values") {
     assertResult(str("a"))((str("a") |).get(0))
     assertResult(str("b"))((str("a") | "b").get(1))
@@ -125,26 +80,26 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel structure") {
-    val poly: Lst[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3)
+    val poly: Lst[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3).asInstanceOf[Lst[Obj]]
     assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
-    assertResult(int.id())(poly.elements.head)
-    assertResult(int.plus(2))(poly.elements(1))
-    assertResult(int(3))(poly.elements(2))
-    assertResult(int)(poly.elements.head.via._1)
-    assertResult(int)(poly.elements(1).via._1)
-    assert(poly.elements(2).root)
+    assertResult(int.id())(poly.gvalues.head)
+    assertResult(int.plus(2))(poly.gvalues(1))
+    assertResult(int(3))(poly.gvalues(2))
+    assertResult(int)(poly.gvalues.head.via._1)
+    assertResult(int)(poly.gvalues(1).via._1)
+    assert(poly.gvalues(2).root)
     assertResult(int.id() | int.plus(2) | int(3))(poly.range)
   }
 
   test("parallel quantifier") {
-    val poly: Lst[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3)
+    val poly: Lst[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3).asInstanceOf[Lst[Obj]]
     assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
-    assertResult(int.q(2).id())(poly.elements.head)
-    assertResult(int.q(2).plus(2))(poly.elements(1))
-    assertResult(int(3))(poly.elements(2))
-    assertResult(int.q(2))(poly.elements.head.via._1)
-    assertResult(int.q(2))(poly.elements(1).via._1)
-    assert(poly.elements(2).root)
+    assertResult(int.q(2).id())(poly.gvalues.head)
+    assertResult(int.q(2).plus(2))(poly.gvalues(1))
+    assertResult(int(3))(poly.gvalues(2))
+    assertResult(int.q(2))(poly.gvalues.head.via._1)
+    assertResult(int.q(2))(poly.gvalues(1).via._1)
+    assert(poly.gvalues(2).root)
     assertResult(int.q(2).id() | int.q(2).plus(2) | int(3))(poly.range)
   }
 

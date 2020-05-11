@@ -54,8 +54,8 @@ object PlusOp {
           case aint: Int => start.clone(ground = aint.ground + inst.arg0[Int]().ground)
           case areal: Real => start.clone(ground = areal.ground + inst.arg0[Real]().ground)
           case astr: Str => start.clone(ground = astr.ground + inst.arg0[Str]().ground)
-          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = arec.ground ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().ground)
-          case arec: ORecType => start.clone(ground = arec.ground ++ inst.arg0[ORecType]().ground)
+          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = (arec.ground._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().gmap))
+          case arec: ORecType => start.clone(ground = arec.gmap ++ inst.arg0[ORecType]().gmap)
           //////// EXPERIMENTAL
           case prodA: Lst[O] if prodA.ground._1 == Tokens.:/ => arg match {
             case prodB: Lst[O] if prodB.ground._1 == Tokens.:/ => prodA | prodB

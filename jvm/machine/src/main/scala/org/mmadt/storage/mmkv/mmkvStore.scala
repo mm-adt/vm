@@ -53,7 +53,7 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
   private val store: mutable.Map[K, V] = {
     val source: BufferedSource = Source.fromFile(file)
     try source.getLines().drop(1)
-      .map(k => mmlang.parse[RecValue[StrValue, Value[Obj]]](k).ground.values)
+      .map(k => mmlang.parse[RecValue[StrValue, Value[Obj]]](k).gmap.values)
       .foldLeft(new mutable.LinkedHashMap[K, V])((b, a) => b ++ Map(a.head.asInstanceOf[K] -> a.tail.head.asInstanceOf[V]))
     finally source.close()
   }

@@ -30,7 +30,7 @@ import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait MergeOp[A <: Obj] {
-  this: Lst[A] =>
+  this: Poly[A] =>
   def merge[B <: Obj]: B = MergeOp[A]().exec(this).asInstanceOf[B]
   final def `>-`: A = this.merge[A]
 }
@@ -38,12 +38,12 @@ trait MergeOp[A <: Obj] {
 object MergeOp {
   def apply[A <: Obj](): MergeInst[A] = new MergeInst[A]()
 
-  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
+  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Lst[A]): A = {
+    override def exec(start: Poly[A]): A = {
       start match {
-        case astrm: Strm[Lst[A]] => strm[A](astrm.values.map(x => this.exec(x))) // TODO: why does via() not work here? (nested streams?)
-        case _ if start.isValue => strm(start.ground._2.map(x => x.clone(q = multQ(start, x))).filter(_.alive)).asInstanceOf[A]
+        case astrm: Strm[Poly[A]] => strm[A](astrm.values.map(x => this.exec(x))) // TODO: why does via() not work here? (nested streams?)
+        case _ if start.isValue => strm(start.gvalues.map(x => x.clone(q = multQ(start, x))).filter(_.alive)).asInstanceOf[A]
         case _ => BranchInstruction.brchType[A](start).clone(via = (start, this))
       }
 

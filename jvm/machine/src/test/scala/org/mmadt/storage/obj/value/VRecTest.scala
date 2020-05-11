@@ -43,8 +43,8 @@ class VRecTest extends FunSuite {
 
   test("rec values") {
     assertResult("[1:true]")(rec(int(1) -> btrue).toString)
-    assertResult("[1:true,2:false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
-    assertResult("[1:true,2:false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
+    assertResult("[1:true/2:false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
+    assertResult("[1:true/2:false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
     assertResult(bfalse)(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)).get(int(2), bool))
     assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
@@ -56,36 +56,36 @@ class VRecTest extends FunSuite {
 
   test("rec value via varargs construction") {
     // forwards keys
-    assertResult(ListMap(X, Y))(rec(X, Y).ground)
-    assertResult(ListMap(X, Y))(rec(X).plus(rec(Y)).ground)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y, Z).ground)
-    assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).ground)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).ground)
+    assertResult(ListMap(X, Y))(rec(X, Y).gmap)
+    assertResult(ListMap(X, Y))(rec(X).plus(rec(Y)).gmap)
+    assertResult(ListMap(X, Y, Z))(rec(X, Y, Z).gmap)
+    assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
+    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
     // backwards keys
-    assertResult(ListMap(Y, X))(rec(Y, X).ground)
-    assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).ground)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y, X).ground)
-    assertResult(ListMap(Z, Y, X))(rec(Z).plus(rec(Y, X)).ground)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y).plus(rec(X)).ground)
+    assertResult(ListMap(Y, X))(rec(Y, X).gmap)
+    assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).gmap)
+    assertResult(ListMap(Z, Y, X))(rec(Z, Y, X).gmap)
+    assertResult(ListMap(Z, Y, X))(rec(Z).plus(rec(Y, X)).gmap)
+    assertResult(ListMap(Z, Y, X))(rec(Z, Y).plus(rec(X)).gmap)
     // overwrite orderings
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).ground) // TODO: determine overwrite order
+    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).gmap) // TODO: determine overwrite order
   }
 
   test("rec value via map construction") {
     // forwards keys
-    assertResult(ListMap(X, Y))(vrec(Map(X, Y)).ground)
-    assertResult(ListMap(X, Y))(vrec(Map(X)).plus(vrec(Map(Y))).ground)
-    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y, Z)).ground)
-    assertResult(ListMap(X, Y, Z))(vrec(Map(X)).plus(vrec(Map(Y, Z))).ground)
-    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y)).plus(vrec(Map(Z))).ground)
+    assertResult(ListMap(X, Y))(vrec(Map(X, Y)).gmap)
+    assertResult(ListMap(X, Y))(vrec(Map(X)).plus(vrec(Map(Y))).gmap)
+    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y, Z)).gmap)
+    assertResult(ListMap(X, Y, Z))(vrec(Map(X)).plus(vrec(Map(Y, Z))).gmap)
+    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y)).plus(vrec(Map(Z))).gmap)
     // backwards keys
-    assertResult(ListMap(Y, X))(vrec(Map(Y, X)).ground)
-    assertResult(ListMap(Y, X))(vrec(Map(Y)).plus(vrec(Map(X))).ground)
-    assertResult(ListMap(Z, Y, X))(vrec(Map(Z, Y, X)).ground)
-    assertResult(ListMap(Z, Y, X))(vrec(Map(Z)).plus(vrec(Map(Y, X))).ground)
-    assertResult(ListMap(Z, Y, X))(vrec(Map(Z, Y)).plus(vrec(Map(X))).ground)
+    assertResult(ListMap(Y, X))(vrec(Map(Y, X)).gmap)
+    assertResult(ListMap(Y, X))(vrec(Map(Y)).plus(vrec(Map(X))).gmap)
+    assertResult(ListMap(Z, Y, X))(vrec(Map(Z, Y, X)).gmap)
+    assertResult(ListMap(Z, Y, X))(vrec(Map(Z)).plus(vrec(Map(Y, X))).gmap)
+    assertResult(ListMap(Z, Y, X))(vrec(Map(Z, Y)).plus(vrec(Map(X))).gmap)
     // overwrite orderings
-    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y)).plus(vrec(Map(X, Z))).ground) // TODO: determine overwrite order
+    assertResult(ListMap(X, Y, Z))(vrec(Map(X, Y)).plus(vrec(Map(X, Z))).gmap) // TODO: determine overwrite order
   }
 
   test("rec value quantifiers") {

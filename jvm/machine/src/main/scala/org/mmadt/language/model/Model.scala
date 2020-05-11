@@ -38,7 +38,7 @@ import scala.collection.mutable
  */
 trait Model {
 
-  def apply[B <: Obj](name: String): OType[B] = this.toRec.ground.values.find(x => x.name == name).get.asInstanceOf[OType[B]]
+  def apply[B <: Obj](name: String): OType[B] = this.toRec.ground._2.values.find(x => x.name == name).get.asInstanceOf[OType[B]]
   def apply[B <: Obj](obj: B): B = (obj match {
     case astrm: Strm[Obj] => strm(astrm.values.map(x => this.apply(x))) // TODO: migrate to AsOp?
     case avalue: Value[Obj] => this.get(avalue).getOrElse(avalue)
@@ -54,7 +54,7 @@ trait Model {
 
 object Model {
   def from(args: (Type[Obj], Type[Obj])*): Model = args.foldRight(this.simple())((a, b) => b.put(a._1, a._2))
-  def from(arg: RecType[Type[Obj], Type[Obj]]): Model = arg.ground.iterator.foldRight(this.simple())((a, b) => b.put(a._1, a._2))
+  def from(arg: RecType[Type[Obj], Type[Obj]]): Model = arg.ground._2.iterator.foldRight(this.simple())((a, b) => b.put(a._1, a._2))
 
   val id: Model = new Model {
     override def put(left: Type[Obj], right: Type[Obj]): Model = this
@@ -109,7 +109,7 @@ object Model {
         .map(x => (x._1, x._2.asInstanceOf[Type[Obj]]))
     }
     override def toRec: RecType[Type[Obj], Type[Obj]] = {
-      trec[Type[Obj], Type[Obj]](ground = this.typeMap.values.foldRight(mutable.Map[Type[Obj], Type[Obj]]())((a, b) => b ++ a).toMap)
+      trec[Type[Obj], Type[Obj]](gmap = this.typeMap.values.foldRight(mutable.Map[Type[Obj], Type[Obj]]())((a, b) => b ++ a).toMap)
     }
     override def get(left: Value[Obj]): Option[Value[Obj]] = {
       typeMap.get(left.name) match {

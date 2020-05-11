@@ -39,10 +39,10 @@ object TailOp {
     override def q(q: IntQ): this.type = new TailInst(q).asInstanceOf[this.type]
     override def exec(start: O): O = (start match {
       case apoly: Lst[Obj] =>
-        if (apoly.elements.isEmpty)
+        if (apoly.gvalues.isEmpty)
           throw new LanguageException("no tail on empty poly")
         else
-          apoly.clone(apoly.elements.tail)
+          apoly.clone(apoly.gvalues.tail)
     }).asInstanceOf[O].via(start, this)
 
   }

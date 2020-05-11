@@ -55,12 +55,12 @@ object MultOp {
           case areal: Real => start.clone(ground = areal.ground * inst.arg0[Real]().ground)
           //////// EXPERIMENTAL
           case serialA: Lst[O] if serialA.isSerial => multObj[O](arg match {
-            case serialB: Lst[O] if serialB.isSerial => serialA.clone(serialA.elements ++ serialB.elements)
-            case choiceB: Lst[O] if choiceB.isChoice => choiceB.clone(choiceB.elements.map(a => /.clone(serialA.elements :+ a)).asInstanceOf[List[O]])
+            case serialB: Lst[O] if serialB.isSerial => serialA.clone(serialA.gvalues ++ serialB.gvalues)
+            case choiceB: Lst[O] if choiceB.isChoice => choiceB.clone(choiceB.gvalues.map(a => /.clone(serialA.gvalues :+ a)).asInstanceOf[List[O]])
           })
           case choiceA: Lst[O] if choiceA.isChoice => multObj[O](arg match {
-            case serialB: Lst[O] if serialB.isSerial => choiceA.clone(choiceA.elements.map(a => /.clone(a +: serialB.elements)).asInstanceOf[List[O]])
-            case choiceB: Lst[O] if choiceB.isChoice => choiceA.clone(choiceA.elements.map(a => |.clone(a +: choiceB.elements)).asInstanceOf[List[O]])
+            case serialB: Lst[O] if serialB.isSerial => choiceA.clone(choiceA.gvalues.map(a => /.clone(a +: serialB.gvalues)).asInstanceOf[List[O]])
+            case choiceB: Lst[O] if choiceB.isChoice => choiceA.clone(choiceA.gvalues.map(a => |.clone(a +: choiceB.gvalues)).asInstanceOf[List[O]])
           })
         }
         case _ => start
@@ -70,7 +70,7 @@ object MultOp {
 
   def multObj[O <: Obj](poly: Lst[O]): Lst[O] = {
     if (!poly.isType) return poly
-    poly.clone(List(poly.elements.foldLeft(poly.elements.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])).asInstanceOf[List[O]])
+    poly.clone(List(poly.gvalues.foldLeft(poly.gvalues.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])).asInstanceOf[List[O]])
   }
 
 }

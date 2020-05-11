@@ -42,14 +42,14 @@ object TypeChecker {
       ((obj.isInstanceOf[Lst[_]] && pattern.isInstanceOf[Lst[_]] &&
         testList(obj.asInstanceOf[Lst[Obj]], pattern.asInstanceOf[Lst[Obj]]) && obj.compute(pattern).alive) || // structural type checking on records
         (obj.isInstanceOf[RecValue[_, _]] && pattern.isInstanceOf[RecType[_, _]] &&
-          testRecord(obj.ground.asInstanceOf[collection.Map[Obj, Obj]], pattern.asInstanceOf[ORecType].ground) && obj.compute(pattern).alive))) && // structural type checking on records
+          testRecord(obj.asInstanceOf[Rec[Obj, Obj]].gmap, pattern.asInstanceOf[ORecType].gmap) && obj.compute(pattern).alive))) && // structural type checking on records
       withinQ(obj, pattern) // must be within the type's quantified window
   }
 
   def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean = {
     if (!obj.alive && !pattern.alive) return true
     pattern match {
-      case achoice: Lst[O] if achoice.isChoice => obj.split(achoice).merge.alive
+      case achoice: Poly[O] if achoice.isChoice => obj.split(achoice).merge.alive
       case _ => obj.ground.equals(pattern.ground) && withinQ(obj, pattern)
     }
   }
@@ -59,7 +59,7 @@ object TypeChecker {
     ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj) || obj.name.equals(Tokens.anon) || pattern.name.equals(Tokens.anon)) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) ||
       (obj match {
-        case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.ground, pattern.asInstanceOf[ORecType].ground)
+        case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.gmap, pattern.asInstanceOf[ORecType].gmap)
         case lstType: Lst[Obj] => testList(lstType, pattern.asInstanceOf[Lst[Obj]])
         case _ => false
       })) &&
@@ -90,7 +90,7 @@ object TypeChecker {
   }
 
   private def testList(leftList: Lst[Obj], rightList: Lst[Obj]): Boolean = {
-    if (rightList.elements.isEmpty || leftList.elements.equals(rightList.elements)) return true
-    leftList.elements.zip(rightList.elements).foldRight(true)((a, b) => a._1.test(a._2) && b)
+    if (rightList.gvalues.isEmpty || leftList.gvalues.equals(rightList.gvalues)) return true
+    leftList.gvalues.zip(rightList.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)
   }
 }
