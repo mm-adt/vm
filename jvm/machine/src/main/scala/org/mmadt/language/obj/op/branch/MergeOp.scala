@@ -43,6 +43,7 @@ object MergeOp {
     override def exec(start: Poly[A]): A = {
       start match {
         case astrm: Strm[Poly[A]] => strm[A](astrm.values.map(x => this.exec(x))) // TODO: why does via() not work here? (nested streams?)
+        case _ if start.isValue && start.isSerial => start.gvalues.lastOption.map(x => x.clone(q = multQ(start, x))).filter(_.alive).getOrElse(zeroObj.asInstanceOf[A])
         case _ if start.isValue => strm(start.gvalues.map(x => x.clone(q = multQ(start, x))).filter(_.alive)).asInstanceOf[A]
         case _ => BranchInstruction.brchType[A](start).clone(via = (start, this))
       }

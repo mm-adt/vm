@@ -31,6 +31,8 @@ package object mmlang {
   lazy val RANGLE = ">"
   lazy val LCURL = "{"
   lazy val RCURL = "}"
+  lazy val LROUND = "("
+  lazy val RROUND = ")"
   lazy val QZERO = "{0}"
   lazy val COMMA = ","
   lazy val LBRACKET = "["
