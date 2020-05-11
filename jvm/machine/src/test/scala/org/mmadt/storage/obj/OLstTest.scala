@@ -126,7 +126,7 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel structure") {
     val poly: Lst[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3)
-    assertResult("lst[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
+    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
     assertResult(int.id())(poly.elements.head)
     assertResult(int.plus(2))(poly.elements(1))
     assertResult(int(3))(poly.elements(2))
@@ -138,7 +138,7 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel quantifier") {
     val poly: Lst[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3)
-    assertResult("lst[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
+    assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
     assertResult(int.q(2).id())(poly.elements.head)
     assertResult(int.q(2).plus(2))(poly.elements(1))
     assertResult(int(3))(poly.elements(2))
@@ -149,9 +149,9 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel [split] quantification") {
-    assertResult(int.q(3))(int.mult(8).split(__.id() | __.plus(8).mult(2) | int(56)).merge[Int].id().isolate)
-    assertResult(int.q(13, 23))(int.mult(8).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
-    assertResult(int.q(25, 45))(int.q(2).mult(8).q(1).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
+    assertResult(int)(int.mult(8).split(__.id() | __.plus(8).mult(2) | int(56)).merge[Int].id().isolate)
+    assertResult(int.q(1, 20))(int.mult(8).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
+    assertResult(int.q(1, 40))(int.q(2).mult(8).q(1).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
     //assertResult(__)(int.q(2).mult(8).q(0).split(__.id().q(10, 20) / __.plus(8).mult(2).q(2) / int(56)).merge[Obj].id().isolate)
   }
 

@@ -47,7 +47,7 @@ package object op {
         case 1 => types.head
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
-      if (brch.ground._1 == "|") { // [branch] sum the min/max quantification
+      if (!brch.isChoice) { // [branch] sum the min/max quantification
         result.hardQ(brch.ground._2.map(x => x.q).reduce((a, b) => plusQ(a, b))) //minZero(
       }
       else { // [choose] select min/max quantification

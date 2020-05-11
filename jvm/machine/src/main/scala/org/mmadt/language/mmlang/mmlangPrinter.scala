@@ -60,19 +60,22 @@ object mmlangPrinter {
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
-    lst.elements.zip(List.fill(lst.elements.length)(() => "")).foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x._1.asInstanceOf[Obj].alive).map(x => x._1).getOrElse(Tokens.empty) + lst.ground._1).dropRight(1) + RBRACKET
+    if (lst.elements.isEmpty)
+      LBRACKET + Tokens.space + RBRACKET
+    else
+      lst.elements.foldLeft(LBRACKET)((string, element) => string + (if (element.asInstanceOf[Obj].alive) element else Tokens.empty) + lst.connective).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
       case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.ground)
-      case alst: Lst[_] => alst.name + listString(alst)
+      case alst: Lst[_] => listString(alst)
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
         case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.ground)
-        case alst: Lst[_] => alst.name + listString(alst)
+        case alst: Lst[_] => listString(alst)
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
     }

@@ -31,7 +31,7 @@ object Tokens {
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
     Tokens.plus, Tokens.gt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as, Tokens.a, // Tokens.model (shared with global name)
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.given,
-    Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
+    Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
 
   val anon = "_"
   val obj = "obj"
@@ -86,6 +86,7 @@ object Tokens {
   val split = "split"
 
   val empty = ""
+  val space = " "
   val btrue = "true"
   val bfalse = "false"
 

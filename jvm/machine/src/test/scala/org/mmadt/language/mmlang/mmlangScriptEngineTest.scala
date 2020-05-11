@@ -25,7 +25,6 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, Lst}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -472,9 +471,9 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("poly basics") {
-//    assertResult("[name->'marko'|age->29]")(engine.eval("[name->'marko'|age->29]").toString)
-//    assertResult("29")(engine.eval("[name->'marko'|age->29].1").toString)
-//    assertResult("29")(engine.eval("[name->'marko'|age->29].age").toString)
+    //    assertResult("[name->'marko'|age->29]")(engine.eval("[name->'marko'|age->29]").toString)
+    //    assertResult("29")(engine.eval("[name->'marko'|age->29].1").toString)
+    //    assertResult("29")(engine.eval("[name->'marko'|age->29].age").toString)
     assertResult("['a'/'a']")(engine.eval("'a'-<[_/_]").toString)
     assertResult("['b'/'a']")(engine.eval("['a'/'b']-<[.1/.0]").toString)
     // mult
@@ -493,6 +492,16 @@ class mmlangScriptEngineTest extends FunSuite {
     //assertResult("[int[plus,2][plus,5][id]]<=[int/[plus,2]][mult,[[plus,5]/[id]]]")(engine.eval("[int/[plus,2]][mult,[[plus,5]/[id]]]").toString)
     println(engine.eval("[int/[plus,2]][mult,[[plus,5]/[id]]]"))
     // assertResult("[int{?}<=int[plus,2][plus,5][is,bool<=int[gt,0]]]<=[int/[plus,2]][mult,[[plus,5]/[is,[gt,0]]]]")(engine.eval("[int/[plus,2]][mult,[[plus,5]/[is>0]]]").toString)
+  }
+
+  test("choice type checking") {
+    assertResult(btrue)(engine.eval("'marko'[a,[str|int]]"))
+    assertResult(bfalse)(engine.eval("'marko'[a,[real|int]]"))
+    assertResult(str)(engine.eval("str-<[str|str|str]>-").range)
+    assertResult(str)(engine.eval("str-<[str|str|str]>-").domain())
+    // assertResult(str.q(2,7))(engine.eval("str-<[str{2}|str{5}|str{3,7}]>-").range) TODO: obj{0} range -- need to use Type.ctypeCheck()
+    assertResult(str.q(2, 7))(engine.eval("str-<[str[id]{2}|str[id]{5}|str[id]{3,7}]>-").range)
+    assertResult(str)(engine.eval("str-<[str[id]{2}|str[id]{5}|str[id]{3,7}]>-").domain())
   }
 
   test("poly split/merge/get") {
@@ -514,13 +523,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("6")(engine.eval("[1/[2/[3|[4|5|6]]]].1.1.1.2").toString)
     //////
     //    assertResult("[str;;]<=str~<[str;int;int[plus,2]]")(engine.eval("str~<[str;int;int[plus,2]]").toString)
-    assertResult("obj{1,12}<=lst[str/int{2}/int{12}<=int{3}[plus,2]{4}]>-[is,true][id]")(engine.eval("[str{1}/int{2}/int{3}[plus,2]{4}]>-[is,true][id]").toString)
-    //    assertResult("[;;str]<=str~<[int;bool;str]")(engine.eval("str~<[int;bool;str]").toString)
+    assertResult("obj{15}<=[str/int{2}/int{12}<=int{3}[plus,2]{4}]>-[is,true][id]")(engine.eval("[str{1}/int{2}/int{3}[plus,2]{4}]>-[is,true][id]").toString)
+    assertResult("[||str]<=str-<[||str]")(engine.eval("str-<[int|bool|str]").toString)
     //    assertResult("str-<[str;;]>-[plus,'hello']")(engine.eval("str-<[str;int;int[plus,2]]>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<[str/int/int[plus,2]]>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz'-<[str/int/int[plus,2]]>-[plus,'hello']").toString)
     // assertResult("[3;;]<=int~<[3;int;int[plus,2]]")(engine.eval("int~<[3;int;int[plus,2]]").toString)
-    assertResult("int{2,3}<=int-<[3|int|int{?}<=int[is,bool<=int[lt,0]]]>-[plus,1]")(engine.eval("int-<[3|int|int[is<0]]>-[plus,1]").toString)
+    assertResult("int{?}<=int-<[3|int|int{?}<=int[is,bool<=int[lt,0]]]>-[plus,1]")(engine.eval("int-<[3|int|int[is<0]]>-[plus,1]").toString)
     /////
     assertResult(zeroObj / int(10))(engine.eval("10-<[bool/int]"))
     assertResult(zeroObj / int(10))(engine.eval("10 int[id]-<[bool/int]"))
@@ -528,8 +537,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(10))(engine.eval("10-<[bool/int]>-[id]"))
     assertResult(int(110))(engine.eval("10-<[bool/int]>-[plus,100]"))
     //
-    assertResult("int[plus,100][plus,200]-<[int/int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int/int[plus,2]]>-[plus,20]").toString)
-    assertResult("int{2}<=int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]").toString)
+    assertResult("int{2}<=int[plus,100][plus,200]-<[int/int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int/int[plus,2]]>-[plus,20]").toString)
+    assertResult("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]").toString)
     assertResult("[10/10/11]")(engine.eval("10-<[bool/int]>-[plus,1][path]").toString)
     assertResult("12,14")(engine.eval("1[plus,1]-<[int/int[plus,2]]>-[plus,10]").toString)
   }

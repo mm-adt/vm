@@ -95,22 +95,25 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   //  (x => poly[Obj](x._1._2).clone(ground = (x._1._2, x._1._1._2 +: x._2.map(y => y._2), x._1._1._1 +: x._2.map(y => y._1))))
 
   // type parsing
-  lazy val objType: Parser[Obj] = dType | anonType
+  lazy val objType: Parser[Obj] = dType | anonTypeSugar
   lazy val tobjType: Parser[Type[Obj]] = Tokens.obj ^^ (_ => StorageFactory.obj)
-  lazy val anonKind: Parser[__] = Tokens.anon ^^ (_ => __)
+  lazy val anonType: Parser[__] = Tokens.anon ^^ (_ => __)
   lazy val boolType: Parser[BoolType] = Tokens.bool ^^ (_ => bool)
   lazy val intType: Parser[IntType] = Tokens.int ^^ (_ => int)
   lazy val realType: Parser[RealType] = Tokens.real ^^ (_ => real)
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
+  lazy val lstType: Parser[Lst[Obj]] = Tokens.lst ~> opt(lstObj) ^^ (x => x.getOrElse(lst(Tokens.:/)))
   lazy val recType: Parser[ORecType] = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(ground = x.getOrElse(Map.empty)))
   lazy val recStruct: Parser[Map[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj, COMMA | PIPE) <~ RBRACKET) ^^ (x => x.map(o => (o._1, o._2)).toMap)
-  lazy val cType: Parser[Type[Obj]] = (anonKind | tobjType | boolType | realType | intType | strType | recType | (Tokens.lst ~> polyObj)) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+
+
+  lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj, Obj]](inst | polyInst) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x)))
     case None ~ domain ~ insts => insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
   }
 
-  lazy val anonType: Parser[__] = rep1[Inst[Obj, Obj]](inst) ^^ (x => __(x))
+  lazy val anonTypeSugar: Parser[__] = rep1[Inst[Obj, Obj]](inst) ^^ (x => __(x))
   lazy val instOp: String = Tokens.reserved.foldRight(EMPTY)((a, b) => b + PIPE + a).drop(1)
 
   // value parsing

@@ -49,10 +49,10 @@ trait Lst[A <: Obj] extends Obj
 
   override def test(other: Obj): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case serial: Lst[_] =>
-      if (serial.elements.isEmpty || this.elements.equals(serial.elements)) return true
-      serial.connective == this.connective &&
-        this.elements.zip(serial.elements).foldRight(true)((a, b) => a._1.test(a._2) && b)
+    case alst: Lst[_] =>
+      if (alst.elements.isEmpty || this.elements.equals(alst.elements)) return true
+      alst.connective == this.connective &&
+        this.elements.zip(alst.elements).foldRight(true)((a, b) => a._1.test(a._2) && b)
     case _ => false
   }
 
