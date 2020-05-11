@@ -5,7 +5,7 @@ import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
@@ -15,8 +15,8 @@ trait Poly[A <: Obj] extends Obj
   with Value[Poly[A]]
   with CombineOp[A]
   with MergeOp[A]
-  with GetOp[Obj, A]
-  with PutOp[Obj, A]
+  with GetOp[Int, A]
+  with PutOp[Int, A]
   with HeadOp[A]
   with TailOp
   with PlusOp[Poly[A]]
@@ -26,18 +26,15 @@ trait Poly[A <: Obj] extends Obj
   def ground: PolyTuple[A]
   def groundConnective: String = ground._1
   def groundList: List[A] = ground._2
-  def groundKeys: List[String] = ground._3
-  def hasKeys: Boolean = groundKeys.nonEmpty
   def isSerial: Boolean = this.groundConnective == Tokens.:/
+  def isParallel: Boolean = this.groundConnective == Tokens.:\
   def isChoice: Boolean = this.groundConnective == Tokens.:|
 
-  def clone(values: List[A]): this.type = this.clone(ground = (groundConnective, values, groundKeys))
 
-  override def get(key: Obj): A = {
+  def clone(values: List[A]): this.type = this.clone(ground = (groundConnective, values))
+
+  override def get(key: Int): A = {
     val valueType: A = key match {
-      case astr: StrValue =>
-        Poly.checkIndex(this, groundKeys.indexOf(astr.ground))
-        this.groundList(groundKeys.indexOf(astr.ground))
       case aint: IntValue =>
         Poly.checkIndex(this, aint.ground.toInt)
         this.groundList(aint.ground.toInt)
@@ -46,7 +43,7 @@ trait Poly[A <: Obj] extends Obj
     valueType.via(this, GetOp[Obj, A](key, valueType))
   }
 
-  override def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp[Obj, BB](key, btype))
+  override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Obj, BB](key, btype))
 
   def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.ground._2.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
   def isType: Boolean = !this.ground._2.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))

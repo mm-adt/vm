@@ -4,7 +4,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.storage.StorageFactory.qOne
 
-class OPoly[A <: Obj](val name: String = Tokens.empty, val ground: PolyTuple[A], val q: IntQ = qOne, val via: ViaTuple = base) extends Poly[A] {
+class OPoly[A <: Obj](val name: String = Tokens.lst, val ground: PolyTuple[A], val q: IntQ = qOne, val via: ViaTuple = base) extends Poly[A] {
   override def clone(name: String = this.name,
                      ground: Any = this.ground,
                      q: IntQ = this.q,

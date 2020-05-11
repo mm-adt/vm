@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -46,17 +46,7 @@ object PutOp {
         case apoly: Poly[_] => key match {
           case avalue: IntValue =>
             val (front, back) = apoly.groundList.splitAt(avalue.ground.toInt)
-            apoly.clone(ground = (apoly.groundConnective, (front :+ value) ++ back, apoly.groundKeys), via = (start, this))
-          case avalue: StrValue => {
-            val index: scala.Int = apoly.groundKeys.indexOf(avalue.ground)
-            println(apoly.groundList :+ value)
-            if (-1 == index) apoly.clone(ground = (apoly.groundConnective, apoly.groundList :+ value, apoly.groundKeys :+ avalue.ground))
-            else {
-              val (frontV, backV) = apoly.groundList.splitAt(index)
-              val (frontK, backK) = apoly.groundKeys.splitAt(index)
-              apoly.clone(ground = (apoly.groundConnective, (frontV :+ value) ++ backV, (frontK :+ avalue.ground) ++ backK), via = (start, this))
-            }
-          }
+            apoly.clone(ground = (apoly.groundConnective, (front :+ value) ++ back), via = (start, this))
           case _ => apoly.via(start, this)
         }
         case rec: Rec[_, _] => rec.clone(ground = rec.ground().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))

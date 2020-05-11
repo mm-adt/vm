@@ -68,7 +68,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult("['a'|'b']")(("a" | "b").toString())
   }
 
-  test("parallel keys") {
+  /*test("parallel keys") {
     assertResult("[name->'marko'|age->29]")(("name" -> str("marko") | "age" -> int(29)).toString)
     assertResult(str("marko"))(("name" -> str("marko") | "age" -> int(29)).get("name"))
   }
@@ -110,7 +110,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
     // overwrite orderings
     assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).ground) // TODO: determine overwrite order*/
 
-  }
+  }*/
 
 
   test("parallel [get] values") {
@@ -126,7 +126,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel structure") {
     val poly: Poly[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3)
-    assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
+    assertResult("lst[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
     assertResult(int.id())(poly.groundList.head)
     assertResult(int.plus(2))(poly.groundList(1))
     assertResult(int(3))(poly.groundList(2))
@@ -138,7 +138,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel quantifier") {
     val poly: Poly[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3)
-    assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
+    assertResult("lst[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
     assertResult(int.q(2).id())(poly.groundList.head)
     assertResult(int.q(2).plus(2))(poly.groundList(1))
     assertResult(int(3))(poly.groundList(2))

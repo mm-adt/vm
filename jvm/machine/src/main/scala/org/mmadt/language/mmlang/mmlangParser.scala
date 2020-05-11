@@ -87,12 +87,12 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val varGet: Parser[Type[Obj]] = varName ~ rep(inst) ^^
     (x => this.model.get(tobj(x._1)).getOrElse(__.apply(List[Inst[_, _]](FromOp(x._1)) ++ x._2)))
 
-  // product and coproduct parsing
-  lazy val polyObj: Parser[Poly[Obj]] = (polyRecObj | polyLstObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
-  lazy val polySep: Parser[String] = Tokens.:/ | Tokens.:|
-  lazy val polyLstObj: Parser[Poly[Obj]] = (LBRACKET ~> (obj ~ polySep) ~ rep1sep(obj, polySep) <~ RBRACKET) ^^ (x => poly(x._1._2, x._1._1 +: x._2: _*))
-  lazy val polyRecObj: Parser[Poly[Obj]] = (LBRACKET ~> ((symbolName <~ Tokens.:->) ~ obj ~ polySep) ~ rep1sep((symbolName <~ Tokens.:->) ~ obj, polySep) <~ RBRACKET) ^^
-    (x => poly[Obj](x._1._2).clone(ground = (x._1._2, x._1._1._2 +: x._2.map(y => y._2), x._1._1._1 +: x._2.map(y => y._1))))
+  // poly parsing
+  lazy val polyObj: Parser[Poly[Obj]] = lstObj ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
+  lazy val polySep: Parser[String] = Tokens.:/ | Tokens.:| | Tokens.:\
+  lazy val lstObj: Parser[Poly[Obj]] = (LBRACKET ~> (obj ~ polySep) ~ rep1sep(obj, polySep) <~ RBRACKET) ^^ (x => poly(x._1._2, x._1._1 +: x._2: _*))
+  //lazy val polyRecObj: Parser[Poly[Obj]] = (LBRACKET ~> ((symbolName <~ Tokens.:->) ~ obj ~ polySep) ~ rep1sep((symbolName <~ Tokens.:->) ~ obj, polySep) <~ RBRACKET) ^^
+  //  (x => poly[Obj](x._1._2).clone(ground = (x._1._2, x._1._1._2 +: x._2.map(y => y._2), x._1._1._1 +: x._2.map(y => y._1))))
 
   // type parsing
   lazy val objType: Parser[Obj] = dType | anonType
@@ -104,7 +104,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
   lazy val recType: Parser[ORecType] = (Tokens.rec ~> opt(recStruct)) ^^ (x => trec(ground = x.getOrElse(Map.empty)))
   lazy val recStruct: Parser[Map[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ (Tokens.:-> | Tokens.::)) ~ obj, COMMA | PIPE) <~ RBRACKET) ^^ (x => x.map(o => (o._1, o._2)).toMap)
-  lazy val cType: Parser[Type[Obj]] = (anonKind | tobjType | boolType | realType | intType | strType | recType /* | polyObj */) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val cType: Parser[Type[Obj]] = (anonKind | tobjType | boolType | realType | intType | strType | recType | (Tokens.lst ~> polyObj)) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj, Obj]](inst | polyInst) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x)))
     case None ~ domain ~ insts => insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))

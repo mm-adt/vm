@@ -40,6 +40,7 @@ object Tokens {
   val rec = "rec"
   val int = "int"
   val real = "real"
+  val lst = "lst"
   val inst = "inst"
 
   val a = "a"
@@ -112,8 +113,9 @@ object Tokens {
   val :-> = "->"
   val :| = "|"
   val :/ = "/"
+  val :\ = "\\"
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst).contains(name) // TODO: global immutable set
+  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst, lst).contains(name) // TODO: global immutable set
 }

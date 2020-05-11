@@ -49,9 +49,9 @@ trait StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
-  def poly[A <: Obj](sep: String, values: A*): Poly[A] = new OPoly[A](ground = (sep, values.toList, List.empty))
-  def |[A<:Obj]:Poly[A] = new OPoly[A](ground=(Tokens.:|,List.empty,List.empty))
-  def /[A<:Obj]:Poly[A] = new OPoly[A](ground=(Tokens.:/,List.empty,List.empty))
+  def poly[A <: Obj](sep: String, values: A*): Poly[A] = new OPoly[A](ground = (sep, values.toList))
+  def |[A<:Obj]:Poly[A] = new OPoly[A](ground=(Tokens.:|,List.empty))
+  def /[A<:Obj]:Poly[A] = new OPoly[A](ground=(Tokens.:/,List.empty))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base): BoolType

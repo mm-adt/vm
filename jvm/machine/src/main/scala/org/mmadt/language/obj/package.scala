@@ -36,7 +36,7 @@ package object obj {
   type State = Map[String, Obj]
   type InstList = List[(Type[Obj], Inst[Obj, Obj])]
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
-  type PolyTuple[A <: Obj] = (String, List[A], List[String])
+  type PolyTuple[A <: Obj] = (String, List[A])
   val base : ViaTuple = (null, null)
   // less typing
   type OType[+O <: Obj] = Type[O] with O
