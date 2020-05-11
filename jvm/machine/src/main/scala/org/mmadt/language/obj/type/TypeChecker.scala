@@ -36,7 +36,7 @@ import scala.collection.mutable
 object TypeChecker {
   def matchesVT[O <: Obj](obj: Value[O], pattern: Type[O]): Boolean = {
     if (!obj.alive && !pattern.alive) return true
-    (pattern.name.equals(Tokens.obj) || pattern.name.equals(Tokens.anon) || // all objects are obj
+    (pattern.name.equals(Tokens.obj) || (pattern.name.equals(Tokens.anon) && (pattern.root || pattern.asInstanceOf[__](obj).alive)) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || obj.compute(pattern).alive)) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
       obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
       ((obj.isInstanceOf[Lst[_]] && pattern.isInstanceOf[Lst[_]] &&
@@ -56,7 +56,7 @@ object TypeChecker {
 
   def matchesTT[O <: Obj](obj: Type[O], pattern: Type[O]): Boolean = {
     if (!obj.alive && !pattern.alive) return true
-    ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj) || obj.name.equals(Tokens.anon) || pattern.name.equals(Tokens.anon)) || // all objects are obj
+    ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj) || obj.name.equals(Tokens.anon) || (pattern.name.equals(Tokens.anon) && pattern.root)) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) ||
       (obj match {
         case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.gmap, pattern.asInstanceOf[ORecType].gmap)

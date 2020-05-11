@@ -1,4 +1,4 @@
-rec['k'->int,'v'->str]
+rec:['k'->int,'v'->str]
 ['k'->1,'v'->'marko']
 ['k'->2,'v'->'ryan']
 ['k'->3,'v'->'stephen']

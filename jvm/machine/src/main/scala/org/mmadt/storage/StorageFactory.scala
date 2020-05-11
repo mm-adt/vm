@@ -82,7 +82,7 @@ trait StorageFactory {
   def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne, via: ViaTuple = base): StrValue
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, value: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base): RecValue[A, B]
   //
-  def strm[O <: Obj](itty: Seq[O]): OStrm[O]
+  def strm[O <: Obj](itty: Seq[O]): O
   def strm[O <: Obj]: OStrm[O]
 }
 
@@ -131,7 +131,7 @@ object StorageFactory {
   def vreal(name: String = Tokens.real, ground: Double, q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): RealValue = f.vreal(name, ground, q, via)
   def vstr(name: String = Tokens.str, ground: String, q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): StrValue = f.vstr(name, ground, q, via)
   def vrec[A <: Value[Obj], B <: Value[Obj]](name: String = Tokens.rec, ground: collection.Map[A, B], q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): RecValue[A, B] = f.vrec(name, ground, q, via)
-  def strm[O <: Obj](seq: Seq[O])(implicit f: StorageFactory): OStrm[O] = f.strm[O](seq)
+  def strm[O <: Obj](seq: Seq[O])(implicit f: StorageFactory): O = f.strm[O](seq)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
   /////////CONSTANTS//////
   lazy val btrue: BoolValue = bool(ground = true)
@@ -183,7 +183,7 @@ object StorageFactory {
     override def vrec[A <: Value[Obj], B <: Value[Obj]](values: Iterator[RecValue[A, B]]): RecStrm[A, B] = new VRecStrm(values = MultiSet(values.toSeq))
     //
     override def strm[O <: Obj]: OStrm[O] = VEmptyStrm.empty[O]
-    override def strm[O <: Obj](values: Seq[O]): OStrm[O] = {
+    override def strm[O <: Obj](values: Seq[O]): O = {
       (values.headOption.getOrElse(null) match {
         case _: Bool => new VBoolStrm(values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))
         case _: Int => new VIntStrm(values = MultiSet(values.asInstanceOf[Seq[IntValue]]))
@@ -191,8 +191,8 @@ object StorageFactory {
         case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
         case _: Rec[_, _] => new VRecStrm[Value[Obj], Value[Obj]](values = MultiSet(values.asInstanceOf[Seq[RecValue[Value[Obj], Value[Obj]]]]))
         case _: Lst[_] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Lst[Obj]]]))
-        case _ => VEmptyStrm.empty[O]
-      }).asInstanceOf[OStrm[O]]
+        case _ => zeroObj
+      }).asInstanceOf[O]
     }
   }
 }

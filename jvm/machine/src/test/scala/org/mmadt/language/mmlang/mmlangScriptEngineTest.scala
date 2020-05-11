@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.{FunSuite, Ignore}
+import org.scalatest.FunSuite
 
 
 /**
@@ -50,7 +50,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int)(engine.eval("int"))
     assertResult(real)(engine.eval("real"))
     assertResult(str)(engine.eval("str"))
-    assertResult(rec)(engine.eval("rec[]"))
+    // assertResult(rec)(engine.eval("rec:[]"))
     assertResult(rec)(engine.eval("rec"))
   }
 
@@ -59,7 +59,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(int(0), int(1)))(engine.eval("int{?}"))
     assertResult(real.q(int(0), int(0)))(engine.eval("real{0}"))
     assertResult(str)(engine.eval("str{1}"))
-    assertResult(rec.q(int(5), int(10)))(engine.eval("rec[]{5,10}"))
+    // assertResult(rec.q(int(5), int(10)))(engine.eval("rec:[]{5,10}"))
     assertResult(rec.q(int(5), int(10)))(engine.eval("rec{5,10}"))
   }
 
@@ -92,12 +92,12 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("rec type parsing") {
-    assertResult(trec(str("name") -> str, str("age") -> int))(engine.eval("rec[   'name'   ->str ,   'age' ->int]"))
-    assertResult(trec(str("name") -> str, str("age") -> int))(engine.eval("rec['name'->str,'age'->int]"))
-    assertResult(trec(str("name") -> str, str("age") -> int).q(30))(engine.eval("rec['name'->str,'age'->int]{30}"))
-    assertResult(trec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("rec['name'->str,'age'->int]{30}[get,'age'][gt,30]"))
-    assertResult(trec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("bool{30}<=rec['name'->str,'age'->int]{30}[get,'age'][gt,30]"))
-    assertResult(bool.q(*) <= trec(str("name") -> str, str("age") -> int).q(*).get("age", int).gt(30))(engine.eval("bool{*}<=rec['name'->str,'age'->int]{*}[get,'age'][gt,30]"))
+    assertResult(trec(str("name") -> str, str("age") -> int))(engine.eval("rec:[   'name'   ->str ,   'age' ->int]"))
+    assertResult(trec(str("name") -> str, str("age") -> int))(engine.eval("rec:['name'->str,'age'->int]"))
+    assertResult(trec(str("name") -> str, str("age") -> int).q(30))(engine.eval("rec:['name'->str,'age'->int]{30}"))
+    assertResult(trec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("rec:['name'->str,'age'->int]{30}[get,'age'][gt,30]"))
+    assertResult(trec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("bool{30}<=rec:['name'->str,'age'->int]{30}[get,'age'][gt,30]"))
+    assertResult(bool.q(*) <= trec(str("name") -> str, str("age") -> int).q(*).get("age", int).gt(30))(engine.eval("bool{*}<=rec:['name'->str,'age'->int]{*}[get,'age'][gt,30]"))
   }
 
   test("rec named value parsing") {
@@ -107,13 +107,13 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("composite type get/put") {
     val person: RecType[StrValue, ObjType] = trec(str("name") -> str, str("age") -> int)
-    assertResult(str <= person.get(str("name")))(engine.eval("str<=rec['name'->str,'age'->int][get,'name']"))
-    assertResult(int <= person.get(str("age")))(engine.eval("int<=rec['name'->str,'age'->int][get,'age']"))
-    assertResult(int <= rec.put(str("age"), int).get(str("age")))(engine.eval("rec[][put,'age',int][get,'age']"))
-    assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("rec[][put,'age',int][get,'age'][plus,10]"))
-    assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[][put,'age',int][get,'age'][plus,10]"))
-    assertResult(int(20))(engine.eval("['name'->'marko'] rec[][put,'age',10][get,'age'][plus,10]"))
-    assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[][put,'age',10][get,'age'][plus,10]"))
+    assertResult(str <= person.get(str("name")))(engine.eval("str<=rec:['name'->str,'age'->int][get,'name']"))
+    assertResult(int <= person.get(str("age")))(engine.eval("int<=rec:['name'->str,'age'->int][get,'age']"))
+    assertResult(int <= rec.put(str("age"), int).get(str("age")))(engine.eval("rec[put,'age',int][get,'age']"))
+    assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("rec[put,'age',int][get,'age'][plus,10]"))
+    assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[put,'age',int][get,'age'][plus,10]"))
+    assertResult(int(20))(engine.eval("['name'->'marko'] rec[put,'age',10][get,'age'][plus,10]"))
+    assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[put,'age',10][get,'age'][plus,10]"))
   }
 
   test("poly get/put") {
@@ -182,13 +182,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str("14"))(engine.eval("5[plus,2][mult,2][as,str]"))
     assertResult(str("14hello"))(engine.eval("5 int[plus,2][mult,2][as,str][plus,'hello']"))
     assertResult(str("14hello"))(engine.eval("5[plus,2][mult,2][as,str][plus,'hello']"))
-    assertResult(vrec(str("x") -> int(7)))(engine.eval("5 int[plus,2][as,rec['x'->int]]"))
-    assertResult(vrec(str("x") -> int(7), str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'-><.x>,'y'-><.y>]]"))
-    assertResult(vrec(str("x") -> int(7), str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<.x>,'y'->int<.y>]]"))
-    assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['a'->int<.x>,'b'->int<.y>]][get,'b']"))
-    assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['a'-><.x>,'b'-><.y>]][get,'b']"))
-    assertResult(int ==> int.to("x").plus(1).to("y").as(trec(str("a") -> int.from("x"), str("b") -> int.from("y"))).get("b"))(engine.eval("int<x>[plus,1]<y>[as,rec['a'->int<.x>,'b'->int<.y>]].b"))
-    assertResult(vrec(str("x") -> int(7), str("y") -> int(10), str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec['x'->int<.x>,'y'->int<.y>,'z'->[as,rec['a'-><.x> + <.y>]]]]"))
+    assertResult(vrec(str("x") -> int(7)))(engine.eval("5 int[plus,2][as,rec:['x'->int]]"))
+    assertResult(vrec(str("x") -> int(7), str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['x'-><.x>,'y'-><.y>]]"))
+    assertResult(vrec(str("x") -> int(7), str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['x'->int<.x>,'y'->int<.y>]]"))
+    assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['a'->int<.x>,'b'->int<.y>]][get,'b']"))
+    assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['a'-><.x>,'b'-><.y>]][get,'b']"))
+    assertResult(int ==> int.to("x").plus(1).to("y").as(trec(str("a") -> int.from("x"), str("b") -> int.from("y"))).get("b"))(engine.eval("int<x>[plus,1]<y>[as,rec:['a'->int<.x>,'b'->int<.y>]].b"))
+    assertResult(vrec(str("x") -> int(7), str("y") -> int(10), str("z") -> vrec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['x'->int<.x>,'y'->int<.y>,'z'->[as,rec:['a'-><.x> + <.y>]]]]"))
   }
 
   test("start instruction initial") {
@@ -307,7 +307,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("parallel with rec types") {
     //    assertResult("rec[:/'a':'aa']<=str-<rec[:/'a':'aa']")(engine.eval("'a'-<rec[int+1[is>0] -> +10 / str -> +'a']").toString)
-    //    assertResult(btrue)(engine.eval("true-<[bool -> bool ; int -> int]>-"))
+    assertResult(zeroObj)(engine.eval("true-<[bool -> bool ; int -> int]>-"))
     assertResult(int(10))(engine.eval("10-<[bool -> bool ; int -> int]>-"))
     assertResult(int(10))(engine.eval("10-<[bool -> true ; int -> int]>-"))
     assertResult(int(11))(engine.eval("10-<[bool -> true ; int -> int[plus,1]]>-"))
@@ -369,11 +369,11 @@ class mmlangScriptEngineTest extends FunSuite {
         |    'bb'->
         |      ['bba'->4]]].b.bb.bba""".stripMargin))
     assertResult(int(0))(engine.eval("['a'->['b'->['c'->['d'->0]]]].a.b.c.d"))
-    assertResult(int(4, 12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec['a'->int<.x>,'b'->int<.y>]]-<[[id]-->.a,[is,true]-->.b]>-"))
+    assertResult(int(4, 12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec:['a'->int<.x>,'b'->int<.y>]]-<[[id]-->.a,[is,true]-->.b]>-"))
   }
 
   test("rec poly") {
-    assertResult(int(14))(engine.eval("4-<rec[str->'x';int->+10]>-"))
+    assertResult(int(14))(engine.eval("4-<rec:[str->'x';int->+10]>-"))
     assertResult(int(2, 14))(engine.eval("4-<[int[is>0]->2;int->+10]>-"))
   }
 
@@ -481,7 +481,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse.q(3, 30))(engine.eval("true{3,30}[and,false][and,[or,bool]]"))
   }
 
-  test("variables") {
+  test("lst variables") {
     assertResult(int(3))(engine.eval("1<x>[plus,1][plus,x]"))
     assertResult(int(5, 23))(engine.eval("1-<[[plus,1]<x>,[plus,10]<x>]>-[plus,1][plus,x]"))
     assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<[x[plus,2],x]>-"))
@@ -494,10 +494,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
 
-  test("poly basics") {
-    //    assertResult("[name->'marko'|age->29]")(engine.eval("[name->'marko'|age->29]").toString)
-    //    assertResult("29")(engine.eval("[name->'marko'|age->29].1").toString)
-    //    assertResult("29")(engine.eval("[name->'marko'|age->29].age").toString)
+  test("lst values w/ [mult], [plus], and [zero]") {
     assertResult("['a';'a']")(engine.eval("'a'-<[_;_]").toString)
     assertResult("['b','a']")(engine.eval("['a';'b']-<[.1,.0]").toString)
     // TODO assertResult("['aZ';'bz']")(engine.eval("['a';'b']-<[.1+'z'<x>;.0+'Z'<y>]>--<[y;x]").toString)
@@ -554,18 +551,18 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("[1|2|3]")(engine.eval("[1|2|3]").toString)
     assertResult("[1;2;3]")(engine.eval("[1;2;3]").toString)
     assertResult("[1;[2|3]]")(engine.eval("[1;[2|3]]").toString)
-    //assertResult("'a'")(engine.eval("['a'].0").toString)
+    assertResult("'a'")(engine.eval("['a'|].0").toString)
     assertResult("[2|3]")(engine.eval("[1;[2|3]][get,1]").toString)
     assertResult("3")(engine.eval("[1;[2|3]][get,1][get,1]").toString)
     assertResult("6")(engine.eval("[1;[2;[3|[4|5|6]]]].1.1.1.2").toString)
     //////
-    //    assertResult("[str;;]<=str~<[str;int;int[plus,2]]")(engine.eval("str~<[str;int;int[plus,2]]").toString)
+    assertResult("[str;;]<=str-<[str;;]")(engine.eval("str-<[str;int;int[plus,2]]").toString)
     assertResult("obj{15}<=[str;int{2};int{12}<=int{3}[plus,2]{4}]>-[is,true][id]")(engine.eval("[str{1};int{2};int{3}[plus,2]{4}]>-[is,true][id]").toString)
     assertResult("[||str]<=str-<[||str]")(engine.eval("str-<[int|bool|str]").toString)
     assertResult("str-<[str,,]>-[plus,'hello']")(engine.eval("str-<[str,,]>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<[str,int,int[plus,2]]>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz'-<[str,int,int[plus,2]]>-[plus,'hello']").toString)
-    // assertResult("[3;;]<=int~<[3;int;int[plus,2]]")(engine.eval("int~<[3;int;int[plus,2]]").toString)
+    //assertResult("[3||]<=int-<[3|int|int[plus,2]]")(engine.eval("int-<[3|int|int[plus,2]]").toString)
     assertResult("int{?}<=int-<[3|int|int{?}<=int[is,bool<=int[lt,0]]]>-[plus,1]")(engine.eval("int-<[3|int|int[is<0]]>-[plus,1]").toString)
     /////
     assertResult(zeroObj `,` int(10))(engine.eval("10-<[bool,int]"))
@@ -578,5 +575,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]").toString)
     assertResult("[10;10;11]")(engine.eval("10-<[bool,int]>-[plus,1][path]").toString)
     assertResult("12,14")(engine.eval("1[plus,1]-<[int,int[plus,2]]>-[plus,10]").toString)
+  }
+
+  test("play") {
+    assertResult(bfalse)(engine.eval("5[a,-<[bool|real]>-]"))
+    assertResult(btrue)(engine.eval("5.5[a,-<[bool|real]>-]"))
+    assertResult(btrue)(engine.eval("false[a,-<[bool|real]>-]"))
+    assertResult(bfalse)(engine.eval("'hello'[a,-<[bool|real]>-]"))
   }
 }
