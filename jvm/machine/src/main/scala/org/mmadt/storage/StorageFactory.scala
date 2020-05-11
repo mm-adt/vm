@@ -30,7 +30,7 @@ import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{ViaTuple, _}
 import org.mmadt.storage.StorageFactory.{qOne, qZero}
-import org.mmadt.storage.obj.OPoly
+import org.mmadt.storage.obj.OLst
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm._
@@ -49,9 +49,9 @@ trait StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(value = Map.empty[A, B])
-  def poly[A <: Obj](sep: String, values: A*): Poly[A] = new OPoly[A](ground = (sep, values.toList))
-  def |[A<:Obj]:Poly[A] = new OPoly[A](ground=(Tokens.:|,List.empty))
-  def /[A<:Obj]:Poly[A] = new OPoly[A](ground=(Tokens.:/,List.empty))
+  def poly[A <: Obj](sep: String, values: A*): Lst[A] = new OLst[A](ground = (sep, values.toList))
+  def |[A<:Obj]:Lst[A] = new OLst[A](ground=(Tokens.:|,List.empty))
+  def /[A<:Obj]:Lst[A] = new OLst[A](ground=(Tokens.:/,List.empty))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base): BoolType
@@ -96,9 +96,9 @@ object StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: RecType[A, B] = trec(ground = Map.empty[A, B])
-  def poly[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Poly[A] = f.poly[A](sep, values: _*)
-  def |[A<:Obj](implicit f: StorageFactory):Poly[A] = f.|
-  def /[A<:Obj](implicit f: StorageFactory):Poly[A] = f./
+  def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Lst[A] = f.poly[A](sep, values: _*)
+  def |[A<:Obj](implicit f: StorageFactory):Lst[A] = f.|
+  def /[A<:Obj](implicit f: StorageFactory):Lst[A] = f./
 
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
@@ -143,7 +143,7 @@ object StorageFactory {
   lazy val ? : (IntValue, IntValue) = qMark
   lazy val + : (IntValue, IntValue) = qPlus
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
-    case apoly: Poly[Obj] if apoly.isValue => apoly.clone(apoly.groundList.map(x => asType[Obj](x)))
+    case alst: Lst[Obj] if alst.isValue => alst.clone(alst.elements.map(x => asType[Obj](x)))
     case atype: Type[_] => atype
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
@@ -188,7 +188,7 @@ object StorageFactory {
         case _: Real => new VRealStrm(values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
         case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
         case _: Rec[_, _] => new VRecStrm[Value[Obj], Value[Obj]](values = MultiSet(values.asInstanceOf[Seq[RecValue[Value[Obj], Value[Obj]]]]))
-        case _: Poly[_] => new VPolyStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Poly[Obj]]]))
+        case _: Lst[_] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Lst[Obj]]]))
         case _ => VEmptyStrm.empty[O]
       }).asInstanceOf[OStrm[O]]
     }

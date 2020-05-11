@@ -43,10 +43,10 @@ object PutOp {
     override def q(q: IntQ): this.type = new PutInst[A, B](key, value, q).asInstanceOf[this.type]
     override def exec(start: Obj): Obj = {
       start match {
-        case apoly: Poly[_] => key match {
+        case apoly: Lst[_] => key match {
           case avalue: IntValue =>
-            val (front, back) = apoly.groundList.splitAt(avalue.ground.toInt)
-            apoly.clone(ground = (apoly.groundConnective, (front :+ value) ++ back), via = (start, this))
+            val (front, back) = apoly.elements.splitAt(avalue.ground.toInt)
+            apoly.clone(ground = (apoly.connective, (front :+ value) ++ back), via = (start, this))
           case _ => apoly.via(start, this)
         }
         case rec: Rec[_, _] => rec.clone(ground = rec.ground().asInstanceOf[Map[A, B]] + (key -> value), via = (rec, this))

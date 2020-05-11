@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.Poly
+import org.mmadt.language.obj.Lst
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.storage.StorageFactory._
@@ -37,8 +37,8 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[get] w/ lst values") {
-    val check: TableFor3[Poly[StrValue], IntValue, StrValue] =
-      new TableFor3[Poly[StrValue], IntValue, StrValue](("list", "key", "value"),
+    val check: TableFor3[Lst[StrValue], IntValue, StrValue] =
+      new TableFor3[Lst[StrValue], IntValue, StrValue](("list", "key", "value"),
         ("a" |, 0, str("a")),
         ("a" | "b", 0, "a"),
         ("a" | "b" | "c", 1, "b"),
@@ -59,7 +59,7 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
       (str("a") | "b" | "c").get(3)
     }
     assertThrows[LanguageException] {
-      poly("|").get(0)
+      lst("|").get(0)
     }
   }
 

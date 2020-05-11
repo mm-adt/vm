@@ -37,7 +37,7 @@ package object op {
   trait BranchInstruction
 
   object BranchInstruction {
-    def brchType[OT <: Obj](brch: Poly[_ <: Obj]): OT = {
+    def brchType[OT <: Obj](brch: Lst[_ <: Obj]): OT = {
       val types = brch.ground._2.filter(_.alive).map {
         case atype: Type[OT] => atype.hardQ(1).range
         case avalue: Value[OT] => asType(avalue)

@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.{Obj, Poly}
+import org.mmadt.language.obj.{Obj, Lst}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -31,9 +31,9 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[tail] w/ parallel poly]") {
-    val check: TableFor2[Poly[_], Obj] =
+    val check: TableFor2[Lst[_], Obj] =
       new TableFor2(("parallel", "tail"),
-        (str("a") |, poly("|")),
+        (str("a") |, lst("|")),
         (str("a") | "b", str("b") |),
         (str("a") | "b" | "c", str("b") | str("c")),
         (str("d") | "b" | "c", str("b") | str("c")),
@@ -54,7 +54,7 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[tail] w/ serial poly") {
-    val check: TableFor2[Poly[_], Obj] =
+    val check: TableFor2[Lst[_], Obj] =
       new TableFor2(("serial", "tail"),
         //(str("a") /, /),
         (str("a") / "b", str("b") /),

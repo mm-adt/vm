@@ -26,7 +26,7 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.PathOp
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Obj, Poly}
+import org.mmadt.language.obj.{Obj, Lst}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -38,8 +38,8 @@ class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("a"), __.plus("b").plus("c").path(), str("a") / "ab" / "abc"),
         (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(), str("a") / "ab" / "ababcd" / "ababcde"),
         //(str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path().get(1).path(), `;`[Str]("a", "ab", "ababcd", "ababcde")), TODO: branch to historic paths
-        (int(1, 2, 3), __.plus(1).path(), strm(List[Poly[IntValue]](int(1) / 2, int(2) / 3, int(3) / 4))),
-        (int(1, 2, 3), __.plus(1).plus(2).path(), strm(List[Poly[IntValue]](int(1) / 2 / 4, int(2) / 3 / 5, int(3) / 4 / 6))),
+        (int(1, 2, 3), __.plus(1).path(), strm(List[Lst[IntValue]](int(1) / 2, int(2) / 3, int(3) / 4))),
+        (int(1, 2, 3), __.plus(1).plus(2).path(), strm(List[Lst[IntValue]](int(1) / 2 / 4, int(2) / 3 / 5, int(3) / 4 / 6))),
       )
     forEvery(starts) { (input, atype, result) => {
       List(

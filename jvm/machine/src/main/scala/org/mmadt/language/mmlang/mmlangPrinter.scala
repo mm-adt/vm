@@ -49,30 +49,30 @@ object mmlangPrinter {
 
   def strmString(strm: Strm[Obj]): String = strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
 
-  def polyString(poly: Poly[_]): String = {
-    if (poly.root) polyList(poly)
-    if (!poly.isValue)
-      typeString(poly.asInstanceOf[Type[Obj]])
+  def lstString(lst: Lst[_]): String = {
+    if (lst.root) listString(lst)
+    if (!lst.isValue)
+      typeString(lst.asInstanceOf[Type[Obj]])
     else
-      polyList(poly) + qString(poly.q)
+      listString(lst) + qString(lst.q)
   }
 
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (kv._1 + COLON + kv._2 + sep)).dropRight(1) + RBRACKET
-  private def polyList(poly: Poly[_]): String = {
-    if (poly.isInstanceOf[Strm[_]]) return strmString(poly.asInstanceOf[Strm[Obj]])
-    poly.groundList.zip(List.fill(poly.groundList.length)(() => "")).foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x._1.asInstanceOf[Obj].alive).map(x => x._1).getOrElse(Tokens.empty) + poly.ground._1).dropRight(1) + RBRACKET
+  private def listString(lst: Lst[_]): String = {
+    if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
+    lst.elements.zip(List.fill(lst.elements.length)(() => "")).foldLeft(LBRACKET)((a, b) => a + Option(b).filter(x => x._1.asInstanceOf[Obj].alive).map(x => x._1).getOrElse(Tokens.empty) + lst.ground._1).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
       case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.ground)
-      case apoly: Poly[_] => apoly.name + polyList(apoly)
+      case alst: Lst[_] => alst.name + listString(alst)
       case _ => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) Tokens.empty else {
       (atype.domain() match {
         case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + mapString(arec.ground)
-        case apoly: Poly[_] => apoly.name + polyList(apoly)
+        case alst: Lst[_] => alst.name + listString(alst)
         case btype: Type[_] => btype.name
       }) + qString(atype.domain().q)
     }
@@ -93,7 +93,7 @@ object mmlangPrinter {
     (inst.op() match {
       case Tokens.to => LANGLE + inst.arg0[StrValue]().ground + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().ground + RANGLE
-      case Tokens.split => Tokens.split_op + polyList(inst.arg0[Poly[_]]())
+      case Tokens.split => Tokens.split_op + listString(inst.arg0[Lst[_]]())
       case Tokens.merge => Tokens.merge_op
       case _ => inst.args() match {
         case Nil => LBRACKET + inst.op() + RBRACKET

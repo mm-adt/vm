@@ -5,12 +5,12 @@ import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Int, Obj, Poly, Str}
+import org.mmadt.language.obj.{Int, Obj, Lst, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
 
-class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
+class OLstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("basic poly") {
     assertResult(str("a"))(("a" | "b" | "c").head())
@@ -44,8 +44,8 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
 
 
   test("parallel [tail][head] values") {
-    val starts: TableFor2[Poly[Obj], List[Value[Obj]]] =
-      new TableFor2[Poly[Obj], List[Value[Obj]]](("parallel", "projections"),
+    val starts: TableFor2[Lst[Obj], List[Value[Obj]]] =
+      new TableFor2[Lst[Obj], List[Value[Obj]]](("parallel", "projections"),
         (|, List.empty),
         ("a" |, List(str("a"))),
         ("a" | "b", List(str("a"), str("b"))),
@@ -53,7 +53,7 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
         ("a" | ("b" | "d") | "c", List(str("a"), "b" | "d", str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
-      assertResult(alst.groundList)(blist)
+      assertResult(alst.elements)(blist)
       if (blist.nonEmpty) {
         assertResult(alst.head())(blist.head)
         assertResult(alst.ground._2.head)(blist.head)
@@ -125,26 +125,26 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel structure") {
-    val poly: Poly[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3)
+    val poly: Lst[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3)
     assertResult("lst[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
-    assertResult(int.id())(poly.groundList.head)
-    assertResult(int.plus(2))(poly.groundList(1))
-    assertResult(int(3))(poly.groundList(2))
-    assertResult(int)(poly.groundList.head.via._1)
-    assertResult(int)(poly.groundList(1).via._1)
-    assert(poly.groundList(2).root)
+    assertResult(int.id())(poly.elements.head)
+    assertResult(int.plus(2))(poly.elements(1))
+    assertResult(int(3))(poly.elements(2))
+    assertResult(int)(poly.elements.head.via._1)
+    assertResult(int)(poly.elements(1).via._1)
+    assert(poly.elements(2).root)
     assertResult(int.id() | int.plus(2) | int(3))(poly.range)
   }
 
   test("parallel quantifier") {
-    val poly: Poly[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3)
+    val poly: Lst[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3)
     assertResult("lst[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
-    assertResult(int.q(2).id())(poly.groundList.head)
-    assertResult(int.q(2).plus(2))(poly.groundList(1))
-    assertResult(int(3))(poly.groundList(2))
-    assertResult(int.q(2))(poly.groundList.head.via._1)
-    assertResult(int.q(2))(poly.groundList(1).via._1)
-    assert(poly.groundList(2).root)
+    assertResult(int.q(2).id())(poly.elements.head)
+    assertResult(int.q(2).plus(2))(poly.elements(1))
+    assertResult(int(3))(poly.elements(2))
+    assertResult(int.q(2))(poly.elements.head.via._1)
+    assertResult(int.q(2))(poly.elements(1).via._1)
+    assert(poly.elements(2).root)
     assertResult(int.q(2).id() | int.q(2).plus(2) | int(3))(poly.range)
   }
 
@@ -156,8 +156,8 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("serial value/type checking") {
-    val starts: TableFor2[Poly[Obj], Boolean] =
-      new TableFor2[Poly[Obj], Boolean](("serial", "isValue"),
+    val starts: TableFor2[Lst[Obj], Boolean] =
+      new TableFor2[Lst[Obj], Boolean](("serial", "isValue"),
         (/, true),
         ("a" / "b", true),
         ("a" / "b" / "c" / "d", true),
@@ -170,8 +170,8 @@ class OPolyTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("serial [put]") {
-    val starts: TableFor4[Poly[Obj], Int, Obj, Poly[Obj]] =
-      new TableFor4[Poly[Obj], Int, Obj, Poly[Obj]](("serial", "key", "value", "newProd"),
+    val starts: TableFor4[Lst[Obj], Int, Obj, Lst[Obj]] =
+      new TableFor4[Lst[Obj], Int, Obj, Lst[Obj]](("serial", "key", "value", "newProd"),
         (/, 0, "a", "a" /),
         ("b" /, 0, "a", "a" / "b"),
         ("a" / "c", 1, "b", "a" / "b" / "c"),

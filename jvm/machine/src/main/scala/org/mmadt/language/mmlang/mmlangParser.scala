@@ -88,9 +88,9 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
     (x => this.model.get(tobj(x._1)).getOrElse(__.apply(List[Inst[_, _]](FromOp(x._1)) ++ x._2)))
 
   // poly parsing
-  lazy val polyObj: Parser[Poly[Obj]] = lstObj ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Poly[Obj]]).getOrElse(x._1))
+  lazy val polyObj: Parser[Lst[Obj]] = lstObj ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Lst[Obj]]).getOrElse(x._1))
   lazy val polySep: Parser[String] = Tokens.:/ | Tokens.:| | Tokens.:\
-  lazy val lstObj: Parser[Poly[Obj]] = (LBRACKET ~> (obj ~ polySep) ~ rep1sep(obj, polySep) <~ RBRACKET) ^^ (x => poly(x._1._2, x._1._1 +: x._2: _*))
+  lazy val lstObj: Parser[Lst[Obj]] = (LBRACKET ~> (obj ~ polySep) ~ rep1sep(obj, polySep) <~ RBRACKET) ^^ (x => lst(x._1._2, x._1._1 +: x._2: _*))
   //lazy val polyRecObj: Parser[Poly[Obj]] = (LBRACKET ~> ((symbolName <~ Tokens.:->) ~ obj ~ polySep) ~ rep1sep((symbolName <~ Tokens.:->) ~ obj, polySep) <~ RBRACKET) ^^
   //  (x => poly[Obj](x._1._2).clone(ground = (x._1._2, x._1._1._2 +: x._2.map(y => y._2), x._1._1._1 +: x._2.map(y => y._1))))
 

@@ -57,13 +57,13 @@ object PlusOp {
           case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = arec.ground ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().ground)
           case arec: ORecType => start.clone(ground = arec.ground ++ inst.arg0[ORecType]().ground)
           //////// EXPERIMENTAL
-          case prodA: Poly[O] if prodA.ground._1 == Tokens.:/ => arg match {
-            case prodB: Poly[O] if prodB.ground._1 == Tokens.:/ => prodA | prodB
-            case coprodB: Poly[O] if coprodB.ground._1 == Tokens.:| => prodA | coprodB
+          case prodA: Lst[O] if prodA.ground._1 == Tokens.:/ => arg match {
+            case prodB: Lst[O] if prodB.ground._1 == Tokens.:/ => prodA | prodB
+            case coprodB: Lst[O] if coprodB.ground._1 == Tokens.:| => prodA | coprodB
           }
-          case coprodA: Poly[O] if coprodA.ground._1 == Tokens.:| => arg match {
-            case prodB: Poly[O] if prodB.ground._1 == Tokens.:/ => coprodA | prodB
-            case coprodB: Poly[O] if coprodB.ground._1 == Tokens.:| => |.clone(coprodA.ground._2 ++ coprodB.ground._2)
+          case coprodA: Lst[O] if coprodA.ground._1 == Tokens.:| => arg match {
+            case prodB: Lst[O] if prodB.ground._1 == Tokens.:/ => coprodA | prodB
+            case coprodB: Lst[O] if coprodB.ground._1 == Tokens.:| => |.clone(coprodA.ground._2 ++ coprodB.ground._2)
           }
         }
         case _: Type[_] => start

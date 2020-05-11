@@ -20,10 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.value.strm
+package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.strm.PolyStrm
-import org.mmadt.language.obj.{Obj, Poly, ViaTuple, base}
+import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.{Obj, Lst, LstTuple}
 
-class VPolyStrm[A <: Obj](val name: String = Tokens.empty, val values: Seq[Poly[A]], val via: ViaTuple = base) extends PolyStrm[A]
+trait LstStrm[A <: Obj] extends Strm[Lst[A]] with Lst[A] {
+  override def ground: LstTuple[A] = throw LanguageException.typeNoGround(this)
+}

@@ -35,7 +35,7 @@ trait PathOp {
 }
 
 object PathOp {
-  private type Path = Poly[Obj]
+  private type Path = Lst[Obj]
   def apply(): PathInst = new PathInst
 
   class PathInst(q: IntQ = qOne) extends VInst[Obj, Path]((Tokens.path, Nil), q) {
@@ -43,7 +43,7 @@ object PathOp {
     override def exec(start: Obj): Path = {
       (start match {
         case _: Strm[_] => start
-        case _ => poly(Tokens.:/,start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*)
+        case _ => lst(Tokens.:/,start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*)
       }).via(start, this).asInstanceOf[Path]
     }
   }

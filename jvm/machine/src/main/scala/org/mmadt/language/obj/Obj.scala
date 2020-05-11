@@ -37,7 +37,7 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.OPoly
+import org.mmadt.storage.obj.OLst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -105,29 +105,29 @@ trait Obj
   }
 
   // poly fluent methods
-  final def |[A <: Obj](obj: scala.Double): Poly[A] = this.|(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def |[A <: Obj](obj: scala.Long): Poly[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def |[A <: Obj](obj: scala.Int): Poly[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def |[A <: Obj](obj: String): Poly[A] = this.|(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def |[A <: Obj]: Poly[A] = poly(Tokens.:|, this.asInstanceOf[A])
-  final def |[A <: Obj](obj: A): Poly[A] = this.polyMaker(Tokens.:|, obj)
+  final def |[A <: Obj](obj: scala.Double): Lst[A] = this.|(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def |[A <: Obj](obj: scala.Long): Lst[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def |[A <: Obj](obj: scala.Int): Lst[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def |[A <: Obj](obj: String): Lst[A] = this.|(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def |[A <: Obj]: Lst[A] = lst(Tokens.:|, this.asInstanceOf[A])
+  final def |[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.:|, obj)
   //final def |[A <: Obj](obj: Tuple2[String, A]): Poly[A] = this.polyMaker(Tokens.:|, obj)
   //
-  final def /[A <: Obj](obj: scala.Double): Poly[A] = this./(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def /[A <: Obj](obj: scala.Long): Poly[A] = this./(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def /[A <: Obj](obj: scala.Int): Poly[A] = this./(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def /[A <: Obj](obj: String): Poly[A] = this./(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def /[A <: Obj]: Poly[A] = poly(Tokens.:/, this.asInstanceOf[A])
-  final def /[A <: Obj](obj: A): Poly[A] = this.polyMaker(Tokens.:/, obj)
+  final def /[A <: Obj](obj: scala.Double): Lst[A] = this./(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def /[A <: Obj](obj: scala.Long): Lst[A] = this./(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def /[A <: Obj](obj: scala.Int): Lst[A] = this./(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def /[A <: Obj](obj: String): Lst[A] = this./(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
+  final def /[A <: Obj]: Lst[A] = lst(Tokens.:/, this.asInstanceOf[A])
+  final def /[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.:/, obj)
   //final def /[A <: Obj](obj: (String, A)): Poly[A] = this.polyMaker(Tokens.:/, obj)
   /////////////////
-  private final def polyMaker[A <: Obj](sep: String, obj: A): Poly[A] = {
+  private final def polyMaker[A <: Obj](sep: String, obj: A): Lst[A] = {
     this match {
-      case apoly: Poly[A] => obj match {
-        case bpoly: Poly[A] => poly(sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A]): _*)
-        case _ => apoly.clone(apoly.groundList :+ obj)
+      case apoly: Lst[A] => obj match {
+        case bpoly: Lst[A] => lst(sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A]): _*)
+        case _ => apoly.clone(apoly.elements :+ obj)
       }
-      case _ => poly(sep, this.asInstanceOf[A], obj)
+      case _ => lst(sep, this.asInstanceOf[A], obj)
     }
   }
   /*private def polyMaker[A <: Obj](sep: String, obj: (String, A)): Poly[A] = {

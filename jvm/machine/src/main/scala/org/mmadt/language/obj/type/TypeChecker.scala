@@ -39,8 +39,8 @@ object TypeChecker {
     (pattern.name.equals(Tokens.obj) || pattern.name.equals(Tokens.anon) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && (obj.name.equals(pattern.name) || pattern.domain().name.equals(obj.name)) && ((pattern.q == qZero && obj.q == qZero) || obj.compute(pattern).alive)) || // nominal type checking (prevent infinite recursion on recursive types) w/ structural on atomics
       obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
-      ((obj.isInstanceOf[Poly[_]] && pattern.isInstanceOf[Poly[_]] &&
-        testList(obj.asInstanceOf[Poly[Obj]], pattern.asInstanceOf[Poly[Obj]]) && obj.compute(pattern).alive) || // structural type checking on records
+      ((obj.isInstanceOf[Lst[_]] && pattern.isInstanceOf[Lst[_]] &&
+        testList(obj.asInstanceOf[Lst[Obj]], pattern.asInstanceOf[Lst[Obj]]) && obj.compute(pattern).alive) || // structural type checking on records
         (obj.isInstanceOf[RecValue[_, _]] && pattern.isInstanceOf[RecType[_, _]] &&
           testRecord(obj.ground.asInstanceOf[collection.Map[Obj, Obj]], pattern.asInstanceOf[ORecType].ground) && obj.compute(pattern).alive))) && // structural type checking on records
       withinQ(obj, pattern) // must be within the type's quantified window
@@ -58,7 +58,7 @@ object TypeChecker {
       (!obj.name.equals(Tokens.rec) && obj.name.equals(pattern.name)) ||
       (obj match {
         case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.ground, pattern.asInstanceOf[ORecType].ground)
-        case lstType: Poly[Obj] => testList(lstType, pattern.asInstanceOf[Poly[Obj]])
+        case lstType: Lst[Obj] => testList(lstType, pattern.asInstanceOf[Lst[Obj]])
         case _ => false
       })) &&
       obj.trace
@@ -87,8 +87,8 @@ object TypeChecker {
     typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.ground != 0)
   }
 
-  private def testList(leftList: Poly[Obj], rightList: Poly[Obj]): Boolean = {
-    if (rightList.groundList.isEmpty || leftList.groundList.equals(rightList.groundList)) return true
-    leftList.groundList.zip(rightList.groundList).foldRight(true)((a, b) => a._1.test(a._2) && b)
+  private def testList(leftList: Lst[Obj], rightList: Lst[Obj]): Boolean = {
+    if (rightList.elements.isEmpty || leftList.elements.equals(rightList.elements)) return true
+    leftList.elements.zip(rightList.elements).foldRight(true)((a, b) => a._1.test(a._2) && b)
   }
 }

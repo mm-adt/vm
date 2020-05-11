@@ -40,7 +40,7 @@ trait LanguageFactory {
   def printType(atype: Type[Obj]): String
   def printInst(inst: Inst[_, _]): String
   def printStrm(strm: Strm[Obj]): String
-  def printPoly(poly: Poly[_]): String
+  def printLst(poly: Lst[_]): String
 }
 
 object LanguageFactory {
@@ -52,12 +52,12 @@ object LanguageFactory {
   def printType(atype: Type[Obj])(implicit f: LanguageFactory): String = f.printType(atype)
   def printInst(inst: Inst[_, _])(implicit f: LanguageFactory): String = f.printInst(inst)
   def printStrm(strm: Strm[Obj])(implicit f: LanguageFactory): String = f.printStrm(strm)
-  def printPoly(branch: Poly[_])(implicit f: LanguageFactory): String = f.printPoly(branch)
+  def printLst(branch: Lst[_])(implicit f: LanguageFactory): String = f.printLst(branch)
   implicit val mmlangFactory: LanguageFactory = new LanguageFactory {
     override def printValue(value: Value[Obj]): String = mmlangPrinter.valueString(value)
     override def printType(atype: Type[Obj]): String = mmlangPrinter.typeString(atype)
     override def printInst(inst: Inst[_, _]): String = mmlangPrinter.instString(inst)
     override def printStrm(strm: Strm[Obj]): String = mmlangPrinter.strmString(strm)
-    override def printPoly(poly: Poly[_]): String = mmlangPrinter.polyString(poly)
+    override def printLst(poly: Lst[_]): String = mmlangPrinter.lstString(poly)
   }
 }

@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, Poly}
+import org.mmadt.language.obj.{Obj, Lst}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -32,7 +32,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[head] w/ parallel poly") {
-    val check: TableFor2[Poly[_], Obj] =
+    val check: TableFor2[Lst[_], Obj] =
       new TableFor2(("parallel", "head"),
         (str("a") |, "a"),
         (str("a") | "b", "a"),
@@ -46,7 +46,7 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[head] w/ serial poly") {
-    val check: TableFor2[Poly[_], Obj] =
+    val check: TableFor2[Lst[_], Obj] =
       new TableFor2(("serial", "head"),
         (str("a")/, "a"),
         (str("a")/ "b", "a"),
