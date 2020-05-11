@@ -22,7 +22,7 @@ object TraceOp {
     override def exec(start: Obj): Lst[Obj] = {
       (start match {
         case _: Strm[_] => start
-        case _ => lst(Tokens.:/, start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 / b._2).combine(pattern).gvalues) ++ (start / this).combine(pattern).gvalues: _*)
+        case _ => lst(Tokens./, start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 / b._2).combine(pattern).gvalues) ++ (start / this).combine(pattern).gvalues: _*)
       }).via(start, this).asInstanceOf[Lst[Obj]]
     }
   }

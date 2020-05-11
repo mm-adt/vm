@@ -43,7 +43,7 @@ object PathOp {
     override def exec(start: Obj): Path = {
       (start match {
         case _: Strm[_] => start
-        case _ => lst(Tokens.:/,start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*)
+        case _ => lst(Tokens./,start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*)
       }).via(start, this).asInstanceOf[Path]
     }
   }

@@ -109,13 +109,13 @@ class SocialModelTest extends FunSuite {
     assertResult("nat<=person[get,'age'][plus,nat]")(toSocial.toString)
     assertResult("nat")(toSocial.range.name)
     assertResult("person")(toSocial.domain().name)
-    assertResult("int<=rec['name':str/'age':int][get,'age'][plus,int]")(smCompiler(toSocial).toString)
+    assertResult("int<=rec['name':str;'age':int][get,'age'][plus,int]")(smCompiler(toSocial).toString)
     assertResult(int(40))(smIterator(vrec(str("name") -> str("ryan"), str("age") -> int(20)), smCompiler(toSocial)))
   }
 
   test("model compilation already in model") {
     assertResult("nat<=person[get,'age'][plus,nat]")(msCompiler(person.get(str("age"), nat).plus(nat)).toString)
-    assertResult("int<=rec['name':str/'age':int][get,'age'][plus,int]")(smCompiler(trec[Str, Obj](str("name") -> str, str("age") -> int).get(str("age"), int).plus(int)).toString)
+    assertResult("int<=rec['name':str;'age':int][get,'age'][plus,int]")(smCompiler(trec[Str, Obj](str("name") -> str, str("age") -> int).get(str("age"), int).plus(int)).toString)
   }
 
   /* test("model composite strm"){

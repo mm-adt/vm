@@ -24,10 +24,10 @@ trait Lst[A <: Obj] extends Poly[A]
   with ZeroOp[Lst[A]] {
 
   def ground: LstTuple[A]
-  def connective: String = ground._1
+  def gsep: String = ground._1
   override def gvalues: List[A] = ground._2
 
-  def clone(values: List[A]): this.type = this.clone(ground = (connective, values))
+  def clone(values: List[A]): this.type = this.clone(ground = (gsep, values))
 
   override def get(key: Int): A = {
     val valueType: A = key match {
@@ -45,8 +45,7 @@ trait Lst[A <: Obj] extends Poly[A]
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] =>
       if (alst.gvalues.isEmpty || this.gvalues.equals(alst.gvalues)) return true
-      alst.connective == this.connective &&
-        this.gvalues.zip(alst.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)
+      Poly.sameSep(this, alst) && this.gvalues.zip(alst.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)
     case _ => false
   }
 
@@ -54,10 +53,10 @@ trait Lst[A <: Obj] extends Poly[A]
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.ground.hashCode()
   override def equals(other: Any): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case apoly: Lst[_] =>
-      apoly.connective == this.connective && apoly.name.equals(this.name) && eqQ(apoly, this) &&
-        ((this.isValue && apoly.isValue && this.gvalues.zip(apoly.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
-          (this.gvalues == apoly.gvalues && this.via == apoly.via))
+    case alst: Lst[_] =>
+      Poly.sameSep(this, alst) && alst.name.equals(this.name) && eqQ(alst, this) &&
+        ((this.isValue && alst.isValue && this.gvalues.zip(alst.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
+          (this.gvalues == alst.gvalues && this.via == alst.via))
     case _ => false
   }
 }

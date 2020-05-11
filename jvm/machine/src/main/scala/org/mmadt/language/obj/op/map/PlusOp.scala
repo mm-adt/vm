@@ -57,13 +57,13 @@ object PlusOp {
           case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = (arec.ground._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().gmap))
           case arec: ORecType => start.clone(ground = arec.gmap ++ inst.arg0[ORecType]().gmap)
           //////// EXPERIMENTAL
-          case prodA: Lst[O] if prodA.ground._1 == Tokens.:/ => arg match {
-            case prodB: Lst[O] if prodB.ground._1 == Tokens.:/ => prodA | prodB
-            case coprodB: Lst[O] if coprodB.ground._1 == Tokens.:| => prodA | coprodB
+          case prodA: Lst[O] if prodA.isSerial => arg match {
+            case prodB: Lst[O] if prodB.isSerial => prodA | prodB
+            case coprodB: Lst[O] if coprodB.isChoice => prodA | coprodB
           }
-          case coprodA: Lst[O] if coprodA.ground._1 == Tokens.:| => arg match {
-            case prodB: Lst[O] if prodB.ground._1 == Tokens.:/ => coprodA | prodB
-            case coprodB: Lst[O] if coprodB.ground._1 == Tokens.:| => |.clone(coprodA.ground._2 ++ coprodB.ground._2)
+          case coprodA: Lst[O] if coprodA.isChoice  => arg match {
+            case prodB: Lst[O] if prodB.isSerial  => coprodA | prodB
+            case coprodB: Lst[O] if coprodB.isChoice => |.clone(coprodA.ground._2 ++ coprodB.ground._2)
           }
         }
         case _: Type[_] => start

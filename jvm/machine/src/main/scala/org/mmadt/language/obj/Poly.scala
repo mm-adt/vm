@@ -7,11 +7,11 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 
 trait Poly[A <: Obj] extends Obj with MergeOp[A] {
-  def connective: String
+  def gsep: String
   def gvalues: Seq[A]
-  def isSerial: Boolean = this.connective == Tokens.:/
-  def isParallel: Boolean = this.connective == Tokens.:\
-  def isChoice: Boolean = this.connective == Tokens.:|
+  def isSerial: Boolean = this.gsep == Tokens./ || this.gsep == Tokens.`;`
+  def isParallel: Boolean = this.gsep == Tokens.\
+  def isChoice: Boolean = this.gsep == Tokens.|
 
   def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.gvalues.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
   def isType: Boolean = !this.gvalues.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))
@@ -29,4 +29,5 @@ object Poly {
       case alst: Lst[A] => Lst.keepFirst(alst)
     }
   }
+  def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial
 }

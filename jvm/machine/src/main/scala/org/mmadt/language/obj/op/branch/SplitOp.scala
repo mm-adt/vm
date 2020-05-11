@@ -42,9 +42,9 @@ object SplitOp {
   class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
-      apoly.connective match {
-        case Tokens.:/ | Tokens.:\ => processAll(start)
-        case Tokens.:| => processFirst(start)
+      apoly.gsep match {
+        case _ if apoly.isChoice => processFirst(start)
+        case _ if apoly.isSerial || apoly.isParallel => processAll(start)
         case _ => throw new LanguageException("Unknown poly connective: " + start)
       }
     }

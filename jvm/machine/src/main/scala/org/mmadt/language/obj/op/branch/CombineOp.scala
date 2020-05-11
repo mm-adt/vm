@@ -19,8 +19,8 @@ object CombineOp {
     override def q(q: IntQ): this.type = new CombineInst[A, B](other, q).asInstanceOf[this.type]
     override def exec(start: Lst[A]): Lst[B] = {
       val combinedPoly = other.clone(start.gvalues.zip(other.gvalues).map(a => Inst.resolveArg(a._1, a._2))).via(start, this)
-      other.connective match {
-        case Tokens.:| => Lst.keepFirst(combinedPoly)
+      other.gsep match {
+        case Tokens.| => Lst.keepFirst(combinedPoly)
         case _ => combinedPoly
       }
     }

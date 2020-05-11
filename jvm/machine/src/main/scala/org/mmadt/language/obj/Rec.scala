@@ -39,8 +39,8 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def ground: RecTuple[A, B]
   def gmap: collection.Map[A, B] = ground._2
   def gvalues: Seq[B] = gmap.values.toSeq
-  def connective: String = ground._1
-  def clone(values: collection.Map[A, B]): this.type = this.clone(ground = (connective, values))
+  def gsep: String = ground._1
+  def clone(values: collection.Map[A, B]): this.type = this.clone(ground = (gsep, values))
 }
 object Rec {
   def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B], inst: Inst[A, Rec[A, B]]): Rec[A, B] = {
