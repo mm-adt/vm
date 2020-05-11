@@ -308,7 +308,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("parallel with rec types") {
-    assertResult("rec[:/'a':'aa']<=str-<rec[:/'a':'aa']")(engine.eval("'a'-<rec[int+1[is>0] -> +10 / str -> +'a']").toString)
+    //    assertResult("rec[:/'a':'aa']<=str-<rec[:/'a':'aa']")(engine.eval("'a'-<rec[int+1[is>0] -> +10 / str -> +'a']").toString)
     assertResult(btrue)(engine.eval("true-<[bool -> bool / int -> int]>-"))
     assertResult(int(10))(engine.eval("10-<[bool -> bool / int -> int]>-"))
     assertResult(int(10))(engine.eval("10-<[bool -> true / int -> int]>-"))
@@ -376,6 +376,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("rec poly") {
     assertResult(int(14))(engine.eval("4-<rec[str->'x'/int->+10]>-"))
+    assertResult(int(2, 14))(engine.eval("4-<[int[is>0]->2/int->+10]>-"))
   }
 
   test("bool strm input parsing") {

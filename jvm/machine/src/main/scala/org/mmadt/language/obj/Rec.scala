@@ -25,7 +25,7 @@ package org.mmadt.language.obj
 import org.mmadt.language.obj.op.map.{GetOp, PlusOp, ZeroOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory.zeroObj
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -48,10 +48,10 @@ object Rec {
       case _: Value[_] => start.clone(via = (start, inst))
       case _ => start
     }
-    arec.clone(arec.gmap.map(slot => {
+    arec.clone(arec.gmap.toSeq.map(slot => {
       val key = Inst.resolveArg(arg, slot._1)
       (key, if (key.alive) Inst.resolveArg(arg, slot._2) else zeroObj.asInstanceOf[B])
-    }))
+    }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values))))
   }
   def keepFirst[A <: Obj, B <: Obj](arec: Rec[A, B]): Rec[A, B] = {
     val first: (A, B) = arec.gmap.find(x => x._1.alive).getOrElse((zeroObj.asInstanceOf[A], zeroObj.asInstanceOf[B]))
