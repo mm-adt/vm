@@ -82,6 +82,9 @@ package object op {
 
   }
   object TraceInstruction {
-    def isTrace(inst: Inst[Obj, Obj]): Boolean = inst.op.equals(Tokens.to) || inst.op.equals(Tokens.from)
+    def isTrace(inst: Inst[Obj, Obj]): Boolean =
+      inst.op.equals(Tokens.to) ||
+        inst.op.equals(Tokens.from) ||
+        inst.op.equals(Tokens.trace)
   }
 }
