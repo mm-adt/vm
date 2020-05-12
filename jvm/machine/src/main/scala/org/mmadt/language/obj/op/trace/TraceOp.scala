@@ -21,9 +21,6 @@ object TraceOp extends Func[Obj, Lst[Obj]] {
     case _: Strm[_] => start
     case _ => lst(
       inst.arg0[Lst[Obj]].gsep,
-      start.trace
-        .foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2)
-          .combine(inst.arg0[Lst[Obj]]).glist) ++ (start `;` inst)
-        .combine(inst.arg0[Lst[Obj]]).glist: _*)
+      start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(inst.arg0[Lst[Obj]]).glist): _*)
   }).via(start, inst).asInstanceOf[Lst[Obj]]
 }

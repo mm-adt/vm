@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.Lst
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.storage.StorageFactory._
@@ -46,8 +46,9 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(check) { (alst, akey, avalue) => {
       assertResult(avalue)(alst.get(akey))
-      assertResult(avalue)(GetOp(akey).exec(alst.asInstanceOf[GetOp.GetType[IntValue, StrValue]]))
+      //assertResult(avalue)(GetOp(akey).exec(alst.asInstanceOf[Obj with GetOp[IntValue, StrValue]])
     }
+
     }
   }
 

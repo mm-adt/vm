@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -35,19 +36,7 @@ trait GetOp[A <: Obj, B <: Obj] {
   def get(key: A): B
   def get[BB <: Obj](key: A, btype: BB): BB
 }
-
-object GetOp {
-  def apply[A <: Obj, B <: Obj](key: A): GetInst[A, B] = new GetInst[A, B](key)
-  def apply[A <: Obj, B <: Obj](key: A, typeHint: B): GetInst[A, B] = new GetInst(key, typeHint)
-
-  type GetType[A <: Obj, B <: Obj] = Obj with GetOp[A, B]
-
-  class GetInst[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B], q: IntQ = qOne) extends VInst[GetType[A, B], B](g = (Tokens.get, List(key)), q = q) {
-    override def q(q: IntQ): this.type = new GetInst[A, B](key, typeHint, q).asInstanceOf[this.type]
-    override def exec(start: GetType[A, B]): B = {
-      val inst = new GetInst[A, B](Inst.resolveArg(start, key), typeHint, q)
-      start.get(inst.arg0[A]).via(start, inst)
-    }
-  }
-
+object GetOp extends Func[Obj with GetOp[Obj, Obj], Obj] {
+  def apply[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B]): Inst[A, B] = new VInst[A, B](g = (Tokens.get, List(key)), func = this)
+  override def apply(start: Obj with GetOp[Obj, Obj], inst: Inst[Obj with GetOp[Obj, Obj], Obj]): Obj = start.get(inst.arg0[Obj]).via(start, inst)
 }

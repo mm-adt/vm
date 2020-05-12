@@ -30,7 +30,6 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.SplitOp.SplitInst
 import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
 import org.mmadt.language.obj.op.map.GetOp
-import org.mmadt.language.obj.op.map.GetOp.GetInst
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp, TraceOp}
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -137,8 +136,8 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val splitSugar: Parser[SplitInst[Obj]] = Tokens.split_op ~> (polyObj | recTypeNoPrefix | recType | recValue) ^^ (x => SplitOp(x.asInstanceOf[Poly[Obj]]))
   lazy val mergeSugar: Parser[Inst[Poly[Obj], Obj]] = Tokens.merge_op ^^ (_ => MergeOp[Obj]())
   lazy val polyInst: Parser[SplitInst[Obj]] = polyObj ^^ (x => SplitOp(x))
-  lazy val getStrSugar: Parser[GetInst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
-  lazy val getIntSugar: Parser[GetInst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
+  lazy val getStrSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
+  lazy val getIntSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
   lazy val toSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> symbolName <~ RANGLE ^^ (x => ToOp(x))
   lazy val traceSugar: Parser[Inst[Obj, Obj]] = LROUND ~> lstObj <~ RROUND ^^ (x => TraceOp(x))
   lazy val fromSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
