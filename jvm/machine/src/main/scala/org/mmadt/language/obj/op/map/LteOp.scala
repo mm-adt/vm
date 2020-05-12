@@ -23,10 +23,11 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.storage.StorageFactory.{bool, qOne, strm}
+import org.mmadt.storage.StorageFactory.bool
 import org.mmadt.storage.obj.value.VInst
 
 import scala.util.Try
@@ -41,23 +42,14 @@ trait LteOp[O <: Obj] {
   final def =<(other: O): Bool = this.lte(other)
   final def =<(anon: __): Bool = this.lte(anon)
 }
-
-object LteOp {
-  def apply[O <: Obj](other: Obj): Inst[O, Bool] = new LteInst[O](other)
-
-  class LteInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](g = (Tokens.lte, List(other)), q = q) {
-    override def q(q: IntQ): this.type = new LteInst[O](other, q).asInstanceOf[this.type]
-    override def exec(start: O): Bool = {
-      val inst = new LteInst[O](Inst.resolveArg(start, other), q)
-      Try[Bool]((start match {
-        case aint: Int => bool(g = aint.g <= inst.arg0[Int].g)
-        case areal: Real => bool(g = areal.g <= inst.arg0[Real].g)
-        case astr: Str => bool(g = astr.g <= inst.arg0[Str].g)
-      }).via(start, inst)).getOrElse(start match {
-        case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))
-        case _ => bool.via(start, inst)
-      })
-    }
+object LteOp extends Func[Obj, Bool] {
+  def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.lte, List(other)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
+    Try[Obj](start match {
+      case astrm: Strm[Obj] => astrm
+      case aint: Int => bool(g = aint.g <= inst.arg0[Int].g)
+      case areal: Real => bool(g = areal.g <= inst.arg0[Real].g)
+      case astr: Str => bool(g = astr.g <= inst.arg0[Str].g)
+    }).getOrElse(bool).via(start, inst).asInstanceOf[Bool]
   }
-
 }

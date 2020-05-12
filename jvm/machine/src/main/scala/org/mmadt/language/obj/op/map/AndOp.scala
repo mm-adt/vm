@@ -23,11 +23,10 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 import scala.util.Try
@@ -42,20 +41,12 @@ trait AndOp {
   final def &&(anon: __): Bool = this.and(anon)
   final def &&(bool: Bool): Bool = this.and(bool)
 }
-
-object AndOp {
-  def apply(other: Obj): AndInst = new AndInst(other)
-
-  class AndInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool](g = (Tokens.and, List(other)), q = q) {
-    override def q(q: IntQ): this.type = new AndInst(other, q).asInstanceOf[this.type]
-    override def exec(start: Bool): Bool = {
-      val inst = new AndInst(Inst.resolveArg(start, other), q)
-      Try[Bool](start match {
-        case _: Strm[_] => start
-        case _: BoolValue => start.clone(g = start.g && inst.arg0[Bool].g)
-        case _ => start
-      }).getOrElse(start).via(start, inst)
-    }
+object AndOp extends Func[Bool, Bool] {
+  def apply(other: Obj): Inst[Bool, Bool] = new VInst[Bool, Bool](g = (Tokens.and, List(other)), func = this)
+  override def apply(start: Bool, inst: Inst[Bool, Bool]): Bool = {
+    Try[Bool](start match {
+      case _: BoolValue => start.clone(g = start.g && inst.arg0[Bool].g)
+      case _ => start
+    }).getOrElse(start).via(start, inst)
   }
-
 }

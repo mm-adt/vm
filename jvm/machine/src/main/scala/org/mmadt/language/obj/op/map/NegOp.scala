@@ -23,8 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
 import scala.util.Try
@@ -37,18 +37,11 @@ trait NegOp[O <: Obj] {
   def neg(): this.type = NegOp().exec(this)
   final def unary_-(): this.type = this.neg()
 }
-
-object NegOp {
-  def apply[O <: Obj](): NegInst[O] = new NegInst[O]
-
-  class NegInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](g = (Tokens.neg, Nil), q = q) {
-    override def q(q: IntQ): this.type = new NegInst(q).asInstanceOf[this.type]
-    override def exec(start: O): O = {
-      Try(start match {
-        case aint: Int => start.clone(g = -aint.g)
-        case areal: Real => start.clone(g = -areal.g)
-      }).getOrElse(start).via(start, this)
-    }
-  }
-
+object NegOp extends Func[Obj, Obj] {
+  def apply[A <: Obj](): Inst[A, A] = new VInst[A, A](g = (Tokens.neg, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj =
+    Try[Obj](start match {
+      case aint: Int => start.clone(g = -aint.g)
+      case areal: Real => start.clone(g = -areal.g)
+    }).getOrElse(start).via(start, inst)
 }

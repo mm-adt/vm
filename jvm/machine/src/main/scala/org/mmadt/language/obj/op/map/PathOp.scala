@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
@@ -32,18 +33,12 @@ trait PathOp {
   this: Obj =>
   def path(): Lst[Obj] = PathOp().exec(this)
 }
-
-object PathOp {
-  def apply(): PathInst = new PathInst
-
-  class PathInst(q: IntQ = qOne) extends VInst[Obj, Lst[Obj]](g = (Tokens.path, Nil), q = q) {
-    override def q(q: IntQ): this.type = new PathInst(q).asInstanceOf[this.type]
-    override def exec(start: Obj): Lst[Obj] = {
-      (start match {
-        case _: Strm[_] => start
-        case _ => lst(Tokens.`;`, start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*)
-      }).via(start, this).asInstanceOf[Lst[Obj]]
-    }
+object PathOp extends Func[Obj, Lst[Obj]] {
+  def apply(): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = {
+    (start match {
+      case _: Strm[_] => start
+      case _ => lst(Tokens.`;`, start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*)
+    }).via(start, inst).asInstanceOf[Lst[Obj]]
   }
-
 }

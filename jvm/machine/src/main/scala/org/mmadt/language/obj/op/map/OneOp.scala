@@ -23,8 +23,9 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Int, IntQ, Obj, Real}
+import org.mmadt.language.obj.{Inst, Int, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,19 +36,12 @@ trait OneOp[O <: Obj] {
   this: O =>
   def one(): this.type = OneOp().exec(this)
 }
-
-object OneOp {
-  def apply[O <: Obj](): OneInst[O] = new OneInst[O]
-
-  class OneInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](g = (Tokens.one, Nil), q = q) {
-    override def q(q: IntQ): this.type = new OneInst[O](q).asInstanceOf[this.type]
-    override def exec(start: O): O = {
-      (start match {
-        case _: Strm[_] => start
-        case _: Int => int(1)
-        case _: Real => real(1.0)
-      }).via(start, this).asInstanceOf[O]
-    }
+object OneOp extends Func[Obj, Obj] {
+  def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.one, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    (start match {
+      case _: Int => int(1)
+      case _: Real => real(1.0)
+    }).via(start, inst)
   }
-
 }

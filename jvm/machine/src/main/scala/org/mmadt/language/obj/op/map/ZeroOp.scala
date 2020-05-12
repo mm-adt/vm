@@ -23,8 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Int, IntQ, Lst, Obj, Real, Rec, Str}
+import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.{Inst, Int, Lst, Obj, Real, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,23 +35,14 @@ trait ZeroOp[O <: Obj] {
   this: O =>
   def zero(): this.type = ZeroOp().exec(this)
 }
-
-object ZeroOp {
-  def apply[O <: Obj](): ZeroInst[O] = new ZeroInst[O]
-
-  class ZeroInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](g = (Tokens.zero, Nil), q = q) {
-    override def q(q: IntQ): this.type = new ZeroInst[O](q).asInstanceOf[this.type]
-    override def exec(start: O): O = {
-      (start match {
-        case _: Strm[_] => start
-        case _: Int => int(0)
-        case _: Real => real(0.0)
-        case _: Str => str(Tokens.empty)
-        case arec: Rec[Obj, Obj] => arec.clone(g = Map.empty[Obj, Obj])
-        case apoly: Lst[O] => apoly.clone(List.empty[O])
-        case _ => start
-      }).asInstanceOf[O].via(start, this)
-    }
-  }
-
+object ZeroOp extends Func[Obj, Obj] {
+  def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.zero, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
+    case _: Int => int(0)
+    case _: Real => real(0.0)
+    case _: Str => str(Tokens.empty)
+    case arec: Rec[Obj, Obj] => arec.clone(g = Map.empty[Obj, Obj])
+    case apoly: Lst[Obj] => apoly.clone(List.empty[Obj])
+    case _ => start
+  }).via(start, inst)
 }

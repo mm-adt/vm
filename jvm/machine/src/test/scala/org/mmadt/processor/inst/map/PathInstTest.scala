@@ -22,11 +22,10 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.PathOp
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.{Obj, Lst}
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -37,7 +36,7 @@ class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
       new TableFor3[Obj, Obj, Obj](("input", "type", "result"),
         (str("a"), __.plus("b").plus("c").path(), str("a") `;` "ab" `;` "abc"),
         (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(), str("a") `;` "ab" `;` "ababcd" `;` "ababcde"),
-        //(str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path().get(1).path(), `;`[Str]("a", "ab", "ababcd", "ababcde")), TODO: branch to historic paths
+        //(str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path().get(1).path(), str("a")`;` "ab"`;` "ababcd"`;` "ababcde"),
         (int(1, 2, 3), __.plus(1).path(), strm(List[Lst[IntValue]](int(1) `;` 2, int(2) `;` 3, int(3) `;` 4))),
         (int(1, 2, 3), __.plus(1).plus(2).path(), strm(List[Lst[IntValue]](int(1) `;` 2 `;` 4, int(2) `;` 3 `;` 5, int(3) `;` 4 `;` 6))),
       )

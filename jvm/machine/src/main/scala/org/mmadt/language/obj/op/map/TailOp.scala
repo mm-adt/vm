@@ -22,29 +22,20 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.obj.{IntQ, Lst, Obj}
+import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
 import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait TailOp {
   this: Obj =>
-  def tail(): this.type = TailOp().exec(this)
+  def tail(): this.type = TailOp[Obj]().exec(this).asInstanceOf[this.type]
 }
-
-object TailOp {
-  def apply[O <: Obj](): TailInst[O] = new TailInst[O]
-
-  class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](g = (Tokens.tail, Nil), q = q) {
-    override def q(q: IntQ): this.type = new TailInst(q).asInstanceOf[this.type]
-    override def exec(start: O): O = (start match {
-      case apoly: Lst[Obj] =>
-        if (apoly.glist.isEmpty)
-          throw new LanguageException("no tail on empty poly")
-        else
-          apoly.clone(apoly.glist.tail)
-    }).asInstanceOf[O].via(start, this)
-
-  }
-
+object TailOp extends Func[Obj, Poly[Obj]] {
+  def apply[A <: Obj](): Inst[Obj, Poly[A]] = new VInst[Obj, Poly[A]](g = (Tokens.tail, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = (start match {
+    case apoly: Lst[Obj] =>
+      if (apoly.glist.isEmpty) throw new LanguageException("no tail on empty poly")
+      else apoly.clone(apoly.glist.tail)
+  }).via(start, inst)
 }

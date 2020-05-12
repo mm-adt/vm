@@ -23,10 +23,11 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Int, IntQ, Lst, Obj, Real}
+import org.mmadt.language.obj.{Inst, Int, Lst, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -40,37 +41,31 @@ trait MultOp[O <: Obj] {
   final def *(anon: __): this.type = this.mult(anon)
   final def *(arg: O): this.type = this.mult(arg)
 }
-
-object MultOp {
-  def apply[O <: Obj](obj: Obj): MultInst[O] = new MultInst[O](obj)
-
-  class MultInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](g = (Tokens.mult, List(arg)), q = q) {
-    override def q(q: IntQ): this.type = new MultInst[O](arg, q).asInstanceOf[this.type]
-    override def exec(start: O): O = {
-      val inst = new MultInst(Inst.resolveArg(start, arg), q)
-      (start match {
-        case _: Strm[_] => start
-        case _: Value[_] => start match {
-          case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
-          case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
-          case serialA: Lst[O] if serialA.isSerial => inst.arg0[O] match {
-            case serialB: Lst[O] if serialB.isSerial => serialA.clone(serialA.glist ++ serialB.glist)
-            case choiceB: Lst[O] if choiceB.isChoice => choiceB.clone(choiceB.glist.map(a => `;`.clone(serialA.glist :+ a)).asInstanceOf[List[O]])
-          }
-          case choiceA: Lst[O] if choiceA.isChoice => inst.arg0[O] match {
-            case serialB: Lst[O] if serialB.isSerial => choiceA.clone(choiceA.glist.map(a => `;`.clone(a +: serialB.glist)).asInstanceOf[List[O]])
-            case choiceB: Lst[O] if choiceB.isChoice => choiceA.clone(choiceA.glist.flatMap(a => choiceB.glist.map(b => a | b)).asInstanceOf[List[O]])
-          }
+object MultOp extends Func[Obj, Obj] {
+  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.mult, List(obj)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    (start match {
+      case _: Strm[_] => start
+      case _: Value[_] => start match {
+        case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
+        case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
+        case serialA: Lst[Obj] if serialA.isSerial => inst.arg0[Obj] match {
+          case serialB: Lst[Obj] if serialB.isSerial => serialA.clone(serialA.glist ++ serialB.glist)
+          case choiceB: Lst[Obj] if choiceB.isChoice => choiceB.clone(choiceB.glist.map(a => `;`[Obj].clone(serialA.glist :+ a)))
         }
-        case _ => start
-      }).via(start, inst).asInstanceOf[O]
-    }
+        case choiceA: Lst[Obj] if choiceA.isChoice => inst.arg0[Obj] match {
+          case serialB: Lst[Obj] if serialB.isSerial => choiceA.clone(choiceA.glist.map(a => `;`[Obj].clone(a +: serialB.glist)))
+          case choiceB: Lst[Obj] if choiceB.isChoice => choiceA.clone(choiceA.glist.flatMap(a => choiceB.glist.map(b => a | b)))
+        }
+      }
+      case _ => start
+    }).via(start, inst)
   }
-
-  /* def multObj[O <: Obj](poly: Lst[O]): Lst[O] = {
-     if (!poly.isType) return poly
-     poly.clone(List(poly.gvalues.foldLeft(poly.gvalues.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])).asInstanceOf[List[O]])
-   }*/
-
 }
+
+/* def multObj[O <: Obj](poly: Lst[O]): Lst[O] = {
+   if (!poly.isType) return poly
+   poly.clone(List(poly.gvalues.foldLeft(poly.gvalues.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])).asInstanceOf[List[O]])
+ }*/
+
 

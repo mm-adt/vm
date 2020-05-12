@@ -22,11 +22,12 @@
 
 package org.mmadt.language.obj.op.map
 
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -42,22 +43,12 @@ trait EqsOp {
   final def ===(other: Obj): Bool = this.eqs(other)
   final def ===(anon: __): Bool = this.eqs(anon)
 }
-
-object EqsOp {
-  def apply[O <: Obj](other: Obj): Inst[O, Bool] = new EqsInst[O](other)
-
-  class EqsInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](g = (Tokens.eqs, List(other)), q = q) {
-    override def q(q: IntQ): this.type = new EqsInst[O](other, q).asInstanceOf[this.type]
-    override def exec(start: O): Bool = {
-      val inst = new EqsInst[O](Inst.resolveArg(start, other), q)
-      Try[Bool]((start match {
-        case avalue: Value[_] => bool(g = avalue.g == inst.arg0[Value[_]].g)
-        case _ => throw new LanguageException("")
-      }).via(start, inst)).getOrElse(start match {
-        case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))
-        case _ => bool.via(start, inst)
-      })
-    }
+object EqsOp extends Func[Obj, Bool] {
+  def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.eqs, List(other)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
+    Try[Obj](start match {
+      case astrm: Strm[Obj] => astrm
+      case avalue: Value[_] => bool(g = avalue.g == inst.arg0[Value[_]].g)
+    }).getOrElse(bool).via(start, inst).asInstanceOf[Bool]
   }
-
 }

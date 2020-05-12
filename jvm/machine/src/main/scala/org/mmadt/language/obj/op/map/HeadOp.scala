@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.obj.{IntQ, Lst, Obj}
+import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
 import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
 trait HeadOp[A <: Obj] {
@@ -32,16 +32,12 @@ trait HeadOp[A <: Obj] {
   def head(): A = HeadOp().exec(this)
 }
 
-object HeadOp {
-  def apply[A <: Obj](): HeadInst[A] = new HeadInst[A]
-
-  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], A](g = (Tokens.head, Nil), q = q) {
-    override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Lst[A]): A =
-      if (!start.glist.exists(_.alive))
-        throw new LanguageException("no head on empty poly")
-      else
-        start.glist.filter(_.alive).head.via(start, this)
+object HeadOp extends Func[Poly[Obj], Obj] {
+  def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.head, Nil), func = this)
+  override def apply(start: Poly[Obj], inst: Inst[Poly[Obj], Obj]): Obj = {
+    if (!start.glist.exists(_.alive))
+      throw new LanguageException("no head on empty poly")
+    else
+      start.glist.filter(_.alive).head.via(start, inst)
   }
-
 }

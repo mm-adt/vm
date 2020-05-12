@@ -23,8 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -34,13 +34,7 @@ trait IdOp {
   this: Obj =>
   def id(): this.type = IdOp[this.type]().exec(this)
 }
-
-object IdOp {
-  def apply[O <: Obj](): Inst[O, O] = new IdInst
-
-  class IdInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](g = (Tokens.id, Nil), q = q) {
-    override def q(q: IntQ): this.type = new IdInst[O](q).asInstanceOf[this.type]
-    override def exec(start: O): O = start.via(start, this)
-  }
-
+object IdOp extends Func[Obj, Obj] {
+  def apply[A <: Obj](): Inst[A, A] = new VInst[A, A](g = (Tokens.id, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.via(start, inst)
 }

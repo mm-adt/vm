@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
@@ -37,17 +38,14 @@ trait AOp {
   this: Obj =>
   def a(other: Obj): Bool = AOp(other).exec(this)
 }
-
-object AOp {
-  def apply(other: Obj): AInst = new AInst(other)
-
-  class AInst(other: Obj, q: IntQ = qOne) extends VInst[Obj, Bool](g=(Tokens.a, List(other)), q=q) {
-    override def q(q: IntQ): this.type = new AInst(other, q).asInstanceOf[this.type]
-    override def exec(start: Obj): Bool = start match {
-      case astrm: Strm[_] => strm[Bool](astrm.values.map(x => this.exec(x)))
-      case _: Value[_] => bool(start.test(other)).via(start, this)
-      case _: Type[_] => bool.via(start, this)
+object AOp extends Func[Obj, Bool] {
+  def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
+    val oldInst = inst.via._1.asInstanceOf[Inst[Obj, Bool]]
+    start match {
+      case astrm: Strm[_] => strm[Bool](astrm.values.map(x => oldInst.exec(x)))
+      case _: Value[_] => bool(start.test(oldInst.arg0[Obj])).via(start, inst)
+      case _: Type[_] => bool.via(start, oldInst)
     }
   }
-
 }

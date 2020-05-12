@@ -23,9 +23,10 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.obj.value.VInst
 
 import scala.util.Try
@@ -41,15 +42,13 @@ trait OrOp {
   final def ||(bool: Bool): Bool = this.or(bool)
 }
 
-object OrOp {
-  def apply(other: Obj): OrInst = new OrInst(other)
-
-  class OrInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool](g = (Tokens.or, List(other)), q = q) {
-    override def q(q: IntQ): this.type = new OrInst(other, q).asInstanceOf[this.type]
-    override def exec(start: Bool): Bool = {
-      val inst = new OrInst(Inst.resolveArg(start, other), q)
-      Try[Bool](start.clone(g = start.g || inst.arg0[Bool].g)).getOrElse(start).via(start, inst)
-    }
+object OrOp extends Func[Bool, Bool] {
+  def apply(other: Obj): Inst[Bool, Bool] = new VInst[Bool, Bool](g = (Tokens.or, List(other)), func = this)
+  override def apply(start: Bool, inst: Inst[Bool, Bool]): Bool = {
+    Try[Bool](start match {
+      case _: BoolValue => start.clone(g = start.g || inst.arg0[Bool].g)
+      case _ => start
+    }).getOrElse(start).via(start, inst)
   }
-
 }
+

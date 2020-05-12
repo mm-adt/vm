@@ -23,9 +23,10 @@
 package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{IntQ, Obj, _}
+import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,19 +36,15 @@ trait MergeOp[A <: Obj] {
   final def `>-`: A = this.merge[A]
 }
 
-object MergeOp {
-  def apply[A <: Obj](): MergeInst[A] = new MergeInst[A]()
-
-  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A](g=(Tokens.merge, Nil), q=q) with BranchInstruction {
-    override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
-    override def exec(start: Poly[A]): A = {
-      start match {
-        case astrm: Strm[Poly[A]] => strm[A](astrm.values.map(x => this.exec(x))) // TODO: why does via() not work here? (nested streams?)
-        case _ if start.isValue && start.isSerial => start.glist.lastOption.map(x => x.clone(q = multQ(start, x))).filter(_.alive).getOrElse(zeroObj.asInstanceOf[A])
-        case _ if start.isValue => strm(start.glist.map(x => x.clone(q = multQ(start, x))).filter(_.alive)).asInstanceOf[A]
-        case _ => BranchInstruction.brchType[A](start).clone(via = (start, this))
-      }
-
+object MergeOp extends Func[Obj, Obj] {
+  def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.merge, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    start match {
+      case astrm: Strm[Poly[_]] => strm(astrm.values.map(x => inst.exec(x))) // TODO: why does via() not work here? (nested streams?)
+      case apoly: Poly[_] if apoly.isValue && apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(start, x))).filter(_.alive).getOrElse(zeroObj)
+      case apoly: Poly[_] if apoly.isValue => strm(apoly.glist.map(x => x.clone(q = multQ(start, x))).filter(_.alive))
+      case apoly: Poly[_] => BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
+      case _ => start.via(start, inst)
     }
   }
 

@@ -23,9 +23,9 @@
 package org.mmadt.language.obj.op.filter
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.FilterInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -40,23 +40,16 @@ trait IsOp {
   def is(anon: __): this.type = IsOp(anon).exec(this)
   def is(bool: Bool): this.type = IsOp(bool).exec(this)
 }
-
-object IsOp {
-  def apply[O <: Obj](other: Obj): Inst[O, O] = new IsInst[O](other)
-
-  class IsInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](g = (Tokens.is, List(arg)), q = q) with FilterInstruction {
-    override def q(q: IntQ): this.type = new IsInst[O](arg, q).asInstanceOf[this.type]
-    override def exec(start: O): O = {
-      val inst: Inst[O, O] = new IsInst(Inst.resolveArg(start, arg), q)
-      Try[O](
-        if (inst.arg0[Bool].g) start.via(start, inst)
-        else start.via(start, inst).hardQ(qZero))
-        .getOrElse(start match {
-          case astrm: Strm[O] => astrm.via(start, inst).asInstanceOf[O]
-          case _ => start.clone(via = (start, inst), q = minZero(multQ(start, inst)))
-        })
-    }
+object IsOp extends Func[Obj, Obj] {
+  def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    Try[Obj](
+      if (inst.arg0[Bool].g) start.via(start, inst)
+      else start.via(start, inst).hardQ(qZero))
+      .getOrElse(start match {
+        case astrm: Strm[Obj] => astrm.via(start, inst)
+        case _ => start.clone(via = (start, inst), q = minZero(multQ(start, inst)))
+      })
   }
-
 }
 

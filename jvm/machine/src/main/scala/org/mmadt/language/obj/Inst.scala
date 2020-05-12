@@ -60,7 +60,7 @@ object Inst {
       }
     }
 
-  trait Func {
-    def apply[S <: Obj, E <: Obj](start: S, inst: Inst[S, E]): E
+  trait Func[S <: Obj, E <: Obj] {
+    def apply(start: S, inst: Inst[S, E]): E
   }
 }
