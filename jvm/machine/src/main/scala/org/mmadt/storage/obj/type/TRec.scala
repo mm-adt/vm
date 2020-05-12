@@ -32,7 +32,7 @@ import org.mmadt.storage.StorageFactory._
  */
 class TRec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`;`, Map.empty[A, B]), val q: IntQ = qOne, val via: ViaTuple = base) extends RecType[A, B] {
   override def clone(name: String = this.name,
-                     ground: Any = this.g,
+                     g: Any = this.g,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new TRec[A, B](name, ground.asInstanceOf[RecTuple[A, B]], q, via).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = new TRec[A, B](name, g.asInstanceOf[RecTuple[A, B]], q, via).asInstanceOf[this.type]
 }

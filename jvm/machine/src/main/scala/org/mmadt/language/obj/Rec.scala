@@ -40,7 +40,7 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def gmap: collection.Map[A, B] = g._2
   def glist: Seq[B] = gmap.values.toSeq
   def gsep: String = g._1
-  def clone(values: collection.Map[A, B]): this.type = this.clone(ground = (gsep, values))
+  def clone(values: collection.Map[A, B]): this.type = this.clone(g = (gsep, values))
 }
 object Rec {
   def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B], inst: Inst[A, Rec[A, B]]): Rec[A, B] = {

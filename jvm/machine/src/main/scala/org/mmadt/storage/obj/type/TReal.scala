@@ -32,7 +32,7 @@ import org.mmadt.storage.StorageFactory.qOne
  */
 class TReal(val name: String = Tokens.real, val q: IntQ = qOne, val via: ViaTuple = base) extends RealType {
   override def clone(name: String = this.name,
-                     ground: Any = null,
+                     g: Any = null,
                      q: IntQ = this.q,
                      via: ViaTuple = this.via): this.type = new TReal(name, q, via).asInstanceOf[this.type]
 }

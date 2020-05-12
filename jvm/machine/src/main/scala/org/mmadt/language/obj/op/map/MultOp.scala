@@ -51,8 +51,8 @@ object MultOp {
       (start match {
         case _: Strm[_] => start
         case _: Value[_] => start match {
-          case aint: Int => start.clone(ground = aint.g * inst.arg0[Int].g)
-          case areal: Real => start.clone(ground = areal.g * inst.arg0[Real].g)
+          case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
+          case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
           case serialA: Lst[O] if serialA.isSerial => inst.arg0[O] match {
             case serialB: Lst[O] if serialB.isSerial => serialA.clone(serialA.glist ++ serialB.glist)
             case choiceB: Lst[O] if choiceB.isChoice => choiceB.clone(choiceB.glist.map(a => `;`.clone(serialA.glist :+ a)).asInstanceOf[List[O]])

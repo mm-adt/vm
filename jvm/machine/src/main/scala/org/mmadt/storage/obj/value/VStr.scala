@@ -30,7 +30,7 @@ import org.mmadt.language.obj.{IntQ, ViaTuple}
  */
 class VStr(val name: String, val g: String, val q: IntQ, val via: ViaTuple) extends StrValue {
   override def clone(name: String = this.name,
-                     ground: Any = this.g,
+                     g: Any = this.g,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new VStr(name, ground.asInstanceOf[String], q, via).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = new VStr(name, g.asInstanceOf[String], q, via).asInstanceOf[this.type]
 }

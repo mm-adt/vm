@@ -32,7 +32,7 @@ import org.mmadt.storage.StorageFactory._
  */
 class TStr(val name: String = Tokens.str, val q: IntQ = qOne, val via: ViaTuple = base) extends StrType {
   override def clone(name: String = this.name,
-                     ground: Any = null,
+                     g: Any = null,
                      q: IntQ = this.q,
                      via: ViaTuple = this.via): this.type = new TStr(name, q, via).asInstanceOf[this.type]
 }

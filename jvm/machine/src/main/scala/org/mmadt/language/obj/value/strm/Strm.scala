@@ -45,7 +45,7 @@ trait Strm[+O <: Obj] extends Value[O] {
   override val q: IntQ = this.values.foldLeft(qZero)((a, b) => plusQ(a, b.q))
   // utility methods
   override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]
-  override def clone(name: String = this.name, ground: Any = null, q: IntQ = this.q, via: ViaTuple = base): this.type = strm(this.values).asInstanceOf[this.type]
+  override def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = base): this.type = strm(this.values).asInstanceOf[this.type]
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printStrm(this)

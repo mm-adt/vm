@@ -28,7 +28,7 @@ trait Lst[A <: Obj] extends Poly[A]
   override def gsep: String = g._1
   override def glist: List[A] = g._2
 
-  def clone(values: List[A]): this.type = this.clone(ground = (gsep, values))
+  def clone(values: List[A]): this.type = this.clone(g = (gsep, values))
 
   override def get(key: Int): A = {
     val valueType: A = key match {

@@ -46,10 +46,10 @@ object PutOp {
         case apoly: Lst[_] => key match {
           case avalue: IntValue =>
             val (front, back) = apoly.glist.splitAt(avalue.g.toInt)
-            apoly.clone(ground = (apoly.gsep, (front :+ value) ++ back), via = (start, this))
+            apoly.clone(g = (apoly.gsep, (front :+ value) ++ back), via = (start, this))
           case _ => apoly.via(start, this)
         }
-        case rec: Rec[A, B] => rec.clone(ground = (Tokens.`;`, rec.gmap + (key -> value)), via = (rec, this))
+        case rec: Rec[A, B] => rec.clone(g = (Tokens.`;`, rec.gmap + (key -> value)), via = (rec, this))
       }
     }
   }

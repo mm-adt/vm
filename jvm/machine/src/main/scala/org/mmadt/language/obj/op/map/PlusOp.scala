@@ -51,11 +51,11 @@ object PlusOp {
       (start match {
         case _: Strm[_] => start
         case _: Value[_] => start match {
-          case aint: Int => start.clone(ground = aint.g + inst.arg0[Int].g)
-          case areal: Real => start.clone(ground = areal.g + inst.arg0[Real].g)
-          case astr: Str => start.clone(ground = astr.g + inst.arg0[Str].g)
-          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = (arec.g._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]].gmap))
-          case arec: ORecType => start.clone(ground = arec.gmap ++ inst.arg0[ORecType]().gmap)
+          case aint: Int => start.clone(g = aint.g + inst.arg0[Int].g)
+          case areal: Real => start.clone(g = areal.g + inst.arg0[Real].g)
+          case astr: Str => start.clone(g = astr.g + inst.arg0[Str].g)
+          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]].gmap))
+          case arec: ORecType => start.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
           //////// EXPERIMENTAL
           case serialA: Poly[O] if serialA.isSerial => inst.arg0[Poly[O]] match {
             case serialB: Poly[O] if serialB.isSerial => serialA | serialB

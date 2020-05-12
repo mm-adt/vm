@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
 class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple = base) extends Type[__]
   with GetOp[Obj, Obj]
   with PutOp[Obj, Obj] {
-  override def clone(name: String = Tokens.anon, ground: Any, q: IntQ = qOne, via: ViaTuple = base): this.type = new __(name, q, via).asInstanceOf[this.type]
+  override def clone(name: String = Tokens.anon, g: Any, q: IntQ = qOne, via: ViaTuple = base): this.type = new __(name, q, via).asInstanceOf[this.type]
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(via = (obj, inst))
   def apply[T <: Obj](obj: Obj): OType[T] = asType(this.trace.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))

@@ -52,7 +52,7 @@ object AndOp {
       val inst = new AndInst(Inst.resolveArg(start, other), q)
       Try[Bool](start match {
         case _: Strm[_] => start
-        case _: BoolValue => start.clone(ground = start.g && inst.arg0[Bool].g)
+        case _: BoolValue => start.clone(g = start.g && inst.arg0[Bool].g)
         case _ => start
       }).getOrElse(start).via(start, inst)
     }

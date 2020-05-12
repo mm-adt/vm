@@ -148,7 +148,7 @@ trait Obj
   }*/
 
   // utility methods
-  def clone(name: String = this.name, ground: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
+  def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: Type[E]): E = rangeType.trace

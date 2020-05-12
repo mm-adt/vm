@@ -47,7 +47,7 @@ object ZeroOp {
         case _: Int => int(0)
         case _: Real => real(0.0)
         case _: Str => str(Tokens.empty)
-        case arec: Rec[Obj, Obj] => arec.clone(ground = Map.empty[Obj, Obj])
+        case arec: Rec[Obj, Obj] => arec.clone(g = Map.empty[Obj, Obj])
         case apoly: Lst[O] => apoly.clone(List.empty[O])
         case _ => start
       }).asInstanceOf[O].via(start, this)
