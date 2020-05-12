@@ -33,7 +33,7 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
-import org.mmadt.language.obj.op.traverser.{ExplainOp, FromOp, ToOp}
+import org.mmadt.language.obj.op.trace.{ExplainOp, FromOp, ToOp, TraceOp}
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
@@ -62,7 +62,7 @@ object OpInstResolver {
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head.asInstanceOf[Lst[Obj]])
       case Tokens.merge | Tokens.merge_op => MergeOp()
       case Tokens.given | Tokens.given_op => GivenOp(args.head)
-      case Tokens.`trace` => args.headOption.map(x => TraceOp(x.asInstanceOf[Lst[Obj]])).getOrElse(TraceOp())
+      case Tokens.trace => args.headOption.map(x => TraceOp(x.asInstanceOf[Lst[Obj]])).getOrElse(TraceOp())
       //
       case Tokens.noop => NoOp()
       case Tokens.add => AddOp(args.head)

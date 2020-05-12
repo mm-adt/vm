@@ -30,13 +30,12 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.MergeOp.MergeInst
 import org.mmadt.language.obj.op.branch.SplitOp.SplitInst
 import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
+import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.map.GetOp.GetInst
-import org.mmadt.language.obj.op.map.TraceOp.TraceInst
-import org.mmadt.language.obj.op.map.{GetOp, TraceOp}
-import org.mmadt.language.obj.op.traverser.FromOp.FromInst
-import org.mmadt.language.obj.op.traverser.ToOp.ToInst
-import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
-import org.mmadt.language.obj.value.strm._
+import org.mmadt.language.obj.op.trace.FromOp.FromInst
+import org.mmadt.language.obj.op.trace.ToOp.ToInst
+import org.mmadt.language.obj.op.trace.TraceOp.TraceInst
+import org.mmadt.language.obj.op.trace.{FromOp, ToOp, TraceOp}
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory
@@ -125,7 +124,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val intValue: Parser[IntValue] = opt(valueType) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
   lazy val realValue: Parser[RealValue] = opt(valueType) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
   lazy val strValue: Parser[StrValue] = opt(valueType) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
-  lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ Tokens.-> ) ~ objValue, polySep) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
+  lazy val recValue: Parser[ORecValue] = opt(valueType) ~ (LBRACKET ~> repsep((objValue <~ Tokens.->) ~ objValue, polySep) <~ RBRACKET) ^^ (x => vrec(x._1.getOrElse(Tokens.rec), x._2.map(o => (o._1, o._2)).toMap, qOne))
   lazy val strm: Parser[Obj] = (objValue <~ COMMA) ~ rep1sep(objValue, COMMA) ^^ (x => estrm((List(x._1) :+ x._2.head) ++ x._2.tail))
 
   // instruction parsing

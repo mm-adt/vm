@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.traverser
+package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}

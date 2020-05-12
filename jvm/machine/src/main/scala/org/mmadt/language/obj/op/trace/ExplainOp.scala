@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.traverser
+package org.mmadt.language.obj.op.trace
 
 import java.util
 
@@ -45,7 +45,7 @@ trait ExplainOp {
 object ExplainOp {
   def apply(): ExplainInst = new ExplainInst
 
-  class ExplainInst extends VInst[Obj, Str]((Tokens.explain, Nil)) {
+  class ExplainInst extends VInst[Obj, Str]((Tokens.explain, Nil)) with TraceInstruction {
     override def exec(start: Obj): Str = str(ExplainOp.printableTable(asType(start))).start()
   }
 

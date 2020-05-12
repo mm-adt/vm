@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.{AsOp, ModelOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
-import org.mmadt.language.obj.op.traverser.{FromOp, ToOp}
+import org.mmadt.language.obj.op.trace.{FromOp, ToOp, TraceOp}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}

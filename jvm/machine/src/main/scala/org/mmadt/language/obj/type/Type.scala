@@ -25,7 +25,7 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.sideeffect.AddOp
-import org.mmadt.language.obj.op.traverser.ExplainOp
+import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.storage.StorageFactory._

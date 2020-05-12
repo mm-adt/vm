@@ -1,7 +1,8 @@
-package org.mmadt.language.obj.op.map
+package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{IntQ, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -17,7 +18,7 @@ object TraceOp {
   def apply(): TraceInst = TraceOp.apply(__ `;` __)
   def apply(pattern: Lst[Obj]): TraceInst = new TraceInst(pattern)
 
-  class TraceInst(pattern: Lst[Obj], q: IntQ = qOne) extends VInst[Obj, Lst[Obj]]((Tokens.trace, List(pattern)), q) {
+  class TraceInst(pattern: Lst[Obj], q: IntQ = qOne) extends VInst[Obj, Lst[Obj]]((Tokens.trace, List(pattern)), q) with TraceInstruction {
     override def q(q: IntQ): this.type = new TraceInst(pattern, q).asInstanceOf[this.type]
     override def exec(start: Obj): Lst[Obj] = {
       (start match {

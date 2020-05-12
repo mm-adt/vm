@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.processor.inst.traverser
+package org.mmadt.processor.inst.trace
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.__

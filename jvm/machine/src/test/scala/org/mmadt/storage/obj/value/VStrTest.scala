@@ -62,4 +62,8 @@ class VStrTest extends FunSuite {
     //assertResult(str("marko"))(str("m") ===> str.plus("a").plus("r").plus("k").plus("o").path().tail().tail().tail().tail().head())
     //assertResult(str("marko"))(str("m") ===> str.plus("a").plus("r").plus("k").plus("o").path().tail().tail().tail().head().as(str).plus("k").plus("o").path().tail().tail().tail().tail().head())
   }
+
+  test("play") {
+   str("m") ==> str.plus("a").plus("r").plus("k").plus("o")
+  }
 }
