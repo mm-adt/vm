@@ -35,13 +35,13 @@ trait HeadOp[A <: Obj] {
 object HeadOp {
   def apply[A <: Obj](): HeadInst[A] = new HeadInst[A]
 
-  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], A](ground = (Tokens.head, Nil), q = q) {
+  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], A](g = (Tokens.head, Nil), q = q) {
     override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
     override def exec(start: Lst[A]): A =
-      if (!start.gvalues.exists(_.alive))
+      if (!start.glist.exists(_.alive))
         throw new LanguageException("no head on empty poly")
       else
-        start.gvalues.filter(_.alive).head.via(start, this)
+        start.glist.filter(_.alive).head.via(start, this)
   }
 
 }

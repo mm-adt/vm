@@ -41,7 +41,7 @@ trait AOp {
 object AOp {
   def apply(other: Obj): AInst = new AInst(other)
 
-  class AInst(other: Obj, q: IntQ = qOne) extends VInst[Obj, Bool](ground=(Tokens.a, List(other)), q=q) {
+  class AInst(other: Obj, q: IntQ = qOne) extends VInst[Obj, Bool](g=(Tokens.a, List(other)), q=q) {
     override def q(q: IntQ): this.type = new AInst(other, q).asInstanceOf[this.type]
     override def exec(start: Obj): Bool = start match {
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => this.exec(x)))

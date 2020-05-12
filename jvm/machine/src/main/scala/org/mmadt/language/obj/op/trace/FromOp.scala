@@ -42,12 +42,12 @@ object FromOp {
   def apply(label: StrValue): FromInst[Obj] = new FromInst[Obj](label)
   def apply[O <: Obj](label: StrValue, default: O): FromInst[O] = new FromInst[O](label, default)
 
-  class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O](ground = (Tokens.from, List(label)), q = q) with TraceInstruction {
+  class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O](g = (Tokens.from, List(label)), q = q) with TraceInstruction {
     override def q(q: IntQ): this.type = new FromInst[O](label, default, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
-      val history: Option[O] = Obj.fetchOption[O](start, label.ground)
+      val history: Option[O] = Obj.fetchOption[O](start, label.g)
       if (history.isEmpty && start.isInstanceOf[Value[_]])
-        throw LanguageException.labelNotFound(start, label.ground)
+        throw LanguageException.labelNotFound(start, label.g)
       history.getOrElse(if (null == default) asType(start).asInstanceOf[O] else default).via(start, this)
     }
   }

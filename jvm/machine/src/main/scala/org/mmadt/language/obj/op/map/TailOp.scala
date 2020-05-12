@@ -35,14 +35,14 @@ trait TailOp {
 object TailOp {
   def apply[O <: Obj](): TailInst[O] = new TailInst[O]
 
-  class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.tail, Nil), q = q) {
+  class TailInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](g = (Tokens.tail, Nil), q = q) {
     override def q(q: IntQ): this.type = new TailInst(q).asInstanceOf[this.type]
     override def exec(start: O): O = (start match {
       case apoly: Lst[Obj] =>
-        if (apoly.gvalues.isEmpty)
+        if (apoly.glist.isEmpty)
           throw new LanguageException("no tail on empty poly")
         else
-          apoly.clone(apoly.gvalues.tail)
+          apoly.clone(apoly.glist.tail)
     }).asInstanceOf[O].via(start, this)
 
   }

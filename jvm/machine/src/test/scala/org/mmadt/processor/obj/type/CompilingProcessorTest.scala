@@ -115,9 +115,9 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     println(mmToSocial + "\n" + socialToMM)
     //
     assertResult("nat")(mmToSocial(int(32)).name)
-    assertResult(32)(mmToSocial(int(32)).ground)
+    assertResult(32)(mmToSocial(int(32)).g)
     assertResult("int")(socialToMM(int(32).named("nat")).name)
-    assertResult(32)(socialToMM(int(32).named("nat")).ground)
+    assertResult(32)(socialToMM(int(32).named("nat")).g)
     //
     val compile1 = Processor.compiler(mmToSocial).apply(trec(str("name") -> str, str("age") -> int))
     assertResult("person")(compile1.domain().name)

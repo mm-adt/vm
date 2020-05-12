@@ -44,17 +44,17 @@ trait PlusOp[O <: Obj] {
 object PlusOp {
   def apply[O <: Obj](obj: Obj): PlusInst[O] = new PlusInst[O](obj)
 
-  class PlusInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.plus, List(arg)), q = q) {
+  class PlusInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](g = (Tokens.plus, List(arg)), q = q) {
     override def q(q: IntQ): this.type = new PlusInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       val inst = new PlusInst(Inst.resolveArg(start, arg), q)
       (start match {
         case _: Strm[_] => start
         case _: Value[_] => start match {
-          case aint: Int => start.clone(ground = aint.ground + inst.arg0[Int]().ground)
-          case areal: Real => start.clone(ground = areal.ground + inst.arg0[Real]().ground)
-          case astr: Str => start.clone(ground = astr.ground + inst.arg0[Str]().ground)
-          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = (arec.ground._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().gmap))
+          case aint: Int => start.clone(ground = aint.g + inst.arg0[Int]().g)
+          case areal: Real => start.clone(ground = areal.g + inst.arg0[Real]().g)
+          case astr: Str => start.clone(ground = astr.g + inst.arg0[Str]().g)
+          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(ground = (arec.g._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]]().gmap))
           case arec: ORecType => start.clone(ground = arec.gmap ++ inst.arg0[ORecType]().gmap)
           //////// EXPERIMENTAL
           case serialA: Poly[O] if serialA.isSerial => inst.arg0[Poly[O]]() match {
@@ -63,7 +63,7 @@ object PlusOp {
           }
           case choiceA: Poly[O] if choiceA.isChoice => inst.arg0[Poly[O]]() match {
             case serialB: Poly[O] if serialB.isSerial => if (serialB.isEmpty) choiceA else choiceA | serialB
-            case choice: Poly[O] if choice.isChoice => |.clone((choiceA.gvalues ++ choice.gvalues).toList)
+            case choice: Poly[O] if choice.isChoice => |.clone((choiceA.glist ++ choice.glist).toList)
           }
         }
         case _: Type[_] => start

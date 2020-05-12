@@ -48,14 +48,14 @@ trait AsOp {
 object AsOp {
   def apply[O <: Obj](obj: O): AsInst[O] = new AsInst[O](obj)
 
-  class AsInst[O <: Obj](obj: O, q: IntQ = qOne) extends VInst[Obj, O](ground = (Tokens.as, List(obj)), q = q) {
+  class AsInst[O <: Obj](obj: O, q: IntQ = qOne) extends VInst[Obj, O](g = (Tokens.as, List(obj)), q = q) {
     override def q(quantifier: IntQ): this.type = new AsInst[O](obj, quantifier).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
       testAlive(obj match {
         case atype: Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
           case rectype: RecType[Obj, Obj] =>
             start match {
-              case recvalue: ORecValue => vrec(name = rectype.name, ground = makeMap(Model.id, recvalue.gmap, rectype.gmap))
+              case recvalue: ORecValue => vrec(name = rectype.name, g = makeMap(Model.id, recvalue.gmap, rectype.gmap))
               case avalue: Value[Obj] => vrec(rectype.name, rectype.gmap.map(x =>
                 (x._1 match {
                   case kvalue: Value[Obj] => kvalue
@@ -69,9 +69,9 @@ object AsOp {
                     start.compute(vtype).asInstanceOf[Value[Obj]]
                 })))
             }
-          case atype: StrType => vstr(name = atype.name, ground = start.asInstanceOf[Value[Obj]].ground.toString).compute(atype)
-          case atype: IntType => vint(name = atype.name, ground = Integer.valueOf(start.asInstanceOf[Value[Obj]].ground.toString).longValue()).compute(atype)
-          case atype: RealType => vreal(name = atype.name, ground = JDouble.valueOf(start.asInstanceOf[Value[Obj]].ground.toString).doubleValue()).compute(atype)
+          case atype: StrType => vstr(name = atype.name, g = start.asInstanceOf[Value[Obj]].g.toString).compute(atype)
+          case atype: IntType => vint(name = atype.name, g = Integer.valueOf(start.asInstanceOf[Value[Obj]].g.toString).longValue()).compute(atype)
+          case atype: RealType => vreal(name = atype.name, g = JDouble.valueOf(start.asInstanceOf[Value[Obj]].g.toString).doubleValue()).compute(atype)
           case xtype: Type[Obj] => start.named(xtype.name).asInstanceOf[O]
         }
         case avalue: Value[Obj] => avalue
@@ -93,7 +93,7 @@ object AsOp {
         valueMap = valueMap + (a._1 -> a._2.as(z._2).asInstanceOf[Value[Obj]])
         typeMap.remove(z._1)
       }))
-      assert(typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.ground != 0))
+      assert(typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.g != 0))
       valueMap.toMap
     }
   }

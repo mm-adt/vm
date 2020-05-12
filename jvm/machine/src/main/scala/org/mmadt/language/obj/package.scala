@@ -32,7 +32,6 @@ import org.mmadt.storage.StorageFactory._
  */
 package object obj {
   type IntQ = (IntValue, IntValue)
-  type InstList = List[(Type[Obj], Inst[Obj, Obj])]
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   type LstTuple[A <: Obj] = (String, List[A])
   type RecTuple[A <: Obj, B <: Obj] = (String, collection.Map[A, B])
@@ -66,15 +65,15 @@ package object obj {
     case _: IntQ => (qA._1 + qB._1, qA._2 + qB._2)
   }
   def withinQ(objA: Obj, objB: Obj): Boolean = {
-    objA.q._1.ground >= objB.q._1.ground &&
-      objA.q._2.ground <= objB.q._2.ground
+    objA.q._1.g >= objB.q._1.g &&
+      objA.q._2.g <= objB.q._2.g
   }
   def eqQ(objA: Obj, objB: Obj): Boolean = {
     (objA.q, objB.q) match {
       case (null, null) => true
-      case (null, y) if y._1.ground == 1 && y._2.ground == 1 => true
-      case (x, null) if x._1.ground == 1 && x._2.ground == 1 => true
-      case (x, y) if x._1.ground == y._1.ground && x._2.ground == y._2.ground => true
+      case (null, y) if y._1.g == 1 && y._2.g == 1 => true
+      case (x, null) if x._1.g == 1 && x._2.g == 1 => true
+      case (x, y) if x._1.g == y._1.g && x._2.g == y._2.g => true
       case _ => false
     }
   }

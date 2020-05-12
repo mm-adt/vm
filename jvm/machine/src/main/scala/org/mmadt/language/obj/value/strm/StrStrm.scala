@@ -29,5 +29,5 @@ import org.mmadt.language.obj.Str
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrStrm extends Strm[Str] with Str {
-  override def ground: String = throw LanguageException.typeNoGround(this)
+  override def g: String = throw LanguageException.typeNoGround(this)
 }

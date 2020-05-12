@@ -32,17 +32,17 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Inst[S <: Obj, +E <: Obj] extends Lst[Obj] {
-  final def op(): String = this.ground._1
-  final def args(): List[Obj] = this.gvalues
-  final def arg0[O <: Obj](): O = this.gvalues.head.asInstanceOf[O]
-  final def arg1[O <: Obj](): O = this.gvalues.tail.head.asInstanceOf[O]
-  final def arg2[O <: Obj](): O = this.gvalues.tail.tail.head.asInstanceOf[O]
-  final def arg3[O <: Obj](): O = this.gvalues.tail.tail.tail.head.asInstanceOf[O]
+  final def op(): String = this.g._1
+  final def args(): List[Obj] = this.glist
+  final def arg0[O <: Obj](): O = this.glist.head.asInstanceOf[O]
+  final def arg1[O <: Obj](): O = this.glist.tail.head.asInstanceOf[O]
+  final def arg2[O <: Obj](): O = this.glist.tail.tail.head.asInstanceOf[O]
+  final def arg3[O <: Obj](): O = this.glist.tail.tail.tail.head.asInstanceOf[O]
   def exec(start: S): E;
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
-  override lazy val hashCode: scala.Int = this.ground.hashCode()
+  override lazy val hashCode: scala.Int = this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case inst: Inst[_, _] => inst.op() == this.op() && inst.args() == this.args() && this.q == inst.q
     case _ => false

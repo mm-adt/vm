@@ -39,7 +39,7 @@ trait ZeroOp[O <: Obj] {
 object ZeroOp {
   def apply[O <: Obj](): ZeroInst[O] = new ZeroInst[O]
 
-  class ZeroInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.zero, Nil), q = q) {
+  class ZeroInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](g = (Tokens.zero, Nil), q = q) {
     override def q(q: IntQ): this.type = new ZeroInst[O](q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       (start match {

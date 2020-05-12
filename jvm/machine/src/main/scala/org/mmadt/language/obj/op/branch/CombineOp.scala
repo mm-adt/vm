@@ -15,10 +15,10 @@ trait CombineOp[A <: Obj] {
 object CombineOp {
   def apply[A <: Obj, B <: Obj](other: Lst[B]): CombineInst[A, B] = new CombineInst[A, B](other)
 
-  class CombineInst[A <: Obj, B <: Obj](other: Lst[B], q: IntQ = qOne) extends VInst[Lst[A], Lst[B]](ground = (Tokens.combine, List(other)), q = q) with BranchInstruction {
+  class CombineInst[A <: Obj, B <: Obj](other: Lst[B], q: IntQ = qOne) extends VInst[Lst[A], Lst[B]](g = (Tokens.combine, List(other)), q = q) with BranchInstruction {
     override def q(q: IntQ): this.type = new CombineInst[A, B](other, q).asInstanceOf[this.type]
     override def exec(start: Lst[A]): Lst[B] = {
-      val combinedPoly = other.clone(start.gvalues.zip(other.gvalues).map(a => Inst.resolveArg(a._1, a._2))).via(start, this)
+      val combinedPoly = other.clone(start.glist.zip(other.glist).map(a => Inst.resolveArg(a._1, a._2))).via(start, this)
       other.gsep match {
         case Tokens.| => Lst.keepFirst(combinedPoly)
         case _ => combinedPoly

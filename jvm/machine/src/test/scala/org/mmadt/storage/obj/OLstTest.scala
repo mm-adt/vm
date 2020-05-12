@@ -53,12 +53,12 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
         ("a" | ("b" | "d") | "c", List(str("a"), "b" | "d", str("c"))),
       )
     forEvery(starts) { (alst, blist) => {
-      assertResult(alst.gvalues)(blist)
+      assertResult(alst.glist)(blist)
       if (blist.nonEmpty) {
         assertResult(alst.head())(blist.head)
-        assertResult(alst.ground._2.head)(blist.head)
-        assertResult(alst.tail().ground._2)(blist.tail)
-        assertResult(alst.ground._2.tail)(blist.tail)
+        assertResult(alst.g._2.head)(blist.head)
+        assertResult(alst.tail().g._2)(blist.tail)
+        assertResult(alst.g._2.tail)(blist.tail)
       }
     }
     }
@@ -82,24 +82,24 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
   test("parallel structure") {
     val poly: Lst[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3).asInstanceOf[Lst[Obj]]
     assertResult("[int[id]|int[plus,2]|3]<=int[mult,8]-<[int[id]|int[plus,2]|3]")(poly.toString)
-    assertResult(int.id())(poly.gvalues.head)
-    assertResult(int.plus(2))(poly.gvalues(1))
-    assertResult(int(3))(poly.gvalues(2))
-    assertResult(int)(poly.gvalues.head.via._1)
-    assertResult(int)(poly.gvalues(1).via._1)
-    assert(poly.gvalues(2).root)
+    assertResult(int.id())(poly.glist.head)
+    assertResult(int.plus(2))(poly.glist(1))
+    assertResult(int(3))(poly.glist(2))
+    assertResult(int)(poly.glist.head.via._1)
+    assertResult(int)(poly.glist(1).via._1)
+    assert(poly.glist(2).root)
     assertResult(int.id() | int.plus(2) | int(3))(poly.range)
   }
 
   test("parallel quantifier") {
     val poly: Lst[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3).asInstanceOf[Lst[Obj]]
     assertResult("[int{2}[id]|int{2}[plus,2]|3]<=int{2}[mult,8]-<[int{2}[id]|int{2}[plus,2]|3]")(poly.toString)
-    assertResult(int.q(2).id())(poly.gvalues.head)
-    assertResult(int.q(2).plus(2))(poly.gvalues(1))
-    assertResult(int(3))(poly.gvalues(2))
-    assertResult(int.q(2))(poly.gvalues.head.via._1)
-    assertResult(int.q(2))(poly.gvalues(1).via._1)
-    assert(poly.gvalues(2).root)
+    assertResult(int.q(2).id())(poly.glist.head)
+    assertResult(int.q(2).plus(2))(poly.glist(1))
+    assertResult(int(3))(poly.glist(2))
+    assertResult(int.q(2))(poly.glist.head.via._1)
+    assertResult(int.q(2))(poly.glist(1).via._1)
+    assert(poly.glist(2).root)
     assertResult(int.q(2).id() | int.q(2).plus(2) | int(3))(poly.range)
   }
 

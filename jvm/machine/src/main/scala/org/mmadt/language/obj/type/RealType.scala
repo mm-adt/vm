@@ -32,6 +32,6 @@ import org.mmadt.language.obj.value.RealValue
 trait RealType extends Real
   with Type[Real]
   with ObjType {
-  def ground: Double = throw LanguageException.typeNoGround(this)
+  def g: Double = throw LanguageException.typeNoGround(this)
   def apply(value: RealValue): RealValue = value.named(this.name)
 }

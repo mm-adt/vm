@@ -44,7 +44,7 @@ object mmlangPrinter {
     case (x, y) if y == int(Long.MaxValue) => "{" + x + ",}"
     case (x, y) if x == int(Long.MinValue) => "{," + y + "}"
     case x if null == x => Tokens.empty
-    case _ => "{" + x._1.ground + "," + x._2.ground + "}"
+    case _ => "{" + x._1.g + "," + x._2.g + "}"
   }
 
   def strmString(strm: Strm[Obj]): String = strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
@@ -61,10 +61,10 @@ object mmlangPrinter {
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) + RBRACKET
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
-    if (lst.gvalues.isEmpty)
+    if (lst.glist.isEmpty)
       LBRACKET + Tokens.space + RBRACKET
     else
-      lst.gvalues.foldLeft(LBRACKET)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RBRACKET
+      lst.glist.foldLeft(LBRACKET)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {
@@ -88,15 +88,15 @@ object mmlangPrinter {
     (if (named) avalue.name + COLON else EMPTY) + (
       avalue match {
         case arec: RecValue[_, _] => mapString(arec.gmap, sep = arec.gsep, empty = EMPTYREC)
-        case astr: StrValue => SQUOTE + astr.ground + SQUOTE
-        case _ => avalue.ground
+        case astr: StrValue => SQUOTE + astr.g + SQUOTE
+        case _ => avalue.g
       }) + qString(avalue.q)
   }
 
   def instString(inst: Inst[_, _]): String = {
     (inst.op() match {
-      case Tokens.to => LANGLE + inst.arg0[StrValue]().ground + RANGLE
-      case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().ground + RANGLE
+      case Tokens.to => LANGLE + inst.arg0[StrValue]().g + RANGLE
+      case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().g + RANGLE
       case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]]().toString
       case Tokens.merge => Tokens.merge_op
       case _ => inst.args() match {

@@ -50,7 +50,7 @@ object TypeChecker {
     if (!obj.alive && !pattern.alive) return true
     pattern match {
       case achoice: Poly[O] if achoice.isChoice => obj.split(achoice).merge.alive
-      case _ => obj.ground.equals(pattern.ground) && withinQ(obj, pattern)
+      case _ => obj.g.equals(pattern.g) && withinQ(obj, pattern)
     }
   }
 
@@ -86,11 +86,11 @@ object TypeChecker {
     leftMap.map(a => typeMap.find(k =>
       a._1.test(k._1) && a._2.test(k._2)).map(z => typeMap.remove(z._1))).toList
 
-    typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.ground != 0)
+    typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.g != 0)
   }
 
   private def testList(leftList: Lst[Obj], rightList: Lst[Obj]): Boolean = {
-    if (rightList.gvalues.isEmpty || leftList.gvalues.equals(rightList.gvalues)) return true
-    leftList.gvalues.zip(rightList.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)
+    if (rightList.glist.isEmpty || leftList.glist.equals(rightList.glist)) return true
+    leftList.glist.zip(rightList.glist).foldRight(true)((a, b) => a._1.test(a._2) && b)
   }
 }

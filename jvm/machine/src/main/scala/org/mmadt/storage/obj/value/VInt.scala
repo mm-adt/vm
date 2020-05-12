@@ -31,11 +31,11 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(val name: String = Tokens.int, val ground: Long, val q: IntQ = VInt.q1, val via: ViaTuple = base) extends IntValue {
+class VInt(val name: String = Tokens.int, val g: Long, val q: IntQ = VInt.q1, val via: ViaTuple = base) extends IntValue {
   override def clone(name: String = this.name,
-                     ground: Any = this.ground,
+                     g: Any = this.g,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new VInt(name, ground.asInstanceOf[Long], q, via).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = new VInt(name, g.asInstanceOf[Long], q, via).asInstanceOf[this.type]
 }
 
 object VInt {

@@ -32,7 +32,7 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Value[+V <: Obj] extends Obj {
-  def ground: Any
+  def g: Any
 
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
@@ -42,10 +42,10 @@ trait Value[+V <: Obj] extends Obj {
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printValue(this)
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.ground.hashCode()
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case astrm: Strm[V] => MultiSet.test(astrm, this.toStrm)
-    case avalue: Value[V] => avalue.ground.equals(this.ground) && eqQ(this, avalue)
+    case avalue: Value[V] => avalue.g.equals(this.g) && eqQ(this, avalue)
     case _ => false
   }
 }

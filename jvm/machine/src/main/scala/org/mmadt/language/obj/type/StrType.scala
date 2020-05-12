@@ -32,7 +32,7 @@ import org.mmadt.language.obj._
 trait StrType extends Str
   with Type[Str]
   with ObjType {
-  def ground: String = throw LanguageException.typeNoGround(this)
+  def g: String = throw LanguageException.typeNoGround(this)
 }
 
 

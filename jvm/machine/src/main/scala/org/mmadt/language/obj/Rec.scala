@@ -36,10 +36,10 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   with PutOp[A, B]
   with ZeroOp[Rec[A, B]] {
 
-  def ground: RecTuple[A, B]
-  def gmap: collection.Map[A, B] = ground._2
-  def gvalues: Seq[B] = gmap.values.toSeq
-  def gsep: String = ground._1
+  def g: RecTuple[A, B]
+  def gmap: collection.Map[A, B] = g._2
+  def glist: Seq[B] = gmap.values.toSeq
+  def gsep: String = g._1
   def clone(values: collection.Map[A, B]): this.type = this.clone(ground = (gsep, values))
 }
 object Rec {

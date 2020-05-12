@@ -45,17 +45,17 @@ trait ExplainOp {
 object ExplainOp {
   def apply(): ExplainInst = new ExplainInst
 
-  class ExplainInst extends VInst[Obj, Str](ground=(Tokens.explain, Nil)) with TraceInstruction {
+  class ExplainInst extends VInst[Obj, Str](g=(Tokens.explain, Nil)) with TraceInstruction {
     override def exec(start: Obj): Str = str(ExplainOp.printableTable(asType(start))).start()
   }
 
   private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj])
   private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0): List[Row] = {
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {
-      if (b._2.isInstanceOf[TraceInstruction]) state += (b._2.arg0[StrValue]().ground -> b._2.exec(b._1).asInstanceOf[Type[Obj]].range)
+      if (b._2.isInstanceOf[TraceInstruction]) state += (b._2.arg0[StrValue]().g -> b._2.exec(b._1).asInstanceOf[Type[Obj]].range)
       val temp = if (b._2.isInstanceOf[TraceInstruction]) a else a :+ (depth, b._2, lastRange(b._1.asInstanceOf[Type[Obj]]), b._2.exec(b._1).asInstanceOf[Type[Obj]].range, mutable.LinkedHashMap(state.toSeq: _*))
       val inner = b._2.args().foldLeft(List[Row]())((x, y) => x ++ (y match {
-        case branches: Lst[_] if b._2.isInstanceOf[BranchInstruction] => branches.ground._2.flatMap(x => List(x)).map {
+        case branches: Lst[_] if b._2.isInstanceOf[BranchInstruction] => branches.g._2.flatMap(x => List(x)).map {
           case btype: Type[_] => btype
           case bvalue: Value[_] => bvalue.start()
         }.flatMap(x => explain(x, mutable.LinkedHashMap(state.toSeq: _*), depth + 1))

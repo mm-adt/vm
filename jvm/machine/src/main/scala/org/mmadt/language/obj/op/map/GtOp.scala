@@ -45,14 +45,14 @@ trait GtOp[O <: Obj] {
 object GtOp {
   def apply[O <: Obj](other: Obj): Inst[O, Bool] = new GtInst[O](other)
 
-  class GtInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](ground = (Tokens.gt, List(other)), q = q) {
+  class GtInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](g = (Tokens.gt, List(other)), q = q) {
     override def q(q: IntQ): this.type = new GtInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
       val inst = new GtInst[O](Inst.resolveArg(start, other), q)
       Try[Bool]((start match {
-        case aint: Int => bool(ground = aint.ground > inst.arg0[Int]().ground)
-        case areal: Real => bool(ground = areal.ground > inst.arg0[Real]().ground)
-        case astr: Str => bool(ground = astr.ground > inst.arg0[Str]().ground)
+        case aint: Int => bool(g = aint.g > inst.arg0[Int]().g)
+        case areal: Real => bool(g = areal.g > inst.arg0[Real]().g)
+        case astr: Str => bool(g = astr.g > inst.arg0[Str]().g)
       }).via(start, inst)).getOrElse(start match {
         case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))
         case _ => bool.via(start, inst)

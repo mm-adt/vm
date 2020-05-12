@@ -37,10 +37,10 @@ class ModelInstTest extends FunSuite {
 
   test("[model] w/ values") {
     assertResult("nat")(int(5).model[IntValue](modelA).name)
-    assertResult(5)(int(5).model[IntValue](modelA).ground)
+    assertResult(5)(int(5).model[IntValue](modelA).g)
     //
     assertResult("int")(int(5).model[IntValue](modelA).plus(1).model[IntValue](modelB).name)
-    assertResult(6)(int(5).model[IntValue](modelA).plus(1).model[IntValue](modelB).ground)
+    assertResult(6)(int(5).model[IntValue](modelA).plus(1).model[IntValue](modelB).g)
 
   }
   test("[map] w/ types") {

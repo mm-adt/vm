@@ -102,7 +102,7 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { obj => {
       val expr = maker(obj)
       obj match {
-        case value: Value[_] => assert(value.ground == expr.asInstanceOf[Value[_]].ground)
+        case value: Value[_] => assert(value.g == expr.asInstanceOf[Value[_]].g)
         case _ =>
       }
       assert(obj.q != expr.q)

@@ -46,12 +46,12 @@ trait EqsOp {
 object EqsOp {
   def apply[O <: Obj](other: Obj): Inst[O, Bool] = new EqsInst[O](other)
 
-  class EqsInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](ground = (Tokens.eqs, List(other)), q = q) {
+  class EqsInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](g = (Tokens.eqs, List(other)), q = q) {
     override def q(q: IntQ): this.type = new EqsInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
       val inst = new EqsInst[O](Inst.resolveArg(start, other), q)
       Try[Bool]((start match {
-        case avalue: Value[_] => bool(ground = avalue.ground == inst.arg0[Value[_]]().ground)
+        case avalue: Value[_] => bool(g = avalue.g == inst.arg0[Value[_]]().g)
         case _ => throw new LanguageException("")
       }).via(start, inst)).getOrElse(start match {
         case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))

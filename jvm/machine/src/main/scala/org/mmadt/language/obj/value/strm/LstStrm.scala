@@ -26,5 +26,5 @@ import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.{Obj, Lst, LstTuple}
 
 trait LstStrm[A <: Obj] extends Strm[Lst[A]] with Lst[A] {
-  override def ground: LstTuple[A] = throw LanguageException.typeNoGround(this)
+  override def g: LstTuple[A] = throw LanguageException.typeNoGround(this)
 }

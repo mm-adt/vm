@@ -41,12 +41,12 @@ trait NegOp[O <: Obj] {
 object NegOp {
   def apply[O <: Obj](): NegInst[O] = new NegInst[O]
 
-  class NegInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.neg, Nil), q = q) {
+  class NegInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](g = (Tokens.neg, Nil), q = q) {
     override def q(q: IntQ): this.type = new NegInst(q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       Try(start match {
-        case aint: Int => start.clone(ground = -aint.ground)
-        case areal: Real => start.clone(ground = -areal.ground)
+        case aint: Int => start.clone(ground = -aint.g)
+        case areal: Real => start.clone(ground = -areal.g)
       }).getOrElse(start).via(start, this)
     }
   }

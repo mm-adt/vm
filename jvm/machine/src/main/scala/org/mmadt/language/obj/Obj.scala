@@ -132,7 +132,7 @@ trait Obj
     this match {
       case apoly: Lst[A] => obj match {
         case bpoly: Lst[A] => lst(sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A]): _*)
-        case _ => apoly.clone(apoly.gvalues :+ obj)
+        case _ => apoly.clone(apoly.glist :+ obj)
       }
       case _ => lst(sep, this.asInstanceOf[A], obj)
     }
@@ -180,7 +180,7 @@ object Obj {
   def fetchOption[A <: Obj](obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => None
-      case x if x.via._2.op() == Tokens.to && x.via._2.arg0[StrValue]().ground == label => Some(x.via._1.asInstanceOf[A])
+      case x if x.via._2.op() == Tokens.to && x.via._2.arg0[StrValue]().g == label => Some(x.via._1.asInstanceOf[A])
       case x => fetchOption(x.via._1, label)
     }
   }

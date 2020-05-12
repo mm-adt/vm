@@ -39,13 +39,13 @@ trait PutOp[A <: Obj, B <: Obj] {
 object PutOp {
   def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[Obj, Obj] = new PutInst[A, B](key, value)
 
-  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Obj, Obj](ground = (Tokens.put, List(key, value)), q = q) {
+  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Obj, Obj](g = (Tokens.put, List(key, value)), q = q) {
     override def q(q: IntQ): this.type = new PutInst[A, B](key, value, q).asInstanceOf[this.type]
     override def exec(start: Obj): Obj = {
       start match {
         case apoly: Lst[_] => key match {
           case avalue: IntValue =>
-            val (front, back) = apoly.gvalues.splitAt(avalue.ground.toInt)
+            val (front, back) = apoly.glist.splitAt(avalue.g.toInt)
             apoly.clone(ground = (apoly.gsep, (front :+ value) ++ back), via = (start, this))
           case _ => apoly.via(start, this)
         }

@@ -46,7 +46,7 @@ object ModelOp {
   private type ModelT = RecType[Type[Obj], Type[Obj]]
   def apply[S <: Obj, E <: Obj](model: ModelT): Inst[S, E] = new ModelInst[S, E](model)
 
-  class ModelInst[S <: Obj, E <: Obj](model: ModelT, q: IntQ = qOne) extends VInst[S, E](ground = (Tokens.model, List(model)), q = q) {
+  class ModelInst[S <: Obj, E <: Obj](model: ModelT, q: IntQ = qOne) extends VInst[S, E](g = (Tokens.model, List(model)), q = q) {
     override def q(quantifier: IntQ): this.type = new ModelInst[S, E](model, quantifier).asInstanceOf[this.type]
     val m: Model = Model.from(model)
     override def exec(start: S): E = {

@@ -30,5 +30,5 @@ import org.mmadt.language.obj.Int
 trait IntValue extends Int
   with ObjValue
   with Value[Int] {
-  override val ground: Long
+  override val g: Long
 }

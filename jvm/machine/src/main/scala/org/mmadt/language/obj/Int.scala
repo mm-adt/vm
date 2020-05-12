@@ -37,5 +37,5 @@ trait Int extends Obj
   with LteOp[Int]
   with OneOp[Int]
   with ZeroOp[Int] {
-  def ground: Long
+  def g: Long
 }

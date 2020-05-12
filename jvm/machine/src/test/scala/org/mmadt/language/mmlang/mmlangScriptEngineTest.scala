@@ -78,11 +78,11 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("atomic named value parsing") {
-    assertResult(vbool(name = "keep", ground = true))(engine.eval("keep:true"))
-    assertResult(vint(name = "nat", ground = 5))(engine.eval("nat:5"))
-    assertResult(vint(name = "score", ground = -51))(engine.eval("score:-51"))
-    assertResult(vstr(name = "fname", ground = "marko"))(engine.eval("fname:'marko'"))
-    assertResult(vstr(name = "garbage", ground = "marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("garbage:'marko comp3 45AHA\"\"\\'-%^&'"))
+    assertResult(vbool(name = "keep", g = true))(engine.eval("keep:true"))
+    assertResult(vint(name = "nat", g = 5))(engine.eval("nat:5"))
+    assertResult(vint(name = "score", g = -51))(engine.eval("score:-51"))
+    assertResult(vstr(name = "fname", g = "marko"))(engine.eval("fname:'marko'"))
+    assertResult(vstr(name = "garbage", g = "marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("garbage:'marko comp3 45AHA\"\"\\'-%^&'"))
   }
 
   test("rec value parsing") {

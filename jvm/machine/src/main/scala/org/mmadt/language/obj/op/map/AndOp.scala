@@ -46,13 +46,13 @@ trait AndOp {
 object AndOp {
   def apply(other: Obj): AndInst = new AndInst(other)
 
-  class AndInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool](ground = (Tokens.and, List(other)), q = q) {
+  class AndInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool](g = (Tokens.and, List(other)), q = q) {
     override def q(q: IntQ): this.type = new AndInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
       val inst = new AndInst(Inst.resolveArg(start, other), q)
       Try[Bool](start match {
         case _: Strm[_] => start
-        case _: BoolValue => start.clone(ground = start.ground && inst.arg0[Bool]().ground)
+        case _: BoolValue => start.clone(ground = start.g && inst.arg0[Bool]().g)
         case _ => start
       }).getOrElse(start).via(start, inst)
     }

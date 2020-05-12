@@ -6,16 +6,17 @@ import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 
-trait Poly[A <: Obj] extends Obj with MergeOp[A] {
+trait Poly[A <: Obj] extends Obj
+  with MergeOp[A] {
   def gsep: String
-  def gvalues: Seq[A]
+  def glist: Seq[A]
   def isSerial: Boolean = this.gsep == Tokens.`;`
   def isParallel: Boolean = this.gsep == Tokens.`,`
   def isChoice: Boolean = this.gsep == Tokens.|
-  def isEmpty: Boolean = this.gvalues.isEmpty
+  def isEmpty: Boolean = this.glist.isEmpty
 
-  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.gvalues.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
-  def isType: Boolean = !this.gvalues.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))
+  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.glist.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
+  def isType: Boolean = !this.glist.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))
 }
 object Poly {
   def resolveSlots[A <: Obj](start: A, apoly: Poly[A], inst: Inst[A, Poly[A]]): Poly[A] = {

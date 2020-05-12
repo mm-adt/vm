@@ -58,7 +58,7 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
     finally source.close()
   }
 
-  private val counter: AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].ground).max)
+  private val counter: AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].g).max)
 
   def get(key: K): V = store(key)
   def put(key: K, value: V): V = store.put(key, value).getOrElse(value)

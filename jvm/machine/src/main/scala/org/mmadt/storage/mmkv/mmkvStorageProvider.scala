@@ -75,7 +75,7 @@ object mmkvStorageProvider {
     def isGetKeyEq(file: Str, key: Obj): Inst[Obj, Rec[StrValue, Obj]] = new mmkvIsGetKeyEqInst(file, key)
     def strm(file: Str): Inst[Obj, Rec[StrValue, Obj]] = new mmkvInst(file)
 
-    class mmkvInst(fileStr: Str, q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](ground = (opcode, List(fileStr)), q = q) {
+    class mmkvInst(fileStr: Str, q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr)), q = q) {
       override def q(quantifier: IntQ): this.type = new mmkvInst(fileStr, quantifier).asInstanceOf[this.type]
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
@@ -85,7 +85,7 @@ object mmkvStorageProvider {
       }
     }
 
-    class mmkvIsGetKeyEqInst(fileStr: Str, key: Obj, q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](ground = (opcode, List(fileStr, str("getByKeyEq"), key)), q = q) {
+    class mmkvIsGetKeyEqInst(fileStr: Str, key: Obj, q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr, str("getByKeyEq"), key)), q = q) {
       override def q(quantifier: IntQ): this.type = new mmkvIsGetKeyEqInst(fileStr, key, quantifier).asInstanceOf[this.type]
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
@@ -95,7 +95,7 @@ object mmkvStorageProvider {
       }
     }
 
-    class mmkvAddKeyValueInst(fileStr: Str, key: Rec[StrValue, Obj], q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](ground = (opcode, List(fileStr, str("addKeyValue"), key)), q = q) {
+    class mmkvAddKeyValueInst(fileStr: Str, key: Rec[StrValue, Obj], q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr, str("addKeyValue"), key)), q = q) {
       override def q(quantifier: IntQ): this.type = new mmkvAddKeyValueInst(fileStr, key, quantifier).asInstanceOf[this.type]
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
@@ -110,7 +110,7 @@ object mmkvStorageProvider {
     private def connect(file: Str): mmkvStore[Value[Obj], Value[Obj]] = {
       file match {
         case _: Type[_] => throw new UnsupportedOperationException
-        case avalue: StrValue => mmkvStore.open(avalue.ground)
+        case avalue: StrValue => mmkvStore.open(avalue.g)
       }
     }
 

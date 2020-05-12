@@ -39,11 +39,11 @@ trait AppendOp[A <: Obj] {
 object AppendOp {
   def apply[O <: Obj](other: Obj): AppendInst[O] = new AppendInst[O](other)
 
-  class AppendInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[Lst[O], Lst[O]](ground=(Tokens.append, List(other)), q=q) {
+  class AppendInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[Lst[O], Lst[O]](g=(Tokens.append, List(other)), q=q) {
     override def q(quantifier: IntQ): this.type = new AppendInst[O](other, quantifier).asInstanceOf[this.type]
     override def exec(start: Lst[O]): Lst[O] = {
       val inst = new AppendInst[O](Inst.resolveArg(start, other), q)
-      start.clone(start.gvalues :+ inst.arg0[O]()).via(start, inst)
+      start.clone(start.glist :+ inst.arg0[O]()).via(start, inst)
     }
   }
 

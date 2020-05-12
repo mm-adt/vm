@@ -38,13 +38,13 @@ trait MergeOp[A <: Obj] {
 object MergeOp {
   def apply[A <: Obj](): MergeInst[A] = new MergeInst[A]()
 
-  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A](ground=(Tokens.merge, Nil), q=q) with BranchInstruction {
+  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A](g=(Tokens.merge, Nil), q=q) with BranchInstruction {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
     override def exec(start: Poly[A]): A = {
       start match {
         case astrm: Strm[Poly[A]] => strm[A](astrm.values.map(x => this.exec(x))) // TODO: why does via() not work here? (nested streams?)
-        case _ if start.isValue && start.isSerial => start.gvalues.lastOption.map(x => x.clone(q = multQ(start, x))).filter(_.alive).getOrElse(zeroObj.asInstanceOf[A])
-        case _ if start.isValue => strm(start.gvalues.map(x => x.clone(q = multQ(start, x))).filter(_.alive)).asInstanceOf[A]
+        case _ if start.isValue && start.isSerial => start.glist.lastOption.map(x => x.clone(q = multQ(start, x))).filter(_.alive).getOrElse(zeroObj.asInstanceOf[A])
+        case _ if start.isValue => strm(start.glist.map(x => x.clone(q = multQ(start, x))).filter(_.alive)).asInstanceOf[A]
         case _ => BranchInstruction.brchType[A](start).clone(via = (start, this))
       }
 

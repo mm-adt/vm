@@ -30,9 +30,9 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VReal(val name: String = Tokens.real, val ground: Double, val q: IntQ = qOne, val via: ViaTuple = base) extends RealValue {
+class VReal(val name: String = Tokens.real, val g: Double, val q: IntQ = qOne, val via: ViaTuple = base) extends RealValue {
   override def clone(name: String = this.name,
-                     ground: Any = this.ground,
+                     ground: Any = this.g,
                      q: IntQ = this.q,
                      via: ViaTuple = this.via): this.type = new VReal(name, ground.asInstanceOf[Double], q, via).asInstanceOf[this.type]
 }

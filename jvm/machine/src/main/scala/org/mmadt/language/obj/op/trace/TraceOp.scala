@@ -18,12 +18,12 @@ object TraceOp {
   def apply(): TraceInst = TraceOp.apply(__ `;` __)
   def apply(pattern: Lst[Obj]): TraceInst = new TraceInst(pattern)
 
-  class TraceInst(pattern: Lst[Obj], q: IntQ = qOne) extends VInst[Obj, Lst[Obj]](ground = (Tokens.trace, List(pattern)), q = q) with TraceInstruction {
+  class TraceInst(pattern: Lst[Obj], q: IntQ = qOne) extends VInst[Obj, Lst[Obj]](g = (Tokens.trace, List(pattern)), q = q) with TraceInstruction {
     override def q(q: IntQ): this.type = new TraceInst(pattern, q).asInstanceOf[this.type]
     override def exec(start: Obj): Lst[Obj] = {
       (start match {
         case _: Strm[_] => start
-        case _ => lst(pattern.gsep, start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(pattern).gvalues) ++ (start `;` this).combine(pattern).gvalues: _*)
+        case _ => lst(pattern.gsep, start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(pattern).glist) ++ (start `;` this).combine(pattern).glist: _*)
       }).via(start, this).asInstanceOf[Lst[Obj]]
     }
   }

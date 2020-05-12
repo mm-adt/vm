@@ -44,12 +44,12 @@ trait IsOp {
 object IsOp {
   def apply[O <: Obj](other: Obj): Inst[O, O] = new IsInst[O](other)
 
-  class IsInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.is, List(arg)), q = q) with FilterInstruction {
+  class IsInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](g = (Tokens.is, List(arg)), q = q) with FilterInstruction {
     override def q(q: IntQ): this.type = new IsInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       val inst: Inst[O, O] = new IsInst(Inst.resolveArg(start, arg), q)
       Try[O](
-        if (inst.arg0[Bool]().ground) start.via(start, inst)
+        if (inst.arg0[Bool]().g) start.via(start, inst)
         else start.via(start, inst).hardQ(qZero))
         .getOrElse(start match {
           case astrm: Strm[O] => astrm.via(start, inst).asInstanceOf[O]

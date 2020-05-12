@@ -44,7 +44,7 @@ trait FoldOp {
 object FoldOp {
   def apply[A <: Obj](_seed: (String, A), atype: A): Inst[Obj, A] = new FoldInst[A](_seed, atype)
 
-  class FoldInst[A <: Obj](_seed: (String, A), atype: Obj) extends VInst[Obj, A](ground=(Tokens.fold, List(str(_seed._1), _seed._2, atype))) with ReduceInstruction[A] with TraceInstruction {
+  class FoldInst[A <: Obj](_seed: (String, A), atype: Obj) extends VInst[Obj, A](g=(Tokens.fold, List(str(_seed._1), _seed._2, atype))) with ReduceInstruction[A] with TraceInstruction {
     override val seed: (String, A) = _seed
     override val reduction: Type[A] = atype.asInstanceOf[Type[A]]
 

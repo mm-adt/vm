@@ -36,7 +36,7 @@ trait PathOp {
 object PathOp {
   def apply(): PathInst = new PathInst
 
-  class PathInst(q: IntQ = qOne) extends VInst[Obj, Lst[Obj]](ground = (Tokens.path, Nil), q = q) {
+  class PathInst(q: IntQ = qOne) extends VInst[Obj, Lst[Obj]](g = (Tokens.path, Nil), q = q) {
     override def q(q: IntQ): this.type = new PathInst(q).asInstanceOf[this.type]
     override def exec(start: Obj): Lst[Obj] = {
       (start match {

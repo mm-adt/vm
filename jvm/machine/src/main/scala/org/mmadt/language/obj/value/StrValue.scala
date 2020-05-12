@@ -30,5 +30,5 @@ import org.mmadt.language.obj.Str
 trait StrValue extends Str
   with ObjValue
   with Value[Str] {
-  override val ground: String
+  override val g: String
 }

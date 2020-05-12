@@ -44,22 +44,22 @@ trait MultOp[O <: Obj] {
 object MultOp {
   def apply[O <: Obj](obj: Obj): MultInst[O] = new MultInst[O](obj)
 
-  class MultInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.mult, List(arg)), q = q) {
+  class MultInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](g = (Tokens.mult, List(arg)), q = q) {
     override def q(q: IntQ): this.type = new MultInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       val inst = new MultInst(Inst.resolveArg(start, arg), q)
       (start match {
         case _: Strm[_] => start
         case _: Value[_] => start match {
-          case aint: Int => start.clone(ground = aint.ground * inst.arg0[Int]().ground)
-          case areal: Real => start.clone(ground = areal.ground * inst.arg0[Real]().ground)
+          case aint: Int => start.clone(ground = aint.g * inst.arg0[Int]().g)
+          case areal: Real => start.clone(ground = areal.g * inst.arg0[Real]().g)
           case serialA: Lst[O] if serialA.isSerial => inst.arg0[O]() match {
-            case serialB: Lst[O] if serialB.isSerial => serialA.clone(serialA.gvalues ++ serialB.gvalues)
-            case choiceB: Lst[O] if choiceB.isChoice => choiceB.clone(choiceB.gvalues.map(a => `;`.clone(serialA.gvalues :+ a)).asInstanceOf[List[O]])
+            case serialB: Lst[O] if serialB.isSerial => serialA.clone(serialA.glist ++ serialB.glist)
+            case choiceB: Lst[O] if choiceB.isChoice => choiceB.clone(choiceB.glist.map(a => `;`.clone(serialA.glist :+ a)).asInstanceOf[List[O]])
           }
           case choiceA: Lst[O] if choiceA.isChoice => inst.arg0[O]() match {
-            case serialB: Lst[O] if serialB.isSerial => choiceA.clone(choiceA.gvalues.map(a => `;`.clone(a +: serialB.gvalues)).asInstanceOf[List[O]])
-            case choiceB: Lst[O] if choiceB.isChoice => choiceA.clone(choiceA.gvalues.flatMap(a => choiceB.gvalues.map(b => a | b)).asInstanceOf[List[O]])
+            case serialB: Lst[O] if serialB.isSerial => choiceA.clone(choiceA.glist.map(a => `;`.clone(a +: serialB.glist)).asInstanceOf[List[O]])
+            case choiceB: Lst[O] if choiceB.isChoice => choiceA.clone(choiceA.glist.flatMap(a => choiceB.glist.map(b => a | b)).asInstanceOf[List[O]])
           }
         }
         case _ => start

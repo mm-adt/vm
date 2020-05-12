@@ -38,7 +38,7 @@ package object op {
 
   object BranchInstruction {
     def brchType[OT <: Obj](brch: Poly[_ <: Obj]): OT = {
-      val types = brch.gvalues.filter(_.alive).map {
+      val types = brch.glist.filter(_.alive).map {
         case atype: Type[OT] => atype.hardQ(1).range
         case avalue: Value[OT] => asType(avalue)
       }.asInstanceOf[Iterable[OType[OT]]]
@@ -48,12 +48,12 @@ package object op {
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
       if (!brch.isChoice) { // [branch] sum the min/max quantification
-        result.hardQ(brch.gvalues.map(x => x.q).reduce((a, b) => plusQ(a, b))) //minZero(
+        result.hardQ(brch.glist.map(x => x.q).reduce((a, b) => plusQ(a, b))) //minZero(
       }
       else { // [choose] select min/max quantification
-        result.hardQ(brch.gvalues.filter(_.alive).map(x => x.q).reduce((a, b) => (
-          int(Math.min(a._1.ground, b._1.ground)),
-          int(Math.max(a._2.ground, b._2.ground)))))
+        result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduce((a, b) => (
+          int(Math.min(a._1.g, b._1.g)),
+          int(Math.max(a._2.g, b._2.g)))))
       }
     }
   }

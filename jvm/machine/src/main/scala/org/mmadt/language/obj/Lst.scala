@@ -24,17 +24,17 @@ trait Lst[A <: Obj] extends Poly[A]
   //with OneOp[Lst[A]]
   with ZeroOp[Lst[A]] {
 
-  def ground: LstTuple[A]
-  def gsep: String = ground._1
-  override def gvalues: List[A] = ground._2
+  def g: LstTuple[A]
+  override def gsep: String = g._1
+  override def glist: List[A] = g._2
 
   def clone(values: List[A]): this.type = this.clone(ground = (gsep, values))
 
   override def get(key: Int): A = {
     val valueType: A = key match {
       case aint: IntValue =>
-        Lst.checkIndex(this, aint.ground.toInt)
-        this.gvalues(aint.ground.toInt)
+        Lst.checkIndex(this, aint.g.toInt)
+        this.glist(aint.g.toInt)
       case _ => obj.asInstanceOf[A]
     }
     valueType.via(this, GetOp[Obj, A](key, valueType))
@@ -45,19 +45,19 @@ trait Lst[A <: Obj] extends Poly[A]
   override def test(other: Obj): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] =>
-      if (alst.gvalues.isEmpty || this.gvalues.equals(alst.gvalues)) return true
-      Poly.sameSep(this, alst) && this.gvalues.zip(alst.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)
+      if (alst.glist.isEmpty || this.glist.equals(alst.glist)) return true
+      Poly.sameSep(this, alst) && this.glist.zip(alst.glist).foldRight(true)((a, b) => a._1.test(a._2) && b)
     case _ => false
   }
 
   override def toString: String = LanguageFactory.printLst(this)
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.ground.hashCode()
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] =>
       Poly.sameSep(this, alst) && alst.name.equals(this.name) && eqQ(alst, this) &&
-        ((this.isValue && alst.isValue && this.gvalues.zip(alst.gvalues).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
-          (this.gvalues == alst.gvalues && this.via == alst.via))
+        ((this.isValue && alst.isValue && this.glist.zip(alst.glist).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
+          (this.glist == alst.glist && this.via == alst.via))
     case _ => false
   }
 }
@@ -65,11 +65,11 @@ trait Lst[A <: Obj] extends Poly[A]
 object Lst {
   def checkIndex(apoly: Lst[_], index: scala.Int): Unit = {
     if (index < 0) throw new LanguageException("poly index must be 0 or greater: " + index)
-    if (apoly.gvalues.length < (index + 1)) throw new LanguageException("poly index is out of bounds: " + index)
+    if (apoly.glist.length < (index + 1)) throw new LanguageException("poly index is out of bounds: " + index)
   }
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
-    val first: scala.Int = apoly.gvalues.indexWhere(x => x.alive)
-    apoly.clone(apoly.gvalues.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
+    val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
+    apoly.clone(apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
   }
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A], inst: Inst[A, Lst[A]]): Lst[A] = {
     val arg = start match {
@@ -78,11 +78,11 @@ object Lst {
     }
     if (apoly.isSerial) {
       var local = arg
-      apoly.clone(apoly.gvalues.map(slot => {
+      apoly.clone(apoly.glist.map(slot => {
         local = Inst.resolveArg(local, slot)
         local
       }))
     } else
-      apoly.clone(apoly.gvalues.map(slot => Inst.resolveArg(arg, slot)))
+      apoly.clone(apoly.glist.map(slot => Inst.resolveArg(arg, slot)))
   }
 }
