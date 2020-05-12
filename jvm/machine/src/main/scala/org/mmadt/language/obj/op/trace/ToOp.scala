@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{IntQ, Obj}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -36,16 +36,9 @@ trait ToOp {
   this: Obj =>
   def to(label: StrValue): this.type = ToOp(label).exec(this)
 }
-object ToOp {
-  def apply[O <: Obj](label: StrValue): ToInst[O] = new ToInst(label)
-  class ToInst[O <: Obj](label: StrValue, q: IntQ = qOne) extends VInst[O, O](g = (Tokens.to, List(label)), q = q) with TraceInstruction {
-    override def q(q: IntQ): this.type = new ToInst[O](label, q).asInstanceOf[this.type]
-    override def exec(start: O): O = start.via(start, this)
-  }
-}
-/*
 object ToOp extends Func[Obj, Obj] {
   def apply[O <: Obj](label: StrValue): Inst[O, O] = new VInst[O, O](g = (Tokens.to, List(label)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.via(start, inst)
 }
-*/
+
+

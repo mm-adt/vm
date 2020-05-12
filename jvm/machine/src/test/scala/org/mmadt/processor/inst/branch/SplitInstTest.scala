@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.`type`.{IntType, Type, __}
-import org.mmadt.language.obj.{Int, Obj, Poly, Real}
+import org.mmadt.language.obj.{Int, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -160,7 +160,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(real(2.0, 3.0, 3.0))(
       real(0.0, 1.0, 1.0) ===> real.q(3).to("x").plus(1.0).to("y").-<(
         (__.is(__.eqs(1.0)) --> __.from("y")) `,`
-          (__.is(__.eqs(2.0)) --> __.from("x"))
+          (__.is(__.eqs(2.0)) --> real.from("x"))
       ).>-.plus(real.from("y")))
   }
 
@@ -210,7 +210,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(real(2.0, 3.0, 3.0))(
       real(0.0, 1.0, 1.0) ===> real.q(3).to("x").plus(1.0).to("y").-<(
         __.is(__.eqs(1.0)) --> __.from("y") |
-          __.is(__.eqs(2.0)) --> __.from("x")
+          __.is(__.eqs(2.0)) --> real.from("x")
       ).>-.plus(real.from("y")))
   }
 }
