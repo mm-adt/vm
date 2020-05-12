@@ -37,7 +37,7 @@ trait Lst[A <: Obj] extends Poly[A]
         this.glist(aint.g.toInt)
       case _ => obj.asInstanceOf[A]
     }
-    valueType.via(this, GetOp[Obj, A](key, valueType))
+    if (valueType.via == base) valueType.via(this, GetOp[Obj, A](key, valueType)) else valueType.via(valueType.via._1 | this, GetOp[Obj, A](key, valueType))
   }
 
   override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Obj, BB](key, btype))

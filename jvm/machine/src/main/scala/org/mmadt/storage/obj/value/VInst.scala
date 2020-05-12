@@ -23,13 +23,15 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[Obj], val q: IntQ = qOne, val via: ViaTuple = base) extends Inst[S, E] {
-  override def clone(name: String, g: Any, q: (IntValue, IntValue), via: ViaTuple): this.type = this
+class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[Obj], val q: IntQ = qOne, val via: ViaTuple = base, val func: Func = null) extends Inst[S, E] {
+
+  override def clone(name: String = this.name, g: Any = this.g, q: IntQ = this.q, via: ViaTuple = this.via): this.type = new VInst[S, E](name, g.asInstanceOf[LstTuple[Obj]], q, via, func).asInstanceOf[this.type]
+  override def exec(start: S): E = this.func(start, this)
 }

@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.strm.Strm
@@ -42,32 +43,31 @@ trait PlusOp[O <: Obj] {
 }
 
 object PlusOp {
-  def apply[O <: Obj](obj: Obj): PlusInst[O] = new PlusInst[O](obj)
+  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj)), func = PlusFunc)
 
-  class PlusInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](g = (Tokens.plus, List(arg)), q = q) {
-    override def q(q: IntQ): this.type = new PlusInst[O](arg, q).asInstanceOf[this.type]
-    override def exec(start: O): O = {
-      val inst = new PlusInst(Inst.resolveArg(start, arg), q)
+  object PlusFunc extends Func {
+    override def apply[S <: Obj, E <: Obj](start: S, inst: Inst[S, E]): E = {
+      val rinst = inst.clone(g = (inst.gsep, List(Inst.resolveArg(start, inst.arg0[Obj])))).via(inst, IdOp())
       (start match {
         case _: Strm[_] => start
         case _: Value[_] => start match {
-          case aint: Int => start.clone(g = aint.g + inst.arg0[Int].g)
-          case areal: Real => start.clone(g = areal.g + inst.arg0[Real].g)
-          case astr: Str => start.clone(g = astr.g + inst.arg0[Str].g)
-          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]].gmap))
-          case arec: ORecType => start.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
+          case aint: Int => start.clone(g = aint.g + rinst.arg0[Int].g)
+          case areal: Real => start.clone(g = areal.g + rinst.arg0[Real].g)
+          case astr: Str => start.clone(g = astr.g + rinst.arg0[Str].g)
+          case arec: RecValue[Value[Value[Obj]], Obj] => start.clone(g = (arec.g._1, arec.gmap ++ rinst.arg0[RecValue[Value[Obj], Value[Obj]]].gmap))
+          case arec: ORecType => start.clone(g = arec.gmap ++ rinst.arg0[ORecType]().gmap)
           //////// EXPERIMENTAL
-          case serialA: Poly[O] if serialA.isSerial => inst.arg0[Poly[O]] match {
-            case serialB: Poly[O] if serialB.isSerial => serialA | serialB
-            case choiceB: Poly[O] if choiceB.isChoice => serialA | choiceB
+          case serialA: Poly[E] if serialA.isSerial => rinst.arg0[Poly[E]] match {
+            case serialB: Poly[E] if serialB.isSerial => serialA | serialB
+            case choiceB: Poly[E] if choiceB.isChoice => serialA | choiceB
           }
-          case choiceA: Poly[O] if choiceA.isChoice => inst.arg0[Poly[O]] match {
-            case serialB: Poly[O] if serialB.isSerial => if (serialB.isEmpty) choiceA else choiceA | serialB
-            case choice: Poly[O] if choice.isChoice => |.clone((choiceA.glist ++ choice.glist).toList)
+          case choiceA: Poly[E] if choiceA.isChoice => rinst.arg0[Poly[E]] match {
+            case serialB: Poly[E] if serialB.isSerial => if (serialB.isEmpty) choiceA else choiceA | serialB
+            case choice: Poly[E] if choice.isChoice => |[E].clone((choiceA.glist ++ choice.glist).toList)
           }
         }
         case _: Type[_] => start
-      }).via(start, inst).asInstanceOf[O]
+      }).asInstanceOf[E].via(start, rinst)
     }
   }
 
