@@ -18,7 +18,7 @@ trait GivenOp {
 object GivenOp {
   def apply[O <: Obj](other: O): Inst[Obj, O] = new GivenInst(other)
 
-  class GivenInst[O <: Obj](other: O, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.given, List(other)), q) with BranchInstruction {
+  class GivenInst[O <: Obj](other: O, q: IntQ = qOne) extends VInst[Obj, O](ground=(Tokens.given, List(other)), q=q) with BranchInstruction {
     override def q(q: IntQ): this.type = new GivenInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
       val rangeObj: O = Inst.resolveArg(lastBranch(start), other)

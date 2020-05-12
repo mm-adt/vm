@@ -39,7 +39,7 @@ trait SplitOp {
 object SplitOp {
   def apply[A <: Obj](branches: Poly[A]): SplitInst[A] = new SplitInst[A](branches)
 
-  class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]]((Tokens.split, List(apoly)), q) with BranchInstruction {
+  class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]](ground = (Tokens.split, List(apoly)), q = q) with BranchInstruction {
     override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
     override def exec(start: A): Poly[A] = {
       apoly.gsep match {

@@ -36,7 +36,7 @@ trait NoOp {
 object NoOp {
   def apply[O <: Obj](): NoInst[O] = new NoInst[O]
 
-  class NoInst[O <: Obj] extends VInst[O, O]((Tokens.noop, Nil)) {
+  class NoInst[O <: Obj] extends VInst[O, O](ground=(Tokens.noop, Nil)) {
     override def q(quantifier: IntQ): this.type = new NoInst[O]().asInstanceOf[this.type]
     override def exec(start: O): O = start
   }

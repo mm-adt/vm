@@ -41,7 +41,7 @@ trait MapOp {
 object MapOp {
   def apply[O <: Obj](other: O): Inst[Obj, O] = new MapInst[O](other)
 
-  class MapInst[O <: Obj](other: O, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.map, List(other)), q) {
+  class MapInst[O <: Obj](other: O, q: IntQ = qOne) extends VInst[Obj, O](ground = (Tokens.map, List(other)), q = q) {
     override def q(q: IntQ): this.type = new MapInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
       val inst = new MapInst(Inst.resolveArg(start, other), this.q)

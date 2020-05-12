@@ -38,7 +38,7 @@ trait AddOp {
 object AddOp {
   def apply[O <: Obj with AddOp](obj: Obj): Inst[O, O] = new AddInst[O](obj)
 
-  class AddInst[O <: Obj with AddOp](obj: Obj) extends VInst[O, O]((Tokens.add, List(obj))) with SideEffectInstruction {
+  class AddInst[O <: Obj with AddOp](obj: Obj) extends VInst[O, O](ground=(Tokens.add, List(obj))) with SideEffectInstruction {
     override def exec(start: O): O = start.add(Inst.resolveArg(start, obj).asInstanceOf[O])
   }
 

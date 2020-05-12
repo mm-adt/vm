@@ -46,7 +46,7 @@ trait AndOp {
 object AndOp {
   def apply(other: Obj): AndInst = new AndInst(other)
 
-  class AndInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool]((Tokens.and, List(other)), q) {
+  class AndInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool](ground = (Tokens.and, List(other)), q = q) {
     override def q(q: IntQ): this.type = new AndInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
       val inst = new AndInst(Inst.resolveArg(start, other), q)

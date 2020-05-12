@@ -40,7 +40,7 @@ trait QOp {
 object QOp {
   def apply(): QInst = new QInst
 
-  class QInst extends VInst[Obj, Int]((Tokens.q, Nil)) with QuantifierInstruction {
+  class QInst extends VInst[Obj, Int](ground=(Tokens.q, Nil)) with QuantifierInstruction {
     override def exec(start: Obj): Int = (start match {
       case _: Value[_] => this.q._1.q(qOne)
       case _ => int

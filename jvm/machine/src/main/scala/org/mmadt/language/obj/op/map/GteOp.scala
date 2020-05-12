@@ -45,7 +45,7 @@ trait GteOp[O <: Obj] {
 object GteOp {
   def apply[O <: Obj](other: Obj): Inst[O, Bool] = new GteInst[O](other)
 
-  class GteInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.gte, List(other)), q) {
+  class GteInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](ground = (Tokens.gte, List(other)), q = q) {
     override def q(q: IntQ): this.type = new GteInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
       val inst = new GteInst[O](Inst.resolveArg(start, other), q)

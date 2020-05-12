@@ -38,7 +38,7 @@ trait IdOp {
 object IdOp {
   def apply[O <: Obj](): Inst[O, O] = new IdInst
 
-  class IdInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.id, Nil), q) {
+  class IdInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.id, Nil), q = q) {
     override def q(q: IntQ): this.type = new IdInst[O](q).asInstanceOf[this.type]
     override def exec(start: O): O = start.via(start, this)
   }

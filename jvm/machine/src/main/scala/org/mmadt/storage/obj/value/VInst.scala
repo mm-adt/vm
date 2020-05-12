@@ -22,22 +22,14 @@
 
 package org.mmadt.storage.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val ground: InstTuple, val q: IntQ = qOne, val via: ViaTuple = base) extends Inst[S, E] with Value[Inst[S, E]] {
-  def this(value: InstTuple, q: IntQ) = this(Tokens.inst, value, q, base)
-  def this(value: InstTuple) = this(Tokens.inst, value, qOne, base)
-  override def test(other: Obj): Boolean = false //  TODO: GUT WHEN VINST JOINS HEIRARCHY
-  override def clone(_name: String, ground: Any, _quantifier: (IntValue, IntValue), _via: ViaTuple): this.type = this
-  override def equals(other: Any): Boolean = other match {
-    case inst: Inst[_, _] => inst.ground == this.ground && eqQ(this, inst)
-    case _ => false
-  }
-  override def toString: String = LanguageFactory.printInst(this)
+abstract class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val ground: LstTuple[Obj], val q: IntQ = qOne, val via: ViaTuple = base) extends Inst[S, E] {
+  override def clone(name: String, ground: Any, q: (IntValue, IntValue), via: ViaTuple): this.type = this
 }

@@ -81,8 +81,6 @@ object Lst {
       apoly.clone(apoly.gvalues.map(slot => {
         local = Inst.resolveArg(local, slot)
         local
-        //local = local.via(x, IdOp())
-        // x
       }))
     } else
       apoly.clone(apoly.gvalues.map(slot => Inst.resolveArg(arg, slot)))

@@ -45,7 +45,7 @@ trait ExplainOp {
 object ExplainOp {
   def apply(): ExplainInst = new ExplainInst
 
-  class ExplainInst extends VInst[Obj, Str]((Tokens.explain, Nil)) with TraceInstruction {
+  class ExplainInst extends VInst[Obj, Str](ground=(Tokens.explain, Nil)) with TraceInstruction {
     override def exec(start: Obj): Str = str(ExplainOp.printableTable(asType(start))).start()
   }
 

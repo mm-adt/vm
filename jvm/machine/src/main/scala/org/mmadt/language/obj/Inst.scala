@@ -31,20 +31,20 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Inst[S <: Obj, +E <: Obj] extends Obj {
-  def ground(): InstTuple
-  final def op(): String = this.ground()._1
-  final def args(): List[Obj] = this.ground()._2
-  final def arg0[O <: Obj](): O = this.ground()._2.head.asInstanceOf[O]
-  final def arg1[O <: Obj](): O = this.ground()._2.tail.head.asInstanceOf[O]
-  final def arg2[O <: Obj](): O = this.ground()._2.tail.tail.head.asInstanceOf[O]
-  final def arg3[O <: Obj](): O = this.ground()._2.tail.tail.tail.head.asInstanceOf[O]
+trait Inst[S <: Obj, +E <: Obj] extends Lst[Obj] {
+  final def op(): String = this.ground._1
+  final def args(): List[Obj] = this.gvalues
+  final def arg0[O <: Obj](): O = this.gvalues.head.asInstanceOf[O]
+  final def arg1[O <: Obj](): O = this.gvalues.tail.head.asInstanceOf[O]
+  final def arg2[O <: Obj](): O = this.gvalues.tail.tail.head.asInstanceOf[O]
+  final def arg3[O <: Obj](): O = this.gvalues.tail.tail.tail.head.asInstanceOf[O]
   def exec(start: S): E;
+
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
-  override lazy val hashCode: scala.Int = this.ground().hashCode()
+  override lazy val hashCode: scala.Int = this.ground.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case inst: Inst[_, _] => inst.op() == this.op() && inst.args() == this.args()
+    case inst: Inst[_, _] => inst.op() == this.op() && inst.args() == this.args() && this.q == inst.q
     case _ => false
   }
 }

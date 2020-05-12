@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Int, IntQ, Obj, Lst, Real, Rec, Str}
+import org.mmadt.language.obj.{Int, IntQ, Lst, Obj, Real, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,7 +39,7 @@ trait ZeroOp[O <: Obj] {
 object ZeroOp {
   def apply[O <: Obj](): ZeroInst[O] = new ZeroInst[O]
 
-  class ZeroInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O]((Tokens.zero, Nil), q) {
+  class ZeroInst[O <: Obj](q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.zero, Nil), q = q) {
     override def q(q: IntQ): this.type = new ZeroInst[O](q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       (start match {

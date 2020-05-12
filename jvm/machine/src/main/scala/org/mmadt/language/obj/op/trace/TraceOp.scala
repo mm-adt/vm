@@ -18,7 +18,7 @@ object TraceOp {
   def apply(): TraceInst = TraceOp.apply(__ `;` __)
   def apply(pattern: Lst[Obj]): TraceInst = new TraceInst(pattern)
 
-  class TraceInst(pattern: Lst[Obj], q: IntQ = qOne) extends VInst[Obj, Lst[Obj]]((Tokens.trace, List(pattern)), q) with TraceInstruction {
+  class TraceInst(pattern: Lst[Obj], q: IntQ = qOne) extends VInst[Obj, Lst[Obj]](ground = (Tokens.trace, List(pattern)), q = q) with TraceInstruction {
     override def q(q: IntQ): this.type = new TraceInst(pattern, q).asInstanceOf[this.type]
     override def exec(start: Obj): Lst[Obj] = {
       (start match {

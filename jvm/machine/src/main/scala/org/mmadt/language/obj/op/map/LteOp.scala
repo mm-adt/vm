@@ -45,7 +45,7 @@ trait LteOp[O <: Obj] {
 object LteOp {
   def apply[O <: Obj](other: Obj): Inst[O, Bool] = new LteInst[O](other)
 
-  class LteInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.lte, List(other)), q) {
+  class LteInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](ground = (Tokens.lte, List(other)), q = q) {
     override def q(q: IntQ): this.type = new LteInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
       val inst = new LteInst[O](Inst.resolveArg(start, other), q)

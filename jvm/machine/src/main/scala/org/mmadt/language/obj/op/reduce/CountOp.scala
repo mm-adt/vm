@@ -44,9 +44,9 @@ trait CountOp {
 object CountOp {
   def apply(): Inst[Obj, Int] = new CountInst
 
-  class CountInst extends VInst[Obj, Int]((Tokens.count, Nil)) with ReduceInstruction[Int] {
-    lazy val zero: IntValue = int(0)
-    override val seed: (String, IntValue) = ("seed", zero)
+  class CountInst extends VInst[Obj, Int](ground=(Tokens.count, Nil)) with ReduceInstruction[Int] {
+    //lazy val zero: IntValue = int(0)
+    override val seed: (String, IntValue) = ("seed", null)
     override val reduction: IntType = int.quant().plus(int.from(seed._1)).asInstanceOf[IntType]
     override def exec(start: Obj): Int = start.count()
   }

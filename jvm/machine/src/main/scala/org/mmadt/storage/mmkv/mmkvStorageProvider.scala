@@ -30,9 +30,9 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value._
 import org.mmadt.storage.StorageFactory.{str, _}
-import org.mmadt.storage.StorageProvider
 import org.mmadt.storage.mmkv.mmkvStorageProvider._
 import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.{StorageFactory, StorageProvider}
 
 import scala.collection.JavaConverters._
 
@@ -75,31 +75,31 @@ object mmkvStorageProvider {
     def isGetKeyEq(file: Str, key: Obj): Inst[Obj, Rec[StrValue, Obj]] = new mmkvIsGetKeyEqInst(file, key)
     def strm(file: Str): Inst[Obj, Rec[StrValue, Obj]] = new mmkvInst(file)
 
-    class mmkvInst(fileStr: Str, q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]]((opcode, List(fileStr)), q) {
+    class mmkvInst(fileStr: Str, q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](ground = (opcode, List(fileStr)), q = q) {
       override def q(quantifier: IntQ): this.type = new mmkvInst(fileStr, quantifier).asInstanceOf[this.type]
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
-          case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(*)
+          case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(StorageFactory.*)
           case _: Value[_] => connect(fileStr).strm().via(start, this)
         }).asInstanceOf[Rec[StrValue, Obj]]
       }
     }
 
-    class mmkvIsGetKeyEqInst(fileStr: Str, key: Obj, q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]]((opcode, List(fileStr, str("getByKeyEq"), key)), q) {
+    class mmkvIsGetKeyEqInst(fileStr: Str, key: Obj, q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](ground = (opcode, List(fileStr, str("getByKeyEq"), key)), q = q) {
       override def q(quantifier: IntQ): this.type = new mmkvIsGetKeyEqInst(fileStr, key, quantifier).asInstanceOf[this.type]
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
-          case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(*)
+          case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(StorageFactory.*)
           case _ => vrec(K -> key.asInstanceOf[Value[Obj]], V -> connect(fileStr).get(key.asInstanceOf[Value[Obj]]))
         }).asInstanceOf[Rec[StrValue, Obj]]
       }
     }
 
-    class mmkvAddKeyValueInst(fileStr: Str, key: Rec[StrValue, Obj], q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]]((opcode, List(fileStr, str("addKeyValue"), key)), q) {
+    class mmkvAddKeyValueInst(fileStr: Str, key: Rec[StrValue, Obj], q: IntQ = qOne) extends VInst[Obj, Rec[StrValue, Obj]](ground = (opcode, List(fileStr, str("addKeyValue"), key)), q = q) {
       override def q(quantifier: IntQ): this.type = new mmkvAddKeyValueInst(fileStr, key, quantifier).asInstanceOf[this.type]
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
-          case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(*)
+          case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(StorageFactory.*)
           case _ => vrec(K -> Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[RecValue[StrValue, ObjValue]].get(str("k")).asInstanceOf[Value[Obj]], V -> connect(fileStr).put(
             Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[RecValue[StrValue, ObjValue]].get(str("k")),
             Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[RecValue[StrValue, ObjValue]].get(str("v"))))

@@ -44,7 +44,7 @@ trait PlusOp[O <: Obj] {
 object PlusOp {
   def apply[O <: Obj](obj: Obj): PlusInst[O] = new PlusInst[O](obj)
 
-  class PlusInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.plus, List(arg)), q) {
+  class PlusInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.plus, List(arg)), q = q) {
     override def q(q: IntQ): this.type = new PlusInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       val inst = new PlusInst(Inst.resolveArg(start, arg), q)

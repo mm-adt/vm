@@ -46,7 +46,7 @@ trait EqsOp {
 object EqsOp {
   def apply[O <: Obj](other: Obj): Inst[O, Bool] = new EqsInst[O](other)
 
-  class EqsInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool]((Tokens.eqs, List(other)), q) {
+  class EqsInst[O <: Obj](other: Obj, q: IntQ = qOne) extends VInst[O, Bool](ground = (Tokens.eqs, List(other)), q = q) {
     override def q(q: IntQ): this.type = new EqsInst[O](other, q).asInstanceOf[this.type]
     override def exec(start: O): Bool = {
       val inst = new EqsInst[O](Inst.resolveArg(start, other), q)

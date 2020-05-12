@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.obj.{IntQ, Obj, Lst}
+import org.mmadt.language.obj.{IntQ, Lst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
@@ -35,7 +35,7 @@ trait HeadOp[A <: Obj] {
 object HeadOp {
   def apply[A <: Obj](): HeadInst[A] = new HeadInst[A]
 
-  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], A]((Tokens.head, Nil), q) {
+  class HeadInst[A <: Obj](q: IntQ = qOne) extends VInst[Lst[A], A](ground = (Tokens.head, Nil), q = q) {
     override def q(q: IntQ): this.type = new HeadInst[A](q).asInstanceOf[this.type]
     override def exec(start: Lst[A]): A =
       if (!start.gvalues.exists(_.alive))

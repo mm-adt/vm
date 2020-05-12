@@ -39,7 +39,7 @@ trait PutOp[A <: Obj, B <: Obj] {
 object PutOp {
   def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[Obj, Obj] = new PutInst[A, B](key, value)
 
-  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Obj, Obj]((Tokens.put, List(key, value)), q) {
+  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Obj, Obj](ground = (Tokens.put, List(key, value)), q = q) {
     override def q(q: IntQ): this.type = new PutInst[A, B](key, value, q).asInstanceOf[this.type]
     override def exec(start: Obj): Obj = {
       start match {

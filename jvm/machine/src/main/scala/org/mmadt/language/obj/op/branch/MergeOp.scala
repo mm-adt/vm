@@ -38,7 +38,7 @@ trait MergeOp[A <: Obj] {
 object MergeOp {
   def apply[A <: Obj](): MergeInst[A] = new MergeInst[A]()
 
-  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A]((Tokens.merge, Nil), q) with BranchInstruction {
+  class MergeInst[A <: Obj](q: IntQ = qOne) extends VInst[Poly[A], A](ground=(Tokens.merge, Nil), q=q) with BranchInstruction {
     override def q(q: IntQ): this.type = new MergeInst[A](q).asInstanceOf[this.type]
     override def exec(start: Poly[A]): A = {
       start match {

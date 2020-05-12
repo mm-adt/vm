@@ -40,7 +40,7 @@ trait StartOp {
 object StartOp {
   def apply[O <: Obj](starts: O): Inst[Obj, O] = new StartInst(starts)
 
-  class StartInst[O <: Obj](starts: O, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.start, List(starts)), q) with InitialInstruction {
+  class StartInst[O <: Obj](starts: O, q: IntQ = qOne) extends VInst[Obj, O](ground=(Tokens.start, List(starts)), q=q) with InitialInstruction {
     override def q(quantifier: IntQ): this.type = new StartInst[O](starts, quantifier).asInstanceOf[this.type]
     override def exec(start: Obj): O = starts
   }

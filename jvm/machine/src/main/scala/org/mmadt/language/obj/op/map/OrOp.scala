@@ -44,7 +44,7 @@ trait OrOp {
 object OrOp {
   def apply(other: Obj): OrInst = new OrInst(other)
 
-  class OrInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool]((Tokens.or, List(other)), q) {
+  class OrInst(other: Obj, q: IntQ = qOne) extends VInst[Bool, Bool](ground = (Tokens.or, List(other)), q = q) {
     override def q(q: IntQ): this.type = new OrInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
       val inst = new OrInst(Inst.resolveArg(start, other), q)

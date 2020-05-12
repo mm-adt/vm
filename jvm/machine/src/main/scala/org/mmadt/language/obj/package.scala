@@ -32,8 +32,6 @@ import org.mmadt.storage.StorageFactory._
  */
 package object obj {
   type IntQ = (IntValue, IntValue)
-  type InstTuple = (String, List[Obj])
-  type State = Map[String, Obj]
   type InstList = List[(Type[Obj], Inst[Obj, Obj])]
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   type LstTuple[A <: Obj] = (String, List[A])

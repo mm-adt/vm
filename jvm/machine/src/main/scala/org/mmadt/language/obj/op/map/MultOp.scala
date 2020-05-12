@@ -23,10 +23,10 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Int, IntQ, Obj, Lst, Real}
+import org.mmadt.language.obj.{Inst, Int, IntQ, Lst, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -44,7 +44,7 @@ trait MultOp[O <: Obj] {
 object MultOp {
   def apply[O <: Obj](obj: Obj): MultInst[O] = new MultInst[O](obj)
 
-  class MultInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O]((Tokens.mult, List(arg)), q) {
+  class MultInst[O <: Obj](arg: Obj, q: IntQ = qOne) extends VInst[O, O](ground = (Tokens.mult, List(arg)), q = q) {
     override def q(q: IntQ): this.type = new MultInst[O](arg, q).asInstanceOf[this.type]
     override def exec(start: O): O = {
       val inst = new MultInst(Inst.resolveArg(start, arg), q)
@@ -67,10 +67,10 @@ object MultOp {
     }
   }
 
- /* def multObj[O <: Obj](poly: Lst[O]): Lst[O] = {
-    if (!poly.isType) return poly
-    poly.clone(List(poly.gvalues.foldLeft(poly.gvalues.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])).asInstanceOf[List[O]])
-  }*/
+  /* def multObj[O <: Obj](poly: Lst[O]): Lst[O] = {
+     if (!poly.isType) return poly
+     poly.clone(List(poly.gvalues.foldLeft(poly.gvalues.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])).asInstanceOf[List[O]])
+   }*/
 
 }
 

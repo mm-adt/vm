@@ -42,7 +42,7 @@ object FromOp {
   def apply(label: StrValue): FromInst[Obj] = new FromInst[Obj](label)
   def apply[O <: Obj](label: StrValue, default: O): FromInst[O] = new FromInst[O](label, default)
 
-  class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O]((Tokens.from, List(label)), q) with TraceInstruction {
+  class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O](ground = (Tokens.from, List(label)), q = q) with TraceInstruction {
     override def q(q: IntQ): this.type = new FromInst[O](label, default, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
       val history: Option[O] = Obj.fetchOption[O](start, label.ground)
