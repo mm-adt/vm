@@ -37,11 +37,9 @@ trait FromOp {
   def from(label: StrValue): this.type = this.from[this.type](label, asType(this))
   def from[O <: Obj](label: StrValue, atype: O): O = FromOp(label, atype).exec(this)
 }
-
 object FromOp {
   def apply(label: StrValue): FromInst[Obj] = new FromInst[Obj](label)
   def apply[O <: Obj](label: StrValue, default: O): FromInst[O] = new FromInst[O](label, default)
-
   class FromInst[O <: Obj](label: StrValue, default: O = null, q: IntQ = qOne) extends VInst[Obj, O](g = (Tokens.from, List(label)), q = q) with TraceInstruction {
     override def q(q: IntQ): this.type = new FromInst[O](label, default, q).asInstanceOf[this.type]
     override def exec(start: Obj): O = {
@@ -51,5 +49,17 @@ object FromOp {
       history.getOrElse(if (null == default) asType(start).asInstanceOf[O] else default).via(start, this)
     }
   }
-
 }
+
+/*
+object FromOp extends Func[Obj, Obj] {
+  def apply[O <: Obj](label: StrValue): Inst[Obj, Obj] = new VInst[Obj, O](g = (Tokens.from, List(label)), func = this)
+  def apply[O <: Obj](label: StrValue, default: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.from, List(label, default)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val history: Option[Obj] = Obj.fetchOption[Obj](start, inst.arg0[StrValue].g)
+    if (history.isEmpty && start.isInstanceOf[Value[_]])
+      throw LanguageException.labelNotFound(start, inst.arg0[StrValue].g)
+    history.getOrElse(if (inst.args.length == 1) asType(start) else inst.arg1).via(start, inst)
+  }
+}
+*/

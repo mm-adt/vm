@@ -31,7 +31,6 @@ trait HeadOp[A <: Obj] {
   this: Lst[A] =>
   def head(): A = HeadOp().exec(this)
 }
-
 object HeadOp extends Func[Poly[Obj], Obj] {
   def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.head, Nil), func = this)
   override def apply(start: Poly[Obj], inst: Inst[Poly[Obj], Obj]): Obj = {

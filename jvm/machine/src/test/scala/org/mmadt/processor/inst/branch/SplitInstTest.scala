@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.`type`.{IntType, Type, __}
-import org.mmadt.language.obj.{Int, Obj, Poly}
+import org.mmadt.language.obj.{Int, Obj, Poly, Real}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
