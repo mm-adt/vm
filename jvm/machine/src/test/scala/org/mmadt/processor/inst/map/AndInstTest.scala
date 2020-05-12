@@ -64,7 +64,7 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
       //println(s"${input} ${atype.toString.substring(4)}")
       List(
         //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input} ${atype.toString.substring(4)}"),
-        AndOp(atype.trace.head._2.arg0()).q(atype.trace.head._2.q).exec(input.asInstanceOf[Bool]),
+        AndOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input.asInstanceOf[Bool]),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),
         input ===> atype,

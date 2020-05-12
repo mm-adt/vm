@@ -46,7 +46,7 @@ object GetOp {
     override def q(q: IntQ): this.type = new GetInst[A, B](key, typeHint, q).asInstanceOf[this.type]
     override def exec(start: GetType[A, B]): B = {
       val inst = new GetInst[A, B](Inst.resolveArg(start, key), typeHint, q)
-      start.get(inst.arg0[A]()).via(start, inst)
+      start.get(inst.arg0[A]).via(start, inst)
     }
   }
 

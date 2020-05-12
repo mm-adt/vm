@@ -88,8 +88,8 @@ object Model {
             //val state = bindLeftValuesToRightVariables(left,a._1).map(x => Traverser.standard(x._1)(x._2)).flatMap(x => x.state).toMap // TODO: may need to give model to traverser
             a._2.trace.map(x =>
               OpInstResolver.resolve[Obj, Obj](
-                x._2.op(),
-                x._2.args().map(i => Inst.resolveArg[Obj, Obj](x._1, i)))) // TODO: may need to give model to traverser
+                x._2.op,
+                x._2.args.map(i => Inst.resolveArg[Obj, Obj](x._1, i)))) // TODO: may need to give model to traverser
               .foldRight(a._2.domain[Obj]())((x, z) => z.via(z, x))
           })
         }
@@ -98,7 +98,7 @@ object Model {
     // generate traverser state
     private def bindLeftValuesToRightVariables(left: Type[Obj], right: Type[Obj]): List[(Obj, Type[Obj])] = {
       left.trace.map(_._2).zip(right.trace.map(_._2))
-        .flatMap(x => x._1.args().zip(x._2.args()))
+        .flatMap(x => x._1.args.zip(x._2.args))
         .filter(x => x._2.isInstanceOf[Type[Obj]])
         .flatMap(x => {
           x._1 match {

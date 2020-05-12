@@ -48,7 +48,7 @@ object OrOp {
     override def q(q: IntQ): this.type = new OrInst(other, q).asInstanceOf[this.type]
     override def exec(start: Bool): Bool = {
       val inst = new OrInst(Inst.resolveArg(start, other), q)
-      Try[Bool](start.clone(ground = start.g || inst.arg0[Bool]().g)).getOrElse(start).via(start, inst)
+      Try[Bool](start.clone(ground = start.g || inst.arg0[Bool].g)).getOrElse(start).via(start, inst)
     }
   }
 

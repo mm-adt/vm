@@ -66,10 +66,10 @@ object TypeChecker {
       obj.trace
         .map(_._2)
         .zip(pattern.trace.map(_._2))
-        .map(insts => insts._1.op().equals(insts._2.op()) &&
-          insts._1.args().zip(insts._2.args()).
+        .map(insts => insts._1.op.equals(insts._2.op) &&
+          insts._1.args.zip(insts._2.args).
             map(a => a._1.test(a._2)).
-            fold(insts._1.args().length == insts._2.args().length)(_ && _))
+            fold(insts._1.args.length == insts._2.args.length)(_ && _))
         .fold(obj.trace.length == pattern.trace.length)(_ && _) &&
       withinQ(obj, pattern)
   }

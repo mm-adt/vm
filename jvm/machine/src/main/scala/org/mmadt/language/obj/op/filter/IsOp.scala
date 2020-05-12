@@ -49,7 +49,7 @@ object IsOp {
     override def exec(start: O): O = {
       val inst: Inst[O, O] = new IsInst(Inst.resolveArg(start, arg), q)
       Try[O](
-        if (inst.arg0[Bool]().g) start.via(start, inst)
+        if (inst.arg0[Bool].g) start.via(start, inst)
         else start.via(start, inst).hardQ(qZero))
         .getOrElse(start match {
           case astrm: Strm[O] => astrm.via(start, inst).asInstanceOf[O]

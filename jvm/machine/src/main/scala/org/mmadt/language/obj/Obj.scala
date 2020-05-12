@@ -180,7 +180,7 @@ object Obj {
   def fetchOption[A <: Obj](obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => None
-      case x if x.via._2.op() == Tokens.to && x.via._2.arg0[StrValue]().g == label => Some(x.via._1.asInstanceOf[A])
+      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some(x.via._1.asInstanceOf[A])
       case x => fetchOption(x.via._1, label)
     }
   }

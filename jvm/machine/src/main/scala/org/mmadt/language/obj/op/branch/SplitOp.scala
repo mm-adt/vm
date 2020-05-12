@@ -53,7 +53,7 @@ object SplitOp {
       val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
       start match {
         case astrm: Strm[A] => astrm.via(start, this).asInstanceOf[Lst[A]]
-        case _ => inst.arg0[Poly[A]]().clone(via = (start, inst))
+        case _ => inst.arg0[Poly[A]].clone(via = (start, inst))
       }
     }
 
@@ -61,8 +61,8 @@ object SplitOp {
       val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
       (start match {
         case astrm: Strm[A] => return astrm.via(start, inst).asInstanceOf[Lst[A]]
-        case _: Type[_] => inst.arg0[Poly[A]]()
-        case _ => Poly.keepFirst(inst.arg0[Poly[A]]())
+        case _: Type[_] => inst.arg0[Poly[A]]
+        case _ => Poly.keepFirst(inst.arg0[Poly[A]])
       }).clone(via = (start, inst))
     }
   }

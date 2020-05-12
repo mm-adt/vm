@@ -51,7 +51,7 @@ object EqsOp {
     override def exec(start: O): Bool = {
       val inst = new EqsInst[O](Inst.resolveArg(start, other), q)
       Try[Bool]((start match {
-        case avalue: Value[_] => bool(g = avalue.g == inst.arg0[Value[_]]().g)
+        case avalue: Value[_] => bool(g = avalue.g == inst.arg0[Value[_]].g)
         case _ => throw new LanguageException("")
       }).via(start, inst)).getOrElse(start match {
         case astrm: Strm[O] => strm[Bool](astrm.values.map(x => this.exec(x)))

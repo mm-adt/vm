@@ -61,8 +61,8 @@ class VIntTest extends FunSuite {
     assertResult(2)(atype.trace.length)
     assertResult((int.id(), PlusOp(int.plus(2))))(atype.trace.last)
     assertResult(PlusOp(int.plus(2)))(atype.trace.last._2)
-    assertResult(int.plus(2))(atype.trace.last._2.arg0[IntType]())
-    assertResult(List((int, PlusOp(2))))(atype.trace.last._2.arg0[IntType]().trace)
+    assertResult(int.plus(2))(atype.trace.last._2.arg0[IntType])
+    assertResult(List((int, PlusOp(2))))(atype.trace.last._2.arg0[IntType].trace)
   }
   test("nested lineages of values") {
     val atype = int.id().plus(int.plus(2))
@@ -70,8 +70,8 @@ class VIntTest extends FunSuite {
     assertResult(2)((int(3) ===> atype).trace.length)
     assertResult((int(3), PlusOp(5)))((int(3) ===> atype).trace.last)
     assertResult(PlusOp(5))((int(3) ===> int.id().plus(int.plus(2))).trace.last._2)
-    assertResult(int(5))((int(3) ===> int.id().plus(int.plus(2))).trace.last._2.arg0[Obj]())
-    assertResult(List((int(3), IdOp()), (int(3), PlusOp(2))))((int(3) ===> int.id().plus(int.plus(2))).trace.last._2.arg0[Obj]().trace)
+    assertResult(int(5))((int(3) ===> int.id().plus(int.plus(2))).trace.last._2.arg0[Obj])
+    assertResult(List((int(3), IdOp()), (int(3), PlusOp(2))))((int(3) ===> int.id().plus(int.plus(2))).trace.last._2.arg0[Obj].trace)
   }
 }
 

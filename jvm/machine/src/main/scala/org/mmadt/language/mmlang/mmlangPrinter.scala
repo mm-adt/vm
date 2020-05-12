@@ -94,14 +94,14 @@ object mmlangPrinter {
   }
 
   def instString(inst: Inst[_, _]): String = {
-    (inst.op() match {
-      case Tokens.to => LANGLE + inst.arg0[StrValue]().g + RANGLE
-      case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue]().g + RANGLE
-      case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]]().toString
+    (inst.op match {
+      case Tokens.to => LANGLE + inst.arg0[StrValue].g + RANGLE
+      case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue].g + RANGLE
+      case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]].toString
       case Tokens.merge => Tokens.merge_op
-      case _ => inst.args() match {
-        case Nil => LBRACKET + inst.op() + RBRACKET
-        case args: List[Obj] => LBRACKET + inst.op() + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET
+      case _ => inst.args match {
+        case Nil => LBRACKET + inst.op + RBRACKET
+        case args: List[Obj] => LBRACKET + inst.op + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET
       }
     }) + qString(inst.q)
   }

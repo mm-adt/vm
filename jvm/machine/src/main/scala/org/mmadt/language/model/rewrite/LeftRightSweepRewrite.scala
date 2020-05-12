@@ -40,7 +40,7 @@ object LeftRightSweepRewrite {
       model.get(atype) match {
         case Some(right: Type[S]) => rewrite(model, right, btype, start)
         case None =>
-          val inst: Inst[Obj, Obj] = OpInstResolver.resolve(atype.via._2.op(), rewriteArgs(model, atype.rinvert[Type[S]]().range, atype.via._2.asInstanceOf[Inst[Obj, Obj]], start)).q(atype.via._2.q)
+          val inst: Inst[Obj, Obj] = OpInstResolver.resolve(atype.via._2.op, rewriteArgs(model, atype.rinvert[Type[S]]().range, atype.via._2.asInstanceOf[Inst[Obj, Obj]], start)).q(atype.via._2.q)
           rewrite(model,
             atype.rinvert(),
             inst.exec(atype.rinvert[Type[S]]().range).asInstanceOf[Type[S]].compute(btype).asInstanceOf[Type[S]], // might need a model.resolve down the road
@@ -57,12 +57,12 @@ object LeftRightSweepRewrite {
 
   // if no match, then apply the instruction after rewriting its arguments
   private def rewriteArgs[S <: Obj](model: Model, start: Type[S], inst: Inst[Obj, Obj], end: S): List[Obj] = {
-    inst.op() match {
-      case Tokens.a | Tokens.as | Tokens.map | Tokens.put | Tokens.model | Tokens.split => inst.args().map {
+    inst.op match {
+      case Tokens.a | Tokens.as | Tokens.map | Tokens.put | Tokens.model | Tokens.split => inst.args.map {
         case atype: Type[_] if isSymbol(atype) => model(atype)
         case other => other
       }
-      case _ => inst.args().map {
+      case _ => inst.args.map {
         case atype: Type[_] => rewrite(model, atype, start, start)
         case avalue: Value[_] => avalue
       }
