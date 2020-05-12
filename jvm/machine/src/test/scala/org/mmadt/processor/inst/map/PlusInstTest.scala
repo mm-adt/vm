@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.{IntType, RealType, Type, __}
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
-import org.mmadt.language.obj.{Int, Lst, Obj, Real}
+import org.mmadt.language.obj.{Int, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
@@ -111,10 +111,6 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(real.plus(real))(real.plus(real)) // type * type = type
     assert(real.plus(real).isInstanceOf[RealType])
     assert(real.plus(real).isInstanceOf[Real])
-  }
-
-  test("[plus] w/ trace") {
-    assertResult(PlusOp(int))(int(4).mult(2).plus(int).tracer().get(3).trace.head._1.asInstanceOf[Lst[Obj]].head())
   }
 
   /*test("[plus] w/ serial and parallel poly") {

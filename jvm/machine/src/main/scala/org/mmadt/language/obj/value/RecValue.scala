@@ -34,6 +34,4 @@ trait RecValue[A <: Value[Obj], B <: Value[Obj]] extends Rec[A, B]
 
   override val g: RecTuple[A, B]
   override def gmap: collection.Map[A,B] = g._2
-  override def get(key: A): B = this.gmap(key).via(this, GetOp(key))
-  override def get[BB <: Obj](key: A, btype: BB): BB = this.gmap(key).via(this, GetOp(key, btype)).asInstanceOf[BB]
 }

@@ -4,8 +4,8 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
@@ -29,18 +29,6 @@ trait Lst[A <: Obj] extends Poly[A]
   override def glist: List[A] = g._2
 
   def clone(values: List[A]): this.type = this.clone(g = (gsep, values))
-
-  override def get(key: Int): A = {
-    val valueType: A = key match {
-      case aint: IntValue =>
-        Lst.checkIndex(this, aint.g.toInt)
-        this.glist(aint.g.toInt)
-      case _ => obj.asInstanceOf[A]
-    }
-    if (valueType.via == base) valueType.via(this, GetOp[Obj, A](key, valueType)) else valueType.via(valueType.via._1 | this, GetOp[Obj, A](key, valueType))
-  }
-
-  override def get[BB <: Obj](key: Int, btype: BB): BB = btype.via(this, GetOp[Obj, BB](key, btype))
 
   override def test(other: Obj): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)

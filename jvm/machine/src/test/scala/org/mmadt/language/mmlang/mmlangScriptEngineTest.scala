@@ -583,4 +583,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("false[a,-<[bool|real]>-]"))
     assertResult(bfalse)(engine.eval("'hello'[a,-<[bool|real]>-]"))
   }
+
+  test("play2") {
+   println(engine.eval("5[plus,int][trace].1[path]"))
+
+  }
 }

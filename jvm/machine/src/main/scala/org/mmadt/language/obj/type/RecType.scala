@@ -39,9 +39,6 @@ trait RecType[A <: Obj, B <: Obj] extends Rec[A, B]
   def apply(value: (Value[A], Value[B])*): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, (Tokens.`;`, value.toMap), this.q)
   def apply(value: RecValue[Value[A], Value[B]]): RecValue[Value[A], Value[B]] = new VRec[Value[A], Value[B]](this.name, value.g, this.q)
 
-  override def get[BB <: Obj](key: A, btype: BB): BB = btype.via(this, GetOp[A, BB](key, btype))
-  override def get(key: A): B = asType(this.g._2(key)).via(this, GetOp[A, B](key, asType[B](this.g._2(key))))
-
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.toString().hashCode() ^ this.trace.hashCode() ^ this.q.hashCode()
   override def equals(other: Any): Boolean = other match {
     case atype: RecType[A, B] => this.name == atype.name && this.q == atype.q && this.g == atype.g && this.via == atype.via

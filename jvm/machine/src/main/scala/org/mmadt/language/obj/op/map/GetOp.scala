@@ -25,6 +25,8 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.{RecType, __}
+import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -33,10 +35,23 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait GetOp[A <: Obj, B <: Obj] {
   this: Obj =>
-  def get(key: A): B
-  def get[BB <: Obj](key: A, btype: BB): BB
+  def get(key: A): B = GetOp(key).exec(this)
+  def get[BB <: Obj](key: A, btype: BB): BB = btype.via(this, GetOp[A, BB](key, btype))
 }
-object GetOp extends Func[Obj with GetOp[Obj, Obj], Obj] {
-  def apply[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B]): Inst[A, B] = new VInst[A, B](g = (Tokens.get, List(key)), func = this)
-  override def apply(start: Obj with GetOp[Obj, Obj], inst: Inst[Obj with GetOp[Obj, Obj], Obj]): Obj = start.get(inst.arg0[Obj]).via(start, inst)
+object GetOp extends Func[Obj, Obj] {
+  def apply[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val key: Obj = inst.arg0[Obj]
+    (start match {
+      case anon: __ => anon
+      case arec: RecType[Obj, Obj] => asType(arec.gmap(key))
+      case arec: RecValue[Value[Obj], Value[Obj]] => arec.gmap(key.asInstanceOf[Value[Obj]])
+      case alst: Lst[_] => key match {
+        case aint: IntValue =>
+          Lst.checkIndex(alst, aint.g.toInt)
+          alst.glist(aint.g.toInt)
+        case _ => obj
+      }
+    }).via(start, inst)
+  }
 }
