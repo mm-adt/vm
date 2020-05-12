@@ -28,14 +28,17 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1).-<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
         (int(1).q(5).-<(int `,` int.plus(2).q(10)), int(1).q(5) `,` int(3).q(50)),
         (int(1).q(5).-<(int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
-        // (int(int(1), int(100)).-<(|(int, int)) >-, int(int(1), int(1), int(100), int(100))),
-        //(int(int(1).q(5), int(100)).-<(|(int, int.plus(2).q(10))) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
-        //(int(int(1), int(2)).-<(|(int, int -< (|(int, int)))), |(strm(List(int(1), int(2))), strm(List(|(int(1), int(1)), |(int(2), int(2)))))),
-        //(int(1) -< |(str, int), |[Obj](obj.q(0), int(1))),
-        // (strm(List(int(1), str("a"))) -< `|`(str, int), strm(List(`|`[Obj](obj.q(0), int(1)), `|`[Obj](str("a"), obj.q(0))))),
+        (int(int(1), int(100)).-<(int | int) >-, int(int(1), int(100))),
+        (int(int(1), int(100)).-<(int `,` int) >-, int(1, 1, 100, 100)),
+        (int(int(1), int(100)).-<(int `,` int) >-, int(int(1).q(2), int(100).q(2))),
+        (int(int(1).q(5), int(100)).-<(int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
+        (int(int(1).q(5), int(100)).-<(int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
+        //(int(int(1), int(2)).-<(int | (int -< (int | int))), strm(List(int(1)|, int(2)|))),
+        //(int(int(1), int(2)).-<(int `,` (int -< (int | int))), strm[Obj](List(int(1), int(1) |, int(2), int(2) |))),
+        (int(1) -< (str | int), zeroObj | int(1)),
+        //(strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
     forEvery(starts) { (query, result) => {
-      println(s"${query}")
       assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
       assertResult(result)(query)
     }
@@ -107,7 +110,7 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(int)(int.mult(8).split(__.id() | __.plus(8).mult(2) | int(56)).merge[Int].id().isolate)
     assertResult(int.q(1, 20))(int.mult(8).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
     assertResult(int.q(1, 40))(int.q(2).mult(8).q(1).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
-    //assertResult(__)(int.q(2).mult(8).q(0).split(__.id().q(10, 20) / __.plus(8).mult(2).q(2) / int(56)).merge[Obj].id().isolate)
+    assertResult(int(56))(int.q(2).mult(8).q(0).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Obj].id().isolate)
   }
 
   test("serial value/type checking") {

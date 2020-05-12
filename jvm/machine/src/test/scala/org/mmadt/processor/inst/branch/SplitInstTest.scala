@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.inst.branch
 
-import org.mmadt.language.obj.`type`.{IntType, __}
+import org.mmadt.language.obj.`type`.{IntType, Type, __}
 import org.mmadt.language.obj.{Int, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -35,18 +35,19 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     val check: TableFor3[Obj, Poly[Obj], Obj] =
       new TableFor3[Obj, Poly[Obj], Obj](("input", "type", "result"),
         (int(1), int.-<(int `;` int), int(1) `;` int(1)),
-        //(int(1,2,3), int.q(3).-<(int.q(3) / int.q(3)), int(1,2,3)/ int(1,2,3)),
-        //(int(2), __.-<(coprod(int, str)), coprod(int(2), obj.q(qZero))),
-        //(int(2).q(2), int.q(5).-<(coprod(int, int.is(__.gt(10)))), coprod(int(2), obj.q(qZero))),
+        (int(1, 2, 3), int.q(3).-<(int.q(3) `,` int.q(3)), strm(List((int(1) `,` 1), (int(2) `,` 2), (int(3) `,` 3)))),
+        (int(1, 2, 3), int.q(3).-<(int(5).q(3) `,` int(8).q(3)), (int(5).q(3) `,` int(8).q(3)).q(3)),
+        (int(2), __.-<(int | str), int(2) | obj.q(qZero)),
+        (int(4).q(2), int.q(2).-<(int | int.is(__.gt(10))), int(4).q(2) | obj.q(qZero)),
         (int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), int(2).q(2) `;` obj.q(qZero)),
         (int(2), int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)),
-        // (int(2), int.-<(coprod(int.-<(coprod(int, int.is(__.gt(11)))), int.is(__.gt(10)))), coprod(coprod(int(2), obj.q(qZero)), obj.q(qZero))),
+        (int(2), int.-<(int.-<(int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero)),
       )
     forEvery(check) { (input, atype, result) => {
-      //assertResult(result)(input.compute(atype))
-      //assertResult(result)(input ==> atype)
+      assertResult(result)(input.compute(atype.asInstanceOf[Type[Obj]]))
+      assertResult(result)(input ==> atype.asInstanceOf[Type[Obj]])
       assertResult(result)(input ===> atype)
-      // assertResult(result)(input ===> (input.range ==> atype))
+      assertResult(result)(input ===> (input.range ==> atype.asInstanceOf[Type[Obj]]))
       assertResult(result)(input ===> (input.range ===> atype))
     }
     }
@@ -76,9 +77,9 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   ////////////////////////////
 
-  /*test("[//] trace w/ state") {
+  /*test("[;] trace w/ state") {
     val results = int(2, 8, 15, 20) ==> int.q(4).to("x").plus(1).-<(
-      (int.is(int.gt(10)) --> int.mult(10)) /
+      (int.is(int.gt(10)) --> int.mult(10)) `;`
         (int --> int.id().plus(int.from("x")).to("y").id())).>-
 
     println(results.toStrm.values.map(x=>x.trace))
@@ -115,7 +116,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     }
   }*/
 
-  test("[\\] w/ values") {
+  test("[,] w/ values") {
     assertResult(int(4))(
       int(0).plus(1).-<(
         (int.is(int.gt(2)) --> int.mult(3)) `,`
@@ -123,7 +124,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
 
     assertResult(int(12, 16))(
       int(0).plus(4).-<(
-        (int.is(int.gt(2)) --> int.mult(3))`,`
+        (int.is(int.gt(2)) --> int.mult(3)) `,`
           (int --> int.mult(4))) >-)
 
     assertResult(int(42, 43, 44))(
@@ -155,7 +156,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
           (int.is(int.gt(10)) --> __.plus(4))).>-)
   }
 
-  test("[//] w/ state") {
+  test("[,] w/ state") {
     assertResult(real(2.0, 3.0, 3.0))(
       real(0.0, 1.0, 1.0) ===> real.q(3).to("x").plus(1.0).to("y").-<(
         (__.is(__.eqs(1.0)) --> __.from("y")) `,`

@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map.EqsOp
@@ -66,7 +67,7 @@ class EqsInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(starts) { (input, atype, result, kind) => {
       List(
-        //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
+        new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
         EqsOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),

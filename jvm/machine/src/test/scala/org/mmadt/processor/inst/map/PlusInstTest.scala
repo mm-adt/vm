@@ -64,7 +64,6 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0), __.plus(__.plus(real)), real(3.0, 6.0, 9.0), "strm"), // strm * anon = strm
       )
     forEvery(starts) { (input, atype, result, kind) => {
-      //println(s"${input}${atype}")
       List(
         new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
         PlusOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input),
