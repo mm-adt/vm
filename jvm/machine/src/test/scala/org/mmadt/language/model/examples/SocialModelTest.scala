@@ -108,7 +108,7 @@ class SocialModelTest extends FunSuite {
     val toSocial = msCompiler(trec[Str, Obj](str("name") -> str, str("age") -> int).get(str("age"), int).plus(int))
     assertResult("nat<=person[get,'age'][plus,nat]")(toSocial.toString)
     assertResult("nat")(toSocial.range.name)
-    assertResult("person")(toSocial.domain().name)
+    assertResult("person")(toSocial.domain.name)
     assertResult("int<=rec:['name'->str;'age'->int][get,'age'][plus,int]")(smCompiler(toSocial).toString)
     assertResult(int(40))(smIterator(vrec(str("name") -> str("ryan"), str("age") -> int(20)), smCompiler(toSocial)))
   }

@@ -49,7 +49,7 @@ object LeftRightSweepRewrite {
     } else if (!btype.root) {
       rewrite(model,
         btype.linvert(),
-        btype.linvert().domain(),
+        btype.linvert().domain,
         btype.trace.head._2.exec(start)).asInstanceOf[S]
     }
     else start

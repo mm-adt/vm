@@ -120,25 +120,25 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     assertResult(32)(socialToMM(int(32).named("nat")).g)
     //
     val compile1 = Processor.compiler(mmToSocial).apply(trec(str("name") -> str, str("age") -> int))
-    assertResult("person")(compile1.domain().name)
-    assertResult("nat")(compile1.domain().asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
+    assertResult("person")(compile1.domain.name)
+    assertResult("nat")(compile1.domain.asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
     assertResult("person")(compile1.range.name)
     assertResult("nat")(compile1.range.asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
 
     val compile2 = Processor.compiler(mmToSocial).apply(trec(str("name") -> str, str("age") -> int).id().get("age", int))
-    assertResult("person")(compile2.domain().name)
-    assertResult("nat")(compile2.domain().asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
+    assertResult("person")(compile2.domain.name)
+    assertResult("nat")(compile2.domain.asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
     assertResult("nat")(compile2.range.name)
 
     val compile3 = Processor.compiler(socialToMM).apply(compile1)
-    assertResult("rec")(compile3.domain().name)
-    assertResult("int")(compile3.domain().asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
+    assertResult("rec")(compile3.domain.name)
+    assertResult("int")(compile3.domain.asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
     assertResult("rec")(compile3.range.name)
     assertResult("int")(compile3.range.asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
 
     val compile4 = Processor.compiler(socialToMM).apply(compile2)
-    assertResult("rec")(compile4.domain().name)
-    assertResult("int")(compile4.domain().asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
+    assertResult("rec")(compile4.domain.name)
+    assertResult("int")(compile4.domain.asInstanceOf[RecType[Str, Obj]].get(str("age")).name)
     assertResult("int")(compile4.range.name)
   }
 }

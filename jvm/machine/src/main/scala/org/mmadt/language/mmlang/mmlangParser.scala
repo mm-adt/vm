@@ -65,7 +65,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
     x._2 match {
       case None => x._1 match {
         case _: Value[_] => x._1 // left hand value only, return it
-        case _: Type[_] => x._1.domain() ===> x._1 // left hand type only, compile it with it's domain
+        case _: Type[_] => x._1.domain ===> x._1 // left hand type only, compile it with it's domain
       }
       case Some(y) => x._1 ===> y // left and right hand, evaluate right type with left obj
     }

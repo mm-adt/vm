@@ -23,8 +23,9 @@
 package org.mmadt.processor
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.processor.obj.value.IteratorProcessor
 import org.mmadt.storage.StorageFactory._
@@ -34,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
  */
 trait Processor {
   def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E
-  def apply[S <: Obj, E <: Obj](rangeType: Type[E]): Type[E] = this.apply(rangeType.domain[S](), rangeType).asInstanceOf[Type[E]]
+  def apply[S <: Obj, E <: Obj](rangeType: Type[E]): Type[E] = this.apply(rangeType.domain[S], rangeType).asInstanceOf[Type[E]]
 }
 
 object Processor {
@@ -44,7 +45,11 @@ object Processor {
   def strmOrSingle[O <: Obj](itty: Iterator[O]): O = {
     if (itty.hasNext) {
       val first = itty.next()
-      if (itty.hasNext) strm[O]((first +: itty.toList)) else first
+      first match {
+        case _: Value[_] if itty.hasNext => strm[O]((first +: itty.toList))
+        case _: Value[_] => first
+        case _ => asType(first).q(plusQ(first.q, itty.foldLeft(qZero)((a, b) => plusQ(a, b.q))))
+      }
     } else
       zeroObj.asInstanceOf[O]
   }

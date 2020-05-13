@@ -78,7 +78,7 @@ trait Obj
     domainType.compute(asType(this)).hardQ(this.q).asInstanceOf[this.type]
   }
   def range: Type[Obj] = asType(this.isolate)
-  def domain[D <: Obj](): Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]()
+  def domain[D <: Obj]: Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
@@ -158,7 +158,7 @@ trait Obj
     .getOrElse(this.asInstanceOf[E])
 
   def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = {
-    LanguageException.testTypeCheck(range.range, rangeType.asInstanceOf[Type[E]].domain())
+    LanguageException.testTypeCheck(range.range, rangeType.asInstanceOf[Type[E]].domain)
     this match {
       case _: Value[_] => Processor.iterator(model).apply(this, rangeType)
       case _: Type[_] => Processor.compiler(model).apply(this, rangeType)

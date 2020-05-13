@@ -25,13 +25,15 @@ package org.mmadt.language.obj.value
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.op.trace.TypeOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Value[+V <: Obj] extends Obj {
+trait Value[+V <: Obj] extends Obj
+  with TypeOp[V] {
   def g: Any
 
   // pattern matching methods
