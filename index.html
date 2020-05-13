@@ -437,7 +437,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .imageblock.left{margin:.25em 3em 1.25em 0}
 .imageblock.right{margin:.25em 0 1.25em .625em}
 table.tableblock{max-width:100%;border-collapse:separate; margin:0.25em 1em 0.25em 1em}
-
+hr{border-width:0px 0 0; margin:1em 0 3em}
 </style>
 </head>
 <body class="book toc2 toc-left">
@@ -1560,7 +1560,7 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all center" style="width: 35%;">
+<table class="tableblock frame-all grid-all right" style="width: 35%;">
 <caption class="title">Table 4. Ring with Unity Theorems</caption>
 <colgroup>
 <col style="width: 100%;">
@@ -1589,10 +1589,7 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>&#160;<br>
-&#160;<br></p>
-</div>
+<hr>
 <div class="paragraph">
 <p>The ring axioms are presented again in the table below along with the associated <code>mmlang</code> expressions, where <code>[a]</code>, <code>[b]</code>, <code>[c]</code> are variable instructions from <code>inst</code>.</p>
 </div>
@@ -1646,13 +1643,13 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 <div class="paragraph">
 <p>Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where <code>[a]</code> is <code>int[plus,1]</code>, <code>[b]</code> is <code>int[mult,2]</code>, and <code>[c]</code> is <code>int[mult,3]</code> (though any respectfully sorted types can be used).</p>
 </div>
-<table class="tableblock frame-all grid-all left" style="width: 50%;">
+<table class="tableblock frame-all grid-all left" style="width: 48%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>-&lt;[-&lt;[[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]]&gt;-,[mult,<span style="color:#00D">3</span>]]&gt;-
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
@@ -1679,13 +1676,13 @@ mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</sp
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all right" style="width: 50%;">
+<table class="tableblock frame-all grid-all center" style="width: 48%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>[<span style="color:#369;font-weight:bold">id</span>][plus,<span style="color:#00D">1</span>]
 ==&gt;<span style="color:#00D">2</span>
@@ -1708,11 +1705,7 @@ mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D"
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>&#160;<br>
-&#160;<br>
-&#160;<br></p>
-</div>
+<hr>
 </div>
 </div>
 <div class="sect2">
