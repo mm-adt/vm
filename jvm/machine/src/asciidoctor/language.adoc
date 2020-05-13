@@ -38,7 +38,7 @@ Everything that can be denoted in `mmlang` is an `obj`. Within the VM and outsid
 
 image::obj-type-q-value-q.png[float=right,width=450]
 
-This internal structure is well-defined as an https://en.wikipedia.org/wiki/Semiring[algebraic semiring]. The semiring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts. Thus, the previous formula can be rewritten as \[
+This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring]. The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts. Thus, the previous formula can be rewritten as \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
 This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*. This is the *obj meta-model*.
@@ -392,7 +392,7 @@ The `inst`-monoid is an algebraic structure that can be used by all untyped lang
 
 ==== The Type Trace Graph
 
-Every mm-ADT program is a _type_. Every type is created by a https://en.wikipedia.org/wiki/Type_constructor[type constructor]. The ctypes are degenerate _nullary_ constructors. The dtypes are `n`-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the type's definition within a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] called a *type trace graph*.
+Every mm-ADT program is a _type_. Every type is created by a https://en.wikipedia.org/wiki/Type_constructor[type constructor]. The ctypes are degenerate _nullary_ constructors. The dtypes are `n`-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type's definition within a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] called a *type trace graph*.
 
 ===== Linear Type Traces
 
@@ -468,6 +468,111 @@ mmlang> -10~<[int[is>0] | int[neg]]=[_|[neg]]>-
 ----
 
 ==== The Type Ring
+
+.Stream Ring Theory
+****
+https://zenodo.org/record/2565243[Stream ring theory] is a ring algebra defined by the https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* and *coefficient* ring, where every function/coefficient pair is an element of the carrier of a polynomial *stream* ring. The algebra's intended use was in distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, large amounts of data need to be colocated for processing. Proto-versions of the stream ring algebra are realized in the distributed graph computing framework called http://tinkerpop.apache.org[Apache TinkerPop].
+
+mm-ADT adopts the algebra of stream ring theory, where functions are *instructions* and coefficients are *quantifiers*. mm-ADT's type system is realized as a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] extension of the algebra.
+****
+
+mm-ADT's type system is founded on the mathematics of https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ring*. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring's carrier set is the set of all instructions -- `inst`. The multiplicative (`*`) and additive (`+`) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated table provides the (most well known) logical entailments of said axioms -- i.e., theorems.
+
+.Ring with Unity Axioms
+[width=35%,float=left]
+|===
+|`(a + b) + c = a + (b + c)`
+|`0 + a = a + 0 = a`
+|`a - a = a + (-a) = 0`
+|`a + b = b + a`
+|`(a * b) * c = a * (b * c)`
+|`1 * a = a * 1 = a`
+|`(a + b) * c = (a * c) + (b * c)`
+|`a * (b + c) = (a * b) + (a * c)`
+|===
+
+.Ring with Unity Theorems
+[width=35%,float=center]
+|===
+|`a + b = a + c => b = c`
+|`a + b = 0 => a = -b & b = -a`
+|`-(a+b) = (-a) + (-b)`
+|`-(-a) = a`
+|`a*0 = 0 = 0*a`
+|`a * (-b) = -a * b = -(a * b)`
+|`(-a) * (-b) = a * b`
+|===
+
+{nbsp} +
+
+The ring axioms are presented again in the table below along with the associated `mmlang` expressions, where `[a]`, `[b]`, `[c]` are variable instructions from `inst`.
+
+.The Ring Axioms in mmlang
+[cols="2,4"]
+|===
+|Ring Axioms                        |Related mmlang Types
+
+|`(a + b) + c = a + (b + c)`        |`-<[-<[[a],[b]]>-,[c]]>-` \$=\$ `-<[[a],-<[[b],[c]]>-]>-`
+|`0 + a = a + 0 = a`                |`-<[[id]{0},[a]]>-` \$=\$ `-<[[a],[id]{0}]>-`
+|`a - a = a + (-a) = 0`             |`-<[[a],[a]{-1}]>-` \$=\$ `[id]{0}`
+|`a + b = b + a`                    |`-<[[a],[b]]>-` \$=\$ `-<[[b],[a]]>-`
+|`(a * b) * c = a * (b * c)`        |`[map,[a][b]][c]` \$=\$ `[a][map,[b][c]]`
+|`1 * a = a * 1 = a`                |`[id][a]` \$=\$ `[a][id]` \$=\$ `[a]`
+|`(a + b) * c = (a * c) + (b * c)`  |`-<[[a],[b]]>-[c]` \$=\$ `-<[[a][c],[b][c]]>-`
+|`a * (b + c) = (a * b) + (a * c)`  |`[a]-<[[b],[c]]>-` \$=\$ `-<[[a][b],[a][c]]>-`
+|===
+
+Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where `[a]` is `int[plus,1]`, `[b]` is `int[mult,2]`, and `[c]` is `int[mult,3]` (though any respectfully sorted types can be used).
+
+.mmlang Expressions of the Ring Axioms
+[cols="5,5"]
+|===
+a|
+[source]
+----
+mmlang> 1-<[-<[[plus,1],[mult,2]]>-,[mult,3]]>-
+==>2{2}
+==>3
+mmlang> 1-<[[plus,1],-<[[mult,2],[mult,3]]>-]>-
+==>2{2}
+==>3
+mmlang> 1-<[[id]{0},[plus,1]]>-
+==>2
+mmlang> 1-<[[plus,1],[id]{0}]>-
+==>2
+mmlang> 1-<[[plus,1],[plus,1]{-1}]>-
+mmlang> 1[id]{0}
+mmlang> 1-<[[plus,1],[mult,2]]>-
+==>2{2}
+mmlang> 1-<[[mult,2],[plus,1]]>-
+==>2{2}
+mmlang> 1[map,[plus,1][mult,2]][mult,3]
+==>12
+mmlang> 1[plus,1][map,[mult,2][mult,3]]
+==>12
+----
+
+a|
+[source]
+----
+mmlang> 1[id][plus,1]
+==>2
+mmlang> 1[plus,1][id]
+==>2
+mmlang> 1[plus,1]
+==>2
+mmlang> 1-<[[plus,1],[mult,2]]>-[mult,3]
+==>6{2}
+mmlang> 1-<[[plus,1][mult,3],[mult,2][mult,3]]>-
+==>6{2}
+mmlang> 1[plus,1]-<[[mult,2],[mult,3]]>-
+==>4
+==>6
+mmlang> 1-<[[plus,1][mult,2],[plus,1][mult,3]]>-
+==>4
+==>6
+----
+|===
 
 === The Value
 

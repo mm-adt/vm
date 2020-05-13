@@ -128,37 +128,7 @@ _Every key_ that matches has it's respective value processed for the incoming `o
 
 mm-ADT's type theory has a rich axiomatic semantics founded on https://en.wikipedia.org/wiki/Ring_theory[algebraic ring theory] and in particular, on https://zenodo.org/record/2565243[stream ring theory].
 
-NOTE: In stream ring theory, instructions are called _functions_ and quantifiers are called _coefficients_.
-A function-coefficient pair is called a _stream_.
-The equivalence highlights the fact that mm-ADT types refer to streams of objects (i.e. https://en.wikipedia.org/wiki/Multiset[multi-sets] or bags).
 
-In ring theory, if \$<A,+,\ast>\$ is a ring with \$A\$ the carrier set, \$0 \in A\$ the additive identity, \$1 \in A\$ the multiplicative identity, and \$a,b,c \in A\$, then the ring must obey the axioms itemized on the left.
-Every ring benefits from the theorems itemized on the right which are (the most popularly used) logical entailments of the axioms.
-
-.Ring with Unity Axioms
-[width=50%,float=left]
-|===
-|`(a + b) + c = a + (b + c)`
-|`0 + a = a + 0 = a`
-|`a - a = a + (-a) = 0`
-|`a + b = b + a`
-|`(a * b) * c = a * (b * c)`
-|`1 * a = a * 1 = a`
-|`(a + b) * c = (a * c) + (b * c)`
-|`a * (b + c) = (a * b) + (a * c)`
-|===
-
-.Ring Axiom Entailments
-[width=50%,float=right]
-|===
-|`a + b = a + c => b = c`
-|`a + b = 0 => a = -b & b = -a`
-|`-(a+b) = (-a) + (-b)`
-|`-(-a) = a`
-|`a*0 = 0 = 0*a`
-|`a * (-b) = -a * b = -(a * b)`
-|`(-a) * (-b) = a * b`
-|===
 
 &nbsp;
 
@@ -183,20 +153,7 @@ In mm-ADT, the carrier set of the *instruction ring* is the set of all instructi
 
 In the table below `[a]`, `[b]`, and `[c]` are variable instructions in `inst`, where `[none] == [is,false]` and `[all] == [is,true]`.
 
-.The Ring Axioms in mmlang
-[cols="2,4"]
-|===
-|Ring Axioms                        |Related mmlang Types
 
-|`(a + b) + c = a + (b + c)`        |`[branch,[branch,[a],[b]],[c]] == [branch,[a],[branch,[b],[c]]]`
-|`0 + a = a + 0 = a`                |`[branch,[none],[a]] == [branch,[a],[none]] == [a]`
-|`a - a = a + (-a) = 0`             |`[branch,[a],[a]{-1}] == [none]`
-|`a + b = b + a`                    |`[branch,[a],[b]] == [branch,[b],[a]]`
-|`(a * b) * c = a * (b * c)`        |`[map,[a][b]][c] == [a][map,[b][c]]`
-|`1 * a = a * 1 = a`                |`[all][a] == [a][all] == [a]`
-|`(a + b) * c = (a * c) + (b * c)`  |`[branch,[a],[b]][c] == [branch,[a][c],[b][c]]`
-|`a * (b + c) = (a * b) + (a * c)`  |`[a][branch,[b],[c]] == [branch,[a][b],[a][c]]`
-|===
 
 IMPORTANT: A known "bug" in stream ring theory is that not all instructions in `inst` have an additive inverse.
 Thus, it is not the case that every instruction set can serve as the carrier of a ring.
