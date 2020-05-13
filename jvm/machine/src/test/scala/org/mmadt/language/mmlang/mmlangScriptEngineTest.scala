@@ -579,8 +579,8 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("[type] instruction parsing") {
     assertResult("bool<=int[plus,1][mult,5][gt,int[mult,int]]")(engine.eval("5[plus,1][mult,5][gt,int[mult,int]][type]").toString)
-    assertResult("int{?}<=int[is,bool<=int[lt,10]]{?}")(engine.eval("5[is<10][type]").toString) // TODO: why the dangling quantifier
-    assertResult("int{0,3}<=int[is,bool<=int[lt,10]]{0,3}")(engine.eval("5,6,7[is<10][type]").toString) // TODO: why the dangling quantifier
+    assertResult("int{?}<=int[is,bool<=int[lt,10]]")(engine.eval("5[is<10][type]").toString)
+    assertResult("int{0,3}<=int[is,bool<=int[lt,10]]")(engine.eval("5,6,7[is<10][type]").toString) // TODO: why the dangling quantifier
   }
 
   test("play") {

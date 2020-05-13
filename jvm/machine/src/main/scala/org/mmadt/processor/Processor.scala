@@ -48,7 +48,7 @@ object Processor {
       first match {
         case _: Value[_] if itty.hasNext => strm[O]((first +: itty.toList))
         case _: Value[_] => first
-        case _ => asType(first).q(plusQ(first.q, itty.foldLeft(qZero)((a, b) => plusQ(a, b.q))))
+        case _ => asType(first).hardQ(plusQ(first.q, itty.foldLeft(qZero)((a, b) => plusQ(a, b.q))))
       }
     } else
       zeroObj.asInstanceOf[O]
