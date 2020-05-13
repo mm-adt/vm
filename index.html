@@ -775,7 +775,7 @@ The recommended target language for all higher-level language compilers is <code
 </div>
 </div>
 <div class="paragraph">
-<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Semiring">algebraic semiring</a>. The semiring axioms specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over coproducts. Thus, the previous formula can be rewritten as \[
+<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">algebraic ring</a>. The ring axioms specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over coproducts. Thus, the previous formula can be rewritten as \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
 This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>. This is the <strong>obj meta-model</strong>.</p>
@@ -1423,7 +1423,7 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 <div class="sect3">
 <h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
 <div class="paragraph">
-<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the type&#8217;s definition within a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> called a <strong>type trace graph</strong>.</p>
+<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type&#8217;s definition within a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> called a <strong>type trace graph</strong>.</p>
 </div>
 <div class="sect4">
 <h5 id="_linear_type_traces">Linear Type Traces</h5>
@@ -1514,7 +1514,192 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 </div>
 <div class="sect3">
 <h4 id="_the_type_ring">The Type Ring</h4>
-
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Stream Ring Theory</div>
+<div class="paragraph">
+<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> is a ring algebra defined by the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> and <strong>coefficient</strong> ring, where every function/coefficient pair is an element of the carrier of a polynomial <strong>stream</strong> ring. The algebra&#8217;s intended use was in distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, large amounts of data need to be colocated for processing. Proto-versions of the stream ring algebra are realized in the distributed graph computing framework called <a href="http://tinkerpop.apache.org">Apache TinkerPop</a>.</p>
+</div>
+<div class="paragraph">
+<p>mm-ADT adopts the algebra of stream ring theory, where functions are <strong>instructions</strong> and coefficients are <strong>quantifiers</strong>. mm-ADT&#8217;s type system is realized as a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> extension of the algebra.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>mm-ADT&#8217;s type system is founded on the mathematics of <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ring</strong>. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring&#8217;s carrier set is the set of all instructions&#8201;&#8212;&#8201;<code>inst</code>. The multiplicative (<code>*</code>) and additive (<code>+</code>) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated table provides the (most well known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., theorems.</p>
+</div>
+<table class="tableblock frame-all grid-all left" style="width: 35%;">
+<caption class="title">Table 3. Ring with Unity Axioms</caption>
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all center" style="width: 35%;">
+<caption class="title">Table 4. Ring with Unity Theorems</caption>
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = a + c &#8658; b = c</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = 0 &#8658; a = -b &amp; b = -a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-(-a) = a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a*0 = 0 = 0*a</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (-b) = -a * b = -(a * b)</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(-a) * (-b) = a * b</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>&#160;<br></p>
+</div>
+<div class="paragraph">
+<p>The ring axioms are presented again in the table below along with the associated <code>mmlang</code> expressions, where <code>[a]</code>, <code>[b]</code>, <code>[c]</code> are variable instructions from <code>inst</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. The Ring Axioms in mmlang</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Ring Axioms</th>
+<th class="tableblock halign-left valign-top">Related mmlang Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[-&lt;[[a],[b]]&gt;-,[c]]&gt;-</code> \$=\$ <code>-&lt;[[a],-&lt;[[b],[c]]&gt;-]&gt;-</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[[id]{0},[a]]&gt;-</code> \$=\$ <code>-&lt;[[a],[id]{0}]&gt;-</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[[a],[a]{-1}]&gt;-</code> \$=\$ <code>[id]{0}</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[[a],[b]]&gt;-</code> \$=\$ <code>-&lt;[[b],[a]]&gt;-</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[map,[a][b]][c]</code> \$=\$ <code>[a][map,[b][c]]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[id][a]</code> \$=\$ <code>[a][id]</code> \$=\$ <code>[a]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[[a],[b]]&gt;-[c]</code> \$=\$ <code>-&lt;[[a][c],[b][c]]&gt;-</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a]-&lt;[[b],[c]]&gt;-</code> \$=\$ <code>-&lt;[[a][b],[a][c]]&gt;-</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where <code>[a]</code> is <code>int[plus,1]</code>, <code>[b]</code> is <code>int[mult,2]</code>, and <code>[c]</code> is <code>int[mult,3]</code> (though any respectfully sorted types can be used).</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. mmlang Expressions of the Ring Axioms</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>-&lt;[-&lt;[[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]]&gt;-,[mult,<span style="color:#00D">3</span>]]&gt;-
+==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
+==&gt;<span style="color:#00D">3</span>
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],-&lt;[[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]]&gt;-]&gt;-
+==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
+==&gt;<span style="color:#00D">3</span>
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>},[plus,<span style="color:#00D">1</span>]]&gt;-
+==&gt;<span style="color:#00D">2</span>
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}]&gt;-
+==&gt;<span style="color:#00D">2</span>
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],[plus,<span style="color:#00D">1</span>]{-<span style="color:#00D">1</span>}]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]]&gt;-
+==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[mult,<span style="color:#00D">2</span>],[plus,<span style="color:#00D">1</span>]]&gt;-
+==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
+mmlang&gt; <span style="color:#00D">1</span>[<span style="color:#369;font-weight:bold">map</span>,[plus,<span style="color:#00D">1</span>][mult,<span style="color:#00D">2</span>]][mult,<span style="color:#00D">3</span>]
+==&gt;<span style="color:#00D">12</span>
+mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>][<span style="color:#369;font-weight:bold">map</span>,[mult,<span style="color:#00D">2</span>][mult,<span style="color:#00D">3</span>]]
+==&gt;<span style="color:#00D">12</span></code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>[<span style="color:#369;font-weight:bold">id</span>][plus,<span style="color:#00D">1</span>]
+==&gt;<span style="color:#00D">2</span>
+mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>][<span style="color:#369;font-weight:bold">id</span>]
+==&gt;<span style="color:#00D">2</span>
+mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>]
+==&gt;<span style="color:#00D">2</span>
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]]&gt;-[mult,<span style="color:#00D">3</span>]
+==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>][mult,<span style="color:#00D">3</span>],[mult,<span style="color:#00D">2</span>][mult,<span style="color:#00D">3</span>]]&gt;-
+==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}
+mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>]-&lt;[[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]]&gt;-
+==&gt;<span style="color:#00D">4</span>
+==&gt;<span style="color:#00D">6</span>
+mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>][mult,<span style="color:#00D">2</span>],[plus,<span style="color:#00D">1</span>][mult,<span style="color:#00D">3</span>]]&gt;-
+==&gt;<span style="color:#00D">4</span>
+==&gt;<span style="color:#00D">6</span></code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1728,85 +1913,6 @@ The record keys are <code>{0}</code>-predicates where if the incoming <code>obj<
 <div class="paragraph">
 <p>mm-ADT&#8217;s type theory has a rich axiomatic semantics founded on <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring theory</a> and in particular, on <a href="https://zenodo.org/record/2565243">stream ring theory</a>.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-In stream ring theory, instructions are called <em>functions</em> and quantifiers are called <em>coefficients</em>.
-A function-coefficient pair is called a <em>stream</em>.
-The equivalence highlights the fact that mm-ADT types refer to streams of objects (i.e. <a href="https://en.wikipedia.org/wiki/Multiset">multi-sets</a> or bags).
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>In ring theory, if \$&lt;A,+,\ast&gt;\$ is a ring with \$A\$ the carrier set, \$0 \in A\$ the additive identity, \$1 \in A\$ the multiplicative identity, and \$a,b,c \in A\$, then the ring must obey the axioms itemized on the left.
-Every ring benefits from the theorems itemized on the right which are (the most popularly used) logical entailments of the axioms.</p>
-</div>
-<table class="tableblock frame-all grid-all left" style="width: 50%;">
-<caption class="title">Table 3. Ring with Unity Axioms</caption>
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all right" style="width: 50%;">
-<caption class="title">Table 4. Ring Axiom Entailments</caption>
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = a + c &#8658; b = c</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = 0 &#8658; a = -b &amp; b = -a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-(-a) = a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a*0 = 0 = 0*a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (-b) = -a * b = -(a * b)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(-a) * (-b) = a * b</code></p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
 <p>&nbsp;</p>
 </div>
@@ -1860,53 +1966,6 @@ The type graph structure presented previously is a subgraph of a (pseudo) <a hre
 <div class="paragraph">
 <p>In the table below <code>[a]</code>, <code>[b]</code>, and <code>[c]</code> are variable instructions in <code>inst</code>, where <code>[none] == [is,false]</code> and <code>[all] == [is,true]</code>.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. The Ring Axioms in mmlang</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Ring Axioms</th>
-<th class="tableblock halign-left valign-top">Related mmlang Types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[branch,[a],[b]],[c]] == [branch,[a],[branch,[b],[c]]]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[none],[a]] == [branch,[a],[none]] == [a]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[a],[a]{-1}] == [none]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[a],[b]] == [branch,[b],[a]]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[map,[a][b]][c] == [a][map,[b][c]]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[all][a] == [a][all] == [a]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch,[a],[b]][c] == [branch,[a][c],[b][c]]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a][branch,[b],[c]] == [branch,[a][b],[a][c]]</code></p></td>
-</tr>
-</tbody>
-</table>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -2033,7 +2092,7 @@ _________      _________
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Instruction classes</caption>
+<caption class="title">Table 7. Instruction classes</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 27.2727%;">
