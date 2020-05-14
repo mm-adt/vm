@@ -1,4 +1,5 @@
 :imagesdir: ./images/language
+:subs: non
 
 == Language Structures
 
@@ -209,7 +210,7 @@ a|
 mmlang> int<=int
 ==>int
 ----
-|From the perspective of type-as-function, An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `<=` and repeated type are not displayed.
+|From the perspective of type-as-function, An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `\<=` and repeated type are not displayed.
 
 a|
 [source]
@@ -353,7 +354,7 @@ A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\lan
 
 mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_ **inst monoid** \[
 \langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where `S` is `obj{0}` (i.e. nothing). The `x<=[start,x]` instruction is an *initial instruction* in that it returns it's arguments regardless of the input `obj` (or lack thereof).
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where `S` is `obj{0}` (i.e. nothing). The `x\<=[start,x]` instruction is an *initial instruction* in that it returns it's arguments regardless of the input `obj` (or lack thereof).
 
 \[
 \texttt{[start,x]}: \texttt{obj\{0\}} \rightarrow \texttt{x}
@@ -471,15 +472,15 @@ mmlang> -10~<[int[is>0] | int[neg]]=[_|[neg]]>-
 
 .Stream Ring Theory
 ****
-https://zenodo.org/record/2565243[Stream ring theory] is a ring algebra defined by the https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* and *coefficient* ring, where every function/coefficient pair is an element of the carrier of a polynomial *stream* ring. The algebra's intended use was in distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, large amounts of data need to be colocated for processing. Proto-versions of the stream ring algebra are realized in the distributed graph computing framework called http://tinkerpop.apache.org[Apache TinkerPop].
+https://zenodo.org/record/2565243[Stream ring theory] is a ring algebra defined by the https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* and *coefficient* ring, where every function/coefficient pair is an element of the carrier of a polynomial *stream* ring. The algebra's intended use was in distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, large amounts of data need to be co-located for processing. A proto-version of the stream ring algebra was realized in the distributed graph computing framework http://tinkerpop.apache.org[Apache TinkerPop].
 
 mm-ADT adopts the algebra of stream ring theory, where functions are *instructions* and coefficients are *quantifiers*. mm-ADT's type system is realized as a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] extension of the algebra.
 ****
 
-mm-ADT's type system is founded on the mathematics of https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ring*. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring's carrier set is the set of all instructions -- `inst`. The multiplicative (`*`) and additive (`+`) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated table provides the (most well known) logical entailments of said axioms -- i.e., theorems.
+mm-ADT's type system is founded on the mathematics of https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ring*. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring's carrier set is the set of all instructions -- `inst`. The multiplicative (`*`) and additive (`+`) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated Table <<ring-entailments>>  provides the (most well known) logical entailments of said axioms -- i.e., theorems.
 
 .Ring with Unity Axioms
-[width=35%,float=left]
+[cols="^",width=35%,float=left]
 |===
 |`(a + b) + c = a + (b + c)`
 |`0 + a = a + 0 = a`
@@ -492,10 +493,11 @@ mm-ADT's type system is founded on the mathematics of https://en.wikipedia.org/w
 |===
 
 .Ring with Unity Theorems
-[width=35%,float=center]
+[[ring-entailments]]
+[cols="^",width=35%,float=right]
 |===
-|`a + b = a + c => b = c`
-|`a + b = 0 => a = -b & b = -a`
+|`a + b = a + c \=> b = c`
+|`a + b = 0 \=> a = -b & b = -a`
 |`-(a+b) = (-a) + (-b)`
 |`-(-a) = a`
 |`a*0 = 0 = 0*a`
@@ -503,14 +505,14 @@ mm-ADT's type system is founded on the mathematics of https://en.wikipedia.org/w
 |`(-a) * (-b) = a * b`
 |===
 
-{nbsp} +
+'''
 
 The ring axioms are presented again in the table below along with the associated `mmlang` expressions, where `[a]`, `[b]`, `[c]` are variable instructions from `inst`.
 
 .The Ring Axioms in mmlang
-[cols="2,4"]
+[cols="^2,^4"]
 |===
-|Ring Axioms                        |Related mmlang Types
+|Ring Axioms                        |mmlang Types
 
 |`(a + b) + c = a + (b + c)`        |`-<[-<[[a],[b]]>-,[c]]>-` \$=\$ `-<[[a],-<[[b],[c]]>-]>-`
 |`0 + a = a + 0 = a`                |`-<[[id]{0},[a]]>-` \$=\$ `-<[[a],[id]{0}]>-`
@@ -522,12 +524,18 @@ The ring axioms are presented again in the table below along with the associated
 |`a * (b + c) = (a * b) + (a * c)`  |`[a]-<[[b],[c]]>-` \$=\$ `-<[[a][b],[a][c]]>-`
 |===
 
-Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where `[a]` is `int[plus,1]`, `[b]` is `int[mult,2]`, and `[c]` is `int[mult,3]` (though any respectfully sorted types can be used).
+Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where
 
-.mmlang Expressions of the Ring Axioms
-[cols="5,5"]
+* `[a]` is `int[plus,1]`
+* `[b]` is `int[mult,2]`
+* `[c]` is `int[mult,3]`.
+
+Though any combinations of respectively sorted instructions can be used.
+
+[width=48%,float=left]
 |===
 a|
+[.small]
 [source]
 ----
 mmlang> 1-<[-<[[plus,1],[mult,2]]>-,[mult,3]]>-
@@ -550,9 +558,14 @@ mmlang> 1[map,[plus,1][mult,2]][mult,3]
 ==>12
 mmlang> 1[plus,1][map,[mult,2][mult,3]]
 ==>12
-----
 
+----
+|===
+
+[width=48%,float=center]
+|===
 a|
+[.small]
 [source]
 ----
 mmlang> 1[id][plus,1]
@@ -573,6 +586,8 @@ mmlang> 1-<[[plus,1][mult,2],[plus,1][mult,3]]>-
 ==>6
 ----
 |===
+
+'''
 
 === The Value
 

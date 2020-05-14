@@ -173,6 +173,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(?) <= int.is(int.gt(int(10))))(engine.eval("int[is>10]"))
   }
 
+  test("empty result sets") {
+    assertResult(zeroObj)(engine.eval("1-<[[id]{1},[id]{-1}]>-"))
+  }
+
   test("as instruction parsing") {
     assertResult(int(1))(engine.eval("1[as,int]"))
     assertResult(str("1"))(engine.eval("1[as,str]"))
@@ -589,6 +593,4 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("false[a,-<[bool|real]>-]"))
     assertResult(bfalse)(engine.eval("'hello'[a,-<[bool|real]>-]"))
   }
-
-
 }

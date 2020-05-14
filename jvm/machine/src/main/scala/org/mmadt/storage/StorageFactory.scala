@@ -153,6 +153,7 @@ object StorageFactory {
     case _: BoolValue | _: BoolStrm => tbool(name = obj.name, q = obj.q)
     case _: RecStrm[_, _] => trec(name = obj.name, gmap = Map.empty, q = obj.q)
     case recval: RecValue[_, _] => trec(name = recval.name, gmap = recval.gmap, q = recval.q)
+    case _: ObjStrm => tobj(name = obj.name, q = obj.q)
 
   }).asInstanceOf[OType[O]]
   def isSymbol[O <: Obj](obj: O): Boolean = obj match {
@@ -191,7 +192,7 @@ object StorageFactory {
         case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
         case _: Rec[_, _] => new VRecStrm[Value[Obj], Value[Obj]](values = MultiSet(values.asInstanceOf[Seq[RecValue[Value[Obj], Value[Obj]]]]))
         case _: Lst[_] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Lst[Obj]]]))
-        case _ => zeroObj
+        case _ => new VObjStrm(values = List.empty)
       }).asInstanceOf[O]
     }
   }
