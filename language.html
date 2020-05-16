@@ -1248,19 +1248,42 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 <div class="paragraph">
 <p>Every <code>poly</code> has a separator. The separator provides details the way in which the poly should be processed. There are three kinds of separators.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><code>|</code>: a <em>choice</em> (or either) with <code>{n}|{m}</code> quantified as \$n|m\$.</p>
-</li>
-<li>
-<p><code>,</code>: a <em>parallel</em> (or all) with <code>{n},{m}</code> quantified as \$n+m\$.</p>
-</li>
-<li>
-<p><code>;</code>: a <em>serial</em> (or compose) with <code>{n};{m}</code> quantified as \$n \ast m\$.</p>
-</li>
-</ol>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 37.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">structure</th>
+<th class="tableblock halign-left valign-top">sep</th>
+<th class="tableblock halign-left valign-top">name</th>
+<th class="tableblock halign-left valign-top">quantifier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct w/ eliminator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">choice or either</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n}|{m}</code> quantified as \$n|m\$</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all or parallel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n},{m}</code> quantified as \$n+m\$</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compose or serial</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n};{m}</code> quantified as \$n \ast m\$.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; int&lt;[mult,2]{10}|[plus,1]{20}&gt;
@@ -1308,6 +1331,38 @@ mmlang&gt; int&lt;[mult,2]{10};[plus,1]{20}&gt;
 </tr>
 </tbody>
 </table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 6&lt;int|str&gt;
+==&gt;6
+mmlang&gt; 6&lt;int+1|int+2&gt;
+==&gt;7
+mmlang&gt; 6&lt;int+1,int+2&gt;
+==&gt;7
+==&gt;8
+mmlang&gt; 6&lt;int+1;int+2&gt;
+==&gt;9</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_a_poly_of_streams_or_a_stream_of_polys">A Poly of Streams or a Stream of Polys</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; [1,2,3,4,5]&gt;--&lt;[int+1,int*2]
+==&gt;[3,4]
+==&gt;[2,2]
+==&gt;[4,6]
+==&gt;[5,8]
+==&gt;[6,10]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 1-&lt;[+2,&lt;+3,+4&gt;]
+==&gt;[3,4,5]</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_the_inst_monoid">The Inst Monoid</h4>
@@ -1681,7 +1736,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-16 11:06:47 -0600
+Last updated 2020-05-16 16:56:45 -0600
 </div>
 </div>
 </body>

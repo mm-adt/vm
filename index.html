@@ -485,7 +485,11 @@ hr{border-width:0px 0 0; margin:1em 0 3em}
 </li>
 <li><a href="#_language_algebras">Language Algebras</a>
 <ul class="sectlevel3">
-<li><a href="#_bicartesian_closed_category">Bicartesian Closed Category</a></li>
+<li><a href="#_bicartesian_closed_category">Bicartesian Closed Category</a>
+<ul class="sectlevel4">
+<li><a href="#_a_poly_of_streams_or_a_stream_of_polys">A Poly of Streams or a Stream of Polys</a></li>
+</ul>
+</li>
 <li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 <li><a href="#_the_type_ringoid">The Type Ringoid</a></li>
 </ul>
@@ -1520,19 +1524,42 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 <div class="paragraph">
 <p>Every <code>poly</code> has a separator. The separator provides details the way in which the poly should be processed. There are three kinds of separators.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><code>|</code>: a <em>choice</em> (or either) with <code>{n}|{m}</code> quantified as \$n|m\$.</p>
-</li>
-<li>
-<p><code>,</code>: a <em>parallel</em> (or all) with <code>{n},{m}</code> quantified as \$n+m\$.</p>
-</li>
-<li>
-<p><code>;</code>: a <em>serial</em> (or compose) with <code>{n};{m}</code> quantified as \$n \ast m\$.</p>
-</li>
-</ol>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 25%;">
+<col style="width: 37.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">structure</th>
+<th class="tableblock halign-left valign-top">sep</th>
+<th class="tableblock halign-left valign-top">name</th>
+<th class="tableblock halign-left valign-top">quantifier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct w/ eliminator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">choice or either</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n}|{m}</code> quantified as \$n|m\$</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all or parallel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n},{m}</code> quantified as \$n+m\$</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compose or serial</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n};{m}</code> quantified as \$n \ast m\$.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;[mult,<span style="color:#00D">2</span>]{<span style="color:#00D">10</span>}|[plus,<span style="color:#00D">1</span>]{<span style="color:#00D">20</span>}&gt;
@@ -1580,6 +1607,38 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;[mult,<span s
 </tr>
 </tbody>
 </table>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>&lt;<span style="color:#369;font-weight:bold">int</span>|<span style="color:#369;font-weight:bold">str</span>&gt;
+==&gt;<span style="color:#00D">6</span>
+mmlang&gt; <span style="color:#00D">6</span>&lt;<span style="color:#369;font-weight:bold">int</span>+<span style="color:#00D">1</span>|<span style="color:#369;font-weight:bold">int</span>+<span style="color:#00D">2</span>&gt;
+==&gt;<span style="color:#00D">7</span>
+mmlang&gt; <span style="color:#00D">6</span>&lt;<span style="color:#369;font-weight:bold">int</span>+<span style="color:#00D">1</span>,<span style="color:#369;font-weight:bold">int</span>+<span style="color:#00D">2</span>&gt;
+==&gt;<span style="color:#00D">7</span>
+==&gt;<span style="color:#00D">8</span>
+mmlang&gt; <span style="color:#00D">6</span>&lt;<span style="color:#369;font-weight:bold">int</span>+<span style="color:#00D">1</span>;<span style="color:#369;font-weight:bold">int</span>+<span style="color:#00D">2</span>&gt;
+==&gt;<span style="color:#00D">9</span></code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_a_poly_of_streams_or_a_stream_of_polys">A Poly of Streams or a Stream of Polys</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>,<span style="color:#00D">4</span>,<span style="color:#00D">5</span>]&gt;--&lt;[<span style="color:#369;font-weight:bold">int</span>+<span style="color:#00D">1</span>,<span style="color:#369;font-weight:bold">int</span>*<span style="color:#00D">2</span>]
+==&gt;[<span style="color:#00D">3</span>,<span style="color:#00D">4</span>]
+==&gt;[<span style="color:#00D">2</span>,<span style="color:#00D">2</span>]
+==&gt;[<span style="color:#00D">4</span>,<span style="color:#00D">6</span>]
+==&gt;[<span style="color:#00D">5</span>,<span style="color:#00D">8</span>]
+==&gt;[<span style="color:#00D">6</span>,<span style="color:#00D">10</span>]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>-&lt;[+<span style="color:#00D">2</span>,&lt;+<span style="color:#00D">3</span>,+<span style="color:#00D">4</span>&gt;]
+==&gt;[<span style="color:#00D">3</span>,<span style="color:#00D">4</span>,<span style="color:#00D">5</span>]</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_the_inst_monoid">The Inst Monoid</h4>
