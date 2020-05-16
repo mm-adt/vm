@@ -444,9 +444,14 @@ Every composite structure, including products and coproducts, are an mm-ADT `pol
 
 Every `poly` has a separator. The separator provides details the way in which the poly should be processed. There are three kinds of separators.
 
-. `|`: a _choice_ (or either) with `{n}|{m}` quantified as \$n|m\$.
-. `,`: a _parallel_ (or all) with `{n},{m}` quantified as \$n+m\$.
-. `;`: a _serial_ (or compose) with `{n};{m}` quantified as \$n \ast m\$.
+[cols="2,1,2,3"]
+|===
+|structure               |sep   |name               |quantifier
+
+|coproduct w/ eliminator | `\|` | choice or either  | `{n}\|{m}` quantified as \$n\|m\$
+|coproduct               | `,`  | all or parallel   | `{n},{m}` quantified as \$n+m\$
+|product                 | `;`  | compose or serial | `{n};{m}` quantified as \$n \ast m\$.
+|===
 
 [source]
 ----
@@ -470,6 +475,37 @@ A few examples are provided.
 | `<int+1,int+2>`                     | both `int` incremented by `1` and incremented by `2`.
 | `<int+1;int+2>`                     | an `int` incremented by `1` and then incremented by `2`.
 |===
+
+[source]
+----
+mmlang> 6<int|str>
+==>6
+mmlang> 6<int+1|int+2>
+==>7
+mmlang> 6<int+1,int+2>
+==>7
+==>8
+mmlang> 6<int+1;int+2>
+==>9
+----
+
+===== A Poly of Streams or a Stream of Polys
+
+[source]
+----
+mmlang> [1,2,3,4,5]>--<[int+1,int*2]
+==>[3,4]
+==>[2,2]
+==>[4,6]
+==>[5,8]
+==>[6,10]
+----
+
+[source]
+----
+mmlang> 1-<[+2,<+3,+4>]
+==>[3,4,5]
+----
 
 ==== The Inst Monoid
 
