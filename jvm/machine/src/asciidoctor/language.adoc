@@ -326,6 +326,83 @@ mmlang>
 |The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
 |===
 
+==== The Type Trace Graph
+
+Every mm-ADT program is a _type_. Every type is created by a https://en.wikipedia.org/wiki/Type_constructor[type constructor]. The ctypes are degenerate _nullary_ constructors. The dtypes are `n`-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type's definition within a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] called a *type trace graph*.
+
+===== Linear Type Traces
+
+Any type constructed with instructions contain argument values (not types) generates a *linear type trace*.
+
+[source]
+----
+mmlang> int
+==>int
+mmlang> int[id]
+==>int[id]
+mmlang> int[id][gt,0]
+==>bool<=int[id][gt,0]
+----
+
+===== Nested Type Traces
+
+Any type constructed with instructions that contain an argument type generates a *nested type trace*.
+
+[source]
+----
+mmlang> int
+==>int
+mmlang> int[id]
+==>int[id]
+mmlang> int[id][is,[gt,0]]
+==>int{?}<=int[id][is,bool<=int[gt,0]]
+mmlang>
+----
+
+===== Branching Type Traces
+
+Nested types are examples of _inter-instruction branching_. The more general form is _intra-instruction branching_. Any instruction that forks an `obj` into a `poly` or joins the `objs` of a `poly` are *branch instructions*. They generate *branching type traces*.
+
+A https://en.wikipedia.org/wiki/Tagged_union[*sum type*] (tagged union) is constructed by branching across a `|-poly`.
+
+image::sum-type-constructor.png[width=600,align=center]
+
+[source]
+----
+mmlang> int~<[int[is>0] | int[neg]]
+==>[int{?}<=int[is,bool<=int[gt,0]]|int[neg]]<=int~<[int{?}<=int[is,bool<=int[gt,0]]|int[neg]]
+----
+
+In the example above, a `int` is the ctype that is split across two branches via `[choice]` (with a sugar of `~<`). Given an `int` value, that `int` value will either be greater than 0 or it will be negated.  In other words, the type maps an `int` to a coproduct containing it's https://en.wikipedia.org/wiki/Absolute_value[absolute value] as determined either from the first or the second branch.
+
+[source]
+----
+mmlang> 10~<[int[is>0] | int[neg]]
+==>[10|]
+mmlang> -10~<[int[is>0] | int[neg]]
+==>[|10]
+----
+
+While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain `int`. For example, should the coproduct undergo a `[merge]` (with a sugar of `>-`), then the above type yields the same range value for two different `int` domains.
+
+[source]
+----
+mmlang> 10~<[int[is>0] | int[neg]]>-
+==>10
+mmlang> -10~<[int[is>0] | int[neg]]>-
+==>10
+----
+
+Without the merge, the branch that the incoming `int` took is preserved in the coproduct's `poly` structure and can be inverted.
+
+[source]
+----
+mmlang> 10~<[int[is>0] | int[neg]]=[_|[neg]]>-
+==>10
+mmlang> -10~<[int[is>0] | int[neg]]=[_|[neg]]>-
+==>-10
+----
+
 === Language Algebras
 
 .Initial and Terminal Objects
@@ -343,7 +420,56 @@ A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E
 &nbsp;
 ****
 
-The program the mm-ADT VM, there must exist a functor from the source language to the logical structure of types and values within the mm-ADT.
+==== Bicartesian Closed Category
+
+A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories[bicartesian closed category] has products, coproducts, a product unit, a coproduct unit, exponents, and product distributivity over coproducts with the following axioms.
+
+[cols="2,3,4"]
+|===
+| axiom | mmlang type | description
+
+| \$a + b = b + a \$                           | `<a\|b> = <b\|a>`                    | commutative coproducts
+| \$(a + b) + c = a + (b + c)\$                | `\<<a\|b>\|c> = <a\|<b\|c>>`         |associative coproducts
+| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `<a;<b\|c>> = \<<a;b>\|<a;c>>`       | distributivity
+| \$0 + a = a\$                                | `<_{0}\|a> = a`                      | coproduct unit
+| \$0 \ast a = 0\$                             | `<_{0};a> = _{0}`                    | coproduct unit annihilation
+| \$1 \ast a = a\$                             | `<_{1};a> = a`                       | product unit
+| \$c^ {b^a} = c^{a \ast b}\$                  | `<a;b;c> = <<a;b>;c>`                | currying
+|===
+
+Every composite structure, including products and coproducts, are an mm-ADT `poly`. There are two kinds of `polys`:
+
+. `lst`: a list indexed by `int` whose elements are `objs`.
+. `rec`: a map indexed by arbitrary `obj` keys, whose values are `objs`.
+
+Every `poly` has a separator. The separator provides details the way in which the poly should be processed. There are three kinds of separators.
+
+. `|`: a _choice_ (or either) with `{n}|{m}` quantified as \$n|m\$.
+. `,`: a _parallel_ (or all) with `{n},{m}` quantified as \$n+m\$.
+. `;`: a _serial_ (or compose) with `{n};{m}` quantified as \$n \ast m\$.
+
+[source]
+----
+mmlang> int<[mult,2]{10}|[plus,1]{20}>
+==>int{10,20}<=int<[int{10}<=int[mult,2]{10}|int{20}<=int[plus,1]{20}]>
+mmlang> int<[mult,2]{10},[plus,1]{20}>
+==>int{30}<=int<[int{10}<=int[mult,2]{10},int{20}<=int[plus,1]{20}]>
+mmlang> int<[mult,2]{10};[plus,1]{20}>
+==>int{200}<=int<[int{10}<=int[mult,2]{10};int{200}<=int{10}[plus,1]{20}]>
+----
+
+A few examples are provided.
+
+[cols="2,4"]
+|===
+| mmlang                              | description
+
+| `<int\|str>`                        | either an `int` or a `str`.
+| `<int[is>20]\|int[is<10]]>`         | either an `int` greater than 20 or an `int` less than 10.
+| `<int[is>20]<x>\|int[is<10]<y>]>`   | either an `int` greater than 20 labeled `x` or an `int` less than 10 labeled `y`.
+| `<int+1,int+2>`                     | both `int` incremented by `1` and incremented by `2`.
+| `<int+1;int+2>`                     | an `int` incremented by `1` and then incremented by `2`.
+|===
 
 ==== The Inst Monoid
 
@@ -391,84 +517,7 @@ image::inst-type-functor.png[width=35%,align=center]
 
 The `inst`-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile. The benefit of the `inst`-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.
 
-==== The Type Trace Graph
-
-Every mm-ADT program is a _type_. Every type is created by a https://en.wikipedia.org/wiki/Type_constructor[type constructor]. The ctypes are degenerate _nullary_ constructors. The dtypes are `n`-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type's definition within a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] called a *type trace graph*.
-
-===== Linear Type Traces
-
-Any type constructed with instructions contain argument values (not types) generates a *linear type trace*.
-
-[source]
-----
-mmlang> int
-==>int
-mmlang> int[id]
-==>int[id]
-mmlang> int[id][gt,0]
-==>bool<=int[id][gt,0]
-----
-
-===== Nested Type Traces
-
-Any type constructed with instructions that contain an argument type generates a *nested type trace*.
-
-[source]
-----
-mmlang> int
-==>int
-mmlang> int[id]
-==>int[id]
-mmlang> int[id][is,[gt,0]]
-==>int{?}<=int[id][is,bool<=int[gt,0]]
-mmlang>
-----
-
-===== Branching Type Traces
-
-Nested types are examples of _inter-instruction branching_. The more general form is _intra-instruction branching_. Any instruction that forks an `obj` into a `poly` or joins the `objs` of a `poly` into a stream are *branch instructions*. They generate *branching type traces*.
-
-A https://en.wikipedia.org/wiki/Tagged_union[*sum type*] (tagged union) can be constructed from a ctype.
-
-image::sum-type-constructor.png[width=600,align=center]
-
-[source]
-----
-mmlang> int~<[int[is>0] | int[neg]]
-==>[int{?}<=int[is,bool<=int[gt,0]]|int[neg]]<=int~<[int{?}<=int[is,bool<=int[gt,0]]|int[neg]]
-----
-
-In the example above, a `int` is the ctype that is split across two branches via `[choice]` (with a sugar of `~<`). Given an `int` value, that `int` value will either be greater than 0 or it will be negated.  In other words, the type maps an `int` to a coproduct containing it's https://en.wikipedia.org/wiki/Absolute_value[absolute value] as determined either from the first or the second branch.
-
-[source]
-----
-mmlang> 10~<[int[is>0] | int[neg]]
-==>[10|]
-mmlang> -10~<[int[is>0] | int[neg]]
-==>[|10]
-----
-
-While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain `int`. For example, should the coproduct undergo a `[merge]` (with a sugar of `>-`), then the above type yields the same range value for two different `int` domains.
-
-[source]
-----
-mmlang> 10~<[int[is>0] | int[neg]]>-
-==>10
-mmlang> -10~<[int[is>0] | int[neg]]>-
-==>10
-----
-
-Without the merge, the branch that the incoming `int` took is preserved in the coproduct's `poly` structure and can be inverted.
-
-[source]
-----
-mmlang> 10~<[int[is>0] | int[neg]]=[_|[neg]]>-
-==>10
-mmlang> -10~<[int[is>0] | int[neg]]=[_|[neg]]>-
-==>-10
-----
-
-==== The Type Ring
+==== The Type Ringoid
 
 .Stream Ring Theory
 ****
@@ -477,7 +526,7 @@ https://zenodo.org/record/2565243[Stream ring theory] is a ring algebra defined 
 mm-ADT adopts the algebra of stream ring theory, where functions are *instructions* and coefficients are *quantifiers*. mm-ADT's type system is realized as a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] extension of the algebra.
 ****
 
-mm-ADT's type system is founded on the mathematics of https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ring*. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring's carrier set is the set of all instructions -- `inst`. The multiplicative (`*`) and additive (`+`) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated Table <<ring-entailments>>  provides the (most well known) logical entailments of said axioms -- i.e., theorems.
+mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ringoid*. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring's carrier set is the set of all instructions -- `inst`. The multiplicative (`*`) and additive (`+`) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated Table <<ring-entailments>>  provides the (most well known) logical entailments of said axioms -- i.e., theorems.
 
 .Ring with Unity Axioms
 [cols="^",width=35%,float=left]

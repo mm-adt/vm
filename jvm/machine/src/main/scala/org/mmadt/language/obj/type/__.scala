@@ -57,6 +57,7 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   override def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
   //
   override def equals(other: Any): Boolean = other match {
+    case obj: Obj if !this.alive => !obj.alive
     case anon: __ => ((this.root && anon.root) || (this.via == anon.via))
     case _ => false
   }

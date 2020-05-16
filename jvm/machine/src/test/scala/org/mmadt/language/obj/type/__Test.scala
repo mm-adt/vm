@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.op.map.{GtOp, IdOp, MultOp, PlusOp}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -48,6 +49,10 @@ class __Test extends FunSuite {
   }
 
   test("__ type structure") {
+    assertResult(__.q(0))(__.q(0))
+    assertResult(int.q(0))(__.q(0))
+    assertResult(zeroObj)(__.q(0).compute(__.q(0)))
+    assertResult(zeroObj)(__.q(0) ===> __.q(0))
     assert(__.root)
     assert(!__.plus(1).root)
     assertResult(__)(__.plus(1).via._1)

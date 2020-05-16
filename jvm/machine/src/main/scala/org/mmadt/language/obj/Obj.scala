@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.model.Model
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
@@ -90,7 +90,7 @@ trait Obj
 
   // via methods
   def root: Boolean = null == this.via || null == this.via._1
-  def isolate: this.type = this.clone(via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
+  def isolate: this.type = this.clone(q = this.q, via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
   def domainObj[D <: Obj](): D = if (this.root) this.asInstanceOf[D] else this.via._1.domainObj[D]() // TODO: rename to like start/end (the non-typed versions of domain/range)
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = multQ(obj.q, inst.q), via = (obj, inst))
   def trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
@@ -174,7 +174,7 @@ trait Obj
 object Obj {
   def fetch[A <: Obj](obj: Obj, label: String): A = {
     val result: Option[A] = Obj.fetchOption[A](obj, label)
-    if (result.isEmpty) throw LanguageException.labelNotFound(obj, label)
+    if (result.isEmpty) throw LanguageException.labelNotFound(obj.tracer(zeroObj `;` __), label)
     result.get
   }
 

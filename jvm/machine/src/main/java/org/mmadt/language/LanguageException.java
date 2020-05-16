@@ -74,7 +74,7 @@ public class LanguageException extends VmException {
     }
 
     public static LanguageException labelNotFound(final Obj source, final String label) {
-        return new LanguageException(source.trace() + " does not contain the label '" + label + "'");
+        return new LanguageException(source + " does not contain the label '" + label + "'");
     }
 
     public static void testDomainRange(final Type<?> range, final Type<?> domain) {
