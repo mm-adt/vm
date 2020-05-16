@@ -41,8 +41,8 @@ object MergeOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
       case astrm: Strm[Poly[_]] => strm(astrm.values.map(x => inst.exec(x))) // TODO: why does via() not work here? (nested streams?)
-      case apoly: Poly[_] if apoly.isValue && apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(start, x))).filter(_.alive).getOrElse(zeroObj)
-      case apoly: Poly[_] if apoly.isValue => strm(apoly.glist.map(x => x.clone(q = multQ(start, x))).filter(_.alive))
+      case apoly: Poly[_] if apoly.isValue && apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive).getOrElse(zeroObj)
+      case apoly: Poly[_] if apoly.isValue => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
       case apoly: Poly[_] => BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
       case _ => start.via(start, inst)
     }

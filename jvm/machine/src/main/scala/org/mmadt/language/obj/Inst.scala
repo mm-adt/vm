@@ -56,7 +56,7 @@ object Inst {
       case typeArg: OType[E] => obj match {
         case _: Strm[_] => arg
         case _: Value[_] => if (Type.ctypeCheck(obj, typeArg)) obj.compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
-        case atype: Type[_] => if (Type.ctypeCheck(obj, typeArg)) atype.range.compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
+        case obj: Type[_] => if (Type.ctypeCheck(obj, typeArg)) obj.range.compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
       }
     }
 

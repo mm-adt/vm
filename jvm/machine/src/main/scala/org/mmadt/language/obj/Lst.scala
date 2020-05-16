@@ -67,7 +67,10 @@ object Lst {
     if (apoly.isSerial) {
       var local = arg
       apoly.clone(apoly.glist.map(slot => {
-        local = Inst.resolveArg(local, slot)
+        local = local match {
+          case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
+          case _ => Inst.resolveArg(local, slot)
+        }
         local
       }))
     } else

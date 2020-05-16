@@ -533,8 +533,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("choice type checking") {
-    assertResult(btrue)(engine.eval("'marko'[a,[str|int]]"))
-    assertResult(bfalse)(engine.eval("'marko'[a,[real|int]]"))
+    assertResult(btrue)(engine.eval("'marko'[a,<str|int>]"))
+    assertResult(bfalse)(engine.eval("'marko'[a,<real|int>]"))
     assertResult(str)(engine.eval("str-<[str|str|str]>-").range)
     assertResult(str)(engine.eval("str-<[str|str|str]>-").domain)
     // assertResult(str.q(2,7))(engine.eval("str-<[str{2}|str{5}|str{3,7}]>-").range) TODO: obj{0} range -- need to use Type.ctypeCheck()
@@ -587,10 +587,46 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("int{0,3}<=int[is,bool<=int[lt,10]]")(engine.eval("5,6,7[is<10][type]").toString) // TODO: why the dangling quantifier
   }
 
+  test("ring axioms") {
+    assertResult(strm(List(int(2).q(2), int(3))))(engine.eval("1<<[plus,1],[mult,2]>,[mult,3]>"))
+    assertResult(strm(List(int(2).q(2), int(3))))(engine.eval("1<[plus,1],<[mult,2],[mult,3]>>"))
+    assertResult(int(2))(engine.eval("1<[id]{0},[plus,1]>"))
+    assertResult(int(2))(engine.eval("1<[plus,1],[id]{0}>"))
+    assertResult(zeroObj)(engine.eval("1<[plus,1],[plus,1]{-1}>"))
+    assertResult(zeroObj)(engine.eval("1[id]{0}"))
+    assertResult(int(2).q(2))(engine.eval("1<[plus,1],[mult,2]>"))
+    assertResult(int(2).q(2))(engine.eval("1<[mult,2],[plus,1]>"))
+    assertResult(int(12))(engine.eval("1<<[plus,1];[mult,2]>;[mult,3]>"))
+    assertResult(int(12))(engine.eval("1<[plus,1];<[mult,2];[mult,3]>>"))
+    assertResult(int(2))(engine.eval("1<[id];[plus,1]>"))
+    assertResult(int(2))(engine.eval("1<[id];[plus,1]>"))
+    assertResult(int(2))(engine.eval("1<[plus,1];[id]>"))
+    assertResult(int(2))(engine.eval("1[plus,1]"))
+    assertResult(int(6).q(2))(engine.eval("1<<[plus,1],[mult,2]>;[mult,3]>"))
+    assertResult(int(6).q(2))(engine.eval("1<<[plus,1];[mult,3]>,<[mult,2];[mult,3]>>"))
+    assertResult(strm(List(int(4), int(6))))(engine.eval("1<[plus,1];<[mult,2],[mult,3]>>"))
+    assertResult(strm(List(int(4), int(6))))(engine.eval("1<<[plus,1];[mult,2]>,<[plus,1];[mult,3]>>"))
+  }
+
+  test("ring theorems") {
+    assertResult(int(2).q(-2))(engine.eval("1<[plus,1],[mult,2]>{-1}"))
+    assertResult(int(2).q(-2))(engine.eval("1<[plus,1]{-1},[mult,2]{-1}>"))
+    assertResult(int(2))(engine.eval("1<[plus,1]{-1}|>{-1}")) // TODO
+    assertResult(int(2))(engine.eval("1[plus,1]"))
+    assertResult(zeroObj)(engine.eval("1<[plus,1];[id]{0}>"))
+    assertResult(zeroObj)(engine.eval("1[id]{0}"))
+    assertResult(zeroObj)(engine.eval("1<[id]{0};[plus,1]>"))
+    assertResult(int(4).q(-1))(engine.eval("1<[plus,1];[mult,2]{-1}>"))
+    assertResult(int(4).q(-1))(engine.eval("1<[plus,1]{-1};[mult,2]>"))
+    assertResult(int(4).q(-1))(engine.eval("1<[plus,1];[mult,2]>{-1}"))
+    assertResult(int(4))(engine.eval("1<[plus,1]{-1};[mult,2]{-1}>"))
+    assertResult(int(4))(engine.eval("1<[plus,1];[mult,2]>"))
+  }
+
   test("play") {
-    assertResult(bfalse)(engine.eval("5[a,-<[bool|real]>-]"))
-    assertResult(btrue)(engine.eval("5.5[a,-<[bool|real]>-]"))
-    assertResult(btrue)(engine.eval("false[a,-<[bool|real]>-]"))
-    assertResult(bfalse)(engine.eval("'hello'[a,-<[bool|real]>-]"))
+    assertResult(bfalse)(engine.eval("5[a,<bool|real>]"))
+    assertResult(btrue)(engine.eval("5.5[a,<bool|real>]"))
+    assertResult(btrue)(engine.eval("false[a,<bool|real>]"))
+    assertResult(bfalse)(engine.eval("'hello'[a,<bool|real>]"))
   }
 }

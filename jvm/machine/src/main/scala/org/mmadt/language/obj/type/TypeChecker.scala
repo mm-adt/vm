@@ -46,13 +46,7 @@ object TypeChecker {
       withinQ(obj, pattern) // must be within the type's quantified window
   }
 
-  def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean = {
-    if (!obj.alive && !pattern.alive) return true
-    pattern match {
-      case achoice: Poly[O] if achoice.isChoice => obj.split(achoice).merge.alive
-      case _ => obj.g.equals(pattern.g) && withinQ(obj, pattern)
-    }
-  }
+  def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean = (!obj.alive && !pattern.alive) || (obj.g.equals(pattern.g) && withinQ(obj, pattern))
 
   def matchesTT[O <: Obj](obj: Type[O], pattern: Type[O]): Boolean = {
     if (!obj.alive && !pattern.alive) return true
