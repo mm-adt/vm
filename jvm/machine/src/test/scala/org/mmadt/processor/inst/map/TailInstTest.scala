@@ -23,12 +23,22 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.{Obj, Lst}
+import org.mmadt.language.obj.Obj._
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
+
+  test("[tail] anonymous type") {
+    assertResult("b" |)(("a" | "b") ===> __.tail())
+    assertResult("b" | "c")(("a" | "b" | "c") ===> __.tail())
+    //
+    assertResult("b" `;`)(("a" `;` "b") ===> __.tail())
+    assertResult("b" `;` "c")(("a" `;` "b" `;` "c") ===> __.tail())
+  }
 
   test("[tail] w/ parallel poly]") {
     val check: TableFor2[Lst[_], Obj] =

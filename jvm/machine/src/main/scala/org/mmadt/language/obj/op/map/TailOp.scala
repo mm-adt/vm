@@ -37,5 +37,6 @@ object TailOp extends Func[Obj, Poly[Obj]] {
     case apoly: Lst[Obj] =>
       if (apoly.glist.isEmpty) throw new LanguageException("no tail on empty poly")
       else apoly.clone(apoly.glist.tail)
-  }).via(start, inst)
+    case _ => start
+  }).via(start, inst).asInstanceOf[Poly[Obj]]
 }

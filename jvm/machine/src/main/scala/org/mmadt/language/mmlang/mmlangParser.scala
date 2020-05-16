@@ -104,7 +104,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj, Obj]](inst | polyInst) ^^ {
+  lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[Inst[Obj, Obj]](inst) ^^ {
     case Some(range) ~ domain ~ insts => (range <= insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x)))
     case None ~ domain ~ insts => insts.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
   }
@@ -125,7 +125,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // instruction parsing
   lazy val inst: Parser[Inst[Obj, Obj]] = (
     sugarlessInst | fromSugar | toSugar | splitSugar |
-      mergeSugar | infixSugar | getStrSugar | getIntSugar | traceSugar) ~ opt(quantifier) ^^
+      mergeSugar | infixSugar | getStrSugar | getIntSugar | traceSugar | polyInst) ~ opt(quantifier) ^^
     (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
     Tokens.plus_op | Tokens.mult_op | Tokens.gte_op |

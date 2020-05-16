@@ -28,15 +28,19 @@ import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
 trait HeadOp[A <: Obj] {
-  this: Lst[A] =>
+  this: Poly[A] =>
   def head(): A = HeadOp().exec(this)
 }
-object HeadOp extends Func[Poly[Obj], Obj] {
+object HeadOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.head, Nil), func = this)
-  override def apply(start: Poly[Obj], inst: Inst[Poly[Obj], Obj]): Obj = {
-    if (!start.glist.exists(_.alive))
-      throw new LanguageException("no head on empty poly")
-    else
-      start.glist.filter(_.alive).head.via(start, inst)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    (start match {
+      case alst: Lst[_] =>
+        if (!alst.glist.exists(_.alive))
+          throw new LanguageException("no head on empty poly")
+        else
+          alst.glist.filter(_.alive).head
+      case _ => start
+    }).via(start, inst)
   }
 }

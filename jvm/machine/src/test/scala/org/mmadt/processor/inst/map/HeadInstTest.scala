@@ -23,12 +23,24 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Obj._
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
+
+  test("[head] anonymous type") {
+    assertResult(str("a"))(("a" |) ===> __.head())
+    assertResult(str("a"))(("a" | "b") ===> __.head())
+    assertResult(str("a"))(("a" | "b" | "c") ===> __.head())
+    //
+    assertResult(str("a"))(("a" `;`) ===> __.head())
+    assertResult(str("a"))(("a" `;` "b") ===> __.head())
+    assertResult(str("a"))(("a" `;` "b" `;` "c") ===> __.head())
+  }
 
   test("[head] w/ parallel poly") {
     val check: TableFor2[Lst[_], Obj] =

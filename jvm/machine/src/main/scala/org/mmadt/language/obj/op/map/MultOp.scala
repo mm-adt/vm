@@ -63,9 +63,3 @@ object MultOp extends Func[Obj, Obj] {
   }
 }
 
-/* def multObj[O <: Obj](poly: Lst[O]): Lst[O] = {
-   if (!poly.isType) return poly
-   poly.clone(List(poly.gvalues.foldLeft(poly.gvalues.head.domain[Obj]())((a, b) => a.compute[Obj](b.asInstanceOf[Type[Obj]]).asInstanceOf[Type[Obj]])).asInstanceOf[List[O]])
- }*/
-
-
