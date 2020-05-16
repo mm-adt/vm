@@ -497,11 +497,10 @@ class mmlangScriptEngineTest extends FunSuite {
     }
   }
 
-
   test("lst values w/ [mult], [plus], and [zero]") {
     assertResult("['a';'a']")(engine.eval("'a'-<[_;_]").toString)
     assertResult("['b','a']")(engine.eval("['a';'b']-<[.1,.0]").toString)
-    // TODO assertResult("['aZ';'bz']")(engine.eval("['a';'b']-<[.1+'z'<x>;.0+'Z'<y>]>--<[y;x]").toString)
+    assertResult("['aZ';'bz']")(engine.eval("['a';'b']<w>-<[.1+'z'<x>;<.w>.0+'Z'<y>]>--<[y;x]").toString) // TODO
     //assertResult(zeroObj |)(engine.eval("[|]")) // TODO: this might be bad
     assertResult("a" | "b" | zeroObj)(engine.eval("['a'|'b'|]"))
     assertResult("a" | zeroObj | zeroObj)(engine.eval("['a'||]"))
@@ -575,7 +574,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(10))(engine.eval("10-<[bool,int]>-[id]"))
     assertResult(int(110))(engine.eval("10-<[bool,int]>-[plus,100]"))
     //
-    assertResult("int{2}<=int[plus,100][plus,200]-<[int;int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int;int[plus,2]]>-[plus,20]").toString)
+    assertResult("int[plus,100][plus,200]-<[int;int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int;int[plus,2]]>-[plus,20]").toString)
     assertResult("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<[int|int[plus,2]]>-[plus,20]").toString)
     assertResult("[10;10;11]")(engine.eval("10-<[bool,int]>-[plus,1][path]").toString)
     assertResult("12,14")(engine.eval("1[plus,1]-<[int,int[plus,2]]>-[plus,10]").toString)
@@ -621,12 +620,5 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(4).q(-1))(engine.eval("1<[plus,1];[mult,2]>{-1}"))
     assertResult(int(4))(engine.eval("1<[plus,1]{-1};[mult,2]{-1}>"))
     assertResult(int(4))(engine.eval("1<[plus,1];[mult,2]>"))
-  }
-
-  test("play") {
-    assertResult(bfalse)(engine.eval("5[a,<bool|real>]"))
-    assertResult(btrue)(engine.eval("5.5[a,<bool|real>]"))
-    assertResult(btrue)(engine.eval("false[a,<bool|real>]"))
-    assertResult(bfalse)(engine.eval("'hello'[a,<bool|real>]"))
   }
 }

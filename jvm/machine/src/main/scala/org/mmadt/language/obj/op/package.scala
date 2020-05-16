@@ -43,15 +43,15 @@ package object op {
         case atype: Type[OT] => atype.hardQ(1).range
         case avalue: Value[OT] => asType(avalue)
       }.asInstanceOf[Iterable[OType[OT]]]
-
       val result: OType[OT] = types.toSet.size match {
         case 1 => types.head
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
-      if (!brch.isChoice) { // [branch] sum the min/max quantification
-        result.hardQ(brch.glist.map(x => x.q).reduce((a, b) => plusQ(a, b))) //minZero(
-      }
-      else { // [choose] select min/max quantification
+      if (brch.isParallel) { // [,] sum the min/max quantification
+        result.hardQ(brch.glist.map(x => x.q).reduce((a, b) => plusQ(a, b)))
+      } else if (brch.isSerial) { // [;] mult the min/max quantification
+        asType(brch.glist.last.asInstanceOf[OT]).hardQ(brch.glist.map(x => x.q).reduce((a, b) => multQ(a, b)))
+      } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduce((a, b) => (
           int(Math.min(a._1.g, b._1.g)),
           int(Math.max(a._2.g, b._2.g)))))
