@@ -45,7 +45,34 @@ object AOp extends Func[Obj, Bool] {
     start match {
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => oldInst.exec(x)))
       case _: Value[_] => bool(start.test(oldInst.arg0[Obj])).via(start, inst)
-      case _: Type[_] => bool.via(start, oldInst)
+      case atype: Type[_] if oldInst.arg0[Obj].isInstanceOf[Type[_]] =>
+        if (!Inst.resolveArg(start, oldInst.arg0[Obj]).alive)
+          bfalse.via(start, oldInst)
+        else {
+          bindLeftValuesToRightVariables(atype, int.is(int.gt(int.to("x"))))
+            .map(y => y._1.compute(y._2))
+            .map(x => Obj.fetchOption[Int](x, "x"))
+            .filter(x => x.isDefined)
+            .map(x => x.get.plus(1))
+            .map(x => bool(x.test(oldInst.arg0[Type[_]])).clone(via = (start, oldInst)))
+            .find(x => x.g)
+            .getOrElse(bool.via(start, oldInst)).asInstanceOf[Bool]
+        }
+      case _ => bool.via(start, oldInst)
     }
+  }
+
+  // generate traverser state
+  private def bindLeftValuesToRightVariables(left: Type[Obj], right: Type[Obj]): List[(Obj, Type[Obj])] = {
+    left.trace.map(_._2).zip(right.trace.map(_._2))
+      .flatMap(x => x._1.args.zip(x._2.args))
+      .filter(x => x._2.isInstanceOf[Type[Obj]])
+      .flatMap(x => {
+        x._1 match {
+          case left1: Type[Obj] => bindLeftValuesToRightVariables(left1, x._2.asInstanceOf[Type[Obj]])
+          case _ => List(x)
+        }
+      })
+      .map(x => (x._1, x._2.asInstanceOf[Type[Obj]]))
   }
 }

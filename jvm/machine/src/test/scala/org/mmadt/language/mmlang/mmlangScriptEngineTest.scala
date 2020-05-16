@@ -23,8 +23,10 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
@@ -663,5 +665,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(4).q(-1))(engine.eval("1<[plus,1];[mult,2]>{-1}"))
     assertResult(int(4))(engine.eval("1<[plus,1]{-1};[mult,2]{-1}>"))
     assertResult(int(4))(engine.eval("1<[plus,1];[mult,2]>"))
+  }
+
+
+  test("play") {
+  println(int.is(int.gt(10)).a(int.is(int.gt(0))))
   }
 }
