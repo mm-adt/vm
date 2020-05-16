@@ -1596,8 +1596,8 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 5. The Ring Axioms in mmlang</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
+<col style="width: 40%;">
+<col style="width: 60%;">
 </colgroup>
 <thead>
 <tr>
@@ -1608,35 +1608,35 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 <tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt;[-&lt;[[a],[b]]&gt;-,[c]]&gt;-</code> \$=\$ <code>-&lt;[[a],-&lt;[[b],[c]]&gt;-]&gt;-</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a],[b]&gt;,[c]&gt;</code> \$=\$ <code>&lt;[a],&lt;[b],[c]&gt;&gt;</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt;[[id]{0},[a]]&gt;-</code> \$=\$ <code>-&lt;[[a],[id]{0}]&gt;-</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[id]{0},[a]&gt;</code> \$=\$ <code>&lt;[a],[id]{0}&gt;</code> \$=\$ <code>[a]</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt;[[a],[a]{-1}]&gt;-</code> \$=\$ <code>[id]{0}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[a]{-1}&gt;</code> \$=\$ <code>[id]{0}</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt;[[a],[b]]&gt;-</code> \$=\$ <code>-&lt;[[b],[a]]&gt;-</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[b]&gt;</code> \$=\$ <code>&lt;[b],[a]&gt;</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt;[[a][b];[c]]&gt;-</code> \$=\$ <code>-&lt;[[a];[b][c]]&gt;-</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a];[b]&gt;;[c]&gt;</code> \$=\$ <code>&lt;[a];&lt;[b];[c]&gt;&gt;</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>[id][a]</code> \$=\$ <code>[a][id]</code> \$=\$ <code>[a]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[id];[a]&gt;</code> \$=\$ <code>&lt;[a];[id]&gt;</code> \$=\$ <code>[a]</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt;[[a],[b]]&gt;-[c]</code> \$=\$ <code>-&lt;[[a][c],[b][c]]&gt;-</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a],[b]&gt;;[c]&gt;</code> \$=\$ <code>&lt;&lt;[a];[c]&gt;,&lt;[b];[c]&gt;&gt;</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>[a]-&lt;[[b],[c]]&gt;-</code> \$=\$ <code>-&lt;[[a][b],[a][c]]&gt;-</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];&lt;[b],[c]&gt;&gt;</code> \$=\$ <code>&lt;&lt;[a];[b]&gt;,&lt;[a];[c]&gt;&gt;</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1659,7 +1659,7 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 <div class="paragraph">
 <p>Though any combinations of respectively sorted instructions can be used.</p>
 </div>
-<table class="tableblock frame-all grid-all left" style="width: 48%;">
+<table class="tableblock frame-all grid-all left" style="width: 45%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -1667,25 +1667,25 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>-&lt;[-&lt;[[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]]&gt;-,[mult,<span style="color:#00D">3</span>]]&gt;-
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]&gt;,[mult,<span style="color:#00D">3</span>]&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
 ==&gt;<span style="color:#00D">3</span>
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],-&lt;[[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]]&gt;-]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],&lt;[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]&gt;&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
 ==&gt;<span style="color:#00D">3</span>
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>},[plus,<span style="color:#00D">1</span>]]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>},[plus,<span style="color:#00D">1</span>]&gt;
 ==&gt;<span style="color:#00D">2</span>
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}&gt;
 ==&gt;<span style="color:#00D">2</span>
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],[plus,<span style="color:#00D">1</span>]{-<span style="color:#00D">1</span>}]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],[plus,<span style="color:#00D">1</span>]{-<span style="color:#00D">1</span>}&gt;
 mmlang&gt; <span style="color:#00D">1</span>[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[mult,<span style="color:#00D">2</span>],[plus,<span style="color:#00D">1</span>]]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;[mult,<span style="color:#00D">2</span>],[plus,<span style="color:#00D">1</span>]&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>][mult,<span style="color:#00D">2</span>];[mult,<span style="color:#00D">3</span>]]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>]&gt;;[mult,<span style="color:#00D">3</span>]&gt;
 ==&gt;<span style="color:#00D">12</span>
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>][mult,<span style="color:#00D">3</span>]]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];&lt;[mult,<span style="color:#00D">2</span>];[mult,<span style="color:#00D">3</span>]&gt;&gt;
 ==&gt;<span style="color:#00D">12</span></code></pre>
 </div>
 </div></div></td>
@@ -1700,22 +1700,95 @@ mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D"
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>[<span style="color:#369;font-weight:bold">id</span>][plus,<span style="color:#00D">1</span>]
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;[<span style="color:#369;font-weight:bold">id</span>];[plus,<span style="color:#00D">1</span>]&gt;
 ==&gt;<span style="color:#00D">2</span>
-mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>][<span style="color:#369;font-weight:bold">id</span>]
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];[<span style="color:#369;font-weight:bold">id</span>]&gt;
 ==&gt;<span style="color:#00D">2</span>
 mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>]
 ==&gt;<span style="color:#00D">2</span>
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]]&gt;-[mult,<span style="color:#00D">3</span>]
+mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]&gt;;[mult,<span style="color:#00D">3</span>]&gt;
 ==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>][mult,<span style="color:#00D">3</span>],[mult,<span style="color:#00D">2</span>][mult,<span style="color:#00D">3</span>]]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">3</span>]&gt;,&lt;[mult,<span style="color:#00D">2</span>];[mult,<span style="color:#00D">3</span>]&gt;&gt;
 ==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>]-&lt;[[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];&lt;[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]&gt;&gt;
 ==&gt;<span style="color:#00D">4</span>
 ==&gt;<span style="color:#00D">6</span>
-mmlang&gt; <span style="color:#00D">1</span>-&lt;[[plus,<span style="color:#00D">1</span>][mult,<span style="color:#00D">2</span>],[plus,<span style="color:#00D">1</span>][mult,<span style="color:#00D">3</span>]]&gt;-
+mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>]&gt;,&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">3</span>]&gt;&gt;
 ==&gt;<span style="color:#00D">4</span>
 ==&gt;<span style="color:#00D">6</span></code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<div class="paragraph">
+<p>Similarly, for the common ring theorems:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. The Ring Theorems in mmlang</caption>
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Ring Theorems</th>
+<th class="tableblock halign-center valign-top">mmlang Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[b]&gt;{-1}</code> \$=\$ <code>&lt;[a]{-1},[b]{-1}&gt;</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(-a) = a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a]{-1}&gt;{-1}</code> \$=\$ <code>[a]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a*0 = 0 = 0*a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];[id]{0}&gt;</code> \$=\$ <code>[id]{0}</code> \$=\$ <code>&lt;[id]{0};[a]&gt;</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (-b) = -a * b = -(a * b)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];[b]{-1}&gt;</code> \$=\$ <code>&lt;[a]{-1};[b]&gt;</code> \$=\$ <code>&lt;[a];[b]&gt;{-1}</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(-a) * (-b) = a * b</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a]{-1};[b]{-1}&gt;</code> \$=\$ <code>&lt;[a];[b]&gt;</code></p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all center" style="width: 45%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]&gt;{-<span style="color:#00D">1</span>}
+==&gt;<span style="color:#00D">2</span>{-<span style="color:#00D">2</span>}
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>]{-<span style="color:#00D">1</span>},[mult,<span style="color:#00D">2</span>]{-<span style="color:#00D">1</span>}&gt;
+==&gt;<span style="color:#00D">2</span>{-<span style="color:#00D">2</span>}
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>]{-<span style="color:#00D">1</span>}&gt;{-<span style="color:#00D">1</span>}
+==&gt;<span style="color:#00D">2</span>
+mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>]
+==&gt;<span style="color:#00D">2</span>
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}&gt;
+mmlang&gt; <span style="color:#00D">1</span>[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}
+mmlang&gt; <span style="color:#00D">1</span>&lt;[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>};[plus,<span style="color:#00D">1</span>]&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>]{-<span style="color:#00D">1</span>}&gt;
+==&gt;<span style="color:#00D">4</span>{-<span style="color:#00D">1</span>}
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>]{-<span style="color:#00D">1</span>};[mult,<span style="color:#00D">2</span>]&gt;
+==&gt;<span style="color:#00D">4</span>{-<span style="color:#00D">1</span>}
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>]&gt;{-<span style="color:#00D">1</span>}
+==&gt;<span style="color:#00D">4</span>{-<span style="color:#00D">1</span>}
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>]{-<span style="color:#00D">1</span>};[mult,<span style="color:#00D">2</span>]{-<span style="color:#00D">1</span>}&gt;
+==&gt;<span style="color:#00D">4</span>
+mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>]&gt;
+==&gt;<span style="color:#00D">4</span></code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2114,7 +2187,7 @@ _________      _________
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Instruction classes</caption>
+<caption class="title">Table 7. Instruction classes</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 27.2727%;">
