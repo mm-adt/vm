@@ -474,11 +474,6 @@ hr{border-width:0px 0 0; margin:1em 0 3em}
 <li><a href="#_type_definitions">Type Definitions</a></li>
 <li><a href="#_type_quantification">Type Quantification</a></li>
 <li><a href="#_type_compilation">Type Compilation</a></li>
-</ul>
-</li>
-<li><a href="#_language_algebras">Language Algebras</a>
-<ul class="sectlevel3">
-<li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 <li><a href="#_the_type_trace_graph">The Type Trace Graph</a>
 <ul class="sectlevel4">
 <li><a href="#_linear_type_traces">Linear Type Traces</a></li>
@@ -486,7 +481,13 @@ hr{border-width:0px 0 0; margin:1em 0 3em}
 <li><a href="#_branching_type_traces">Branching Type Traces</a></li>
 </ul>
 </li>
-<li><a href="#_the_type_ring">The Type Ring</a></li>
+</ul>
+</li>
+<li><a href="#_language_algebras">Language Algebras</a>
+<ul class="sectlevel3">
+<li><a href="#_bicartesian_closed_category">Bicartesian Closed Category</a></li>
+<li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
+<li><a href="#_the_type_ringoid">The Type Ringoid</a></li>
 </ul>
 </li>
 <li><a href="#_the_value">The Value</a>
@@ -1325,6 +1326,98 @@ mmlang&gt;</code></pre>
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
+<div class="paragraph">
+<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type&#8217;s definition within a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> called a <strong>type trace graph</strong>.</p>
+</div>
+<div class="sect4">
+<h5 id="_linear_type_traces">Linear Type Traces</h5>
+<div class="paragraph">
+<p>Any type constructed with instructions contain argument values (not types) generates a <strong>linear type trace</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
+==&gt;<span style="color:#369;font-weight:bold">int</span>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][gt,<span style="color:#00D">0</span>]
+==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][gt,<span style="color:#00D">0</span>]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_nested_type_traces">Nested Type Traces</h5>
+<div class="paragraph">
+<p>Any type constructed with instructions that contain an argument type generates a <strong>nested type trace</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
+==&gt;<span style="color:#369;font-weight:bold">int</span>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]
+mmlang&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_branching_type_traces">Branching Type Traces</h5>
+<div class="paragraph">
+<p>Nested types are examples of <em>inter-instruction branching</em>. The more general form is <em>intra-instruction branching</em>. Any instruction that forks an <code>obj</code> into a <code>poly</code> or joins the <code>objs</code> of a <code>poly</code> are <strong>branch instructions</strong>. They generate <strong>branching type traces</strong>.</p>
+</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Tagged_union"><strong>sum type</strong></a> (tagged union) is constructed by branching across a <code>|-poly</code>.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/sum-type-constructor.png" alt="sum type constructor" width="600">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]
+==&gt;[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]|<span style="color:#369;font-weight:bold">int</span>[neg]]&lt;=<span style="color:#369;font-weight:bold">int</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]|<span style="color:#369;font-weight:bold">int</span>[neg]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example above, a <code>int</code> is the ctype that is split across two branches via <code>[choice]</code> (with a sugar of <code>~&lt;</code>). Given an <code>int</code> value, that <code>int</code> value will either be greater than 0 or it will be negated.  In other words, the type maps an <code>int</code> to a coproduct containing it&#8217;s <a href="https://en.wikipedia.org/wiki/Absolute_value">absolute value</a> as determined either from the first or the second branch.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]
+==&gt;[<span style="color:#00D">10</span>|]
+mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]
+==&gt;[|<span style="color:#00D">10</span>]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain <code>int</code>. For example, should the coproduct undergo a <code>[merge]</code> (with a sugar of <code>&gt;-</code>), then the above type yields the same range value for two different <code>int</code> domains.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]&gt;-
+==&gt;<span style="color:#00D">10</span>
+mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]&gt;-
+==&gt;<span style="color:#00D">10</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Without the merge, the branch that the incoming <code>int</code> took is preserved in the coproduct&#8217;s <code>poly</code> structure and can be inverted.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]=[_|[neg]]&gt;-
+==&gt;<span style="color:#00D">10</span>
+mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]=[_|[neg]]&gt;-
+==&gt;-<span style="color:#00D">10</span></code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_language_algebras">Language Algebras</h3>
@@ -1355,8 +1448,138 @@ mmlang&gt;</code></pre>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_bicartesian_closed_category">Bicartesian Closed Category</h4>
 <div class="paragraph">
-<p>The program the mm-ADT VM, there must exist a functor from the source language to the logical structure of types and values within the mm-ADT.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> has products, coproducts, a product unit, a coproduct unit, exponents, and product distributivity over coproducts with the following axioms.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22.2222%;">
+<col style="width: 33.3333%;">
+<col style="width: 44.4445%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">axiom</th>
+<th class="tableblock halign-left valign-top">mmlang type</th>
+<th class="tableblock halign-left valign-top">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = b + a \$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a|b&gt; = &lt;b|a&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commutative coproducts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;&lt;a|b&gt;|c&gt; = &lt;a|&lt;b|c&gt;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a;&lt;b|c&gt;&gt; = &lt;&lt;a;b&gt;|&lt;a;c&gt;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 + a = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{0}|a&gt; = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 \ast a = 0\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{0};a&gt; = _{0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit annihilation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$1 \ast a = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{1};a&gt; = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product unit</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$c^ {b^a} = c^{a \ast b}\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a;b;c&gt; = &lt;&lt;a;b&gt;;c&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">currying</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Every composite structure, including products and coproducts, are an mm-ADT <code>poly</code>. There are two kinds of <code>polys</code>:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>lst</code>: a list indexed by <code>int</code> whose elements are <code>objs</code>.</p>
+</li>
+<li>
+<p><code>rec</code>: a map indexed by arbitrary <code>obj</code> keys, whose values are <code>objs</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Every <code>poly</code> has a separator. The separator provides details the way in which the poly should be processed. There are three kinds of separators.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>|</code>: a <em>choice</em> (or either) with <code>{n}|{m}</code> quantified as \$n|m\$.</p>
+</li>
+<li>
+<p><code>,</code>: a <em>parallel</em> (or all) with <code>{n},{m}</code> quantified as \$n+m\$.</p>
+</li>
+<li>
+<p><code>;</code>: a <em>serial</em> (or compose) with <code>{n};{m}</code> quantified as \$n \ast m\$.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;[mult,<span style="color:#00D">2</span>]{<span style="color:#00D">10</span>}|[plus,<span style="color:#00D">1</span>]{<span style="color:#00D">20</span>}&gt;
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">10</span>,<span style="color:#00D">20</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>&lt;[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">10</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">2</span>]{<span style="color:#00D">10</span>}|<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">20</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>]{<span style="color:#00D">20</span>}]&gt;
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;[mult,<span style="color:#00D">2</span>]{<span style="color:#00D">10</span>},[plus,<span style="color:#00D">1</span>]{<span style="color:#00D">20</span>}&gt;
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">30</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>&lt;[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">10</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">2</span>]{<span style="color:#00D">10</span>},<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">20</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>]{<span style="color:#00D">20</span>}]&gt;
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;[mult,<span style="color:#00D">2</span>]{<span style="color:#00D">10</span>};[plus,<span style="color:#00D">1</span>]{<span style="color:#00D">20</span>}&gt;
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">200</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>&lt;[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">10</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">2</span>]{<span style="color:#00D">10</span>};<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">200</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">10</span>}[plus,<span style="color:#00D">1</span>]{<span style="color:#00D">20</span>}]&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A few examples are provided.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">mmlang</th>
+<th class="tableblock halign-left valign-top">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int|str&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">either an <code>int</code> or a <code>str</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int[is&gt;20]|int[is&lt;10]]&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">either an <code>int</code> greater than 20 or an <code>int</code> less than 10.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int[is&gt;20]&lt;x&gt;|int[is&lt;10]&lt;y&gt;]&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">either an <code>int</code> greater than 20 labeled <code>x</code> or an <code>int</code> less than 10 labeled <code>y</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int+1,int+2&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">both <code>int</code> incremented by <code>1</code> and incremented by <code>2</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int+1;int+2&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">an <code>int</code> incremented by <code>1</code> and then incremented by <code>2</code>.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_the_inst_monoid">The Inst Monoid</h4>
@@ -1421,99 +1644,7 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
-<div class="paragraph">
-<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type&#8217;s definition within a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> called a <strong>type trace graph</strong>.</p>
-</div>
-<div class="sect4">
-<h5 id="_linear_type_traces">Linear Type Traces</h5>
-<div class="paragraph">
-<p>Any type constructed with instructions contain argument values (not types) generates a <strong>linear type trace</strong>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
-==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][gt,<span style="color:#00D">0</span>]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][gt,<span style="color:#00D">0</span>]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_nested_type_traces">Nested Type Traces</h5>
-<div class="paragraph">
-<p>Any type constructed with instructions that contain an argument type generates a <strong>nested type trace</strong>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
-==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">id</span>][<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]
-mmlang&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_branching_type_traces">Branching Type Traces</h5>
-<div class="paragraph">
-<p>Nested types are examples of <em>inter-instruction branching</em>. The more general form is <em>intra-instruction branching</em>. Any instruction that forks an <code>obj</code> into a <code>poly</code> or joins the <code>objs</code> of a <code>poly</code> into a stream are <strong>branch instructions</strong>. They generate <strong>branching type traces</strong>.</p>
-</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Tagged_union"><strong>sum type</strong></a> (tagged union) can be constructed from a ctype.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/sum-type-constructor.png" alt="sum type constructor" width="600">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]
-==&gt;[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]|<span style="color:#369;font-weight:bold">int</span>[neg]]&lt;=<span style="color:#369;font-weight:bold">int</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]|<span style="color:#369;font-weight:bold">int</span>[neg]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the example above, a <code>int</code> is the ctype that is split across two branches via <code>[choice]</code> (with a sugar of <code>~&lt;</code>). Given an <code>int</code> value, that <code>int</code> value will either be greater than 0 or it will be negated.  In other words, the type maps an <code>int</code> to a coproduct containing it&#8217;s <a href="https://en.wikipedia.org/wiki/Absolute_value">absolute value</a> as determined either from the first or the second branch.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]
-==&gt;[<span style="color:#00D">10</span>|]
-mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]
-==&gt;[|<span style="color:#00D">10</span>]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain <code>int</code>. For example, should the coproduct undergo a <code>[merge]</code> (with a sugar of <code>&gt;-</code>), then the above type yields the same range value for two different <code>int</code> domains.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]&gt;-
-==&gt;<span style="color:#00D">10</span>
-mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]&gt;-
-==&gt;<span style="color:#00D">10</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Without the merge, the branch that the incoming <code>int</code> took is preserved in the coproduct&#8217;s <code>poly</code> structure and can be inverted.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]=[_|[neg]]&gt;-
-==&gt;<span style="color:#00D">10</span>
-mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>] | <span style="color:#369;font-weight:bold">int</span>[neg]]=[_|[neg]]&gt;-
-==&gt;-<span style="color:#00D">10</span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_the_type_ring">The Type Ring</h4>
+<h4 id="_the_type_ringoid">The Type Ringoid</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Stream Ring Theory</div>
@@ -1526,7 +1657,7 @@ mmlang&gt; -<span style="color:#00D">10</span>~&lt;[<span style="color:#369;font
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT&#8217;s type system is founded on the mathematics of <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ring</strong>. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring&#8217;s carrier set is the set of all instructions&#8201;&#8212;&#8201;<code>inst</code>. The multiplicative (<code>*</code>) and additive (<code>+</code>) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated Table <a href="#ring-entailments">Ring with Unity Theorems</a>  provides the (most well known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., theorems.</p>
+<p>mm-ADT&#8217;s type system is founded on the mathematics of multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ringoid</strong>. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring&#8217;s carrier set is the set of all instructions&#8201;&#8212;&#8201;<code>inst</code>. The multiplicative (<code>*</code>) and additive (<code>+</code>) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated Table <a href="#ring-entailments">Ring with Unity Theorems</a>  provides the (most well known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., theorems.</p>
 </div>
 <table class="tableblock frame-all grid-all left" style="width: 35%;">
 <caption class="title">Table 3. Ring with Unity Axioms</caption>
