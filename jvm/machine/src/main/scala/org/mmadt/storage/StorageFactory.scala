@@ -183,7 +183,7 @@ object StorageFactory {
     override def vrec[A <: Value[Obj], B <: Value[Obj]](name: String, g: collection.Map[A, B], q: IntQ, via: ViaTuple): RecValue[A, B] = new VRec[A, B](name, (Tokens.`;`, g), q, via)
     override def vrec[A <: Value[Obj], B <: Value[Obj]](values: Iterator[RecValue[A, B]]): RecStrm[A, B] = new VRecStrm(values = MultiSet(values.toSeq))
     //
-    override def strm[O <: Obj]: OStrm[O] = VEmptyStrm.empty[O]
+    override def strm[O <: Obj]: OStrm[O] = new VObjStrm(values = List.empty).asInstanceOf[OStrm[O]]
     override def strm[O <: Obj](values: Seq[O]): O = {
       (values.headOption.getOrElse(null) match {
         case _: Bool => new VBoolStrm(values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))

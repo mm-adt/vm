@@ -23,9 +23,11 @@
 package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.`type`.{RecType, __}
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -35,23 +37,19 @@ trait PutOp[A <: Obj, B <: Obj] {
   this: Obj =>
   def put(key: A, value: B): this.type = PutOp(key, value).exec(this).asInstanceOf[this.type]
 }
-
-object PutOp {
-  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[Obj, Obj] = new PutInst[A, B](key, value)
-
-  class PutInst[A <: Obj, B <: Obj](key: A, value: B, q: IntQ = qOne) extends VInst[Obj, Obj](g = (Tokens.put, List(key, value)), q = q) {
-    override def q(q: IntQ): this.type = new PutInst[A, B](key, value, q).asInstanceOf[this.type]
-    override def exec(start: Obj): Obj = {
-      start match {
-        case apoly: Lst[_] => key match {
-          case avalue: IntValue =>
-            val (front, back) = apoly.glist.splitAt(avalue.g.toInt)
-            apoly.clone(g = (apoly.gsep, (front :+ value) ++ back), via = (start, this))
-          case _ => apoly.via(start, this)
-        }
-        case rec: Rec[A, B] => rec.clone(g = (Tokens.`;`, rec.gmap + (key -> value)), via = (rec, this))
-      }
+object PutOp extends Func[Obj, Obj] {
+  def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.put, List(key, value)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
+    case anon: __ => anon.via(start, inst)
+    case astrm: Strm[Obj] => astrm.via(start, inst.via._2)
+    case arec: RecType[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Obj] -> inst.arg1[Obj]))).via(start, inst)
+    case arec: RecValue[Value[Obj], Value[Obj]] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Value[Obj]] -> inst.arg1[Value[Obj]]))).via(start, inst)
+    case alst: Lst[_] => inst.arg0[Obj] match {
+      case avalue: IntValue =>
+        val (front, back) = alst.glist.splitAt(avalue.g.toInt)
+        alst.clone(g = (alst.gsep, (front :+ inst.arg1[Obj]) ++ back), via = (start, inst))
+      case _ => alst.via(start, inst)
     }
-  }
 
+  }
 }

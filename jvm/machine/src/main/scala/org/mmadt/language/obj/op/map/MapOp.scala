@@ -47,11 +47,8 @@ object MapOp {
       val inst = new MapInst(Inst.resolveArg(start, other), this.q)
       start match {
         case astrm: Strm[_] => strm[O](astrm.values.map(x => this.exec(x)))
+        case _: Value[_] => Inst.resolveArg(start, other).via(start, inst)
         case _: Type[_] => asType[O](inst.arg0[O]).via(start, inst)
-        case _ => (other match { // Value[_]
-          case _: Value[_] => inst.arg0[O]
-          case atype: Type[O] => start.compute(atype)
-        }).via(start, inst)
       }
     }
   }
