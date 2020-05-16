@@ -24,7 +24,6 @@ package org.mmadt.language.obj.op
 
 import java.util.ServiceLoader
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
@@ -36,6 +35,7 @@ import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
 
@@ -66,7 +66,7 @@ object OpInstResolver {
       //
       case Tokens.noop => NoOp()
       case Tokens.add => AddOp(args.head)
-      case Tokens.a | Tokens.a_op => AOp(args.head.asInstanceOf[Type[Obj]])
+      case Tokens.a | Tokens.a_op => AOp(args.head)
       case Tokens.as => AsOp(args.head)
       case Tokens.and | Tokens.and_op => AndOp(args.head)
       case Tokens.or | Tokens.or_op => OrOp(args.head)
@@ -112,7 +112,7 @@ object OpInstResolver {
       //////////////////////////////////////////////////////////////////////////////////////////
       case _ => service(op, args) match {
         case Some(inst) => inst
-        case None => throw new IllegalArgumentException("Unknown instruction: " + op + "," + args)
+        case None => throw LanguageException.unknownInstruction(op, JavaConverters.seqAsJavaList(args))
       }
     }).asInstanceOf[Inst[S, E]]
   }

@@ -29,6 +29,7 @@ import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
 import org.mmadt.storage.StorageFactory;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -49,6 +50,10 @@ public class LanguageException extends VmException {
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
         return new LanguageException(source + " is not " + (target.toString().matches("^[aeiouAEIOU].*") ? "an " : "a ") + target);
+    }
+
+    public static LanguageException unknownInstruction(final String op, final List<Obj> args) {
+        return new LanguageException("[" + op + args.stream().map(Obj::toString).reduce("", (a, b) -> a + "," + b) + "] is an unknown instruction");
     }
 
     public static LanguageException typeError(final Obj source, final String message) {

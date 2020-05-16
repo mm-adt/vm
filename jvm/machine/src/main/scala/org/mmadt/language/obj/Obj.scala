@@ -37,7 +37,6 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.OLst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -165,7 +164,10 @@ trait Obj
     }
   }
   def ===>[E <: Obj](rangeType: E): E = {
-    this ==> rangeType.asInstanceOf[Type[E]]
+    rangeType match {
+      case _: Type[_] => this ==> rangeType.asInstanceOf[Type[E]]
+      case _ => rangeType
+    }
   }
 }
 
