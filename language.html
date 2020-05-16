@@ -847,7 +847,7 @@ mmlang&gt; int{2}[is&gt;0]                             <b class="conum">(3)</b>
 ==&gt;int</code></pre>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">From the perspective of type-as-function, An mm-ADT <code>int</code> is a <a href="https://en.wikipedia.org/wiki/NOP_(code)">no-op</a> on the set of integers. Given any integer, <code>int</code> returns that integer. In <code>mmlang</code>, when the domain and range are the same, the <code>&#8656;</code> and repeated type are not displayed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">From the perspective of type-as-function, An mm-ADT <code>int</code> is a <a href="https://en.wikipedia.org/wiki/NOP_(code)">no-op</a> on the set of integers. Given any integer, <code>int</code> returns that integer. In <code>mmlang</code>, when the domain and range are the same, the <code>&lt;=</code> and repeated type are not displayed.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -1100,7 +1100,7 @@ mmlang&gt;</code></pre>
 <div class="paragraph">
 <p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
 \langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is <code>obj{0}</code> (i.e. nothing). The <code>x&#8656;[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
+where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element. This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is <code>obj{0}</code> (i.e. nothing). The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1247,7 +1247,7 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 <div class="content">
 <div class="title">Stream Ring Theory</div>
 <div class="paragraph">
-<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> is a ring algebra defined by the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> and <strong>coefficient</strong> ring, where every function/coefficient pair is an element of the carrier of a polynomial <strong>stream</strong> ring. The algebra&#8217;s intended use was in distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, large amounts of data need to be colocated for processing. Proto-versions of the stream ring algebra are realized in the distributed graph computing framework called <a href="http://tinkerpop.apache.org">Apache TinkerPop</a>.</p>
+<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> is a ring algebra defined by the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> and <strong>coefficient</strong> ring, where every function/coefficient pair is an element of the carrier of a polynomial <strong>stream</strong> ring. The algebra&#8217;s intended use was in distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, large amounts of data need to be co-located for processing. A proto-version of the stream ring algebra was realized in the distributed graph computing framework <a href="http://tinkerpop.apache.org">Apache TinkerPop</a>.</p>
 </div>
 <div class="paragraph">
 <p>mm-ADT adopts the algebra of stream ring theory, where functions are <strong>instructions</strong> and coefficients are <strong>quantifiers</strong>. mm-ADT&#8217;s type system is realized as a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> extension of the algebra.</p>
@@ -1255,7 +1255,7 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT&#8217;s type system is founded on the mathematics of <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ring</strong>. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring&#8217;s carrier set is the set of all instructions&#8201;&#8212;&#8201;<code>inst</code>. The multiplicative (<code>*</code>) and additive (<code>+</code>) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated table provides the (most well known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., theorems.</p>
+<p>mm-ADT&#8217;s type system is founded on the mathematics of <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ring</strong>. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring&#8217;s carrier set is the set of all instructions&#8201;&#8212;&#8201;<code>inst</code>. The multiplicative (<code>*</code>) and additive (<code>+</code>) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated Table <a href="#ring-entailments">Ring with Unity Theorems</a>  provides the (most well known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., theorems.</p>
 </div>
 <table class="tableblock frame-all grid-all left" style="width: 35%;">
 <caption class="title">Table 3. Ring with Unity Axioms</caption>
@@ -1289,17 +1289,17 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
+<table id="ring-entailments" class="tableblock frame-all grid-all right" style="width: 35%;">
 <caption class="title">Table 4. Ring with Unity Theorems</caption>
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = a + c &#8658; b = c</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = a + c =&gt; b = c</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = 0 &#8658; a = -b &amp; b = -a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = 0 =&gt; a = -b &amp; b = -a</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
@@ -1353,7 +1353,7 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>[map,[a][b]][c]</code> \$=\$ <code>[a][map,[b][c]]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt;[[a][b];[c]]&gt;-</code> \$=\$ <code>-&lt;[[a];[b][c]]&gt;-</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
@@ -1370,7 +1370,23 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 </tbody>
 </table>
 <div class="paragraph">
-<p>Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where <code>[a]</code> is <code>int[plus,1]</code>, <code>[b]</code> is <code>int[mult,2]</code>, and <code>[c]</code> is <code>int[mult,3]</code> (though any respectfully sorted types can be used).</p>
+<p>Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>[a]</code> is <code>int[plus,1]</code></p>
+</li>
+<li>
+<p><code>[b]</code> is <code>int[mult,2]</code></p>
+</li>
+<li>
+<p><code>[c]</code> is <code>int[mult,3]</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Though any combinations of respectively sorted instructions can be used.</p>
 </div>
 <table class="tableblock frame-all grid-all left" style="width: 48%;">
 <colgroup>
@@ -1396,9 +1412,9 @@ mmlang&gt; 1-&lt;[[plus,1],[mult,2]]&gt;-
 ==&gt;2{2}
 mmlang&gt; 1-&lt;[[mult,2],[plus,1]]&gt;-
 ==&gt;2{2}
-mmlang&gt; 1[map,[plus,1][mult,2]][mult,3]
+mmlang&gt; 1-&lt;[[plus,1][mult,2];[mult,3]]&gt;-
 ==&gt;12
-mmlang&gt; 1[plus,1][map,[mult,2][mult,3]]
+mmlang&gt; 1-&lt;[[plus,1];[mult,2][mult,3]]&gt;-
 ==&gt;12</code></pre>
 </div>
 </div></div></td>
@@ -1462,7 +1478,7 @@ mmlang&gt; 1-&lt;[[plus,1][mult,2],[plus,1][mult,3]]&gt;-
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-13 13:41:58 -0600
+Last updated 2020-05-15 22:49:48 -0600
 </div>
 </div>
 </body>
