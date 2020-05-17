@@ -1,3 +1,28 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("code[data-lang='python']").attr("data-lang", "mmlang")
+  $("span[style='color:#010']").attr("style","color:#710")
+  $("span[style='background-color:hsla(0,100%,50%,0.05)']").attr("style","background-color:hsla(0,100%,100%,0.05)")
+  $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;background-color:hsla(0,100%,100%,0.05)")
+  jQuery.each(["branch","neg","get","gte","lte",
+                "mult","plus","start","noop","eq"], function(index,value) {
+    $("code:contains('"+value+"')").html(function(_, html) {
+      return html.replace(new RegExp(value,"gi"), "<span style='color:#080;font-weight:bold'>"+value+"</span>");
+    });
+   });
+   jQuery.each(["true","false"], function(index,value) {
+    $("code:contains('"+value+"')").html(function(_, html) {
+      return html.replace(new RegExp(value,"gi"), "<span style='color:#00D'>"+value+"</span>");
+    });
+   });
+   jQuery.each(["_","real","rec","lst","poly","inst","obj","int"], function(index,value) {
+    $("code:contains('"+value+"')").html(function(_, html) {
+      return html.replace(new RegExp(value,"gi"), "<span style='color:#369;font-weight:bold'>"+value+"</span>");
+    });
+   });
+});
+</script>
 <style type="text/css">
 .imageblock.left{margin:.25em 3em 1.25em 0}
 .imageblock.right{margin:.25em 0 1.25em .625em}
