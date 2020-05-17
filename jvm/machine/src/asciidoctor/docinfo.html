@@ -5,27 +5,28 @@ $(document).ready(function(){
   $("span[style='color:#010']").attr("style","color:#710")
   $("span[style='background-color:hsla(0,100%,50%,0.05)']").attr("style","background-color:hsla(0,100%,100%,0.05)")
   $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;background-color:hsla(0,100%,100%,0.05)")
-  jQuery.each(["branch","neg","get","gte","lte","gt","lt",
-                "mult","plus","start","noop","eq","is"], function(index,value) {
-    $("code:contains('["+value+"')").html(function(_, html) {
-      return html.replace(new RegExp("\\["+value,"gi"), "[<span style='color:#080;font-weight:bold'>"+value+"</span>");
-    });
-   });
-   jQuery.each(["true","false"], function(index,value) {
-    $("code:contains('"+value+"')").html(function(_, html) {
-      return html.replace(new RegExp(value,"gi"), "<span style='color:#00D'>"+value+"</span>");
-    });
-   });
-   jQuery.each(["_","real","rec","lst","poly","inst","obj","int","str"], function(index,value) {
-    $("code:contains('"+value+"')").html(function(_, html) {
-      return html.replace(new RegExp(value,"gi"), "<span style='color:#369;font-weight:bold'>"+value+"</span>");
-    });
-   });
-   jQuery.each(["mmlang"], function(index,value) {
-    $("code:contains('"+value+"')").html(function(_, html) {
-      return html.replace(new RegExp(value,"gi"), "<span style='color:#710'>"+value+"</span>");
-    });
-   });
+  var rewrites = {"op":      ["[",      "[<span style='color:#080;font-weight:bold'>XXX</span>"],
+                  "infix":   ["",       "<span style='color:#080;font-weight:bold'>XXX</span>"],
+                  "vars":    ["[",      "[<span style='color:#080;font-weight:bold'>XXX</span>"],
+                  "value":   ["",       "<span style='color:#00D'>XXX</span>"],
+                  "type":    ["",       "<span style='color:#369;font-weight:bold'>XXX</span>"],
+                  "special": ["",       "<span style='color:#710'>XXX</span>"],
+                  "plain":   ["",       "<span style='color:#000'>XXX</span>"]};
+  var items =    {"op":      ["a","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
+                              "one","zero","noop","eq","is","id","db","explain","count","fold","map"],
+                  "infix":   ["|"],
+                  "vars":    ["a","b","c"],
+                  "value":   ["true","false"],
+                  "type":    ["_","real","rec","lst","poly","inst","obj","int","str","bool","range","domain"],
+                  "special": ["mmlang","q"],
+                  "plain":   ["is not"]};
+  $.each(items, function(key, values) {
+    jQuery.each(values, function(index,element) {
+      $("code:contains('"+$.escapeSelector(rewrites[key][0]+element)+"')").html(function(_, html) {
+        return html.replace(new RegExp($.escapeSelector(rewrites[key][0]+element),"gi"), rewrites[key][1].replace(new RegExp("XXX","gi"),element));
+      });
+     });
+   })
 });
 </script>
 <style type="text/css">
