@@ -440,11 +440,20 @@ $(document).ready(function(){
   $("span[style='color:#010']").attr("style","color:#710")
   $("span[style='background-color:hsla(0,100%,50%,0.05)']").attr("style","background-color:hsla(0,100%,100%,0.05)")
   $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;background-color:hsla(0,100%,100%,0.05)")
-  $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;background-color:hsla(0,100%,100%,0.05)")
-   var ops = ["branch","neg","get"];
-   jQuery.each(ops, function(index,value) {
-    $("code:contains('branch')").html(function(_, html) {
-      html.replace(/(branch)/g, "<span style='color:#080;font-weight:bold'>$1</span>");
+  jQuery.each(["branch","neg","get","gte","lte",
+                "mult","plus","start","noop","eq"], function(index,value) {
+    $("code:contains('"+value+"')").html(function(_, html) {
+      return html.replace(new RegExp(value,"gi"), "<span style='color:#080;font-weight:bold'>"+value+"</span>");
+    });
+   });
+   jQuery.each(["true","false"], function(index,value) {
+    $("code:contains('"+value+"')").html(function(_, html) {
+      return html.replace(new RegExp(value,"gi"), "<span style='color:#00D'>"+value+"</span>");
+    });
+   });
+   jQuery.each(["_","real","rec","lst","poly","inst","obj","int"], function(index,value) {
+    $("code:contains('"+value+"')").html(function(_, html) {
+      return html.replace(new RegExp(value,"gi"), "<span style='color:#369;font-weight:bold'>"+value+"</span>");
     });
    });
 });
@@ -455,10 +464,6 @@ $(document).ready(function(){
 table.tableblock{max-width:100%;border-collapse:separate; margin:0.25em 1em 0.25em 1em}
 hr{border-width:0px 0 0; margin:1em 0 3em}
 </style>
-<p>This is a paragraph.</p>
-<p>This is another paragraph.</p>
-
-<button>Click me to hide paragraphs</button>
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
