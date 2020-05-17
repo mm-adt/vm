@@ -1116,9 +1116,9 @@ mmlang&gt;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 10~&lt;[int[is&gt;0] | int[neg]]
+<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]&gt;
 ==&gt;[10|]
-mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]
+mmlang&gt; -10&lt;int[is&gt;0] | int[neg]&gt;
 ==&gt;[|10]</code></pre>
 </div>
 </div>
@@ -1127,9 +1127,9 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 10~&lt;[int[is&gt;0] | int[neg]]&gt;-
+<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]&gt;
 ==&gt;10
-mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]&gt;-
+mmlang&gt; -10&lt;int[is&gt;0] | int[neg]&gt;
 ==&gt;10</code></pre>
 </div>
 </div>
@@ -1138,9 +1138,9 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]&gt;-
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
+<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]]=[_|[neg]&gt;
 ==&gt;10
-mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
+mmlang&gt; -10&lt;int[is&gt;0] | int[neg]]=[_|[neg]&gt;
 ==&gt;-10</code></pre>
 </div>
 </div>
@@ -1149,89 +1149,8 @@ mmlang&gt; -10~&lt;[int[is&gt;0] | int[neg]]=[_|[neg]]&gt;-
 </div>
 <div class="sect2">
 <h3 id="_language_algebras">Language Algebras</h3>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Initial and Terminal Objects</div>
-<div class="imageblock left">
-<div class="content">
-<img src="./images/language/initial.png" alt="initial" width="130">
-</div>
-</div>
-<div class="paragraph">
-<p>A category may have an <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial and/or terminal</a> object.</p>
-</div>
-<div class="paragraph">
-<p>An <strong>initial object</strong> \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/terminal.png" alt="terminal" width="130">
-</div>
-</div>
-<div class="paragraph">
-<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
-</div>
-<div class="paragraph">
-<p>&nbsp;</p>
-</div>
-</div>
-</div>
 <div class="sect3">
-<h4 id="_bicartesian_closed_category">Bicartesian Closed Category</h4>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> has products, coproducts, a product unit, a coproduct unit, exponents, and product distributivity over coproducts with the following axioms.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 22.2222%;">
-<col style="width: 33.3333%;">
-<col style="width: 44.4445%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">axiom</th>
-<th class="tableblock halign-left valign-top">mmlang type</th>
-<th class="tableblock halign-left valign-top">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = b + a \$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a|b&gt; = &lt;b|a&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commutative coproducts</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;&lt;a|b&gt;|c&gt; = &lt;a|&lt;b|c&gt;&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a;&lt;b|c&gt;&gt; = &lt;&lt;a;b&gt;|&lt;a;c&gt;&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 + a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{0}|a&gt; = a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 \ast a = 0\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{0};a&gt; = _{0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit annihilation</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$1 \ast a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{1};a&gt; = a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">product unit</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$c^ {b^a} = c^{a \ast b}\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a;b;c&gt; = &lt;&lt;a;b&gt;;c&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">currying</p></td>
-</tr>
-</tbody>
-</table>
+<h4 id="_the_polys">The Polys</h4>
 <div class="paragraph">
 <p>Every composite structure, including products and coproducts, are an mm-ADT <code>poly</code>. There are two kinds of <code>polys</code>:</p>
 </div>
@@ -1363,6 +1282,90 @@ mmlang&gt; 6&lt;int+1;int+2&gt;
 </div>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_bicartesian_closed_category">Bicartesian Closed Category</h4>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Initial and Terminal Objects</div>
+<div class="imageblock left">
+<div class="content">
+<img src="./images/language/initial.png" alt="initial" width="130">
+</div>
+</div>
+<div class="paragraph">
+<p>A category may have an <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial and/or terminal</a> object.</p>
+</div>
+<div class="paragraph">
+<p>An <strong>initial object</strong> \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.</p>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/terminal.png" alt="terminal" width="130">
+</div>
+</div>
+<div class="paragraph">
+<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
+</div>
+<div class="paragraph">
+<p>&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> has products, coproducts, a product unit, a coproduct unit, exponents, and products distribute over coproducts. These features are captured by the following axioms that all BC categories must support.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22.2222%;">
+<col style="width: 33.3333%;">
+<col style="width: 44.4445%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">axiom</th>
+<th class="tableblock halign-left valign-top">mmlang type</th>
+<th class="tableblock halign-left valign-top">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = b + a \$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a|b&gt; = &lt;b|a&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commutative coproducts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;&lt;a|b&gt;|c&gt; = &lt;a|&lt;b|c&gt;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a;&lt;b|c&gt;&gt; = &lt;&lt;a;b&gt;|&lt;a;c&gt;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 + a = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{0}|a&gt; = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 \ast a = 0\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{0};a&gt; = _{0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit annihilation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$1 \ast a = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{1};a&gt; = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product unit</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$c^ {b^a} = c^{a \ast b}\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a;b;c&gt; = &lt;&lt;a;b&gt;;c&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">currying</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_the_inst_monoid">The Inst Monoid</h4>
@@ -1736,7 +1739,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-16 16:59:04 -0600
+Last updated 2020-05-17 00:51:26 -0600
 </div>
 </div>
 </body>
