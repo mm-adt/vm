@@ -377,9 +377,9 @@ In the example above, a `int` is the ctype that is split across two branches via
 
 [source]
 ----
-mmlang> 10~<[int[is>0] | int[neg]]
+mmlang> 10<int[is>0] | int[neg]>
 ==>[10|]
-mmlang> -10~<[int[is>0] | int[neg]]
+mmlang> -10<int[is>0] | int[neg]>
 ==>[|10]
 ----
 
@@ -387,9 +387,9 @@ While both injections of the coproduct contain the same value, their location in
 
 [source]
 ----
-mmlang> 10~<[int[is>0] | int[neg]]>-
+mmlang> 10<int[is>0] | int[neg]>
 ==>10
-mmlang> -10~<[int[is>0] | int[neg]]>-
+mmlang> -10<int[is>0] | int[neg]>
 ==>10
 ----
 
@@ -397,45 +397,15 @@ Without the merge, the branch that the incoming `int` took is preserved in the c
 
 [source]
 ----
-mmlang> 10~<[int[is>0] | int[neg]]=[_|[neg]]>-
+mmlang> 10<int[is>0] | int[neg]]=[_|[neg]>
 ==>10
-mmlang> -10~<[int[is>0] | int[neg]]=[_|[neg]]>-
+mmlang> -10<int[is>0] | int[neg]]=[_|[neg]>
 ==>-10
 ----
 
 === Language Algebras
 
-.Initial and Terminal Objects
-****
-image::initial.png[width=130,float=left]
-
-A category may have an https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial and/or terminal] object.
-
-An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.
-
-image::terminal.png[width=130,float=right]
-
-A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
-
-&nbsp;
-****
-
-==== Bicartesian Closed Category
-
-A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories[bicartesian closed category] has products, coproducts, a product unit, a coproduct unit, exponents, and product distributivity over coproducts with the following axioms.
-
-[cols="2,3,4"]
-|===
-| axiom | mmlang type | description
-
-| \$a + b = b + a \$                           | `<a\|b> = <b\|a>`                    | commutative coproducts
-| \$(a + b) + c = a + (b + c)\$                | `\<<a\|b>\|c> = <a\|<b\|c>>`         |associative coproducts
-| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `<a;<b\|c>> = \<<a;b>\|<a;c>>`       | distributivity
-| \$0 + a = a\$                                | `<_{0}\|a> = a`                      | coproduct unit
-| \$0 \ast a = 0\$                             | `<_{0};a> = _{0}`                    | coproduct unit annihilation
-| \$1 \ast a = a\$                             | `<_{1};a> = a`                       | product unit
-| \$c^ {b^a} = c^{a \ast b}\$                  | `<a;b;c> = <<a;b>;c>`                | currying
-|===
+==== The Polys
 
 Every composite structure, including products and coproducts, are an mm-ADT `poly`. There are two kinds of `polys`:
 
@@ -506,6 +476,38 @@ mmlang> [1,2,3,4,5]>--<[int+1,int*2]
 mmlang> 1-<[+2,<+3,+4>]
 ==>[3,4,5]
 ----
+
+==== Bicartesian Closed Category
+
+.Initial and Terminal Objects
+****
+image::initial.png[width=130,float=left]
+
+A category may have an https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial and/or terminal] object.
+
+An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.
+
+image::terminal.png[width=130,float=right]
+
+A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+
+&nbsp;
+****
+
+A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories[bicartesian closed category] has products, coproducts, a product unit, a coproduct unit, exponents, and products distribute over coproducts. These features are captured by the following axioms that all BC categories must support.
+
+[cols="2,3,4"]
+|===
+| axiom | mmlang type | description
+
+| \$a + b = b + a \$                           | `<a\|b> = <b\|a>`                    | commutative coproducts
+| \$(a + b) + c = a + (b + c)\$                | `\<<a\|b>\|c> = <a\|<b\|c>>`         | associative coproducts
+| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `<a;<b\|c>> = \<<a;b>\|<a;c>>`       | distributivity
+| \$0 + a = a\$                                | `<_{0}\|a> = a`                      | coproduct unit
+| \$0 \ast a = 0\$                             | `<_{0};a> = _{0}`                    | coproduct unit annihilation
+| \$1 \ast a = a\$                             | `<_{1};a> = a`                       | product unit
+| \$c^ {b^a} = c^{a \ast b}\$                  | `<a;b;c> = <<a;b>;c>`                | currying
+|===
 
 ==== The Inst Monoid
 
