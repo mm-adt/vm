@@ -434,36 +434,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-$(document).ready(function(){
-  $("code[data-lang='python']").attr("data-lang", "mmlang")
-  $("span[style='color:#010']").attr("style","color:#710")
-  $("span[style='background-color:hsla(0,100%,50%,0.05)']").attr("style","background-color:hsla(0,100%,100%,0.05)")
-  $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;background-color:hsla(0,100%,100%,0.05)")
-  var rewrites = {"op":      ["[",      "[<span style='color:#080;font-weight:bold'>XXX</span>"],
-                  "infix":   ["",       "<span style='color:#080;font-weight:bold'>XXX</span>"],
-                  "vars":    ["[",      "[<span style='color:#080;font-weight:bold'>XXX</span>"],
-                  "value":   ["",       "<span style='color:#00D'>XXX</span>"],
-                  "type":    ["",       "<span style='color:#369;font-weight:bold'>XXX</span>"],
-                  "special": ["",       "<span style='color:#710'>XXX</span>"],
-                  "plain":   ["",       "<span style='color:#000'>XXX</span>"]};
-  var items =    {"op":      ["a","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
-                              "one","zero","noop","eq","is","id","db","explain","count","fold","map"],
-                  "infix":   ["|"],
-                  "vars":    ["a","b","c"],
-                  "value":   ["true","false"],
-                  "type":    ["_","real","rec","lst","poly","inst","obj","int","str","bool","range","domain"],
-                  "special": ["mmlang","q"],
-                  "plain":   ["is not"]};
-  $.each(items, function(key, values) {
-    jQuery.each(values, function(index,element) {
-      $("code:contains('"+$.escapeSelector(rewrites[key][0]+element)+"')").html(function(_, html) {
-        return html.replace(new RegExp($.escapeSelector(rewrites[key][0]+element),"gi"), rewrites[key][1].replace(new RegExp("XXX","gi"),element));
-      });
-     });
-   })
-});
-</script>
+<script type="text/javascript" src="images/syntax-highlighter.js"></script>
 <style type="text/css">
 .imageblock.left{margin:.25em 3em 1.25em 0}
 .imageblock.right{margin:.25em 0 1.25em .625em}
@@ -2843,7 +2814,7 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-29 15:09:04 -0600
+Last updated 2020-05-17 11:32:16 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
