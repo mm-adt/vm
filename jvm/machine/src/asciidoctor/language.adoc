@@ -688,7 +688,7 @@ mmlang> 1[plus,1]
 ----
 
 |`(a + b) * c = (a * c) + (b * c)`
-|&nbsp;
+|image:multiplicative-right-distributivity.png[link=images/language/multiplicative-right-distributivity.png]
 a|
 [.small]
 [source]
@@ -700,7 +700,7 @@ mmlang> 1<<[plus,1];[mult,3]>,<[mult,2];[mult,3]>>
 ----
 
 |`a * (b + c) = (a * b) + (a * c)`
-|&nbsp;
+|image:multiplicative-left-distributivity.png[link=images/language/multiplicative-left-distributivity.png]
 a|
 [.small]
 [source]
