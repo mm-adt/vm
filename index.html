@@ -433,12 +433,32 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("code[data-lang='python']").attr("data-lang", "mmlang")
+  $("span[style='color:#010']").attr("style","color:#710")
+  $("span[style='background-color:hsla(0,100%,50%,0.05)']").attr("style","background-color:hsla(0,100%,100%,0.05)")
+  $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;background-color:hsla(0,100%,100%,0.05)")
+  $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;background-color:hsla(0,100%,100%,0.05)")
+   var ops = ["branch","neg","get"];
+   jQuery.each(ops, function(index,value) {
+    $("code:contains('branch')").html(function(_, html) {
+      html.replace(/(branch)/g, "<span style='color:#080;font-weight:bold'>$1</span>");
+    });
+   });
+});
+</script>
 <style type="text/css">
 .imageblock.left{margin:.25em 3em 1.25em 0}
 .imageblock.right{margin:.25em 0 1.25em .625em}
 table.tableblock{max-width:100%;border-collapse:separate; margin:0.25em 1em 0.25em 1em}
 hr{border-width:0px 0 0; margin:1em 0 3em}
 </style>
+<p>This is a paragraph.</p>
+<p>This is another paragraph.</p>
+
+<button>Click me to hide paragraphs</button>
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
