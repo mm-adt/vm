@@ -1443,41 +1443,66 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT&#8217;s type system is founded on the mathematics of multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ringoid</strong>. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring&#8217;s carrier set is the set of all instructions&#8201;&#8212;&#8201;<code>inst</code>. The multiplicative (<code>*</code>) and additive (<code>+</code>) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated Table <a href="#ring-entailments">Ring with Unity Theorems</a>  provides the (most well known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., theorems.</p>
+<p>mm-ADT&#8217;s type system is founded on the mathematics of multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ringoid</strong>. A ring relates two monoids that share a carrier set. The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all instructions (<code>inst</code>), where, with the ringoid&#8217;s multiplicative operator (<code>*</code>) and commutative additive operator (<code>+</code>) the set of all possible mm-ADT types is induced. The ring axioms specfiy the constraints of the mm-ADT type system. These <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> are presented below, where the associated table provides the (most well-known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>.</p>
 </div>
-<table class="tableblock frame-all grid-all left" style="width: 35%;">
+<table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. Ring with Unity Axioms</caption>
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 28.5714%;">
+<col style="width: 28.5714%;">
+<col style="width: 42.8572%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">common notation</th>
+<th class="tableblock halign-center valign-top">terminology</th>
+<th class="tableblock halign-center valign-top">mmlang notation</th>
+</tr>
+</thead>
 <tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">additive associativity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a],[b]&gt;,[c]&gt;</code> \$=\$ <code>&lt;[a],&lt;[b],[c]&gt;&gt;</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">additive identity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[id]{0},[a]&gt;</code> \$=\$ <code>&lt;[a],[id]{0}&gt;</code> \$=\$ <code>[a]</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">additive inverses</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[a]{-1}&gt;</code> \$=\$ <code>[id]{0}</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">additive commutativity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[b]&gt;</code> \$=\$ <code>&lt;[b],[a]&gt;</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative associativity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a];[b]&gt;;[c]&gt;</code> \$=\$ <code>&lt;[a];&lt;[b];[c]&gt;&gt;</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative identity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[id];[a]&gt;</code> \$=\$ <code>&lt;[a];[id]&gt;</code> \$=\$ <code>[a]</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative left distributivity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a],[b]&gt;;[c]&gt;</code> \$=\$ <code>&lt;&lt;[a];[c]&gt;,&lt;[b];[c]&gt;&gt;</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative right distributivity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];&lt;[b],[c]&gt;&gt;</code> \$=\$ <code>&lt;&lt;[a];[b]&gt;,&lt;[a];[c]&gt;&gt;</code></p></td>
 </tr>
 </tbody>
 </table>
-<table id="ring-entailments" class="tableblock frame-all grid-all right" style="width: 35%;">
+<table class="tableblock frame-all grid-all center" style="width: 35%;">
 <caption class="title">Table 4. Ring with Unity Theorems</caption>
 <colgroup>
 <col style="width: 100%;">
@@ -1508,56 +1533,6 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 </table>
 <hr>
 <div class="paragraph">
-<p>The ring axioms are presented again in the table below along with the associated <code>mmlang</code> expressions, where <code>[a]</code>, <code>[b]</code>, <code>[c]</code> are variable instructions from <code>inst</code>.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. The Ring Axioms in mmlang</caption>
-<colgroup>
-<col style="width: 40%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">Ring Axioms</th>
-<th class="tableblock halign-center valign-top">mmlang Types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a],[b]&gt;,[c]&gt;</code> \$=\$ <code>&lt;[a],&lt;[b],[c]&gt;&gt;</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[id]{0},[a]&gt;</code> \$=\$ <code>&lt;[a],[id]{0}&gt;</code> \$=\$ <code>[a]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[a]{-1}&gt;</code> \$=\$ <code>[id]{0}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[b]&gt;</code> \$=\$ <code>&lt;[b],[a]&gt;</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a];[b]&gt;;[c]&gt;</code> \$=\$ <code>&lt;[a];&lt;[b];[c]&gt;&gt;</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[id];[a]&gt;</code> \$=\$ <code>&lt;[a];[id]&gt;</code> \$=\$ <code>[a]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a],[b]&gt;;[c]&gt;</code> \$=\$ <code>&lt;&lt;[a];[c]&gt;,&lt;[b];[c]&gt;&gt;</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];&lt;[b],[c]&gt;&gt;</code> \$=\$ <code>&lt;&lt;[a];[b]&gt;,&lt;[a];[c]&gt;&gt;</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
 <p>Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where</p>
 </div>
 <div class="ulist">
@@ -1576,12 +1551,24 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 <div class="paragraph">
 <p>Though any combinations of respectively sorted instructions can be used.</p>
 </div>
-<table class="tableblock frame-all grid-all left" style="width: 45%;">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. The Ring Axioms in mmlang</caption>
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 30%;">
+<col style="width: 20%;">
+<col style="width: 50%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Ring Axiom</th>
+<th class="tableblock halign-left valign-top">mm-ADT Diagram</th>
+<th class="tableblock halign-left valign-top">mmlang Denotation</th>
+</tr>
+</thead>
 <tbody>
 <tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-associativity.png"><img src="./images/language/additive-associativity.png" alt="additive associativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; 1&lt;&lt;[plus,1],[mult,2]&gt;,[mult,3]&gt;
@@ -1589,32 +1576,63 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 ==&gt;3
 mmlang&gt; 1&lt;[plus,1],&lt;[mult,2],[mult,3]&gt;&gt;
 ==&gt;2{2}
-==&gt;3
-mmlang&gt; 1&lt;[id]{0},[plus,1]&gt;
+==&gt;3</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-identity.png"><img src="./images/language/additive-identity.png" alt="additive identity"></a></span></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 1&lt;[id]{0},[plus,1]&gt;
 ==&gt;2
 mmlang&gt; 1&lt;[plus,1],[id]{0}&gt;
-==&gt;2
-mmlang&gt; 1&lt;[plus,1],[plus,1]{-1}&gt;
-mmlang&gt; 1[id]{0}
-mmlang&gt; 1&lt;[plus,1],[mult,2]&gt;
+==&gt;2</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-inverse.png"><img src="./images/language/additive-inverse.png" alt="additive inverse"></a></span></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;[plus,1],[mult,2]&gt;,[mult,3]&gt;
+==&gt;2{2}
+==&gt;3
+mmlang&gt; 1&lt;[plus,1],&lt;[mult,2],[mult,3]&gt;&gt;
+==&gt;2{2}
+==&gt;3</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-commutativity.png"><img src="./images/language/additive-commutativity.png" alt="additive commutativity"></a></span></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 1&lt;[plus,1],[mult,2]&gt;
 ==&gt;2{2}
 mmlang&gt; 1&lt;[mult,2],[plus,1]&gt;
-==&gt;2{2}
-mmlang&gt; 1&lt;&lt;[plus,1];[mult,2]&gt;;[mult,3]&gt;
+==&gt;2{2}</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-associativity.png"><img src="./images/language/multiplicative-associativity.png" alt="multiplicative associativity"></a></span></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;[plus,1];[mult,2]&gt;;[mult,3]&gt;
 ==&gt;12
 mmlang&gt; 1&lt;[plus,1];&lt;[mult,2];[mult,3]&gt;&gt;
 ==&gt;12</code></pre>
 </div>
 </div></div></td>
 </tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all center" style="width: 48%;">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<tbody>
 <tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; 1&lt;[id];[plus,1]&gt;
@@ -1622,12 +1640,28 @@ mmlang&gt; 1&lt;[plus,1];&lt;[mult,2];[mult,3]&gt;&gt;
 mmlang&gt; 1&lt;[plus,1];[id]&gt;
 ==&gt;2
 mmlang&gt; 1[plus,1]
-==&gt;2
-mmlang&gt; 1&lt;&lt;[plus,1],[mult,2]&gt;;[mult,3]&gt;
+==&gt;2</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;[plus,1],[mult,2]&gt;;[mult,3]&gt;
 ==&gt;6{2}
 mmlang&gt; 1&lt;&lt;[plus,1];[mult,3]&gt;,&lt;[mult,2];[mult,3]&gt;&gt;
-==&gt;6{2}
-mmlang&gt; 1&lt;[plus,1];&lt;[mult,2],[mult,3]&gt;&gt;
+==&gt;6{2}</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 1&lt;[plus,1];&lt;[mult,2],[mult,3]&gt;&gt;
 ==&gt;4
 ==&gt;6
 mmlang&gt; 1&lt;&lt;[plus,1];[mult,2]&gt;,&lt;[plus,1];[mult,3]&gt;&gt;
@@ -1638,7 +1672,6 @@ mmlang&gt; 1&lt;&lt;[plus,1];[mult,2]&gt;,&lt;[plus,1];[mult,3]&gt;&gt;
 </tr>
 </tbody>
 </table>
-<hr>
 <div class="paragraph">
 <p>Similarly, for the common ring theorems:</p>
 </div>
@@ -1739,7 +1772,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-17 00:51:26 -0600
+Last updated 2020-05-17 16:41:13 -0600
 </div>
 </div>
 </body>
