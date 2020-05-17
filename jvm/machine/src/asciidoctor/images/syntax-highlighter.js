@@ -32,8 +32,9 @@ $(document).ready(function(){
                   "plain":   ["is not"]};
   $.each(items, function(key, values) {
     jQuery.each(values, function(index,element) {
-      $("code:contains('"+$.escapeSelector(rewrites[key][0]+element)+"')").html(function(_, html) {
-        return html.replace(new RegExp($.escapeSelector(rewrites[key][0]+element),"gi"), rewrites[key][1].replace(new RegExp(token,"gi"),element));
+      var fragment = $.escapeSelector(rewrites[key][0]+element);
+      $("code:contains('"+fragment+"')").html(function(_, html) {
+        return html.replace(new RegExp(fragment,"gi"), rewrites[key][1].replace(new RegExp(token,"gi"),element));
       });
      });
    })
