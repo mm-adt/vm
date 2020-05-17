@@ -5,10 +5,10 @@ $(document).ready(function(){
   $("span[style='color:#010']").attr("style","color:#710")
   $("span[style='background-color:hsla(0,100%,50%,0.05)']").attr("style","background-color:hsla(0,100%,100%,0.05)")
   $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;background-color:hsla(0,100%,100%,0.05)")
-  jQuery.each(["branch","neg","get","gte","lte",
-                "mult","plus","start","noop","eq"], function(index,value) {
-    $("code:contains('"+value+"')").html(function(_, html) {
-      return html.replace(new RegExp(value,"gi"), "<span style='color:#080;font-weight:bold'>"+value+"</span>");
+  jQuery.each(["branch","neg","get","gte","lte","gt","lt",
+                "mult","plus","start","noop","eq","is"], function(index,value) {
+    $("code:contains('["+value+"')").html(function(_, html) {
+      return html.replace(new RegExp("\\["+value,"gi"), "[<span style='color:#080;font-weight:bold'>"+value+"</span>");
     });
    });
    jQuery.each(["true","false"], function(index,value) {
@@ -16,9 +16,14 @@ $(document).ready(function(){
       return html.replace(new RegExp(value,"gi"), "<span style='color:#00D'>"+value+"</span>");
     });
    });
-   jQuery.each(["_","real","rec","lst","poly","inst","obj","int"], function(index,value) {
+   jQuery.each(["_","real","rec","lst","poly","inst","obj","int","str"], function(index,value) {
     $("code:contains('"+value+"')").html(function(_, html) {
       return html.replace(new RegExp(value,"gi"), "<span style='color:#369;font-weight:bold'>"+value+"</span>");
+    });
+   });
+   jQuery.each(["mmlang"], function(index,value) {
+    $("code:contains('"+value+"')").html(function(_, html) {
+      return html.replace(new RegExp(value,"gi"), "<span style='color:#710'>"+value+"</span>");
     });
    });
 });
