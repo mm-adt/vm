@@ -564,24 +564,25 @@ https://zenodo.org/record/2565243[Stream ring theory] is a ring algebra defined 
 mm-ADT adopts the algebra of stream ring theory, where functions are *instructions* and coefficients are *quantifiers*. mm-ADT's type system is realized as a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] extension of the algebra.
 ****
 
-mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ringoid*. A ring relates two monoids that share a carrier set. The generator of the mm-ADT type ring's carrier set is the set of all instructions -- `inst`. The multiplicative (`*`) and additive (`+`) monoids of the type ring induce the set of all mm-ADT types. Ring theory specifies the following axioms, where the associated Table <<ring-entailments>>  provides the (most well known) logical entailments of said axioms -- i.e., theorems.
+mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ringoid*. A ring relates two monoids that share a carrier set. The mm-ADT type ringoid https://en.wikipedia.org/wiki/Generator_(mathematics)[generator] is the set of all instructions (`inst`), where, with the ringoid's multiplicative operator (`*`) and commutative additive operator (`+`) the set of all possible mm-ADT types is induced. The ring axioms specfiy the constraints of the mm-ADT type system. These https://en.wikipedia.org/wiki/Axiom[axioms] are presented below, where the associated table provides the (most well-known) logical entailments of said axioms -- i.e., https://en.wikipedia.org/wiki/Theorem[theorems].
 
 .Ring with Unity Axioms
-[cols="^",width=35%,float=left]
+[cols="^4,^4,^6"]
 |===
-|`(a + b) + c = a + (b + c)`
-|`0 + a = a + 0 = a`
-|`a - a = a + (-a) = 0`
-|`a + b = b + a`
-|`(a * b) * c = a * (b * c)`
-|`1 * a = a * 1 = a`
-|`(a + b) * c = (a * c) + (b * c)`
-|`a * (b + c) = (a * b) + (a * c)`
+| common notation                          | terminology                      | mmlang notation
+
+|`(a + b) + c = a + (b + c)`       | additive associativity                   | `<<[a],[b]>,[c]>` \$=\$ `<[a],<[b],[c]>>`
+|`0 + a = a + 0 = a`               | additive identity                        | `<[id]{0},[a]>` \$=\$ `<[a],[id]{0}>` \$=\$ `[a]`
+|`a - a = a + (-a) = 0`            | additive inverses                        | `<[a],[a]{-1}>` \$=\$ `[id]{0}`
+|`a + b = b + a`                   | additive commutativity                   | `<[a],[b]>` \$=\$ `<[b],[a]>`
+|`(a * b) * c = a * (b * c)`       | multiplicative associativity             | `<<[a];[b]>;[c]>` \$=\$ `<[a];<[b];[c]>>`
+|`1 * a = a * 1 = a`               | multiplicative identity                  | `<[id];[a]>` \$=\$ `<[a];[id]>` \$=\$ `[a]`
+|`(a + b) * c = (a * c) + (b * c)` | multiplicative left distributivity       | `<<[a],[b]>;[c]>` \$=\$ `<<[a];[c]>,<[b];[c]>>`
+|`a * (b + c) = (a * b) + (a * c)` | multiplicative right distributivity      | `<[a];<[b],[c]>>` \$=\$ `<<[a];[b]>,<[a];[c]>>`
 |===
 
 .Ring with Unity Theorems
-[[ring-entailments]]
-[cols="^",width=35%,float=right]
+[cols="^",width=35%,float=center]
 |===
 |`a + b = a + c \=> b = c`
 |`a + b = 0 \=> a = -b & b = -a`
@@ -594,23 +595,6 @@ mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wi
 
 '''
 
-The ring axioms are presented again in the table below along with the associated `mmlang` expressions, where `[a]`, `[b]`, `[c]` are variable instructions from `inst`.
-
-.The Ring Axioms in mmlang
-[cols="^2,^3"]
-|===
-|Ring Axioms                        |mmlang Types
-
-|`(a + b) + c = a + (b + c)`        |`<<[a],[b]>,[c]>` \$=\$ `<[a],<[b],[c]>>`
-|`0 + a = a + 0 = a`                |`<[id]{0},[a]>` \$=\$ `<[a],[id]{0}>` \$=\$ `[a]`
-|`a - a = a + (-a) = 0`             |`<[a],[a]{-1}>` \$=\$ `[id]{0}`
-|`a + b = b + a`                    |`<[a],[b]>` \$=\$ `<[b],[a]>`
-|`(a * b) * c = a * (b * c)`        |`<<[a];[b]>;[c]>` \$=\$ `<[a];<[b];[c]>>`
-|`1 * a = a * 1 = a`                |`<[id];[a]>` \$=\$ `<[a];[id]>` \$=\$ `[a]`
-|`(a + b) * c = (a * c) + (b * c)`  |`<<[a],[b]>;[c]>` \$=\$ `<<[a];[c]>,<[b];[c]>>`
-|`a * (b + c) = (a * b) + (a * c)`  |`<[a];<[b],[c]>>` \$=\$ `<<[a];[b]>,<[a];[c]>>`
-|===
-
 Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where
 
 * `[a]` is `int[plus,1]`
@@ -619,8 +603,13 @@ Example mm-ADT types demonstrating the equalities of the ring axioms are present
 
 Though any combinations of respectively sorted instructions can be used.
 
-[width=45%,float=left]
+.The Ring Axioms in mmlang
+[cols="^3,2,5"]
 |===
+|Ring Axiom |mm-ADT Diagram |mmlang Denotation
+
+|`(a + b) + c = a + (b + c)`
+|image:additive-associativity.png[link=images/language/additive-associativity.png]
 a|
 [.small]
 [source]
@@ -631,25 +620,61 @@ mmlang> 1<<[plus,1],[mult,2]>,[mult,3]>
 mmlang> 1<[plus,1],<[mult,2],[mult,3]>>
 ==>2{2}
 ==>3
+----
+
+|`0 + a = a + 0 = a`
+|image:additive-identity.png[link=images/language/additive-identity.png]
+a|
+[.small]
+[source]
+----
 mmlang> 1<[id]{0},[plus,1]>
 ==>2
 mmlang> 1<[plus,1],[id]{0}>
 ==>2
-mmlang> 1<[plus,1],[plus,1]{-1}>
-mmlang> 1[id]{0}
+----
+
+
+|`a - a = a + (-a) = 0`
+|image:additive-inverse.png[link=images/language/additive-inverse.png]
+a|
+[.small]
+[source]
+----
+mmlang> 1<<[plus,1],[mult,2]>,[mult,3]>
+==>2{2}
+==>3
+mmlang> 1<[plus,1],<[mult,2],[mult,3]>>
+==>2{2}
+==>3
+----
+
+|`a + b = b + a`
+|image:additive-commutativity.png[link=images/language/additive-commutativity.png]
+a|
+[.small]
+[source]
+----
 mmlang> 1<[plus,1],[mult,2]>
 ==>2{2}
 mmlang> 1<[mult,2],[plus,1]>
 ==>2{2}
+----
+
+|`(a * b) * c = a * (b * c)`
+|image:multiplicative-associativity.png[link=images/language/multiplicative-associativity.png]
+a|
+[.small]
+[source]
+----
 mmlang> 1<<[plus,1];[mult,2]>;[mult,3]>
 ==>12
 mmlang> 1<[plus,1];<[mult,2];[mult,3]>>
 ==>12
 ----
-|===
 
-[width=48%,float=center]
-|===
+|`1 * a = a * 1 = a`
+|&nbsp;
 a|
 [.small]
 [source]
@@ -660,10 +685,26 @@ mmlang> 1<[plus,1];[id]>
 ==>2
 mmlang> 1[plus,1]
 ==>2
+----
+
+|`(a + b) * c = (a * c) + (b * c)`
+|&nbsp;
+a|
+[.small]
+[source]
+----
 mmlang> 1<<[plus,1],[mult,2]>;[mult,3]>
 ==>6{2}
 mmlang> 1<<[plus,1];[mult,3]>,<[mult,2];[mult,3]>>
 ==>6{2}
+----
+
+|`a * (b + c) = (a * b) + (a * c)`
+|&nbsp;
+a|
+[.small]
+[source]
+----
 mmlang> 1<[plus,1];<[mult,2],[mult,3]>>
 ==>4
 ==>6
@@ -672,7 +713,7 @@ mmlang> 1<<[plus,1];[mult,2]>,<[plus,1];[mult,3]>>
 ==>6
 ----
 |===
-'''
+
 
 Similarly, for the common ring theorems:
 
