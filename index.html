@@ -451,7 +451,7 @@ $(document).ready(function(){
       return html.replace(new RegExp(value,"gi"), "<span style='color:#00D'>"+value+"</span>");
     });
    });
-   jQuery.each(["_","real","rec","lst","poly","inst","obj","int"], function(index,value) {
+   jQuery.each(["_","real","rec","lst","poly","inst","obj","int","str"], function(index,value) {
     $("code:contains('"+value+"')").html(function(_, html) {
       return html.replace(new RegExp(value,"gi"), "<span style='color:#369;font-weight:bold'>"+value+"</span>");
     });
