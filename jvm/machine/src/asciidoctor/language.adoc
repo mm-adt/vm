@@ -674,7 +674,7 @@ mmlang> 1<[plus,1];<[mult,2];[mult,3]>>
 ----
 
 |`1 * a = a * 1 = a`
-|&nbsp;
+|image:multiplicative-identity.png[link=images/language/multiplicative-identity.png]
 a|
 [.small]
 [source]
