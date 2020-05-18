@@ -564,46 +564,46 @@ https://zenodo.org/record/2565243[Stream ring theory] is a ring algebra defined 
 mm-ADT adopts the algebra of stream ring theory, where functions are *instructions* and coefficients are *quantifiers*. mm-ADT's type system is realized as a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] extension of the algebra.
 ****
 
-mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ringoid*. A ring relates two monoids that share a carrier set. The mm-ADT type ringoid https://en.wikipedia.org/wiki/Generator_(mathematics)[generator] is the set of all instructions (`inst`), where, with the ringoid's multiplicative operator (`*`) and commutative additive operator (`+`) the set of all possible mm-ADT types is induced.
+mm-ADT's type system is founded on a multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] called the mm-ADT *type ringoid*. A ring is composed of a multiplicative monoid (`\*`) and an additive group (`+`) that share the same carrier set. A https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] generalizes the mathematics of a ring for multi-sorted carrier partitions (i.e. for typed elements). The mm-ADT type ringoid https://en.wikipedia.org/wiki/Generator_(mathematics)[generator] is the set of all instructions (`inst`), where, with the ringoid's multiplicative operator (`*`) and commutative additive operator (`+`), when faithfully applied according to sort, induce the set of all possible mm-ADT types.
 
 * *Addition* is encoded using a `,-poly`, where each slot of the polynomial is an independent parallel type.
 * *Multiplication* is encoded using a `;-poly`, where each slot of the polynomial is a dependent serial type.
 * The *additive identity* `0` is `[id]{0}`. Given all `{0}` quantified `objs` are isomorphic any `{0}` can be used in stead.
 * The *multiplicative identity* `1` is `[id]{1}`, which in `mmlang` is represented as `[id]`.
 
-NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group]. In mm-ADT, the additive structure support inversion with _negative types_ that entail a ring with an additive group, where the `,-poly` `[a{1},a{-1}]` merges to `a{0}` or `{0}`.
+NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring(oid)], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group]. In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general). Thus, mm-ADT realizes an additive group, where the `,-poly` `[a{1},a{-1}]` merges to `\_{0}` (`a{1-1}` \$\implies\$ `a{0}` \$implies\$ `_{0}`).
 
 The ring https://en.wikipedia.org/wiki/Axiom[axioms] are presented below along with the respective mm-ADT structure denoted in `mmlang`.
 
 .Ring with Unity Axioms
-[cols="^4,^4,^6"]
+[cols="^4,^4,^5"]
 |===
-| common notation                  | terminology                              | mmlang notation
+| common notation                    | terminology                              | mmlang notation
 
-|`(a + b) + c = a + (b + c)`       | additive associativity                   | `<<[a],[b]>,[c]>` \$=\$ `<[a],<[b],[c]>>`
-|`0 + a = a + 0 = a`               | additive identity                        | `<[id]{0},[a]>` \$=\$ `<[a],[id]{0}>` \$=\$ `[a]`
-|`a - a = a + (-a) = 0`            | additive inverses                        | `<[a],[a]{-1}>` \$=\$ `[id]{0}`
-|`a + b = b + a`                   | additive commutativity                   | `<[a],[b]>` \$=\$ `<[b],[a]>`
-|`(a * b) * c = a * (b * c)`       | multiplicative associativity             | `<<[a];[b]>;[c]>` \$=\$ `<[a];<[b];[c]>>`
-|`1 * a = a * 1 = a`               | multiplicative identity                  | `<[id];[a]>` \$=\$ `<[a];[id]>` \$=\$ `[a]`
-|`(a + b) * c = (a * c) + (b * c)` | multiplicative left distributivity       | `<<[a],[b]>;[c]>` \$=\$ `<<[a];[c]>,<[b];[c]>>`
-|`a * (b + c) = (a * b) + (a * c)` | multiplicative right distributivity      | `<[a];<[b],[c]>>` \$=\$ `<<[a];[b]>,<[a];[c]>>`
+|\$(a + b) + c = a + (b + c)\$       | additive associativity                   | `\<<a,b>,c>` \$\cong\$ `<a,<b,c>>`
+|\$0 + a = a + 0 = a\$               | additive identity                        | `<\_{0},a>` \$\cong\$ `<a,_{0}>` \$\cong\$ `a`
+|\$a - a = a + (-a) = 0\$            | additive inverses                        | `<a,a{-1}>` \$\cong\$ `_{0}`
+|\$a + b = b + a\$                   | additive commutativity                   | `<a,b>` \$\cong\$ `<b,a>`
+|\$(a * b) * c = a * (b * c)\$       | multiplicative associativity             | `\<<a;b>;c>` \$\cong\$ `<a;<b;c>>`
+|\$1 * a = a * 1 = a\$               | multiplicative identity                  | `<\_;a>` \$\cong\$ `<a;_>` \$\cong\$ `a`
+|\$(a + b) * c = (a * c) + (b * c)\$ | multiplicative left distributivity       | `\<<a,b>;c>` \$\cong\$ `<<a;c>,<b;c>>`
+|\$a * (b + c) = (a * b) + (a * c)\$ | multiplicative right distributivity      | `<a;<b,c>>` \$\cong\$ `\<<a;b>,<a;c>>`
 |===
 
 Similarly, for the common ring theorems:
 
 .Ring with Unity Theorems
-[cols="^5,^3,^8"]
+[cols="^4,^2,^4"]
 |===
-| common notation                  | deduction                              | mmlang notation
+| common notation                    | deduction                                | mmlang notation
 
-|`a + b = a + c \=> b = c`         | factors                                  |
-|`a + b = 0 \=> a = -b & b = -a`   | unique inverse                           |
-|`-(a+b) = (-a) + (-b)`            | distributivity       | `<[a],[b]>{-1}` \$=\$ `<[a]{-1},[b]{-1}>`
-|`-(-a) = a`                       | distributivity       | `<[a]{-1}>{-1}` \$=\$ `[a]`
-|`a*0 = 0 = 0*a`                   | annihilator                              | `<[a];[id]{0}>` \$=\$ `[id]{0}` \$=\$ `<[id]{0};[a]>`
-|`a * (-b) = -a * b = -(a * b)`    | factors                                  | `<[a];[b]{-1}>` \$=\$ `<[a]{-1};[b]>` \$=\$ `<[a];[b]>{-1}`
-|`(-a) * (-b) = a * b`             | factors                                  | `<[a]{-1};[b]{-1}>` \$=\$ `<[a];[b]>`
+|\$a + b = a + c \=> b = c\$         | factors                                  |
+|\$a + b = 0 \=> a = -b & b = -a\$   | unique inverse                           |
+|\$-(a+b) = (-a) + (-b)\$            | distributivity                           | `<a,b>{-1}` \$\cong\$ `<a{-1},b{-1}>`
+|\$-(-a) = a\$                       | distributivity                           | `<a{-1}>{-1}` \$\cong\$ `a`
+|\$a*0 = 0 = 0*a\$                   | annihilator                              | `<a;_{0}>` \$\cong\$ `\_{0}` \$\cong\$ `<_{0};a>`
+|\$a * (-b) = -a * b = -(a * b)\$    | factors                                  | `<a;b{-1}>` \$\cong\$ `<a{-1};b>` \$\cong\$ `<a;b>{-1}`
+|\$(-a) * (-b) = a * b\$             | factors                                  | `<a{-1};b{-1}>` \$\cong\$ `<a;b>`
 |===
 
 
