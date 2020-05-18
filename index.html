@@ -1911,13 +1911,13 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 <div class="ulist">
 <ul>
 <li>
-<p><code>[a]</code> is <code>int[plus,1]</code></p>
+<p><code>[a]</code> is <code>int[plus,1]</code> with sugar of <code>+1</code></p>
 </li>
 <li>
-<p><code>[b]</code> is <code>int[mult,2]</code></p>
+<p><code>[b]</code> is <code>int[mult,2]</code> with sugar of <code>*2</code></p>
 </li>
 <li>
-<p><code>[c]</code> is <code>int[mult,3]</code>.</p>
+<p><code>[c]</code> is <code>int[mult,3]</code> with sugar of <code>*3</code></p>
 </li>
 </ul>
 </div>
@@ -1929,8 +1929,8 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 <caption class="title">Table 1 5. The Ring Axioms in mmlang</caption>
 <colgroup>
 <col style="width: 30%;">
-<col style="width: 20%;">
-<col style="width: 50%;">
+<col style="width: 40%;">
+<col style="width: 30%;">
 </colgroup>
 <thead>
 <tr>
@@ -1945,10 +1945,10 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-associativity.png"><img src="./images/language/additive-associativity.png" alt="additive associativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]&gt;,[mult,<span style="color:#00D">3</span>]&gt;
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;+<span style="color:#00D">1</span>,*<span style="color:#00D">2</span>&gt;,*<span style="color:#00D">3</span>&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
 ==&gt;<span style="color:#00D">3</span>
-mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],&lt;[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]&gt;&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;+<span style="color:#00D">1</span>,&lt;*<span style="color:#00D">2</span>,*<span style="color:#00D">3</span>&gt;&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
 ==&gt;<span style="color:#00D">3</span></code></pre>
 </div>
@@ -1959,9 +1959,9 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-identity.png"><img src="./images/language/additive-identity.png" alt="additive identity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>},[plus,<span style="color:#00D">1</span>]&gt;
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>},+<span style="color:#00D">1</span>&gt;
 ==&gt;<span style="color:#00D">2</span>
-mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;+<span style="color:#00D">1</span>,[<span style="color:#369;font-weight:bold">id</span>]{<span style="color:#00D">0</span>}&gt;
 ==&gt;<span style="color:#00D">2</span></code></pre>
 </div>
 </div></div></td>
@@ -1971,10 +1971,10 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-inverse.png"><img src="./images/language/additive-inverse.png" alt="additive inverse"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]&gt;,[mult,<span style="color:#00D">3</span>]&gt;
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;+<span style="color:#00D">1</span>,*<span style="color:#00D">2</span>&gt;,*<span style="color:#00D">3</span>&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
 ==&gt;<span style="color:#00D">3</span>
-mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],&lt;[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]&gt;&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;+<span style="color:#00D">1</span>,&lt;*<span style="color:#00D">2</span>,*<span style="color:#00D">3</span>&gt;&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
 ==&gt;<span style="color:#00D">3</span></code></pre>
 </div>
@@ -1985,9 +1985,9 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-commutativity.png"><img src="./images/language/additive-commutativity.png" alt="additive commutativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]&gt;
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;+<span style="color:#00D">1</span>,*<span style="color:#00D">2</span>&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#00D">1</span>&lt;[mult,<span style="color:#00D">2</span>],[plus,<span style="color:#00D">1</span>]&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;*<span style="color:#00D">2</span>,+<span style="color:#00D">1</span>&gt;
 ==&gt;<span style="color:#00D">2</span>{<span style="color:#00D">2</span>}</code></pre>
 </div>
 </div></div></td>
@@ -1997,9 +1997,9 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;[mult,<span style="color:#00D">2
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-associativity.png"><img src="./images/language/multiplicative-associativity.png" alt="multiplicative associativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>]&gt;;[mult,<span style="color:#00D">3</span>]&gt;
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;+<span style="color:#00D">1</span>;*<span style="color:#00D">2</span>&gt;;*<span style="color:#00D">3</span>&gt;
 ==&gt;<span style="color:#00D">12</span>
-mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];&lt;[mult,<span style="color:#00D">2</span>];[mult,<span style="color:#00D">3</span>]&gt;&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;+<span style="color:#00D">1</span>;&lt;*<span style="color:#00D">2</span>;*<span style="color:#00D">3</span>&gt;&gt;
 ==&gt;<span style="color:#00D">12</span></code></pre>
 </div>
 </div></div></td>
@@ -2009,11 +2009,11 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-identity.png"><img src="./images/language/multiplicative-identity.png" alt="multiplicative identity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;[<span style="color:#369;font-weight:bold">id</span>];[plus,<span style="color:#00D">1</span>]&gt;
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;[<span style="color:#369;font-weight:bold">id</span>];+<span style="color:#00D">1</span>&gt;
 ==&gt;<span style="color:#00D">2</span>
-mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];[<span style="color:#369;font-weight:bold">id</span>]&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;+<span style="color:#00D">1</span>;[<span style="color:#369;font-weight:bold">id</span>]&gt;
 ==&gt;<span style="color:#00D">2</span>
-mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</span>]
+mmlang&gt; <span style="color:#00D">1</span>+<span style="color:#00D">1</span>
 ==&gt;<span style="color:#00D">2</span></code></pre>
 </div>
 </div></div></td>
@@ -2023,9 +2023,9 @@ mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">1</sp
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-right-distributivity.png"><img src="./images/language/multiplicative-right-distributivity.png" alt="multiplicative right distributivity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]&gt;;[mult,<span style="color:#00D">3</span>]&gt;
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;+<span style="color:#00D">1</span>,*<span style="color:#00D">2</span>&gt;;*<span style="color:#00D">3</span>&gt;
 ==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">3</span>]&gt;,&lt;[mult,<span style="color:#00D">2</span>];[mult,<span style="color:#00D">3</span>]&gt;&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;+<span style="color:#00D">1</span>;*<span style="color:#00D">3</span>&gt;,&lt;*<span style="color:#00D">2</span>;*<span style="color:#00D">3</span>&gt;&gt;
 ==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}</code></pre>
 </div>
 </div></div></td>
@@ -2035,10 +2035,10 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-left-distributivity.png"><img src="./images/language/multiplicative-left-distributivity.png" alt="multiplicative left distributivity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1</span>];&lt;[mult,<span style="color:#00D">2</span>],[mult,<span style="color:#00D">3</span>]&gt;&gt;
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>&lt;+<span style="color:#00D">1</span>;&lt;*<span style="color:#00D">2</span>,*<span style="color:#00D">3</span>&gt;&gt;
 ==&gt;<span style="color:#00D">4</span>
 ==&gt;<span style="color:#00D">6</span>
-mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>]&gt;,&lt;[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">3</span>]&gt;&gt;
+mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;+<span style="color:#00D">1</span>;*<span style="color:#00D">2</span>&gt;,&lt;+<span style="color:#00D">1</span>;*<span style="color:#00D">3</span>&gt;&gt;
 ==&gt;<span style="color:#00D">4</span>
 ==&gt;<span style="color:#00D">6</span></code></pre>
 </div>

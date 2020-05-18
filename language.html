@@ -1637,13 +1637,13 @@ mmlang&gt; 'a'-&lt;[_+'b'|_+'c']&gt;-
 <div class="ulist">
 <ul>
 <li>
-<p><code>[a]</code> is <code>int[plus,1]</code></p>
+<p><code>[a]</code> is <code>int[plus,1]</code> with sugar of <code>+1</code></p>
 </li>
 <li>
-<p><code>[b]</code> is <code>int[mult,2]</code></p>
+<p><code>[b]</code> is <code>int[mult,2]</code> with sugar of <code>*2</code></p>
 </li>
 <li>
-<p><code>[c]</code> is <code>int[mult,3]</code>.</p>
+<p><code>[c]</code> is <code>int[mult,3]</code> with sugar of <code>*3</code></p>
 </li>
 </ul>
 </div>
@@ -1655,8 +1655,8 @@ mmlang&gt; 'a'-&lt;[_+'b'|_+'c']&gt;-
 <caption class="title">Table 1 5. The Ring Axioms in mmlang</caption>
 <colgroup>
 <col style="width: 30%;">
-<col style="width: 20%;">
-<col style="width: 50%;">
+<col style="width: 40%;">
+<col style="width: 30%;">
 </colgroup>
 <thead>
 <tr>
@@ -1671,10 +1671,10 @@ mmlang&gt; 'a'-&lt;[_+'b'|_+'c']&gt;-
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-associativity.png"><img src="./images/language/additive-associativity.png" alt="additive associativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;[plus,1],[mult,2]&gt;,[mult,3]&gt;
+<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;+1,*2&gt;,*3&gt;
 ==&gt;2{2}
 ==&gt;3
-mmlang&gt; 1&lt;[plus,1],&lt;[mult,2],[mult,3]&gt;&gt;
+mmlang&gt; 1&lt;+1,&lt;*2,*3&gt;&gt;
 ==&gt;2{2}
 ==&gt;3</code></pre>
 </div>
@@ -1685,9 +1685,9 @@ mmlang&gt; 1&lt;[plus,1],&lt;[mult,2],[mult,3]&gt;&gt;
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-identity.png"><img src="./images/language/additive-identity.png" alt="additive identity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1&lt;[id]{0},[plus,1]&gt;
+<pre class="highlight"><code>mmlang&gt; 1&lt;[id]{0},+1&gt;
 ==&gt;2
-mmlang&gt; 1&lt;[plus,1],[id]{0}&gt;
+mmlang&gt; 1&lt;+1,[id]{0}&gt;
 ==&gt;2</code></pre>
 </div>
 </div></div></td>
@@ -1697,10 +1697,10 @@ mmlang&gt; 1&lt;[plus,1],[id]{0}&gt;
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-inverse.png"><img src="./images/language/additive-inverse.png" alt="additive inverse"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;[plus,1],[mult,2]&gt;,[mult,3]&gt;
+<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;+1,*2&gt;,*3&gt;
 ==&gt;2{2}
 ==&gt;3
-mmlang&gt; 1&lt;[plus,1],&lt;[mult,2],[mult,3]&gt;&gt;
+mmlang&gt; 1&lt;+1,&lt;*2,*3&gt;&gt;
 ==&gt;2{2}
 ==&gt;3</code></pre>
 </div>
@@ -1711,9 +1711,9 @@ mmlang&gt; 1&lt;[plus,1],&lt;[mult,2],[mult,3]&gt;&gt;
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-commutativity.png"><img src="./images/language/additive-commutativity.png" alt="additive commutativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1&lt;[plus,1],[mult,2]&gt;
+<pre class="highlight"><code>mmlang&gt; 1&lt;+1,*2&gt;
 ==&gt;2{2}
-mmlang&gt; 1&lt;[mult,2],[plus,1]&gt;
+mmlang&gt; 1&lt;*2,+1&gt;
 ==&gt;2{2}</code></pre>
 </div>
 </div></div></td>
@@ -1723,9 +1723,9 @@ mmlang&gt; 1&lt;[mult,2],[plus,1]&gt;
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-associativity.png"><img src="./images/language/multiplicative-associativity.png" alt="multiplicative associativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;[plus,1];[mult,2]&gt;;[mult,3]&gt;
+<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;+1;*2&gt;;*3&gt;
 ==&gt;12
-mmlang&gt; 1&lt;[plus,1];&lt;[mult,2];[mult,3]&gt;&gt;
+mmlang&gt; 1&lt;+1;&lt;*2;*3&gt;&gt;
 ==&gt;12</code></pre>
 </div>
 </div></div></td>
@@ -1735,11 +1735,11 @@ mmlang&gt; 1&lt;[plus,1];&lt;[mult,2];[mult,3]&gt;&gt;
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-identity.png"><img src="./images/language/multiplicative-identity.png" alt="multiplicative identity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1&lt;[id];[plus,1]&gt;
+<pre class="highlight"><code>mmlang&gt; 1&lt;[id];+1&gt;
 ==&gt;2
-mmlang&gt; 1&lt;[plus,1];[id]&gt;
+mmlang&gt; 1&lt;+1;[id]&gt;
 ==&gt;2
-mmlang&gt; 1[plus,1]
+mmlang&gt; 1+1
 ==&gt;2</code></pre>
 </div>
 </div></div></td>
@@ -1749,9 +1749,9 @@ mmlang&gt; 1[plus,1]
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-right-distributivity.png"><img src="./images/language/multiplicative-right-distributivity.png" alt="multiplicative right distributivity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;[plus,1],[mult,2]&gt;;[mult,3]&gt;
+<pre class="highlight"><code>mmlang&gt; 1&lt;&lt;+1,*2&gt;;*3&gt;
 ==&gt;6{2}
-mmlang&gt; 1&lt;&lt;[plus,1];[mult,3]&gt;,&lt;[mult,2];[mult,3]&gt;&gt;
+mmlang&gt; 1&lt;&lt;+1;*3&gt;,&lt;*2;*3&gt;&gt;
 ==&gt;6{2}</code></pre>
 </div>
 </div></div></td>
@@ -1761,10 +1761,10 @@ mmlang&gt; 1&lt;&lt;[plus,1];[mult,3]&gt;,&lt;[mult,2];[mult,3]&gt;&gt;
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-left-distributivity.png"><img src="./images/language/multiplicative-left-distributivity.png" alt="multiplicative left distributivity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1&lt;[plus,1];&lt;[mult,2],[mult,3]&gt;&gt;
+<pre class="highlight"><code>mmlang&gt; 1&lt;+1;&lt;*2,*3&gt;&gt;
 ==&gt;4
 ==&gt;6
-mmlang&gt; 1&lt;&lt;[plus,1];[mult,2]&gt;,&lt;[plus,1];[mult,3]&gt;&gt;
+mmlang&gt; 1&lt;&lt;+1;*2&gt;,&lt;+1;*3&gt;&gt;
 ==&gt;4
 ==&gt;6</code></pre>
 </div>
@@ -1872,7 +1872,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-18 00:32:39 -0600
+Last updated 2020-05-18 03:32:29 -0600
 </div>
 </div>
 </body>
