@@ -571,9 +571,7 @@ mm-ADT's type system is founded on a multi-sorted https://en.wikipedia.org/wiki/
 * The *additive identity* `0` is `[id]{0}`. Given all `{0}` quantified `objs` are isomorphic any `{0}` can be used in stead.
 * The *multiplicative identity* `1` is `[id]{1}`, which in `mmlang` is represented as `[id]`.
 
-NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring(oid)], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group]. In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general). Thus, mm-ADT realizes an additive group, where the `,-poly` `[a{1},a{-1}]` merges to `\_{0}` (`a{1-1}` \$\implies\$ `a{0}` \$implies\$ `_{0}`).
-
-The ring https://en.wikipedia.org/wiki/Axiom[axioms] are presented below along with the respective mm-ADT structure denoted in `mmlang`.
+NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring(oid)], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group]. In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general). Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoid], where the `,-poly` `[a{1},a{-1}]` merges to `\_{0}` (`a{1-1}` \$\implies\$ `a{0}` \$implies\$ `_{0}`).
 
 .Ring with Unity Axioms
 [cols="^4,^4,^5"]
@@ -610,14 +608,21 @@ Similarly, for the common ring theorems:
 
 ===== Polynomial Composites
 
-image::delta-nabla.png[width=650,align=center]
-
-mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`) or **split** (partition via `|`) a single `obj`.
+mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`), **split** (partition via `|`), or **eval** (pipe via `;`) a single `obj`. In particular, for the additive groupoid `polys`, their respective `poly` constructors are defined as
 
 \[
 \begin{split}
-\Delta_n&: A &\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
-\Delta_n&(a) &= [a,\ldots,a]
+\Delta_n^,&: A &\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
+\Delta_n^,&(a) &= [a,\ldots,a]
+\end{split}
+\]
+
+and
+
+\[
+\begin{split}
+\Delta_n^|&: A &\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
+\Delta_n^|&(a) &= [a\{?\}|\ldots|a\{?\}].
 \end{split}
 \]
 
@@ -641,14 +646,24 @@ mmlang> 6-<[_>0|_>8]
 ==>[true|]
 ----
 
-Upon exiting an instruction, all internal `poly`-branches are serialized via a \$\nabla\$-injection (nabla) serves to  *merge* (union via `,`) or *select* (disjoint union via `|`) from many independent streams to a single stream.
+Upon exiting an instruction, all internal `poly`-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  *merge* (https://en.wikipedia.org/wiki/Union_(set_theory)[union] via `,`) or *select* (https://en.wikipedia.org/wiki/Disjoint_union[disjoint] union via `|`) many independent streams \$nabla\$ is defined as
 
 \[
 \begin{split}
-\nabla_n&: \overbrace{B \times \ldots \times B}^{n-\text{times}} &\rightarrow B \\
-\nabla_n&([b,\ldots,b]) &= b
+\nabla_n^,&: \overbrace{B \times \ldots \times B}^{n-\text{times}} &\rightarrow \overbrace{B + \ldots + B}^{n-\text{times}} \\
+\nabla_n^,&([b,\ldots,b]) &= nb
 \end{split}
 \]
+
+and
+
+\[
+\begin{split}
+\nabla_n^|&: \overbrace{B \times \ldots \times B}^{n-\text{times}} &\rightarrow B \\
+\nabla_n^|&([b|\ldots|b]) &= b
+\end{split}
+\]
+
 
 If `A` is `str` and `B` is `bool`, then \$\nabla\$ is expressed as `>-` in `mmlang`.
 
@@ -671,6 +686,25 @@ mmlang> 6-<[_>0|_>8]>-
 ==>true
 ----
 
+image::comma-delta-nabla.png[width=455,float=left]
+
+image::pipe-delta-nabla.png[width=465,float=right]
+
+'''
+
+In mmlang, a `poly` can be denoted as a _structure_ using `[ ]` (a value) or as a _process_ using `< >` (a type). The latter has the following desugaring derivation.
+
+[source]
+----
+<a,b,c>
+-<[a,b,c]>-
+[delta,[a,b,c]][nabla]
+----
+
+===== Axioms, Diagrams, and Notation
+
+The ring https://en.wikipedia.org/wiki/Axiom[axioms] are presented below along with the respective mm-ADT structure denoted in the `mmlang` `< >`-sugar form.
+
 The table on the right provides the (most well-known) logical entailments of said axioms -- i.e., https://en.wikipedia.org/wiki/Theorem[theorems]. Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where
 
 * `[a]` is `int[plus,1]` with sugar of `+1`
@@ -678,8 +712,6 @@ The table on the right provides the (most well-known) logical entailments of sai
 * `[c]` is `int[mult,3]` with sugar of `*3`
 
 Though any combinations of respectively sorted instructions can be used.
-
-===== Axioms, Diagrams, and Notation
 
 .The Ring Axioms in mmlang
 [cols="^3,4,3"]
