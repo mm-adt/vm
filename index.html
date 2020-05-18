@@ -489,7 +489,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_bicartesian_closed_category">Bicartesian Closed Category</a></li>
 <li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
-<li><a href="#_the_type_ringoid">The Type Ringoid</a></li>
+<li><a href="#_the_type_ringoid">The Type Ringoid</a>
+<ul class="sectlevel4">
+<li><a href="#_polynomial_composites">Polynomial Composites</a></li>
+<li><a href="#_axioms_diagrams_and_notation">Axioms, Diagrams, and Notation</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_the_value">The Value</a>
@@ -1807,9 +1812,63 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 </tr>
 </tbody>
 </table>
-<hr>
-<div class="exampleblock">
-<div class="content">
+<div class="paragraph">
+<p>Similarly, for the common ring theorems:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Ring with Unity Theorems</caption>
+<colgroup>
+<col style="width: 31.25%;">
+<col style="width: 18.75%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">common notation</th>
+<th class="tableblock halign-center valign-top">deduction</th>
+<th class="tableblock halign-center valign-top">mmlang notation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = a + c =&gt; b = c</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = 0 =&gt; a = -b &amp; b = -a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">unique inverse</p></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">distributivity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[b]&gt;{-1}</code> \$=\$ <code>&lt;[a]{-1},[b]{-1}&gt;</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(-a) = a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">distributivity</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a]{-1}&gt;{-1}</code> \$=\$ <code>[a]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a*0 = 0 = 0*a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">annihilator</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];[id]{0}&gt;</code> \$=\$ <code>[id]{0}</code> \$=\$ <code>&lt;[id]{0};[a]&gt;</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (-b) = -a * b = -(a * b)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];[b]{-1}&gt;</code> \$=\$ <code>&lt;[a]{-1};[b]&gt;</code> \$=\$ <code>&lt;[a];[b]&gt;{-1}</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(-a) * (-b) = a * b</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a]{-1};[b]{-1}&gt;</code> \$=\$ <code>&lt;[a];[b]&gt;</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="_polynomial_composites">Polynomial Composites</h5>
 <div class="imageblock text-center">
 <div class="content">
 <img src="./images/language/delta-nabla.png" alt="delta nabla" width="650">
@@ -1826,22 +1885,25 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 \end{split}
 \]</p>
 </div>
+<div class="paragraph">
+<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\Delta\$ is expressed as <code>-&lt;</code> in <code>mmlang</code>.</p>
+</div>
 <div class="listingblock">
 <div class="title">Copy \$\Delta\$</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_,_]
-==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>]
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]
-==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ac</span><span style="color:#710">'</span></span>]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_,_]
+==&gt;[<span style="color:#00D">6</span>,<span style="color:#00D">6</span>]
+mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>,_&gt;<span style="color:#00D">8</span>]
+==&gt;[true,false]</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Split \$\Delta\$</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_|_]
-==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>|]
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>|_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]
-==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>|]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_|_]
+==&gt;[<span style="color:#00D">6</span>|]
+mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>|_&gt;<span style="color:#00D">8</span>]
+==&gt;[true|]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1855,56 +1917,28 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 \end{split}
 \]</p>
 </div>
+<div class="paragraph">
+<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\nabla\$ is expressed as <code>&gt;-</code> in <code>mmlang</code>.</p>
+</div>
 <div class="listingblock">
 <div class="title">Merge \$\nabla\$</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_,_]&gt;-
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]&gt;-
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ac</span><span style="color:#710">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_,_]&gt;-
+==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}
+mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>,_&gt;<span style="color:#00D">8</span>]&gt;-
+==&gt;true
+==&gt;false</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Select \$\nabla\$</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_|_]&gt;-
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>|_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]&gt;-
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_|_]&gt;-
+==&gt;<span style="color:#00D">6</span>
+mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>|_&gt;<span style="color:#00D">8</span>]&gt;-
+==&gt;true</code></pre>
 </div>
 </div>
-</div>
-</div>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
-<caption class="title">Table 1 4. Ring with Unity Theorems</caption>
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = a + c =&gt; b = c</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = 0 =&gt; a = -b &amp; b = -a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(-a) = a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a*0 = 0 = 0*a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (-b) = -a * b = -(a * b)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(-a) * (-b) = a * b</code></p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
 <p>The table on the right provides the (most well-known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>. Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where</p>
 </div>
@@ -1924,9 +1958,11 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 <div class="paragraph">
 <p>Though any combinations of respectively sorted instructions can be used.</p>
 </div>
-<hr>
+</div>
+<div class="sect4">
+<h5 id="_axioms_diagrams_and_notation">Axioms, Diagrams, and Notation</h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1 5. The Ring Axioms in mmlang</caption>
+<caption class="title">Table 5. The Ring Axioms in mmlang</caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 40%;">
@@ -2046,44 +2082,6 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;+<span style="color:#00D">1<
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Similarly, for the common ring theorems:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1 6. The Ring Theorems in mmlang</caption>
-<colgroup>
-<col style="width: 40%;">
-<col style="width: 60%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">Ring Theorems</th>
-<th class="tableblock halign-center valign-top">mmlang Types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[b]&gt;{-1}</code> \$=\$ <code>&lt;[a]{-1},[b]{-1}&gt;</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(-a) = a</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a]{-1}&gt;{-1}</code> \$=\$ <code>[a]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a*0 = 0 = 0*a</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];[id]{0}&gt;</code> \$=\$ <code>[id]{0}</code> \$=\$ <code>&lt;[id]{0};[a]&gt;</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (-b) = -a * b = -(a * b)</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];[b]{-1}&gt;</code> \$=\$ <code>&lt;[a]{-1};[b]&gt;</code> \$=\$ <code>&lt;[a];[b]&gt;{-1}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(-a) * (-b) = a * b</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a]{-1};[b]{-1}&gt;</code> \$=\$ <code>&lt;[a];[b]&gt;</code></p></td>
-</tr>
-</tbody>
-</table>
 <table class="tableblock frame-all grid-all center" style="width: 45%;">
 <colgroup>
 <col style="width: 100%;">
@@ -2119,6 +2117,7 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;[plus,<span style="color:#00D">1
 </tbody>
 </table>
 <hr>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2511,7 +2510,7 @@ _________      _________
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1 7. Instruction classes</caption>
+<caption class="title">Table 6. Instruction classes</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 27.2727%;">
