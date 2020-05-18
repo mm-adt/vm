@@ -1810,6 +1810,11 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 <hr>
 <div class="exampleblock">
 <div class="content">
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/delta-nabla.png" alt="delta nabla" width="650">
+</div>
+</div>
 <div class="paragraph">
 <p>mm-ADT composes unary functions via <code>*</code> and <code>+</code>. <code>n</code>-ary functions are encoded as <code>poly</code>-coupled unary functions with the \$\Delta\$-projection (delta) serving to <strong>copy</strong> (clone via <code>,</code>) or <strong>split</strong> (partition via <code>|</code>) a single <code>obj</code>.</p>
 </div>
@@ -1845,8 +1850,8 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 <div class="paragraph">
 <p>\[
 \begin{split}
-\nabla_n&amp;: \overbrace{A \times \ldots \times A}^{n-\text{times}} &amp;\rightarrow A \\
-\nabla_n&amp;([a,\ldots,a]) &amp;= a
+\nabla_n&amp;: \overbrace{B \times \ldots \times B}^{n-\text{times}} &amp;\rightarrow B \\
+\nabla_n&amp;([b,\ldots,b]) &amp;= b
 \end{split}
 \]</p>
 </div>
@@ -1867,11 +1872,6 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 ==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
 mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>|_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]&gt;-
 ==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span></code></pre>
-</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/delta-nabla.png" alt="delta nabla" width="600">
 </div>
 </div>
 </div>
