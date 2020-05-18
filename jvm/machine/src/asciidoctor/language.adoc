@@ -564,12 +564,21 @@ https://zenodo.org/record/2565243[Stream ring theory] is a ring algebra defined 
 mm-ADT adopts the algebra of stream ring theory, where functions are *instructions* and coefficients are *quantifiers*. mm-ADT's type system is realized as a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] extension of the algebra.
 ****
 
-mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ringoid*. A ring relates two monoids that share a carrier set. The mm-ADT type ringoid https://en.wikipedia.org/wiki/Generator_(mathematics)[generator] is the set of all instructions (`inst`), where, with the ringoid's multiplicative operator (`*`) and commutative additive operator (`+`) the set of all possible mm-ADT types is induced. The ring axioms specfiy the constraints of the mm-ADT type system. These https://en.wikipedia.org/wiki/Axiom[axioms] are presented below, where the associated table provides the (most well-known) logical entailments of said axioms -- i.e., https://en.wikipedia.org/wiki/Theorem[theorems].
+mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] -- the mm-ADT *type ringoid*. A ring relates two monoids that share a carrier set. The mm-ADT type ringoid https://en.wikipedia.org/wiki/Generator_(mathematics)[generator] is the set of all instructions (`inst`), where, with the ringoid's multiplicative operator (`*`) and commutative additive operator (`+`) the set of all possible mm-ADT types is induced.
+
+* *Addition* is encoded using a `,-poly`, where each slot of the polynomial is an independent parallel type.
+* *Multiplication* is encoded using a `;-poly`, where each slot of the polynomial is a dependent serial type.
+* The *additive identity* `0` is `[id]{0}`. Given all `{0}` quantified `objs` are isomorphic any `{0}` can be used in stead.
+* The *multiplicative identity* `1` is `[id]{1}`, which in `mmlang` is represented as `[id]`.
+
+NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group]. In mm-ADT, the additive structure support inversion with _negative types_ that entail a ring with an additive group, where the `,-poly` `[a{1},a{-1}]` merges to `a{0}` or `{0}`.
+
+The ring https://en.wikipedia.org/wiki/Axiom[axioms] are presented below along with the respective mm-ADT structure denoted in `mmlang`.
 
 .Ring with Unity Axioms
 [cols="^4,^4,^6"]
 |===
-| common notation                          | terminology                      | mmlang notation
+| common notation                  | terminology                              | mmlang notation
 
 |`(a + b) + c = a + (b + c)`       | additive associativity                   | `<<[a],[b]>,[c]>` \$=\$ `<[a],<[b],[c]>>`
 |`0 + a = a + 0 = a`               | additive identity                        | `<[id]{0},[a]>` \$=\$ `<[a],[id]{0}>` \$=\$ `[a]`
@@ -581,8 +590,71 @@ mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wi
 |`a * (b + c) = (a * b) + (a * c)` | multiplicative right distributivity      | `<[a];<[b],[c]>>` \$=\$ `<<[a];[b]>,<[a];[c]>>`
 |===
 
+'''
+
+====
+mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`) or **split** (partition via `|`) a single `obj`.
+
+\[
+\begin{split}
+\Delta_n&: A &\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
+\Delta_n&(a) &= [a,\ldots,a]
+\end{split}
+\]
+
+.Copy \$\Delta\$
+[source]
+----
+mmlang> 'a'-<[_,_]
+==>['a','a']
+mmlang> 'a'-<[_+'b',_+'c']
+==>['ab','ac']
+----
+
+.Split \$\Delta\$
+[source]
+----
+mmlang> 'a'-<[_|_]
+==>['a'|]
+mmlang> 'a'-<[_+'b'|_+'c']
+==>['ab'|]
+----
+
+Upon exiting an instruction, all internal `poly`-branches are serialized via a \$\nabla\$-injection (nabla) serves to  *merge* (union via `,`) or *select* (disjoint union via `|`) from many independent streams to a single stream.
+
+\[
+\begin{split}
+\nabla_n&: \overbrace{A \times \ldots \times A}^{n-\text{times}} &\rightarrow A \\
+\nabla_n&([a,\ldots,a]) &= a
+\end{split}
+\]
+
+.Merge \$\nabla\$
+[source]
+----
+mmlang> 'a'-<[_,_]>-
+==>'a'{2}
+mmlang> 'a'-<[_+'b',_+'c']>-
+==>'ab'
+==>'ac'
+----
+
+.Select \$\nabla\$
+[source]
+----
+mmlang> 'a'-<[_|_]>-
+==>'a'
+mmlang> 'a'-<[_+'b'|_+'c']>-
+==>'ab'
+----
+
+image::delta-nabla.png[width=600,align=center]
+
+====
+
+:table-caption: Table 1
 .Ring with Unity Theorems
-[cols="^",width=35%,float=center]
+[cols="^",width=35%,float=right]
 |===
 |`a + b = a + c \=> b = c`
 |`a + b = 0 \=> a = -b & b = -a`
@@ -592,16 +664,15 @@ mm-ADT's type system is founded on the mathematics of multi-sorted https://en.wi
 |`a * (-b) = -a * b = -(a * b)`
 |`(-a) * (-b) = a * b`
 |===
-
-'''
-
-Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where
+The table on the right provides the (most well-known) logical entailments of said axioms -- i.e., https://en.wikipedia.org/wiki/Theorem[theorems]. Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where
 
 * `[a]` is `int[plus,1]`
 * `[b]` is `int[mult,2]`
 * `[c]` is `int[mult,3]`.
 
 Though any combinations of respectively sorted instructions can be used.
+
+'''
 
 .The Ring Axioms in mmlang
 [cols="^3,2,5"]
