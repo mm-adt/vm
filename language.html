@@ -1443,7 +1443,7 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT&#8217;s type system is founded on the mathematics of multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ringoid</strong>. A ring relates two monoids that share a carrier set. The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all instructions (<code>inst</code>), where, with the ringoid&#8217;s multiplicative operator (<code>*</code>) and commutative additive operator (<code>+</code>) the set of all possible mm-ADT types is induced.</p>
+<p>mm-ADT&#8217;s type system is founded on a multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a> called the mm-ADT <strong>type ringoid</strong>. A ring is composed of a multiplicative monoid (<code>*</code>) and an additive group (<code>+</code>) that share the same carrier set. A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes the mathematics of a ring for multi-sorted carrier partitions (i.e. for typed elements). The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all instructions (<code>inst</code>), where, with the ringoid&#8217;s multiplicative operator (<code>*</code>) and commutative additive operator (<code>+</code>), when faithfully applied according to sort, induce the set of all possible mm-ADT types.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1468,7 +1468,7 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 <div class="title">Note</div>
 </td>
 <td class="content">
-The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. In mm-ADT, the additive structure support inversion with <em>negative types</em> that entail a ring with an additive group, where the <code>,-poly</code> <code>[a{1},a{-1}]</code> merges to <code>a{0}</code> or <code>{0}</code>.
+The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring(oid)</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. In mm-ADT, the elements of the additive component can be inverted by their corresponding <em>negative type</em> (or negative <code>obj</code> in general). Thus, mm-ADT realizes an additive group, where the <code>,-poly</code> <code>[a{1},a{-1}]</code> merges to <code>_{0}</code> (<code>a{1-1}</code> \$\implies\$ <code>a{0}</code> \$implies\$ <code>_{0}</code>).
 </td>
 </tr>
 </table>
@@ -1479,9 +1479,9 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. Ring with Unity Axioms</caption>
 <colgroup>
-<col style="width: 28.5714%;">
-<col style="width: 28.5714%;">
-<col style="width: 42.8572%;">
+<col style="width: 30.7692%;">
+<col style="width: 30.7692%;">
+<col style="width: 38.4616%;">
 </colgroup>
 <thead>
 <tr>
@@ -1492,44 +1492,44 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) + c = a + (b + c)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive associativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a],[b]&gt;,[c]&gt;</code> \$=\$ <code>&lt;[a],&lt;[b],[c]&gt;&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;a,b&gt;,c&gt;</code> \$\cong\$ <code>&lt;a,&lt;b,c&gt;&gt;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>0 + a = a + 0 = a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$0 + a = a + 0 = a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive identity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[id]{0},[a]&gt;</code> \$=\$ <code>&lt;[a],[id]{0}&gt;</code> \$=\$ <code>[a]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;_{0},a&gt;</code> \$\cong\$ <code>&lt;a,_{0}&gt;</code> \$\cong\$ <code>a</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a - a = a + (-a) = 0</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a - a = a + (-a) = 0\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive inverses</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[a]{-1}&gt;</code> \$=\$ <code>[id]{0}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a,a{-1}&gt;</code> \$\cong\$ <code>_{0}</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = b + a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = b + a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive commutativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[b]&gt;</code> \$=\$ <code>&lt;[b],[a]&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a,b&gt;</code> \$\cong\$ <code>&lt;b,a&gt;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a * b) * c = a * (b * c)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a * b) * c = a * (b * c)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative associativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a];[b]&gt;;[c]&gt;</code> \$=\$ <code>&lt;[a];&lt;[b];[c]&gt;&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;a;b&gt;;c&gt;</code> \$\cong\$ <code>&lt;a;&lt;b;c&gt;&gt;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>1 * a = a * 1 = a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$1 * a = a * 1 = a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative identity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[id];[a]&gt;</code> \$=\$ <code>&lt;[a];[id]&gt;</code> \$=\$ <code>[a]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;_;a&gt;</code> \$\cong\$ <code>&lt;a;_&gt;</code> \$\cong\$ <code>a</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a + b) * c = (a * c) + (b * c)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) * c = (a * c) + (b * c)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative left distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;[a],[b]&gt;;[c]&gt;</code> \$=\$ <code>&lt;&lt;[a];[c]&gt;,&lt;[b];[c]&gt;&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;a,b&gt;;c&gt;</code> \$\cong\$ <code>&lt;&lt;a;c&gt;,&lt;b;c&gt;&gt;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (b + c) = (a * b) + (a * c)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a * (b + c) = (a * b) + (a * c)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative right distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];&lt;[b],[c]&gt;&gt;</code> \$=\$ <code>&lt;&lt;[a];[b]&gt;,&lt;[a];[c]&gt;&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a;&lt;b,c&gt;&gt;</code> \$\cong\$ <code>&lt;&lt;a;b&gt;,&lt;a;c&gt;&gt;</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1539,9 +1539,9 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 4. Ring with Unity Theorems</caption>
 <colgroup>
-<col style="width: 31.25%;">
-<col style="width: 18.75%;">
-<col style="width: 50%;">
+<col style="width: 40%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
 </colgroup>
 <thead>
 <tr>
@@ -1552,39 +1552,39 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = a + c =&gt; b = c</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = a + c =&gt; b = c\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
 <td class="tableblock halign-center valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a + b = 0 =&gt; a = -b &amp; b = -a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = 0 =&gt; a = -b &amp; b = -a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">unique inverse</p></td>
 <td class="tableblock halign-center valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(a+b) = (-a) + (-b)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$-(a+b) = (-a) + (-b)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a],[b]&gt;{-1}</code> \$=\$ <code>&lt;[a]{-1},[b]{-1}&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a,b&gt;{-1}</code> \$\cong\$ <code>&lt;a{-1},b{-1}&gt;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-(-a) = a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$-(-a) = a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a]{-1}&gt;{-1}</code> \$=\$ <code>[a]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a{-1}&gt;{-1}</code> \$\cong\$ <code>a</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a*0 = 0 = 0*a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a*0 = 0 = 0*a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">annihilator</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];[id]{0}&gt;</code> \$=\$ <code>[id]{0}</code> \$=\$ <code>&lt;[id]{0};[a]&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a;_{0}&gt;</code> \$\cong\$ <code>_{0}</code> \$\cong\$ <code>&lt;_{0};a&gt;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>a * (-b) = -a * b = -(a * b)</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a * (-b) = -a * b = -(a * b)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a];[b]{-1}&gt;</code> \$=\$ <code>&lt;[a]{-1};[b]&gt;</code> \$=\$ <code>&lt;[a];[b]&gt;{-1}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a;b{-1}&gt;</code> \$\cong\$ <code>&lt;a{-1};b&gt;</code> \$\cong\$ <code>&lt;a;b&gt;{-1}</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(-a) * (-b) = a * b</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(-a) * (-b) = a * b\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;[a]{-1};[b]{-1}&gt;</code> \$=\$ <code>&lt;[a];[b]&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a{-1};b{-1}&gt;</code> \$\cong\$ <code>&lt;a;b&gt;</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1866,7 +1866,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-18 04:00:41 -0600
+Last updated 2020-05-18 12:24:42 -0600
 </div>
 </div>
 </body>
