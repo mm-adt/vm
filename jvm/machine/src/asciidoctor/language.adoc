@@ -590,9 +590,25 @@ The ring https://en.wikipedia.org/wiki/Axiom[axioms] are presented below along w
 |`a * (b + c) = (a * b) + (a * c)` | multiplicative right distributivity      | `<[a];<[b],[c]>>` \$=\$ `<<[a];[b]>,<[a];[c]>>`
 |===
 
-'''
+Similarly, for the common ring theorems:
 
-====
+.Ring with Unity Theorems
+[cols="^5,^3,^8"]
+|===
+| common notation                  | deduction                              | mmlang notation
+
+|`a + b = a + c \=> b = c`         | factors                                  |
+|`a + b = 0 \=> a = -b & b = -a`   | unique inverse                           |
+|`-(a+b) = (-a) + (-b)`            | distributivity       | `<[a],[b]>{-1}` \$=\$ `<[a]{-1},[b]{-1}>`
+|`-(-a) = a`                       | distributivity       | `<[a]{-1}>{-1}` \$=\$ `[a]`
+|`a*0 = 0 = 0*a`                   | annihilator                              | `<[a];[id]{0}>` \$=\$ `[id]{0}` \$=\$ `<[id]{0};[a]>`
+|`a * (-b) = -a * b = -(a * b)`    | factors                                  | `<[a];[b]{-1}>` \$=\$ `<[a]{-1};[b]>` \$=\$ `<[a];[b]>{-1}`
+|`(-a) * (-b) = a * b`             | factors                                  | `<[a]{-1};[b]{-1}>` \$=\$ `<[a];[b]>`
+|===
+
+
+
+===== Polynomial Composites
 
 image::delta-nabla.png[width=650,align=center]
 
@@ -605,22 +621,24 @@ mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded a
 \end{split}
 \]
 
+If `A` is `str` and `B` is `bool`, then \$\Delta\$ is expressed as `-<` in `mmlang`.
+
 .Copy \$\Delta\$
 [source]
 ----
-mmlang> 'a'-<[_,_]
-==>['a','a']
-mmlang> 'a'-<[_+'b',_+'c']
-==>['ab','ac']
+mmlang> 6-<[_,_]
+==>[6,6]
+mmlang> 6-<[_>0,_>8]
+==>[true,false]
 ----
 
 .Split \$\Delta\$
 [source]
 ----
-mmlang> 'a'-<[_|_]
-==>['a'|]
-mmlang> 'a'-<[_+'b'|_+'c']
-==>['ab'|]
+mmlang> 6-<[_|_]
+==>[6|]
+mmlang> 6-<[_>0|_>8]
+==>[true|]
 ----
 
 Upon exiting an instruction, all internal `poly`-branches are serialized via a \$\nabla\$-injection (nabla) serves to  *merge* (union via `,`) or *select* (disjoint union via `|`) from many independent streams to a single stream.
@@ -632,38 +650,27 @@ Upon exiting an instruction, all internal `poly`-branches are serialized via a \
 \end{split}
 \]
 
+If `A` is `str` and `B` is `bool`, then \$\nabla\$ is expressed as `>-` in `mmlang`.
+
 .Merge \$\nabla\$
 [source]
 ----
-mmlang> 'a'-<[_,_]>-
-==>'a'{2}
-mmlang> 'a'-<[_+'b',_+'c']>-
-==>'ab'
-==>'ac'
+mmlang> 6-<[_,_]>-
+==>6{2}
+mmlang> 6-<[_>0,_>8]>-
+==>true
+==>false
 ----
 
 .Select \$\nabla\$
 [source]
 ----
-mmlang> 'a'-<[_|_]>-
-==>'a'
-mmlang> 'a'-<[_+'b'|_+'c']>-
-==>'ab'
+mmlang> 6-<[_|_]>-
+==>6
+mmlang> 6-<[_>0|_>8]>-
+==>true
 ----
-====
 
-:table-caption: Table 1
-.Ring with Unity Theorems
-[cols="^",width=35%,float=right]
-|===
-|`a + b = a + c \=> b = c`
-|`a + b = 0 \=> a = -b & b = -a`
-|`-(a+b) = (-a) + (-b)`
-|`-(-a) = a`
-|`a*0 = 0 = 0*a`
-|`a * (-b) = -a * b = -(a * b)`
-|`(-a) * (-b) = a * b`
-|===
 The table on the right provides the (most well-known) logical entailments of said axioms -- i.e., https://en.wikipedia.org/wiki/Theorem[theorems]. Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where
 
 * `[a]` is `int[plus,1]` with sugar of `+1`
@@ -672,7 +679,7 @@ The table on the right provides the (most well-known) logical entailments of sai
 
 Though any combinations of respectively sorted instructions can be used.
 
-'''
+===== Axioms, Diagrams, and Notation
 
 .The Ring Axioms in mmlang
 [cols="^3,4,3"]
@@ -786,19 +793,7 @@ mmlang> 1<<+1;*2>,<+1;*3>>
 |===
 
 
-Similarly, for the common ring theorems:
 
-.The Ring Theorems in mmlang
-[cols="^2,^3"]
-|===
-|Ring Theorems                        |mmlang Types
-
-|`-(a+b) = (-a) + (-b)`               |`<[a],[b]>{-1}` \$=\$ `<[a]{-1},[b]{-1}>`
-|`-(-a) = a`                          |`<[a]{-1}>{-1}` \$=\$ `[a]`
-|`a*0 = 0 = 0*a`                      |`<[a];[id]{0}>` \$=\$ `[id]{0}` \$=\$ `<[id]{0};[a]>`
-|`a * (-b) = -a * b = -(a * b)`       |`<[a];[b]{-1}>` \$=\$ `<[a]{-1};[b]>` \$=\$ `<[a];[b]>{-1}`
-|`(-a) * (-b) = a * b`                |`<[a]{-1};[b]{-1}>` \$=\$ `<[a];[b]>`
-|===
 
 [width=45%,float=center]
 |===
