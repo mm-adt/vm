@@ -593,6 +593,9 @@ The ring https://en.wikipedia.org/wiki/Axiom[axioms] are presented below along w
 '''
 
 ====
+
+image::delta-nabla.png[width=650,align=center]
+
 mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`) or **split** (partition via `|`) a single `obj`.
 
 \[
@@ -624,8 +627,8 @@ Upon exiting an instruction, all internal `poly`-branches are serialized via a \
 
 \[
 \begin{split}
-\nabla_n&: \overbrace{A \times \ldots \times A}^{n-\text{times}} &\rightarrow A \\
-\nabla_n&([a,\ldots,a]) &= a
+\nabla_n&: \overbrace{B \times \ldots \times B}^{n-\text{times}} &\rightarrow B \\
+\nabla_n&([b,\ldots,b]) &= b
 \end{split}
 \]
 
@@ -647,9 +650,6 @@ mmlang> 'a'-<[_|_]>-
 mmlang> 'a'-<[_+'b'|_+'c']>-
 ==>'ab'
 ----
-
-image::delta-nabla.png[width=600,align=center]
-
 ====
 
 :table-caption: Table 1
