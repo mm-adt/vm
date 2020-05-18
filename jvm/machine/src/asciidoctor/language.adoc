@@ -608,7 +608,16 @@ Similarly, for the common ring theorems:
 
 ===== Polynomial Composites
 
-mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`), **split** (partition via `|`), or **eval** (pipe via `;`) a single `obj`. In particular, for the additive groupoid `polys`, their respective `poly` constructors are defined as
+mm-ADT `polys` (polynomials) are constructed and destructed using \$\Delta\$ and \$\nabla\$. For the additive groupoid `polys`, the diagrammatic representation of the relationship between \$\Delta\$ and \$\nabla\$ is provided below and will be analyzed in this section.
+
+[cols="3,^8"]
+|===
+| `,-poly` =
+\$\left(\Delta^, \cdot \langle f,g \rangle \cdot \nabla^,\right)\$  | image:comma-delta-nabla.png[width=455]
+| `\|-poly` = \$\left(\Delta^\| \cdot \langle f,g \rangle \cdot \nabla^\|\right) \$ | image:pipe-delta-nabla.png[width=465]
+|===
+
+mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`), **split** (partition via `|`), or **compose** (pipe via `;`) a single `obj`. In particular, for the additive groupoid `polys`, their respective `poly` constructors are defined as
 
 \[
 \begin{split}
@@ -626,7 +635,7 @@ and
 \end{split}
 \]
 
-If `A` is `str` and `B` is `bool`, then \$\Delta\$ is expressed as `-<` in `mmlang`.
+If `A` is `str` and `B` is `bool`, then \$\Delta\$ (`[delta]`) is denoted with sugar as `-<` in `mmlang`.
 
 .Copy \$\Delta\$
 [source]
@@ -646,7 +655,7 @@ mmlang> 6-<[_>0|_>8]
 ==>[true|]
 ----
 
-Upon exiting an instruction, all internal `poly`-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  *merge* (https://en.wikipedia.org/wiki/Union_(set_theory)[union] via `,`) or *select* (https://en.wikipedia.org/wiki/Disjoint_union[disjoint] union via `|`) many independent streams \$nabla\$ is defined as
+Upon exiting an instruction, all internal `poly`-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  **merge** (https://en.wikipedia.org/wiki/Polynomial[polynomial addition] similar to https://en.wikipedia.org/wiki/Multiset[multiset union] via `,`), **select** (https://en.wikipedia.org/wiki/Disjoint_union[disjoint] union via `|`), or **return** (via `;`) a single stream from multiple streams. For the additive groupoids, \$nabla\$ is defined as
 
 \[
 \begin{split}
@@ -685,10 +694,6 @@ mmlang> 6-<[_|_]>-
 mmlang> 6-<[_>0|_>8]>-
 ==>true
 ----
-
-image::comma-delta-nabla.png[width=455,float=left]
-
-image::pipe-delta-nabla.png[width=465,float=right]
 
 '''
 
