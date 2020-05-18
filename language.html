@@ -1588,7 +1588,27 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 <div class="sect4">
 <h5 id="_polynomial_composites">Polynomial Composites</h5>
 <div class="paragraph">
-<p>mm-ADT composes unary functions via <code>*</code> and <code>+</code>. <code>n</code>-ary functions are encoded as <code>poly</code>-coupled unary functions with the \$\Delta\$-projection (delta) serving to <strong>copy</strong> (clone via <code>,</code>), <strong>split</strong> (partition via <code>|</code>), or <strong>eval</strong> (pipe via <code>;</code>) a single <code>obj</code>. In particular, for the additive groupoid <code>polys</code>, their respective <code>poly</code> constructors are defined as</p>
+<p>mm-ADT <code>polys</code> (polynomials) are constructed and destructed using \$\Delta\$ and \$\nabla\$. For the additive groupoid <code>polys</code>, the diagrammatic representation of the relationship between \$\Delta\$ and \$\nabla\$ is provided below and will be analyzed in this section.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 27.2727%;">
+<col style="width: 72.7273%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code> =
+\$\left(\Delta^, \cdot \langle f,g \rangle \cdot \nabla^,\right)\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="455"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code> = \$\left(\Delta^| \cdot \langle f,g \rangle \cdot \nabla^|\right) \$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="465"></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>mm-ADT composes unary functions via <code>*</code> and <code>+</code>. <code>n</code>-ary functions are encoded as <code>poly</code>-coupled unary functions with the \$\Delta\$-projection (delta) serving to <strong>copy</strong> (clone via <code>,</code>), <strong>split</strong> (partition via <code>|</code>), or <strong>compose</strong> (pipe via <code>;</code>) a single <code>obj</code>. In particular, for the additive groupoid <code>polys</code>, their respective <code>poly</code> constructors are defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1610,7 +1630,7 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 \]</p>
 </div>
 <div class="paragraph">
-<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\Delta\$ is expressed as <code>-&lt;</code> in <code>mmlang</code>.</p>
+<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\Delta\$ (<code>[delta]</code>) is denoted with sugar as <code>-&lt;</code> in <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
 <div class="title">Copy \$\Delta\$</div>
@@ -1631,7 +1651,7 @@ mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]
 </div>
 </div>
 <div class="paragraph">
-<p>Upon exiting an instruction, all internal <code>poly</code>-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  <strong>merge</strong> (<a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> via <code>,</code>) or <strong>select</strong> (<a href="https://en.wikipedia.org/wiki/Disjoint_union">disjoint</a> union via <code>|</code>) many independent streams \$nabla\$ is defined as</p>
+<p>Upon exiting an instruction, all internal <code>poly</code>-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  <strong>merge</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial addition</a> similar to <a href="https://en.wikipedia.org/wiki/Multiset">multiset union</a> via <code>,</code>), <strong>select</strong> (<a href="https://en.wikipedia.org/wiki/Disjoint_union">disjoint</a> union via <code>|</code>), or <strong>return</strong> (via <code>;</code>) a single stream from multiple streams. For the additive groupoids, \$nabla\$ is defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1672,16 +1692,6 @@ mmlang&gt; 6-&lt;[_&gt;0,_&gt;8]&gt;-
 ==&gt;6
 mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]&gt;-
 ==&gt;true</code></pre>
-</div>
-</div>
-<div class="imageblock left">
-<div class="content">
-<img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="455">
-</div>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="465">
 </div>
 </div>
 <hr>
@@ -1904,7 +1914,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-18 13:54:28 -0600
+Last updated 2020-05-18 14:15:45 -0600
 </div>
 </div>
 </body>
