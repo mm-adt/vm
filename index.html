@@ -1717,7 +1717,38 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT&#8217;s type system is founded on the mathematics of multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ringoid</strong>. A ring relates two monoids that share a carrier set. The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all instructions (<code>inst</code>), where, with the ringoid&#8217;s multiplicative operator (<code>*</code>) and commutative additive operator (<code>+</code>) the set of all possible mm-ADT types is induced. The ring axioms specfiy the constraints of the mm-ADT type system. These <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> are presented below, where the associated table provides the (most well-known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>.</p>
+<p>mm-ADT&#8217;s type system is founded on the mathematics of multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>&#8201;&#8212;&#8201;the mm-ADT <strong>type ringoid</strong>. A ring relates two monoids that share a carrier set. The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all instructions (<code>inst</code>), where, with the ringoid&#8217;s multiplicative operator (<code>*</code>) and commutative additive operator (<code>+</code>) the set of all possible mm-ADT types is induced.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Addition</strong> is encoded using a <code>,-poly</code>, where each slot of the polynomial is an independent parallel type.</p>
+</li>
+<li>
+<p><strong>Multiplication</strong> is encoded using a <code>;-poly</code>, where each slot of the polynomial is a dependent serial type.</p>
+</li>
+<li>
+<p>The <strong>additive identity</strong> <code>0</code> is <code>[id]{0}</code>. Given all <code>{0}</code> quantified <code>objs</code> are isomorphic any <code>{0}</code> can be used in stead.</p>
+</li>
+<li>
+<p>The <strong>multiplicative identity</strong> <code>1</code> is <code>[id]{1}</code>, which in <code>mmlang</code> is represented as <code>[id]</code>.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. In mm-ADT, the additive structure support inversion with <em>negative types</em> that entail a ring with an additive group, where the <code>,-poly</code> <code>[a{1},a{-1}]</code> merges to <code>a{0}</code> or <code>{0}</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The ring <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> are presented below along with the respective mm-ADT structure denoted in <code>mmlang</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. Ring with Unity Axioms</caption>
@@ -1776,8 +1807,77 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all center" style="width: 35%;">
-<caption class="title">Table 4. Ring with Unity Theorems</caption>
+<hr>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>mm-ADT composes unary functions via <code>*</code> and <code>+</code>. <code>n</code>-ary functions are encoded as <code>poly</code>-coupled unary functions with the \$\Delta\$-projection (delta) serving to <strong>copy</strong> (clone via <code>,</code>) or <strong>split</strong> (partition via <code>|</code>) a single <code>obj</code>.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{split}
+\Delta_n&amp;: A &amp;\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
+\Delta_n&amp;(a) &amp;= [a,\ldots,a]
+\end{split}
+\]</p>
+</div>
+<div class="listingblock">
+<div class="title">Copy \$\Delta\$</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_,_]
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>]
+mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ac</span><span style="color:#710">'</span></span>]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Split \$\Delta\$</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_|_]
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>|]
+mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>|_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>|]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Upon exiting an instruction, all internal <code>poly</code>-branches are serialized via a \$\nabla\$-injection (nabla) serves to  <strong>merge</strong> (union via <code>,</code>) or <strong>select</strong> (disjoint union via <code>|</code>) from many independent streams to a single stream.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{split}
+\nabla_n&amp;: \overbrace{A \times \ldots \times A}^{n-\text{times}} &amp;\rightarrow A \\
+\nabla_n&amp;([a,\ldots,a]) &amp;= a
+\end{split}
+\]</p>
+</div>
+<div class="listingblock">
+<div class="title">Merge \$\nabla\$</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_,_]&gt;-
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}
+mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]&gt;-
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ac</span><span style="color:#710">'</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Select \$\nabla\$</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_|_]&gt;-
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
+mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&lt;[_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>|_+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]&gt;-
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span></code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/delta-nabla.png" alt="delta nabla" width="600">
+</div>
+</div>
+</div>
+</div>
+<table class="tableblock frame-all grid-all right" style="width: 35%;">
+<caption class="title">Table 1 4. Ring with Unity Theorems</caption>
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -1805,9 +1905,8 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 </tr>
 </tbody>
 </table>
-<hr>
 <div class="paragraph">
-<p>Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where</p>
+<p>The table on the right provides the (most well-known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>. Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1825,8 +1924,9 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 <div class="paragraph">
 <p>Though any combinations of respectively sorted instructions can be used.</p>
 </div>
+<hr>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. The Ring Axioms in mmlang</caption>
+<caption class="title">Table 1 5. The Ring Axioms in mmlang</caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 20%;">
@@ -1950,7 +2050,7 @@ mmlang&gt; <span style="color:#00D">1</span>&lt;&lt;[plus,<span style="color:#00
 <p>Similarly, for the common ring theorems:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. The Ring Theorems in mmlang</caption>
+<caption class="title">Table 1 6. The Ring Theorems in mmlang</caption>
 <colgroup>
 <col style="width: 40%;">
 <col style="width: 60%;">
@@ -2411,7 +2511,7 @@ _________      _________
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Instruction classes</caption>
+<caption class="title">Table 1 7. Instruction classes</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 27.2727%;">
