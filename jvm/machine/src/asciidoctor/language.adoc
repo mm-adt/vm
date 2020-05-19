@@ -659,50 +659,50 @@ mmlang> 5[split,int[is>0],int[is<0],int][merge]
 
 ===== Poly Types
 
-The ctypes are fundamental, atomic types. Everything else is a `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomials]) regardless of it being explicitly encoded as an `obj` subject to manipulation by the instruction set architecture or implicitly within the underlying machinery of the mm-ADT VM. mm-ADT `polys` encode `obj` compositions in a non-reductive manner as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid], where the composition operator relating the `poly` components are either _parallel_ (`,`), _serial_ (`;`) , and _choice_ (`|`). These operators specify the denotational semantics of the polymorphic, endomorphic instructions `[mult]`/`[div]` and `[plus]`/`[minus]`. The mm-ADT `poly` has numerous uses in mm-ADT with it's two primary roles being:
+The ctypes are fundamental, atomic types. Everything else, regardless of being an _explicit_ `obj` subject to instruction manipulation or an _implicit_ object within the mm-ADT VM's host environment, is a `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]). mm-ADT `polys` encode `obj` compositions in a non-reductive manner as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid], where the specified composition operator relating the `poly` components is either a _parallel_ (`,`), _serial_ (`;`) , and _choice_ (`|`). Each operator determines the denotational semantics of the endo/poly-morphic instructions `[mult]`/`[div]` and `[plus]`/`[minus]`. The `poly` serves two primary roles in mm-ADT:
 
-. *Composite structures* (_values_): A value-based `poly` is not reduced by the associated monoid operator, but instead is realized as a polynomial lacking indeterminates. mm-ADT provides two convenient value-based `poly` types: `lst` (`int`-indexed array) and `rec` (`obj`-indexed array).
-. *Branching processes* (_types_): When an `obj` is passed as an argument to an additive `poly` group, the `obj` is split across the individual `poly` components, where if the component is a type, the `obj` is resolved to an element of the type's range whereby the component serves as branch in the computation.
+. *Composite structures* (_values_): A value-based `poly` is not reduced by the associated monoid operator, but instead realizes as a _determinate polynomial_ (a polynomial lacking indeterminates). mm-ADT provides two convenient value-based `poly` type constructors: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
+. *Branching processes* (_types_): A `poly` can be reduced using the `[split]`/`[merge]` "delta-nabla"-instructions, where `[split]` splits the incoming `obj` across the `poly` components, where if the component is a type, the `obj` is resolved to an element of the type's range. In this manner, a type-based `poly` is a \$n\$-ary branch structure, where the trace operator determines the branch semantics.
 
-NOTE: Given that a `poly`, like any other `obj`, can be operated on by the mm-ADT VM instructions and that they provide a "lifted" algebraic representation of the mm-ADT VM's underlying calculus, `polys` are the entry-point to mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming].
+NOTE: An algebraic representation of the mm-ADT VM's underlying calculus is realized by a "lifting" https://en.wikipedia.org/wiki/Functor[functor] that maps objects and morphisms of the virtual machine's host context to the category of mm-ADT `polys`. Given that a `poly`, like any other `obj`, can be operated on by virtual machine instructions, `polys` are the gateway to mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming].
 
 ====== Composite Structures
 
 ====== Branching Processes
 
-A `poly` type is https://en.wikipedia.org/wiki/Type_constructor[constructed] and destructed using \$\Delta\$ (_delta_) and \$\nabla\$ (_nabla_), respectively. This section specifies the properties of the two additive `polys` diagrammed below, where `,-poly` is a faithful implementation of a ring `+` operator and `|-poly` is a faithful implementation of an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the ring `+` operator commonly used for https://en.wikipedia.org/wiki/Tagged_union[sum types].
+A `poly` type is https://en.wikipedia.org/wiki/Type_constructor[constructed] and destructed using \$\Delta\$ (_delta_) and \$\nabla\$ (_nabla_), respectively. This section specifies the properties of the `polys` diagrammed below, where `,-poly` is a faithful implementation of the type ringoid's additive group (\$oplus\$), `|-poly` is an implementation of an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the additive group commonly used to denote https://en.wikipedia.org/wiki/Tagged_union[sum types], and `;-poly` is a faithful implementation of the type ringoid's multiplicative monoid (\$otimes\$).
 
 [cols="3,^9"]
 |===
 | `,-poly`
 \[
-  \left(\Delta^, \cdot \langle f,g \rangle \cdot \nabla^,\right)
+  \left(\Delta^, \circ \left(f \oplus g\right) \circ \nabla^,\right)
 \]
 copy/clone-branching +
 independent slots +
 coproduct +
-\$A + A = 2A\$
+\$A \oplus A \implies 2A\$
 | image:comma-delta-nabla.png[width=455,link=images/language/comma-delta-nabla.png]
 
 
 | `\|-poly`
 \[
-  \left(\Delta^\| \cdot \langle f,g \rangle \cdot \nabla^\|\right)
+  \left(\Delta^\| \circ \left(f \oplus g\right) \circ \nabla^\|\right)
 \]
 either/choice-branching +
 dependent slots +
 coproduct +
-\$A + A = A\$
+\$A \oplus A \implies A\$
 | image:pipe-delta-nabla.png[width=455,link=images/language/pipe-delta-nabla.png]
 
 | `;-poly`
 \[
-\left(\Delta^; \cdot f \cdot g \cdot \nabla^; \right)
+\left(\Delta^; \circ \left(f \otimes g\right) \circ \nabla^; \right)
 \]
 andThen/compose-chain +
 dependent slots +
 product +
-\$A + A = A\$
+\$A \otimes B \implies C\$
 | image:semi-delta-nabla.png[width=455,link=images/language/semi-delta-nabla.png]
 |===
 
