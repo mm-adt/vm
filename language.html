@@ -1645,15 +1645,15 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>The ctypes are fundamental, atomic types. Everything else is a <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>) regardless of it being explicitly encoded as an <code>obj</code> subject to manipulation by the instruction set architecture or implicitly within the underlying machinery of the mm-ADT VM. mm-ADT <code>polys</code> encode <code>obj</code> compositions in a non-reductive manner as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>, where the composition operator relating the <code>poly</code> components are either <em>parallel</em> (<code>,</code>), <em>serial</em> (<code>;</code>) , and <em>choice</em> (<code>|</code>). These operators specify the denotational semantics of the polymorphic, endomorphic instructions <code>[mult]</code>/<code>[div]</code> and <code>[plus]</code>/<code>[minus]</code>. The mm-ADT <code>poly</code> has numerous uses in mm-ADT with it&#8217;s two primary roles being:</p>
+<p>The ctypes are fundamental, atomic types. Everything else, regardless of being an <em>explicit</em> <code>obj</code> subject to instruction manipulation or an <em>implicit</em> object within the mm-ADT VM&#8217;s host environment, is a <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>). mm-ADT <code>polys</code> encode <code>obj</code> compositions in a non-reductive manner as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>, where the specified composition operator relating the <code>poly</code> components is either a <em>parallel</em> (<code>,</code>), <em>serial</em> (<code>;</code>) , and <em>choice</em> (<code>|</code>). Each operator determines the denotational semantics of the endo/poly-morphic instructions <code>[mult]</code>/<code>[div]</code> and <code>[plus]</code>/<code>[minus]</code>. The <code>poly</code> serves two primary roles in mm-ADT:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is not reduced by the associated monoid operator, but instead is realized as a polynomial lacking indeterminates. mm-ADT provides two convenient value-based <code>poly</code> types: <code>lst</code> (<code>int</code>-indexed array) and <code>rec</code> (<code>obj</code>-indexed array).</p>
+<p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is not reduced by the associated monoid operator, but instead realizes as a <em>determinate polynomial</em> (a polynomial lacking indeterminates). mm-ADT provides two convenient value-based <code>poly</code> type constructors: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
 </li>
 <li>
-<p><strong>Branching processes</strong> (<em>types</em>): When an <code>obj</code> is passed as an argument to an additive <code>poly</code> group, the <code>obj</code> is split across the individual <code>poly</code> components, where if the component is a type, the <code>obj</code> is resolved to an element of the type&#8217;s range whereby the component serves as branch in the computation.</p>
+<p><strong>Branching processes</strong> (<em>types</em>): A <code>poly</code> can be reduced using the <code>[split]</code>/<code>[merge]</code> "delta-nabla"-instructions, where <code>[split]</code> splits the incoming <code>obj</code> across the <code>poly</code> components, where if the component is a type, the <code>obj</code> is resolved to an element of the type&#8217;s range. In this manner, a type-based <code>poly</code> is a \$n\$-ary branch structure, where the trace operator determines the branch semantics.</p>
 </li>
 </ol>
 </div>
@@ -1664,7 +1664,7 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 <div class="title">Note</div>
 </td>
 <td class="content">
-Given that a <code>poly</code>, like any other <code>obj</code>, can be operated on by the mm-ADT VM instructions and that they provide a "lifted" algebraic representation of the mm-ADT VM&#8217;s underlying calculus, <code>polys</code> are the entry-point to mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.
+An algebraic representation of the mm-ADT VM&#8217;s underlying calculus is realized by a "lifting" <a href="https://en.wikipedia.org/wiki/Functor">functor</a> that maps objects and morphisms of the virtual machine&#8217;s host context to the category of mm-ADT <code>polys</code>. Given that a <code>poly</code>, like any other <code>obj</code>, can be operated on by virtual machine instructions, <code>polys</code> are the gateway to mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.
 </td>
 </tr>
 </table>
@@ -1676,7 +1676,7 @@ Given that a <code>poly</code>, like any other <code>obj</code>, can be operated
 <div class="sect5">
 <h6 id="_branching_processes">Branching Processes</h6>
 <div class="paragraph">
-<p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the two additive <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of a ring <code>+</code> operator and <code>|-poly</code> is a faithful implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the ring <code>+</code> operator commonly used for <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
+<p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of the type ringoid&#8217;s additive group (\$oplus\$), <code>|-poly</code> is an implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>, and <code>;-poly</code> is a faithful implementation of the type ringoid&#8217;s multiplicative monoid (\$otimes\$).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1687,34 +1687,34 @@ Given that a <code>poly</code>, like any other <code>obj</code>, can be operated
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code>
 \[
-  \left(\Delta^, \cdot \langle f,g \rangle \cdot \nabla^,\right)
+  \left(\Delta^, \circ \left(f \oplus g\right) \circ \nabla^,\right)
 \]
 copy/clone-branching<br>
 independent slots<br>
 coproduct<br>
-\$A + A = 2A\$</p></td>
+\$A \oplus A \implies 2A\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="455"></a></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code>
 \[
-  \left(\Delta^| \cdot \langle f,g \rangle \cdot \nabla^|\right)
+  \left(\Delta^| \circ \left(f \oplus g\right) \circ \nabla^|\right)
 \]
 either/choice-branching<br>
 dependent slots<br>
 coproduct<br>
-\$A + A = A\$</p></td>
+\$A \oplus A \implies A\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="455"></a></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code>
 \[
-\left(\Delta^; \cdot f \cdot g \cdot \nabla^; \right)
+\left(\Delta^; \circ \left(f \otimes g\right) \circ \nabla^; \right)
 \]
 andThen/compose-chain<br>
 dependent slots<br>
 product<br>
-\$A + A = A\$</p></td>
+\$A \otimes B \implies C\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla" width="455"></a></span></p></td>
 </tr>
 </tbody>
@@ -2035,7 +2035,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-19 12:42:49 -0600
+Last updated 2020-05-19 13:18:18 -0600
 </div>
 </div>
 </body>
