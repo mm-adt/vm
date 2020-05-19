@@ -1477,9 +1477,9 @@ The algebra underlying most type theories operate as a <a href="https://en.wikip
 <p>\[
 \begin{split}
 \texttt{[int{1},int\{-1\}]&gt;-} &amp; \implies \\
-\texttt{int{1-1}}           &amp; \implies \\
-\texttt{int{0}}             &amp; \implies \\
-\texttt{_{0}}
+\texttt{int{1-1}}             &amp; \implies \\
+\texttt{int{0}}               &amp; \implies \\
+\texttt{_{0}}                   &amp; .
 \end{split}
 \]</p>
 </div>
@@ -1643,24 +1643,37 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 </div>
 </div>
 <div class="sect4">
-<h5 id="_polynomial_composites">Polynomial Composites</h5>
+<h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>mm-ADT <code>polys</code> (polynomials) are constructed and destructed using \$\Delta\$ and \$\nabla\$. For the additive groupoid <code>polys</code>, the diagrammatic representation of the relationship between \$\Delta\$ and \$\nabla\$ is provided below and will be analyzed in this section.</p>
+<p>mm-ADT <code>polys</code> (polynomials) are composite <em>structures</em> (<strong>values</strong>) and also branching <em>processes</em> (<strong>types</strong>). A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ and \$\nabla\$, respectively. This section specifies the properties of the two additive <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of a ring <code>+</code> operator and <code>|-poly</code> is a faithful implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the ring <code>+</code> operator commonly used for <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 27.2727%;">
-<col style="width: 72.7273%;">
+<col style="width: 25%;">
+<col style="width: 75%;">
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code> =
-\$\left(\Delta^, \cdot \langle f,g \rangle \cdot \nabla^,\right)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="455"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code>
+\[
+  \left(\Delta^, \cdot \langle f,g \rangle \cdot \nabla^,\right)
+\]
+copy/clone-branching<br>
+decoupled slots<br>
+product<br>
+\$A + A = 2A\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="455"></a></span></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code> = \$\left(\Delta^| \cdot \langle f,g \rangle \cdot \nabla^|\right) \$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="465"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code>
+\[
+  \left(\Delta^| \cdot \langle f,g \rangle \cdot \nabla^|\right)
+\]
+either/choice-branching<br>
+decoupled slots<br>
+coproduct<br>
+\$A + A = A\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="455"></a></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -1961,7 +1974,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-18 23:05:53 -0600
+Last updated 2020-05-19 00:10:52 -0600
 </div>
 </div>
 </body>
