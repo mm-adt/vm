@@ -659,7 +659,12 @@ mmlang> 5[split,int[is>0],int[is<0],int][merge]
 
 ===== Poly Types
 
-mm-ADT `polys` (polynomials) are composite _structures_ (*values*) and also branching _processes_ (*types*). A `poly` type is https://en.wikipedia.org/wiki/Type_constructor[constructed] and destructed using \$\Delta\$ and \$\nabla\$, respectively. This section specifies the properties of the two additive `polys` diagrammed below, where `,-poly` is a faithful implementation of a ring `+` operator and `|-poly` is a faithful implementation of an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the ring `+` operator commonly used for https://en.wikipedia.org/wiki/Tagged_union[sum types].
+mm-ADT `polys` (polynomials) serve two purposes:
+
+. composite _structures_ (*values*)
+. branching _processes_ (*types*).
+
+A `poly` type is https://en.wikipedia.org/wiki/Type_constructor[constructed] and destructed using \$\Delta\$ (_delta_) and \$\nabla\$ (_nabla_), respectively. This section specifies the properties of the two additive `polys` diagrammed below, where `,-poly` is a faithful implementation of a ring `+` operator and `|-poly` is a faithful implementation of an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the ring `+` operator commonly used for https://en.wikipedia.org/wiki/Tagged_union[sum types].
 
 [cols="3,^9"]
 |===
@@ -679,10 +684,20 @@ product +
   \left(\Delta^\| \cdot \langle f,g \rangle \cdot \nabla^\|\right)
 \]
 either/choice-branching +
-decoupled slots +
+coupled slots +
 coproduct +
 \$A + A = A\$
 | image:pipe-delta-nabla.png[width=455,link=images/language/pipe-delta-nabla.png]
+
+| `;-poly`
+\[
+\left(\Delta^; \cdot f \cdot g \cdot \nabla^; \right)
+\]
+andThen/compose-chain +
+coupled slots +
+coproduct +
+\$A + A = A\$
+| image:semi-delta-nabla.png[width=455,link=images/language/semi-delta-nabla.png]
 |===
 
 mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`), **split** (partition via `|`), or **compose** (pipe via `;`) a single `obj`. In particular, for the additive groupoid `polys`, their respective `poly` constructors are defined as
@@ -721,6 +736,15 @@ mmlang> 6-<[_|_]
 ==>[6|]
 mmlang> 6-<[_>0|_>8]
 ==>[true|]
+----
+
+.Apply \$\Delta\$
+[source]
+----
+mmlang> 6-<[_;_]
+==>[6;6]
+mmlang> 6-<[_+1;_>6]
+==>[7;true]
 ----
 
 Upon exiting an instruction, all internal `poly`-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  **merge** (https://en.wikipedia.org/wiki/Polynomial[polynomial addition] similar to https://en.wikipedia.org/wiki/Multiset[multiset union] via `,`), **select** (https://en.wikipedia.org/wiki/Disjoint_union[disjoint] union via `|`), or **return** (via `;`) a single stream from multiple streams. For the additive groupoids, \$nabla\$ is defined as
@@ -763,6 +787,15 @@ mmlang> 6-<[_>0|_>8]>-
 ==>true
 ----
 
+.Return \$\nabla\$
+[source]
+----
+mmlang> 6-<[_;_]>-
+==>6
+mmlang> 6-<[_+1;_>6]>-
+==>true
+----
+
 '''
 
 ===== Axioms, Diagrams, and Notation
@@ -771,9 +804,9 @@ The ring https://en.wikipedia.org/wiki/Axiom[axioms] are presented below along w
 
 The table on the right provides the (most well-known) logical entailments of said axioms -- i.e., https://en.wikipedia.org/wiki/Theorem[theorems]. Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where
 
-* `[a]` is `int[plus,1]` with sugar of `+1`
-* `[b]` is `int[mult,2]` with sugar of `*2`
-* `[c]` is `int[mult,3]` with sugar of `*3`
+* \$a\$ is `int[plus,1]` with sugar of `+1`
+* \$b\$ is `int[mult,2]` with sugar of `*2`
+* \$c\$ is `int[mult,3]` with sugar of `*3`
 
 Though any combinations of respectively sorted instructions can be used.
 
@@ -823,7 +856,7 @@ mmlang> 1<+1,<*2,*3>>
 ==>3
 ----
 
-|\$`a + b = b + a\$
+|\$a + b = b + a\$
 |image:additive-commutativity.png[link=images/language/additive-commutativity.png]
 a|
 [.small]
