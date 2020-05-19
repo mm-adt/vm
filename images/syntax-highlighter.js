@@ -24,7 +24,7 @@ $(document).ready(function(){
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
   var items =    {"op":      ["a","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map",
-                              "split","merge"],
+                              "split","merge","head","tail"],
                   "infix":   ["|"],
                   "vars":    ["a","b","c"],
                   "value":   ["true","false"],
