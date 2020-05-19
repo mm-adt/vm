@@ -659,12 +659,18 @@ mmlang> 5[split,int[is>0],int[is<0],int][merge]
 
 ===== Poly Types
 
-mm-ADT `polys` (polynomials) serve two purposes:
+mm-ADT `polys` (polynomials) are `objs` composed in a non-reductive manner from other `objs`, where a specified algebra relates the components of the composition and the meaning of the polymorphic `[mult]` and `[plus]` instructions: _parallel_ (`,`), _serial_ (`;`) , and _choice_ (`|`). A `poly` serves two primary roles:
 
-. composite _structures_ (*values*)
-. branching _processes_ (*types*).
+. *Composite structures* (_values_): The base ctypes are fundamental, atomic datum. Everything else is a `poly`. mm-ADT provides two convenient `poly` structures for which all other composites are founded. A `lst` is a polynomial list. A `rec` is a polynomial key linked to a polynomial value.
+. *Branching processes* (_types_): When an `obj` is passed as an argument to an additive `poly` group, the `obj` is split across the individual `poly` slots, where if the slot contains a type, the `obj` is domain and the result of the branch is the range. Given `poly` `[head]/[plus]`-style instructions, `polys` enable https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming] in mm-ADT.
+
+====== Composite Structures
+
+====== Branching Processes
 
 A `poly` type is https://en.wikipedia.org/wiki/Type_constructor[constructed] and destructed using \$\Delta\$ (_delta_) and \$\nabla\$ (_nabla_), respectively. This section specifies the properties of the two additive `polys` diagrammed below, where `,-poly` is a faithful implementation of a ring `+` operator and `|-poly` is a faithful implementation of an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the ring `+` operator commonly used for https://en.wikipedia.org/wiki/Tagged_union[sum types].
+
+NOTE: An mm-ADT base type is also realized as a polynomial with a single indeterminate and coefficient. As an example, `'mmadt'{2}`.
 
 [cols="3,^9"]
 |===
