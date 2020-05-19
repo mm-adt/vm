@@ -576,9 +576,9 @@ NOTE: The algebra underlying most type theories operate as a https://en.wikipedi
 \[
 \begin{split}
 \texttt{[int\{1\},int\{-1\}]>-} & \implies \\
-\texttt{int\{1-1\}}           & \implies \\
-\texttt{int\{0\}}             & \implies \\
-\texttt{_{0}}
+\texttt{int\{1-1\}}             & \implies \\
+\texttt{int\{0\}}               & \implies \\
+\texttt{_{0}}                   & .
 \end{split}
 \]
 
@@ -657,15 +657,32 @@ mmlang> 5[split,int[is>0],int[is<0],int][merge]
 ==>5{2}
 ----
 
-===== Polynomial Composites
+===== Poly Types
 
-mm-ADT `polys` (polynomials) are constructed and destructed using \$\Delta\$ and \$\nabla\$. For the additive groupoid `polys`, the diagrammatic representation of the relationship between \$\Delta\$ and \$\nabla\$ is provided below and will be analyzed in this section.
+mm-ADT `polys` (polynomials) are composite _structures_ (*values*) and also branching _processes_ (*types*). A `poly` type is https://en.wikipedia.org/wiki/Type_constructor[constructed] and destructed using \$\Delta\$ and \$\nabla\$, respectively. This section specifies the properties of the two additive `polys` diagrammed below, where `,-poly` is a faithful implementation of a ring `+` operator and `|-poly` is a faithful implementation of an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the ring `+` operator commonly used for https://en.wikipedia.org/wiki/Tagged_union[sum types].
 
-[cols="3,^8"]
+[cols="3,^9"]
 |===
-| `,-poly` =
-\$\left(\Delta^, \cdot \langle f,g \rangle \cdot \nabla^,\right)\$  | image:comma-delta-nabla.png[width=455]
-| `\|-poly` = \$\left(\Delta^\| \cdot \langle f,g \rangle \cdot \nabla^\|\right) \$ | image:pipe-delta-nabla.png[width=465]
+| `,-poly`
+\[
+  \left(\Delta^, \cdot \langle f,g \rangle \cdot \nabla^,\right)
+\]
+copy/clone-branching +
+decoupled slots +
+product +
+\$A + A = 2A\$
+| image:comma-delta-nabla.png[width=455,link=images/language/comma-delta-nabla.png]
+
+
+| `\|-poly`
+\[
+  \left(\Delta^\| \cdot \langle f,g \rangle \cdot \nabla^\|\right)
+\]
+either/choice-branching +
+decoupled slots +
+coproduct +
+\$A + A = A\$
+| image:pipe-delta-nabla.png[width=455,link=images/language/pipe-delta-nabla.png]
 |===
 
 mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`), **split** (partition via `|`), or **compose** (pipe via `;`) a single `obj`. In particular, for the additive groupoid `polys`, their respective `poly` constructors are defined as
