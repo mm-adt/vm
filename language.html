@@ -1645,15 +1645,15 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>The ctypes are fundamental, atomic types. Everything else, regardless of being an <em>explicit</em> <code>obj</code> subject to instruction manipulation or an <em>implicit</em> object within the mm-ADT VM&#8217;s host environment, is a <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>). mm-ADT <code>polys</code> encode <code>obj</code> compositions in a non-reductive manner as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>, where the specified composition operator relating the <code>poly</code> components is either a <em>parallel</em> (<code>,</code>), <em>serial</em> (<code>;</code>) , and <em>choice</em> (<code>|</code>). Each operator determines the denotational semantics of the endo/poly-morphic instructions <code>[mult]</code>/<code>[div]</code> and <code>[plus]</code>/<code>[minus]</code>. The <code>poly</code> serves two primary roles in mm-ADT:</p>
+<p>The mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is a composite ctype that encodes <code>obj</code> compositions in a non-reductive manner as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>, where the specified composition operator relating the <code>poly</code> components is either <em>parallel</em> (<code>,</code>), <em>serial</em> (<code>;</code>) , or <em>choice</em> (<code>|</code>). Each operator determines the denotational semantics of the endo/poly-morphic instructions <code>[mult]</code>/<code>[div]</code> and <code>[plus]</code>/<code>[minus]</code> such that each <code>poly</code> is a particular associative monoid composition within a larger composition of a potentially larger algebraic structure such as a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> or a <a href="https://en.wikipedia.org/wiki/Field_(mathematics)">field</a>. The <code>poly</code> serves two primary roles in mm-ADT:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is not reduced by the associated monoid operator, but instead realizes as a <em>determinate polynomial</em> (a polynomial lacking indeterminates). mm-ADT provides two convenient value-based <code>poly</code> type constructors: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
+<p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is not reduced by its associated monoid operator, but instead is realized as a <em>determinate polynomial</em> (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient <code>poly</code> type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
 </li>
 <li>
-<p><strong>Branching processes</strong> (<em>types</em>): A <code>poly</code> can be reduced using the <code>[split]</code>/<code>[merge]</code> "delta-nabla"-instructions, where <code>[split]</code> splits the incoming <code>obj</code> across the <code>poly</code> components, where if the component is a type, the <code>obj</code> is resolved to an element of the type&#8217;s range. In this manner, a type-based <code>poly</code> is a \$n\$-ary branch structure, where the trace operator determines the branch semantics.</p>
+<p><strong>Branching processes</strong> (<em>types</em>): A <code>poly</code> can be reduced using the <code>[split]</code>/<code>[merge]</code> <em>delta-nabla</em>-instructions. The <code>[split]</code> instruction clones the incoming <code>obj</code> to every component of the <code>poly</code> and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure <code>obj</code>/anti-<code>obj</code> annihilator splits. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose trace operator and component coefficients yield the branch semantics.</p>
 </li>
 </ol>
 </div>
@@ -1664,7 +1664,7 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 <div class="title">Note</div>
 </td>
 <td class="content">
-An algebraic representation of the mm-ADT VM&#8217;s underlying calculus is realized by a "lifting" <a href="https://en.wikipedia.org/wiki/Functor">functor</a> that maps objects and morphisms of the virtual machine&#8217;s host context to the category of mm-ADT <code>polys</code>. Given that a <code>poly</code>, like any other <code>obj</code>, can be operated on by virtual machine instructions, <code>polys</code> are the gateway to mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.
+An algebraic representation of the mm-ADT VM&#8217;s underlying calculus is realized by a "lifting" <a href="https://en.wikipedia.org/wiki/Functor">functor</a> that maps objects and morphisms of the virtual machine&#8217;s host context to the category of mm-ADT <code>polys</code>. Given that a <code>poly</code>, like any other <code>obj</code>, can be operated on by the virtual machine&#8217;s instructions, <code>polys</code> are the gateway to mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.
 </td>
 </tr>
 </table>
@@ -1676,7 +1676,7 @@ An algebraic representation of the mm-ADT VM&#8217;s underlying calculus is real
 <div class="sect5">
 <h6 id="_branching_processes">Branching Processes</h6>
 <div class="paragraph">
-<p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of the type ringoid&#8217;s additive group (\$oplus\$), <code>|-poly</code> is an implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>, and <code>;-poly</code> is a faithful implementation of the type ringoid&#8217;s multiplicative monoid (\$otimes\$).</p>
+<p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of the mm-ADT type ringoid&#8217;s additive group (\$oplus\$), <code>|-poly</code> is an implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>, and <code>;-poly</code> is a faithful implementation of the type ringoid&#8217;s multiplicative monoid (\$otimes\$).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2035,7 +2035,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-19 13:18:18 -0600
+Last updated 2020-05-19 14:09:54 -0600
 </div>
 </div>
 </body>
