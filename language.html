@@ -1645,20 +1645,38 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>mm-ADT <code>polys</code> (polynomials) serve two purposes:</p>
+<p>mm-ADT <code>polys</code> (polynomials) are <code>objs</code> composed in a non-reductive manner from other <code>objs</code>, where a specified algebra relates the components of the composition and the meaning of the polymorphic <code>[mult]</code> and <code>[plus]</code> instructions: <em>parallel</em> (<code>,</code>), <em>serial</em> (<code>;</code>) , and <em>choice</em> (<code>|</code>). A <code>poly</code> serves two primary roles:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>composite <em>structures</em> (<strong>values</strong>)</p>
+<p><strong>Composite structures</strong> (<em>values</em>): The base ctypes are fundamental, atomic datum. Everything else is a <code>poly</code>. mm-ADT provides two convenient <code>poly</code> structures for which all other composites are founded. A <code>lst</code> is a polynomial list. A <code>rec</code> is a polynomial key linked to a polynomial value.</p>
 </li>
 <li>
-<p>branching <em>processes</em> (<strong>types</strong>).</p>
+<p><strong>Branching processes</strong> (<em>types</em>): When an <code>obj</code> is passed as an argument to an additive <code>poly</code> group, the <code>obj</code> is split across the individual <code>poly</code> slots, where if the slot contains a type, the <code>obj</code> is domain and the result of the branch is the range. Given <code>poly</code> <code>[head]/[plus]</code>-style instructions, <code>polys</code> enable <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> in mm-ADT.</p>
 </li>
 </ol>
 </div>
+<div class="sect5">
+<h6 id="_composite_structures">Composite Structures</h6>
+
+</div>
+<div class="sect5">
+<h6 id="_branching_processes">Branching Processes</h6>
 <div class="paragraph">
 <p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the two additive <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of a ring <code>+</code> operator and <code>|-poly</code> is a faithful implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the ring <code>+</code> operator commonly used for <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+An mm-ADT base type is also realized as a polynomial with a single indeterminate and coefficient. As an example, <code>'mmadt'{2}</code>.
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1807,6 +1825,7 @@ mmlang&gt; 6-&lt;[_+1;_&gt;6]&gt;-
 </div>
 </div>
 <hr>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_axioms_diagrams_and_notation">Axioms, Diagrams, and Notation</h5>
@@ -2016,7 +2035,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-19 03:37:00 -0600
+Last updated 2020-05-19 11:56:11 -0600
 </div>
 </div>
 </body>
