@@ -1645,7 +1645,20 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>mm-ADT <code>polys</code> (polynomials) are composite <em>structures</em> (<strong>values</strong>) and also branching <em>processes</em> (<strong>types</strong>). A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ and \$\nabla\$, respectively. This section specifies the properties of the two additive <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of a ring <code>+</code> operator and <code>|-poly</code> is a faithful implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the ring <code>+</code> operator commonly used for <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
+<p>mm-ADT <code>polys</code> (polynomials) serve two purposes:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>composite <em>structures</em> (<strong>values</strong>)</p>
+</li>
+<li>
+<p>branching <em>processes</em> (<strong>types</strong>).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the two additive <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of a ring <code>+</code> operator and <code>|-poly</code> is a faithful implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the ring <code>+</code> operator commonly used for <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1670,10 +1683,21 @@ product<br>
   \left(\Delta^| \cdot \langle f,g \rangle \cdot \nabla^|\right)
 \]
 either/choice-branching<br>
-decoupled slots<br>
+coupled slots<br>
 coproduct<br>
 \$A + A = A\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="455"></a></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code>
+\[
+\left(\Delta^; \cdot f \cdot g \cdot \nabla^; \right)
+\]
+andThen/compose-chain<br>
+coupled slots<br>
+coproduct<br>
+\$A + A = A\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla" width="455"></a></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -1720,6 +1744,15 @@ mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]
 ==&gt;[true|]</code></pre>
 </div>
 </div>
+<div class="listingblock">
+<div class="title">Apply \$\Delta\$</div>
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 6-&lt;[_;_]
+==&gt;[6;6]
+mmlang&gt; 6-&lt;[_+1;_&gt;6]
+==&gt;[7;true]</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>Upon exiting an instruction, all internal <code>poly</code>-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  <strong>merge</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial addition</a> similar to <a href="https://en.wikipedia.org/wiki/Multiset">multiset union</a> via <code>,</code>), <strong>select</strong> (<a href="https://en.wikipedia.org/wiki/Disjoint_union">disjoint</a> union via <code>|</code>), or <strong>return</strong> (via <code>;</code>) a single stream from multiple streams. For the additive groupoids, \$nabla\$ is defined as</p>
 </div>
@@ -1764,6 +1797,15 @@ mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]&gt;-
 ==&gt;true</code></pre>
 </div>
 </div>
+<div class="listingblock">
+<div class="title">Return \$\nabla\$</div>
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 6-&lt;[_;_]&gt;-
+==&gt;6
+mmlang&gt; 6-&lt;[_+1;_&gt;6]&gt;-
+==&gt;true</code></pre>
+</div>
+</div>
 <hr>
 </div>
 <div class="sect4">
@@ -1777,13 +1819,13 @@ mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]&gt;-
 <div class="ulist">
 <ul>
 <li>
-<p><code>[a]</code> is <code>int[plus,1]</code> with sugar of <code>+1</code></p>
+<p>\$a\$ is <code>int[plus,1]</code> with sugar of <code>+1</code></p>
 </li>
 <li>
-<p><code>[b]</code> is <code>int[mult,2]</code> with sugar of <code>*2</code></p>
+<p>\$b\$ is <code>int[mult,2]</code> with sugar of <code>*2</code></p>
 </li>
 <li>
-<p><code>[c]</code> is <code>int[mult,3]</code> with sugar of <code>*3</code></p>
+<p>\$c\$ is <code>int[mult,3]</code> with sugar of <code>*3</code></p>
 </li>
 </ul>
 </div>
@@ -1846,7 +1888,7 @@ mmlang&gt; 1&lt;+1,&lt;*2,*3&gt;&gt;
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$`a + b = b + a\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = b + a\$</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-commutativity.png"><img src="./images/language/additive-commutativity.png" alt="additive commutativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
@@ -1974,7 +2016,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-19 00:10:52 -0600
+Last updated 2020-05-19 03:37:00 -0600
 </div>
 </div>
 </body>
