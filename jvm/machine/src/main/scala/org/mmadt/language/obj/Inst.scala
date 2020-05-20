@@ -50,6 +50,7 @@ trait Inst[S <: Obj, +E <: Obj] extends Lst[Obj] {
 }
 
 object Inst {
+  def oldInst[S <: Obj, E <: Obj](newInst: Inst[S, E]): Inst[S, E] = newInst.via._1.asInstanceOf[Inst[S, E]]
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E =
     arg match {
       case valueArg: OValue[E] => valueArg

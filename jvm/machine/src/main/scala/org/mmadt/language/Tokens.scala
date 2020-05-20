@@ -30,7 +30,7 @@ object Tokens {
   lazy val reserved: Set[String] = Set(
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
     Tokens.plus, Tokens.gt, Tokens.lt, Tokens.gte, Tokens.lte, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as, Tokens.a, // Tokens.model (shared with global name)
-    Tokens.split, Tokens.combine, Tokens.merge, Tokens.given, Tokens.trace, Tokens.start, Tokens.`type`,
+    Tokens.split, Tokens.combine, Tokens.merge, Tokens.given, Tokens.trace, Tokens.start, Tokens.`type`, Tokens.repeat,
     Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
 
   val anon = "_"
@@ -85,6 +85,7 @@ object Tokens {
   val combine = "combine"
   val merge = "merge"
   val split = "split"
+  val repeat = "repeat"
 
   val empty = ""
   val space = " "

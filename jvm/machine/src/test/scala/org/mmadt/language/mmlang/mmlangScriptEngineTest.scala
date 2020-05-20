@@ -566,7 +566,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("[['a';'b']|['c'|'d']]")(engine.eval("['a';'b'][plus,['c'|'d']]").toString)
     assertResult("[['a'|'b']|['c';'d']]")(engine.eval("['a'|'b'][plus,['c';'d']]").toString)
     assertResult("['a'|'b']")(engine.eval("['a'|'b'][plus,[zero]]").toString)
-//    assertResult("[['a';'b']|[ ]]")(engine.eval("['a';'b'][plus,[zero]]").toString)
+    //    assertResult("[['a';'b']|[ ]]")(engine.eval("['a';'b'][plus,[zero]]").toString)
     // assertResult("['a','b']")(engine.eval("['a','b'][plus,[zero]]").toString)
     // mult w; types
     //assertResult("[int[plus,2][plus,5][id]]<=[int;[plus,2]][mult,[[plus,5];[id]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[id]]]").toString)
@@ -663,6 +663,16 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(4).q(-1))(engine.eval("1<[plus,1];[mult,2]>{-1}"))
     assertResult(int(4))(engine.eval("1<[plus,1]{-1};[mult,2]{-1}>"))
     assertResult(int(4))(engine.eval("1<[plus,1];[mult,2]>"))
+  }
+
+  test("repeat parsing") {
+    assertResult(int(64))(engine.eval("20[plus,10][repeat,int[plus,1],34]"))
+    assertResult(int(64))(engine.eval("20[plus,10](int[plus,1])^34"))
+    assertResult(int(64))(engine.eval("20[plus,10]([plus,1])^34"))
+    assertResult(int(64))(engine.eval("20+10(+1)^34"))
+    assertResult(int(67, 64))(engine.eval("23,20+10(+1)^34"))
+    assertResult((1 `,` 1) `,` (1 `,` 1))(engine.eval("1(-<[_,_])^2"))
+    assertResult(((1 `,` 1) `,` (1 `,` 1)) `,` ((1 `,` 1) `,` (1 `,` 1)))(engine.eval("1(-<[_,_])^3"))
   }
 
 

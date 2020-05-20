@@ -60,7 +60,8 @@ trait Obj
     with ToOp
     with TraceOp
     with StartOp
-    with SplitOp {
+    with SplitOp
+    with RepeatOp[Obj] {
 
   //////////////////////////////////////////////////////////////
   // data associated with every obj

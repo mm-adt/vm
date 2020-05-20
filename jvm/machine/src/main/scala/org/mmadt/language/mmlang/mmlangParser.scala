@@ -27,7 +27,7 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
+import org.mmadt.language.obj.op.branch.{MergeOp, RepeatOp, SplitOp}
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
 import org.mmadt.language.obj.value.{strm => _, _}
@@ -124,7 +124,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 
   // instruction parsing
   lazy val inst: Parser[List[Inst[Obj, Obj]]] = manyInstSugar | (
-    sugarlessInst | fromSugar | toSugar | splitSugar |
+    sugarlessInst | fromSugar | toSugar | splitSugar | repeatSugar |
       mergeSugar | infixSugar | getStrSugar | getIntSugar | polyInst) ~ opt(quantifier) ^^
     (x => List(x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]]))
   lazy val manyInstSugar: Parser[List[Inst[Obj, Obj]]] = splitMergeSugar | splitMergeSuperSugar ~ opt(quantifier) ^^ (x => x._2.map(q => List(x._1.head, x._1.tail.head.q(q))).getOrElse(x._1))
@@ -145,6 +145,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val toSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> symbolName <~ RANGLE ^^ (x => ToOp(x))
   // lazy val traceSugar: Parser[Inst[Obj, Obj]] = LROUND ~> lstObj <~ RROUND ^^ (x => TraceOp(x))
   lazy val fromSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
+  lazy val repeatSugar: Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ ("^" ~> intValue) ^^ (x => RepeatOp(x._1, x._2))
   lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
 
   // quantifier parsing
