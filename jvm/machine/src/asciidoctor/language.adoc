@@ -662,7 +662,7 @@ mmlang> 5[split,int[is>0],int[is<0],int][merge]
 The mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is a composite ctype that encodes `obj` compositions in a non-reductive manner as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid], where the specified composition operator relating the `poly` components is either _parallel_ (`,`), _serial_ (`;`) , or _choice_ (`|`). Each operator determines the denotational semantics of the endo/poly-morphic instructions `[mult]`/`[div]` and `[plus]`/`[minus]` such that each `poly` is a particular associative monoid composition within a larger composition of a potentially larger algebraic structure such as a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] or a https://en.wikipedia.org/wiki/Field_(mathematics)[field]. The `poly` serves two primary roles in mm-ADT:
 
 . *Composite structures* (_values_): A value-based `poly` is not reduced by its associated monoid operator, but instead is realized as a _determinate polynomial_ (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient `poly` type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
-. *Branching processes* (_types_): A `poly` can be reduced using the `[split]`/`[merge]` _delta-nabla_-instructions. The `[split]` instruction clones the incoming `obj` to every component of the `poly` and resolves each `obj` clone to an `obj` of the component type's range. For types respecting https://en.wikipedia.org/wiki/No-cloning_theorem[no-clone] axioms, `obj` coefficients are manipulated accordingly to ensure `obj`/anti-`obj` annihilator splits. All range `objs` are aggregated into a subsuming type by the `[merge]` instruction. In this manner, a type-based `poly` serves as an \$n\$-ary branch structure whose trace operator and component coefficients yield the branch semantics.
+. *Branching processes* (_types_): A `poly` can be reduced using the `[split]`/`[merge]` _delta-nabla_-instructions. The `[split]` instruction clones the incoming `obj` to every component of the `poly` and resolves each `obj` clone to an `obj` of the component type's range. For types respecting https://en.wikipedia.org/wiki/No-cloning_theorem[no-clone] axioms, `obj` coefficients are manipulated accordingly to ensure `obj`/anti-`obj` https://en.wikipedia.org/wiki/Creation_and_annihilation_operators[annihilator] splits. All range `objs` are aggregated into a subsuming type by the `[merge]` instruction. In this manner, a type-based `poly` serves as an \$n\$-ary branch structure whose trace operator and component coefficients yield the branch semantics.
 
 NOTE: An algebraic representation of the mm-ADT VM's underlying calculus is realized by a "lifting" https://en.wikipedia.org/wiki/Functor[functor] that maps objects and morphisms of the virtual machine's host context to the category of mm-ADT `polys`. Given that a `poly`, like any other `obj`, can be operated on by the virtual machine's instructions, `polys` are the gateway to mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming].
 
@@ -706,7 +706,7 @@ product +
 | image:semi-delta-nabla.png[width=455,link=images/language/semi-delta-nabla.png]
 |===
 
-mm-ADT composes unary functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`), **split** (partition via `|`), or **compose** (pipe via `;`) a single `obj`. In particular, for the additive groupoid `polys`, their respective `poly` constructors are defined as
+mm-ADT composes functions via `*` and `+`. `n`-ary functions are encoded as `poly`-coupled unary functions with the \$\Delta\$-projection (delta) serving to **copy** (clone via `,`), **split** (partition via `|`), or **compose** (pipe via `;`) a single `obj`. In particular, for the additive groupoid `polys`, their respective `poly` constructors are defined as
 
 \[
 \begin{split}
@@ -767,7 +767,7 @@ and
 \[
 \begin{split}
 \nabla_n^|&: \overbrace{B \times \ldots \times B}^{n-\text{times}} &\rightarrow B \\
-\nabla_n^|&([b|\ldots|b]) &= b
+\nabla_n^|&([b|\ldots|b]) &= b.
 \end{split}
 \]
 
