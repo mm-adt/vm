@@ -107,10 +107,9 @@ object Tokens {
   val a_op = "?"
 
   val split_op = "-<"
-  val split2_op = "("
+  val pow_op = "^"
   val combine_op = "="
   val merge_op = ">-"
-  val merge2_op = ")"
   val given_op = "-->"
 
 

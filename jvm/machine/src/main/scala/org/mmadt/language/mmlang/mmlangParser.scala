@@ -125,7 +125,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // instruction parsing
   lazy val inst: Parser[List[Inst[Obj, Obj]]] = manyInstSugar | (
     sugarlessInst | fromSugar | toSugar | splitSugar | repeatSugar |
-      mergeSugar | infixSugar | getStrSugar | getIntSugar | polyInst) ~ opt(quantifier) ^^
+      mergeSugar | infixSugar | getStrSugar | getIntSugar) ~ opt(quantifier) ^^
     (x => List(x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]]))
   lazy val manyInstSugar: Parser[List[Inst[Obj, Obj]]] = splitMergeSugar | splitMergeSuperSugar ~ opt(quantifier) ^^ (x => x._2.map(q => List(x._1.head, x._1.tail.head.q(q))).getOrElse(x._1))
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
@@ -136,16 +136,14 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
     (x => OpInstResolver.resolve(x._1, List(x._2)))
   lazy val splitMergeSugar: Parser[List[Inst[Obj, Obj]]] = LANGLE ~> polyObj <~ RANGLE ^^ (x => List(SplitOp(x), MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]]))
   lazy val splitMergeSuperSugar: Parser[List[Inst[Obj, Obj]]] = LANGLE ~> lstStruct <~ RANGLE ^^ (x => List(SplitOp(lst(x._1, x._2: _*)), MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]]))
-  // lazy val splitMergeShortSugar: Parser[List[Inst[Obj, Obj]]] = lstStruct ^^ (x => List(SplitOp(lst(x._1, x._2: _*)), MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]]))
   lazy val splitSugar: Parser[Inst[Obj, Obj]] = Tokens.split_op ~> (polyObj | recTypeNoPrefix | recType | recValue) ^^ (x => SplitOp(x.asInstanceOf[Poly[Obj]]))
   lazy val mergeSugar: Parser[Inst[Obj, Obj]] = Tokens.merge_op ^^ (_ => MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]])
-  lazy val polyInst: Parser[Inst[Obj, Obj]] = polyObj ^^ (x => SplitOp(x)) // TODO: REMOVE NOW THAT WE HAVE <x;y>
   lazy val getStrSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
   lazy val getIntSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
   lazy val toSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> symbolName <~ RANGLE ^^ (x => ToOp(x))
   // lazy val traceSugar: Parser[Inst[Obj, Obj]] = LROUND ~> lstObj <~ RROUND ^^ (x => TraceOp(x))
   lazy val fromSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
-  lazy val repeatSugar: Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ ("^" ~> intValue) ^^ (x => RepeatOp(x._1, x._2))
+  lazy val repeatSugar: Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.pow_op ~> intValue) ^^ (x => RepeatOp(x._1, x._2))
   lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> ("""=?[a-z]+""".r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
 
   // quantifier parsing
