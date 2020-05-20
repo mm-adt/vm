@@ -4,7 +4,7 @@
  * This file is loaded from docinfo.html <script src="syntax-highlighter.js"/>
  **/
 $(document).ready(function(){
-  $("a[href^='https://en.wikipedia.org/wiki']").wrap("<span id='p2'></span>") // WIKIPEDIA PAGE PREVIEW
+  $("a[href^='https://en.wikipedia.org/wiki']").miniPreview({prefetch:'parenthover',width:800,height:400,scale:0.9}) // WIKIPEDIA PAGE PREVIEW
   //////////////////
   var token = "XXX"
   var ospan = "<span style='color:"
