@@ -58,6 +58,6 @@ object LanguageFactory {
     override def printType(atype: Type[Obj]): String = mmlangPrinter.typeString(atype)
     override def printInst(inst: Inst[_, _]): String = mmlangPrinter.instString(inst)
     override def printStrm(strm: Strm[Obj]): String = mmlangPrinter.strmString(strm)
-    override def printLst(poly: Lst[_]): String = mmlangPrinter.lstString(poly)
+    override def printLst(poly: Lst[_]): String = mmlangPrinter.lstPrettyString(poly) // TODO: MAKE THIS A NEW LANGUAGEFACTORY (IMPLICITS)
   }
 }

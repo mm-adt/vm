@@ -61,15 +61,13 @@ object mmlangPrinter {
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) + RBRACKET
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
-    if (lst.glist.isEmpty)
-      LBRACKET + Tokens.space + RBRACKET
-    else
-      lst.glist.foldLeft(LBRACKET)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RBRACKET
+    if (lst.glist.isEmpty) LBRACKET + Tokens.space + RBRACKET
+    else lst.glist.foldLeft(LBRACKET)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {
     val range = (atype match {
-      case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + COLON + mapString(arec.gmap, sep =arec.gsep)
+      case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + COLON + mapString(arec.gmap, sep = arec.gsep)
       case alst: Lst[_] => listString(alst)
       case _ => atype.name
     }) + qString(atype.q)
@@ -104,5 +102,40 @@ object mmlangPrinter {
         case args: List[Obj] => LBRACKET + inst.op + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET
       }
     }) + qString(inst.q)
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  def lstPrettyString(lst: Lst[_]): String = {
+    if (lst.root) listString(lst)
+    if (!lst.isValue)
+      typePrettyString(lst.asInstanceOf[Type[Obj]])
+    else
+      prettyLstString(lst) + qString(lst.q)
+  }
+
+  private def prettyLstString(lst: Lst[_]): String = {
+    if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
+    if (lst.glist.isEmpty) LBRACKET + Tokens.space + RBRACKET
+    if (lst.isType && lst.glist.asInstanceOf[List[Obj]].count(_.alive) > 2) lst.glist.foldLeft(LBRACKET + "\n")((string, element) => string + "     " + aliveString(element) + lst.gsep + "\n").dropRight(2) + "\n   " + RBRACKET
+    else lst.glist.foldLeft(LBRACKET)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RBRACKET
+  }
+
+  def typePrettyString(atype: Type[Obj]): String = {
+    val range = (atype match {
+      case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + COLON + mapString(arec.gmap, sep = arec.gsep)
+      case alst: Lst[_] => prettyLstString(alst)
+      case _ => atype.name
+    }) + qString(atype.q)
+    val domain = if (atype.root) Tokens.empty else {
+      (atype.domain match {
+        case arec: RecType[_, _] => if (!atype.root && Tokens.named(arec.name)) arec.name else arec.name + COLON + mapString(arec.gmap, sep = arec.gsep)
+        case alst: Lst[_] => prettyLstString(alst)
+        case btype: Type[_] => btype.name
+      }) + qString(atype.domain.q)
+    }
+    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain.alive && !atype.domain.equals(obj.q(qStar))) domain else Tokens.empty))) + atype.trace.map(_._2.toString()).fold(Tokens.empty)((a, b) => a + b)
   }
 }

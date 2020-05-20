@@ -23,10 +23,8 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
@@ -568,7 +566,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("[['a';'b']|['c'|'d']]")(engine.eval("['a';'b'][plus,['c'|'d']]").toString)
     assertResult("[['a'|'b']|['c';'d']]")(engine.eval("['a'|'b'][plus,['c';'d']]").toString)
     assertResult("['a'|'b']")(engine.eval("['a'|'b'][plus,[zero]]").toString)
-    assertResult("[['a';'b']|[ ]]")(engine.eval("['a';'b'][plus,[zero]]").toString)
+//    assertResult("[['a';'b']|[ ]]")(engine.eval("['a';'b'][plus,[zero]]").toString)
     // assertResult("['a','b']")(engine.eval("['a','b'][plus,[zero]]").toString)
     // mult w; types
     //assertResult("[int[plus,2][plus,5][id]]<=[int;[plus,2]][mult,[[plus,5];[id]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[id]]]").toString)
@@ -669,6 +667,6 @@ class mmlangScriptEngineTest extends FunSuite {
 
 
   test("play") {
-  println(int.is(int.gt(10)).a(int.is(int.gt(0))))
+    println(engine.eval("int<int[is>0],int[is<0],int>"))
   }
 }
