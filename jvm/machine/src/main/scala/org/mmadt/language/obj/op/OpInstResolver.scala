@@ -61,7 +61,7 @@ object OpInstResolver {
       case Tokens.split | Tokens.split_op => SplitOp(args.head.asInstanceOf[Poly[Obj]])
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head.asInstanceOf[Lst[Obj]])
       case Tokens.merge | Tokens.merge_op => MergeOp()
-      case Tokens.repeat => RepeatOp(args.head, args.tail.head.asInstanceOf[IntValue])
+      case Tokens.repeat => RepeatOp(args.head, args.tail.head)
       case Tokens.given | Tokens.given_op => GivenOp(args.head)
       case Tokens.trace => args.headOption.map(x => TraceOp(x.asInstanceOf[Lst[Obj]])).getOrElse(TraceOp())
       //

@@ -111,7 +111,6 @@ trait Obj
   final def |[A <: Obj](obj: String): Lst[A] = this.|(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def |[A <: Obj]: Lst[A] = lst(Tokens.|, this.asInstanceOf[A])
   final def |[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.|, obj)
-  //final def |[A <: Obj](obj: Tuple2[String, A]): Poly[A] = this.polyMaker(Tokens.:|, obj)
   //
   final def `;`[A <: Obj](obj: scala.Double): Lst[A] = this.`;`(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `;`[A <: Obj](obj: scala.Long): Lst[A] = this.`;`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
@@ -119,7 +118,6 @@ trait Obj
   final def `;`[A <: Obj](obj: String): Lst[A] = this.`;`(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `;`[A <: Obj]: Lst[A] = lst(Tokens.`;`, this.asInstanceOf[A])
   final def `;`[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.`;`, obj)
-  //final def /[A <: Obj](obj: (String, A)): Poly[A] = this.polyMaker(Tokens.:/, obj)
   //
   final def `,`[A <: Obj](obj: scala.Double): Lst[A] = this.`,`(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `,`[A <: Obj](obj: scala.Long): Lst[A] = this.`,`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
@@ -137,15 +135,6 @@ trait Obj
       case _ => lst(sep, this.asInstanceOf[A], obj)
     }
   }
-  /*private def polyMaker[A <: Obj](sep: String, obj: (String, A)): Poly[A] = {
-    this match {
-      case apoly: Poly[A] => obj._2 match {
-        case _: Poly[A] => poly(sep, List(this.asInstanceOf[A], obj._2): _*)
-        case _ => apoly.clone(ground = (sep, apoly.groundList :+ obj._2, apoly.groundKeys :+ obj._1))
-      }
-      case _ => poly[A](sep).clone(ground = (sep, List(this.asInstanceOf[A], obj._2), List(null, obj._1)))
-    }
-  }*/
 
   // utility methods
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
@@ -188,7 +177,6 @@ object Obj {
     }
   }
 
-  //@inline implicit def tupleToPoly[A <: Obj](keyObj: (String, A)): Poly[A] = new OPoly[A](ground = (Tokens.:|, List(keyObj._2), List(keyObj._1)))
   @inline implicit def booleanToBool(ground: Boolean): BoolValue = bool(ground)
   @inline implicit def longToInt(ground: Long): IntValue = int(ground)
   @inline implicit def intToInt(ground: scala.Int): IntValue = int(ground.longValue())
@@ -202,5 +190,4 @@ object Obj {
   @inline implicit class LongExtensions(l: Long)
   @inline implicit class FloatExtensions(f: Float)
   @inline implicit class DoubleExtensions(d: Double)
-
 }
