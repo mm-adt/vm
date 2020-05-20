@@ -435,7 +435,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="images/syntax-highlighter.js"></script>
+<script type="text/javascript">
+    $(function() { $('#p2 a').miniPreview({ prefetch: 'parenthover',width:800,height:400,scale:0.9}); });
+</script>
+<script src="http://codegena.com/assets/js/image-preview-for-link.js"></script>
+<link href="http://codegena.com/assets/css/image-preview-for-link.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="images/css-additions.css" />
+
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
@@ -1932,7 +1938,7 @@ mmlang&gt; <span style="color:#00D">5</span>[split,<span style="color:#369;font-
 <p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is not reduced by its associated monoid operator, but instead is realized as a <em>determinate polynomial</em> (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient <code>poly</code> type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
 </li>
 <li>
-<p><strong>Branching processes</strong> (<em>types</em>): A <code>poly</code> can be reduced using the <code>[split]</code>/<code>[merge]</code> <em>delta-nabla</em>-instructions. The <code>[split]</code> instruction clones the incoming <code>obj</code> to every component of the <code>poly</code> and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure <code>obj</code>/anti-<code>obj</code> annihilator splits. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose trace operator and component coefficients yield the branch semantics.</p>
+<p><strong>Branching processes</strong> (<em>types</em>): A <code>poly</code> can be reduced using the <code>[split]</code>/<code>[merge]</code> <em>delta-nabla</em>-instructions. The <code>[split]</code> instruction clones the incoming <code>obj</code> to every component of the <code>poly</code> and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure <code>obj</code>/anti-<code>obj</code> <a href="https://en.wikipedia.org/wiki/Creation_and_annihilation_operators">annihilator</a> splits. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose trace operator and component coefficients yield the branch semantics.</p>
 </li>
 </ol>
 </div>

@@ -1653,7 +1653,7 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 <p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is not reduced by its associated monoid operator, but instead is realized as a <em>determinate polynomial</em> (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient <code>poly</code> type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
 </li>
 <li>
-<p><strong>Branching processes</strong> (<em>types</em>): A <code>poly</code> can be reduced using the <code>[split]</code>/<code>[merge]</code> <em>delta-nabla</em>-instructions. The <code>[split]</code> instruction clones the incoming <code>obj</code> to every component of the <code>poly</code> and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure <code>obj</code>/anti-<code>obj</code> annihilator splits. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose trace operator and component coefficients yield the branch semantics.</p>
+<p><strong>Branching processes</strong> (<em>types</em>): A <code>poly</code> can be reduced using the <code>[split]</code>/<code>[merge]</code> <em>delta-nabla</em>-instructions. The <code>[split]</code> instruction clones the incoming <code>obj</code> to every component of the <code>poly</code> and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure <code>obj</code>/anti-<code>obj</code> <a href="https://en.wikipedia.org/wiki/Creation_and_annihilation_operators">annihilator</a> splits. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose trace operator and component coefficients yield the branch semantics.</p>
 </li>
 </ol>
 </div>
@@ -2035,7 +2035,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-19 14:16:27 -0600
+Last updated 2020-05-19 23:10:25 -0600
 </div>
 </div>
 </body>
