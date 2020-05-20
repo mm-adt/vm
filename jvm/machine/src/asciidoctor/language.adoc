@@ -628,13 +628,12 @@ Every corresponding `mmlang` expression makes use of `poly`-types. In `mmlang`, 
 
 [source]
 ----
-int<int[is>0],int[is<0],int>
-==>
-int{1,3}<=int-<[
-  int{?}<=int[is,bool<=int[gt,0]],
-  int{?}<=int[is,bool<=int[lt,0]],
-  int
-]>-
+mmlang> int<int[is>0],int[is<0],int>
+==>int{1,3}<=int-<[
+     int{?}<=int[is,bool<=int[gt,0]],
+     int{?}<=int[is,bool<=int[lt,0]],
+     int
+   ]>-
 ----
 
 The `< >` `poly` form is `mmlang` sugar with the following derivation.
