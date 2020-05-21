@@ -1696,9 +1696,9 @@ Likewise, <code>[map]</code>, <code>[branch]</code>, and <code>[choose]</code> a
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, the corresponding monoids across the three diagrams are the monoids of a particular encoding of the universal <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. The <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> <code>;,-poly</code> ring to the <strong>procedural</strong> \$\langle \tt{obj},\ast,\rangle\$ ring.
+<p>Finally, the corresponding monoids across the three diagrams are the monoids of a particular encoding of the universal <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. The <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> <code>;,-poly</code> ring to the <strong>procedural</strong> \$\langle \tt{obj},\ast,+\rangle\$ ring.
 \[
-;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast, \rangle
+;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast, + \rangle
 \]
 In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a <strong>language</strong> to a <strong>processor</strong> through the common communication medium of <code>objs</code> provided by <strong>storage</strong>. All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of <em>synthetic data systems</em>.</p>
 </div>
@@ -2089,7 +2089,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-21 16:32:43 -0600
+Last updated 2020-05-21 16:41:56 -0600
 </div>
 </div>
 </body>
