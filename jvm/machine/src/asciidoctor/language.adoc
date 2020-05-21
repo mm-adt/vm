@@ -681,7 +681,7 @@ image::monoid-homomorphisms.png[align=center]
 
 Finally, the corresponding monoids across the three diagrams are the monoids of a particular encoding of the universal https://zenodo.org/record/2565243[stream ring] algebra. The `poly` monoids form a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and thus, a syntactic https://en.wikipedia.org/wiki/Free_algebra[free algebra] that enables mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming] by way of a https://en.wikipedia.org/wiki/Ring_homomorphism[ring homomorphism] from the *structural* `;,-poly` ring to the *procedural* \$\langle \tt{obj},\ast,+\rangle\$ ring.
 \[
-;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast,+ \rangle
+;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast, + \rangle
 \]
 In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a *language* to a *processor* through the common communication medium of `objs` provided by *storage*. All mm-ADT compliant components are faithful to `obj` and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of _synthetic data systems_.
 
