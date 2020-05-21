@@ -663,6 +663,8 @@ class mmlangScriptEngineTest extends FunSuite {
     ///
     assertResult(int(11))(engine.eval("1(+2)^(<10)"))
     assertResult(int(11))(engine.eval("1(+1)^(10)"))
+
+    //println(engine.eval("[[[1,2],[3,4]],[[5,6],[7,8]]](>-)^(3)[path]"))
   }
 
 

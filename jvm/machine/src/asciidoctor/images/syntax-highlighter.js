@@ -17,16 +17,14 @@ $(document).ready(function(){
   // END: general random tweaks to convert python highlighting to mmlang
   var rewrites = {"op":      ["[",  "["+ospan + "#080" +bold + cspan],      // bold green
                   "infix":   ["",       ospan + "#080" +bold + cspan],      // bold green
-                  "vars":    ["[",  "["+ospan + "#080" +bold + cspan],      // bold green
                   "value":   ["",       ospan + "#00D" + cspan],            // light blue
                   "type":    ["",       ospan + "#369" + bold + cspan],     // dark blue
                   "special": ["",       ospan + "#710" + cspan],            // dark red
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
   var items =    {"op":      ["a","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map",
-                              "split","merge","head","tail","div","minus"],
+                              "split","merge","head","tail","div","minus","choose"],
                   "infix":   ["|"],
-                  "vars":    ["a","b","c"],
                   "value":   ["true","false"],
                   "type":    ["_","real","rec","lst","poly","inst","obj","int","str","bool","range","domain"],
                   "special": ["mmlang","q"],

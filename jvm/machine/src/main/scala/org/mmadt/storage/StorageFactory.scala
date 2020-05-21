@@ -145,6 +145,7 @@ object StorageFactory {
   lazy val ? : (IntValue, IntValue) = qMark
   lazy val + : (IntValue, IntValue) = qPlus
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
+    case alst: LstStrm[Obj] if alst.isValue => lst(sep = ",").q(alst.q) // TODO:
     case alst: Lst[Obj] if alst.isValue => alst.clone(alst.glist.map(x => asType[Obj](x)))
     case atype: Type[_] => atype
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
