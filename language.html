@@ -1643,9 +1643,60 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 </div>
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
+<table class="tableblock frame-all grid-all left small" style="width: 30%;">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">op</th>
+<th class="tableblock halign-left valign-top">poly</th>
+<th class="tableblock halign-left valign-top">obj</th>
+<th class="tableblock halign-left valign-top">inst</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">multiply</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\ast\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[map]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">add</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$+\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">either</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$o+\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[choose]</code></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>The mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an mm-ADT ctype and an element of a <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> over <code>obj</code>, where the composition operator relating the <code>poly</code> is either <em>parallel</em> (<code>,</code>), <em>serial</em> (<code>;</code>) , or <em>choice</em> (<code>|</code>). The operator determines the denotational semantics of the endo/poly-morphic instructions <code>[mult]</code>/<code>[div]</code> (<code>*</code>) and <code>[plus]</code>/<code>[minus]</code> (<code>+</code>) such that each <code>poly</code> exists within a larger algebraic structure known as a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> (i.e. a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a>). This polynomial ring is isomorphic to the underlying mm-ADT VM&#8217;s process algebra whose elements (generically known as <em>objects</em>) and operations can be directly manipulated through a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a>. \$\Delta\$ maps object to <code>obj</code> and \$\nabla\$ maps <code>obj</code> to object. The \$\Delta/\nabla\$-bijection is realized by the <code>[split]</code> and <code>[merge]</code> instructions in <code>inst</code>, respectively. mm-ADT <code>polys</code> are the gateway to mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.</p>
+<p>The mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is both a <em>ctype</em> and an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to one of the mm-ADT VM operational monoids&#8201;&#8212;&#8201;\$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$, respectively. A \$\nabla\$ (<em>nabla</em>) is an <a href="https://en.wikipedia.org/wiki/Epimorphism">epi</a> - <a href="https://en.wikipedia.org/wiki/Catamorphism">catamorphism</a> that folds the free <code>poly</code> structure into an <code>obj</code> by way of a reductive, "left-to-right" application of the <code>obj</code> monoid&#8217;s operator. Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids are derived from the set of mm-ADT <code>objs</code>, where the <em>delta morphisms</em>, \$\Delta:\tt{obj}^n \rightarrow \tt{poly}\$,  <strong>construct</strong> <code>polys</code> and the compositional <code>inst</code> instructions (<code>[map]</code>, <code>[branch]</code>, and <code>[choose]</code>) <strong>compute</strong> <code>objs</code>. The commuting diagrams below expose the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings across the mm-ADT monoids.</p>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/monoid-homomorphisms.png" alt="monoid homomorphisms">
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, the three monoids within each monoidal category compose into a universal algebraic <a href="https://zenodo.org/record/2565243">stream ring</a>. The <code>poly</code> monoidal construction realizes a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> enabling mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> via the <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the structural <code>;,-poly</code> ring to the procedural \$\langle \tt{obj},\ast,+\rangle\$ ring&#8201;&#8212;&#8201;the mm-ADT virtual machine.</p>
+</div>
+<div class="paragraph">
+<p>\[
+;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast,+ \rangle
+\]</p>
+</div>
+<div class="sect5">
+<h6 id="_poly_structures_and_processes">Poly Structures and Processes</h6>
 <div class="paragraph">
 <p>The <code>poly</code> serves two primary roles in mm-ADT:</p>
 </div>
@@ -1658,6 +1709,7 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 <p><strong>Branching processes</strong> (<em>types</em>): . The <code>[split]</code> instruction clones the incoming <code>obj</code> across the <code>poly</code> indices and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure requisite <code>obj</code>/anti-<code>obj</code> <a href="https://en.wikipedia.org/wiki/Creation_and_annihilation_operators">annihilation</a>. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose composition operator and component coefficients provide branch semantics.</p>
 </li>
 </ol>
+</div>
 </div>
 <div class="sect5">
 <h6 id="_composite_structures">Composite Structures</h6>
@@ -2025,7 +2077,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-21 00:55:08 -0600
+Last updated 2020-05-21 04:35:01 -0600
 </div>
 </div>
 </body>
