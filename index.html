@@ -1961,7 +1961,7 @@ mmlang&gt; <span style="color:#00D">5</span>[split,<span style="color:#369;font-
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is both a <em>ctype</em> and an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to one of the mm-ADT VM operational monoids&#8201;&#8212;&#8201;\$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$, respectively. A \$\nabla\$ (<em>nabla</em>) is an <a href="https://en.wikipedia.org/wiki/Epimorphism">epi</a> - <a href="https://en.wikipedia.org/wiki/Catamorphism">catamorphism</a> that folds the free <code>poly</code> structure into an <code>obj</code> by way of a reductive, "left-to-right" application of the <code>obj</code> monoid&#8217;s operator. Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids are derived from the set of mm-ADT <code>objs</code>, where the <em>delta morphisms</em>, \$\Delta:\tt{obj}^n \rightarrow \tt{poly}\$,  <strong>construct</strong> <code>polys</code> and the compositional <code>inst</code> instructions (<code>[map]</code>, <code>[branch]</code>, and <code>[choose]</code>) <strong>compute</strong> <code>objs</code>. The commuting diagrams below expose the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings across the mm-ADT monoids.</p>
+<p>The mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is both a <em>ctype</em> and an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to one of the mm-ADT VM operational monoids&#8201;&#8212;&#8201;\$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$, respectively. Each <em>nabla morphism</em> (\$\nabla\$) is an <a href="https://en.wikipedia.org/wiki/Epimorphism">epi</a> - <a href="https://en.wikipedia.org/wiki/Catamorphism">catamorphic</a> fold over the free <code>poly</code> structure down to an <code>obj</code> by way of a reductive, "left-to-right" application of the \$\langle \tt{obj},-\rangle\$ monoid&#8217;s operator. Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids are derived from the set of mm-ADT <code>objs</code>, where the <em>delta morphisms</em>, \$\Delta:\tt{obj}^n \rightarrow \tt{poly}\$,  <strong>construct</strong> <code>polys</code> and the compositional <code>inst</code> instructions (<code>[map]</code>, <code>[branch]</code>, and <code>[choose]</code>) <strong>compute</strong> <code>objs</code>. The commuting diagrams below expose the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings across the mm-ADT monoids.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -1969,12 +1969,20 @@ mmlang&gt; <span style="color:#00D">5</span>[split,<span style="color:#369;font-
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, the three monoids within each monoidal category compose into a universal algebraic <a href="https://zenodo.org/record/2565243">stream ring</a>. The <code>poly</code> monoidal construction realizes a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> enabling mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> via the <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the structural <code>;,-poly</code> ring to the procedural \$\langle \tt{obj},\ast,+\rangle\$ ring&#8201;&#8212;&#8201;the mm-ADT virtual machine.</p>
+<p>Finally, the three monoids within each monoidal category compose into the universal <a href="https://zenodo.org/record/2565243">stream ring</a>. The <code>poly</code> monoidal construction realizes a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> enabling mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> via a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> <code>;,-poly</code> ring to the <strong>procedural</strong> \$\langle \tt{obj},\ast,+\rangle\$ ring&#8201;&#8212;&#8201;an mm-ADT processor.</p>
 </div>
 <div class="paragraph">
 <p>\[
 ;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast,+ \rangle
 \]</p>
+</div>
+<div class="paragraph">
+<p>In terms of the mm-ADT VMs component architecture, the ring homomorphism above is a mapping from a <strong>language</strong> to a <strong>processor</strong> communicated through <code>objs</code> provided by <strong>storage</strong>. All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them. In this way, the mm-ADT VM remains forever agnostic to the specifics of the component implementations. Hence the notion that mm-ADT generates <em>synthetic data system</em> via algebraic composition.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/ring-homomorphisms.png" alt="ring homomorphisms" width="320">
+</div>
 </div>
 <div class="sect5">
 <h6 id="_poly_structures_and_processes">Poly Structures and Processes</h6>
