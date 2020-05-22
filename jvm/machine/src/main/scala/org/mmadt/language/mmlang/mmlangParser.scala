@@ -85,7 +85,10 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val polyObj: Parser[Lst[Obj]] = lstObj ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Lst[Obj]]).getOrElse(x._1))
   lazy val polySep: Parser[String] = Tokens.| | Tokens.`;` | Tokens.`,`
   lazy val lstObj: Parser[Lst[Obj]] = (LBRACKET ~> lstStruct <~ RBRACKET) ^^ (x => lst(x._1, x._2: _*))
-  lazy val lstStruct: Parser[LstTuple[Obj]] = (opt(obj) ~ polySep) ~ rep1sep(opt(obj), polySep) ^^ (x => lst(x._1._2, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)): _*).g)
+  lazy val lstStruct: Parser[LstTuple[Obj]] =
+    (opt(obj) ~ polySep <~ (PERIOD <~ guard(RBRACKET))) ^^ (x => x._1.map(y => lst(x._2, y).g).getOrElse(lst(x._2).g)) |
+      (opt(obj) ~ polySep) ~ rep1sep(opt(obj), polySep) ^^ (x => lst(x._1._2, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)): _*).g)
+
   //lazy val polyRecObj: Parser[Poly[Obj]] = (LBRACKET ~> ((symbolName <~ Tokens.:->) ~ obj ~ polySep) ~ rep1sep((symbolName <~ Tokens.:->) ~ obj, polySep) <~ RBRACKET) ^^
   //  (x => poly[Obj](x._1._2).clone(ground = (x._1._2, x._1._1._2 +: x._2.map(y => y._2), x._1._1._1 +: x._2.map(y => y._1))))
 
@@ -105,7 +108,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ {
-    case Some(range) ~ domain ~ insts => (range <= insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x)))
+    case Some(range) ~ domain ~ insts => range <= insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
     case None ~ domain ~ insts => insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
   }
 

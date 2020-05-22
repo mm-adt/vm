@@ -61,8 +61,12 @@ object mmlangPrinter {
   private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LBRACKET)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) + RBRACKET
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
-    if (lst.glist.isEmpty) LBRACKET + Tokens.space + RBRACKET
-    else lst.glist.foldLeft(LBRACKET)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RBRACKET
+    if (lst.glist.isEmpty)
+      LBRACKET + "." + lst.gsep + RBRACKET
+    else if (lst.glist.length == 1)
+      LBRACKET + lst.glist.head + "." + lst.gsep + RBRACKET
+    else
+      lst.glist.foldLeft(LBRACKET)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RBRACKET
   }
 
   def typeString(atype: Type[Obj]): String = {

@@ -424,7 +424,6 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(30, 40))(engine.eval("0,1,2,3 int{2,5}[plus,1][is,int[gt,2]][mult,10]"))
     assertResult(int(300, 40))(engine.eval("0,1,2,3 int{1,6}[plus,1][is,int[gt,2]]<[int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100]]>>-"))
     assertResult(int(300, 40))(engine.eval("0,1,2,3 int{*}[plus,1][is,int[gt,2]]<[int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100]]>>-"))
-    //    assertResult(int(300, 40))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]][int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100]]>-"))
     assertResult(int(300, 40))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]]-<[int[is,int[gt,3]][mult,10] | int[mult,100]]>-"))
     assertResult(int(300, 40))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]]-<[int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100]]>-"))
     assertResult(int(30, 40))(engine.eval("0,1,2,3 int{4}[plus,1][is,int[gt,2]][mult,10]"))
@@ -528,6 +527,12 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("lst values w/ [mult], [plus], and [zero]") {
+    assertResult(`;`)(engine.eval("[;.]"))
+    assertResult(`,`)(engine.eval("[,.]"))
+    assertResult(`|`)(engine.eval("[|.]"))
+    assertResult(int(1) `;`)(engine.eval("[1;.]"))
+    assertResult(int(1) `,`)(engine.eval("[1,.]"))
+    assertResult(int(1) `|`)(engine.eval("[1|.]"))
     assertResult("['a';'a']")(engine.eval("'a'-<[_;_]").toString)
     assertResult("['b','a']")(engine.eval("['a';'b']-<[.1,.0]").toString)
     assertResult("['aZ';'bz']")(engine.eval("['a';'b']<w>-<[.1+'z'<x>;<.w>.0+'Z'<y>]>--<[y;x]").toString) // TODO
@@ -546,15 +551,27 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("[['a'|'c']|['a'|'d']|['b'|'c']|['b'|'d']]")(engine.eval("['a'|'b']*['c'|'d']").toString)
     assertResult("[['a';'c';'d']|['b';'c';'d']]")(engine.eval("['a'|'b'][mult,['c';'d']]").toString) // (a*c*d)+(b*c*d)
     assertResult("[['a';'c';'d']|['b';'c';'d']]")(engine.eval("['a'|'b']*['c';'d']").toString)
-    //assertResult("['a'|'b']")(engine.eval("['a'|'b'][mult,[one]]").toString)
+    /////////////
+    assertResult("[['a';'b';'c'],['a';'b';'d']]")(engine.eval("['a';'b'][mult,['c','d']]").toString)
+    assertResult("[['a';'b';'c'],['a';'b';'d']]")(engine.eval("['a';'b']*['c','d']").toString)
+    assertResult("[['a','c'],['a','d'],['b','c'],['b','d']]")(engine.eval("['a','b'][mult,['c','d']]").toString) // ac+ad + bc+bd
+    assertResult("[['a','c'],['a','d'],['b','c'],['b','d']]")(engine.eval("['a','b']*['c','d']").toString)
+    assertResult("[['a';'c';'d'],['b';'c';'d']]")(engine.eval("['a','b'][mult,['c';'d']]").toString) // (a*c*d)+(b*c*d)
+    assertResult("[['a';'c';'d'],['b';'c';'d']]")(engine.eval("['a','b']*['c';'d']").toString)
     // plus
     assertResult("['a'|'b'|'c'|'d']")(engine.eval("['a'|'b'][plus,['c'|'d']]").toString)
-    assertResult("[['a';'b']|['c';'d']]")(engine.eval("['a';'b'][plus,['c';'d']]").toString)
+    assertResult("[['a';'b'],['c';'d']]")(engine.eval("['a';'b'][plus,['c';'d']]").toString)
     assertResult("[['a';'b']|['c'|'d']]")(engine.eval("['a';'b'][plus,['c'|'d']]").toString)
     assertResult("[['a'|'b']|['c';'d']]")(engine.eval("['a'|'b'][plus,['c';'d']]").toString)
     assertResult("['a'|'b']")(engine.eval("['a'|'b'][plus,[zero]]").toString)
-    //    assertResult("[['a';'b']|[ ]]")(engine.eval("['a';'b'][plus,[zero]]").toString)
-    // assertResult("['a','b']")(engine.eval("['a','b'][plus,[zero]]").toString)
+    /////////////
+    assertResult("['a','b','c','d']")(engine.eval("['a','b'][plus,['c','d']]").toString)
+    assertResult("[['a';'b'],['c';'d']]")(engine.eval("['a';'b'][plus,['c';'d']]").toString)
+    assertResult("[['a';'b'],['c','d']]")(engine.eval("['a';'b'][plus,['c','d']]").toString)
+    assertResult("[['a','b'],['c';'d']]")(engine.eval("['a','b'][plus,['c';'d']]").toString)
+    assertResult("['a'|'b']")(engine.eval("['a'|'b'][plus,[zero]]").toString) // TODO: early optimization okay?
+    assertResult("[['a';'b'],[.;]]")(engine.eval("['a';'b'][plus,[zero]]").toString)
+    assertResult("['a','b']")(engine.eval("['a','b'][plus,[zero]]").toString) // TODO: early optimization okay?
     // mult w; types
     //assertResult("[int[plus,2][plus,5][id]]<=[int;[plus,2]][mult,[[plus,5];[id]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[id]]]").toString)
     println(engine.eval("[int;[plus,2]][mult,[[plus,5];[id]]]"))
@@ -676,6 +693,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
 
   test("play") {
+    println(engine.eval("[3;.]"))
     println(engine.eval("[int;[plus,2];-<[[mult,2],[plus,10]]>-]<x>[map,5][split,x]"))
     println(engine.eval("1,2,[3,](-<[_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
     println(engine.eval("[1,[2,3]]=[_,=[<y>,[id]]]>-"))

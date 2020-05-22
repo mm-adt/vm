@@ -13,6 +13,7 @@ trait Poly[A <: Obj] extends Obj
   def isSerial: Boolean = this.gsep == Tokens.`;`
   def isParallel: Boolean = this.gsep == Tokens.`,`
   def isChoice: Boolean = this.gsep == Tokens.|
+  def isPlus: Boolean = this.isParallel | this.isChoice
   def isEmpty: Boolean = this.glist.isEmpty
 
   def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.glist.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))

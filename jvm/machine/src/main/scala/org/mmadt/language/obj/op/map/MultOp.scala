@@ -49,13 +49,13 @@ object MultOp extends Func[Obj, Obj] {
       case _: Value[_] => start match {
         case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
         case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
-        case serialA: Lst[Obj] if serialA.isSerial => inst.arg0[Obj] match {
-          case serialB: Lst[Obj] if serialB.isSerial => serialA.clone(serialA.glist ++ serialB.glist)
-          case choiceB: Lst[Obj] if choiceB.isChoice => choiceB.clone(choiceB.glist.map(a => `;`[Obj].clone(serialA.glist :+ a)))
+        case multA: Lst[Obj] if multA.isSerial => inst.arg0[Obj] match {
+          case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist ++ multB.glist)
+          case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(plusB.glist.map(a => `;`[Obj].clone(multA.glist :+ a)))
         }
-        case choiceA: Lst[Obj] if choiceA.isChoice => inst.arg0[Obj] match {
-          case serialB: Lst[Obj] if serialB.isSerial => choiceA.clone(choiceA.glist.map(a => `;`[Obj].clone(a +: serialB.glist)))
-          case choiceB: Lst[Obj] if choiceB.isChoice => choiceA.clone(choiceA.glist.flatMap(a => choiceB.glist.map(b => a | b)))
+        case multA: Lst[Obj] if multA.isPlus => inst.arg0[Obj] match {
+          case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist.map(a => `;`[Obj].clone(a +: multB.glist)))
+          case plusB: Lst[Obj] if plusB.isPlus => multA.clone(multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b))))
         }
       }
       case _ => start

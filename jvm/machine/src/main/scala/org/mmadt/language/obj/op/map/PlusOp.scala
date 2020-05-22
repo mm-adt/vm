@@ -55,13 +55,13 @@ object PlusOp extends Func[Obj, Obj] {
           case arec: RecValue[Value[Value[Obj]], Obj] => arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]].gmap))
           case arec: ORecType => arec.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
           //////// EXPERIMENTAL
-          case serialA: Poly[Obj] if serialA.isSerial => inst.arg0[Poly[Obj]] match {
-            case serialB: Poly[Obj] if serialB.isSerial => serialA | serialB
-            case choiceB: Poly[Obj] if choiceB.isChoice => serialA | choiceB
+          case multA: Poly[Obj] if multA.isSerial => inst.arg0[Poly[Obj]] match {
+            case multB: Poly[Obj] if multB.isSerial => multA `,` multB
+            case plusB: Poly[Obj] if plusB.isPlus => lst(plusB.gsep, multA, plusB)
           }
-          case choiceA: Poly[Obj] if choiceA.isChoice => inst.arg0[Poly[Obj]] match {
-            case serialB: Poly[Obj] if serialB.isSerial => if (serialB.isEmpty) choiceA else choiceA | serialB
-            case choice: Poly[Obj] if choice.isChoice => |[Obj].clone((choiceA.glist ++ choice.glist).toList)
+          case plusA: Poly[Obj] if plusA.isPlus => inst.arg0[Poly[Obj]] match {
+            case multB: Poly[Obj] if multB.isSerial => if (multB.isEmpty) plusA else lst(plusA.gsep, plusA, multB)
+            case plusB: Poly[Obj] if plusB.isPlus => plusA.clone(g = (plusA.gsep, (plusA.glist ++ plusB.glist).toList))
           }
         }
         case _ => start
