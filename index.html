@@ -488,8 +488,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_poly_types">Poly Types</a>
 <ul class="sectlevel4">
-<li><a href="#_composite_structures">Composite Structures</a></li>
-<li><a href="#_branching_processes">Branching Processes</a></li>
+<li><a href="#_data_structures">Data Structures</a></li>
+<li><a href="#_process_structures">Process Structures</a></li>
+<li><a href="#_free_monoids">Free Monoids</a></li>
+<li><a href="#_free_ring">Free Ring</a></li>
 </ul>
 </li>
 </ul>
@@ -1521,39 +1523,62 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
+<div class="paragraph">
+<p>The <code>poly</code> serves two primary roles in mm-ADT:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Data structures</strong> (<em>values</em>): A value-based <code>poly</code> is realized as a <em>determinate polynomial</em> (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient <code>poly</code> type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
+</li>
+<li>
+<p><strong>Process structures</strong> (<em>types</em>): . The <code>[split]</code> instruction clones the incoming <code>obj</code> across the <code>poly</code> indices and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure requisite <code>obj</code>/anti-<code>obj</code> <a href="https://en.wikipedia.org/wiki/Creation_and_annihilation_operators">annihilation</a>. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose composition operator and component coefficients provide branch semantics.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="_data_structures">Data Structures</h5>
+
+</div>
+<div class="sect4">
+<h5 id="_process_structures">Process Structures</h5>
+
+</div>
+<div class="sect4">
+<h5 id="_free_monoids">Free Monoids</h5>
 <table class="tableblock frame-all grid-all left small" style="width: 30%;">
 <colgroup>
-<col style="width: 40%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">op</th>
 <th class="tableblock halign-left valign-top">poly</th>
-<th class="tableblock halign-left valign-top">obj</th>
 <th class="tableblock halign-left valign-top">inst</th>
+<th class="tableblock halign-left valign-top">meta</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">multiply</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$\ast\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[compose]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[mult]</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">add</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$+\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[plus]</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">either</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$o+\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[choose]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[plus]</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1563,7 +1588,7 @@ mmlang&gt;</code></pre>
 \begin{split}
 \nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[compose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\prod_{i&lt;n} q_i, \\
 \nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\sum_{i&lt;n} q_i, \\
-\nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i&lt;n}(q_i),\max_{i&lt;n}(q_i)),
+\nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[choose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i&lt;n}(q_i),\max_{i&lt;n}(q_i)),
 \end{split}
 \]
 where <code>\nabla</code> is realized as the <a href="https://ncatlab.org/nlab/show/codiagonal">codiagonal</a> <code>&gt;-</code> (i.e. <code>[merge]</code>) instruction. the resultant <code>obj</code> is quantified within the specified <code>q</code> range. This is the general solution to deriving the the type quantifier during compilation. This range can be further refined with instruction semantics.</p>
@@ -1576,7 +1601,7 @@ where <code>\nabla</code> is realized as the <a href="https://ncatlab.org/nlab/s
 </div>
 <hr>
 <div class="paragraph">
-<p>Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids derive their carrier sets from the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial</a> set of mm-ADT <code>objs</code>. The injective <em>delta functions</em>, \$\Delta:\tt{obj} \rightarrow \text{-poly}\$, yield the generators of the <code>-poly</code> monoid&#8217;s, where
+<p>Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids derive their <a href="https://en.wikipedia.org/wiki/Algebraic_structure">carrier sets</a> from the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial</a> set of mm-ADT <code>objs</code>. The injective <em>delta functions</em>, \$\Delta:\tt{obj} \rightarrow \text{-poly}\$, yield the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generators</a> of the <code>-poly</code> monoid&#8217;s, where
 \[
 \begin{split}
 \Delta^{;}(\texttt{obj}) &amp;=&amp; [\texttt{obj};], \\
@@ -1584,13 +1609,13 @@ where <code>\nabla</code> is realized as the <a href="https://ncatlab.org/nlab/s
 \Delta^{|}(\texttt{obj}) &amp;=&amp; [\texttt{obj}|],
 \end{split}
 \]
-and <code>\Delta</code> is realized as the <a href="https://en.wikipedia.org/wiki/Diagonal_morphism">diagonal</a> <code>-&lt;</code> (i.e. <code>[split]</code>) instruction. Likewise, <code>[compose]</code>, <code>[branch]</code>, and <code>[choose]</code> are the instruction representations of the composition of <code>objs</code>. If
+and \$\Delta\$ the <a href="https://en.wikipedia.org/wiki/Diagonal_morphism">diagonal</a> <code>-&lt;</code> (i.e. <code>[split]</code>) instruction. Likewise, <code>[compose]</code>, <code>[branch]</code>, and <code>[choose]</code> are the instruction representations of the composition of <code>objs</code>. If
 \[
 \begin{split}
 U: M \rightarrow \textbf{Set}
 \end{split}
 \]
-maps a monoid to it&#8217;s carrier set, then the diagrams below commute such that the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings is realized in the lifted <code>poly</code> syntactic category.</p>
+maps a monoid to its carrier set, then the diagrams below commute, where the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings is realized as the "lifted" <code>poly</code> syntactic category encoding of the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -1598,41 +1623,7 @@ maps a monoid to it&#8217;s carrier set, then the diagrams below commute such th
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, the corresponding monoids across the three diagrams are the monoids of a particular encoding of the universal <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. The <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> ` free ring to the <strong>procedural</strong> reducing ring.
-\[
-;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle
-\]
-where the <em>branch</em> component forms a group with <code>-&lt;[a{q},a{-q}]&gt;- = obj{0}</code> and <code>[branch,a{q},a{-q}] = obj{0}</code>.</p>
-</div>
-<div class="paragraph">
-<p>In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a <strong>language</strong> to a <strong>processor</strong> through the common communication medium of <code>objs</code> provided by <strong>storage</strong>. All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of <em>synthetic data systems</em>.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/ring-homomorphisms.png" alt="ring homomorphisms" width="320">
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>poly</code> serves two primary roles in mm-ADT:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is realized as a <em>determinate polynomial</em> (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient <code>poly</code> type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
-</li>
-<li>
-<p><strong>Branching processes</strong> (<em>types</em>): . The <code>[split]</code> instruction clones the incoming <code>obj</code> across the <code>poly</code> indices and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure requisite <code>obj</code>/anti-<code>obj</code> <a href="https://en.wikipedia.org/wiki/Creation_and_annihilation_operators">annihilation</a>. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose composition operator and component coefficients provide branch semantics.</p>
-</li>
-</ol>
-</div>
-<div class="sect4">
-<h5 id="_composite_structures">Composite Structures</h5>
-
-</div>
-<div class="sect4">
-<h5 id="_branching_processes">Branching Processes</h5>
-<div class="paragraph">
-<p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of the mm-ADT type ringoid&#8217;s additive group (\$oplus\$), <code>|-poly</code> is an implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>, and <code>;-poly</code> is a faithful implementation of the type ringoid&#8217;s multiplicative monoid (\$otimes\$).</p>
+<p>The following diagrams detail the operational semantics of the mm-ADT VM with respects to the coupling between the corresponding free and reductive monoids. The dashed lines provide a disentangled, parallel (product) view of the respective double-line compositions. Finally, the squiggly line joining the two parallel morphisms in the <code>|-poly</code> diagram makes clear that, unlike the branches in <code>,-poly</code> these branches are coupled to ensure the proper <a href="https://en.wikipedia.org/wiki/Tagged_union">sum type</a> (disjoint union) semantics of the <em>either</em> <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1641,14 +1632,25 @@ where the <em>branch</em> component forms a group with <code>-&lt;[a{q},a{-q}]&g
 </colgroup>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code>
+\[
+\left(\Delta^; \circ \left(f \ast g\right) \circ \nabla^; \right)
+\]
+andThen/compose-chain<br>
+dependent slots<br>
+product<br>
+\$A \ast B \implies C\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla" width="455"></a></span></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code>
 \[
-\left(\Delta^, \circ \left(f \oplus g\right) \circ \nabla^,\right)
+\left(\Delta^, \circ \left(f+g\right) \circ \nabla^,\right)
 \]
 copy/clone-branching<br>
 independent slots<br>
-coproduct<br>
-\$A \oplus A \implies 2A\$</p></td>
+product<br>
+\$A+A \implies 2A\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="455"></a></span></p></td>
 </tr>
 <tr>
@@ -1662,98 +1664,102 @@ coproduct<br>
 \$A \oplus A \implies A\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="455"></a></span></p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code>
-\[
-\left(\Delta^; \circ \left(f \otimes g\right) \circ \nabla^; \right)
-\]
-andThen/compose-chain<br>
-dependent slots<br>
-product<br>
-\$A \otimes B \implies C\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla" width="455"></a></span></p></td>
-</tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="_free_ring">Free Ring</h5>
 <div class="paragraph">
-<p>mm-ADT composes functions via <code>*</code> and <code>+</code>. <code>n</code>-ary functions are encoded as <code>poly</code>-coupled unary functions with the \$\Delta\$-projection (delta) serving to <strong>copy</strong> (clone via <code>,</code>), <strong>split</strong> (partition via <code>|</code>), or <strong>compose</strong> (pipe via <code>;</code>) a single <code>obj</code>. In particular, for the additive groupoid <code>polys</code>, their respective <code>poly</code> constructors are defined as</p>
+<p>The two <code>;,-poly</code> monoids serve as components of a <a href="https://en.wikipedia.org/wiki/Universal_algebra">universal algebra</a> that implements the <a href="https://zenodo.org/record/2565243">stream ring</a> algebra&#8201;&#8212;&#8201;the foundational algebra of the mm-ADT VM. The two <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> ` <code>;,-poly</code> free ring to the corresponding reductive <strong>procedural</strong> ring such that
+\[
+;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle
+\]
+where the <em>branch</em> component is, in fact, a group with <code>-&lt;[a{q},a{-q}]&gt;- = obj{0}</code> and <code>[branch,a{q},a{-q}] = obj{0}</code>. The <code>|-poly</code> can be appended to the <code>;,-poly</code> ring, where it serves as an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
 </div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\Delta_n^,&amp;: A &amp;\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
-\Delta_n^,&amp;(a) &amp;= [a,\ldots,a]
-\end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>and</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\Delta_n^|&amp;: A &amp;\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
-\Delta_n^|&amp;(a) &amp;= [a\{?\}|\ldots|a\{?\}].
-\end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\Delta\$ (<code>[delta]</code>) is denoted with sugar as <code>-&lt;</code> in <code>mmlang</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Copy \$\Delta\$</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_,_]
-==&gt;[<span style="color:#00D">6</span>,<span style="color:#00D">6</span>]
-mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>,_&gt;<span style="color:#00D">8</span>]
-==&gt;[true,false]</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Split \$\Delta\$</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_|_]
-==&gt;[<span style="color:#00D">6</span>|]
-mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>|_&gt;<span style="color:#00D">8</span>]
-==&gt;[true|]</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Apply \$\Delta\$</div>
+<table class="tableblock frame-all grid-all left" style="width: 45%;">
+<caption class="title">Table 3. Delta Poly</caption>
+<colgroup>
+<col style="width: 30.7692%;">
+<col style="width: 7.6923%;">
+<col style="width: 61.5385%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">poly op</th>
+<th class="tableblock halign-left valign-top">mmlang</th>
+<th class="tableblock halign-left valign-top">example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code>-<strong>apply</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[;]</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_;_]
 ==&gt;[<span style="color:#00D">6</span>;<span style="color:#00D">6</span>]
 mmlang&gt; <span style="color:#00D">6</span>-&lt;[_+<span style="color:#00D">1</span>;_&gt;<span style="color:#00D">6</span>]
 ==&gt;[<span style="color:#00D">7</span>;true]</code></pre>
 </div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code>-<strong>copy</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[,]</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_,_]
+==&gt;[<span style="color:#00D">6</span>,<span style="color:#00D">6</span>]
+mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>,_&gt;<span style="color:#00D">8</span>]
+==&gt;[true,false]</code></pre>
 </div>
-<div class="paragraph">
-<p>Upon exiting an instruction, all internal <code>poly</code>-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  <strong>merge</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial addition</a> similar to <a href="https://en.wikipedia.org/wiki/Multiset">multiset union</a> via <code>,</code>), <strong>select</strong> (<a href="https://en.wikipedia.org/wiki/Disjoint_union">disjoint</a> union via <code>|</code>), or <strong>return</strong> (via <code>;</code>) a single stream from multiple streams. For the additive groupoids, \$nabla\$ is defined as</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code>-<strong>pick</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[|]</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_|_]
+==&gt;[<span style="color:#00D">6</span>|]
+mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>|_&gt;<span style="color:#00D">8</span>]
+==&gt;[true|]</code></pre>
 </div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\nabla_n^,&amp;: \overbrace{B \times \ldots \times B}^{n-\text{times}} &amp;\rightarrow \overbrace{B + \ldots + B}^{n-\text{times}} \\
-\nabla_n^,&amp;([b,\ldots,b]) &amp;= nb
-\end{split}
-\]</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all right" style="width: 45%;">
+<caption class="title">Table 4. Nabla Poly</caption>
+<colgroup>
+<col style="width: 30.7692%;">
+<col style="width: 7.6923%;">
+<col style="width: 61.5385%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">poly op</th>
+<th class="tableblock halign-left valign-top">mmlang</th>
+<th class="tableblock halign-left valign-top">example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code>-<strong>return</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[;]&gt;-</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_;_]&gt;-
+==&gt;<span style="color:#00D">6</span>
+mmlang&gt; <span style="color:#00D">6</span>-&lt;[_+<span style="color:#00D">1</span>;_&gt;<span style="color:#00D">6</span>]&gt;-
+==&gt;true</code></pre>
 </div>
-<div class="paragraph">
-<p>and</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\nabla_n^|&amp;: \overbrace{B \times \ldots \times B}^{n-\text{times}} &amp;\rightarrow B \\
-\nabla_n^|&amp;([b|\ldots|b]) &amp;= b.
-\end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\nabla\$ is expressed as <code>&gt;-</code> in <code>mmlang</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Merge \$\nabla\$</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code>-<strong>merge</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[,]&gt;-</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_,_]&gt;-
 ==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}
@@ -1761,26 +1767,31 @@ mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">
 ==&gt;true
 ==&gt;false</code></pre>
 </div>
-</div>
-<div class="listingblock">
-<div class="title">Select \$\nabla\$</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code>-<strong>coalesce</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[|]&gt;-</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_|_]&gt;-
 ==&gt;<span style="color:#00D">6</span>
-mmlang&gt; <span style="color:#00D">6</span>-&lt;[_&gt;<span style="color:#00D">0</span>|_&gt;<span style="color:#00D">8</span>]&gt;-
-==&gt;true</code></pre>
+mmlang&gt; <span style="color:#00D">6</span>-&lt;[_+<span style="color:#00D">1</span>|_&gt;<span style="color:#00D">6</span>]&gt;-
+==&gt;<span style="color:#00D">7</span></code></pre>
 </div>
-</div>
-<div class="listingblock">
-<div class="title">Return \$\nabla\$</div>
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;[_;_]&gt;-
-==&gt;<span style="color:#00D">6</span>
-mmlang&gt; <span style="color:#00D">6</span>-&lt;[_+<span style="color:#00D">1</span>;_&gt;<span style="color:#00D">6</span>]&gt;-
-==&gt;true</code></pre>
-</div>
-</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <hr>
+<div class="paragraph">
+<p>In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a <strong>language</strong> to a <strong>processor</strong> through the common communication medium of <code>objs</code> provided by <strong>storage</strong>. All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of <em>synthetic data systems</em>.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/ring-homomorphisms.png" alt="ring homomorphisms" width="320">
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1998,7 +2009,7 @@ mmlang&gt;</code></pre>
 <p>Every ring(oid) must satisfy the following axioms. The respective <code>mmlang</code> expressions are provided where <code>a</code>,<code>b</code>, and <code>c</code> are respectfully sorted mm-ADT types.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Ring with Unity Axioms</caption>
+<caption class="title">Table 5. Ring with Unity Axioms</caption>
 <colgroup>
 <col style="width: 30.7692%;">
 <col style="width: 30.7692%;">
@@ -2058,7 +2069,7 @@ mmlang&gt;</code></pre>
 <p>The most commonly used theorems entailed by the ring axioms are provided below.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Ring with Unity Theorems</caption>
+<caption class="title">Table 6. Ring with Unity Theorems</caption>
 <colgroup>
 <col style="width: 40%;">
 <col style="width: 20%;">
@@ -2169,7 +2180,7 @@ mmlang&gt; <span style="color:#00D">5</span>[split,<span style="color:#369;font-
 <p>Though any combinations of respectively sorted instructions can be used.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. The Ring Axioms in mmlang</caption>
+<caption class="title">Table 7. The Ring Axioms in mmlang</caption>
 <colgroup>
 <col style="width: 30%;">
 <col style="width: 40%;">
@@ -2703,7 +2714,7 @@ _________      _________
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Instruction classes</caption>
+<caption class="title">Table 8. Instruction classes</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 27.2727%;">
