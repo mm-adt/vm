@@ -33,7 +33,7 @@ import org.mmadt.language.obj.op.model.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.trace._
-import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -95,7 +95,7 @@ object OpInstResolver {
         val label = args.head.asInstanceOf[StrValue]
         args.tail match {
           case Nil => FromOp(label)
-          case obj: Obj => FromOp(label, obj)
+          case list: List[Obj] => FromOp(label, list.head)
           case _ => throw new IllegalStateException
         }
       case Tokens.fold => args.tail.tail.head match {

@@ -57,7 +57,7 @@ class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from("x", int).mult(int.from("y", int)))))
     //
     intercept[LanguageException] {
-      assertResult(int(20))(int(1) ==> int.from("x").plus(1).map(int.mult(10)))
+      int(1) ==> int.from("x").plus(1).map(int.mult(10))
     }
   }
 
@@ -70,7 +70,7 @@ class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult("int[id]<x>[map,int<.x>]<y><.x><.y>")((int ==> int.id().to("x").map(int.from("x")).to("y").from("x").from("y")).toString)
     //
     intercept[LanguageException] {
-      assertResult(int(20))(int(1) ==> int.plus(1).plus(int.mult(10).to("x")).from("x", int))
+      assertResult(int(20))(int(1) ==> int.plus(1).plus(int.mult(10).to("x")).from("x"))
     }
   }
 

@@ -47,6 +47,7 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
         case _: FilterInstruction => output.map(_.compute(tt._1.via(tt._1, tt._2)).asInstanceOf[E]).filter(_.alive)
         //////////////OTHER//////////////
         case _ => output
+          .filter(_.alive)
           .map(_.compute(tt._1.via(tt._1, tt._2)))
           .filter(_.alive)
           .flatMap(x => x match {

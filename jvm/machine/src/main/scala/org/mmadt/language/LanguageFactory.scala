@@ -55,7 +55,7 @@ object LanguageFactory {
   def printLst(branch: Lst[_])(implicit f: LanguageFactory): String = f.printLst(branch)
   implicit val mmlangFactory: LanguageFactory = new LanguageFactory {
     override def printValue(value: Value[Obj]): String = mmlangPrinter.valueString(value)
-    override def printType(atype: Type[Obj]): String = mmlangPrinter.typeString(atype)
+    override def printType(atype: Type[Obj]): String = mmlangPrinter.typePrettyString(atype)
     override def printInst(inst: Inst[_, _]): String = mmlangPrinter.instString(inst)
     override def printStrm(strm: Strm[Obj]): String = mmlangPrinter.strmString(strm)
     override def printLst(poly: Lst[_]): String = mmlangPrinter.lstPrettyString(poly) // TODO: MAKE THIS A NEW LANGUAGEFACTORY (IMPLICITS)

@@ -42,7 +42,7 @@ object PutOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
     case anon: __ => anon.via(start, inst)
     case astrm: Strm[Obj] => astrm.via(start, inst.via._2)
-    case arec: RecType[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Obj] -> inst.arg1[Obj]))).via(start, inst)
+    case arec: RecType[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Obj] -> inst.arg1[Obj].hardQ(1)))).via(start, inst) // TODO: {0} on int (probably cause of lazy Q loading)
     case arec: RecValue[Value[Obj], Value[Obj]] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Value[Obj]] -> inst.arg1[Value[Obj]]))).via(start, inst)
     case alst: Lst[_] => inst.arg0[Obj] match {
       case avalue: IntValue =>

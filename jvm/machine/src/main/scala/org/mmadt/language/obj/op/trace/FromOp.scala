@@ -36,16 +36,20 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FromOp {
   this: Obj =>
-  def from(label: StrValue): this.type = this.from[this.type](label, asType(this))
+  def from(label: StrValue): this.type = FromOp(label).exec(this).asInstanceOf[this.type]
   def from[O <: Obj](label: StrValue, atype: O): O = FromOp(label, atype).exec(this)
 }
 object FromOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](label: StrValue): Inst[Obj, Obj] = this.apply(label = label, default = obj)
+  def apply[O <: Obj](label: StrValue): Inst[Obj, Obj] = new VInst[Obj, O](g = (Tokens.from, List(label)), func = this) with TraceInstruction
   def apply[O <: Obj](label: StrValue, default: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.from, List(label, default)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val history: Option[Obj] = Obj.fetchOption[Obj](start, inst.arg0[StrValue].g)
     if (history.isEmpty && start.isInstanceOf[Value[_]])
-      throw LanguageException.labelNotFound(start.tracer(zeroObj `;` __), inst.arg0[StrValue].g)
-    history.getOrElse(if (inst.arg1.equals(obj)) asType(start) else inst.arg1).via(start, inst)
+      if (inst.args.length == 1)
+        throw LanguageException.labelNotFound(start.tracer(zeroObj `;` __), inst.arg0[StrValue].g)
+      else
+        Inst.resolveArg(start, inst.arg1[Obj]).via(start, inst)
+    else
+      history.getOrElse(if (inst.args.length == 1) asType(start) else inst.arg1).via(start, inst)
   }
 }

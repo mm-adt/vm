@@ -43,5 +43,6 @@ object NegOp extends Func[Obj, Obj] {
     Try[Obj](start match {
       case aint: Int => start.clone(g = -aint.g)
       case areal: Real => start.clone(g = -areal.g)
+      case abool: Bool => start.clone(g = !abool.g)
     }).getOrElse(start).via(start, inst)
 }

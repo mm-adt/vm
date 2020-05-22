@@ -667,7 +667,7 @@ mmlang> 5[split,int[is>0],int[is<0],int][merge]
 | add      | `,` | \$+\$    | `[branch]`
 | either   | `\|` | \$o+\$   | `[choose]`
 |===
-An mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is an element of either a _serial_ (`;`), _parallel_ (`,`), or _choice_ (`|`) https://en.wikipedia.org/wiki/Free_object[free] https://en.wikipedia.org/wiki/Trace_monoid[trace monoid] that is https://en.wikipedia.org/wiki/Adjoint_functors[left-adjoint] to the respective \$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$ monoid. The _nabla functions_, \$\nabla^{-}: \tt{poly} \rightarrow \tt{obj} \$, fold a free `poly` structure down to an `obj` via the "left-to-right" application of the associated \$\langle \tt{obj},-\rangle\$ monoid's operator.
+An mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is an element of either a _serial_ (`;`), _parallel_ (`,`), or _choice_ (`|`) https://en.wikipedia.org/wiki/Free_object[free] https://en.wikipedia.org/wiki/Trace_monoid[trace monoid] that is https://en.wikipedia.org/wiki/Adjoint_functors[left-adjoint] to a respective \$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$ monoid. The _nabla functions_, \$\nabla^{-}: \tt{poly} \rightarrow \tt{obj} \$, fold a free `poly` structure down to an `obj` via the "left-to-right" application of the associated \$\langle \tt{obj},-\rangle\$ monoid's operator.
 \[
 \nabla^-(\texttt{poly}) = \prod_{i} \texttt{poly}_i.
 \]

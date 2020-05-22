@@ -78,8 +78,8 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   // variable parsing
   lazy val symbolName: Regex = "[a-zA-Z]+".r
   lazy val varName: Parser[String] = ("^(?!(" + instOp + s"))(${symbolName})").r <~ not(":")
-  lazy val varGet: Parser[Type[Obj]] = varName ~ rep(inst) ^^
-    (x => this.model.get(tobj(x._1)).getOrElse(__.apply(List[Inst[_, _]](FromOp(x._1)) ++ x._2.flatten)))
+  lazy val varGet: Parser[Type[Obj]] = varName ~ opt("?") ~ rep(inst) ^^
+    (x => this.model.get(tobj(x._1._1)).getOrElse(__.apply(List[Inst[_, _]](if (x._1._2.isEmpty) FromOp[Obj](x._1._1) else FromOp[Obj](x._1._1, tobj().q(0))) ++ x._2.flatten)))
 
   // poly parsing
   lazy val polyObj: Parser[Lst[Obj]] = lstObj ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Lst[Obj]]).getOrElse(x._1))
