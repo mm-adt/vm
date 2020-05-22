@@ -1680,7 +1680,7 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 </tbody>
 </table>
 <div class="paragraph">
-<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to the respective \$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$ monoid. The <em>nabla functions</em>, \$\nabla^{-}: \tt{poly} \rightarrow \tt{obj} \$, fold a free <code>poly</code> structure down to an <code>obj</code> via the "left-to-right" application of the associated \$\langle \tt{obj},-\rangle\$ monoid&#8217;s operator.
+<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to a respective \$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$ monoid. The <em>nabla functions</em>, \$\nabla^{-}: \tt{poly} \rightarrow \tt{obj} \$, fold a free <code>poly</code> structure down to an <code>obj</code> via the "left-to-right" application of the associated \$\langle \tt{obj},-\rangle\$ monoid&#8217;s operator.
 \[
 \nabla^-(\texttt{poly}) = \prod_{i} \texttt{poly}_i.
 \]
@@ -2089,7 +2089,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-21 16:41:56 -0600
+Last updated 2020-05-21 16:56:55 -0600
 </div>
 </div>
 </body>
