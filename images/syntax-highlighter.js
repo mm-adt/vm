@@ -21,7 +21,7 @@ $(document).ready(function(){
                   "type":    ["",       ospan + "#369" + bold + cspan],     // dark blue
                   "special": ["",       ospan + "#710" + cspan],            // dark red
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
-  var items =    {"op":      ["a","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
+  var items =    {"op":      ["a","compose","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map",
                               "split","merge","head","tail","div","minus","choose"],
                   "infix":   ["|","&&"],

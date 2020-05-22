@@ -1260,7 +1260,7 @@ mmlang&gt;</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">multiply</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$\ast\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[map]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[compose]</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">add</p></td>
@@ -1277,15 +1277,39 @@ mmlang&gt;</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to a respective \$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$ monoid. The <em>nabla functions</em>, \$\nabla^{-}: \tt{poly} \rightarrow \tt{obj} \$, fold a free <code>poly</code> structure down to an <code>obj</code> via the "left-to-right" application of the associated \$\langle \tt{obj},-\rangle\$ monoid&#8217;s operator.
+<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ reducing, non-free monoid. The <em>nabla functions</em>, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free <code>poly</code> structure into an <code>obj{*}</code> via the applications of the reducing monoid&#8217;s operator in <code>inst</code> such that
 \[
-\nabla^-(\texttt{poly}) = \prod_{i} \texttt{poly}_i.
+\begin{split}
+\nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[compose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\prod_{i&lt;n} q_i, \\
+\nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\sum_{i&lt;n} q_i, \\
+\nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i&lt;n}(q_i),\max_{i&lt;n}(q_i)),
+\end{split}
 \]
-Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids derive their carrier sets from the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial</a> set of mm-ADT <code>objs</code>. The injective <em>delta functions</em>, \$\Delta:\tt{obj} \rightarrow \tt{poly}\$, yield the generators of the <code>-poly</code> monoid&#8217;s, where
+where <code>\nabla</code> is realized as the <a href="https://ncatlab.org/nlab/show/codiagonal">codiagonal</a> <code>&gt;-</code> (i.e. <code>[merge]</code>) instruction. the resultant <code>obj</code> is quantified within the specified <code>q</code> range. This is the general solution to deriving the the type quantifier during compilation. This range can be further refined with instruction semantics.</p>
+</div>
+<hr>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/free-monoid-homomorphisms.png" alt="free monoid homomorphisms">
+</div>
+</div>
+<hr>
+<div class="paragraph">
+<p>Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids derive their carrier sets from the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial</a> set of mm-ADT <code>objs</code>. The injective <em>delta functions</em>, \$\Delta:\tt{obj} \rightarrow \text{-poly}\$, yield the generators of the <code>-poly</code> monoid&#8217;s, where
 \[
-\Delta^{-}(\tt{obj}) = [\tt{obj}].
+\begin{split}
+\Delta^{;}(\texttt{obj}) &amp;=&amp; [\texttt{obj};], \\
+\Delta^{,}(\texttt{obj}) &amp;=&amp; [\texttt{obj},], \\
+\Delta^{|}(\texttt{obj}) &amp;=&amp; [\texttt{obj}|],
+\end{split}
 \]
-Likewise, <code>[map]</code>, <code>[branch]</code>, and <code>[choose]</code> are the instruction representations of the composition of <code>objs</code>. The commuting diagrams below expose the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings across these mm-ADT monoids.</p>
+and <code>\Delta</code> is realized as the <a href="https://en.wikipedia.org/wiki/Diagonal_morphism">diagonal</a> <code>-&lt;</code> (i.e. <code>[split]</code>) instruction. Likewise, <code>[compose]</code>, <code>[branch]</code>, and <code>[choose]</code> are the instruction representations of the composition of <code>objs</code>. If
+\[
+\begin{split}
+U: M \rightarrow \textbf{Set}
+\end{split}
+\]
+maps a monoid to it&#8217;s carrier set, then the diagrams below commute such that the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings is realized in the lifted <code>poly</code> syntactic category.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -1293,11 +1317,14 @@ Likewise, <code>[map]</code>, <code>[branch]</code>, and <code>[choose]</code> a
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, the corresponding monoids across the three diagrams are the monoids of a particular encoding of the universal <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. The <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> <code>;,-poly</code> ring to the <strong>procedural</strong> \$\langle \tt{obj},\ast,+\rangle\$ ring.
+<p>Finally, the corresponding monoids across the three diagrams are the monoids of a particular encoding of the universal <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. The <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> ` free ring to the <strong>procedural</strong> reducing ring.
 \[
-;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast, + \rangle
+;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle
 \]
-In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a <strong>language</strong> to a <strong>processor</strong> through the common communication medium of <code>objs</code> provided by <strong>storage</strong>. All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of <em>synthetic data systems</em>.</p>
+where the <em>branch</em> component forms a group with <code>-&lt;[a{q},a{-q}]&gt;- = obj{0}</code> and <code>[branch,a{q},a{-q}] = obj{0}</code>.</p>
+</div>
+<div class="paragraph">
+<p>In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a <strong>language</strong> to a <strong>processor</strong> through the common communication medium of <code>objs</code> provided by <strong>storage</strong>. All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of <em>synthetic data systems</em>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -2030,7 +2057,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-22 04:41:45 -0600
+Last updated 2020-05-22 16:45:55 -0600
 </div>
 </div>
 </body>
