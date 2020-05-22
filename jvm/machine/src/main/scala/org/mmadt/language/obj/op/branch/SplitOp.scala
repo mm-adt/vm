@@ -22,12 +22,12 @@
 
 package org.mmadt.language.obj.op.branch
 
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
@@ -36,35 +36,35 @@ trait SplitOp {
   final def -<[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
 }
 
-object SplitOp {
-  def apply[A <: Obj](branches: Poly[A]): SplitInst[A] = new SplitInst[A](branches)
+object SplitOp extends Func[Obj, Obj] {
+  def apply[A <: Obj](branches: Obj): Inst[A, Poly[A]] = new VInst[A, Poly[A]](g = (Tokens.split, List(branches)), func = this) with BranchInstruction
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val oldInst: Inst[Obj, Poly[Obj]] = Inst.oldInst(inst).asInstanceOf[Inst[Obj, Poly[Obj]]]
+    val apoly: Poly[Obj] = oldInst.arg0[Obj] match {
+      case x: Poly[Obj] => x
+      case x => Inst.resolveArg[Obj, Obj](start, x).asInstanceOf[Poly[Obj]]
 
-  class SplitInst[A <: Obj](apoly: Poly[A], q: IntQ = qOne) extends VInst[A, Poly[A]](g = (Tokens.split, List(apoly)), q = q) with BranchInstruction {
-    override def q(q: IntQ): this.type = new SplitInst[A](apoly, q).asInstanceOf[this.type]
-    override def exec(start: A): Poly[A] = {
-      apoly.gsep match {
-        case _ if apoly.isChoice => processFirst(start)
-        case _ if apoly.isSerial || apoly.isParallel => processAll(start)
-        case _ => throw new LanguageException("Unknown poly connective: " + start)
-      }
     }
-
-    private def processAll(start: A): Poly[A] = {
-      val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
-      start match {
-        case astrm: Strm[A] => astrm.via(start, this).asInstanceOf[Lst[A]]
-        case _ => inst.arg0[Poly[A]].clone(via = (start, inst))
-      }
-    }
-
-    private def processFirst(start: A): Poly[A] = {
-      val inst = new SplitInst[A](Poly.resolveSlots(start, apoly, this))
-      (start match {
-        case astrm: Strm[A] => return astrm.via(start, inst).asInstanceOf[Lst[A]]
-        case _: Type[_] => inst.arg0[Poly[A]]
-        case _ => Poly.keepFirst(inst.arg0[Poly[A]])
-      }).clone(via = (start, inst))
+    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(start, apoly, oldInst))
+    apoly.gsep match {
+      case _ if apoly.isChoice => processFirst(start, newInst)
+      case _ if apoly.isSerial || apoly.isParallel => processAll(start, newInst)
+      case _ => throw new LanguageException("Unknown poly connective: " + start)
     }
   }
 
+  private def processAll(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = {
+    start match {
+      case astrm: Strm[Obj] => astrm.via(start, inst).asInstanceOf[Lst[Obj]]
+      case _ => inst.arg0[Poly[Obj]].clone(via = (start, inst))
+    }
+  }
+
+  private def processFirst(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = {
+    (start match {
+      case astrm: Strm[Obj] => return astrm.via(start, inst).asInstanceOf[Lst[Obj]]
+      case _: Type[_] => inst.arg0[Poly[Obj]]
+      case _ => Poly.keepFirst(inst.arg0[Poly[Obj]])
+    }).clone(via = (start, inst))
+  }
 }
