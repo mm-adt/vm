@@ -810,7 +810,9 @@ mmlang&gt; int{2}[is&gt;0]                             <b class="conum">(3)</b>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_type_signatures">Type Signatures</h4>
+<h4 id="_type_structure">Type Structure</h4>
+<div class="sect4">
+<h5 id="_type_signature">Type Signature</h5>
 <div class="paragraph">
 <p>Every mm-ADT type can be generally understood as a function that maps an <code>obj</code> of one type to an <code>obj</code> of another type. A <strong>type signature</strong> specifies the source and target of this mapping, where the <em>domain</em> is the source type and the <em>range</em> is the target type. Both the domain and range type specifications include a respective quantifier denoted <code>{q}</code> in <code>mmlang</code>. The general pattern of a type signature is</p>
 </div>
@@ -881,8 +883,8 @@ mmlang&gt; int{0,5}&lt;=int{0,5}
 </tbody>
 </table>
 </div>
-<div class="sect3">
-<h4 id="_type_definitions">Type Definitions</h4>
+<div class="sect4">
+<h5 id="_type_definition">Type Definition</h5>
 <div class="paragraph">
 <p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>. For a type, this history is called the <strong>type definition</strong> (and more generally, the <strong>type&#8217;s trace</strong>).</p>
 </div>
@@ -907,8 +909,8 @@ In practice, the string representation of a value is it&#8217;s ground and the s
 <p>Both types and values exist in a larger graph called the <strong>obj trace graph</strong>. In theory, the complete history of an mm-ADT program from compilation to execution is stored in this graph. However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that will no longer be needed by mm-ADT program. This process is called <strong>trace removal</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_type_quantification">Type Quantification</h4>
+<div class="sect4">
+<h5 id="_type_quantification">Type Quantification</h5>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
 <caption class="title">Table 2. Quantifier Symbols in mmlang</caption>
 <colgroup>
@@ -998,6 +1000,99 @@ where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the addi
 </table>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_type_trace_graph">Type Trace Graph</h5>
+<div class="paragraph">
+<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type&#8217;s definition within a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> called a <strong>type trace graph</strong>.</p>
+</div>
+<div class="sect5">
+<h6 id="_linear_type_traces">Linear Type Traces</h6>
+<div class="paragraph">
+<p>Any type constructed with instructions contain argument values (not types) generates a <strong>linear type trace</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; int
+==&gt;int
+mmlang&gt; int[id]
+==&gt;int[id]
+mmlang&gt; int[id][gt,0]
+==&gt;bool&lt;=int[id][gt,0]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_nested_type_traces">Nested Type Traces</h6>
+<div class="paragraph">
+<p>Any type constructed with instructions that contain an argument type generates a <strong>nested type trace</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; int
+==&gt;int
+mmlang&gt; int[id]
+==&gt;int[id]
+mmlang&gt; int[id][is,[gt,0]]
+==&gt;int{?}&lt;=int[id][is,bool&lt;=int[gt,0]]
+mmlang&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_branching_type_traces">Branching Type Traces</h6>
+<div class="paragraph">
+<p>Nested types are examples of <em>inter-instruction branching</em>. The more general form is <em>intra-instruction branching</em>. Any instruction that forks an <code>obj</code> into a <code>poly</code> or joins the <code>objs</code> of a <code>poly</code> are <strong>branch instructions</strong>. They generate <strong>branching type traces</strong>.</p>
+</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Tagged_union"><strong>sum type</strong></a> (tagged union) is constructed by branching across a <code>|-poly</code>.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/sum-type-constructor.png" alt="sum type constructor" width="600">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; int~&lt;[int[is&gt;0] | int[neg]]
+==&gt;[int{?}&lt;=int[is,bool&lt;=int[gt,0]]|int[neg]]&lt;=int~&lt;[int{?}&lt;=int[is,bool&lt;=int[gt,0]]|int[neg]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example above, a <code>int</code> is the ctype that is split across two branches via <code>[choice]</code> (with a sugar of <code>~&lt;</code>). Given an <code>int</code> value, that <code>int</code> value will either be greater than 0 or it will be negated.  In other words, the type maps an <code>int</code> to a coproduct containing it&#8217;s <a href="https://en.wikipedia.org/wiki/Absolute_value">absolute value</a> as determined either from the first or the second branch.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]&gt;
+==&gt;[10|]
+mmlang&gt; -10&lt;int[is&gt;0] | int[neg]&gt;
+==&gt;[|10]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain <code>int</code>. For example, should the coproduct undergo a <code>[merge]</code> (with a sugar of <code>&gt;-</code>), then the above type yields the same range value for two different <code>int</code> domains.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]&gt;
+==&gt;10
+mmlang&gt; -10&lt;int[is&gt;0] | int[neg]&gt;
+==&gt;10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Without the merge, the branch that the incoming <code>int</code> took is preserved in the coproduct&#8217;s <code>poly</code> structure and can be inverted.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]]=[_|[neg]&gt;
+==&gt;10
+mmlang&gt; -10&lt;int[is&gt;0] | int[neg]]=[_|[neg]&gt;
+==&gt;-10</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_type_compilation">Type Compilation</h4>
 <div class="paragraph">
@@ -1055,234 +1150,334 @@ mmlang&gt;</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_the_type_trace_graph">The Type Trace Graph</h4>
+<h4 id="_mono_types">Mono Types</h4>
 <div class="paragraph">
-<p>Every mm-ADT program is a <em>type</em>. Every type is created by a <a href="https://en.wikipedia.org/wiki/Type_constructor">type constructor</a>. The ctypes are degenerate <em>nullary</em> constructors. The dtypes are <code>n</code>-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type&#8217;s definition within a <a href="https://en.wikipedia.org/wiki/Directed_graph">directed labeled graph</a> called a <strong>type trace graph</strong>.</p>
+<p>An mm-ADT <code>mono</code> is the set of all atomic types.</p>
 </div>
+<table class="tableblock frame-all grid-all left small" style="width: 35%;">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">inst</th>
+<th class="tableblock halign-left valign-top">0</th>
+<th class="tableblock halign-left valign-top">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bool</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&amp;&amp;</code> <code>||</code> <code>-</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>*</code> <code>+</code> <code>-</code> <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>real</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>*</code> <code>+</code> <code>-</code> <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>str</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>+</code> <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>''</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<hr>
 <div class="sect4">
-<h5 id="_linear_type_traces">Linear Type Traces</h5>
-<div class="paragraph">
-<p>Any type constructed with instructions contain argument values (not types) generates a <strong>linear type trace</strong>.</p>
-</div>
+<h5 id="_bool_type">Bool Type</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; int
-==&gt;int
-mmlang&gt; int[id]
-==&gt;int[id]
-mmlang&gt; int[id][gt,0]
-==&gt;bool&lt;=int[id][gt,0]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_nested_type_traces">Nested Type Traces</h5>
-<div class="paragraph">
-<p>Any type constructed with instructions that contain an argument type generates a <strong>nested type trace</strong>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; int
-==&gt;int
-mmlang&gt; int[id]
-==&gt;int[id]
-mmlang&gt; int[id][is,[gt,0]]
-==&gt;int{?}&lt;=int[id][is,bool&lt;=int[gt,0]]
+<pre class="highlight"><code>mmlang&gt; true
+==&gt;true
+mmlang&gt; true&amp;&amp;false
+==&gt;false
+mmlang&gt; true[and,false]
+==&gt;false
+mmlang&gt; true[and,false][neg]
+==&gt;true
+mmlang&gt; true[and,false][neg][or,false]
+==&gt;true
+mmlang&gt; bool[and,false][neg][or,false][explain]
+==&gt;'
+bool[and,false][neg][or,false]
+
+instruction    domain       range  state
+-----------------------------------------
+[and,false]    bool    =&gt;   bool
+[neg]          bool    =&gt;   bool
+[or,false]     bool    =&gt;   bool
+'
 mmlang&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_branching_type_traces">Branching Type Traces</h5>
-<div class="paragraph">
-<p>Nested types are examples of <em>inter-instruction branching</em>. The more general form is <em>intra-instruction branching</em>. Any instruction that forks an <code>obj</code> into a <code>poly</code> or joins the <code>objs</code> of a <code>poly</code> are <strong>branch instructions</strong>. They generate <strong>branching type traces</strong>.</p>
+<h5 id="_int_type">Int Type</h5>
+
 </div>
+<div class="sect4">
+<h5 id="_real_type">Real Type</h5>
+
+</div>
+<div class="sect4">
+<h5 id="_str_type">Str Type</h5>
+
+</div>
+</div>
+<div class="sect3">
+<h4 id="_poly_types">Poly Types</h4>
+<table class="tableblock frame-all grid-all left small" style="width: 30%;">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">op</th>
+<th class="tableblock halign-left valign-top">poly</th>
+<th class="tableblock halign-left valign-top">obj</th>
+<th class="tableblock halign-left valign-top">inst</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">multiply</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\ast\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[map]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">add</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$+\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">either</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$o+\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[choose]</code></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Tagged_union"><strong>sum type</strong></a> (tagged union) is constructed by branching across a <code>|-poly</code>.</p>
+<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to a respective \$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$ monoid. The <em>nabla functions</em>, \$\nabla^{-}: \tt{poly} \rightarrow \tt{obj} \$, fold a free <code>poly</code> structure down to an <code>obj</code> via the "left-to-right" application of the associated \$\langle \tt{obj},-\rangle\$ monoid&#8217;s operator.
+\[
+\nabla^-(\texttt{poly}) = \prod_{i} \texttt{poly}_i.
+\]
+Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids derive their carrier sets from the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial</a> set of mm-ADT <code>objs</code>. The injective <em>delta functions</em>, \$\Delta:\tt{obj} \rightarrow \tt{poly}\$, yield the generators of the <code>-poly</code> monoid&#8217;s, where
+\[
+\Delta^{-}(\tt{obj}) = [\tt{obj}].
+\]
+Likewise, <code>[map]</code>, <code>[branch]</code>, and <code>[choose]</code> are the instruction representations of the composition of <code>objs</code>. The commuting diagrams below expose the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings across these mm-ADT monoids.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/sum-type-constructor.png" alt="sum type constructor" width="600">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; int~&lt;[int[is&gt;0] | int[neg]]
-==&gt;[int{?}&lt;=int[is,bool&lt;=int[gt,0]]|int[neg]]&lt;=int~&lt;[int{?}&lt;=int[is,bool&lt;=int[gt,0]]|int[neg]]</code></pre>
+<img src="./images/language/monoid-homomorphisms.png" alt="monoid homomorphisms">
 </div>
 </div>
 <div class="paragraph">
-<p>In the example above, a <code>int</code> is the ctype that is split across two branches via <code>[choice]</code> (with a sugar of <code>~&lt;</code>). Given an <code>int</code> value, that <code>int</code> value will either be greater than 0 or it will be negated.  In other words, the type maps an <code>int</code> to a coproduct containing it&#8217;s <a href="https://en.wikipedia.org/wiki/Absolute_value">absolute value</a> as determined either from the first or the second branch.</p>
+<p>Finally, the corresponding monoids across the three diagrams are the monoids of a particular encoding of the universal <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. The <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> <code>;,-poly</code> ring to the <strong>procedural</strong> \$\langle \tt{obj},\ast,+\rangle\$ ring.
+\[
+;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast, + \rangle
+\]
+In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a <strong>language</strong> to a <strong>processor</strong> through the common communication medium of <code>objs</code> provided by <strong>storage</strong>. All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of <em>synthetic data systems</em>.</p>
 </div>
-<div class="listingblock">
+<div class="imageblock text-center">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]&gt;
-==&gt;[10|]
-mmlang&gt; -10&lt;int[is&gt;0] | int[neg]&gt;
-==&gt;[|10]</code></pre>
+<img src="./images/language/ring-homomorphisms.png" alt="ring homomorphisms" width="320">
 </div>
 </div>
 <div class="paragraph">
-<p>While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain <code>int</code>. For example, should the coproduct undergo a <code>[merge]</code> (with a sugar of <code>&gt;-</code>), then the above type yields the same range value for two different <code>int</code> domains.</p>
+<p>The <code>poly</code> serves two primary roles in mm-ADT:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is realized as a <em>determinate polynomial</em> (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient <code>poly</code> type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
+</li>
+<li>
+<p><strong>Branching processes</strong> (<em>types</em>): . The <code>[split]</code> instruction clones the incoming <code>obj</code> across the <code>poly</code> indices and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure requisite <code>obj</code>/anti-<code>obj</code> <a href="https://en.wikipedia.org/wiki/Creation_and_annihilation_operators">annihilation</a>. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose composition operator and component coefficients provide branch semantics.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="_composite_structures">Composite Structures</h5>
+
+</div>
+<div class="sect4">
+<h5 id="_branching_processes">Branching Processes</h5>
+<div class="paragraph">
+<p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of the mm-ADT type ringoid&#8217;s additive group (\$oplus\$), <code>|-poly</code> is an implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>, and <code>;-poly</code> is a faithful implementation of the type ringoid&#8217;s multiplicative monoid (\$otimes\$).</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code>
+\[
+\left(\Delta^, \circ \left(f \oplus g\right) \circ \nabla^,\right)
+\]
+copy/clone-branching<br>
+independent slots<br>
+coproduct<br>
+\$A \oplus A \implies 2A\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="455"></a></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code>
+\[
+\left(\Delta^| \circ \left(f \oplus g\right) \circ \nabla^|\right)
+\]
+either/choice-branching<br>
+dependent slots<br>
+coproduct<br>
+\$A \oplus A \implies A\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="455"></a></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code>
+\[
+\left(\Delta^; \circ \left(f \otimes g\right) \circ \nabla^; \right)
+\]
+andThen/compose-chain<br>
+dependent slots<br>
+product<br>
+\$A \otimes B \implies C\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla" width="455"></a></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>mm-ADT composes functions via <code>*</code> and <code>+</code>. <code>n</code>-ary functions are encoded as <code>poly</code>-coupled unary functions with the \$\Delta\$-projection (delta) serving to <strong>copy</strong> (clone via <code>,</code>), <strong>split</strong> (partition via <code>|</code>), or <strong>compose</strong> (pipe via <code>;</code>) a single <code>obj</code>. In particular, for the additive groupoid <code>polys</code>, their respective <code>poly</code> constructors are defined as</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{split}
+\Delta_n^,&amp;: A &amp;\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
+\Delta_n^,&amp;(a) &amp;= [a,\ldots,a]
+\end{split}
+\]</p>
+</div>
+<div class="paragraph">
+<p>and</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{split}
+\Delta_n^|&amp;: A &amp;\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
+\Delta_n^|&amp;(a) &amp;= [a\{?\}|\ldots|a\{?\}].
+\end{split}
+\]</p>
+</div>
+<div class="paragraph">
+<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\Delta\$ (<code>[delta]</code>) is denoted with sugar as <code>-&lt;</code> in <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
+<div class="title">Copy \$\Delta\$</div>
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]&gt;
-==&gt;10
-mmlang&gt; -10&lt;int[is&gt;0] | int[neg]&gt;
-==&gt;10</code></pre>
+<pre class="highlight"><code>mmlang&gt; 6-&lt;[_,_]
+==&gt;[6,6]
+mmlang&gt; 6-&lt;[_&gt;0,_&gt;8]
+==&gt;[true,false]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Split \$\Delta\$</div>
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 6-&lt;[_|_]
+==&gt;[6|]
+mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]
+==&gt;[true|]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Apply \$\Delta\$</div>
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 6-&lt;[_;_]
+==&gt;[6;6]
+mmlang&gt; 6-&lt;[_+1;_&gt;6]
+==&gt;[7;true]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Without the merge, the branch that the incoming <code>int</code> took is preserved in the coproduct&#8217;s <code>poly</code> structure and can be inverted.</p>
+<p>Upon exiting an instruction, all internal <code>poly</code>-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  <strong>merge</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial addition</a> similar to <a href="https://en.wikipedia.org/wiki/Multiset">multiset union</a> via <code>,</code>), <strong>select</strong> (<a href="https://en.wikipedia.org/wiki/Disjoint_union">disjoint</a> union via <code>|</code>), or <strong>return</strong> (via <code>;</code>) a single stream from multiple streams. For the additive groupoids, \$nabla\$ is defined as</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{split}
+\nabla_n^,&amp;: \overbrace{B \times \ldots \times B}^{n-\text{times}} &amp;\rightarrow \overbrace{B + \ldots + B}^{n-\text{times}} \\
+\nabla_n^,&amp;([b,\ldots,b]) &amp;= nb
+\end{split}
+\]</p>
+</div>
+<div class="paragraph">
+<p>and</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{split}
+\nabla_n^|&amp;: \overbrace{B \times \ldots \times B}^{n-\text{times}} &amp;\rightarrow B \\
+\nabla_n^|&amp;([b|\ldots|b]) &amp;= b.
+\end{split}
+\]</p>
+</div>
+<div class="paragraph">
+<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\nabla\$ is expressed as <code>&gt;-</code> in <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
+<div class="title">Merge \$\nabla\$</div>
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 10&lt;int[is&gt;0] | int[neg]]=[_|[neg]&gt;
-==&gt;10
-mmlang&gt; -10&lt;int[is&gt;0] | int[neg]]=[_|[neg]&gt;
-==&gt;-10</code></pre>
+<pre class="highlight"><code>mmlang&gt; 6-&lt;[_,_]&gt;-
+==&gt;6{2}
+mmlang&gt; 6-&lt;[_&gt;0,_&gt;8]&gt;-
+==&gt;true
+==&gt;false</code></pre>
 </div>
 </div>
+<div class="listingblock">
+<div class="title">Select \$\nabla\$</div>
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 6-&lt;[_|_]&gt;-
+==&gt;6
+mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]&gt;-
+==&gt;true</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Return \$\nabla\$</div>
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 6-&lt;[_;_]&gt;-
+==&gt;6
+mmlang&gt; 6-&lt;[_+1;_&gt;6]&gt;-
+==&gt;true</code></pre>
+</div>
+</div>
+<hr>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_language_algebras">Language Algebras</h3>
-<div class="sect3">
-<h4 id="_the_polys">The Polys</h4>
-<div class="paragraph">
-<p>Every composite structure, including products and coproducts, are an mm-ADT <code>poly</code>. There are two kinds of <code>polys</code>:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><code>lst</code>: a list indexed by <code>int</code> whose elements are <code>objs</code>.</p>
-</li>
-<li>
-<p><code>rec</code>: a map indexed by arbitrary <code>obj</code> keys, whose values are <code>objs</code>.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Every <code>poly</code> has a separator. The separator provides details the way in which the poly should be processed. There are three kinds of separators.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 12.5%;">
-<col style="width: 25%;">
-<col style="width: 37.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">structure</th>
-<th class="tableblock halign-left valign-top">sep</th>
-<th class="tableblock halign-left valign-top">name</th>
-<th class="tableblock halign-left valign-top">quantifier</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct w/ eliminator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">choice or either</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n}|{m}</code> quantified as \$n|m\$</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">all or parallel</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n},{m}</code> quantified as \$n+m\$</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">product</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">compose or serial</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{n};{m}</code> quantified as \$n \ast m\$.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; int&lt;[mult,2]{10}|[plus,1]{20}&gt;
-==&gt;int{10,20}&lt;=int&lt;[int{10}&lt;=int[mult,2]{10}|int{20}&lt;=int[plus,1]{20}]&gt;
-mmlang&gt; int&lt;[mult,2]{10},[plus,1]{20}&gt;
-==&gt;int{30}&lt;=int&lt;[int{10}&lt;=int[mult,2]{10},int{20}&lt;=int[plus,1]{20}]&gt;
-mmlang&gt; int&lt;[mult,2]{10};[plus,1]{20}&gt;
-==&gt;int{200}&lt;=int&lt;[int{10}&lt;=int[mult,2]{10};int{200}&lt;=int{10}[plus,1]{20}]&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A few examples are provided.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">mmlang</th>
-<th class="tableblock halign-left valign-top">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int|str&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">either an <code>int</code> or a <code>str</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int[is&gt;20]|int[is&lt;10]]&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">either an <code>int</code> greater than 20 or an <code>int</code> less than 10.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int[is&gt;20]&lt;x&gt;|int[is&lt;10]&lt;y&gt;]&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">either an <code>int</code> greater than 20 labeled <code>x</code> or an <code>int</code> less than 10 labeled <code>y</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int+1,int+2&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">both <code>int</code> incremented by <code>1</code> and incremented by <code>2</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;int+1;int+2&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">an <code>int</code> incremented by <code>1</code> and then incremented by <code>2</code>.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 6&lt;int|str&gt;
-==&gt;6
-mmlang&gt; 6&lt;int+1|int+2&gt;
-==&gt;7
-mmlang&gt; 6&lt;int+1,int+2&gt;
-==&gt;7
-==&gt;8
-mmlang&gt; 6&lt;int+1;int+2&gt;
-==&gt;9</code></pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_a_poly_of_streams_or_a_stream_of_polys">A Poly of Streams or a Stream of Polys</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; [1,2,3,4,5]&gt;--&lt;[int+1,int*2]
-==&gt;[3,4]
-==&gt;[2,2]
-==&gt;[4,6]
-==&gt;[5,8]
-==&gt;[6,10]</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1-&lt;[+2,&lt;+3,+4&gt;]
-==&gt;[3,4,5]</code></pre>
-</div>
-</div>
-</div>
-</div>
 <div class="sect3">
 <h4 id="_bicartesian_closed_category">Bicartesian Closed Category</h4>
 <div class="sidebarblock">
@@ -1642,246 +1837,6 @@ mmlang&gt; 5[split,int[is&gt;0],int[is&lt;0],int][merge]
 </div>
 </div>
 <div class="sect4">
-<h5 id="_poly_types">Poly Types</h5>
-<table class="tableblock frame-all grid-all left small" style="width: 30%;">
-<colgroup>
-<col style="width: 40%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">op</th>
-<th class="tableblock halign-left valign-top">poly</th>
-<th class="tableblock halign-left valign-top">obj</th>
-<th class="tableblock halign-left valign-top">inst</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">multiply</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\ast\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[map]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">add</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$+\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">either</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$o+\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[choose]</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to a respective \$langle \tt{obj},\ast \rangle\$, \$langle \tt{obj},+ \rangle\$, or \$langle \tt{obj},\o+ \rangle\$ monoid. The <em>nabla functions</em>, \$\nabla^{-}: \tt{poly} \rightarrow \tt{obj} \$, fold a free <code>poly</code> structure down to an <code>obj</code> via the "left-to-right" application of the associated \$\langle \tt{obj},-\rangle\$ monoid&#8217;s operator.
-\[
-\nabla^-(\texttt{poly}) = \prod_{i} \texttt{poly}_i.
-\]
-Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids derive their carrier sets from the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial</a> set of mm-ADT <code>objs</code>. The injective <em>delta functions</em>, \$\Delta:\tt{obj} \rightarrow \tt{poly}\$, yield the generators of the <code>-poly</code> monoid&#8217;s, where
-\[
-\Delta^{-}(\tt{obj}) = [\tt{obj}].
-\]
-Likewise, <code>[map]</code>, <code>[branch]</code>, and <code>[choose]</code> are the instruction representations of the composition of <code>objs</code>. The commuting diagrams below expose the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings across these mm-ADT monoids.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/monoid-homomorphisms.png" alt="monoid homomorphisms">
-</div>
-</div>
-<div class="paragraph">
-<p>Finally, the corresponding monoids across the three diagrams are the monoids of a particular encoding of the universal <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. The <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> <code>;,-poly</code> ring to the <strong>procedural</strong> \$\langle \tt{obj},\ast,+\rangle\$ ring.
-\[
-;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;,}\;\;\;} \langle \texttt{obj},\ast, + \rangle
-\]
-In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a <strong>language</strong> to a <strong>processor</strong> through the common communication medium of <code>objs</code> provided by <strong>storage</strong>. All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of <em>synthetic data systems</em>.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/ring-homomorphisms.png" alt="ring homomorphisms" width="320">
-</div>
-</div>
-<div class="sect5">
-<h6 id="_poly_structures_and_processes">Poly Structures and Processes</h6>
-<div class="paragraph">
-<p>The <code>poly</code> serves two primary roles in mm-ADT:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Composite structures</strong> (<em>values</em>): A value-based <code>poly</code> is realized as a <em>determinate polynomial</em> (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient <code>poly</code> type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
-</li>
-<li>
-<p><strong>Branching processes</strong> (<em>types</em>): . The <code>[split]</code> instruction clones the incoming <code>obj</code> across the <code>poly</code> indices and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure requisite <code>obj</code>/anti-<code>obj</code> <a href="https://en.wikipedia.org/wiki/Creation_and_annihilation_operators">annihilation</a>. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose composition operator and component coefficients provide branch semantics.</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_composite_structures">Composite Structures</h6>
-
-</div>
-<div class="sect5">
-<h6 id="_branching_processes">Branching Processes</h6>
-<div class="paragraph">
-<p>A <code>poly</code> type is <a href="https://en.wikipedia.org/wiki/Type_constructor">constructed</a> and destructed using \$\Delta\$ (<em>delta</em>) and \$\nabla\$ (<em>nabla</em>), respectively. This section specifies the properties of the <code>polys</code> diagrammed below, where <code>,-poly</code> is a faithful implementation of the mm-ADT type ringoid&#8217;s additive group (\$oplus\$), <code>|-poly</code> is an implementation of an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>, and <code>;-poly</code> is a faithful implementation of the type ringoid&#8217;s multiplicative monoid (\$otimes\$).</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 75%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code>
-\[
-  \left(\Delta^, \circ \left(f \oplus g\right) \circ \nabla^,\right)
-\]
-copy/clone-branching<br>
-independent slots<br>
-coproduct<br>
-\$A \oplus A \implies 2A\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="455"></a></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code>
-\[
-  \left(\Delta^| \circ \left(f \oplus g\right) \circ \nabla^|\right)
-\]
-either/choice-branching<br>
-dependent slots<br>
-coproduct<br>
-\$A \oplus A \implies A\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="455"></a></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code>
-\[
-\left(\Delta^; \circ \left(f \otimes g\right) \circ \nabla^; \right)
-\]
-andThen/compose-chain<br>
-dependent slots<br>
-product<br>
-\$A \otimes B \implies C\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla" width="455"></a></span></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>mm-ADT composes functions via <code>*</code> and <code>+</code>. <code>n</code>-ary functions are encoded as <code>poly</code>-coupled unary functions with the \$\Delta\$-projection (delta) serving to <strong>copy</strong> (clone via <code>,</code>), <strong>split</strong> (partition via <code>|</code>), or <strong>compose</strong> (pipe via <code>;</code>) a single <code>obj</code>. In particular, for the additive groupoid <code>polys</code>, their respective <code>poly</code> constructors are defined as</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\Delta_n^,&amp;: A &amp;\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
-\Delta_n^,&amp;(a) &amp;= [a,\ldots,a]
-\end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>and</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\Delta_n^|&amp;: A &amp;\rightarrow \overbrace{A \times \ldots \times A}^{n-\text{times}} \\
-\Delta_n^|&amp;(a) &amp;= [a\{?\}|\ldots|a\{?\}].
-\end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\Delta\$ (<code>[delta]</code>) is denoted with sugar as <code>-&lt;</code> in <code>mmlang</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Copy \$\Delta\$</div>
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_,_]
-==&gt;[6,6]
-mmlang&gt; 6-&lt;[_&gt;0,_&gt;8]
-==&gt;[true,false]</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Split \$\Delta\$</div>
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_|_]
-==&gt;[6|]
-mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]
-==&gt;[true|]</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Apply \$\Delta\$</div>
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_;_]
-==&gt;[6;6]
-mmlang&gt; 6-&lt;[_+1;_&gt;6]
-==&gt;[7;true]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Upon exiting an instruction, all internal <code>poly</code>-branches are serialized via a \$\nabla\$-injection (nabla) which serves to  <strong>merge</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial addition</a> similar to <a href="https://en.wikipedia.org/wiki/Multiset">multiset union</a> via <code>,</code>), <strong>select</strong> (<a href="https://en.wikipedia.org/wiki/Disjoint_union">disjoint</a> union via <code>|</code>), or <strong>return</strong> (via <code>;</code>) a single stream from multiple streams. For the additive groupoids, \$nabla\$ is defined as</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\nabla_n^,&amp;: \overbrace{B \times \ldots \times B}^{n-\text{times}} &amp;\rightarrow \overbrace{B + \ldots + B}^{n-\text{times}} \\
-\nabla_n^,&amp;([b,\ldots,b]) &amp;= nb
-\end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>and</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-\nabla_n^|&amp;: \overbrace{B \times \ldots \times B}^{n-\text{times}} &amp;\rightarrow B \\
-\nabla_n^|&amp;([b|\ldots|b]) &amp;= b.
-\end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>If <code>A</code> is <code>str</code> and <code>B</code> is <code>bool</code>, then \$\nabla\$ is expressed as <code>&gt;-</code> in <code>mmlang</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Merge \$\nabla\$</div>
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_,_]&gt;-
-==&gt;6{2}
-mmlang&gt; 6-&lt;[_&gt;0,_&gt;8]&gt;-
-==&gt;true
-==&gt;false</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Select \$\nabla\$</div>
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_|_]&gt;-
-==&gt;6
-mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]&gt;-
-==&gt;true</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Return \$\nabla\$</div>
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_;_]&gt;-
-==&gt;6
-mmlang&gt; 6-&lt;[_+1;_&gt;6]&gt;-
-==&gt;true</code></pre>
-</div>
-</div>
-<hr>
-</div>
-</div>
-<div class="sect4">
 <h5 id="_axioms_diagrams_and_notation">Axioms, Diagrams, and Notation</h5>
 <div class="paragraph">
 <p>The ring <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> are presented below along with the respective mm-ADT structure denoted in the <code>mmlang</code> <code>&lt; &gt;</code>-sugar form.</p>
@@ -2064,20 +2019,6 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_the_value">The Value</h3>
-<div class="paragraph">
-<p>The mm-ADT type system is realized in real-world programs.</p>
-</div>
-<div class="sect3">
-<h4 id="_uni_values">Uni Values</h4>
-
-</div>
-<div class="sect3">
-<h4 id="_poly_values">Poly Values</h4>
-
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -2089,7 +2030,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-21 16:56:55 -0600
+Last updated 2020-05-22 04:41:45 -0600
 </div>
 </div>
 </body>
