@@ -1340,37 +1340,29 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect5">
 <h6 id="_poly_domain_instructions">Poly Domain Instructions</h6>
-<table class="tableblock frame-all grid-all" style="width: 75%;">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 9.0909%;">
-<col style="width: 9.0909%;">
-<col style="width: 9.0909%;">
-<col style="width: 72.7273%;">
+<col style="width: 6.25%;">
+<col style="width: 6.25%;">
+<col style="width: 6.25%;">
+<col style="width: 31.25%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">inst</th>
 <th class="tableblock halign-left valign-top">arg(s)</th>
 <th class="tableblock halign-left valign-top">range</th>
+<th class="tableblock halign-left valign-top">description</th>
 <th class="tableblock halign-left valign-top">mmlang example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[mult]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b']*['c','d']
-==&gt;[['a','c'],['a','d'],['b','c'],['b','d']]</code></pre>
-</div>
-</div></div></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[plus]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a right concatenation of the <code>poly</code> argument</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b']+['c','d']
@@ -1379,9 +1371,34 @@ mmlang&gt;</code></pre>
 </div></div></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[mult]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Dot_product">dot product</a> (distributive over addition via <a href="https://en.wikipedia.org/wiki/FOIL_method">FOIL</a>)</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b']*['c','d']
+==&gt;[['a','c'],['a','d'],['b','c'],['b','d']]</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[hmult]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Hadamard_product_(matrices)">Hadamard</a> pairwise product</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b']=['c','d']
+==&gt;['c','d']</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[head]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj{0}</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the first term of the polynomial (a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-based interpretation)</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b'][head]
@@ -1393,8 +1410,9 @@ language error: no head on empty poly</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[tail]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj{0}</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the polynomial without the first term (a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-based interpretation)</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b'][tail]
@@ -1406,8 +1424,9 @@ language error: no tail on empty poly</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[get]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">direct access to term by index (an <a href="https://en.wikipedia.org/wiki/Array_data_structure">array</a>-based interpretation)</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b','c'].1
@@ -1419,8 +1438,9 @@ language error: poly index is out of bounds: 3</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[put]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj,obj</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int,obj</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">insert term by index (an <a href="https://en.wikipedia.org/wiki/Array_data_structure">array</a>-based interpretation)</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b','c'][put,1,'ab']
@@ -2265,7 +2285,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-23 00:46:55 -0600
+Last updated 2020-05-23 01:22:31 -0600
 </div>
 </div>
 </body>
