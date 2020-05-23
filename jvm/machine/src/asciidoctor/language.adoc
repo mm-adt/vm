@@ -476,7 +476,7 @@ The `poly` serves two primary roles in mm-ADT:
 | \$+\$    | `,`  | `[branch]`  | `[plus]`
 | \$o+\$   | `\|` | `[choose]`  | `[plus]`
 |===
-An mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is an element of either a _serial_ (`;`), _parallel_ (`,`), or _choice_ (`|`) https://en.wikipedia.org/wiki/Free_object[free] https://en.wikipedia.org/wiki/Trace_monoid[trace monoid] that is https://en.wikipedia.org/wiki/Adjoint_functors[left-adjoint] to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ reducing, non-free monoid. The _nabla functions_, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free `poly` structure into an `obj{*}` via the applications of the reducing monoid's operator in `inst` such that
+An mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is an element of either a _serial_ (`;`), _parallel_ (`,`), or _choice_ (`|`) https://en.wikipedia.org/wiki/Free_object[free] https://en.wikipedia.org/wiki/Trace_monoid[trace monoid] that is https://en.wikipedia.org/wiki/Adjoint_functors[left-adjoint] to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ non-free, reductive monoid. The _nabla functions_, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free `poly` structure into an `obj{*}` via the applications of the reducing monoid's operator in `inst` such that
 \[
 \begin{split}
 \nabla^;(\texttt{poly}) &=& \texttt{[compose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\prod_{i<n} q_i, \\
@@ -484,7 +484,7 @@ An mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is an el
 \nabla^;(\texttt{poly}) &=& \texttt{[choose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i<n}(q_i),\max_{i<n}(q_i)),
 \end{split}
 \]
-where `\nabla` is realized as the https://ncatlab.org/nlab/show/codiagonal[codiagonal] `>-` (i.e. `[merge]`) instruction. the resultant `obj` is quantified within the specified `q` range. This is the general solution to deriving the the type quantifier during compilation. This range can be further refined with instruction semantics.
+where \$\nabla\$ is realized as the https://ncatlab.org/nlab/show/codiagonal[codiagonal] `>-` (i.e. `[merge]`) instruction. the resultant `obj` is quantified within the specified `q` range. This is the general solution to deriving the type quantifier during compilation and can be further refined using instruction semantics.
 
 '''
 image::free-monoid-homomorphisms.png[align=center]
@@ -551,10 +551,23 @@ The two `;,-poly` monoids serve as components of a https://en.wikipedia.org/wiki
 \[
 ;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle
 \]
-where the _branch_ component is, in fact, a group with `-<[a{q},a{-q}]>- = obj{0}` and `[branch,a{q},a{-q}] = obj{0}`. The `|-poly` can be appended to the `;,-poly` ring, where it serves as an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the additive group commonly used to denote https://en.wikipedia.org/wiki/Tagged_union[sum types].
+where the _branch_ component is, in fact, a group with `-<[a{q},a{-q}]>- = obj{0}` and `[branch,a{q},a{-q}] = obj{0}`.
+[source]
+----
+mmlang> -<['a'{2},'a'{-2}]
+==>['a'{2},'a'{-2}]
+mmlang> -<['a'{2},'a'{-2}]>-
+mmlang>
+mmlang> [branch,['a'{2},'a'{-2}]]
+mmlang>
+----
+
+
+The `|-poly` can be appended to the `;,-poly` ring, where it serves as an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the additive group commonly used to denote https://en.wikipedia.org/wiki/Tagged_union[sum types].
 
 .Delta Poly
-[cols="4,1,8",width=45%,float=left]
+[.small]
+[cols="4,1,9",width=46%,float=left]
 |===
 | poly op         | mmlang      | example
 
@@ -588,7 +601,8 @@ mmlang> 6-<[_>0\|_>8]
 |===
 
 .Nabla Poly
-[cols="4,1,8",width=45%,float=right]
+[.small]
+[cols="4,1,9",width=46%,float=right]
 |===
 | poly op            | mmlang      | example
 
