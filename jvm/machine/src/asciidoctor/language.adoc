@@ -456,16 +456,52 @@ mmlang>
 
 ==== Poly Types
 
-The `poly` serves two primary roles in mm-ADT:
+The elements of the set \$\mathbf{Poly}\$ are https://en.wikipedia.org/wiki/Polynomial[polynomials] denoted `poly`. A `poly` is the composite of:
 
-. *Data structures* (_values_): A value-based `poly` is realized as a _determinate polynomial_ (i.e., a polynomial lacking indeterminates). mm-ADT provides two convenient `poly` type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
+. *indeterminates*: type `objs` known as variables or symbols,
+. *constants*: value `objs` known as constants,
+. *binary relations*: the symbols `;` (*andThen*), `,` (*orThen*), and `|` (*xorThen*) used to compose `poly` expressions.
+
+If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT `obj` values, \$T \subset \mathbf{Obj}\$ the set of `obj` types, \$V \cap \T = \empty\$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is
+\[
+(v_0;t_0),(v_1;t_1),\ldots,(v_n;t_n)
+\]
+and is denoted, in `mmlang`, as either
+[source]
+----
+[[v0;t0],[v1;t1],...,[vn;tn]]
+[[v0;t0]|[v1;t1]|...|[vn;tn]]
+----
+
+Every `[v;t]` composition is called a *term*. The terms of a `poly` can be reduced using a _summation operator_  (`,` or `|`) whose general form is
+\[
+\texttt{obj} = \sum_{i<n} \texttt{v}_i;\texttt{t}_i.
+\]
+
+'''
+
+An mm-ADT `poly` has the following uses:
+
+. *Data structures* (_values_): A value-based `poly` is a _determinate polynomial_ (i.e., a polynomial lacking indeterminates).
 . *Process structures* (_types_): . The `[split]` instruction clones the incoming `obj` across the `poly` indices and resolves each `obj` clone to an `obj` of the component type's range. For types respecting https://en.wikipedia.org/wiki/No-cloning_theorem[no-clone] axioms, `obj` coefficients are manipulated accordingly to ensure requisite `obj`/anti-`obj` https://en.wikipedia.org/wiki/Creation_and_annihilation_operators[annihilation]. All range `objs` are aggregated into a subsuming type by the `[merge]` instruction. In this manner, a type-based `poly` serves as an \$n\$-ary branch structure whose composition operator and component coefficients provide branch semantics.
+
+mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
 
 ===== Data Structures
 
+[source]
+----
+mmlang> [1,2,3]
+==>[1,2,3]
+mmlang> [[1;[id]],[2;[id]],[3;[id]]]
+==>[[1;_[id]],[2;_[id]],[3;_[id]]]
+mmlang> -<[-<[1;[id]]>-,-<[2;[id]]>-,-<[3;[id]]>-]
+==>[1,2,3]
+----
+
 ===== Process Structures
 
-====== Free Monoids
+====== Free Poly Monoid
 
 [.small]
 [cols="1,1,1,1",width=30%,float=left]
@@ -476,6 +512,7 @@ The `poly` serves two primary roles in mm-ADT:
 | \$+\$    | `,`  | `[branch]`  | `[plus]`
 | \$o+\$   | `\|` | `[choose]`  | `[plus]`
 |===
+
 An mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is an element of either a _serial_ (`;`), _parallel_ (`,`), or _choice_ (`|`) https://en.wikipedia.org/wiki/Free_object[free] https://en.wikipedia.org/wiki/Trace_monoid[trace monoid] that is https://en.wikipedia.org/wiki/Adjoint_functors[left-adjoint] to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ non-free, reductive monoid. The _nabla functions_, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free `poly` structure into an `obj{*}` via the applications of the reducing monoid's operator in `inst` such that
 \[
 \begin{split}
