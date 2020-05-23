@@ -1246,22 +1246,32 @@ mmlang&gt;</code></pre>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>indeterminates</strong>: type <code>objs</code> known as variables or symbols,</p>
+<p><strong>terms</strong>: <code>objs</code> connected by the multiplicative operator <code>;</code> (<em>andThen</em>).</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><strong>indeterminates</strong>: type <code>objs</code> known as variables or symbols.</p>
 </li>
 <li>
-<p><strong>constants</strong>: value <code>objs</code> known as constants,</p>
+<p><strong>constants</strong>: value <code>objs</code> known as constants.</p>
+</li>
+</ol>
+</div>
 </li>
 <li>
-<p><strong>binary relations</strong>: the symbols <code>;</code> (<strong>andThen</strong>), <code>,</code> (<strong>orThen</strong>), and <code>|</code> (<strong>xorThen</strong>) used to compose <code>poly</code> expressions.</p>
+<p><strong>sum composites</strong>: the symbols <code>,</code> (<em>orThen</em>) and <code>|</code> (<em>xorThen</em>) relate terms by a function with the general form \$ \tt{obj} = \sum_{i&lt;n} \tt{v}_i;\tt{t}_i \$.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT <code>obj</code> values, \$T \subset \mathbf{Obj}\$ the set of <code>obj</code> types, \$V \cap \T = \empty\$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is
+<p>If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT <code>obj</code> values, \$T \subset \mathbf{Obj}\$ the set of <code>obj</code> types, \$V \cap \T = \emptyset \$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is denoted in conventional algebraic notation as one of the following expressions
 \[
-(v_0;t_0),(v_1;t_1),\ldots,(v_n;t_n)
+\begin{split}
+(v_0 \cdot t_0) &amp; + &amp; (v_1 \cdot t_1) &amp; + &amp; \ldots &amp; + &amp; (v_n \cdot t_n) \\
+(v_0 \cdot t_0) &amp;\,|&amp; (v_1 \cdot t_1) &amp;\,|&amp; \ldots &amp;\,|&amp; (v_n \cdot t_n)
+\end{split}
 \]
-and is denoted, in <code>mmlang</code>, as either</p>
+and is denoted, in <code>mmlang</code>, as either one of the expressions below, respectively.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1269,23 +1279,17 @@ and is denoted, in <code>mmlang</code>, as either</p>
 [[v0;t0]|[v1;t1]|...|[vn;tn]]</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Every <code>[v;t]</code> composition is called a <strong>term</strong>. The terms of a <code>poly</code> can be reduced using a <em>summation operator</em>  (<code>,</code> or <code>|</code>) whose general form is
-\[
-\texttt{obj} = \sum_{i&lt;n} \texttt{v}_i;\texttt{t}_i.
-\]</p>
-</div>
 <hr>
 <div class="paragraph">
-<p>An mm-ADT <code>poly</code> has the following uses:</p>
+<p>While mm-ADT supports the full spectrum of polynomial forms, there are two significant forms that are at the extreme ends of the type/value <code>obj</code> divide and they function to either structure data or processes.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Data structures</strong> (<em>values</em>): A value-based <code>poly</code> is a <em>determinate polynomial</em> (i.e., a polynomial lacking indeterminates).</p>
+<p><strong>Data structures</strong> (<em>data</em>): A value-only <code>poly</code> is called a <em>determinate polynomial</em> (i.e., a <code>poly</code> lacking indeterminates).</p>
 </li>
 <li>
-<p><strong>Process structures</strong> (<em>types</em>): . The <code>[split]</code> instruction clones the incoming <code>obj</code> across the <code>poly</code> indices and resolves each <code>obj</code> clone to an <code>obj</code> of the component type&#8217;s range. For types respecting <a href="https://en.wikipedia.org/wiki/No-cloning_theorem">no-clone</a> axioms, <code>obj</code> coefficients are manipulated accordingly to ensure requisite <code>obj</code>/anti-<code>obj</code> <a href="https://en.wikipedia.org/wiki/Creation_and_annihilation_operators">annihilation</a>. All range <code>objs</code> are aggregated into a subsuming type by the <code>[merge]</code> instruction. In this manner, a type-based <code>poly</code> serves as an \$n\$-ary branch structure whose composition operator and component coefficients provide branch semantics.</p>
+<p><strong>Process structures</strong> (<em>program</em>): A type-only <code>poly</code> is called an <em>inconstant polynomial</em> (i.e., a <code>poly</code> lacking constants).</p>
 </li>
 </ol>
 </div>
@@ -1294,6 +1298,46 @@ and is denoted, in <code>mmlang</code>, as either</p>
 </div>
 <div class="sect4">
 <h5 id="_data_structures">Data Structures</h5>
+<div class="paragraph">
+<p>Determinate polynomials are degenerate in that their terms contain only values (constants). A three term determinate whose constants are in <code>str</code> is below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b','c']
+==&gt;['a','b','c']</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An empty term (zero-degree) <code>,-poly</code> has the following form in mm-ADT.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; [,.]
+==&gt;[,.]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A single term (one-degree) <code>,-poly</code> has a similar form.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a',.]
+==&gt;['a',.]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The reason being is that the <code>-poly</code> below is a two term poly with the second term being <code>obj{0}</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a',]
+==&gt;['a',]
+mmlang&gt; ['a',].1
+mmlang&gt; ['a',.].1
+language error: poly index is out of bounds: 1
+mmlang&gt;</code></pre>
+</div>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; [1,2,3]
@@ -2126,7 +2170,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-22 23:39:32 -0600
+Last updated 2020-05-23 00:31:54 -0600
 </div>
 </div>
 </body>
