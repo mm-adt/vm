@@ -1300,7 +1300,7 @@ mmlang&gt;</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ reducing, non-free monoid. The <em>nabla functions</em>, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free <code>poly</code> structure into an <code>obj{*}</code> via the applications of the reducing monoid&#8217;s operator in <code>inst</code> such that
+<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ non-free, reductive monoid. The <em>nabla functions</em>, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free <code>poly</code> structure into an <code>obj{*}</code> via the applications of the reducing monoid&#8217;s operator in <code>inst</code> such that
 \[
 \begin{split}
 \nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[compose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\prod_{i&lt;n} q_i, \\
@@ -1308,7 +1308,7 @@ mmlang&gt;</code></pre>
 \nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[choose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i&lt;n}(q_i),\max_{i&lt;n}(q_i)),
 \end{split}
 \]
-where <code>\nabla</code> is realized as the <a href="https://ncatlab.org/nlab/show/codiagonal">codiagonal</a> <code>&gt;-</code> (i.e. <code>[merge]</code>) instruction. the resultant <code>obj</code> is quantified within the specified <code>q</code> range. This is the general solution to deriving the the type quantifier during compilation. This range can be further refined with instruction semantics.</p>
+where \$\nabla\$ is realized as the <a href="https://ncatlab.org/nlab/show/codiagonal">codiagonal</a> <code>&gt;-</code> (i.e. <code>[merge]</code>) instruction. the resultant <code>obj</code> is quantified within the specified <code>q</code> range. This is the general solution to deriving the type quantifier during compilation and can be further refined using instruction semantics.</p>
 </div>
 <hr>
 <div class="imageblock text-center">
@@ -1391,14 +1391,27 @@ coproduct<br>
 \[
 ;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle
 \]
-where the <em>branch</em> component is, in fact, a group with <code>-&lt;[a{q},a{-q}]&gt;- = obj{0}</code> and <code>[branch,a{q},a{-q}] = obj{0}</code>. The <code>|-poly</code> can be appended to the <code>;,-poly</code> ring, where it serves as an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
+where the <em>branch</em> component is, in fact, a group with <code>-&lt;[a{q},a{-q}]&gt;- = obj{0}</code> and <code>[branch,a{q},a{-q}] = obj{0}</code>.</p>
 </div>
-<table class="tableblock frame-all grid-all left" style="width: 45%;">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; -&lt;['a'{2},'a'{-2}]
+==&gt;['a'{2},'a'{-2}]
+mmlang&gt; -&lt;['a'{2},'a'{-2}]&gt;-
+mmlang&gt;
+mmlang&gt; [branch,['a'{2},'a'{-2}]]
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>|-poly</code> can be appended to the <code>;,-poly</code> ring, where it serves as an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
+</div>
+<table class="tableblock frame-all grid-all left small" style="width: 46%;">
 <caption class="title">Table 3. Delta Poly</caption>
 <colgroup>
-<col style="width: 30.7692%;">
-<col style="width: 7.6923%;">
-<col style="width: 61.5385%;">
+<col style="width: 28.5714%;">
+<col style="width: 7.1428%;">
+<col style="width: 64.2858%;">
 </colgroup>
 <thead>
 <tr>
@@ -1446,12 +1459,12 @@ mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all right" style="width: 45%;">
+<table class="tableblock frame-all grid-all right small" style="width: 46%;">
 <caption class="title">Table 4. Nabla Poly</caption>
 <colgroup>
-<col style="width: 30.7692%;">
-<col style="width: 7.6923%;">
-<col style="width: 61.5385%;">
+<col style="width: 28.5714%;">
+<col style="width: 7.1428%;">
+<col style="width: 64.2858%;">
 </colgroup>
 <thead>
 <tr>
@@ -2066,7 +2079,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-22 17:57:26 -0600
+Last updated 2020-05-22 18:10:12 -0600
 </div>
 </div>
 </body>
