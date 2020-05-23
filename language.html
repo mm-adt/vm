@@ -1352,19 +1352,24 @@ language error: poly index is out of bounds: 1</code></pre>
 </div>
 <div class="sect5">
 <h6 id="_poly_domain_instructions">Poly Domain Instructions</h6>
+<div class="paragraph">
+<p>A <code>poly</code> has various interpretations including: <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>, <a href="https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)">vector</a>, <a href="https://en.wikipedia.org/wiki/Array_data_structure">array</a>, and program. The table below presents the set of instructions whose domain is <code>poly</code>.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 6.25%;">
-<col style="width: 6.25%;">
-<col style="width: 6.25%;">
-<col style="width: 31.25%;">
-<col style="width: 50%;">
+<col style="width: 5.8823%;">
+<col style="width: 5.8823%;">
+<col style="width: 5.8823%;">
+<col style="width: 5.8823%;">
+<col style="width: 29.4117%;">
+<col style="width: 47.0591%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">inst</th>
 <th class="tableblock halign-left valign-top">arg(s)</th>
 <th class="tableblock halign-left valign-top">range</th>
+<th class="tableblock halign-left valign-top">style</th>
 <th class="tableblock halign-left valign-top">description</th>
 <th class="tableblock halign-left valign-top">mmlang vpoly example</th>
 </tr>
@@ -1374,7 +1379,8 @@ language error: poly index is out of bounds: 1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[plus]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a right concatenation of the <code>poly</code> argument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">term expression concatenation</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b']+['c','d']
@@ -1386,7 +1392,8 @@ language error: poly index is out of bounds: 1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[mult]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Dot_product">dot product</a> (distributive over addition via <a href="https://en.wikipedia.org/wiki/FOIL_method">FOIL</a>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">vector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Dot_product">dot product</a> that is distributive over addition via <a href="https://en.wikipedia.org/wiki/FOIL_method">FOIL</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b']*['c','d']
@@ -1398,6 +1405,7 @@ language error: poly index is out of bounds: 1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[hmult]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">vector</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Hadamard_product_(matrices)">Hadamard</a> pairwise product</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
@@ -1410,7 +1418,8 @@ language error: poly index is out of bounds: 1</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[head]</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the first term of the polynomial (a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-based interpretation)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the first term of the polynomial</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b'][head]
@@ -1424,7 +1433,8 @@ language error: no head on empty poly</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[tail]</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the polynomial without the first term (a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-based interpretation)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the polynomial without the first term</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b'][tail]
@@ -1438,7 +1448,8 @@ language error: no tail on empty poly</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[get]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">direct access to term by index (an <a href="https://en.wikipedia.org/wiki/Array_data_structure">array</a>-based interpretation)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">term access by index</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b','c'].1
@@ -1452,7 +1463,8 @@ language error: poly index is out of bounds: 3</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[put]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int,obj</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">insert term by index (an <a href="https://en.wikipedia.org/wiki/Array_data_structure">array</a>-based interpretation)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">array</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">term insertion term by index</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; ['a','b','c'][put,1,'ab']
@@ -1810,6 +1822,117 @@ mmlang&gt; 6-&lt;[_+1|_&gt;6]&gt;-
 <img src="./images/language/ring-homomorphisms.png" alt="ring homomorphisms" width="320">
 </div>
 </div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_poly_patterns">Poly Patterns</h5>
+<div class="sect5">
+<h6 id="_lists">Lists</h6>
+
+</div>
+<div class="sect5">
+<h6 id="_stream_containers">Stream Containers</h6>
+
+</div>
+<div class="sect5">
+<h6 id="_01_boolean_matrices">{0,1}-Boolean Matrices</h6>
+<div class="paragraph">
+<p>Hadamard pair-wise product can be used to filter specific terms out of a <code>poly</code> in a manner analogous to \$\{0,1\}\$-boolean matrices in <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebra</a>. As values do not pass through values, <code>[hmult]</code> is provided a <code>tpoly</code> where the slots to filter have a <code>{0}</code> quantification (e.g., <code>obj{0}</code>) and the slots to keep should maintain an identity (e.g. <code>[id]</code> or <code>[noop]</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b','c']=[obj{0},obj{0},str[id]]   // <b class="conum">(1)</b>
+==&gt;[,,'c']
+mmlang&gt; ['a','b','c']=[,,str[id]]               // <b class="conum">(2)</b>
+==&gt;[,,'c']
+mmlang&gt; ['a','b','c']=[,,_[id]]                 // <b class="conum">(3)</b>
+==&gt;[,,'c']
+mmlang&gt; ['a','b','c']=[,,_]                     // <b class="conum">(4)</b>
+==&gt;[,,'c']</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>A fully typed \$\{0,1\}\$-polynomial.</p>
+</li>
+<li>
+<p>An empty slot is <code>mmlang</code> sugar for <code>obj{0}</code>.</p>
+</li>
+<li>
+<p>The anonymous type <code>_[id]</code> is compiled to <code>str[id]</code>.</p>
+</li>
+<li>
+<p>The anonymous type <code>_</code> is compiled to <code>str</code> (i.e. <code>str[noop]</code>).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Identity_matrix">identity matrix</a> is a \$\{0,1\}\$-matrix that when multiplied using standard matrix product, the result is equivalent to <code>[id]</code>.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{bmatrix}
+1 &amp; 2 &amp; 3 \\
+4 &amp; 5 &amp; 6 \\
+7 &amp; 8 &amp; 9 \\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; 2 &amp; 3 \\
+4 &amp; 5 &amp; 6 \\
+7 &amp; 8 &amp; 9 \\
+\end{bmatrix}
+\]</p>
+</div>
+<div class="paragraph">
+<p>However, with pair-wise product, only the main diagonol remains.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{bmatrix}
+1 &amp; 2 &amp; 3 \\
+4 &amp; 5 &amp; 6 \\
+7 &amp; 8 &amp; 9 \\
+\end{bmatrix}
+\bullet
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 \\
+0 &amp; 5 &amp; 0 \\
+0 &amp; 0 &amp; 9 \\
+\end{bmatrix}
+\]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; [[1,2,3],[4,5,6],[7,8,9]]=[=[_,,],=[,_,],=[,,_]]
+==&gt;[[1,,],[,5,],[,,9]]
+mmlang&gt; [[1,2,3],
+         [4,5,6],
+         [7,8,9]]
+         =
+        [=[_,,],
+         =[,_,],
+         =[,,_]]
+==&gt;[[1,,],[,5,],[,,9]]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_meta_programming">Meta-Programming</h6>
+
 </div>
 </div>
 </div>
@@ -2368,7 +2491,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-23 02:47:58 -0600
+Last updated 2020-05-23 13:28:57 -0600
 </div>
 </div>
 </body>
