@@ -87,4 +87,14 @@ public class LanguageException extends VmException {
         if (!StorageFactory.asType(obj).range().test(((type instanceof __) ? ((__) type).apply(obj) : type).domain()))
             throw LanguageException.typingError(obj, type);
     }
+
+    public static class PolyException {
+        public static LanguageException noHead() {
+            return new LanguageException("Empty polys do not have heads");
+        }
+
+        public static LanguageException noTail() {
+            return new LanguageException("Empty polys do not have tails");
+        }
+    }
 }

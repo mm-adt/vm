@@ -35,8 +35,8 @@ object TailOp extends Func[Obj, Poly[Obj]] {
   def apply[A <: Obj](): Inst[Obj, Poly[A]] = new VInst[Obj, Poly[A]](g = (Tokens.tail, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = (start match {
     case apoly: Lst[Obj] =>
-      if (apoly.glist.isEmpty) throw new LanguageException("no tail on empty poly")
-      else apoly.clone(apoly.glist.tail)
+      if (apoly.glist.isEmpty) throw LanguageException.PolyException.noTail
+      apoly.clone(apoly.glist.tail)
     case _ => start
   }).via(start, inst).asInstanceOf[Poly[Obj]]
 }

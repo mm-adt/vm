@@ -45,8 +45,9 @@ object IsOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     Try[Obj](
       if (inst.arg0[Bool].g) start.via(start, inst)
-      else start.via(start, inst).hardQ(qZero))
-      .getOrElse(start match {
+      else
+        start.via(start, inst).hardQ(qZero)).getOrElse(
+      start match {
         case astrm: Strm[Obj] => astrm.via(start, inst)
         case _ => start.clone(via = (start, inst), q = minZero(multQ(start, inst)))
       })

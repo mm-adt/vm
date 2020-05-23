@@ -23,7 +23,8 @@
 package org.mmadt.language.obj.op.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.{IntQ, Obj}
+import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -33,12 +34,7 @@ trait NoOp {
   this: Obj =>
 }
 
-object NoOp {
-  def apply[O <: Obj](): NoInst[O] = new NoInst[O]
-
-  class NoInst[O <: Obj] extends VInst[O, O](g=(Tokens.noop, Nil)) {
-    override def q(quantifier: IntQ): this.type = new NoInst[O]().asInstanceOf[this.type]
-    override def exec(start: O): O = start
-  }
-
+object NoOp extends Func[Obj, Obj] {
+  def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.noop, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start
 }

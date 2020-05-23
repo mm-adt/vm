@@ -45,7 +45,6 @@ object Tokens {
 
   val a = "a"
   val add = "add"
-  val append = "append" // TODO: for demo purposes only
   val head = "head"
   val tail = "tail"
   val noop = "noop"
@@ -92,7 +91,6 @@ object Tokens {
   val btrue = "true"
   val bfalse = "false"
 
-  val append_op = ":+"
   val q_mark = "?"
   val plus_op, q_plus = "+"
   val mult_op, q_star = "*"

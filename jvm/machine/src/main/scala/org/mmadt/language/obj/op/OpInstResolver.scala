@@ -34,7 +34,7 @@ import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
+import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
@@ -55,7 +55,6 @@ object OpInstResolver {
 
   def resolve[S <: Obj, E <: Obj](op: String, args: List[Obj]): Inst[S, E] = {
     (op match {
-      case Tokens.append | Tokens.append_op => AppendOp(args.head)
       case Tokens.head => HeadOp()
       case Tokens.tail => TailOp()
       case Tokens.split | Tokens.split_op => SplitOp(args.head)

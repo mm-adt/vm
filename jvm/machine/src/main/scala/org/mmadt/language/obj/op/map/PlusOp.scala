@@ -54,7 +54,7 @@ object PlusOp extends Func[Obj, Obj] {
           case astr: Str => astr.clone(g = astr.g + inst.arg0[Str].g)
           case arec: RecValue[Value[Value[Obj]], Obj] => arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]].gmap))
           case arec: ORecType => arec.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
-          //////// EXPERIMENTAL
+          // poly plus
           case multA: Poly[Obj] if multA.isSerial => inst.arg0[Poly[Obj]] match {
             case multB: Poly[Obj] if multB.isSerial => multA `,` multB
             case plusB: Poly[Obj] if plusB.isPlus => lst(plusB.gsep, multA, plusB)

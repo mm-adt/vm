@@ -35,11 +35,7 @@ object HeadOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.head, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     (start match {
-      case alst: Lst[_] =>
-        if (!alst.glist.exists(_.alive))
-          throw new LanguageException("no head on empty poly")
-        else
-          alst.glist.filter(_.alive).head
+      case alst: Lst[_] => alst.glist.find(_.alive).getOrElse(throw LanguageException.PolyException.noHead)
       case _ => start
     }).via(start, inst)
   }

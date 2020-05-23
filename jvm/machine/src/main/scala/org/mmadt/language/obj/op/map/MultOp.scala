@@ -49,12 +49,13 @@ object MultOp extends Func[Obj, Obj] {
       case _: Value[_] => start match {
         case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
         case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
+        // poly mult
         case multA: Lst[Obj] if multA.isSerial => inst.arg0[Obj] match {
           case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist ++ multB.glist)
-          case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(plusB.glist.map(a => `;`[Obj].clone(multA.glist :+ a)))
+          case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(plusB.glist.map(a => lst(Tokens.`;`, multA.glist :+ a: _*)))
         }
         case multA: Lst[Obj] if multA.isPlus => inst.arg0[Obj] match {
-          case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist.map(a => `;`[Obj].clone(a +: multB.glist)))
+          case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist.map(a => lst(Tokens.`;`, a +: multB.glist: _*)))
           case plusB: Lst[Obj] if plusB.isPlus => multA.clone(multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b))))
         }
       }
