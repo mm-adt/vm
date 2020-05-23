@@ -521,7 +521,6 @@ mmlang> ['a',]
 mmlang> ['a',].1
 mmlang> ['a',.].1
 language error: poly index is out of bounds: 1
-mmlang>
 ----
 
 ====== Poly Domain Instructions
@@ -589,15 +588,57 @@ mmlang> ['a','b','c'][put,5,'e']
 ----
 |===
 
+
+====== Split and Merge
+
+[cols="1,1,1,5,8",width=100%]
+|===
+| inst     |  arg(s)   | range  | description | mmlang example
+
+| `[split]`  | `poly` | `poly`  |
+a|
+[source]
+----
+mmlang> -<['a','b','c']
+==>['a','b','c']
+----
+| `[merge]`  |        | `obj`  |
+a|
+[source]
+----
+mmlang> -<['a','b','c']>-
+==>'a'
+==>'b'
+==>'c'
+----
+|===
+
+.A Note on Determinate Polys and the Identity Type
+====
+The degenerate determinate `poly` is composed of value only terms.
+
 [source]
 ----
 mmlang> [1,2,3]
 ==>[1,2,3]
+----
+
+Another interpretation is a `poly` whose term types are always `[id]`.
+
+[source]
+----
 mmlang> [[1;[id]],[2;[id]],[3;[id]]]
 ==>[[1;_[id]],[2;_[id]],[3;_[id]]]
+----
+
+When the `poly` is solved using `-<` and `>-`, the determinate form is realized.
+
+[source]
+----
 mmlang> -<[-<[1;[id]]>-,-<[2;[id]]>-,-<[3;[id]]>-]
 ==>[1,2,3]
 ----
+====
 
 ===== Process Structures
 
