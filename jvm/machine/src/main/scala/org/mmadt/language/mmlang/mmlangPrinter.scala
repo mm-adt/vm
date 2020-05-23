@@ -62,9 +62,9 @@ object mmlangPrinter {
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
     if (lst.glist.isEmpty)
-      LBRACKET + "." + lst.gsep + RBRACKET
+      LBRACKET +  lst.gsep + "." + RBRACKET
     else if (lst.glist.length == 1)
-      LBRACKET + lst.glist.head + "." + lst.gsep + RBRACKET
+      LBRACKET + lst.glist.head + lst.gsep + "." + RBRACKET
     else
       lst.glist.foldLeft(LBRACKET)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RBRACKET
   }

@@ -458,36 +458,136 @@ mmlang>
 
 The elements of the set \$\mathbf{Poly}\$ are https://en.wikipedia.org/wiki/Polynomial[polynomials] denoted `poly`. A `poly` is the composite of:
 
-. *indeterminates*: type `objs` known as variables or symbols,
-. *constants*: value `objs` known as constants,
-. *binary relations*: the symbols `;` (*andThen*), `,` (*orThen*), and `|` (*xorThen*) used to compose `poly` expressions.
+. *terms*: `objs` connected by the multiplicative operator `;` (_andThen_).
+.. *indeterminates*: type `objs` known as variables or symbols.
+.. *constants*: value `objs` known as constants.
+. *sum composites*: the symbols `,` (_orThen_) and `|` (_xorThen_) relate terms by a function with the general form \$ \tt{obj} = \sum_{i<n} \tt{v}_i;\tt{t}_i \$.
 
-If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT `obj` values, \$T \subset \mathbf{Obj}\$ the set of `obj` types, \$V \cap \T = \empty\$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is
+If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT `obj` values, \$T \subset \mathbf{Obj}\$ the set of `obj` types, \$V \cap \T = \emptyset \$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is denoted in conventional algebraic notation as one of the following expressions
 \[
-(v_0;t_0),(v_1;t_1),\ldots,(v_n;t_n)
+\begin{split}
+(v_0 \cdot t_0) & + & (v_1 \cdot t_1) & + & \ldots & + & (v_n \cdot t_n) \\
+(v_0 \cdot t_0) &\,|& (v_1 \cdot t_1) &\,|& \ldots &\,|& (v_n \cdot t_n)
+\end{split}
 \]
-and is denoted, in `mmlang`, as either
+and is denoted, in `mmlang`, as either one of the expressions below, respectively.
 [source]
 ----
 [[v0;t0],[v1;t1],...,[vn;tn]]
 [[v0;t0]|[v1;t1]|...|[vn;tn]]
 ----
 
-Every `[v;t]` composition is called a *term*. The terms of a `poly` can be reduced using a _summation operator_  (`,` or `|`) whose general form is
-\[
-\texttt{obj} = \sum_{i<n} \texttt{v}_i;\texttt{t}_i.
-\]
-
 '''
 
-An mm-ADT `poly` has the following uses:
+While mm-ADT supports the full spectrum of polynomial forms, there are two significant forms that are at the extreme ends of the type/value `obj` divide and they function to either structure data or processes.
 
-. *Data structures* (_values_): A value-based `poly` is a _determinate polynomial_ (i.e., a polynomial lacking indeterminates).
-. *Process structures* (_types_): . The `[split]` instruction clones the incoming `obj` across the `poly` indices and resolves each `obj` clone to an `obj` of the component type's range. For types respecting https://en.wikipedia.org/wiki/No-cloning_theorem[no-clone] axioms, `obj` coefficients are manipulated accordingly to ensure requisite `obj`/anti-`obj` https://en.wikipedia.org/wiki/Creation_and_annihilation_operators[annihilation]. All range `objs` are aggregated into a subsuming type by the `[merge]` instruction. In this manner, a type-based `poly` serves as an \$n\$-ary branch structure whose composition operator and component coefficients provide branch semantics.
+. *Data structures* (_data_): A value-only `poly` is called a _determinate polynomial_ (i.e., a `poly` lacking indeterminates).
+. *Process structures* (_program_): A type-only `poly` is called an _inconstant polynomial_ (i.e., a `poly` lacking constants).
 
 mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
 
 ===== Data Structures
+
+Determinate polynomials are degenerate in that their terms contain only values (constants). A three term determinate whose constants are in `str` is below.
+
+[source]
+----
+mmlang> ['a','b','c']
+==>['a','b','c']
+----
+
+An empty term (zero-degree) `,-poly` has the following form in `mmlang`
+
+[source]
+----
+mmlang> [,.]
+==>[,.]
+----
+
+A single term `,-poly` also uses a `.` as a terminator token.
+
+[source]
+----
+mmlang> ['a',.]
+==>['a',.]
+----
+
+The reason for `.` is that the `,-poly` below is a two term poly with the second term being `obj{0}`.
+
+[source]
+----
+mmlang> ['a',]
+==>['a',]
+mmlang> ['a',].1
+mmlang> ['a',.].1
+language error: poly index is out of bounds: 1
+mmlang>
+----
+
+====== Poly Domain Instructions
+
+[cols="1,1,1,5,8",width=100%]
+|===
+| inst     |  arg(s)   | range  | description | mmlang example
+
+| `[plus]` | `poly`    | `poly` | a right concatenation of the `poly` argument
+a|
+[source]
+----
+mmlang> ['a','b']+['c','d']
+==>['a','b','c','d']
+----
+| `[mult]` | `poly`    | `poly` | https://en.wikipedia.org/wiki/Dot_product[dot product] (distributive over addition via https://en.wikipedia.org/wiki/FOIL_method[FOIL])
+a|
+[source]
+----
+mmlang> ['a','b']*['c','d']
+==>[['a','c'],['a','d'],['b','c'],['b','d']]
+----
+| `[hmult]` | `poly`  | `poly`  | https://en.wikipedia.org/wiki/Hadamard_product_(matrices)[Hadamard] pairwise product
+a|
+[source]
+----
+mmlang> ['a','b']=['c','d']
+==>['c','d']
+----
+| `[head]` |    | `obj`   | the first term of the polynomial (a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-based interpretation)
+a|
+[source]
+----
+mmlang> ['a','b'][head]
+==>'a'
+mmlang> [,.][head]
+language error: no head on empty poly
+----
+| `[tail]` |    | `poly`  | the polynomial without the first term (a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-based interpretation)
+a|
+[source]
+----
+mmlang> ['a','b'][tail]
+==>['b'.,]
+mmlang> [,.][tail]
+language error: no tail on empty poly
+----
+| `[get]`  | `int`     | `obj`   | direct access to term by index (an https://en.wikipedia.org/wiki/Array_data_structure[array]-based interpretation)
+a|
+[source]
+----
+mmlang> ['a','b','c'].1
+==>'b'
+mmlang> ['a','b','c'].3
+language error: poly index is out of bounds: 3
+----
+| `[put]`  | `int,obj` | `poly`  | insert term by index (an https://en.wikipedia.org/wiki/Array_data_structure[array]-based interpretation)
+a|
+[source]
+----
+mmlang> ['a','b','c'][put,1,'ab']
+==>['a','ab','b','c']
+mmlang> ['a','b','c'][put,5,'e']
+==>['a','b','c',,'e']
+----
+|===
 
 [source]
 ----
