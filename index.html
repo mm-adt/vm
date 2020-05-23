@@ -1615,8 +1615,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 ==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,]
 mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,]<span style="color:#60E">.1</span>
 mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,.]<span style="color:#60E">.1</span>
-language error: poly index <span style="color:#080;font-weight:bold">is</span> out of bounds: <span style="color:#00D">1</span>
-mmlang&gt;</code></pre>
+language error: poly index <span style="color:#080;font-weight:bold">is</span> out of bounds: <span style="color:#00D">1</span></code></pre>
 </div>
 </div>
 <div class="sect5">
@@ -1733,14 +1732,85 @@ mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect5">
+<h6 id="_split_and_merge">Split and Merge</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 6.25%;">
+<col style="width: 6.25%;">
+<col style="width: 6.25%;">
+<col style="width: 31.25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">inst</th>
+<th class="tableblock halign-left valign-top">arg(s)</th>
+<th class="tableblock halign-left valign-top">range</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[split]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; -&lt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[merge]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; -&lt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]&gt;-
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span></code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="exampleblock">
+<div class="title">Example 1. A Note on Determinate Polys and the Identity Type</div>
+<div class="content">
+<div class="paragraph">
+<p>The degenerate determinate <code>poly</code> is composed of value only terms.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>]
-==&gt;[<span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>]
-mmlang&gt; [[<span style="color:#00D">1</span>;[<span style="color:#369;font-weight:bold">id</span>]],[<span style="color:#00D">2</span>;[<span style="color:#369;font-weight:bold">id</span>]],[<span style="color:#00D">3</span>;[<span style="color:#369;font-weight:bold">id</span>]]]
-==&gt;[[<span style="color:#00D">1</span>;_[<span style="color:#369;font-weight:bold">id</span>]],[<span style="color:#00D">2</span>;_[<span style="color:#369;font-weight:bold">id</span>]],[<span style="color:#00D">3</span>;_[<span style="color:#369;font-weight:bold">id</span>]]]
-mmlang&gt; -&lt;[-&lt;[<span style="color:#00D">1</span>;[<span style="color:#369;font-weight:bold">id</span>]]&gt;-,-&lt;[<span style="color:#00D">2</span>;[<span style="color:#369;font-weight:bold">id</span>]]&gt;-,-&lt;[<span style="color:#00D">3</span>;[<span style="color:#369;font-weight:bold">id</span>]]&gt;-]
 ==&gt;[<span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Another interpretation is a <code>poly</code> whose term types are always <code>[id]</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [[<span style="color:#00D">1</span>;[<span style="color:#369;font-weight:bold">id</span>]],[<span style="color:#00D">2</span>;[<span style="color:#369;font-weight:bold">id</span>]],[<span style="color:#00D">3</span>;[<span style="color:#369;font-weight:bold">id</span>]]]
+==&gt;[[<span style="color:#00D">1</span>;_[<span style="color:#369;font-weight:bold">id</span>]],[<span style="color:#00D">2</span>;_[<span style="color:#369;font-weight:bold">id</span>]],[<span style="color:#00D">3</span>;_[<span style="color:#369;font-weight:bold">id</span>]]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the <code>poly</code> is solved using <code>-&lt;</code> and <code>&gt;-</code>, the determinate form is realized.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; -&lt;[-&lt;[<span style="color:#00D">1</span>;[<span style="color:#369;font-weight:bold">id</span>]]&gt;-,-&lt;[<span style="color:#00D">2</span>;[<span style="color:#369;font-weight:bold">id</span>]]&gt;-,-&lt;[<span style="color:#00D">3</span>;[<span style="color:#369;font-weight:bold">id</span>]]&gt;-]
+==&gt;[<span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>]</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>

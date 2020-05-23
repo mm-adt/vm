@@ -1334,8 +1334,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 ==&gt;['a',]
 mmlang&gt; ['a',].1
 mmlang&gt; ['a',.].1
-language error: poly index is out of bounds: 1
-mmlang&gt;</code></pre>
+language error: poly index is out of bounds: 1</code></pre>
 </div>
 </div>
 <div class="sect5">
@@ -1452,14 +1451,85 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect5">
+<h6 id="_split_and_merge">Split and Merge</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 6.25%;">
+<col style="width: 6.25%;">
+<col style="width: 6.25%;">
+<col style="width: 31.25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">inst</th>
+<th class="tableblock halign-left valign-top">arg(s)</th>
+<th class="tableblock halign-left valign-top">range</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[split]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; -&lt;['a','b','c']
+==&gt;['a','b','c']</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[merge]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; -&lt;['a','b','c']&gt;-
+==&gt;'a'
+==&gt;'b'
+==&gt;'c'</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="exampleblock">
+<div class="title">Example 1. A Note on Determinate Polys and the Identity Type</div>
+<div class="content">
+<div class="paragraph">
+<p>The degenerate determinate <code>poly</code> is composed of value only terms.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; [1,2,3]
-==&gt;[1,2,3]
-mmlang&gt; [[1;[id]],[2;[id]],[3;[id]]]
-==&gt;[[1;_[id]],[2;_[id]],[3;_[id]]]
-mmlang&gt; -&lt;[-&lt;[1;[id]]&gt;-,-&lt;[2;[id]]&gt;-,-&lt;[3;[id]]&gt;-]
 ==&gt;[1,2,3]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Another interpretation is a <code>poly</code> whose term types are always <code>[id]</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; [[1;[id]],[2;[id]],[3;[id]]]
+==&gt;[[1;_[id]],[2;_[id]],[3;_[id]]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the <code>poly</code> is solved using <code>-&lt;</code> and <code>&gt;-</code>, the determinate form is realized.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; -&lt;[-&lt;[1;[id]]&gt;-,-&lt;[2;[id]]&gt;-,-&lt;[3;[id]]&gt;-]
+==&gt;[1,2,3]</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2285,7 +2355,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-23 01:22:31 -0600
+Last updated 2020-05-23 01:48:52 -0600
 </div>
 </div>
 </body>
