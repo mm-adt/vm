@@ -532,32 +532,34 @@ language error: poly index is out of bounds: 1
 
 ====== Poly Domain Instructions
 
-[cols="1,1,1,5,8",width=100%]
-|===
-| inst     |  arg(s)   | range  | description | mmlang vpoly example
+A `poly` has various interpretations including: https://en.wikipedia.org/wiki/List_(abstract_data_type)[list], https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)[vector], https://en.wikipedia.org/wiki/Array_data_structure[array], and program. The table below presents the set of instructions whose domain is `poly`.
 
-| `[plus]` | `poly`    | `poly` | a right concatenation of the `poly` argument
+[cols="1,1,1,1,5,8",width=100%]
+|===
+| inst     |  arg(s)   | range  | style | description | mmlang vpoly example
+
+| `[plus]` | `poly`    | `poly` | list  | term expression concatenation
 a|
 [source]
 ----
 mmlang> ['a','b']+['c','d']
 ==>['a','b','c','d']
 ----
-| `[mult]` | `poly`    | `poly` | https://en.wikipedia.org/wiki/Dot_product[dot product] (distributive over addition via https://en.wikipedia.org/wiki/FOIL_method[FOIL])
+| `[mult]` | `poly`    | `poly` | vector | https://en.wikipedia.org/wiki/Dot_product[dot product] that is distributive over addition via https://en.wikipedia.org/wiki/FOIL_method[FOIL]
 a|
 [source]
 ----
 mmlang> ['a','b']*['c','d']
 ==>[['a','c'],['a','d'],['b','c'],['b','d']]
 ----
-| `[hmult]` | `poly`  | `poly`  | https://en.wikipedia.org/wiki/Hadamard_product_(matrices)[Hadamard] pairwise product
+| `[hmult]` | `poly`  | `poly`  | vector | https://en.wikipedia.org/wiki/Hadamard_product_(matrices)[Hadamard] pairwise product
 a|
 [source]
 ----
 mmlang> ['a','b']=['c','d']
 ==>['c','d']
 ----
-| `[head]` |    | `obj`   | the first term of the polynomial (a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-based interpretation)
+| `[head]` |          | `obj`   | list   | the first term of the polynomial
 a|
 [source]
 ----
@@ -566,7 +568,7 @@ mmlang> ['a','b'][head]
 mmlang> [,.][head]
 language error: no head on empty poly
 ----
-| `[tail]` |    | `poly`  | the polynomial without the first term (a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-based interpretation)
+| `[tail]` |          | `poly`  | list   | the polynomial without the first term
 a|
 [source]
 ----
@@ -575,7 +577,7 @@ mmlang> ['a','b'][tail]
 mmlang> [,.][tail]
 language error: no tail on empty poly
 ----
-| `[get]`  | `int`     | `obj`   | direct access to term by index (an https://en.wikipedia.org/wiki/Array_data_structure[array]-based interpretation)
+| `[get]`  | `int`     | `obj`   | array | term access by index
 a|
 [source]
 ----
@@ -584,7 +586,7 @@ mmlang> ['a','b','c'].1
 mmlang> ['a','b','c'].3
 language error: poly index is out of bounds: 3
 ----
-| `[put]`  | `int,obj` | `poly`  | insert term by index (an https://en.wikipedia.org/wiki/Array_data_structure[array]-based interpretation)
+| `[put]`  | `int,obj` | `poly`  | array | term insertion term by index
 a|
 [source]
 ----
@@ -825,6 +827,95 @@ mmlang> 6-<[_+1\|_>6]>-
 In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a *language* to a *processor* through the common communication medium of `objs` provided by *storage*. All mm-ADT compliant components are faithful to `obj` and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of _synthetic data systems_.
 
 image::ring-homomorphisms.png[align=center,width=320]
+
+===== Poly Patterns
+
+====== Lists
+
+====== Stream Containers
+
+====== {0,1}-Boolean Matrices
+
+Hadamard pair-wise product can be used to filter specific terms out of a `poly` in a manner analogous to \$\{0,1\}\$-boolean matrices in https://en.wikipedia.org/wiki/Linear_algebra[linear algebra]. As values do not pass through values, `[hmult]` is provided a `tpoly` where the slots to filter have a `{0}` quantification (e.g., `obj{0}`) and the slots to keep should maintain an identity (e.g. `[id]` or `[noop]`).
+
+[source]
+----
+mmlang> ['a','b','c']=[obj{0},obj{0},str[id]]   // <1>
+==>[,,'c']
+mmlang> ['a','b','c']=[,,str[id]]               // <2>
+==>[,,'c']
+mmlang> ['a','b','c']=[,,_[id]]                 // <3>
+==>[,,'c']
+mmlang> ['a','b','c']=[,,_]                     // <4>
+==>[,,'c']
+----
+
+<1> A fully typed \$\{0,1\}\$-polynomial.
+<2> An empty slot is `mmlang` sugar for `obj{0}`.
+<3> The anonymous type `_[id]` is compiled to `str[id]`.
+<4> The anonymous type `_` is compiled to `str` (i.e. `str[noop]`).
+
+The https://en.wikipedia.org/wiki/Identity_matrix[identity matrix] is a \$\{0,1\}\$-matrix that when multiplied using standard matrix product, the result is equivalent to `[id]`.
+
+\[
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9 \\
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9 \\
+\end{bmatrix}
+\]
+
+However, with pair-wise product, only the main diagonol remains.
+
+\[
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6 \\
+7 & 8 & 9 \\
+\end{bmatrix}
+\bullet
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 5 & 0 \\
+0 & 0 & 9 \\
+\end{bmatrix}
+\]
+
+
+[source]
+----
+mmlang> [[1,2,3],[4,5,6],[7,8,9]]=[=[_,,],=[,_,],=[,,_]]
+==>[[1,,],[,5,],[,,9]]
+mmlang> [[1,2,3],
+         [4,5,6],
+         [7,8,9]]
+         =
+        [=[_,,],
+         =[,_,],
+         =[,,_]]
+==>[[1,,],[,5,],[,,9]]
+----
+
+====== Meta-Programming
+
 
 === Language Algebras
 
