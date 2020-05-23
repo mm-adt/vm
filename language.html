@@ -1308,7 +1308,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 </div>
 <div class="paragraph">
-<p>An empty term (zero-degree) <code>,-poly</code> has the following form in mm-ADT.</p>
+<p>An empty term (zero-degree) <code>,-poly</code> has the following form in <code>mmlang</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1317,7 +1317,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 </div>
 <div class="paragraph">
-<p>A single term (one-degree) <code>,-poly</code> has a similar form.</p>
+<p>A single term <code>,-poly</code> also uses a <code>.</code> as a terminator token.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1326,7 +1326,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 </div>
 <div class="paragraph">
-<p>The reason being is that the <code>-poly</code> below is a two term poly with the second term being <code>obj{0}</code>.</p>
+<p>The reason for <code>.</code> is that the <code>,-poly</code> below is a two term poly with the second term being <code>obj{0}</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1338,6 +1338,100 @@ language error: poly index is out of bounds: 1
 mmlang&gt;</code></pre>
 </div>
 </div>
+<div class="sect5">
+<h6 id="_poly_domain_instructions">Poly Domain Instructions</h6>
+<table class="tableblock frame-all grid-all" style="width: 75%;">
+<colgroup>
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 72.7273%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">inst</th>
+<th class="tableblock halign-left valign-top">arg(s)</th>
+<th class="tableblock halign-left valign-top">range</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[mult]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b']*['c','d']
+==&gt;[['a','c'],['a','d'],['b','c'],['b','d']]</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[plus]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b']+['c','d']
+==&gt;['a','b','c','d']</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[head]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj{0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b'][head]
+==&gt;'a'
+mmlang&gt; [,.][head]
+language error: no head on empty poly</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[tail]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj{0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b'][tail]
+==&gt;['b'.,]
+mmlang&gt; [,.][tail]
+language error: no tail on empty poly</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[get]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b','c'].1
+==&gt;'b'
+mmlang&gt; ['a','b','c'].3
+language error: poly index is out of bounds: 3</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[put]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj,obj</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b','c'][put,1,'ab']
+==&gt;['a','ab','b','c']
+mmlang&gt; ['a','b','c'][put,5,'e']
+==&gt;['a','b','c',,'e']</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>mmlang&gt; [1,2,3]
@@ -1346,6 +1440,7 @@ mmlang&gt; [[1;[id]],[2;[id]],[3;[id]]]
 ==&gt;[[1;_[id]],[2;_[id]],[3;_[id]]]
 mmlang&gt; -&lt;[-&lt;[1;[id]]&gt;-,-&lt;[2;[id]]&gt;-,-&lt;[3;[id]]&gt;-]
 ==&gt;[1,2,3]</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -2170,7 +2265,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-23 00:31:54 -0600
+Last updated 2020-05-23 00:46:55 -0600
 </div>
 </div>
 </body>
