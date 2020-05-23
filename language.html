@@ -1291,7 +1291,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 <hr>
 <div class="paragraph">
-<p>There are three kinds of <code>polys</code>: <code>vpoly</code>, <code>tpoly</code>, and <code>tvpoly</code>. The <code>vpolys</code> and <code>tpolys</code> are fixpoint structures denoting purely data or process structures and exist at the extreme ends of the type/value <code>obj</code> divide. Between these extremes are the <code>tvpolys</code>. These <code>polys</code> can be understood as representing either a process that hasn&#8217;t returned terminated (evaluation) or a data structure containing functions (references).</p>
+<p>There are three kinds of <code>polys</code>: <code>vpoly</code>, <code>tpoly</code>, and <code>tvpoly</code>. The <code>vpolys</code> and <code>tpolys</code> are data or process <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fixpoints</a> that exist at the extreme ends of the type/value <code>obj</code> coproduct. Between these extremes are the <code>tvpolys</code>. The <code>tvpolys</code> ultimately resolve to a <code>vpoly</code> or a <code>tpoly</code> fixpoint through the process of <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> or <a href="https://en.wikipedia.org/wiki/Eval">evaluation</a>. These <code>tvpolys</code> represent a process that hasn&#8217;t terminated (<a href="https://en.wikipedia.org/wiki/State_(computer_science)">state</a>) or data equipped with functions (<a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a>).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1302,7 +1302,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 <p><strong>Process structures</strong> (<em>program</em>): A type-only <code>poly</code> is called an <em>inconstant polynomial</em> or <code>tpoly</code> (i.e., a <code>poly</code> lacking constants).</p>
 </li>
 <li>
-<p><strong>Computational structures</strong> (<em>computing</em>): a type/value <code>poly</code> is a <code>tvpoly</code> (i.e., a <code>poly</code> at an intermediate state between a <code>tpoly</code> or <code>vpoly</code> fixpoint).</p>
+<p><strong>Computational structures</strong> (<em>computing</em>): a type/value <code>poly</code> is a <code>tvpoly</code> (i.e., a <code>poly</code> at a midpoint between a <code>tpoly</code> or <code>vpoly</code> fixpoint).</p>
 </li>
 </ol>
 </div>
@@ -1535,7 +1535,7 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 </div>
 </div>
 <div class="paragraph">
-<p>When the <code>tvpoly</code> is solved using <code>-&lt;</code> and <code>&gt;-</code>, the determinate form is realized as a <code>vpoly</code> (the fixpoint).</p>
+<p>When the <code>tvpoly</code> is <a href="https://en.wikipedia.org/wiki/Polynomial#Solving_equations">solved</a> using <code>-&lt;</code> and <code>&gt;-</code>, a <code>vpoly</code> fixpoint is reached.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2368,7 +2368,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-23 02:30:55 -0600
+Last updated 2020-05-23 02:47:58 -0600
 </div>
 </div>
 </body>
