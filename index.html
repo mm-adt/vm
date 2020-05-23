@@ -1583,11 +1583,11 @@ mmlang&gt;</code></pre>
 \[
 \begin{split}
 \nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[compose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\prod_{i&lt;n} q_i, \\
-\nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\sum_{i&lt;n} q_i, \\
-\nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[choose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i&lt;n}(q_i),\max_{i&lt;n}(q_i)),
+\nabla^,(\texttt{poly}) &amp;=&amp; \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\sum_{i&lt;n} q_i, \\
+\nabla^|(\texttt{poly}) &amp;=&amp; \texttt{[choose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i&lt;n}(q_i),\max_{i&lt;n}(q_i)),
 \end{split}
 \]
-where \$\nabla\$ is realized as the <a href="https://ncatlab.org/nlab/show/codiagonal">codiagonal</a> <code>&gt;-</code> (i.e. <code>[merge]</code>) instruction. the resultant <code>obj</code> is quantified within the specified <code>q</code> range. This is the general solution to deriving the type quantifier during compilation and can be further refined using instruction semantics.</p>
+where \$\nabla\$ is realized as the <a href="https://ncatlab.org/nlab/show/codiagonal">codiagonal</a> <code>&gt;-</code> (i.e. <code>[merge]</code>) instruction. the resultant <code>obj</code> is quantified within the specified <code>q</code> range. This is the general solution to deriving the type quantifier during compilation and can be further refined using instruction semantics. The following diagrams specify three <a href="https://en.wikipedia.org/wiki/Monoid#Monoid_homomorphisms">monoid homomorphisms</a> that couple the <code>poly</code> to <code>inst</code> monoids such that the underlying monoidal processes of the mm-ADT VM can be directly manipulated by any mm-ADT language that supports <code>poly</code>&#8201;&#8212;&#8201;e.g., within <code>mmlang</code>.</p>
 </div>
 <hr>
 <div class="imageblock text-center">
