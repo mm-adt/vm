@@ -485,11 +485,11 @@ and is denoted, in `mmlang`, as either one of the expressions below, respectivel
 
 '''
 
-There are three kinds of `polys`: `vpoly`, `tpoly`, and `tvpoly`. The `vpolys` and `tpolys` are fixpoint structures denoting purely data or process structures and exist at the extreme ends of the type/value `obj` divide. Between these extremes are the `tvpolys`. These `polys` can be understood as representing either a process that hasn't returned terminated (evaluation) or a data structure containing functions (references).
+There are three kinds of `polys`: `vpoly`, `tpoly`, and `tvpoly`. The `vpolys` and `tpolys` are data or process https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fixpoints] that exist at the extreme ends of the type/value `obj` coproduct. Between these extremes are the `tvpolys`. The `tvpolys` ultimately resolve to a `vpoly` or a `tpoly` fixpoint through the process of https://en.wikipedia.org/wiki/Compiler[compilation] or https://en.wikipedia.org/wiki/Eval[evaluation]. These `tvpolys` represent a process that hasn't terminated (https://en.wikipedia.org/wiki/State_(computer_science)[state]) or data equipped with functions (https://en.wikipedia.org/wiki/Closure_(computer_programming)[closure]).
 
 . *Data structures* (_data_): A value-only `poly` is called a _determinate polynomial_ or `vpoly` (i.e., a `poly` lacking indeterminates).
 . *Process structures* (_program_): A type-only `poly` is called an _inconstant polynomial_ or `tpoly` (i.e., a `poly` lacking constants).
-. *Computational structures* (_computing_): a type/value `poly` is a `tvpoly` (i.e., a `poly` at an intermediate state between a `tpoly` or `vpoly` fixpoint).
+. *Computational structures* (_computing_): a type/value `poly` is a `tvpoly` (i.e., a `poly` at a midpoint between a `tpoly` or `vpoly` fixpoint).
 
 mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
 
@@ -638,7 +638,7 @@ mmlang> [[1;[id]],[2;[id]],[3;[id]]]
 ==>[[1;_[id]],[2;_[id]],[3;_[id]]]
 ----
 
-When the `tvpoly` is solved using `-<` and `>-`, the determinate form is realized as a `vpoly` (the fixpoint).
+When the `tvpoly` is https://en.wikipedia.org/wiki/Polynomial#Solving_equations[solved] using `-<` and `>-`, a `vpoly` fixpoint is reached.
 
 [source]
 ----
