@@ -26,7 +26,8 @@ $(document).ready(function(){
                               "split","merge","head","tail","div","minus","choose","put"],
                   "infix":   ["|","&&"],
                   "value":   ["true","false"],
-                  "type":    ["_","real","rec","lst","poly","inst","obj","int","str","bool","range","domain"],
+                  "type":    ["_","real","rec","lst","poly","vpoly","tpoly","tvpoly","inst",
+                              "obj","int","str","bool","range","domain"],
                   "special": ["mmlang","q"],
                   "plain":   ["is not"]};
   $.each(items, function(key, values) {

@@ -1240,6 +1240,11 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/poly-type-value.png" alt="poly type value" width="525">
+</div>
+</div>
 <div class="paragraph">
 <p>The elements of the set \$\mathbf{Poly}\$ are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a> denoted <code>poly</code>. A <code>poly</code> is the composite of:</p>
 </div>
@@ -1259,9 +1264,14 @@ mmlang&gt;</code></pre>
 </div>
 </li>
 <li>
-<p><strong>sum composites</strong>: the symbols <code>,</code> (<em>orThen</em>) and <code>|</code> (<em>xorThen</em>) relate terms by a function with the general form \$ \tt{obj} = \sum_{i&lt;n} \tt{v}_i;\tt{t}_i \$.</p>
+<p><strong>sum composites</strong>: the symbols <code>,</code> (<em>orThen</em>) and <code>|</code> (<em>xorThen</em>) relate terms by a function with the general form</p>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{obj} = \sum_{i&lt;n} (v_i \cdot t_i).
+\]</p>
 </div>
 <div class="paragraph">
 <p>If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT <code>obj</code> values, \$T \subset \mathbf{Obj}\$ the set of <code>obj</code> types, \$V \cap \T = \emptyset \$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is denoted in conventional algebraic notation as one of the following expressions
@@ -1281,15 +1291,18 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 <hr>
 <div class="paragraph">
-<p>While mm-ADT supports the full spectrum of polynomial forms, there are two significant forms that are at the extreme ends of the type/value <code>obj</code> divide and they function to either structure data or processes.</p>
+<p>There are three kinds of <code>polys</code>: <code>vpoly</code>, <code>tpoly</code>, and <code>tvpoly</code>. The <code>vpolys</code> and <code>tpolys</code> are fixpoint structures denoting purely data or process structures and exist at the extreme ends of the type/value <code>obj</code> divide. Between these extremes are the <code>tvpolys</code>. These <code>polys</code> can be understood as representing either a process that hasn&#8217;t returned terminated (evaluation) or a data structure containing functions (references).</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Data structures</strong> (<em>data</em>): A value-only <code>poly</code> is called a <em>determinate polynomial</em> (i.e., a <code>poly</code> lacking indeterminates).</p>
+<p><strong>Data structures</strong> (<em>data</em>): A value-only <code>poly</code> is called a <em>determinate polynomial</em> or <code>vpoly</code> (i.e., a <code>poly</code> lacking indeterminates).</p>
 </li>
 <li>
-<p><strong>Process structures</strong> (<em>program</em>): A type-only <code>poly</code> is called an <em>inconstant polynomial</em> (i.e., a <code>poly</code> lacking constants).</p>
+<p><strong>Process structures</strong> (<em>program</em>): A type-only <code>poly</code> is called an <em>inconstant polynomial</em> or <code>tpoly</code> (i.e., a <code>poly</code> lacking constants).</p>
+</li>
+<li>
+<p><strong>Computational structures</strong> (<em>computing</em>): a type/value <code>poly</code> is a <code>tvpoly</code> (i.e., a <code>poly</code> at an intermediate state between a <code>tpoly</code> or <code>vpoly</code> fixpoint).</p>
 </li>
 </ol>
 </div>
@@ -1299,7 +1312,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 <div class="sect4">
 <h5 id="_data_structures">Data Structures</h5>
 <div class="paragraph">
-<p>Determinate polynomials are degenerate in that their terms contain only values (constants). A three term determinate whose constants are in <code>str</code> is below.</p>
+<p>Determinate polynomials are degenerate in that their terms contain only values (constants). A three term <code>,-vpoly</code> whose constants are in <code>str</code> is below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1308,7 +1321,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 </div>
 <div class="paragraph">
-<p>An empty term (zero-degree) <code>,-poly</code> has the following form in <code>mmlang</code></p>
+<p>An empty term (zero-degree) <code>,-vpoly</code> has the following form in <code>mmlang</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1317,7 +1330,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 </div>
 <div class="paragraph">
-<p>A single term <code>,-poly</code> also uses a <code>.</code> as a terminator token.</p>
+<p>A single term <code>,-vpoly</code> also uses a <code>.</code> as a terminator token.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1326,7 +1339,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 </div>
 <div class="paragraph">
-<p>The reason for <code>.</code> is that the <code>,-poly</code> below is a two term poly with the second term being <code>obj{0}</code>.</p>
+<p>The reason for <code>.</code> is that the <code>,-vpoly</code> below is a two term poly with the second term being <code>obj{0}</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1353,7 +1366,7 @@ language error: poly index is out of bounds: 1</code></pre>
 <th class="tableblock halign-left valign-top">arg(s)</th>
 <th class="tableblock halign-left valign-top">range</th>
 <th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">mmlang example</th>
+<th class="tableblock halign-left valign-top">mmlang vpoly example</th>
 </tr>
 </thead>
 <tbody>
@@ -1468,7 +1481,7 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 <th class="tableblock halign-left valign-top">arg(s)</th>
 <th class="tableblock halign-left valign-top">range</th>
 <th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">mmlang example</th>
+<th class="tableblock halign-left valign-top">mmlang vpoly example</th>
 </tr>
 </thead>
 <tbody>
@@ -1501,10 +1514,10 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 </tbody>
 </table>
 <div class="exampleblock">
-<div class="title">Example 1. A Note on Determinate Polys and the Identity Type</div>
+<div class="title">Example 1. Determinate Polys and the Constant Identity Type</div>
 <div class="content">
 <div class="paragraph">
-<p>The degenerate determinate <code>poly</code> is composed of value only terms.</p>
+<p>A determinate <code>vpoly</code> has terms containing only values.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1513,7 +1526,7 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 </div>
 </div>
 <div class="paragraph">
-<p>Another interpretation is a <code>poly</code> whose term types are always <code>[id]</code>.</p>
+<p>Another interpretation of a determinate poly states that the polynomial has term types <code>[id]</code>. More specifically, for <code>int</code> constants, <code>int[id]</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1522,7 +1535,7 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 </div>
 </div>
 <div class="paragraph">
-<p>When the <code>poly</code> is solved using <code>-&lt;</code> and <code>&gt;-</code>, the determinate form is realized.</p>
+<p>When the <code>tvpoly</code> is solved using <code>-&lt;</code> and <code>&gt;-</code>, the determinate form is realized as a <code>vpoly</code> (the fixpoint).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2355,7 +2368,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-23 01:48:52 -0600
+Last updated 2020-05-23 02:30:55 -0600
 </div>
 </div>
 </body>
