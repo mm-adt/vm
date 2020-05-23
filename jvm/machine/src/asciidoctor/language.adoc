@@ -465,7 +465,7 @@ The `poly` serves two primary roles in mm-ADT:
 
 ===== Process Structures
 
-===== Free Monoids
+====== Free Monoids
 
 [.small]
 [cols="1,1,1,1",width=30%,float=left]
@@ -544,8 +544,7 @@ coproduct +
 | image:pipe-delta-nabla.png[width=455,link=images/language/pipe-delta-nabla.png]
 |===
 
-
-===== Free Ring
+====== Free Ring
 
 The two `;,-poly` monoids serve as components of a https://en.wikipedia.org/wiki/Universal_algebra[universal algebra] that implements the https://zenodo.org/record/2565243[stream ring] algebra -- the foundational algebra of the mm-ADT VM. The two `poly` monoids form a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and thus, a syntactic https://en.wikipedia.org/wiki/Free_algebra[free algebra] that enables mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming] by way of a https://en.wikipedia.org/wiki/Ring_homomorphism[ring homomorphism] from the *structural* ` `;,-poly` free ring to the corresponding reductive *procedural* ring such that
 \[
