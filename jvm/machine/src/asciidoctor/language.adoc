@@ -456,12 +456,18 @@ mmlang>
 
 ==== Poly Types
 
+image::poly-type-value.png[float=right,width=525]
+
 The elements of the set \$\mathbf{Poly}\$ are https://en.wikipedia.org/wiki/Polynomial[polynomials] denoted `poly`. A `poly` is the composite of:
 
 . *terms*: `objs` connected by the multiplicative operator `;` (_andThen_).
 .. *indeterminates*: type `objs` known as variables or symbols.
 .. *constants*: value `objs` known as constants.
-. *sum composites*: the symbols `,` (_orThen_) and `|` (_xorThen_) relate terms by a function with the general form \$ \tt{obj} = \sum_{i<n} \tt{v}_i;\tt{t}_i \$.
+. *sum composites*: the symbols `,` (_orThen_) and `|` (_xorThen_) relate terms by a function with the general form
+
+\[
+\texttt{obj} = \sum_{i<n} (v_i \cdot t_i).
+\]
 
 If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT `obj` values, \$T \subset \mathbf{Obj}\$ the set of `obj` types, \$V \cap \T = \emptyset \$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is denoted in conventional algebraic notation as one of the following expressions
 \[
@@ -479,16 +485,17 @@ and is denoted, in `mmlang`, as either one of the expressions below, respectivel
 
 '''
 
-While mm-ADT supports the full spectrum of polynomial forms, there are two significant forms that are at the extreme ends of the type/value `obj` divide and they function to either structure data or processes.
+There are three kinds of `polys`: `vpoly`, `tpoly`, and `tvpoly`. The `vpolys` and `tpolys` are fixpoint structures denoting purely data or process structures and exist at the extreme ends of the type/value `obj` divide. Between these extremes are the `tvpolys`. These `polys` can be understood as representing either a process that hasn't returned terminated (evaluation) or a data structure containing functions (references).
 
-. *Data structures* (_data_): A value-only `poly` is called a _determinate polynomial_ (i.e., a `poly` lacking indeterminates).
-. *Process structures* (_program_): A type-only `poly` is called an _inconstant polynomial_ (i.e., a `poly` lacking constants).
+. *Data structures* (_data_): A value-only `poly` is called a _determinate polynomial_ or `vpoly` (i.e., a `poly` lacking indeterminates).
+. *Process structures* (_program_): A type-only `poly` is called an _inconstant polynomial_ or `tpoly` (i.e., a `poly` lacking constants).
+. *Computational structures* (_computing_): a type/value `poly` is a `tvpoly` (i.e., a `poly` at an intermediate state between a `tpoly` or `vpoly` fixpoint).
 
 mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
 
 ===== Data Structures
 
-Determinate polynomials are degenerate in that their terms contain only values (constants). A three term determinate whose constants are in `str` is below.
+Determinate polynomials are degenerate in that their terms contain only values (constants). A three term `,-vpoly` whose constants are in `str` is below.
 
 [source]
 ----
@@ -496,7 +503,7 @@ mmlang> ['a','b','c']
 ==>['a','b','c']
 ----
 
-An empty term (zero-degree) `,-poly` has the following form in `mmlang`
+An empty term (zero-degree) `,-vpoly` has the following form in `mmlang`
 
 [source]
 ----
@@ -504,7 +511,7 @@ mmlang> [,.]
 ==>[,.]
 ----
 
-A single term `,-poly` also uses a `.` as a terminator token.
+A single term `,-vpoly` also uses a `.` as a terminator token.
 
 [source]
 ----
@@ -512,7 +519,7 @@ mmlang> ['a',.]
 ==>['a',.]
 ----
 
-The reason for `.` is that the `,-poly` below is a two term poly with the second term being `obj{0}`.
+The reason for `.` is that the `,-vpoly` below is a two term poly with the second term being `obj{0}`.
 
 [source]
 ----
@@ -527,7 +534,7 @@ language error: poly index is out of bounds: 1
 
 [cols="1,1,1,5,8",width=100%]
 |===
-| inst     |  arg(s)   | range  | description | mmlang example
+| inst     |  arg(s)   | range  | description | mmlang vpoly example
 
 | `[plus]` | `poly`    | `poly` | a right concatenation of the `poly` argument
 a|
@@ -593,7 +600,7 @@ mmlang> ['a','b','c'][put,5,'e']
 
 [cols="1,1,1,5,8",width=100%]
 |===
-| inst     |  arg(s)   | range  | description | mmlang example
+| inst     |  arg(s)   | range  | description | mmlang vpoly example
 
 | `[split]`  | `poly` | `poly`  |
 a|
@@ -613,9 +620,9 @@ mmlang> -<['a','b','c']>-
 ----
 |===
 
-.A Note on Determinate Polys and the Identity Type
+.Determinate Polys and the Constant Identity Type
 ====
-The degenerate determinate `poly` is composed of value only terms.
+A determinate `vpoly` has terms containing only values.
 
 [source]
 ----
@@ -623,7 +630,7 @@ mmlang> [1,2,3]
 ==>[1,2,3]
 ----
 
-Another interpretation is a `poly` whose term types are always `[id]`.
+Another interpretation of a determinate poly states that the polynomial has term types `[id]`. More specifically, for `int` constants, `int[id]`.
 
 [source]
 ----
@@ -631,7 +638,7 @@ mmlang> [[1;[id]],[2;[id]],[3;[id]]]
 ==>[[1;_[id]],[2;_[id]],[3;_[id]]]
 ----
 
-When the `poly` is solved using `-<` and `>-`, the determinate form is realized.
+When the `tvpoly` is solved using `-<` and `>-`, the determinate form is realized as a `vpoly` (the fixpoint).
 
 [source]
 ----
