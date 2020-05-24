@@ -1113,8 +1113,8 @@ A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_cat
 | axiom | mmlang type | description
 
 | \$a + b = b + a \$                           | `(a\|b) = (b\|a)`                    | commutative coproducts
-| \$(a + b) + c = a + (b + c)\$                | `\((a\|b)\|c) = (a\|<b\|c))`         | associative coproducts
-| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `(a;(b\|c)) = ((a;b>\|(a;c))`       | distributivity
+| \$(a + b) + c = a + (b + c)\$                | `\((a\|b)\|c) = (a\|(b\|c))`         | associative coproducts
+| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `(a;(b\|c)) = \((a;b)\|(a;c))`       | distributivity
 | \$0 + a = a\$                                | `(_{0}\|a) = a`                      | coproduct unit
 | \$0 \ast a = 0\$                             | `(_{0};a) = _{0}`                    | coproduct unit annihilation
 | \$1 \ast a = a\$                             | `(_{1};a) = a`                       | product unit
