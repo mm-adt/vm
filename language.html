@@ -2266,12 +2266,12 @@ mmlang&gt; [[1,2,3],
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>((a|b)|c) = (a|&lt;b|c))</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>((a|b)|c) = (a|(b|c))</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a;(b|c)) = a;b&gt;|(a;c</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a;(b|c)) = ((a;b)|(a;c))</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
 </tr>
 <tr>
@@ -2765,7 +2765,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-24 13:19:33 -0600
+Last updated 2020-05-24 13:23:56 -0600
 </div>
 </div>
 </body>

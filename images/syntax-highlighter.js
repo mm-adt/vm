@@ -24,7 +24,7 @@ $(document).ready(function(){
   var items =    {"op":      ["a","compose","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map",
                               "split","merge","head","tail","div","minus","choose","put"],
-                  "infix":   ["|","&&"],
+                  "infix":   ["|","&&",","],
                   "value":   ["true","false"],
                   "type":    ["_","real","rec","lst","tvpoly","vpoly","tpoly","poly","inst",
                               "obj","int","str","bool","range","domain"],
