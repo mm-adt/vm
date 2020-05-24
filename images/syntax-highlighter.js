@@ -41,4 +41,5 @@ $(document).ready(function(){
    //////////////////
    $("a[href^='https://en.wikipedia.org/wiki']").miniPreview({ prefetch: 'parenthover',width:800,height:400,scale:0.9}); // WIKIPEDIA PAGE PREVIEW
    $("iframe[class='mini-preview-frame']").attr( "style", function( i, value ) { return value + ";margin-top:-75px;margin-left:-160px;width:136%;height:133%;"; });
+   $("div[class='mini-preview-wrapper']").attr("style","width:800px;height:400px;top:22.1px;left:820px;position:fixed;")
 });
