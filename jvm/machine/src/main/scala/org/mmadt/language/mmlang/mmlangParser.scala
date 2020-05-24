@@ -138,7 +138,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
       Tokens.combine_op | Tokens.a_op | Tokens.is) ~ obj ^^
     (x => OpInstResolver.resolve(x._1, List(x._2)))
   lazy val splitMergeSugar: Parser[List[Inst[Obj, Obj]]] = LANGLE ~> polyObj <~ RANGLE ^^ (x => List(SplitOp(x), MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]]))
-  lazy val splitMergeSuperSugar: Parser[List[Inst[Obj, Obj]]] = LANGLE ~> lstStruct <~ RANGLE ^^ (x => List(SplitOp(lst(x._1, x._2: _*)), MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]]))
+  lazy val splitMergeSuperSugar: Parser[List[Inst[Obj, Obj]]] = LROUND ~> lstStruct <~ RROUND ^^ (x => List(SplitOp(lst(x._1, x._2: _*)), MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]]))
   lazy val splitSugar: Parser[Inst[Obj, Obj]] = Tokens.split_op ~> (polyObj | recTypeNoPrefix | recType | recValue) ^^ (x => SplitOp(x.asInstanceOf[Poly[Obj]]))
   lazy val mergeSugar: Parser[Inst[Obj, Obj]] = Tokens.merge_op ^^ (_ => MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]])
   lazy val getStrSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))

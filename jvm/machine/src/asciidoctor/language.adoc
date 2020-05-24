@@ -456,13 +456,13 @@ mmlang>
 
 ==== Poly Types
 
-[cols="1,2,4,4",width=50%,float=right]
+[cols="0,1,2,1",width=50%,float=right]
 |===
-| poly |  inst       | polynomial form   | monoid form
+| poly |  inst       | polynomial form   | monoidal
 
-| `,`  | `[branch]`  | commutative       | monoid ring
-| `\|` | `[choose]`  | non-commutative   | monoid ring
-| `;`  | `[compose]` | semi-commutative  | monoid monoid
+| `,`  | `[branch]`  | commutative       | ring `+`
+| `\|` | `[choose]`  | non-commutative   | ring `+`
+| `;`  | `[compose]` | semi-commutative  | monoid `*`
 |===
 
 The elements of the set `poly` are https://en.wikipedia.org/wiki/Polynomial[polynomials]. A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
@@ -520,20 +520,30 @@ A `tpoly` can be understood as either an unordered (`,`) or ordered (`|`, `;`) c
 
 [source]
 ----
-mmlang> 3-<[_[plus,1],_[mult,2]]   <1>
+mmlang> 3-<[[plus,1],[mult,2]]   <1>
 ==>[4,6]
-mmlang> 3-<[_[plus,1]|_[mult,2]]   <2>
+mmlang> 3-<[[plus,1]|[mult,2]]   <2>
 ==>[4|]
-mmlang> 3-<[_[plus,1];_[mult,2]]   <3>
+mmlang> 3-<[[plus,1];[mult,2]]   <3>
 ==>[4;8]
 ----
 <1> A polynomial solved as `[3+1,3*2]` (or).
 <2> A polynomial solved as `[3+1,obj{0}]` (exclusive or).
 <3> A polynomial solved as `[3+1,3+1*2]`  (and).
 
-===== Three Polynomial Rings
+[NOTE]
+================================================================
+The two terms of the polynomial `[bool\<=int[gt,0],bool\<=int[gt,10]]` are `bool` types. The two terms of `[[gt,0],[gt,10]]` are `_` types (anonymous types). A compilation process infers the domain/range of the anonymous types.
+[source]
+----
+mmlang> -<[[gt,0],[gt,10]]
+==>[bool<=_[gt,0],bool<=_[gt,10]]
+mmlang> int-<[[gt,0],[gt,10]]
+==>[bool<=int[gt,0],bool<=int[gt,10]]
+----
+================================================================
 
-A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings] (also known as https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]). Every `poly` draws from the same `obj` carrier set, but are combined using different "additive" operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `|` is idempotent addition and `;` yields a non-commutative polynomial ring. The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
+A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings] (also known as https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]). Every `poly` draws from the same `obj` carrier set, but are combined using different "additive" operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `|` yields a non-commutative polynomial and `;` yields a semi-commutative polynomial ring with "addition" being monoid multiplication. The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
 
 [source]
 ----
@@ -542,19 +552,19 @@ A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring
 [[t0{q0}];[t1{q1}];...;[tn{qn}]]
 ----
 
-====== The ,-poly with Or Branching
+===== orThen ,-poly
 
-A `,-poly` is a classic, commutative, polynomial ring with term addition defined as
+A `,-poly` is a https://en.wikipedia.org/wiki/Commutative_property[commutative], polynomial ring with term addition defined as
 
 \[
-\texttt{t0\{q0\}} , \texttt{t1\{q1\}} =
+\texttt{t0\{q0\},t1\{q1\}} =
 \begin{cases}
-\texttt{t0\{q0+q1\}}                     & \text{if } \texttt{t0} = \texttt{t1}, \\
-\texttt{t0\{q0\}} , \texttt{t1\{q1\}}    & \text{otherwise.}
+\texttt{t0\{q0+q1\}}          & \text{if } \texttt{t0==t1}, \\
+\texttt{t0\{q0\},t1\{q1\}}    & \text{otherwise.}
 \end{cases}
 \]
 
-The above states that if two terms have equivalent indeterminates, then their coefficients can be summed. In the lexicon of mm-ADT, the equation states that if two type instruction sequences are equivalent, then their quantifiers can be summed according to the rules of the additive operator of the respective quantifier ring. The following `mmlang` examples highlight the above equation, but from within the category of the `inst` monoid.
+If the indeterminates of two terms are equal, then they can be merged by summing their coefficients. In the lexicon of mm-ADT, if two types are equal, then their quantifiers can be summed using the additive operator of the respective quantifier ring. Within the category of the `inst` monoid, the following `mmlang` examples highlight the salient features of `|-poly` addition.
 
 [source]
 ----
@@ -568,11 +578,11 @@ mmlang> 'marko'{2}                                <4>
 ==>'marko'{2}
 ----
 <1> The `'mar'` `str` is copied as input to two `[plus,'ko']` branches.
-<2> Polynomial summation of quantifiers is possible because the two branches are equal.
-<3> With only one "branch", the expression resolves to a single term polynomial.
-<4> The polynomial no longer has indeterminates and thus, is solved.
+<2> Branch aggregation by coefficient summation is possible because the two branches are equal.
+<3> With only one "branch," the expression can be extracted from `[branch]`.
+<4> The expression has reached a fixpoint and thus, is solved.
 
-Using `polys`, the previous `mmlang` examples are written as follows.
+In the category `poly`, the previous `mmlang` examples are written as follows.
 
 [source]
 ----
@@ -584,7 +594,7 @@ mmlang> -<[[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]>-
 ==>'marko'{2}
 ----
 
-The last expression demonstrates a property of all rings: multiplication both right and left distributes over addition.
+The last expression demonstrates a property of all rings: multiplication both right and left https://en.wikipedia.org/wiki/Distributive_property[distributes] over addition.
 \[
 \begin{split}
 a(b+c) &=& \; ab + ac \\
@@ -602,15 +612,55 @@ mmlang> -<[[start,'b'],[start,'c']]>-[plus,'a']
 ==>'ca'
 ----
 
-====== The |-poly and Exclusive Or Branching
+.Type Equality
+================================================================
+Two `,-poly` terms can be added if their indeterminates are equal. For the monotypes such as `bool`, `int`, `real`, and `str`, equality is based on the grounded value of the type. Equality ignores quantification and trace history.
+
+[source]
+----
+mmlang> 'a'=='a'
+==>true
+mmlang> 'a'=='ab'
+==>false
+mmlang> 6==6
+==>true
+mmlang> 6==6{10}
+==>true
+mmlang> 6{20}==6{10}
+==>true{20}
+mmlang>
+----
+
+Every type is either a ctype or a dtype. A ctype does not have a trace. A dtype's trace is the list of instructions rooted at a ctype. Type equality is based on ctype and trace equality.
+
+[source]
+----
+mmlang> [int,.]==[int,.]
+==>true
+mmlang> [int,.]==[int[plus,10],.]
+==>false
+mmlang> [int[plus,10],.]==[int[plus,10],.]
+==>true
+----
+
+In the example below, the two traces are different, but the semantics of the expression are the same. Thus, as a polynomial, these two terms should be combined. This is accomplished via a particular type of https://en.wikipedia.org/wiki/Rewriting[rewrite system] for _type rewrites_. Given a specification of type equivalences (as defined by their trace), `int[plus,10][plus,0]` is rewritten to `int[plus,10]`. At which point the two types are equivalent and can be merged accordingly.
+
+[source]
+----
+mmlang> [int[plus,10],.]==[int[plus,10][plus,0],.]
+==>false
+----
+================================================================
+
+===== xorThen |-poly
 
 A `|-poly` is a non-commutative polynomial ring, where term addition is defined as
 
 \[
-\texttt{t0\{q0\}} | \texttt{t1\{q1\}} =
+\texttt{t0\{q0\}|t1\{q1\}} =
 \begin{cases}
-\texttt{t0\{q0\}}    & \text{if } x=>\texttt{t0\{q0\}}  \notin \texttt{obj\{0\}}, \\
-\texttt{t1\{q1\}}    & \text{if } x=>\texttt{t1\{q1\}}  \notin \texttt{obj\{0\}}, \\
+\texttt{t0\{q0\}}    & \text{if } x=>\texttt{t0\{q0\}} \notin \texttt{obj\{0\}}, \\
+\texttt{t1\{q1\}}    & \text{if } x=>\texttt{t1\{q1\}} \notin \texttt{obj\{0\}}, \\
 \texttt{obj\{0\}}    & \text{otherwise.}
 \end{cases}
 \]
@@ -638,13 +688,14 @@ mmlang> 'mar'-<[[plus,'ko']{0}|[plus,'io']{0}]>-
 mmlang>
 ----
 
+Every `|-poly` is non-commutative because the order in which the terms/branches are evaluated determines the result of the computation. While `,-poly` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-poly` implements link:https://en.wikipedia.org/wiki/Null_(SQL)#COALESCE[coalesce].
 
-====== The ;-poly and Composition Chains
+===== andThen ;-poly
 
-A `;-poly` is a semi-commutative polynomial ring, where term "addition" is ring multiplication and is defined as
+A `;-poly` is a semi-commutative polynomial ring, where term "addition" is ring multiplication and thus, is monoid multiplication. Monoid multiplication is standard type composition and is defined as
 
 \[
-\texttt{t0\{q0\}} ; \texttt{t1\{q1\}} = \texttt{t0 t1\{q0 * q1\}}
+\texttt{t0\{q0\};t1\{q1\} = t0;t1\{q0*q1\}}
 \]
 
 [source]
@@ -664,6 +715,19 @@ mmlang> 'mar'-<[[plus,'k'];[plus,'o']]>-
 mmlang> 'mar'-<[[plus,'k'];[plus,'o']{0}]>-
 mmlang>
 ----
+
+[NOTE]
+================================================================
+The `[compose]` instruction is a https://en.wikipedia.org/wiki/Higher-order_function[higher-order instruction] that yields the same result as fundamental instruction composition/concatenation.
+
+[source]
+----
+mmlang> 'mar'[plus,'k']{2}[plus,'o']{3}
+==>'marko'{6}
+mmlang> 'mar'[plus,'k']{2}[plus,'o']{0}
+mmlang>
+----
+================================================================
 
 ====== Poly Domain Instructions
 
@@ -1048,13 +1112,13 @@ A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_cat
 |===
 | axiom | mmlang type | description
 
-| \$a + b = b + a \$                           | `<a\|b> = <b\|a>`                    | commutative coproducts
-| \$(a + b) + c = a + (b + c)\$                | `\<<a\|b>\|c> = <a\|<b\|c>>`         | associative coproducts
-| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `<a;<b\|c>> = \<<a;b>\|<a;c>>`       | distributivity
-| \$0 + a = a\$                                | `<_{0}\|a> = a`                      | coproduct unit
-| \$0 \ast a = 0\$                             | `<_{0};a> = _{0}`                    | coproduct unit annihilation
-| \$1 \ast a = a\$                             | `<_{1};a> = a`                       | product unit
-| \$c^ {b^a} = c^{a \ast b}\$                  | `<a;b;c> = <<a;b>;c>`                | currying
+| \$a + b = b + a \$                           | `(a\|b) = (b\|a)`                    | commutative coproducts
+| \$(a + b) + c = a + (b + c)\$                | `\((a\|b)\|c) = (a\|<b\|c))`         | associative coproducts
+| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `(a;(b\|c)) = ((a;b>\|(a;c))`       | distributivity
+| \$0 + a = a\$                                | `(_{0}\|a) = a`                      | coproduct unit
+| \$0 \ast a = 0\$                             | `(_{0};a) = _{0}`                    | coproduct unit annihilation
+| \$1 \ast a = a\$                             | `(_{1};a) = a`                       | product unit
+| \$c^ {b^a} = c^{a \ast b}\$                  | `(a;b;c) = ((a;b);c)`                | currying
 |===
 
 ==== The Inst Monoid
@@ -1146,14 +1210,14 @@ Every ring(oid) must satisfy the following axioms. The respective `mmlang` expre
 |===
 | common notation                    | terminology                              | mmlang notation
 
-|\$(a + b) + c = a + (b + c)\$       | additive associativity                   | `\<<a,b>,c>` \$\cong\$ `<a,<b,c>>`
-|\$0 + a = a + 0 = a\$               | additive identity                        | `<\_{0},a>` \$\cong\$ `<a,_{0}>` \$\cong\$ `a`
-|\$a - a = a + (-a) = 0\$            | additive inverses                        | `<a,a{-1}>` \$\cong\$ `_{0}`
-|\$a + b = b + a\$                   | additive commutativity                   | `<a,b>` \$\cong\$ `<b,a>`
-|\$(a * b) * c = a * (b * c)\$       | multiplicative associativity             | `\<<a;b>;c>` \$\cong\$ `<a;<b;c>>`
-|\$1 * a = a * 1 = a\$               | multiplicative identity                  | `<\_;a>` \$\cong\$ `<a;_>` \$\cong\$ `a`
-|\$(a + b) * c = (a * c) + (b * c)\$ | multiplicative left distributivity       | `\<<a,b>;c>` \$\cong\$ `<<a;c>,<b;c>>`
-|\$a * (b + c) = (a * b) + (a * c)\$ | multiplicative right distributivity      | `<a;<b,c>>` \$\cong\$ `\<<a;b>,<a;c>>`
+|\$(a + b) + c = a + (b + c)\$       | additive associativity                   | `\((a,b),c)` \$\cong\$ `(a,(b,c))`
+|\$0 + a = a + 0 = a\$               | additive identity                        | `(\_{0},a)` \$\cong\$ `(a,_{0})` \$\cong\$ `a`
+|\$a - a = a + (-a) = 0\$            | additive inverses                        | `(a,a{-1})` \$\cong\$ `_{0}`
+|\$a + b = b + a\$                   | additive commutativity                   | `(a,b)` \$\cong\$ `(b,a)`
+|\$(a * b) * c = a * (b * c)\$       | multiplicative associativity             | `\((a;b);c)` \$\cong\$ `(a;(b;c))`
+|\$1 * a = a * 1 = a\$               | multiplicative identity                  | `(\_;a)` \$\cong\$ `(a;_)` \$\cong\$ `a`
+|\$(a + b) * c = (a * c) + (b * c)\$ | multiplicative left distributivity       | `\((a,b);c)` \$\cong\$ `((a;c),(b;c))`
+|\$a * (b + c) = (a * b) + (a * c)\$ | multiplicative right distributivity      | `(a;(b,c))` \$\cong\$ `\((a;b),(a;c))`
 |===
 
 The most commonly used theorems entailed by the ring axioms are provided below.
@@ -1163,13 +1227,13 @@ The most commonly used theorems entailed by the ring axioms are provided below.
 |===
 | common notation                    | deduction                                | mmlang notation
 
-|\$a + b = a + c \=> b = c\$         | factors                                  |
-|\$a + b = 0 \=> a = -b & b = -a\$   | unique inverse                           |
-|\$-(a+b) = (-a) + (-b)\$            | distributivity                           | `<a,b>{-1}` \$\cong\$ `<a{-1},b{-1}>`
-|\$-(-a) = a\$                       | distributivity                           | `<a{-1}>{-1}` \$\cong\$ `a`
-|\$a*0 = 0 = 0*a\$                   | annihilator                              | `<a;_{0}>` \$\cong\$ `\_{0}` \$\cong\$ `<_{0};a>`
-|\$a * (-b) = -a * b = -(a * b)\$    | factors                                  | `<a;b{-1}>` \$\cong\$ `<a{-1};b>` \$\cong\$ `<a;b>{-1}`
-|\$(-a) * (-b) = a * b\$             | factors                                  | `<a{-1};b{-1}>` \$\cong\$ `<a;b>`
+|\$a + b = a + c \=) b = c\$         | factors                                  |
+|\$a + b = 0 \=) a = -b & b = -a\$   | unique inverse                           |
+|\$-(a+b) = (-a) + (-b)\$            | distributivity                           | `(a,b){-1}` \$\cong\$ `(a{-1},b{-1})`
+|\$-(-a) = a\$                       | distributivity                           | `(a{-1}){-1}` \$\cong\$ `a`
+|\$a*0 = 0 = 0*a\$                   | annihilator                              | `(a;_{0})` \$\cong\$ `\_{0}` \$\cong\$ `(_{0};a)`
+|\$a * (-b) = -a * b = -(a * b)\$    | factors                                  | `(a;b{-1})` \$\cong\$ `(a{-1};b)` \$\cong\$ `(a;b){-1}`
+|\$(-a) * (-b) = a * b\$             | factors                                  | `(a{-1};b{-1})` \$\cong\$ `(a;b)`
 |===
 
 Every corresponding `mmlang` expression makes use of `poly`-types. In `mmlang`, a `poly` can be denoted as a _structure_ via `[ ]` (a value) or as a _process_ via `< >` (a type). The example 3-slot `int` `,-poly` below has a domain of `int` and a range of `int{1,3}`. This branch structure will product one, two, or three `ints` given a single `int`.
@@ -1188,9 +1252,9 @@ The `< >` `poly` form is `mmlang` sugar with the following derivation.
 
 \[
 \begin{split}
-\texttt{<a,b,c>}               & \implies \\
+\texttt{(a,b,c)}               & \implies \\
 \texttt{-<[a,b,c]>-}           & \implies \\
-\texttt{[delta,a,b,c][nabla]}  & \implies \\
+\texttt{[branch,a,b,c]}  & \implies \\
 \end{split}
 \]
 
