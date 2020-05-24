@@ -488,7 +488,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_poly_types">Poly Types</a>
 <ul class="sectlevel4">
-<li><a href="#_three_polynomial_rings">Three Polynomial Rings</a></li>
+<li><a href="#_orthen_poly">orThen ,-poly</a></li>
+<li><a href="#_xorthen_poly">xorThen |-poly</a></li>
+<li><a href="#_andthen_poly">andThen ;-poly</a></li>
 <li><a href="#_free_poly_monoid">Free Poly Monoid</a></li>
 <li><a href="#_poly_patterns">Poly Patterns</a></li>
 </ul>
@@ -1524,17 +1526,17 @@ mmlang&gt;</code></pre>
 <h4 id="_poly_types">Poly Types</h4>
 <table class="tableblock frame-all grid-all right" style="width: 50%;">
 <colgroup>
-<col style="width: 9.0909%;">
-<col style="width: 18.1818%;">
-<col style="width: 36.3636%;">
-<col style="width: 36.3637%;">
+<col style="width: 0%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+<col style="width: 25%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">poly</th>
 <th class="tableblock halign-left valign-top">inst</th>
 <th class="tableblock halign-left valign-top">polynomial form</th>
-<th class="tableblock halign-left valign-top">monoid form</th>
+<th class="tableblock halign-left valign-top">monoidal</th>
 </tr>
 </thead>
 <tbody>
@@ -1542,19 +1544,19 @@ mmlang&gt;</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">commutative</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">monoid ring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ring <code>+</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[choose]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">non-commutative</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">monoid ring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ring <code>+</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[compose]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">semi-commutative</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">monoid monoid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">monoid <code>*</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1658,11 +1660,11 @@ language error: poly index <span style="color:#080;font-weight:bold">is</span> o
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">3</span>-&lt;[_[plus,<span style="color:#00D">1</span>],_[mult,<span style="color:#00D">2</span>]]   <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">3</span>-&lt;[[plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>]]   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;[<span style="color:#00D">4</span>,<span style="color:#00D">6</span>]
-mmlang&gt; <span style="color:#00D">3</span>-&lt;[_[plus,<span style="color:#00D">1</span>]|_[mult,<span style="color:#00D">2</span>]]   <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; <span style="color:#00D">3</span>-&lt;[[plus,<span style="color:#00D">1</span>]|[mult,<span style="color:#00D">2</span>]]   <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;[<span style="color:#00D">4</span>|]
-mmlang&gt; <span style="color:#00D">3</span>-&lt;[_[plus,<span style="color:#00D">1</span>];_[mult,<span style="color:#00D">2</span>]]   <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; <span style="color:#00D">3</span>-&lt;[[plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>]]   <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;[<span style="color:#00D">4</span>;<span style="color:#00D">8</span>]</code></pre>
 </div>
 </div>
@@ -1682,10 +1684,30 @@ mmlang&gt; <span style="color:#00D">3</span>-&lt;[_[plus,<span style="color:#00D
 </tr>
 </table>
 </div>
-<div class="sect4">
-<h5 id="_three_polynomial_rings">Three Polynomial Rings</h5>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>A <code>poly</code> is an element in one of 3 <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial rings</a> (also known as <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a>). Every <code>poly</code> draws from the same <code>obj</code> carrier set, but are combined using different "additive" operators: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>|</code> is idempotent addition and <code>;</code> yields a non-commutative polynomial ring. The general form of a <code>poly</code> from each of the three polynomial rings is expressed below in <code>mmlang</code>.</p>
+<p>The two terms of the polynomial <code>[bool&lt;=int[gt,0],bool&lt;=int[gt,10]]</code> are <code>bool</code> types. The two terms of <code><a id="gt"></a></code> are <code>_</code> types (anonymous types). A compilation process infers the domain/range of the anonymous types.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; -&lt;[[gt,<span style="color:#00D">0</span>],[gt,<span style="color:#00D">10</span>]]
+==&gt;[<span style="color:#369;font-weight:bold">bool</span>&lt;=_[gt,<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">bool</span>&lt;=_[gt,<span style="color:#00D">10</span>]]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>-&lt;[[gt,<span style="color:#00D">0</span>],[gt,<span style="color:#00D">10</span>]]
+==&gt;[<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">10</span>]]</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A <code>poly</code> is an element in one of 3 <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial rings</a> (also known as <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a>). Every <code>poly</code> draws from the same <code>obj</code> carrier set, but are combined using different "additive" operators: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>|</code> yields a non-commutative polynomial and <code>;</code> yields a semi-commutative polynomial ring with "addition" being monoid multiplication. The general form of a <code>poly</code> from each of the three polynomial rings is expressed below in <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1694,22 +1716,22 @@ mmlang&gt; <span style="color:#00D">3</span>-&lt;[_[plus,<span style="color:#00D
 [[t0{q0}];[t1{q1}];...;[tn{qn}]]</code></pre>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_the_poly_with_or_branching">The ,-poly with Or Branching</h6>
+<div class="sect4">
+<h5 id="_orthen_poly">orThen ,-poly</h5>
 <div class="paragraph">
-<p>A <code>,-poly</code> is a classic, commutative, polynomial ring with term addition defined as</p>
+<p>A <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>, polynomial ring with term addition defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{t0{q0}} , \texttt{t1{q1}} =
+\texttt{t0{q0},t1{q1}} =
 \begin{cases}
-\texttt{t0\{q0+q1\}}                     &amp; \text{if } \texttt{t0} = \texttt{t1}, \\
-\texttt{t0{q0}} , \texttt{t1{q1}}    &amp; \text{otherwise.}
+\texttt{t0\{q0+q1\}}          &amp; \text{if } \texttt{t0==t1}, \\
+\texttt{t0{q0},t1{q1}}    &amp; \text{otherwise.}
 \end{cases}
 \]</p>
 </div>
 <div class="paragraph">
-<p>The above states that if two terms have equivalent indeterminates, then their coefficients can be summed. In the lexicon of mm-ADT, the equation states that if two type instruction sequences are equivalent, then their quantifiers can be summed according to the rules of the additive operator of the respective quantifier ring. The following <code>mmlang</code> examples highlight the above equation, but from within the category of the <code>inst</code> monoid.</p>
+<p>If the indeterminates of two terms are equal, then they can be merged by summing their coefficients. In the lexicon of mm-ADT, if two types are equal, then their quantifiers can be summed using the additive operator of the respective quantifier ring. Within the category of the <code>inst</code> monoid, the following <code>mmlang</code> examples highlight the salient features of <code>|-poly</code> addition.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1731,20 +1753,20 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Polynomial summation of quantifiers is possible because the two branches are equal.</td>
+<td>Branch aggregation by coefficient summation is possible because the two branches are equal.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>With only one "branch", the expression resolves to a single term polynomial.</td>
+<td>With only one "branch," the expression can be extracted from <code>[branch]</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The polynomial no longer has indeterminates and thus, is solved.</td>
+<td>The expression has reached a fixpoint and thus, is solved.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Using <code>polys</code>, the previous <code>mmlang</code> examples are written as follows.</p>
+<p>In the category <code>poly</code>, the previous <code>mmlang</code> examples are written as follows.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1757,7 +1779,7 @@ mmlang&gt; -&lt;[[start,<span style="background-color:hsla(0,100%,50%,0.05)"><sp
 </div>
 </div>
 <div class="paragraph">
-<p>The last expression demonstrates a property of all rings: multiplication both right and left distributes over addition.
+<p>The last expression demonstrates a property of all rings: multiplication both right and left <a href="https://en.wikipedia.org/wiki/Distributive_property">distributes</a> over addition.
 \[
 \begin{split}
 a(b+c) &amp;=&amp; \; ab + ac \\
@@ -1775,18 +1797,63 @@ mmlang&gt; -&lt;[[start,<span style="background-color:hsla(0,100%,50%,0.05)"><sp
 ==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ca</span><span style="color:#710">'</span></span></code></pre>
 </div>
 </div>
+<div class="exampleblock">
+<div class="title">Deep Dive 1. Type Equality</div>
+<div class="content">
+<div class="paragraph">
+<p>Two <code>,-poly</code> terms can be added if their indeterminates are equal. For the monotypes such as <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>, equality is based on the grounded value of the type. Equality ignores quantification and trace history.</p>
 </div>
-<div class="sect5">
-<h6 id="_the_poly_and_exclusive_or_branching">The |-poly and Exclusive Or Branching</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>==<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
+==&gt;true
+mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>==<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>
+==&gt;false
+mmlang&gt; <span style="color:#00D">6</span>==<span style="color:#00D">6</span>
+==&gt;true
+mmlang&gt; <span style="color:#00D">6</span>==<span style="color:#00D">6</span>{<span style="color:#00D">10</span>}
+==&gt;true
+mmlang&gt; <span style="color:#00D">6</span>{<span style="color:#00D">20</span>}==<span style="color:#00D">6</span>{<span style="color:#00D">10</span>}
+==&gt;true{<span style="color:#00D">20</span>}
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Every type is either a ctype or a dtype. A ctype does not have a trace. A dtype&#8217;s trace is the list of instructions rooted at a ctype. Type equality is based on ctype and trace equality.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="color:#369;font-weight:bold">int</span>,.]==[<span style="color:#369;font-weight:bold">int</span>,.]
+==&gt;true
+mmlang&gt; [<span style="color:#369;font-weight:bold">int</span>,.]==[<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>],.]
+==&gt;false
+mmlang&gt; [<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>],.]==[<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>],.]
+==&gt;true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example below, the two traces are different, but the semantics of the expression are the same. Thus, as a polynomial, these two terms should be combined. This is accomplished via a particular type of <a href="https://en.wikipedia.org/wiki/Rewriting">rewrite system</a> for <em>type rewrites</em>. Given a specification of type equivalences (as defined by their trace), <code>int[plus,10][plus,0]</code> is rewritten to <code>int[plus,10]</code>. At which point the two types are equivalent and can be merged accordingly.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>],.]==[<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>][plus,<span style="color:#00D">0</span>],.]
+==&gt;false</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_xorthen_poly">xorThen |-poly</h5>
 <div class="paragraph">
 <p>A <code>|-poly</code> is a non-commutative polynomial ring, where term addition is defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{t0{q0}} | \texttt{t1{q1}} =
+\texttt{t0{q0}|t1{q1}} =
 \begin{cases}
-\texttt{t0{q0}}    &amp; \text{if } x&#8658;\texttt{t0{q0}}  \notin \texttt{obj{0}}, \\
-\texttt{t1{q1}}    &amp; \text{if } x&#8658;\texttt{t1{q1}}  \notin \texttt{obj{0}}, \\
+\texttt{t0{q0}}    &amp; \text{if } x&#8658;\texttt{t0{q0}} \notin \texttt{obj{0}}, \\
+\texttt{t1{q1}}    &amp; \text{if } x&#8658;\texttt{t1{q1}} \notin \texttt{obj{0}}, \\
 \texttt{obj{0}}    &amp; \text{otherwise.}
 \end{cases}
 \]</p>
@@ -1827,15 +1894,18 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 mmlang&gt;</code></pre>
 </div>
 </div>
-</div>
-<div class="sect5">
-<h6 id="_the_poly_and_composition_chains">The ;-poly and Composition Chains</h6>
 <div class="paragraph">
-<p>A <code>;-poly</code> is a semi-commutative polynomial ring, where term "addition" is ring multiplication and is defined as</p>
+<p>Every <code>|-poly</code> is non-commutative because the order in which the terms/branches are evaluated determines the result of the computation. While <code>,-poly</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-poly</code> implements <a href="https://en.wikipedia.org/wiki/Null_(SQL)#COALESCE">coalesce</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_andthen_poly">andThen ;-poly</h5>
+<div class="paragraph">
+<p>A <code>;-poly</code> is a semi-commutative polynomial ring, where term "addition" is ring multiplication and thus, is monoid multiplication. Monoid multiplication is standard type composition and is defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{t0{q0}} ; \texttt{t1{q1}} = \texttt{t0 t1\{q0 * q1\}}
+\texttt{t0{q0};t1{q1} = t0;t1\{q0*q1\}}
 \]</p>
 </div>
 <div class="listingblock">
@@ -1866,6 +1936,27 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 mmlang&gt;</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>[compose]</code> instruction is a <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instruction</a> that yields the same result as fundamental instruction composition/concatenation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]{<span style="color:#00D">3</span>}
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">6</span>}
+mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}
+mmlang&gt;</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect5">
 <h6 id="_poly_domain_instructions">Poly Domain Instructions</h6>
@@ -2473,37 +2564,37 @@ mmlang&gt; [[<span style="color:#00D">1</span>,<span style="color:#00D">2</span>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = b + a \$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a|b&gt; = &lt;b|a&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a|b) = (b|a)</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">commutative coproducts</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;&lt;a|b&gt;|c&gt; = &lt;a|&lt;b|c&gt;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>((a|b)|c) = (a|&lt;b|c))</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a;&lt;b|c&gt;&gt; = &lt;&lt;a;b&gt;|&lt;a;c&gt;&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a;(b|c)) = a;b&gt;|(a;c</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$0 + a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{0}|a&gt; = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(_{0}|a) = a</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$0 \ast a = 0\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{0};a&gt; = _{0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(_{0};a) = _{0}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit annihilation</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$1 \ast a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;_{1};a&gt; = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(_{1};a) = a</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">product unit</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$c^ {b^a} = c^{a \ast b}\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;a;b;c&gt; = &lt;&lt;a;b&gt;;c&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a;b;c) = ((a;b);c)</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">currying</p></td>
 </tr>
 </tbody>
@@ -2654,42 +2745,42 @@ mmlang&gt;</code></pre>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive associativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;a,b&gt;,c&gt;</code> \$\cong\$ <code>&lt;a,&lt;b,c&gt;&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>((a,b),c)</code> \$\cong\$ <code>(a,(b,c))</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$0 + a = a + 0 = a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive identity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;_{0},a&gt;</code> \$\cong\$ <code>&lt;a,_{0}&gt;</code> \$\cong\$ <code>a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(_{0},a)</code> \$\cong\$ <code>(a,_{0})</code> \$\cong\$ <code>a</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a - a = a + (-a) = 0\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive inverses</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a,a{-1}&gt;</code> \$\cong\$ <code>_{0}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a,a{-1})</code> \$\cong\$ <code>_{0}</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = b + a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive commutativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a,b&gt;</code> \$\cong\$ <code>&lt;b,a&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a,b)</code> \$\cong\$ <code>(b,a)</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$(a * b) * c = a * (b * c)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative associativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;a;b&gt;;c&gt;</code> \$\cong\$ <code>&lt;a;&lt;b;c&gt;&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>((a;b);c)</code> \$\cong\$ <code>(a;(b;c))</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$1 * a = a * 1 = a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative identity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;_;a&gt;</code> \$\cong\$ <code>&lt;a;_&gt;</code> \$\cong\$ <code>a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(_;a)</code> \$\cong\$ <code>(a;_)</code> \$\cong\$ <code>a</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) * c = (a * c) + (b * c)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative left distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;&lt;a,b&gt;;c&gt;</code> \$\cong\$ <code>&lt;&lt;a;c&gt;,&lt;b;c&gt;&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>((a,b);c)</code> \$\cong\$ <code>((a;c),(b;c))</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a * (b + c) = (a * b) + (a * c)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative right distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a;&lt;b,c&gt;&gt;</code> \$\cong\$ <code>&lt;&lt;a;b&gt;,&lt;a;c&gt;&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a;(b,c))</code> \$\cong\$ <code>((a;b),(a;c))</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -2712,39 +2803,39 @@ mmlang&gt;</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = a + c =&gt; b = c\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = a + c \=) b = c\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
 <td class="tableblock halign-center valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = 0 =&gt; a = -b &amp; b = -a\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = 0 \=) a = -b &amp; b = -a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">unique inverse</p></td>
 <td class="tableblock halign-center valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$-(a+b) = (-a) + (-b)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a,b&gt;{-1}</code> \$\cong\$ <code>&lt;a{-1},b{-1}&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a,b){-1}</code> \$\cong\$ <code>(a{-1},b{-1})</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$-(-a) = a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a{-1}&gt;{-1}</code> \$\cong\$ <code>a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a{-1}){-1}</code> \$\cong\$ <code>a</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a*0 = 0 = 0*a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">annihilator</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a;_{0}&gt;</code> \$\cong\$ <code>_{0}</code> \$\cong\$ <code>&lt;_{0};a&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a;_{0})</code> \$\cong\$ <code>_{0}</code> \$\cong\$ <code>(_{0};a)</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a * (-b) = -a * b = -(a * b)\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a;b{-1}&gt;</code> \$\cong\$ <code>&lt;a{-1};b&gt;</code> \$\cong\$ <code>&lt;a;b&gt;{-1}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a;b{-1})</code> \$\cong\$ <code>(a{-1};b)</code> \$\cong\$ <code>(a;b){-1}</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$(-a) * (-b) = a * b\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>&lt;a{-1};b{-1}&gt;</code> \$\cong\$ <code>&lt;a;b&gt;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a{-1};b{-1})</code> \$\cong\$ <code>(a;b)</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -2767,9 +2858,9 @@ mmlang&gt;</code></pre>
 <div class="paragraph">
 <p>\[
 \begin{split}
-\texttt{&lt;a,b,c&gt;}               &amp; \implies \\
+\texttt{(a,b,c)}               &amp; \implies \\
 \texttt{-&lt;[a,b,c]&gt;-}           &amp; \implies \\
-\texttt{[delta,a,b,c][nabla]}  &amp; \implies \\
+\texttt{[branch,a,b,c]}  &amp; \implies \\
 \end{split}
 \]</p>
 </div>
@@ -3773,7 +3864,7 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-24 00:47:16 -0600
+Last updated 2020-05-24 11:53:54 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
