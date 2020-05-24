@@ -1522,69 +1522,68 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
+<div class="paragraph">
+<p>The elements of the set <code>poly</code> are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>. A polynomial is a <em>linear combination</em> of <em>terms</em> composed of <em>coefficients</em> and <em>indeterminates</em> typically expressed as
+\[
+p = a_0 x^0 + a_1 x^1 + a_2 x^2 + \ldots + a_n x^n,
+\]
+where \$a_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$a_i x^i\$ is a term, and the terms are linearly combined via <code>+</code>.</p>
+</div>
+<div class="paragraph">
+<p>In the lexicon of mm-ADT, <code>poly</code> is a <em>parallelization</em> of <em>objs</em> composed of <em>quantifiers</em> and <em>instructions</em> typically expressed as</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">[[x0]{a0},[x1]{a1},[x2]{a2},...,[xn]{an}]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where <code>ai</code> is a quantifier, <code>xi</code> is an instruction (or composition of instructions), <code>xi{ai}</code> is an <code>obj</code> (type or value), and the <code>objs</code> are in parallel slots via <code>,</code>.</p>
+</div>
+<div class="paragraph">
+<p>The set <code>obj</code> is a <a href="https://en.wikipedia.org/wiki/Tagged_union">disjoint union</a> of types and values, where \$\tt{type} \rightarrow \tt{obj} leftarrow \tt{value}\$. The type <code>objs</code> are the carrier of a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> with <code>[compose]</code> as multiplication , <code>[branch]</code> as addition, <code>[id]</code> as the multiplicative identity (<strong>1</strong>), and <code>[is,false]</code> as the additive identity (<strong>0</strong>). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is <code>int</code> and <code>+</code> and <code>*</code> are standard integer addition and multiplication, respectively. A variation of the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of rings composes the type ring and the quantifier into a new ring called a <a href="https://zenodo.org/record/2565243">stream ring</a>, where the carrier set is the set of all quantified types and <code>[id]{1}</code> is the multiplicative identity and <code>[id]{0}</code> is the additive identity.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+An mm-ADT <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Free_object">free object</a> of a stream ring.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A <code>poly</code> is an element in one of 3 <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial rings</a> (also known as <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a>). Every <code>poly</code> draws from the same <code>obj</code> carrier set, but are combined using different "additive" operators: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>|</code> is idempotent addition and <code>;</code> yields a non-commutative polynomial ring. The general form of a <code>poly</code> from each of the three polynomial rings is expressed below in <code>mmlang</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">[[t0{q0}],[t1{q1}],...,[tn{qn}]]
+[[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
+[[t0{q0}];[t1{q1}];...;[tn{qn}]]</code></pre>
+</div>
+</div>
+<hr>
 <div class="imageblock right">
 <div class="content">
 <img src="./images/language/poly-type-value.png" alt="poly type value" width="525">
 </div>
 </div>
 <div class="paragraph">
-<p>The elements of the set \$\mathbf{Poly}\$ are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a> denoted <code>poly</code>. A <code>poly</code> is the composite of:</p>
+<p>In mm-ADT, <code>poly</code> is formed from the coproduct of <code>vpoly</code>, <code>tpoly</code>, and <code>tvpoly</code>. The <code>vpolys</code> and <code>tpolys</code> are data or process <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fixpoints</a> that exist at the extreme ends of the type/value <code>obj</code> coproduct. Between these extremes are the <code>tvpolys</code>. The <code>tvpolys</code> ultimately resolve to a <code>vpoly</code> or a <code>tpoly</code> fixpoint through the process of <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> or <a href="https://en.wikipedia.org/wiki/Eval">evaluation</a>. A <code>tvpoly</code> can be understood as a process that hasn&#8217;t terminated (<a href="https://en.wikipedia.org/wiki/State_(computer_science)">state</a>) or as a function equipped with data (<a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a>). Together, these <code>poly</code> types are useful as:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>terms</strong>: <code>objs</code> connected by the multiplicative operator <code>;</code> (<em>andThen</em>).</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p><strong>indeterminates</strong>: type <code>objs</code> known as variables or symbols.</p>
+<p><strong>Data structures</strong> (<code>vpoly</code>): Data as the solution to a polynomial, where there no longer exists indeterminates.</p>
 </li>
 <li>
-<p><strong>constants</strong>: value <code>objs</code> known as constants.</p>
-</li>
-</ol>
-</div>
+<p><strong>Process structures</strong> (<code>tpoly</code>): Programs as a polynomial containing only indeterminates and thus, may have various value solutions.</p>
 </li>
 <li>
-<p><strong>sum composites</strong>: the symbols <code>,</code> (<em>orThen</em>) and <code>|</code> (<em>xorThen</em>) relate terms by a function with the general form</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>\[
-\texttt{obj} = \sum_{i&lt;n} (v_i \cdot t_i).
-\]</p>
-</div>
-<div class="paragraph">
-<p>If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT <code>obj</code> values, \$T \subset \mathbf{Obj}\$ the set of <code>obj</code> types, \$V \cap \T = \emptyset \$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is denoted in conventional algebraic notation as one of the following expressions
-\[
-\begin{split}
-(v_0 \cdot t_0) &amp; + &amp; (v_1 \cdot t_1) &amp; + &amp; \ldots &amp; + &amp; (v_n \cdot t_n) \\
-(v_0 \cdot t_0) &amp;\,|&amp; (v_1 \cdot t_1) &amp;\,|&amp; \ldots &amp;\,|&amp; (v_n \cdot t_n)
-\end{split}
-\]
-and is denoted, in <code>mmlang</code>, as either one of the expressions below, respectively.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">[[v0;t0],[v1;t1],...,[vn;tn]]
-[[v0;t0]|[v1;t1]|...|[vn;tn]]</code></pre>
-</div>
-</div>
-<hr>
-<div class="paragraph">
-<p>There are three kinds of <code>polys</code>: <code>vpoly</code>, <code>tpoly</code>, and <code>tvpoly</code>. The <code>vpolys</code> and <code>tpolys</code> are data or process <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fixpoints</a> that exist at the extreme ends of the type/value <code>obj</code> coproduct. Between these extremes are the <code>tvpolys</code>. The <code>tvpolys</code> ultimately resolve to a <code>vpoly</code> or a <code>tpoly</code> fixpoint through the process of <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> or <a href="https://en.wikipedia.org/wiki/Eval">evaluation</a>. These <code>tvpolys</code> represent a process that hasn&#8217;t terminated (<a href="https://en.wikipedia.org/wiki/State_(computer_science)">state</a>) or data equipped with functions (<a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a>).</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Data structures</strong> (<em>data</em>): A value-only <code>poly</code> is called a <em>determinate polynomial</em> or <code>vpoly</code> (i.e., a <code>poly</code> lacking indeterminates).</p>
-</li>
-<li>
-<p><strong>Process structures</strong> (<em>program</em>): A type-only <code>poly</code> is called an <em>inconstant polynomial</em> or <code>tpoly</code> (i.e., a <code>poly</code> lacking constants).</p>
-</li>
-<li>
-<p><strong>Computational structures</strong> (<em>computing</em>): a type/value <code>poly</code> is a <code>tvpoly</code> (i.e., a <code>poly</code> at a midpoint between a <code>tpoly</code> or <code>vpoly</code> fixpoint).</p>
+<p><strong>Computing structures</strong> (<code>tvpoly</code>): A computation as a polynomial containing that hasn&#8217;t been fully solved and thus, is midway between a <code>tpoly</code> and a <code>vpoly</code> fixpoint.</p>
 </li>
 </ol>
 </div>
@@ -1594,7 +1593,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 <div class="sect4">
 <h5 id="_data_structures">Data Structures</h5>
 <div class="paragraph">
-<p>Determinate polynomials are degenerate in that their terms contain only values (constants). A three term <code>,-vpoly</code> whose constants are in <code>str</code> is below.</p>
+<p>A three term <code>,-vpoly</code> whose constants are in <code>str</code> is below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1603,7 +1602,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 </div>
 <div class="paragraph">
-<p>An empty term (zero-degree) <code>,-vpoly</code> has the following form in <code>mmlang</code></p>
+<p>An empty term <code>,-poly</code> has the following form in <code>mmlang</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1621,7 +1620,7 @@ and is denoted, in <code>mmlang</code>, as either one of the expressions below, 
 </div>
 </div>
 <div class="paragraph">
-<p>The reason for <code>.</code> is that the <code>,-vpoly</code> below is a two term poly with the second term being <code>obj{0}</code>.</p>
+<p>The reason for <code>.</code> is that the <code>,-vpoly</code> below is a two term <code>poly</code> with the second term being <code>obj{0}</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1808,7 +1807,7 @@ mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 </tbody>
 </table>
 <div class="exampleblock">
-<div class="title">Example 1. Determinate Polys and the Constant Identity Type</div>
+<div class="title">Example 1. The Constant Identity Type</div>
 <div class="content">
 <div class="paragraph">
 <p>A determinate <code>vpoly</code> has terms containing only values.</p>
