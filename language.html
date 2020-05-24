@@ -1240,6 +1240,42 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
+<table class="tableblock frame-all grid-all right" style="width: 50%;">
+<colgroup>
+<col style="width: 9.0909%;">
+<col style="width: 18.1818%;">
+<col style="width: 36.3636%;">
+<col style="width: 36.3637%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">poly</th>
+<th class="tableblock halign-left valign-top">inst</th>
+<th class="tableblock halign-left valign-top">polynomial form</th>
+<th class="tableblock halign-left valign-top">monoid form</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commutative</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">monoid ring</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[choose]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">non-commutative</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">monoid ring</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[compose]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">semi-commutative</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">monoid monoid</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>The elements of the set <code>poly</code> are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>. A polynomial is a <em>linear combination</em> of <em>terms</em> composed of <em>coefficients</em> and <em>indeterminates</em> typically expressed as
 \[
@@ -1261,29 +1297,6 @@ where \$a_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$a_i x^i\$ is a te
 <div class="paragraph">
 <p>The set <code>obj</code> is a <a href="https://en.wikipedia.org/wiki/Tagged_union">disjoint union</a> of types and values, where \$\tt{type} \rightarrow \tt{obj} leftarrow \tt{value}\$. The type <code>objs</code> are the carrier of a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> with <code>[compose]</code> as multiplication , <code>[branch]</code> as addition, <code>[id]</code> as the multiplicative identity (<strong>1</strong>), and <code>[is,false]</code> as the additive identity (<strong>0</strong>). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is <code>int</code> and <code>+</code> and <code>*</code> are standard integer addition and multiplication, respectively. A variation of the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of rings composes the type ring and the quantifier into a new ring called a <a href="https://zenodo.org/record/2565243">stream ring</a>, where the carrier set is the set of all quantified types and <code>[id]{1}</code> is the multiplicative identity and <code>[id]{0}</code> is the additive identity.</p>
 </div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Important</div>
-</td>
-<td class="content">
-An mm-ADT <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Free_object">free object</a> of a stream ring.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>A <code>poly</code> is an element in one of 3 <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial rings</a> (also known as <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a>). Every <code>poly</code> draws from the same <code>obj</code> carrier set, but are combined using different "additive" operators: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>|</code> is idempotent addition and <code>;</code> yields a non-commutative polynomial ring. The general form of a <code>poly</code> from each of the three polynomial rings is expressed below in <code>mmlang</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>[[t0{q0}],[t1{q1}],...,[tn{qn}]]
-[[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
-[[t0{q0}];[t1{q1}];...;[tn{qn}]]</code></pre>
-</div>
-</div>
-<hr>
 <div class="imageblock right">
 <div class="content">
 <img src="./images/language/poly-type-value.png" alt="poly type value" width="525">
@@ -1301,41 +1314,47 @@ An mm-ADT <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Free_obj
 <p><strong>Process structures</strong> (<code>tpoly</code>): Programs as a polynomial containing only indeterminates and thus, may have various value solutions.</p>
 </li>
 <li>
-<p><strong>Computing structures</strong> (<code>tvpoly</code>): A computation as a polynomial containing that hasn&#8217;t been fully solved and thus, is midway between a <code>tpoly</code> and a <code>vpoly</code> fixpoint.</p>
+<p><strong>Computing structures</strong> (<code>tvpoly</code>): A computation as a polynomial that hasn&#8217;t been fully solved and thus, is midway between either a <code>tpoly</code> or a <code>vpoly</code> fixpoint.</p>
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>mm-ADT provides two convenient type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+mm-ADT provides two convenient type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).
+</td>
+</tr>
+</table>
 </div>
-<div class="sect4">
-<h5 id="_data_structures">Data Structures</h5>
 <div class="paragraph">
-<p>A three term <code>,-vpoly</code> whose constants are in <code>str</code> is below.</p>
+<p>A <code>vpoly</code> can be understood as a common list containing only values.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b','c']
-==&gt;['a','b','c']</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>An empty term <code>,-poly</code> has the following form in <code>mmlang</code></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; [,.]
-==&gt;[,.]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A single term <code>,-vpoly</code> also uses a <code>.</code> as a terminator token.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a',.]
+<pre class="highlight"><code>mmlang&gt; ['a','b','c']      <b class="conum">(1)</b>
+==&gt;['a','b','c']
+mmlang&gt; [,.]               <b class="conum">(2)</b>
+==&gt;[,.]
+mmlang&gt; ['a',.]            <b class="conum">(3)</b>
 ==&gt;['a',.]</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>A fully reduced three term polynomial.</p>
+</li>
+<li>
+<p>An empty <code>,-poly</code>.</p>
+</li>
+<li>
+<p>A single term <code>,-vpoly</code> also uses a <code>.</code> as a terminator token.</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
 <p>The reason for <code>.</code> is that the <code>,-vpoly</code> below is a two term <code>poly</code> with the second term being <code>obj{0}</code>.</p>
@@ -1347,6 +1366,208 @@ An mm-ADT <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Free_obj
 mmlang&gt; ['a',].1
 mmlang&gt; ['a',.].1
 language error: poly index is out of bounds: 1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A <code>tpoly</code> can be understood as either an unordered (<code>,</code>) or ordered (<code>|</code>, <code>;</code>) collection of functions.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 3-&lt;[_[plus,1],_[mult,2]]   <b class="conum">(1)</b>
+==&gt;[4,6]
+mmlang&gt; 3-&lt;[_[plus,1]|_[mult,2]]   <b class="conum">(2)</b>
+==&gt;[4|]
+mmlang&gt; 3-&lt;[_[plus,1];_[mult,2]]   <b class="conum">(3)</b>
+==&gt;[4;8]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>A polynomial solved as <code>[3+1,3*2]</code> (or).</p>
+</li>
+<li>
+<p>A polynomial solved as <code>[3+1,obj{0}]</code> (exclusive or).</p>
+</li>
+<li>
+<p>A polynomial solved as <code>[3+1,3+1*2]</code>  (and).</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="_three_polynomial_rings">Three Polynomial Rings</h5>
+<div class="paragraph">
+<p>A <code>poly</code> is an element in one of 3 <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial rings</a> (also known as <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a>). Every <code>poly</code> draws from the same <code>obj</code> carrier set, but are combined using different "additive" operators: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>|</code> is idempotent addition and <code>;</code> yields a non-commutative polynomial ring. The general form of a <code>poly</code> from each of the three polynomial rings is expressed below in <code>mmlang</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[[t0{q0}],[t1{q1}],...,[tn{qn}]]
+[[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
+[[t0{q0}];[t1{q1}];...;[tn{qn}]]</code></pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_the_poly_with_or_branching">The ,-poly with Or Branching</h6>
+<div class="paragraph">
+<p>A <code>,-poly</code> is a classic, commutative, polynomial ring with term addition defined as</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{t0{q0}} , \texttt{t1{q1}} =
+\begin{cases}
+\texttt{t0\{q0+q1\}}                     &amp; \text{if } \texttt{t0} = \texttt{t1}, \\
+\texttt{t0{q0}} , \texttt{t1{q1}}    &amp; \text{otherwise.}
+\end{cases}
+\]</p>
+</div>
+<div class="paragraph">
+<p>The above states that if two terms have equivalent indeterminates, then their coefficients can be summed. In the lexicon of mm-ADT, the equation states that if two type instruction sequences are equivalent, then their quantifiers can be summed according to the rules of the additive operator of the respective quantifier ring. The following <code>mmlang</code> examples highlight the above equation, but from within the category of the <code>inst</code> monoid.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 'mar'[branch,[plus,'ko'],[plus,'ko']]     <b class="conum">(1)</b>
+==&gt;'marko'{2}
+mmlang&gt; 'mar'[branch,[plus,'ko']{2}]              <b class="conum">(2)</b>
+==&gt;'marko'{2}
+mmlang&gt; 'mar'[plus,'ko']{2}                       <b class="conum">(3)</b>
+==&gt;'marko'{2}
+mmlang&gt; 'marko'{2}                                <b class="conum">(4)</b>
+==&gt;'marko'{2}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The <code>'mar'</code> <code>str</code> is copied as input to two <code>[plus,'ko']</code> branches.</p>
+</li>
+<li>
+<p>Polynomial summation of quantifiers is possible because the two branches are equal.</p>
+</li>
+<li>
+<p>With only one "branch", the expression resolves to a single term polynomial.</p>
+</li>
+<li>
+<p>The polynomial no longer has indeterminates and thus, is solved.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Using <code>polys</code>, the previous <code>mmlang</code> examples are written as follows.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 'mar'-&lt;[[plus,'ko'],[plus,'ko']]&gt;-
+==&gt;'marko'{2}
+mmlang&gt; 'mar'-&lt;[[plus,'ko']{2},.]&gt;-
+==&gt;'marko'{2}
+mmlang&gt; -&lt;[[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]&gt;-
+==&gt;'marko'{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The last expression demonstrates a property of all rings: multiplication both right and left distributes over addition.
+\[
+\begin{split}
+a(b+c) &amp;=&amp; \; ab + ac \\
+(b+c)a &amp;=&amp; \; ba + ca
+\end{split}
+\]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 'a'-&lt;[[plus,'b'],[plus,'c']]&gt;-
+==&gt;'ab'
+==&gt;'ac'
+mmlang&gt; -&lt;[[start,'b'],[start,'c']]&gt;-[plus,'a']
+==&gt;'ba'
+==&gt;'ca'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_the_poly_and_exclusive_or_branching">The |-poly and Exclusive Or Branching</h6>
+<div class="paragraph">
+<p>A <code>|-poly</code> is a non-commutative polynomial ring, where term addition is defined as</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{t0{q0}} | \texttt{t1{q1}} =
+\begin{cases}
+\texttt{t0{q0}}    &amp; \text{if } x&#8658;\texttt{t0{q0}}  \notin \texttt{obj{0}}, \\
+\texttt{t1{q1}}    &amp; \text{if } x&#8658;\texttt{t1{q1}}  \notin \texttt{obj{0}}, \\
+\texttt{obj{0}}    &amp; \text{otherwise.}
+\end{cases}
+\]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 'mar'[choose,[plus,'ko'],[plus,'io']]          <b class="conum">(1)</b>
+==&gt;'marko'
+mmlang&gt; 'mar'[choose,[plus,'ko']{0},[plus,'io']]       <b class="conum">(2)</b>
+==&gt;'mario'
+mmlang&gt; 'mar'[choose,[plus,'ko']{0},[plus,'io']{0}]    <b class="conum">(3)</b>
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The first branch does not yield <code>obj{0}</code> so <code>'ko'</code> is added to <code>'mar'</code>. The polynomial reduces to <code>[plus,'ko']</code>.</p>
+</li>
+<li>
+<p>The first branch does yield an <code>obj{0}</code> and the second does not so <code>'io'</code> is added to <code>'mar'</code>. The polynomial reduces to <code>[plus,'io']</code>.</p>
+</li>
+<li>
+<p>Both branches yield an <code>obj{0}</code>. The polynomial reduces to <code>obj{0}</code>.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 'mar'-&lt;[[plus,'ko']|[plus,'io']]&gt;-
+==&gt;'marko'
+mmlang&gt; 'mar'-&lt;[[plus,'ko']{0}|[plus,'io']]&gt;-
+==&gt;'mario'
+mmlang&gt; 'mar'-&lt;[[plus,'ko']{0}|[plus,'io']{0}]&gt;-
+mmlang&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_the_poly_and_composition_chains">The ;-poly and Composition Chains</h6>
+<div class="paragraph">
+<p>A <code>;-poly</code> is a semi-commutative polynomial ring, where term "addition" is ring multiplication and is defined as</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{t0{q0}} ; \texttt{t1{q1}} = \texttt{t0 t1\{q0 * q1\}}
+\]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 'mar'[compose,[plus,'k']{2},[plus,'o']{3}]  <b class="conum">(1)</b>
+==&gt;'marko'{6}
+mmlang&gt; 'mar'[compose,[plus,'k']{2},[plus,'o']{0}]  <b class="conum">(2)</b>
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The two branches are serially composed to create a single "branch" with a quantifier that is the product of the two original branch quantifiers.</p>
+</li>
+<li>
+<p>The two branches are serially composed, but the second branch has a <code>0</code>-quantifier and thus, the resolution goes to <code>obj{0}</code> as <code>2 * 0 = 0</code>.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 'mar'-&lt;[[plus,'k'];[plus,'o']]&gt;-
+==&gt;'marko'
+mmlang&gt; 'mar'-&lt;[[plus,'k'];[plus,'o']{0}]&gt;-
+mmlang&gt;</code></pre>
+</div>
 </div>
 </div>
 <div class="sect5">
@@ -1524,44 +1745,10 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 </tr>
 </tbody>
 </table>
-<div class="exampleblock">
-<div class="title">Example 1. The Constant Identity Type</div>
-<div class="content">
-<div class="paragraph">
-<p>A determinate <code>vpoly</code> has terms containing only values.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; [1,2,3]
-==&gt;[1,2,3]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Another interpretation of a determinate poly states that the polynomial has term types <code>[id]</code>. More specifically, for <code>int</code> constants, <code>int[id]</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; [[1;[id]],[2;[id]],[3;[id]]]
-==&gt;[[1;_[id]],[2;_[id]],[3;_[id]]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the <code>tvpoly</code> is <a href="https://en.wikipedia.org/wiki/Polynomial#Solving_equations">solved</a> using <code>-&lt;</code> and <code>&gt;-</code>, a <code>vpoly</code> fixpoint is reached.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; -&lt;[-&lt;[1;[id]]&gt;-,-&lt;[2;[id]]&gt;-,-&lt;[3;[id]]&gt;-]
-==&gt;[1,2,3]</code></pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_process_structures">Process Structures</h5>
-<div class="sect5">
-<h6 id="_free_poly_monoid">Free Poly Monoid</h6>
+<h5 id="_free_poly_monoid">Free Poly Monoid</h5>
 <table class="tableblock frame-all grid-all left small" style="width: 30%;">
 <colgroup>
 <col style="width: 25%;">
@@ -1682,7 +1869,6 @@ coproduct<br>
 </tr>
 </tbody>
 </table>
-</div>
 <div class="sect5">
 <h6 id="_free_ring">Free Ring</h6>
 <div class="paragraph">
@@ -2490,7 +2676,7 @@ mmlang&gt; 1&lt;[plus,1];[mult,2]&gt;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-24 00:34:31 -0600
+Last updated 2020-05-24 02:32:37 -0600
 </div>
 </div>
 </body>
