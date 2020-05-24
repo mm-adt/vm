@@ -456,46 +456,47 @@ mmlang>
 
 ==== Poly Types
 
-image::poly-type-value.png[float=right,width=525]
-
-The elements of the set \$\mathbf{Poly}\$ are https://en.wikipedia.org/wiki/Polynomial[polynomials] denoted `poly`. A `poly` is the composite of:
-
-. *terms*: `objs` connected by the multiplicative operator `;` (_andThen_).
-.. *indeterminates*: type `objs` known as variables or symbols.
-.. *constants*: value `objs` known as constants.
-. *sum composites*: the symbols `,` (_orThen_) and `|` (_xorThen_) relate terms by a function with the general form
-
+The elements of the set `poly` are https://en.wikipedia.org/wiki/Polynomial[polynomials]. A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
 \[
-\texttt{obj} = \sum_{i<n} (v_i \cdot t_i).
+p = a_0 x^0 + a_1 x^1 + a_2 x^2 + \ldots + a_n x^n,
 \]
+where \$a_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$a_i x^i\$ is a term, and the terms are linearly combined via `+`.
 
-If \$V \subset \mathbf{Obj} \$ are the set of all mm-ADT `obj` values, \$T \subset \mathbf{Obj}\$ the set of `obj` types, \$V \cap \T = \emptyset \$, then the polynomial \$ \tt{poly} \in \tt{Poly} \$ is denoted in conventional algebraic notation as one of the following expressions
-\[
-\begin{split}
-(v_0 \cdot t_0) & + & (v_1 \cdot t_1) & + & \ldots & + & (v_n \cdot t_n) \\
-(v_0 \cdot t_0) &\,|& (v_1 \cdot t_1) &\,|& \ldots &\,|& (v_n \cdot t_n)
-\end{split}
-\]
-and is denoted, in `mmlang`, as either one of the expressions below, respectively.
+In the lexicon of mm-ADT, `poly` is a _parallelization_ of _objs_ composed of _quantifiers_ and _instructions_ typically expressed as
 [source]
 ----
-[[v0;t0],[v1;t1],...,[vn;tn]]
-[[v0;t0]|[v1;t1]|...|[vn;tn]]
+[[x0]{a0},[x1]{a1},[x2]{a2},...,[xn]{an}]
+----
+where `ai` is a quantifier, `xi` is an instruction (or composition of instructions), `xi{ai}` is an `obj` (type or value), and the `objs` are in parallel slots via `,`.
+
+The set `obj` is a https://en.wikipedia.org/wiki/Tagged_union[disjoint union] of types and values, where \$\tt{type} \rightarrow \tt{obj} leftarrow \tt{value}\$. The type `objs` are the carrier of a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] with `[compose]` as multiplication , `[branch]` as addition, `[id]` as the multiplicative identity (*1*), and `[is,false]` as the additive identity (*0*). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is `int` and `+` and `*` are standard integer addition and multiplication, respectively. A variation of the https://en.wikipedia.org/wiki/Product_ring[direct product] of rings composes the type ring and the quantifier into a new ring called a https://zenodo.org/record/2565243[stream ring], where the carrier set is the set of all quantified types and `[id]{1}` is the multiplicative identity and `[id]{0}` is the additive identity.
+
+IMPORTANT: An mm-ADT `poly` is a https://en.wikipedia.org/wiki/Free_object[free object] of a stream ring.
+
+A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings] (also known as https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]). Every `poly` draws from the same `obj` carrier set, but are combined using different "additive" operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `|` is idempotent addition and `;` yields a non-commutative polynomial ring. The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
+
+[source]
+----
+[[t0{q0}],[t1{q1}],...,[tn{qn}]]
+[[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
+[[t0{q0}];[t1{q1}];...;[tn{qn}]]
 ----
 
 '''
 
-There are three kinds of `polys`: `vpoly`, `tpoly`, and `tvpoly`. The `vpolys` and `tpolys` are data or process https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fixpoints] that exist at the extreme ends of the type/value `obj` coproduct. Between these extremes are the `tvpolys`. The `tvpolys` ultimately resolve to a `vpoly` or a `tpoly` fixpoint through the process of https://en.wikipedia.org/wiki/Compiler[compilation] or https://en.wikipedia.org/wiki/Eval[evaluation]. These `tvpolys` represent a process that hasn't terminated (https://en.wikipedia.org/wiki/State_(computer_science)[state]) or data equipped with functions (https://en.wikipedia.org/wiki/Closure_(computer_programming)[closure]).
+image::poly-type-value.png[float=right,width=525]
 
-. *Data structures* (_data_): A value-only `poly` is called a _determinate polynomial_ or `vpoly` (i.e., a `poly` lacking indeterminates).
-. *Process structures* (_program_): A type-only `poly` is called an _inconstant polynomial_ or `tpoly` (i.e., a `poly` lacking constants).
-. *Computational structures* (_computing_): a type/value `poly` is a `tvpoly` (i.e., a `poly` at a midpoint between a `tpoly` or `vpoly` fixpoint).
+In mm-ADT, `poly` is formed from the coproduct of `vpoly`, `tpoly`, and `tvpoly`. The `vpolys` and `tpolys` are data or process https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fixpoints] that exist at the extreme ends of the type/value `obj` coproduct. Between these extremes are the `tvpolys`. The `tvpolys` ultimately resolve to a `vpoly` or a `tpoly` fixpoint through the process of https://en.wikipedia.org/wiki/Compiler[compilation] or https://en.wikipedia.org/wiki/Eval[evaluation]. A `tvpoly` can be understood as a process that hasn't terminated (https://en.wikipedia.org/wiki/State_(computer_science)[state]) or as a function equipped with data (https://en.wikipedia.org/wiki/Closure_(computer_programming)[closure]). Together, these `poly` types are useful as:
+
+. *Data structures* (`vpoly`): Data as the solution to a polynomial, where there no longer exists indeterminates.
+. *Process structures* (`tpoly`): Programs as a polynomial containing only indeterminates and thus, may have various value solutions.
+. *Computing structures* (`tvpoly`): A computation as a polynomial containing that hasn't been fully solved and thus, is midway between a `tpoly` and a `vpoly` fixpoint.
 
 mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
 
 ===== Data Structures
 
-Determinate polynomials are degenerate in that their terms contain only values (constants). A three term `,-vpoly` whose constants are in `str` is below.
+A three term `,-vpoly` whose constants are in `str` is below.
 
 [source]
 ----
@@ -503,7 +504,7 @@ mmlang> ['a','b','c']
 ==>['a','b','c']
 ----
 
-An empty term (zero-degree) `,-vpoly` has the following form in `mmlang`
+An empty term `,-poly` has the following form in `mmlang`
 
 [source]
 ----
@@ -519,7 +520,7 @@ mmlang> ['a',.]
 ==>['a',.]
 ----
 
-The reason for `.` is that the `,-vpoly` below is a two term poly with the second term being `obj{0}`.
+The reason for `.` is that the `,-vpoly` below is a two term `poly` with the second term being `obj{0}`.
 
 [source]
 ----
@@ -622,7 +623,7 @@ mmlang> -<['a','b','c']>-
 ----
 |===
 
-.Determinate Polys and the Constant Identity Type
+.The Constant Identity Type
 ====
 A determinate `vpoly` has terms containing only values.
 
