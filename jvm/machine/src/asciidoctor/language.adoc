@@ -456,6 +456,15 @@ mmlang>
 
 ==== Poly Types
 
+[cols="1,2,4,4",width=50%,float=right]
+|===
+| poly |  inst       | polynomial form   | monoid form
+
+| `,`  | `[branch]`  | commutative       | monoid ring
+| `\|` | `[choose]`  | non-commutative   | monoid ring
+| `;`  | `[compose]` | semi-commutative  | monoid monoid
+|===
+
 The elements of the set `poly` are https://en.wikipedia.org/wiki/Polynomial[polynomials]. A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
 \[
 p = a_0 x^0 + a_1 x^1 + a_2 x^2 + \ldots + a_n x^n,
@@ -471,54 +480,30 @@ where `ai` is a quantifier, `xi` is an instruction (or composition of instructio
 
 The set `obj` is a https://en.wikipedia.org/wiki/Tagged_union[disjoint union] of types and values, where \$\tt{type} \rightarrow \tt{obj} leftarrow \tt{value}\$. The type `objs` are the carrier of a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] with `[compose]` as multiplication , `[branch]` as addition, `[id]` as the multiplicative identity (*1*), and `[is,false]` as the additive identity (*0*). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is `int` and `+` and `*` are standard integer addition and multiplication, respectively. A variation of the https://en.wikipedia.org/wiki/Product_ring[direct product] of rings composes the type ring and the quantifier into a new ring called a https://zenodo.org/record/2565243[stream ring], where the carrier set is the set of all quantified types and `[id]{1}` is the multiplicative identity and `[id]{0}` is the additive identity.
 
-IMPORTANT: An mm-ADT `poly` is a https://en.wikipedia.org/wiki/Free_object[free object] of a stream ring.
-
-A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings] (also known as https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]). Every `poly` draws from the same `obj` carrier set, but are combined using different "additive" operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `|` is idempotent addition and `;` yields a non-commutative polynomial ring. The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
-
-[source]
-----
-[[t0{q0}],[t1{q1}],...,[tn{qn}]]
-[[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
-[[t0{q0}];[t1{q1}];...;[tn{qn}]]
-----
-
-'''
-
 image::poly-type-value.png[float=right,width=525]
 
 In mm-ADT, `poly` is formed from the coproduct of `vpoly`, `tpoly`, and `tvpoly`. The `vpolys` and `tpolys` are data or process https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fixpoints] that exist at the extreme ends of the type/value `obj` coproduct. Between these extremes are the `tvpolys`. The `tvpolys` ultimately resolve to a `vpoly` or a `tpoly` fixpoint through the process of https://en.wikipedia.org/wiki/Compiler[compilation] or https://en.wikipedia.org/wiki/Eval[evaluation]. A `tvpoly` can be understood as a process that hasn't terminated (https://en.wikipedia.org/wiki/State_(computer_science)[state]) or as a function equipped with data (https://en.wikipedia.org/wiki/Closure_(computer_programming)[closure]). Together, these `poly` types are useful as:
 
 . *Data structures* (`vpoly`): Data as the solution to a polynomial, where there no longer exists indeterminates.
 . *Process structures* (`tpoly`): Programs as a polynomial containing only indeterminates and thus, may have various value solutions.
-. *Computing structures* (`tvpoly`): A computation as a polynomial containing that hasn't been fully solved and thus, is midway between a `tpoly` and a `vpoly` fixpoint.
+. *Computing structures* (`tvpoly`): A computation as a polynomial that hasn't been fully solved and thus, is midway between either a `tpoly` or a `vpoly` fixpoint.
 
-mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
+IMPORTANT: mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
 
-===== Data Structures
-
-A three term `,-vpoly` whose constants are in `str` is below.
+A `vpoly` can be understood as a common list containing only values.
 
 [source]
 ----
-mmlang> ['a','b','c']
+mmlang> ['a','b','c']      <1>
 ==>['a','b','c']
-----
-
-An empty term `,-poly` has the following form in `mmlang`
-
-[source]
-----
-mmlang> [,.]
+mmlang> [,.]               <2>
 ==>[,.]
-----
-
-A single term `,-vpoly` also uses a `.` as a terminator token.
-
-[source]
-----
-mmlang> ['a',.]
+mmlang> ['a',.]            <3>
 ==>['a',.]
 ----
+<1> A fully reduced three term polynomial.
+<2> An empty `,-poly`.
+<3> A single term `,-vpoly` also uses a `.` as a terminator token.
 
 The reason for `.` is that the `,-vpoly` below is a two term `poly` with the second term being `obj{0}`.
 
@@ -529,6 +514,155 @@ mmlang> ['a',]
 mmlang> ['a',].1
 mmlang> ['a',.].1
 language error: poly index is out of bounds: 1
+----
+
+A `tpoly` can be understood as either an unordered (`,`) or ordered (`|`, `;`) collection of functions.
+
+[source]
+----
+mmlang> 3-<[_[plus,1],_[mult,2]]   <1>
+==>[4,6]
+mmlang> 3-<[_[plus,1]|_[mult,2]]   <2>
+==>[4|]
+mmlang> 3-<[_[plus,1];_[mult,2]]   <3>
+==>[4;8]
+----
+<1> A polynomial solved as `[3+1,3*2]` (or).
+<2> A polynomial solved as `[3+1,obj{0}]` (exclusive or).
+<3> A polynomial solved as `[3+1,3+1*2]`  (and).
+
+===== Three Polynomial Rings
+
+A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings] (also known as https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]). Every `poly` draws from the same `obj` carrier set, but are combined using different "additive" operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `|` is idempotent addition and `;` yields a non-commutative polynomial ring. The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
+
+[source]
+----
+[[t0{q0}],[t1{q1}],...,[tn{qn}]]
+[[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
+[[t0{q0}];[t1{q1}];...;[tn{qn}]]
+----
+
+====== The ,-poly with Or Branching
+
+A `,-poly` is a classic, commutative, polynomial ring with term addition defined as
+
+\[
+\texttt{t0\{q0\}} , \texttt{t1\{q1\}} =
+\begin{cases}
+\texttt{t0\{q0+q1\}}                     & \text{if } \texttt{t0} = \texttt{t1}, \\
+\texttt{t0\{q0\}} , \texttt{t1\{q1\}}    & \text{otherwise.}
+\end{cases}
+\]
+
+The above states that if two terms have equivalent indeterminates, then their coefficients can be summed. In the lexicon of mm-ADT, the equation states that if two type instruction sequences are equivalent, then their quantifiers can be summed according to the rules of the additive operator of the respective quantifier ring. The following `mmlang` examples highlight the above equation, but from within the category of the `inst` monoid.
+
+[source]
+----
+mmlang> 'mar'[branch,[plus,'ko'],[plus,'ko']]     <1>
+==>'marko'{2}
+mmlang> 'mar'[branch,[plus,'ko']{2}]              <2>
+==>'marko'{2}
+mmlang> 'mar'[plus,'ko']{2}                       <3>
+==>'marko'{2}
+mmlang> 'marko'{2}                                <4>
+==>'marko'{2}
+----
+<1> The `'mar'` `str` is copied as input to two `[plus,'ko']` branches.
+<2> Polynomial summation of quantifiers is possible because the two branches are equal.
+<3> With only one "branch", the expression resolves to a single term polynomial.
+<4> The polynomial no longer has indeterminates and thus, is solved.
+
+Using `polys`, the previous `mmlang` examples are written as follows.
+
+[source]
+----
+mmlang> 'mar'-<[[plus,'ko'],[plus,'ko']]>-
+==>'marko'{2}
+mmlang> 'mar'-<[[plus,'ko']{2},.]>-
+==>'marko'{2}
+mmlang> -<[[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]>-
+==>'marko'{2}
+----
+
+The last expression demonstrates a property of all rings: multiplication both right and left distributes over addition.
+\[
+\begin{split}
+a(b+c) &=& \; ab + ac \\
+(b+c)a &=& \; ba + ca
+\end{split}
+\]
+
+[source]
+----
+mmlang> 'a'-<[[plus,'b'],[plus,'c']]>-
+==>'ab'
+==>'ac'
+mmlang> -<[[start,'b'],[start,'c']]>-[plus,'a']
+==>'ba'
+==>'ca'
+----
+
+====== The |-poly and Exclusive Or Branching
+
+A `|-poly` is a non-commutative polynomial ring, where term addition is defined as
+
+\[
+\texttt{t0\{q0\}} | \texttt{t1\{q1\}} =
+\begin{cases}
+\texttt{t0\{q0\}}    & \text{if } x=>\texttt{t0\{q0\}}  \notin \texttt{obj\{0\}}, \\
+\texttt{t1\{q1\}}    & \text{if } x=>\texttt{t1\{q1\}}  \notin \texttt{obj\{0\}}, \\
+\texttt{obj\{0\}}    & \text{otherwise.}
+\end{cases}
+\]
+
+[source]
+----
+mmlang> 'mar'[choose,[plus,'ko'],[plus,'io']]          <1>
+==>'marko'
+mmlang> 'mar'[choose,[plus,'ko']{0},[plus,'io']]       <2>
+==>'mario'
+mmlang> 'mar'[choose,[plus,'ko']{0},[plus,'io']{0}]    <3>
+mmlang>
+----
+<1> The first branch does not yield `obj{0}` so `'ko'` is added to `'mar'`. The polynomial reduces to `[plus,'ko']`.
+<2> The first branch does yield an `obj{0}` and the second does not so `'io'` is added to `'mar'`. The polynomial reduces to `[plus,'io']`.
+<3> Both branches yield an `obj{0}`. The polynomial reduces to `obj{0}`.
+
+[source]
+----
+mmlang> 'mar'-<[[plus,'ko']|[plus,'io']]>-
+==>'marko'
+mmlang> 'mar'-<[[plus,'ko']{0}|[plus,'io']]>-
+==>'mario'
+mmlang> 'mar'-<[[plus,'ko']{0}|[plus,'io']{0}]>-
+mmlang>
+----
+
+
+====== The ;-poly and Composition Chains
+
+A `;-poly` is a semi-commutative polynomial ring, where term "addition" is ring multiplication and is defined as
+
+\[
+\texttt{t0\{q0\}} ; \texttt{t1\{q1\}} = \texttt{t0 t1\{q0 * q1\}}
+\]
+
+[source]
+----
+mmlang> 'mar'[compose,[plus,'k']{2},[plus,'o']{3}]  <1>
+==>'marko'{6}
+mmlang> 'mar'[compose,[plus,'k']{2},[plus,'o']{0}]  <2>
+mmlang>
+----
+<1> The two branches are serially composed to create a single "branch" with a quantifier that is the product of the two original branch quantifiers.
+<2> The two branches are serially composed, but the second branch has a `0`-quantifier and thus, the resolution goes to `obj{0}` as `2 * 0 = 0`.
+
+[source]
+----
+mmlang> 'mar'-<[[plus,'k'];[plus,'o']]>-
+==>'marko'
+mmlang> 'mar'-<[[plus,'k'];[plus,'o']{0}]>-
+mmlang>
 ----
 
 ====== Poly Domain Instructions
@@ -623,36 +757,7 @@ mmlang> -<['a','b','c']>-
 ----
 |===
 
-.The Constant Identity Type
-====
-A determinate `vpoly` has terms containing only values.
-
-[source]
-----
-mmlang> [1,2,3]
-==>[1,2,3]
-----
-
-Another interpretation of a determinate poly states that the polynomial has term types `[id]`. More specifically, for `int` constants, `int[id]`.
-
-[source]
-----
-mmlang> [[1;[id]],[2;[id]],[3;[id]]]
-==>[[1;_[id]],[2;_[id]],[3;_[id]]]
-----
-
-When the `tvpoly` is https://en.wikipedia.org/wiki/Polynomial#Solving_equations[solved] using `-<` and `>-`, a `vpoly` fixpoint is reached.
-
-[source]
-----
-mmlang> -<[-<[1;[id]]>-,-<[2;[id]]>-,-<[3;[id]]>-]
-==>[1,2,3]
-----
-====
-
-===== Process Structures
-
-====== Free Poly Monoid
+===== Free Poly Monoid
 
 [.small]
 [cols="1,1,1,1",width=30%,float=left]

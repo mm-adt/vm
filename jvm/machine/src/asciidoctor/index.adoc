@@ -12,6 +12,7 @@ Marko A. Rodriguez <marko@rredux.com>
 :source-language: python
 :favicon: ./images/favicon.ico
 :copyright: 2020
+:example-caption: Deep Dive
 
 include::introduction.adoc[]
 
