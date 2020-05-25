@@ -22,12 +22,11 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.trace.ExplainOp
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -45,8 +44,15 @@ trait Type[+T <: Obj] extends Obj
 
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
-    case argValue: Value[_] => TypeChecker.matchesTV(this, argValue)
-    case argType: Type[_] => TypeChecker.matchesTT(this, argType)
+    case aobj: Obj if !aobj.alive => !this.alive
+    case arec: RecType[_, _] => TypeChecker.matchesTT(this, arec)
+    case atype: Type[_] =>
+      (name.equals(atype.name) || atype.name.equals(Tokens.obj) || this.name.equals(Tokens.anon) || atype.name.equals(Tokens.anon)) &&
+        withinQ(this, atype) &&
+        this.trace.length == atype.trace.length &&
+        this.trace.map(_._2).zip(atype.trace.map(_._2)).
+          forall(insts => insts._1.op.equals(insts._2.op) && insts._1.args.zip(insts._2.args).forall(a => a._1.test(a._2)))
+    case _ => false
   }
   // standard Java implementations
   override def toString: String = LanguageFactory.printType(this)

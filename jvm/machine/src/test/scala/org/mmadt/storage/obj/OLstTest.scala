@@ -12,6 +12,18 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
 
 class OLstTest extends FunSuite with TableDrivenPropertyChecks {
 
+  test("lst test") {
+    assert(("a" | "b").q(0).test(str.q(0)))
+    //
+    assert(("a" | "b").test("a" | "b"))
+    assert(("a" | "b").test("a" |))
+    assert(!("a" |).test("a" | "b"))
+    //
+    assert(("a" | ("b" | "c")).test("a" | ("b" | "c")))
+    assert(("a" | ("b" | "c")).test("a" | ("b" |)))
+    assert(!("a" | ("b" |)).test("a" | ("b" | "c")))
+  }
+
   test("basic poly") {
     assertResult(str("a"))(("a" | "b" | "c").head())
     assertResult("b" | "c")(("a" | "b" | "c").tail())

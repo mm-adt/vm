@@ -23,6 +23,7 @@
 package org.mmadt.language;
 
 import org.mmadt.VmException;
+import org.mmadt.language.obj.Lst;
 import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
@@ -95,6 +96,11 @@ public class LanguageException extends VmException {
 
         public static LanguageException noTail() {
             return new LanguageException("Empty polys do not have tails");
+        }
+
+        public static void testIndex(final Lst<?> lst, final int index) {
+            if (index < 0) throw new LanguageException("Index must be 0 or greater: " + index);
+            if (lst.glist().length() < (index + 1)) throw new LanguageException("Index is out of bounds: " + index);
         }
     }
 }

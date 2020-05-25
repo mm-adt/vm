@@ -22,11 +22,11 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, TypeChecker}
+import org.mmadt.language.obj.`type`.{RecType, Type, TypeChecker}
 import org.mmadt.language.obj.op.trace.TypeOp
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
@@ -36,10 +36,16 @@ trait Value[+V <: Obj] extends Obj
   with TypeOp[V] {
   def g: Any
 
-  // pattern matching methods
+
   override def test(other: Obj): Boolean = other match {
-    case argValue: Value[_] => TypeChecker.matchesVV(this, argValue)
-    case argType: Type[_] => TypeChecker.matchesVT(this, argType)
+    case aobj: Obj if (!aobj.alive) => !this.alive
+    case astrm: Strm[_] => MultiSet.test(this, astrm)
+    case arec: RecType[_, _] => TypeChecker.matchesVT(this, arec)
+    case avalue: Value[_] if this.name.equals(avalue.name) =>
+      withinQ(this, avalue) && this.g.equals(avalue.g)
+    case atype: Type[_] if this.name.equals(atype.name) || atype.name.equals(Tokens.anon) =>
+      withinQ(this, atype.domain) && this.compute(atype).alive
+    case _ => false
   }
 
   // standard Java implementations
@@ -48,7 +54,7 @@ trait Value[+V <: Obj] extends Obj
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
     case astrm: Strm[V] => MultiSet.test(astrm, this.toStrm)
-    case avalue: Value[V] => avalue.g.equals(this.g) && eqQ(this, avalue)
+    case avalue: Value[V] => this.g.equals(avalue.g) && eqQ(this, avalue)
     case _ => false
   }
 }

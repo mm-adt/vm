@@ -30,6 +30,22 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class IntTypeTest extends FunSuite {
+
+  test("int type test") {
+    // type ~ value
+    assert(!int.test(int(3)))
+    assert(!int.plus(10).plus(-5).plus(-5).test(int(3).plus(10).plus(-5).plus(-5)))
+    // type ~ type
+    assert(int.test(int))
+    assert(int.plus(2).test(int.plus(2)))
+    assert(int.is(int.gt(2)).test(int.is(int.gt(2))))
+    assert(!int.test(str))
+    assert(!int.test(int.plus(2)))
+    assert(!int.plus(2).test(int))
+    assert(!int.test(str.map(int(2))))
+    assert(!int.test(str.map(int)))
+  }
+
   test("int infix operators") {
     assertResult("bool<=int[plus,2][gt,4]")((int + 2 > 4).toString)
     assertResult("int{?}<=int[plus,2][is,bool<=int[gt,4]]")((int + 2 is int.gt(4)).toString)
@@ -48,7 +64,7 @@ class IntTypeTest extends FunSuite {
       int(6) ==> int.q(2).is(int.gt(5))
     }
     intercept[LanguageException] {
-      int(6) ==> int.q(15,46).is(int.gt(5))
+      int(6) ==> int.q(15, 46).is(int.gt(5))
     }
   }
   test("int: deep nest") {
@@ -57,14 +73,5 @@ class IntTypeTest extends FunSuite {
     assertResult(int(4))(int(1) ==> int.plus(int.plus(int.plus(1))))
     assertResult(int(5))(int(1) ==> int.plus(int.plus(int.plus(int.plus(1)))))
     assertResult(int(6))(int(1) ==> int.plus(int.plus(int.plus(int.plus(int.plus(1))))))
-  }
-
-  test("int: type structure") {
-    println(int.plus(int(2)).mult(int(5)).trace)
-  }
-
-  test("int: pattern matching") {
-    assert(int.test(int))
-    assert(!int.test(str))
   }
 }

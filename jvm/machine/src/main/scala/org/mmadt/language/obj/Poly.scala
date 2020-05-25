@@ -32,5 +32,6 @@ object Poly {
       case alst: Lst[A] => Lst.keepFirst(alst)
     }
   }
-  def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial
+  def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = (apoly.glist.isEmpty || bpoly.glist.isEmpty) ||
+    (apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial)
 }

@@ -47,8 +47,6 @@ object TypeChecker {
       withinQ(obj, pattern) // must be within the type's quantified window
   }
 
-  def matchesVV[O <: Obj](obj: Value[O], pattern: Value[O]): Boolean = (!obj.alive && !pattern.alive) || (obj.g.equals(pattern.g) && withinQ(obj, pattern))
-
   def matchesTT[O <: Obj](obj: Type[O], pattern: Type[O]): Boolean = {
     if (!obj.alive && !pattern.alive) return true
     ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj) || obj.name.equals(Tokens.anon) || (pattern.name.equals(Tokens.anon) && pattern.root)) || // all objects are obj
@@ -68,8 +66,6 @@ object TypeChecker {
         .fold(obj.trace.length == pattern.trace.length)(_ && _) &&
       withinQ(obj, pattern)
   }
-
-  def matchesTV[O <: Obj](obj: Type[O], pattern: Value[O]): Boolean = !obj.alive && !pattern.alive
 
   ////////////////////////////////////////////////////////
 

@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{RecType, __}
@@ -48,7 +48,7 @@ object GetOp extends Func[Obj, Obj] {
       case arec: RecValue[Value[Obj], Value[Obj]] => arec.gmap(key.asInstanceOf[Value[Obj]])
       case alst: Lst[_] => key match {
         case aint: IntValue =>
-          Lst.checkIndex(alst, aint.g.toInt)
+          LanguageException.PolyException.testIndex(alst, aint.g.toInt)
           alst.glist(aint.g.toInt)
         case _ => obj
       }

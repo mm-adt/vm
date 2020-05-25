@@ -85,7 +85,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.plus(3), int, int.plus(3).a(int)),
         (int(1, 2, 3), int, bool(true, true, true)),
         (int(1, 2, 3), int.is(int.gt(2)), bool(false, false, true)),
-        (int(int(1).q(10), int(2).q(20), int(3).q(30)), int.is(__.gt(2)).q(*), bool(bfalse.q(10), bfalse.q(20), btrue.q(30))),
+        (int(int(1).q(10), int(2).q(20), int(3).q(30)), int.q(*).is(__.gt(2)), bool(bfalse.q(10), bfalse.q(20), btrue.q(30))),
         (int(1, 2, 3), real, bool(false, false, false)),
         // real
         (real(20.0), real(20.0), btrue),

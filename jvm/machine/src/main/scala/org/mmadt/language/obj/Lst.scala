@@ -1,12 +1,12 @@
 package org.mmadt.language.obj
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
@@ -31,10 +31,9 @@ trait Lst[A <: Obj] extends Poly[A]
   def clone(values: List[A]): this.type = this.clone(g = (gsep, values))
 
   override def test(other: Obj): Boolean = other match {
+    case aobj: Obj if !aobj.alive => !this.alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case alst: Lst[_] =>
-      if (alst.glist.isEmpty || this.glist.equals(alst.glist)) return true
-      Poly.sameSep(this, alst) && this.glist.zip(alst.glist).foldRight(true)((a, b) => a._1.test(a._2) && b)
+    case alst: Lst[_] => Poly.sameSep(this, alst) && this.glist.length >= alst.glist.length && this.glist.zip(alst.glist).foldRight(true)((a, b) => a._1.test(a._2) && b)
     case _ => false
   }
 
@@ -44,17 +43,13 @@ trait Lst[A <: Obj] extends Poly[A]
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] =>
       Poly.sameSep(this, alst) && alst.name.equals(this.name) && eqQ(alst, this) &&
-        ((this.isValue && alst.isValue && this.glist.zip(alst.glist).foldRight(true)((a, b) => a._1.test(a._2) && b)) ||
+        ((this.isValue && this.glist.zip(alst.glist).foldRight(true)((a, b) => a._1.equals(a._2) && b)) ||
           (this.glist == alst.glist && this.via == alst.via))
     case _ => false
   }
 }
 
 object Lst {
-  def checkIndex(apoly: Lst[_], index: scala.Int): Unit = {
-    if (index < 0) throw new LanguageException("poly index must be 0 or greater: " + index)
-    if (apoly.glist.length < (index + 1)) throw new LanguageException("poly index is out of bounds: " + index)
-  }
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
     apoly.clone(apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
