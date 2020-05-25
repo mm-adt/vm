@@ -412,19 +412,19 @@ A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ 
 |\$a + b = 0 \=> a = -b & b = -a\$   | unique inverse                           |
 |\$-(a+b) = (-a) + (-b)\$            | distributivity                           | `(a,b){-1} == (a{-1},b{-1})`
 |\$-(-a) = a\$                       | distributivity                           | `(a{-1}){-1} == a`
-|\$a*0 = 0 = 0*a\$                   | annihilator                              | `(a;_{0}) == \_{0} == (_{0};a)`
+|\$a*0 = 0 = 0*a\$                   | annihilator                              | `(a;{0}) == {0} == ({0};a)`
 |\$a * (-b) = -a * b = -(a * b)\$    | factors                                  | `(a;b{-1}) == (a{-1};b) == (a;b){-1}`
 |\$(-a) * (-b) = a * b\$             | factors                                  | `(a{-1};b{-1}) == (a;b)`
 |===
 ****
 
-[cols="0,1,2,1",width=50%,float=right]
+[cols="0,1,2",width=35%,float=right]
 |===
-| poly |  inst       | polynomial form   | monoidal
+| poly |  inst       | properties
 
-| `,`  | `[branch]`  | commutative       | ring `+`
-| `\|` | `[choose]`  | non-commutative   | ring `+`
-| `;`  | `[compose]` | semi-commutative  | monoid `*`
+| `,`  | `[branch]`  | commutative
+| `\|` | `[choose]`  | non-commutative
+| `;`  | `[compose]` | semi-commutative
 |===
 
 A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
@@ -505,7 +505,7 @@ mmlang> int-<[[gt,0],[gt,10]]
 ----
 ================================================================
 
-A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings] (also known as https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]). Every `poly` draws from the same `obj` carrier set, but are combined using different "additive" operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `|` yields a non-commutative polynomial and `;` yields a semi-commutative polynomial ring with "addition" being monoid multiplication. The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
+A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings]. Every `poly` draws from the same `obj` carrier set, but are combined using different "additive" operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `|` yields a non-commutative polynomial and `;` yields a semi-commutative polynomial ring with "addition" being monoid multiplication. The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
 
 [source]
 ----
@@ -513,6 +513,16 @@ A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring
 [[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
 [[t0{q0}];[t1{q1}];...;[tn{qn}]]
 ----
+
+================================================================
+The `polys` have two structural representations (a value and a type from) and two `poly`-specific instructions for mapping an `obj` to a `vpoly` and a `vpoly` to an `obj`. The intution being that these operators transform a serial expression into a parallel expression and vice versa. Each has a respective `mmlang` syntax sugar that is the preferred notation for all the remaining examples.
+
+. `[ ]`: The _value_ form of a `poly` is an "atomic" poly that can only be resolved when used in conjection with `poly`-specific instructions/operators.
+. `-<`: The _split_ operator is syntax sugar for `poly\<=obj[split,poly]` where the incoming `obj` is cloned across the `poly` terms. The result is the result of applying the incoming `obj` to each `poly` term in a `poly` of equal size and type.
+. `>-`: The _merge_ operator is syntax sugar for `obj{*}\<=poly[merge]` where the incoming `poly` is deconstructed into its component terms, where the resultant `obj's` quantifier is computed the polynomial's summation formula.
+. `( )`: The _type_ form of a `poly` is a "functional" poly that can be composed with other types, where `(a,b,c)` is equivalent to `-<[a,b,c]>-`.
+
+================================================================
 
 ===== orThen ,-poly
 
@@ -548,11 +558,11 @@ In the category `poly`, the previous `mmlang` examples are written as follows.
 
 [source]
 ----
-mmlang> 'mar'-<[[plus,'ko'],[plus,'ko']]>-
+mmlang> 'mar'([plus,'ko'],[plus,'ko'])
 ==>'marko'{2}
-mmlang> 'mar'-<[[plus,'ko']{2},.]>-
+mmlang> 'mar'([plus,'ko']{2},.)
 ==>'marko'{2}
-mmlang> -<[[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]>-
+mmlang> ([start,'mar'][plus,'ko'],[start,'mar'][plus,'ko'])
 ==>'marko'{2}
 ----
 
@@ -566,10 +576,10 @@ a(b+c) &=& \; ab + ac \\
 
 [source]
 ----
-mmlang> 'a'-<[[plus,'b'],[plus,'c']]>-
+mmlang> 'a'(+'b',+'c')
 ==>'ab'
 ==>'ac'
-mmlang> -<[[start,'b'],[start,'c']]>-[plus,'a']
+mmlang> ('b','c')+'a'
 ==>'ba'
 ==>'ca'
 ----
@@ -641,11 +651,11 @@ mmlang>
 
 [source]
 ----
-mmlang> 'mar'-<[[plus,'ko']|[plus,'io']]>-
+mmlang> 'mar'([plus,'ko']|[plus,'io'])
 ==>'marko'
-mmlang> 'mar'-<[[plus,'ko']{0}|[plus,'io']]>-
+mmlang> 'mar'([plus,'ko']{0}|[plus,'io'])
 ==>'mario'
-mmlang> 'mar'-<[[plus,'ko']{0}|[plus,'io']{0}]>-
+mmlang> 'mar'([plus,'ko']{0}|[plus,'io']{0})
 mmlang>
 ----
 
@@ -653,7 +663,7 @@ Every `|-poly` is non-commutative because the order in which the terms/branches 
 
 ===== andThen ;-poly
 
-A `;-poly` is a semi-commutative polynomial ring, where term "addition" is ring multiplication and thus, is monoid multiplication. Monoid multiplication is standard type composition and is defined as
+A `;-poly` is a semi-commutative polynomial ring, where term "addition" is ring multiplication and thus, is monoid multiplication. Polynomials with this structure are called https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]). In mm-ADT, monoid multiplication is standard type composition and is defined as
 
 \[
 \texttt{t0\{q0\};t1\{q1\} = t0;t1\{q0*q1\}}
@@ -671,9 +681,9 @@ mmlang>
 
 [source]
 ----
-mmlang> 'mar'-<[[plus,'k'];[plus,'o']]>-
+mmlang> 'mar'([plus,'k'];[plus,'o'])
 ==>'marko'
-mmlang> 'mar'-<[[plus,'k'];[plus,'o']{0}]>-
+mmlang> 'mar'([plus,'k'];[plus,'o']{0})
 mmlang>
 ----
 
@@ -781,6 +791,78 @@ mmlang> -<['a','b','c']>-
 ==>'c'
 ----
 |===
+
+'''
+
+[.small]
+[cols="4,1,9",width=46%,float=left]
+|===
+| poly op         | mmlang      | example
+
+| `;`-*apply*  | `-<[;]`
+a|
+[source]
+----
+mmlang> 6-<[_;_]
+==>[6;6]
+mmlang> 6-<[_+1;_>6]
+==>[7;true]
+----
+| `,`-*copy*   | `-<[,]`
+a|
+[source]
+----
+mmlang> 6-<[_,_]
+==>[6,6]
+mmlang> 6-<[_>0,_>8]
+==>[true,false]
+----
+| `\|`-*pick*  | `-<[\|]`
+a|
+[source]
+----
+mmlang> 6-<[_\|_]
+==>[6\|]
+mmlang> 6-<[_>0\|_>8]
+==>[true\|]
+----
+|===
+
+[.small]
+[cols="4,1,9",width=46%,float=right]
+|===
+| poly op            | mmlang      | example
+
+| `;`-*return*     | `[;]>-`
+a|
+[source]
+----
+mmlang> 6-<[_;_]>-
+==>6
+mmlang> 6-<[_+1;_>6]>-
+==>true
+----
+| `,`-*merge*      | `[,]>-`
+a|
+[source]
+----
+mmlang> 6-<[_,_]>-
+==>6{2}
+mmlang> 6-<[_>0,_>8]>-
+==>true
+==>false
+----
+| `\|`-*coalesce*  | `[\|]>-`
+a|
+[source]
+----
+mmlang> 6-<[_\|_]>-
+==>6
+mmlang> 6-<[_+1\|_>6]>-
+==>7
+----
+|===
+'''
 
 ===== Poly Patterns
 
@@ -899,9 +981,9 @@ A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_cat
 | \$a + b = b + a \$                           | `(a\|b) = (b\|a)`                    | commutative coproducts
 | \$(a + b) + c = a + (b + c)\$                | `\((a\|b)\|c) = (a\|(b\|c))`         | associative coproducts
 | \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `(a;(b\|c)) = \((a;b)\|(a;c))`       | distributivity
-| \$0 + a = a\$                                | `(_{0}\|a) = a`                      | coproduct unit
-| \$0 \ast a = 0\$                             | `(_{0};a) = _{0}`                    | coproduct unit annihilation
-| \$1 \ast a = a\$                             | `(_{1};a) = a`                       | product unit
+| \$0 + a = a\$                                | `({0}\|a) = a`                       | coproduct unit
+| \$0 \ast a = 0\$                             | `({0};a) = {0}`                      | coproduct unit annihilation
+| \$1 \ast a = a\$                             | `({1};a) = a`                        | product unit
 | \$c^ {b^a} = c^{a \ast b}\$                  | `(a;b;c) = ((a;b);c)`                | currying
 |===
 
@@ -1033,7 +1115,7 @@ The two `;,-poly` monoids serve as components of a https://en.wikipedia.org/wiki
 \[
 ;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle
 \]
-where the _branch_ component is, in fact, a group with `-<[a{q},a{-q}]>- = obj{0}` and `[branch,a{q},a{-q}] = obj{0}`.
+where the _branch_ component is, in fact, a group with `(a{q},a{-q}) == {0}` and `[branch,a{q},a{-q}] == {0}`.
 [source]
 ----
 mmlang> -<['a'{2},'a'{-2}]
@@ -1047,78 +1129,6 @@ mmlang>
 
 The `|-poly` can be appended to the `;,-poly` ring, where it serves as an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the additive group commonly used to denote https://en.wikipedia.org/wiki/Tagged_union[sum types].
 
-.Delta Poly
-[.small]
-[cols="4,1,9",width=46%,float=left]
-|===
-| poly op         | mmlang      | example
-
-| `;`-*apply*  | `-<[;]`
-a|
-[source]
-----
-mmlang> 6-<[_;_]
-==>[6;6]
-mmlang> 6-<[_+1;_>6]
-==>[7;true]
-----
-| `,`-*copy*   | `-<[,]`
-a|
-[source]
-----
-mmlang> 6-<[_,_]
-==>[6,6]
-mmlang> 6-<[_>0,_>8]
-==>[true,false]
-----
-| `\|`-*pick*  | `-<[\|]`
-a|
-[source]
-----
-mmlang> 6-<[_\|_]
-==>[6\|]
-mmlang> 6-<[_>0\|_>8]
-==>[true\|]
-----
-|===
-
-.Nabla Poly
-[.small]
-[cols="4,1,9",width=46%,float=right]
-|===
-| poly op            | mmlang      | example
-
-| `;`-*return*     | `[;]>-`
-a|
-[source]
-----
-mmlang> 6-<[_;_]>-
-==>6
-mmlang> 6-<[_+1;_>6]>-
-==>true
-----
-| `,`-*merge*      | `[,]>-`
-a|
-[source]
-----
-mmlang> 6-<[_,_]>-
-==>6{2}
-mmlang> 6-<[_>0,_>8]>-
-==>true
-==>false
-----
-| `\|`-*coalesce*  | `[\|]>-`
-a|
-[source]
-----
-mmlang> 6-<[_\|_]>-
-==>6
-mmlang> 6-<[_+1\|_>6]>-
-==>7
-----
-|===
-
-'''
 
 In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a *language* to a *processor* through the common communication medium of `objs` provided by *storage*. All mm-ADT compliant components are faithful to `obj` and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of _synthetic data systems_.
 
@@ -1142,24 +1152,6 @@ mm-ADT's type system is founded on a multi-sorted https://en.wikipedia.org/wiki/
 
 NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring(oid)], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group]. In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general). Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoid], where, for example, the `,-poly` `[int{1},int{-1}]` merges to `int{0}` and thus, the initial `obj` as
 
-\[
-\begin{split}
-\texttt{[int\{1\},int\{-1\}]>-} & \implies \\
-\texttt{int\{1-1\}}             & \implies \\
-\texttt{int\{0\}}               & \implies \\
-\texttt{_{0}}                   & .
-\end{split}
-\]
-
-
-[source]
-----
-mmlang> [int{1},int{-1}]
-==>[int,int{-1}]
-mmlang> [int{1},int{-1}]>-
-mmlang>
-----
-
 
 Every corresponding `mmlang` expression makes use of `poly`-types. In `mmlang`, a `poly` can be denoted as a _structure_ via `[ ]` (a value) or as a _process_ via `< >` (a type). The example 3-slot `int` `,-poly` below has a domain of `int` and a range of `int{1,3}`. This branch structure will product one, two, or three `ints` given a single `int`.
 
@@ -1172,28 +1164,6 @@ mmlang> int<int[is>0],int[is<0],int>
      int
    ]>-
 ----
-
-The `< >` `poly` form is `mmlang` sugar with the following derivation.
-
-\[
-\begin{split}
-\texttt{(a,b,c)}               & \implies \\
-\texttt{-<[a,b,c]>-}           & \implies \\
-\texttt{[branch,a,b,c]}  & \implies \\
-\end{split}
-\]
-
-[source]
-----
-mmlang> 5<int[is>0],int[is<0],int>
-==>5{2}
-mmlang> 5-<[int[is>0],int[is<0],int]>-
-==>5{2}
-mmlang> 5[split,int[is>0],int[is<0],int][merge]
-==>5{2}
-----
-
-
 
 ===== Axioms, Diagrams, and Notation
 
@@ -1218,10 +1188,10 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1<<+1,*2>,*3>
+mmlang> 1((+1,*2),*3)
 ==>2{2}
 ==>3
-mmlang> 1<+1,<*2,*3>>
+mmlang> 1(+1,(*2,*3))
 ==>2{2}
 ==>3
 ----
@@ -1232,9 +1202,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1<[id]{0},+1>
+mmlang> 1({0},+1)
 ==>2
-mmlang> 1<+1,[id]{0}>
+mmlang> 1(+1,{0})
 ==>2
 ----
 
@@ -1245,10 +1215,10 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1<<+1,*2>,*3>
+mmlang> 1((+1,*2),*3)
 ==>2{2}
 ==>3
-mmlang> 1<+1,<*2,*3>>
+mmlang> 1(+1,(*2,*3))
 ==>2{2}
 ==>3
 ----
@@ -1259,9 +1229,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1<+1,*2>
+mmlang> 1(+1,*2)
 ==>2{2}
-mmlang> 1<*2,+1>
+mmlang> 1(*2,+1)
 ==>2{2}
 ----
 
@@ -1271,9 +1241,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1<<+1;*2>;*3>
+mmlang> 1((+1;*2);*3)
 ==>12
-mmlang> 1<+1;<*2;*3>>
+mmlang> 1(+1;(*2;*3))
 ==>12
 ----
 
@@ -1283,9 +1253,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1<[id];+1>
+mmlang> 1({1};+1)
 ==>2
-mmlang> 1<+1;[id]>
+mmlang> 1(+1;{1})
 ==>2
 mmlang> 1+1
 ==>2
@@ -1297,9 +1267,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1<<+1,*2>;*3>
+mmlang> 1((+1,*2>;*3)
 ==>6{2}
-mmlang> 1<<+1;*3>,<*2;*3>>
+mmlang> 1((+1;*3),(*2;*3))
 ==>6{2}
 ----
 
@@ -1309,45 +1279,12 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1<+1;<*2,*3>>
+mmlang> 1(+1;(*2,*3))
 ==>4
 ==>6
-mmlang> 1<<+1;*2>,<+1;*3>>
+mmlang> 1((+1;*2),(+1;*3))
 ==>4
 ==>6
-----
-|===
-
-
-
-
-[width=45%,float=center]
-|===
-a|
-[.small]
-[source]
-----
-mmlang> 1<[plus,1],[mult,2]>{-1}
-==>2{-2}
-mmlang> 1<[plus,1]{-1},[mult,2]{-1}>
-==>2{-2}
-mmlang> 1<[plus,1]{-1}>{-1}
-==>2
-mmlang> 1[plus,1]
-==>2
-mmlang> 1<[plus,1];[id]{0}>
-mmlang> 1[id]{0}
-mmlang> 1<[id]{0};[plus,1]>
-mmlang> 1<[plus,1];[mult,2]{-1}>
-==>4{-1}
-mmlang> 1<[plus,1]{-1};[mult,2]>
-==>4{-1}
-mmlang> 1<[plus,1];[mult,2]>{-1}
-==>4{-1}
-mmlang> 1<[plus,1]{-1};[mult,2]{-1}>
-==>4
-mmlang> 1<[plus,1];[mult,2]>
-==>4
 ----
 |===
 '''
