@@ -73,7 +73,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // mmlang's language structure
-  lazy val obj: Parser[Obj] = varGet | objValue | objType | polyObj
+  lazy val obj: Parser[Obj] = varGet | objValue | objType | polyObj | anonQuant
 
   // variable parsing
   lazy val symbolName: Regex = "[a-zA-Z]+".r
@@ -104,7 +104,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val recType: Parser[ORecType] = (Tokens.rec ~> opt(COLON ~> recStruct)) ^^ (x => trec(gmap = x.map(_._2).getOrElse(Map.empty[Obj, Obj])))
   lazy val recTypeNoPrefix: Parser[ORecType] = recStruct ^^ (x => trec(gmap = x._2))
   lazy val recStruct: Parser[RecTuple[Obj, Obj]] = (LBRACKET ~> repsep((obj <~ Tokens.->) ~ obj, polySep) <~ RBRACKET) ^^ (x => (Tokens.`;`, x.map(o => (o._1, o._2)).toMap))
-
+  lazy val anonQuant: Parser[__] = quantifier ^^ (x => new __().q(x))
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ {

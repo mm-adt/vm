@@ -243,6 +243,11 @@ mmlang> int{0,5}<=int{0,5}
 
 ===== Type Definition
 
+.Monoids
+****
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
+****
+
 Types and values both have a *ground* that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`. For a type, this history is called the *type definition* (and more generally, the *type's trace*).
 
 NOTE: In practice, the string representation of a value is it's ground and the string representation of a type is it's trace.
@@ -286,83 +291,6 @@ int{*}<=[=db][get,'people']       // 0 or more ints (any)
 NOTE: The default quantifier ring of the mm-ADT VM is \[
 \langle \mathbb{N}^+ \times \mathbb{N}^+, \ast, + \rangle, \]
 where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`. Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`.
-
-===== Type Trace Graph
-
-Every mm-ADT program is a _type_. Every type is created by a https://en.wikipedia.org/wiki/Type_constructor[type constructor]. The ctypes are degenerate _nullary_ constructors. The dtypes are `n`-ary constructors with their arity being the number of instructions applied to their respective base ctype. The arity is also the path length of the spine of the type's definition within a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] called a *type trace graph*.
-
-====== Linear Type Traces
-
-Any type constructed with instructions contain argument values (not types) generates a *linear type trace*.
-
-[source]
-----
-mmlang> int
-==>int
-mmlang> int[id]
-==>int[id]
-mmlang> int[id][gt,0]
-==>bool<=int[id][gt,0]
-----
-
-====== Nested Type Traces
-
-Any type constructed with instructions that contain an argument type generates a *nested type trace*.
-
-[source]
-----
-mmlang> int
-==>int
-mmlang> int[id]
-==>int[id]
-mmlang> int[id][is,[gt,0]]
-==>int{?}<=int[id][is,bool<=int[gt,0]]
-mmlang>
-----
-
-====== Branching Type Traces
-
-Nested types are examples of _inter-instruction branching_. The more general form is _intra-instruction branching_. Any instruction that forks an `obj` into a `poly` or joins the `objs` of a `poly` are *branch instructions*. They generate *branching type traces*.
-
-A https://en.wikipedia.org/wiki/Tagged_union[*sum type*] (tagged union) is constructed by branching across a `|-poly`.
-
-image::sum-type-constructor.png[width=600,align=center]
-
-[source]
-----
-mmlang> int~<[int[is>0] | int[neg]]
-==>[int{?}<=int[is,bool<=int[gt,0]]|int[neg]]<=int~<[int{?}<=int[is,bool<=int[gt,0]]|int[neg]]
-----
-
-In the example above, a `int` is the ctype that is split across two branches via `[choice]` (with a sugar of `~<`). Given an `int` value, that `int` value will either be greater than 0 or it will be negated.  In other words, the type maps an `int` to a coproduct containing it's https://en.wikipedia.org/wiki/Absolute_value[absolute value] as determined either from the first or the second branch.
-
-[source]
-----
-mmlang> 10<int[is>0] | int[neg]>
-==>[10|]
-mmlang> -10<int[is>0] | int[neg]>
-==>[|10]
-----
-
-While both injections of the coproduct contain the same value, their location in the coproduct contains information about the state of the domain `int`. For example, should the coproduct undergo a `[merge]` (with a sugar of `>-`), then the above type yields the same range value for two different `int` domains.
-
-[source]
-----
-mmlang> 10<int[is>0] | int[neg]>
-==>10
-mmlang> -10<int[is>0] | int[neg]>
-==>10
-----
-
-Without the merge, the branch that the incoming `int` took is preserved in the coproduct's `poly` structure and can be inverted.
-
-[source]
-----
-mmlang> 10<int[is>0] | int[neg]]=[_|[neg]>
-==>10
-mmlang> -10<int[is>0] | int[neg]]=[_|[neg]>
-==>-10
-----
 
 ==== Type Compilation
 
@@ -456,6 +384,40 @@ mmlang>
 
 ==== Poly Types
 
+.Rings
+****
+A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the _multiplicative_ operator, \$\+: A \times A \rightarrow A \$ is the _additive_ operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity. A ring satisfies the following axioms, where \$ a,b,c \in A \$.
+
+[.small]
+[cols="^4,^4,^5"]
+|===
+| common notation                    | terminology                              | mmlang notation
+
+|\$(a + b) + c = a + (b + c)\$       | additive associativity                   | `\((a,b),c) == (a,(b,c))`
+|\$0 + a = a + 0 = a\$               | additive identity                        | `({0},a) == (a,{0}) == a`
+|\$a - a = a + (-a) = 0\$            | additive inverses                        | `(a,a{-1}) == {0}`
+|\$a + b = b + a\$                   | additive commutativity                   | `(a,b) == (b,a)`
+|\$(a * b) * c = a * (b * c)\$       | multiplicative associativity             | `\((a;b);c) == (a;(b;c))`
+|\$1 * a = a * 1 = a\$               | multiplicative identity                  | `({1};a) == (a;{1}) == a`
+|\$(a + b) * c = (a * c) + (b * c)\$ | multiplicative left distributivity       | `\((a,b);c) == ((a;c),(b;c))`
+|\$a * (b + c) = (a * b) + (a * c)\$ | multiplicative right distributivity      | `(a;(b,c)) == \((a;b),(a;c))`
+|===
+
+[.small]
+[cols="^4,^2,^4"]
+|===
+| common notation                    | deduction                                | mmlang notation
+
+|\$a + b = a + c \=> b = c\$         | factors                                  |
+|\$a + b = 0 \=> a = -b & b = -a\$   | unique inverse                           |
+|\$-(a+b) = (-a) + (-b)\$            | distributivity                           | `(a,b){-1} == (a{-1},b{-1})`
+|\$-(-a) = a\$                       | distributivity                           | `(a{-1}){-1} == a`
+|\$a*0 = 0 = 0*a\$                   | annihilator                              | `(a;_{0}) == \_{0} == (_{0};a)`
+|\$a * (-b) = -a * b = -(a * b)\$    | factors                                  | `(a;b{-1}) == (a{-1};b) == (a;b){-1}`
+|\$(-a) * (-b) = a * b\$             | factors                                  | `(a{-1};b{-1}) == (a;b)`
+|===
+****
+
 [cols="0,1,2,1",width=50%,float=right]
 |===
 | poly |  inst       | polynomial form   | monoidal
@@ -465,18 +427,18 @@ mmlang>
 | `;`  | `[compose]` | semi-commutative  | monoid `*`
 |===
 
-The elements of the set `poly` are https://en.wikipedia.org/wiki/Polynomial[polynomials]. A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
+A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
 \[
-p = a_0 x^0 + a_1 x^1 + a_2 x^2 + \ldots + a_n x^n,
+p = q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n,
 \]
-where \$a_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$a_i x^i\$ is a term, and the terms are linearly combined via `+`.
+where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via `+`.
 
-In the lexicon of mm-ADT, `poly` is a _parallelization_ of _objs_ composed of _quantifiers_ and _instructions_ typically expressed as
+In mm-ADT, the elements of the set `poly` are https://en.wikipedia.org/wiki/Polynomial[polynomials].  A `poly` is a _decoupling_ of _objs_ composed of _quantifiers_ and _objects_ typically expressed as
 [source]
 ----
-[[x0]{a0},[x1]{a1},[x2]{a2},...,[xn]{an}]
+[x0{q0},x1{q1},x2{q2},...,xn{qn}]
 ----
-where `ai` is a quantifier, `xi` is an instruction (or composition of instructions), `xi{ai}` is an `obj` (type or value), and the `objs` are in parallel slots via `,`.
+where `qi` is a quantifier, `xi` is an object, `xi{qi}` is an `obj` (type or value), and the `objs` are isolated via `,`.
 
 The set `obj` is a https://en.wikipedia.org/wiki/Tagged_union[disjoint union] of types and values, where \$\tt{type} \rightarrow \tt{obj} leftarrow \tt{value}\$. The type `objs` are the carrier of a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] with `[compose]` as multiplication , `[branch]` as addition, `[id]` as the multiplicative identity (*1*), and `[is,false]` as the additive identity (*0*). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is `int` and `+` and `*` are standard integer addition and multiplication, respectively. A variation of the https://en.wikipedia.org/wiki/Product_ring[direct product] of rings composes the type ring and the quantifier into a new ring called a https://zenodo.org/record/2565243[stream ring], where the carrier set is the set of all quantified types and `[id]{1}` is the multiplicative identity and `[id]{0}` is the additive identity.
 
@@ -612,7 +574,6 @@ mmlang> -<[[start,'b'],[start,'c']]>-[plus,'a']
 ==>'ca'
 ----
 
-.Type Equality
 ================================================================
 Two `,-poly` terms can be added if their indeterminates are equal. For the monotypes such as `bool`, `int`, `real`, and `str`, equality is based on the grounded value of the type. Equality ignores quantification and trace history.
 
@@ -821,183 +782,6 @@ mmlang> -<['a','b','c']>-
 ----
 |===
 
-===== Free Poly Monoid
-
-[.small]
-[cols="1,1,1,1",width=30%,float=left]
-|===
-| op       | poly | inst        |  meta
-
-| \$\ast\$ | `;`  | `[compose]` | `[mult]`
-| \$+\$    | `,`  | `[branch]`  | `[plus]`
-| \$o+\$   | `\|` | `[choose]`  | `[plus]`
-|===
-
-An mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is an element of either a _serial_ (`;`), _parallel_ (`,`), or _choice_ (`|`) https://en.wikipedia.org/wiki/Free_object[free] https://en.wikipedia.org/wiki/Trace_monoid[trace monoid] that is https://en.wikipedia.org/wiki/Adjoint_functors[left-adjoint] to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ non-free, reductive monoid. The _nabla functions_, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free `poly` structure into an `obj{*}` via the applications of the reducing monoid's operator in `inst` such that
-\[
-\begin{split}
-\nabla^;(\texttt{poly}) &=& \texttt{[compose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\prod_{i<n} q_i, \\
-\nabla^,(\texttt{poly}) &=& \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\sum_{i<n} q_i, \\
-\nabla^|(\texttt{poly}) &=& \texttt{[choose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i<n}(q_i),\max_{i<n}(q_i)),
-\end{split}
-\]
-where \$\nabla\$ is realized as the https://ncatlab.org/nlab/show/codiagonal[codiagonal] `>-` (i.e. `[merge]`) instruction. the resultant `obj` is quantified within the specified `q` range. This is the general solution to deriving the type quantifier during compilation and can be further refined using instruction semantics. The following diagrams specify three https://en.wikipedia.org/wiki/Monoid#Monoid_homomorphisms[monoid homomorphisms] that couple the `poly` to `inst` monoids such that the underlying monoidal processes of the mm-ADT VM can be directly manipulated by any mm-ADT language that supports `poly` -- e.g., within `mmlang`.
-
-'''
-image::free-monoid-homomorphisms.png[align=center]
-'''
-
-Both the `-poly` and \$\langle \tt{obj},- \rangle\$ monoids derive their https://en.wikipedia.org/wiki/Algebraic_structure[carrier sets] from the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial] set of mm-ADT `objs`. The injective _delta functions_, \$\Delta:\tt{obj} \rightarrow \text{-poly}\$, yield the https://en.wikipedia.org/wiki/Generator_(mathematics)[generators] of the `-poly` monoid's, where
-\[
-\begin{split}
-\Delta^{;}(\texttt{obj}) &=& [\texttt{obj};], \\
-\Delta^{,}(\texttt{obj}) &=& [\texttt{obj},], \\
-\Delta^{|}(\texttt{obj}) &=& [\texttt{obj}|],
-\end{split}
-\]
-and \$\Delta\$ the https://en.wikipedia.org/wiki/Diagonal_morphism[diagonal] `-<` (i.e. `[split]`) instruction. Likewise, `[compose]`, `[branch]`, and `[choose]` are the instruction representations of the composition of `objs`. If
-\[
-\begin{split}
-U: M \rightarrow \textbf{Set}
-\end{split}
-\]
-maps a monoid to its carrier set, then the diagrams below commute, where the https://en.wikipedia.org/wiki/Universal_property[universal property] of monoid mappings is realized as the "lifted" `poly` syntactic category encoding of the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture].
-
-image::monoid-homomorphisms.png[align=center]
-
-The following diagrams detail the operational semantics of the mm-ADT VM with respects to the coupling between the corresponding free and reductive monoids. The dashed lines provide a disentangled, parallel (product) view of the respective double-line compositions. Finally, the squiggly line joining the two parallel morphisms in the `|-poly` diagram makes clear that, unlike the branches in `,-poly` these branches are coupled to ensure the proper https://en.wikipedia.org/wiki/Tagged_union[sum type] (disjoint union) semantics of the _either_ https://en.wikipedia.org/wiki/Coproduct[coproduct].
-
-[cols="3,^9"]
-|===
-| `;-poly`
-\[
-\left(\Delta^; \circ \left(f \ast g\right) \circ \nabla^; \right)
-\]
-andThen/compose-chain +
-dependent slots +
-product +
-\$A \ast B \implies C\$
-| image:semi-delta-nabla.png[width=455,link=images/language/semi-delta-nabla.png]
-
-| `,-poly`
-\[
-\left(\Delta^, \circ \left(f+g\right) \circ \nabla^,\right)
-\]
-copy/clone-branching +
-independent slots +
-product +
-\$A+A \implies 2A\$
-| image:comma-delta-nabla.png[width=455,link=images/language/comma-delta-nabla.png]
-
-
-| `\|-poly`
-\[
-\left(\Delta^\| \circ \left(f \oplus g\right) \circ \nabla^\|\right)
-\]
-either/choice-branching +
-dependent slots +
-coproduct +
-\$A \oplus A \implies A\$
-| image:pipe-delta-nabla.png[width=455,link=images/language/pipe-delta-nabla.png]
-|===
-
-====== Free Ring
-
-The two `;,-poly` monoids serve as components of a https://en.wikipedia.org/wiki/Universal_algebra[universal algebra] that implements the https://zenodo.org/record/2565243[stream ring] algebra -- the foundational algebra of the mm-ADT VM. The two `poly` monoids form a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and thus, a syntactic https://en.wikipedia.org/wiki/Free_algebra[free algebra] that enables mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming] by way of a https://en.wikipedia.org/wiki/Ring_homomorphism[ring homomorphism] from the *structural* ` `;,-poly` free ring to the corresponding reductive *procedural* ring such that
-\[
-;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle
-\]
-where the _branch_ component is, in fact, a group with `-<[a{q},a{-q}]>- = obj{0}` and `[branch,a{q},a{-q}] = obj{0}`.
-[source]
-----
-mmlang> -<['a'{2},'a'{-2}]
-==>['a'{2},'a'{-2}]
-mmlang> -<['a'{2},'a'{-2}]>-
-mmlang>
-mmlang> [branch,['a'{2},'a'{-2}]]
-mmlang>
-----
-
-
-The `|-poly` can be appended to the `;,-poly` ring, where it serves as an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the additive group commonly used to denote https://en.wikipedia.org/wiki/Tagged_union[sum types].
-
-.Delta Poly
-[.small]
-[cols="4,1,9",width=46%,float=left]
-|===
-| poly op         | mmlang      | example
-
-| `;`-*apply*  | `-<[;]`
-a|
-[source]
-----
-mmlang> 6-<[_;_]
-==>[6;6]
-mmlang> 6-<[_+1;_>6]
-==>[7;true]
-----
-| `,`-*copy*   | `-<[,]`
-a|
-[source]
-----
-mmlang> 6-<[_,_]
-==>[6,6]
-mmlang> 6-<[_>0,_>8]
-==>[true,false]
-----
-| `\|`-*pick*  | `-<[\|]`
-a|
-[source]
-----
-mmlang> 6-<[_\|_]
-==>[6\|]
-mmlang> 6-<[_>0\|_>8]
-==>[true\|]
-----
-|===
-
-.Nabla Poly
-[.small]
-[cols="4,1,9",width=46%,float=right]
-|===
-| poly op            | mmlang      | example
-
-| `;`-*return*     | `[;]>-`
-a|
-[source]
-----
-mmlang> 6-<[_;_]>-
-==>6
-mmlang> 6-<[_+1;_>6]>-
-==>true
-----
-| `,`-*merge*      | `[,]>-`
-a|
-[source]
-----
-mmlang> 6-<[_,_]>-
-==>6{2}
-mmlang> 6-<[_>0,_>8]>-
-==>true
-==>false
-----
-| `\|`-*coalesce*  | `[\|]>-`
-a|
-[source]
-----
-mmlang> 6-<[_\|_]>-
-==>6
-mmlang> 6-<[_+1\|_>6]>-
-==>7
-----
-|===
-
-'''
-
-In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a *language* to a *processor* through the common communication medium of `objs` provided by *storage*. All mm-ADT compliant components are faithful to `obj` and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of _synthetic data systems_.
-
-image::ring-homomorphisms.png[align=center,width=320]
-
 ===== Poly Patterns
 
 ====== Lists
@@ -1123,10 +907,6 @@ A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_cat
 
 ==== The Inst Monoid
 
-.Monoids
-****
-A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
-****
 
 mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_ **inst monoid** \[
 \langle\texttt{inst},\ast\rangle, \]
@@ -1167,6 +947,183 @@ image::inst-type-functor.png[width=35%,align=center]
 
 The `inst`-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile. The benefit of the `inst`-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.
 
+==== Free Poly Monoid
+
+[.small]
+[cols="1,1,1,1",width=30%,float=left]
+|===
+| op       | poly | inst        |  meta
+
+| \$\ast\$ | `;`  | `[compose]` | `[mult]`
+| \$+\$    | `,`  | `[branch]`  | `[plus]`
+| \$o+\$   | `\|` | `[choose]`  | `[plus]`
+|===
+
+An mm-ADT `poly` (https://en.wikipedia.org/wiki/Polynomial[polynomial]) is an element of either a _serial_ (`;`), _parallel_ (`,`), or _choice_ (`|`) https://en.wikipedia.org/wiki/Free_object[free] https://en.wikipedia.org/wiki/Trace_monoid[trace monoid] that is https://en.wikipedia.org/wiki/Adjoint_functors[left-adjoint] to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ non-free, reductive monoid. The _nabla functions_, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free `poly` structure into an `obj{*}` via the applications of the reducing monoid's operator in `inst` such that
+\[
+\begin{split}
+\nabla^;(\texttt{poly}) &=& \texttt{[compose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\prod_{i<n} q_i, \\
+\nabla^,(\texttt{poly}) &=& \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\sum_{i<n} q_i, \\
+\nabla^|(\texttt{poly}) &=& \texttt{[choose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i<n}(q_i),\max_{i<n}(q_i)),
+\end{split}
+\]
+where \$\nabla\$ is realized as the https://ncatlab.org/nlab/show/codiagonal[codiagonal] `>-` (i.e. `[merge]`) instruction. the resultant `obj` is quantified within the specified `q` range. This is the general solution to deriving the type quantifier during compilation and can be further refined using instruction semantics. The following diagrams specify three https://en.wikipedia.org/wiki/Monoid#Monoid_homomorphisms[monoid homomorphisms] that couple the `poly` to `inst` monoids such that the underlying monoidal processes of the mm-ADT VM can be directly manipulated by any mm-ADT language that supports `poly` -- e.g., within `mmlang`.
+
+'''
+image::free-monoid-homomorphisms.png[align=center]
+'''
+
+Both the `-poly` and \$\langle \tt{obj},- \rangle\$ monoids derive their https://en.wikipedia.org/wiki/Algebraic_structure[carrier sets] from the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial] set of mm-ADT `objs`. The injective _delta functions_, \$\Delta:\tt{obj} \rightarrow \text{-poly}\$, yield the https://en.wikipedia.org/wiki/Generator_(mathematics)[generators] of the `-poly` monoid's, where
+\[
+\begin{split}
+\Delta^{;}(\texttt{obj}) &=& [\texttt{obj};], \\
+\Delta^{,}(\texttt{obj}) &=& [\texttt{obj},], \\
+\Delta^{|}(\texttt{obj}) &=& [\texttt{obj}|],
+\end{split}
+\]
+and \$\Delta\$ the https://en.wikipedia.org/wiki/Diagonal_morphism[diagonal] `-<` (i.e. `[split]`) instruction. Likewise, `[compose]`, `[branch]`, and `[choose]` are the instruction representations of the composition of `objs`. If
+\[
+\begin{split}
+U: M \rightarrow \textbf{Set}
+\end{split}
+\]
+maps a monoid to its carrier set, then the diagrams below commute, where the https://en.wikipedia.org/wiki/Universal_property[universal property] of monoid mappings is realized as the "lifted" `poly` syntactic category encoding of the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture].
+
+image::monoid-homomorphisms.png[align=center]
+
+The following diagrams detail the operational semantics of the mm-ADT VM with respects to the coupling between the corresponding free and reductive monoids. The dashed lines provide a disentangled, parallel (product) view of the respective double-line compositions. Finally, the squiggly line joining the two parallel morphisms in the `|-poly` diagram makes clear that, unlike the branches in `,-poly` these branches are coupled to ensure the proper https://en.wikipedia.org/wiki/Tagged_union[sum type] (disjoint union) semantics of the _either_ https://en.wikipedia.org/wiki/Coproduct[coproduct].
+
+[cols="3,^9"]
+|===
+| `;-poly`
+\[
+\left(\Delta^; \circ \left(f \ast g\right) \circ \nabla^; \right)
+\]
+andThen/compose-chain +
+dependent slots +
+product +
+\$A \ast B \implies C\$
+| image:semi-delta-nabla.png[width=455,link=images/language/semi-delta-nabla.png]
+
+| `,-poly`
+\[
+\left(\Delta^, \circ \left(f+g\right) \circ \nabla^,\right)
+\]
+copy/clone-branching +
+independent slots +
+product +
+\$A+A \implies 2A\$
+| image:comma-delta-nabla.png[width=455,link=images/language/comma-delta-nabla.png]
+
+
+| `\|-poly`
+\[
+\left(\Delta^\| \circ \left(f \oplus g\right) \circ \nabla^\|\right)
+\]
+either/choice-branching +
+dependent slots +
+coproduct +
+\$A \oplus A \implies A\$
+| image:pipe-delta-nabla.png[width=455,link=images/language/pipe-delta-nabla.png]
+|===
+
+===== Free Ring
+
+The two `;,-poly` monoids serve as components of a https://en.wikipedia.org/wiki/Universal_algebra[universal algebra] that implements the https://zenodo.org/record/2565243[stream ring] algebra -- the foundational algebra of the mm-ADT VM. The two `poly` monoids form a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and thus, a syntactic https://en.wikipedia.org/wiki/Free_algebra[free algebra] that enables mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming] by way of a https://en.wikipedia.org/wiki/Ring_homomorphism[ring homomorphism] from the *structural* ` `;,-poly` free ring to the corresponding reductive *procedural* ring such that
+\[
+;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle
+\]
+where the _branch_ component is, in fact, a group with `-<[a{q},a{-q}]>- = obj{0}` and `[branch,a{q},a{-q}] = obj{0}`.
+[source]
+----
+mmlang> -<['a'{2},'a'{-2}]
+==>['a'{2},'a'{-2}]
+mmlang> -<['a'{2},'a'{-2}]>-
+mmlang>
+mmlang> [branch,['a'{2},'a'{-2}]]
+mmlang>
+----
+
+
+The `|-poly` can be appended to the `;,-poly` ring, where it serves as an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the additive group commonly used to denote https://en.wikipedia.org/wiki/Tagged_union[sum types].
+
+.Delta Poly
+[.small]
+[cols="4,1,9",width=46%,float=left]
+|===
+| poly op         | mmlang      | example
+
+| `;`-*apply*  | `-<[;]`
+a|
+[source]
+----
+mmlang> 6-<[_;_]
+==>[6;6]
+mmlang> 6-<[_+1;_>6]
+==>[7;true]
+----
+| `,`-*copy*   | `-<[,]`
+a|
+[source]
+----
+mmlang> 6-<[_,_]
+==>[6,6]
+mmlang> 6-<[_>0,_>8]
+==>[true,false]
+----
+| `\|`-*pick*  | `-<[\|]`
+a|
+[source]
+----
+mmlang> 6-<[_\|_]
+==>[6\|]
+mmlang> 6-<[_>0\|_>8]
+==>[true\|]
+----
+|===
+
+.Nabla Poly
+[.small]
+[cols="4,1,9",width=46%,float=right]
+|===
+| poly op            | mmlang      | example
+
+| `;`-*return*     | `[;]>-`
+a|
+[source]
+----
+mmlang> 6-<[_;_]>-
+==>6
+mmlang> 6-<[_+1;_>6]>-
+==>true
+----
+| `,`-*merge*      | `[,]>-`
+a|
+[source]
+----
+mmlang> 6-<[_,_]>-
+==>6{2}
+mmlang> 6-<[_>0,_>8]>-
+==>true
+==>false
+----
+| `\|`-*coalesce*  | `[\|]>-`
+a|
+[source]
+----
+mmlang> 6-<[_\|_]>-
+==>6
+mmlang> 6-<[_+1\|_>6]>-
+==>7
+----
+|===
+
+'''
+
+In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a *language* to a *processor* through the common communication medium of `objs` provided by *storage*. All mm-ADT compliant components are faithful to `obj` and the stream ring axioms that bind them regardless of their particular ring encoding. In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of _synthetic data systems_.
+
+image::ring-homomorphisms.png[align=center,width=320]
+
 ==== The Type Ringoid
 
 .Stream Ring Theory
@@ -1203,38 +1160,6 @@ mmlang> [int{1},int{-1}]>-
 mmlang>
 ----
 
-Every ring(oid) must satisfy the following axioms. The respective `mmlang` expressions are provided where `a`,`b`, and `c` are respectfully sorted mm-ADT types.
-
-.Ring with Unity Axioms
-[cols="^4,^4,^5"]
-|===
-| common notation                    | terminology                              | mmlang notation
-
-|\$(a + b) + c = a + (b + c)\$       | additive associativity                   | `\((a,b),c)` \$\cong\$ `(a,(b,c))`
-|\$0 + a = a + 0 = a\$               | additive identity                        | `(\_{0},a)` \$\cong\$ `(a,_{0})` \$\cong\$ `a`
-|\$a - a = a + (-a) = 0\$            | additive inverses                        | `(a,a{-1})` \$\cong\$ `_{0}`
-|\$a + b = b + a\$                   | additive commutativity                   | `(a,b)` \$\cong\$ `(b,a)`
-|\$(a * b) * c = a * (b * c)\$       | multiplicative associativity             | `\((a;b);c)` \$\cong\$ `(a;(b;c))`
-|\$1 * a = a * 1 = a\$               | multiplicative identity                  | `(\_;a)` \$\cong\$ `(a;_)` \$\cong\$ `a`
-|\$(a + b) * c = (a * c) + (b * c)\$ | multiplicative left distributivity       | `\((a,b);c)` \$\cong\$ `((a;c),(b;c))`
-|\$a * (b + c) = (a * b) + (a * c)\$ | multiplicative right distributivity      | `(a;(b,c))` \$\cong\$ `\((a;b),(a;c))`
-|===
-
-The most commonly used theorems entailed by the ring axioms are provided below.
-
-.Ring with Unity Theorems
-[cols="^4,^2,^4"]
-|===
-| common notation                    | deduction                                | mmlang notation
-
-|\$a + b = a + c \=) b = c\$         | factors                                  |
-|\$a + b = 0 \=) a = -b & b = -a\$   | unique inverse                           |
-|\$-(a+b) = (-a) + (-b)\$            | distributivity                           | `(a,b){-1}` \$\cong\$ `(a{-1},b{-1})`
-|\$-(-a) = a\$                       | distributivity                           | `(a{-1}){-1}` \$\cong\$ `a`
-|\$a*0 = 0 = 0*a\$                   | annihilator                              | `(a;_{0})` \$\cong\$ `\_{0}` \$\cong\$ `(_{0};a)`
-|\$a * (-b) = -a * b = -(a * b)\$    | factors                                  | `(a;b{-1})` \$\cong\$ `(a{-1};b)` \$\cong\$ `(a;b){-1}`
-|\$(-a) * (-b) = a * b\$             | factors                                  | `(a{-1};b{-1})` \$\cong\$ `(a;b)`
-|===
 
 Every corresponding `mmlang` expression makes use of `poly`-types. In `mmlang`, a `poly` can be denoted as a _structure_ via `[ ]` (a value) or as a _process_ via `< >` (a type). The example 3-slot `int` `,-poly` below has a domain of `int` and a range of `int{1,3}`. This branch structure will product one, two, or three `ints` given a single `int`.
 

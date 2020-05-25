@@ -165,6 +165,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(__.plus(1).mult(__.plus(10)))(engine.eval("[plus,1][mult,[plus,10]]"))
     assertResult(__.plus(1.2).mult(__.plus(10.1)))(engine.eval("[plus,1.2][mult,[plus,10.1]]"))
     assertResult(int(75))(engine.eval("4[plus,1][mult,[plus,10]]"))
+    assertResult(__.q(qZero))(engine.eval("{0}"))
+    assertResult(__)(engine.eval("{1}"))
+    assertResult(int(10))(engine.eval("int({0}|10)"))
+    assertResult(int(5))(engine.eval("5({0}|{1})"))
+    assertResult(zeroObj)(engine.eval("5({0};{1})"))
+    assertResult(int(5))(engine.eval("5({0},{1})"))
   }
 
   test("quantifier inst parsing") {
@@ -668,6 +674,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(4))(engine.eval("1([plus,1]{-1};[mult,2]{-1})"))
     assertResult(int(4))(engine.eval("1([plus,1];[mult,2])"))
   }
+
 
   test("repeat parsing") {
     assertResult(int(64))(engine.eval("20[plus,10][repeat,int[plus,1],34]"))
