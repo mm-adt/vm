@@ -21,3 +21,4 @@
 #
 
 org.mmadt.language.mmlang.mmlangScriptEngineFactory
+org.mmadt.language.gremlin.GremlinScriptEngineFactory

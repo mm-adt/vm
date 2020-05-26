@@ -68,7 +68,7 @@ public class Console {
 
     public static void main(final String[] args) throws Exception {
         String engineName = "mmlang";
-        final mmADTScriptEngine engine = LanguageFactory.getLanguage("mmlang").getEngine().get();
+        mmADTScriptEngine engine = LanguageFactory.getLanguage("mmlang").getEngine().get();
         final Terminal terminal = TerminalBuilder.builder().name("mm-ADT Console").build();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
@@ -95,9 +95,10 @@ public class Console {
                     break;
                 else if (line.equals(LANG_OP))
                     MANAGER.getEngineFactories().forEach(factory -> terminal.writer().println(RESULT + factory.getEngineName()));
-                else if (line.startsWith(LANG_OP))
+                else if (line.startsWith(LANG_OP)) {
                     engineName = line.replace(LANG_OP, "").trim();
-                else if (line.equals(MODEL_OP))
+                    engine = (mmADTScriptEngine) MANAGER.getEngineByName(engineName);
+                } else if (line.equals(MODEL_OP))
                     terminal.writer().println(Model.from((Rec) engine.eval(Tokens.model())));
                 else if (line.equals(MODEL_OP + " clear"))
                     engine.put(MODEL, Model.simple());

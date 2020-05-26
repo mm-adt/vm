@@ -22,12 +22,50 @@
 
 package org.mmadt.language.jsr223;
 
+import org.mmadt.language.LanguageException;
+
 import javax.script.ScriptEngineFactory;
+import java.util.List;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface mmADTScriptEngineFactory extends ScriptEngineFactory {
+
+    @Override
+    public default Object getParameter(String key) {
+        throw new LanguageException(this.getClass().getCanonicalName() + " needs to implements getParameter(String key)");
+    }
+
+    @Override
+    public default List<String> getExtensions() {
+        return List.of("txt");
+    }
+
+    @Override
+    public default List<String> getNames() {
+        return List.of(this.getLanguageName());
+    }
+
+    @Override
+    public default List<String> getMimeTypes() {
+        return List.of("txt");
+    }
+
+    @Override
+    public default String getOutputStatement(String toDisplay) {
+        return toDisplay;
+    }
+
+    @Override
+    public default String getEngineName() {
+        return this.getLanguageName();
+    }
+
+    @Override
+    public default String getEngineVersion() {
+        return this.getLanguageVersion();
+    }
 
     @Override
     public mmADTScriptEngine getScriptEngine();

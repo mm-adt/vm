@@ -28,12 +28,18 @@ import org.mmadt.language.obj.Obj;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
+import javax.script.SimpleBindings;
 import java.io.Reader;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 public interface mmADTScriptEngine extends ScriptEngine {
+
+    @Override
+    public default Bindings createBindings() {
+        return new SimpleBindings();
+    }
 
     @Override
     public default Obj eval(String script) throws VmException {
