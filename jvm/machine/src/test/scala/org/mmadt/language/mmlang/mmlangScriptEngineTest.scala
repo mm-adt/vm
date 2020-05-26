@@ -50,9 +50,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertThrows[LanguageException] {
       engine.eval("_[bad]")
     }
-    assertThrows[LanguageException] {
-      engine.eval("_[bad,'hello']")
-    }
+    /*    assertThrows[LanguageException] {
+          engine.eval("_[bdad,'hello']")
+        }*/
     assertThrows[LanguageException] {
       engine.eval("_[bad,1,3]")
     }
@@ -107,7 +107,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("rec value parsing") {
-    assertResult(rec(str("name") -> str("marko")))(engine.eval("['name'->'marko']"))
+    assertResult(rec(str("name") -> str("marko")))(engine.eval("['name'->'marko',.]"))
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(engine.eval("['name'->'marko','age'->29]"))
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(engine.eval("['name'->  'marko' , 'age' ->29]"))
   }
@@ -133,8 +133,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int <= rec.put(str("age"), int).get(str("age")))(engine.eval("rec[put,'age',int][get,'age']"))
     assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("rec[put,'age',int][get,'age'][plus,10]"))
     assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[put,'age',int][get,'age'][plus,10]"))
-    assertResult(int(20))(engine.eval("['name'->'marko'] rec[put,'age',10][get,'age'][plus,10]"))
-    assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[put,'age',10][get,'age'][plus,10]"))
+    assertResult(int(20))(engine.eval("['name'->'marko',.] rec[put,'age',10][get,'age'][plus,10]"))
+    assertResult(int(20))(engine.eval("['name'->'marko',.] int<=rec[put,'age',10][get,'age'][plus,10]"))
   }
 
   test("poly get/put") {
@@ -227,13 +227,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str("14"))(engine.eval("5[plus,2][mult,2][as,str]"))
     assertResult(str("14hello"))(engine.eval("5 int[plus,2][mult,2][as,str][plus,'hello']"))
     assertResult(str("14hello"))(engine.eval("5[plus,2][mult,2][as,str][plus,'hello']"))
-    assertResult(rec(str("x") -> int(7)))(engine.eval("5 int[plus,2][as,rec:['x'->int]]"))
+    assertResult(rec(str("x") -> int(7)))(engine.eval("5 int[plus,2][as,rec:['x'->int,.]]"))
     assertResult(rec(str("x") -> int(7), str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['x'-><.x>,'y'-><.y>]]"))
     assertResult(rec(str("x") -> int(7), str("y") -> int(10)))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['x'->int<.x>,'y'->int<.y>]]"))
     assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['a'->int<.x>,'b'->int<.y>]][get,'b']"))
     assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['a'-><.x>,'b'-><.y>]][get,'b']"))
     assertResult(int ==> int.to("x").plus(1).to("y").as(rec(str("a") -> int.from("x"), str("b") -> int.from("y"))).get("b"))(engine.eval("int<x>[plus,1]<y>[as,rec:['a'->int<.x>,'b'->int<.y>]].b"))
-    assertResult(rec(str("x") -> int(7), str("y") -> int(10), str("z") -> rec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['x'->int<.x>,'y'->int<.y>,'z'->[as,rec:['a'-><.x> + <.y>]]]]"))
+    assertResult(rec(str("x") -> int(7), str("y") -> int(10), str("z") -> rec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['x'->int<.x>,'y'->int<.y>,'z'->[as,rec:['a'-><.x> + <.y>,.]]]]"))
   }
 
   test("start instruction initial") {
@@ -345,21 +345,24 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("parallel with rec types") {
     assertResult(zeroObj)(engine.eval("true-<[bool -> bool ; int -> int]>-"))
-    assertResult(int(10))(engine.eval("10-<[bool -> bool ; int -> int]>-"))
-    assertResult(int(10))(engine.eval("10-<[bool -> true ; int -> int]>-"))
-    assertResult(int(11))(engine.eval("10-<[bool -> true ; int -> int[plus,1]]>-"))
-    assertResult(int(11, 51, 61))(engine.eval("10,50,60-<[bool -> true ; int -> int[plus,1]]>-"))
-    assertResult(int(11, 51, 61))(engine.eval("10,50,60-<[bool -> true ; int -> int[plus,1]]>-"))
-    assertResult(int(11, 51, 51, 61))(engine.eval("10,50{2},60-<[bool -> true ; int -> int[plus,1]]>-"))
-    assertResult(int(11).q(2))(engine.eval("10,10-<[bool -> true ; int -> int[plus,1]]>-"))
-    assertResult(int(11).q(2))(engine.eval("10{2}-<[bool -> true ; int -> int[plus,1]]>-"))
-    /*assertResult(int(302, 42))(engine.eval(
+    assertResult(zeroObj)(engine.eval("10-<[bool -> bool ; int -> int]>-"))
+    assertResult(int(10))(engine.eval("10-<[bool -> true | int -> int]>-"))
+    assertResult(int(13))(engine.eval("10-<[int -> int[plus,2] ; _ -> int[plus,1]]>-"))
+    assertResult(int(11, 51, 61))(engine.eval("10,50,60-<[int ->int ; _ -> int[plus,1]]>-"))
+    assertResult(zeroObj)(engine.eval("10,50,60-<[bool -> true ; int -> int[plus,1]]>-"))
+    assertResult(int(11, 51, 51, 61))(engine.eval("10,50{2},60-<[int -> int ; int+1 -> int[plus,1]]>-"))
+    assertResult(zeroObj)(engine.eval("10,10-<[bool -> true ; int -> int[plus,1]]>-"))
+    assertResult(int(11).q(2))(engine.eval("10{2}-<[int+1 ->int ; int -> int[plus,1]]>-"))
+    assertResult(int(302, 42))(engine.eval(
       """ 0,1,2,3
         | [plus,1][is>2]-<
         |   [ int[is>3] -> int[mult,10]
-        |   | is<4      -> int[mult,100]]>-[plus,2]""".stripMargin))*/
-    //assertResult(bfalse)(engine.eval("4[plus,1]-<[[is>5] --> true | int --> false]>-"))
-    //assertResult(btrue)(engine.eval("5[plus,1]-<[[is>5] --> true | int --> false]>-"))
+        |   | is<4      -> int[mult,100]]>-[plus,2]""".stripMargin))
+    assertResult(bfalse)(engine.eval("4[plus,1]-<[[is>5] -> true | int -> false]>-"))
+    assertResult(bool(btrue, bfalse))(engine.eval("4[plus,56]-<[[is>5] -> true , int -> false]>-"))
+    assertResult(btrue)(engine.eval("5[plus,1]-<[[is>5] -> true | int+1 -> false]>-"))
+    assertResult(bfalse)(engine.eval("4[plus,1]([is>5] -> true | int -> false)"))
+    assertResult(btrue)(engine.eval("5[plus,1]([is>5] -> true | int+3 -> false)"))
   }
 
   test("to/from state parsing") {
@@ -407,14 +410,14 @@ class mmlangScriptEngineTest extends FunSuite {
         | 'b'->
         |   ['ba'->3,
         |    'bb'->
-        |      ['bba'->4]]].b.bb.bba""".stripMargin))
-    assertResult(int(0))(engine.eval("['a'->['b'->['c'->['d'->0]]]].a.b.c.d"))
+        |      ['bba'->4,.]]].b.bb.bba""".stripMargin))
+    assertResult(int(0))(engine.eval("['a'->['b'->['c'->['d'->0,.],.],.],.].a.b.c.d"))
     assertResult(int(4, 12))(engine.eval("2[plus,2]<x>[mult,3]<y>[as,rec:['a'->int<.x>,'b'->int<.y>]]-<[[id]-->.a,[is,true]-->.b]>-"))
   }
 
   test("rec poly") {
-    assertResult(int(14))(engine.eval("4-<rec:[str->'x';int->+10]>-"))
-    assertResult(int(2, 14))(engine.eval("4-<[int[is>0]->2;int->+10]>-"))
+    assertResult(int(14))(engine.eval("4-<rec:[str->'x'|int->+10]>-"))
+    assertResult(int(2, 14))(engine.eval("4-<[int[is>0]->2,int->+10]>-"))
   }
 
   test("bool strm input parsing") {
@@ -445,7 +448,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }*/
 
   test("rec strm input parsing") {
-    assertResult(rec(rec(str("a") -> int(1), str("b") -> int(0)), rec(str("a") -> int(2), str("b") -> int(0))))(engine.eval("""['a'->1],['a'->2][plus,['b'->0]]"""))
+    assertResult(rec(rec(str("a") -> int(1), str("b") -> int(0)), rec(str("a") -> int(2), str("b") -> int(0))))(engine.eval("""['a'->1,.],['a'->2,.][plus,['b'->0,.]]"""))
   }
 
   test("anonymous expression parsing") {
@@ -700,6 +703,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
 
   test("play") {
+    println(engine.eval("4(is>3 -> 1 , 4 -> 2)"))
     println(engine.eval("[3;.]"))
     println(engine.eval("[int;[plus,2];-<[[mult,2],[plus,10]]>-]<x>[map,5][split,x]"))
     println(engine.eval("1,2,[3,](-<[_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))

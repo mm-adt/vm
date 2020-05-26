@@ -68,13 +68,24 @@ object Rec {
       case _: Value[_] => start.clone(via = (start, inst))
       case _ => start
     }
-    arec.clone(arec.gmap.toSeq.map(slot => {
-      val key = Inst.resolveArg(arg, slot._1)
-      (key, if (key.alive) Inst.resolveArg(arg, slot._2) else zeroObj.asInstanceOf[B])
-    }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values))))
+    if (arec.isSerial) {
+      var local = arg -> arg
+      arec.clone(g = (arec.gsep, arec.gmap.map(slot => {
+        val key = Inst.resolveArg(local._1, slot._1)
+        local = if (!key.alive) (key -> zeroObj.asInstanceOf[A]) else local._2 match {
+          case astrm: Strm[_] => key -> strm(astrm.values.map(x => Inst.resolveArg(x, slot._2))).asInstanceOf[A]
+          case _ => (key -> Inst.resolveArg(local._2, slot._2)).asInstanceOf[(A, A)]
+        }
+        local
+      })))
+    } else
+      arec.clone(g = (arec.gsep, arec.gmap.toSeq.map(slot => {
+        val key = Inst.resolveArg(arg, slot._1)
+        (key, if (key.alive) Inst.resolveArg(arg, slot._2) else zeroObj.asInstanceOf[B])
+      }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values)))))
   }
   def keepFirst[A <: Obj, B <: Obj](arec: Rec[A, B]): Rec[A, B] = {
     val first: (A, B) = arec.gmap.find(x => x._1.alive).getOrElse((zeroObj.asInstanceOf[A], zeroObj.asInstanceOf[B]))
-    arec.clone(arec.gmap.map(a => if (a == first) a else (zeroObj.asInstanceOf[A], zeroObj.asInstanceOf[B])).toMap[A, B])
+    arec.clone(g = (arec.gsep, arec.gmap.map(a => if (a == first) a else (zeroObj.asInstanceOf[A], zeroObj.asInstanceOf[B])).toMap[A, B]))
   }
 }
