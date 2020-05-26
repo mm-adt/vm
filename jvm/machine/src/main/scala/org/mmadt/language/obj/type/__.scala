@@ -32,9 +32,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple = base) extends Type[__]
-  with GetOp[Obj, Obj]
-  with PutOp[Obj, Obj] {
+class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple = base) extends Type[__] {
   override def clone(name: String = Tokens.anon, g: Any, q: IntQ = qOne, via: ViaTuple = base): this.type = new __(name, q, via).asInstanceOf[this.type]
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(via = (obj, inst))
   def apply[T <: Obj](obj: Obj): OType[T] = asType(this.trace.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a))).asInstanceOf[OType[T]]
@@ -52,9 +50,9 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   def head(): this.type = this.via(this, HeadOp())
   def tail(): this.type = this.via(this, TailOp())
   ///
-  override def get(key: Obj): this.type = this.via(this, GetOp(key))
-  override def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
-  override def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
+  def get(key: Obj): this.type = this.via(this, GetOp(key))
+  def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
+  def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
   //
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
