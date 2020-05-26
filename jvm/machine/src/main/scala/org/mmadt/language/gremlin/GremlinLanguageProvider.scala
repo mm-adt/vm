@@ -9,7 +9,7 @@ import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters.asScalaIterator
 
-trait GremlinLanguageProvider extends LanguageProvider {
+class GremlinLanguageProvider extends LanguageProvider {
   override val name: String = GremlinLanguageProvider._name
   override val model: Model = Model.id
   override def getEngine: Optional[mmADTScriptEngine] = Optional.of(GremlinLanguageProvider.scriptEngine())
