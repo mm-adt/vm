@@ -1568,7 +1568,7 @@ mmlang&gt;</code></pre>
 <tr>
 <th class="tableblock halign-left valign-top">poly</th>
 <th class="tableblock halign-left valign-top">inst</th>
-<th class="tableblock halign-left valign-top">properties</th>
+<th class="tableblock halign-left valign-top">+ axiom</th>
 </tr>
 </thead>
 <tbody>
@@ -1771,7 +1771,7 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>-&lt;[[gt,<span s
 <div class="sect4">
 <h5 id="_orthen_poly">orThen ,-poly</h5>
 <div class="paragraph">
-<p>A <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>, polynomial ring with term addition defined as</p>
+<p>A <code>,-poly</code> is a polynomial ring with <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> addition defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1897,7 +1897,7 @@ mmlang&gt; [<span style="color:#369;font-weight:bold">int</span>[plus,<span styl
 <div class="sect4">
 <h5 id="_xorthen_poly">xorThen |-poly</h5>
 <div class="paragraph">
-<p>A <code>|-poly</code> is a non-commutative polynomial ring, where term addition is defined as</p>
+<p>A <code>|-poly</code> is a polynomial ring with non-commutative addition defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1946,13 +1946,13 @@ mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Every <code>|-poly</code> is non-commutative because the order in which the terms/branches are evaluated determines the result of the computation. While <code>,-poly</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-poly</code> implements <a href="https://en.wikipedia.org/wiki/Null_(SQL)#COALESCE">coalesce</a>.</p>
+<p>Every <code>|-poly</code> non-commutative addition because the order in which the terms/branches are evaluated determines the result of the computation. While <code>,-poly</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-poly</code> implements <a href="https://en.wikipedia.org/wiki/Null_(SQL)#COALESCE">coalesce</a>.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_andthen_poly">andThen ;-poly</h5>
 <div class="paragraph">
-<p>A <code>;-poly</code> is a semi-commutative polynomial ring, where term "addition" is ring multiplication and thus, is monoid multiplication. Polynomials with this structure are called <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a>). In mm-ADT, monoid multiplication is standard type composition and is defined as</p>
+<p>A <code>;-poly</code> is a polynomial ring with semi-commutative "addition," where "addition" is ring multiplication and thus, is monoid multiplication and monoid multiplication is only guaranteed commutative for the <em>filter-subring</em>. Polynomials with this structure are called <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a>. In mm-ADT, monoid multiplication is standard type composition and is defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
