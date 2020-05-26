@@ -866,6 +866,64 @@ mmlang> 6-<[_+1\|_>6]>-
 
 ===== Poly Patterns
 
+====== Records
+
+The examples thus far demonstrates the `lst` version of `poly`. A `lst` is a `poly`, where it's slots are indexed by an `int` value. For complex, nested `poly` structures, remembers slots by an `int` is error prone. To rememdy this as well as provided some added expressivity, there are `rec` `polys`. The slots of a `rec` are indexed by an arbitrary `obj` key.
+
+NOTE: A `lst` is analogous to a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list] or https://en.wikipedia.org/wiki/Array_data_structure[array] and a `rec` is analogous to a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record] or https://en.wikipedia.org/wiki/Hash_table[map].
+
+There are three primary use cases for `rec`.
+
+. Labeling slots with `str` values is more user friendly.
++
+[source]
+----
+mmlang> ['marko',29]                      <1>
+==>['marko',29]
+mmlang> ['marko',29].0
+==>'marko'
+mmlang> ['marko',29].1
+==>29
+mmlang> ['name'->'marko','age'->29]
+==>['name'->'marko','age'->29]
+mmlang> ['name'->'marko','age'->29].name  <2>
+==>'marko'
+mmlang> ['name'->'marko','age'->29].age
+==>29
+----
+<1> The slots of a "person" `lst` are accessed with `int` values.
+<2> The slots of a "person" `rec` are accessed with `str` keys.
++
+. Range access
++
+[source]
+----
+mmlang> ['a'->1,'b'->2,'c'->3,'d'->4]
+==>['a'->1,'b'->2,'c'->3,'d'->4]
+mmlang> ['a'->1,'b'->2,'c'->3,'d'->4][get,is>'a']
+==>2
+==>3
+==>4
+mmlang> ['a'->1,'b'->2,'c'->3,'d'->4][get,is>'b']
+==>3
+==>4
+mmlang>
+----
++
+. Predicate Branching
++
+[source]
+----
+mmlang> 1,2,3-<[is==2 -> 'name' | [is>2] -> 'is' | int -> 'my']
+==>[->|1->'my']
+==>[2->'my','name'|->]
+==>[->|3->'my','is']
+mmlang> 1,2,3(is==2 -> 'name' | [is>2] -> 'is' | int -> 'my')
+==>'name'
+==>'my'{3}
+==>'is'
+----
+
 ====== Lists
 
 ====== Stream Containers
