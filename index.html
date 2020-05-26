@@ -2296,6 +2296,94 @@ mmlang&gt; <span style="color:#00D">6</span>-&lt;[_+<span style="color:#00D">1</
 <div class="sect4">
 <h5 id="_poly_patterns">Poly Patterns</h5>
 <div class="sect5">
+<h6 id="_records">Records</h6>
+<div class="paragraph">
+<p>The examples thus far demonstrates the <code>lst</code> version of <code>poly</code>. A <code>lst</code> is a <code>poly</code>, where it&#8217;s slots are indexed by an <code>int</code> value. For complex, nested <code>poly</code> structures, remembers slots by an <code>int</code> is error prone. To rememdy this as well as provided some added expressivity, there are <code>rec</code> <code>polys</code>. The slots of a <code>rec</code> are indexed by an arbitrary <code>obj</code> key.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A <code>lst</code> is analogous to a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a> or <a href="https://en.wikipedia.org/wiki/Array_data_structure">array</a> and a <code>rec</code> is analogous to a <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a> or <a href="https://en.wikipedia.org/wiki/Hash_table">map</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are three primary use cases for <code>rec</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Labeling slots with <code>str</code> values is more user friendly.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]                      <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]
+mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]<span style="color:#60E">.0</span>
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
+mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]<span style="color:#60E">.1</span>
+==&gt;<span style="color:#00D">29</span>
+mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">age</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">29</span>]
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">age</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">29</span>]
+mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">age</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">29</span>].name  <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
+mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">age</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">29</span>].age
+==&gt;<span style="color:#00D">29</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The slots of a "person" <code>lst</code> are accessed with <code>int</code> values.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The slots of a "person" <code>rec</code> are accessed with <code>str</code> keys.</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Range access</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">1</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">2</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">3</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">4</span>]
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">1</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">2</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">3</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">4</span>]
+mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">1</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">2</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">3</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">4</span>][get,<span style="color:#080;font-weight:bold">is</span>&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>]
+==&gt;<span style="color:#00D">2</span>
+==&gt;<span style="color:#00D">3</span>
+==&gt;<span style="color:#00D">4</span>
+mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">1</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">2</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">3</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">4</span>][get,<span style="color:#080;font-weight:bold">is</span>&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>]
+==&gt;<span style="color:#00D">3</span>
+==&gt;<span style="color:#00D">4</span>
+mmlang&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Predicate Branching</p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>-&lt;[<span style="color:#080;font-weight:bold">is</span>==<span style="color:#00D">2</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span> | [<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">2</span>] -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">is</span><span style="color:#710">'</span></span> | <span style="color:#369;font-weight:bold">int</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>]
+==&gt;[-&gt;|<span style="color:#00D">1</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>]
+==&gt;[<span style="color:#00D">2</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>|-&gt;]
+==&gt;[-&gt;|<span style="color:#00D">3</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">is</span><span style="color:#710">'</span></span>]
+mmlang&gt; <span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>(<span style="color:#080;font-weight:bold">is</span>==<span style="color:#00D">2</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span> | [<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">2</span>] -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">is</span><span style="color:#710">'</span></span> | <span style="color:#369;font-weight:bold">int</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>)
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>{<span style="color:#00D">3</span>}
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">is</span><span style="color:#710">'</span></span></code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect5">
 <h6 id="_lists">Lists</h6>
 
 </div>

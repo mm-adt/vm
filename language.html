@@ -1994,6 +1994,92 @@ mmlang&gt; 6-&lt;[_+1|_&gt;6]&gt;-
 <div class="sect4">
 <h5 id="_poly_patterns">Poly Patterns</h5>
 <div class="sect5">
+<h6 id="_records">Records</h6>
+<div class="paragraph">
+<p>The examples thus far demonstrates the <code>lst</code> version of <code>poly</code>. A <code>lst</code> is a <code>poly</code>, where it&#8217;s slots are indexed by an <code>int</code> value. For complex, nested <code>poly</code> structures, remembers slots by an <code>int</code> is error prone. To rememdy this as well as provided some added expressivity, there are <code>rec</code> <code>polys</code>. The slots of a <code>rec</code> are indexed by an arbitrary <code>obj</code> key.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+A <code>lst</code> is analogous to a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a> or <a href="https://en.wikipedia.org/wiki/Array_data_structure">array</a> and a <code>rec</code> is analogous to a <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a> or <a href="https://en.wikipedia.org/wiki/Hash_table">map</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are three primary use cases for <code>rec</code>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Labeling slots with <code>str</code> values is more user friendly.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['marko',29]                      <b class="conum">(1)</b>
+==&gt;['marko',29]
+mmlang&gt; ['marko',29].0
+==&gt;'marko'
+mmlang&gt; ['marko',29].1
+==&gt;29
+mmlang&gt; ['name'-&gt;'marko','age'-&gt;29]
+==&gt;['name'-&gt;'marko','age'-&gt;29]
+mmlang&gt; ['name'-&gt;'marko','age'-&gt;29].name  <b class="conum">(2)</b>
+==&gt;'marko'
+mmlang&gt; ['name'-&gt;'marko','age'-&gt;29].age
+==&gt;29</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The slots of a "person" <code>lst</code> are accessed with <code>int</code> values.</p>
+</li>
+<li>
+<p>The slots of a "person" <code>rec</code> are accessed with <code>str</code> keys.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Range access</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4]
+==&gt;['a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4]
+mmlang&gt; ['a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4][get,is&gt;'a']
+==&gt;2
+==&gt;3
+==&gt;4
+mmlang&gt; ['a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4][get,is&gt;'b']
+==&gt;3
+==&gt;4
+mmlang&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Predicate Branching</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 1,2,3-&lt;[is==2 -&gt; 'name' | [is&gt;2] -&gt; 'is' | int -&gt; 'my']
+==&gt;[-&gt;|1-&gt;'my']
+==&gt;[2-&gt;'my','name'|-&gt;]
+==&gt;[-&gt;|3-&gt;'my','is']
+mmlang&gt; 1,2,3(is==2 -&gt; 'name' | [is&gt;2] -&gt; 'is' | int -&gt; 'my')
+==&gt;'name'
+==&gt;'my'{3}
+==&gt;'is'</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect5">
 <h6 id="_lists">Lists</h6>
 
 </div>
@@ -2615,7 +2701,7 @@ mmlang&gt; 1((+1;*2),(+1;*3))
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-26 04:20:03 -0600
+Last updated 2020-05-26 06:36:24 -0600
 </div>
 </div>
 </body>
