@@ -775,6 +775,7 @@ The table below presents the set of instructions whose domain is `poly`.
 
 | `[plus]` | `poly`    | `poly` | list  | term expression concatenation
 a|
+[.small]
 [source]
 ----
 mmlang> ['a','b']+['c','d']
@@ -782,6 +783,7 @@ mmlang> ['a','b']+['c','d']
 ----
 | `[mult]` | `poly`    | `poly` | vector | https://en.wikipedia.org/wiki/Dot_product[dot product] that is distributive over addition via https://en.wikipedia.org/wiki/FOIL_method[FOIL]
 a|
+[.small]
 [source]
 ----
 mmlang> ['a','b']*['c','d']
@@ -789,6 +791,7 @@ mmlang> ['a','b']*['c','d']
 ----
 | `[hmult]` | `poly`  | `poly`  | vector | https://en.wikipedia.org/wiki/Hadamard_product_(matrices)[Hadamard] pairwise product
 a|
+[.small]
 [source]
 ----
 mmlang> ['a','b']=['c','d']
@@ -796,6 +799,7 @@ mmlang> ['a','b']=['c','d']
 ----
 | `[head]` |          | `obj`   | list   | the first term of the polynomial
 a|
+[.small]
 [source]
 ----
 mmlang> ['a','b'][head]
@@ -805,6 +809,7 @@ language error: no head on empty poly
 ----
 | `[tail]` |          | `poly`  | list   | the polynomial without the first term
 a|
+[.small]
 [source]
 ----
 mmlang> ['a','b'][tail]
@@ -814,6 +819,7 @@ language error: no tail on empty poly
 ----
 | `[get]`  | `int`     | `obj`   | array | term access by index
 a|
+[.small]
 [source]
 ----
 mmlang> ['a','b','c'].1
@@ -823,6 +829,7 @@ language error: poly index is out of bounds: 3
 ----
 | `[put]`  | `int,obj` | `poly`  | array | term insertion term by index
 a|
+[.small]
 [source]
 ----
 mmlang> ['a','b','c'][put,1,'ab']
