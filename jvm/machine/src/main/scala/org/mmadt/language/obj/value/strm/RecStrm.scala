@@ -25,13 +25,17 @@ package org.mmadt.language.obj.value.strm
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Obj, Rec, RecTuple}
+import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecStrm[A <: Value[Obj], B <: Value[Obj]] extends Strm[Rec[A, B]] with Rec[A, B] {
-  override def g: RecTuple[A,B] = throw LanguageException.typeNoGround(this)
-  override def get(key: A): B = throw new UnsupportedOperationException
-  override def get[BB <: Obj](key: A, btype: BB): BB = throw new UnsupportedOperationException
+  override def g: RecTuple[A, B] = throw LanguageException.typeNoGround(this)
+
+  override def equals(other: Any): Boolean = other match {
+    case arec: Rec[_, _] => MultiSet.test(this, arec)
+    case _ => false
+  }
 }
 

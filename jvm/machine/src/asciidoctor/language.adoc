@@ -135,7 +135,7 @@ The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural t
   \begin{split}
     \texttt{type} &=\;& (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{poly}) + (\texttt{type} \times \texttt{inst}) \\
     \texttt{type} &=\;& \texttt{ctype} + (\texttt{type} \times \texttt{inst}) \\
-    \texttt{type} &=\;& \texttt{ctype} + \texttt{dtype}, 
+    \texttt{type} &=\;& \texttt{ctype} + \texttt{dtype},
   \end{split}
 \]
 
@@ -144,8 +144,8 @@ where each component of the coproduct also has a respective quantifier as previo
 A dtype has two \$pi\$-projections. The type projection denotes the _domain_ and the instruction projection denotes the _function_, where the type product as a whole, relative to the component projections, is the _range_.
 \[
   \begin{split}
-    \tt{type} &=\;& (\tt{type} &\;\times\;& \tt{inst}) &\;+\;& \tt{ctype} \\ 
-    \text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"} 
+    \tt{type} &=\;& (\tt{type} &\;\times\;& \tt{inst}) &\;+\;& \tt{ctype} \\
+    \text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"}
   \end{split}
 \]
 
@@ -220,7 +220,7 @@ a|
 mmlang> int<=bool
 error: bool is not an int
 ----
-|Type's that are fully specified by their type signature are always canonical types. Without any instructions, there is no way that this (meaningless) type can map a `bool` to an `int`. 
+|Type's that are fully specified by their type signature are always canonical types. Without any instructions, there is no way that this (meaningless) type can map a `bool` to an `int`.
 
 a|
 [source]
@@ -420,7 +420,7 @@ A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ 
 
 [cols="0,1,2",width=35%,float=right]
 |===
-| poly |  inst       | properties
+| poly |  inst       | + axiom
 
 | `,`  | `[branch]`  | commutative
 | `\|` | `[choose]`  | non-commutative
@@ -526,7 +526,7 @@ The `polys` have two structural representations (a value and a type from) and tw
 
 ===== orThen ,-poly
 
-A `,-poly` is a https://en.wikipedia.org/wiki/Commutative_property[commutative], polynomial ring with term addition defined as
+A `,-poly` is a polynomial ring with https://en.wikipedia.org/wiki/Commutative_property[commutative] addition defined as
 
 \[
 \texttt{t0\{q0\},t1\{q1\}} =
@@ -625,7 +625,7 @@ mmlang> [int[plus,10],.]==[int[plus,10][plus,0],.]
 
 ===== xorThen |-poly
 
-A `|-poly` is a non-commutative polynomial ring, where term addition is defined as
+A `|-poly` is a polynomial ring with non-commutative addition defined as
 
 \[
 \texttt{t0\{q0\}|t1\{q1\}} =
@@ -659,11 +659,11 @@ mmlang> 'mar'([plus,'ko']{0}|[plus,'io']{0})
 mmlang>
 ----
 
-Every `|-poly` is non-commutative because the order in which the terms/branches are evaluated determines the result of the computation. While `,-poly` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-poly` implements link:https://en.wikipedia.org/wiki/Null_(SQL)#COALESCE[coalesce].
+Every `|-poly` non-commutative addition because the order in which the terms/branches are evaluated determines the result of the computation. While `,-poly` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-poly` implements link:https://en.wikipedia.org/wiki/Null_(SQL)#COALESCE[coalesce].
 
 ===== andThen ;-poly
 
-A `;-poly` is a semi-commutative polynomial ring, where term "addition" is ring multiplication and thus, is monoid multiplication. Polynomials with this structure are called https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]). In mm-ADT, monoid multiplication is standard type composition and is defined as
+A `;-poly` is a polynomial ring with semi-commutative "addition," where "addition" is ring multiplication and thus, is monoid multiplication and monoid multiplication is only guaranteed commutative for the _filter-subring_. Polynomials with this structure are called https://en.wikipedia.org/wiki/Monoid_ring[monoid rings]. In mm-ADT, monoid multiplication is standard type composition and is defined as
 
 \[
 \texttt{t0\{q0\};t1\{q1\} = t0;t1\{q0*q1\}}

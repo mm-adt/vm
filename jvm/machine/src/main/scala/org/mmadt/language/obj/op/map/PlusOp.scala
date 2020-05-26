@@ -26,7 +26,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{RecValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -52,8 +52,8 @@ object PlusOp extends Func[Obj, Obj] {
           case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
           case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)
           case astr: Str => astr.clone(g = astr.g + inst.arg0[Str].g)
-          case arec: RecValue[Value[Value[Obj]], Obj] => arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[RecValue[Value[Obj], Value[Obj]]].gmap))
-          case arec: ORecType => arec.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
+          case arec: Rec[Obj, Obj] => arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[Rec[Value[Obj], Value[Obj]]].gmap))
+       //   case arec: Rec => arec.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
           // poly plus
           case multA: Poly[Obj] if multA.isSerial => inst.arg0[Poly[Obj]] match {
             case multB: Poly[Obj] if multB.isSerial => multA `,` multB

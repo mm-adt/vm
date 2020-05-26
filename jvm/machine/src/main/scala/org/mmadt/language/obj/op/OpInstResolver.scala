@@ -34,7 +34,7 @@ import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{AddOp, ErrorOp, PutOp}
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Lst, Obj}
+import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
@@ -83,7 +83,7 @@ object OpInstResolver {
         case List(key: Obj) => GetOp(key)
       }
       case Tokens.map => MapOp(args.head)
-      case Tokens.model => ModelOp(args.head.asInstanceOf[RecType[Type[Obj], Type[Obj]]])
+      case Tokens.model => ModelOp(args.head.asInstanceOf[Rec[Type[Obj], Type[Obj]]])
       case Tokens.neg => NegOp()
       case Tokens.count => CountOp()
       case Tokens.explain => ExplainOp()

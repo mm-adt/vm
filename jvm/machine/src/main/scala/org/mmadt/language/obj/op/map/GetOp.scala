@@ -25,8 +25,8 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{RecType, __}
-import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -44,8 +44,8 @@ object GetOp extends Func[Obj, Obj] {
     val key: Obj = inst.arg0[Obj]
     (start match {
       case anon: __ => anon
-      case arec: RecType[Obj, Obj] => asType(arec.gmap(key))
-      case arec: RecValue[Value[Obj], Value[Obj]] => arec.gmap(key.asInstanceOf[Value[Obj]])
+      //case arec: RecType[Obj, Obj] => asType(arec.gmap(key))
+      case arec: Rec[Obj, Obj] => arec.gmap(key)
       case alst: Lst[_] => key match {
         case aint: IntValue =>
           LanguageException.PolyException.testIndex(alst, aint.g.toInt)

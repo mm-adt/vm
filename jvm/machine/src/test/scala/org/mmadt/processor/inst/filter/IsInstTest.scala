@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.filter
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.value.Value
@@ -97,11 +97,12 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
         int(10),
         real(23.0),
         str("a"),
-        trec(str("a") -> int, str("b") -> bool),
-        vrec(str("a") -> int(1), str("b") -> int(2)))
+        rec(str("a") -> int, str("b") -> bool),
+        rec(str("a") -> int(1), str("b") -> int(2)))
     forEvery(starts) { obj => {
       val expr = maker(obj)
       obj match {
+        case _ : Rec[Obj,Obj] =>
         case value: Value[_] => assert(value.g == expr.asInstanceOf[Value[_]].g)
         case _ =>
       }

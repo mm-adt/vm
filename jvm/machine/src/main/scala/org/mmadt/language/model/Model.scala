@@ -23,12 +23,12 @@
 package org.mmadt.language.model
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.model.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, OType, Obj}
+import org.mmadt.language.obj.{Inst, OType, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 
 import scala.collection.mutable
@@ -49,19 +49,19 @@ trait Model {
   def put(left: Type[Obj], right: Type[Obj]): Model
   def get(left: Type[Obj]): Option[Type[Obj]]
   def get(left: Value[Obj]): Option[Value[Obj]]
-  def toRec: RecType[Type[Obj], Type[Obj]]
+  def toRec: Rec[Type[Obj], Type[Obj]]
 }
 
 object Model {
   def from(args: (Type[Obj], Type[Obj])*): Model = args.foldRight(this.simple())((a, b) => b.put(a._1, a._2))
-  def from(arg: RecType[Type[Obj], Type[Obj]]): Model = arg.g._2.iterator.foldRight(this.simple())((a, b) => b.put(a._1, a._2))
+  def from(arg: Rec[Type[Obj], Type[Obj]]): Model = arg.g._2.iterator.foldRight(this.simple())((a, b) => b.put(a._1, a._2))
 
   val id: Model = new Model {
     override def put(left: Type[Obj], right: Type[Obj]): Model = this
     override def put(model: Model): Model = this
     override def get(left: Type[Obj]): Option[Type[Obj]] = None
     override def get(left: Value[Obj]): Option[Value[Obj]] = None
-    override def toRec: RecType[Type[Obj], Type[Obj]] = rec
+    override def toRec: Rec[Type[Obj], Type[Obj]] = rec
   }
 
   def simple(): Model = new Model {
@@ -108,8 +108,8 @@ object Model {
         })
         .map(x => (x._1, x._2.asInstanceOf[Type[Obj]]))
     }
-    override def toRec: RecType[Type[Obj], Type[Obj]] = {
-      trec[Type[Obj], Type[Obj]](gmap = this.typeMap.values.foldRight(mutable.Map[Type[Obj], Type[Obj]]())((a, b) => b ++ a).toMap)
+    override def toRec: Rec[Type[Obj], Type[Obj]] = {
+      rec[Type[Obj], Type[Obj]](Tokens.`,`,this.typeMap.values.foldRight(mutable.Map[Type[Obj], Type[Obj]]())((a, b) => b ++ a).toMap)
     }
     override def get(left: Value[Obj]): Option[Value[Obj]] = {
       typeMap.get(left.name) match {

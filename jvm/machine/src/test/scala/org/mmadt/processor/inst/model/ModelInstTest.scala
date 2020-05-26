@@ -22,8 +22,8 @@
 
 package org.mmadt.processor.inst.model
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -32,8 +32,8 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelInstTest extends FunSuite {
-  val modelA: RecType[Type[Obj], Type[Obj]] = trec((int <= int.is(int.gt(0))) -> int.named("nat"))
-  val modelB: RecType[Type[Obj], Type[Obj]] = trec(int.named("nat") -> int)
+  val modelA: Rec[Type[Obj], Type[Obj]] = rec((int <= int.is(int.gt(0))) -> int.named("nat"))
+  val modelB: Rec[Type[Obj], Type[Obj]] = rec(int.named("nat") -> int)
 
   test("[model] w/ values") {
     assertResult("nat")(int(5).model[IntValue](modelA).name)
@@ -49,7 +49,7 @@ class ModelInstTest extends FunSuite {
   }
 
   test("[model] as functor") {
-    val functor: RecType[Type[Obj], Type[Obj]] = trec(int.mult(10) -> str.plus("0"), int.mult(1) -> str)
+    val functor: Rec[Type[Obj], Type[Obj]] = rec(int.mult(10) -> str.plus("0"), int.mult(1) -> str)
     //    assertResult(str("32002"))(str("32") ===> (int.mult(1).mult(10).mult(10).model[StrType](functor).plus("2")))
   }
 }

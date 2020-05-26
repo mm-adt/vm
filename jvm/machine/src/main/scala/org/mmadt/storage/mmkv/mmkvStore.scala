@@ -24,10 +24,9 @@ package org.mmadt.storage.mmkv
 
 import java.util.concurrent.atomic.AtomicLong
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.RecType
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{IntValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
 import org.mmadt.language.{LanguageFactory, LanguageProvider}
 import org.mmadt.storage.StorageFactory._
 
@@ -44,16 +43,16 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
   private val K: StrValue = str("k")
   private val V: StrValue = str("v")
 
-  val schema: RecType[StrValue, Obj] = {
+  val schema: Rec[StrValue, Obj] = {
     val source = Source.fromFile(file)
-    try source.getLines().take(1).map(line => mmlang.parse[RecType[StrValue, Obj]](line)).next().named(MMKV)
+    try source.getLines().take(1).map(line => mmlang.parse[Rec[StrValue, Obj]](line)).next().named(MMKV)
     finally source.close();
   }
 
   private val store: mutable.Map[K, V] = {
     val source: BufferedSource = Source.fromFile(file)
     try source.getLines().drop(1)
-      .map(k => mmlang.parse[RecValue[StrValue, Value[Obj]]](k).gmap.values)
+      .map(k => mmlang.parse[Rec[StrValue, Value[Obj]]](k).gmap.values)
       .foldLeft(new mutable.LinkedHashMap[K, V])((b, a) => b ++ Map(a.head.asInstanceOf[K] -> a.tail.head.asInstanceOf[V]))
     finally source.close()
   }
@@ -64,7 +63,7 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
   def put(key: K, value: V): V = store.put(key, value).getOrElse(value)
   def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
   def remove(key: K): V = store.remove(key).get
-  def strm(): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => vrec(K -> x._1.asInstanceOf[Value[V]], V -> x._2.asInstanceOf[Value[V]])))
+  def strm(): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => rec(K -> x._1.asInstanceOf[Value[V]], V -> x._2.asInstanceOf[Value[V]])))
   def clear(): Unit = {
     counter.set(0L)
     store.clear()

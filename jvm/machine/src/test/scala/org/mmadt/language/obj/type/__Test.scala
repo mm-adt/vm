@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.op.map.{GtOp, IdOp, MultOp, PlusOp}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -77,7 +76,7 @@ class __Test extends FunSuite {
   }
 
   test("__  type fluency") {
-    assertResult(str("marko!"))(vrec(str("name") -> str("marko")) ===> __.id().get(str("name")).plus(str("!")))
+    assertResult(str("marko!"))(rec(str("name") -> str("marko")) ===> __.id().get(str("name")).plus(str("!")))
     assertResult(int(12))(int(5) ===> __.plus(2).plus(5).id())
     assertResult(int(120))(int(5) ===> __.plus(2).plus(5).id().mult(10))
   }

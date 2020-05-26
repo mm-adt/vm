@@ -36,7 +36,7 @@ import org.mmadt.language.LanguageFactory;
 import org.mmadt.language.Tokens;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
 import org.mmadt.language.model.Model;
-import org.mmadt.language.obj.type.RecType;
+import org.mmadt.language.obj.Rec;
 import scala.collection.JavaConverters;
 
 import javax.script.ScriptEngineManager;
@@ -98,11 +98,11 @@ public class Console {
                 else if (line.startsWith(LANG_OP))
                     engineName = line.replace(LANG_OP, "").trim();
                 else if (line.equals(MODEL_OP))
-                    terminal.writer().println(Model.from((RecType) engine.eval(Tokens.model())));
+                    terminal.writer().println(Model.from((Rec) engine.eval(Tokens.model())));
                 else if (line.equals(MODEL_OP + " clear"))
                     engine.put(MODEL, Model.simple());
                 else if (line.startsWith(MODEL_OP))
-                    engine.put(MODEL, Model.from((RecType) engine.eval(Tokens.model())).put(Model.from((RecType) engine.eval(line.substring(6)))));
+                    engine.put(MODEL, Model.from((Rec) engine.eval(Tokens.model())).put(Model.from((Rec) engine.eval(line.substring(6)))));
                 else
                     JavaConverters.asJavaIterator(engine.eval(line).toStrm().values().iterator()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
             } catch (final UserInterruptException e) {

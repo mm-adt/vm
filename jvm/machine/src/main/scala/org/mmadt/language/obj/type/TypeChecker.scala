@@ -24,8 +24,8 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{RecValue, Value}
 import org.mmadt.storage.StorageFactory._
 
 import scala.collection.mutable
@@ -42,8 +42,8 @@ object TypeChecker {
       obj.isInstanceOf[Strm[Obj]] || // TODO: testing a stream requires accessing its values (we need strm type descriptors associated with the strm -- or strms are only checked nominally)
       ((obj.isInstanceOf[Lst[_]] && pattern.isInstanceOf[Lst[_]] &&
         testList(obj.asInstanceOf[Lst[Obj]], pattern.asInstanceOf[Lst[Obj]]) && obj.compute(pattern).alive) || // structural type checking on records
-        (obj.isInstanceOf[RecValue[_, _]] && pattern.isInstanceOf[RecType[_, _]] &&
-          testRecord(obj.asInstanceOf[Rec[Obj, Obj]].gmap, pattern.asInstanceOf[ORecType].gmap) && obj.compute(pattern).alive))) && // structural type checking on records
+        (obj.isInstanceOf[Rec[_, _]] && pattern.isInstanceOf[Rec[_, _]] &&
+          testRecord(obj.asInstanceOf[Rec[Obj, Obj]].gmap, pattern.asInstanceOf[Rec[Obj, Obj]].gmap) && obj.compute(pattern).alive))) && // structural type checking on records
       withinQ(obj, pattern) // must be within the type's quantified window
   }
 
@@ -52,7 +52,7 @@ object TypeChecker {
     ((obj.name.equals(Tokens.obj) || pattern.name.equals(Tokens.obj) || obj.name.equals(Tokens.anon) || (pattern.name.equals(Tokens.anon) && pattern.root)) || // all objects are obj
       (!obj.name.equals(Tokens.rec) && !obj.name.equals(Tokens.lst) && obj.name.equals(pattern.name)) ||
       (obj match {
-        case recType: ORecType if pattern.isInstanceOf[RecType[_, _]] => testRecord(recType.gmap, pattern.asInstanceOf[ORecType].gmap)
+        case recType: Rec[Obj, Obj] if pattern.isInstanceOf[Rec[_, _]] => testRecord(recType.gmap, pattern.asInstanceOf[Rec[Obj,Obj]].gmap)
         case lstType: Lst[Obj] => testList(lstType, pattern.asInstanceOf[Lst[Obj]])
         case _ => false
       })) &&

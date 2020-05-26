@@ -45,7 +45,6 @@ trait Type[+T <: Obj] extends Obj
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
-    case arec: RecType[_, _] => TypeChecker.matchesTT(this, arec)
     case atype: Type[_] =>
       (name.equals(atype.name) || atype.name.equals(Tokens.obj) || this.name.equals(Tokens.anon) || atype.name.equals(Tokens.anon)) &&
         withinQ(this, atype) &&

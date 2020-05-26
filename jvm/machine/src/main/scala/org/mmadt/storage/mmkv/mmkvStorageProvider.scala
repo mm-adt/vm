@@ -29,8 +29,9 @@ import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value._
-import org.mmadt.storage.StorageFactory.{str, _}
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.mmkv.mmkvStorageProvider._
+import org.mmadt.storage.obj.ORec
 import org.mmadt.storage.obj.value.VInst
 import org.mmadt.storage.{StorageFactory, StorageProvider}
 
@@ -45,9 +46,9 @@ class mmkvStorageProvider extends StorageProvider {
   override lazy val model: Model = Model.from(
     // tobj(name) -> trec(K -> obj,V -> obj), // TODO: this needs to be dynamically determined by mmkvStore file access
     mmkv.put(K, obj) -> mmkv.error("keys are immutable"),
-    mmkv.put(V, obj) -> mmkv.error("values are immutable"),
-    //    (mmkv <= mmkv.via(obj.q(0), mmkvOp.strm(str.to("x"))).is(mmkv.get(K, int).eqs(int.to("y")))) -> (mmkv.q(qMark) <= obj.q(0).via(obj.q(0), mmkvOp.isGetKeyEq(str.from("x"), int.from("y")))),
-    (trec(K -> int, V -> obj).q(*) <= mmkv.via(obj.q(0), mmkvOp.strm(str.to("x"))).add(trec(K -> int, V -> obj).to("y"))) -> mmkv.via(mmkv, mmkvOp.addKeyValue(str.from("x"), rec.from("y"))))
+    mmkv.put(V, obj) -> mmkv.error("values are immutable"))
+  //    (mmkv <= mmkv.via(obj.q(0), mmkvOp.strm(str.to("x"))).is(mmkv.get(K, int).eqs(int.to("y")))) -> (mmkv.q(qMark) <= obj.q(0).via(obj.q(0), mmkvOp.isGetKeyEq(str.from("x"), int.from("y")))),
+  //    (trec(K -> int, V -> obj).q(*) <= mmkv.via(obj.q(0), mmkvOp.strm(str.to("x"))).add(trec(K -> int, V -> obj).to("y"))) -> mmkv.via(mmkv, mmkvOp.addKeyValue(str.from("x"), rec.from("y"))))
 
   val getByKeyEq: StrValue = str("getByKeyEq")
   val addKeyValue: StrValue = str("addKeyValue")
@@ -68,7 +69,7 @@ object mmkvStorageProvider {
   private val opcode = "=mmkv"
   private val K: StrValue = str("k")
   private val V: StrValue = str("v")
-  private val mmkv = rec[Str, Obj].q(*).named("mmkv")
+  private val mmkv: Rec[Obj, Obj] = new ORec[Obj, Obj]().q(*).named("mmkv")
 
   object mmkvOp {
     def addKeyValue(file: Str, kv: Rec[StrValue, Obj]): Inst[Obj, Rec[StrValue, Obj]] = new mmkvAddKeyValueInst(file, kv)
@@ -90,7 +91,7 @@ object mmkvStorageProvider {
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
           case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(StorageFactory.*)
-          case _ => vrec(K -> key.asInstanceOf[Value[Obj]], V -> connect(fileStr).get(key.asInstanceOf[Value[Obj]]))
+          case _ => rec(K -> key.asInstanceOf[Value[Obj]], V -> connect(fileStr).get(key.asInstanceOf[Value[Obj]]))
         }).asInstanceOf[Rec[StrValue, Obj]]
       }
     }
@@ -100,9 +101,9 @@ object mmkvStorageProvider {
       override def exec(start: Obj): Rec[StrValue, Obj] = {
         (start match {
           case atype: Type[_] => connect(fileStr).schema.via(atype, this).hardQ(StorageFactory.*)
-          case _ => vrec(K -> Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[RecValue[StrValue, ObjValue]].get(str("k")).asInstanceOf[Value[Obj]], V -> connect(fileStr).put(
-            Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[RecValue[StrValue, ObjValue]].get(str("k")),
-            Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[RecValue[StrValue, ObjValue]].get(str("v"))))
+          case _ => rec(K -> Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[Rec[StrValue, ObjValue]].get(str("k")).asInstanceOf[Value[Obj]], V -> connect(fileStr).put(
+            Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[Rec[StrValue, ObjValue]].get(str("k")),
+            Inst.resolveArg[Obj, Obj](start, key).asInstanceOf[Rec[StrValue, ObjValue]].get(str("v"))))
         }).asInstanceOf[Rec[StrValue, Obj]]
       }
     }

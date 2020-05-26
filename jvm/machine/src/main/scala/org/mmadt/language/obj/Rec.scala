@@ -22,15 +22,20 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.map.{GetOp, PlusOp, ZeroOp}
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj, B <: Obj] extends Poly[B]
+  with Type[Rec[A, B]]
+  with Value[Rec[A, B]]
   with PlusOp[Rec[A, B]]
   with GetOp[A, B]
   with PutOp[A, B]
@@ -41,6 +46,21 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def glist: Seq[B] = gmap.values.toSeq
   def gsep: String = g._1
   def clone(values: collection.Map[A, B]): this.type = this.clone(g = (gsep, values))
+  override def test(other: Obj): Boolean = other match {
+    case aobj: Obj if !aobj.alive => !this.alive
+    case astrm: Strm[_] => MultiSet.test(this, astrm)
+    case arec: Rec[_, _] => Poly.sameSep(this, arec) && withinQ(this, arec) &&
+      (this.gmap.size >= arec.gmap.size && this.gmap.zip(arec.gmap).foldRight(true)((a, b) => a._1._1.test(a._2._1) && a._1._2.test(a._2._2) && b))
+    case _ => false
+  }
+
+
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
+  override def equals(other: Any): Boolean = other match {
+    case astrm: Strm[_] => MultiSet.test(this, astrm)
+    case arec: Rec[_, _] => /*Poly.sameSep(this, arec) &&*/ arec.name.equals(this.name) && eqQ(arec, this) && this.gmap == arec.gmap
+    case _ => false
+  }
 }
 object Rec {
   def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B], inst: Inst[A, Rec[A, B]]): Rec[A, B] = {

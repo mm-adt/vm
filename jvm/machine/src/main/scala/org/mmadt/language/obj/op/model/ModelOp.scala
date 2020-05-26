@@ -25,9 +25,9 @@ package org.mmadt.language.obj.op.model
 import org.mmadt.language.Tokens
 import org.mmadt.language.model.Model
 import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.model.ModelOp.{ModelInst, ModelT}
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.{Inst, IntQ, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -43,7 +43,7 @@ trait ModelOp {
 }
 
 object ModelOp {
-  private type ModelT = RecType[Type[Obj], Type[Obj]]
+  private type ModelT = Rec[Type[Obj], Type[Obj]]
   def apply[S <: Obj, E <: Obj](model: ModelT): Inst[S, E] = new ModelInst[S, E](model)
 
   class ModelInst[S <: Obj, E <: Obj](model: ModelT, q: IntQ = qOne) extends VInst[S, E](g = (Tokens.model, List(model)), q = q) {

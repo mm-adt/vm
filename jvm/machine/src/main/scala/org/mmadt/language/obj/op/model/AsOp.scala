@@ -30,6 +30,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.ORec
 import org.mmadt.storage.obj.value.VInst
 
 import scala.collection.mutable
@@ -53,10 +54,10 @@ object AsOp {
     override def exec(start: Obj): O = {
       testAlive(obj match {
         case atype: Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
-          case rectype: RecType[Obj, Obj] =>
+          case rectype: Rec[Obj, Obj] =>
             start match {
-              case recvalue: ORecValue => vrec(name = rectype.name, g = makeMap(Model.id, recvalue.gmap, rectype.gmap))
-              case avalue: Value[Obj] => vrec(rectype.name, rectype.gmap.map(x =>
+              case arec: Rec[Obj,Obj] => new ORec(name = rectype.name, g = (Tokens.`;`,makeMap(Model.id, arec.gmap, rectype.gmap)))
+              case avalue: Value[Obj] => rec(Tokens.`,`,rectype.gmap.map(x =>
                 (x._1 match {
                   case kvalue: Value[Obj] => kvalue
                   case ktype: Type[Obj] =>
@@ -67,7 +68,7 @@ object AsOp {
                   case vtype: Type[Obj] =>
                     TypeChecker.matchesVT(avalue, vtype)
                     start.compute(vtype).asInstanceOf[Value[Obj]]
-                })))
+                })).toMap).named(rectype.name)
             }
           case atype: StrType => vstr(name = atype.name, g = start.asInstanceOf[Value[Obj]].g.toString).compute(atype)
           case atype: IntType => vint(name = atype.name, g = Integer.valueOf(start.asInstanceOf[Value[Obj]].g.toString).longValue()).compute(atype)
@@ -84,16 +85,16 @@ object AsOp {
       trav
     }
 
-    private def makeMap(model: Model, leftMap: collection.Map[Value[Obj], Value[Obj]], rightMap: collection.Map[Obj, Obj]): collection.Map[Value[Obj], Value[Obj]] = {
+    private def makeMap(model: Model, leftMap: collection.Map[Obj, Obj], rightMap: collection.Map[Obj, Obj]): collection.Map[Obj, Obj] = {
       if (leftMap.equals(rightMap)) return leftMap
       val typeMap: mutable.Map[Obj, Obj] = mutable.Map() ++ rightMap
-      var valueMap: mutable.Map[Value[Obj], Value[Obj]] = mutable.Map()
+      var valueMap: mutable.Map[Obj, Obj] = mutable.Map()
       leftMap.map(a => typeMap.find(k =>
         model(a._1).test(k._1) && model(a._2).test(k._2)).map(z => {
-        valueMap = valueMap + (a._1 -> a._2.as(z._2).asInstanceOf[Value[Obj]])
+        valueMap = valueMap + (a._1 -> a._2.as(z._2))
         typeMap.remove(z._1)
       }))
-      assert(typeMap.isEmpty || !typeMap.values.exists(x => x.q._1.g != 0))
+      assert(typeMap.isEmpty || !typeMap.values.exists(x => x.alive))
       valueMap.toMap
     }
   }

@@ -25,9 +25,9 @@ package org.mmadt.language.obj.op.sideeffect
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{RecType, __}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, RecValue, Value}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -42,8 +42,7 @@ object PutOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
     case anon: __ => anon.via(start, inst)
     case astrm: Strm[Obj] => astrm.via(start, inst.via._2)
-    case arec: RecType[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Obj] -> inst.arg1[Obj].hardQ(1)))).via(start, inst) // TODO: {0} on int (probably cause of lazy Q loading)
-    case arec: RecValue[Value[Obj], Value[Obj]] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Value[Obj]] -> inst.arg1[Value[Obj]]))).via(start, inst)
+    case arec: Rec[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Obj] -> inst.arg1[Obj].hardQ(1))),via=(start, inst)) // TODO: {0} on int (probably cause of lazy Q loading)
     case alst: Lst[_] => inst.arg0[Obj] match {
       case avalue: IntValue =>
         val (front, back) = alst.glist.splitAt(avalue.g.toInt)
