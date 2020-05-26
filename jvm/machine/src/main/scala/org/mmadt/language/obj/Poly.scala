@@ -6,7 +6,7 @@ import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 
-sealed trait Poly[A <: Obj] extends Obj
+trait Poly[A <: Obj] extends Obj
   with MergeOp[A] {
   def gsep: String
   def glist: Seq[A]
@@ -26,9 +26,9 @@ object Poly {
       case alst: Lst[A] => Lst.resolveSlots(start, alst, inst.asInstanceOf[Inst[A, Lst[A]]])
     }
   }
-  def keepFirst[A <: Obj](apoly: Poly[A]): Poly[A] = {
+  def keepFirst[A <: Obj](start: Obj, inst: Inst[Obj, Obj], apoly: Poly[A]): Poly[A] = {
     apoly match {
-      case arec: Rec[Obj, A] => Rec.keepFirst(arec)
+      case arec: Rec[Obj, A] => Rec.keepFirst(start,inst,arec)
       case alst: Lst[A] => Lst.keepFirst(alst)
     }
   }

@@ -58,7 +58,8 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case arec: Rec[_, _] => /*Poly.sameSep(this, arec) &&*/ arec.name.equals(this.name) && eqQ(arec, this) && this.gmap == arec.gmap
+    case arec: Rec[_, _] => Poly.sameSep(this, arec) && arec.name.equals(this.name) && eqQ(arec, this) &&
+      (this.gmap.size == arec.gmap.size && this.gmap.zip(arec.gmap).foldRight(true)((a, b) => a._1._1.equals(a._2._1) && a._1._2.equals(a._2._2) && b))
     case _ => false
   }
 }
@@ -84,8 +85,17 @@ object Rec {
         (key, if (key.alive) Inst.resolveArg(arg, slot._2) else zeroObj.asInstanceOf[B])
       }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values)))))
   }
-  def keepFirst[A <: Obj, B <: Obj](arec: Rec[A, B]): Rec[A, B] = {
-    val first: (A, B) = arec.gmap.find(x => x._1.alive).getOrElse((zeroObj.asInstanceOf[A], zeroObj.asInstanceOf[B]))
-    arec.clone(g = (arec.gsep, arec.gmap.map(a => if (a == first) a else (zeroObj.asInstanceOf[A], zeroObj.asInstanceOf[B])).toMap[A, B]))
+  def keepFirst[A <: Obj, B <: Obj](start: Obj, inst: Inst[Obj, Obj], arec: Rec[A, B]): Rec[A, B] = {
+    var found: Boolean = false;
+    arec.clone(g = (arec.gsep, arec.gmap.map(x => {
+      if (!found) {
+        val temp = (Inst.resolveArg(start, x._1), Inst.resolveArg(start, x._2))
+        if (temp._1.alive) {
+          found = true
+          temp
+        } else (zeroObj, zeroObj)
+      } else
+        (zeroObj, zeroObj)
+    }).toMap[Obj, Obj]))
   }
 }

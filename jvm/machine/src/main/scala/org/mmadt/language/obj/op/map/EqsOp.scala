@@ -47,7 +47,9 @@ object EqsOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.eqs, List(other)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     Try[Obj](start match {
+      case _: Obj if !start.alive => bool(!inst.arg0.alive)
       case astrm: Strm[Obj] => astrm
+      case apoly: Poly[_] => bool(inst.arg0.equals(start))
       case avalue: Value[_] => bool(g = avalue.g == inst.arg0[Value[_]].g)
     }).getOrElse(bool).via(start, inst).asInstanceOf[Bool]
   }

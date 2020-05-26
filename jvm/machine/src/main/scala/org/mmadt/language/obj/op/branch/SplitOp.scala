@@ -47,6 +47,7 @@ object SplitOp extends Func[Obj, Obj] {
     }
     val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(start, apoly, oldInst))
     apoly.gsep match {
+      case _ if apoly.isChoice & apoly.isInstanceOf[Rec[Obj, Obj]] => processFirst(start, inst.asInstanceOf[Inst[Obj, Poly[Obj]]]) // TODO: why?
       case _ if apoly.isChoice => processFirst(start, newInst)
       case _ if apoly.isSerial || apoly.isParallel => processAll(start, newInst)
       case _ => throw new LanguageException("Unknown poly connective: " + start)
@@ -62,9 +63,9 @@ object SplitOp extends Func[Obj, Obj] {
 
   private def processFirst(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = {
     (start match {
-      case astrm: Strm[Obj] => return astrm.via(start, inst).asInstanceOf[Lst[Obj]]
+      case astrm: Strm[Obj] => return astrm.via(start, inst).asInstanceOf[Poly[Obj]]
       case _: Type[_] => inst.arg0[Poly[Obj]]
-      case _ => Poly.keepFirst(inst.arg0[Poly[Obj]])
+      case _ => Poly.keepFirst(start, inst, inst.arg0[Poly[Obj]])
     }).clone(via = (start, inst))
   }
 }

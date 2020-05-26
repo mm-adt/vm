@@ -41,6 +41,7 @@ class EqsInstTest extends FunSuite with TableDrivenPropertyChecks {
     val starts: TableFor4[Obj, Obj, Obj, String] =
       new TableFor4[Obj, Obj, Obj, String](("input", "type", "result", "kind"),
         //////// INT
+        (int.q(qZero), __.eqs(str.q(qZero)), btrue.q(qZero), "value"),
         (int(2), int.eqs(1), bfalse, "value"), // value * value = value
         (int(2).q(10), __.eqs(1), bfalse.q(10), "value"), // value * value = value
         (int(2).q(10), __.eqs(1).q(20), bfalse.q(200), "value"), // value * value = value

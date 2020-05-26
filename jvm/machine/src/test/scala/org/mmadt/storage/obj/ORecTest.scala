@@ -1,6 +1,7 @@
 package org.mmadt.storage.obj
-import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, rec, str}
 import org.scalatest.FunSuite
 
@@ -68,5 +69,11 @@ class ORecTest extends FunSuite {
     assertResult(rec(X, Y, Z).q(2))(rec(X, Y).q(int(2)) ==> rec.q(int(2)).plus(rec(Z)))
     assertResult(rec(X, Y, Z).q(2))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)))
     assertResult(rec(X, Y, Z).q(4))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)).q(2))
+  }
+
+  test("rec choose branching") {
+    assertResult(str("name", "my", "is"))(int(1, 2, 3).split(rec(Tokens.`|`, Map(int.is(int.eqs(2)) -> str("name"), int.is(int.gt(2)) -> str("is"), int -> str("my")))).merge[Str])
+    assertResult(false)(rec(Tokens.`|`, Map(str("a") -> int(1), str("b") -> int(2))).equals(rec(Tokens.`|`, Map(str("b") -> int(2), str("a") -> int(1)))))
+    assertResult(bfalse)(rec(Tokens.`|`, Map(str("a") -> int(1), str("b") -> int(2))).eqs(rec(Tokens.`|`, Map(str("b") -> int(2), str("a") -> int(1)))))
   }
 }

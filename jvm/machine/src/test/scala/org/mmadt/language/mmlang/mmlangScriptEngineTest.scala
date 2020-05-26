@@ -145,7 +145,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("poly get/put") {
-    val person: Rec[Obj, Obj] = rec(Tokens.`,`, Map(str("name") -> str, str("age") -> int).asInstanceOf[Map[Obj, Obj]])
+    assertResult(bfalse)(engine.eval("[1->'a',2->'b']==[2->'b',1->'a']"))
+    val person: Rec[Obj, Obj] = rec(Tokens.`|`, Map(str("name") -> str, str("age") -> int).asInstanceOf[Map[Obj, Obj]])
     assertResult(str <= person.get("name"))(engine.eval("['name'->str|'age'->int][get,'name']"))
     assertResult(int <= person.get("age"))(engine.eval("['name'->str|'age'->int][get,'age']"))
     // assertResult(str <= person.get("name"))(engine.eval("str<=['name'->str|'age'->int][get,'name']"))
