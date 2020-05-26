@@ -22,11 +22,11 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -44,8 +44,13 @@ object GetOp extends Func[Obj, Obj] {
     val key: Obj = inst.arg0[Obj]
     (start match {
       case anon: __ => anon
-      //case arec: RecType[Obj, Obj] => asType(arec.gmap(key))
-      case arec: Rec[Obj, Obj] => arec.gmap(key)
+      case arec: Rec[Obj, Obj] =>
+        val results = arec.gmap
+          .filter(a => key.test(a._1) || a._1.test(Inst.oldInst(inst).arg0[Obj]))
+          .values
+        if (results.isEmpty) throw LanguageException.PolyException.noKeyValue(arec, key)
+        else if (results.size == 1) results.head
+        else return strm(results.toSeq)
       case alst: Lst[_] => key match {
         case aint: IntValue =>
           LanguageException.PolyException.testIndex(alst, aint.g.toInt)

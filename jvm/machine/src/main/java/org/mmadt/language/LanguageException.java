@@ -25,6 +25,7 @@ package org.mmadt.language;
 import org.mmadt.VmException;
 import org.mmadt.language.obj.Lst;
 import org.mmadt.language.obj.Obj;
+import org.mmadt.language.obj.Rec;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
@@ -101,6 +102,10 @@ public class LanguageException extends VmException {
         public static void testIndex(final Lst<?> lst, final int index) {
             if (index < 0) throw new LanguageException("Index must be 0 or greater: " + index);
             if (lst.glist().length() < (index + 1)) throw new LanguageException("Index is out of bounds: " + index);
+        }
+
+        public static LanguageException noKeyValue(final Rec<?, ?> rec, final Obj key) {
+            return new LanguageException("Key doesn't match any rec keys: " + key);
         }
     }
 }

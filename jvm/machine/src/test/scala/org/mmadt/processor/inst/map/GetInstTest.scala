@@ -23,9 +23,8 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Lst
 import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.{Lst, Obj}
-import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -74,7 +73,7 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
     val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
     assertResult(str("marko"))(marko.get(str("name")))
     assertResult(int(29))(marko.get(str("age")))
-    assertThrows[NoSuchElementException] {
+    assertThrows[LanguageException] {
       marko.get(str("bad-key"))
     }
   }

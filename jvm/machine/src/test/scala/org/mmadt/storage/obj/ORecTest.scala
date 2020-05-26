@@ -1,4 +1,5 @@
 package org.mmadt.storage.obj
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, rec, str}
 import org.scalatest.FunSuite
@@ -23,7 +24,7 @@ class ORecTest extends FunSuite {
     assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))
-    intercept[NoSuchElementException] {
+    intercept[LanguageException] {
       rec(int(1) -> btrue, int(2) -> bfalse).get(int(3))
     }
   }

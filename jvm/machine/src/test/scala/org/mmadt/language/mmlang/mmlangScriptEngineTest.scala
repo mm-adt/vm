@@ -24,10 +24,10 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.Rec
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.{LanguageException, LanguageFactory}
+import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -135,19 +135,26 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[put,'age',int][get,'age'][plus,10]"))
     assertResult(int(20))(engine.eval("['name'->'marko',.] rec[put,'age',10][get,'age'][plus,10]"))
     assertResult(int(20))(engine.eval("['name'->'marko',.] int<=rec[put,'age',10][get,'age'][plus,10]"))
+    assertResult(int(4, 6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,is>1]"))
+    assertResult(int(6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,is>3]"))
+    assertResult(int(2, 4, 6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,is<100]"))
+    assertResult(int(2, 4, 6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,int]"))
+    assertThrows[LanguageException] {
+      assertResult(zeroObj)(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,str]"))
+    }
   }
 
   test("poly get/put") {
-    //val person: Poly[Obj] = "name" -> str | "age" -> int
-    //assertResult(str <= person.get("name"))(engine.eval("[name->str|age->int][get,'name']"))
-    //assertResult(int <= person.get("age"))(engine.eval("[name->str|age->int][get,'age']"))
-    //    assertResult(str <= person.get("name"))(engine.eval("str<=[name->str|age->int][get,'name']"))
+    val person: Rec[Obj, Obj] = rec(Tokens.`,`, Map(str("name") -> str, str("age") -> int).asInstanceOf[Map[Obj, Obj]])
+    assertResult(str <= person.get("name"))(engine.eval("['name'->str|'age'->int][get,'name']"))
+    assertResult(int <= person.get("age"))(engine.eval("['name'->str|'age'->int][get,'age']"))
+    // assertResult(str <= person.get("name"))(engine.eval("str<=['name'->str|'age'->int][get,'name']"))
     //    assertResult(int <= person.get("age"))(engine.eval("int<=[name->str|age->int][get,'age']"))
     //assertResult(int <= poly[Int]("|").put(str("age"), int).get(str("age")))(engine.eval("rec[][put,'age',int][get,'age']"))
     //assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("rec[][put,'age',int][get,'age'][plus,10]"))
     //assertResult(int <= rec.put(str("age"), int).get(str("age")).plus(int(10)))(engine.eval("int<=rec[][put,'age',int][get,'age'][plus,10]"))
     //assertResult(int(20))(engine.eval("['name'->'marko'] rec[][put,'age',10][get,'age'][plus,10]"))
-    //assertResult(int(20))(engine.eval("['name'->'marko'] int<=rec[][put,'age',10][get,'age'][plus,10]"))
+    assertResult(int(20))(engine.eval("['name'->'marko',.] int<=rec:[put,'age',10][get,'age'][plus,10]"))
   }
 
   test("quantified value parsing") {
