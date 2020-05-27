@@ -424,6 +424,19 @@ mmlang>
 
 ==== Poly Types
 
+.Section Language Constructs
+================================================================
+. `( )` is a type polynomial.
+. `[ ]` is a value polynomial.
+. `lst` is a polynomial with terms indexed by `int`.
+. `rec` is a polynomial with terms indexed by `obj`.
+. `,` is a polynomial term deliminator denoting parallel compose.
+. `|` is a polynomial term deliminator denoting parallel choose.
+. `;` is a polynomial term combinator denoting serial compose.
+. `-<` is sugar for `[split]` copying the LHS across all polynomial terms.
+. `>-` is sugar for `[merge]` joining polynomial terms into a single `obj`.
+================================================================
+
 .Rings
 ****
 A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the _multiplicative_ operator, \$\+: A \times A \rightarrow A \$ is the _additive_ operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity.
@@ -544,8 +557,8 @@ mmlang> 3-<[[plus,1];[mult,2]]   <3>
 
 [NOTE]
 ================================================================
-The two terms of the polynomial `[bool\<=int[gt,0],bool\<=int[gt,10]]` are `bool` types.
-The two terms of `[[gt,0],[gt,10]]` are `_` types (anonymous types).
+The two terms of the polynomial `[bool<=int[gt,0],bool<=int[gt,10]]` are `bool` types.
+The two terms of `\[[gt,0],[gt,10]]` are `_` types (_anonymous types_).
 A compilation process infers the domain/range of the anonymous types.
 
 [source]
