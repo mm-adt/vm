@@ -139,9 +139,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,is>3]"))
     assertResult(int(2, 4, 6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,is<100]"))
     assertResult(int(2, 4, 6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,int]"))
-    assertThrows[LanguageException] {
+//    assertThrows[LanguageException] {
       assertResult(zeroObj)(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,str]"))
-    }
+//    }
   }
 
   test("poly get/put") {

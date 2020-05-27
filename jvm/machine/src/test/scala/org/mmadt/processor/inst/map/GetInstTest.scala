@@ -65,7 +65,7 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[get] lineage") {
     val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
-    assertResult(2)(rec.get(str("name"), str).plus(" rodriguez").trace.length)
+    assertResult(2)(marko.get(str("name"), str).plus(" rodriguez").trace.length)
   }
 
 
@@ -73,8 +73,8 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
     val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
     assertResult(str("marko"))(marko.get(str("name")))
     assertResult(int(29))(marko.get(str("age")))
-    assertThrows[LanguageException] {
-      marko.get(str("bad-key"))
-    }
+    //assertThrows[LanguageException] {
+    assertResult(zeroObj)(marko.get(str("bad-key")))
+    //}
   }
 }

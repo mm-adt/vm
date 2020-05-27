@@ -26,6 +26,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -36,19 +37,24 @@ import org.mmadt.storage.obj.value.VInst
 trait GetOp[A <: Obj, B <: Obj] {
   this: Obj =>
   def get(key: A): B = GetOp(key).exec(this)
-  def get[BB <: Obj](key: A, btype: BB): BB = btype.via(this, GetOp[A, BB](key, btype))
+  def get[BB <: Obj](key: A, btype: BB): BB = GetOp[A, BB](key).exec(this)
 }
 object GetOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val key: Obj = inst.arg0[Obj]
+    println(start)
     (start match {
+      case astrm: Strm[_] => return astrm.via(start, inst)
       case anon: __ => anon
       case arec: Rec[Obj, Obj] =>
         val results = arec.gmap
           .filter(a => key.test(a._1) || a._1.test(Inst.oldInst(inst).arg0[Obj]))
+          .filter(a => a._1.alive)
           .values
-        if (results.isEmpty) throw LanguageException.PolyException.noKeyValue(arec, key)
+          .flatMap(a => a.toStrm.values)
+          .filter(a => a.alive)
+        if (results.isEmpty) zeroObj //throw LanguageException.PolyException.noKeyValue(arec, key)
         else if (results.size == 1) results.head
         else return strm(results.toSeq)
       case alst: Lst[_] => key match {

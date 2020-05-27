@@ -33,6 +33,7 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 trait RecStrm[A <: Value[Obj], B <: Value[Obj]] extends Strm[Rec[A, B]] with Rec[A, B] {
   override def g: RecTuple[A, B] = throw LanguageException.typeNoGround(this)
 
+  override lazy val hashCode: Int = this.values.hashCode()
   override def equals(other: Any): Boolean = other match {
     case arec: Rec[_, _] => MultiSet.test(this, arec)
     case _ => false

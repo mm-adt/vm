@@ -53,9 +53,7 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
     case aobj: Obj if !aobj.alive => !this.alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
-      withinQ(this, arec) &&
-      this.gmap.size >= arec.gmap.size &&
-      arec.gmap.count(x => this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
+      withinQ(this, arec) && arec.gmap.count(x => qStar.equals(x._2.q) || this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
     case _ => false
   }
 

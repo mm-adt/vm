@@ -1,9 +1,9 @@
 package org.mmadt.storage.obj
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.{IntValue, StrValue}
-import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, rec, str}
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 import scala.collection.immutable.ListMap
@@ -22,13 +22,13 @@ class ORecTest extends FunSuite {
     assertResult("[1->true]")(rec(int(1) -> btrue).toString)
     assertResult("[1->true,2->false]")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
     assertResult("[1->true,2->false]")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
-    assertResult(bfalse)(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)).get(int(2), bool))
+    assertResult(bfalse)(rec(int(1) -> btrue) ===> rec.plus(rec(int(2) -> bfalse)).get(int(2)))
     assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))
-    intercept[LanguageException] {
-      rec(int(1) -> btrue, int(2) -> bfalse).get(int(3))
-    }
+    //intercept[LanguageException] {
+    assertResult(zeroObj)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(3)))
+    //}
   }
 
   test("rec value via varargs construction") {
