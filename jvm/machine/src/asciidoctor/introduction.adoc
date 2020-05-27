@@ -109,26 +109,29 @@ mmlang> 1[plus,2]
 
 The https://en.wikipedia.org/wiki/Context-free_grammar[context-free grammar] for `mmlang` is presented below.
 
-[source]
-----
-obj   := (type | value){q}
-type  := ctype | dtype
-ctype := bool | int  | real | str | poly | _
-poly  :=  lst | inst | rec
-q     := int,int | int | ? | * | +
-{0}   := _{0,0}
-{1}   := _{1,1}
-dtype := ctype<=ctype([inst]+)
-sep   := ; | , | "|"
-rec   := [-] | [obj->obj(<sep>obj->obj)*]
-lst   := [ ] | [obj(<sep>obj)*]
-inst  := [op(,obj*)]
-op    := a, add, and, as, combine, count, eq, error, explain, fold, from,
-         get, given, groupCount, gt, gte, head, id, is, last, lt, lte, map,
-         merge, mult, neg, noop, one, or, path, plus, pow, put, q, repeat,
-         split, start, tail, to, trace, type, zero
-sugop := . | > | < | >= | =< | ==
-----
+[cols="1m,3m,5"]
+|===
+|token | structure | description
+
+|obj   | (type \| value){q}                           | an `obj` is either a type or a value and a quantifier (`obj=(type + value){q}`)
+|type  | ctype \| dtype                               | a type is a ctype or a dtype (`type = ctype + dtype`)
+|ctype | bool \| int  \| real \| str \| poly \| _     | a canonical type by which refined and dependent types are built
+|poly  |  lst \| inst \| rec                          | polynomials are composite structures with an internal semantics that reflects the process algebra
+|q     | int,int \| int \| ? \| * \| `+`              | a quantifier denoting an "amount." `? = {0,1}`,`* = {-infty,+infty}`,`+ = {1,+infty}`
+|{0}   | _{0,0}                                       | "none" or the zero-`obj`.
+|dtype | ctype\<=ctype([inst]+)                       | a derived type inductively defined from a ctype base
+|sep   | ; \| , \| '\|'                               | polynomial element separator. `;` is compose, `,` is branch, and `\|` is choose.
+|rec   | [-] \| [obj->obj(<sep>obj->obj)*]            | a record has `obj` keys and `obj` values
+|lst   | [ ] \| [obj(<sep>obj)*]                      | a list has `int` keys and `obj` values
+|inst  | [op(,obj*)]                                  | an instruction has an opcode and arguments.
+|op    | a, add, and, as, combine, count, eq, error,
+         explain, fold, from, get, given, groupCount,
+         gt, gte, head, id, is, last, lt, lte, map,
+         merge, mult, neg, noop, one, or, path, plus,
+         pow, put, q, repeat, split, start, tail, to,
+         trace, type, zero                            | the opcodes supported by the mm-ADT VM
+|sugop | . \| > \| < \| >= \| =< \| == \| * \| `+`    | infix operators
+|===
 
 The following https://en.wikipedia.org/wiki/Axiomatic_semantics[language axioms] have variables `x`, `y`, and `z` in `ctype` and `[a]` and `[b]` in `inst`.
 

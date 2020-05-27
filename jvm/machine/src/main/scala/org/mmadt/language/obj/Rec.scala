@@ -52,17 +52,21 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case arec: Rec[_, _] => Poly.sameSep(this, arec) && withinQ(this, arec) &&
-      (this.gmap.size >= arec.gmap.size && this.gmap.zip(arec.gmap).foldRight(true)((a, b) => a._1._1.test(a._2._1) && a._1._2.test(a._2._2) && b))
+    case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
+      withinQ(this, arec) &&
+      this.gmap.size >= arec.gmap.size &&
+      arec.gmap.count(x => this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
     case _ => false
   }
-
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case arec: Rec[_, _] => Poly.sameSep(this, arec) && arec.name.equals(this.name) && eqQ(arec, this) &&
-      (this.gmap.size == arec.gmap.size && this.gmap.zip(arec.gmap).foldRight(true)((a, b) => a._1._1.equals(a._2._1) && a._1._2.equals(a._2._2) && b))
+    case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
+      arec.name.equals(this.name) &&
+      eqQ(arec, this) &&
+      this.gmap.size == arec.gmap.size &&
+      this.gmap.zip(arec.gmap).foldRight(true)((a, b) => a._1._1.equals(a._2._1) && a._1._2.equals(a._2._2) && b)
     case _ => false
   }
 }

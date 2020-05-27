@@ -23,6 +23,7 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.VmException
+import org.mmadt.language.Tokens.{bool => _, int => _, lst => _, real => _, rec => _, str => _, _}
 import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._

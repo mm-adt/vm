@@ -22,51 +22,25 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.model.Model
+import org.mmadt.language.obj.Rec
+import org.mmadt.language.obj.value.{ObjValue, StrValue}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
+
+import scala.collection.immutable.ListMap
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class PersonTest extends FunSuite {
 
-  /*test("person rec"){
-    val marko:RecValue[StrValue,ObjValue] = vrec(Map(str("name") -> str("marko"),str("age") -> int(29)))
-    assertResult(ListMap(str("name") -> str("marko"),str("age") -> int(29)))(marko.value())
+  test("person rec") {
+    val marko: Rec[StrValue, ObjValue] = rec(str("name") -> str("marko"), str("age") -> int(29))
+    assertResult(ListMap(str("name") -> str("marko"), str("age") -> int(29)))(marko.gmap)
     assertResult("['name'->'marko','age'->29]")(marko.toString)
-    assertResult("person:['name'->'marko','age'->29]")(marko.as("person").toString)
-    ///
     assertResult("rec")(marko.name)
-    assertResult("person")(marko.as[Str]("person").name)
-    assertResult(str("marko"))(marko ==> rec.get(str("name"),str))
-    assertResult(int(29))(marko ==> rec.get(str("age"),int))
-    assertResult(str("marko"))(marko.as[Obj]("person") ==> rec.get(str("name"),str))
-    assertResult(int(29))(marko.as[Obj]("person") ==> rec.get(str("age"),int))
-  }*/
-
-  /*test("person compilation") {
-    val marko = new TRec[Str, Obj](Map(str("name") -> str("marko"), str("age") -> int(29)), Nil, qOne).as("person")
-    val model = new SimpleModel().
-      put(int, int.mult(2), int.plus(int)).
-      put(int, int.plus(0), int).
-      typePut("person", rec[Str, Str].get[StrType]("firstname", str), rec[Str, Str].get[StrType]("name", str))
-    val processor = new CompilingProcessor[Obj, Obj](model)
-    println(model)
-    println(processor.apply(marko, rec[Str, Str].get[StrType]("firstname", str)).toList)
-  }*/
-
-  test("person evaluation") {
-    //val marko:Rec[Obj,Obj] = rec(str("name") -> str("marko"),str("age") -> int(29)).as[Rec[_,_]]("person")
-    val model = Model.simple().
-      put(int.mult(2), int.plus(int)).
-      put(int.plus(0), int).
-      put(rec.get(str("firstname"), str), rec.get(str("name"), str))
-    println(model)
-    println(model.get(rec.get(str("firstname"), str)))
-    // println(IteratorChainProcessor(marko, rec.get(str("firstname"), str)).toList)
+    assertResult(str("marko"))(marko ==> rec.get(str("name"), str))
+    assertResult(int(29))(marko ==> rec.get(str("age"), int))
   }
-
-
 }
 

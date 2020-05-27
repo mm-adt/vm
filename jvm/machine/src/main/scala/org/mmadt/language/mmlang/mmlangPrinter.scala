@@ -23,6 +23,7 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.Tokens.{int => _, obj => _, _}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.strm.Strm
@@ -35,7 +36,7 @@ import org.mmadt.storage.StorageFactory._
 object mmlangPrinter {
 
   def qString(x: IntQ): String = x match {
-    case `qOne` => Tokens.empty
+    case `qOne` => empty
     case `qZero` => QZERO
     case `qMark` => s"${LCURL}${Tokens.q_mark}${RCURL}"
     case `qPlus` => s"${LCURL}${Tokens.q_plus}${RCURL}"

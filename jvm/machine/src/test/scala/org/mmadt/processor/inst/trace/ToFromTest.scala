@@ -77,8 +77,7 @@ class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
   test("[to][from] w/ anonymous types") {
     assertResult("int[id]<x>[map,int[id]]<y><.x><.y>")(int.id().to("x").map(__.id()).to("y").from("x").from("y").toString)
     assertResult("int[id]<x>[map,int<.x>]<y><.x><.y>")(int.id().to("x").map(__.from("x", int)).to("y").from("x").from("y").toString)
-
-    // assertResult("int[id]<x>[map,int<.x>]<y><.x><.y>")((int ==> int.id().to("x").map(__.from("x")).to("y").from("x").from("y")).toString)
-    //assertResult("int[id]<x>[map,int[plus,int[mult,int<.x>]]]<y><.x><.y>")((int ==> int.id().to("x").map(__.plus(__.mult(__.from("x")))).to("y").from("x").from("y")).toString)
+    assertResult("int[id]<x>[map,int<.x>]<y><.x><.y>")((int ==> int.id().to("x").map(__.from("x")).to("y").from("x").from("y")).toString)
+    assertResult("int[id]<x>[map,int[plus,int[mult,int<.x>]]]<y><.x><.y>")((int ==> int.id().to("x").map(__.plus(__.mult(__.from("x")))).to("y").from("x").from("y")).toString)
   }
 }

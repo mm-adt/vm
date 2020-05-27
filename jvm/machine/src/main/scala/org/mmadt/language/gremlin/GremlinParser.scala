@@ -2,8 +2,8 @@ package org.mmadt.language.gremlin
 import org.mmadt.VmException
 import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory._
 
 import scala.util.matching.Regex
@@ -30,9 +30,13 @@ class GremlinParser extends JavaTokenParsers {
     x.flatten.foldLeft[Obj](new __())((a, b) => b.exec(a))
   })
 
-  lazy val step: Parser[List[Inst[Obj, Obj]]] = "[a-zA-Z]+".r ~ opt("('" ~> "[a-zA-Z]+".r <~ "')") ^^ (x => {
-    TraversalMonoid.resolve(x._1, x._2.map(y => List(str(y))).getOrElse(List.empty[Obj]))
-  })
+  lazy val aobj: Parser[Obj] = astr | abool | aint | astr
+  lazy val abool: Parser[Bool] = ("true" | "false") ^^ (x => bool(x.equals("true")))
+  lazy val aint: Parser[Int] = wholeNumber ^^ (x => int(x.toLong))
+  lazy val astr: Parser[Str] = """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => str(x.subSequence(1, x.length - 1).toString))
+
+
+  lazy val step: Parser[List[Inst[Obj, Obj]]] = "[a-zA-Z]+".r ~ ("(" ~> repsep(aobj, ",") <~ ")") ^^ (x => TraversalMonoid.resolve(x._1, x._2))
 }
 object GremlinParser {
   def parse[O <: Obj](script: String, model: Model): O = try {
