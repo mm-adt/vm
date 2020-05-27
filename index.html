@@ -457,7 +457,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_component_categories_and_their_functors">Component Categories and their Functors</a></li>
 </ul>
 </li>
-<li><a href="#_the_mm_adt_console">The mm-ADT Console</a></li>
+<li><a href="#_the_mm_adt_console">The mm-ADT Console</a>
+<ul class="sectlevel3">
+<li><a href="#_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_language_structures">Language Structures</a>
@@ -544,8 +548,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_reference_guide">Reference Guide</a>
-<ul class="sectlevel2">
-<li><a href="#_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</a>
 <ul class="sectlevel3">
 <li><a href="#_instructions">Instructions</a>
 <ul class="sectlevel4">
@@ -556,8 +558,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_reduce_instructions">Reduce Instructions</a></li>
 <li><a href="#_sideeffect_instructions">SideEffect Instructions</a></li>
 <li><a href="#_traverser_instructions">Traverser Instructions</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -705,6 +705,64 @@ mmlang&gt; <span style="color:#00D">1</span>+<span style="color:#00D">2</span>
 ==&gt;<span style="color:#00D">3</span>
 mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">2</span>]
 ==&gt;<span style="color:#00D">3</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</h4>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">obj   := (<span style="color:#369;font-weight:bold">type</span> | value){q}
+<span style="color:#369;font-weight:bold">type</span>  := ctype | dtype
+ctype := <span style="color:#369;font-weight:bold">bool</span> | <span style="color:#369;font-weight:bold">int</span> | real | <span style="color:#369;font-weight:bold">str</span> | poly
+poly  := lst, inst, rec
+sep   := ; | , | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">|</span><span style="color:#710">&quot;</span></span>
+q     := <span style="color:#369;font-weight:bold">int</span>,<span style="color:#369;font-weight:bold">int</span>
+dtype := ctype&lt;=ctype([inst]+)
+rec   := [-] | [obj-&gt;obj(&lt;sep&gt;obj-&gt;obj)*]
+lst   := [ ] | [obj(&lt;sep&gt;obj)*]
+inst  := [op(,obj*)]
+op    := a, <span style="color:#080;font-weight:bold">as</span>, branch, choose, plus, mult, <span style="color:#080;font-weight:bold">is</span>, ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables <code>x</code>, <code>y</code>, and <code>z</code> in <code>ctype</code> and <code>[a]</code> and <code>[b]</code> in <code>inst</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">id</span>(x)                      := x&lt;=x[<span style="color:#369;font-weight:bold">id</span>]
+domain(y&lt;=x[a])            := x
+<span style="color:#369;font-weight:bold">range</span>(y&lt;=x[a])             := y
+domain(x)                  := x
+<span style="color:#369;font-weight:bold">range</span>(x)                   := x
+;-compose(y&lt;=x[a],z&lt;=y[b])  := z&lt;=x[a][b]
++-compose(y&lt;=x[a],y&lt;=x[b])  := y&lt;=x[branch,y&lt;=x[a],y&lt;=x[b]]
+|-compose(y&lt;=x[a],z&lt;=x[b])  := y&lt;=x[choose,y&lt;=x[a],z&lt;=x[b]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring).
+In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">;-compose(y{q1}&lt;=x[a],z{q2}&lt;=y[b]) := z{q1*q2}&lt;=x[a][b]
++-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[a]) := y{q1+q2}&lt;=x[a]
++-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
+|-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{<span style="color:#369;font-weight:bold">min</span>(q1,q2),<span style="color:#369;font-weight:bold">max</span>(q1,q2)}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following inference rules reuse the same variables as the equations above.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">xxx   yyy      xxx   yyy
+_________      _________
+    zz            zz</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -2727,32 +2785,24 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 <div class="paragraph">
 <p>The mm-ADT VM is a computing machine founded on a non-commutative <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> ring called a <em>stream ring</em>. The practical mental-model that mm-ADT purports is that of streams of data flowing through serial (<code>*</code>) and parallel (<code>+</code>) structures bound by functions (instructions). Moreover, these streams can be split and merged via the product and coproduct of <em>streams</em> of data whose size and dynamics are regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is manipulated by <code>mmlang</code>. However, there are two other intervening algebras (at the processor and storage levels), where ultimately, the <code>mmlang</code> <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> realizes a correspondence by means of a <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring action</a> upon a <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a>.</p>
 </div>
-<div class="ulist">
-<ul>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p><strong>Obj Magma</strong> (<em>storage</em>): The set of all <code>objs</code> along with a single, non-associative binary <em>juxtaposition</em> operator.</p>
-</li>
-</ul>
-</div>
 <div class="paragraph">
 <p>\[
 \mathbf{Obj} = \langle \texttt{obj}, \cdot \rangle
 \]</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p><strong>Inst Monoid</strong> (<em>processor</em>): A nested monoid with an associative, non-commutative binary <em>next</em> operator that corresponds to the processor&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_pipelining">instruction pipeline</a>.</p>
-</li>
-</ol>
-</div>
 <div class="paragraph">
 <p>\[
 \mathbf{Inst} = \langle \texttt{inst}, *, 1, 0 \rangle
 \]</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+</li>
 <li>
 <p><strong>Trace Ringoid</strong> (<em>language</em>): A generalization of the <code>inst</code> monoid that supports the composition of polynomials for the construction of serial (<code>*</code>), parallel (<code>+</code>), and parallel choice (<code>|</code>) pipelines, where \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving <a href="https://en.wikipedia.org/wiki/Automorphism">automorphism</a> from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a>). This generalization provides greater flexibility for expressing a wider range of common computational patterns.</p>
 </li>
@@ -3515,60 +3565,6 @@ Whenever the diagram branches, the <code>obj</code> at the branch is cloned, tak
 <div class="sect1">
 <h2 id="_reference_guide">Reference Guide</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</h3>
-<div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">obj   := (<span style="color:#369;font-weight:bold">type</span> | value){q}
-<span style="color:#369;font-weight:bold">type</span>  := ctype | dtype
-ctype := <span style="color:#369;font-weight:bold">bool</span> | <span style="color:#369;font-weight:bold">int</span> | real | <span style="color:#369;font-weight:bold">str</span> | rec | inst
-q     := <span style="color:#369;font-weight:bold">int</span>,<span style="color:#369;font-weight:bold">int</span>
-dtype := ctype&lt;=ctype([inst]+)
-rec   := [:] | [obj:obj(,obj:obj)*]
-inst  := [op(,obj*)]
-op    := a, <span style="color:#080;font-weight:bold">as</span>, branch, choose, plus, mult, <span style="color:#080;font-weight:bold">is</span>, ...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables <code>x</code>, <code>y</code>, and <code>z</code> in <code>ctype</code> and <code>[a]</code> and <code>[b]</code> in <code>inst</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">id</span>(x)                      := x&lt;=x[<span style="color:#369;font-weight:bold">id</span>]
-domain(y&lt;=x[a])            := x
-<span style="color:#369;font-weight:bold">range</span>(y&lt;=x[a])             := y
-domain(x)                  := x
-<span style="color:#369;font-weight:bold">range</span>(x)                   := x
-scompose(y&lt;=x[a],z&lt;=y[b])  := z&lt;=x[a][b]
-pcompose(y&lt;=x[a],y&lt;=x[b])  := y&lt;=x[branch,y&lt;=x[a],y&lt;=x[b]]
-pcompose(y&lt;=x[a],z&lt;=x[b])  := obj&lt;=x[branch,y&lt;=x[a],z&lt;=x[b]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring).
-In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">scompose(y{q1}&lt;=x[a],z{q2}&lt;=y[b]) := z{q1*q2}&lt;=x[a][b]
-pcompose(y{q1}&lt;=x[a],y{q2}&lt;=x[a]) := y{q1+q2}&lt;=x[a]
-pcompose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
-pcompose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := obj{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],z{q2}&lt;=x[b]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The following inference rules reuse the same variables as the equations above.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">xxx   yyy      xxx   yyy
-_________      _________
-    zz            zz</code></pre>
-</div>
-</div>
 <div class="sect3">
 <h4 id="_instructions">Instructions</h4>
 <div class="paragraph">
@@ -3997,7 +3993,6 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 </div>
 </div>
 </div>
-</div>
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnotedef_1">
@@ -4006,7 +4001,7 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-24 11:53:54 -0600
+Last updated 2020-05-27 01:51:04 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">

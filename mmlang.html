@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>mmlang Syntax and Semantics</title>
+<title>Untitled</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -434,65 +434,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 </div>
 <div id="content">
-<div class="sect2">
-<h3 id="_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</h3>
-<div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>obj   := (type | value){q}
-type  := ctype | dtype
-ctype := bool | int | real | str | rec | inst
-q     := int,int
-dtype := ctype&lt;=ctype([inst]+)
-rec   := [:] | [obj:obj(,obj:obj)*]
-inst  := [op(,obj*)]
-op    := a, as, branch, choose, plus, mult, is, ...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables <code>x</code>, <code>y</code>, and <code>z</code> in <code>ctype</code> and <code>[a]</code> and <code>[b]</code> in <code>inst</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>id(x)                      := x&lt;=x[id]
-domain(y&lt;=x[a])            := x
-range(y&lt;=x[a])             := y
-domain(x)                  := x
-range(x)                   := x
-scompose(y&lt;=x[a],z&lt;=y[b])  := z&lt;=x[a][b]
-pcompose(y&lt;=x[a],y&lt;=x[b])  := y&lt;=x[branch,y&lt;=x[a],y&lt;=x[b]]
-pcompose(y&lt;=x[a],z&lt;=x[b])  := obj&lt;=x[branch,y&lt;=x[a],z&lt;=x[b]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring).
-In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>scompose(y{q1}&lt;=x[a],z{q2}&lt;=y[b]) := z{q1*q2}&lt;=x[a][b]
-pcompose(y{q1}&lt;=x[a],y{q2}&lt;=x[a]) := y{q1+q2}&lt;=x[a]
-pcompose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
-pcompose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := obj{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],z{q2}&lt;=x[b]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The following inference rules reuse the same variables as the equations above.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>xxx   yyy      xxx   yyy
-_________      _________
-    zz            zz</code></pre>
-</div>
-</div>
-</div>
+
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-28 23:01:26 -0600
+Last updated 2020-05-27 01:51:19 -0600
 </div>
 </div>
 </body>
