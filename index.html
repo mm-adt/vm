@@ -712,27 +712,92 @@ mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">2</sp
 <div class="paragraph">
 <p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">obj   := (<span style="color:#369;font-weight:bold">type</span> | value){q}
-<span style="color:#369;font-weight:bold">type</span>  := ctype | dtype
-ctype := <span style="color:#369;font-weight:bold">bool</span> | <span style="color:#369;font-weight:bold">int</span>  | real | <span style="color:#369;font-weight:bold">str</span> | poly | _
-poly  :=  lst | inst | rec
-q     := <span style="color:#369;font-weight:bold">int</span>,<span style="color:#369;font-weight:bold">int</span> | <span style="color:#369;font-weight:bold">int</span> | <span style="color:#F00;background-color:#FAA">?</span> | * | +
-{<span style="color:#00D">0</span>}   := _{<span style="color:#00D">0</span>,<span style="color:#00D">0</span>}
-{<span style="color:#00D">1</span>}   := _{<span style="color:#00D">1</span>,<span style="color:#00D">1</span>}
-dtype := ctype&lt;=ctype([inst]+)
-sep   := ; | , | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">|</span><span style="color:#710">&quot;</span></span>
-rec   := [-] | [obj-&gt;obj(&lt;sep&gt;obj-&gt;obj)*]
-lst   := [ ] | [obj(&lt;sep&gt;obj)*]
-inst  := [op(,obj*)]
-op    := a, add, <span style="color:#080;font-weight:bold">and</span>, <span style="color:#080;font-weight:bold">as</span>, combine, count, eq, error, explain, fold, <span style="color:#080;font-weight:bold">from</span>,
-         get, given, groupCount, gt, gte, head, <span style="color:#369;font-weight:bold">id</span>, <span style="color:#080;font-weight:bold">is</span>, last, lt, lte, <span style="color:#369;font-weight:bold">map</span>,
-         merge, mult, neg, noop, one, <span style="color:#080;font-weight:bold">or</span>, path, plus, <span style="color:#369;font-weight:bold">pow</span>, put, q, repeat,
-         split, start, tail, to, trace, <span style="color:#369;font-weight:bold">type</span>, zero
-sugop := . | &gt; | &lt; | &gt;= | =&lt; | ==</code></pre>
-</div>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 33.3333%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">token</th>
+<th class="tableblock halign-left valign-top">structure</th>
+<th class="tableblock halign-left valign-top">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(type | value){q}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">an <code>obj</code> is either a type or a value and a quantifier (<code>obj=(type + value){q}</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ctype | dtype</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a type is a ctype or a dtype (<code>type = ctype + dtype</code>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ctype</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bool | int  | real | str | poly | _</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a canonical type by which refined and dependent types are built</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lst | inst | rec</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">polynomials are composite structures with an internal semantics that reflects the process algebra</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>q</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int,int | int | ? | * | <code>+</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a quantifier denoting an "amount." <code>? = {0,1}</code>,<code>* = {-infty,+infty}</code>,<code>+ = {1,+infty}</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_{0,0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"none" or the zero-<code>obj</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dtype</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ctype&lt;=ctype([inst]+)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a derived type inductively defined from a ctype base</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sep</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>; | , | '|'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">polynomial element separator. <code>;</code> is compose, <code>,</code> is branch, and <code>|</code> is choose.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rec</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[-] | [obj&#8594;obj(&lt;sep&gt;obj&#8594;obj)*]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a record has <code>obj</code> keys and <code>obj</code> values</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lst</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[ ] | [obj(&lt;sep&gt;obj)*]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a list has <code>int</code> keys and <code>obj</code> values</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[op(,obj*)]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">an instruction has an opcode and arguments.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>op</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a, add, and, as, combine, count, eq, error,
+         explain, fold, from, get, given, groupCount,
+         gt, gte, head, id, is, last, lt, lte, map,
+         merge, mult, neg, noop, one, or, path, plus,
+         pow, put, q, repeat, split, start, tail, to,
+         trace, type, zero</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the opcodes supported by the mm-ADT VM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sugop</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>. | &gt; | &lt; | &gt;= | =&lt; | == | * | <code>+</code></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">infix operators</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables <code>x</code>, <code>y</code>, and <code>z</code> in <code>ctype</code> and <code>[a]</code> and <code>[b]</code> in <code>inst</code>.</p>
 </div>
