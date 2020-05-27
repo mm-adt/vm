@@ -464,7 +464,7 @@ As an economic model, each integration point offers the respective development t
 <p><strong>Processing Engines</strong>: Processor developers enable their push- or pull-based execution engines to be programmed by any mm-ADT language for evaluation via mm-ADT&#8217;s abstract execution model for processing data structures via single-machine, multi-threaded, agent-based, distributed near-time, and/or cluster-oriented, batch-analytic processors.</p>
 </li>
 <li>
-<p><strong>Storage Systems</strong>: Storage engineers can embed their systems using <em>model-ADT</em> functors expressed in mm-ADT&#8217;s dependent type system that enable the lossless encoding of key/value store, document store, wide-column store, graph store, relational store, and other novel or hybrid structures such as hypergraph, docu-graph, and quantum data structures.</p>
+<p><strong>Storage Systems</strong>: Storage engineers can embed their systems using <em>model-ADTs</em> expressed in mm-ADT&#8217;s dependent type system that enable the lossless encoding of key/value store, document store, wide-column store, graph store, relational store, and other novel or hybrid structures such as hypergraph, docu-graph, and quantum data structures.</p>
 </li>
 </ul>
 </div>
@@ -472,9 +472,9 @@ As an economic model, each integration point offers the respective development t
 <p>The mm-ADT VM enables the intermingling of any language, any processor, and any storage system, that can faithfully implement the core language semantics (<em>types and values</em>), processor semantics (<em>process trace graphs</em>), and/or storage semantics (<em>data structure streams</em>).</p>
 </div>
 <div class="sect2">
-<h3 id="_the_mm_adt_algebras">The mm-ADT Algebras</h3>
+<h3 id="_mm_adt_theory">mm-ADT Theory</h3>
 <div class="sect3">
-<h4 id="_the_universal_unary_function">The Universal Unary Function</h4>
+<h4 id="_a_universal_unary_function">A Universal Unary Function</h4>
 <div class="paragraph">
 <p>Every mm-ADT program denotes a single <a href="https://en.wikipedia.org/wiki/Unary_function">unary function</a> that maps an <code>obj</code> of type \$S\$ (start) to an <code>obj</code> of type \$E\$ (end) with the function signature</p>
 </div>
@@ -489,7 +489,7 @@ The sole purpose of this documentation is to make salient the various algebraic 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_component_categories_and_their_functors">Component Categories and their Functors</h4>
+<h4 id="_three_interrelated_algebras">Three Interrelated Algebras</h4>
 <table class="tableblock frame-all grid-all right" style="width: 40%;">
 <colgroup>
 <col style="width: 50%;">
@@ -517,27 +517,17 @@ The sole purpose of this documentation is to make salient the various algebraic 
 </tbody>
 </table>
 <div class="paragraph">
-<p>Each of the three aforementioned mm-ADT VM components has an associated axiomatic algebra that best describes it&#8217;s structures and processes.
-The <strong>language algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> that captures the serial composition of instructions from the mm-ADT instruction set architecture.
-The <strong>processor algebra</strong> (for both compilation and evaluation) is a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> capturing serial and parallel function evaluation on objects that represent types and values.
-Finally, the <strong>storage algebra</strong> is a suite of categorical <a href="https://en.wikipedia.org/wiki/Functor">functors</a> that map the mm-ADT VM&#8217;s language and processing algebras to common abstract data types that best represent the interfacing storage systems (e.g. key/value, graph, relational, etc.).</p>
+<p>Each of the three aforementioned mm-ADT VM components has an associated axiomatic algebra that best describes its structures and processes. The <strong>language algebra</strong> is a described as a trace polynomial ringoid that captures the serial and parallel composition of instructions from the mm-ADT instruction set architecture. The <strong>processor algebra</strong> (for both compilation and evaluation) is an instruction monoid for serially composing instructions. Finally, the <strong>storage algebra</strong> is founded on the set of all mm-ADT objects with various algebraic actions that specify the way in which the many abstract data types are coupled and controlled by one another (e.g. key/value, graph, relational, etc.).</p>
 </div>
 <div class="paragraph">
-<p>Each of these algebraic structures has a respective categorical encoding and, for each category, there exists a bijective functor to the other two categories such that diagram below commutes.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/introduction/mmadt-algebras.png" alt="mmadt algebras" width="250">
-</div>
-</div>
-<div class="paragraph">
-<p>The primary purpose of this documentation is to explain these categories algebraically, their intra-category functors, and the respective software technology that enables their real-world manifestation.
-Data technology developers will learn how to integrate their technology with any of the aforementioned categories so end users may compose their system with other systems to create mathematically sound <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
+<p>The primary purpose of this documentation is to explain these algebras individuals, specify their relationship to each otherm and demonstrate how they are manipulated in practice with mm-ADT technology. Data system engineers will learn how to integrate their technology so end users may compose their system with other systems to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_mm_adt_console">The mm-ADT Console</h3>
+<h3 id="_mm_adt_practice">mm-ADT Practice</h3>
+<div class="sect3">
+<h4 id="_mm_adt_console">mm-ADT Console</h4>
 <div class="paragraph">
 <p>The mm-ADT VM provides a <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop:">REPL</a> console for users to evaluate mm-ADT programs written in any mm-ADT language.
 The reference language distributed with the VM is called <code>mmlang</code>. <code>mmlang</code> is a low-level, functional language that is in near 1-to-1 correspondence with the underlying VM architecture&#8201;&#8212;&#8201;offering it&#8217;s users <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-Complete</a> expressively when writing programs and an interactive teaching tool for studying the mm-ADT VM.</p>
@@ -571,97 +561,31 @@ mmlang&gt; 1[plus,2]
 ==&gt;3</code></pre>
 </div>
 </div>
+</div>
 <div class="sect3">
 <h4 id="_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</h4>
 <div class="paragraph">
 <p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 11.1111%;">
-<col style="width: 33.3333%;">
-<col style="width: 55.5556%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">token</th>
-<th class="tableblock halign-left valign-top">structure</th>
-<th class="tableblock halign-left valign-top">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(type | value){q}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">an <code>obj</code> is either a type or a value and a quantifier (<code>obj=(type + value){q}</code>)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ctype | dtype</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a type is a ctype or a dtype (<code>type = ctype + dtype</code>)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ctype</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>bool | int  | real | str | poly | _</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a canonical type by which refined and dependent types are built</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lst | inst | rec</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">polynomials are composite structures with an internal semantics that reflects the process algebra</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>q</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int,int | int | ? | * | <code>+</code></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a quantifier denoting an "amount." <code>? = {0,1}</code>,<code>* = {-infty,+infty}</code>,<code>+ = {1,+infty}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>_{0,0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">"none" or the zero-<code>obj</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dtype</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ctype&lt;=ctype([inst]+)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a derived type inductively defined from a ctype base</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sep</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>; | , | '|'</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">polynomial element separator. <code>;</code> is compose, <code>,</code> is branch, and <code>|</code> is choose.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rec</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[-] | [obj&#8594;obj(&lt;sep&gt;obj&#8594;obj)*]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a record has <code>obj</code> keys and <code>obj</code> values</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[ ] | [obj(&lt;sep&gt;obj)*]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a list has <code>int</code> keys and <code>obj</code> values</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[op(,obj*)]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">an instruction has an opcode and arguments.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>op</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a, add, and, as, combine, count, eq, error,
-         explain, fold, from, get, given, groupCount,
-         gt, gte, head, id, is, last, lt, lte, map,
-         merge, mult, neg, noop, one, or, path, plus,
-         pow, put, q, repeat, split, start, tail, to,
-         trace, type, zero</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the opcodes supported by the mm-ADT VM</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sugop</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>. | &gt; | &lt; | &gt;= | =&lt; | == | * | <code>+</code></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">infix operators</p></td>
-</tr>
-</tbody>
-</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>type  := (ctype | dtype){q}
+ctype := bool | int  | real | str | poly | _
+poly  :=  lst | inst | rec
+q     := int,int | int | ? | * | +
+{int} := _{int,int}
+dtype := ctype&lt;=ctype([inst]+)
+sep   := ; | , | "|"
+rec   := [-] | [obj-&gt;obj(&lt;sep&gt;obj-&gt;obj)*]
+lst   := [ ] | [obj(&lt;sep&gt;obj)*]
+inst  := [op(,obj*)]
+op    := a, add, and, as, combine, count, eq, error, explain, fold, from,
+         get, given, groupCount, gt, gte, head, id, is, last, lt, lte, map,
+         merge, mult, neg, noop, one, or, path, plus, pow, put, q, repeat,
+         split, start, tail, to, trace, type, zero
+sugop := . | &gt; | &lt; | &gt;= | =&lt; | == | * | +</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables <code>x</code>, <code>y</code>, and <code>z</code> in <code>ctype</code> and <code>[a]</code> and <code>[b]</code> in <code>inst</code>.</p>
 </div>
@@ -731,7 +655,7 @@ typeA[a,typeB]                     := typeA(typeB) != {0}</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-27 03:37:09 -0600
+Last updated 2020-05-27 12:08:58 -0600
 </div>
 </div>
 </body>
