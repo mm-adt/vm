@@ -583,6 +583,8 @@ type  := ctype | dtype
 ctype := bool | int  | real | str | poly | _
 poly  :=  lst | inst | rec
 q     := int,int | int | ? | * | +
+{0}   := _{0,0}
+{1}   := _{1,1}
 dtype := ctype&lt;=ctype([inst]+)
 sep   := ; | , | "|"
 rec   := [-] | [obj-&gt;obj(&lt;sep&gt;obj-&gt;obj)*]
@@ -607,20 +609,21 @@ domain(x)                   := x
 range(x)                    := x
 ;-compose(y&lt;=x[a],z&lt;=y[b])  := z&lt;=x[a][b]
 +-compose(y&lt;=x[a],y&lt;=x[b])  := y&lt;=x[branch,y&lt;=x[a],y&lt;=x[b]]
-|-compose(y&lt;=x[a],z&lt;=x[b])  := y&lt;=x[choose,y&lt;=x[a],z&lt;=x[b]</code></pre>
+|-compose(y&lt;=x[a],z&lt;=x[b])  := y&lt;=x[choose,y&lt;=x[a],z&lt;=x[b]
+objA(valueB)                := valueB
+objA(typeB)                 := typeB&lt;=objA
+objA(typeB[instA][instB])   := typeB&lt;=objA[instA][instB]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring). In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring. The <code><em></code> symbol refers to the _anonymous type</em>.</p>
+<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring). In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>;-compose(y{q1}&lt;=x[a],z{q2}&lt;=y[b]) := z{q1*q2}&lt;=x[a][b]
 +-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[a]) := y{q1+q2}&lt;=x[a]
 +-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
-|-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{min(q1,q2),max(q1,q2)}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
-_-compose(typeA,_)                 := typeA
-_-compose(typeA,_[instA][instB])   := instB(instA(typeA))</code></pre>
+|-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{min(q1,q2),max(q1,q2)}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -644,13 +647,16 @@ str&lt;=obj{*}[explain]
 </div>
 </div>
 <div class="paragraph">
-<p>The following inference rules reuse the same variables as the equations above.</p>
+<p>Typing rules, where the <code>_</code> symbol refers to the <em>anonymous type</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>T &lt;: A  A &lt;: B
---------------
-    T &lt;: B</code></pre>
+<pre class="highlight"><code>typeA(_)                           := typeA
+typeA(_[instA][instB])             := instB(instA(typeA)) =&gt; typeB&lt;=typeA[instA][instB]
+obj[a,_]                           := true
+typeA[a,typeA]                     := true
+typeA[a,{0}]                       := typeA.q == 0,0
+typeA[a,typeB]                     := typeA(typeB) != {0}</code></pre>
 </div>
 </div>
 </div>
@@ -660,7 +666,7 @@ str&lt;=obj{*}[explain]
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-27 02:39:50 -0600
+Last updated 2020-05-27 03:11:14 -0600
 </div>
 </div>
 </body>

@@ -719,6 +719,8 @@ mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">2</sp
 ctype := <span style="color:#369;font-weight:bold">bool</span> | <span style="color:#369;font-weight:bold">int</span>  | real | <span style="color:#369;font-weight:bold">str</span> | poly | _
 poly  :=  lst | inst | rec
 q     := <span style="color:#369;font-weight:bold">int</span>,<span style="color:#369;font-weight:bold">int</span> | <span style="color:#369;font-weight:bold">int</span> | <span style="color:#F00;background-color:#FAA">?</span> | * | +
+{<span style="color:#00D">0</span>}   := _{<span style="color:#00D">0</span>,<span style="color:#00D">0</span>}
+{<span style="color:#00D">1</span>}   := _{<span style="color:#00D">1</span>,<span style="color:#00D">1</span>}
 dtype := ctype&lt;=ctype([inst]+)
 sep   := ; | , | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">&quot;</span><span style="color:#D20">|</span><span style="color:#710">&quot;</span></span>
 rec   := [-] | [obj-&gt;obj(&lt;sep&gt;obj-&gt;obj)*]
@@ -743,20 +745,21 @@ domain(x)                   := x
 <span style="color:#369;font-weight:bold">range</span>(x)                    := x
 ;-compose(y&lt;=x[a],z&lt;=y[b])  := z&lt;=x[a][b]
 +-compose(y&lt;=x[a],y&lt;=x[b])  := y&lt;=x[branch,y&lt;=x[a],y&lt;=x[b]]
-|-compose(y&lt;=x[a],z&lt;=x[b])  := y&lt;=x[choose,y&lt;=x[a],z&lt;=x[b]</code></pre>
+|-compose(y&lt;=x[a],z&lt;=x[b])  := y&lt;=x[choose,y&lt;=x[a],z&lt;=x[b]
+objA(valueB)                := valueB
+objA(typeB)                 := typeB&lt;=objA
+objA(typeB[instA][instB])   := typeB&lt;=objA[instA][instB]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring). In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring. The <code><em></code> symbol refers to the _anonymous type</em>.</p>
+<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring). In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">;-compose(y{q1}&lt;=x[a],z{q2}&lt;=y[b]) := z{q1*q2}&lt;=x[a][b]
 +-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[a]) := y{q1+q2}&lt;=x[a]
 +-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
-|-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{<span style="color:#369;font-weight:bold">min</span>(q1,q2),<span style="color:#369;font-weight:bold">max</span>(q1,q2)}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
-_-compose(typeA,_)                 := typeA
-_-compose(typeA,_[instA][instB])   := instB(instA(typeA))</code></pre>
+|-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{<span style="color:#369;font-weight:bold">min</span>(q1,q2),<span style="color:#369;font-weight:bold">max</span>(q1,q2)}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -780,13 +783,16 @@ _-compose(typeA,_[instA][instB])   := instB(instA(typeA))</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The following inference rules reuse the same variables as the equations above.</p>
+<p>Typing rules, where the <code>_</code> symbol refers to the <em>anonymous type</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">T &lt;: A  A &lt;: B
---------------
-    T &lt;: B</code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">typeA(_)                           := typeA
+typeA(_[instA][instB])             := instB(instA(typeA)) =&gt; typeB&lt;=typeA[instA][instB]
+obj[a,_]                           := true
+typeA[a,typeA]                     := true
+typeA[a,{<span style="color:#00D">0</span>}]                       := typeA.q == <span style="color:#00D">0</span>,<span style="color:#00D">0</span>
+typeA[a,typeB]                     := typeA(typeB) != {<span style="color:#00D">0</span>}</code></pre>
 </div>
 </div>
 </div>
