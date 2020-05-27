@@ -56,6 +56,7 @@ object OpInstResolver {
   def resolve[S <: Obj, E <: Obj](op: String, args: List[Obj]): Inst[S, E] = {
     (op match {
       case Tokens.head => HeadOp()
+      case Tokens.last => LastOp()
       case Tokens.tail => TailOp()
       case Tokens.split | Tokens.split_op => SplitOp(args.head)
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head.asInstanceOf[Lst[Obj]])

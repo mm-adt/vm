@@ -762,6 +762,19 @@ mmlang> 'mar'[plus,'k']{2}[plus,'o']{3}
 mmlang> 'mar'[plus,'k']{2}[plus,'o']{0}
 mmlang>
 ----
+
+Moreover, a `poly` can be inspected using standard list instructions. Below demonstrates that the `;-poly[merge]` (`>-`) is equivalent to `;-poly[last]`.
+
+
+[source]
+----
+mmlang> 'mar'-<[[plus,'k'];[plus,'o']]
+==>['mark';'marko']
+mmlang> 'mar'-<[[plus,'k'];[plus,'o']]>-
+==>'marko'
+mmlang> 'mar'-<[[plus,'k'];[plus,'o']][last]
+==>'marko'
+----
 ================================================================
 
 ====== Poly Domain Instructions
@@ -805,7 +818,7 @@ a|
 mmlang> ['a','b'][head]
 ==>'a'
 mmlang> [,.][head]
-language error: no head on empty poly
+language error: empty polys do not have heads
 ----
 | `[tail]` |          | `poly`  | list   | the polynomial without the first term
 a|
@@ -815,7 +828,17 @@ a|
 mmlang> ['a','b'][tail]
 ==>['b'.,]
 mmlang> [,.][tail]
-language error: no tail on empty poly
+language error: empty polys do not have tails
+----
+| `[last]` |          | `obj`  | list   | the last term of the polynomial
+a|
+[.small]
+[source]
+----
+mmlang> ['a','b'][last]
+==>'b'
+mmlang> [,.][last]
+language error: empty polys do not have lasts
 ----
 | `[get]`  | `int`     | `obj`   | array | term access by index
 a|
@@ -950,9 +973,9 @@ There are three primary use cases for `rec`.
 +
 [source]
 ----
-mmlang> ['marko',29]                      <1>
+mmlang> ['marko',29]
 ==>['marko',29]
-mmlang> ['marko',29].0
+mmlang> ['marko',29].0                    <1>
 ==>'marko'
 mmlang> ['marko',29].1
 ==>29

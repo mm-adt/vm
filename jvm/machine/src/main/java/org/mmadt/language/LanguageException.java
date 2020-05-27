@@ -95,6 +95,10 @@ public class LanguageException extends VmException {
             return new LanguageException("Empty polys do not have heads");
         }
 
+        public static LanguageException noLast() {
+            return new LanguageException("Empty polys do not have lasts");
+        }
+
         public static LanguageException noTail() {
             return new LanguageException("Empty polys do not have tails");
         }

@@ -58,7 +58,7 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
 
-  test("parallel [tail][head] values") {
+  test("parallel [tail][head][last] values") {
     val starts: TableFor2[Lst[Obj], List[Value[Obj]]] =
       new TableFor2[Lst[Obj], List[Value[Obj]]](("parallel", "projections"),
         (|, List.empty),
@@ -70,8 +70,10 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { (alst, blist) => {
       assertResult(alst.glist)(blist)
       if (blist.nonEmpty) {
+        assertResult(alst.last())(blist.last)
         assertResult(alst.head())(blist.head)
         assertResult(alst.g._2.head)(blist.head)
+        assertResult(alst.g._2.last)(blist.last)
         assertResult(alst.tail().g._2)(blist.tail)
         assertResult(alst.g._2.tail)(blist.tail)
       }

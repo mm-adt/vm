@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.map.{GetOp, PlusOp, ZeroOp}
+import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
@@ -39,6 +39,9 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   with PlusOp[Rec[A, B]]
   with GetOp[A, B]
   with PutOp[A, B]
+  with HeadOp[B]
+  with TailOp
+  with LastOp[B]
   with ZeroOp[Rec[A, B]] {
 
   def g: RecTuple[A, B]

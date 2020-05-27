@@ -19,6 +19,7 @@ trait Lst[A <: Obj] extends Poly[A]
   with PutOp[Int, A]
   with HeadOp[A]
   with TailOp
+  with LastOp[A]
   with PlusOp[Lst[A]]
   with MultOp[Lst[A]]
   //with OneOp[Lst[A]]
