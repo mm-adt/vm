@@ -1196,6 +1196,42 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
+<div class="exampleblock">
+<div class="title">Example 1. Section Language Constructs</div>
+<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>( )</code> is a type polynomial.</p>
+</li>
+<li>
+<p><code>[ ]</code> is a value polynomial.</p>
+</li>
+<li>
+<p><code>lst</code> is a polynomial with terms indexed by <code>int</code>.</p>
+</li>
+<li>
+<p><code>rec</code> is a polynomial with terms indexed by <code>obj</code>.</p>
+</li>
+<li>
+<p><code>,</code> is a polynomial term deliminator denoting parallel compose.</p>
+</li>
+<li>
+<p><code>|</code> is a polynomial term deliminator denoting parallel choose.</p>
+</li>
+<li>
+<p><code>;</code> is a polynomial term combinator denoting serial compose.</p>
+</li>
+<li>
+<p><code>-&lt;</code> is sugar for <code>[split]</code> copying the LHS across all polynomial terms.</p>
+</li>
+<li>
+<p><code>&gt;-</code> is sugar for <code>[merge]</code> joining polynomial terms into a single <code>obj</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Rings</div>
@@ -1475,8 +1511,8 @@ mmlang&gt; 3-&lt;[[plus,1];[mult,2]]   <b class="conum">(3)</b>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The two terms of the polynomial <code>[bool&lt;=int[gt,0],bool&lt;=int[gt,10]]</code> are <code>bool</code> types.
-The two terms of <code><a id="gt"></a></code> are <code>_</code> types (anonymous types).
+<p>The two terms of the polynomial <code>[bool&#8656;int[gt,0],bool&#8656;int[gt,10]]</code> are <code>bool</code> types.
+The two terms of <code>[[gt,0],[gt,10]]</code> are <code><em></code> types (_anonymous types</em>).
 A compilation process infers the domain/range of the anonymous types.</p>
 </div>
 <div class="listingblock">
@@ -2294,8 +2330,6 @@ mmlang&gt; [[1,2,3],
 </div>
 <div class="sect2">
 <h3 id="_language_algebras">Language Algebras</h3>
-<div class="sect3">
-<h4 id="_bicartesian_closed_category">Bicartesian Closed Category</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Initial and Terminal Objects</div>
@@ -2329,8 +2363,7 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 </div>
 </div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> has products, coproducts, a product unit, a coproduct unit, exponents, and products distribute over coproducts.
-These features are captured by the following axioms that all BC categories must support.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> supports <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>, <a href="https://en.wikipedia.org/wiki/Coproduct">coproducts</a>, a product unit, a coproduct unit, <a href="https://en.wikipedia.org/wiki/Exponential_object">exponents</a>, and products <a href="https://en.wikipedia.org/wiki/Exponential_object">distribute</a> over coproducts. These features are captured by the following axioms below. If an algebraic system satisfies the axioms, then that system has the requisite expressivity for <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-Complete</a>, general purpose computing.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2383,9 +2416,51 @@ These features are captured by the following axioms that all BC categories must 
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>The mm-ADT VM is a computing machine founded on a non-commutative <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> ring called a <em>stream ring</em>. The practical mental-model that mm-ADT purports is that of streams of data flowing through serial (<code>\*</code>) and parallel (<code>+</code>) structures bound by functions (instructions). Moreover, these streams can be split and merged via the product and coproduct of <em>streams</em> of data whose size and dynamics is regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is ultimately manipulated by <code>mmlang</code>. However, there are to other intervening algebra (at the processor and storage levels) that `mmlang&#8217;s ringoid is ultimately in correspondence with via a <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring action</a> upon, ultimately, a <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Obj Magma</strong> (<em>storage</em>): The set of all <code>objs</code> along with a single, non-associative binary <em>juxtaposition</em> operator.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>\[
+\mathbf{Obj} = \langle \texttt{obj}, \cdot \rangle
+\]</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Inst Monoid</strong> (<em>processor</em>): A nested monoid with an associative, non-commutative binary <em>next</em> operator that corresponds to the processor&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_pipelining">instruction pipeline</a>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>\[
+\mathbf{Inst} = \langle \texttt{inst}, *, 1, 0 \rangle
+\]</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Trace Ringoid</strong> (<em>language</em>): A generalization of the <code>inst</code> monoid that supports the composition of polynomials for the expression of parallel, serial, and parallel branching computational pipelines such that \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving <a href="https://en.wikipedia.org/wiki/Automorphism">automorphism</a> from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a>). The benefit of generalization being greater flexibility in how to express a wide range of common computational patterns.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>\[
+\textbf{Trace} = \langle \texttt{inst} \cup \texttt{poly}, *, +, 1, 0 \rangle
+\]</p>
 </div>
 <div class="sect3">
-<h4 id="_the_inst_monoid">The Inst Monoid</h4>
+<h4 id="_obj_magma">Obj Magma</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_inst_monoid">Inst Monoid</h4>
 <div class="paragraph">
 <p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems.
 The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
@@ -2600,7 +2675,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_type_ringoid">The Type Ringoid</h4>
+<h4 id="_trace_ringoid">Trace Ringoid</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Stream Ring Theory</div>
@@ -2827,7 +2902,7 @@ mmlang&gt; 1((+1;*2),(+1;*3))
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-26 22:49:51 -0600
+Last updated 2020-05-27 00:37:52 -0600
 </div>
 </div>
 </body>
