@@ -580,15 +580,19 @@ mmlang&gt; 1[plus,2]
 <div class="content">
 <pre class="highlight"><code>obj   := (type | value){q}
 type  := ctype | dtype
-ctype := bool | int | real | str | poly
-poly  := lst, inst, rec
-sep   := ; | , | "|"
-q     := int,int
+ctype := bool | int  | real | str | poly | _
+poly  :=  lst | inst | rec
+q     := int,int | int | ? | * | +
 dtype := ctype&lt;=ctype([inst]+)
+sep   := ; | , | "|"
 rec   := [-] | [obj-&gt;obj(&lt;sep&gt;obj-&gt;obj)*]
 lst   := [ ] | [obj(&lt;sep&gt;obj)*]
 inst  := [op(,obj*)]
-op    := a, as, branch, choose, plus, mult, is, ...</code></pre>
+op    := a, add, and, as, combine, count, eq, error, explain, fold, from,
+         get, given, groupCount, gt, gte, head, id, is, last, lt, lte, map,
+         merge, mult, neg, noop, one, or, path, plus, pow, put, q, repeat,
+         split, start, tail, to, trace, type, zero
+sugop := . | &gt; | &lt; | &gt;= | =&lt; | ==</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -596,26 +600,47 @@ op    := a, as, branch, choose, plus, mult, is, ...</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>id(x)                      := x&lt;=x[id]
-domain(y&lt;=x[a])            := x
-range(y&lt;=x[a])             := y
-domain(x)                  := x
-range(x)                   := x
+<pre class="highlight"><code>id(x)                       := x&lt;=x[id]
+domain(y&lt;=x[a])             := x
+range(y&lt;=x[a])              := y
+domain(x)                   := x
+range(x)                    := x
 ;-compose(y&lt;=x[a],z&lt;=y[b])  := z&lt;=x[a][b]
 +-compose(y&lt;=x[a],y&lt;=x[b])  := y&lt;=x[branch,y&lt;=x[a],y&lt;=x[b]]
 |-compose(y&lt;=x[a],z&lt;=x[b])  := y&lt;=x[choose,y&lt;=x[a],z&lt;=x[b]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring).
-In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring.</p>
+<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring). In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring. The <code><em></code> symbol refers to the _anonymous type</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>;-compose(y{q1}&lt;=x[a],z{q2}&lt;=y[b]) := z{q1*q2}&lt;=x[a][b]
 +-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[a]) := y{q1+q2}&lt;=x[a]
 +-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
-|-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{min(q1,q2),max(q1,q2)}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]</code></pre>
+|-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{min(q1,q2),max(q1,q2)}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
+_-compose(typeA,_)                 := typeA
+_-compose(typeA,_[instA][instB])   := instB(instA(typeA))</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[compose,x[id],x[id]]                            := x
+[branch,x[id],x[id]]                             := x{2}
+[choose,x[id],x[id]]                             := x
+[repeat,[obj{?}-&gt;{0},obj{?}-&gt;type,n]]            := type[pow,n]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>domain&lt;=range[op(,arg)*]     := operation or equivalence
+--------------------------------------------------------
+bool&lt;=objA[a,objB]           := objA.test(objB)
+bool&lt;=boolA[and,boolB]       := boolA &amp; boolB
+int&lt;=obj{*}[count]           := obj{*}[q]
+bool&lt;=objA[eq,objB]          := objA == objB
+str&lt;=obj{*}[explain]
+...</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -623,9 +648,9 @@ In the following equations, <code>*</code> and <code>+</code> refer to the respe
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>xxx   yyy      xxx   yyy
-_________      _________
-    zz            zz</code></pre>
+<pre class="highlight"><code>T &lt;: A  A &lt;: B
+--------------
+    T &lt;: B</code></pre>
 </div>
 </div>
 </div>
@@ -635,7 +660,7 @@ _________      _________
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-27 01:59:16 -0600
+Last updated 2020-05-27 02:39:50 -0600
 </div>
 </div>
 </body>
