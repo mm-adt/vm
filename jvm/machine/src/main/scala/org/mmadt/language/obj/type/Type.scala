@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.op.model.ModelOp
-import org.mmadt.language.obj.op.sideeffect.AddOp
 import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageFactory, Tokens}
@@ -33,7 +32,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Type[+T <: Obj] extends Obj
-  with AddOp
   with ModelOp
   with ExplainOp {
   this: T =>
@@ -61,9 +59,6 @@ trait Type[+T <: Obj] extends Obj
     case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && ((this.root && atype.root) || (this.via == atype.via))
     case _ => false
   }
-
-  // obj-level operations TODO: remove
-  override def add[O <: Obj](obj: O): O = asType(obj).asInstanceOf[O].via(this, AddOp(obj))
 }
 
 object Type {

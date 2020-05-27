@@ -33,5 +33,4 @@ trait RealType extends Real
   with Type[Real]
   with ObjType {
   def g: Double = throw LanguageException.typeNoGround(this)
-  def apply(value: RealValue): RealValue = value.named(this.name)
 }

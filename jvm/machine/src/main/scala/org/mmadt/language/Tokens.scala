@@ -44,7 +44,6 @@ object Tokens {
   val inst = "inst"
 
   val a = "a"
-  val add = "add"
   val head = "head"
   val tail = "tail"
   val last = "last"
