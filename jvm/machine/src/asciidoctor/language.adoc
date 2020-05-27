@@ -1164,18 +1164,18 @@ A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_cat
 
 The mm-ADT VM is a computing machine founded on a non-commutative https://en.wikipedia.org/wiki/Polynomial_ring[polynomial] ring called a _stream ring_. The practical mental-model that mm-ADT purports is that of streams of data flowing through serial (`*`) and parallel (`+`) structures bound by functions (instructions). Moreover, these streams can be split and merged via the product and coproduct of _streams_ of data whose size and dynamics are regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is manipulated by `mmlang`. However, there are two other intervening algebras (at the processor and storage levels), where ultimately, the `mmlang` https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] realizes a correspondence by means of a https://en.wikipedia.org/wiki/Module_(mathematics)[ring action] upon a https://en.wikipedia.org/wiki/Magma_%28algebra%29[magma].
 
-* *Obj Magma* (_storage_): The set of all `objs` along with a single, non-associative binary _juxtaposition_ operator.
-
+. *Obj Magma* (_storage_): The set of all `objs` along with a single, non-associative binary _juxtaposition_ operator.
++
 \[
 \mathbf{Obj} = \langle \texttt{obj}, \cdot \rangle
 \]
-
++
 . *Inst Monoid* (_processor_): A nested monoid with an associative, non-commutative binary _next_ operator that corresponds to the processor's https://en.wikipedia.org/wiki/Instruction_pipelining[instruction pipeline].
-
++
 \[
 \mathbf{Inst} = \langle \texttt{inst}, *, 1, 0 \rangle
 \]
-
++
 . *Trace Ringoid* (_language_): A generalization of the `inst` monoid that supports the composition of polynomials for the construction of serial (`*`), parallel (`+`), and parallel choice (`|`) pipelines, where \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving https://en.wikipedia.org/wiki/Automorphism[automorphism] from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self https://en.wikipedia.org/wiki/Embedding[embedding]). This generalization provides greater flexibility for expressing a wider range of common computational patterns.
 
 \[

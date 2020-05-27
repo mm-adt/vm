@@ -24,8 +24,6 @@ include::processor.adoc[]
 
 == Reference Guide
 
-include::mmlang.adoc[]
-
 :leveloffset: +1
 include::instructions.adoc[]
 :leveloffset: -1

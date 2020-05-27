@@ -104,3 +104,82 @@ mmlang> 1+2
 mmlang> 1[plus,2]
 ==>3
 ----
+
+==== mmlang Syntax and Semantics
+
+The https://en.wikipedia.org/wiki/Context-free_grammar[context-free grammar] for `mmlang` is presented below.
+
+[source]
+----
+obj   := (type | value){q}
+type  := ctype | dtype
+ctype := bool | int  | real | str | poly | _
+poly  :=  lst | inst | rec
+q     := int,int | int | ? | * | +
+dtype := ctype<=ctype([inst]+)
+sep   := ; | , | "|"
+rec   := [-] | [obj->obj(<sep>obj->obj)*]
+lst   := [ ] | [obj(<sep>obj)*]
+inst  := [op(,obj*)]
+op    := a, add, and, as, combine, count, eq, error, explain, fold, from,
+         get, given, groupCount, gt, gte, head, id, is, last, lt, lte, map,
+         merge, mult, neg, noop, one, or, path, plus, pow, put, q, repeat,
+         split, start, tail, to, trace, type, zero
+sugop := . | > | < | >= | =< | ==
+----
+
+The following https://en.wikipedia.org/wiki/Axiomatic_semantics[language axioms] have variables `x`, `y`, and `z` in `ctype` and `[a]` and `[b]` in `inst`.
+
+[source]
+----
+id(x)                       := x<=x[id]
+domain(y<=x[a])             := x
+range(y<=x[a])              := y
+domain(x)                   := x
+range(x)                    := x
+;-compose(y<=x[a],z<=y[b])  := z<=x[a][b]
++-compose(y<=x[a],y<=x[b])  := y<=x[branch,y<=x[a],y<=x[b]]
+|-compose(y<=x[a],z<=x[b])  := y<=x[choose,y<=x[a],z<=x[b]
+----
+
+The quantifiers of an `mmlang` program are elements of a ring with unity (the quantifier ring). In the following equations, `*` and `+` refer to the respective monoid and group operations of the program's associated quantifier ring. The `_` symbol refers to the _anonymous type_.
+
+[source]
+----
+;-compose(y{q1}<=x[a],z{q2}<=y[b]) := z{q1*q2}<=x[a][b]
++-compose(y{q1}<=x[a],y{q2}<=x[a]) := y{q1+q2}<=x[a]
++-compose(y{q1}<=x[a],y{q2}<=x[b]) := y{q1+q2}<=x[branch,y{q1}<=x[a],y{q2}<=x[b]]
+|-compose(y{q1}<=x[a],y{q2}<=x[b]) := y{min(q1,q2),max(q1,q2)}<=x[branch,y{q1}<=x[a],y{q2}<=x[b]]
+_-compose(typeA,_)                 := typeA
+_-compose(typeA,_[instA][instB])   := instB(instA(typeA))
+----
+
+[source]
+----
+[compose,x[id],x[id]]                            := x
+[branch,x[id],x[id]]                             := x{2}
+[choose,x[id],x[id]]                             := x
+[repeat,[obj{?}->{0},obj{?}->type,n]]            := type[pow,n]
+----
+
+[source]
+----
+domain<=range[op(,arg)*]     := operation or equivalence
+--------------------------------------------------------
+bool<=objA[a,objB]           := objA.test(objB)
+bool<=boolA[and,boolB]       := boolA & boolB
+int<=obj{*}[count]           := obj{*}[q]
+bool<=objA[eq,objB]          := objA == objB
+str<=obj{*}[explain]
+...
+----
+
+The following inference rules reuse the same variables as the equations above.
+
+[source]
+----
+T <: A  A <: B
+--------------
+    T <: B
+----
+
