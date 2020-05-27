@@ -116,6 +116,8 @@ type  := ctype | dtype
 ctype := bool | int  | real | str | poly | _
 poly  :=  lst | inst | rec
 q     := int,int | int | ? | * | +
+{0}   := _{0,0}
+{1}   := _{1,1}
 dtype := ctype<=ctype([inst]+)
 sep   := ; | , | "|"
 rec   := [-] | [obj->obj(<sep>obj->obj)*]
@@ -140,9 +142,12 @@ range(x)                    := x
 ;-compose(y<=x[a],z<=y[b])  := z<=x[a][b]
 +-compose(y<=x[a],y<=x[b])  := y<=x[branch,y<=x[a],y<=x[b]]
 |-compose(y<=x[a],z<=x[b])  := y<=x[choose,y<=x[a],z<=x[b]
+objA(valueB)                := valueB
+objA(typeB)                 := typeB<=objA
+objA(typeB[instA][instB])   := typeB<=objA[instA][instB]
 ----
 
-The quantifiers of an `mmlang` program are elements of a ring with unity (the quantifier ring). In the following equations, `*` and `+` refer to the respective monoid and group operations of the program's associated quantifier ring. The `_` symbol refers to the _anonymous type_.
+The quantifiers of an `mmlang` program are elements of a ring with unity (the quantifier ring). In the following equations, `*` and `+` refer to the respective monoid and group operations of the program's associated quantifier ring.
 
 [source]
 ----
@@ -150,8 +155,6 @@ The quantifiers of an `mmlang` program are elements of a ring with unity (the qu
 +-compose(y{q1}<=x[a],y{q2}<=x[a]) := y{q1+q2}<=x[a]
 +-compose(y{q1}<=x[a],y{q2}<=x[b]) := y{q1+q2}<=x[branch,y{q1}<=x[a],y{q2}<=x[b]]
 |-compose(y{q1}<=x[a],y{q2}<=x[b]) := y{min(q1,q2),max(q1,q2)}<=x[branch,y{q1}<=x[a],y{q2}<=x[b]]
-_-compose(typeA,_)                 := typeA
-_-compose(typeA,_[instA][instB])   := instB(instA(typeA))
 ----
 
 [source]
@@ -174,12 +177,14 @@ str<=obj{*}[explain]
 ...
 ----
 
-The following inference rules reuse the same variables as the equations above.
+Typing rules, where the `_` symbol refers to the __anonymous type__.
 
 [source]
 ----
-T <: A  A <: B
---------------
-    T <: B
+typeA(_)                           := typeA
+typeA(_[instA][instB])             := instB(instA(typeA)) => typeB<=typeA[instA][instB]
+obj[a,_]                           := true
+typeA[a,typeA]                     := true
+typeA[a,{0}]                       := typeA.q == 0,0
+typeA[a,typeB]                     := typeA(typeB) != {0}
 ----
-
