@@ -2725,7 +2725,7 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT VM is a computing machine founded on a non-commutative <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> ring called a <em>stream ring</em>. The practical mental-model that mm-ADT purports is that of streams of data flowing through serial (<code>\*</code>) and parallel (<code>+</code>) structures bound by functions (instructions). Moreover, these streams can be split and merged via the product and coproduct of <em>streams</em> of data whose size and dynamics is regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is ultimately manipulated by <code>mmlang</code>. However, there are to other intervening algebra (at the processor and storage levels) that `mmlang&#8217;s ringoid is ultimately in correspondence with via a <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring action</a> upon, ultimately, a <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a>.</p>
+<p>The mm-ADT VM is a computing machine founded on a non-commutative <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> ring called a <em>stream ring</em>. The practical mental-model that mm-ADT purports is that of streams of data flowing through serial (<code>*</code>) and parallel (<code>+</code>) structures bound by functions (instructions). Moreover, these streams can be split and merged via the product and coproduct of <em>streams</em> of data whose size and dynamics are regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is manipulated by <code>mmlang</code>. However, there are two other intervening algebras (at the processor and storage levels), where ultimately, the <code>mmlang</code> <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> realizes a correspondence by means of a <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring action</a> upon a <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -2754,13 +2754,13 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Trace Ringoid</strong> (<em>language</em>): A generalization of the <code>inst</code> monoid that supports the composition of polynomials for the expression of parallel, serial, and parallel branching computational pipelines such that \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving <a href="https://en.wikipedia.org/wiki/Automorphism">automorphism</a> from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a>). The benefit of generalization being greater flexibility in how to express a wide range of common computational patterns.</p>
+<p><strong>Trace Ringoid</strong> (<em>language</em>): A generalization of the <code>inst</code> monoid that supports the composition of polynomials for the construction of serial (<code>*</code>), parallel (<code>+</code>), and parallel choice (<code>|</code>) pipelines, where \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving <a href="https://en.wikipedia.org/wiki/Automorphism">automorphism</a> from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a>). This generalization provides greater flexibility for expressing a wider range of common computational patterns.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
 <p>\[
-\textbf{Trace} = \langle \texttt{inst} \cup \texttt{poly}, *, +, 1, 0 \rangle
+\textbf{Trace} = \langle \texttt{inst} \cup \texttt{poly}, *, +, |, 1, 0 \rangle
 \]</p>
 </div>
 <div class="sect3">
