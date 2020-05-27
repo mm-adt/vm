@@ -1764,6 +1764,19 @@ mmlang&gt; 'mar'[plus,'k']{2}[plus,'o']{0}
 mmlang&gt;</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Moreover, a <code>poly</code> can be inspected using standard list instructions. Below demonstrates that the <code>;-poly[merge]</code> (<code>&gt;-</code>) is equivalent to <code>;-poly[last]</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; 'mar'-&lt;[[plus,'k'];[plus,'o']]
+==&gt;['mark';'marko']
+mmlang&gt; 'mar'-&lt;[[plus,'k'];[plus,'o']]&gt;-
+==&gt;'marko'
+mmlang&gt; 'mar'-&lt;[[plus,'k'];[plus,'o']][last]
+==&gt;'marko'</code></pre>
+</div>
+</div>
 </td>
 </tr>
 </table>
@@ -1844,7 +1857,7 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <pre class="highlight"><code>mmlang&gt; ['a','b'][head]
 ==&gt;'a'
 mmlang&gt; [,.][head]
-language error: no head on empty poly</code></pre>
+language error: empty polys do not have heads</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -1859,7 +1872,22 @@ language error: no head on empty poly</code></pre>
 <pre class="highlight"><code>mmlang&gt; ['a','b'][tail]
 ==&gt;['b'.,]
 mmlang&gt; [,.][tail]
-language error: no tail on empty poly</code></pre>
+language error: empty polys do not have tails</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[last]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the last term of the polynomial</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; ['a','b'][last]
+==&gt;'b'
+mmlang&gt; [,.][last]
+language error: empty polys do not have lasts</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2081,9 +2109,9 @@ A <code>lst</code> is analogous to a <a href="https://en.wikipedia.org/wiki/List
 <p>Labeling <code>poly</code> indices.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['marko',29]                      <b class="conum">(1)</b>
+<pre class="highlight"><code>mmlang&gt; ['marko',29]
 ==&gt;['marko',29]
-mmlang&gt; ['marko',29].0
+mmlang&gt; ['marko',29].0                    <b class="conum">(1)</b>
 ==&gt;'marko'
 mmlang&gt; ['marko',29].1
 ==&gt;29
@@ -2799,7 +2827,7 @@ mmlang&gt; 1((+1;*2),(+1;*3))
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-26 11:07:28 -0600
+Last updated 2020-05-26 22:49:51 -0600
 </div>
 </div>
 </body>

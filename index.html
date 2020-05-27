@@ -2066,6 +2066,19 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 mmlang&gt;</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Moreover, a <code>poly</code> can be inspected using standard list instructions. Below demonstrates that the <code>;-poly[merge]</code> (<code>&gt;-</code>) is equivalent to <code>;-poly[last]</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>-&lt;[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>];[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]]
+==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mark</span><span style="color:#710">'</span></span>;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>]
+mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>-&lt;[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>];[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]]&gt;-
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
+mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>-&lt;[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>];[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]][last]
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span></code></pre>
+</div>
+</div>
 </td>
 </tr>
 </table>
@@ -2146,7 +2159,7 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>][head]
 ==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
 mmlang&gt; [,.][head]
-language error: no head on empty poly</code></pre>
+language error: empty polys do <span style="color:#080;font-weight:bold">not</span> have heads</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2161,7 +2174,22 @@ language error: no head on empty poly</code></pre>
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>][tail]
 ==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>.,]
 mmlang&gt; [,.][tail]
-language error: no tail on empty poly</code></pre>
+language error: empty polys do <span style="color:#080;font-weight:bold">not</span> have tails</code></pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[last]</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the last term of the polynomial</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>][last]
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>
+mmlang&gt; [,.][last]
+language error: empty polys do <span style="color:#080;font-weight:bold">not</span> have lasts</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2383,9 +2411,9 @@ A <code>lst</code> is analogous to a <a href="https://en.wikipedia.org/wiki/List
 <p>Labeling <code>poly</code> indices.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]                      <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]
 ==&gt;[<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]
-mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]<span style="color:#60E">.0</span>
+mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]<span style="color:#60E">.0</span>                    <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
 mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>]<span style="color:#60E">.1</span>
 ==&gt;<span style="color:#00D">29</span>

@@ -16,6 +16,7 @@ $(document).ready(function(){
   $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;" + bcolor)
   // END: general random tweaks to convert python highlighting to mmlang
   var rewrites = {"op":      ["[",  "["+ospan + "#080" +bold + cspan],      // bold green
+                  "tokens":  ["",       ospan + "#000" +bold + cspan],      // bold green
                   "infix":   ["",       ospan + "#080" +bold + cspan],      // bold green
                   "value":   ["",       ospan + "#00D" + cspan],            // light blue
                   "type":    ["",       ospan + "#369" + bold + cspan],     // dark blue
@@ -23,8 +24,9 @@ $(document).ready(function(){
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
   var items =    {"op":      ["a","compose","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map",
-                              "split","merge","head","tail","div","minus","choose","put"],
-                  "infix":   ["|","&&",","],
+                              "split","merge","last","head","tail","div","minus","choose","put"],
+                  "tokens":  ["{","}"],
+                  "infix":   ["|","&&",",","+","*"],
                   "value":   ["true","false"],
                   "type":    ["_","real","rec","lst","tvpoly","vpoly","tpoly","poly","inst",
                               "obj","int","str","bool","range","domain"],
