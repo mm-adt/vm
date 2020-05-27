@@ -1127,8 +1127,6 @@ mmlang> [[1,2,3],
 
 === Language Algebras
 
-==== Bicartesian Closed Category
-
 .Initial and Terminal Objects
 ****
 image::initial.png[width=130,float=left]
@@ -1149,8 +1147,7 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 &nbsp;
 ****
 
-A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories[bicartesian closed category] has products, coproducts, a product unit, a coproduct unit, exponents, and products distribute over coproducts.
-These features are captured by the following axioms that all BC categories must support.
+A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories[bicartesian closed category] supports https://en.wikipedia.org/wiki/Product_(category_theory)[products], https://en.wikipedia.org/wiki/Coproduct[coproducts], a product unit, a coproduct unit, https://en.wikipedia.org/wiki/Exponential_object[exponents], and products https://en.wikipedia.org/wiki/Exponential_object[distribute] over coproducts. These features are captured by the following axioms below. If an algebraic system satisfies the axioms, then that system has the requisite expressivity for https://en.wikipedia.org/wiki/Turing_completeness[Turing-Complete], general purpose computing.
 
 [cols="2,3,4"]
 |===
@@ -1165,7 +1162,29 @@ These features are captured by the following axioms that all BC categories must 
 | \$c^ {b^a} = c^{a \ast b}\$                  | `(a;b;c) = ((a;b);c)`                | currying
 |===
 
-==== The Inst Monoid
+The mm-ADT VM is a computing machine founded on a non-commutative https://en.wikipedia.org/wiki/Polynomial_ring[polynomial] ring called a _stream ring_. The practical mental-model that mm-ADT purports is that of streams of data flowing through serial (`\*`) and parallel (`+`) structures bound by functions (instructions). Moreover, these streams can be split and merged via the product and coproduct of _streams_ of data whose size and dynamics is regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is ultimately manipulated by `mmlang`. However, there are to other intervening algebra (at the processor and storage levels) that `mmlang`'s ringoid is ultimately in correspondence with via a https://en.wikipedia.org/wiki/Module_(mathematics)[ring action] upon, ultimately, a https://en.wikipedia.org/wiki/Magma_%28algebra%29[magma].
+
+* *Obj Magma* (_storage_): The set of all `objs` along with a single, non-associative binary _juxtaposition_ operator.
+
+\[
+\mathbf{Obj} = \langle \texttt{obj}, \cdot \rangle
+\]
+
+. *Inst Monoid* (_processor_): A nested monoid with an associative, non-commutative binary _next_ operator that corresponds to the processor's https://en.wikipedia.org/wiki/Instruction_pipelining[instruction pipeline].
+
+\[
+\mathbf{Inst} = \langle \texttt{inst}, *, 1, 0 \rangle
+\]
+
+. *Trace Ringoid* (_language_): A generalization of the `inst` monoid that supports the composition of polynomials for the expression of parallel, serial, and parallel branching computational pipelines such that \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving https://en.wikipedia.org/wiki/Automorphism[automorphism] from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self https://en.wikipedia.org/wiki/Embedding[embedding]). The benefit of generalization being greater flexibility in how to express a wide range of common computational patterns.
+
+\[
+\textbf{Trace} = \langle \texttt{inst} \cup \texttt{poly}, *, +, 1, 0 \rangle
+\]
+
+==== Obj Magma
+
+==== Inst Monoid
 
 mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems.
 The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_ **inst monoid** \[
@@ -1317,7 +1336,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 
 image::ring-homomorphisms.png[align=center,width=320]
 
-==== The Type Ringoid
+==== Trace Ringoid
 
 .Stream Ring Theory
 ****
