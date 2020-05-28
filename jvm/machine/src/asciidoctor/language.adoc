@@ -328,7 +328,7 @@ The default quantifier ring of the mm-ADT VM is
 \]
 where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`. Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`. Thus, `int` is `int{1}`  is `int{1,1}`.
 
-One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal object]. While `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic, typically, throughout the documentation, both will be referred to simply as `obj{0}` (the *zero object*).
+One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal object]. Because types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic, typically, throughout the documentation, both will be referred to simply as `obj{0}` (the *zero object*).
 
 ==== Type Compilation
 
