@@ -922,7 +922,7 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>A <em>stream</em> of <code>'a'</code>,<code>'b'</code>, and <code>'a'</code> <code>str</code> values.</td>
+<td>A type containing <code>'a'</code>,<code>'b'</code>, and <code>'a'</code> <code>str</code> values.</td>
 </tr>
 </table>
 </div>
@@ -1146,6 +1146,45 @@ In terms of the "<em>range = domain and function</em>" reading, when <code>int</
 <p>The diagram above is a representation of a structure that is important across numerous processes in mm-ADT including type checking, type inference, compiler optimization, garbage collection, and more.
 It has a name.
 It&#8217;s called the program&#8217;s <strong>type graph</strong>.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Deep Dive 1. mm-ADT Types are Graphs and their Values are Paths</div>
+<div class="content">
+<div class="paragraph">
+<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT
+<br></p>
+</div>
+<div class="paragraph">
+<p><code>int[is&gt;0]</code></p>
+</div>
+<div class="paragraph">
+<p>would be considered a reasonable  type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$p:\mathbb{N} \rightarrow \mathbb{B}\$). Every base type extended with predicate(s) is either equivalent to or a subset of the base ctype. On the other hand, the type
+<br></p>
+</div>
+<div class="paragraph">
+<p><code>int[plus,1]</code></p>
+</div>
+<div class="paragraph">
+<p>would be considered an unreasonable type as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>.</p>
+</div>
+<div class="paragraph">
+<p>An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as specified by its instructions) maps the <code>obj</code> to some <code>obj</code> not equivalent to <code>obj{0}</code> (the terminal). That is, if the type&#8217;s function is well defined for that <code>obj</code>, then that <code>obj</code> is of that type. If
+\[
+f: A \rightarrow B
+\]
+is the function of type <code>B&lt;=A[f]</code>, then
+\[
+f(a) =
+\begin{cases}
+b\{*\} &amp; \text{if $a$ is the type},  \\
+b\{ 0\} &amp; \text{otherwise.}
+\end{cases}
+\]</p>
+</div>
+<div class="paragraph">
+<p>An mm-ADT type denotes a <strong>type graph</strong> and only those <code>objs</code> that realize paths within that graph are considered of that type.</p>
+</div>
+</div>
 </div>
 <div class="imageblock right">
 <div class="content">
@@ -1563,7 +1602,7 @@ mmlang&gt;</code></pre>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
 <div class="exampleblock">
-<div class="title">Deep Dive 1. Section Language Constructs</div>
+<div class="title">Deep Dive 2. Section Language Constructs</div>
 <div class="content">
 <div class="olist arabic">
 <ol class="arabic">
