@@ -788,24 +788,21 @@ It&#8217;s called the program&#8217;s <strong>type graph</strong>.</p>
 <div class="title">Example 1. mm-ADT Types are Graphs and their Values Realize Paths</div>
 <div class="content">
 <div class="paragraph">
-<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT
+<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type
 <br></p>
 </div>
 <div class="paragraph">
 <p><code>int[is&gt;0]</code></p>
 </div>
 <div class="paragraph">
-<p>would be considered a reasonable  type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$p:\mathbb{N} \rightarrow \mathbb{B}\$). Every base type extended with predicate(s) is either equivalent to or a subset of the base ctype. On the other hand, the type
+<p>would be considered a reasonable type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$p:\mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type
 <br></p>
 </div>
 <div class="paragraph">
 <p><code>int[plus,1]</code></p>
 </div>
 <div class="paragraph">
-<p>would be considered an unreasonable type as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>.</p>
-</div>
-<div class="paragraph">
-<p>An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as specified by its instructions) maps the <code>obj</code> to some <code>obj</code> not equivalent to <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal</a>). That is, if the type&#8217;s function is well-defined for that <code>obj</code>, then that <code>obj</code> is of that type. If
+<p>would be considered unreasonable as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>. An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as algorithmically defined by its instructions) <em>does not</em> map the <code>obj</code> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal</a> <code>obj{0}</code>. If
 \[
 f: A \rightarrow B
 \]
@@ -813,13 +810,13 @@ is the function of type <code>B&lt;=A[f]</code>, then
 \[
 f(a) =
 \begin{cases}
-b\{*\} &amp; \text{if $a$ is the type},  \\
+b\{*\} &amp; \text{if $a$ is a value of the type},  \\
 b\{ 0\} &amp; \text{otherwise.}
 \end{cases}
 \]</p>
 </div>
 <div class="paragraph">
-<p>An mm-ADT type denotes a <strong>type graph</strong> and only those <code>objs</code> that realize paths within that graph are considered of that type.</p>
+<p>An mm-ADT type denotes a <strong>type graph</strong> and it&#8217;s values are only those <code>objs</code> that realize a path in that graph.</p>
 </div>
 </div>
 </div>
@@ -2933,7 +2930,7 @@ mmlang&gt; 1((+1;*2),(+1;*3))
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-28 01:21:57 -0600
+Last updated 2020-05-28 01:29:01 -0600
 </div>
 </div>
 </body>
