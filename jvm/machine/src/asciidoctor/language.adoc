@@ -196,7 +196,7 @@ would be considered a reasonable  type -- it is the set of integers greater than
 
 would be considered an unreasonable type as it is a transformation function, not a https://en.wikipedia.org/wiki/Indicator_function[characteristic function]. However, in mm-ADT, _both are types_.
 
-An `obj` is a member of a particular type if and only if the type's function (as specified by its instructions) maps the `obj` to some `obj` not equivalent to `obj{0}` (the terminal). That is, if the type's function is well defined for that `obj`, then that `obj` is of that type. If
+An `obj` is a member of a particular type if and only if the type's function (as specified by its instructions) maps the `obj` to some `obj` not equivalent to `obj{0}` (the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal]). That is, if the type's function is well-defined for that `obj`, then that `obj` is of that type. If
 \[
 f: A \rightarrow B
 \]
