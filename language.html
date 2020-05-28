@@ -896,14 +896,6 @@ mmlang&gt; int{0,5}&lt;=int{0,5}
 </div>
 <div class="sect4">
 <h5 id="_type_definition">Type Definition</h5>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Monoids</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.</p>
-</div>
-</div>
-</div>
 <div class="paragraph">
 <p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>. For a type, this history is called the <strong>type definition</strong> (and more generally, the <strong>type&#8217;s trace</strong>) and is a subgraph of a larger <strong>type graph</strong>.</p>
 </div>
@@ -940,6 +932,38 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 </div>
 <div class="sect4">
 <h5 id="_type_quantification">Type Quantification</h5>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Initial and Terminal Objects</div>
+<div class="imageblock left">
+<div class="content">
+<img src="./images/language/initial.png" alt="initial" width="130">
+</div>
+</div>
+<div class="paragraph">
+<p>A category may have an <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial and/or terminal</a> object.</p>
+</div>
+<div class="paragraph">
+<p>An <strong>initial object</strong> \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
+Initial objects, via their morphisms, generate all the objects of the category.
+If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity.
+Thus, besides labels, two initials are isomorphic.</p>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/terminal.png" alt="terminal" width="130">
+</div>
+</div>
+<div class="paragraph">
+<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
+Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
+Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
+</div>
+<div class="paragraph">
+<p>&nbsp;</p>
+</div>
+</div>
+</div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
 <caption class="title">Table 2. Quantifier Symbols in mmlang</caption>
 <colgroup>
@@ -1119,6 +1143,14 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_mono_types">Mono Types</h4>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Monoids</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.</p>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>An mm-ADT <code>mono</code> is the set of all atomic types.</p>
 </div>
@@ -2342,38 +2374,6 @@ mmlang&gt; [[1,2,3],
 </div>
 <div class="sect2">
 <h3 id="_language_algebras">Language Algebras</h3>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Initial and Terminal Objects</div>
-<div class="imageblock left">
-<div class="content">
-<img src="./images/language/initial.png" alt="initial" width="130">
-</div>
-</div>
-<div class="paragraph">
-<p>A category may have an <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial and/or terminal</a> object.</p>
-</div>
-<div class="paragraph">
-<p>An <strong>initial object</strong> \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
-Initial objects, via their morphisms, generate all the objects of the category.
-If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity.
-Thus, besides labels, two initials are isomorphic.</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/terminal.png" alt="terminal" width="130">
-</div>
-</div>
-<div class="paragraph">
-<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
-Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
-Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
-</div>
-<div class="paragraph">
-<p>&nbsp;</p>
-</div>
-</div>
-</div>
 <div class="paragraph">
 <p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> supports <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>, <a href="https://en.wikipedia.org/wiki/Coproduct">coproducts</a>, a product unit, a coproduct unit, <a href="https://en.wikipedia.org/wiki/Exponential_object">exponents</a>, and products <a href="https://en.wikipedia.org/wiki/Exponential_object">distribute</a> over coproducts. These features are captured by the following axioms below. If an algebraic system satisfies the axioms, then that system has the requisite expressivity for <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-Complete</a>, general purpose computing.</p>
 </div>
@@ -2906,7 +2906,7 @@ mmlang&gt; 1((+1;*2),(+1;*3))
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-28 14:46:42 -0600
+Last updated 2020-05-28 14:49:31 -0600
 </div>
 </div>
 </body>
