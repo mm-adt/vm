@@ -879,8 +879,7 @@ Within the VM and outside the referential purview of an interfacing language, ev
 </div>
 </div>
 <div class="paragraph">
-<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">algebraic ring</a>.
-The ring axioms specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over coproducts.
+<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">algebraic ring</a>. The ring axioms specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over coproducts.
 Thus, the previous formula can be rewritten as \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
@@ -1056,30 +1055,20 @@ The table below presents a collection of the more interesting conceptual blurs t
 \]</p>
 </div>
 <div class="paragraph">
-<p>This definition specifies no internal structure to a type or value.
-If this definition was complete, then types and values would be isomorphic and thus, indistinguishable.
-This is not the case.
-Types are defined in terms of other types.
-Values are not. mm-ADT types are a coproduct, where every type is either a</p>
+<p>That equation is not an <a href="https://en.wikipedia.org/wiki/Axiom">axiom</a>, but a <a href="https://en.wikipedia.org/wiki/Theorem">theorem</a>. Its truth can be deduced from the equations of the full <a href="https://en.wikipedia.org/wiki/Axiomatic_system">axiomatization</a> of <code>obj</code>. In particular, for types, they are defined relative to other types. Types are a coproduct of either a</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>canonical type</strong> (ctype): a base/fundamental type, or a</p>
+<p><strong>canonical type</strong> (ctype): a <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base/fundamental</a> type, or a</p>
 </li>
 <li>
-<p><strong>derived type</strong> (dtype): a product of a type and an instruction (<code>inst</code>).</p>
+<p><strong>derived type</strong> (dtype): a product of a type and an <a href="https://en.wikipedia.org/wiki/Machine_code">instruction</a> (<code>inst</code>).</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>The ctypes are <a href="https://en.wikipedia.org/wiki/Nominal_type_system">nominal types</a>.
-There are five ctypes:</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/type-product.png" alt="type product" width="295">
-</div>
+<p>The ctypes are <a href="https://en.wikipedia.org/wiki/Nominal_type_system">nominal types</a>. There are five ctypes:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1100,10 +1089,13 @@ There are five ctypes:</p>
 </li>
 </ol>
 </div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/type-product.png" alt="type product" width="295">
+</div>
+</div>
 <div class="paragraph">
-<p>The dtypes are <a href="https://en.wikipedia.org/wiki/Structural_type_system">structural types</a> whose <a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive definition</a> is ultimately based at a ctype via a chain of instructions (<code>inst</code>) that operate on types to yield types.
-The path back to a type&#8217;s base ctype is called the type&#8217;s <strong>trace</strong>.
-Formally, the type coproduct is defined as</p>
+<p>The dtypes are <a href="https://en.wikipedia.org/wiki/Structural_type_system">structural types</a> whose <a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive definition</a>'s base case is a ctype realized via a chain of instructions (<code>inst</code>) that operate on types to yield types. The path back to a type&#8217;s base ctype is called the type&#8217;s <strong>trace</strong>. Formally, the type coproduct is defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1115,16 +1107,14 @@ Formally, the type coproduct is defined as</p>
 <p>where each component of the coproduct also has a respective quantifier as previously defined for all <code>objs</code>.</p>
 </div>
 <div class="paragraph">
-<p>A dtype has two \$pi\$-projections.
-The type projection denotes the <em>domain</em> and the instruction projection denotes the <em>function</em>, where the type product as a whole, relative to the component projections, is the <em>range</em>.
+<p>A dtype has two \$pi\$-projections. The type projection denotes the <a href="https://en.wikipedia.org/wiki/Domain_of_a_function">domain</a> and the instruction projection denotes the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">function</a>, where the type product as a whole, relative to the component projections, is the <a href="https://en.wikipedia.org/wiki/Range_of_a_function">range</a>.
 \[
 \begin{split}
 \tt{type} &amp;=\;&amp; (\tt{type} &amp;\;\times\;&amp; \tt{inst}) &amp;\;+\;&amp; \tt{ctype} \\ \text{“range} &amp;=\;&amp; (\text{domain} &amp;\;\text{and}\;&amp; \text{function}) &amp;\;\text{or}\;&amp; \text{base"} \end{split}
 \]</p>
 </div>
 <div class="paragraph">
-<p>The implication of the dtype product is that mm-ADT types are generated <a href="https://en.wikipedia.org/wiki/Inductive_type">inductively</a> by applying instructions from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>).
-The application of an <code>inst</code> to a type (ctype or dtype) yields a dtype that is a structural expansion of the previous type.</p>
+<p>The implication of the dtype product is that mm-ADT types are generated <a href="https://en.wikipedia.org/wiki/Inductive_type">inductively</a> by applying instructions from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>). The application of an <code>inst</code> to a type (ctype or dtype) yields a dtype that is a structural expansion of the previous type.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -1132,10 +1122,8 @@ The application of an <code>inst</code> to a type (ctype or dtype) yields a dtyp
 </div>
 </div>
 <div class="paragraph">
-<p>For example, <code>int</code> is a ctype denoting a single <code>int</code> value from the set of all integers.
-When the instruction <code>[is&gt;0]</code> is applied to <code>int</code>, the dtype <code>int[is&gt;0]</code> is formed.
-This dtype is a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement type</a> that restricts <code>int</code> to only those <code>int</code> values greater than zero&#8201;&#8212;&#8201;i.e., a natural number \$\mathbb{N}^+\$.
-In terms of the "<em>range = domain and function</em>" reading, when <code>int</code> (<strong>domain</strong>) is applied to <code>[is&gt;0]</code> (<strong>function</strong>), the result is an <code>int</code> greater than zero (<strong>range</strong>).</p>
+<p>For example, <code>int</code> is a ctype denoting a single <code>int</code> value from the set of all integers. When the instruction <code>[is&gt;0]</code> is applied to <code>int</code>, the dtype <code>int[is&gt;0]</code> is formed. This dtype is a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement type</a> that restricts <code>int</code> to only those <code>int</code> values greater than zero&#8201;&#8212;&#8201;i.e., a natural number \$\mathbb{N}^+\$.
+In terms of the "<em>range = domain and function</em>" reading, when an <code>int</code> (<strong>domain</strong>) is applied to <code>[is&gt;0]</code> (<strong>function</strong>), the result is an <code>int</code> greater than zero (<strong>range</strong>).</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -1143,61 +1131,25 @@ In terms of the "<em>range = domain and function</em>" reading, when <code>int</
 </div>
 </div>
 <div class="paragraph">
-<p>The diagram above is a representation of a structure that is important across numerous processes in mm-ADT including type checking, type inference, compiler optimization, garbage collection, and more.
-It has a name.
-It&#8217;s called the program&#8217;s <strong>type graph</strong>.</p>
+<p>The diagram above is an instance of a structure that is core to various aspects of mm-ADT including type checking, type inference, compiler optimization, garbage collection, and more. It has a name. It&#8217;s called a <strong>type graph</strong>.</p>
 </div>
-<div class="exampleblock">
-<div class="title">Deep Dive 1. mm-ADT Types are Graphs and their Values Realize Paths</div>
-<div class="content">
-<div class="paragraph">
-<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type
-<br></p>
-</div>
-<div class="paragraph">
-<p><code>int[is&gt;0]</code></p>
-</div>
-<div class="paragraph">
-<p>would be considered a reasonable type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$p:\mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type
-<br></p>
-</div>
-<div class="paragraph">
-<p><code>int[plus,1]</code></p>
-</div>
-<div class="paragraph">
-<p>would be considered unreasonable as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>. An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as algorithmically defined by its instructions) <em>does not</em> map the <code>obj</code> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal</a> <code>obj{0}</code>. If
-\[
-f: A \rightarrow B
-\]
-is the function of type <code>B&lt;=A[f]</code>, then
-\[
-f(a) =
-\begin{cases}
-b\{*\} &amp; \text{if $a$ is a value of the type},  \\
-b\{ 0\} &amp; \text{otherwise.}
-\end{cases}
-\]</p>
-</div>
-<div class="paragraph">
-<p>An mm-ADT type denotes a <strong>type graph</strong> and it&#8217;s values are only those <code>objs</code> that realize a path in that graph.</p>
-</div>
-</div>
-</div>
+<div class="sect3">
+<h4 id="_type_structure">Type Structure</h4>
 <div class="imageblock right">
 <div class="content">
 <img src="./images/language/obj-full.png" alt="obj full" width="320">
 </div>
 </div>
 <div class="paragraph">
-<p>The full <code>obj</code> structure thus far is diagrammed on the right and some type construction examples are presented in <code>mmlang</code> on the left.</p>
+<p>The full <code>obj</code> structure thus far is diagrammed on the right and some type examples are presented in <code>mmlang</code> on the left.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>                                      <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>                                    <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}                                   <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}                                 <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                             <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                           <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[gt,<span style="color:#00D">0</span>]]</code></pre>
 </div>
 </div>
@@ -1213,12 +1165,12 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A dtype denoting a stream of zero, one, or two integers.</td>
+<td>A dtype denoting a zero, one, or two integers.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The salient features of a type are captured in the psuedo-<code>mmlang</code> expression below, where the three projections are conviently understood as encoding a type&#8217;s</p>
+<p>The salient features of a type are captured in the psuedo-<code>mmlang</code> expression below, where the three projections encode a type&#8217;s</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1226,7 +1178,7 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 <p><strong>Type signature</strong>: the ctype specification of a type&#8217;s domain and range (via the \$ \pi_\tt{domai\n} \$ and \$ \pi_\tt{rang\e} \$ projections), and</p>
 </li>
 <li>
-<p><strong>Type definition</strong>: an instruction tree specifying domain <code>obj</code> processes (via the \$ \pi_\tt{i\nsts} \$ projection).</p>
+<p><strong>Type definition</strong>: an instruction sequence specifying domain <code>obj</code> processes (via the \$ \pi_\tt{i\nsts} \$ projection).</p>
 </li>
 </ol>
 </div>
@@ -1235,25 +1187,19 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 <img src="./images/language/type-signature-definition.png" alt="type signature definition" width="650">
 </div>
 </div>
-<div class="sect3">
-<h4 id="_type_structure">Type Structure</h4>
 <div class="sect4">
 <h5 id="_type_signature">Type Signature</h5>
 <div class="paragraph">
-<p>Every mm-ADT type can be generally understood as a function that maps an <code>obj</code> of one type to an <code>obj</code> of another type.
-A <strong>type signature</strong> specifies the source and target of this mapping, where the <em>domain</em> is the source type and the <em>range</em> is the target type.
-Both the domain and range type specifications include a respective quantifier denoted <code>{q}</code> in <code>mmlang</code>.
+<p>Every mm-ADT type can be generally understood as a function that maps an <code>obj</code> of one type to an <code>obj</code> of another type. A <strong>type signature</strong> specifies the source and target of this mapping, where the <em>domain</em> is the source type and the <em>range</em> is the target type. Both the domain and range type specifications include a respective quantifier denoted <code>{q}</code> in <code>mmlang</code>.
 The general pattern of a type signature is</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">range</span>{q}&lt;=domain{q}</code></pre>
-</div>
+<div class="paragraph">
+<p><code>range{q}&lt;=domain{q}</code></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
+<col style="width: 37.5%;">
+<col style="width: 62.5%;">
 </colgroup>
 <thead>
 <tr>
@@ -1269,7 +1215,9 @@ The general pattern of a type signature is</p>
 ==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">In most programming languages, a value can be typed <code>int</code> as in <code>val x:int = 10</code>. Such <a href="https://en.wikipedia.org/wiki/Declaration_(computer_programming)">declarations</a> state that the value referred to by <code>x</code> is a <em>single</em> element within the set of integers. The concept of a "single element" is captured in mm-ADT by the <code>obj</code> quantifier, where a <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unit</a> quantifier is not displayed in <code>mmlang</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">In most programming languages, a value can be typed <code>int</code> as in</p>
+<p class="tableblock"><code>val x:int = 10</code>.</p>
+<p class="tableblock">Such <a href="https://en.wikipedia.org/wiki/Declaration_(computer_programming)">declarations</a> state that the value referred to by <code>x</code> is a <em>single</em> element within the set of integers. The concept of a "single element" is captured in mm-ADT by the <code>obj</code> quantifier, where a <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unit</a> quantifier is not displayed in <code>mmlang</code>. That is, <code>int{1}</code> is more concisely displayed as <code>int</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -1278,16 +1226,16 @@ The general pattern of a type signature is</p>
 ==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">From the perspective of type-as-function, An mm-ADT <code>int</code> is a <a href="https://en.wikipedia.org/wiki/NOP_(code)">no-op</a> on the set of integers. Given any integer, <code>int</code> returns that integer. In <code>mmlang</code>, when the domain and range are the same, the <code>&lt;=</code> and repeated type are not displayed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">From the perspective of "type-as-function," An mm-ADT <code>int</code> is a <a href="https://en.wikipedia.org/wiki/NOP_(code)">no-op</a> on the set of integers. Given any integer, <code>int</code> returns that integer. In <code>mmlang</code>, when the domain and range are the same, the <code>&lt;=</code> and repeated type are not displayed. That is <code>int&lt;=int</code> is more concisely displayed as <code>int</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>
-error: <span style="color:#369;font-weight:bold">bool</span> <span style="color:#080;font-weight:bold">is</span> <span style="color:#080;font-weight:bold">not</span> an <span style="color:#369;font-weight:bold">int</span></code></pre>
+language error: <span style="color:#369;font-weight:bold">bool</span> <span style="color:#080;font-weight:bold">is</span> <span style="color:#080;font-weight:bold">not</span> an <span style="color:#369;font-weight:bold">int</span></code></pre>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type&#8217;s that are fully specified by their type signature are always canonical types. Without any instructions, there is no way that this (meaningless) type can map a <code>bool</code> to an <code>int</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type&#8217;s that are fully specified by their type signature are always canonical types. Therefore, <code>bool&lt;=int</code> is meaningless as there are no instructions to map an <code>int</code> to a <code>bool</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -1296,7 +1244,7 @@ error: <span style="color:#369;font-weight:bold">bool</span> <span style="color:
 ==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}</code></pre>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int{5}</code> is a type referring to 5 integers (with repeats possible according to stream semantics). As a point of comparison, <code>int</code> denotes a stream containing a single integer. This is why <code>int</code> is syntactic sugar for <code>int{1}</code> in <code>mmlang</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int{5}</code> is a type referring to 5 integers. As a point of comparison, <code>int</code> refers to a single integer. This is why <code>int</code> is syntactic sugar for <code>int{1}</code> in <code>mmlang</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -1323,13 +1271,7 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 </div>
 </div>
 <div class="paragraph">
-<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM).
-The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>).
-The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>.
-When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>.
-When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground.
-Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>.
-For a type, this history is called the <strong>type definition</strong> (and more generally, the <strong>type&#8217;s trace</strong>).</p>
+<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>. For a type, this history is called the <strong>type definition</strong> (and more generally, the <strong>type&#8217;s trace</strong>) and is a subgraph of a larger <strong>type graph</strong>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1338,7 +1280,7 @@ For a type, this history is called the <strong>type definition</strong> (and mor
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In practice, the string representation of a value is it&#8217;s ground and the string representation of a type is it&#8217;s trace.
+In practice, the string representation of a value is its <em>ground</em> and the string representation of a type is its <em>trace</em>.
 </td>
 </tr>
 </table>
@@ -1348,11 +1290,18 @@ In practice, the string representation of a value is it&#8217;s ground and the s
 <img src="./images/language/type-value-trace.png" alt="type value trace" width="550">
 </div>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">2</span>[plus,<span style="color:#00D">4</span>][<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]
+==&gt;<span style="color:#00D">6</span>
+mmlang&gt; <span style="color:#00D">2</span>[plus,<span style="color:#00D">4</span>][<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>][trace]
+==&gt;[<span style="color:#00D">2</span>;[plus,<span style="color:#00D">4</span>];<span style="color:#00D">6</span>;[<span style="color:#080;font-weight:bold">is</span>,true]]
+mmlang&gt; <span style="color:#00D">2</span>[plus,<span style="color:#00D">4</span>][<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>][<span style="color:#369;font-weight:bold">type</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">4</span>][<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>Both types and values exist in a larger graph called the <strong>obj trace graph</strong>.
-In theory, the complete history of an mm-ADT program from compilation to execution is stored in this graph.
-However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that will no longer be needed by mm-ADT program.
-This process is called <strong>trace removal</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
+<p>Both types and values exist in a larger graph called the <strong>obj graph</strong> for which a type&#8217;s type graph is a component. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that are no longer required by the program. This process is called <strong>trace retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -1415,9 +1364,7 @@ This process is called <strong>trace removal</strong> and is the mm-ADT equivale
 </tbody>
 </table>
 <div class="paragraph">
-<p>In order to quantify the <em>amount</em> of values denoted by a type, every mm-ADT type has an associated quantifier <code>q</code>.
-Quantifiers are typically integers, but can be any element from an ordered algebraic ring (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, unitary matrices, etc.).
-Moreover, while integer quantifiers signify "amount," other quantifiers such as unitary matrices used to represent a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description.</p>
+<p>In order to quantify the <em>amount</em> of values denoted by a type, every mm-ADT type has an associated quantifier <code>q</code>. Quantifiers are typically integers, but can be any element from an ordered algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, unitary matrices, etc.). While integer quantifiers signify "amount," other quantifiers such as <a href="https://en.wikipedia.org/wiki/Unitary_matrix">unitary matrices</a> used in the representation of a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description.</p>
 </div>
 <div class="paragraph">
 <p>Common programming concepts that are usually captured by typeclasses or functors (via <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifting</a>) are expressed in mm-ADT via quantification.</p>
@@ -1431,27 +1378,56 @@ Moreover, while integer quantifiers signify "amount," other quantifiers such as 
 <span style="color:#369;font-weight:bold">int</span>{*}&lt;=[=db][get,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">people</span><span style="color:#710">'</span></span>]       // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> more ints (<span style="color:#369;font-weight:bold">any</span>)</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The default quantifier ring of the mm-ADT VM is \[
-\langle \mathbb{N}^+ \times \mathbb{N}^+, \ast, + \rangle, \]
-where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity.
-The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively.
-In <code>mmlang</code> if an <code>obj</code> quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or <code>{1,1}</code>.
-Moreover, if a single value is provided, it is assumed to be repeated where <code>{n}</code> is shorthand for <code>{n,n}</code>.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>The default quantifier ring of the mm-ADT VM is
+\[
+\langle \mathbb{N}^+ \times \mathbb{N}^+, \ast, + \rangle,
+\]
+where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In <code>mmlang</code> if an <code>obj</code> quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or <code>{1,1}</code>. Moreover, if a single value is provided, it is assumed to be repeated where <code>{n}</code> is shorthand for <code>{n,n}</code>. Thus, <code>int</code> is <code>int{1}</code>  is <code>int{1,1}</code>.</p>
+</div>
+<div class="paragraph">
+<p>One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>&#8201;&#8212;&#8201;<code>{0}</code>. All <code>objs</code> quantified with the respective quantifier ring&#8217;s annihilator are <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal object</a>. While <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;0]</code> are isomorphic, typically, throughout the documentation, both will be referred to simply as <code>obj{0}</code> (the <strong>zero object</strong>).</p>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_type_compilation">Type Compilation</h4>
+<div class="exampleblock">
+<div class="title">Deep Dive 1. mm-ADT Types are Graphs and their Values Realize Paths</div>
+<div class="content">
+<div class="paragraph">
+<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type
+<br></p>
+</div>
+<div class="paragraph">
+<p><code>int[is&gt;0]</code></p>
+</div>
+<div class="paragraph">
+<p>would be considered a reasonable type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$ \tt{g\t}:\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type
+<br></p>
+</div>
+<div class="paragraph">
+<p><code>int[plus,1]</code></p>
+</div>
+<div class="paragraph">
+<p>would be considered unreasonable as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>. An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as algorithmically defined by its instructions) <em>does not</em> map the <code>obj</code> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal</a> <code>obj{0}</code>. If
+\[
+f: A \rightarrow B
+\]
+is the function of type <code>B&lt;=A[f]</code>, then
+\[
+f(a) =
+\begin{cases}
+b\{*\} &amp; \text{if $a$ is a value of the type},  \\
+b\{ 0\} &amp; \text{otherwise.}
+\end{cases}
+\]</p>
+</div>
+<div class="paragraph">
+<p>An mm-ADT <strong>type graph</strong> denotes a type whose values are those <code>objs</code> that realize a path in that graph.</p>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>Every instruction is able to operate on both types and values.
 Instructions applied to types is program <em>compilation</em> and instructions applied to values is program <em>evaluation</em>.</p>
