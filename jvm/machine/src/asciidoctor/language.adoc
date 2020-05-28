@@ -254,11 +254,6 @@ mmlang> int{0,5}<=int{0,5}
 
 ===== Type Definition
 
-.Monoids
-****
-A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
-****
-
 Types and values both have a *ground* that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`. For a type, this history is called the *type definition* (and more generally, the *type's trace*) and is a subgraph of a larger *type graph*.
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _trace_.
@@ -278,6 +273,26 @@ mmlang> 2[plus,4][is>0][type]
 Both types and values exist in a larger graph called the *obj graph* for which a type's type graph is a component. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that are no longer required by the program. This process is called *trace retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
 ===== Type Quantification
+
+.Initial and Terminal Objects
+****
+image::initial.png[width=130,float=left]
+
+A category may have an https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial and/or terminal] object.
+
+An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
+Initial objects, via their morphisms, generate all the objects of the category.
+If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity.
+Thus, besides labels, two initials are isomorphic.
+
+image::terminal.png[width=130,float=right]
+
+A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
+Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
+Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+
+&nbsp;
+****
 
 .Quantifier Symbols in mmlang
 [width=35%,cols="1,1,2,float=right]
@@ -386,6 +401,11 @@ mmlang>
 |===
 
 ==== Mono Types
+
+.Monoids
+****
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
+****
 
 An mm-ADT `mono` is the set of all atomic types.
 
@@ -1139,26 +1159,6 @@ mmlang> [[1,2,3],
 ====== Meta-Programming
 
 === Language Algebras
-
-.Initial and Terminal Objects
-****
-image::initial.png[width=130,float=left]
-
-A category may have an https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial and/or terminal] object.
-
-An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
-Initial objects, via their morphisms, generate all the objects of the category.
-If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity.
-Thus, besides labels, two initials are isomorphic.
-
-image::terminal.png[width=130,float=right]
-
-A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
-Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
-Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
-
-&nbsp;
-****
 
 A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories[bicartesian closed category] supports https://en.wikipedia.org/wiki/Product_(category_theory)[products], https://en.wikipedia.org/wiki/Coproduct[coproducts], a product unit, a coproduct unit, https://en.wikipedia.org/wiki/Exponential_object[exponents], and products https://en.wikipedia.org/wiki/Exponential_object[distribute] over coproducts. These features are captured by the following axioms below. If an algebraic system satisfies the axioms, then that system has the requisite expressivity for https://en.wikipedia.org/wiki/Turing_completeness[Turing-Complete], general purpose computing.
 
