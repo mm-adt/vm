@@ -182,21 +182,19 @@ The diagram above is a representation of a structure that is important across nu
 It has a name.
 It's called the program's *type graph*.
 
-.mm-ADT Types are Graphs and their Values are Paths
+.mm-ADT Types are Graphs and their Values Realize Paths
 ================================================================
-In the https://en.wikipedia.org/wiki/Set_theory[set theoretic] interpretation of _types_, the mm-ADT
+In the https://en.wikipedia.org/wiki/Set_theory[set theoretic] interpretation of _types_, the mm-ADT type
  +
 
 `int[is>0]`
 
-would be considered a reasonable  type -- it is the set of integers greater than `0`. This type defines a subtype of `int` using a https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate] (\$p:\mathbb{N} \rightarrow \mathbb{B}\$). Every base type extended with predicate(s) is either equivalent to or a subset of the base ctype. On the other hand, the type
+would be considered a reasonable type -- it is the set of integers greater than `0`. This type defines a subtype of `int` using a https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate] (\$p:\mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type
  +
 
 `int[plus,1]`
 
-would be considered an unreasonable type as it is a transformation function, not a https://en.wikipedia.org/wiki/Indicator_function[characteristic function]. However, in mm-ADT, _both are types_.
-
-An `obj` is a member of a particular type if and only if the type's function (as specified by its instructions) maps the `obj` to some `obj` not equivalent to `obj{0}` (the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal]). That is, if the type's function is well-defined for that `obj`, then that `obj` is of that type. If
+would be considered unreasonable as it is a transformation function, not a https://en.wikipedia.org/wiki/Indicator_function[characteristic function]. However, in mm-ADT, _both are types_. An `obj` is a member of a particular type if and only if the type's function (as algorithmically defined by its instructions) _does not_ map the `obj` to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal] `obj{0}`. If
 \[
 f: A \rightarrow B
 \]
@@ -204,12 +202,12 @@ is the function of type `B\<=A[f]`, then
 \[
 f(a) =
 \begin{cases}
-b\{*\} & \text{if $a$ is the type},  \\
+b\{*\} & \text{if $a$ is a value of the type},  \\
 b\{ 0\} & \text{otherwise.}
 \end{cases}
 \]
 
-An mm-ADT type denotes a *type graph* and only those `objs` that realize paths within that graph are considered of that type.
+An mm-ADT type denotes a *type graph* and it's values are only those `objs` that realize a path in that graph.
 ================================================================
 
 image::obj-full.png[float=right,width=320]
