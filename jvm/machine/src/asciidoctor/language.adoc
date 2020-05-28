@@ -74,7 +74,7 @@ mmlang> 'a','b','a'    <5>
 <2> A single `int` value of `1`.
 <3> Five `int` types.
 <4> Five `1` `int` values.
-<5> A _stream_ of `'a'`,`'b'`, and `'a'` `str` values.
+<5> A type containing `'a'`,`'b'`, and `'a'` `str` values.
 
 ==== Types and Values
 
@@ -181,6 +181,36 @@ image::int_isgt0.png[align=center,width=260]
 The diagram above is a representation of a structure that is important across numerous processes in mm-ADT including type checking, type inference, compiler optimization, garbage collection, and more.
 It has a name.
 It's called the program's *type graph*.
+
+.mm-ADT Types are Graphs and their Values are Paths
+================================================================
+In the https://en.wikipedia.org/wiki/Set_theory[set theoretic] interpretation of _types_, the mm-ADT
+ +
+
+`int[is>0]`
+
+would be considered a reasonable  type -- it is the set of integers greater than `0`. This type defines a subtype of `int` using a https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate] (\$p:\mathbb{N} \rightarrow \mathbb{B}\$). Every base type extended with predicate(s) is either equivalent to or a subset of the base ctype. On the other hand, the type
+ +
+
+`int[plus,1]`
+
+would be considered an unreasonable type as it is a transformation function, not a https://en.wikipedia.org/wiki/Indicator_function[characteristic function]. However, in mm-ADT, _both are types_.
+
+An `obj` is a member of a particular type if and only if the type's function (as specified by its instructions) maps the `obj` to some `obj` not equivalent to `obj{0}` (the terminal). That is, if the type's function is well defined for that `obj`, then that `obj` is of that type. If
+\[
+f: A \rightarrow B
+\]
+is the function of type `B\<=A[f]`, then
+\[
+f(a) =
+\begin{cases}
+b\{*\} & \text{if $a$ is the type},  \\
+b\{ 0\} & \text{otherwise.}
+\end{cases}
+\]
+
+An mm-ADT type denotes a *type graph* and only those `objs` that realize paths within that graph are considered of that type.
+================================================================
 
 image::obj-full.png[float=right,width=320]
 
