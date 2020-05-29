@@ -1009,7 +1009,7 @@ mmlang> 6-<[_+1\|_>6]>-
 
 ====== Records
 
-The examples thus far have used the `lst` version of `poly`. The slots of a `lst` `poly` are indexed by a `int` (ordered from 0 to \$n\$). For complex, nested `poly` structures, working with slots `int` indices is error prone. The `rec` `polys` alleviate the problem as well as provide some added expressivity. The slots of a `rec` are indexed by an arbitrary `obj` key.
+The examples thus far have used the `lst` version of `poly`. The slots of a `lst` `poly` are indexed by `int` (ordered from 0 to \$n\$). For complex `poly` structures such as nested `polys` or `polys` with many slots, working with `int` indices is cumbersome and error prone. The `rec` `polys` alleviate the problem while providing added expressivity. The slots of a `rec` are indexed by an arbitrary `obj` key.
 
 NOTE: A `lst` is analogous to a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list] or https://en.wikipedia.org/wiki/Array_data_structure[array] and a `rec` is analogous to a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record] or https://en.wikipedia.org/wiki/Hash_table[map].
 
@@ -1067,7 +1067,7 @@ mmlang> 1,2,3-<[is==2 -> 'name' | is>2 -> 'is' | int -> 'my']>-
 
 ================================================================
 
-The `poly` `recs` are ordered. Even though slots can be uniquely identified by their, equality is dependant on position.
+The `poly` `recs` are ordered. Even though slots can be uniquely identified by their `obj`-key, equality is dependent on position.
 
 [source]
 ----
@@ -1077,7 +1077,7 @@ mmlang> [1->'a',2->'b']==[2->'b',1->'a']
 ==>false
 ----
 
-The `rec` that is generated from a `-<` split has both the keys and the slots resolved. If two keys yield the same result, then their slots are merged as specified by the `poly` summation operator.
+Order-based equality ensures the semantics of `;-rec` and `|-rec`, which are non-commutative. The `rec` that is generated from a `-<` split has both the keys and the slots resolved according to the rules of _juxtaposition_ . If two keys yield the same result, then their slots are merged as specified by the `poly` summation operator.
 
 
 image::rec-orders.png[width=600,align=center]

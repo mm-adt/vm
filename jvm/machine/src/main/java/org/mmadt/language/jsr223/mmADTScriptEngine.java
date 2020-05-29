@@ -23,12 +23,15 @@
 package org.mmadt.language.jsr223;
 
 import org.mmadt.VmException;
+import org.mmadt.language.LanguageException;
 import org.mmadt.language.obj.Obj;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.SimpleBindings;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -52,13 +55,21 @@ public interface mmADTScriptEngine extends ScriptEngine {
     }
 
     @Override
-    public Obj eval(String script, ScriptContext context) throws VmException;
+    public default Obj eval(String script, ScriptContext context) throws VmException {
+        return this.eval(script, context.getBindings(ScriptContext.ENGINE_SCOPE));
+    }
 
     @Override
     public Obj eval(String script, Bindings bindings) throws VmException;
 
     @Override
-    public Obj eval(Reader reader, ScriptContext context) throws VmException;
+    public default Obj eval(Reader reader, ScriptContext context) throws VmException {
+        try {
+            return eval(new BufferedReader(reader).readLine(), context);
+        } catch (IOException e) {
+            throw new LanguageException(e.getMessage());
+        }
+    }
 
 
 }
