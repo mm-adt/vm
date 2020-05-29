@@ -135,15 +135,14 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
     sugarlessInst | fromSugar | toSugar | splitSugar | repeatSugar |
       mergeSugar | infixSugar | getStrSugar | getIntSugar) ~ opt(quantifier) ^^
     (x => List(x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]]))
-  lazy val manyInstSugar: Parser[List[Inst[Obj, Obj]]] = splitMergeSugar | splitMergeSuperSugar ~ opt(quantifier) ^^ (x => x._2.map(q => List(x._1.head, x._1.tail.head.q(q))).getOrElse(x._1))
+  lazy val manyInstSugar: Parser[List[Inst[Obj, Obj]]] = splitMergeSugar ~ opt(quantifier) ^^ (x => x._2.map(q => List(x._1.head, x._1.tail.head.q(q))).getOrElse(x._1))
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
     Tokens.plus_op | Tokens.mult_op | Tokens.gte_op |
       Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op |
       Tokens.and_op | /*Tokens.or_op |*/ Tokens.given_op |
       Tokens.combine_op | Tokens.a_op | Tokens.is) ~ obj ^^
     (x => OpInstResolver.resolve(x._1, List(x._2)))
-  lazy val splitMergeSugar: Parser[List[Inst[Obj, Obj]]] = LANGLE ~> polyObj <~ RANGLE ^^ (x => List(SplitOp(x), MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]]))
-  lazy val splitMergeSuperSugar: Parser[List[Inst[Obj, Obj]]] =
+  lazy val splitMergeSugar: Parser[List[Inst[Obj, Obj]]] =
     (LROUND ~> lstStruct <~ RROUND ^^ (x => List(SplitOp(lst(x._1, x._2: _*)), MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]]).asInstanceOf[List[Inst[Obj, Obj]]])) |
       (LROUND ~> recStruct <~ RROUND ^^ (x => List(SplitOp(rec(x._1, x._2.asInstanceOf[Map[Obj, Obj]])), MergeOp[Obj]()).asInstanceOf[List[Inst[Obj, Obj]]]))
   lazy val splitSugar: Parser[Inst[Obj, Obj]] = Tokens.split_op ~> polyObj ^^ (x => SplitOp(x.asInstanceOf[Poly[Obj]]))

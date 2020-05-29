@@ -26,8 +26,8 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,10 +41,15 @@ trait AOp {
 object AOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
-    val oldInst = inst.via._1.asInstanceOf[Inst[Obj, Bool]]
+    val oldInst = Inst.oldInst(inst)
     start match {
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => oldInst.exec(x)))
-      case _: Value[_] => bool(start.test(oldInst.arg0[Obj])).via(start, inst)
+      case _: Value[_] =>
+        val arg = oldInst.arg0[Obj] match {
+          case atype: Type[Obj] if atype.trace.headOption.map(_._2.op).getOrElse("none") == Tokens.from => Obj.fetch[Obj](start, atype.trace.head._2.arg0[StrValue].g)
+          case x => x
+        }
+        bool(start.test(arg)).via(start, inst)
       case atype: Type[_] if oldInst.arg0[Obj].isInstanceOf[Type[_]] =>
         if (!Inst.resolveArg(start, oldInst.arg0[Obj]).alive)
           bfalse.via(start, oldInst)

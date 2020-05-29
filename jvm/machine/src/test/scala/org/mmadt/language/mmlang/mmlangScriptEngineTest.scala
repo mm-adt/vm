@@ -139,9 +139,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,is>3]"))
     assertResult(int(2, 4, 6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,is<100]"))
     assertResult(int(2, 4, 6))(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,int]"))
-//    assertThrows[LanguageException] {
-      assertResult(zeroObj)(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,str]"))
-//    }
+    //    assertThrows[LanguageException] {
+    assertResult(zeroObj)(engine.eval("[1 -> 2 , 3 -> 4,5 -> 6][get,str]"))
+    //    }
   }
 
   test("poly get/put") {
@@ -312,7 +312,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("[15;100]")(engine.eval("5-<[int+1[is>0] --> +10 ; int --> 100]").toString)
     assertResult("[15|]")(engine.eval("5-<[int+1[is>0] --> +10 | int --> 100]").toString)
     assertResult("15")(engine.eval("5-<[int+1[is>0] --> +10 | int --> 100]>-").toString)
-    assertResult(btrue)(engine.eval("  5 [plus,2]<[[is>5]-->true|[is==1]-->[plus 2]|int-->20]>"))
+    assertResult(btrue)(engine.eval("  5 [plus,2]([is>5]-->true|[is==1]-->[plus 2]|int-->20)"))
     assertResult(int(3))(engine.eval("-1[plus,2]-<[int[is>5]-->34|int[is==1]-->int[plus2]|int-->20]>-"))
     assertResult(int(3))(engine.eval("-1 int[plus,2]-<[int[is>5]-->34|int[is==1]-->int[plus2]|int-->20]>-"))
     assertResult(btrue)(engine.eval("  5 [plus,2]([is>5]-->true|[is==1]-->[plus 2]|int-->20)"))
@@ -327,9 +327,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bool(btrue, bfalse.q(2)))(engine.eval("5,2,1[plus,1](int[is>5] --> true | int --> false)"))
     assertResult(bool(btrue, bfalse.q(2)))(engine.eval("5,2,1[plus,1]-<[int[is>5] --> true | int --> false]>-"))
     assertResult(bool(btrue.q(2), bfalse))(engine.eval("5,2,1[plus,1]-<[[is<5] --> true | int --> false]>-"))
-    assertResult(bool(btrue.q(2), bfalse))(engine.eval("5,2,1[plus,1]<[[is<5] --> true | int --> false]>"))
-    assertResult(bool(btrue.q(2), bfalse))(engine.eval("5,2,1[is>0][plus,1]<[[is<5] --> true | int --> false]>"))
-    assertResult(bool(btrue.q(2), bfalse))(engine.eval("5,2,1[plus,1][is>0][mult,1]<[[is<5] --> true | int --> false]>"))
+    assertResult(bool(btrue.q(2), bfalse))(engine.eval("5,2,1[plus,1]([is<5] --> true | int --> false)"))
+    assertResult(bool(btrue.q(2), bfalse))(engine.eval("5,2,1[is>0][plus,1]([is<5] --> true | int --> false)"))
+    assertResult(bool(btrue.q(2), bfalse))(engine.eval("5,2,1[plus,1][is>0][mult,1]([is<5] --> true | int --> false)"))
     assertResult(bool(bfalse.q(3), btrue.q(4)))(engine.eval("4,2,1,10,10,10{2}[plus,1]-<[[is>5] --> true | int --> false]>-"))
     assertResult(btrue)(engine.eval("5[plus,1]-<[[is>5] --> true | int --> false]>-"))
     assertResult(btrue)(engine.eval("true-<[bool --> bool | int --> int]>-"))
@@ -439,8 +439,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(1, 2, 3))(engine.eval("0,1,2[plus,1]"))
     assertResult(int(int(1).q(3), int(2).q(10), int(3)))(engine.eval("0{3},1{10},2[plus,1]"))
     assertResult(int(30, 40))(engine.eval("0,1,2,3 int{2,5}[plus,1][is,int[gt,2]][mult,10]"))
-    assertResult(int(300, 40))(engine.eval("0,1,2,3 int{1,6}[plus,1][is,int[gt,2]]<[int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100]]>>-"))
-    assertResult(int(300, 40))(engine.eval("0,1,2,3 int{*}[plus,1][is,int[gt,2]]<[int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100]]>>-"))
+    assertResult(int(300, 40))(engine.eval("0,1,2,3 int{1,6}[plus,1][is,int[gt,2]](int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100])>-"))
+    assertResult(int(300, 40))(engine.eval("0,1,2,3 int{*}[plus,1][is,int[gt,2]](int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100])>-"))
     assertResult(int(300, 40))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]]-<[int[is,int[gt,3]][mult,10] | int[mult,100]]>-"))
     assertResult(int(300, 40))(engine.eval("0,1,2,3[plus,1][is,int[gt,2]]-<[int[is,int[gt,3]] --> int[mult,10] | int --> int[mult,100]]>-"))
     assertResult(int(30, 40))(engine.eval("0,1,2,3 int{4}[plus,1][is,int[gt,2]][mult,10]"))
@@ -476,11 +476,11 @@ class mmlangScriptEngineTest extends FunSuite {
         | [plus,1][is>2]
         |   < [is>3] ---> [mult,10]
         |   | int    ---> [mult,100]>[plus,2]""".stripMargin))*/
-    assertResult(bfalse)(engine.eval("4[plus,1]<[[is>5] --> true | int --> false]>"))
+    assertResult(bfalse)(engine.eval("4[plus,1]([is>5] --> true | int --> false)"))
     assertResult(btrue)(engine.eval("5[plus,1]-<[[is>5] --> true | int --> false]>-"))
-    assertResult(btrue)(engine.eval("true<[bool --> bool | int --> int]>"))
-    assertResult(int(10))(engine.eval("10<[bool --> bool | int --> int]>"))
-    assertResult(int(10))(engine.eval("10<[bool --> true | int --> int]>"))
+    assertResult(btrue)(engine.eval("true(bool --> bool | int --> int)"))
+    assertResult(int(10))(engine.eval("10(bool --> bool | int --> int)"))
+    assertResult(int(10))(engine.eval("10(bool --> true | int --> int)"))
     assertResult(int(11))(engine.eval("10(bool --> true | int --> int[plus,1])"))
   }
 
@@ -707,6 +707,15 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("[1,[2,[3,4,[5,6,7]]]](>-)^([a,lst])"))
     assertResult("[[1,1],[1,1]],[[3,3],[3,3]],[[[1,2],[3,4]],[[1,2],[3,4]]]{3}")(engine.eval("1,3,[[1,2],[3,4]](-<[_,_])^([a,[int,int]])").toString) // TODO: strm q
     assertResult(int(1, 2, 3))(engine.eval("1,2,[3,](-<[_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
+  }
+
+  test("define parsing") {
+    assertResult(btrue `,` bfalse `,` btrue)(engine.eval(
+      """ 1
+        | [define,'nat',int[is>0]]
+        | [define,'zero',int[is==[zero]]]
+        | [define,'one',int[is==[one]]]
+        |   -<[[a,nat],[a,zero],[a,one]]""".stripMargin))
   }
 
 

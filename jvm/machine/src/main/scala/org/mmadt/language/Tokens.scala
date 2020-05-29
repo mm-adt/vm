@@ -28,6 +28,7 @@ package org.mmadt.language
 object Tokens {
 
   lazy val reserved: Set[String] = Set(
+    Tokens.define,
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
     Tokens.plus, Tokens.gt, Tokens.lt, Tokens.gte, Tokens.lte, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as, Tokens.a, // Tokens.model (shared with global name)
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.given, Tokens.trace, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last,
@@ -43,6 +44,7 @@ object Tokens {
   val lst = "lst"
   val inst = "inst"
 
+  val define = "define"
   val a = "a"
   val head = "head"
   val tail = "tail"

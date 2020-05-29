@@ -102,6 +102,7 @@ object OpInstResolver {
         case x: Type[Obj] => FoldOp((args.head.asInstanceOf[StrValue].g, args.tail.head), x)
       }
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].g)
+      case Tokens.define => DefineOp(args.head.asInstanceOf[StrValue], args(1))
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()

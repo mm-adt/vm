@@ -40,5 +40,6 @@ object OneOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
     case _: Int => int(1)
     case _: Real => real(1.0)
+    case _ => start
   }).via(start, inst)
 }

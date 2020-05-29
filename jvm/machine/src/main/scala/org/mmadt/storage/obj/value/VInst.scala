@@ -37,8 +37,10 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
                      g: Any = this.g,
                      q: IntQ = this.q,
                      via: ViaTuple = this.via): this.type = {
-    if (TraceInstruction.isTrace(this.asInstanceOf[Inst[Obj, Obj]])) (new VInst[S, E](name, g.asInstanceOf[LstTuple[Obj]], q, via, this.func) with TraceInstruction).asInstanceOf[this.type]
-    else new VInst[S, E](name, g.asInstanceOf[LstTuple[Obj]], q, via, this.func).asInstanceOf[this.type]
+    (if (TraceInstruction.isTrace(this))
+      new VInst[S, E](name, g.asInstanceOf[LstTuple[Obj]], q, via, this.func) with TraceInstruction
+    else
+      new VInst[S, E](name, g.asInstanceOf[LstTuple[Obj]], q, via, this.func)).asInstanceOf[this.type]
   }
   override def exec(start: S): E = this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (
     this.op,
