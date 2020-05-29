@@ -565,17 +565,18 @@ mmlang&gt; 1[plus,2]
 <div class="sect3">
 <h4 id="_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</h4>
 <div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below. <code>mmlang</code> is best understood as a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> whose elements denote mm-ADT programs which <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">act, as modules,</a> on the ringoid structure of an mm-ADT processor.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>type  := (ctype | dtype){q}
+<pre class="highlight"><code>obj   := (type | value){q}
+type  := ctype | dtype
 ctype := bool | int  | real | str | poly | _
-poly  :=  lst | inst | rec
+poly  := lst | rec | inst
+sep   := ; | , | (|)
 q     := int,int | int | ? | * | +
 {int} := _{int,int}
 dtype := ctype&lt;=ctype([inst]+)
-sep   := ; | , | "|"
 rec   := [-] | [obj-&gt;obj(&lt;sep&gt;obj-&gt;obj)*]
 lst   := [ ] | [obj(&lt;sep&gt;obj)*]
 inst  := [op(,obj*)]
@@ -587,65 +588,134 @@ sugop := . | &gt; | &lt; | &gt;= | =&lt; | == | * | +</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables <code>x</code>, <code>y</code>, and <code>z</code> in <code>ctype</code> and <code>[a]</code> and <code>[b]</code> in <code>inst</code>.</p>
+<p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables:</p>
 </div>
+<table class="tableblock frame-none grid-none small" style="width: 25%;">
+<colgroup>
+<col style="width: 66.6666%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">variable</th>
+<th class="tableblock halign-left valign-top">range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>o1</code>, <code>o2</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>objs</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t1</code>, <code>t2</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>v1</code>, <code>v2</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">values</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a]</code>, <code>[b]</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instructions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{q1}</code>, <code>{q2}</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quantifiers</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>id(x)                       := x&lt;=x[id]
-domain(y&lt;=x[a])             := x
-range(y&lt;=x[a])              := y
-domain(x)                   := x
-range(x)                    := x
-;-compose(y&lt;=x[a],z&lt;=y[b])  := z&lt;=x[a][b]
-+-compose(y&lt;=x[a],y&lt;=x[b])  := y&lt;=x[branch,y&lt;=x[a],y&lt;=x[b]]
-|-compose(y&lt;=x[a],z&lt;=x[b])  := y&lt;=x[choose,y&lt;=x[a],z&lt;=x[b]
-objA(valueB)                := valueB
-objA(typeB)                 := typeB&lt;=objA
-objA(typeB[instA][instB])   := typeB&lt;=objA[instA][instB]</code></pre>
+<pre class="highlight"><code>id(t1)                    := t1&lt;=t1[id]
+domain(t1)                := t1
+range(t1)                 := t1
+domain(t2&lt;=t1[a])         := t1
+range(t2&lt;=t1[a])          := t2</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The quantifiers of an <code>mmlang</code> program are elements of a ring with unity (the quantifier ring). In the following equations, <code>*</code> and <code>+</code> refer to the respective monoid and group operations of the program&#8217;s associated quantifier ring.</p>
+<p>The quantifiers of an <code>mmlang</code> program are elements of a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> called the <em>quantifier ring</em>. In the equations to follow, <code>*</code> and <code>+</code> refer to the respective monoid and group operations the quantifier ring.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>obj</code> magma juxtapositions, where instructions <code>[a]</code>, <code>[b]</code>, etc. act as <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">functions</a> on values and as free monoid concatenation on types. The particulars <code>objs</code> that are yielded juxtaposing an <code>obj</code> to the left of a type are forthcoming.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>;-compose(y{q1}&lt;=x[a],z{q2}&lt;=y[b]) := z{q1*q2}&lt;=x[a][b]
-+-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[a]) := y{q1+q2}&lt;=x[a]
-+-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{q1+q2}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]
-|-compose(y{q1}&lt;=x[a],y{q2}&lt;=x[b]) := y{min(q1,q2),max(q1,q2)}&lt;=x[branch,y{q1}&lt;=x[a],y{q2}&lt;=x[b]]</code></pre>
+<pre class="highlight"><code>v1{q1}                v2{q2}               := v2{q1*q2}
+v1{q1}                t2{q2}&lt;=t1[a][b]     := b(a(v1)){q1*q2}
+t2{q1}&lt;=t1[a][b]      t3{q2}&lt;=t2[c][d]     := t3{q1*q2}&lt;=t1[a][b][c][d]
+t2{q1}&lt;=t1[a][b]      v1{q2}               := v1{q1*q2}</code></pre>
 </div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>inst</code> instructions denote functions that operate on <code>objs</code>. The particular of each instruction is forthcoming. The branch instructions denote flow control operations that mirror the type ringoid where <code>[compose]</code> is <code>*</code>, <code>[branch]</code> is <code>+</code>, and <code>[choose]</code> is <code>|</code>.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[compose,x[id],x[id]]                            := x
-[branch,x[id],x[id]]                             := x{2}
-[choose,x[id],x[id]]                             := x
-[repeat,[obj{?}-&gt;{0},obj{?}-&gt;type,n]]            := type[pow,n]</code></pre>
+<pre class="highlight"><code>v1{q1}[compose,t2{q2}&lt;=t1[a][b],t3{q3}&lt;=t2[c][d]]]     := t3{q1*q2*q3}&lt;=t1[a][b][c][d](v1)
+v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1),t2{q1*q2}&lt;=t1[c][d](v1)
+v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[a][b]]       := t2{q1*(q2+q3)}&lt;=t1[a][b][c][d](v1)
+v1{q1}[choose,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1) | t2{q1*q2}&lt;=t1[c][d](v1)
+v1{q1}[repeat,[obj{?}-&gt;{0},obj{?}-&gt;type,n]]            := ...</code></pre>
 </div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>polys</code> are the free algebra of the branch operations encoded in <code>mmlang</code> itself. Thus, the <code>inst</code> branch rules above are mirrored in the <code>poly</code> compositions below.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>domain&lt;=range[op(,arg)*]     := operation or equivalence
+<pre class="highlight"><code>(t2{q1}&lt;=t1[a][b];t3{q2}&lt;=t2[c][d])  := t3{q1*q2}[a][b][c][d]
+(t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d])  := t2{q1+q2}&lt;=t1[branch,t2{q1}&lt;=t1[a][b],t2{q1}&lt;=t1[c][d]]
+(t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[a][b])  := t2{q1+q2}&lt;=t1[a][b]
+(t2{q1}&lt;=t1[a][b]|t2{q2}&lt;=t1[c][d])  := t2{min(q1,q2),max(q1,q2)}&lt;=t1[choose,t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d]]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The non-branching <code>inst</code> instructions are the functional primitives that are composed to create mm-ADT programs.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>obj    type                     := operation or equivalence
 --------------------------------------------------------
-bool&lt;=objA[a,objB]           := objA.test(objB)
-bool&lt;=boolA[and,boolB]       := boolA &amp; boolB
-int&lt;=obj{*}[count]           := obj{*}[q]
-bool&lt;=objA[eq,objB]          := objA == objB
-str&lt;=obj{*}[explain]
+o1     bool&lt;=obj[a,o2]          := o1.test(o2)
+bool1  bool&lt;=bool[and,bool2]    := bool1 &amp; bool2
+o1{q1} int&lt;=obj[count]          := q1
+o1     bool&lt;=obj[eq,o2]         := o1 == o2
+t1     str&lt;=obj[explain]        ...
 ...</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Typing rules, where the <code>_</code> symbol refers to the <em>anonymous type</em>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The type-oriented <code>inst</code> instructions specify the typing rules, where the <code>_</code> symbol refers to the <em>anonymous type</em>. These equations are presented using the <code>obj</code> magma&#8217;s juxtaposition.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>typeA(_)                           := typeA
-typeA(_[instA][instB])             := instB(instA(typeA)) =&gt; typeB&lt;=typeA[instA][instB]
-obj[a,_]                           := true
-typeA[a,typeA]                     := true
-typeA[a,{0}]                       := typeA.q == 0,0
-typeA[a,typeB]                     := typeA(typeB) != {0}</code></pre>
+<pre class="highlight"><code>t1    _                     := t1
+t1    _[a][b]               := b(a(t1))&lt;=t1[a][b]
+o1    [a,_]                 := true
+o1    [a,o1]                := true
+o1{0} [a,{0}]               := true
+o1    [a,t1]                := t1(o1) != {0}</code></pre>
 </div>
 </div>
 </div>
@@ -655,7 +725,7 @@ typeA[a,typeB]                     := typeA(typeB) != {0}</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-27 12:08:58 -0600
+Last updated 2020-05-28 23:35:15 -0600
 </div>
 </div>
 </body>
