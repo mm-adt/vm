@@ -24,7 +24,7 @@ $(document).ready(function(){
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
   var items =    {"op":      ["a","compose","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map",
-                              "split","merge","last","head","tail","div","minus","choose","put"],
+                              "split","merge","last","head","tail","div","minus","choose","put","repeat"],
                   "tokens":  ["{","}"],
                   "infix":   ["|","&&",",","+","*"],
                   "value":   ["true","false"],
