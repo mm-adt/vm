@@ -140,9 +140,9 @@ object StorageFactory {
   lazy val + : (IntValue, IntValue) = qPlus
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
     case alst: LstStrm[Obj] if alst.isValue => lst(sep = Tokens.`,`).q(alst.q) // TODO:
-    case alst: Lst[Obj] if alst.isValue => alst.clone(alst.glist.map(x => asType[Obj](x)))
-    case arec: RecStrm[Obj, Obj] if arec.isValue => lst(Tokens.`,`).q(arec.q) // TODO:
-    case arec: Rec[Obj, Obj] if arec.isValue => arec.clone(g = (arec.gsep, arec.gmap.map(x => (asType[Obj](x._1), asType[Obj](x._2)))))
+    //case alst: Lst[Obj] if alst.isValue => alst.clone(alst.glist.map(x => asType[Obj](x)))
+    case arec: RecStrm[Obj, Obj] if arec.isValue => rec.q(arec.q) // TODO:
+    //case arec: Rec[Obj, Obj] if arec.isValue => arec.clone(g = (arec.gsep, arec.gmap.map(x => (asType[Obj](x._1), asType[Obj](x._2)))))
     case atype: Type[_] => atype
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)

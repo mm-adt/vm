@@ -67,7 +67,11 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
         case _: Value[_] => x._1 // left hand value only, return it
         case _: Type[_] => x._1.domain ===> x._1 // left hand type only, compile it with it's domain
       }
-      case Some(y) => x._1 ===> y // left and right hand, evaluate right type with left obj
+      case Some(y) =>
+        x._1 match {
+          case _: Type[Obj] => x._1 ===> y
+          case _: Value[Obj] => x._1 ===> (asType(x._1) ===> y)
+        } // left and right hand, evaluate right type with left obj
     }
   })
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +91,6 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val polySep: Parser[String] = Tokens.| | Tokens.`;` | Tokens.`,`
   lazy val lstObj: Parser[Lst[Obj]] = (LBRACKET ~> lstStruct <~ RBRACKET) ^^ (x => lst(x._1, x._2: _*))
   lazy val recObj: Parser[Rec[Obj, Obj]] = (opt(valueType) <~ opt(COLON)) ~ (LBRACKET ~> recStruct <~ RBRACKET) ^^ (x => rec(x._2._1, x._2._2.asInstanceOf[Map[Obj, Obj]]).named(x._1.getOrElse(Tokens.rec)))
-  //  lazy val recStruct: Parser[RecTuple[Obj, Obj]] = repsep((obj <~ Tokens.->) ~ obj, polySep) ^^ (x => (Tokens.`;`, x.map(o => (o._1, o._2)).toMap))
   lazy val lstStruct: Parser[LstTuple[Obj]] =
     (opt(obj) ~ polySep <~ (PERIOD <~ guard(RBRACKET))) ^^ (x => x._1.map(y => lst(x._2, y).g).getOrElse(lst(x._2).g)) |
       (opt(obj) ~ polySep) ~ rep1sep(opt(obj), polySep) ^^ (x => lst(x._1._2, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)): _*).g)

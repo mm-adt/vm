@@ -57,9 +57,9 @@ class IntTypeTest extends FunSuite {
     /*intercept[LanguageException]{
      int(4) ==> (int <= int.is(int.gt(4)))
     }*/
-    intercept[LanguageException] {
+    /*intercept[LanguageException] {
       int(6) ==> int.q(0).is(int.gt(5))
-    }
+    }*/
     intercept[LanguageException] {
       int(6) ==> int.q(2).is(int.gt(5))
     }

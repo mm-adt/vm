@@ -95,7 +95,7 @@ class __Test extends FunSuite {
       int(5) ===> int.q(10)
     }
     assertResult(bfalse)(int(5) ===> __.gt(16))
-    assertResult(bfalse.q(*))(int(5).q(*) ===> __.q(0).gt(16))
+    assertResult(zeroObj)(int(5).q(*) ===> __.q(0).gt(16))
     assertResult(zeroObj)(int(5).q(0) ===> __.q(*).gt(16))
     assertResult(int(5))(int(5) ===> __)
     assertResult(int(5))(int(5) ===> __.id())

@@ -84,11 +84,12 @@ object Rec {
         }
         local
       })))
-    } else
+    } else {
       arec.clone(g = (arec.gsep, arec.gmap.toSeq.map(slot => {
         val key = Inst.resolveArg(arg, slot._1)
         (key, if (key.alive) Inst.resolveArg(arg, slot._2) else zeroObj.asInstanceOf[B])
-      }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values)))))
+      }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values))))))
+    }
   }
   def keepFirst[A <: Obj, B <: Obj](start: Obj, inst: Inst[Obj, Obj], arec: Rec[A, B]): Rec[A, B] = {
     var found: Boolean = false;

@@ -47,6 +47,7 @@ object SplitOp extends Func[Obj, Obj] {
     }
     val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(start, apoly, oldInst))
     apoly.gsep match {
+      case _ if apoly.isInstanceOf[Rec[Obj,Obj]] && apoly.isType && apoly.isSerial => newInst.arg0[Obj].via(start,inst)
       case _ if apoly.isChoice & apoly.isInstanceOf[Rec[Obj, Obj]] => processFirst(start, inst.asInstanceOf[Inst[Obj, Poly[Obj]]]) // TODO: why?
       case _ if apoly.isChoice => processFirst(start, newInst)
       case _ if apoly.isSerial || apoly.isParallel => processAll(start, newInst)

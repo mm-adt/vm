@@ -66,14 +66,14 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
 
     int(1, 2, 3) ==> int.q(+)
 
-    assertThrows[LanguageException] {
+/*    assertThrows[LanguageException] {
       int(10) ===> int.q(0)
     }
 
     assertThrows[LanguageException] {
       int(1, 2, 3) ==> int.q(0)
     }
-
+*/
     assertThrows[LanguageException] {
       int(10) ===> bool.and(bfalse)
     }
