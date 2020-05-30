@@ -568,9 +568,7 @@ mmlang&gt; 'a','b','a'    <b class="conum">(5)</b>
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
 <div class="paragraph">
-<p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values).
-In mm-ADT, instructions operate on both types and values.
-Two interesting consequences are that compilation is simply running an mm-ADT program with type arguments and when values are applied to types during evaluation, types serve as <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda (or anonymous) functions</a>.</p>
+<p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two interesting consequences are: 1.) compilation is triggered by evaluation a program with type arguments and 2.) types (composed of instructions) can be used as <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda (or anonymous) functions</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -585,48 +583,21 @@ mmlang&gt;</code></pre>
 <div class="colist arabic">
 <ol>
 <li>
-<p>The <code>int</code> type is passed to the <code>int[is&gt;0]</code>-type to yield an either 0 or 1 <code>int</code> (compilation)</p>
+<p>The <code>int</code> type is passed to the <code>int[is&gt;0]</code>-type to yield an either 0 or 1 <code>int</code> (<strong>compilation</strong>).</p>
 </li>
 <li>
-<p>The type <code>[is&gt;0]</code> serves as a lambda of the form \[ \lambda x = \begin{cases} x &amp; \text{if } x &gt; 0 \\ \emptyset &amp; \text{otherwise.} \end{cases} \]</p>
+<p>The type <code>[is&gt;0]</code> serves as a lambda of the form \[ \lambda x = \begin{cases} x &amp; \text{if } x &gt; 0 \\ \emptyset &amp; \text{otherwise} \end{cases} \] (<strong>evaluation</strong>).</p>
 </li>
 <li>
-<p>The type <code>[is&gt;0]</code> filtering the <code>int</code> value -1.</p>
+<p>The type <code>[is&gt;0]</code> filtering the <code>int</code> value -1 (<strong>evaluation</strong>).</p>
 </li>
 </ol>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 60%;">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Types</th>
-<th class="tableblock halign-left valign-top">Values</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Refer to themselves and values</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Refer to themselves</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Generalized values</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specified types</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A non-unit function</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unit function</p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
-<p>The continuum between types and values eases many longstanding distinctions in computer science.
-The table below presents a collection of the more interesting conceptual blurs that are introduced in mm-ADT. The particulars of each will be discussed over the course of this documentation.</p>
+<p>Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of this documentation.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Consequences of Type/Value Unification</caption>
+<caption class="title">Table 1. Consequences of Type/Value Integration</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 14.2857%;">
@@ -652,13 +623,13 @@ The table below presents a collection of the more interesting conceptual blurs t
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bytecode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the algebra of type construction relaxes the necessity for different program encodings.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the type construction algebra yield an <a href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> used through to evaluation.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">state</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">values</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">'mutable' state are values from historic types contained within the structure of the current type.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">types and values both encode state information in their process traces.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">functions</p></td>
@@ -673,7 +644,7 @@ The table below presents a collection of the more interesting conceptual blurs t
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">classical</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">quantum</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">quantum computing is classical computing with unitary matrix quantifiers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quantum computing is classical computing with a unitary matrix quantifier ring.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">canonical</p></td>
@@ -1044,7 +1015,19 @@ int{*}&lt;=[=db][get,'people']       // 0 or more ints (any)</code></pre>
 where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In <code>mmlang</code> if an <code>obj</code> quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or <code>{1,1}</code>. Moreover, if a single value is provided, it is assumed to be repeated where <code>{n}</code> is shorthand for <code>{n,n}</code>. Thus, <code>int</code> is <code>int{1}</code>  is <code>int{1,1}</code>.</p>
 </div>
 <div class="paragraph">
-<p>One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>&#8201;&#8212;&#8201;<code>{0}</code>. All <code>objs</code> quantified with the respective quantifier ring&#8217;s annihilator are <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal object</a>. Because types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;0]</code> are isomorphic, typically, throughout the documentation, both will be referred to simply as <code>obj{0}</code> (the <strong>zero object</strong>).</p>
+<p>One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>&#8201;&#8212;&#8201;<code>{0}</code>. All <code>objs</code> quantified with the respective quantifier ring&#8217;s annihilator are <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal object</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;0]</code> are isomorphic due to their quantifiers both being <code>{0}</code>. Typically, throughout the documentation, both will be referred to simply as <code>obj{0}</code> or <code>{0}</code> (the <strong>zero object</strong>).
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -2166,7 +2149,7 @@ mmlang&gt; 6-&lt;[_+1|_&gt;6]&gt;-
 <div class="sect5">
 <h6 id="_records">Records</h6>
 <div class="paragraph">
-<p>The examples thus far have used the <code>lst</code> version of <code>poly</code>. The slots of a <code>lst</code> <code>poly</code> are indexed by a <code>int</code> (ordered from 0 to \$n\$). For complex, nested <code>poly</code> structures, working with slots <code>int</code> indices is error prone. The <code>rec</code> <code>polys</code> alleviate the problem as well as provide some added expressivity. The slots of a <code>rec</code> are indexed by an arbitrary <code>obj</code> key.</p>
+<p>The examples thus far have used the <code>lst</code> version of <code>poly</code>. The slots of a <code>lst</code> <code>poly</code> are indexed by <code>int</code> (ordered from 0 to \$n\$). For complex <code>poly</code> structures such as nested <code>polys</code> or <code>polys</code> with many slots, working with <code>int</code> indices is cumbersome and error prone. The <code>rec</code> <code>polys</code> alleviate the problem while providing added expressivity. The slots of a <code>rec</code> are indexed by an arbitrary <code>obj</code> key.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2251,7 +2234,7 @@ mmlang&gt; 1,2,3-&lt;[is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my']&
 <div class="exampleblock">
 <div class="content">
 <div class="paragraph">
-<p>The <code>poly</code> <code>recs</code> are ordered. Even though slots can be uniquely identified by their, equality is dependant on position.</p>
+<p>The <code>poly</code> <code>recs</code> are ordered. Even though slots can be uniquely identified by their <code>obj</code>-key, equality is dependent on position.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2262,7 +2245,7 @@ mmlang&gt; [1-&gt;'a',2-&gt;'b']==[2-&gt;'b',1-&gt;'a']
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>rec</code> that is generated from a <code>-&lt;</code> split has both the keys and the slots resolved. If two keys yield the same result, then their slots are merged as specified by the <code>poly</code> summation operator.</p>
+<p>Order-based equality ensures the semantics of <code>;-rec</code> and <code>|-rec</code>, which are non-commutative. The <code>rec</code> that is generated from a <code>-&lt;</code> split has both the keys and the slots resolved according to the rules of <em>juxtaposition</em> . If two keys yield the same result, then their slots are merged as specified by the <code>poly</code> summation operator.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -2906,7 +2889,7 @@ mmlang&gt; 1((+1;*2),(+1;*3))
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-28 14:58:26 -0600
+Last updated 2020-05-30 04:57:27 -0600
 </div>
 </div>
 </body>
