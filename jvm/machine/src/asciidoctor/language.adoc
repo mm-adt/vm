@@ -77,9 +77,7 @@ mmlang> 'a','b','a'    <5>
 
 ==== Types and Values
 
-Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values).
-In mm-ADT, instructions operate on both types and values.
-Two interesting consequences are that compilation is simply running an mm-ADT program with type arguments and when values are applied to types during evaluation, types serve as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions].
+Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two interesting consequences are: 1.) compilation is triggered by evaluation a program with type arguments and 2.) types (composed of instructions) can be used as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions].
 
 [source]
 ----   
@@ -90,34 +88,24 @@ mmlang> 5 int[is>0]                   <2>
 mmlang> -1 int[is>0]                  <3>
 mmlang>
 ----
-<1> The `int` type is passed to the `int[is>0]`-type to yield an either 0 or 1 `int` (compilation)
-<2> The type `[is>0]` serves as a lambda of the form \[ \lambda x = \begin{cases} x & \text{if } x > 0 \\ \emptyset & \text{otherwise.} \end{cases} \]
-<3> The type `[is>0]` filtering the `int` value -1.
+<1> The `int` type is passed to the `int[is>0]`-type to yield an either 0 or 1 `int` (*compilation*).
+<2> The type `[is>0]` serves as a lambda of the form \[ \lambda x = \begin{cases} x & \text{if } x > 0 \\ \emptyset & \text{otherwise} \end{cases} \] (*evaluation*).
+<3> The type `[is>0]` filtering the `int` value -1 (*evaluation*).
 
-[width=60]
-|===
-| Types | Values
+Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of this documentation.
 
-| Refer to themselves and values | Refer to themselves
-| Generalized values | Specified types
-| A non-unit function | A unit function
-|===
-
-The continuum between types and values eases many longstanding distinctions in computer science.
-The table below presents a collection of the more interesting conceptual blurs that are introduced in mm-ADT. The particulars of each will be discussed over the course of this documentation.
-
-.Consequences of Type/Value Unification
+.Consequences of Type/Value Integration
 [cols="2,2,10"]
 |===
 |structure A | structure B | unification
 
 |types       | values     | quantifiers expand the cardinality of values and constrain the cardinality of types
 |compilation | evaluation | compilations are evaluations with types, where a compilation error is a "runtime compile-time" error.
-|AST         | bytecode   | the algebra of type construction relaxes the necessity for different program encodings.
-|state       | values     | 'mutable' state are values from historic types contained within the structure of the current type.
+|AST         | type       | the type construction algebra yield an https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] used through to evaluation.
+|state       | trace      | types and values both encode state information in their process traces.
 |functions   | types      | functions are (dependent) types with value references generated at evaluation.
 |programs    | types      | a program is a "complicated" type.
-|classical   | quantum    | quantum computing is classical computing with unitary matrix quantifiers.
+|classical   | quantum    | quantum computing is classical computing with a unitary matrix quantifier ring.
 |canonical   | atomics    | atomic values and canonical types are both "tokens" by which all constructions are built.
 |===
 
@@ -328,7 +316,9 @@ The default quantifier ring of the mm-ADT VM is
 \]
 where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`. Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`. Thus, `int` is `int{1}`  is `int{1,1}`.
 
-One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal object]. Because types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic, typically, throughout the documentation, both will be referred to simply as `obj{0}` (the *zero object*).
+One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal object].
+
+NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}` or `{0}` (the *zero object*).
 
 ==== Type Compilation
 
