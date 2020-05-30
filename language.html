@@ -1229,10 +1229,10 @@ mmlang&gt;</code></pre>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><code>( )</code> is a type polynomial.</p>
+<p><code>[ ]</code> is a type polynomial.</p>
 </li>
 <li>
-<p><code>[ ]</code> is a value polynomial.</p>
+<p><code>( )</code> is a value polynomial.</p>
 </li>
 <li>
 <p><code>lst</code> is a polynomial with terms indexed by <code>int</code>.</p>
@@ -1417,7 +1417,7 @@ A <code>poly</code> is a <em>decoupling</em> of <em>objs</em> composed of <em>qu
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[x0{q0},x1{q1},x2{q2},...,xn{qn}]</code></pre>
+<pre class="highlight"><code>(x0{q0},x1{q1},x2{q2},...,xn{qn})</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1471,12 +1471,12 @@ mm-ADT provides two convenient type constructors for working with <code>poly</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b','c']      <b class="conum">(1)</b>
-==&gt;['a','b','c']
-mmlang&gt; [,.]               <b class="conum">(2)</b>
-==&gt;[,.]
-mmlang&gt; ['a',.]            <b class="conum">(3)</b>
-==&gt;['a',.]</code></pre>
+<pre class="highlight"><code>mmlang&gt; ('a','b','c')      <b class="conum">(1)</b>
+==&gt;('a','b','c')
+mmlang&gt; (,.)               <b class="conum">(2)</b>
+==&gt;(,.)
+mmlang&gt; ('a',.)            <b class="conum">(3)</b>
+==&gt;('a',.)</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1497,10 +1497,10 @@ mmlang&gt; ['a',.]            <b class="conum">(3)</b>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a',]
-==&gt;['a',]
-mmlang&gt; ['a',].1
-mmlang&gt; ['a',.].1
+<pre class="highlight"><code>mmlang&gt; ('a',)
+==&gt;('a',)
+mmlang&gt; ('a',).1
+mmlang&gt; ('a',.).1
 language error: poly index is out of bounds: 1</code></pre>
 </div>
 </div>
@@ -1509,24 +1509,24 @@ language error: poly index is out of bounds: 1</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 3-&lt;[[plus,1],[mult,2]]   <b class="conum">(1)</b>
+<pre class="highlight"><code>mmlang&gt; 3-&lt;([plus,1],[mult,2])   <b class="conum">(1)</b>
 ==&gt;[4,6]
-mmlang&gt; 3-&lt;[[plus,1]|[mult,2]]   <b class="conum">(2)</b>
+mmlang&gt; 3-&lt;([plus,1]|[mult,2])   <b class="conum">(2)</b>
 ==&gt;[4|]
-mmlang&gt; 3-&lt;[[plus,1];[mult,2]]   <b class="conum">(3)</b>
+mmlang&gt; 3-&lt;([plus,1];[mult,2])   <b class="conum">(3)</b>
 ==&gt;[4;8]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <ol>
 <li>
-<p>A polynomial solved as <code>[3+1,3*2]</code> (or).</p>
+<p>A polynomial solved as <code>(3+1,3*2)</code> (or).</p>
 </li>
 <li>
-<p>A polynomial solved as <code>[3+1,obj{0}]</code> (exclusive or).</p>
+<p>A polynomial solved as <code>(3+1,obj{0})</code> (exclusive or).</p>
 </li>
 <li>
-<p>A polynomial solved as <code>[3+1,3+1*2]</code>  (and).</p>
+<p>A polynomial solved as <code>(3+1,3+1*2)</code>  (and).</p>
 </li>
 </ol>
 </div>
@@ -1544,10 +1544,10 @@ A compilation process infers the domain/range of the anonymous types.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; -&lt;[[gt,0],[gt,10]]
-==&gt;[bool&lt;=_[gt,0],bool&lt;=_[gt,10]]
-mmlang&gt; int-&lt;[[gt,0],[gt,10]]
-==&gt;[bool&lt;=int[gt,0],bool&lt;=int[gt,10]]</code></pre>
+<pre class="highlight"><code>mmlang&gt; -&lt;([gt,0],[gt,10])
+==&gt;(bool&lt;=_[gt,0],bool&lt;=_[gt,10])
+mmlang&gt; int-&lt;([gt,0],[gt,10])
+==&gt;(bool&lt;=int[gt,0],bool&lt;=int[gt,10])</code></pre>
 </div>
 </div>
 </td>
@@ -1561,9 +1561,9 @@ The general form of a <code>poly</code> from each of the three polynomial rings 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[[t0{q0}],[t1{q1}],...,[tn{qn}]]
-[[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
-[[t0{q0}];[t1{q1}];...;[tn{qn}]]</code></pre>
+<pre class="highlight"><code>([t0{q0}],[t1{q1}],...,[tn{qn}])
+([t0{q0}]|[t1{q1}]|...|[tn{qn}])
+([t0{q0}];[t1{q1}];...;[tn{qn}])</code></pre>
 </div>
 </div>
 <div class="exampleblock">
@@ -1576,7 +1576,7 @@ Each has a respective <code>mmlang</code> syntax sugar that is the preferred not
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><code>[ ]</code>: The <em>value</em> form of a <code>poly</code> is an "atomic" poly that can only be resolved when used in conjection with <code>poly</code>-specific instructions/operators.</p>
+<p><code>( )</code>: The <em>value</em> form of a <code>poly</code> is an "atomic" poly that can only be resolved when used in conjection with <code>poly</code>-specific instructions/operators.</p>
 </li>
 <li>
 <p><code>-&lt;</code>: The <em>split</em> operator is syntax sugar for <code>poly&lt;=obj[split,poly]</code> where the incoming <code>obj</code> is cloned across the <code>poly</code> terms.
@@ -1586,7 +1586,7 @@ The result is the result of applying the incoming <code>obj</code> to each <code
 <p><code>&gt;-</code>: The <em>merge</em> operator is syntax sugar for <code>obj{*}&lt;=poly[merge]</code> where the incoming <code>poly</code> is deconstructed into its component terms, where the resultant <code>obj&#8217;s</code> quantifier is computed the polynomial&#8217;s summation formula.</p>
 </li>
 <li>
-<p><code>( )</code>: The <em>type</em> form of a <code>poly</code> is a "functional" poly that can be composed with other types, where <code>(a,b,c)</code> is equivalent to <code>-&lt;[a,b,c]&gt;-</code>.</p>
+<p><code>[ ]</code>: The <em>type</em> form of a <code>poly</code> is a "functional" poly that can be composed with other types, where <code>[a,b,c]</code> is equivalent to <code>-&lt;(a,b,c)&gt;-</code>.</p>
 </li>
 </ol>
 </div>
@@ -1641,11 +1641,11 @@ mmlang&gt; 'marko'{2}                                <b class="conum">(4)</b>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 'mar'([plus,'ko'],[plus,'ko'])
+<pre class="highlight"><code>mmlang&gt; 'mar'[[plus,'ko'],[plus,'ko']]
 ==&gt;'marko'{2}
-mmlang&gt; 'mar'([plus,'ko']{2},.)
+mmlang&gt; 'mar'[[plus,'ko']{2},.]
 ==&gt;'marko'{2}
-mmlang&gt; ([start,'mar'][plus,'ko'],[start,'mar'][plus,'ko'])
+mmlang&gt; [[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]
 ==&gt;'marko'{2}</code></pre>
 </div>
 </div>
@@ -1658,10 +1658,10 @@ a(b+c) &amp;=&amp; \; ab + ac \\ (b+c)a &amp;=&amp; \; ba + ca \end{split}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 'a'(+'b',+'c')
+<pre class="highlight"><code>mmlang&gt; 'a'[+'b',+'c']
 ==&gt;'ab'
 ==&gt;'ac'
-mmlang&gt; ('b','c')+'a'
+mmlang&gt; ['b','c']+'a'
 ==&gt;'ba'
 ==&gt;'ca'</code></pre>
 </div>
@@ -1696,11 +1696,11 @@ Type equality is based on ctype and trace equality.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; [int,.]==[int,.]
+<pre class="highlight"><code>mmlang&gt; (int,.)==(int,.)
 ==&gt;true
-mmlang&gt; [int,.]==[int[plus,10],.]
+mmlang&gt; (int,.)==(int[plus,10],.)
 ==&gt;false
-mmlang&gt; [int[plus,10],.]==[int[plus,10],.]
+mmlang&gt; (int[plus,10],.)==(int[plus,10],.)
 ==&gt;true</code></pre>
 </div>
 </div>
@@ -1713,7 +1713,7 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; [int[plus,10],.]==[int[plus,10][plus,0],.]
+<pre class="highlight"><code>mmlang&gt; (int[plus,10],.)==(int[plus,10][plus,0],.)
 ==&gt;false</code></pre>
 </div>
 </div>
@@ -1759,11 +1759,11 @@ The polynomial reduces to <code>obj{0}</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 'mar'([plus,'ko']|[plus,'io'])
+<pre class="highlight"><code>mmlang&gt; 'mar'[[plus,'ko']|[plus,'io']]
 ==&gt;'marko'
-mmlang&gt; 'mar'([plus,'ko']{0}|[plus,'io'])
+mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']]
 ==&gt;'mario'
-mmlang&gt; 'mar'([plus,'ko']{0}|[plus,'io']{0})
+mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']{0}]
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -1803,9 +1803,9 @@ mmlang&gt;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 'mar'([plus,'k'];[plus,'o'])
+<pre class="highlight"><code>mmlang&gt; 'mar'[[plus,'k'];[plus,'o']]
 ==&gt;'marko'
-mmlang&gt; 'mar'([plus,'k'];[plus,'o']{0})
+mmlang&gt; 'mar'[[plus,'k'];[plus,'o']{0}]
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -1832,11 +1832,11 @@ mmlang&gt;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 'mar'-&lt;[[plus,'k'];[plus,'o']]
+<pre class="highlight"><code>mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])
 ==&gt;['mark';'marko']
-mmlang&gt; 'mar'-&lt;[[plus,'k'];[plus,'o']]&gt;-
+mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])&gt;-
 ==&gt;'marko'
-mmlang&gt; 'mar'-&lt;[[plus,'k'];[plus,'o']][last]
+mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])[last]
 ==&gt;'marko'</code></pre>
 </div>
 </div>
@@ -1878,8 +1878,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock">term expression concatenation</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b']+['c','d']
-==&gt;['a','b','c','d']</code></pre>
+<pre class="highlight"><code>mmlang&gt; ('a','b')+('c','d')
+==&gt;('a','b','c','d')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -1891,8 +1891,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Dot_product">dot product</a> that is distributive over addition via <a href="https://en.wikipedia.org/wiki/FOIL_method">FOIL</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b']*['c','d']
-==&gt;[['a','c'],['a','d'],['b','c'],['b','d']]</code></pre>
+<pre class="highlight"><code>mmlang&gt; ('a','b')*('c','d')
+==&gt;(('a','c'),('a','d'),('b','c'),('b','d'))</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -1904,8 +1904,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Hadamard_product_(matrices)">Hadamard</a> pairwise product</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b']=['c','d']
-==&gt;['c','d']</code></pre>
+<pre class="highlight"><code>mmlang&gt; ('a','b')=('c','d')
+==&gt;('c','d')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -1917,9 +1917,9 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock">the first term of the polynomial</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b'][head]
+<pre class="highlight"><code>mmlang&gt; ('a','b')[head]
 ==&gt;'a'
-mmlang&gt; [,.][head]
+mmlang&gt; (,.)[head]
 language error: empty polys do not have heads</code></pre>
 </div>
 </div></div></td>
@@ -1932,9 +1932,9 @@ language error: empty polys do not have heads</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the polynomial without the first term</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b'][tail]
-==&gt;['b'.,]
-mmlang&gt; [,.][tail]
+<pre class="highlight"><code>mmlang&gt; ('a','b')[tail]
+==&gt;('b'.,)
+mmlang&gt; (,.)[tail]
 language error: empty polys do not have tails</code></pre>
 </div>
 </div></div></td>
@@ -1947,9 +1947,9 @@ language error: empty polys do not have tails</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the last term of the polynomial</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b'][last]
+<pre class="highlight"><code>mmlang&gt; ('a','b')[last]
 ==&gt;'b'
-mmlang&gt; [,.][last]
+mmlang&gt; (,.)[last]
 language error: empty polys do not have lasts</code></pre>
 </div>
 </div></div></td>
@@ -1962,9 +1962,9 @@ language error: empty polys do not have lasts</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">term access by index</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b','c'].1
+<pre class="highlight"><code>mmlang&gt; ('a','b','c').1
 ==&gt;'b'
-mmlang&gt; ['a','b','c'].3
+mmlang&gt; ('a','b','c').3
 language error: poly index is out of bounds: 3</code></pre>
 </div>
 </div></div></td>
@@ -1977,10 +1977,10 @@ language error: poly index is out of bounds: 3</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">term insertion term by index</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b','c'][put,1,'ab']
-==&gt;['a','ab','b','c']
-mmlang&gt; ['a','b','c'][put,5,'e']
-==&gt;['a','b','c',,'e']</code></pre>
+<pre class="highlight"><code>mmlang&gt; ('a','b','c')[put,1,'ab']
+==&gt;('a','ab','b','c')
+mmlang&gt; ('a','b','c')[put,5,'e']
+==&gt;('a','b','c',,'e')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2014,8 +2014,8 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; -&lt;['a','b','c']
-==&gt;['a','b','c']</code></pre>
+<pre class="highlight"><code>mmlang&gt; -&lt;('a','b','c')
+==&gt;('a','b','c')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2026,7 +2026,7 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; -&lt;['a','b','c']&gt;-
+<pre class="highlight"><code>mmlang&gt; -&lt;('a','b','c')&gt;-
 ==&gt;'a'
 ==&gt;'b'
 ==&gt;'c'</code></pre>
@@ -2052,37 +2052,37 @@ mmlang&gt; ['a','b','c'][put,5,'e']
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code>-<strong>apply</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[;]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;(;)</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_;_]
-==&gt;[6;6]
-mmlang&gt; 6-&lt;[_+1;_&gt;6]
-==&gt;[7;true]</code></pre>
+<pre class="highlight"><code>mmlang&gt; 6-&lt;(_;_)
+==&gt;(6;6)
+mmlang&gt; 6-&lt;(_+1;_&gt;6)
+==&gt;(7;true)</code></pre>
 </div>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code>-<strong>copy</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[,]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;(,)</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_,_]
-==&gt;[6,6]
-mmlang&gt; 6-&lt;[_&gt;0,_&gt;8]
-==&gt;[true,false]</code></pre>
+<pre class="highlight"><code>mmlang&gt; 6-&lt;(_,_)
+==&gt;(6,6)
+mmlang&gt; 6-&lt;(_&gt;0,_&gt;8)
+==&gt;(true,false)</code></pre>
 </div>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code>-<strong>pick</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;[|]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;(|)</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_|_]
-==&gt;[6|]
-mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]
-==&gt;[true|]</code></pre>
+<pre class="highlight"><code>mmlang&gt; 6-&lt;(_|_)
+==&gt;(6|)
+mmlang&gt; 6-&lt;(_&gt;0|_&gt;8)
+==&gt;(true|)</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2104,24 +2104,24 @@ mmlang&gt; 6-&lt;[_&gt;0|_&gt;8]
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code>-<strong>return</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[;]&gt;-</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(;)&gt;-</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_;_]&gt;-
+<pre class="highlight"><code>mmlang&gt; 6-&lt;(_;_)&gt;-
 ==&gt;6
-mmlang&gt; 6-&lt;[_+1;_&gt;6]&gt;-
+mmlang&gt; 6-&lt;(_+1;_&gt;6)&gt;-
 ==&gt;true</code></pre>
 </div>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code>-<strong>merge</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[,]&gt;-</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(,)&gt;-</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_,_]&gt;-
+<pre class="highlight"><code>mmlang&gt; 6-&lt;(_,_)&gt;-
 ==&gt;6{2}
-mmlang&gt; 6-&lt;[_&gt;0,_&gt;8]&gt;-
+mmlang&gt; 6-&lt;(_&gt;0,_&gt;8)&gt;-
 ==&gt;true
 ==&gt;false</code></pre>
 </div>
@@ -2129,12 +2129,12 @@ mmlang&gt; 6-&lt;[_&gt;0,_&gt;8]&gt;-
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code>-<strong>coalesce</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[|]&gt;-</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(|)&gt;-</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 6-&lt;[_|_]&gt;-
+<pre class="highlight"><code>mmlang&gt; 6-&lt;(_|_)&gt;-
 ==&gt;6
-mmlang&gt; 6-&lt;[_+1|_&gt;6]&gt;-
+mmlang&gt; 6-&lt;(_+1|_&gt;6)&gt;-
 ==&gt;7</code></pre>
 </div>
 </div></div></td>
@@ -2172,17 +2172,17 @@ A <code>lst</code> is analogous to a <a href="https://en.wikipedia.org/wiki/List
 <p>Labeling <code>poly</code> indices.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['marko',29]
-==&gt;['marko',29]
-mmlang&gt; ['marko',29].0                    <b class="conum">(1)</b>
+<pre class="highlight"><code>mmlang&gt; ('marko',29)
+==&gt;('marko',29)
+mmlang&gt; ('marko',29).0                    <b class="conum">(1)</b>
 ==&gt;'marko'
-mmlang&gt; ['marko',29].1
+mmlang&gt; ('marko',29).1
 ==&gt;29
-mmlang&gt; ['name'-&gt;'marko','age'-&gt;29]
-==&gt;['name'-&gt;'marko','age'-&gt;29]
-mmlang&gt; ['name'-&gt;'marko','age'-&gt;29].name  <b class="conum">(2)</b>
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)
+==&gt;('name'-&gt;'marko','age'-&gt;29)
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29).name  <b class="conum">(2)</b>
 ==&gt;'marko'
-mmlang&gt; ['name'-&gt;'marko','age'-&gt;29].age
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29).age
 ==&gt;29</code></pre>
 </div>
 </div>
@@ -2201,13 +2201,13 @@ mmlang&gt; ['name'-&gt;'marko','age'-&gt;29].age
 <p>Accessing multiple slots at a time.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4]
-==&gt;['a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4]
-mmlang&gt; ['a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4][get,is&gt;'a']
+<pre class="highlight"><code>mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4)
+==&gt;('a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4)
+mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4)[get,is&gt;'a']
 ==&gt;2
 ==&gt;3
 ==&gt;4
-mmlang&gt; ['a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4][get,is&gt;'b']
+mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'c'-&gt;3,'d'-&gt;4)[get,is&gt;'b']
 ==&gt;3
 ==&gt;4
 mmlang&gt;</code></pre>
@@ -2218,11 +2218,11 @@ mmlang&gt;</code></pre>
 <p>Branching with predicates.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1,2,3-&lt;[is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my']
-==&gt;[-&gt;|1-&gt;'my']
-==&gt;[2-&gt;'name'|-&gt;]
-==&gt;[-&gt;|3-&gt;'is']
-mmlang&gt; 1,2,3-&lt;[is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my']&gt;-
+<pre class="highlight"><code>mmlang&gt; 1,2,3-&lt;(is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my')
+==&gt;(-&gt;|1-&gt;'my')
+==&gt;(2-&gt;'name'|-&gt;)
+==&gt;(-&gt;|3-&gt;'is')
+mmlang&gt; 1,2,3-&lt;(is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my')&gt;-
 ==&gt;'my'
 ==&gt;'name'
 ==&gt;'is'</code></pre>
@@ -2238,9 +2238,9 @@ mmlang&gt; 1,2,3-&lt;[is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my']&
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; [1-&gt;'a',2-&gt;'b']==[1-&gt;'a',2-&gt;'b']
+<pre class="highlight"><code>mmlang&gt; (1-&gt;'a',2-&gt;'b')==(1-&gt;'a',2-&gt;'b')
 ==&gt;true
-mmlang&gt; [1-&gt;'a',2-&gt;'b']==[2-&gt;'b',1-&gt;'a']
+mmlang&gt; (1-&gt;'a',2-&gt;'b')==(2-&gt;'b',1-&gt;'a')
 ==&gt;false</code></pre>
 </div>
 </div>
@@ -2254,12 +2254,12 @@ mmlang&gt; [1-&gt;'a',2-&gt;'b']==[2-&gt;'b',1-&gt;'a']
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 23-&lt;[is&gt;10-&gt;'a',int-&gt;'b']
-==&gt;[23-&gt;'b','a']
-mmlang&gt; 23-&lt;[is&gt;10-&gt;'a'|int-&gt;'b']
-==&gt;[23-&gt;'a'|-&gt;]
-mmlang&gt; 23-&lt;[is&gt;10-&gt;'a';int-&gt;'b']
-==&gt;[23-&gt;'b']</code></pre>
+<pre class="highlight"><code>mmlang&gt; 23-&lt;(is&gt;10-&gt;'a',int-&gt;'b')
+==&gt;(23-&gt;'b','a')
+mmlang&gt; 23-&lt;(is&gt;10-&gt;'a'|int-&gt;'b')
+==&gt;(23-&gt;'a'|-&gt;)
+mmlang&gt; 23-&lt;(is&gt;10-&gt;'a';int-&gt;'b')
+==&gt;(23-&gt;'b')</code></pre>
 </div>
 </div>
 </div>
@@ -2281,14 +2281,14 @@ As values do not pass through values, <code>[hmult]</code> is provided a <code>t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; ['a','b','c']=[obj{0},obj{0},str[id]]   // <b class="conum">(1)</b>
-==&gt;[,,'c']
-mmlang&gt; ['a','b','c']=[,,str[id]]               // <b class="conum">(2)</b>
-==&gt;[,,'c']
-mmlang&gt; ['a','b','c']=[,,_[id]]                 // <b class="conum">(3)</b>
-==&gt;[,,'c']
-mmlang&gt; ['a','b','c']=[,,_]                     // <b class="conum">(4)</b>
-==&gt;[,,'c']</code></pre>
+<pre class="highlight"><code>mmlang&gt; ('a','b','c')=(obj{0},obj{0},str[id])   // <b class="conum">(1)</b>
+==&gt;(,,'c')
+mmlang&gt; ('a','b','c')=(,,str[id])               // <b class="conum">(2)</b>
+==&gt;(,,'c')
+mmlang&gt; ('a','b','c')=(,,_[id])                 // <b class="conum">(3)</b>
+==&gt;(,,'c')
+mmlang&gt; ('a','b','c')=(,,_)                     // <b class="conum">(4)</b>
+==&gt;(,,'c')</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2335,16 +2335,16 @@ mmlang&gt; ['a','b','c']=[,,_]                     // <b class="conum">(4)</b>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; [[1,2,3],[4,5,6],[7,8,9]]=[=[_,,],=[,_,],=[,,_]]
-==&gt;[[1,,],[,5,],[,,9]]
-mmlang&gt; [[1,2,3],
-         [4,5,6],
-         [7,8,9]]
+<pre class="highlight"><code>mmlang&gt; ((1,2,3),(4,5,6),(7,8,9))=(=(_,,),=(,_,),=(,,_))
+==&gt;((1,,),(,5,),(,,9))
+mmlang&gt; ((1,2,3),
+         (4,5,6),
+         (7,8,9))
          =
-        [=[_,,],
-         =[,_,],
-         =[,,_]]
-==&gt;[[1,,],[,5,],[,,9]]</code></pre>
+        (=(_,,),
+         =(,_,),
+         =(,,_))
+==&gt;((1,,),(,5,),(,,9))</code></pre>
 </div>
 </div>
 </div>
@@ -2638,9 +2638,9 @@ where the <em>branch</em> component is, in fact, a group with <code>(a{q},a{-q})
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; -&lt;['a'{2},'a'{-2}]
+<pre class="highlight"><code>mmlang&gt; -&lt;('a'{2},'a'{-2})
 ==&gt;['a'{2},'a'{-2}]
-mmlang&gt; -&lt;['a'{2},'a'{-2}]&gt;-
+mmlang&gt; -&lt;('a'{2},'a'{-2})&gt;-
 mmlang&gt;
 mmlang&gt; [branch,['a'{2},'a'{-2}]]
 mmlang&gt;</code></pre>
@@ -2720,12 +2720,12 @@ This branch structure will product one, two, or three <code>ints</code> given a 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; int&lt;int[is&gt;0],int[is&lt;0],int&gt;
-==&gt;int{1,3}&lt;=int-&lt;[
+<pre class="highlight"><code>mmlang&gt; int[int[is&gt;0],int[is&lt;0],int]
+==&gt;int{1,3}&lt;=int-&lt;(
      int{?}&lt;=int[is,bool&lt;=int[gt,0]],
      int{?}&lt;=int[is,bool&lt;=int[lt,0]],
      int
-   ]&gt;-</code></pre>
+   )&gt;-</code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -2773,10 +2773,10 @@ Example mm-ADT types demonstrating the equalities of the ring axioms are present
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-associativity.png"><img src="./images/language/additive-associativity.png" alt="additive associativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1((+1,*2),*3)
+<pre class="highlight"><code>mmlang&gt; 1[[+1,*2],*3]
 ==&gt;2{2}
 ==&gt;3
-mmlang&gt; 1(+1,(*2,*3))
+mmlang&gt; 1[+1,[*2,*3]]
 ==&gt;2{2}
 ==&gt;3</code></pre>
 </div>
@@ -2787,9 +2787,9 @@ mmlang&gt; 1(+1,(*2,*3))
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-identity.png"><img src="./images/language/additive-identity.png" alt="additive identity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1({0},+1)
+<pre class="highlight"><code>mmlang&gt; 1[{0},+1]
 ==&gt;2
-mmlang&gt; 1(+1,{0})
+mmlang&gt; 1[+1,{0}]
 ==&gt;2</code></pre>
 </div>
 </div></div></td>
@@ -2799,10 +2799,10 @@ mmlang&gt; 1(+1,{0})
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-inverse.png"><img src="./images/language/additive-inverse.png" alt="additive inverse"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1((+1,*2),*3)
+<pre class="highlight"><code>mmlang&gt; 1[[+1,*2],*3]
 ==&gt;2{2}
 ==&gt;3
-mmlang&gt; 1(+1,(*2,*3))
+mmlang&gt; 1[+1,[*2,*3]]
 ==&gt;2{2}
 ==&gt;3</code></pre>
 </div>
@@ -2813,9 +2813,9 @@ mmlang&gt; 1(+1,(*2,*3))
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-commutativity.png"><img src="./images/language/additive-commutativity.png" alt="additive commutativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1(+1,*2)
+<pre class="highlight"><code>mmlang&gt; 1[+1,*2]
 ==&gt;2{2}
-mmlang&gt; 1(*2,+1)
+mmlang&gt; 1[*2,+1]
 ==&gt;2{2}</code></pre>
 </div>
 </div></div></td>
@@ -2825,9 +2825,9 @@ mmlang&gt; 1(*2,+1)
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-associativity.png"><img src="./images/language/multiplicative-associativity.png" alt="multiplicative associativity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1((+1;*2);*3)
+<pre class="highlight"><code>mmlang&gt; 1[[+1;*2];*3]
 ==&gt;12
-mmlang&gt; 1(+1;(*2;*3))
+mmlang&gt; 1[+1;[*2;*3]]
 ==&gt;12</code></pre>
 </div>
 </div></div></td>
@@ -2837,9 +2837,9 @@ mmlang&gt; 1(+1;(*2;*3))
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-identity.png"><img src="./images/language/multiplicative-identity.png" alt="multiplicative identity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1({1};+1)
+<pre class="highlight"><code>mmlang&gt; 1[{1};+1]
 ==&gt;2
-mmlang&gt; 1(+1;{1})
+mmlang&gt; 1[+1;{1}]
 ==&gt;2
 mmlang&gt; 1+1
 ==&gt;2</code></pre>
@@ -2851,9 +2851,9 @@ mmlang&gt; 1+1
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-right-distributivity.png"><img src="./images/language/multiplicative-right-distributivity.png" alt="multiplicative right distributivity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1((+1,*2&gt;;*3)
+<pre class="highlight"><code>mmlang&gt; 1[[+1,*2&gt;;*3]
 ==&gt;6{2}
-mmlang&gt; 1((+1;*3),(*2;*3))
+mmlang&gt; 1[[+1;*3],[*2;*3]]
 ==&gt;6{2}</code></pre>
 </div>
 </div></div></td>
@@ -2863,10 +2863,10 @@ mmlang&gt; 1((+1;*3),(*2;*3))
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-left-distributivity.png"><img src="./images/language/multiplicative-left-distributivity.png" alt="multiplicative left distributivity"></a></span></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1(+1;(*2,*3))
+<pre class="highlight"><code>mmlang&gt; 1[+1;[*2,*3]]
 ==&gt;4
 ==&gt;6
-mmlang&gt; 1((+1;*2),(+1;*3))
+mmlang&gt; 1[[+1;*2],[+1;*3]]
 ==&gt;4
 ==&gt;6</code></pre>
 </div>
@@ -2889,7 +2889,7 @@ mmlang&gt; 1((+1;*2),(+1;*3))
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-30 04:57:27 -0600
+Last updated 2020-05-30 13:25:07 -0600
 </div>
 </div>
 </body>
