@@ -2769,12 +2769,12 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 </div>
 <div class="paragraph">
 <p>\[
-\begin{bmatrix}
-1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \\ \end{bmatrix}
-\cdot \begin{bmatrix}
-1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \\ \end{bmatrix}
-= \begin{bmatrix}
-1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \\ \end{bmatrix}
+\begin{pmatrix}
+1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \\ \end{pmatrix}
+\cdot \begin{pmatrix}
+1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \\ \end{pmatrix}
+= \begin{pmatrix}
+1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \\ \end{pmatrix}
 \]</p>
 </div>
 <div class="paragraph">
@@ -2782,12 +2782,12 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 </div>
 <div class="paragraph">
 <p>\[
-\begin{bmatrix}
-1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \\ \end{bmatrix}
-\bullet \begin{bmatrix}
-1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \\ \end{bmatrix}
-= \begin{bmatrix}
-1 &amp; 0 &amp; 0 \\ 0 &amp; 5 &amp; 0 \\ 0 &amp; 0 &amp; 9 \\ \end{bmatrix}
+\begin{pmatrix}
+1 &amp; 2 &amp; 3 \\ 4 &amp; 5 &amp; 6 \\ 7 &amp; 8 &amp; 9 \\ \end{pmatrix}
+\bullet \begin{pmatrix}
+1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \\ \end{pmatrix}
+= \begin{pmatrix}
+1 &amp; 0 &amp; 0 \\ 0 &amp; 5 &amp; 0 \\ 0 &amp; 0 &amp; 9 \\ \end{pmatrix}
 \]</p>
 </div>
 <div class="listingblock">
@@ -2833,37 +2833,37 @@ mmlang&gt; ((<span style="color:#00D">1</span>,<span style="color:#00D">2</span>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = b + a \$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a|b) = (b|a)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a|b] = [b|a]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">commutative coproducts</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>((a|b)|c) = (a|(b|c))</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[[a|b]|c] = [a|[b|c]]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a;(b|c)) = ((a;b)|(a;c))</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a;[b|c]] = [[a;b]|[a;c]]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$0 + a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>({0}|a) = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{0}|a] = a</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$0 \ast a = 0\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>({0};a) = {0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{0};a] = {0}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit annihilation</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$1 \ast a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>({1};a) = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{1};a] = a</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">product unit</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$c^ {b^a} = c^{a \ast b}\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(a;b;c) = ((a;b);c)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a;b;c] = [[a;b];c]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">currying</p></td>
 </tr>
 </tbody>
