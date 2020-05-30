@@ -1113,23 +1113,23 @@ mmlang> ('a','b','c')=(,,_)                     // <4>
 The https://en.wikipedia.org/wiki/Identity_matrix[identity matrix] is a \$\{0,1\}\$-matrix that when multiplied using standard matrix product, the result is equivalent to `[id]`.
 
 \[
-\begin{bmatrix}
-1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \\ \end{bmatrix}
-\cdot \begin{bmatrix}
-1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \\ \end{bmatrix}
-= \begin{bmatrix}
-1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \\ \end{bmatrix}
+\begin{pmatrix}
+1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \\ \end{pmatrix}
+\cdot \begin{pmatrix}
+1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \\ \end{pmatrix}
+= \begin{pmatrix}
+1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \\ \end{pmatrix}
 \]
 
 However, with pair-wise product, only the main diagonol remains.
 
 \[
-\begin{bmatrix}
-1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \\ \end{bmatrix}
-\bullet \begin{bmatrix}
-1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \\ \end{bmatrix}
-= \begin{bmatrix}
-1 & 0 & 0 \\ 0 & 5 & 0 \\ 0 & 0 & 9 \\ \end{bmatrix}
+\begin{pmatrix}
+1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \\ \end{pmatrix}
+\bullet \begin{pmatrix}
+1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \\ \end{pmatrix}
+= \begin{pmatrix}
+1 & 0 & 0 \\ 0 & 5 & 0 \\ 0 & 0 & 9 \\ \end{pmatrix}
 \]
 
 [source]
@@ -1156,13 +1156,13 @@ A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_cat
 |===
 | axiom | mmlang type | description
 
-| \$a + b = b + a \$                           | `(a\|b) = (b\|a)`                    | commutative coproducts
-| \$(a + b) + c = a + (b + c)\$                | `\((a\|b)\|c) = (a\|(b\|c))`         | associative coproducts
-| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `(a;(b\|c)) = \((a;b)\|(a;c))`       | distributivity
-| \$0 + a = a\$                                | `({0}\|a) = a`                       | coproduct unit
-| \$0 \ast a = 0\$                             | `({0};a) = {0}`                      | coproduct unit annihilation
-| \$1 \ast a = a\$                             | `({1};a) = a`                        | product unit
-| \$c^ {b^a} = c^{a \ast b}\$                  | `(a;b;c) = ((a;b);c)`                | currying
+| \$a + b = b + a \$                           | `[a\|b] = [b\|a]`                    | commutative coproducts
+| \$(a + b) + c = a + (b + c)\$                | `[[a\|b]\|c] = [a\|[b\|c]]`         | associative coproducts
+| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `[a;[b\|c]] = [[a;b]\|[a;c]]`       | distributivity
+| \$0 + a = a\$                                | `[{0}\|a] = a`                       | coproduct unit
+| \$0 \ast a = 0\$                             | `[{0};a] = {0}`                      | coproduct unit annihilation
+| \$1 \ast a = a\$                             | `[{1};a] = a`                        | product unit
+| \$c^ {b^a} = c^{a \ast b}\$                  | `[a;b;c] = [[a;b];c]`                | currying
 |===
 
 The mm-ADT VM is a computing machine founded on a non-commutative https://en.wikipedia.org/wiki/Polynomial_ring[polynomial] ring called a _stream ring_. The practical mental-model that mm-ADT purports is that of streams of data flowing through serial (`*`) and parallel (`+`) structures bound by functions (instructions). Moreover, these streams can be split and merged via the product and coproduct of _streams_ of data whose size and dynamics are regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is manipulated by `mmlang`. However, there are two other intervening algebras (at the processor and storage levels), where ultimately, the `mmlang` https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] realizes a correspondence by means of a https://en.wikipedia.org/wiki/Module_(mathematics)[ring action] upon a https://en.wikipedia.org/wiki/Magma_%28algebra%29[magma].

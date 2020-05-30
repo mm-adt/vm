@@ -102,6 +102,6 @@ object Rec {
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)
-    }).toMap[Obj, Obj]))
+    })))
   }
 }
