@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.{LanguageException, Tokens}
@@ -68,6 +68,7 @@ object PlusOp extends Func[Obj, Obj] {
       }).via(start, inst)
     } catch {
       case _: ClassCastException => throw LanguageException.typingError(start, asType(inst.arg0[Obj])) // TODO: type check at VInst
+      case _: LanguageException => start.via(start,inst)
     }
   }
 }

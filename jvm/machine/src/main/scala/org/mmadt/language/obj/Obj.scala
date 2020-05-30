@@ -147,7 +147,7 @@ trait Obj
     .getOrElse(this.asInstanceOf[E])
 
   def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = {
-    if(!rangeType.alive) return zeroObj.asInstanceOf[E]
+    if (!rangeType.alive) return zeroObj.asInstanceOf[E]
     LanguageException.testTypeCheck(range.range, rangeType.asInstanceOf[Type[E]].domain)
     this match {
       case _: Value[_] => Processor.iterator(model).apply(this, rangeType)
@@ -163,6 +163,10 @@ trait Obj
 }
 
 object Obj {
+  def nest[A <: Obj](obj: Type[Obj]): Type[Obj] = {
+    obj.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(obj.range.asInstanceOf[Type[Obj]])((a, b) => a.clone(via = (b._1, b._2)).asInstanceOf[Type[Obj]])
+  }
+
   def fetch[A <: Obj](obj: Obj, label: String): A = {
     val result: Option[A] = Obj.fetchOption[A](obj, label)
     if (result.isEmpty) throw LanguageException.labelNotFound(obj.tracer(zeroObj `;` __), label)

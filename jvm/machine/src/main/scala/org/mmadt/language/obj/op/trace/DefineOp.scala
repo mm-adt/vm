@@ -12,5 +12,5 @@ trait DefineOp {
 }
 object DefineOp extends Func[Obj, Obj] {
   def apply[O <: Obj](name: StrValue, obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.define, List(name, obj)), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.via(start, Inst.oldInst(inst))
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = if (Obj.fetchOption(start, inst.arg0[StrValue].g).isEmpty) start.via(start, Inst.oldInst(inst)) else start
 }

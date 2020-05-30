@@ -22,14 +22,16 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Int, Lst, Obj, Real}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,23 +46,28 @@ trait MultOp[O <: Obj] {
 object MultOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.mult, List(obj)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    (start match {
-      case _: Strm[_] => start
-      case _: Value[_] => start match {
-        case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
-        case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
-        // poly mult
-        case multA: Lst[Obj] if multA.isSerial => inst.arg0[Obj] match {
-          case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist ++ multB.glist)
-          case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(plusB.glist.map(a => lst(Tokens.`;`, multA.glist :+ a: _*)))
+    Try[Obj] {
+      start match {
+        case _: Strm[_] => start
+        case _: Value[_] => start match {
+          case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
+          case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
+          // poly mult
+          case multA: Lst[Obj] if multA.isSerial => inst.arg0[Obj] match {
+            case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist ++ multB.glist)
+            case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(plusB.glist.map(a => lst(Tokens.`;`, multA.glist :+ a: _*)))
+          }
+          case multA: Lst[Obj] if multA.isPlus => inst.arg0[Obj] match {
+            case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist.map(a => lst(Tokens.`;`, a +: multB.glist: _*)))
+            case plusB: Lst[Obj] if plusB.isPlus => multA.clone(multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b))))
+          }
         }
-        case multA: Lst[Obj] if multA.isPlus => inst.arg0[Obj] match {
-          case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist.map(a => lst(Tokens.`;`, a +: multB.glist: _*)))
-          case plusB: Lst[Obj] if plusB.isPlus => multA.clone(multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b))))
-        }
+        case _ => start
       }
-      case _ => start
-    }).via(start, inst)
+    }.toEither match {
+      case left: Left[Throwable, Obj] => throw new LanguageException(left.value.getMessage)
+      case right: Right[Throwable, Obj] => right.value.via(start, inst)
+    }
   }
 }
 
