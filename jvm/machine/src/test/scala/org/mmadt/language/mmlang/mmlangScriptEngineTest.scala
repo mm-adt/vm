@@ -783,7 +783,7 @@ class mmlangScriptEngineTest extends FunSuite {
         | [define,'zero',int[is==[zero]]]
         | [define,'one',int[is==[one]]]
         |   -<[[a,nat],[a,zero],[a,one]]""".stripMargin))
-    assertResult("[bool<=int[a,_<.nat>],bool<=int[a,_<.zero>],bool<=int[a,_<.one>]]")(engine.eval(
+    assertResult("[bool<=int[a,int{?}<=int[is,bool<=int[gt,0]]],bool<=int[a,int{?}<=int[is,bool<=int[eq,0]]],bool<=int[a,int{?}<=int[is,bool<=int[eq,1]]]]")(engine.eval(
       """ int
         | [define,'nat',int[is>0]]
         | [define,'zero',[is==[zero]]]
