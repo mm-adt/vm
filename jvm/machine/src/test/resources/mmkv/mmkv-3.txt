@@ -1,1 +1,1 @@
-rec:['k'->int,'v'->bool]
+rec:('k'->int,'v'->bool)

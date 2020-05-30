@@ -449,8 +449,8 @@ mmlang>
 
 .Section Language Constructs
 ================================================================
-. `( )` is a type polynomial.
-. `[ ]` is a value polynomial.
+. `[ ]` is a type polynomial.
+. `( )` is a value polynomial.
 . `lst` is a polynomial with terms indexed by `int`.
 . `rec` is a polynomial with terms indexed by `obj`.
 . `,` is a polynomial term deliminator denoting parallel compose.
@@ -513,7 +513,7 @@ A `poly` is a _decoupling_ of _objs_ composed of _quantifiers_ and _objects_ typ
 
 [source]
 ----
-[x0{q0},x1{q1},x2{q2},...,xn{qn}]
+(x0{q0},x1{q1},x2{q2},...,xn{qn})
 ----
 
 where `qi` is a quantifier, `xi` is an object, `xi{qi}` is an `obj` (type or value), and the `objs` are isolated via `,`.
@@ -541,12 +541,12 @@ A `vpoly` can be understood as a common list containing only values.
 
 [source]
 ----
-mmlang> ['a','b','c']      <1>
-==>['a','b','c']
-mmlang> [,.]               <2>
-==>[,.]
-mmlang> ['a',.]            <3>
-==>['a',.]
+mmlang> ('a','b','c')      <1>
+==>('a','b','c')
+mmlang> (,.)               <2>
+==>(,.)
+mmlang> ('a',.)            <3>
+==>('a',.)
 ----
 <1> A fully reduced three term polynomial.
 <2> An empty `,-poly`.
@@ -556,10 +556,10 @@ The reason for `.` is that the `,-vpoly` below is a two term `poly` with the sec
 
 [source]
 ----
-mmlang> ['a',]
-==>['a',]
-mmlang> ['a',].1
-mmlang> ['a',.].1
+mmlang> ('a',)
+==>('a',)
+mmlang> ('a',).1
+mmlang> ('a',.).1
 language error: poly index is out of bounds: 1
 ----
 
@@ -567,16 +567,16 @@ A `tpoly` can be understood as either an unordered (`,`) or ordered (`|`, `;`) c
 
 [source]
 ----
-mmlang> 3-<[[plus,1],[mult,2]]   <1>
+mmlang> 3-<([plus,1],[mult,2])   <1>
 ==>[4,6]
-mmlang> 3-<[[plus,1]|[mult,2]]   <2>
+mmlang> 3-<([plus,1]|[mult,2])   <2>
 ==>[4|]
-mmlang> 3-<[[plus,1];[mult,2]]   <3>
+mmlang> 3-<([plus,1];[mult,2])   <3>
 ==>[4;8]
 ----
-<1> A polynomial solved as `[3+1,3*2]` (or).
-<2> A polynomial solved as `[3+1,obj{0}]` (exclusive or).
-<3> A polynomial solved as `[3+1,3+1*2]`  (and).
+<1> A polynomial solved as `(3+1,3*2)` (or).
+<2> A polynomial solved as `(3+1,obj{0})` (exclusive or).
+<3> A polynomial solved as `(3+1,3+1*2)`  (and).
 
 [NOTE]
 ================================================================
@@ -586,10 +586,10 @@ A compilation process infers the domain/range of the anonymous types.
 
 [source]
 ----
-mmlang> -<[[gt,0],[gt,10]]
-==>[bool<=_[gt,0],bool<=_[gt,10]]
-mmlang> int-<[[gt,0],[gt,10]]
-==>[bool<=int[gt,0],bool<=int[gt,10]]
+mmlang> -<([gt,0],[gt,10])
+==>(bool<=_[gt,0],bool<=_[gt,10])
+mmlang> int-<([gt,0],[gt,10])
+==>(bool<=int[gt,0],bool<=int[gt,10])
 ----
 ================================================================
 
@@ -599,9 +599,9 @@ The general form of a `poly` from each of the three polynomial rings is expresse
 
 [source]
 ----
-[[t0{q0}],[t1{q1}],...,[tn{qn}]]
-[[t0{q0}]|[t1{q1}]|...|[tn{qn}]]
-[[t0{q0}];[t1{q1}];...;[tn{qn}]]
+([t0{q0}],[t1{q1}],...,[tn{qn}])
+([t0{q0}]|[t1{q1}]|...|[tn{qn}])
+([t0{q0}];[t1{q1}];...;[tn{qn}])
 ----
 
 ================================================================
@@ -609,11 +609,11 @@ The `polys` have two structural representations (a value and a type from) and tw
 The intution being that these operators transform a serial expression into a parallel expression and vice versa.
 Each has a respective `mmlang` syntax sugar that is the preferred notation for all the remaining examples.
 
-. `[ ]`: The _value_ form of a `poly` is an "atomic" poly that can only be resolved when used in conjection with `poly`-specific instructions/operators.
+. `( )`: The _value_ form of a `poly` is an "atomic" poly that can only be resolved when used in conjection with `poly`-specific instructions/operators.
 . `-<`: The _split_ operator is syntax sugar for `poly\<=obj[split,poly]` where the incoming `obj` is cloned across the `poly` terms.
 The result is the result of applying the incoming `obj` to each `poly` term in a `poly` of equal size and type.
 . `>-`: The _merge_ operator is syntax sugar for `obj{*}\<=poly[merge]` where the incoming `poly` is deconstructed into its component terms, where the resultant `obj's` quantifier is computed the polynomial's summation formula.
-. `( )`: The _type_ form of a `poly` is a "functional" poly that can be composed with other types, where `(a,b,c)` is equivalent to `-<[a,b,c]>-`.
+. `[ ]`: The _type_ form of a `poly` is a "functional" poly that can be composed with other types, where `[a,b,c]` is equivalent to `-<(a,b,c)>-`.
 
 ================================================================
 
@@ -650,11 +650,11 @@ In the category `poly`, the previous `mmlang` examples are written as follows.
 
 [source]
 ----
-mmlang> 'mar'([plus,'ko'],[plus,'ko'])
+mmlang> 'mar'[[plus,'ko'],[plus,'ko']]
 ==>'marko'{2}
-mmlang> 'mar'([plus,'ko']{2},.)
+mmlang> 'mar'[[plus,'ko']{2},.]
 ==>'marko'{2}
-mmlang> ([start,'mar'][plus,'ko'],[start,'mar'][plus,'ko'])
+mmlang> [[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]
 ==>'marko'{2}
 ----
 
@@ -666,10 +666,10 @@ a(b+c) &=& \; ab + ac \\ (b+c)a &=& \; ba + ca \end{split}
 
 [source]
 ----
-mmlang> 'a'(+'b',+'c')
+mmlang> 'a'[+'b',+'c']
 ==>'ab'
 ==>'ac'
-mmlang> ('b','c')+'a'
+mmlang> ['b','c']+'a'
 ==>'ba'
 ==>'ca'
 ----
@@ -701,11 +701,11 @@ Type equality is based on ctype and trace equality.
 
 [source]
 ----
-mmlang> [int,.]==[int,.]
+mmlang> (int,.)==(int,.)
 ==>true
-mmlang> [int,.]==[int[plus,10],.]
+mmlang> (int,.)==(int[plus,10],.)
 ==>false
-mmlang> [int[plus,10],.]==[int[plus,10],.]
+mmlang> (int[plus,10],.)==(int[plus,10],.)
 ==>true
 ----
 
@@ -717,7 +717,7 @@ At which point the two types are equivalent and can be merged accordingly.
 
 [source]
 ----
-mmlang> [int[plus,10],.]==[int[plus,10][plus,0],.]
+mmlang> (int[plus,10],.)==(int[plus,10][plus,0],.)
 ==>false
 ----
 ================================================================
@@ -749,11 +749,11 @@ The polynomial reduces to `obj{0}`.
 
 [source]
 ----
-mmlang> 'mar'([plus,'ko']|[plus,'io'])
+mmlang> 'mar'[[plus,'ko']|[plus,'io']]
 ==>'marko'
-mmlang> 'mar'([plus,'ko']{0}|[plus,'io'])
+mmlang> 'mar'[[plus,'ko']{0}|[plus,'io']]
 ==>'mario'
-mmlang> 'mar'([plus,'ko']{0}|[plus,'io']{0})
+mmlang> 'mar'[[plus,'ko']{0}|[plus,'io']{0}]
 mmlang>
 ----
 
@@ -781,9 +781,9 @@ mmlang>
 
 [source]
 ----
-mmlang> 'mar'([plus,'k'];[plus,'o'])
+mmlang> 'mar'[[plus,'k'];[plus,'o']]
 ==>'marko'
-mmlang> 'mar'([plus,'k'];[plus,'o']{0})
+mmlang> 'mar'[[plus,'k'];[plus,'o']{0}]
 mmlang>
 ----
 
@@ -804,11 +804,11 @@ Moreover, a `poly` can be inspected using standard list instructions. Below demo
 
 [source]
 ----
-mmlang> 'mar'-<[[plus,'k'];[plus,'o']]
+mmlang> 'mar'-<([plus,'k'];[plus,'o'])
 ==>['mark';'marko']
-mmlang> 'mar'-<[[plus,'k'];[plus,'o']]>-
+mmlang> 'mar'-<([plus,'k'];[plus,'o'])>-
 ==>'marko'
-mmlang> 'mar'-<[[plus,'k'];[plus,'o']][last]
+mmlang> 'mar'-<([plus,'k'];[plus,'o'])[last]
 ==>'marko'
 ----
 ================================================================
@@ -827,33 +827,33 @@ a|
 [.small]
 [source]
 ----
-mmlang> ['a','b']+['c','d']
-==>['a','b','c','d']
+mmlang> ('a','b')+('c','d')
+==>('a','b','c','d')
 ----
 | `[mult]` | `poly`    | `poly` | vector | https://en.wikipedia.org/wiki/Dot_product[dot product] that is distributive over addition via https://en.wikipedia.org/wiki/FOIL_method[FOIL]
 a|
 [.small]
 [source]
 ----
-mmlang> ['a','b']*['c','d']
-==>[['a','c'],['a','d'],['b','c'],['b','d']]
+mmlang> ('a','b')*('c','d')
+==>(('a','c'),('a','d'),('b','c'),('b','d'))
 ----
 | `[hmult]` | `poly`  | `poly`  | vector | https://en.wikipedia.org/wiki/Hadamard_product_(matrices)[Hadamard] pairwise product
 a|
 [.small]
 [source]
 ----
-mmlang> ['a','b']=['c','d']
-==>['c','d']
+mmlang> ('a','b')=('c','d')
+==>('c','d')
 ----
 | `[head]` |          | `obj`   | list   | the first term of the polynomial
 a|
 [.small]
 [source]
 ----
-mmlang> ['a','b'][head]
+mmlang> ('a','b')[head]
 ==>'a'
-mmlang> [,.][head]
+mmlang> (,.)[head]
 language error: empty polys do not have heads
 ----
 | `[tail]` |          | `poly`  | list   | the polynomial without the first term
@@ -861,9 +861,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> ['a','b'][tail]
-==>['b'.,]
-mmlang> [,.][tail]
+mmlang> ('a','b')[tail]
+==>('b'.,)
+mmlang> (,.)[tail]
 language error: empty polys do not have tails
 ----
 | `[last]` |          | `obj`  | list   | the last term of the polynomial
@@ -871,9 +871,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> ['a','b'][last]
+mmlang> ('a','b')[last]
 ==>'b'
-mmlang> [,.][last]
+mmlang> (,.)[last]
 language error: empty polys do not have lasts
 ----
 | `[get]`  | `int`     | `obj`   | array | term access by index
@@ -881,9 +881,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> ['a','b','c'].1
+mmlang> ('a','b','c').1
 ==>'b'
-mmlang> ['a','b','c'].3
+mmlang> ('a','b','c').3
 language error: poly index is out of bounds: 3
 ----
 | `[put]`  | `int,obj` | `poly`  | array | term insertion term by index
@@ -891,10 +891,10 @@ a|
 [.small]
 [source]
 ----
-mmlang> ['a','b','c'][put,1,'ab']
-==>['a','ab','b','c']
-mmlang> ['a','b','c'][put,5,'e']
-==>['a','b','c',,'e']
+mmlang> ('a','b','c')[put,1,'ab']
+==>('a','ab','b','c')
+mmlang> ('a','b','c')[put,5,'e']
+==>('a','b','c',,'e')
 ----
 |===
 
@@ -908,14 +908,14 @@ mmlang> ['a','b','c'][put,5,'e']
 a|
 [source]
 ----
-mmlang> -<['a','b','c']
-==>['a','b','c']
+mmlang> -<('a','b','c')
+==>('a','b','c')
 ----
 | `[merge]`  |        | `obj`  |
 a|
 [source]
 ----
-mmlang> -<['a','b','c']>-
+mmlang> -<('a','b','c')>-
 ==>'a'
 ==>'b'
 ==>'c'
@@ -929,32 +929,32 @@ mmlang> -<['a','b','c']>-
 |===
 | poly op         | mmlang      | example
 
-| `;`-*apply*  | `-<[;]`
+| `;`-*apply*  | `-<(;)`
 a|
 [source]
 ----
-mmlang> 6-<[_;_]
-==>[6;6]
-mmlang> 6-<[_+1;_>6]
-==>[7;true]
+mmlang> 6-<(_;_)
+==>(6;6)
+mmlang> 6-<(_+1;_>6)
+==>(7;true)
 ----
-| `,`-*copy*   | `-<[,]`
+| `,`-*copy*   | `-<(,)`
 a|
 [source]
 ----
-mmlang> 6-<[_,_]
-==>[6,6]
-mmlang> 6-<[_>0,_>8]
-==>[true,false]
+mmlang> 6-<(_,_)
+==>(6,6)
+mmlang> 6-<(_>0,_>8)
+==>(true,false)
 ----
-| `\|`-*pick*  | `-<[\|]`
+| `\|`-*pick*  | `-<(\|)`
 a|
 [source]
 ----
-mmlang> 6-<[_\|_]
-==>[6\|]
-mmlang> 6-<[_>0\|_>8]
-==>[true\|]
+mmlang> 6-<(_\|_)
+==>(6\|)
+mmlang> 6-<(_>0\|_>8)
+==>(true\|)
 ----
 |===
 
@@ -963,32 +963,32 @@ mmlang> 6-<[_>0\|_>8]
 |===
 | poly op            | mmlang      | example
 
-| `;`-*return*     | `[;]>-`
+| `;`-*return*     | `(;)>-`
 a|
 [source]
 ----
-mmlang> 6-<[_;_]>-
+mmlang> 6-<(_;_)>-
 ==>6
-mmlang> 6-<[_+1;_>6]>-
+mmlang> 6-<(_+1;_>6)>-
 ==>true
 ----
-| `,`-*merge*      | `[,]>-`
+| `,`-*merge*      | `(,)>-`
 a|
 [source]
 ----
-mmlang> 6-<[_,_]>-
+mmlang> 6-<(_,_)>-
 ==>6{2}
-mmlang> 6-<[_>0,_>8]>-
+mmlang> 6-<(_>0,_>8)>-
 ==>true
 ==>false
 ----
-| `\|`-*coalesce*  | `[\|]>-`
+| `\|`-*coalesce*  | `(\|)>-`
 a|
 [source]
 ----
-mmlang> 6-<[_\|_]>-
+mmlang> 6-<(_\|_)>-
 ==>6
-mmlang> 6-<[_+1\|_>6]>-
+mmlang> 6-<(_+1\|_>6)>-
 ==>7
 ----
 |===
@@ -1009,17 +1009,17 @@ There are three primary use cases for `rec`.
 +
 [source]
 ----
-mmlang> ['marko',29]
-==>['marko',29]
-mmlang> ['marko',29].0                    <1>
+mmlang> ('marko',29)
+==>('marko',29)
+mmlang> ('marko',29).0                    <1>
 ==>'marko'
-mmlang> ['marko',29].1
+mmlang> ('marko',29).1
 ==>29
-mmlang> ['name'->'marko','age'->29]
-==>['name'->'marko','age'->29]
-mmlang> ['name'->'marko','age'->29].name  <2>
+mmlang> ('name'->'marko','age'->29)
+==>('name'->'marko','age'->29)
+mmlang> ('name'->'marko','age'->29).name  <2>
 ==>'marko'
-mmlang> ['name'->'marko','age'->29].age
+mmlang> ('name'->'marko','age'->29).age
 ==>29
 ----
 <1> The slots of a "person" `lst` are accessed with `int` values.
@@ -1029,13 +1029,13 @@ mmlang> ['name'->'marko','age'->29].age
 +
 [source]
 ----
-mmlang> ['a'->1,'b'->2,'c'->3,'d'->4]
-==>['a'->1,'b'->2,'c'->3,'d'->4]
-mmlang> ['a'->1,'b'->2,'c'->3,'d'->4][get,is>'a']
+mmlang> ('a'->1,'b'->2,'c'->3,'d'->4)
+==>('a'->1,'b'->2,'c'->3,'d'->4)
+mmlang> ('a'->1,'b'->2,'c'->3,'d'->4)[get,is>'a']
 ==>2
 ==>3
 ==>4
-mmlang> ['a'->1,'b'->2,'c'->3,'d'->4][get,is>'b']
+mmlang> ('a'->1,'b'->2,'c'->3,'d'->4)[get,is>'b']
 ==>3
 ==>4
 mmlang>
@@ -1045,11 +1045,11 @@ mmlang>
 +
 [source]
 ----
-mmlang> 1,2,3-<[is==2 -> 'name' | is>2 -> 'is' | int -> 'my']
-==>[->|1->'my']
-==>[2->'name'|->]
-==>[->|3->'is']
-mmlang> 1,2,3-<[is==2 -> 'name' | is>2 -> 'is' | int -> 'my']>-
+mmlang> 1,2,3-<(is==2 -> 'name' | is>2 -> 'is' | int -> 'my')
+==>(->|1->'my')
+==>(2->'name'|->)
+==>(->|3->'is')
+mmlang> 1,2,3-<(is==2 -> 'name' | is>2 -> 'is' | int -> 'my')>-
 ==>'my'
 ==>'name'
 ==>'is'
@@ -1061,9 +1061,9 @@ The `poly` `recs` are ordered. Even though slots can be uniquely identified by t
 
 [source]
 ----
-mmlang> [1->'a',2->'b']==[1->'a',2->'b']
+mmlang> (1->'a',2->'b')==(1->'a',2->'b')
 ==>true
-mmlang> [1->'a',2->'b']==[2->'b',1->'a']
+mmlang> (1->'a',2->'b')==(2->'b',1->'a')
 ==>false
 ----
 
@@ -1074,12 +1074,12 @@ image::rec-orders.png[width=600,align=center]
 
 [source]
 ----
-mmlang> 23-<[is>10->'a',int->'b']
-==>[23->'b','a']
-mmlang> 23-<[is>10->'a'|int->'b']
-==>[23->'a'|->]
-mmlang> 23-<[is>10->'a';int->'b']
-==>[23->'b']
+mmlang> 23-<(is>10->'a',int->'b')
+==>(23->'b','a')
+mmlang> 23-<(is>10->'a'|int->'b')
+==>(23->'a'|->)
+mmlang> 23-<(is>10->'a';int->'b')
+==>(23->'b')
 ----
 
 ================================================================
@@ -1095,14 +1095,14 @@ As values do not pass through values, `[hmult]` is provided a `tpoly` where the 
 
 [source]
 ----
-mmlang> ['a','b','c']=[obj{0},obj{0},str[id]]   // <1>
-==>[,,'c']
-mmlang> ['a','b','c']=[,,str[id]]               // <2>
-==>[,,'c']
-mmlang> ['a','b','c']=[,,_[id]]                 // <3>
-==>[,,'c']
-mmlang> ['a','b','c']=[,,_]                     // <4>
-==>[,,'c']
+mmlang> ('a','b','c')=(obj{0},obj{0},str[id])   // <1>
+==>(,,'c')
+mmlang> ('a','b','c')=(,,str[id])               // <2>
+==>(,,'c')
+mmlang> ('a','b','c')=(,,_[id])                 // <3>
+==>(,,'c')
+mmlang> ('a','b','c')=(,,_)                     // <4>
+==>(,,'c')
 ----
 
 <1> A fully typed \$\{0,1\}\$-polynomial.
@@ -1134,16 +1134,16 @@ However, with pair-wise product, only the main diagonol remains.
 
 [source]
 ----
-mmlang> [[1,2,3],[4,5,6],[7,8,9]]=[=[_,,],=[,_,],=[,,_]]
-==>[[1,,],[,5,],[,,9]]
-mmlang> [[1,2,3],
-         [4,5,6],
-         [7,8,9]]
+mmlang> ((1,2,3),(4,5,6),(7,8,9))=(=(_,,),=(,_,),=(,,_))
+==>((1,,),(,5,),(,,9))
+mmlang> ((1,2,3),
+         (4,5,6),
+         (7,8,9))
          =
-        [=[_,,],
-         =[,_,],
-         =[,,_]]
-==>[[1,,],[,5,],[,,9]]
+        (=(_,,),
+         =(,_,),
+         =(,,_))
+==>((1,,),(,5,),(,,9))
 ----
 
 ====== Meta-Programming
@@ -1323,9 +1323,9 @@ where the _branch_ component is, in fact, a group with `(a{q},a{-q}) == {0}` and
 
 [source]
 ----
-mmlang> -<['a'{2},'a'{-2}]
+mmlang> -<('a'{2},'a'{-2})
 ==>['a'{2},'a'{-2}]
-mmlang> -<['a'{2},'a'{-2}]>-
+mmlang> -<('a'{2},'a'{-2})>-
 mmlang>
 mmlang> [branch,['a'{2},'a'{-2}]]
 mmlang>
@@ -1372,12 +1372,12 @@ This branch structure will product one, two, or three `ints` given a single `int
 
 [source]
 ----
-mmlang> int<int[is>0],int[is<0],int>
-==>int{1,3}<=int-<[
+mmlang> int[int[is>0],int[is<0],int]
+==>int{1,3}<=int-<(
      int{?}<=int[is,bool<=int[gt,0]],
      int{?}<=int[is,bool<=int[lt,0]],
      int
-   ]>-
+   )>-
 ----
 
 ===== Axioms, Diagrams, and Notation
@@ -1404,10 +1404,10 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1((+1,*2),*3)
+mmlang> 1[[+1,*2],*3]
 ==>2{2}
 ==>3
-mmlang> 1(+1,(*2,*3))
+mmlang> 1[+1,[*2,*3]]
 ==>2{2}
 ==>3
 ----
@@ -1418,9 +1418,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1({0},+1)
+mmlang> 1[{0},+1]
 ==>2
-mmlang> 1(+1,{0})
+mmlang> 1[+1,{0}]
 ==>2
 ----
 
@@ -1431,10 +1431,10 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1((+1,*2),*3)
+mmlang> 1[[+1,*2],*3]
 ==>2{2}
 ==>3
-mmlang> 1(+1,(*2,*3))
+mmlang> 1[+1,[*2,*3]]
 ==>2{2}
 ==>3
 ----
@@ -1445,9 +1445,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1(+1,*2)
+mmlang> 1[+1,*2]
 ==>2{2}
-mmlang> 1(*2,+1)
+mmlang> 1[*2,+1]
 ==>2{2}
 ----
 
@@ -1457,9 +1457,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1((+1;*2);*3)
+mmlang> 1[[+1;*2];*3]
 ==>12
-mmlang> 1(+1;(*2;*3))
+mmlang> 1[+1;[*2;*3]]
 ==>12
 ----
 
@@ -1469,9 +1469,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1({1};+1)
+mmlang> 1[{1};+1]
 ==>2
-mmlang> 1(+1;{1})
+mmlang> 1[+1;{1}]
 ==>2
 mmlang> 1+1
 ==>2
@@ -1483,9 +1483,9 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1((+1,*2>;*3)
+mmlang> 1[[+1,*2>;*3]
 ==>6{2}
-mmlang> 1((+1;*3),(*2;*3))
+mmlang> 1[[+1;*3],[*2;*3]]
 ==>6{2}
 ----
 
@@ -1495,10 +1495,10 @@ a|
 [.small]
 [source]
 ----
-mmlang> 1(+1;(*2,*3))
+mmlang> 1[+1;[*2,*3]]
 ==>4
 ==>6
-mmlang> 1((+1;*2),(+1;*3))
+mmlang> 1[[+1;*2],[+1;*3]]
 ==>4
 ==>6
 ----
