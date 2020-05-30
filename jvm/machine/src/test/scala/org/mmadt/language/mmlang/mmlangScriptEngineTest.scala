@@ -758,6 +758,25 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("define parsing") {
+    assertResult(int(120))(engine.eval("10[define,'big',int[plus,100]][plus,0][plus,big]"))
+    assertResult(btrue)(engine.eval("['name'->'marko','age'->29][define,'person',['name'->str,'age'->int]][a,person]"))
+    assertResult(btrue.q(100))(engine.eval("['name'->'marko','age'->29][define,'person',['name'->str,'age'->int]][a,person]{100}"))
+    assertResult(bfalse.q(100))(engine.eval("['name'->'marko',.][define,'person',['name'->str,'age'->int]][a,person]{100}"))
+    // TODO: bad rec test    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("['name'->'marko',.][define,'person',['name'->str,'age'->int]][put,'age',29][is,[a,person]]{350}"))
+    // assertResult(rec(str("name")->str("marko"),str("age")->int(29)).q(350))(engine.eval("['name'->'marko','age'->29][define,'years',int][define,'person',['name'->str,'age'->years]][is,[a,person]]{350}"))
+    assertResult(str("old guy"))(engine.eval(
+      """ ['name'->'marko','age'->29]
+        | [define,'person',['name'->str,'age'->int]]
+        | [define,'old',>20]
+        | [define,'young',<20]
+        | [is,[a,person]](.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy')""".stripMargin))
+    assertResult(str("young guy"))(engine.eval(
+      """ ['name'->'marko','age'->29]
+        | [define,'person',rec['name'->str,'age'->int][is,.age>0]]
+        | [define,'old',[is>20]]
+        | [define,'young',[is<20]]
+        | [is,[a,person]](.age+-100<.old> -> 'old guy' , .age+-100<.young> -> 'young guy')""".stripMargin))
+    ///////////////////
     assertResult(btrue `,` bfalse `,` btrue)(engine.eval(
       """ 1
         | [define,'nat',int[is>0]]
@@ -782,8 +801,8 @@ class mmlangScriptEngineTest extends FunSuite {
         | [map,one]""".stripMargin))
   }
 
-
   test("play") {
+    println(engine.eval("10[define,'big',int[plus,100]]<.big>+10"))
     println(engine.eval("4(is>3 -> 1 , 4 -> 2)"))
     println(engine.eval("[3;.]"))
     println(engine.eval("[int;[plus,2];-<[[mult,2],[plus,10]]>-]<x>[map,5][split,x]"))

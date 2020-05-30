@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj}
@@ -43,13 +43,19 @@ object FromOp extends Func[Obj, Obj] {
   def apply[O <: Obj](label: StrValue): Inst[Obj, Obj] = new VInst[Obj, O](g = (Tokens.from, List(label)), func = this) with TraceInstruction
   def apply[O <: Obj](label: StrValue, default: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.from, List(label, default)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val history: Option[Obj] = Obj.fetchOption[Obj](start, inst.arg0[StrValue].g)
+    val history: Option[(String, Obj)] = Obj.fetchWithInstOption[Obj](start, inst.arg0[StrValue].g)
     if (history.isEmpty && start.isInstanceOf[Value[_]])
       if (inst.args.length == 1)
         throw LanguageException.labelNotFound(start.tracer(zeroObj `;` __), inst.arg0[StrValue].g)
       else
         Inst.resolveArg(start, inst.arg1[Obj]).via(start, inst)
-    else
-      history.getOrElse(if (inst.args.length == 1) asType(start) else inst.arg1).via(start, inst)
+    else {
+      history match {
+        case Some((Tokens.to, aobj)) => aobj.via(start, inst)
+        case Some((Tokens.define, avalue: Value[Obj])) => avalue.via(start, inst)
+        case Some((Tokens.define, atype: Type[Obj])) => Inst.resolveArg(start,atype)
+        case None => history.map(x => x._2).getOrElse(if (inst.args.length == 1) asType(start) else inst.arg1).via(start, inst)
+      }
+    }
   }
 }

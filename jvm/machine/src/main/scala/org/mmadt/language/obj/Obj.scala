@@ -178,8 +178,19 @@ object Obj {
     obj match {
       case x if x.root => None
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some(x.via._1.asInstanceOf[A])
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some(x.via._2.arg1[A])
+      case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some(Inst.resolveArg(obj,x.via._2.arg1[A]))
       case x => fetchOption(x.via._1, label)
+    }
+  }
+
+
+  @scala.annotation.tailrec
+  def fetchWithInstOption[A <: Obj](obj: Obj, label: String): Option[(String, A)] = {
+    obj match {
+      case x if x.root => None
+      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some((Tokens.to, x.via._1.asInstanceOf[A]))
+      case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some((Tokens.define, x.via._2.arg1[A]))
+      case x => fetchWithInstOption(x.via._1, label)
     }
   }
 

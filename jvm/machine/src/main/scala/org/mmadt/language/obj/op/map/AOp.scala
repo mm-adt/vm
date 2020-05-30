@@ -45,11 +45,10 @@ object AOp extends Func[Obj, Bool] {
     start match {
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => oldInst.exec(x)))
       case _: Value[_] =>
-        val arg = oldInst.arg0[Obj] match {
-          case atype: Type[Obj] if atype.trace.headOption.map(_._2.op).getOrElse("none") == Tokens.from => Obj.fetch[Obj](start, atype.trace.head._2.arg0[StrValue].g)
-          case x => x
-        }
-        bool(start.test(arg)).via(start, inst)
+        (oldInst.arg0[Obj] match {
+          case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => bool(start.test(Obj.fetch[Obj](start, atype.trace.head._2.arg0[StrValue].g)))
+          case x => bool(start.test(x))
+        }).via(start, inst)
       case atype: Type[_] if oldInst.arg0[Obj].isInstanceOf[Type[_]] =>
         if (!Inst.resolveArg(start, oldInst.arg0[Obj]).alive)
           bfalse.via(start, oldInst)
