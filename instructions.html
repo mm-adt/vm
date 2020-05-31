@@ -439,12 +439,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table class="tableblock frame-all grid-all" style="width: 75%;">
 <caption class="title">Table 1. Instruction classes</caption>
 <colgroup>
-<col style="width: 9.0909%;">
-<col style="width: 27.2727%;">
-<col style="width: 63.6364%;">
+<col style="width: 8.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 58.3334%;">
 </colgroup>
 <thead>
 <tr>
@@ -457,52 +457,47 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Branch</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>y{*}&lt;=x[branch]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for splitting traversers across instructions.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Split <code>objs</code> across instructions.</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Filter</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>x{?}&lt;=x[filter]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for removing traversers from an evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove <code>objs</code> from an evaluation</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Flatmap</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>y{*}&lt;=x[flatmap]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for splitting traversers across objects.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Split <code>objs</code> across objects.</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Initial</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj{0}&lt;=x[initial]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for finalizing objects in an evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Finalize <code>objs</code> in an evaluation</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Map</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[map]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for moving traversers between objects</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Model</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[model]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for transforming types between model-ADTs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move <code>objs</code> between objects</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Reduce</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x{*}[reduce]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for funneling traversers down to a single traverser</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fold <code>objs</code> down to a single <code>obj</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">SideEffect</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>x&lt;=x[sideeffect]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions that yield global state mutations</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Global state mutations</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Terminal</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>x{*}&lt;=obj{0}[terminal]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for generating objects for evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generate <code>objs</code> for evaluation</p></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Traverser</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[traverser]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions that operate on the traverser itself</p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock">Trace</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[trace]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Traverser the <code>obj</code> graph (reflection)</p></td>
 </tr>
 </tbody>
 </table>
@@ -512,357 +507,39 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.</p>
 </div>
 <div class="sect4">
+<h5 id="_compose">[compose]</h5>
+
+</div>
+<div class="sect4">
 <h5 id="_branch">[branch]</h5>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">branch syntax</th>
-<th class="tableblock halign-left valign-top">syntax style</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&#8656;x[branch,rec[x:y]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">vm instruction</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&#8656;x[[x&#8594;y]+[x&#8594;y]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stream addition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&#8656;x[x&#8594;y &amp; x&#8594;y]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">inline aggregate</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; int[branch,rec[[is,[gt,0]] :[plus,1],
-                       [is,[gt,10]]:[plus,2]]]
-==&gt;int{0,2}&lt;=int[branch,[int{?}&lt;=int[is,bool&lt;=int[gt,0]] :int[plus,1]
-                        &amp;int{?}&lt;=int[is,bool&lt;=int[gt,10]]:int[plus,2]]]
-mmlang&gt; -1,1,11[branch,rec[[is,[gt,0]]:[plus,1],[is,[gt,10]]:[plus,2]]]
-==&gt;2
-==&gt;12
-==&gt;13
-mmlang&gt; -1,1,11[is&gt;0-&gt;+1 &amp; is&gt;10-&gt;+2]
-==&gt;2
-==&gt;12
-==&gt;13</code></pre>
-</div>
-</div>
+
 </div>
 <div class="sect4">
 <h5 id="_choose">[choose]</h5>
-<div class="paragraph">
-<p>The <code>[choose]</code> instruction takes a single <code>rec</code>-type argument.
-The record keys are <code>{0}</code>-predicates where if the incoming <code>obj</code> matches the key, then the <code>obj</code> is processed by the value.
-The <em>first key</em> that matches has it&#8217;s respective value processed for the incoming <code>obj</code>.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\tt x[choose]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow x[tv_m] : x[tk_m][q] \; \neq \;0 \]</p>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">choose syntax</th>
-<th class="tableblock halign-left valign-top">syntax style</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[choose,rec[x:y]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">vm instruction</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[[x&#8594;y][x&#8594;y]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stream division</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[x&#8594;y | x&#8594;y]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">inline selection</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; int[choose,rec[[is,[gt,0]] :[plus,1],
-                       [is,[gt,10]]:[plus,2]]]
-==&gt;int[choose,[int{?}&lt;=int[is,bool&lt;=int[gt,0]] :int[plus,1]
-              |int{?}&lt;=int[is,bool&lt;=int[gt,10]]:int[plus,2]]]
-mmlang&gt; -1,1,11[choose,rec[[is,[gt,0]]:[plus,1],[is,[gt,10]]:[plus,2]]]
-==&gt;-1
-==&gt;2
-==&gt;12
-mmlang&gt; -1,1,11[is&gt;0-&gt;+1 | is&gt;10-&gt;+2]
-==&gt;-1
-==&gt;2
-==&gt;12</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_filter_instructions">Filter Instructions</h4>
-<div class="sect4">
-<h5 id="_is">[is]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>x&lt;=x[is,bool]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><code>[is]</code> is the canonical filter instruction.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>&lt;x&gt;[is,[as,bool][[eq,true]  -&gt; &lt;x&gt;
-                |[eq,false] -&gt; &lt;x&gt;[none] ]</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 6,42[is,true]
-==&gt;6
-==&gt;42
-mmlang&gt; 6,42[is,false]
-mmlang&gt; 6,42[is,[a,int]]
-==&gt;6
-==&gt;42
-mmlang&gt; 6,42 is[a,int]
-==&gt;6
-==&gt;42
-mmlang&gt; 6,42[is,[gt,10]]
-==&gt;42
-mmlang&gt; 6,42[is,[lt,10]]
-==&gt;6
-mmlang&gt; 6,42[is&gt;10]
-==&gt;42
-mmlang&gt; 6,42 is&gt;10
-==&gt;42
-mmlang&gt; int{2}[is&gt;10]
-==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,10]]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_map_instructions">Map Instructions</h4>
-<div class="sect4">
-<h5 id="_a">[a]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>bool&lt;=x[a,y]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_and">[and]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>bool&lt;=bool[and,bool]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_eq">[eq]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>bool&lt;=x[eq,y]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_get">[get]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>y &lt;= rec[x:y][get,x]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_gte">[gte]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>bool&lt;=x[gte,y]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_gt">[gt]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>bool&lt;=x[gt,y]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_id">[id]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>obj&lt;=obj[id]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_lte">[lte]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>bool&lt;=x[lte,x:ord]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_lt">[lt]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>bool&lt;=x[lt,x:ord]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_map">[map]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>x&lt;=obj[map,x:type]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_mult">[mult]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>x&lt;=x[mult,x:mmonoid]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_neg">[neg]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>x&lt;=x[neg,x:pgroup]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_one">[one]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>x&lt;=x:mmonoid[one]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_or">[or]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>bool&lt;=bool[or,bool]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_plus">[plus]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>x&lt;=x[plus,x:pmonoid]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_q">[q]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>ring&lt;=obj{ring}[q]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_zero">[zero]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>x&lt;=x:pmonoid[one]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_model_instructions">Model Instructions</h4>
-<div class="sect4">
-<h5 id="_as">[as]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>x&lt;=obj[as,x:type]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_reduce_instructions">Reduce Instructions</h4>
-<div class="sect4">
-<h5 id="_count">[count]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>ring:x&lt;=obj{ring:x}[count]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_fold">[fold]</h5>
 
 </div>
 </div>
 <div class="sect3">
-<h4 id="_sideeffect_instructions">SideEffect Instructions</h4>
-<div class="sect4">
-<h5 id="_error">[error]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>obj&lt;=obj[error,str]</code></pre>
+<h4 id="_filter_instructions">Filter Instructions</h4>
+
 </div>
+<div class="sect3">
+<h4 id="_map_instructions">Map Instructions</h4>
+
 </div>
-</div>
+<div class="sect3">
+<h4 id="_reduce_instructions">Reduce Instructions</h4>
+
 </div>
 <div class="sect3">
 <h4 id="_traverser_instructions">Traverser Instructions</h4>
-<div class="sect4">
-<h5 id="_explain">[explain]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>str&lt;=type[explain]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_from">[from]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>y&lt;=obj&lt;x:y&gt;[from,x]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_to">[to]</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>y&lt;x:y&gt;&lt;=y[to,x]</code></pre>
-</div>
-</div>
-</div>
+
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-04-28 23:01:26 -0600
+Last updated 2020-05-30 22:27:42 -0600
 </div>
 </div>
 </body>

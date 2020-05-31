@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<meta name="author" content="Marko A. Rodriguez">
+<meta name="author" content="Marko A. Rodriguez [creator] (RReduX)">
 <meta name="copyright" content="2020">
 <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
 <title>mm-ADT: The Virtual Machine</title>
@@ -443,8 +443,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>mm-ADT: The Virtual Machine</h1>
 <div class="details">
-<span id="author" class="author">Marko A. Rodriguez</span><br>
-<span id="email" class="email"><a href="mailto:marko@rredux.com">marko@rredux.com</a></span><br>
+<span id="author" class="author">Marko A. Rodriguez [creator] (RReduX)</span><br>
+<span id="revdate">Ryan Wisnesky [advisor] (Conexus)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -529,18 +529,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_n_ary_relations">n-Ary Relations</a></li>
 </ul>
 </li>
-</ul>
-</li>
 <li><a href="#_instruction_classes">Instruction Classes</a>
-<ul class="sectlevel3">
-<li><a href="#_branching">Branching</a>
 <ul class="sectlevel4">
-<li><a href="#_branching_specifications">Branching Specifications</a></li>
-</ul>
-</li>
-<li><a href="#_type_ring">Type Ring</a>
-<ul class="sectlevel4">
-<li><a href="#_the_instruction_ring">The Instruction Ring</a></li>
+<li><a href="#_map">Map</a></li>
+<li><a href="#_filter">Filter</a></li>
+<li><a href="#_trace">Trace</a></li>
+<li><a href="#_branch">Branch</a></li>
 </ul>
 </li>
 </ul>
@@ -555,9 +549,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_branch_instructions">Branch Instructions</a></li>
 <li><a href="#_filter_instructions">Filter Instructions</a></li>
 <li><a href="#_map_instructions">Map Instructions</a></li>
-<li><a href="#_model_instructions">Model Instructions</a></li>
 <li><a href="#_reduce_instructions">Reduce Instructions</a></li>
-<li><a href="#_sideeffect_instructions">SideEffect Instructions</a></li>
 <li><a href="#_traverser_instructions">Traverser Instructions</a></li>
 </ul>
 </li>
@@ -3347,13 +3339,14 @@ mmlang&gt; <span style="color:#00D">1</span>[[+<span style="color:#00D">1</span>
 <h2 id="_processor_structures">Processor Structures</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The programs of the mm-ADT virtual machine are <em>types</em>. From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s instruction set architecture.
-Every mm-ADT type is isomorphic to a directed labeled <strong>type trace graph</strong> containing type-vertices and instruction-edges called.
-The program&#8217;s type trace graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) types. At execution time, values propagate through the type trace graph of the program and generate a parallel, homomorphic image of the types' manifestations as values in the <strong>value trace graph</strong>, where the resultant struture of an mm-ADT computation is the <strong>obj trace graph</strong></p>
+<p>The programs of the mm-ADT virtual machine are <em>types</em>. From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. Every mm-ADT type has a corresponding <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">diagrammatic</a> representation that is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to a directed labeled <strong>type graph</strong> composed of <em>type</em>-vertices and <em>instruction</em>-edges.</p>
+</div>
+<div class="paragraph">
+<p>A program&#8217;s type graph is the <a href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize). At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the <strong>value graph</strong>, where the resultant structure of an mm-ADT computation is the <strong>obj graph</strong>, where</p>
 </div>
 <div class="paragraph">
 <p>\[
-G(\texttt{obj}) = ( V = \texttt{values} \cup \texttt{types}, E \subseteq (V \times \texttt{inst} \times V) ).
+\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q})
 \]</p>
 </div>
 <div class="imageblock right">
@@ -3362,10 +3355,10 @@ G(\texttt{obj}) = ( V = \texttt{values} \cup \texttt{types}, E \subseteq (V \tim
 </div>
 </div>
 <div class="paragraph">
-<p>Type composition, compilation, and ultimate evaluation are carried out by mm-ADT compliant <strong>processors</strong>. Processors ground the mm-ADT VM to the physical machine (whether on a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world&#8217;s physics provides the baseline dynamics (a "<em>ptype</em>" so to speak).</p>
+<p>Type composition, compilation, and evaluation are carried out by mm-ADT compliant <strong>processors</strong>. Processors ground the mm-ADT VM to the underlying physical computer (whether on a single machine, via multiple threads, or across compute cluster), where, at the bottom of this <em>process stack</em>, the natural world&#8217;s physics provides the baseline dynamics (the fundamental ground of the computation).</p>
 </div>
 <div class="paragraph">
-<p>This section details the specifics of the relationships between types, values, and processors</p>
+<p>This section details the specifics of the relationships between types, values, and processors.</p>
 </div>
 <div class="sect2">
 <h3 id="_processes">Processes</h3>
@@ -3384,9 +3377,6 @@ G(\texttt{obj}) = ( V = \texttt{values} \cup \texttt{types}, E \subseteq (V \tim
 <p><strong>Evaluation</strong>: (<a href="https://en.wikipedia.org/wiki/Execution_(computing)">type enumeration</a>).</p>
 </li>
 </ol>
-</div>
-<div class="paragraph">
-<p>&nbsp;</p>
 </div>
 <div class="sect3">
 <h4 id="_instruction_evaluation">Instruction Evaluation</h4>
@@ -3427,218 +3417,29 @@ denotes the unary function \[
 \end{array}
 \]</p>
 </div>
-<div class="paragraph">
-<p>The above unary function is evaluated via the nested mm-ADT instruction, where the \$\Delta_n\$ product projections refer to the diagonal of the <code>obj</code> (clone) and the \$arg_n\$ products projections denote the arguments to the subsequent instruction.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/int_gt_plus_id.png" alt="int gt plus id" width="100%">
-</div>
-</div>
 </div>
 <div class="sect4">
 <h5 id="_n_ary_relations">n-Ary Relations</h5>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Distributed mm-ADT processors can yield on the order of millions of traversers during a single program evaluation.
-Conceptually, a processor is responsible for coordinating a <a href="https://en.wikipedia.org/wiki/Swarm_intelligence"><em>traverser swarm</em></a>, where the result of an mm-ADT program is the aggregate data locations of all the halted traversers.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_instruction_classes">Instruction Classes</h3>
-<div class="sect3">
-<h4 id="_branching">Branching</h4>
-<div class="paragraph">
-<p>The <code>[branch]</code> instruction is a general-purpose instruction for creating and merging parallel streams of objects.
-All other branching instructions are founded on <code>[branch]</code> and extend it with added usability-parametrization.
-In general, all branching instructions can be understood as generating a product (<strong>splitting</strong>) and then generating a co-product (<strong>merging</strong>).</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/branch-prod-coprod.png" alt="branch prod coprod" width="75%">
-</div>
-</div>
-<div class="paragraph">
-<p>When a traverser at an \$\tt{obj} \in A\$ arrives at <code>[branch]</code>, the traverser is split across the respective internal types&#8201;&#8212;&#8201;called <em>branches</em>.
-Splitting is a cloning process by which a product is formed and then each component of the product is projected to each respective branch via \$\pi_n\$.</p>
-</div>
-<div class="paragraph">
-<p>\[\texttt{split}: A \rightarrow A \times \ldots \times A\]</p>
-</div>
-<div class="imageblock left">
-<div class="content">
-<img src="./images/processor/branch-traversers.png" alt="branch traversers" width="600">
-</div>
-</div>
-<div class="paragraph">
-<p>Every branch can operate independently, where no global communication is required between branches.
-This is an important feature of <code>[branch]</code> and the branch instructions in general because each branch can be isolated and migrated for physical distribution and parallelization.
-All other instructions that make use of internal types for parametrization do not enjoy this feature.</p>
-</div>
-<div class="paragraph">
-<p>Finally, the resultant traversers of each individual branch are then summed via \$\iota_n\$ to yield a single stream co-product of outgoing traversers.</p>
-</div>
-<div class="paragraph">
-<p>\[\texttt{merge}: (B \times \ldots \times D) \rightarrow (B + \ldots + D)\]</p>
-</div>
-<div class="sect4">
-<h5 id="_branching_specifications">Branching Specifications</h5>
-<div class="paragraph">
-<p>There are two ways of programming a <code>[branch]</code> instruction.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Using a <code>rec</code> structure where the keys are <code>{0}</code>-predicate filters and the values are the branch transformations.</p>
-</li>
-<li>
-<p>Using a <code>lst</code> structure where the values are the branch transformations.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Every <code>lst</code>-form can be expressed as a <code>rec</code>-form via and every <code>rec</code>-form can be expressed as a <code>lst</code>-form.
-The general rule for transformation is detailed in the source fragment below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">[branch,[[a];[b];[c]]]    =&gt; [branch,[x:a,y:b,z:c]]
-[branch,rec[x:a,y:b,z:c]] =&gt; [branch,[[<span style="color:#080;font-weight:bold">is</span>,x][a];[<span style="color:#080;font-weight:bold">is</span>,y][b];[<span style="color:#080;font-weight:bold">is</span>,z][c]]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>[branch]</code> instruction takes a single <code>rec</code>-type argument.
-The record keys are <code>{0}</code>-predicates where if the incoming <code>obj</code> matches the key, then the <code>obj</code> is processed by the value.
-<em>Every key</em> that matches has it&#8217;s respective value processed for the incoming <code>obj</code>.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\tt x[branch]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow \biguplus_{i \in 1 \to n} x[tv_i] \; \text{iff} \; x[tk_i][q] \neq 0 \]</p>
-</div>
+
 </div>
 </div>
 <div class="sect3">
-<h4 id="_type_ring">Type Ring</h4>
-<div class="paragraph">
-<p>mm-ADT&#8217;s type theory has a rich axiomatic semantics founded on <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring theory</a> and in particular, on <a href="https://zenodo.org/record/2565243">stream ring theory</a>.</p>
-</div>
-<div class="paragraph">
-<p>&nbsp;</p>
-</div>
-<div class="paragraph">
-<p>The type system of mm-ADT is characterized by a particular formulation of the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product of rings</a> over the <em>quantifier</em> and <em>instruction</em> rings (discussed next).
-The product of these two rings is a ring itself called the <em>stream ring</em>.
-Thus, mm-ADT&#8217;s types are founded on ring theory in general and stream ring theory in particular.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/ring-structures.png" alt="ring structures" width="80%">
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Instructions and quantifiers are the carrier sets of two independent <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">rings</a> with unity whose <a href="https://en.wikipedia.org/wiki/Direct_product">direct product</a> forms the mm-ADT type ring and is the subject of study in <a href="https://zenodo.org/record/2565243">stream ring theory</a> (SRT).
-The type graph structure presented previously is a subgraph of a (pseudo) <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> formed from the multiplicative <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">monoid</a> (w/ no multiplicative inverse) component of that ring.
-</td>
-</tr>
-</table>
+<h4 id="_instruction_classes">Instruction Classes</h4>
+<div class="sect4">
+<h5 id="_map">Map</h5>
+
 </div>
 <div class="sect4">
-<h5 id="_the_instruction_ring">The Instruction Ring</h5>
-<div class="paragraph">
-<p>In mm-ADT, the carrier set of the <strong>instruction ring</strong> is the set of all instructions, where</p>
+<h5 id="_filter">Filter</h5>
+
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>inst</code> is the carrier set,</p>
-</li>
-<li>
-<p><code>*</code> is serial composition,</p>
-</li>
-<li>
-<p><code>+</code> is parallel composition,</p>
-</li>
-<li>
-<p><code>0</code> is <code>[none]</code> and</p>
-</li>
-<li>
-<p><code>1</code> is <code>[all]</code>.</p>
-</li>
-</ul>
+<div class="sect4">
+<h5 id="_trace">Trace</h5>
+
 </div>
-<div class="paragraph">
-<p>In the table below <code>[a]</code>, <code>[b]</code>, and <code>[c]</code> are variable instructions in <code>inst</code>, where <code>[none] == [is,false]</code> and <code>[all] == [is,true]</code>.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-A known "bug" in stream ring theory is that not all instructions in <code>inst</code> have an additive inverse.
-Thus, it is not the case that every instruction set can serve as the carrier of a ring.
-Fortunately, in the larger composite type ring (discussed later), which forms the primary algebraic structure in mm-ADT&#8217;s type system, the quantifier ring&#8217;s multiplicative inverse can be used to remedy the situation&#8212;&#8203;see the 3rd entry in the table above.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>As an example, the instructions <code>[plus,10]</code> and <code>[gt,5]</code> can be combined via serial and/or parallel composition.
-In general, all serial and parallel compositions are <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> except for those that use instructions from a particular <code>inst</code> subring known as the <em>the reduce near-ring</em> (discussed later).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [plus,<span style="color:#00D">10</span>] <span style="color:#369;font-weight:bold">int</span>[mult,[gt,<span style="color:#00D">5</span>]]
-==&gt;[plus,<span style="color:#00D">10</span>][gt,<span style="color:#00D">5</span>]
-mmlang&gt; [plus,<span style="color:#00D">10</span>] inst[plus,[gt,<span style="color:#00D">5</span>]]
-==&gt;[branch,[plus,<span style="color:#00D">10</span>],[gt,<span style="color:#00D">5</span>]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Distributive_property">distributivity</a> of multiplications over addition is made apparent with expressions below which have a diagrammatic representation, where the edges/arrows are streams of <code>objs</code> that are being operated on by the <code>insts</code> vertex/objects they meet along the way.
-Whenever the diagram branches, the <code>obj</code> at the branch is cloned, taking <em>both</em> branches.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\texttt{x[branch,[a],[b]]} = \uplus &lt;\texttt{x[a]},\texttt{x[b]}&gt; \]</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">[plus,<span style="color:#00D">10</span>][branch,[gt,<span style="color:#00D">5</span>],[lt,<span style="color:#00D">2</span>]]  ==  [branch,[plus,<span style="color:#00D">10</span>][gt,<span style="color:#00D">5</span>],[plus,<span style="color:#00D">10</span>][lt,<span style="color:#00D">2</span>]]</code></pre>
-</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/inst-left-distrib.png" alt="inst left distrib" width="750">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">[branch,[plus,<span style="color:#00D">10</span>],[mult,<span style="color:#00D">5</span>]][gt,<span style="color:#00D">7</span>]  ==  [branch,[plus,<span style="color:#00D">10</span>][gt,<span style="color:#00D">7</span>],[mult,<span style="color:#00D">5</span>][gt,<span style="color:#00D">7</span>]]</code></pre>
-</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/inst-right-distrib.png" alt="inst right distrib" width="750">
-</div>
-</div>
+<div class="sect4">
+<h5 id="_branch">Branch</h5>
+
 </div>
 </div>
 </div>
@@ -3656,12 +3457,12 @@ Whenever the diagram branches, the <code>obj</code> at the branch is cloned, tak
 <div class="paragraph">
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table class="tableblock frame-all grid-all" style="width: 75%;">
 <caption class="title">Table 4. Instruction classes</caption>
 <colgroup>
-<col style="width: 9.0909%;">
-<col style="width: 27.2727%;">
-<col style="width: 63.6364%;">
+<col style="width: 8.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 58.3334%;">
 </colgroup>
 <thead>
 <tr>
@@ -3674,52 +3475,47 @@ Whenever the diagram branches, the <code>obj</code> at the branch is cloned, tak
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Branch</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>y{*}&lt;=x[branch]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for splitting traversers across instructions.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Split <code>objs</code> across instructions.</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Filter</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>x{?}&lt;=x[filter]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for removing traversers from an evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Remove <code>objs</code> from an evaluation</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Flatmap</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>y{*}&lt;=x[flatmap]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for splitting traversers across objects.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Split <code>objs</code> across objects.</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Initial</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj{0}&lt;=x[initial]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for finalizing objects in an evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Finalize <code>objs</code> in an evaluation</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Map</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[map]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for moving traversers between objects</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Model</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[model]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for transforming types between model-ADTs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move <code>objs</code> between objects</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Reduce</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x{*}[reduce]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for funneling traversers down to a single traverser</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fold <code>objs</code> down to a single <code>obj</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">SideEffect</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>x&lt;=x[sideeffect]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions that yield global state mutations</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Global state mutations</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">Terminal</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>x{*}&lt;=obj{0}[terminal]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions for generating objects for evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generate <code>objs</code> for evaluation</p></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Traverser</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[traverser]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instructions that operate on the traverser itself</p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock">Trace</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[trace]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Traverser the <code>obj</code> graph (reflection)</p></td>
 </tr>
 </tbody>
 </table>
@@ -3729,351 +3525,33 @@ Whenever the diagram branches, the <code>obj</code> at the branch is cloned, tak
 <p>The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.</p>
 </div>
 <div class="sect5">
-<h6 id="_branch">[branch]</h6>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">branch syntax</th>
-<th class="tableblock halign-left valign-top">syntax style</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&#8656;x[branch,rec[x:y]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">vm instruction</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&#8656;x[[x&#8594;y]+[x&#8594;y]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stream addition</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&#8656;x[x&#8594;y &amp; x&#8594;y]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">inline aggregate</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[branch,rec[[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]] :[plus,<span style="color:#00D">1</span>],
-                       [<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">10</span>]]:[plus,<span style="color:#00D">2</span>]]]
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[branch,[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]] :<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>]
-                        &amp;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">10</span>]]:<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">2</span>]]]
-mmlang&gt; -<span style="color:#00D">1</span>,<span style="color:#00D">1</span>,<span style="color:#00D">11</span>[branch,rec[[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]:[plus,<span style="color:#00D">1</span>],[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">10</span>]]:[plus,<span style="color:#00D">2</span>]]]
-==&gt;<span style="color:#00D">2</span>
-==&gt;<span style="color:#00D">12</span>
-==&gt;<span style="color:#00D">13</span>
-mmlang&gt; -<span style="color:#00D">1</span>,<span style="color:#00D">1</span>,<span style="color:#00D">11</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>-&gt;+<span style="color:#00D">1</span> &amp; <span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">10</span>-&gt;+<span style="color:#00D">2</span>]
-==&gt;<span style="color:#00D">2</span>
-==&gt;<span style="color:#00D">12</span>
-==&gt;<span style="color:#00D">13</span></code></pre>
+<h6 id="_compose">[compose]</h6>
+
 </div>
-</div>
+<div class="sect5">
+<h6 id="_branch_2">[branch]</h6>
+
 </div>
 <div class="sect5">
 <h6 id="_choose">[choose]</h6>
-<div class="paragraph">
-<p>The <code>[choose]</code> instruction takes a single <code>rec</code>-type argument.
-The record keys are <code>{0}</code>-predicates where if the incoming <code>obj</code> matches the key, then the <code>obj</code> is processed by the value.
-The <em>first key</em> that matches has it&#8217;s respective value processed for the incoming <code>obj</code>.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\tt x[choose]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow x[tv_m] : x[tk_m][q] \; \neq \;0 \]</p>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 50%;">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">choose syntax</th>
-<th class="tableblock halign-left valign-top">syntax style</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[choose,rec[x:y]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">vm instruction</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[[x&#8594;y][x&#8594;y]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stream division</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[x&#8594;y | x&#8594;y]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">inline selection</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[choose,rec[[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]] :[plus,<span style="color:#00D">1</span>],
-                       [<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">10</span>]]:[plus,<span style="color:#00D">2</span>]]]
-==&gt;<span style="color:#369;font-weight:bold">int</span>[choose,[<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]] :<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>]
-              |<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">10</span>]]:<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">2</span>]]]
-mmlang&gt; -<span style="color:#00D">1</span>,<span style="color:#00D">1</span>,<span style="color:#00D">11</span>[choose,rec[[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]:[plus,<span style="color:#00D">1</span>],[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">10</span>]]:[plus,<span style="color:#00D">2</span>]]]
-==&gt;-<span style="color:#00D">1</span>
-==&gt;<span style="color:#00D">2</span>
-==&gt;<span style="color:#00D">12</span>
-mmlang&gt; -<span style="color:#00D">1</span>,<span style="color:#00D">1</span>,<span style="color:#00D">11</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>-&gt;+<span style="color:#00D">1</span> | <span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">10</span>-&gt;+<span style="color:#00D">2</span>]
-==&gt;-<span style="color:#00D">1</span>
-==&gt;<span style="color:#00D">2</span>
-==&gt;<span style="color:#00D">12</span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_filter_instructions">Filter Instructions</h5>
-<div class="sect5">
-<h6 id="_is">[is]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">x&lt;=x[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p><code>[is]</code> is the canonical filter instruction.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">&lt;x&gt;[<span style="color:#080;font-weight:bold">is</span>,[<span style="color:#080;font-weight:bold">as</span>,<span style="color:#369;font-weight:bold">bool</span>][[eq,true]  -&gt; &lt;x&gt;
-                |[eq,false] -&gt; &lt;x&gt;[none] ]</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>,<span style="color:#00D">42</span>[<span style="color:#080;font-weight:bold">is</span>,true]
-==&gt;<span style="color:#00D">6</span>
-==&gt;<span style="color:#00D">42</span>
-mmlang&gt; <span style="color:#00D">6</span>,<span style="color:#00D">42</span>[<span style="color:#080;font-weight:bold">is</span>,false]
-mmlang&gt; <span style="color:#00D">6</span>,<span style="color:#00D">42</span>[<span style="color:#080;font-weight:bold">is</span>,[a,<span style="color:#369;font-weight:bold">int</span>]]
-==&gt;<span style="color:#00D">6</span>
-==&gt;<span style="color:#00D">42</span>
-mmlang&gt; <span style="color:#00D">6</span>,<span style="color:#00D">42</span> <span style="color:#080;font-weight:bold">is</span>[a,<span style="color:#369;font-weight:bold">int</span>]
-==&gt;<span style="color:#00D">6</span>
-==&gt;<span style="color:#00D">42</span>
-mmlang&gt; <span style="color:#00D">6</span>,<span style="color:#00D">42</span>[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">10</span>]]
-==&gt;<span style="color:#00D">42</span>
-mmlang&gt; <span style="color:#00D">6</span>,<span style="color:#00D">42</span>[<span style="color:#080;font-weight:bold">is</span>,[lt,<span style="color:#00D">10</span>]]
-==&gt;<span style="color:#00D">6</span>
-mmlang&gt; <span style="color:#00D">6</span>,<span style="color:#00D">42</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">10</span>]
-==&gt;<span style="color:#00D">42</span>
-mmlang&gt; <span style="color:#00D">6</span>,<span style="color:#00D">42</span> <span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">10</span>
-==&gt;<span style="color:#00D">42</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">10</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[gt,<span style="color:#00D">10</span>]]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_map_instructions">Map Instructions</h5>
-<div class="sect5">
-<h6 id="_a">[a]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">bool</span>&lt;=x[a,y]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_and">[and]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>[<span style="color:#080;font-weight:bold">and</span>,<span style="color:#369;font-weight:bold">bool</span>]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_eq">[eq]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">bool</span>&lt;=x[eq,y]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_get">[get]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">y &lt;= rec[x:y][get,x]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_gte">[gte]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">bool</span>&lt;=x[gte,y]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_gt">[gt]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">bool</span>&lt;=x[gt,y]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_id">[id]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">obj&lt;=obj[<span style="color:#369;font-weight:bold">id</span>]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_lte">[lte]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">bool</span>&lt;=x[lte,x:<span style="color:#369;font-weight:bold">ord</span>]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_lt">[lt]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">bool</span>&lt;=x[lt,x:<span style="color:#369;font-weight:bold">ord</span>]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_map">[map]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">x&lt;=obj[<span style="color:#369;font-weight:bold">map</span>,x:<span style="color:#369;font-weight:bold">type</span>]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_mult">[mult]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">x&lt;=x[mult,x:mmonoid]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_neg">[neg]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">x&lt;=x[neg,x:pgroup]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_one">[one]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">x&lt;=x:mmonoid[one]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_or">[or]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>[<span style="color:#080;font-weight:bold">or</span>,<span style="color:#369;font-weight:bold">bool</span>]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_plus">[plus]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">x&lt;=x[plus,x:pmonoid]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_q">[q]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">ring&lt;=obj{ring}[q]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_zero">[zero]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">x&lt;=x:pmonoid[one]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_model_instructions">Model Instructions</h5>
-<div class="sect5">
-<h6 id="_as">[as]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">x&lt;=obj[<span style="color:#080;font-weight:bold">as</span>,x:<span style="color:#369;font-weight:bold">type</span>]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_reduce_instructions">Reduce Instructions</h5>
-<div class="sect5">
-<h6 id="_count">[count]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">ring:x&lt;=obj{ring:x}[count]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_fold">[fold]</h6>
 
 </div>
 </div>
 <div class="sect4">
-<h5 id="_sideeffect_instructions">SideEffect Instructions</h5>
-<div class="sect5">
-<h6 id="_error">[error]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">obj&lt;=obj[error,<span style="color:#369;font-weight:bold">str</span>]</code></pre>
+<h5 id="_filter_instructions">Filter Instructions</h5>
+
 </div>
+<div class="sect4">
+<h5 id="_map_instructions">Map Instructions</h5>
+
 </div>
-</div>
+<div class="sect4">
+<h5 id="_reduce_instructions">Reduce Instructions</h5>
+
 </div>
 <div class="sect4">
 <h5 id="_traverser_instructions">Traverser Instructions</h5>
-<div class="sect5">
-<h6 id="_explain">[explain]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">str</span>&lt;=<span style="color:#369;font-weight:bold">type</span>[explain]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_from">[from]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">y&lt;=obj&lt;x:y&gt;[<span style="color:#080;font-weight:bold">from</span>,<span style="color:#B44;font-weight:bold">x</span>]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_to">[to]</h6>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">y&lt;x:y&gt;&lt;=y[to,x]</code></pre>
-</div>
-</div>
-</div>
+
 </div>
 </div>
 </div>
@@ -4087,7 +3565,7 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-27 01:51:04 -0600
+Last updated 2020-05-30 21:49:39 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
