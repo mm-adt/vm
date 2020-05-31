@@ -1,3 +1,5 @@
+== Reference
+
 === Instructions
 
 The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.
@@ -29,5 +31,5 @@ The branch instruction support the splitting and merging of parallel, data flows
 ==== Filter Instructions
 ==== Map Instructions
 ==== Reduce Instructions
-==== Traverser Instructions
+==== Trace Instructions
 

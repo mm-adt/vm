@@ -23,8 +23,4 @@ include::storage.adoc[]
 
 include::processor.adoc[]
 
-== Reference Guide
-
-:leveloffset: +1
 include::instructions.adoc[]
-:leveloffset: -1
