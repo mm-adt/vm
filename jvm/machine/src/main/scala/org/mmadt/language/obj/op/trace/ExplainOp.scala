@@ -52,14 +52,14 @@ object ExplainOp {
   private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj],String)
   private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0,prefix:String=""): List[Row] = {
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {
-      if (b._2.isInstanceOf[TraceInstruction]) state += (b._2.arg0[StrValue].g -> b._2.exec(b._1).asInstanceOf[Type[Obj]].range)
+      if (b._2.isInstanceOf[TraceInstruction]) state += b._2.arg0[StrValue].g -> (if (b._2.op == Tokens.define) (b._2.arg1[Obj]) else (b._2.exec(b._1).range))
       val temp = if (b._2.isInstanceOf[TraceInstruction]) a else a :+ (depth, b._2, lastRange(b._1.asInstanceOf[Type[Obj]]), b._2.exec(b._1).asInstanceOf[Type[Obj]].range, mutable.LinkedHashMap(state.toSeq: _*),prefix)
       val inner = b._2.args.foldLeft(List[Row]())((x, y) => x ++ (y match {
         case branches: Rec[Obj,Obj] if b._2.op.equals(Tokens.split) => branches.gmap.flatMap { a => {
           List(explain(a._1 match {
             case btype: Type[_] => btype
             case bvalue: Value[_] => bvalue.start()
-          },mutable.LinkedHashMap(state.toSeq: _*), depth + 1,prefix),
+          },mutable.LinkedHashMap(state.toSeq: _*), depth + 1),
           explain(a._2 match {
             case btype: Type[_] => btype
             case bvalue: Value[_] => bvalue.start()
@@ -68,8 +68,8 @@ object ExplainOp {
         case branches: Lst[_] if b._2.isInstanceOf[BranchInstruction] => branches.glist.map {
           case btype: Type[_] => btype
           case bvalue: Value[_] => bvalue.start()
-        }.flatMap(x => explain(x, mutable.LinkedHashMap(state.toSeq: _*), depth + 1,prefix))
-        case btype: Type[Obj] => explain(btype, mutable.LinkedHashMap(state.toSeq: _*), depth + 1,prefix)
+        }.flatMap(x => explain(x, mutable.LinkedHashMap(state.toSeq: _*), depth + 1))
+        case btype: Type[Obj] => explain(btype, mutable.LinkedHashMap(state.toSeq: _*), depth + 1)
         case _ => Nil
       }))
       temp ++ inner
@@ -102,7 +102,7 @@ object ExplainOp {
       .append(objStringClip(b._3)).append(stolenRepeat(" ", Math.abs(c2 - (objStringClip(b._3).length) - (b._1))))
       .append("=>").append(stolenRepeat(" ", 3)).append(stolenRepeat(" ", b._1))
       .append(objStringClip(b._4)).append(stolenRepeat(" ", Math.abs(c3 - (objStringClip(b._4).length) - (b._1))))
-      .append(b._5.foldLeft("")((x, y) => x + (y._2 + "<" + y._1 + "> "))).append("\n"))
+      .append(b._5.foldLeft("")((x, y) => x + (y._1 + "->" + y._2 + " "))).append("\n"))
     "\n" + atype.toString + "\n\n" + builder.toString()
   }
   // stolen from Scala distribution as this method doesn't exist in some distributions of Scala
