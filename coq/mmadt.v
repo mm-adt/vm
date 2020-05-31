@@ -1,4 +1,14 @@
-(* Start of corrected SRT formalization in Coq, by Ryan Wisnesky *)
+(*
+This mmadt.v source file for Coq version 8.11 (https://coq.inria.fr) 
+provides a mechanically rigorous environment for understanding the mathematical 
+properties of the corresponding JVM implementation of the mm-ADT VM.  Our goal
+is to deduce features of mmlang in a purely axiomatic manner, based on the stream 
+ring theory axioms for which mm-ADT VM was initialy founded, rather than the particulars 
+of its Scala implementation, which must be optimized for e.g., speed, robustness, etc.
+*)
+
+(* Author: Ryan Wisnesky *)
+
 Require Import String BinNums List Bool Floats BinIntDef ProofIrrelevance FunctionalExtensionality Sorted.
 Import ListNotations.
 Open Scope string_scope. Open Scope type_scope. Open Scope list_scope.
