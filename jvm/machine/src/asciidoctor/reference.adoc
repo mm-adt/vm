@@ -1,0 +1,35 @@
+== Reference
+
+=== Instructions
+
+The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.
+
+.Instruction classes
+[cols="^1h,4,6",width=80%]
+|===
+| Class      | Signature                  | Description
+
+| Branch     | `y{*}\<=x[branch]`         | Split `objs` across instructions.
+| Filter     | `x{?}\<=x[filter]`         | Remove `objs` from an evaluation
+| Flatmap    | `y{*}\<=x[flatmap]`        | Split `objs` across objects.
+| Initial    | `obj{0}\<=x[initial]`      | Finalize `objs` in an evaluation
+| Map        | `y\<=x[map]`               | Move `objs` between objects
+| Reduce     | `y\<=x{*}[reduce]`         | Fold `objs` down to a single `obj`
+| SideEffect | `x\<=x[sideeffect]`        | Global state mutations
+| Terminal   | `x{*}\<=obj{0}[terminal]`  | Generate `objs` for evaluation
+| Trace      | `y\<=x[trace]`             | Traverser the `obj` graph (reflection)
+|===
+
+==== Branch Instructions
+
+The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.
+
+===== [compose]
+===== [branch]
+===== [choose]
+
+==== Filter Instructions
+==== Map Instructions
+==== Reduce Instructions
+==== Trace Instructions
+
