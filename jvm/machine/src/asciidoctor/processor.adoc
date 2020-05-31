@@ -2,35 +2,27 @@
 
 == Processor Structures
 
-The programs of the mm-ADT virtual machine are _types_. From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's instruction set architecture.
-Every mm-ADT type is isomorphic to a directed labeled *type trace graph* containing type-vertices and instruction-edges called.
-The program's type trace graph is the internal data structure used by the mm-ADT VM to not only compose types (encode), but also to compile (transform/optimize) types. At execution time, values propagate through the type trace graph of the program and generate a parallel, homomorphic image of the types' manifestations as values in the *value trace graph*, where the resultant struture of an mm-ADT computation is the *obj trace graph*
+The programs of the mm-ADT virtual machine are _types_. From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. Every mm-ADT type has a corresponding https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrammatic] representation that is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to a directed labeled *type graph* composed of _type_-vertices and _instruction_-edges.
+
+A program's type graph is the https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize). At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the *value graph*, where the resultant structure of an mm-ADT computation is the *obj graph*, where
 
 \[
-G(\texttt{obj}) = ( V = \texttt{values} \cup \texttt{types}, E \subseteq (V \times \texttt{inst} \times V) ).
+\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q})
 \]
 
 image::process-stack.png[float="right",width=200]
 
-Type composition, compilation, and ultimate evaluation are carried out by mm-ADT compliant *processors*. Processors ground the mm-ADT VM to the physical machine (whether on a single machine, via multiple threads, or across a compute cluster), where ultimately, at the bottom of this "process stack," the natural world's physics provides the baseline dynamics (a "_ptype_" so to speak).
+Type composition, compilation, and evaluation are carried out by mm-ADT compliant *processors*. Processors ground the mm-ADT VM to the underlying physical computer (whether on a single machine, via multiple threads, or across compute cluster), where, at the bottom of this _process stack_, the natural world's physics provides the baseline dynamics (the fundamental ground of the computation).
 
-This section details the specifics of the relationships between types, values, and processors
+This section details the specifics of the relationships between types, values, and processors.
 
 === Processes
 
 Processors are used in the following three situations:
 
 . *Composition*: (https://en.wikipedia.org/wiki/Type_inference[type inference]).
-+
-
 . *Compilation*: (https://en.wikipedia.org/wiki/Program_optimization[type optimization]). https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point].
-+
-
 . *Evaluation*: (https://en.wikipedia.org/wiki/Execution_(computing)[type enumeration]).
-+
-
-
-&nbsp;
 
 
 ==== Instruction Evaluation
@@ -67,128 +59,16 @@ denotes the unary function \[
 \end{array}
 \]
 
-The above unary function is evaluated via the nested mm-ADT instruction, where the \$\Delta_n\$ product projections refer to the diagonal of the `obj` (clone) and the \$arg_n\$ products projections denote the arguments to the subsequent instruction.
-
-image::int_gt_plus_id.png[align="center",width=100%]
-
 ===== n-Ary Relations
 
-NOTE: Distributed mm-ADT processors can yield on the order of millions of traversers during a single program evaluation.
-Conceptually, a processor is responsible for coordinating a https://en.wikipedia.org/wiki/Swarm_intelligence[_traverser swarm_], where the result of an mm-ADT program is the aggregate data locations of all the halted traversers.
+==== Instruction Classes
 
-=== Instruction Classes
+===== Map
 
-==== Branching
+===== Filter
 
-The `[branch]` instruction is a general-purpose instruction for creating and merging parallel streams of objects.
-All other branching instructions are founded on `[branch]` and extend it with added usability-parametrization.
-In general, all branching instructions can be understood as generating a product (*splitting*) and then generating a co-product (*merging*).
+===== Trace
 
-image::branch-prod-coprod.png[align="center",width=75%]
-
-When a traverser at an \$\tt{obj} \in A\$ arrives at `[branch]`, the traverser is split across the respective internal types -- called _branches_.
-Splitting is a cloning process by which a product is formed and then each component of the product is projected to each respective branch via \$\pi_n\$.
-
-\[\texttt{split}: A \rightarrow A \times \ldots \times A\]
-
-image::branch-traversers.png[float="left",width=600]
-
-Every branch can operate independently, where no global communication is required between branches.
-This is an important feature of `[branch]` and the branch instructions in general because each branch can be isolated and migrated for physical distribution and parallelization.
-All other instructions that make use of internal types for parametrization do not enjoy this feature.
-
-Finally, the resultant traversers of each individual branch are then summed via \$\iota_n\$ to yield a single stream co-product of outgoing traversers.
-
-\[\texttt{merge}: (B \times \ldots \times D) \rightarrow (B + \ldots + D)\]
-
-===== Branching Specifications
-
-There are two ways of programming a `[branch]` instruction.
-
-. Using a `rec` structure where the keys are `{0}`-predicate filters and the values are the branch transformations.
-. Using a `lst` structure where the values are the branch transformations.
-
-Every `lst`-form can be expressed as a `rec`-form via and every `rec`-form can be expressed as a `lst`-form.
-The general rule for transformation is detailed in the source fragment below.
-
-[source]
-----
-[branch,[[a];[b];[c]]]    => [branch,[x:a,y:b,z:c]]
-[branch,rec[x:a,y:b,z:c]] => [branch,[[is,x][a];[is,y][b];[is,z][c]]]
-----
-
-The `[branch]` instruction takes a single `rec`-type argument.
-The record keys are `{0}`-predicates where if the incoming `obj` matches the key, then the `obj` is processed by the value.
-_Every key_ that matches has it's respective value processed for the incoming `obj`.
-
-\[
-\tt x[branch]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow \biguplus_{i \in 1 \to n} x[tv_i] \; \text{iff} \; x[tk_i][q] \neq 0 \]
-
-==== Type Ring
-
-mm-ADT's type theory has a rich axiomatic semantics founded on https://en.wikipedia.org/wiki/Ring_theory[algebraic ring theory] and in particular, on https://zenodo.org/record/2565243[stream ring theory].
-
-
-
-&nbsp;
-
-The type system of mm-ADT is characterized by a particular formulation of the https://en.wikipedia.org/wiki/Product_ring[direct product of rings] over the _quantifier_ and _instruction_ rings (discussed next).
-The product of these two rings is a ring itself called the _stream ring_.
-Thus, mm-ADT's types are founded on ring theory in general and stream ring theory in particular.
-
-image::ring-structures.png[align="center",width=80%]
-
-NOTE: Instructions and quantifiers are the carrier sets of two independent https://en.wikipedia.org/wiki/Ring_(mathematics)[rings] with unity whose https://en.wikipedia.org/wiki/Direct_product[direct product] forms the mm-ADT type ring and is the subject of study in https://zenodo.org/record/2565243[stream ring theory] (SRT).
-The type graph structure presented previously is a subgraph of a (pseudo) https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] formed from the multiplicative https://en.wikipedia.org/wiki/Group_(mathematics)[monoid] (w/ no multiplicative inverse) component of that ring.
-
-===== The Instruction Ring
-
-In mm-ADT, the carrier set of the *instruction ring* is the set of all instructions, where
-
-* `inst` is the carrier set,
-* `*` is serial composition,
-* `+` is parallel composition,
-* `0` is `[none]` and
-* `1` is `[all]`.
-
-In the table below `[a]`, `[b]`, and `[c]` are variable instructions in `inst`, where `[none] == [is,false]` and `[all] == [is,true]`.
-
-
-
-IMPORTANT: A known "bug" in stream ring theory is that not all instructions in `inst` have an additive inverse.
-Thus, it is not the case that every instruction set can serve as the carrier of a ring.
-Fortunately, in the larger composite type ring (discussed later), which forms the primary algebraic structure in mm-ADT's type system, the quantifier ring's multiplicative inverse can be used to remedy the situation--see the 3rd entry in the table above.
-
-As an example, the instructions `[plus,10]` and `[gt,5]` can be combined via serial and/or parallel composition.
-In general, all serial and parallel compositions are https://en.wikipedia.org/wiki/Associative_property[associative] except for those that use instructions from a particular `inst` subring known as the _the reduce near-ring_ (discussed later).
-
-[source]
-----
-mmlang> [plus,10] int[mult,[gt,5]]
-==>[plus,10][gt,5]
-mmlang> [plus,10] inst[plus,[gt,5]]
-==>[branch,[plus,10],[gt,5]]
-----
-
-The https://en.wikipedia.org/wiki/Distributive_property[distributivity] of multiplications over addition is made apparent with expressions below which have a diagrammatic representation, where the edges/arrows are streams of `objs` that are being operated on by the `insts` vertex/objects they meet along the way.
-Whenever the diagram branches, the `obj` at the branch is cloned, taking _both_ branches.
-
-\[
-\texttt{x[branch,[a],[b]]} = \uplus <\texttt{x[a]},\texttt{x[b]}> \]
-
-[source]
-----
-[plus,10][branch,[gt,5],[lt,2]]  ==  [branch,[plus,10][gt,5],[plus,10][lt,2]]
-----
-
-// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZARgBpiBdUkANwEMAbAVxiRAB12cdhkAjAE50wAYwAWpAL4hJpdJlz5CKAEykADFVqMWbTt14BzHKQCsFabPnY8BImpVb6zVog5ceyBiceW5IDBslInVyJx1XdwNkNGY4ck0-a0U7FABmMOpnXTd9HgsZf0CU5WQAFkztFz12GABHJiwaQuTbUtNK7Mi83kFhcSkWgIU2ogA2DXDq3I9eWKZ44kSh4tGUCccsiJro+cXlq2Gg1OQAdkmt6ajPYzMCw9XglHPNqpzr3m9SXxWRp+QABydbYzAz3LQwKCGeBEUAAMwEEAAtkhQiAcBAkMRDgjkajqBikCocYiUYgMujMYh1CS8YgyJSkGVaWS1IzEMz-LiyRN2acWUheYTEACBYhzuyAJxioHspZipYEqnEbFc0lISVKrHYixAA
-image::inst-left-distrib.png[width=750,align=center]
-
-[source]
-----
-[branch,[plus,10],[mult,5]][gt,7]  ==  [branch,[plus,10][gt,7],[mult,5][gt,7]]
-----
-// https://tikzcd.yichuanshen.de/#N4Igdg9gJgpgziAXAbVABwnAlgFyxMJZABgBoBGAXVJADcBDAGwFcYkQAdDnHYZAIwBO9MAGMAFqQC+IKaXSZc+QinKli1Ok1bsuPPmhZwKGmXIXY8BImoBMmhizaJO3XsgC2zRjlIBWSjN5EAxLZSJbCgdtZ1d9QNlg0KVrFAAWKJpHHRcuGABHZixaRIsUlWQ-TK0nXTc+IREJaVKQxSsKgDZ1aNrc+uRDZmNyU1bkjqJu+yyYuv1Pb18AoLLJlAB2Htm+uPcAc18NhPM2sNTkLZmanL2+Q9Jj1bPyogAOauzYvV4TpPbwigAMyfOb9BYPJ6yTQwKD7eBEUAAM0EEA8SDIIBwECQ5FOKLRGJo2KQtnxqPRiDUWJxiCB5MJiEiNKQ9OCBMpVRZiE6DM5xNpGz5SG63LewsQW25AE4JdKBbjiBKPtzRhKQaq8YEgA
-image::inst-right-distrib.png[width=750,align=center]
+===== Branch
 
 === Processor Implementations

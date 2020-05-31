@@ -3,271 +3,31 @@
 The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.
 
 .Instruction classes
-[cols="^1h,3,7"]
+[cols="^1h,4,7",width=75%]
 |===
 | Class      | Signature            | Description
 
-| Branch     | `y{*}\<=x[branch]`    | Instructions for splitting traversers across instructions.
-| Filter     | `x{?}\<=x[filter]`    | Instructions for removing traversers from an evaluation
-| Flatmap    | `y{*}\<=x[flatmap]`   | Instructions for splitting traversers across objects.
-| Initial    | `obj{0}\<=x[initial]` | Instructions for finalizing objects in an evaluation
-| Map        | `y\<=x[map]`          | Instructions for moving traversers between objects
-| Model      | `y\<=x[model]`        | Instructions for transforming types between model-ADTs
-| Reduce     | `y\<=x{*}[reduce]`    | Instructions for funneling traversers down to a single traverser
-| SideEffect | `x\<=x[sideeffect]`   | Instructions that yield global state mutations
-| Terminal   | `x{*}\<=obj{0}[terminal]`   | Instructions for generating objects for evaluation
-| Traverser  | `y\<=x[traverser]`    | Instructions that operate on the traverser itself
+| Branch     | `y{*}\<=x[branch]`    | Split `objs` across instructions.
+| Filter     | `x{?}\<=x[filter]`    | Remove `objs` from an evaluation
+| Flatmap    | `y{*}\<=x[flatmap]`   | Split `objs` across objects.
+| Initial    | `obj{0}\<=x[initial]` | Finalize `objs` in an evaluation
+| Map        | `y\<=x[map]`          | Move `objs` between objects
+| Reduce     | `y\<=x{*}[reduce]`    | Fold `objs` down to a single `obj`
+| SideEffect | `x\<=x[sideeffect]`   | Global state mutations
+| Terminal   | `x{*}\<=obj{0}[terminal]`   | Generate `objs` for evaluation
+| Trace  | `y\<=x[trace]`    | Traverser the `obj` graph (reflection)
 |===
 
 ==== Branch Instructions
 
 The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.
 
+===== [compose]
 ===== [branch]
-
-[width=50%,cols="1,2"]
-|====
-| branch syntax           | syntax style
-
-| `y<=x[branch,rec[x:y]]` | vm instruction
-| `y<=x[[x->y]+[x->y]]`   | stream addition
-| `y<=x[x->y & x->y]`     | inline aggregate
-|====
-
-[source]
-----
-mmlang> int[branch,rec[[is,[gt,0]] :[plus,1],
-                       [is,[gt,10]]:[plus,2]]]
-==>int{0,2}<=int[branch,[int{?}<=int[is,bool<=int[gt,0]] :int[plus,1]
-                        &int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
-mmlang> -1,1,11[branch,rec[[is,[gt,0]]:[plus,1],[is,[gt,10]]:[plus,2]]]
-==>2
-==>12
-==>13
-mmlang> -1,1,11[is>0->+1 & is>10->+2]
-==>2
-==>12
-==>13
-----
-
 ===== [choose]
 
-The `[choose]` instruction takes a single `rec`-type argument.
-The record keys are `{0}`-predicates where if the incoming `obj` matches the key, then the `obj` is processed by the value.
-The _first key_ that matches has it's respective value processed for the incoming `obj`.
-
-\[
-\tt x[choose]:[tk_1:tv_1] \times \ldots \times [tk_n:tv_n] \rightarrow x[tv_m] : x[tk_m][q] \; \neq \;0 \]
-
-[width=50%,cols="1,2"]
-|====
-| choose syntax           | syntax style
-
-| `y\<=x[choose,rec[x:y]]` | vm instruction
-| `y\<=x[[x->y][x->y]]`    | stream division
-| `y\<=x[x->y \| x->y]`    | inline selection
-|====
-
-[source]
-----
-mmlang> int[choose,rec[[is,[gt,0]] :[plus,1],
-                       [is,[gt,10]]:[plus,2]]]
-==>int[choose,[int{?}<=int[is,bool<=int[gt,0]] :int[plus,1]
-              |int{?}<=int[is,bool<=int[gt,10]]:int[plus,2]]]
-mmlang> -1,1,11[choose,rec[[is,[gt,0]]:[plus,1],[is,[gt,10]]:[plus,2]]]
-==>-1
-==>2
-==>12
-mmlang> -1,1,11[is>0->+1 | is>10->+2]
-==>-1
-==>2
-==>12
-----
-
 ==== Filter Instructions
-
-===== [is]
-
-```
-x<=x[is,bool]
-```
-
-`[is]` is the canonical filter instruction.
-
-```
-<x>[is,[as,bool][[eq,true]  -> <x>
-                |[eq,false] -> <x>[none] ]
-```
-
-```
-mmlang> 6,42[is,true]
-==>6
-==>42
-mmlang> 6,42[is,false]
-mmlang> 6,42[is,[a,int]]
-==>6
-==>42
-mmlang> 6,42 is[a,int]
-==>6
-==>42
-mmlang> 6,42[is,[gt,10]]
-==>42
-mmlang> 6,42[is,[lt,10]]
-==>6
-mmlang> 6,42[is>10]
-==>42
-mmlang> 6,42 is>10
-==>42
-mmlang> int{2}[is>10]
-==>int{0,2}<=int{2}[is,bool{2}<=int{2}[gt,10]]
-```
-
 ==== Map Instructions
-
-===== [a]
-
-```
-bool<=x[a,y]
-```
-
-===== [and]
-
-```
-bool<=bool[and,bool]
-```
-
-===== [eq]
-
-```
-bool<=x[eq,y]
-```
-
-===== [get]
-
-```
-y <= rec[x:y][get,x]
-```
-
-===== [gte]
-
-```
-bool<=x[gte,y]
-```
-
-===== [gt]
-
-```
-bool<=x[gt,y]
-```
-
-===== [id]
-
-```
-obj<=obj[id]
-```
-
-===== [lte]
-
-```
-bool<=x[lte,x:ord]
-```
-
-===== [lt]
-
-```
-bool<=x[lt,x:ord]
-```
-
-===== [map]
-
-```
-x<=obj[map,x:type]
-```
-
-===== [mult]
-
-```
-x<=x[mult,x:mmonoid]
-```
-
-===== [neg]
-
-```
-x<=x[neg,x:pgroup]
-```
-
-===== [one]
-
-```
-x<=x:mmonoid[one]
-```
-
-===== [or]
-
-```
-bool<=bool[or,bool]
-```
-
-===== [plus]
-
-```
-x<=x[plus,x:pmonoid]
-```
-
-===== [q]
-
-```
-ring<=obj{ring}[q]
-```
-
-===== [zero]
-
-```
-x<=x:pmonoid[one]
-```
-
-==== Model Instructions
-
-===== [as]
-
-```
-x<=obj[as,x:type]
-```
-
 ==== Reduce Instructions
-
-===== [count]
-
-```
-ring:x<=obj{ring:x}[count]
-```
-
-===== [fold]
-
-==== SideEffect Instructions
-
-===== [error]
-
-```
-obj<=obj[error,str]
-```
-
 ==== Traverser Instructions
 
-===== [explain]
-
-```
-str<=type[explain]
-```
-
-===== [from]
-
-```
-y<=obj<x:y>[from,x]
-```
-
-===== [to]
-
-```
-y<x:y><=y[to,x]
-```

@@ -1,5 +1,6 @@
 = mm-ADT: The Virtual Machine
-Marko A. Rodriguez <marko@rredux.com>
+Marko A. Rodriguez [creator] (RReduX)
+Ryan Wisnesky [advisor] (Conexus)
 :project-version: 0.1
 :icons: font
 :toc: left
