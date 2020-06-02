@@ -447,9 +447,9 @@ As an economic model, each integration point offers the respective development t
 <div class="sect1">
 <h2 id="_virtual_machine_components">Virtual Machine Components</h2>
 <div class="sectionbody">
-<div class="imageblock right text-center">
+<div class="imageblock right">
 <div class="content">
-<img src="./images/introduction/vm-components.png" alt="vm components" width="360" height="294">
+<img src="./images/introduction/diag-f9bcfd96975e3103c088523d50854fca.png" alt="diag f9bcfd96975e3103c088523d50854fca" width="380" height="294">
 </div>
 </div>
 <div class="paragraph">
@@ -484,13 +484,12 @@ f: S \rightarrow E.
 \]</p>
 </div>
 <div class="paragraph">
-<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are <a href="https://en.wikipedia.org/wiki/Currying">curried</a> at either compile-time or runtime).
-The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.</p>
+<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are <a href="https://en.wikipedia.org/wiki/Currying">curried</a> at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_three_interrelated_algebras">Three Interrelated Algebras</h4>
-<table class="tableblock frame-all grid-all right" style="width: 40%;">
+<h4 id="_three_algebraic_actions">Three Algebraic Actions</h4>
+<table class="tableblock frame-all grid-all left" style="width: 30%;">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -504,33 +503,33 @@ The sole purpose of this documentation is to make salient the various algebraic 
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">instruction monoid</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ADT functors</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trace ringoid</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Processor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stream ring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code> monoid</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> magma</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Each of the three aforementioned mm-ADT VM components has an associated axiomatic algebra that best describes its structures and processes. The <strong>language algebra</strong> is a described as a trace polynomial ringoid that captures the serial and parallel composition of instructions from the mm-ADT instruction set architecture. The <strong>processor algebra</strong> (for both compilation and evaluation) is an instruction monoid for serially composing instructions. Finally, the <strong>storage algebra</strong> is founded on the set of all mm-ADT objects with various algebraic actions that specify the way in which the many abstract data types are coupled and controlled by one another (e.g. key/value, graph, relational, etc.).</p>
+<p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes. The <strong>language algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace</a> <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> that captures the serial and parallel composition of mm-ADT types. The <strong>processor algebra</strong> (for both compilation and evaluation) is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> for serially composing instructions from the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. Finally, the <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> whose carrier set contains all mm-ADT objects and enables various <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> that specify the way in which <a href="https://en.wikipedia.org/wiki/Abstract_data_type">abstract data types</a> are coupled and controlled by one another (e.g. key/value, graph, relational, etc.).</p>
 </div>
 <div class="paragraph">
-<p>The primary purpose of this documentation is to explain these algebras individuals, specify their relationship to each otherm and demonstrate how they are manipulated in practice with mm-ADT technology. Data system engineers will learn how to integrate their technology so end users may compose their system with other systems to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
+<p>The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated with mm-ADT technology. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_mm_adt_practice">mm-ADT Practice</h3>
+<h3 id="_mm_adt_technology">mm-ADT Technology</h3>
 <div class="sect3">
 <h4 id="_mm_adt_console">mm-ADT Console</h4>
 <div class="paragraph">
 <p>The mm-ADT VM provides a <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop:">REPL</a> console for users to evaluate mm-ADT programs written in any mm-ADT language.
-The reference language distributed with the VM is called <code>mmlang</code>. <code>mmlang</code> is a low-level, functional language that is in near 1-to-1 correspondence with the underlying VM architecture&#8201;&#8212;&#8201;offering it&#8217;s users <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-Complete</a> expressively when writing programs and an interactive teaching tool for studying the mm-ADT VM.</p>
+The reference language distributed with the VM is called <code>mmlang</code>. <code>mmlang</code> is a low-level, functional language that is in near 1-to-1 correspondence with the underlying VM architecture&#8201;&#8212;&#8201;offering it&#8217;s users <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-Complete</a> expressivity when writing programs and an interactive teaching tool for studying the mm-ADT VM.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -565,7 +564,7 @@ mmlang&gt; 1[plus,2]
 <div class="sect3">
 <h4 id="_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</h4>
 <div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below. <code>mmlang</code> is best understood as a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> whose elements denote mm-ADT programs which <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">act, as modules,</a> on the ringoid structure of an mm-ADT processor.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below. <code>mmlang</code> is best understood as a <a href="https://en.wikipedia.org/wiki/Free_algebra">free ringoid</a> whose elements denote mm-ADT programs which <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">act, as modules,</a> on the instruction monoid implemented by every mm-ADT processor.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -725,7 +724,7 @@ o1    [a,t1]                := t1(o1) != {0}</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-28 23:35:15 -0600
+Last updated 2020-06-02 01:21:47 -0600
 </div>
 </div>
 </body>
