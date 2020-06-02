@@ -566,7 +566,7 @@ mmlang&gt; 'a','b','a'    <b class="conum">(5)</b>
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
 <div class="paragraph">
-<p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two interesting consequences are</p>
+<p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values). In mm-ADT, every instruction operates on both types and values. Two interesting consequences are</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -580,7 +580,7 @@ mmlang&gt; 'a','b','a'    <b class="conum">(5)</b>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; int int[is&gt;0]                      <b class="conum">(1)</b>
+<pre class="highlight"><code>mmlang&gt; int int[is,[gt,0]]                 <b class="conum">(1)</b>
 ==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]
 mmlang&gt; 5 int{?}&lt;=int[is,bool&lt;=int[gt,0]]  <b class="conum">(2)</b>
 ==&gt;5</code></pre>
@@ -589,7 +589,7 @@ mmlang&gt; 5 int{?}&lt;=int[is,bool&lt;=int[gt,0]]  <b class="conum">(2)</b>
 <div class="colist arabic">
 <ol>
 <li>
-<p>The <code>int</code>-type is passed to the <code>int[is&gt;0]</code>-type to yield an <code>int{?}</code>-type denoting either 0 or 1 <code>int</code> (<strong>compilation</strong>).</p>
+<p>The <code>int</code>-type is applied to the <code>int[is,[gt,0]]</code>-type to yield an <code>int{?}</code>-type denoting either 0 or 1 <code>int</code> (<strong>compilation</strong>).</p>
 </li>
 <li>
 <p>The type <code>bool&lt;=int[gt,0]</code> serves as a lambda that yields <code>true</code> or <code>false</code> for every incoming <code>int</code> value (<strong>evaluation</strong>).</p>
@@ -733,7 +733,7 @@ mmlang&gt; 5 int{?}&lt;=int[is,bool&lt;=int[gt,0]]  <b class="conum">(2)</b>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, <code>int</code> is a ctype denoting a single <code>int</code> value from the set of all integers. When the instruction <code>[is&gt;0]</code> is applied to <code>int</code>, the dtype <code>int[is&gt;0]</code> is formed. This dtype is a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement type</a> that restricts <code>int</code> to only those <code>int</code> values greater than zero&#8201;&#8212;&#8201;i.e., a natural number \$\mathbb{N}^+\$.
+<p>For example, <code>int</code> is a ctype denoting a single <code>int</code> value from the set of all integers. When the instruction <code>[is&gt;0]</code> is applied to <code>int</code>, the dtype <code>int[is&gt;0]</code> is formed, where <code>[is&gt;0]</code> is <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugar</a> for <code>[is,[gt,0]]</code>. This dtype is a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement type</a> that restricts <code>int</code> to only those <code>int</code> values greater than zero&#8201;&#8212;&#8201;i.e., a natural number \$\mathbb{N}^+\$.
 In terms of the "<em>range = domain and function</em>" reading, when an <code>int</code> (<strong>domain</strong>) is applied to <code>[is&gt;0]</code> (<strong>function</strong>), the result is an <code>int</code> greater than zero (<strong>range</strong>).</p>
 </div>
 <div class="imageblock text-center">
@@ -1018,7 +1018,7 @@ int{*}&lt;=[=db][get,'people']       // 0 or more ints (any)</code></pre>
 where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In <code>mmlang</code> if an <code>obj</code> quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or <code>{1,1}</code>. Moreover, if a single value is provided, it is assumed to be repeated where <code>{n}</code> is shorthand for <code>{n,n}</code>. Thus, <code>int</code> is <code>int{1}</code>  is <code>int{1,1}</code>.</p>
 </div>
 <div class="paragraph">
-<p>One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>&#8201;&#8212;&#8201;<code>{0}</code>. All <code>objs</code> quantified with the respective quantifier ring&#8217;s annihilator are <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal object</a>.</p>
+<p>One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>&#8201;&#8212;&#8201;<code>{0}</code>. All <code>objs</code> quantified with the respective quantifier ring&#8217;s annihilator are <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial object</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2717,7 +2717,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-02 09:06:32 -0600
+Last updated 2020-06-02 09:35:51 -0600
 </div>
 </div>
 </body>
