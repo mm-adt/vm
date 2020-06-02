@@ -7,25 +7,25 @@ As an economic model, each integration point offers the respective development t
 
 == Virtual Machine Components
 
-[ditaa,"vm-components",align="center",float="right",shadows=false]
+[ditaa,float=right,shadows=true]
 ....
-  /---------------------\
-  |            mmADT VM |
-  |                     |
-  | bool,int,str,rec,.. |
-  | strm,model,...      |
-  | map,filter,branch,..|
-  |                     |
-  \-----*----*-----*----/
-        |    |     |
-    /---/    |     \-----\
-    |        |           |
-+---*----+ +-*-----+ +---*-----+
-|{d}     | |  {s}  | | {io}    |
-|        | |       | |         |
-|language| |storage| |processor|
-|        | |       | |         |
-+--------+ +-------+ +---------+
+    /-----------------------\
+    |            mmADT VM   |
+    |                       |
+    | bool,int,real,str,... |
+    | map,filter,branch,..  |
+    | strm,obj,...          |
+    |                       |
+    \-----*-----*-----*-----/
+          |     |     |
+    /-----/     |     \-----\
+    |           |           |
++---*----+ +----*----+ +----*----+
+|{d}     | |  {io}   | | {s}     |
+|        | |         | |         |
+|language| |processor| | storage |
+|        | |         | |         |
++--------+ +---------+ +---------+
 ....
 
 The mm-ADT VM is the integration point for the following data processing technologies:
@@ -59,7 +59,7 @@ The complexities of mm-ADT are realized in the definition of an `obj` (which inc
 | Storage   | `obj` magma
 |===
 
-Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes. The *language algebra* is a https://en.wikipedia.org/wiki/Trace_monoid[trace] https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ringoid] that captures the serial and parallel composition of instructions from the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The *processor algebra* (for both compilation and evaluation) is an instruction https://en.wikipedia.org/wiki/Monoid[monoid] for serially composing instructions. Finally, the *storage algebra* is a https://en.wikipedia.org/wiki/Magma_(algebra)[magma] whose carrier set contains all mm-ADT objects and enables various https://en.wikipedia.org/wiki/Semigroup_action[algebraic actions] that specify the way in which https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types] are coupled and controlled by one another (e.g. key/value, graph, relational, etc.).
+Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes. The *language algebra* is a https://en.wikipedia.org/wiki/Trace_monoid[trace] https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ringoid] that captures the serial and parallel composition of mm-ADT types. The *processor algebra* (for both compilation and evaluation) is a https://en.wikipedia.org/wiki/Monoid[monoid] for serially composing instructions from the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. Finally, the *storage algebra* is a https://en.wikipedia.org/wiki/Magma_(algebra)[magma] whose carrier set contains all mm-ADT objects and enables various https://en.wikipedia.org/wiki/Semigroup_action[algebraic actions] that specify the way in which https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types] are coupled and controlled by one another (e.g. key/value, graph, relational, etc.).
 
 The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated with mm-ADT technology. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create _synthetic data systems_ tailored to their problem's particular computational requirements.
 
