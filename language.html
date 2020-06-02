@@ -696,7 +696,7 @@ mmlang&gt; 5 int{?}&lt;=int[is,bool&lt;=int[gt,0]]  <b class="conum">(2)</b>
 <p><strong>str</strong>: denotes the set of character strings&#8201;&#8212;&#8201;\$ \Sigma^\ast \$.</p>
 </li>
 <li>
-<p><strong>poly</strong>: denotes the set of composites (polynomials)&#8201;&#8212;&#8201;\$ \tt{obj}^n \$.</p>
+<p><strong>poly</strong>: denotes the set of polynomials (composites)&#8201;&#8212;&#8201;\$ \tt{obj}^n \$.</p>
 </li>
 </ol>
 </div>
@@ -801,8 +801,8 @@ mmlang&gt; int{2}[is&gt;0]                           <b class="conum">(3)</b>
 <p>Every mm-ADT type can be generally understood as a function that maps an <code>obj</code> of one type to an <code>obj</code> of another type. A <strong>type signature</strong> specifies the source and target of this mapping, where the <em>domain</em> is the source type and the <em>range</em> is the target type. Both the domain and range type specifications include a respective quantifier denoted <code>{q}</code> in <code>mmlang</code>.
 The general pattern of a type signature is</p>
 </div>
-<div class="paragraph">
-<p><code>range{q}&lt;=domain{q}</code></p>
+<div class="paragraph text-center">
+<p><code>range{q}&lt;=domain{q}</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1227,7 +1227,7 @@ mmlang&gt;</code></pre>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
 <div class="exampleblock">
-<div class="title">Example 2. Section Language Constructs</div>
+<div class="title">Example 2. Poly Constructs</div>
 <div class="content">
 <div class="olist arabic">
 <ol class="arabic">
@@ -1418,10 +1418,8 @@ where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a te
 <p>In mm-ADT, the elements of the set <code>poly</code> are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>.
 A <code>poly</code> is a <em>decoupling</em> of <em>objs</em> composed of <em>quantifiers</em> and <em>objects</em> typically expressed as</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>(x0{q0},x1{q1},x2{q2},...,xn{qn})</code></pre>
-</div>
+<div class="paragraph text-center">
+<p><code>(x0{q0},x1{q1},x2{q2},&#8230;&#8203;,xn{qn})</code></p>
 </div>
 <div class="paragraph">
 <p>where <code>qi</code> is a quantifier, <code>xi</code> is an object, <code>xi{qi}</code> is an <code>obj</code> (type or value), and the <code>objs</code> are isolated via <code>,</code>.</p>
@@ -1541,16 +1539,16 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])   <b class="conum">(3)</b>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The two terms of the polynomial <code>[bool&#8656;int[gt,0],bool&#8656;int[gt,10]]</code> are <code>bool</code> types.
-The two terms of <code>[[gt,0],[gt,10]]</code> are <code><em></code> types (_anonymous types</em>).
-A compilation process infers the domain/range of the anonymous types.</p>
+<p>The two terms of the polynomial <code>[[gt,0],[gt,10]]</code> are <code>_</code> types (<em>anonymous types</em>). Compilation infers the domain/range of the anonymous types.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; -&lt;([gt,0],[gt,10])
-==&gt;(bool&lt;=_[gt,0],bool&lt;=_[gt,10])
-mmlang&gt; int-&lt;([gt,0],[gt,10])
-==&gt;(bool&lt;=int[gt,0],bool&lt;=int[gt,10])</code></pre>
+<pre class="highlight"><code>mmlang&gt; [[gt,0],[gt,10]]
+==&gt;bool{2}&lt;=_-&lt;(bool&lt;=_[gt,0],bool&lt;=_[gt,10])&gt;-
+mmlang&gt; int[[gt,0],[gt,10]]
+==&gt;bool{2}&lt;=int-&lt;(bool&lt;=int[gt,0],bool&lt;=int[gt,10])&gt;-
+mmlang&gt; int{5}[[gt,0],[gt,10]]
+==&gt;bool{10}&lt;=int{5}-&lt;(bool{5}&lt;=int{5}[gt,0],bool{5}&lt;=int{5}[gt,10])&gt;-</code></pre>
 </div>
 </div>
 </td>
@@ -1558,16 +1556,12 @@ mmlang&gt; int-&lt;([gt,0],[gt,10])
 </table>
 </div>
 <div class="paragraph">
-<p>A <code>poly</code> is an element in one of 3 <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial rings</a>.
-Every <code>poly</code> draws from the same <code>obj</code> carrier set, but are combined using different "additive" operators: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>|</code> yields a non-commutative polynomial and <code>;</code> yields a semi-commutative polynomial ring with "addition" being monoid multiplication.
-The general form of a <code>poly</code> from each of the three polynomial rings is expressed below in <code>mmlang</code>.</p>
+<p>There are 3 <code>poly</code> rings. Each draws from the same <code>obj</code> carrier set, but are combined using different "additive" binary operators: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>,</code> yields a commutative polynomial, <code>|</code> yields a non-commutative polynomial and <code>;</code> yields a semi-commutative polynomial with "addition" being monoid multiplication. The general form of a <code>poly</code> from each of the three polynomial rings is expressed below in <code>mmlang</code>.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>([t0{q0}],[t1{q1}],...,[tn{qn}])
-([t0{q0}]|[t1{q1}]|...|[tn{qn}])
-([t0{q0}];[t1{q1}];...;[tn{qn}])</code></pre>
-</div>
+<div class="paragraph text-center">
+<p><code>([t0{q0}],[t1{q1}],&#8230;&#8203;,[tn{qn}])</code><br>
+<code>([t0{q0}]|[t1{q1}]|&#8230;&#8203;|[tn{qn}])</code><br>
+<code>([t0{q0}];[t1{q1}];&#8230;&#8203;;[tn{qn}])</code></p>
 </div>
 <div class="exampleblock">
 <div class="content">
@@ -2717,7 +2711,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-02 09:42:30 -0600
+Last updated 2020-06-02 11:09:11 -0600
 </div>
 </div>
 </body>
