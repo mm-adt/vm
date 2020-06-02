@@ -1244,14 +1244,6 @@ mmlang> [start,int][plus,5][gt,10][id]
 ==>bool<=int[plus,5][gt,10][id]
 ----
 
-There exists an isomorphism (a https://en.wikipedia.org/wiki/Full_and_faithful_functors[bijective functor]) that maps the `inst` syntactic monoid to the type trace graph.
-This bijection proves that the syntax of `mmlang` is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in `mmlang`.
-
-image::inst-type-functor.png[width=35%,align=center]
-
-The `inst`-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile.
-The benefit of the `inst`-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.
-
 ==== Type Ringoid
 
 .Stream Ring Theory
@@ -1275,7 +1267,7 @@ The mm-ADT type ringoid https://en.wikipedia.org/wiki/Generator_(mathematics)[ge
 
 NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring(oid)], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group].
 In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general).
-Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoid], where, for example, the `,-poly` `[int{1},int{-1}]` merges to `int{0}` and thus, the initial `obj` as
+Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoid], where, for example, the `,-poly` `[int{1},int{-1}]` merges to `int{0}` which is isomorphic to the initial `obj{0}`.
 
 ===== The Free Poly Monoid
 
@@ -1373,7 +1365,7 @@ coproduct +
 
 ===== Free Type Ringoid
 
-The two `;,-poly` monoids serve as components of a https://en.wikipedia.org/wiki/Universal_algebra[universal algebra] that implements the https://zenodo.org/record/2565243[stream ring] algebra -- the foundational algebra of the mm-ADT VM. The two `poly` monoids form a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and thus, a syntactic https://en.wikipedia.org/wiki/Free_algebra[free algebra] that enables mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming] by way of a https://en.wikipedia.org/wiki/Ring_homomorphism[ring homomorphism] from the *structural* ` `;,-poly` free ring to the corresponding reductive *procedural* ring such that \[
+The two `;,-poly` monoids serve as components of a https://en.wikipedia.org/wiki/Universal_algebra[universal algebra] that implements the https://zenodo.org/record/2565243[stream ring] algebra -- the foundational algebra of the mm-ADT VM. The two `poly` monoids form a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and thus, a syntactic https://en.wikipedia.org/wiki/Free_algebra[free algebra] that enables mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming] by way of a https://en.wikipedia.org/wiki/Ring_homomorphism[ring homomorphism] from the *structural* `;,-poly` free ring to the corresponding reductive *procedural* ring such that \[
 ;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle \]
 where the _branch_ component is, in fact, a group with `(a{q},a{-q}) == {0}` and `[branch,a{q},a{-q}] == {0}`.
 
@@ -1394,145 +1386,3 @@ All mm-ADT compliant components are faithful to `obj` and the stream ring axioms
 In this way, the mm-ADT VM remains agnostic to the specifics of the component implementations and thus, mm-ADT supports the creation of _synthetic data systems_.
 
 image::ring-homomorphisms.png[align=center,width=320]
-
-
-===== Axioms, Diagrams, and Notation
-
-The ring https://en.wikipedia.org/wiki/Axiom[axioms] are presented below along with the respective mm-ADT structure denoted in the `mmlang` `< >`-sugar form.
-
-The table on the right provides the (most well-known) logical entailments of said axioms -- i.e., https://en.wikipedia.org/wiki/Theorem[theorems].
-Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in `mmlang`, where
-
-* \$a\$ is `int[plus,1]` with sugar of `+1`
-* \$b\$ is `int[mult,2]` with sugar of `*2`
-* \$c\$ is `int[mult,3]` with sugar of `*3`
-
-Though any combinations of respectively sorted instructions can be used.
-
-.The Ring Axioms in mmlang
-[cols="^3,4,3"]
-|===
-|Ring Axiom |mm-ADT Diagram |mmlang Denotation
-
-|\$(a + b) + c = a + (b + c)\$
-|image:additive-associativity.png[link=images/language/additive-associativity.png]
-a|
-[.small]
-[source]
-----
-mmlang> 1[[+1,*2],*3]
-==>2{2}
-==>3
-mmlang> 1[+1,[*2,*3]]
-==>2{2}
-==>3
-----
-
-|\$0 + a = a + 0 = a\$
-|image:additive-identity.png[link=images/language/additive-identity.png]
-a|
-[.small]
-[source]
-----
-mmlang> 1[{0},+1]
-==>2
-mmlang> 1[+1,{0}]
-==>2
-----
-
-
-|\$a - a = a + (-a) = 0\$
-|image:additive-inverse.png[link=images/language/additive-inverse.png]
-a|
-[.small]
-[source]
-----
-mmlang> 1[[+1,*2],*3]
-==>2{2}
-==>3
-mmlang> 1[+1,[*2,*3]]
-==>2{2}
-==>3
-----
-
-|\$a + b = b + a\$
-|image:additive-commutativity.png[link=images/language/additive-commutativity.png]
-a|
-[.small]
-[source]
-----
-mmlang> 1[+1,*2]
-==>2{2}
-mmlang> 1[*2,+1]
-==>2{2}
-----
-
-|\$(a * b) * c = a * (b * c)\$
-|image:multiplicative-associativity.png[link=images/language/multiplicative-associativity.png]
-a|
-[.small]
-[source]
-----
-mmlang> 1[[+1;*2];*3]
-==>12
-mmlang> 1[+1;[*2;*3]]
-==>12
-----
-
-|\$1 * a = a * 1 = a\$
-|image:multiplicative-identity.png[link=images/language/multiplicative-identity.png]
-a|
-[.small]
-[source]
-----
-mmlang> 1[{1};+1]
-==>2
-mmlang> 1[+1;{1}]
-==>2
-mmlang> 1+1
-==>2
-----
-
-|\$(a + b) * c = (a * c) + (b * c)\$
-|image:multiplicative-right-distributivity.png[link=images/language/multiplicative-right-distributivity.png]
-a|
-[.small]
-[source]
-----
-mmlang> 1[[+1,*2>;*3]
-==>6{2}
-mmlang> 1[[+1;*3],[*2;*3]]
-==>6{2}
-----
-
-|\$a * (b + c) = (a * b) + (a * c)\$
-|image:multiplicative-left-distributivity.png[link=images/language/multiplicative-left-distributivity.png]
-a|
-[.small]
-[source]
-----
-mmlang> 1[+1;[*2,*3]]
-==>4
-==>6
-mmlang> 1[[+1;*2],[+1;*3]]
-==>4
-==>6
-----
-|===
-
-'''
-
-A https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories[bicartesian closed category] supports https://en.wikipedia.org/wiki/Product_(category_theory)[products], https://en.wikipedia.org/wiki/Coproduct[coproducts], a product unit, a coproduct unit, https://en.wikipedia.org/wiki/Exponential_object[exponents], and products distribute over coproducts. These features are captured by the following axioms below.
-
-[cols="2,3,4"]
-|===
-| axiom | mmlang type | description
-
-| \$a + b = b + a \$                           | `[a\|b] = [b\|a]`                    | commutative coproducts
-| \$(a + b) + c = a + (b + c)\$                | `[[a\|b]\|c] = [a\|[b\|c]]`         | associative coproducts
-| \$a \ast (b + c) = (a \ast b) + (a \ast c)\$ | `[a;[b\|c]] = [[a;b]\|[a;c]]`       | distributivity
-| \$0 + a = a\$                                | `[{0}\|a] = a`                       | coproduct unit
-| \$0 \ast a = 0\$                             | `[{0};a] = {0}`                      | coproduct unit annihilation
-| \$1 \ast a = a\$                             | `[{1};a] = a`                        | product unit
-| \$c^ {b^a} = c^{a \ast b}\$                  | `[a;b;c] = [[a;b];c]`                | currying
-|===
