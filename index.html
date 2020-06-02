@@ -862,9 +862,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div class="paragraph">
 <p>The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a>.
-It contains a fluent program builder <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> called <code>mmscala</code>.
-Most compiler designers should avoid <code>mmscala</code> because direct access to the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> and the full JDK can create unsafe mm-ADT programs.
-Instead, <code>mmlang</code> should be the target language for most compilers.
+It contains a fluent program builder <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> as direct access to the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> and the full JDK can create unsafe mm-ADT programs. Instead, <code>mmlang</code> should be the target language for most compilers.
 Moreover, all compilers targeting <code>mmlang</code> can be used across different mm-ADT VM implementations.</p>
 </div>
 <div class="admonitionblock important">
@@ -991,36 +989,40 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
 <div class="paragraph">
-<p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two interesting consequences are: 1.) compilation is triggered by evaluation a program with type arguments and 2.) types (composed of instructions) can be used as <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda (or anonymous) functions</a>.</p>
+<p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two interesting consequences are</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Compilation is the evaluation of a program with a type argument (\$ \tt{type} \rightarrow \tt{type} \rightarrow \tt{type} \$) and</p>
+</li>
+<li>
+<p>Types serve as <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda (or anonymous) functions</a> during evaluation (\$ \tt{value} \rightarrow \tt{type} \rightarrow \tt{value} \$).</p>
+</li>
+</ol>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span> <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                 <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span> <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                      <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]
-mmlang&gt; <span style="color:#00D">5</span> <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                   <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="color:#00D">5</span>
-mmlang&gt; -<span style="color:#00D">1</span> <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                  <i class="conum" data-value="3"></i><b>(3)</b>
-mmlang&gt;</code></pre>
+mmlang&gt; <span style="color:#00D">5</span> <span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]  <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;<span style="color:#00D">5</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>int</code> type is passed to the <code>int[is&gt;0]</code>-type to yield an either 0 or 1 <code>int</code> (<strong>compilation</strong>).</td>
+<td>The <code>int</code>-type is passed to the <code>int[is&gt;0]</code>-type to yield an <code>int{?}</code>-type denoting either 0 or 1 <code>int</code> (<strong>compilation</strong>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The type <code>[is&gt;0]</code> serves as a lambda of the form \[ \lambda x = \begin{cases} x &amp; \text{if } x &gt; 0 \\ \emptyset &amp; \text{otherwise} \end{cases} \] (<strong>evaluation</strong>).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The type <code>[is&gt;0]</code> filtering the <code>int</code> value -1 (<strong>evaluation</strong>).</td>
+<td>The type <code>bool&lt;=int[gt,0]</code> serves as a lambda that yields <code>true</code> or <code>false</code> for every incoming <code>int</code> value (<strong>evaluation</strong>).</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of this documentation.</p>
+<p>Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of the documentation.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Consequences of Type/Value Integration</caption>
