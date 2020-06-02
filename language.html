@@ -2480,19 +2480,6 @@ mmlang&gt; [start,int][plus,5][gt,10][id]
 ==&gt;bool&lt;=int[plus,5][gt,10][id]</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>There exists an isomorphism (a <a href="https://en.wikipedia.org/wiki/Full_and_faithful_functors">bijective functor</a>) that maps the <code>inst</code> syntactic monoid to the type trace graph.
-This bijection proves that the syntax of <code>mmlang</code> is sufficient to express every possible mm-ADT type and vice versa, every mm-ADT type has a corresponding expression in <code>mmlang</code>.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/inst-type-functor.png" alt="inst type functor" width="35%">
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>inst</code>-monoid is an algebraic structure that can be used by all untyped languages wishing to compile to the mm-ADT VM. It can be used to write expressions, though, given the lack of typing, not all expressions will properly compile.
-The benefit of the <code>inst</code>-monoid is the simplicity of development, with the drawback of offloading the language-level type checking to the user.</p>
-</div>
 </div>
 <div class="sect3">
 <h4 id="_type_ringoid">Type Ringoid</h4>
@@ -2540,7 +2527,7 @@ The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathem
 <td class="content">
 The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring(oid)</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.
 In mm-ADT, the elements of the additive component can be inverted by their corresponding <em>negative type</em> (or negative <code>obj</code> in general).
-Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoid">groupoid</a>, where, for example, the <code>,-poly</code> <code>[int{1},int{-1}]</code> merges to <code>int{0}</code> and thus, the initial <code>obj</code> as
+Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoid">groupoid</a>, where, for example, the <code>,-poly</code> <code>[int{1},int{-1}]</code> merges to <code>int{0}</code> which is isomorphic to the initial <code>obj{0}</code>.
 </td>
 </tr>
 </table>
@@ -2686,7 +2673,7 @@ coproduct<br>
 <div class="sect4">
 <h5 id="_free_type_ringoid">Free Type Ringoid</h5>
 <div class="paragraph">
-<p>The two <code>;,-poly</code> monoids serve as components of a <a href="https://en.wikipedia.org/wiki/Universal_algebra">universal algebra</a> that implements the <a href="https://zenodo.org/record/2565243">stream ring</a> algebra&#8201;&#8212;&#8201;the foundational algebra of the mm-ADT VM. The two <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> ` <code>;,-poly</code> free ring to the corresponding reductive <strong>procedural</strong> ring such that \[
+<p>The two <code>;,-poly</code> monoids serve as components of a <a href="https://en.wikipedia.org/wiki/Universal_algebra">universal algebra</a> that implements the <a href="https://zenodo.org/record/2565243">stream ring</a> algebra&#8201;&#8212;&#8201;the foundational algebra of the mm-ADT VM. The two <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> <code>;,-poly</code> free ring to the corresponding reductive <strong>procedural</strong> ring such that \[
 ;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle \]
 where the <em>branch</em> component is, in fact, a group with <code>(a{q},a{-q}) == {0}</code> and <code>[branch,a{q},a{-q}] == {0}</code>.</p>
 </div>
@@ -2714,208 +2701,6 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_axioms_diagrams_and_notation">Axioms, Diagrams, and Notation</h5>
-<div class="paragraph">
-<p>The ring <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> are presented below along with the respective mm-ADT structure denoted in the <code>mmlang</code> <code>&lt; &gt;</code>-sugar form.</p>
-</div>
-<div class="paragraph">
-<p>The table on the right provides the (most well-known) logical entailments of said axioms&#8201;&#8212;&#8201;i.e., <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>.
-Example mm-ADT types demonstrating the equalities of the ring axioms are presented below in <code>mmlang</code>, where</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>\$a\$ is <code>int[plus,1]</code> with sugar of <code>+1</code></p>
-</li>
-<li>
-<p>\$b\$ is <code>int[mult,2]</code> with sugar of <code>*2</code></p>
-</li>
-<li>
-<p>\$c\$ is <code>int[mult,3]</code> with sugar of <code>*3</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Though any combinations of respectively sorted instructions can be used.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. The Ring Axioms in mmlang</caption>
-<colgroup>
-<col style="width: 30%;">
-<col style="width: 40%;">
-<col style="width: 30%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">Ring Axiom</th>
-<th class="tableblock halign-left valign-top">mm-ADT Diagram</th>
-<th class="tableblock halign-left valign-top">mmlang Denotation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-associativity.png"><img src="./images/language/additive-associativity.png" alt="additive associativity"></a></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1[[+1,*2],*3]
-==&gt;2{2}
-==&gt;3
-mmlang&gt; 1[+1,[*2,*3]]
-==&gt;2{2}
-==&gt;3</code></pre>
-</div>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$0 + a = a + 0 = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-identity.png"><img src="./images/language/additive-identity.png" alt="additive identity"></a></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1[{0},+1]
-==&gt;2
-mmlang&gt; 1[+1,{0}]
-==&gt;2</code></pre>
-</div>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a - a = a + (-a) = 0\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-inverse.png"><img src="./images/language/additive-inverse.png" alt="additive inverse"></a></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1[[+1,*2],*3]
-==&gt;2{2}
-==&gt;3
-mmlang&gt; 1[+1,[*2,*3]]
-==&gt;2{2}
-==&gt;3</code></pre>
-</div>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = b + a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/additive-commutativity.png"><img src="./images/language/additive-commutativity.png" alt="additive commutativity"></a></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1[+1,*2]
-==&gt;2{2}
-mmlang&gt; 1[*2,+1]
-==&gt;2{2}</code></pre>
-</div>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a * b) * c = a * (b * c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-associativity.png"><img src="./images/language/multiplicative-associativity.png" alt="multiplicative associativity"></a></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1[[+1;*2];*3]
-==&gt;12
-mmlang&gt; 1[+1;[*2;*3]]
-==&gt;12</code></pre>
-</div>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$1 * a = a * 1 = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-identity.png"><img src="./images/language/multiplicative-identity.png" alt="multiplicative identity"></a></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1[{1};+1]
-==&gt;2
-mmlang&gt; 1[+1;{1}]
-==&gt;2
-mmlang&gt; 1+1
-==&gt;2</code></pre>
-</div>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) * c = (a * c) + (b * c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-right-distributivity.png"><img src="./images/language/multiplicative-right-distributivity.png" alt="multiplicative right distributivity"></a></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1[[+1,*2&gt;;*3]
-==&gt;6{2}
-mmlang&gt; 1[[+1;*3],[*2;*3]]
-==&gt;6{2}</code></pre>
-</div>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a * (b + c) = (a * b) + (a * c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/multiplicative-left-distributivity.png"><img src="./images/language/multiplicative-left-distributivity.png" alt="multiplicative left distributivity"></a></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock small">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; 1[+1;[*2,*3]]
-==&gt;4
-==&gt;6
-mmlang&gt; 1[[+1;*2],[+1;*3]]
-==&gt;4
-==&gt;6</code></pre>
-</div>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<hr>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> supports <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>, <a href="https://en.wikipedia.org/wiki/Coproduct">coproducts</a>, a product unit, a coproduct unit, <a href="https://en.wikipedia.org/wiki/Exponential_object">exponents</a>, and products distribute over coproducts. These features are captured by the following axioms below.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 22.2222%;">
-<col style="width: 33.3333%;">
-<col style="width: 44.4445%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">axiom</th>
-<th class="tableblock halign-left valign-top">mmlang type</th>
-<th class="tableblock halign-left valign-top">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = b + a \$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a|b] = [b|a]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commutative coproducts</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[[a|b]|c] = [a|[b|c]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a;[b|c]] = [[a;b]|[a;c]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 + a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{0}|a] = a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 \ast a = 0\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{0};a] = {0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit annihilation</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$1 \ast a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{1};a] = a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">product unit</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$c^ {b^a} = c^{a \ast b}\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a;b;c] = [[a;b];c]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">currying</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 </div>
 </div>
@@ -2929,7 +2714,7 @@ mmlang&gt; 1[[+1;*2],[+1;*3]]
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-02 00:04:31 -0600
+Last updated 2020-06-02 08:18:24 -0600
 </div>
 </div>
 </body>
