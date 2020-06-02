@@ -504,13 +504,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#_obj_magma">Obj Magma</a></li>
 <li><a href="#_inst_monoid">Inst Monoid</a></li>
-<li><a href="#_free_poly_monoid">Free Poly Monoid</a>
+<li><a href="#_type_ringoid">Type Ringoid</a>
 <ul class="sectlevel4">
-<li><a href="#_free_ring">Free Ring</a></li>
-</ul>
-</li>
-<li><a href="#_trace_ringoid">Trace Ringoid</a>
-<ul class="sectlevel4">
+<li><a href="#_the_free_poly_monoid">The Free Poly Monoid</a></li>
+<li><a href="#_free_type_ringoid">Free Type Ringoid</a></li>
 <li><a href="#_axioms_diagrams_and_notation">Axioms, Diagrams, and Notation</a></li>
 </ul>
 </li>
@@ -542,15 +539,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_processor_implementations">Processor Implementations</a></li>
 </ul>
 </li>
-<li><a href="#_reference_guide">Reference Guide</a>
-<ul class="sectlevel3">
+<li><a href="#_reference">Reference</a>
+<ul class="sectlevel2">
 <li><a href="#_instructions">Instructions</a>
+<ul class="sectlevel3">
+<li><a href="#_branch_instructions">Branch Instructions</a>
 <ul class="sectlevel4">
-<li><a href="#_branch_instructions">Branch Instructions</a></li>
+<li><a href="#_compose">[compose]</a></li>
+<li><a href="#_branch_2">[branch]</a></li>
+<li><a href="#_choose">[choose]</a></li>
+</ul>
+</li>
 <li><a href="#_filter_instructions">Filter Instructions</a></li>
 <li><a href="#_map_instructions">Map Instructions</a></li>
 <li><a href="#_reduce_instructions">Reduce Instructions</a></li>
-<li><a href="#_traverser_instructions">Traverser Instructions</a></li>
+<li><a href="#_trace_instructions">Trace Instructions</a></li>
 </ul>
 </li>
 </ul>
@@ -2807,69 +2810,15 @@ mmlang&gt; ((<span style="color:#00D">1</span>,<span style="color:#00D">2</span>
 <div class="sect2">
 <h3 id="_language_algebras">Language Algebras</h3>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> supports <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>, <a href="https://en.wikipedia.org/wiki/Coproduct">coproducts</a>, a product unit, a coproduct unit, <a href="https://en.wikipedia.org/wiki/Exponential_object">exponents</a>, and products <a href="https://en.wikipedia.org/wiki/Exponential_object">distribute</a> over coproducts. These features are captured by the following axioms below. If an algebraic system satisfies the axioms, then that system has the requisite expressivity for <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-Complete</a>, general purpose computing.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 22.2222%;">
-<col style="width: 33.3333%;">
-<col style="width: 44.4445%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">axiom</th>
-<th class="tableblock halign-left valign-top">mmlang type</th>
-<th class="tableblock halign-left valign-top">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = b + a \$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a|b] = [b|a]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commutative coproducts</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[[a|b]|c] = [a|[b|c]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a;[b|c]] = [[a;b]|[a;c]]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 + a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{0}|a] = a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 \ast a = 0\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{0};a] = {0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit annihilation</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$1 \ast a = a\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{1};a] = a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">product unit</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$c^ {b^a} = c^{a \ast b}\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a;b;c] = [[a;b];c]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">currying</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The mm-ADT VM is a computing machine founded on a non-commutative <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> ring called a <em>stream ring</em>. The practical mental-model that mm-ADT purports is that of streams of data flowing through serial (<code>*</code>) and parallel (<code>+</code>) structures bound by functions (instructions). Moreover, these streams can be split and merged via the product and coproduct of <em>streams</em> of data whose size and dynamics are regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is manipulated by <code>mmlang</code>. However, there are two other intervening algebras (at the processor and storage levels), where ultimately, the <code>mmlang</code> <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> realizes a correspondence by means of a <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring action</a> upon a <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a>.</p>
+<p>The mm-ADT VM is a computing machine founded on a non-commutative <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> ring called a <em>stream ring</em>. The practical mental-model that mm-ADT purports is that of streams of data flowing through functions (instructions) composed serially (<code>*</code>) and in parallel (<code>+</code>). Moreover, these streams can be split and merged via the product and coproduct of <em>streams</em> of data whose size and dynamics are regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is manipulated by <code>mmlang</code>. However, there are two other intervening algebras (at the processor and storage levels), where ultimately, the <code>mmlang</code> <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> realizes a correspondence by means of a <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring action</a> upon a <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Obj Magma</strong> (<em>storage</em>): The set of all <code>objs</code> along with a single, non-associative binary <em>juxtaposition</em> operator.</p>
+<p><strong>Obj Magma</strong> (<em>storage</em>): The set of all <code>objs</code> along with a single, non-associative binary <em>juxtaposition</em> operator (denoted with a blank space).</p>
 <div class="paragraph">
 <p>\[
-\mathbf{Obj} = \langle \texttt{obj}, \cdot \rangle
+\mathbf{Obj} = \langle \texttt{obj}, \;\; \rangle
 \]</p>
 </div>
 </li>
@@ -2893,7 +2842,47 @@ mmlang&gt; ((<span style="color:#00D">1</span>,<span style="color:#00D">2</span>
 </div>
 <div class="sect3">
 <h4 id="_obj_magma">Obj Magma</h4>
-
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> is a non-associative algebraic structure with a single binary operator. Let
+\[
+\mathbf{Obj} = \langle \texttt{obj}, \;\; \rangle
+\]
+be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objects and \$ : \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary <em>juxtaposition</em> operated (denoted by a blank space). There are four types of juxtaposition:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A <strong>type juxtaposed to a value</strong> yields the value whose quantifier is multiplied by the type&#8217;s quantifier.</p>
+<div class="paragraph text-center">
+<p><code>t1{q0}&lt;=t0[a][b] v2{q1}</code> = <code>v2{q0*q1}</code></p>
+</div>
+</li>
+<li>
+<p>A <strong>type juxtaposed to a type</strong> yields a type whose domain is the left type&#8217;s domain and whose range is the right type&#8217;s range, where instructions are concatenated (juxtaposed) and respective quantifiers multiplied.</p>
+<div class="paragraph text-center">
+<p><code>t1{q0}&lt;=t0[a][b] t2{q2}&lt;=t1[c][d]</code> = <code>t2{q0*q1}&lt;=t0[a][b][c][d]</code></p>
+</div>
+</li>
+<li>
+<p>A <strong>value juxtaposed to a type</strong> yields an <code>obj</code> (typically a value) that is the application of the type to the value.</p>
+<div class="paragraph text-center">
+<p><code>v0{q0} t2{q1}&lt;=t1[a][b]</code> = <code>b(a(v0)){q0*q1}</code></p>
+</div>
+</li>
+<li>
+<p>A <strong>value juxtaposed to a value</strong> yields the right hand value with quantifiers multiplied.</p>
+<div class="paragraph text-center">
+<p><code>v0{q0} v1{q1}</code> = <code>v1{q0*q1}</code></p>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This is the simplest algebraic structure describing mm-ADT. This interpretation of mm-ADT pushes the rules of branching and its additive effects on quantification to the type and thus, to the respective <code>[branch]</code> and <code>[choose]</code> instructions contained therein. The one non-associative context that renders the algebra a magma is the three element juxtaposition of <code>type value type</code>, where it is generally true that</p>
+</div>
+<div class="paragraph text-center">
+<p><code>(t0 v1) t2</code> \$ne\$ <code>t0 (v1 t2)</code>.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_inst_monoid">Inst Monoid</h4>
@@ -2958,7 +2947,74 @@ The benefit of the <code>inst</code>-monoid is the simplicity of development, wi
 </div>
 </div>
 <div class="sect3">
-<h4 id="_free_poly_monoid">Free Poly Monoid</h4>
+<h4 id="_type_ringoid">Type Ringoid</h4>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Stream Ring Theory</div>
+<div class="paragraph">
+<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> is a ring algebra defined by the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> and <strong>coefficient</strong> ring, where every function/coefficient pair is an element of the carrier of a polynomial <strong>stream</strong> ring.
+The algebra is useful in asynchronous distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, large amounts of data need to be co-located for processing.
+A proto-version of the stream ring algebra was realized in the distributed graph computing framework <a href="http://tinkerpop.apache.org">Apache TinkerPop</a>.</p>
+</div>
+<div class="paragraph">
+<p>mm-ADT adopts the algebra of stream ring theory, where functions are <strong>instructions</strong> and coefficients are <strong>quantifiers</strong>. mm-ADT&#8217;s type system is realized as a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> extension of the algebra.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>mm-ADT&#8217;s type system is founded on a multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a> called the mm-ADT <strong>type ringoid</strong>.
+An algebraic ring is composed of a multiplicative monoid \$\langle A,\ast,1 \rangle\$ and a commutative additive group \$\langle A,+,0\rangle\$ that share the same carrier set \$A\$.
+A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes the mathematics of a ring to support the ring axioms on multi-sorted carriers \$A,B,C\$, etc. (i.e. typed structures).
+The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all ctypes and single instruction dypes covering <code>inst</code>, where, with the ringoid&#8217;s multiplicative operator (<code>*</code>) and commutative additive operator (<code>+</code>), when faithfully applied according to sort, induce the set of all possible mm-ADT types.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <strong>additive operator</strong> <code>+</code> is structurally encoded using a <code>,-poly</code>, where each slot of the polynomial is an independent parallel type.</p>
+</li>
+<li>
+<p>The <strong>multiplicative operator</strong> <code>*</code> is structurally encoded using a <code>;-poly</code>, where each slot of the polynomial is a dependent serial type.</p>
+</li>
+<li>
+<p>The <strong>additive identity</strong> <code>0</code> is the polymorphic anonymous ctype <code>_{0}</code>.</p>
+</li>
+<li>
+<p>The <strong>multiplicative identity</strong> <code>1</code> is the polymorphic anonymous ctype <code>_{1}</code>, which in <code>mmlang</code> is simply denoted <code>_</code>.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring(oid)</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.
+In mm-ADT, the elements of the additive component can be inverted by their corresponding <em>negative type</em> (or negative <code>obj</code> in general).
+Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoid">groupoid</a>, where, for example, the <code>,-poly</code> <code>[int{1},int{-1}]</code> merges to <code>int{0}</code> and thus, the initial <code>obj</code> as
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_the_free_poly_monoid">The Free Poly Monoid</h5>
+<div class="paragraph">
+<p>Every corresponding <code>mmlang</code> expression makes use of <code>poly</code>-types.
+In <code>mmlang</code>, a <code>poly</code> can be denoted as a <em>structure</em> via <code>[ ]</code> (a value) or as a <em>process</em> via <code>&lt; &gt;</code> (a type).
+The example 3-slot <code>int</code> <code>,-poly</code> below has a domain of <code>int</code> and a range of <code>int{1,3}</code>.
+This branch structure will product one, two, or three <code>ints</code> given a single <code>int</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&lt;<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">int</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">1</span>,<span style="color:#00D">3</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(
+     <span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]],
+     <span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[lt,<span style="color:#00D">0</span>]],
+     <span style="color:#369;font-weight:bold">int</span>
+   )&gt;-</code></pre>
+</div>
+</div>
 <table class="tableblock frame-all grid-all left small" style="width: 30%;">
 <colgroup>
 <col style="width: 25%;">
@@ -3078,8 +3134,9 @@ coproduct<br>
 </tr>
 </tbody>
 </table>
+</div>
 <div class="sect4">
-<h5 id="_free_ring">Free Ring</h5>
+<h5 id="_free_type_ringoid">Free Type Ringoid</h5>
 <div class="paragraph">
 <p>The two <code>;,-poly</code> monoids serve as components of a <a href="https://en.wikipedia.org/wiki/Universal_algebra">universal algebra</a> that implements the <a href="https://zenodo.org/record/2565243">stream ring</a> algebra&#8201;&#8212;&#8201;the foundational algebra of the mm-ADT VM. The two <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> ` <code>;,-poly</code> free ring to the corresponding reductive <strong>procedural</strong> ring such that \[
 ;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle \]
@@ -3107,74 +3164,6 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 <div class="content">
 <img src="./images/language/ring-homomorphisms.png" alt="ring homomorphisms" width="320">
 </div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_trace_ringoid">Trace Ringoid</h4>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Stream Ring Theory</div>
-<div class="paragraph">
-<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> is a ring algebra defined by the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> and <strong>coefficient</strong> ring, where every function/coefficient pair is an element of the carrier of a polynomial <strong>stream</strong> ring.
-The algebra is useful in asynchronous distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, large amounts of data need to be co-located for processing.
-A proto-version of the stream ring algebra was realized in the distributed graph computing framework <a href="http://tinkerpop.apache.org">Apache TinkerPop</a>.</p>
-</div>
-<div class="paragraph">
-<p>mm-ADT adopts the algebra of stream ring theory, where functions are <strong>instructions</strong> and coefficients are <strong>quantifiers</strong>. mm-ADT&#8217;s type system is realized as a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> extension of the algebra.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>mm-ADT&#8217;s type system is founded on a multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a> called the mm-ADT <strong>type ringoid</strong>.
-An algebraic ring is composed of a multiplicative monoid \$\langle A,\ast,1 \rangle\$ and a commutative additive group \$\langle A,+,0\rangle\$ that share the same carrier set \$A\$.
-A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes the mathematics of a ring to support the ring axioms on multi-sorted carriers \$A,B,C\$, etc. (i.e. typed structures).
-The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all ctypes and single instruction dypes covering <code>inst</code>, where, with the ringoid&#8217;s multiplicative operator (<code>*</code>) and commutative additive operator (<code>+</code>), when faithfully applied according to sort, induce the set of all possible mm-ADT types.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <strong>additive operator</strong> <code>+</code> is structurally encoded using a <code>,-poly</code>, where each slot of the polynomial is an independent parallel type.</p>
-</li>
-<li>
-<p>The <strong>multiplicative operator</strong> <code>*</code> is structurally encoded using a <code>;-poly</code>, where each slot of the polynomial is a dependent serial type.</p>
-</li>
-<li>
-<p>The <strong>additive identity</strong> <code>0</code> is the polymorphic anonymous ctype <code>_{0}</code>.</p>
-</li>
-<li>
-<p>The <strong>multiplicative identity</strong> <code>1</code> is the polymorphic anonymous ctype <code>_{1}</code>, which in <code>mmlang</code> is simply denoted <code>_</code>.</p>
-</li>
-</ul>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring(oid)</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.
-In mm-ADT, the elements of the additive component can be inverted by their corresponding <em>negative type</em> (or negative <code>obj</code> in general).
-Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoid">groupoid</a>, where, for example, the <code>,-poly</code> <code>[int{1},int{-1}]</code> merges to <code>int{0}</code> and thus, the initial <code>obj</code> as
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Every corresponding <code>mmlang</code> expression makes use of <code>poly</code>-types.
-In <code>mmlang</code>, a <code>poly</code> can be denoted as a <em>structure</em> via <code>[ ]</code> (a value) or as a <em>process</em> via <code>&lt; &gt;</code> (a type).
-The example 3-slot <code>int</code> <code>,-poly</code> below has a domain of <code>int</code> and a range of <code>int{1,3}</code>.
-This branch structure will product one, two, or three <code>ints</code> given a single <code>int</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&lt;<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">int</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">1</span>,<span style="color:#00D">3</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(
-     <span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]],
-     <span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[lt,<span style="color:#00D">0</span>]],
-     <span style="color:#369;font-weight:bold">int</span>
-   )&gt;-</code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -3324,6 +3313,60 @@ mmlang&gt; <span style="color:#00D">1</span>[[+<span style="color:#00D">1</span>
 </tbody>
 </table>
 <hr>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Cartesian_closed_category#Bicartesian_closed_categories">bicartesian closed category</a> supports <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>, <a href="https://en.wikipedia.org/wiki/Coproduct">coproducts</a>, a product unit, a coproduct unit, <a href="https://en.wikipedia.org/wiki/Exponential_object">exponents</a>, and products distribute over coproducts. These features are captured by the following axioms below.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22.2222%;">
+<col style="width: 33.3333%;">
+<col style="width: 44.4445%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">axiom</th>
+<th class="tableblock halign-left valign-top">mmlang type</th>
+<th class="tableblock halign-left valign-top">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = b + a \$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a|b] = [b|a]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commutative coproducts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[[a|b]|c] = [a|[b|c]]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">associative coproducts</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \ast (b + c) = (a \ast b) + (a \ast c)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a;[b|c]] = [[a;b]|[a;c]]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">distributivity</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 + a = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{0}|a] = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$0 \ast a = 0\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{0};a] = {0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coproduct unit annihilation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$1 \ast a = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[{1};a] = a</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">product unit</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$c^ {b^a} = c^{a \ast b}\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a;b;c] = [[a;b];c]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">currying</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -3450,19 +3493,19 @@ denotes the unary function \[
 </div>
 </div>
 <div class="sect1">
-<h2 id="_reference_guide">Reference Guide</h2>
+<h2 id="_reference">Reference</h2>
 <div class="sectionbody">
-<div class="sect3">
-<h4 id="_instructions">Instructions</h4>
+<div class="sect2">
+<h3 id="_instructions">Instructions</h3>
 <div class="paragraph">
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 75%;">
+<table class="tableblock frame-all grid-all" style="width: 80%;">
 <caption class="title">Table 4. Instruction classes</caption>
 <colgroup>
-<col style="width: 8.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 58.3334%;">
+<col style="width: 9.0909%;">
+<col style="width: 36.3636%;">
+<col style="width: 54.5455%;">
 </colgroup>
 <thead>
 <tr>
@@ -3519,38 +3562,38 @@ denotes the unary function \[
 </tr>
 </tbody>
 </table>
-<div class="sect4">
-<h5 id="_branch_instructions">Branch Instructions</h5>
+<div class="sect3">
+<h4 id="_branch_instructions">Branch Instructions</h4>
 <div class="paragraph">
 <p>The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.</p>
 </div>
-<div class="sect5">
-<h6 id="_compose">[compose]</h6>
-
-</div>
-<div class="sect5">
-<h6 id="_branch_2">[branch]</h6>
-
-</div>
-<div class="sect5">
-<h6 id="_choose">[choose]</h6>
-
-</div>
-</div>
 <div class="sect4">
-<h5 id="_filter_instructions">Filter Instructions</h5>
+<h5 id="_compose">[compose]</h5>
 
 </div>
 <div class="sect4">
-<h5 id="_map_instructions">Map Instructions</h5>
+<h5 id="_branch_2">[branch]</h5>
 
 </div>
 <div class="sect4">
-<h5 id="_reduce_instructions">Reduce Instructions</h5>
+<h5 id="_choose">[choose]</h5>
 
 </div>
-<div class="sect4">
-<h5 id="_traverser_instructions">Traverser Instructions</h5>
+</div>
+<div class="sect3">
+<h4 id="_filter_instructions">Filter Instructions</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_map_instructions">Map Instructions</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_reduce_instructions">Reduce Instructions</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_trace_instructions">Trace Instructions</h4>
 
 </div>
 </div>
@@ -3565,7 +3608,7 @@ denotes the unary function \[
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-30 21:49:39 -0600
+Last updated 2020-05-30 23:03:12 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
