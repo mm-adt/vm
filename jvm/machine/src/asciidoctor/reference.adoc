@@ -1,4 +1,10 @@
+:imagesdir: ./images/reference
+
 == Reference
+
+=== mmlang Grammar
+
+image::mmlang-ebnf.svg[opts=interactive,width="100%"]
 
 === Instructions
 

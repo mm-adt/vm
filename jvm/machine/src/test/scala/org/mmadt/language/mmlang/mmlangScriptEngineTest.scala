@@ -844,6 +844,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertThrows[StackOverflowError] {
       engine.eval("1[define,'wxy',xyz][define,'xyz',wxy][a,xyz]")
     }
+    assertThrows[StackOverflowError] {
+      engine.eval("1[define,'xyz',xyz][a,xyz]")
+    }
   }
 
   test("play") {
