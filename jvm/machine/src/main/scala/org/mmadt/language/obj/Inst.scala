@@ -61,7 +61,6 @@ object Inst {
         case obj: Type[_] => if (Type.ctypeCheck(obj, typeArg)) Obj.rangeWithDefinitions(obj).compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
       }
     }
-
   trait Func[S <: Obj, E <: Obj] {
     def apply(start: S, inst: Inst[S, E]): E
   }

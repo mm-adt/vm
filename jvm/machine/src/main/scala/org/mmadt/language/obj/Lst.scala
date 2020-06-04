@@ -74,6 +74,6 @@ object Lst {
         local
       }))
     } else
-      apoly.clone(apoly.glist.map(slot => Inst.resolveArg(arg, Obj.copyDefinitions(arg, slot))))
+      apoly.clone(apoly.glist.map(slot => Inst.resolveArg(arg, slot)))
   }
 }

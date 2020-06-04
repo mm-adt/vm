@@ -832,6 +832,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("(1,(1,(1,(1,2))))[define,'xyz',[is==1|(is==1,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(1,(2,(1,1))))[define,'xyz',[is==1|(is==1,xyz)]][a,xyz]"))
     //
+    assertResult(btrue)(engine.eval("(2,1)[define,'wxy',is==1][define,'xyz',[wxy|(2,xyz)]][a,xyz]"))
     assertResult(btrue)(engine.eval("1[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("2[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))

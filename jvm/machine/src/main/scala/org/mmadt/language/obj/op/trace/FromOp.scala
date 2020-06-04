@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj}
@@ -52,8 +52,7 @@ object FromOp extends Func[Obj, Obj] {
     else {
       history match {
         case Some((Tokens.to, aobj)) => aobj.via(start, inst)
-        case Some((Tokens.define, avalue: Value[Obj])) => avalue.via(start, inst)
-        case Some((Tokens.define, atype: Type[Obj])) => Inst.resolveArg(start,atype)
+        case Some((Tokens.define, aobj)) => Inst.resolveArg(start, aobj)
         case None => history.map(x => x._2).getOrElse(if (inst.args.length == 1) asType(start) else inst.arg1).via(start, inst)
       }
     }
