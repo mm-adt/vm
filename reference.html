@@ -439,6 +439,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_mmlang_grammar">mmlang Grammar</h3>
+<div class="listingblock small">
+<div class="content">
+<pre class="highlight"><code>obj   ::= (type | value)q
+type  ::= ctype | dtype
+ctype ::= bool | int  | real | str | poly | '_'
+poly  ::= lst | rec | inst
+q     ::= '{' int (',' int)? '}'
+dtype ::= ctype q? ('&lt;=' ctype q?)? inst*
+sep   ::= ';' | ',' | '|'
+lst   ::= '(' obj (sep obj)* ')' q?
+rec   ::= '(' obj '-&gt;' obj (sep obj '-&gt;' obj)* ')' q?
+inst  ::= '[' op(','obj)* ']' q?
+op    ::= 'a' | 'add' | 'and' | 'as' | 'combine' | 'count' | 'eq' | 'error' | 'explain' | 'fold' | 'from' |
+          'get' | 'given' | 'groupCount' | 'gt' | 'gte' | 'head' | 'id' | 'is' | 'last' | 'lt' | 'lte' | 'map' |
+          'merge' | 'mult' | 'neg' | 'noop' | 'one' | 'or' | 'path' | 'plus' | 'pow' | 'put' | 'q' | 'repeat' |
+          'split' | 'start' | 'tail' | 'to' | 'trace' | 'type' | 'zero'</code></pre>
+</div>
+</div>
 <div class="imageblock">
 <div class="content">
 <object type="image/svg+xml" data="./images/reference/mmlang-ebnf.svg" width="100%"><span class="alt">mmlang ebnf</span></object>
@@ -552,7 +570,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-04 15:09:11 -0600
+Last updated 2020-06-04 15:28:39 -0600
 </div>
 </div>
 </body>
