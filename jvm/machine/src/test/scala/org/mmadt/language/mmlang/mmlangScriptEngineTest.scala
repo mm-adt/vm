@@ -841,6 +841,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("2[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(2,(1,(1,1))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(1,(1,(1,'1'))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
+    assertThrows[StackOverflowError] {
+      engine.eval("1[define,'wxy',xyz][define,'xyz',wxy][a,xyz]")
+    }
   }
 
   test("play") {
