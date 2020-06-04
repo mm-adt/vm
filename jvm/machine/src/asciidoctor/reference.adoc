@@ -4,7 +4,6 @@
 
 === mmlang Grammar
 
-[.small]
 [source]
 ----
 include::images/reference/mmlang.ebnf[]
