@@ -20,15 +20,15 @@ trait Poly[A <: Obj] extends Obj
   def isType: Boolean = !this.glist.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))
 }
 object Poly {
-  def resolveSlots[A <: Obj](start: A, apoly: Poly[A], inst: Inst[A, Poly[A]]): Poly[A] = {
+  def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = {
     apoly match {
-      case arec: Rec[Obj, A] => Rec.resolveSlots(start, arec, inst.asInstanceOf[Inst[Obj, Rec[Obj, A]]])
-      case alst: Lst[A] => Lst.resolveSlots(start, alst, inst.asInstanceOf[Inst[A, Lst[A]]])
+      case arec: Rec[Obj, A] => Rec.resolveSlots(start, arec)
+      case alst: Lst[A] => Lst.resolveSlots(start, alst)
     }
   }
-  def keepFirst[A <: Obj](start: Obj, inst: Inst[Obj, Obj], apoly: Poly[A]): Poly[A] = {
+  def keepFirst[A <: Obj](start: Obj, apoly: Poly[A]): Poly[A] = {
     apoly match {
-      case arec: Rec[Obj, A] => Rec.keepFirst(start,inst,arec)
+      case arec: Rec[Obj, A] => Rec.keepFirst(start, arec)
       case alst: Lst[A] => Lst.keepFirst(alst)
     }
   }

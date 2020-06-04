@@ -59,13 +59,9 @@ object Lst {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
     apoly.clone(apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
   }
-  def resolveSlots[A <: Obj](start: A, apoly: Lst[A], inst: Inst[A, Lst[A]]): Lst[A] = {
-    val arg = start match {
-      case _: Value[_] => start.clone(via = (start, inst))
-      case _ => start
-    }
+  def resolveSlots[A <: Obj](start: A, apoly: Lst[A]): Lst[A] = {
     if (apoly.isSerial) {
-      var local = arg
+      var local = start
       apoly.clone(apoly.glist.map(slot => {
         local = local match {
           case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
@@ -74,6 +70,6 @@ object Lst {
         local
       }))
     } else
-      apoly.clone(apoly.glist.map(slot => Inst.resolveArg(arg, slot)))
+      apoly.clone(apoly.glist.map(slot => Inst.resolveArg(start, slot)))
   }
 }

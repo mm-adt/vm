@@ -69,10 +69,10 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("quantifiers") {
-    assertResult(int(int(1), int(2)))((int(1) | 2).merge)
-    assertResult(int(int(1).q(10), int(2).q(10)))((int(1) | 2).q(10).merge)
-    assertResult(int(int(1).q(10), int(2).q(50)))((int(1) | int(2).q(5)).q(10).merge)
-    assertResult(int(int(1).q(4, 10), int(2).q(20, 50)))((int(1) | int(2).q(5)).q(4, 10).merge)
+    assertResult(int(1))((int(1) | 2).merge)
+    assertResult(int(1).q(10))((int(1) | 2).q(10).merge)
+    assertResult(int(1).q(10))((int(1) | int(2).q(5)).q(10).merge)
+    assertResult(int(1).q(4, 10))((int(1) | int(2).q(5)).q(4, 10).merge)
   }
 
   ////////////////////////////

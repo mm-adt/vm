@@ -26,6 +26,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.BranchInstruction
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
@@ -46,7 +47,10 @@ object SplitOp extends Func[Obj, Obj] {
       case x => Inst.resolveArg[Obj, Obj](start, x).asInstanceOf[Poly[Obj]]
 
     }
-    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(start, apoly, oldInst))
+    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(start match {
+      case _: Value[_] => start.clone(via = (start, oldInst))
+      case _ => start
+    }, apoly))
     apoly.gsep match {
       case _ if apoly.isInstanceOf[Rec[Obj, Obj]] && apoly.isType && apoly.isSerial => newInst.arg0[Obj].via(start, inst)
       case _ if apoly.isChoice & apoly.isInstanceOf[Rec[Obj, Obj]] => processFirst(start, inst.asInstanceOf[Inst[Obj, Poly[Obj]]]) // TODO: cause the same resolutions map to the same keys
@@ -67,7 +71,7 @@ object SplitOp extends Func[Obj, Obj] {
     (start match {
       case astrm: Strm[Obj] => return astrm.via(start, inst).asInstanceOf[Poly[Obj]]
       case _: Type[_] => inst.arg0[Poly[Obj]]
-      case _ => Poly.keepFirst(start, inst, inst.arg0[Poly[Obj]])
+      case _ => Poly.keepFirst(start, inst.arg0[Poly[Obj]])
 
     }).clone(via = (start, inst))
   }

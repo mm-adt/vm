@@ -71,13 +71,9 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   }
 }
 object Rec {
-  def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B], inst: Inst[A, Rec[A, B]]): Rec[A, B] = {
-    val arg = start match {
-      case _: Value[_] => start.clone(via = (start, inst))
-      case _ => start
-    }
+  def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = {
     if (arec.isSerial) {
-      var local = arg -> arg
+      var local = start -> start
       arec.clone(g = (arec.gsep, arec.gmap.map(slot => {
         val key = Inst.resolveArg(local._1, slot._1)
         local = if (!key.alive) (key -> zeroObj.asInstanceOf[A]) else local._2 match {
@@ -88,12 +84,12 @@ object Rec {
       })))
     } else {
       arec.clone(g = (arec.gsep, arec.gmap.toSeq.map(slot => {
-        val key = Inst.resolveArg(arg, slot._1)
-        (key, if (key.alive) Inst.resolveArg(arg, slot._2) else zeroObj.asInstanceOf[B])
+        val key = Inst.resolveArg(start, slot._1)
+        (key, if (key.alive) Inst.resolveArg(start, slot._2) else zeroObj.asInstanceOf[B])
       }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values))))))
     }
   }
-  def keepFirst[A <: Obj, B <: Obj](start: Obj, inst: Inst[Obj, Obj], arec: Rec[A, B]): Rec[A, B] = {
+  def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {
     var found: Boolean = false;
     arec.clone(g = (arec.gsep, arec.gmap.map(x => {
       if (!found) {
