@@ -34,6 +34,7 @@ trait SplitOp {
   this: Obj =>
   def split[A <: Obj](branches: Poly[A]): Poly[A] = SplitOp(branches).exec(this.asInstanceOf[A])
   final def -<[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
+  final def `[`[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
 }
 
 object SplitOp extends Func[Obj, Obj] {

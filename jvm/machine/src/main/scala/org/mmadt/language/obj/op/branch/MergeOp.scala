@@ -35,6 +35,7 @@ trait MergeOp[A <: Obj] {
   this: Poly[A] =>
   def merge[B <: Obj]: B = MergeOp[A]().exec(this).asInstanceOf[B]
   final def `>-`: A = this.merge[A]
+  final def `]`: A = this.merge[A]
 }
 
 object MergeOp extends Func[Obj, Obj] {

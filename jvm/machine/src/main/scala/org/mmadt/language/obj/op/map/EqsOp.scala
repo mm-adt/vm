@@ -49,7 +49,7 @@ object EqsOp extends Func[Obj, Bool] {
     Try[Obj](start match {
       case _: Obj if !start.alive => bool(!inst.arg0.alive)
       case astrm: Strm[Obj] => astrm
-      case apoly: Poly[_] => bool(inst.arg0.equals(start))
+      case _: Poly[_] => bool(inst.arg0.equals(start))
       case avalue: Value[_] => bool(g = avalue.g == inst.arg0[Value[_]].g)
     }).getOrElse(bool).via(start, inst).asInstanceOf[Bool]
   }

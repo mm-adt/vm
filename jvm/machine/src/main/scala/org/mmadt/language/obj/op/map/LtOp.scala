@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -50,6 +51,7 @@ object LtOp extends Func[Obj, Bool] {
       case aint: Int => bool(g = aint.g < inst.arg0[Int].g)
       case areal: Real => bool(g = areal.g < inst.arg0[Real].g)
       case astr: Str => bool(g = astr.g < inst.arg0[Str].g)
+      case _: Value[Obj] => bfalse
     }).getOrElse(bool).via(start, inst).asInstanceOf[Bool]
   }
 }
