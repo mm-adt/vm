@@ -805,6 +805,23 @@ class mmlangScriptEngineTest extends FunSuite {
         | [map,one]""".stripMargin))
   }
 
+  test("recursive definition parsing") {
+    assertResult(bfalse)(engine.eval("(1,(2,'3'))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,('3',4)))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,(3,'4')))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,(3,4,5)))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    //
+    assertResult(btrue)(engine.eval("(1,2)[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,3))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,(3,4)))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,(3,(4,5))))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    //
+    assertResult(btrue)(engine.eval("(1,2)[define,'xyz',[is?int|is?(int,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,3))[define,'xyz',[is?int|is?(int,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,(3,4)))[define,'xyz',[is?int|is?(int,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,(3,(4,5))))[define,'xyz',[is?int|is?(int,xyz)]][a,xyz]"))
+  }
+
   test("play") {
     println(engine.eval("10[define,'big',int[plus,100]]<.big>+10"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))

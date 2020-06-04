@@ -1,7 +1,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -33,8 +33,12 @@ trait Lst[A <: Obj] extends Poly[A]
 
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
+    case anon: __ => anon(this).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case alst: Lst[_] => Poly.sameSep(this, alst) && withinQ(this, alst) && this.glist.length >= alst.glist.length && this.glist.zip(alst.glist).foldRight(true)((a, b) => a._1.test(a._2) && b)
+    case alst: Lst[_] => Poly.sameSep(this, alst) &&
+      withinQ(this, alst) &&
+      (this.glist.length == alst.glist.length || alst.glist.isEmpty) && // TODO: should lists only check up to their length
+      this.glist.zip(alst.glist).forall(b => Obj.copyDefinitions(this, b._1).test(b._2))
     case _ => false
   }
 
@@ -44,7 +48,7 @@ trait Lst[A <: Obj] extends Poly[A]
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] =>
       Poly.sameSep(this, alst) && alst.name.equals(this.name) && eqQ(alst, this) &&
-        ((this.isValue && this.glist.zip(alst.glist).foldRight(true)((a, b) => a._1.equals(a._2) && b)) ||
+        ((this.isValue && this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))) ||
           (this.glist == alst.glist && this.via == alst.via))
     case _ => false
   }
@@ -70,6 +74,6 @@ object Lst {
         local
       }))
     } else
-      apoly.clone(apoly.glist.map(slot => Inst.resolveArg(arg, slot)))
+      apoly.clone(apoly.glist.map(slot => Inst.resolveArg(arg, Obj.copyDefinitions(arg, slot))))
   }
 }

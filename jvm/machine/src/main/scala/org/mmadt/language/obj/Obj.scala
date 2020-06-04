@@ -163,9 +163,9 @@ trait Obj
 }
 
 object Obj {
-  def nest[A <: Obj](obj: Type[Obj]): Type[Obj] = {
-    obj.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(obj.range.asInstanceOf[Type[Obj]])((a, b) => a.clone(via = (b._1, b._2)).asInstanceOf[Type[Obj]])
-  }
+
+  def rangeWithDefinitions[A <: Obj](obj: Type[Obj]): Type[Obj] = obj.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(obj.range)((a, b) => a.clone(via = (b._1, b._2)))
+  def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(child)((a, b) => a.clone(via = (child, b._2)))
 
   def fetch[A <: Obj](obj: Obj, label: String): A = {
     val result: Option[A] = Obj.fetchOption[A](obj, label)
@@ -178,7 +178,7 @@ object Obj {
     obj match {
       case x if x.root => None
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some(x.via._1.asInstanceOf[A])
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some(Inst.resolveArg(obj,x.via._2.arg1[A]))
+      case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some(Inst.resolveArg(obj, x.via._2.arg1[A]))
       case x => fetchOption(x.via._1, label)
     }
   }

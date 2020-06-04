@@ -42,8 +42,13 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
     else
       new VInst[S, E](name, g.asInstanceOf[LstTuple[Obj]], q, via, this.func)).asInstanceOf[this.type]
   }
-  override def exec(start: S): E = this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (
-    this.op,
-    this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp()))
+  override def exec(start: S): E = {
+    this match {
+      case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
+      case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (
+        this.op,
+        this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp()))
+    }
+  }
 }
 
