@@ -48,7 +48,7 @@ trait Type[+T <: Obj] extends Obj
         withinQ(this, atype) &&
         this.trace.length == atype.trace.length &&
         this.trace.map(_._2).zip(atype.trace.map(_._2)).
-          forall(insts => insts._1.op.equals(insts._2.op) && insts._1.args.zip(insts._2.args).forall(a => a._1.test(a._2)))
+          forall(insts => insts._1.op.equals(insts._2.op) && insts._1.args.zip(insts._2.args).forall(a => Obj.copyDefinitions(this, a._1).test(a._2)))
     case _ => false
   }
   // standard Java implementations
@@ -62,7 +62,5 @@ trait Type[+T <: Obj] extends Obj
 }
 
 object Type {
-  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = {
-    obj.alive && atype.alive && (atype.isInstanceOf[__] || obj.range.hardQ(qOne).test(atype.domain.hardQ(qOne)))
-  }
+  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (atype.isInstanceOf[__] || obj.range.hardQ(qOne).test(atype.domain.hardQ(qOne)))
 }

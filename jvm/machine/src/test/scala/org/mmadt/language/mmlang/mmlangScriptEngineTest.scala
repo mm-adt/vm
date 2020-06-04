@@ -683,7 +683,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("str-<(str,,)>-[plus,'hello']")(engine.eval("str-<(str,,)>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<(str,int,int[plus,2])>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz'-<(str,int,int[plus,2])>-[plus,'hello']").toString)
-    // assertResult("[3||]<=int-<(3|int|int[plus,2]]")(engine.eval("int-<(3|int|int[plus,2]]").toString)
+    assertResult("(3|int|int[plus,2])<=int-<(3|int|int[plus,2])")(engine.eval("int-<(3|int|int[plus,2])").toString)
     assertResult("int{?}<=int-<(3|int|int{?}<=int[is,bool<=int[lt,0]])>-[plus,1]")(engine.eval("int-<(3|int|int[is<0])>-[plus,1]").toString)
     /////
     assertResult(zeroObj `,` int(10))(engine.eval("10-<(bool,int)"))
@@ -763,12 +763,14 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("define parsing") {
+    assertResult(btrue)(engine.eval("10[define,'big',is>4][a,big]"))
+    assertResult(bfalse)(engine.eval("2[define,'big',is>4][a,big]"))
     assertResult(int(120))(engine.eval("10[define,'big',int[plus,100]][plus,0][plus,big]"))
     assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,'person',('name'->str,'age'->int)][a,person]"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,'person',('name'->str,'age'->int)][a,person]{100}"))
     assertResult(bfalse.q(100))(engine.eval("('name'->'marko',.)[define,'person',('name'->str,'age'->int)][a,person]{100}"))
-    // TODO: bad rec test    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("['name'->'marko',.][define,'person',['name'->str,'age'->int]][put,'age',29][is,[a,person]]{350}"))
-    // assertResult(rec(str("name")->str("marko"),str("age")->int(29)).q(350))(engine.eval("['name'->'marko','age'->29][define,'years',int][define,'person',['name'->str,'age'->years]][is,[a,person]]{350}"))
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko',.)[define,'person',('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,'years',int][define,'person',('name'->str,'age'->years)][is,[a,person]]{350}"))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
         | [define,'person',('name'->str,'age'->int)]
@@ -829,6 +831,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,'xyz',[is==1|(is==1,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(1,(1,(1,2))))[define,'xyz',[is==1|(is==1,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(1,(2,(1,1))))[define,'xyz',[is==1|(is==1,xyz)]][a,xyz]"))
+    //
+    assertResult(btrue)(engine.eval("1[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("2[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,(1,(1,1))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(1,(1,(1,'1'))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
   }
 
   test("play") {
