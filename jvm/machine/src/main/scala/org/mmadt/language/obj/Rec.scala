@@ -95,10 +95,10 @@ object Rec {
     var found: Boolean = false;
     arec.clone(g = (arec.gsep, arec.gmap.map(x => {
       if (!found) {
-        val temp = (Inst.resolveArg(start, x._1), Inst.resolveArg(start, x._2))
-        if (temp._1.alive) {
+        val keyResolve = Inst.resolveArg(start, x._1)
+        if (keyResolve.alive) {
           found = true
-          temp
+          (keyResolve, Inst.resolveArg(start, x._2))
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)

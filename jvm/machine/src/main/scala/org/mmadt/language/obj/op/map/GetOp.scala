@@ -62,6 +62,7 @@ object GetOp extends Func[Obj, Obj] {
           alst.glist(aint.g.toInt)
         case _ => obj
       }
+      case _ => key // TODO: weird
     }).via(start, inst)
   }
 }
