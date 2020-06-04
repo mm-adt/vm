@@ -6,9 +6,7 @@
 image::compiling-languages.png[float="right",width=300]
 
 The mm-ADT VM is written in https://scala-lang.org/[Scala].
-It contains a fluent program builder https://en.wikipedia.org/wiki/Application_programming_interface[API] called `mmscala`.
-Most compiler designers should avoid `mmscala` because direct access to the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM] and the full JDK can create unsafe mm-ADT programs.
-Instead, `mmlang` should be the target language for most compilers.
+It contains a fluent program builder https://en.wikipedia.org/wiki/Application_programming_interface[API] called `mmscala`. Most compiler designers should avoid `mmscala` as direct access to the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM] and the full JDK can create unsafe mm-ADT programs. Instead, `mmlang` should be the target language for most compilers.
 Moreover, all compilers targeting `mmlang` can be used across different mm-ADT VM implementations.
 
 IMPORTANT: The recommended target language for all higher-level language compilers is `mmlang`.
@@ -77,22 +75,22 @@ mmlang> 'a','b','a'    <5>
 
 ==== Types and Values
 
-Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two interesting consequences are: 1.) compilation is triggered by evaluation a program with type arguments and 2.) types (composed of instructions) can be used as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions].
+Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, every instruction operates on both types and values. Two interesting consequences are
+
+. Compilation is the evaluation of a program with a type argument (\$ \tt{type} \rightarrow \tt{type} \rightarrow \tt{type} \$) and
+. Types serve as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions] during evaluation (\$ \tt{value} \rightarrow \tt{type} \rightarrow \tt{value} \$).
 
 [source]
 ----   
-mmlang> int int[is>0]                 <1>
+mmlang> int int[is,[gt,0]]                 <1>
 ==>int{?}<=int[is,bool<=int[gt,0]]
-mmlang> 5 int[is>0]                   <2>
+mmlang> 5 int{?}<=int[is,bool<=int[gt,0]]  <2>
 ==>5
-mmlang> -1 int[is>0]                  <3>
-mmlang>
 ----
-<1> The `int` type is passed to the `int[is>0]`-type to yield an either 0 or 1 `int` (*compilation*).
-<2> The type `[is>0]` serves as a lambda of the form \[ \lambda x = \begin{cases} x & \text{if } x > 0 \\ \emptyset & \text{otherwise} \end{cases} \] (*evaluation*).
-<3> The type `[is>0]` filtering the `int` value -1 (*evaluation*).
+<1> The `int`-type is applied to the `int[is,[gt,0]]`-type to yield an `int{?}`-type denoting either 0 or 1 `int` (*compilation*).
+<2> The type `bool\<=int[gt,0]` serves as a lambda that yields `true` or `false` for every incoming `int` value (*evaluation*).
 
-Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of this documentation.
+Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of the documentation.
 
 .Consequences of Type/Value Integration
 [cols="2,2,10"]
@@ -101,9 +99,9 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 
 |types       | values     | quantifiers expand the cardinality of values and constrain the cardinality of types
 |compilation | evaluation | compilations are evaluations with types, where a compilation error is a "runtime compile-time" error.
-|AST         | type       | the type construction algebra yield an https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] used through to evaluation.
+|AST         | type       | a single https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] is used in compilation, optimization, and evaluation.
 |state       | trace      | types and values both encode state information in their process traces.
-|functions   | types      | functions are (dependent) types with value references generated at evaluation.
+|functions   | types      | functions are (dependent) types with values generated at evaluation.
 |programs    | types      | a program is a "complicated" type.
 |classical   | quantum    | quantum computing is classical computing with a unitary matrix quantifier ring.
 |canonical   | atomics    | atomic values and canonical types are both "tokens" by which all constructions are built.
@@ -126,7 +124,7 @@ The ctypes are https://en.wikipedia.org/wiki/Nominal_type_system[nominal types].
 . *int*: denotes the set of integers -- \$ \mathbb{Z} \$.
 . *real*: denotes the set of reals -- \$ \mathbb{R} \$.
 . *str*: denotes the set of character strings -- \$ \Sigma^\ast \$.
-. *poly*: denotes the set of composites (polynomials) -- \$ \tt{obj}^n \$.
+. *poly*: denotes the set of polynomials (composites) -- \$ \tt{obj}^n \$.
 
 image::type-product.png[float=right,width=295]
 
@@ -149,7 +147,7 @@ The implication of the dtype product is that mm-ADT types are generated https://
 
 image::ctype-dtype.png[align=center,width=230]
 
-For example, `int` is a ctype denoting a single `int` value from the set of all integers. When the instruction `[is>0]` is applied to `int`, the dtype `int[is>0]` is formed. This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$.
+For example, `int` is a ctype denoting a single `int` value from the set of all integers. When the instruction `[is>0]` is applied to `int`, the dtype `int[is>0]` is formed, where `[is>0]` is https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugar] for `[is,[gt,0]]`. This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$.
 In terms of the "__range = domain and function__" reading, when an `int` (*domain*) is applied to `[is>0]` (*function*), the result is an `int` greater than zero (*range*).
 
 image::int_isgt0.png[align=center,width=260]
@@ -187,7 +185,8 @@ image::type-signature-definition.png[align=center,width=650]
 Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type and the _range_ is the target type. Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`.
 The general pattern of a type signature is
 
-`range{q}\<=domain{q}`
+[.text-center]
+`range{q}\<=domain{q}`.
 
 [cols="6,10"]
 |===
@@ -316,7 +315,7 @@ The default quantifier ring of the mm-ADT VM is
 \]
 where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`. Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`. Thus, `int` is `int{1}`  is `int{1,1}`.
 
-One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal object].
+One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial object].
 
 NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}` or `{0}` (the *zero object*).
 
@@ -447,7 +446,7 @@ mmlang>
 
 ==== Poly Types
 
-.Section Language Constructs
+.Poly Constructs
 ================================================================
 . `[ ]` is a type polynomial.
 . `( )` is a value polynomial.
@@ -511,10 +510,8 @@ where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a te
 In mm-ADT, the elements of the set `poly` are https://en.wikipedia.org/wiki/Polynomial[polynomials].
 A `poly` is a _decoupling_ of _objs_ composed of _quantifiers_ and _objects_ typically expressed as
 
-[source]
-----
-(x0{q0},x1{q1},x2{q2},...,xn{qn})
-----
+[.text-center]
+`(x0{q0},x1{q1},x2{q2},...,xn{qn})`
 
 where `qi` is a quantifier, `xi` is an object, `xi{qi}` is an `obj` (type or value), and the `objs` are isolated via `,`.
 
@@ -580,29 +577,26 @@ mmlang> 3-<([plus,1];[mult,2])   <3>
 
 [NOTE]
 ================================================================
-The two terms of the polynomial `[bool<=int[gt,0],bool<=int[gt,10]]` are `bool` types.
-The two terms of `\[[gt,0],[gt,10]]` are `_` types (_anonymous types_).
-A compilation process infers the domain/range of the anonymous types.
+The two terms of the polynomial `\[[gt,0],[gt,10]]` are `_` types (__anonymous types__). Compilation infers the domain/range of the anonymous types.
 
 [source]
 ----
-mmlang> -<([gt,0],[gt,10])
-==>(bool<=_[gt,0],bool<=_[gt,10])
-mmlang> int-<([gt,0],[gt,10])
-==>(bool<=int[gt,0],bool<=int[gt,10])
+mmlang> [[gt,0],[gt,10]]
+==>bool{2}<=_-<(bool<=_[gt,0],bool<=_[gt,10])>-
+mmlang> int[[gt,0],[gt,10]]
+==>bool{2}<=int-<(bool<=int[gt,0],bool<=int[gt,10])>-
+mmlang> int{5}[[gt,0],[gt,10]]
+==>bool{10}<=int{5}-<(bool{5}<=int{5}[gt,0],bool{5}<=int{5}[gt,10])>-
 ----
 ================================================================
 
-A `poly` is an element in one of 3 https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings].
-Every `poly` draws from the same `obj` carrier set, but are combined using different "additive" operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `|` yields a non-commutative polynomial and `;` yields a semi-commutative polynomial ring with "addition" being monoid multiplication.
-The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
+There are 3 `poly` rings. Each draws from the same `obj` carrier set, but are combined using different "additive" binary operators: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `,` yields a commutative polynomial, `|` yields a non-commutative polynomial and `;` yields a semi-commutative polynomial with "addition" being monoid multiplication. The general form of a `poly` from each of the three polynomial rings is expressed below in `mmlang`.
 
-[source]
-----
-([t0{q0}],[t1{q1}],...,[tn{qn}])
-([t0{q0}]|[t1{q1}]|...|[tn{qn}])
-([t0{q0}];[t1{q1}];...;[tn{qn}])
-----
+[.text-center]
+`([t0{q0}],[t1{q1}],...,[tn{qn}])` +
+`([t0{q0}]|[t1{q1}]|...|[tn{qn}])` +
+`([t0{q0}];[t1{q1}];...;[tn{qn}])`
+
 
 ================================================================
 The `polys` have two structural representations (a value and a type from) and two `poly`-specific instructions for mapping an `obj` to a `vpoly` and a `vpoly` to an `obj`.
