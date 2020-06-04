@@ -4,6 +4,12 @@
 
 === mmlang Grammar
 
+[.small]
+[source]
+----
+include::images/reference/mmlang.ebnf[]
+----
+
 image::mmlang-ebnf.svg[opts=interactive,width="100%"]
 
 === Instructions
