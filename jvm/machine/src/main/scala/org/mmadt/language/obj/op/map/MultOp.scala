@@ -38,10 +38,12 @@ import scala.util.Try
  */
 trait MultOp[O <: Obj] {
   this: O =>
-  def mult(anon: __): this.type = MultOp(anon).exec(this)
   def mult(arg: O): this.type = MultOp(arg).exec(this)
-  final def *(anon: __): this.type = this.mult(anon)
+  def mult(arg: __): this.type = MultOp(arg).exec(this)
   final def *(arg: O): this.type = this.mult(arg)
+  final def *(arg: __): this.type = this.mult(arg)
+  final def ⨂(arg: O): this.type = this.mult(arg)
+  final def ⨂(arg: __): this.type = this.mult(arg)
 }
 object MultOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.mult, List(obj)), func = this)

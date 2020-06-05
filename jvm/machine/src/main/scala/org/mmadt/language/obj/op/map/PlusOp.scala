@@ -24,9 +24,9 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -36,14 +36,16 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait PlusOp[O <: Obj] {
   this: O =>
-  def plus(anon: __): this.type = PlusOp(anon).exec(this).asInstanceOf[this.type]
-  def plus(arg: O): this.type = PlusOp(arg).exec(this).asInstanceOf[this.type]
-  final def +(anon: __): this.type = this.plus(anon)
+  def plus(arg: O): this.type = PlusOp(arg).exec(this)
+  def plus(arg: __): this.type = PlusOp(arg).exec(this)
   final def +(arg: O): this.type = this.plus(arg)
+  final def +(arg: __): this.type = this.plus(arg)
+  final def ⨁(arg: O): this.type = this.plus(arg)
+  final def ⨁(arg: __): this.type = this.plus(arg)
 }
 
 object PlusOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](obj: Obj): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.plus, List(obj)), func = this)
+  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     try {
       (start match {
@@ -53,7 +55,7 @@ object PlusOp extends Func[Obj, Obj] {
           case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)
           case astr: Str => astr.clone(g = astr.g + inst.arg0[Str].g)
           case arec: Rec[Obj, Obj] => arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[Rec[Value[Obj], Value[Obj]]].gmap))
-       //   case arec: Rec => arec.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
+          //   case arec: Rec => arec.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
           // poly plus
           case multA: Poly[Obj] if multA.isSerial => inst.arg0[Poly[Obj]] match {
             case multB: Poly[Obj] if multB.isSerial => multA `,` multB
@@ -68,7 +70,7 @@ object PlusOp extends Func[Obj, Obj] {
       }).via(start, inst)
     } catch {
       case _: ClassCastException => throw LanguageException.typingError(start, asType(inst.arg0[Obj])) // TODO: type check at VInst
-      case _: LanguageException => start.via(start,inst)
+      case _: LanguageException => start.via(start, inst)
     }
   }
 }

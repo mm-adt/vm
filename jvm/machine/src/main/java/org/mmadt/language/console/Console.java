@@ -23,6 +23,7 @@
 package org.mmadt.language.console;
 
 
+import org.jline.reader.Highlighter;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
@@ -31,6 +32,8 @@ import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.AttributedString;
+import org.jline.utils.AttributedStyle;
 import org.mmadt.VmException;
 import org.mmadt.language.LanguageFactory;
 import org.mmadt.language.Tokens;
@@ -40,6 +43,7 @@ import org.mmadt.language.obj.Rec;
 import scala.collection.JavaConverters;
 
 import javax.script.ScriptEngineManager;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -65,6 +69,8 @@ public class Console {
     private static final String MODEL_OP = ":model";
     private static final String MODEL = "model";
     private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
+    private static final Highlighter HIGHLIGHTER = new DefaultHighlighter();
+
 
     public static void main(final String[] args) throws Exception {
         String engineName = "mmlang";
@@ -75,13 +81,13 @@ public class Console {
         final LineReader reader = LineReaderBuilder.builder()
                 .appName("mm-ADT Console")
                 .terminal(terminal)
-                .highlighter(new DefaultHighlighter())
+                .highlighter(HIGHLIGHTER)
                 .variable(LineReader.HISTORY_FILE, HISTORY)
                 .history(history)
                 .parser(parser)
                 .build();
         ///////////////////////////////////
-        terminal.writer().println(HEADER);
+        HIGHLIGHTER.highlight(reader,HEADER).styleMatches(Pattern.compile("mm-adt.org"),new AttributedStyle().italic()).println(terminal);
         terminal.flush();
 
         while (true) {
@@ -105,11 +111,18 @@ public class Console {
                 else if (line.startsWith(MODEL_OP))
                     engine.put(MODEL, Model.from((Rec) engine.eval(Tokens.model())).put(Model.from((Rec) engine.eval(line.substring(6)))));
                 else
-                    JavaConverters.asJavaIterator(engine.eval(line).toStrm().values().iterator()).forEachRemaining(o -> terminal.writer().println(RESULT + o.toString()));
+                    JavaConverters.asJavaIterator(engine.eval(line).toStrm().values().iterator()).forEachRemaining(o -> {
+                        AttributedString HIGHLIGHT_RESULT = HIGHLIGHTER.highlight(reader,RESULT).styleMatches(Pattern.compile(RESULT),AttributedStyle.BOLD);
+                        AttributedString HIGHLIGHT_RANGE = HIGHLIGHTER.highlight(reader,o.toString()).styleMatches(Pattern.compile("<="),AttributedStyle.BOLD);
+                        HIGHLIGHT_RESULT.print(terminal);
+                        HIGHLIGHT_RANGE.println(terminal);
+                    });
             } catch (final UserInterruptException e) {
                 break;
             } catch (final VmException e) {
-                terminal.writer().println(e.header() + " error: " + e.getMessage());
+                AttributedString HIGHLIGHT_ERROR = HIGHLIGHTER.highlight(reader,"language error").styleMatches(Pattern.compile("language error"), AttributedStyle.BOLD);
+                HIGHLIGHT_ERROR.print(terminal);
+                terminal.writer().println(": " + e.getMessage());
             } catch (final Throwable e) {
                 terminal.writer().println(e);
             }

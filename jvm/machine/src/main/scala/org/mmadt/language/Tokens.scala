@@ -96,6 +96,8 @@ object Tokens {
   val q_mark = "?"
   val plus_op, q_plus = "+"
   val mult_op, q_star = "*"
+  val product_op = "⨂"
+  val sum_op = "⨁"
   val gt_op = ">"
   val gte_op = ">="
   val lt_op = "<"
