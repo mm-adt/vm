@@ -24,6 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Inst, IntQ, OType, Obj, ViaTuple, _}
@@ -49,6 +50,7 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   def lte(other: Obj): BoolType = bool.via(this, LteOp(other))
   def head(): this.type = this.via(this, HeadOp())
   def tail(): this.type = this.via(this, TailOp())
+  def merge(): this.type = this.via(this, MergeOp())
   ///
   def get(key: Obj): this.type = this.via(this, GetOp(key))
   def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))

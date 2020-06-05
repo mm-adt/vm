@@ -61,7 +61,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
 
   // specific to mmlang execution
-  lazy val expr: Parser[Obj] = (strm | obj) ~ opt(objType) ^^ (x => {
+  lazy val expr: Parser[Obj] = obj ~ opt(objType) ^^ (x => {
     x._2 match {
       case None => x._1 match {
         case _: Value[_] => x._1 // left hand value only, return it
@@ -139,7 +139,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val intValue: Parser[IntValue] = opt(valueType) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
   lazy val realValue: Parser[RealValue] = opt(valueType) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
   lazy val strValue: Parser[StrValue] = opt(valueType) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
-  lazy val strm: Parser[Obj] = (objValue <~ COMMA) ~ rep1sep(objValue, COMMA) ^^ (x => estrm((List(x._1) :+ x._2.head) ++ x._2.tail))
+  //lazy val strm: Parser[Obj] = (objValue <~ COMMA) ~ rep1sep(objValue, COMMA) ^^ (x => estrm((List(x._1) :+ x._2.head) ++ x._2.tail))
 
   // instruction parsing
   lazy val inst: Parser[List[Inst[Obj, Obj]]] = manyInstSugar | (

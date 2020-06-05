@@ -65,7 +65,7 @@ class LtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).lt(__.mult(real)), bool(false, true, true), "strm"), // strm * anon = strm
       )
     forEvery(starts) { (query, result, atype) => {
-      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
+      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
       assertResult(result)(query)
       atype match {
         case "value" => assert(query.isInstanceOf[Value[_]])
