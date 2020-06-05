@@ -9,7 +9,9 @@
 include::images/reference/mmlang.ebnf[]
 ----
 
-image::mmlang-ebnf.svg[opts=interactive,width="100%"]
+++++
+<iframe src="images/reference/mmlang-ebnf.html" width="100%" height="1000px"></iframe>
+++++
 
 === Instructions
 
