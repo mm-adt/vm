@@ -20,10 +20,15 @@ lazy val machine = (project in file("machine"))
     mainClass in assembly := Some("org.mmadt.language.console.Console"),
     assemblyJarName in assembly := s"mmadt-vm-${version.value}.jar",
     assemblyOption in assembly := (assemblyOption in assembly).value.copy(prependShellScript = Some(defaultShellScript)),
+    assemblyMergeStrategy in assembly ~= (old => {
+      case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
+      case _ => MergeStrategy.first
+    }),
     // base:= font_size_min: $base_font_size * 0.75
     libraryDependencies := List(
       "org.jline" % "jline" % "3.13.3",
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+      "org.asciidoctor" % "asciidoctorj" % "2.3.0",
       // tests
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
@@ -32,6 +37,7 @@ lazy val machine = (project in file("machine"))
   )
   .enablePlugins(AssemblyPlugin)
   .enablePlugins(AsciidoctorPlugin)
+  .enablePlugins(SitePreviewPlugin)
   .enablePlugins(GhpagesPlugin)
 
 

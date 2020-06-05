@@ -88,14 +88,9 @@ All the examples contained herein are presented using `mmlang`.
 
 [source]
 ----
-mmlang> 1
-==>1
-mmlang> +2
-==>[plus,2]
-mmlang> 1+2
-==>3
-mmlang> 1[plus,2]
-==>3
+1
+1+2
+1[plus,2]
 ----
 
 ==== mmlang Syntax and Semantics
