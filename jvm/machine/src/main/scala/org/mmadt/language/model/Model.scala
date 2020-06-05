@@ -25,7 +25,7 @@ package org.mmadt.language.model
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.model.AsOp
+import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, OType, Obj, Rec}

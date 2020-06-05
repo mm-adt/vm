@@ -20,10 +20,11 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.model
+package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,6 +36,6 @@ trait NoOp {
 }
 
 object NoOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.noop, Nil), func = this)
+  def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.noop, Nil), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start
 }

@@ -849,6 +849,11 @@ class mmlangScriptEngineTest extends FunSuite {
     }
   }
 
+  test("play2"){
+    println(engine.eval("int[define,'nat',int[is>0]][as,nat][plus,10]"))
+    assertResult("nat")(engine.eval("int[define,'nat',int[is>0]][as,nat][plus,10]").name)
+  }
+
   test("play") {
     println(engine.eval("10[define,'big',int[plus,100]]<.big>+10"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))

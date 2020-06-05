@@ -123,7 +123,7 @@ object Tokens {
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst, lst).contains(name) // TODO: global immutable set
+  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst, lst, anon).contains(name) // TODO: global immutable set
 
   lazy val LANGLE = "<"
   lazy val RANGLE = ">"
