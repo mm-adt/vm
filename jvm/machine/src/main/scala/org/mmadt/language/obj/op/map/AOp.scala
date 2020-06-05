@@ -48,7 +48,7 @@ object AOp extends Func[Obj, Bool] {
         (oldInst.arg0[Obj] match {
           case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => bool(start.test(inst.arg0[Obj]))
           case x => bool(start.test(x))
-        }).via(start, inst)
+        }).via(start, oldInst)
       case _ =>
         if (!Inst.resolveArg(start, oldInst.arg0[Obj]).alive)
           bfalse.via(start, oldInst)

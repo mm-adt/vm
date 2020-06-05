@@ -47,7 +47,7 @@ object GteOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.gte, List(other)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     Try[Obj](start match {
-      case astrm: Strm[Obj] => astrm
+      case _: Strm[Obj] => start
       case aint: Int => bool(g = aint.g >= inst.arg0[Int].g)
       case areal: Real => bool(g = areal.g >= inst.arg0[Real].g)
       case astr: Str => bool(g = astr.g >= inst.arg0[Str].g)
