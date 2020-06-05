@@ -442,8 +442,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>obj   ::= (type | value)q
+value ::= vbool | vint | vreal | vstr
+vbool ::= 'true' | 'false'
+vint  ::= [1-9][0-9]*
+vreal ::= [0-9]+'.'[0-9]*
+vstr  ::= "'" [a-zA-Z]* "'"
 type  ::= ctype | dtype
-ctype ::= bool | int  | real | str | poly | '_'
+ctype ::= 'bool' | 'int'  | 'real' | 'str' | poly | '_'
 poly  ::= lst | rec | inst
 q     ::= '{' int (',' int)? '}'
 dtype ::= ctype q? ('&lt;=' ctype q?)? inst*
@@ -451,11 +456,9 @@ sep   ::= ';' | ',' | '|'
 lst   ::= '(' obj (sep obj)* ')' q?
 rec   ::= '(' obj '-&gt;' obj (sep obj '-&gt;' obj)* ')' q?
 inst  ::= '[' op(','obj)* ']' q?
-op    ::= 'a' | 'add' | 'and' | 'as' | 'combine' | 'count' | 'eq' |
-          'error' | 'explain' | 'fold' | 'from' | 'get' | 'given' |
-          'groupCount' | 'gt' | 'gte' | 'head' | 'id' | 'is' | 'last' |
-          'lt' | 'lte' | 'map' | 'merge' | 'mult' | 'neg' | 'noop' |
-          'one' | 'or' | 'path' | 'plus' | 'pow' | 'put' | 'q' | 'repeat' |
+op    ::= 'a' | 'add' | 'and' | 'as' | 'combine' | 'count' | 'eq' | 'error' | 'explain' | 'fold' | 'from' |
+          'get' | 'given' | 'groupCount' | 'gt' | 'gte' | 'head' | 'id' | 'is' | 'last' | 'lt' | 'lte' | 'map' |
+          'merge' | 'mult' | 'neg' | 'noop' | 'one' | 'or' | 'path' | 'plus' | 'pow' | 'put' | 'q' | 'repeat' |
           'split' | 'start' | 'tail' | 'to' | 'trace' | 'type' | 'zero'</code></pre>
 </div>
 </div>
