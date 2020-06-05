@@ -215,6 +215,79 @@
             
             <li><a href="#rec" title="rec">rec</a></li>
             </ul>
+         </p><br><p style="font-size: 14px; font-weight:bold"><a name="value">value:</a></p><img border="0" src="diagram/value.png" height="169" width="153" usemap="#value.map"><map name="value.map"><area shape="rect" coords="49,1,103,33" href="#vbool" title="vbool"><area shape="rect" coords="49,45,91,77" href="#vint" title="vint"><area shape="rect" coords="49,89,101,121" href="#vreal" title="vreal"><area shape="rect" coords="49,133,93,165" href="#vstr" title="vstr"></map><p>
+         
+         <div class="ebnf"><code>
+               
+               <div><a href="#value" title="value">value</a>&nbsp;&nbsp;&nbsp;&nbsp;::= <a href="#vbool" title="vbool">vbool</a></div>
+               
+               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a href="#vint" title="vint">vint</a></div>
+               
+               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a href="#vreal" title="vreal">vreal</a></div>
+               
+               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a href="#vstr" title="vstr">vstr</a></div></code></div>
+         </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#obj" title="obj">obj</a></li>
+            </ul>
+         </p><br><p style="font-size: 14px; font-weight:bold"><a name="vbool">vbool:</a></p><img border="0" src="diagram/vbool.png" height="81" width="151"><p>
+         
+         <div class="ebnf"><code>
+               
+               <div><a href="#vbool" title="vbool">vbool</a>&nbsp;&nbsp;&nbsp;&nbsp;::= 'true'</div>
+               
+               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 'false'</div></code></div>
+         </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            </ul>
+         </p><br><p style="font-size: 14px; font-weight:bold"><a name="vint">vint:</a></p><img border="0" src="diagram/vint.png" height="71" width="243"><p>
+         
+         <div class="ebnf"><code>
+               
+               <div><a href="#vint" title="vint">vint</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::= [1-9] [0-9]*</div></code></div>
+         </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            </ul>
+         </p><br><p style="font-size: 14px; font-weight:bold"><a name="vreal">vreal:</a></p><img border="0" src="diagram/vreal.png" height="71" width="327"><p>
+         
+         <div class="ebnf"><code>
+               
+               <div><a href="#vreal" title="vreal">vreal</a>&nbsp;&nbsp;&nbsp;&nbsp;::= [0-9]+ '.' [0-9]*</div></code></div>
+         </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            </ul>
+         </p><br><p style="font-size: 14px; font-weight:bold"><a name="vstr">vstr:</a></p><img border="0" src="diagram/vstr.png" height="115" width="249"><p>
+         
+         <div class="ebnf"><code>
+               
+               <div><a href="#vstr" title="vstr">vstr</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::= "'" [a-zA-Z]* "'"</div></code></div>
+         </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            </ul>
          </p><br><p style="font-size: 14px; font-weight:bold"><a name="type">type:</a></p><img border="0" src="diagram/type.png" height="81" width="155" usemap="#type.map"><map name="type.map"><area shape="rect" coords="49,1,103,33" href="#ctype" title="ctype"><area shape="rect" coords="49,45,105,77" href="#dtype" title="dtype"></map><p>
          
          <div class="ebnf"><code>
@@ -230,17 +303,17 @@
             
             <li><a href="#obj" title="obj">obj</a></li>
             </ul>
-         </p><br><p style="font-size: 14px; font-weight:bold"><a name="ctype">ctype:</a></p><img border="0" src="diagram/ctype.png" height="257" width="145" usemap="#ctype.map"><map name="ctype.map"><area shape="rect" coords="49,1,95,33" href="#bool" title="bool"><area shape="rect" coords="49,45,85,77" href="#int" title="int"><area shape="rect" coords="49,89,93,121" href="#real" title="real"><area shape="rect" coords="49,133,85,165" href="#str" title="str"><area shape="rect" coords="49,177,95,209" href="#poly" title="poly"></map><p>
+         </p><br><p style="font-size: 14px; font-weight:bold"><a name="ctype">ctype:</a></p><img border="0" src="diagram/ctype.png" height="257" width="147" usemap="#ctype.map"><map name="ctype.map"><area shape="rect" coords="49,177,95,209" href="#poly" title="poly"></map><p>
          
          <div class="ebnf"><code>
                
-               <div><a href="#ctype" title="ctype">ctype</a>&nbsp;&nbsp;&nbsp;&nbsp;::= <a href="#bool" title="bool">bool</a></div>
+               <div><a href="#ctype" title="ctype">ctype</a>&nbsp;&nbsp;&nbsp;&nbsp;::= 'bool'</div>
                
-               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a href="#int" title="int">int</a></div>
+               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 'int'</div>
                
-               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a href="#real" title="real">real</a></div>
+               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 'real'</div>
                
-               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a href="#str" title="str">str</a></div>
+               <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| 'str'</div>
                
                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <a href="#poly" title="poly">poly</a></div>
                

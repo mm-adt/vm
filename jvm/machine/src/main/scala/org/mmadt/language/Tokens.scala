@@ -27,12 +27,12 @@ package org.mmadt.language
  */
 object Tokens {
 
-  lazy val reserved: Set[String] = Set(
-    Tokens.define,
+  lazy val reserved: List[String] = List(
+    Tokens.define, Tokens.neg,
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
-    Tokens.plus, Tokens.gt, Tokens.lt, Tokens.gte, Tokens.lte, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as, Tokens.a, // Tokens.model (shared with global name)
+    Tokens.plus, Tokens.gt, Tokens.gte, Tokens.lt, Tokens.lte, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.a, Tokens.as, // Tokens.model (shared with global name)
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.given, Tokens.trace, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last,
-    Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon, Tokens.and, Tokens.or)
+    Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon, Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one)
 
   val anon = "_"
   val obj = "obj"
