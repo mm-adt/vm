@@ -84,13 +84,11 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // mmlang's language structure
-  lazy val obj: Parser[Obj] = varGet | objValue | objType | polyObj | anonQuant
+  lazy val obj: Parser[Obj] = objValue | objType | polyObj | anonQuant
 
   // variable parsing
   lazy val symbolName: Regex = "[a-zA-Z]+".r
   lazy val varName: Parser[String] = ("^(?!(" + instOp + s"))(${symbolName})").r <~ not(":")
-  lazy val varGet: Parser[Type[Obj]] = varName ~ opt("?") ~ rep(inst) ^^
-    (x => this.model.get(tobj(x._1._1)).getOrElse(__.apply(List[Inst[_, _]](if (x._1._2.isEmpty) FromOp[Obj](x._1._1) else FromOp[Obj](x._1._1, tobj().q(0))) ++ x._2.flatten)))
 
   // poly parsing
   lazy val polyObj: Parser[Value[Obj]] = (lstObj | recObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Value[Obj]]).getOrElse(x._1))
@@ -119,11 +117,11 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
   lazy val recType: Parser[Rec[Obj, Obj]] = Tokens.rec ~> opt(COLON) ~> opt(recObj) ^^ (x => x.getOrElse(rec))
   lazy val lstType: Parser[Lst[Obj]] = Tokens.lst ~> opt(COLON) ~> opt(lstObj) ^^ (x => x.getOrElse(lst(Tokens.`;`)))
-
+  lazy val tokenType: Parser[__] = varName ^^ (x => new __(name = x))
 
   lazy val anonQuant: Parser[__] = quantifier ^^ (x => new __().q(x))
 
-  lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ {
     case Some(range) ~ domain ~ insts => range <= insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
     case None ~ domain ~ insts => insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))

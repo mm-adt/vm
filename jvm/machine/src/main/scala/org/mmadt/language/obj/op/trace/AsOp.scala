@@ -47,7 +47,7 @@ trait AsOp {
 object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val asObj: Obj = (inst.arg0[Obj] match {
+    val asObj: Obj = (Inst.resolveToken(start, inst.arg0[Obj]) match {
       case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => Inst.resolveArg(start, atype).named(atype.trace.head._2.arg0[StrValue].g)
       case atype: Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
         case rectype: Rec[Obj, Obj] => rec(rectype.gsep, rectype.gmap.map(x => Inst.resolveArg(start, x._1) -> Inst.resolveArg(start, x._2)).toMap).named(rectype.name)
@@ -55,7 +55,7 @@ object AsOp extends Func[Obj, Obj] {
         case atype: IntType => vint(name = atype.name, g = Integer.valueOf(start.asInstanceOf[Value[Obj]].g.toString).longValue()).compute(atype)
         case atype: RealType => vreal(name = atype.name, g = JDouble.valueOf(start.asInstanceOf[Value[Obj]].g.toString).doubleValue()).compute(atype)
       }
-      case x => x
+      case x => x.named(inst.arg0.name)
     }).via(start, inst)
     assert(asObj.alive)
     asObj
