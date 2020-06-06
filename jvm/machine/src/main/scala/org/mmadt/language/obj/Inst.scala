@@ -22,10 +22,10 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -51,10 +51,9 @@ trait Inst[S <: Obj, +E <: Obj] extends Lst[Obj] {
 
 object Inst {
   def oldInst[S <: Obj, E <: Obj](newInst: Inst[S, E]): Inst[S, E] = newInst.via._1.asInstanceOf[Inst[S, E]]
-  def resolveToken[A <: Obj](obj: Obj, arg: A): A = {
-    // if (arg.isInstanceOf[__] && Tokens.named(arg.name)) Obj.fetchOption[A](obj, arg.name).getOrElse(arg) else arg
-    Obj.fetchOption[A](obj, arg.name).getOrElse(arg)
-  }
+  def resolveToken[A <: Obj](obj: Obj, arg: A): A =
+    if (arg.isInstanceOf[__] && Tokens.named(arg.name))
+      Obj.fetchOption[A](obj, arg.name).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).getOrElse(arg) else arg
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     resolveToken(obj, arg) match {
       case lstArg: Lst[_] if !lstArg.isValue => (if (obj.test(lstArg)) lstArg else lstArg.q(qZero)).asInstanceOf[E] // TODO: compute lstArg?

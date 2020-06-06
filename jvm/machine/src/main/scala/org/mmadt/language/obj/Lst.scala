@@ -1,6 +1,6 @@
 package org.mmadt.language.obj
 
-import org.mmadt.language.LanguageFactory
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
@@ -38,7 +38,7 @@ trait Lst[A <: Obj] extends Poly[A]
     case alst: Lst[_] => // Poly.sameSep(this, alst) &&
       withinQ(this, alst) &&
         (this.glist.length == alst.glist.length || alst.glist.isEmpty) && // TODO: should lists only check up to their length
-        this.glist.zip(alst.glist).forall(b => Obj.copyDefinitions(this, b._1).test(Inst.resolveToken(this, b._2)))
+        this.glist.zip(alst.glist).forall(b => Obj.copyDefinitions(this, b._1).test(b._2))
     case _ => false
   }
 
@@ -69,7 +69,7 @@ object Lst {
         }
         local
       }))
-    } else
-      apoly.clone(apoly.glist.map(slot => Inst.resolveArg(start, slot)))
+    } else apoly.clone(apoly.glist.map(slot => if(start.name == Tokens.anon) Inst.resolveToken(start, slot) else Inst.resolveArg(start, slot)))
+
   }
 }

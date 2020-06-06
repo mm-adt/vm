@@ -139,9 +139,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(6))(engine.eval("(1 -> 2 , 3 -> 4,5 -> 6)[get,is>3]"))
     assertResult(int(2, 4, 6))(engine.eval("(1 -> 2 , 3 -> 4,5 -> 6)[get,is<100]"))
     assertResult(int(2, 4, 6))(engine.eval("(1 -> 2 , 3 -> 4,5 -> 6)[get,int]"))
-    //    assertThrows[LanguageException] {
+    /*  assertThrows[LanguageException] {
     assertResult(zeroObj)(engine.eval("(1 -> 2 , 3 -> 4,5 -> 6)[get,str]"))
-    //    }
+        }*/
   }
 
   test("poly get/put") {
@@ -240,7 +240,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:('a'->int<.x>,'b'->int<.y>)][get,'b']"))
     // assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['a'-><.x>,'b'-><.y>]][get,'b']"))
     assertResult(int ==> int.to("x").plus(1).to("y").as(rec(str("a") -> int.from("x"), str("b") -> int.from("y"))).get("b"))(engine.eval("int<x>[plus,1]<y>[as,rec:('a'->int<.x>,'b'->int<.y>)].b"))
-    assertResult(rec(str("x") -> int(7), str("y") -> int(10), str("z") -> rec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:('x'->int<.x>,'y'->int<.y>,'z'->[as,rec:('a'-><.x> + <.y>)])]"))
+    //    assertResult(rec(str("x") -> int(7), str("y") -> int(10), str("z") -> rec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:('x'->int<.x>,'y'->int<.y>,'z'->[as,rec:('a'-><.x> + <.y>)])]"))
   }
 
   test("start instruction initial") {
@@ -480,7 +480,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("bool strm input parsing") {
     //  assertResult(btrue)(engine.eval("bool{*}[true,false][is,[id]]"))
-    //assertResult(btrue)(engine.eval("[true,false][is,[id]]"))
+    // assertResult(btrue)(engine.eval("[true,false][is,[id]]"))
   }
 
   test("int strm input parsing") {
@@ -596,13 +596,14 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(3))(engine.eval("1<x>[plus,1][plus,x]"))
     assertResult(int(5, 23))(engine.eval("1-<([plus,1]<x>,[plus,10]<x>)>-[plus,1][plus,x]"))
     assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(<.x>[plus,2],<.x>)>-"))
-    /*      assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(x[plus,2],x)>-"))
-          assertResult(int(3, 1))(engine.eval("1<x><y>[plus,2]-<(y[plus,2],x)>-"))
-          assertResult(int(3))(engine.eval("1<x>[plus,2]-<(x[plus,2]|x)>-"))
-          assertResult(zeroObj | int(3) | zeroObj)(engine.eval("1<x>[plus,2]-<(x[is>100]|x[plus,2]|x)"))
-          assertThrows[LanguageException] {
-            engine.eval("1[plus,1][plus,x]")
-          }*/
+    assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(int<.x>[plus,2],int<.x>)>-"))
+    assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(x[plus,2],x)>-"))
+    assertResult(int(3, 1))(engine.eval("1<x><y>[plus,2]-<(y[plus,2],x)>-"))
+    assertResult(int(3))(engine.eval("1<x>[plus,2]-<(x[plus,2]|x)>-"))
+    //assertResult(zeroObj | int(3) | zeroObj)(engine.eval("1<x>[plus,2]-<(x[is>100]|x[plus,2]|x)"))
+    assertThrows[LanguageException] {
+      engine.eval("1[plus,1][plus,x]")
+    }
   }
 
   test("lst values w/ [mult], [plus], and [zero]") {
@@ -780,7 +781,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(120))(engine.eval("10[define,'big',int[plus,100]][plus,0][plus,big]"))
     assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,'person',('name'->str,'age'->int)][a,person]"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,'person',('name'->str,'age'->int)][a,person]{100}"))
-    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,'person',('name'->str,'age'->int)][a,person]{100}"))
+    //    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,'person',('name'->str,'age'->int)][a,person]{100}"))
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,'person',('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,'years',int][define,'person',('name'->str,'age'->years)][is,[a,person]]{350}"))
     /*    assertResult(str("old guy"))(engine.eval(
@@ -851,24 +852,28 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("2[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(2,(1,(1,1))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(1,(1,(1,'1'))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
-    /*    assertThrows[StackOverflowError] {
-          engine.eval("1[define,'wxy',xyz][define,'xyz',wxy][a,xyz]")
-        }
-        assertThrows[StackOverflowError] {
-          engine.eval("1[define,'xyz',xyz][a,xyz]")
-        }*/
+    assertThrows[StackOverflowError] {
+      engine.eval("1[define,'wxy',xyz][define,'xyz',wxy][a,xyz]")
+    }
+    assertThrows[StackOverflowError] {
+      engine.eval("1[define,'xyz',xyz][a,xyz]")
+    }
   }
 
   test("play2") {
-    println(__.named("nat"))
-    println(engine.eval("int[define,'nat',int[is>0]][as,nat][plus,10]"))
+    assertResult(btrue `,` bfalse `,` btrue)(engine.eval(
+      """ 1
+        | [define,'nat',int[is>0]]
+        | [define,'z',int[is==[zero]]]
+        | [define,'o',int[is==[one]]]
+        |   -<([a,nat],[a,z],[a,o])""".stripMargin))
   }
 
   test("play") {
     println(engine.eval("10[define,'big',int[plus,100]]<.big>+10"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))
-    println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
+    //    println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
     //println(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
     println(engine.eval("(1,(2,3))=(_,=(<y>,[id]))>-"))
     println(engine.eval("[1,2,(3,)](-<(_,))^([a,(((int,),),)][neg])"))

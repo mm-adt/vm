@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
@@ -51,11 +51,12 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def clone(values: collection.Map[A, B]): this.type = this.clone(g = (gsep, values))
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
+    case anon: __ => Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
       withinQ(this, arec) &&
       arec.gmap.count(x => qStar.equals(x._2.q) ||
-        this.gmap.exists(y => Obj.copyDefinitions(this, y._1).test(Inst.resolveToken(this, x._1)) && Obj.copyDefinitions(this, y._2).test(Inst.resolveToken(this, x._2)))) == arec.gmap.size
+        this.gmap.exists(y => Obj.copyDefinitions(this, y._1).test(x._1) && Obj.copyDefinitions(this, y._2).test(x._2))) == arec.gmap.size
     case _ => false
   }
 

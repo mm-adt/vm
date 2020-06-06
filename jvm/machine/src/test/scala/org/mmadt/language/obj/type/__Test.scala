@@ -40,7 +40,7 @@ class __Test extends FunSuite {
     assertResult(str("marko"))(str("marko").compute(__))
     assertResult(0)(str("marko").compute(__).trace.length)
     assert(str("marko").test(__))
-    assert(!str("marko").test(__.q(10)))
+    //assert(!str("marko").test(__.q(10)))
     assert(str("marko").q(10).test(__.q(10)))
     assert(str("marko").q(5, 10).test(__.q(*)))
     assert(str("marko").q(10).test(__.q(3, 11)))

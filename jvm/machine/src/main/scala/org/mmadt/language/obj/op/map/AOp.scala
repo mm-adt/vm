@@ -41,45 +41,35 @@ trait AOp {
 object AOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
-    //val oldInst = Inst.oldInst(inst)
     start match {
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))
-      case _: Value[_] =>
-        (inst.arg0[Obj] match {
-          //case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => bool(start.test(inst.arg0[Obj]))
-          case x => bool(start.test(Inst.resolveToken(start, x)))
-        }).via(start, inst)
-      case _ =>
-        if (!Inst.resolveArg(start, inst.arg0[Obj]).alive)
-           bfalse.via(start, inst)
-         else
-        inst.arg0[Obj] match {
-          //case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => bool.via(start, inst)
-          case _ => bool.via(start, inst)
-        }
+      case _: Value[_] => bool(start.test(inst.arg0[Obj])).via(start, inst)
+      case _ => bool.via(start, inst)
     }
   }
-
-  /*
-   bindLeftValuesToRightVariables(atype, int.is(int.gt(int.to("x"))))
-            .map(y => y._1.compute(y._2))
-            .map(x => Obj.fetchOption[Int](x, "x"))
-            .filter(x => x.isDefined)
-            .map(x => x.get.plus(1))
-            .map(x => bool(x.test(oldInst.arg0[Type[_]])).clone(via = (start, oldInst)))
-            .find(x => x.g)
-            .getOrElse(
-   */
-  /*private def bindLeftValuesToRightVariables(left: Type[Obj], right: Type[Obj]): List[(Obj, Type[Obj])] = {
-    left.trace.map(_._2).zip(right.trace.map(_._2))
-      .flatMap(x => x._1.args.zip(x._2.args))
-      .filter(x => x._2.isInstanceOf[Type[Obj]])
-      .flatMap(x => {
-        x._1 match {
-          case left1: Type[Obj] => bindLeftValuesToRightVariables(left1, x._2.asInstanceOf[Type[Obj]])
-          case _ => List(x)
-        }
-      })
-      .map(x => (x._1, x._2.asInstanceOf[Type[Obj]]))
-  }*/
 }
+
+/////////////////////////////
+
+/*
+ bindLeftValuesToRightVariables(atype, int.is(int.gt(int.to("x"))))
+          .map(y => y._1.compute(y._2))
+          .map(x => Obj.fetchOption[Int](x, "x"))
+          .filter(x => x.isDefined)
+          .map(x => x.get.plus(1))
+          .map(x => bool(x.test(oldInst.arg0[Type[_]])).clone(via = (start, oldInst)))
+          .find(x => x.g)
+          .getOrElse(
+ */
+/*private def bindLeftValuesToRightVariables(left: Type[Obj], right: Type[Obj]): List[(Obj, Type[Obj])] = {
+  left.trace.map(_._2).zip(right.trace.map(_._2))
+    .flatMap(x => x._1.args.zip(x._2.args))
+    .filter(x => x._2.isInstanceOf[Type[Obj]])
+    .flatMap(x => {
+      x._1 match {
+        case left1: Type[Obj] => bindLeftValuesToRightVariables(left1, x._2.asInstanceOf[Type[Obj]])
+        case _ => List(x)
+      }
+    })
+    .map(x => (x._1, x._2.asInstanceOf[Type[Obj]]))
+}*/

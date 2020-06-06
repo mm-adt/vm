@@ -43,12 +43,13 @@ trait Type[+T <: Obj] extends Obj
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
+    case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
     case atype: Type[_] =>
       (name.equals(atype.name) || atype.name.equals(Tokens.obj) || this.name.equals(Tokens.anon) || atype.name.equals(Tokens.anon)) &&
         withinQ(this, atype) &&
         this.trace.length == atype.trace.length &&
         this.trace.map(_._2).zip(atype.trace.map(_._2)).
-          forall(insts => insts._1.op.equals(insts._2.op) && insts._1.args.zip(insts._2.args).forall(a => Obj.copyDefinitions(this, a._1).test(Inst.resolveToken(this, a._2))))
+          forall(insts => insts._1.op.equals(insts._2.op) && insts._1.args.zip(insts._2.args).forall(a => Obj.copyDefinitions(this, a._1).test(a._2)))
     case _ => false
   }
   // standard Java implementations
@@ -62,5 +63,5 @@ trait Type[+T <: Obj] extends Obj
 }
 
 object Type {
-  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (atype.isInstanceOf[__] || obj.range.hardQ(qOne).test(atype.domain.hardQ(qOne)))
+  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (atype.name.equals(Tokens.anon) || obj.range.hardQ(qOne).test(atype.domain.hardQ(qOne)))
 }

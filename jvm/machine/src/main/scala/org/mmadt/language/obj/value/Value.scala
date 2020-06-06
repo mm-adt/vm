@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.TypeOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageFactory, Tokens}
@@ -38,7 +38,8 @@ trait Value[+V <: Obj] extends Obj
 
 
   override def test(other: Obj): Boolean = other match {
-    case aobj: Obj if (!aobj.alive) => !this.alive
+    case aobj: Obj if !aobj.alive => !this.alive
+    case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case avalue: Value[_] if this.name.equals(avalue.name) =>
       withinQ(this, avalue) && this.g.equals(avalue.g)
