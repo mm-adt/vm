@@ -38,7 +38,7 @@ trait Lst[A <: Obj] extends Poly[A]
     case alst: Lst[_] => // Poly.sameSep(this, alst) &&
       withinQ(this, alst) &&
         (this.glist.length == alst.glist.length || alst.glist.isEmpty) && // TODO: should lists only check up to their length
-        this.glist.zip(alst.glist).forall(b => Obj.copyDefinitions(this, b._1).test(b._2))
+        this.glist.zip(alst.glist).forall(b => Obj.copyDefinitions(this, b._1).test(Inst.resolveToken(this, b._2)))
     case _ => false
   }
 

@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
-import org.mmadt.language.obj.op.trace.{AsOp, DefineOp, FromOp, ToOp, TraceOp}
+import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -177,9 +177,9 @@ object Obj {
   def fetchOption[A <: Obj](obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => None
-      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => obj match{
-        case _:Value[Obj] => Some(x.via._1.asInstanceOf[A])
-        case _ => Some(new __(name=label).clone(via=x.via).asInstanceOf[A])
+      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => obj match {
+        case _: Value[Obj] => Some(x.via._1.asInstanceOf[A])
+        case _ => Some(new __(name = label).clone(via = x.via).asInstanceOf[A])
       }
       case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some(x.via._2.arg1[A])
       case x => fetchOption(x.via._1, label)
