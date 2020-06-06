@@ -49,10 +49,11 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
       case _ =>
         this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (
           this.op,
-          this.args.map(arg => {
-            val temp = Inst.resolveArg(start, arg)
-            if (arg.isInstanceOf[__] && Tokens.named(arg.name)) temp.named(arg.name) else temp
-          }))).via(this, IdOp()))
+          this.args.map(arg =>
+            if (__.isToken(arg))
+              Inst.resolveToken(start, arg).named(arg.name)
+            else
+              Inst.resolveArg(start, arg)))).via(this, IdOp()))
     }
   }
 }

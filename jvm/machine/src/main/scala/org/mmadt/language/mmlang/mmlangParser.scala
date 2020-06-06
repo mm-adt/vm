@@ -127,7 +127,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
     case None ~ domain ~ insts => insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
   }
 
-  lazy val anonTypeSugar: Parser[__] = rep1[List[Inst[Obj, Obj]]](inst) ^^ (x => __(x.flatten))
+  lazy val anonTypeSugar: Parser[__] = rep1[List[Inst[Obj, Obj]]](inst) ^^ (x => x.flatten.foldLeft(new __())((a, b) => a.via(a, b)))
   lazy val instOp: String = Tokens.reserved.foldRight(EMPTY)((a, b) => b + PIPE + a).drop(1)
 
   // value parsing

@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.{Inst, IntQ, OType, Obj, ViaTuple, _}
+import org.mmadt.language.obj.{Inst, IntQ, Obj, ViaTuple, _}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -36,7 +36,6 @@ import org.mmadt.storage.StorageFactory._
 class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple = base) extends Type[__] {
   override def clone(name: String = Tokens.anon, g: Any, q: IntQ = qOne, via: ViaTuple = base): this.type = new __(name, q, via).asInstanceOf[this.type]
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(via = (obj, inst))
-  def apply[T <: Obj](obj: Obj): OType[T] = this.trace.foldLeft[Obj](asType(obj))((a, i) => i._2.exec(a)).asInstanceOf[OType[T]]
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
   def neg(): this.type = this.via(this, NegOp())
@@ -64,6 +63,6 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
 }
 
 object __ extends __(Tokens.anon, qOne, base) {
-  def apply(insts: List[Inst[_, _]]): __ = insts.foldLeft(new __())((a, b) => a.via(a, b.asInstanceOf[Inst[Obj, Obj]]))
+  def isToken(obj: Obj): Boolean = obj.isInstanceOf[__] && Tokens.named(obj.name)
 }
 

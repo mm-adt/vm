@@ -586,17 +586,24 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse.q(3, 30))(engine.eval("true{3,30}[and,false][and,[or,bool]]"))
   }
 
-  /*  test("lst variables") {
-      assertResult(int(3))(engine.eval("1<x>[plus,1][plus,x]"))
-      assertResult(int(5, 23))(engine.eval("1-<([plus,1]<x>,[plus,10]<x>)>-[plus,1][plus,x]"))
-      assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(x[plus,2],x)>-"))
-      assertResult(int(3, 1))(engine.eval("1<x><y>[plus,2]-<(y[plus,2],x)>-"))
-      assertResult(int(3))(engine.eval("1<x>[plus,2]-<(x[plus,2]|x)>-"))
-      assertResult(zeroObj | int(3) | zeroObj)(engine.eval("1<x>[plus,2]-<(x[is>100]|x[plus,2]|x)"))
-      assertThrows[LanguageException] {
-        engine.eval("1[plus,1][plus,x]")
-      }
-    }*/
+  test("lst play") {
+    println(engine.eval("int<x>[plus,1][plus,x][trace]"))
+    println(engine.eval("1<x>[plus,1][plus,x][trace]"))
+    assertResult(int(3))(engine.eval("1<x>[plus,1][plus,x]"))
+  }
+
+  test("lst variables") {
+    assertResult(int(3))(engine.eval("1<x>[plus,1][plus,x]"))
+    assertResult(int(5, 23))(engine.eval("1-<([plus,1]<x>,[plus,10]<x>)>-[plus,1][plus,x]"))
+    assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(<.x>[plus,2],<.x>)>-"))
+    /*      assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(x[plus,2],x)>-"))
+          assertResult(int(3, 1))(engine.eval("1<x><y>[plus,2]-<(y[plus,2],x)>-"))
+          assertResult(int(3))(engine.eval("1<x>[plus,2]-<(x[plus,2]|x)>-"))
+          assertResult(zeroObj | int(3) | zeroObj)(engine.eval("1<x>[plus,2]-<(x[is>100]|x[plus,2]|x)"))
+          assertThrows[LanguageException] {
+            engine.eval("1[plus,1][plus,x]")
+          }*/
+  }
 
   test("lst values w/ [mult], [plus], and [zero]") {
     //assertResult(`;`)(engine.eval("()"))
