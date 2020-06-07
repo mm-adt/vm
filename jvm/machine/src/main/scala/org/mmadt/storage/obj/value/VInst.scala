@@ -51,7 +51,7 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
           this.op,
           this.args.map(arg =>
             if (__.isToken(arg))
-              Inst.resolveToken(start, arg).named(arg.name)
+              Inst.resolveToken(start, arg)
             else
               Inst.resolveArg(start, arg)))).via(this, IdOp()))
     }

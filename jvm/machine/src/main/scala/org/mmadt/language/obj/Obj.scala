@@ -179,7 +179,7 @@ object Obj {
       case x if x.root => None
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => obj match {
         case _: Value[Obj] => Some(x.via._1.asInstanceOf[A])
-        case _: Type[Obj] => Some(x.via._1.from(label).asInstanceOf[A])
+        case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
       case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some(x.via._2.arg1[A])
       case x => fetchOption(x.via._1, label)

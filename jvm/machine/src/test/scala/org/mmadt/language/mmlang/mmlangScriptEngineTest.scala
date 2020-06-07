@@ -883,4 +883,9 @@ class mmlangScriptEngineTest extends FunSuite {
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<('x' -> x?,'y' -> y?)"))
     println(engine.eval("1(-<(_,_))^(3)"))
   }
+
+  test("TO DO FIRST") {
+    println(engine.eval("1[define,'big',is>4][a,big]"))
+    println(engine.eval("int<x>[id]<y>[plus,2]<z>[plus,x][mult,z][mult,y[plus,6][plus,z]]"))
+  }
 }
