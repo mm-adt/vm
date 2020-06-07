@@ -88,7 +88,6 @@ package object op {
         inst.op.equals(Tokens.trace) ||
         inst.op.equals(Tokens.define) ||
         inst.op.equals(Tokens.as) ||
-        inst.op.equals(Tokens.noop) ||
-        inst.op.equals(Tokens.a)
+        inst.op.equals(Tokens.noop)
   }
 }

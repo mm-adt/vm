@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
@@ -39,7 +38,7 @@ trait AOp {
   def a(other: Obj): Bool = AOp(other).exec(this)
 }
 object AOp extends Func[Obj, Bool] {
-  def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this) with TraceInstruction
+  def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this) // with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     start match {
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))
@@ -50,7 +49,39 @@ object AOp extends Func[Obj, Bool] {
 }
 
 /////////////////////////////
-
+/*
+override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
+    val oldInst = Inst.oldInst(inst)
+    //val oldInst = Inst.oldInst(inst)
+    start match {
+      case astrm: Strm[_] => strm[Bool](astrm.values.map(x => oldInst.exec(x)))
+      case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))
+      case _: Value[_] =>
+        (oldInst.arg0[Obj] match {
+          case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => bool(start.test(inst.arg0[Obj]))
+          case x => bool(start.test(x))
+        }).via(start, oldInst)
+        (inst.arg0[Obj] match {
+          //case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => bool(start.test(inst.arg0[Obj]))
+          case x => bool(start.test(Inst.resolveToken(start, x)))
+        }).via(start, inst)
+      case _ =>
+        if (!Inst.resolveArg(start, oldInst.arg0[Obj]).alive)
+          bfalse.via(start, oldInst)
+        else
+          oldInst.arg0[Obj] match {
+            case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => bool.via(start, inst)
+            case _ => bool.via(start, oldInst)
+          }
+        if (!Inst.resolveArg(start, inst.arg0[Obj]).alive)
+           bfalse.via(start, inst)
+         else
+        inst.arg0[Obj] match {
+          //case atype: Type[Obj] if atype.trace.headOption.exists(_._2.op.equals(Tokens.from)) => bool.via(start, inst)
+          case _ => bool.via(start, inst)
+        }
+    }
+ */
 /*
  bindLeftValuesToRightVariables(atype, int.is(int.gt(int.to("x"))))
           .map(y => y._1.compute(y._2))

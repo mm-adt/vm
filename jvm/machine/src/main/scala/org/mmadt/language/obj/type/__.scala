@@ -55,11 +55,11 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
   def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
   //
-  override def equals(other: Any): Boolean = other match {
+ /* override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
-    case anon: __ => ((this.root && anon.root) || (this.via == anon.via))
+    case anon: __ => (this.name == anon.name) && this.via == anon.via))
     case _ => false
-  }
+  }*/
 }
 
 object __ extends __(Tokens.anon, qOne, base) {

@@ -25,7 +25,6 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.map.IdOp
 import org.mmadt.storage.StorageFactory._
@@ -43,19 +42,11 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
     else
       new VInst[S, E](name, g.asInstanceOf[LstTuple[Obj]], q, via, this.func)).asInstanceOf[this.type]
   }
-  override def exec(start: S): E = {
+  override def exec(start: S): E =
     this match {
       case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
-      case _ =>
-        this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (
-          this.op,
-          this.args.map(arg =>
-            if (__.isToken(arg))
-              Inst.resolveToken(start, arg)
-            else
-              Inst.resolveArg(start, arg)))).via(this, IdOp()))
+      case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp()))
     }
-  }
 }
 
 

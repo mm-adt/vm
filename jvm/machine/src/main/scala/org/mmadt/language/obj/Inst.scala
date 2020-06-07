@@ -25,7 +25,7 @@ package org.mmadt.language.obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -38,7 +38,7 @@ trait Inst[S <: Obj, +E <: Obj] extends Lst[Obj] {
   final def arg1[O <: Obj]: O = this.glist.tail.head.asInstanceOf[O]
   final def arg2[O <: Obj]: O = this.glist.tail.tail.head.asInstanceOf[O]
   final def arg3[O <: Obj]: O = this.glist.tail.tail.tail.head.asInstanceOf[O]
-  def exec(start: S): E;
+  def exec(start: S): E
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
@@ -52,8 +52,11 @@ trait Inst[S <: Obj, +E <: Obj] extends Lst[Obj] {
 object Inst {
   def oldInst[S <: Obj, E <: Obj](newInst: Inst[S, E]): Inst[S, E] = newInst.via._1.asInstanceOf[Inst[S, E]]
   def resolveToken[A <: Obj](obj: Obj, arg: A): A =
-    if (arg.isInstanceOf[__] && Tokens.named(arg.name))
-      Obj.fetchOption[A](obj, arg.name).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).getOrElse(arg) else arg
+    if (__.isToken(arg))
+      Obj.fetchOption[A](obj, arg.name).orElse[A](obj match {
+        case _: Type[Obj] => Some(__.from(arg.name).asInstanceOf[A])
+        case _ => throw LanguageException.labelNotFound(obj, arg.name)
+      }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     resolveToken(obj, arg) match {
       case lstArg: Lst[_] if !lstArg.isValue => (if (obj.test(lstArg)) lstArg else lstArg.q(qZero)).asInstanceOf[E] // TODO: compute lstArg?

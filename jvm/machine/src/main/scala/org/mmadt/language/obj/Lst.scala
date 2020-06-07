@@ -1,6 +1,6 @@
 package org.mmadt.language.obj
 
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
@@ -49,7 +49,7 @@ trait Lst[A <: Obj] extends Poly[A]
     case alst: Lst[_] =>
       Poly.sameSep(this, alst) && alst.name.equals(this.name) && eqQ(alst, this) &&
         ((this.isValue && this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))) ||
-          (this.glist == alst.glist && this.via == alst.via))
+          (this.glist.equals(alst.glist) && this.via.equals(alst.via)))
     case _ => false
   }
 }
@@ -69,7 +69,7 @@ object Lst {
         }
         local
       }))
-    } else apoly.clone(apoly.glist.map(slot => if(start.name == Tokens.anon) Inst.resolveToken(start, slot) else Inst.resolveArg(start, slot)))
+    } else apoly.clone(apoly.glist.map(slot => Inst.resolveArg(start, slot)))
 
   }
 }

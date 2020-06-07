@@ -45,7 +45,7 @@ trait Type[+T <: Obj] extends Obj
     case aobj: Obj if !aobj.alive => !this.alive
     case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
     case atype: Type[_] =>
-      (name.equals(atype.name) || atype.name.equals(Tokens.obj) || this.name.equals(Tokens.anon) || atype.name.equals(Tokens.anon)) &&
+      (name.equals(atype.name) || this.name.equals(Tokens.anon) || atype.name.equals(Tokens.anon)) &&
         withinQ(this, atype) &&
         this.trace.length == atype.trace.length &&
         this.trace.map(_._2).zip(atype.trace.map(_._2)).

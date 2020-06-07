@@ -139,9 +139,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(6))(engine.eval("(1 -> 2 , 3 -> 4,5 -> 6)[get,is>3]"))
     assertResult(int(2, 4, 6))(engine.eval("(1 -> 2 , 3 -> 4,5 -> 6)[get,is<100]"))
     assertResult(int(2, 4, 6))(engine.eval("(1 -> 2 , 3 -> 4,5 -> 6)[get,int]"))
-    /*  assertThrows[LanguageException] {
+    // assertThrows[LanguageException] {
     assertResult(zeroObj)(engine.eval("(1 -> 2 , 3 -> 4,5 -> 6)[get,str]"))
-        }*/
+    // }
   }
 
   test("poly get/put") {
@@ -198,7 +198,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(int(15).q(48))(engine.eval("5{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
-    assertResult(__.plus(2).q(2).mult(3).q(32).plus(4))(engine.eval("[plus,2]{2}[mult,3]{32}[plus,4]"))
+    // assertResult(__.q(64) <= __.plus(2).q(2).mult(3).q(32).plus(4))(engine.eval("[plus,2]{2}[mult,3]{32}[plus,4]"))
   }
 
   test("refinement type parsing") {
@@ -427,12 +427,15 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.to("a").plus(int(10)).to("b").mult(int(20)))(engine.eval("int<a>[plus,10]<b>[mult,20]"))
     assertResult(int.to("a").plus(int(10)).to("b").mult(int.from("a")))(engine.eval("int<a>[plus,10]<b>[mult,<.a>]"))
     assertResult(int.to("a").plus(int(10)).to("b").mult(int.from("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<.a>]"))
-    //assertResult(int.to("x").plus(int(10)).to("y").mult(int.from("x")))(engine.eval("int<x>[plus,10]<y>[mult,x]"))
-    //    assertResult(int(500))(engine.eval("19[plus,1]<x>[plus,10][mult,x]"))
+    assertResult(int.to("x").plus(int(10)).to("y").mult(int.from("x")))(engine.eval("int<x>[plus,10]<y>[mult,x]"))
+    assertResult(int(600))(engine.eval("19[plus,1]<x>[plus,10][mult,x]"))
     assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,<.x>]"))
     assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<.x>]"))
     assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,int<.y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<.x>[plus,<.y>]]").toString)
     assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,<.y>]]"))
+    assertThrows[LanguageException] {
+      engine.eval("50[is>dog]")
+    }
   }
 
   test("infix operator instruction parsing") {
@@ -600,7 +603,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(x[plus,2],x)>-"))
     assertResult(int(3, 1))(engine.eval("1<x><y>[plus,2]-<(y[plus,2],x)>-"))
     assertResult(int(3))(engine.eval("1<x>[plus,2]-<(x[plus,2]|x)>-"))
-    //assertResult(zeroObj | int(3) | zeroObj)(engine.eval("1<x>[plus,2]-<(x[is>100]|x[plus,2]|x)"))
+    assertResult(zeroObj | int(3) | zeroObj)(engine.eval("1<x>[plus,2]-<(x[is>100]|x[plus,2]|x)"))
     assertThrows[LanguageException] {
       engine.eval("1[plus,1][plus,x]")
     }
@@ -713,7 +716,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("[type] instruction parsing") {
     assertResult("bool<=int[plus,1][mult,5][gt,int[mult,int]]")(engine.eval("5[plus,1][mult,5][gt,int[mult,int]][type]").toString)
     assertResult("int{?}<=int[is,bool<=int[lt,10]]")(engine.eval("5[is<10][type]").toString)
-    //assertResult("int{0,3}<=int[is,bool<=int[lt,10]]")(engine.eval("[start,5,6,7][is<10][type]").toString) // TODO: why the dangling quantifier
+    // assertResult("int{0,3}<=int[is,bool<=int[lt,10]]")(engine.eval("[start,5,6,7][is<10][type]").toString) // TODO: why the dangling quantifier
   }
 
   test("ring axioms") {
@@ -781,16 +784,16 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(120))(engine.eval("10[define,'big',int[plus,100]][plus,0][plus,big]"))
     assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,'person',('name'->str,'age'->int)][a,person]"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,'person',('name'->str,'age'->int)][a,person]{100}"))
-    //    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,'person',('name'->str,'age'->int)][a,person]{100}"))
+    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,'person',('name'->str,'age'->int)][a,person]{100}"))
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,'person',('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,'years',int][define,'person',('name'->str,'age'->years)][is,[a,person]]{350}"))
-    /*    assertResult(str("old guy"))(engine.eval(
-          """ ('name'->'marko','age'->29)
-            | [define,'person',('name'->str,'age'->int)]
-            | [define,'old',>20]
-            | [define,'young',<20]
-            | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
-       */ assertResult(str("young guy"))(engine.eval(
+    assertResult(str("old guy"))(engine.eval(
+      """ ('name'->'marko','age'->29)
+        | [define,'person',('name'->str,'age'->int)]
+        | [define,'old',>20]
+        | [define,'young',<20]
+        | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
+    assertResult(str("young guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
         | [define,'person',rec('name'->str,'age'->int)[is,.age>0]]
         | [define,'old',[is>20]]
@@ -803,13 +806,12 @@ class mmlangScriptEngineTest extends FunSuite {
         | [define,'z',int[is==[zero]]]
         | [define,'o',int[is==[one]]]
         |   -<([a,nat],[a,z],[a,o])""".stripMargin))
-    /*  assertResult("(bool<=int[a,int{?}<=int[is,bool<=int[gt,0]]],bool<=int[a,int{?}<=int[is,bool<=int[eq,0]]],bool<=int[a,int{?}<=int[is,bool<=int[eq,1]]])")(engine.eval(
-        """ int
-          | [define,'nat',int[is>0]]
-          | [define,'z',[is==[zero]]]
-          | [define,'o',[is==[one]]]
-          |   -<([a,nat],[a,z],[a,o])""".stripMargin).range.toString)
-     */
+    assertResult("(bool<=int[a,int{?}<=int[is,bool<=int[gt,0]]],bool<=int[a,int{?}<=int[is,bool<=int[eq,0]]],bool<=int[a,int{?}<=int[is,bool<=int[eq,1]]])")(engine.eval(
+      """ int
+        | [define,'nat',int[is>0]]
+        | [define,'z',[is==[zero]]]
+        | [define,'o',[is==[one]]]
+        |   -<([a,nat],[a,z],[a,o])""".stripMargin).range.toString)
     assertResult(int(11))(engine.eval(
       """ 10
         | [define,'z',0]
@@ -860,20 +862,11 @@ class mmlangScriptEngineTest extends FunSuite {
     }
   }
 
-  test("play2") {
-    assertResult(btrue `,` bfalse `,` btrue)(engine.eval(
-      """ 1
-        | [define,'nat',int[is>0]]
-        | [define,'z',int[is==[zero]]]
-        | [define,'o',int[is==[one]]]
-        |   -<([a,nat],[a,z],[a,o])""".stripMargin))
-  }
-
   test("play") {
     println(engine.eval("10[define,'big',int[plus,100]]<.big>+10"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))
-    //    println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
+    println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
     //println(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
     println(engine.eval("(1,(2,3))=(_,=(<y>,[id]))>-"))
     println(engine.eval("[1,2,(3,)](-<(_,))^([a,(((int,),),)][neg])"))
@@ -882,10 +875,5 @@ class mmlangScriptEngineTest extends FunSuite {
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?[map,'x:']+x[as,str]|y?[map,'y:']+y[as,str])"))
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<('x' -> x?,'y' -> y?)"))
     println(engine.eval("1(-<(_,_))^(3)"))
-  }
-
-  test("TO DO FIRST") {
-    println(engine.eval("1[define,'big',is>4][a,big]"))
-    println(engine.eval("int<x>[id]<y>[plus,2]<z>[plus,x][mult,z][mult,y[plus,6][plus,z]]"))
   }
 }
