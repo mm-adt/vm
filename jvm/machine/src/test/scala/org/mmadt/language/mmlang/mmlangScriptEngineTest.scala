@@ -610,16 +610,17 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("lst values w/ [mult], [plus], and [zero]") {
-    //assertResult(`;`)(engine.eval("()"))
+    assertResult(`;`)(engine.eval("()"))
     assertResult(`,`)(engine.eval("()"))
-    //assertResult(`|`)(engine.eval("()"))
+    assertResult(`|`)(engine.eval("()"))
     //assertResult(int(1) `;`)(engine.eval("(1)"))
     assertResult(int(1) `,`)(engine.eval("(1)"))
     //assertResult(int(1) `|`)(engine.eval("(1)"))
     assertResult("('a';'a')")(engine.eval("'a'-<(_;_)").toString)
     assertResult("('b','a')")(engine.eval("('a';'b')-<(.1,.0)").toString)
     //assertResult("('aZ';'bz')")(engine.eval("('a';'b')<w>-<(.1+'z'<x>;<.w>.0+'Z'<y>)>--<(y;x)").toString) // TODO
-    //assertResult(zeroObj |)(engine.eval("[|]")) // TODO: this might be bad
+    assertResult(zeroObj |)(engine.eval("(|)")) // TODO: this might be bad
+    assertResult(zeroObj | zeroObj)(engine.eval("(|)"))
     assertResult("a" | "b" | zeroObj)(engine.eval("('a'|'b'|)"))
     assertResult("a" | zeroObj | zeroObj)(engine.eval("('a'||)"))
     assertResult(zeroObj | "b" | zeroObj)(engine.eval("(|'b'|)"))
@@ -669,7 +670,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str)(engine.eval("str[str|str|str]").domain)
     assertResult(str | str | str)(engine.eval("str-<(str|str|str)").range)
     assertResult(str | str | str)(engine.eval("str-<(_|_|_)").range)
-    //assertResult(str.q(2, 7))(engine.eval("str(str{2}|str{5}|str{3,7})").range)
+    // assertResult(str.q(2, 7))(engine.eval("str[str{2}|str{5}|str{3,7}]").range)
     assertResult(str.q(2, 7))(engine.eval("str-<(str[id]{2}|str[id]{5}|str[id]{3,7})>-").range)
     assertResult(str)(engine.eval("str-<(str[id]{2}|str[id]{5}|str[id]{3,7})>-").domain)
   }
