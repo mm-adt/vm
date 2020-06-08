@@ -43,9 +43,8 @@ trait Type[+T <: Obj] extends Obj
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
-    case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
     case atype: Type[_] =>
-      (name.equals(atype.name) || this.name.equals(Tokens.anon) || atype.name.equals(Tokens.anon)) &&
+      (name.equals(atype.name) || __.isAnon(this) || __.isAnon(atype)) &&
         withinQ(this, atype) &&
         this.trace.length == atype.trace.length &&
         this.trace.map(_._2).zip(atype.trace.map(_._2)).
@@ -63,5 +62,5 @@ trait Type[+T <: Obj] extends Obj
 }
 
 object Type {
-  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (atype.name.equals(Tokens.anon) || obj.range.hardQ(qOne).test(atype.domain.hardQ(qOne)))
+  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (__.isAnon(atype) || obj.range.hardQ(qOne).test(atype.domain.hardQ(qOne)))
 }

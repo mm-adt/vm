@@ -25,10 +25,10 @@ package org.mmadt.language.obj.op.trace
 import java.util
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{BranchInstruction, TraceInstruction}
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Lst, Obj, Poly, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -45,26 +45,27 @@ trait ExplainOp {
 object ExplainOp {
   def apply(): ExplainInst = new ExplainInst
 
-  class ExplainInst extends VInst[Obj, Str](g=(Tokens.explain, Nil)) with TraceInstruction {
+  class ExplainInst extends VInst[Obj, Str](g = (Tokens.explain, Nil)) with TraceInstruction {
     override def exec(start: Obj): Str = str(ExplainOp.printableTable(asType(start))).start()
   }
 
-  private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj],String)
-  private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0,prefix:String=""): List[Row] = {
+  private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj], String)
+  private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0, prefix: String = ""): List[Row] = {
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {
       if (b._2.isInstanceOf[TraceInstruction] && b._2.op != Tokens.a) state += b._2.arg0[StrValue].g -> (if (b._2.op == Tokens.define) (b._2.arg1[Obj]) else (b._2.exec(b._1).range))
-      val temp = if (b._2.isInstanceOf[TraceInstruction]) a else a :+ (depth, b._2, lastRange(b._1.asInstanceOf[Type[Obj]]), b._2.exec(b._1).asInstanceOf[Type[Obj]].range, mutable.LinkedHashMap(state.toSeq: _*),prefix)
+      val temp = if (b._2.isInstanceOf[TraceInstruction]) a else a :+ (depth, b._2, lastRange(b._1.asInstanceOf[Type[Obj]]), b._2.exec(b._1).asInstanceOf[Type[Obj]].range, mutable.LinkedHashMap(state.toSeq: _*), prefix)
       val inner = b._2.args.foldLeft(List[Row]())((x, y) => x ++ (y match {
-        case branches: Rec[Obj,Obj] if b._2.op.equals(Tokens.split) => branches.gmap.flatMap { a => {
+        case branches: Rec[Obj, Obj] if b._2.op.equals(Tokens.split) => branches.gmap.flatMap { a => {
           List(explain(a._1 match {
             case btype: Type[_] => btype
             case bvalue: Value[_] => bvalue.start()
-          },mutable.LinkedHashMap(state.toSeq: _*), depth + 1),
-          explain(a._2 match {
-            case btype: Type[_] => btype
-            case bvalue: Value[_] => bvalue.start()
-          },mutable.LinkedHashMap(state.toSeq: _*), depth + 1,"->"))
-        }}.flatten
+          }, mutable.LinkedHashMap(state.toSeq: _*), depth + 1),
+            explain(a._2 match {
+              case btype: Type[_] => btype
+              case bvalue: Value[_] => bvalue.start()
+            }, mutable.LinkedHashMap(state.toSeq: _*), depth + 1, "->"))
+        }
+        }.flatten
         case branches: Lst[_] if b._2.isInstanceOf[BranchInstruction] => branches.glist.map {
           case btype: Type[_] => btype
           case bvalue: Value[_] => bvalue.start()
@@ -97,16 +98,16 @@ object ExplainOp {
       .append("state").append("\n")
     builder.append(stolenRepeat("-", builder.length)).append("\n")
     report.foldLeft(builder)((a, b) => a
-      .append(stolenRepeat(" ", b._1)).append(b._6)
-      .append(objStringClip(b._2)).append(stolenRepeat(" ", Math.abs(c1 - (objStringClip(b._2).length))))
-      .append(objStringClip(b._3)).append(stolenRepeat(" ", Math.abs(c2 - (objStringClip(b._3).length) - (b._1))))
-      .append("=>").append(stolenRepeat(" ", 3)).append(stolenRepeat(" ", b._1))
-      .append(objStringClip(b._4)).append(stolenRepeat(" ", Math.abs(c3 - (objStringClip(b._4).length) - (b._1))))
-      .append(b._5.foldLeft("")((x, y) => x + (y._1 + "->" + y._2 + " "))).append("\n"))
+      .append(stolenRepeat(Tokens.space, b._1.g.intValue())).append(b._6)
+      .append(objStringClip(b._2)).append(stolenRepeat(Tokens.space, Math.abs(c1 - objStringClip(b._2).length)))
+      .append(objStringClip(b._3)).append(stolenRepeat(Tokens.space, Math.abs(c2 - objStringClip(b._3).length - b._1.g.intValue())))
+      .append(Tokens.:=>).append(stolenRepeat(" ", 3)).append(stolenRepeat(Tokens.space, b._1.g.intValue()))
+      .append(objStringClip(b._4)).append(stolenRepeat(Tokens.space, Math.abs(c3 - objStringClip(b._4).length - b._1.g.intValue())))
+      .append(b._5.foldLeft("")((x, y) => x + (y._1 + Tokens.-> + y._2 + " "))).append("\n"))
     "\n" + atype.toString + "\n\n" + builder.toString()
   }
   // stolen from Scala distribution as this method doesn't exist in some distributions of Scala
-  private def stolenRepeat(string: String, count: Int): String = {
+  private def stolenRepeat(string: String, count: scala.Int): String = {
     if (count < 0) throw new IllegalArgumentException("count is negative: " + count)
     if (count == 1) return string
     val len = string.length
@@ -116,14 +117,13 @@ object ExplainOp {
       util.Arrays.fill(single, string.charAt(0).asInstanceOf[Byte])
       return new String(single)
     }
-    if (Integer.MAX_VALUE / count < len) throw new OutOfMemoryError("Repeating " + len + " bytes String " + count + " times will produce a String exceeding maximum size.")
+    if (Integer.MAX_VALUE / count < len)
+      throw new OutOfMemoryError("Repeating " + len + " bytes String " + count + " times will produce a String exceeding maximum size.")
     val limit = len * count
     val multiple = new Array[Byte](limit)
     System.arraycopy(string.getBytes, 0, multiple, 0, len)
     var copied = len
-    while ( {
-      copied < limit - copied
-    }) {
+    while (copied < (limit - copied)) {
       System.arraycopy(multiple, 0, multiple, copied, copied)
       copied <<= 1
     }

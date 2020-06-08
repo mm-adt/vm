@@ -51,7 +51,7 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def clone(values: collection.Map[A, B]): this.type = this.clone(g = (gsep, values))
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
-    case anon: __ => Inst.resolveArg(this, anon).alive
+    //case anon: __ => Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
       withinQ(this, arec) &&
