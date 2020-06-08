@@ -46,7 +46,7 @@ object AOp extends Func[Obj, Bool] {
     start match {
       case _: __ => bool.via(start, inst)
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))
-      case apoly: Poly[_] => bool(start.test(resolved)).via(start, inst)
+      case _: Poly[_] => bool(start.test(resolved)).via(start, inst)
       case _: Type[_] => bool.via(start, if (eqQ(start, inst.arg0[Obj])) AOp(resolved) else inst) // streams vs. iterations (this is a crappy problem)
       case _: Value[_] => bool(start.test(inst.arg0[Obj])).via(start, inst)
     }
