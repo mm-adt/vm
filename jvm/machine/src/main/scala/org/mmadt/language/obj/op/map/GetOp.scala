@@ -45,7 +45,7 @@ object GetOp extends Func[Obj, Obj] {
     val key: Obj = inst.arg0[Obj]
     (start match {
       case astrm: Strm[_] => return astrm.via(start, inst)
-      case anon: __ => anon
+      case anon: __ => anon.via(start, inst)
       case arec: Rec[Obj, Obj] =>
         val results = arec.gmap
           .filter(a => key.test(a._1) || a._1.test(Inst.oldInst(inst).arg0[Obj]))
@@ -62,7 +62,14 @@ object GetOp extends Func[Obj, Obj] {
           alst.glist(aint.g.toInt)
         case _ => obj
       }
-      case _ => key // TODO: weird
+      case _ => asType(key) // TODO: weird
     }).via(start, inst)
   }
 }
+
+/*
+if(results.exists(x => x.isInstanceOf[Type[_]])) {
+  return asType(results.head).via(start,inst)
+} else
+  results
+ */

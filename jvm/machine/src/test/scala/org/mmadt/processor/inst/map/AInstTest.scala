@@ -24,6 +24,8 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{ObjType, __}
+import org.mmadt.language.obj.op.map.AOp
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{ObjValue, StrValue}
 import org.mmadt.language.obj.{Bool, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
@@ -110,18 +112,13 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("a"), str, btrue),
         (str("a"), rec, bfalse),
         (str, str("a"), str.a(str("a"))),
+        (str.plus("a"), str("a"), str.plus("a").a(str("a"))),
         // rec
         (marko, marko, btrue),
         (marko, vadas, bfalse),
         (vadas, marko, bfalse),
         (marko, person, btrue),
         (vadas, person, btrue),
-        //(marko, person.is(person.get("age", int).lt(0)), bfalse),
-        // (marko, person.is(person.get("age", int).gt(27)), btrue),
-        //(vadas, person.is(person.get("age", int).gt(27)), bfalse),
-        // (marko, person.is(__.get("age", int).lt(0)), bfalse),
-        (marko, person.is(__.get("age", int).gt(27)), btrue),
-        //(vadas, person.is(__.get("age", int).gt(27)), bfalse),
         (marko, bool, bfalse),
         (marko, int, bfalse),
         (marko, real, bfalse),
@@ -130,13 +127,17 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (person, marko, person.a(marko)),
       )
     forEvery(check) { (left, right, result) => {
-      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
-      // assertResult(result)(left.compute(asType(__.a(right))))
-      //assertResult(result)(left.a(right))
-      //assertResult(result)(AOp(right).exec(left))
-      // assertResult(result)(left ===> left.range.a(right))
-      //assertResult(result)(left ===> (left.range ===> left.range.a(right)))
+      if (!left.isInstanceOf[Strm[_]])
+        assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
+      //else
+      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${left})[a,${right}]"))
+      assertResult(result)(left.compute(asType(__.a(right))))
+      assertResult(result)(left.a(right))
+      assertResult(result)(AOp(right).exec(left))
+      assertResult(result)(left ===> left.range.a(right))
+      assertResult(result)(left ===> (left.range ===> left.range.a(right)))
     }
+
     }
   }
 
@@ -157,5 +158,15 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
       assertResult(length)(expr.trace.length)
     }
     }
+  }
+
+  test("[a] play tests") {
+    //println(marko.get("age",int).lt(0))
+    //println((int.plus(3) ===> int.a(int)))//.compute(asType(__.a(int))))
+    assertResult(btrue)(btrue.compute(asType(__.a(btrue))))
+    assertResult(btrue)(btrue.a(btrue))
+    assertResult(bfalse)(btrue.a(bfalse))
+    assertResult(bfalse)(btrue.a(btrue.q(19)))
+    assertResult(bfalse.q(10))(btrue.q(10).a(btrue.q(19)))
   }
 }
