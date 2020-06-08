@@ -67,7 +67,7 @@ object OpInstResolver {
       //
       case Tokens.noop => NoOp()
       case Tokens.a | Tokens.a_op => AOp(args.head)
-      case Tokens.as => AsOp(args.head)
+      case Tokens.as | Tokens.as_op => AsOp(args.head)
       case Tokens.and | Tokens.and_op => AndOp(args.head)
       case Tokens.or | Tokens.or_op => OrOp(args.head)
       case Tokens.plus | Tokens.plus_op | Tokens.sum_op => PlusOp(args.head)

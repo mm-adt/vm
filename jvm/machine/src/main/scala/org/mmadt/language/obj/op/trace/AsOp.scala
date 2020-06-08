@@ -39,6 +39,7 @@ import org.mmadt.storage.obj.value.VInst
 trait AsOp {
   this: Obj =>
   def as[O <: Obj](obj: O): O = AsOp(obj).exec(this).asInstanceOf[O]
+  def ~[O <: Obj](obj: O): O = this.as(obj)
 }
 
 object AsOp extends Func[Obj, Obj] {
@@ -56,6 +57,7 @@ object AsOp extends Func[Obj, Obj] {
         case areal: Real => realConverter(areal, toObj)
         case astr: Str => strConverter(astr, toObj)
         case alst: Lst[Obj] => lstConverter(alst, toObj)
+        case arec: Rec[Obj, Obj] => recConverter(arec, toObj)
       }
     }.via(start, inst)
 
@@ -121,8 +123,23 @@ object AsOp extends Func[Obj, Obj] {
     y.domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case alst: Lst[Obj] => lst[Obj](sep = alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2)):_*)
+      case alst: Lst[Obj] => lst[Obj](sep = alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2)): _*)
       case _ => throw LanguageException.typingError(x, asType(y))
-    }//, y)
+    } //, y)
+  }
+
+  private def recConverter(x: Rec[Obj, Obj], y: Obj): Obj = {
+    // if (x.isType) return y
+    //Inst.resolveArg(
+    y.domain match {
+      case _: __ => x
+      case astr: StrType => vstr(name = astr.name, g = x.toString)
+      case arec: Rec[Obj, Obj] => rec(sep = arec.gsep, map =
+        x.gmap
+          .flatMap(a => arec.gmap
+            .filter(q => a._1.test(q._1))
+            .map(q => (a._1.as(q._1), a._2.as(q._2)))).toMap[Obj, Obj])
+      case _ => throw LanguageException.typingError(x, asType(y))
+    } //, y)
   }
 }
