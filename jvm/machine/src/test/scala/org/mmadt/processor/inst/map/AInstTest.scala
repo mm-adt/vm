@@ -37,6 +37,8 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
   val marko: Rec[StrValue, ObjValue] = rec(str("name") -> str("marko"), str("age") -> int(29))
   val vadas: Rec[StrValue, ObjValue] = rec(str("name") -> str("vadas"), str("age") -> int(27))
   val person: Rec[StrValue, ObjType] = rec(str("name") -> str, str("age") -> int)
+  val oldPerson: Rec[StrValue, ObjType] = rec(str("name") -> str, str("age") -> int.is(int.gt(28)))
+  val youngPerson: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> __.is(__.lt(28)))
   val car: Rec[StrValue, ObjType] = rec(str("name") -> str, str("year") -> int)
 
   test("[a] w/ values") {
@@ -88,6 +90,8 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2, 3), int.is(int.gt(2)), bool(false, false, true)),
         (int(int(1).q(10), int(2).q(20), int(3).q(30)), int.q(*).is(__.gt(2)), bool(bfalse.q(10), bfalse.q(20), btrue.q(30))),
         (int(1, 2, 3), real, bool(false, false, false)),
+        (int(0), __.plus(10).is(__.gt(10)), bfalse),
+        (int(1), __.plus(10).is(__.gt(10)), btrue),
         // real
         (real(20.0), real(20.0), btrue),
         (real(20.0), real(30.0), bfalse),
@@ -109,6 +113,8 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("a"), bool, bfalse),
         (str("a"), int, bfalse),
         (str("a"), real, bfalse),
+        (str("a"), __.gt(str("b")), bfalse),
+        // (str("a"), str.lt(str("b")), btrue),
         (str("a"), str, btrue),
         (str("a"), rec, bfalse),
         (str, str("a"), str.a(str("a"))),
@@ -119,11 +125,28 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (vadas, marko, bfalse),
         (marko, person, btrue),
         (vadas, person, btrue),
+        (marko, oldPerson, btrue),
+        (marko, youngPerson, bfalse),
+        (marko, youngPerson.put("age",int), btrue),
+        (vadas, oldPerson, bfalse),
+        (vadas, oldPerson.put("age",int.is(int.gt(10))), btrue),
+        (vadas, youngPerson, btrue),
+        (youngPerson, vadas, bfalse),
+        (oldPerson, vadas, bfalse),
+        (youngPerson, marko, bfalse),
+        (oldPerson, vadas, bfalse),
+        (marko, car, bfalse),
+        (vadas, car, bfalse),
+        (person, car, bfalse),
+        (person, person, btrue),
+        (person,oldPerson,bfalse),
+        //(oldPerson,person,btrue),
+        (car, car, btrue),
         (marko, bool, bfalse),
         (marko, int, bfalse),
         (marko, real, bfalse),
         (marko, str, bfalse),
-        (marko, rec, true),
+        (marko, rec, btrue),
         (person, marko, person.a(marko)),
       )
     forEvery(check) { (left, right, result) => {
