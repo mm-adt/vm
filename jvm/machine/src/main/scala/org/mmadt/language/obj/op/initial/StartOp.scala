@@ -23,9 +23,9 @@
 package org.mmadt.language.obj.op.initial
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.op.InitialInstruction
-import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -36,13 +36,7 @@ trait StartOp {
   this: Obj =>
   def start[O <: Obj](): O = StartOp(this).exec(zeroObj).asInstanceOf[O]
 }
-
-object StartOp {
-  def apply[O <: Obj](starts: O): Inst[Obj, O] = new StartInst(starts)
-
-  class StartInst[O <: Obj](starts: O, q: IntQ = qOne) extends VInst[Obj, O](g=(Tokens.start, List(starts)), q=q) with InitialInstruction {
-    override def q(quantifier: IntQ): this.type = new StartInst[O](starts, quantifier).asInstanceOf[this.type]
-    override def exec(start: Obj): O = starts
-  }
-
+object StartOp extends Func[Obj, Obj] {
+  def apply[O <: Obj](starts: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.start, List(starts)), func = this) with TraceInstruction
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Obj.copyDefinitions(start, inst.arg0[Obj])
 }

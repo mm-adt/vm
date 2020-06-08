@@ -108,7 +108,7 @@ object OpInstResolver {
       case Tokens.q => QOp()
       case Tokens.zero => ZeroOp()
       case Tokens.one => OneOp()
-      case Tokens.start => StartOp(if (args.head.isInstanceOf[Value[_]]) strm(args) else args.head)
+      case Tokens.start => StartOp(args.head)
       //////////////////////////////////////////////////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////////////////////////////
       case _ => service(op, args) match {

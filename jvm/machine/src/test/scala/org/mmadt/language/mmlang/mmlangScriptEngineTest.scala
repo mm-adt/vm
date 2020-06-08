@@ -245,13 +245,15 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("start instruction initial") {
-    assertResult(int(1, 2, 3))(engine.eval("[start,1,2,3]"))
+    //assertResult(int(1, 2, 3))(engine.eval("[start,[1,2,3]]"))
     assertResult(int)(engine.eval("[start,int]"))
     assertResult(int)(engine.eval("int{20}[start,int]"))
     //assertResult(int)(engine.eval("2[start,int]"))
     //assertResult(str.plus("a"))(engine.eval("2[start,str[plus,'a']]"))
     //assertResult(int)(engine.eval("'a'{4}[start,int]"))
     assertResult(str.plus("a"))(engine.eval("obj{0}[start,str[plus,'a']]"))
+   assertResult(int(1)`,`2`,`3)(engine.eval("[start,(1,2,3)]"))
+
   }
 
   test("a instruction parsing") {
