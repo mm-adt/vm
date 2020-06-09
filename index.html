@@ -481,7 +481,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_type_quantification">Type Quantification</a></li>
 </ul>
 </li>
-<li><a href="#_type_compilation">Type Compilation</a></li>
+<li><a href="#_type_models">Type Models</a></li>
 <li><a href="#_mono_types">Mono Types</a>
 <ul class="sectlevel4">
 <li><a href="#_bool_type">Bool Type</a></li>
@@ -1027,9 +1027,9 @@ mmlang&gt; <span style="color:#00D">5</span> <span style="color:#369;font-weight
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Consequences of Type/Value Integration</caption>
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 71.4286%;">
+<col style="width: 11.7647%;">
+<col style="width: 11.7647%;">
+<col style="width: 76.4706%;">
 </colgroup>
 <thead>
 <tr>
@@ -1040,34 +1040,39 @@ mmlang&gt; <span style="color:#00D">5</span> <span style="color:#369;font-weight
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">values</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">quantifiers expand the cardinality of values and constrain the cardinality of types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quantifiers expand the cardinality of values and constrain the cardinality of types.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">variable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">types refer to a values across contexts and variables refer to values within contexts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a single <a href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> is used in compilation, optimization, and evaluation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">functions are (dependent) types with values generated at evaluation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">program</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a program is a "complicated" type.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">compilation</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">evaluation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">compilations are evaluations with types, where a compilation error is a "runtime compile-time" error.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AST</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a single <a href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> is used in compilation, optimization, and evaluation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compilations are type evaluations, where a compilation error is a "compilation runtime" error.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">state</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">trace</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">types and values both encode state information in their process traces.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">functions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">functions are (dependent) types with values generated at evaluation.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">programs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a program is a "complicated" type.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">classical</p></td>
@@ -1463,7 +1468,62 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 </div>
 </div>
 <div class="sect3">
-<h4 id="_type_compilation">Type Compilation</h4>
+<h4 id="_type_models">Type Models</h4>
+<div class="paragraph">
+<p>In mm-ADT, every type \$A\$ is a <a href="https://en.wikipedia.org/wiki/Topology"><em>topological space</em></a>, where the points of the space denote mm-ADT <code>objs</code> (either types or values). What makes \$A\$ a topology as opposed to just a set, is a set of relations linking the type&#8217;s <code>objs</code> by the semantics of the type. Every mm-ADT type can be defined by a directed labeled graph, where if \$x:A\$ and \$y:A\$ are two <code>objs</code> in \$A\$, then the path \$x \rightarrow_{A} y\$ is a continuous walk that starts at \$x\$ and ends at \$y\$ that satisfy the semantics of the type. For instance, the type</p>
+</div>
+<div class="paragraph text-center">
+<p><code>int[is,[eq,int]]</code></p>
+</div>
+<div class="paragraph">
+<p>creates a reflexive graph whose vertices are integers and edges are labeled <code>[is,[eq,int]]</code>. Next, there are many other types (and infinite amount in fact) that have a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphic</a> image in <code>int[is,[eq,int]]</code>. Such path-to-path mappings are also known as <a href="https://en.wikipedia.org/wiki/Functor">functors</a> because of the vertices and the edges (or morphisms) that connect them. A few such types are itemized below.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>int[plus,0]</code></p>
+</li>
+<li>
+<p><code>int[plus,1][plus,-1]</code></p>
+</li>
+<li>
+<p><code>int[plus,10][plus,-10]</code></p>
+</li>
+<li>
+<p>etc.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note a common pattern. The type <code>int[plus,x:int][plus,x:int[neg]]</code> captures an infinite number of more specific types that are homomorphic to <code>int[is,[eq,int]]</code>. This higher order type is denoted using mm-ADT <code>polys</code>.</p>
+</div>
+<div class="paragraph text-center">
+<p><code>(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])</code></p>
+</div>
+<div class="paragraph">
+<p>In essence, a new "ctype" is being defined. There is a mapping to <code>int[is,[eq,int]]</code> from any <code>int[plus,x:int][plus,x:int[neg]]</code>. Since there are no instructions to the right of the domain type, this is an identity function. There are no operations that need to take place to coerce the domain value to the range value and thus, defines are form of equality like <code>int&#8656;int</code> but between two different types.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [define,(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])&lt;=(<span style="color:#369;font-weight:bold">int</span>[plus,x:<span style="color:#369;font-weight:bold">int</span>][plus,x:<span style="color:#369;font-weight:bold">int</span>[neg]])]
+        [<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">10</span>][plus,-<span style="color:#00D">10</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Interestingly <code>int[is,[eq,int]]</code> has an image in the base ctype <code>int</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [define,<span style="color:#369;font-weight:bold">int</span>&lt;=(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])]
+        [define,(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])&lt;=(<span style="color:#369;font-weight:bold">int</span>[plus,x:<span style="color:#369;font-weight:bold">int</span>][plus,x:<span style="color:#369;font-weight:bold">int</span>[neg]])]
+        [<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">10</span>][plus,-<span style="color:#00D">10</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Thus, through type composition, there exists the type <code>int&#8656;(int[plus,x:int][plus,x:int[neg]])</code>. These types are the "labels" that decorate the edges of the <strong>type graph</strong>.</p>
+</div>
 <div class="exampleblock">
 <div class="title">Deep Dive 1. mm-ADT Types are Graphs and their Values Realize Paths</div>
 <div class="content">
