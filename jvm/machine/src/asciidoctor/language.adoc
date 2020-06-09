@@ -93,16 +93,17 @@ mmlang> 5 int{?}<=int[is,bool<=int[gt,0]]  <2>
 Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of the documentation.
 
 .Consequences of Type/Value Integration
-[cols="2,2,10"]
+[cols="2,2,13"]
 |===
 |structure A | structure B | unification
 
-|types       | values     | quantifiers expand the cardinality of values and constrain the cardinality of types
-|compilation | evaluation | compilations are evaluations with types, where a compilation error is a "runtime compile-time" error.
-|AST         | type       | a single https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] is used in compilation, optimization, and evaluation.
+|type        | value      | quantifiers expand the cardinality of values and constrain the cardinality of types.
+|type        | variable   | types refer to a values across contexts and variables refer to values within contexts.
+|type        | AST        | a single https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] is used in compilation, optimization, and evaluation.
+|type        | function   | functions are (dependent) types with values generated at evaluation.
+|type        | program    | a program is a "complicated" type.
+|compilation | evaluation | compilations are type evaluations, where a compilation error is a "compilation runtime" error.
 |state       | trace      | types and values both encode state information in their process traces.
-|functions   | types      | functions are (dependent) types with values generated at evaluation.
-|programs    | types      | a program is a "complicated" type.
 |classical   | quantum    | quantum computing is classical computing with a unitary matrix quantifier ring.
 |canonical   | atomics    | atomic values and canonical types are both "tokens" by which all constructions are built.
 |===
@@ -319,7 +320,52 @@ One quantifier serves an important role in mm-ADT as both the additive identity 
 
 NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}` or `{0}` (the *zero object*).
 
-==== Type Compilation
+==== Higher Order Types
+
+In mm-ADT, every type \$A\$ is a https://en.wikipedia.org/wiki/Space_(mathematics)[space], where the points of the space are mm-ADT `objs` (types and values). What makes \$A\$ a space as opposed to a structureless set, is the relations linking the `objs` of the type as dictated by semantics of the type. Every mm-ADT type is described by a directed labeled https://en.wikipedia.org/wiki/Multigraph[multigraph] called a *type graph*. If \$x:A\$ and \$y:A\$ are two `objs` in type \$A\$, then a https://en.wikipedia.org/wiki/Path_(topology)[path] \$x \rightarrow_{A} y\$ through the type graph denotes a continuous walk that starts at \$x\$ and ends at \$y\$ https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence[proving] that \$x\$ is \$A\$-equal to \$y\$. For instance, the type
+
+[.text-center]
+`int[is,[eq,int]]`
+
+describes a https://en.wikipedia.org/wiki/Reflexive_relation[reflexive graph] whose vertices are integers in `int` and whose edges are labeled `[is,[eq,int]]`. There are other mm-ADT types (an infinite amount in fact) that are related to `int[is,[eq,int]]` by a https://en.wikipedia.org/wiki/Graph_homomorphism[graph homomorphism] defined by another type. A few such types are itemized below.
+
+[source]
+----
+int[plus,0]
+int[mult,1]
+int[plus,1][plus,-1]
+int[plus,2][plus,-2]
+int[plus,3][plus,-3]
+...
+----
+
+Note a common pattern. The type `int[plus,x:int][plus,x:int[neg]]` captures an infinite number of more specific types that are homomorphic to `int[is,[eq,int]]`. https://en.wikipedia.org/wiki/Higher-order_function[Higher order type] are defined using mm-ADT `polys`.
+
+[.text-center]
+`(int[is,[eq,int]])\<=(int[plus,x:int][plus,x:int[neg]])`
+
+In category theory, a _type-to-type_ mapping that https://en.wikipedia.org/wiki/Morphism[preserves structure] is called a https://en.wikipedia.org/wiki/Functor[functor]. From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range `\<=`-relation within a higher-order https://en.wikipedia.org/wiki/Identity_function[identity type] with respective signature. The identity is apparent in that there are no instructions specified to coerce the `objs` of the domain to the `objs` of the range. This is analogous to `int\<=int`, save that equivalence is not predicated on equality nor https://en.wikipedia.org/wiki/Isomorphism[isomorphism], but on a https://en.wikipedia.org/wiki/Surjective_function[surjective] homomorphism. With this broader definition, a new `int` equivalence has been defined.
+
+[source]
+----
+mmlang> [define,(int[is,[eq,int]])<=(int[plus,x:int][plus,x:int[neg]])]
+        [int][plus,10][plus,-10]
+==>int[is,[eq,int]]
+----
+
+image::type-to-type-type.png[width=700,align=center]
+
+The type `int[is,[eq,int]]` has a https://en.wikipedia.org/wiki/Isomorphism[ismorphic] image in `int`, where the reflexive self-loop paths in `int[is,[eq,int]]` are contracted to 0-length paths. The isomorphism realizes `int` as a classic set without structure as the `int` type definition has no instructions.
+
+[source]
+----
+mmlang> [define,int<=(int[is,[eq,int]])]
+        [define,(int[is,[eq,int]])<=(int[plus,x:int][plus,x:int[neg]])]
+        [int][plus,10][plus,-10]
+==>int
+----
+
+The composition of two structure preserving type morphisms yields a new type--namely, `int\<=(int[plus,x:int][plus,x:int[neg]])`.
 
 .mm-ADT Types are Graphs and their Values Realize Paths
 ================================================================
@@ -348,46 +394,6 @@ b\{ 0\} & \text{otherwise.}
 
 An mm-ADT *type graph* denotes a type whose values are those `objs` that realize a path in that graph.
 ================================================================
-
-Every instruction is able to operate on both types and values.
-Instructions applied to types is program _compilation_ and instructions applied to values is program _evaluation_.
-
-[cols="10,10"]
-|===
-|mmlang Expression |Description
-
-a|
-[source]
-----
-mmlang> int[is,[gte,0]]
-==>int{?}<=int[is,bool<=int[gte,0]]
-----
-|A base type composed with an instruction/quantifier pair, where the quantifier is not displayed as it's the unit of the quantifier ring -- `{1}`. The result is a compiled type that maps a single integer to zero or one integers. If the internal `bool\<=int[gte,0]` type yields `true`, then an `int{1}`, else `int{0}`.
-
-a|
-[source]
-----
-mmlang> int int[is,[gte,0]]
-==>int{?}<=int[as,int][is,bool<=int[gte,0]]
-----
-|A type operates on an `int` thus, if supplied "an `int` type", the type operates on it to yield a type. The use of types to process types is a form of compilation generally known as https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation].
-
-a|
-[source]
-----
-mmlang> 6 int{?}<=int[is,bool<=int[gte,0]]
-==>6
-----
-|The type maps the positive integer `6{1}` to `6{1}` (_some_).
-
-a|
-[source]
-----
-mmlang> -6 int{?}<=int[is,bool<=int[gte,0]]
-mmlang>
-----
-|The type maps the negative integer `-6{1}` to `-6{0}` (_none_).
-|===
 
 ==== Mono Types
 

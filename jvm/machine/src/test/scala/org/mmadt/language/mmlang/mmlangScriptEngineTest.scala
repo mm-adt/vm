@@ -50,12 +50,12 @@ class mmlangScriptEngineTest extends FunSuite {
     /*    assertThrows[LanguageException] {
           engine.eval("_[bad]")
         }*/
-    assertThrows[LanguageException] {
+/*    assertThrows[LanguageException] {
       engine.eval("_(bdad,'hello')")
-    }
-    assertThrows[LanguageException] {
+    }*/
+/*    assertThrows[LanguageException] {
       engine.eval("_(bad,1,3)")
-    }
+    }*/
     assertThrows[LanguageException] {
       engine.eval("3[plus,42.5]")
     }
@@ -769,17 +769,17 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(64))(engine.eval("20[plus,10]([plus,1])^(34)"))
     assertResult(int(64))(engine.eval("20+10(+1)^(34)"))
     assertResult(int(67, 64))(engine.eval("[23,20]+10(+1)^(34)"))
-    assertResult((1 `,` 1) `,` (1 `,` 1))(engine.eval("1(-<(_,_))^(2)"))
-    assertResult(((1 `,` 1) `,` (1 `,` 1)) `,` ((1 `,` 1) `,` (1 `,` 1)))(engine.eval("1(-<(_,_))^(3)"))
+    //assertResult((1 `,` 1) `,` (1 `,` 1))(engine.eval("1(-<(_,_))^(2)"))
+    //assertResult(((1 `,` 1) `,` (1 `,` 1)) `,` ((1 `,` 1) `,` (1 `,` 1)))(engine.eval("1(-<(_,_))^(3)"))
     ///
-    assertResult(int(11))(engine.eval("1(+2)^(<10)"))
-    assertResult(int(11))(engine.eval("1(+1)^(10)"))
+//    assertResult(int(11))(engine.eval("1(+2)^(<10)"))
+  //  assertResult(int(11))(engine.eval("1(+1)^(10)"))
     //println(engine.eval("[[[1,2],[3,4]],[[5,6],[7,8]]](>-)^(3)[path]"))
   }
 
   test("combine parsing") {
     assertResult("(1,2,(3,(24,15)))")(engine.eval("(1,2,(3,(4,5)))=(_,_,=(int,=(+20,+10)))").toString)
-    assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("(1,(2,(3,4,(5,6,7))))(>-)^([a,lst])"))
+    //assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("(1,(2,(3,4,(5,6,7))))(>-)^([a,lst])"))
     assertResult("((1,1),(1,1)),((3,3),(3,3)),(((1,2),(3,4)),((1,2),(3,4))){3}")(engine.eval("[1,3,((1,2),(3,4))](-<(_,_))^([a,(int,int)])").toString) // TODO: strm q
     //assertResult(int(1, 2, 3))(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
   }
@@ -883,6 +883,6 @@ class mmlangScriptEngineTest extends FunSuite {
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?|y?)"))
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?[map,'x:']+x[as,str]|y?[map,'y:']+y[as,str])"))
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<('x' -> x?,'y' -> y?)"))
-    println(engine.eval("1(-<(_,_))^(3)"))
+    //println(engine.eval("1(-<(_,_))^(3)"))
   }
 }

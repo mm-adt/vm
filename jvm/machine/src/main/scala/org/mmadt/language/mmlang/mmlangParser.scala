@@ -117,7 +117,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val realType: Parser[RealType] = Tokens.real ^^ (_ => real)
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
   lazy val recType: Parser[Rec[Obj, Obj]] = Tokens.rec ~> opt(COLON) ~> opt(recObj) ^^ (x => x.getOrElse(rec))
-  lazy val lstType: Parser[Lst[Obj]] = Tokens.lst ~> opt(COLON) ~> opt(lstObj) ^^ (x => x.getOrElse(lst(Tokens.`;`)))
+  lazy val lstType: Parser[Lst[Obj]] = (Tokens.lst ~> opt(COLON) ~> opt(lstObj) ^^ (x => x.getOrElse(lst(Tokens.`;`)))) | lstObj ^^ (x => x)
   lazy val tokenType: Parser[__] = varName ^^ (x => __(x))
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
