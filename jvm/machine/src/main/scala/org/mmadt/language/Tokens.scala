@@ -27,12 +27,14 @@ package org.mmadt.language
  */
 object Tokens {
 
-  lazy val reserved: List[String] = List(
+  lazy val reservedOps: List[String] = List(
     Tokens.define, Tokens.neg,
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
-    Tokens.plus, Tokens.gt, Tokens.gte, Tokens.lt, Tokens.lte, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.a, Tokens.as, // Tokens.model (shared with global name)
+    Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.given, Tokens.trace, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last,
-    Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon, Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one)
+    Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head,Tokens.tail)
+
+  lazy val reservedTypes: List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
 
   val anon = "_"
   val obj = "obj"

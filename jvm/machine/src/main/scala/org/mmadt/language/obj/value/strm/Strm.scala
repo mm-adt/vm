@@ -40,8 +40,6 @@ trait Strm[+O <: Obj] extends Value[O] {
     (if (x.alive) x else strm).asInstanceOf[this.type]
   }
   override def q(q: IntQ): this.type = strm(this.values.map(x => if (x.root) x.q(multQ(x.q, q)) else x.q(q)).filter(_.alive)).asInstanceOf[this.type]
-  //override def hardQ(q: IntQ): this.type = strm(this.values.map(x => x.hardQ(q)).filter(x => x.alive())).asInstanceOf[this.type]
-  //override def root: Boolean = false
   override val q: IntQ = this.values.foldLeft(qZero)((a, b) => plusQ(a, b.q))
   // utility methods
   override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]

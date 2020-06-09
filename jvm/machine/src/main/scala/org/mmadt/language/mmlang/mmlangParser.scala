@@ -88,7 +88,8 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 
   // variable parsing
   lazy val symbolName: Regex = "[a-zA-Z]+".r
-  lazy val varName: Parser[String] = ("^(?!(" + instOp + s"))(${symbolName})").r <~ not(":")
+  lazy val varName: Parser[String] = ("^(?!(" + reservedTokens + s"))(${symbolName})").r <~ not(":")
+  lazy val reservedTokens: String = List(Tokens.reservedTypes, Tokens.reservedOps).flatten.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1)
 
   // poly parsing
   lazy val polyObj: Parser[Value[Obj]] = (lstObj | recObj) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q).asInstanceOf[Value[Obj]]).getOrElse(x._1))
@@ -117,18 +118,15 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
   lazy val recType: Parser[Rec[Obj, Obj]] = Tokens.rec ~> opt(COLON) ~> opt(recObj) ^^ (x => x.getOrElse(rec))
   lazy val lstType: Parser[Lst[Obj]] = Tokens.lst ~> opt(COLON) ~> opt(lstObj) ^^ (x => x.getOrElse(lst(Tokens.`;`)))
-  lazy val tokenType: Parser[__] = varName ^^ (x => new __(name = x))
-
-  lazy val anonQuant: Parser[__] = quantifier ^^ (x => new __().q(x))
+  lazy val tokenType: Parser[__] = varName ^^ (x => __(x))
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | recType | lstType | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ {
     case Some(range) ~ domain ~ insts => range <= insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
     case None ~ domain ~ insts => insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
   }
-
+  lazy val anonQuant: Parser[__] = quantifier ^^ (x => new __().q(x))
   lazy val anonTypeSugar: Parser[__] = rep1[List[Inst[Obj, Obj]]](inst) ^^ (x => x.flatten.foldLeft(new __())((a, b) => a.clone(via = (a, b))))
-  lazy val instOp: String = Tokens.reserved.foldRight(EMPTY)((a, b) => b + PIPE + a).drop(1)
 
   // value parsing
   lazy val valueType: Parser[String] = symbolName <~ ":"
@@ -160,7 +158,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val toSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> symbolName <~ RANGLE ^^ (x => ToOp(x))
   lazy val fromSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
   lazy val repeatSugar: Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.pow_op ~> LROUND ~> obj <~ RROUND) ^^ (x => RepeatOp(x._1, x._2))
-  lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> (("(" + instOp + ")").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
+  lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> (("(" + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + ")").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
 
   // quantifier parsing
   lazy val quantifier: Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1, x._2.getOrElse(x._1)))

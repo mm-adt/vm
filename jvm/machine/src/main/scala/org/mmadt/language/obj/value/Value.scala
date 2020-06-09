@@ -36,7 +36,6 @@ trait Value[+V <: Obj] extends Obj
   with TypeOp[V] {
   def g: Any
 
-
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
     case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
