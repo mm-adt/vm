@@ -25,11 +25,12 @@ package org.mmadt.language.obj.op.trace
 import java.util
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{BranchInstruction, TraceInstruction}
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.StorageFactory.{str, _}
 import org.mmadt.storage.obj.value.VInst
 
 import scala.collection.mutable
@@ -42,13 +43,9 @@ trait ExplainOp {
   def explain(): Str = ExplainOp().exec(this)
 }
 
-object ExplainOp {
-  def apply(): ExplainInst = new ExplainInst
-
-  class ExplainInst extends VInst[Obj, Str](g = (Tokens.explain, Nil)) with TraceInstruction {
-    override def exec(start: Obj): Str = str(ExplainOp.printableTable(asType(start))).start()
-  }
-
+object ExplainOp extends Func[Obj, Str] {
+  def apply(): Inst[Obj, Str] = new VInst[Obj, Str](g = (Tokens.explain, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Str]): Str = str(printableTable(asType(start))).start()
   private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj], String)
   private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0, prefix: String = ""): List[Row] = {
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {

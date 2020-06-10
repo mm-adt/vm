@@ -22,12 +22,28 @@
 
 package org.mmadt.language.model
 
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class AlgebraTest extends FunSuite {
+
+  test("int ring rewrites") {
+    val intAlgebra = int
+      .define(int <= (int.mult(1) `,`))
+      .define(int <= (int.plus(0) `,`))
+      .define((int.zero() `,`) <= (int.mult(0) `,`))
+    println(intAlgebra)
+    assertResult(int)(int ==> intAlgebra)
+    assertResult(int)(int.mult(1) ===> intAlgebra)
+    assertResult(int)(int.plus(0) ===> intAlgebra)
+    assertResult(int)(int.plus(0).mult(1) ===> intAlgebra)
+    assertResult(int)(int.plus(0).mult(1).plus(0) ===> intAlgebra)
+    assertResult(int.zero())(int.plus(0).mult(0) ===> intAlgebra)
+
+  }
 
   /*test("int ring rewrites") {
     val model = Algebra.ring(int)

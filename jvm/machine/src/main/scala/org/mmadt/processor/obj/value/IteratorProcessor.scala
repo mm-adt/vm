@@ -42,7 +42,7 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
     for (tt <- IteratorProcessor.createInstList(Nil, rangeType)) {
       output = tt._2 match {
         //////////////REDUCE//////////////
-        case reducer: ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)((e, mutatingSeed) => e.compute(reducer.reduction))).map(e => e.q(qOne)) // TODO: need a new seed method other than Traverser
+        case reducer: ReduceInstruction[E] => Iterator(output.foldRight(reducer.seed._2)((e, mutatingSeed) => e.compute(reducer.reduction).asInstanceOf[E])).map(e => e.q(qOne)) // TODO: need a new seed method other than Traverser
         //////////////FILTER//////////////
         case _: FilterInstruction => output.map(_.compute(tt._1.via(tt._1, tt._2)).asInstanceOf[E]).filter(_.alive)
         //////////////OTHER//////////////
@@ -64,7 +64,7 @@ class IteratorProcessor(model: Model = Model.id) extends Processor {
 
 object IteratorProcessor {
   @scala.annotation.tailrec
-  private def createInstList(list: List[(Type[Obj], Inst[Obj, Type[Obj]])], atype: Type[Obj]): List[(Type[Obj], Inst[Obj, Type[Obj]])] = {
-    if (atype.root) list else createInstList(List((atype.range, atype.trace.last._2.asInstanceOf[Inst[Obj, Type[Obj]]])) ::: list, atype.trace.last._1.asInstanceOf[Type[Obj]])
+  private def createInstList(list: List[(Obj, Inst[Obj, Obj])], atype: Obj): List[(Obj, Inst[Obj, Obj])] = {
+    if (atype.root) list else createInstList(List((atype.range, atype.trace.last._2.asInstanceOf[Inst[Obj, Obj]])) ::: list, atype.trace.last._1.asInstanceOf[Obj])
   }
 }

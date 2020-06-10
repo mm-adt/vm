@@ -45,36 +45,21 @@ trait AsOp {
 object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val toObj: Obj = inst.arg0[Obj]
-
-    if (!toObj.isInstanceOf[Poly[Obj]] && toObj.isInstanceOf[Value[Obj]]) {
-      Inst.resolveArg(start, toObj)
+    val asObj: Obj = inst.arg0[Obj]
+    val toObj: Obj = if (!asObj.isInstanceOf[Poly[Obj]] && asObj.isInstanceOf[Value[Obj]]) {
+      Inst.resolveArg(start, asObj)
     } else {
       start match {
-        case _: Type[Obj] if !start.isInstanceOf[Poly[Obj]] => toObj
-        case abool: Bool => boolConverter(abool, toObj)
-        case aint: Int => intConverter(aint, toObj)
-        case areal: Real => realConverter(areal, toObj)
-        case astr: Str => strConverter(astr, toObj)
-        case alst: Lst[Obj] => lstConverter(alst, toObj)
-        case arec: Rec[Obj, Obj] => recConverter(arec, toObj)
+        case _: Type[Obj] if !start.isInstanceOf[Poly[Obj]] => asObj
+        case abool: Bool => boolConverter(abool, asObj)
+        case aint: Int => intConverter(aint, asObj)
+        case areal: Real => realConverter(areal, asObj)
+        case astr: Str => strConverter(astr, asObj)
+        case alst: Lst[Obj] => lstConverter(alst, asObj)
+        case arec: Rec[Obj, Obj] => recConverter(arec, asObj)
       }
     }.via(start, inst)
-
-    /*val asObj: Obj = (resolve match {
-      // case apoly: Poly[Obj] => resolve.named(rename)
-      case atype: Type[Obj] if start.isInstanceOf[Value[_]] => atype match {
-        case rectype: Rec[Obj, Obj] => rec(rectype.gsep, rectype.gmap.map(x => Inst.resolveArg(start, x._1) -> Inst.resolveArg(start, x._2)).toMap).named(rectype.name)
-        case atype: StrType => vstr(name = atype.name, g = start.asInstanceOf[Value[Obj]].g.toString).compute(atype)
-        case atype: IntType => vint(name = atype.name, g = Integer.valueOf(start.asInstanceOf[Value[Obj]].g.toString).longValue()).compute(atype)
-        case atype: RealType => vreal(name = atype.name, g = JDouble.valueOf(start.asInstanceOf[Value[Obj]].g.toString).doubleValue()).compute(atype)
-        case x => x.named(rename)
-      }
-      case x => x.named(rename)
-    }).via(start, inst)
-    println(asObj)
-    assert(asObj.alive)
-    asObj*/
+    if (Tokens.named(asObj.name)) toObj.named(asObj.name) else toObj
   }
 
   private def boolConverter(x: Bool, y: Obj): Obj = {

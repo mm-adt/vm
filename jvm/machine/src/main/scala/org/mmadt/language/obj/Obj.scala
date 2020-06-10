@@ -76,7 +76,8 @@ trait Obj
   def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type = {
     // LanguageException.testDomainRange(asType(this), asType(domainType))
-    domainType.compute(asType(this)).hardQ(this.q).asInstanceOf[this.type]
+    val t:Obj = domainType.compute(asType(this))
+    if (t.root) this.clone(via = (t, NoOp())) else this.clone(via = (t.rinvert(), t.via._2))
   }
   def range: Type[Obj] = asType(this.isolate)
   def domain[D <: Obj]: Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]
@@ -141,11 +142,15 @@ trait Obj
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
-  def compute[E <: Obj](rangeType: Type[E]): E = rangeType.trace
-    .headOption
-    .map(x => x._2.exec(this))
-    .map(x => x.compute(rangeType.linvert()))
-    .getOrElse(this.asInstanceOf[E])
+  def compute[E <: Obj](rangeType: E): E = rangeType match {
+    //case apoly:Poly[_] if apoly.isValue => apoly.asInstanceOf[E]
+    case _: Type[E] => rangeType.trace
+      .headOption
+      .map(x => x._2.exec(this))
+      .map(x => x.compute(rangeType.linvert()))
+      .getOrElse(this.asInstanceOf[E])
+    case _ => rangeType
+  }
 
   def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = {
     if (!rangeType.alive) return zeroObj.asInstanceOf[E]
