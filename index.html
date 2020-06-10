@@ -453,8 +453,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_mm_adt_theory">mm-ADT Theory</a>
 <ul class="sectlevel3">
-<li><a href="#_a_universal_unary_function">A Universal Unary Function</a></li>
-<li><a href="#_three_algebraic_actions">Three Algebraic Actions</a></li>
+<li><a href="#_mm_adt_function">mm-ADT Function</a></li>
+<li><a href="#_mm_adt_algebras">mm-ADT Algebras</a></li>
 </ul>
 </li>
 <li><a href="#_mm_adt_technology">mm-ADT Technology</a>
@@ -487,6 +487,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_int_type">Int Type</a></li>
 <li><a href="#_real_type">Real Type</a></li>
 <li><a href="#_str_type">Str Type</a></li>
+</ul>
+</li>
+<li><a href="#_anonymous_type">Anonymous Type</a>
+<ul class="sectlevel4">
+<li><a href="#_variables">Variables</a></li>
+<li><a href="#_definitions">Definitions</a></li>
 </ul>
 </li>
 <li><a href="#_poly_types">Poly Types</a>
@@ -606,7 +612,7 @@ As an economic model, each integration point offers the respective development t
 <div class="sect2">
 <h3 id="_mm_adt_theory">mm-ADT Theory</h3>
 <div class="sect3">
-<h4 id="_a_universal_unary_function">A Universal Unary Function</h4>
+<h4 id="_mm_adt_function">mm-ADT Function</h4>
 <div class="paragraph">
 <p>Every mm-ADT program denotes a single <a href="https://en.wikipedia.org/wiki/Unary_function">unary function</a> that maps an <code>obj</code> of type \$S\$ (start) to an <code>obj</code> of type \$E\$ (end) with the function signature</p>
 </div>
@@ -616,11 +622,11 @@ f: S \rightarrow E.
 \]</p>
 </div>
 <div class="paragraph">
-<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are <a href="https://en.wikipedia.org/wiki/Currying">curried</a> at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.</p>
+<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested <a href="https://en.wikipedia.org/wiki/Currying">curried</a> functions). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_three_algebraic_actions">Three Algebraic Actions</h4>
+<h4 id="_mm_adt_algebras">mm-ADT Algebras</h4>
 <table class="tableblock frame-all grid-all left" style="width: 30%;">
 <colgroup>
 <col style="width: 50%;">
@@ -634,24 +640,25 @@ f: S \rightarrow E.
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">trace ringoid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> magma</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Processor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code> monoid</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> magma</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code> ringoid</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes. The <strong>language algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace</a> <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> that captures the serial and parallel composition of mm-ADT types. The <strong>processor algebra</strong> (for both compilation and evaluation) is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> for serially composing instructions from the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. Finally, the <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> whose carrier set contains all mm-ADT objects and enables various <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> that specify the way in which <a href="https://en.wikipedia.org/wiki/Abstract_data_type">abstract data types</a> are coupled and controlled by one another (e.g. key/value, graph, relational, etc.).</p>
+<p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component&#8217;s particular interpretation of mm-ADT. The <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a non-https://en.wikipedia.org/wiki/Associative_property[associative], binary "juxtapostion" operator. The <strong>language algebra</strong> is a
+is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturing the serially composition of parameterized instructions (<code>inst</code>) in the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> used for compilation and evaluation of mm-ADT types (or programs). These algebras represent the particular perspective that each component has on a shared data structure called the <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace graph</a>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
 </div>
 <div class="paragraph">
-<p>The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated with mm-ADT technology. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
+<p>The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated by mm-ADT technologies. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
 </div>
 </div>
 </div>
@@ -1561,6 +1568,17 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect4">
 <h5 id="_str_type">Str Type</h5>
+
+</div>
+</div>
+<div class="sect3">
+<h4 id="_anonymous_type">Anonymous Type</h4>
+<div class="sect4">
+<h5 id="_variables">Variables</h5>
+
+</div>
+<div class="sect4">
+<h5 id="_definitions">Definitions</h5>
 
 </div>
 </div>
@@ -2715,7 +2733,7 @@ mmlang&gt; ((<span style="color:#00D">1</span>,<span style="color:#00D">2</span>
 <div class="sect3">
 <h4 id="_higher_order_types">Higher Order Types</h4>
 <div class="paragraph">
-<p>In mm-ADT, every type \$A\$ is a <a href="https://en.wikipedia.org/wiki/Space_(mathematics)">space</a>, where the points of the space are mm-ADT <code>objs</code> (types and values) and the structure distinguishing \$A\$ from being a common set is the <code>inst</code> relations linking the <code>objs</code>. Every mm-ADT type defines a directed labeled <a href="https://en.wikipedia.org/wiki/Multigraph">multigraph</a> called a <strong>type graph</strong>. If \$x,y:A\$ are two <code>objs</code> in \$A\$, then the <a href="https://en.wikipedia.org/wiki/Path_(topology)">path</a> \$x \to_{A} y\$ denotes a continuous walk that starts at \$x\$ and ends at \$y\$ <a href="https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence">proving</a> that \$x\$ is "\$A\$-equal" to \$y\$. Each step of that walk is an instruction forming an edge in the type graph. For instance, the type</p>
+<p>In mm-ADT, every type \$A\$ is a <a href="https://en.wikipedia.org/wiki/Space_(mathematics)">space</a>, where the points of the space are mm-ADT <code>objs</code> (types and values) and the structure distinguishing \$A\$ from being a common set is the <code>inst</code> relations linking the <code>objs</code>. Every mm-ADT type defines a directed labeled <a href="https://en.wikipedia.org/wiki/Multigraph">multigraph</a> called a <strong>type graph</strong>. If \$x,y:A\$ are two <code>objs</code> in \$A\$, then the <a href="https://en.wikipedia.org/wiki/Path_(topology)">path</a> \$x \to_{A} y\$ denotes a continuous walk that starts at \$x\$ and ends at \$y\$ <a href="https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence">proving</a> that \$x\$ is "\$A\$-reduced" to \$y\$. Each step of that walk is an instruction forming an edge in the type graph. For instance, the type</p>
 </div>
 <div class="paragraph text-center">
 <p><code>int[is,[eq,int]]</code></p>
@@ -2775,16 +2793,10 @@ mmlang&gt; ((<span style="color:#00D">1</span>,<span style="color:#00D">2</span>
 <p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type</p>
 </div>
 <div class="paragraph">
-<p>+</p>
-</div>
-<div class="paragraph">
 <p><code>int[is&gt;0]</code></p>
 </div>
 <div class="paragraph">
 <p>would be considered a reasonable type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$ \tt{g\t}:\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type</p>
-</div>
-<div class="paragraph">
-<p>+</p>
 </div>
 <div class="paragraph">
 <p><code>int[plus,1]</code></p>
@@ -2826,7 +2838,7 @@ b\{ 0\} &amp; \text{otherwise.}
 </div>
 </li>
 <li>
-<p><strong>Inst Monoid</strong> (<em>processor</em>): A nested monoid with an associative, non-commutative binary <em>next</em> operator that corresponds to the processor&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_pipelining">instruction pipeline</a>.</p>
+<p><strong>Inst Monoid</strong> (<em>language</em>): A nested monoid with an associative, non-commutative binary <em>compose</em> operator that corresponds to the processor&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_pipelining">instruction pipeline</a>.</p>
 <div class="paragraph">
 <p>\[
 \mathbf{Inst} = \langle \texttt{inst}, *, 1, 0 \rangle
@@ -2834,7 +2846,7 @@ b\{ 0\} &amp; \text{otherwise.}
 </div>
 </li>
 <li>
-<p><strong>Trace Ringoid</strong> (<em>language</em>): A generalization of the <code>inst</code> monoid that supports the composition of polynomials for the construction of serial (<code>*</code>), parallel (<code>+</code>), and parallel choice (<code>|</code>) pipelines, where \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving <a href="https://en.wikipedia.org/wiki/Automorphism">automorphism</a> from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a>). This generalization provides greater flexibility for expressing a wider range of common computational patterns.</p>
+<p><strong>Type Ringoid</strong> (<em>processor</em>): A generalization of the <code>inst</code> monoid that supports the composition of polynomials for the construction of serial (<code>*</code>), parallel (<code>+</code>), and parallel choice (<code>|</code>) pipelines, where \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving <a href="https://en.wikipedia.org/wiki/Automorphism">automorphism</a> from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a>). This generalization provides greater flexibility for expressing a wider range of common computational patterns.</p>
 </li>
 </ol>
 </div>
