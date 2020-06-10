@@ -1040,99 +1040,6 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 </div>
 </div>
 <div class="sect3">
-<h4 id="_higher_order_types">Higher Order Types</h4>
-<div class="paragraph">
-<p>In mm-ADT, every type \$A\$ is a <a href="https://en.wikipedia.org/wiki/Space_(mathematics)">space</a>, where the points of the space are mm-ADT <code>objs</code> (types and values). What makes \$A\$ a space as opposed to a structureless set, is the relations linking the <code>objs</code> of the type as dictated by semantics of the type. Every mm-ADT type is described by a directed labeled <a href="https://en.wikipedia.org/wiki/Multigraph">multigraph</a> called a <strong>type graph</strong>. If \$x:A\$ and \$y:A\$ are two <code>objs</code> in type \$A\$, then a <a href="https://en.wikipedia.org/wiki/Path_(topology)">path</a> \$x \rightarrow_{A} y\$ through the type graph denotes a continuous walk that starts at \$x\$ and ends at \$y\$ <a href="https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence">proving</a> that \$x\$ is \$A\$-equal to \$y\$. For instance, the type</p>
-</div>
-<div class="paragraph text-center">
-<p><code>int[is,[eq,int]]</code></p>
-</div>
-<div class="paragraph">
-<p>describes a <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexive graph</a> whose vertices are integers in <code>int</code> and whose edges are labeled <code>[is,[eq,int]]</code>. There are other mm-ADT types (an infinite amount in fact) that are related to <code>int[is,[eq,int]]</code> by a <a href="https://en.wikipedia.org/wiki/Graph_homomorphism">graph homomorphism</a> defined by another type. A few such types are itemized below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>int[plus,0]
-int[mult,1]
-int[plus,1][plus,-1]
-int[plus,2][plus,-2]
-int[plus,3][plus,-3]
-...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note a common pattern. The type <code>int[plus,x:int][plus,x:int[neg]]</code> captures an infinite number of more specific types that are homomorphic to <code>int[is,[eq,int]]</code>. <a href="https://en.wikipedia.org/wiki/Higher-order_function">Higher order type</a> are defined using mm-ADT <code>polys</code>.</p>
-</div>
-<div class="paragraph text-center">
-<p><code>(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])</code></p>
-</div>
-<div class="paragraph">
-<p>In category theory, a <em>type-to-type</em> mapping that <a href="https://en.wikipedia.org/wiki/Morphism">preserves structure</a> is called a <a href="https://en.wikipedia.org/wiki/Functor">functor</a>. From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range <code>&lt;=</code>-relation within a higher-order <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a> with respective signature. The identity is apparent in that there are no instructions specified to coerce the <code>objs</code> of the domain to the <code>objs</code> of the range. This is analogous to <code>int&lt;=int</code>, save that equivalence is not predicated on equality nor <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphism</a>, but on a <a href="https://en.wikipedia.org/wiki/Surjective_function">surjective</a> homomorphism. With this broader definition, a new <code>int</code> equivalence has been defined.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; [define,(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])]
-        [int][plus,10][plus,-10]
-==&gt;int[is,[eq,int]]</code></pre>
-</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/type-to-type-type.png" alt="type to type type" width="700">
-</div>
-</div>
-<div class="paragraph">
-<p>The type <code>int[is,[eq,int]]</code> has a <a href="https://en.wikipedia.org/wiki/Isomorphism">ismorphic</a> image in <code>int</code>, where the reflexive self-loop paths in <code>int[is,[eq,int]]</code> are contracted to 0-length paths. The isomorphism realizes <code>int</code> as a classic set without structure as the <code>int</code> type definition has no instructions.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>mmlang&gt; [define,int&lt;=(int[is,[eq,int]])]
-        [define,(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])]
-        [int][plus,10][plus,-10]
-==&gt;int</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 1. mm-ADT Types are Graphs and their Values Realize Paths</div>
-<div class="content">
-<div class="paragraph">
-<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type
-<br></p>
-</div>
-<div class="paragraph">
-<p><code>int[is&gt;0]</code></p>
-</div>
-<div class="paragraph">
-<p>would be considered a reasonable type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$ \tt{g\t}:\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type
-<br></p>
-</div>
-<div class="paragraph">
-<p><code>int[plus,1]</code></p>
-</div>
-<div class="paragraph">
-<p>would be considered unreasonable as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>. An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as algorithmically defined by its instructions) <em>does not</em> map the <code>obj</code> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal</a> <code>obj{0}</code>. If
-\[
-f: A \rightarrow B
-\]
-is the function of type <code>B&lt;=A[f]</code>, then
-\[
-f(a) =
-\begin{cases}
-b\{*\} &amp; \text{if $a$ is a value of the type},  \\
-b\{ 0\} &amp; \text{otherwise.}
-\end{cases}
-\]</p>
-</div>
-<div class="paragraph">
-<p>An mm-ADT <strong>type graph</strong> denotes a type whose values are those <code>objs</code> that realize a path in that graph.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
 <h4 id="_mono_types">Mono Types</h4>
 <div class="sidebarblock">
 <div class="content">
@@ -1232,7 +1139,7 @@ mmlang&gt;</code></pre>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
 <div class="exampleblock">
-<div class="title">Example 2. Poly Constructs</div>
+<div class="title">Example 1. Poly Constructs</div>
 <div class="content">
 <div class="olist arabic">
 <ol class="arabic">
@@ -2356,6 +2263,103 @@ mmlang&gt; ((1,2,3),
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_higher_order_types">Higher Order Types</h4>
+<div class="paragraph">
+<p>In mm-ADT, every type \$A\$ is a <a href="https://en.wikipedia.org/wiki/Space_(mathematics)">space</a>, where the points of the space are mm-ADT <code>objs</code> (types and values) and the structure distinguishing \$A\$ from being a common set is the <code>inst</code> relations linking the <code>objs</code>. Every mm-ADT type defines a directed labeled <a href="https://en.wikipedia.org/wiki/Multigraph">multigraph</a> called a <strong>type graph</strong>. If \$x,y:A\$ are two <code>objs</code> in \$A\$, then the <a href="https://en.wikipedia.org/wiki/Path_(topology)">path</a> \$x \to_{A} y\$ denotes a continuous walk that starts at \$x\$ and ends at \$y\$ <a href="https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence">proving</a> that \$x\$ is "\$A\$-equal" to \$y\$. Each step of that walk is an instruction forming an edge in the type graph. For instance, the type</p>
+</div>
+<div class="paragraph text-center">
+<p><code>int[is,[eq,int]]</code></p>
+</div>
+<div class="paragraph">
+<p>describes a <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexive graph</a> with vertices are in <code>int</code> and edges labeled <code>[is,[eq,int]]</code>. There are other mm-ADT types (an infinite amount in fact) that are related to <code>int[is,[eq,int]]</code> by a <a href="https://en.wikipedia.org/wiki/Graph_homomorphism">graph homomorphism</a>. A few such types are itemized below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>int[plus,0]
+int[mult,1]
+int[plus,1][plus,-1]
+int[plus,2][plus,-2]
+int[plus,3][plus,-3]
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note a common pattern. The type <code>int[plus,x:int][plus,x:int[neg]]</code> captures an infinite number of more specific types that are homomorphic to <code>int[is,[eq,int]]</code>. <a href="https://en.wikipedia.org/wiki/Higher-order_function">Higher order type</a> are defined using mm-ADT <code>polys</code>.</p>
+</div>
+<div class="paragraph text-center">
+<p><code>(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])</code></p>
+</div>
+<div class="paragraph">
+<p>In category theory, a <em>type-to-type</em> mapping that <a href="https://en.wikipedia.org/wiki/Morphism">preserves structure</a> is called a <a href="https://en.wikipedia.org/wiki/Functor">functor</a>. From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range <code>&lt;=</code>-relation within a higher-order <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a> with respective signature. The identity is apparent in that there are no instructions required to coerce an <code>obj</code> of the domain to an <code>obj</code> of the range. This is analogous to <code>int&lt;=int</code>, save that the mapping is not predicated on <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphism</a>, but on a broader relationship called a <a href="https://en.wikipedia.org/wiki/Surjective_function">surjective</a> homomorphism (a  <a href="https://en.wikipedia.org/wiki/Rewriting">reduction</a>). Any type containing only a type signature <code>()&lt;=()</code> says that the domain type is equal to the range type such that the domain can be <a href="https://en.wikipedia.org/wiki/Abstract_rewriting_system">substituted</a> for the range.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; [define,(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])]
+        [int][plus,10][plus,-10]
+==&gt;int[is,[eq,int]]</code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/type-to-type-type.png" alt="type to type type" width="700">
+</div>
+</div>
+<div class="paragraph">
+<p>The type <code>int[is,[eq,int]]</code> has an <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> image in <code>int</code>, where the reflexive self-loop paths in <code>int[is,[eq,int]]</code> are contracted to 0-length paths. The isomorphism realizes <code>int</code> as a classic set without structure because the type <code>int</code> has no instructions and thus, no type graph edges.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mmlang&gt; [define,int&lt;=(int[is,[eq,int]])]
+        [define,(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])]
+        [int][plus,10][plus,-10]
+==&gt;int</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. mm-ADT Types are Graphs and their Values Realize Paths</div>
+<div class="content">
+<div class="paragraph">
+<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="paragraph">
+<p><code>int[is&gt;0]</code></p>
+</div>
+<div class="paragraph">
+<p>would be considered a reasonable type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$ \tt{g\t}:\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="paragraph">
+<p><code>int[plus,1]</code></p>
+</div>
+<div class="paragraph">
+<p>would be considered unreasonable as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>. An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as algorithmically defined by its instructions) <em>does not</em> map the <code>obj</code> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal</a> <code>obj{0}</code>. If
+\[
+f: A \rightarrow B
+\]
+is the function of type <code>B&lt;=A[f]</code>, then
+\[
+f(a) =
+\begin{cases}
+b\{*\} &amp; \text{if $a$ is a value of the type},  \\
+b\{ 0\} &amp; \text{otherwise.}
+\end{cases}
+\]</p>
+</div>
+<div class="paragraph">
+<p>An mm-ADT <strong>type graph</strong> denotes a type whose values are those <code>objs</code> that realize a path in that graph.</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_language_algebras">Language Algebras</h3>
@@ -2716,7 +2720,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-09 04:40:07 -0600
+Last updated 2020-06-10 00:12:39 -0600
 </div>
 </div>
 </body>
