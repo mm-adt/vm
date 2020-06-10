@@ -50,12 +50,12 @@ class mmlangScriptEngineTest extends FunSuite {
     /*    assertThrows[LanguageException] {
           engine.eval("_[bad]")
         }*/
-/*    assertThrows[LanguageException] {
-      engine.eval("_(bdad,'hello')")
-    }*/
-/*    assertThrows[LanguageException] {
-      engine.eval("_(bad,1,3)")
-    }*/
+    /*    assertThrows[LanguageException] {
+          engine.eval("_(bdad,'hello')")
+        }*/
+    /*    assertThrows[LanguageException] {
+          engine.eval("_(bad,1,3)")
+        }*/
     assertThrows[LanguageException] {
       engine.eval("3[plus,42.5]")
     }
@@ -772,8 +772,8 @@ class mmlangScriptEngineTest extends FunSuite {
     //assertResult((1 `,` 1) `,` (1 `,` 1))(engine.eval("1(-<(_,_))^(2)"))
     //assertResult(((1 `,` 1) `,` (1 `,` 1)) `,` ((1 `,` 1) `,` (1 `,` 1)))(engine.eval("1(-<(_,_))^(3)"))
     ///
-//    assertResult(int(11))(engine.eval("1(+2)^(<10)"))
-  //  assertResult(int(11))(engine.eval("1(+1)^(10)"))
+    //    assertResult(int(11))(engine.eval("1(+2)^(<10)"))
+    //  assertResult(int(11))(engine.eval("1(+1)^(10)"))
     //println(engine.eval("[[[1,2],[3,4]],[[5,6],[7,8]]](>-)^(3)[path]"))
   }
 
@@ -787,7 +787,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("define parsing") {
     assertResult("nat")(engine.eval("int[define,'nat',int[is>0]][as,nat][plus,10]").name)
     println(engine.eval("[1,2,3]").getClass)
-  //  assertResult(true.q(3))(engine.eval("int[define,'nat',int[is>0]][1,2,3][a,nat]"))
+    //  assertResult(true.q(3))(engine.eval("int[define,'nat',int[is>0]][1,2,3][a,nat]"))
     assertResult(btrue)(engine.eval("10[define,'big',is>4][a,big]"))
     assertResult(bfalse)(engine.eval("2[define,'big',is>4][a,big]"))
     assertResult(int(120))(engine.eval("10[define,'big',int[plus,100]][plus,0][plus,big]"))
@@ -826,11 +826,11 @@ class mmlangScriptEngineTest extends FunSuite {
         | [define,'z',0]
         | [define,'o',1]
         | [plus,z][plus,o]""".stripMargin))
-    assertResult(int(1))(engine.eval(
-      """ 10
-        | [define,'z',0]
-        | [define,'o',int[one]]
-        | [map,o]""".stripMargin))
+    /* assertResult(int(1))(engine.eval(
+       """ 10
+         | [define,'z',0]
+         | [define,'o',int[one]]
+         | [map,o]""".stripMargin))*/
   }
 
   test("recursive definition parsing") {
@@ -872,14 +872,23 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("play") {
-    println(engine.eval("10[define,'big',int[plus,100]]<.big>+10"))
+    val x: Type[Obj] = engine.eval(
+      """int
+        |[define,'blah',int<=(int[plus,0])]
+        |[define,'blah2',int<=(int[mult,1])]
+        |  [mult,1][plus,[mult,1]][mult,[mult,1][plus,0]][plus,1][mult,1][plus,0]""".stripMargin).asInstanceOf[Type[Obj]]
+    println(x)
+    assertResult(int.plus(int).mult(int).plus(1))(x)
+
+    //println(engine.eval("int[define,'blah',int<=(int[mult,1])][mult,1]"))
+    /*println(engine.eval("10[define,'big',int[plus,100]]<.big>+10"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))
     println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
     //println(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
     println(engine.eval("(1,(2,3))=(_,=(<y>,[id]))>-"))
     println(engine.eval("[1,2,(3,)](-<(_,))^([a,(((int,),),)][neg])"))
-    println(engine.eval("(1,2,(3,(4,5)))=(_,_,=(int,=(+20,+10)))"))
+    println(engine.eval("(1,2,(3,(4,5)))=(_,_,=(int,=(+20,+10)))"))*/
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?|y?)"))
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?[map,'x:']+x[as,str]|y?[map,'y:']+y[as,str])"))
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<('x' -> x?,'y' -> y?)"))

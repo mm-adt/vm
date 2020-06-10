@@ -74,10 +74,7 @@ trait Obj
   // type methods
   def named(name: String): this.type = this.clone(name = name)
   def test(other: Obj): Boolean
-  def <=[D <: Obj](domainType: D): this.type = {
-    LanguageException.testDomainRange(asType(this), asType(domainType))
-    domainType.compute(asType(this)).hardQ(this.q).asInstanceOf[this.type]
-  }
+  def <=[D <: Obj](domainType: D): this.type = domainType.compute(asType(this)).hardQ(this.q).asInstanceOf[this.type]
   def range: Type[Obj] = asType(this.isolate)
   def domain[D <: Obj]: Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]
 

@@ -24,7 +24,7 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
-import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
+import org.mmadt.language.model.rewrite.{LeftRightCompiler, LeftRightSweepRewrite}
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.{OType, Obj}
 import org.mmadt.processor.Processor
@@ -36,7 +36,7 @@ class CompilingProcessor(val model: Model = Model.id) extends Processor {
   override def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E = {
     // ProcessorException.testRootedType(domainObj,this)
     LanguageException.testTypeCheck(domainObj, rangeType.domain)
-    if (model == Model.id) domainObj.compute(rangeType)
+    if (model == Model.id) domainObj.compute(LeftRightCompiler.execute(rangeType))
     else {
       val domainType: OType[E] = model(domainObj).asInstanceOf[OType[E]]
       var mutating: E = domainType
