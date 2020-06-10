@@ -26,7 +26,7 @@ $(document).ready(function(){
   var items =    {"special": ["mmlang","q"],
                   "op":      ["a","compose","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map","trace",
-                              "split","merge","last","head","tail","div","minus","choose","put","repeat"],
+                              "split","merge","last","head","tail","div","minus","choose","put","repeat","type"],
                   "tokens":  ["{","}"],
                   "infix":   ["|","&&",",","+","*"],
                   "value":   ["true","false"],
