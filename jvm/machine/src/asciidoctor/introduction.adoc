@@ -38,7 +38,7 @@ The mm-ADT VM enables the intermingling of any language, any processor, and any 
 
 === mm-ADT Theory
 
-==== A Universal Unary Function
+==== mm-ADT Function
 
 Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_function[unary function] that maps an `obj` of type \$S\$ (start) to an `obj` of type \$E\$ (end) with the function signature
 
@@ -46,22 +46,23 @@ Every mm-ADT program denotes a single https://en.wikipedia.org/wiki/Unary_functi
 f: S \rightarrow E.
 \]
 
-The complexities of mm-ADT are realized in the definition of an `obj` (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are https://en.wikipedia.org/wiki/Currying[curried] at either compile-time or runtime). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.
+The complexities of mm-ADT are realized in the definition of an `obj` (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested https://en.wikipedia.org/wiki/Currying[curried] functions). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.
 
-==== Three Algebraic Actions
+==== mm-ADT Algebras
 
 [cols="3,3",width=30,float=left]
 |===
 | Component | Algebra
 
-| Language  | trace ringoid
-| Processor | `inst` monoid
 | Storage   | `obj` magma
+| Language  | `inst` monoid
+| Processor | `type` ringoid
 |===
 
-Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes. The *language algebra* is a https://en.wikipedia.org/wiki/Trace_monoid[trace] https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ringoid] that captures the serial and parallel composition of mm-ADT types. The *processor algebra* (for both compilation and evaluation) is a https://en.wikipedia.org/wiki/Monoid[monoid] for serially composing instructions from the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. Finally, the *storage algebra* is a https://en.wikipedia.org/wiki/Magma_(algebra)[magma] whose carrier set contains all mm-ADT objects and enables various https://en.wikipedia.org/wiki/Semigroup_action[algebraic actions] that specify the way in which https://en.wikipedia.org/wiki/Abstract_data_type[abstract data types] are coupled and controlled by one another (e.g. key/value, graph, relational, etc.).
+Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component's particular interpretation of mm-ADT. The *storage algebra* is a https://en.wikipedia.org/wiki/Magma_(algebra)[magma] with a carrier set containing all mm-ADT objects (`obj`) and a non-https://en.wikipedia.org/wiki/Associative_property[associative], binary "juxtapostion" operator. The *language algebra* is a
+is a https://en.wikipedia.org/wiki/Free_monoid[free monoid] capturing the serially composition of parameterized instructions (`inst`) in the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The *processor algebra* is a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ringoid] used for compilation and evaluation of mm-ADT types (or programs). These algebras represent the particular perspective that each component has on a shared data structure called the https://en.wikipedia.org/wiki/Trace_monoid[trace graph]. This https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] is the medium by which https://en.wikipedia.org/wiki/Semigroup_action[algebraic actions] effectively couple these components over the course of a computation: specification, compilation, and evaluation.
 
-The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated with mm-ADT technology. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create _synthetic data systems_ tailored to their problem's particular computational requirements.
+The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated by mm-ADT technologies. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create _synthetic data systems_ tailored to their problem's particular computational requirements.
 
 === mm-ADT Technology
 

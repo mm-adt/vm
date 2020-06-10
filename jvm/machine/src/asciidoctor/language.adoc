@@ -375,6 +375,12 @@ mmlang>
 
 ===== Str Type
 
+==== Anonymous Type
+
+===== Variables
+
+===== Definitions
+
 ==== Poly Types
 
 .Poly Constructs
@@ -1075,7 +1081,7 @@ mmlang> ((1,2,3),
 
 ==== Higher Order Types
 
-In mm-ADT, every type \$A\$ is a https://en.wikipedia.org/wiki/Space_(mathematics)[space], where the points of the space are mm-ADT `objs` (types and values) and the structure distinguishing \$A\$ from being a common set is the `inst` relations linking the `objs`. Every mm-ADT type defines a directed labeled https://en.wikipedia.org/wiki/Multigraph[multigraph] called a *type graph*. If \$x,y:A\$ are two `objs` in \$A\$, then the https://en.wikipedia.org/wiki/Path_(topology)[path] \$x \to_{A} y\$ denotes a continuous walk that starts at \$x\$ and ends at \$y\$ https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence[proving] that \$x\$ is "\$A\$-equal" to \$y\$. Each step of that walk is an instruction forming an edge in the type graph. For instance, the type
+In mm-ADT, every type \$A\$ is a https://en.wikipedia.org/wiki/Space_(mathematics)[space], where the points of the space are mm-ADT `objs` (types and values) and the structure distinguishing \$A\$ from being a common set is the `inst` relations linking the `objs`. Every mm-ADT type defines a directed labeled https://en.wikipedia.org/wiki/Multigraph[multigraph] called a *type graph*. If \$x,y:A\$ are two `objs` in \$A\$, then the https://en.wikipedia.org/wiki/Path_(topology)[path] \$x \to_{A} y\$ denotes a continuous walk that starts at \$x\$ and ends at \$y\$ https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence[proving] that \$x\$ is "\$A\$-reduced" to \$y\$. Each step of that walk is an instruction forming an edge in the type graph. For instance, the type
 
 [.text-center]
 `int[is,[eq,int]]`
@@ -1123,12 +1129,12 @@ The composition of two structure preserving type morphisms yields a new type--na
 .mm-ADT Types are Graphs and their Values Realize Paths
 ================================================================
 In the https://en.wikipedia.org/wiki/Set_theory[set theoretic] interpretation of _types_, the mm-ADT type
-+
+
 
 `int[is>0]`
 
 would be considered a reasonable type -- it is the set of integers greater than `0`. This type defines a subtype of `int` using a https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate] (\$ \tt{g\t}:\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type
-+
+
 
 `int[plus,1]`
 
@@ -1158,13 +1164,13 @@ The mm-ADT VM is a computing machine founded on a non-commutative https://en.wik
 \mathbf{Obj} = \langle \texttt{obj}, \;\; \rangle
 \]
 +
-. *Inst Monoid* (_processor_): A nested monoid with an associative, non-commutative binary _next_ operator that corresponds to the processor's https://en.wikipedia.org/wiki/Instruction_pipelining[instruction pipeline].
+. *Inst Monoid* (_language_): A nested monoid with an associative, non-commutative binary _compose_ operator that corresponds to the processor's https://en.wikipedia.org/wiki/Instruction_pipelining[instruction pipeline].
 +
 \[
 \mathbf{Inst} = \langle \texttt{inst}, *, 1, 0 \rangle
 \]
 +
-. *Trace Ringoid* (_language_): A generalization of the `inst` monoid that supports the composition of polynomials for the construction of serial (`*`), parallel (`+`), and parallel choice (`|`) pipelines, where \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving https://en.wikipedia.org/wiki/Automorphism[automorphism] from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self https://en.wikipedia.org/wiki/Embedding[embedding]). This generalization provides greater flexibility for expressing a wider range of common computational patterns.
+. *Type Ringoid* (_processor_): A generalization of the `inst` monoid that supports the composition of polynomials for the construction of serial (`*`), parallel (`+`), and parallel choice (`|`) pipelines, where \$ \mathbf{Inst} \subset \mathbf{Trace} \$. However, there exists an information preserving https://en.wikipedia.org/wiki/Automorphism[automorphism] from \$\mathbf{Trace}\$ to \$\mathbf{Inst}\$ (a self https://en.wikipedia.org/wiki/Embedding[embedding]). This generalization provides greater flexibility for expressing a wider range of common computational patterns.
 
 \[
 \textbf{Trace} = \langle \texttt{inst} \cup \texttt{poly}, *, +, |, 1, 0 \rangle
