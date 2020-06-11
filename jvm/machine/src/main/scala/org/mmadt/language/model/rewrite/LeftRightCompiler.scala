@@ -35,7 +35,7 @@ object LeftRightCompiler {
   }
 
   // if no match, then apply the instruction after rewriting its arguments
-  private def rewriteArgs[S <: Obj](defines: List[Obj], start: Type[S], inst: Inst[Obj, Obj]): List[Obj] = {
+  private def rewriteArgs[S <: Obj](defines: List[Obj], start: S, inst: Inst[Obj, Obj]): List[Obj] = {
     inst match {
       case _: TraceInstruction => inst.args
       case _: BranchInstruction => inst.args

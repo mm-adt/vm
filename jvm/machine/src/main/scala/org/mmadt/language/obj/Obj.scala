@@ -153,7 +153,7 @@ trait Obj
 
   def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = {
     if (!rangeType.alive) return zeroObj.asInstanceOf[E]
-    LanguageException.testTypeCheck(range.range, rangeType.asInstanceOf[Type[E]].domain)
+    LanguageException.testTypeCheck(range.range, rangeType.domain)
     this match {
       case _: Value[_] => Processor.iterator(model).apply(this, rangeType)
       case _: Type[_] => Processor.compiler(model).apply(this, rangeType)

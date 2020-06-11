@@ -880,13 +880,16 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("play") {
-    val x: Type[Obj] = engine.eval(
+    val x:Obj = engine.eval(
       """int
-        |[define,int<=(int[plus,0])]
-        |[define,int<=(int[mult,1])]
-        |  [mult,1][plus,[mult,1]][mult,[mult,1][plus,0]][plus,1][mult,1][plus,0]""".stripMargin).asInstanceOf[Type[Obj]]
-    println(x)
-    assertResult(int.plus(int).mult(int).plus(1))(x)
+        |[define,_<=([plus,0])]               // a+0 = a
+        |[define,_<=([mult,1])]               // a*1 = a
+        |[define,_<=([neg][neg])]             // --a = a
+        |[define,(int[zero])<=([mult,0])]     // a*0 = 0
+        |[define,([plus,0])<=([plus,[neg]])]  // a-a = 0
+        |  *1*0+36+0[plus,*0][plus,int[neg][plus,0][neg][neg]]""".stripMargin)
+    println("!!" + x)
+   // assertResult(int.plus(int).mult(int).plus(1))(x)
 
     println(engine.eval("int[define,int<=(int[mult,1])][mult,1]"))
     println(engine.eval("10[define,big<=int[plus,100]]<.big>+10"))

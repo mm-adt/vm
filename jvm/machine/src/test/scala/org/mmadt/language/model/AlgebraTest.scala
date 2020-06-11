@@ -36,7 +36,8 @@ class AlgebraTest extends FunSuite {
       .define(int <= (int.mult(1) `,`))
       .define(int <= (int.plus(0) `,`))
       .define((int.zero() `,`) <= (int.mult(0) `,`))
-      .define(int <= (int.plus(int.neg()) `,`))
+      .define(int <= (int.neg().neg() `,`))
+      .define((int.plus(0)) <= (int.plus(int.neg()) `,`))
     println(intAlgebra)
     assertResult(int)(int ==> intAlgebra)
     assertResult(int)(int.mult(1) ===> intAlgebra)
@@ -45,11 +46,11 @@ class AlgebraTest extends FunSuite {
     assertResult(int)(int.plus(0).mult(1).plus(0) ===> intAlgebra)
     assertResult(int.zero())(int.plus(0).mult(0) ===> intAlgebra)
     assertResult(int)(int.plus(int.neg()) ===> intAlgebra)
-
+    //assertResult(int(0))(int.mult(int.plus(int.neg())) ===> intAlgebra)
   }
 
   test("dd") {
-    println(int ==> (__("nat")<=int.is(int.gt(0))).named("nat"))
+    println(int ==> (__("nat") <= int.is(int.gt(0))).named("nat"))
   }
 
   /*test("int ring rewrites") {
