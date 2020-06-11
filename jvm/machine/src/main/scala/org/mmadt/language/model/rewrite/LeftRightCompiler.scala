@@ -3,7 +3,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Lst, Obj, Poly, withinQ}
+import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
 
 object LeftRightCompiler {
 
@@ -27,7 +27,7 @@ object LeftRightCompiler {
       search(defines, atype) match {
         case Some(right: S) => rewrite(defines, right, btype, start)
         case None =>
-          val inst: Inst[Obj, Obj] = OpInstResolver.resolve(atype.via._2.op, rewriteArgs(defines, atype.rinvert[Type[S]]().range, atype.via._2.asInstanceOf[Inst[Obj, Obj]])).q(atype.via._2.q)
+          val inst: Inst[Obj, Obj] = OpInstResolver.resolve(atype.via._2.op, rewriteArgs(defines, atype.rinvert[S]().range, atype.via._2.asInstanceOf[Inst[Obj, Obj]])).q(atype.via._2.q)
           rewrite(defines, atype.rinvert(), inst.exec(atype.rinvert[Obj]().range).compute(btype), start)
       }
     } else if (!btype.root) rewrite(defines, btype.linvert(), btype.linvert().domain, btype.trace.head._2.exec(start)).asInstanceOf[S]
@@ -42,11 +42,9 @@ object LeftRightCompiler {
       case _ => inst.args.map {
         case avalue: Value[_] => avalue
         case atype: Type[_] => rewrite(defines, atype, start.domain, start.domain)
-
       }
     }
   }
-
 
   def search(defines: List[Obj], atype: Obj): Option[Obj] = {
     defines.map(a => Some(a.domain match {
@@ -65,7 +63,6 @@ object LeftRightCompiler {
 
   def deflessEquals(aobj: Obj, bobj: Obj): Boolean = bobj match {
     case bobj: Obj if !bobj.alive => !aobj.alive
-    case avalue: Value[_] => aobj.test(avalue)
     case atype: Type[_] if aobj.isInstanceOf[Type[Obj]] =>
       (aobj.name.equals(atype.name) || __.isAnon(aobj) || __.isAnon(atype)) && withinQ(aobj, atype) &&
         aobj.trace.count(x => !x._2.op.equals(Tokens.define)) == atype.trace.count(x => !x._2.op.equals(Tokens.define)) &&
@@ -73,6 +70,7 @@ object LeftRightCompiler {
           forall(insts => insts._1.op.equals(insts._2.op) && insts._1.args.zip(insts._2.args).forall(a => {
             deflessEquals(a._1, a._2)
           }))
+    case avalue: Value[_] => aobj.test(avalue)
     case _ => false
   }
 }

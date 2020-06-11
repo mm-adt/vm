@@ -35,6 +35,7 @@ class AlgebraTest extends FunSuite {
       .define(int <= (int.mult(1) `,`))
       .define(int <= (int.plus(0) `,`))
       .define((int.zero() `,`) <= (int.mult(0) `,`))
+      .define(int <= (int.plus(int.neg()) `,`))
     println(intAlgebra)
     assertResult(int)(int ==> intAlgebra)
     assertResult(int)(int.mult(1) ===> intAlgebra)
@@ -42,6 +43,7 @@ class AlgebraTest extends FunSuite {
     assertResult(int)(int.plus(0).mult(1) ===> intAlgebra)
     assertResult(int)(int.plus(0).mult(1).plus(0) ===> intAlgebra)
     assertResult(int.zero())(int.plus(0).mult(0) ===> intAlgebra)
+    assertResult(int)(int.plus(int.neg()) ===> intAlgebra)
 
   }
 
