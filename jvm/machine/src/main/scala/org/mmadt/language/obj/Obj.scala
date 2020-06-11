@@ -76,8 +76,7 @@ trait Obj
   def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type = {
     // LanguageException.testDomainRange(asType(this), asType(domainType))
-    val t:Obj = domainType.compute(asType(this))
-    if (t.root) this.clone(via = (t, NoOp())) else this.clone(via = (t.rinvert(), t.via._2))
+    if (domainType.root) this.clone(via = (domainType, NoOp())) else this.clone(via = (domainType.rinvert(), domainType.via._2))
   }
   def range: Type[Obj] = asType(this.isolate)
   def domain[D <: Obj]: Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]
@@ -143,7 +142,7 @@ trait Obj
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: E): E = rangeType match {
-    //case apoly:Poly[_] if apoly.isValue => apoly.asInstanceOf[E]
+    case _:Type[E] if this.root && rangeType.root && __.isAnon(this) => Obj.copyDefinitions(this, rangeType.hardQ(multQ(this,rangeType)))
     case _: Type[E] => rangeType.trace
       .headOption
       .map(x => x._2.exec(this))
