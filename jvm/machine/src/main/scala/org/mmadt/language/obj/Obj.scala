@@ -72,7 +72,7 @@ trait Obj
   //////////////////////////////////////////////////////////////
 
   // type methods
-  def named(name: String): this.type = this.clone(name = name)
+  def named(name: String): this.type = if (!this.isInstanceOf[__] && name == Tokens.empty) throw new LanguageException("Only anonymous types can be named anonymous") else this.clone(name = name)
   def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type = {
     // LanguageException.testDomainRange(asType(this), asType(domainType))
@@ -142,12 +142,12 @@ trait Obj
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: E): E = rangeType match {
-    case _:Type[E] if this.root && rangeType.root && __.isAnon(this) => Obj.copyDefinitions(this, rangeType.hardQ(multQ(this,rangeType)))
-    case _: Type[E] => rangeType.trace
+    case _: Type[E] if this.root && rangeType.root && __.isAnon(this) => Obj.copyDefinitions(this, rangeType.hardQ(multQ(this, rangeType)))
+    case _: Type[E] => Tokens.tryName[E](rangeType, rangeType.trace
       .headOption
       .map(x => x._2.exec(this))
       .map(x => x.compute(rangeType.linvert()))
-      .getOrElse(this.asInstanceOf[E])
+      .getOrElse(this.asInstanceOf[E]))
     case _ => rangeType
   }
 
@@ -185,7 +185,7 @@ object Obj {
         case _: Value[Obj] => Some(x.via._1.asInstanceOf[A])
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some(Inst.resolveArg(obj, x.via._2.arg1[A]))
+      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].name == label => Some(Inst.resolveArg(obj, x.via._2.arg0[A].named(Tokens.anon)))
       case x => fetchOption(x.via._1, label)
     }
   }
@@ -196,7 +196,7 @@ object Obj {
     obj match {
       case x if x.root => None
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some((Tokens.to, x.via._1.asInstanceOf[A]))
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[StrValue].g == label => Some((Tokens.define, x.via._2.arg1[A]))
+      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].name == label => Some((Tokens.define, x.via._2.arg0[A]))
       case x => fetchWithInstOption(x.via._1, label)
     }
   }

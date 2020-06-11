@@ -22,6 +22,7 @@
 
 package org.mmadt.language.model
 
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -45,6 +46,10 @@ class AlgebraTest extends FunSuite {
     assertResult(int.zero())(int.plus(0).mult(0) ===> intAlgebra)
     assertResult(int)(int.plus(int.neg()) ===> intAlgebra)
 
+  }
+
+  test("dd") {
+    println(int ==> (__("nat")<=int.is(int.gt(0))).named("nat"))
   }
 
   /*test("int ring rewrites") {

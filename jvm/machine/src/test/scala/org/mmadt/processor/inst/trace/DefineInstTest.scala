@@ -11,20 +11,20 @@ class DefineInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[define] value, type, strm, anon combinations") {
     val starts: TableFor2[Obj, Obj] =
       new TableFor2[Obj, Obj](("query", "result"),
-        (int(2).define("nat", int.is(int.gt(0))).a(__("nat")), btrue),
-        (int(-2).define("nat", int.is(int.gt(0))).a(__("nat")), bfalse),
-        (int(-2).define("nat", int.is(int.gt(0))).a(__("nat").plus(100)), bfalse),
+        (int(2).define(__("nat") <= int.is(int.gt(0))).a(__("nat")), btrue),
+        (int(-2).define(__("nat") <= int.is(int.gt(0))).a(__("nat")), bfalse),
+        (int(-2).define(__("nat") <= int.is(int.gt(0))).a(__("nat").plus(100)), bfalse),
 
-        (int(2).define("abc", int.is(int.gt(0))).a(__.from("abc")), btrue),
-        (int(-2).define("abc", int.is(int.gt(0))).a(__.from("abc")), bfalse),
-        ((int(1) `,` (int(1) `,` 1)).define("abc", __.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-).a(__("abc")), btrue),
-        ((int(1) `,` (int(1) `,` 2)).define("abc", __.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-).a(__("abc")), bfalse),
-        ((int(1) `,` (int(2) `,` 1)).define("abc", __.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-).a(__("abc")), bfalse),
-        ((int(1) `,` (int(1) `,` 2)).define("abc", __.-<(__.is(__.a(int)) | (int(1) `,` __("abc"))) >-).a(__("abc")), btrue),
-        ((int(1) `,` (int(1) `,` 2)).define("abc", __.`[`(__.is(__.a(int)) | (int `,` __("abc"))) `]`).a(__("abc")), btrue),
-        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define("abc", __.`[`(__.is(__.a(int)) | (int `,` __("abc"))) `]`).a(__("abc")), btrue),
-        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define("abc", __.`[`(__.is(__.lt(2)) | (int `,` __("abc"))) `]`).a(__("abc")), bfalse),
-        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define("abc", __.`[`(__.is(__.lt(5)) | (int `,` __("abc"))) `]`).a(__("abc")), btrue)
+        (int(2).define(__("abc") <= int.is(int.gt(0))).a(__.from("abc")), btrue),
+        (int(-2).define(__("abc") <= int.is(int.gt(0))).a(__.from("abc")), bfalse),
+        ((int(1) `,` (int(1) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), btrue),
+        ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), bfalse),
+        ((int(1) `,` (int(2) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), bfalse),
+        ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.-<(__.is(__.a(int)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), btrue),
+        ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.`[`(__.is(__.a(int)) | (int `,` __("abc"))) `]`)).a(__("abc")), btrue),
+        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.`[`(__.is(__.a(int)) | (int `,` __("abc"))) `]`)).a(__("abc")), btrue),
+        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.`[`(__.is(__.lt(2)) | (int `,` __("abc"))) `]`)).a(__("abc")), bfalse),
+        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.`[`(__.is(__.lt(5)) | (int `,` __("abc"))) `]`)).a(__("abc")), btrue)
       )
     forEvery(starts) { (query, result) => {
       assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
@@ -34,11 +34,11 @@ class DefineInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[define] play tests") {
-    println(int.define("nat", int.is(int.gt(0))).a(__("nat")))
-    println(int(-10).define("nat", int.is(int.gt(0))).a(__("nat").plus(100)))
+    println(int.define(int.is(int.gt(0))).a(__("nat")))
+    println(int(-10).define(__("nat") <= int.is(int.gt(0))).a(__("nat").plus(100)))
     println(__("nat").plus(100).domain)
-    println(int(-10).compute(int.define("nat", int.is(int.gt(0))).a(__("nat")).asInstanceOf[Type[Bool]]))
-    println(int.define("x", int.plus(10).mult(20)).plus(2) -< (__("x").plus(100) `,` __("x")) >-)
+    println(int(-10).compute(int.define(__("nat") <= int.is(int.gt(0))).a(__("nat")).asInstanceOf[Type[Bool]]))
+    println(int.define(int.plus(10).mult(20)).plus(2) -< (__("x").plus(100) `,` __("x")) >-)
     println(new mmlangScriptEngineFactory().getScriptEngine.eval("1[a,[real|str]]"))
     println(str.a(__.-<(real `|` int) >-)) // TODO
   }

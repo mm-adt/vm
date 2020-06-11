@@ -49,7 +49,7 @@ object ExplainOp extends Func[Obj, Str] {
   private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj], String)
   private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0, prefix: String = ""): List[Row] = {
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {
-      if (b._2.isInstanceOf[TraceInstruction] && b._2.op != Tokens.a) state += b._2.arg0[StrValue].g -> (if (b._2.op == Tokens.define) (b._2.arg1[Obj]) else (b._2.exec(b._1).range))
+      if (b._2.isInstanceOf[TraceInstruction] && b._2.op != Tokens.a) state += (if (b._2.op == Tokens.define)(b._2.arg0[Obj].name-> b._2.arg0[Obj]) else b._2.arg0[Str].g -> b._2.exec(b._1).range)
       val temp = if (b._2.isInstanceOf[TraceInstruction]) a else a :+ (depth, b._2, lastRange(b._1.asInstanceOf[Type[Obj]]), b._2.exec(b._1).asInstanceOf[Type[Obj]].range, mutable.LinkedHashMap(state.toSeq: _*), prefix)
       val inner = b._2.args.foldLeft(List[Row]())((x, y) => x ++ (y match {
         case branches: Rec[Obj, Obj] if b._2.op.equals(Tokens.split) => branches.gmap.flatMap { a => {

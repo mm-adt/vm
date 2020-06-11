@@ -11,7 +11,7 @@ object LeftRightCompiler {
     if (!obj.trace.exists(x => x._2.op.equals(Tokens.define)))
       return obj
 
-    val defines = obj.trace.map(x => x._2).filter(x => x.op.equals(Tokens.define)).map(x => x.arg1[Obj])
+    val defines = obj.trace.map(x => x._2).filter(x => x.op.equals(Tokens.define)).map(x => x.arg0[Obj])
 
     var mutating: O = obj.domain.asInstanceOf[O]
     var previous: O = obj

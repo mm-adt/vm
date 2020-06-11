@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language
+import org.mmadt.language.obj.Obj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -32,7 +33,7 @@ object Tokens {
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult,
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.given, Tokens.trace, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last,
-    Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head,Tokens.tail)
+    Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail)
 
   lazy val reservedTypes: List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
 
@@ -126,7 +127,8 @@ object Tokens {
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst, lst, anon).contains(name) // TODO: global immutable set
+  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst, lst, anon, obj).contains(name) // TODO: global immutable set
+  def tryName[A <: Obj](fromObj: Obj, toObj: A): A = if (Tokens.named(fromObj.name)) toObj.named(fromObj.name) else toObj
 
   lazy val LANGLE = "<"
   lazy val RANGLE = ">"

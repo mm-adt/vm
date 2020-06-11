@@ -278,7 +278,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("explain instruction parsing") {
     println(engine.eval("int{3}[+1,+2,+3][explain]"))
     println(engine.eval("int{3}[is>10 -> +1 | is==0 -> +2 | int -> +3][explain]"))
-    assert(engine.eval("int[define,'nat',int[is>0]]<x>[plus,[mult,x]][[is,[a,nat]][plus,10]|[define,'notnat',int[plus,0]]]<y>[plus,x][explain]").toString.contains("nat->int{?}<=int[is,bool<=int[gt,0]] x->int notnat->int[plus,0]"))
+    assert(engine.eval("int[define,nat<=int[is>0]]<x>[plus,[mult,x]][[is,[a,nat]][plus,10]|[define,notnat<=int[plus,0]]]<y>[plus,x][explain]").toString.contains("nat->nat<=int[is,bool<=int[gt,0]] x->int notnat->notnat<=int[plus,0]"))
     assert(engine.eval("int{3}[+1,+2,+3][explain]").toString.contains("(int{3}[plus,1],int{3}[plus,2],int{3}[pl...    =>   int{9}"))
     assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("instruction"))
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("z->bool"))
@@ -786,103 +786,110 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("define parsing") {
-    assertResult("nat")(engine.eval("int[define,'nat',int[is>0]][as,nat][plus,10]").name)
+    assertResult("nat")(engine.eval("int[define,nat<=int[is>0]][as,nat][plus,10]").name)
     // println(engine.eval("[1,2,3]").getClass)
     // assertResult(true.q(3))(engine.eval("int[define,'nat',int[is>0]][1,2,3][a,nat]"))
-    assertResult(btrue)(engine.eval("10[define,'big',is>4][a,big]"))
-    assertResult(bfalse)(engine.eval("2[define,'big',is>4][a,big]"))
-    assertResult(int(120))(engine.eval("10[define,'big',int[plus,100]][plus,0][plus,big]"))
-    assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,'person',('name'->str,'age'->int)][a,person]"))
-    assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,'person',('name'->str,'age'->int)][a,person]{100}"))
-    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,'person',('name'->str,'age'->int)][a,person]{100}"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,'person',('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,'years',int][define,'person',('name'->str,'age'->years)][is,[a,person]]{350}"))
+    assertResult(btrue)(engine.eval("10[define,big<=int[is>4]][a,big]"))
+    assertResult(btrue)(engine.eval("10[define,big<=_[is>4]][a,big]"))
+    assertResult(bfalse)(engine.eval("2[define,big<=int[is>4]][a,big]"))
+    assertResult(bfalse)(engine.eval("2[define,big<=_[is>4]][a,big]"))
+    assertResult(int(120))(engine.eval("10[define,big<=int[plus,100]][plus,0][plus,big]"))
+    assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][a,person]"))
+    assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][a,person]{100}"))
+    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][a,person]{100}"))
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,years<=int][define,person:('name'->str,'age'->years)][is,[a,person]]{350}"))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
-        | [define,'person',('name'->str,'age'->int)]
-        | [define,'old',>20]
-        | [define,'young',<20]
+        | [define,person:('name'->str,'age'->int)]
+        | [define,old<=int[gt,20]]
+        | [define,young<=int[lt,20]]
         | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
     assertResult(str("young guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
-        | [define,'person',rec('name'->str,'age'->int)[is,.age>0]]
-        | [define,'old',[is>20]]
-        | [define,'young',[is<20]]
+        | [define,person<=rec:('name'->str,'age'->int)[is,.age>0]]
+        | [define,old<=int[is>20]]
+        | [define,young<=int[is<20]]
         | [is,[a,person]][.age+-100<.old> -> 'old guy' , .age+-100<.young> -> 'young guy']""".stripMargin))
     ///////////////////
     assertResult(btrue `,` bfalse `,` btrue)(engine.eval(
       """ 1
-        | [define,'nat',int[is>0]]
-        | [define,'z',int[is==[zero]]]
-        | [define,'o',int[is==[one]]]
+        | [define,nat<=int[is>0]]
+        | [define,z<=int[is==[zero]]]
+        | [define,o<=int[is==[one]]]
         |   -<([a,nat],[a,z],[a,o])""".stripMargin))
     assertResult("(bool<=int[a,int{?}<=int[is,bool<=int[gt,0]]],bool<=int[a,int{?}<=int[is,bool<=int[eq,0]]],bool<=int[a,int{?}<=int[is,bool<=int[eq,1]]])")(engine.eval(
       """ int
-        | [define,'nat',int[is>0]]
-        | [define,'z',[is==[zero]]]
-        | [define,'o',[is==[one]]]
+        | [define,nat<=int[is>0]]
+        | [define,z<=int[is==[zero]]]
+        | [define,o<=int[is==[one]]]
         |   -<([a,nat],[a,z],[a,o])""".stripMargin).range.toString)
     assertResult(int(11))(engine.eval(
       """ 10
-        | [define,'z',0]
-        | [define,'o',1]
+        | [define,z:0]
+        | [define,o:1]
         | [plus,z][plus,o]""".stripMargin))
     assertResult(int(1))(engine.eval(
       """ 10
-        | [define,'z',0]
-        | [define,'o',int[one]]
+        | [define,z:0]
+        | [define,o<=int[one]]
         | [map,o]""".stripMargin))
   }
 
   test("recursive definition parsing") {
-    assertResult(bfalse)(engine.eval("(1,(2,'3'))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(2,('3',4)))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(2,(3,'4')))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(2,(3,4,5)))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,'3'))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,('3',4)))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,(3,'4')))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,(3,4,5)))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
     //
-    assertResult(btrue)(engine.eval("(1,2)[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
-    assertResult(btrue)(engine.eval("(1,(2,3))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
-    assertResult(btrue)(engine.eval("(1,(2,(3,4)))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
-    assertResult(btrue)(engine.eval("(1,(2,(3,(4,5))))[define,'xyz',[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,2)[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,3))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,(3,4)))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,(3,(4,5))))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
     //
-    assertResult(btrue)(engine.eval("(1,2)[define,'xyz',[int|(int,xyz)]][a,xyz]"))
-    assertResult(btrue)(engine.eval("(1,(2,3))[define,'xyz',[int|(int,xyz)]][a,xyz]"))
-    assertResult(btrue)(engine.eval("(1,(2,(3,4)))[define,'xyz',[int|(int,xyz)]][a,xyz]"))
-    assertResult(btrue)(engine.eval("(1,(2,(3,(4,5))))[define,'xyz',[int|(int,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,'a')[define,'xyz',[int|(int,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,('a',3))[define,'xyz',[int|(int,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(2,(3,'a')))[define,'xyz',[int|(int,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,('a',(3,(4,5))))[define,'xyz',[int|(int,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,2)[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,3))[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,(3,4)))[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(2,(3,(4,5))))[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,'a')[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,('a',3))[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,(3,'a')))[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,('a',(3,(4,5))))[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
     //
-    assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,'xyz',[is==1|(is==1,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(1,(1,(1,2))))[define,'xyz',[is==1|(is==1,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(1,(2,(1,1))))[define,'xyz',[is==1|(is==1,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,xyz<=_[is==1|(is==1,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(1,(1,(1,2))))[define,xyz<=_[is==1|(is==1,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(1,(2,(1,1))))[define,xyz<=_[is==1|(is==1,xyz)]][a,xyz]"))
     //
-    assertResult(btrue)(engine.eval("(2,1)[define,'wxy',is==1][define,'xyz',[wxy|(2,xyz)]][a,xyz]"))
-    assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(2,(1,(1,1))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(1,(1,(1,'1'))))[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
-    assertResult(btrue)(engine.eval("1[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("2[define,'wxy',int[is==1]][define,'xyz',[wxy|(wxy,xyz)]][a,xyz]"))
-    assertThrows[StackOverflowError] {
-      engine.eval("1[define,'wxy',xyz][define,'xyz',wxy][a,xyz]")
-    }
-    assertThrows[StackOverflowError] {
-      engine.eval("1[define,'xyz',xyz][a,xyz]")
-    }
+    assertResult(btrue)(engine.eval("(2,1)[define,wxy<=_[is==1]][define,xyz<=_[wxy|(2,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(2,(1,(1,1))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1,(1,(1,(1,'1'))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("1[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("2[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
+    /*    assertThrows[StackOverflowError] {
+          engine.eval("1[define,wxy<=xyz][define,xyz<=wxy][a,xyz]")
+        }
+        assertThrows[StackOverflowError] {
+          engine.eval("1[define,xyz<=xyz][a,xyz]")
+        }
+     */
+  }
+
+  test("play2") {
+    println(engine.eval("nat<=int[is>0]"))
   }
 
   test("play") {
     val x: Type[Obj] = engine.eval(
       """int
-        |[define,'blah',int<=(int[plus,0])]
-        |[define,'blah2',int<=(int[mult,1])]
+        |[define,int<=(int[plus,0])]
+        |[define,int<=(int[mult,1])]
         |  [mult,1][plus,[mult,1]][mult,[mult,1][plus,0]][plus,1][mult,1][plus,0]""".stripMargin).asInstanceOf[Type[Obj]]
     println(x)
     assertResult(int.plus(int).mult(int).plus(1))(x)
 
-    println(engine.eval("int[define,'blah',int<=(int[mult,1])][mult,1]"))
-    println(engine.eval("10[define,'big',int[plus,100]]<.big>+10"))
+    println(engine.eval("int[define,int<=(int[mult,1])][mult,1]"))
+    println(engine.eval("10[define,big<=int[plus,100]]<.big>+10"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))
     println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
