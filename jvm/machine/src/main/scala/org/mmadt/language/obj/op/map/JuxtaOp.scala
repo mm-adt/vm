@@ -1,7 +1,7 @@
 package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, _}
 import org.mmadt.storage.obj.value.VInst
 
 trait JuxtaOp {
@@ -11,5 +11,5 @@ trait JuxtaOp {
 }
 object JuxtaOp extends Func[Obj, Obj] {
   def apply[A <: Obj](right: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.juxt, List(right)), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.arg0[Obj]
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.compute(Inst.oldInst(inst).arg0[Obj]).q(multQ(start, Inst.oldInst(inst).arg0[Obj]))
 }

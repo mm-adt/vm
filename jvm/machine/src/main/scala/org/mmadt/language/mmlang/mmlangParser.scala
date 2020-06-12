@@ -84,7 +84,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // mmlang's language structure
-  lazy val obj: Parser[Obj] = lstRangeType | objValue | objType | polyObj | anonQuant
+  lazy val obj: Parser[Obj] = objType | objValue | anonQuant
 
   // variable parsing
   lazy val symbolName: Regex = "[a-zA-Z]+".r
@@ -124,9 +124,6 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ {
     case Some(range) ~ domain ~ insts => range <= insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
     case None ~ domain ~ insts => insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
-  }
-  lazy val lstRangeType: Parser[Obj] = (lstType <~ Tokens.:<=) ~ cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ {
-    case range ~ domain ~ insts => range <= insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
   }
   lazy val anonQuant: Parser[__] = quantifier ^^ (x => new __().q(x))
   lazy val anonTypeSugar: Parser[__] = rep1[List[Inst[Obj, Obj]]](inst) ^^ (x => x.flatten.foldLeft(new __())((a, b) => a.clone(via = (a, b))))

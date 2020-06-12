@@ -59,7 +59,7 @@ object OpInstResolver {
       case Tokens.last => LastOp()
       case Tokens.tail => TailOp()
       case Tokens.split | Tokens.split_op => SplitOp(args.head)
-      case Tokens.combine | Tokens.combine_op => CombineOp(args.head.asInstanceOf[Lst[Obj]])
+      case Tokens.combine | Tokens.combine_op => CombineOp(args.head)
       case Tokens.merge | Tokens.merge_op => MergeOp()
       case Tokens.repeat => RepeatOp(args.head, args.tail.head)
       case Tokens.given | Tokens.given_op => GivenOp(args.head)

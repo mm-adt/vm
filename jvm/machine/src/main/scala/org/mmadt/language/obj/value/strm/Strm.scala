@@ -49,6 +49,7 @@ trait Strm[+O <: Obj] extends Value[O] {
   override def toString: String = LanguageFactory.printStrm(this)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.values.hashCode()
   override def equals(other: Any): Boolean = other match {
+    case obj: Obj if !this.alive => !obj.alive
     case avalue: Value[O] => MultiSet.test(this, avalue.toStrm)
     case _ => false
   }

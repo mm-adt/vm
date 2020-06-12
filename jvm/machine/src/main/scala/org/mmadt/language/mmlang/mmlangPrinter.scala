@@ -48,7 +48,7 @@ object mmlangPrinter {
     case _ => "{" + x._1.g + "," + x._2.g + "}"
   }
 
-  def strmString(strm: Strm[Obj]): String = strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
+  def strmString(strm: Strm[Obj]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
 
   def lstString(lst: Lst[_]): String = {
     if (lst.root) listString(lst)

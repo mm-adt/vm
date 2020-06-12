@@ -52,6 +52,7 @@ trait Obj
     with MapOp
     with ModelOp
     with GivenOp
+    with JuxtaOp
     with PathOp
     with FromOp
     with QOp
@@ -142,7 +143,7 @@ trait Obj
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: E): E = rangeType match {
-    case _: Type[E] if this.root && rangeType.root && __.isAnon(this) => Obj.copyDefinitions(this, rangeType.hardQ(multQ(this, rangeType)))
+  case _: Type[E] if this.root && rangeType.root && __.isAnon(this) => Obj.copyDefinitions(this, rangeType.hardQ(multQ(this, rangeType)))
     case _: Type[E] => Tokens.tryName[E](rangeType, rangeType.trace
       .headOption
       .map(x => x._2.exec(this))

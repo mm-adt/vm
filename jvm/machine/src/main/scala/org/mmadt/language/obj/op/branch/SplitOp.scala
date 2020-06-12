@@ -62,7 +62,7 @@ object SplitOp extends Func[Obj, Obj] {
 
   private def processAll(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = {
     start match {
-      case astrm: Strm[Obj] => astrm.via(start, inst).asInstanceOf[Lst[Obj]]
+      case astrm: Strm[Obj] => astrm.via(start, inst).asInstanceOf[Poly[Obj]]
       case _ => inst.arg0[Poly[Obj]].clone(via = (start, inst))
     }
   }
