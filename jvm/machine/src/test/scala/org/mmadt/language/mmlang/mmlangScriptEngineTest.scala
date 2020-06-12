@@ -610,7 +610,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(3, 1))(engine.eval("1<x>[plus,2]-<(x[plus,2],x)>-"))
     assertResult(int(3, 1))(engine.eval("1<x><y>[plus,2]-<(y[plus,2],x)>-"))
     assertResult(int(3))(engine.eval("1<x>[plus,2]-<(x[plus,2]|x)>-"))
-    assertResult(zeroObj | int(3) | zeroObj)(engine.eval("1<x>[plus,2]-<(x[is>100]|x[plus,2]|x)"))
+    assertResult(zeroObj | int(3) | zeroObj)(engine.eval("[1]<x>[plus,2]-<(x[is>100]|x[plus,2]|x)"))
     assertThrows[LanguageException] {
       engine.eval("1[plus,1][plus,x]")
     }

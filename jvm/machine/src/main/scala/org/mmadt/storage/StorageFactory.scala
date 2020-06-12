@@ -62,11 +62,11 @@ trait StorageFactory {
   def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = base): RealType
   def tstr(name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = base): StrType
   /////////VALUES/////////
-  def obj(value: Any): ObjValue
-  def bool(value: Boolean): BoolValue = vbool(value = value)
-  def int(value: Long): IntValue = vint(value = value)
-  def real(value: Double): RealValue = vreal(value = value)
-  def str(value: String): StrValue = vstr(value = value)
+  def obj(g: Any): ObjValue
+  def bool(g: Boolean): BoolValue = vbool(g = g)
+  def int(g: Long): IntValue = vint(g = g)
+  def real(g: Double): RealValue = vreal(g = g)
+  def str(g: String): StrValue = vstr(g = g)
   def rec[A <: Value[Obj], B <: Value[Obj]](value1: Rec[A, B], value2: Rec[A, B], valuesN: Rec[A, B]*): RecStrm[A, B] = vrec((List(value1, value2) ++ valuesN).iterator)
   //
   def bool(value1: BoolValue, value2: BoolValue, valuesN: BoolValue*): BoolStrm
@@ -74,10 +74,10 @@ trait StorageFactory {
   def real(value1: RealValue, value2: RealValue, valuesN: RealValue*): RealStrm
   def str(value1: StrValue, value2: StrValue, valuesN: StrValue*): StrStrm
   def vrec[A <: Value[Obj], B <: Value[Obj]](value: Iterator[Rec[A, B]]): RecStrm[A, B]
-  def vbool(name: String = Tokens.bool, value: Boolean, q: IntQ = qOne, via: ViaTuple = base): BoolValue
-  def vint(name: String = Tokens.int, value: Long, q: IntQ = qOne, via: ViaTuple = base): IntValue
-  def vreal(name: String = Tokens.real, value: Double, q: IntQ = qOne, via: ViaTuple = base): RealValue
-  def vstr(name: String = Tokens.str, value: String, q: IntQ = qOne, via: ViaTuple = base): StrValue
+  def vbool(name: String = Tokens.bool, g: Boolean, q: IntQ = qOne, via: ViaTuple = base): BoolValue
+  def vint(name: String = Tokens.int, g: Long, q: IntQ = qOne, via: ViaTuple = base): IntValue
+  def vreal(name: String = Tokens.real, g: Double, q: IntQ = qOne, via: ViaTuple = base): RealValue
+  def vstr(name: String = Tokens.str, g: String, q: IntQ = qOne, via: ViaTuple = base): StrValue
   //
   def strm[O <: Obj](itty: Seq[O]): O
   def strm[O <: Obj]: OStrm[O]
@@ -169,23 +169,20 @@ object StorageFactory {
     override def bool(value1: BoolValue, value2: BoolValue, valuesN: BoolValue*): BoolStrm = new VBoolStrm(values = MultiSet(value1 +: (value2 +: valuesN)))
     override def vint(name: String, g: Long, q: IntQ, via: ViaTuple): IntValue = new VInt(name, g, q, via)
     override def int(value1: IntValue, value2: IntValue, valuesN: IntValue*): IntStrm = new VIntStrm(values = MultiSet(value1 +: (value2 +: valuesN)))
-    override def vreal(name: String, value: Double, q: IntQ, via: ViaTuple): RealValue = new VReal(name, value, q, base)
+    override def vreal(name: String, g: Double, q: IntQ, via: ViaTuple): RealValue = new VReal(name, g, q, base)
     override def real(value1: RealValue, value2: RealValue, valuesN: RealValue*): RealStrm = new VRealStrm(values = MultiSet(value1 +: (value2 +: valuesN)))
     override def vstr(name: String, g: String, q: IntQ, via: ViaTuple): StrValue = new VStr(name, g, q, base)
     override def str(value1: StrValue, value2: StrValue, valuesN: StrValue*): StrStrm = new VStrStrm(values = MultiSet(value1 +: (value2 +: valuesN)))
     override def vrec[A <: Value[Obj], B <: Value[Obj]](values: Iterator[Rec[A, B]]): RecStrm[A, B] = new VRecStrm(values = MultiSet(values.toSeq))
     //
     override def strm[O <: Obj]: OStrm[O] = new VObjStrm(values = List.empty).asInstanceOf[OStrm[O]]
-    override def strm[O <: Obj](values: Seq[O]): O = {
-      (values.headOption.getOrElse(null) match {
-        case _: Bool => new VBoolStrm(values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))
-        case _: Int => new VIntStrm(values = MultiSet(values.asInstanceOf[Seq[IntValue]]))
-        case _: Real => new VRealStrm(values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
-        case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
-        case _: Rec[_, _] => new VRecStrm[Value[Obj], Value[Obj]](values = MultiSet(values.asInstanceOf[Seq[Rec[Value[Obj], Value[Obj]]]]))
-        case _: Lst[_] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Lst[Obj]]]))
-        case _ => new VObjStrm(values = List.empty)
-      }).asInstanceOf[O]
-    }
+    override def strm[O <: Obj](values: Seq[O]): O = values.headOption.map {
+      case _: Bool => new VBoolStrm(values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))
+      case _: Int => new VIntStrm(values = MultiSet(values.asInstanceOf[Seq[IntValue]]))
+      case _: Real => new VRealStrm(values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
+      case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
+      case _: Rec[_, _] => new VRecStrm[Value[Obj], Value[Obj]](values = MultiSet(values.asInstanceOf[Seq[Rec[Value[Obj], Value[Obj]]]]))
+      case _: Lst[_] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Lst[Obj]]]))
+    }.getOrElse(new VObjStrm(values = List.empty)).asInstanceOf[O]
   }
 }

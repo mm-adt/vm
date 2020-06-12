@@ -11,5 +11,5 @@ trait JuxtaOp {
 }
 object JuxtaOp extends Func[Obj, Obj] {
   def apply[A <: Obj](right: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.juxt, List(right)), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.compute(Inst.oldInst(inst).arg0[Obj]).q(multQ(start, Inst.oldInst(inst).arg0[Obj]))
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.compute(Inst.oldInst(inst).arg0[Obj]).hardQ(multQ(start, Inst.oldInst(inst).arg0[Obj]))
 }
