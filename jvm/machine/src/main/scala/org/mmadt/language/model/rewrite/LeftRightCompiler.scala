@@ -49,12 +49,12 @@ object LeftRightCompiler {
   def search(defines: List[Obj], atype: Obj): Option[Obj] = {
     defines.map(a => Some(a.domain match {
       case apoly: Lst[_] => apoly.glist.head
-      case btype: Type[Obj] => btype
+      case btype: Type[_] => btype
     }).filter(x => deflessEquals(x, atype))
       .map(_ =>
         a.range match {
           case apoly: Lst[_] => apoly.glist.head
-          case btype: Type[Obj] => btype
+          case btype: Type[_] => btype
         }))
       .filter(_.isDefined)
       .map(_.get)

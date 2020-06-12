@@ -171,10 +171,14 @@ object Obj {
   def rangeWithDefinitions[A <: Obj](obj: Type[Obj]): Type[Obj] = obj.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(obj.range.asInstanceOf[Type[Obj]])((a, b) => b._2.exec(a).asInstanceOf[Type[Obj]])
   def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
 
-  def fetch[A <: Obj](obj: Obj, label: String): A = {
-    val result: Option[A] = Obj.fetchOption[A](obj, label)
-    if (result.isEmpty) throw LanguageException.labelNotFound(obj.tracer(zeroObj `;` __), label)
-    result.get
+  @scala.annotation.tailrec
+  def fetch(start: Obj, search: Obj): Boolean = {
+    start match {
+      case x if x.root => false
+      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
+      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].equals(search) => true
+      case x => fetch(x.via._1, search)
+    }
   }
 
   @scala.annotation.tailrec
