@@ -147,7 +147,7 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
   lazy val manyInstSugar: Parser[List[Inst[Obj, Obj]]] = splitMergeSugar ~ opt(quantifier) ^^ (x => x._2.map(q => List(x._1.head, x._1.tail.head.q(q))).getOrElse(x._1))
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
     Tokens.as_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op |
-      Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op |
+      Tokens.juxt_op | Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op |
       Tokens.and_op | /*Tokens.or_op |*/ Tokens.given_op | Tokens.product_op | Tokens.sum_op |
       Tokens.combine_op | Tokens.a_op | Tokens.is) ~ obj ^^
     (x => OpInstResolver.resolve(x._1, List(x._2)))

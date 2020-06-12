@@ -82,6 +82,7 @@ object OpInstResolver {
         case List(key: Obj, typeHint: Type[Obj]) => GetOp(key, typeHint)
         case List(key: Obj) => GetOp(key)
       }
+      case Tokens.juxt | Tokens.juxt_op => JuxtaOp(args.head)
       case Tokens.map => MapOp(args.head)
       case Tokens.model => ModelOp(args.head.asInstanceOf[Rec[Type[Obj], Type[Obj]]])
       case Tokens.neg => NegOp()
