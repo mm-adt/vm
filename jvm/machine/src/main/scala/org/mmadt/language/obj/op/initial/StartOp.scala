@@ -38,5 +38,5 @@ trait StartOp {
 }
 object StartOp extends Func[Obj, Obj] {
   def apply[O <: Obj](starts: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.start, List(starts)), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Obj.copyDefinitions(start, inst.arg0[Obj])
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.arg0[Obj]
 }

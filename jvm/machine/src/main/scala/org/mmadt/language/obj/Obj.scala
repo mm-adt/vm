@@ -143,7 +143,7 @@ trait Obj
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: E): E = rangeType match {
-  case _: Type[E] if this.root && rangeType.root && __.isAnon(this) => Obj.copyDefinitions(this, rangeType.hardQ(multQ(this, rangeType)))
+    case _: Type[E] if this.root && rangeType.root && __.isAnon(this) => rangeType.hardQ(multQ(this, rangeType))
     case _: Type[E] => Tokens.tryName[E](rangeType, rangeType.trace
       .headOption
       .map(x => x._2.exec(this))
@@ -169,7 +169,6 @@ trait Obj
 }
 
 object Obj {
-  def rangeWithDefinitions[A <: Obj](obj: Type[Obj]): Type[Obj] = obj.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(obj.range.asInstanceOf[Type[Obj]])((a, b) => b._2.exec(a).asInstanceOf[Type[Obj]])
   def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
 
   @scala.annotation.tailrec
