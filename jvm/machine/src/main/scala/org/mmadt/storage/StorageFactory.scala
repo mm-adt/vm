@@ -32,8 +32,8 @@ import org.mmadt.language.obj.{ViaTuple, _}
 import org.mmadt.storage.StorageFactory.{qOne, qZero}
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
-import org.mmadt.storage.obj.value.strm._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
+import org.mmadt.storage.obj.value.strm.{VObjStrm, _}
 import org.mmadt.storage.obj.{OLst, ORec}
 
 
@@ -183,6 +183,7 @@ object StorageFactory {
       case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
       case _: Rec[_, _] => new VRecStrm[Value[Obj], Value[Obj]](values = MultiSet(values.asInstanceOf[Seq[Rec[Value[Obj], Value[Obj]]]]))
       case _: Lst[_] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Lst[Obj]]]))
+      case _ => new VObjStrm(values = List.empty)
     }.getOrElse(new VObjStrm(values = List.empty)).asInstanceOf[O]
   }
 }

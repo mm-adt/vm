@@ -22,10 +22,10 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -43,6 +43,7 @@ trait Type[+T <: Obj] extends Obj
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
+    case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
     case atype: Type[_] =>
       (name.equals(atype.name) || __.isAnon(this) || __.isAnon(atype)) &&
         withinQ(this, atype) &&

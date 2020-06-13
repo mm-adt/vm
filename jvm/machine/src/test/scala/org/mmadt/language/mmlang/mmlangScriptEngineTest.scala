@@ -876,7 +876,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("play2") {
-    println(engine.eval("nat<=int[is>0]"))
+    println(engine.eval("_[plus,1][plus,2]"))
   }
 
   test("play") {
