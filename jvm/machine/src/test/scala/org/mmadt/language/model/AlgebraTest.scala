@@ -49,8 +49,9 @@ class AlgebraTest extends FunSuite {
     //assertResult(int(0))(int.mult(int.plus(int.neg())) ===> intAlgebra)
   }
 
-  test("dd") {
-    println(int ==> (__("nat") <= int.is(int.gt(0))).named("nat"))
+  test("variable matching") {
+    val defines = int.define((int.plus(__("x")) `,`) <= (int.mult(__("x")) `,`))
+    assertResult(int.plus(2))(int.mult(2) ==> defines)
   }
 
   /*test("int ring rewrites") {
