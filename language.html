@@ -2445,9 +2445,19 @@ be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objec
 </div>
 <div class="sect3">
 <h4 id="_inst_monoid">Inst Monoid</h4>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Cayley Graphs</div>
 <div class="paragraph">
-<p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems.
-The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
+<p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of the structure of a group. If \$\langle A, \cdot, I \rangle \$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and generating set \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and edges \$E = (A \times (A \times I))\$ is the Cayley graph of the group. Thus, the edge \$a \to_i b\$ states that the outgoing and incoming vertices \$a,b \in A\$ respectively are connected by an edge labeled with the element \$i \in I\$.</p>
+</div>
+<div class="paragraph">
+<p>A <em>fully constructed</em> graph, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. As a <em>dynamically constructed</em> graph, a Cayley graph encodes the history of a group computation, where the current element has an incoming edges from the previous element being applied to a denoted generator. A <em>generalized</em> Cayley Graph applies the same concepts of the Cayley graph&#8217;s group presentation, to other magmas such as monoids and semigroups.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
 \langle\texttt{inst},\ast\rangle, \]
 where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element.
 This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is <code>obj{0}</code> (i.e. nothing).
@@ -2725,7 +2735,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-10 02:48:31 -0600
+Last updated 2020-06-14 11:35:53 -0600
 </div>
 </div>
 </body>
