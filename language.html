@@ -2462,21 +2462,29 @@ be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objec
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator set</a> of the <em>syntactic</em> <strong>inst monoid</strong> \[
-\langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element.
-This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where <code>S</code> is <code>obj{0}</code> (i.e. nothing).
-The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
+<p>mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generating set</a> of the <a href="https://en.wikipedia.org/wiki/Free_monoid">free</a> <strong>inst monoid</strong></p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{[start,x]}: \texttt{obj{0}} \rightarrow \texttt{x}
+  \langle \texttt{obj}, \ast, \texttt{inst}, \texttt{[id]} \rangle,
 \]</p>
 </div>
 <div class="paragraph">
-<p>An mm-ADT program is a <em>type</em>, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$).
-The way in which a dtype can be ground to a ctype using instructions only is via the <code>[start]</code> instruction.
-A single pass through the mm-ADT compiler yields a type trace based at a ctype.</p>
+<p>where <code>obj</code> is the carrier set, \$\ast: \tt{obj} \times \tt{i\nst} \to \tt{obj} \$ is the binary instruction application operator, \$\tt{i\nst} \subset \tt{obj}\$ are parameterized instructions, and \$\tt{[id]} \in \tt{i\nst}\$ is the identity element. While the richest algebra describing mm-ADT is a ring with unity, it is important to note that this "instruction-application" interpretation provides enough expressivity to faithfully capture all possible mm-ADT computations. For this reason, the <code>inst</code> monoid is a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid"><em>syntactic monoid</em></a> as any language capable of generating the its elements can general-purpose program the mm-ADT VM.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. An Instruction Only Free Monoid</div>
+<div class="content">
+<div class="paragraph">
+<p>The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{[start,x]}: \texttt{obj{0}} \to \texttt{x}
+\]</p>
+</div>
+<div class="paragraph">
+<p>An mm-ADT program is a <em>type</em> defined recurssively as \$ \tt{type} = (\tt{type} \times \tt{i\nst})\$. As such, an mm-ADT program is not a composition of instructions. The way in which a dtype can be ground to a ctype using only instructions is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
@@ -2504,6 +2512,8 @@ The instruction <code>[id]</code>, on the other hand, does.</p>
 ==&gt;bool&lt;=int[plus,5][gt,10]
 mmlang&gt; [start,int][plus,5][gt,10][id]
 ==&gt;bool&lt;=int[plus,5][gt,10][id]</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2740,7 +2750,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-14 11:41:10 -0600
+Last updated 2020-06-14 12:09:44 -0600
 </div>
 </div>
 </body>
