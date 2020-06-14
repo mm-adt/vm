@@ -73,7 +73,10 @@ trait Obj
   //////////////////////////////////////////////////////////////
 
   // type methods
-  def named(name: String): this.type = if (!this.isInstanceOf[__] && name == Tokens.empty) throw new LanguageException("Only anonymous types can be named anonymous") else this.clone(name = name)
+  def named(name: String): this.type = {
+    LanguageException.checkAnonymousTypeName(this, name)
+    this.clone(name = name)
+  }
   def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type = {
     // LanguageException.testDomainRange(asType(this), asType(domainType))

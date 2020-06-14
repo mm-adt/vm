@@ -50,6 +50,11 @@ public class LanguageException extends VmException {
         return new LanguageException(prefix + "\n" + rowSubstring + "\n" + Stream.generate(() -> " ").limit(Math.min(rowSubstring.length(), column) - 1).reduce((a, b) -> a + b).orElse("") + "^ near here");
     }
 
+    public static void checkAnonymousTypeName(final Obj obj, final String name) {
+        if (!(obj instanceof __) && name.equals(Tokens.anon()))
+            throw new LanguageException(obj + " is not an anonymous type");
+    }
+
     public static LanguageException typingError(final Obj source, final Type<?> target) {
         return new LanguageException(source + " is not " + (target.toString().matches("^[aeiouAEIOU].*") ? "an " : "a ") + target);
     }
@@ -80,13 +85,12 @@ public class LanguageException extends VmException {
     }
 
     public static void testDomainRange(final Type<?> range, final Type<?> domain) {
-        if (!(domain instanceof __) &&
-                !range.range().q(StorageFactory.qOne()).test(domain.range().q(StorageFactory.qOne())))
+        if (!(domain instanceof __) && !range.range().q(StorageFactory.qOne()).test(domain.range().q(StorageFactory.qOne())))
             throw LanguageException.typingError(range, domain);
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (!StorageFactory.asType(obj).range().test(((type instanceof __) ? obj.compute((Type<Obj>)type) : type).domain()))
+        if (!StorageFactory.asType(obj).range().test(((type instanceof __) ? obj.compute((Type<Obj>) type) : type).domain()))
             throw LanguageException.typingError(obj, type);
     }
 
