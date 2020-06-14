@@ -138,6 +138,15 @@ object StorageFactory {
   lazy val * : (IntValue, IntValue) = qStar
   lazy val ? : (IntValue, IntValue) = qMark
   lazy val + : (IntValue, IntValue) = qPlus
+  def baseName(obj: Obj): String = obj match {
+    case _: Bool => Tokens.bool
+    case _: Int => Tokens.int
+    case _: Real => Tokens.real
+    case _: Str => Tokens.str
+    case _: Lst[_] => Tokens.lst
+    case _: Rec[_, _] => Tokens.rec
+    case _: __ => Tokens.anon
+  }
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
     case alst: LstStrm[Obj] if alst.isValue => lst(sep = Tokens.`,`).q(alst.q) // TODO:
     //case alst: Lst[Obj] if alst.isValue => alst.clone(alst.glist.map(x => asType[Obj](x)))

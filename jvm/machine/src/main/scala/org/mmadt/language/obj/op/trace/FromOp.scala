@@ -52,7 +52,7 @@ object FromOp extends Func[Obj, Obj] {
     else {
       history match {
         case Some((Tokens.to, aobj)) => aobj.via(start, inst)
-        case Some((Tokens.define, aobj)) => Inst.resolveArg(start, aobj.named(Tokens.anon)) // TODO: work to get rid of definitions be retrieved with [from]
+        case Some((Tokens.define, aobj)) => Inst.resolveArg(start, aobj.named(baseName(aobj))) // TODO: work to get rid of definitions be retrieved with [from]
         case None => history.map(x => x._2).getOrElse(if (inst.args.length == 1) asType(start) else inst.arg1).via(start, inst)
       }
     }
