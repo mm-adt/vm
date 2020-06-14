@@ -1221,19 +1221,24 @@ A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encodi
 A _fully constructed_ graph, a Cayley graph's vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. As a _dynamically constructed_ graph, a Cayley graph encodes the history of a group computation, where the current element has an incoming edges from the previous element being applied to a denoted generator. A _generalized_ Cayley Graph applies the same concepts of the Cayley graph's group presentation, to other magmas such as monoids and semigroups.
 ****
 
-mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generator set] of the _syntactic_ **inst monoid** \[
-\langle\texttt{inst},\ast\rangle, \]
-where \$\tt{i\nst}\$ is the infinite set of all instruction compositions, \$\ast: \tt{i\nst} \times \tt{i\nst} \rightarrow \tt{i\nst}\$ an associative binary composition operator, and \$\tt{[no\op]} \in \tt{i\nst}\$ is the unique identity element.
-This "instruction-only" interpretation of mm-ADT realizes the general unitary form of mm-ADT \$ f: S \rightarrow E \$ where `S` is `obj{0}` (i.e. nothing).
+mm-ADT types serve numerous roles which are typically realized by many different sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generating set] of the https://en.wikipedia.org/wiki/Free_monoid[free] **inst monoid**
+
+\[
+  \langle \texttt{obj}, \ast, \texttt{inst}, \texttt{[id]} \rangle,
+\]
+
+where `obj` is the carrier set, \$\ast: \tt{obj} \times \tt{i\nst} \to \tt{obj} \$ is the binary instruction application operator, \$\tt{i\nst} \subset \tt{obj}\$ are parameterized instructions, and \$\tt{[id]} \in \tt{i\nst}\$ is the identity element. While the richest algebra describing mm-ADT is a ring with unity, it is important to note that this "instruction-application" interpretation provides enough expressivity to faithfully capture all possible mm-ADT computations. For this reason, the `inst` monoid is a https://en.wikipedia.org/wiki/Syntactic_monoid[_syntactic monoid_] as any language capable of generating the its elements can general-purpose program the mm-ADT VM.
+
+.An Instruction Only Free Monoid
+================================================================
+
 The `x\<=[start,x]` instruction is an *initial instruction* in that it returns it's arguments regardless of the input `obj` (or lack thereof).
 
 \[
-\texttt{[start,x]}: \texttt{obj\{0\}} \rightarrow \texttt{x}
+\texttt{[start,x]}: \texttt{obj\{0\}} \to \texttt{x}
 \]
 
-An mm-ADT program is a _type_, not a composition of instructions (\$ \tt{type} = (\tt{type} \times \tt{i\nst})\$).
-The way in which a dtype can be ground to a ctype using instructions only is via the `[start]` instruction.
-A single pass through the mm-ADT compiler yields a type trace based at a ctype.
+An mm-ADT program is a _type_ defined recurssively as \$ \tt{type} = (\tt{type} \times \tt{i\nst})\$. As such, an mm-ADT program is not a composition of instructions. The way in which a dtype can be ground to a ctype using only instructions is via the `[start]` instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.
 
 image::start-ctypes.png[float="right",width=315]
 
@@ -1258,6 +1263,8 @@ mmlang> [start,int][plus,5][gt,10][noop]
 mmlang> [start,int][plus,5][gt,10][id]
 ==>bool<=int[plus,5][gt,10][id]
 ----
+
+================================================================
 
 ==== Type Ringoid
 
