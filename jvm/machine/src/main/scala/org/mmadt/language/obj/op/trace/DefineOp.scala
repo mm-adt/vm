@@ -35,8 +35,7 @@ object DefineOp extends Func[Obj, Obj] {
   }
   private def mapInstructions(lhs: Inst[Obj, Obj], rhs: Inst[Obj, Obj]): Inst[Obj, Obj] = {
     if (lhs.equals(rhs)) return lhs
-    if (lhs.op != rhs.op) return lhs.q(qZero)
-    if (lhs.args.length != rhs.args.length) return lhs.q(qZero)
+    if (lhs.op != rhs.op || lhs.args.length != rhs.args.length) return lhs.q(qZero)
     val args = lhs.args.zip(rhs.args).map(x => if (x._1.equals(x._2)) x._2 else if (x._1.test(x._2)) x._1.compute(x._2) else x._2.q(qZero))
     if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
   }
@@ -58,13 +57,15 @@ object DefineOp extends Func[Obj, Obj] {
           b = rewrite(range, arewrite, b)
           for (_ <- 1 to length) a = a.linvert()
         } else {
-          b = atake.headOption.map(x => x.exec(b)).getOrElse(b) // atake.foldLeft(b)((x,y) => y.exec(x))
-          a = a.linvert() //for (_ <- 1 to length) a = a.linvert()
+          b = atake.headOption.map(x => x.exec(b)).getOrElse(b)
+          for (_ <- 1 to length) a = a.linvert()
         }
       }
     })
+    if (!b.equals(obj)) {
+      b = traceScanCompiler(defines, b, rewrite)
+    }
     b.trace.map(x => x._2).filter(x => x.op != Tokens.define).foldLeft(b.domainObj[Obj]())((x, y) => y.exec(x)).asInstanceOf[A]
-    //b.asInstanceOf[A]
   }
 
   def chooseRewrite(range: Obj, trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range `|` trace.filter(x => x.op != Tokens.define).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge
@@ -74,16 +75,4 @@ object DefineOp extends Func[Obj, Obj] {
       .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._1.args.zip(x._2.args).map(y => y._1.compute(y._2))))
       .foldLeft(range.domainObj[Obj]())((x, y) => y.exec(x)))
   }
-
-  /*def main(args: Array[String]): Unit = {
-    val headInt = int.define((int `;`) <= (int.plus(0) `;`)).define((int.plus(int) `;`) <= (int.mult(2) `;`)).define((int.mult(__("x")) `;`) <= (int.plus(__.is(int.eqs(-1)).to("x")) `;`)) // int.define((int`;`)<=(int.plus(330).plus(330)`;`))
-    val queryInput = headInt.plus(10).plus(0).plus(0).mult(2).plus(-1) // int.define(__("nat")<=int.is(int.gt(0))).define(int<=int.plus(5)).as(__("nat")) //
-    println(getDefines(queryInput))
-    println(queryInput)
-    val queryOutput = DefineOp.traceScanCompiler(getDefines(queryInput), queryInput, replaceRewrite)
-    println(queryOutput)
-    println((int(0) ==> queryOutput))
-    assert(int(19) == ((int(0) ==> queryOutput)))
-  }*/
-
 }
