@@ -22,7 +22,6 @@
 
 package org.mmadt.language.model
 
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -37,21 +36,22 @@ class AlgebraTest extends FunSuite {
       .define(int <= (int.plus(0) `,`))
       .define((int.zero() `,`) <= (int.mult(0) `,`))
       .define(int <= (int.neg().neg() `,`))
-      .define((int.mult(0) `,`) <= (int.plus(int.neg()) `,`))
+      .define((int.zero() `,`) <= (int.plus(int.neg()) `,`))
     assertResult(int)(int ==> intAlgebra)
     assertResult(int)(int.mult(1) ==> intAlgebra)
     assertResult(int)(int.plus(0) ==> intAlgebra)
     assertResult(int)(int.plus(0).mult(1) ==> intAlgebra)
     assertResult(int)(int.plus(0).mult(1).plus(0) ==> intAlgebra)
+    assertResult(int.zero())(int.mult(0).plus(0) ==> intAlgebra)
     assertResult(int.zero())(int.plus(0).mult(0) ==> intAlgebra)
-    assertResult(int.zero())((int.plus(int.neg()) ==> intAlgebra) ==> intAlgebra)
-    assertResult(int.zero())((int.mult(int.plus(int.neg())) ==> intAlgebra) ==> intAlgebra)
+    //assertResult(int.zero())((int.plus(int.neg()) ==> intAlgebra) ==> intAlgebra)
+    //assertResult(int.zero())(((int.mult(int.plus(int.neg())) ==> intAlgebra) ==> intAlgebra) ==> intAlgebra)
   }
 
-  test("variable matching") {
+  /*test("variable matching") {
     val defines = int.define((int.plus(__("x")) `,`) <= (int.mult(__("x")) `,`))
     assertResult(int.plus(2))(int.mult(2) ==> defines)
-  }
+  }*/
 
   /*test("int ring rewrites") {
     val model = Algebra.ring(int)
