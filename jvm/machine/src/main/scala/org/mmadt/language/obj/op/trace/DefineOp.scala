@@ -51,9 +51,9 @@ object DefineOp extends Func[Obj, Obj] {
       val domain = getPolyOrObj(d)
       val domainTrace = domain.trace.map(x => x._2)
       val length = domainTrace.length
-      if (a.trace.length >= length) {
-        while (!a.root && a.trace.length >= length) {
-          val atake: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(defines, x, rewrite)).take(length)
+      while (!a.root) {
+        val atake: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(defines, x, rewrite)).take(length)
+        if (atake.length == length) {
           val arewrite = atake.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
           if (arewrite.forall(x => x.alive)) {
             b = rewrite(range, arewrite, b)
@@ -62,9 +62,11 @@ object DefineOp extends Func[Obj, Obj] {
             b = atake.headOption.map(x => x.exec(b)).get
             a = a.linvert()
           }
+        } else {
+          b = atake.foldLeft(b)((x, y) => y.exec(x))
+          a = a.domain[Obj]
         }
-      } else
-        b = a
+      }
     })
     if (!b.equals(obj)) b = traceScanCompiler(defines, b, rewrite)
     b.asInstanceOf[A]
