@@ -78,7 +78,7 @@ object Model {
       this
     }
     override def get(left: Type[Obj]): Option[Type[Obj]] = {
-      if (left.name.equals(Tokens.model)) return Some(toRec)
+      //if (left.name.equals(Tokens.model)) return Some(toRec)
       if (isSymbol(left)) return this.typeMap.values.flatten.find(x => x._2.name.equals(left.name) && x._2.root && x._1.name != x._2.name).map(x => x._1.named(left.name))
       this.typeMap.get(left.name) match {
         case None => None

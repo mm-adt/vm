@@ -28,7 +28,6 @@ import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.ErrorOp
 import org.mmadt.language.obj.op.trace._
@@ -50,7 +49,6 @@ trait Obj
     with IsOp
     with FoldOp
     with MapOp
-    with ModelOp
     with GivenOp
     with JuxtaOp
     with PathOp

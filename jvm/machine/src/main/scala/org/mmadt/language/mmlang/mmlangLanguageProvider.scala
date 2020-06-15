@@ -46,7 +46,7 @@ object mmlangLanguageProvider {
   private lazy val scriptEngineManager: ScriptEngineManager = {
     val model: Model = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toSeq.map(x => x.model()).headOption.getOrElse(Model.id)
     val manager: ScriptEngineManager = new ScriptEngineManager() // want to constrain the manager to only accessing mmADTScriptEngines
-    manager.setBindings(bindings(Tokens.model -> model))
+   // manager.setBindings(model)
     manager
   }
   private def scriptEngine(): mmADTScriptEngine = scriptEngineManager.getEngineByName(_name).asInstanceOf[mmlangScriptEngine]

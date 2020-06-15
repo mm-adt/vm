@@ -81,7 +81,6 @@ object Tokens {
   val to = "to"
   val from = "from"
   val start = "start"
-  val model = "model"
   val q = "q"
   val zero = "zero"
   val trace = "trace"

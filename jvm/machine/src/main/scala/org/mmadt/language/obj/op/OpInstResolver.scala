@@ -29,14 +29,12 @@ import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.model.ModelOp
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, PutOp}
 import org.mmadt.language.obj.op.trace._
-import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters
@@ -84,7 +82,6 @@ object OpInstResolver {
       }
       case Tokens.juxt | Tokens.juxt_op => JuxtaOp(args.head)
       case Tokens.map => MapOp(args.head)
-      case Tokens.model => ModelOp(args.head.asInstanceOf[Rec[Type[Obj], Type[Obj]]])
       case Tokens.neg => NegOp()
       case Tokens.count => CountOp()
       case Tokens.explain => ExplainOp()

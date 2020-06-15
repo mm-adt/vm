@@ -66,8 +66,6 @@ public class Console {
     private static final String RESULT = "==>";
     private static final String QUIT_OP = ":q";
     private static final String LANG_OP = ":lang";
-    private static final String MODEL_OP = ":model";
-    private static final String MODEL = "model";
     private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
     private static final Highlighter HIGHLIGHTER = new DefaultHighlighter();
 
@@ -104,13 +102,7 @@ public class Console {
                 else if (line.startsWith(LANG_OP)) {
                     engineName = line.replace(LANG_OP, "").trim();
                     engine = (mmADTScriptEngine) MANAGER.getEngineByName(engineName);
-                } else if (line.equals(MODEL_OP))
-                    terminal.writer().println(Model.from((Rec) engine.eval(Tokens.model())));
-                else if (line.equals(MODEL_OP + " clear"))
-                    engine.put(MODEL, Model.simple());
-                else if (line.startsWith(MODEL_OP))
-                    engine.put(MODEL, Model.from((Rec) engine.eval(Tokens.model())).put(Model.from((Rec) engine.eval(line.substring(6)))));
-                else
+                } else
                     JavaConverters.asJavaIterator(engine.eval(line).toStrm().values().iterator()).forEachRemaining(o -> {
                         AttributedString HIGHLIGHT_RESULT = HIGHLIGHTER.highlight(reader,RESULT).styleMatches(Pattern.compile(RESULT),AttributedStyle.BOLD);
                         AttributedString HIGHLIGHT_RANGE = HIGHLIGHTER.highlight(reader,o.toString()).styleMatches(Pattern.compile("<="),AttributedStyle.BOLD);

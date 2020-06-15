@@ -13,6 +13,6 @@ class GremlinScriptEngine(factory: GremlinScriptEngineFactory) extends AbstractS
   override def eval(script: String, context: ScriptContext): Obj = super.eval(script, context)
   override def eval(script: String, bindings: Bindings): Obj = GremlinParser.parse[Obj](script, getModel(bindings))
   override def getFactory: ScriptEngineFactory = factory
-  private def getModel(bindings: Bindings): Model = if (bindings.containsKey(Tokens.model)) bindings.get(Tokens.model).asInstanceOf[Model] else Model.id
+  private def getModel(bindings: Bindings): Model = Model.id
 }
 

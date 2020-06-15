@@ -18,9 +18,8 @@ class GremlinLanguageProvider extends LanguageProvider {
 object GremlinLanguageProvider {
   private val _name: String = "gremlin"
   private lazy val scriptEngineManager: ScriptEngineManager = {
-    val model: Model = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toSeq.map(x => x.model()).headOption.getOrElse(Model.id)
+    val model: Model = Model.id
     val manager: ScriptEngineManager = new ScriptEngineManager() // want to constrain the manager to only accessing mmADTScriptEngines
-    manager.setBindings(bindings(Tokens.model -> model))
     manager
   }
   private def scriptEngine(): mmADTScriptEngine = scriptEngineManager.getEngineByName(_name).asInstanceOf[GremlinScriptEngine]

@@ -58,7 +58,7 @@ object LeftRightSweepRewrite {
   // if no match, then apply the instruction after rewriting its arguments
   private def rewriteArgs[S <: Obj](model: Model, start: Type[S], inst: Inst[Obj, Obj], end: S): List[Obj] = {
     inst.op match {
-      case Tokens.a | Tokens.as | Tokens.map | Tokens.put | Tokens.model | Tokens.split => inst.args.map {
+      case Tokens.a | Tokens.as | Tokens.map | Tokens.put | Tokens.split => inst.args.map {
         case atype: Type[_] if isSymbol(atype) => model(atype)
         case other => other
       }

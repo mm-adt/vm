@@ -42,7 +42,6 @@ class mmkvStoreTest extends FunSuite {
 
   test("mmkv storage provider") {
     assert(engine.getBindings(ScriptContext.ENGINE_SCOPE).values().isEmpty)
-    assert(engine.getBindings(ScriptContext.GLOBAL_SCOPE).containsKey(Tokens.model))
   }
 
   test("mmkv store [get]") {
