@@ -22,6 +22,7 @@
 
 package org.mmadt.language.model
 
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -48,10 +49,10 @@ class AlgebraTest extends FunSuite {
     //assertResult(int.zero())(((int.mult(int.plus(int.neg())) ==> intAlgebra) ==> intAlgebra) ==> intAlgebra)
   }
 
-  /*test("variable matching") {
-    val defines = int.define((int.plus(__("x")) `,`) <= (int.mult(__("x")) `,`))
+  test("variable matching") {
+    val defines = int.define((int.plus(__("x")) `,`) <= (int.mult(__.to("x")) `,`))
     assertResult(int.plus(2))(int.mult(2) ==> defines)
-  }*/
+  }
 
   /*test("int ring rewrites") {
     val model = Algebra.ring(int)

@@ -33,6 +33,14 @@ object DefineOp extends Func[Obj, Obj] {
       case avalue: Value[_] => avalue
     })
   }
+  private def mapInstructions(lhs: Inst[Obj, Obj], rhs: Inst[Obj, Obj]): Inst[Obj, Obj] = {
+    if (lhs.equals(rhs)) return lhs
+    if (lhs.op != rhs.op) return lhs.q(qZero)
+    if (lhs.args.length != rhs.args.length) return lhs.q(qZero)
+    val args = lhs.args.zip(rhs.args).map(x => if (x._1.equals(x._2)) x._2 else if (x._1.test(x._2)) x._1.compute(x._2) else x._2.q(qZero))
+    if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
+  }
+
   def traceScanCompiler[A <: Obj](defines: List[Obj], obj: A, rewrite: Rewrite): A = {
     var a: Obj = obj
     var b: Obj = obj
@@ -44,10 +52,10 @@ object DefineOp extends Func[Obj, Obj] {
       val domainTrace = domain.trace.map(x => x._2)
       val length = domainTrace.length
       while (!a.root && a.trace.length >= length) {
-        // println(a + "---" + domain)
-        val atake = a.trace.map(x => x._2).map(x => rewriteInstArgs(defines, x, rewrite)).take(length)
-        if (atake.equals(domainTrace)) {
-          b = rewrite(range, atake, b)
+        val atake: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(defines, x, rewrite)).take(length)
+        val arewrite = atake.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
+        if (arewrite.forall(x => x.alive)) {
+          b = rewrite(range, arewrite, b)
           for (_ <- 1 to length) a = a.linvert()
         } else {
           b = atake.headOption.map(x => x.exec(b)).getOrElse(b) // atake.foldLeft(b)((x,y) => y.exec(x))
@@ -60,17 +68,22 @@ object DefineOp extends Func[Obj, Obj] {
   }
 
   def chooseRewrite(range: Obj, trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range `|` trace.filter(x => x.op != Tokens.define).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge
-  def replaceRewrite(range: Obj, trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.compute(range)
+  def replaceRewrite(range: Obj, trace: List[Inst[Obj, Obj]], query: Obj): Obj = {
+    query.compute(trace
+      .zip(range.trace.map(x => x._2))
+      .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._1.args.zip(x._2.args).map(y => y._1.compute(y._2))))
+      .foldLeft(range.domainObj[Obj]())((x, y) => y.exec(x)))
+  }
 
-  def main(args: Array[String]): Unit = {
-    val headInt = int.define((int `;`) <= (int.plus(0) `;`)).define((int.plus(int) `;`) <= (int.mult(2) `;`)) // int.define((int`;`)<=(int.plus(330).plus(330)`;`))
-    val queryInput = headInt.plus(10).plus(0).plus(0).mult(2).plus(2) // int.define(__("nat")<=int.is(int.gt(0))).define(int<=int.plus(5)).as(__("nat")) //
+  /*def main(args: Array[String]): Unit = {
+    val headInt = int.define((int `;`) <= (int.plus(0) `;`)).define((int.plus(int) `;`) <= (int.mult(2) `;`)).define((int.mult(__("x")) `;`) <= (int.plus(__.is(int.eqs(-1)).to("x")) `;`)) // int.define((int`;`)<=(int.plus(330).plus(330)`;`))
+    val queryInput = headInt.plus(10).plus(0).plus(0).mult(2).plus(-1) // int.define(__("nat")<=int.is(int.gt(0))).define(int<=int.plus(5)).as(__("nat")) //
     println(getDefines(queryInput))
     println(queryInput)
     val queryOutput = DefineOp.traceScanCompiler(getDefines(queryInput), queryInput, replaceRewrite)
     println(queryOutput)
     println((int(0) ==> queryOutput))
-    assert(int(22) == ((int(0) ==> queryOutput)))
-  }
+    assert(int(19) == ((int(0) ==> queryOutput)))
+  }*/
 
 }
