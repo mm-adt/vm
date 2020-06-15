@@ -43,10 +43,10 @@ class AlgebraTest extends FunSuite {
     assertResult(int)(int.plus(0) ==> intAlgebra)
     assertResult(int)(int.plus(0).mult(1) ==> intAlgebra)
     assertResult(int)(int.plus(0).mult(1).plus(0) ==> intAlgebra)
-    assertResult(int.zero())(int.mult(0).plus(0) ==> intAlgebra)
+//    assertResult(int.zero())(int.mult(0).plus(0) ==> intAlgebra)
     assertResult(int.zero())(int.plus(0).mult(0) ==> intAlgebra)
-    //assertResult(int.zero())((int.plus(int.neg()) ==> intAlgebra) ==> intAlgebra)
-    //assertResult(int.zero())(((int.mult(int.plus(int.neg())) ==> intAlgebra) ==> intAlgebra) ==> intAlgebra)
+//    assertResult(int.zero())((int.plus(int.neg()) ==> intAlgebra)
+//    assertResult(int.zero())(((int.mult(int.plus(int.neg())) ==> intAlgebra) ==> intAlgebra) ==> intAlgebra)
   }
 
   test("variable matching") {

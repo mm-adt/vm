@@ -75,7 +75,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     }
   }
 
-  /*test("compiler w/ model") {
+  test("compiler w/ model") {
     processor = Processor.compiler()
     val definitions = int
       .define((int.mult(2)`;`)<=(int.plus(int)`;`))
@@ -85,21 +85,21 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     /////
     assertResult(int.mult(2))(processor.apply(int, definitions `=>` int.plus(int)))
     assertResult(int.mult(4))(processor.apply(int, definitions `=>` int.plus(int).mult(int(2))))
-  }*/
+  }
 
-  /*test("compiler w/ nested instructions") {
+  test("compiler w/ nested instructions") {
     processor = Processor.compiler()
 
     val definitions = int
-      .define((int.mult(2)`;`)<=(int.plus(int)`;`))
+      //.define((int.mult(2)`;`)<=(int.plus(int)`;`))
       .define(int<=(int.plus(0)`;`))
       .define(int<=(int.plus(1).plus(-1)`;`))
 
     processor.apply(definitions.plus(int(0)).plus(int.plus(int(1)).plus(int(-1)).plus(int(0))))
-    assertResult(int.plus(int.plus(int(2)).plus(int(3)).plus(int(4))))(processor.apply(definitions.plus(int(0)).plus(int.plus(int(2)).plus(int(3)).plus(int(4)))))
+//    assertResult(int.plus(int.plus(int(2)).plus(int(3)).plus(int(4))))(processor.apply(definitions.plus(int(0)).plus(int.plus(int(2)).plus(int(3)).plus(int(4)))))
     assertResult(int.plus(int))(processor.apply(definitions.plus(0).plus(int.plus(0))))
     assertResult(int.plus(int))(processor.apply(definitions.plus(int(0)).plus(int.plus(int(1)).plus(int(-1)).plus(int(0)))))
-  }*/
+  }
 
   /*test("compiler with domain rewrites") {
     val socialToMM: Model = Model.simple()

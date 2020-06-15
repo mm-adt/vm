@@ -19,6 +19,7 @@ object DefineOp extends Func[Obj, Obj] {
   // [define] related utility methods
   def getDefines(obj: Obj): List[Obj] = obj.trace.filter(x => x._2.op == Tokens.define).map(x => x._2.arg0[Obj]).sortBy(x => -x.domainObj[Obj]().trace.length)
   def putDefines(defines: List[Obj], obj: Obj): Obj = obj.trace.map(x => x._2).foldLeft(defines.foldLeft(obj.domainObj[Obj]())((x, y) => DefineOp(y).exec(x)))((x, y) => y.exec(x))
+  def removeDefines(obj: Obj): Obj = obj.trace.map(x => x._2).filter(x => x.op != Tokens.define).foldLeft(obj.domainObj[Obj]())((x, y) => y.exec(x))
   private def getPolyOrObj(obj: Obj): Obj = obj.domain match {
     case alst: Lst[_] => alst.glist.head
     case _ => obj
@@ -41,8 +42,8 @@ object DefineOp extends Func[Obj, Obj] {
   }
 
   def traceScanCompiler[A <: Obj](defines: List[Obj], obj: A, rewrite: Rewrite): A = {
-    var a: Obj = obj
-    var b: Obj = obj
+    var a: Obj = removeDefines(obj)
+    var b: Obj = a
     defines.filter(x => !(x.isInstanceOf[Value[Obj]] && !x.isInstanceOf[Poly[_]])).filter(x => !__.isToken(x.range)).foreach(d => {
       a = b
       b = b.domainObj[Obj]()
@@ -50,22 +51,23 @@ object DefineOp extends Func[Obj, Obj] {
       val domain = getPolyOrObj(d)
       val domainTrace = domain.trace.map(x => x._2)
       val length = domainTrace.length
-      while (!a.root && a.trace.length >= length) {
-        val atake: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(defines, x, rewrite)).take(length)
-        val arewrite = atake.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
-        if (arewrite.forall(x => x.alive)) {
-          b = rewrite(range, arewrite, b)
-          for (_ <- 1 to length) a = a.linvert()
-        } else {
-          b = atake.headOption.map(x => x.exec(b)).getOrElse(b)
-          for (_ <- 1 to length) a = a.linvert()
+      if (a.trace.length >= length) {
+        while (!a.root && a.trace.length >= length) {
+          val atake: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(defines, x, rewrite)).take(length)
+          val arewrite = atake.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
+          if (arewrite.forall(x => x.alive)) {
+            b = rewrite(range, arewrite, b)
+            for (_ <- 1 to length) a = a.linvert()
+          } else {
+            b = atake.headOption.map(x => x.exec(b)).get
+            a = a.linvert()
+          }
         }
-      }
+      } else
+        b = a
     })
-    if (!b.equals(obj)) {
-      b = traceScanCompiler(defines, b, rewrite)
-    }
-    b.trace.map(x => x._2).filter(x => x.op != Tokens.define).foldLeft(b.domainObj[Obj]())((x, y) => y.exec(x)).asInstanceOf[A]
+    if (!b.equals(obj)) b = traceScanCompiler(defines, b, rewrite)
+    b.asInstanceOf[A]
   }
 
   def chooseRewrite(range: Obj, trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range `|` trace.filter(x => x.op != Tokens.define).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge
