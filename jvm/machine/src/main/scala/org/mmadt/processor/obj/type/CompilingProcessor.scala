@@ -35,6 +35,10 @@ import org.mmadt.processor.Processor
 class CompilingProcessor(val model: Model = Model.id) extends Processor {
   override def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E = {
     // ProcessorException.testRootedType(domainObj,this)
+    /*
+     val query:E = domainObj.compute(rangeType).asInstanceOf[E]
+      DefineOp.traceScanCompiler(DefineOp.getDefines(query),query,DefineOp.replaceRewrite)
+     */
     LanguageException.testTypeCheck(domainObj, rangeType.domain)
     if (model == Model.id) LeftRightCompiler.execute(domainObj.compute(rangeType).asInstanceOf[E])
     else {
