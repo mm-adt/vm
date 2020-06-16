@@ -31,7 +31,7 @@ import org.scalatest.{FunSuite, Matchers}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks with Matchers {
-  final var processor: Processor = Processor.compiler()
+  final var processor: Processor = Processor.compiler
 
   test("compiler w/ linear singleton type") {
     assertResult(int.mult(int(2)))(processor.apply(int, int.mult(int(2))))
@@ -50,7 +50,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler w/ linear quantified type and model") {
-    processor = Processor.compiler()
+    processor = Processor.compiler
     val definitions = int
       .define((int.plus(int) `,`) <= (int.mult(2) `,`))
       .define(int <= (int.plus(0) `,`))
@@ -76,7 +76,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler w/ model") {
-    processor = Processor.compiler()
+    processor = Processor.compiler
     val definitions = int
       .define((int.mult(2) `;`) <= (int.plus(int) `;`))
       .define((int.mult(4) `;`) <= (int.mult(2).mult(2) `;`))
@@ -87,7 +87,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   }
 
   test("compiler w/ nested instructions") {
-    processor = Processor.compiler()
+    processor = Processor.compiler
 
     val definitions = int
       //.define((int.mult(2)`;`)<=(int.plus(int)`;`))

@@ -23,10 +23,12 @@
 package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.{ReduceInstruction, TraceInstruction}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -34,31 +36,19 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FoldOp {
   this: Obj =>
-  def fold[O <: Obj](seed: (String, O))(foldType: Type[O]): O = this match {
-    case _: Type[_] => asType[O](seed._2).via(this, FoldOp(seed, foldType))
-    case _ => this ==> foldType
-  }
-  def fold[O <: Obj](seed: O)(atype: Type[O]): O = fold("seed" -> seed)(atype)
+  def fold[O <: Obj](seed: O)(foldType: Type[_]): O = FoldOp(seed, foldType).exec(this).asInstanceOf[O]
+
 }
 
-object FoldOp {
-  def apply[A <: Obj](_seed: (String, A), atype: A): Inst[Obj, A] = new FoldInst[A](_seed, atype)
-
-  class FoldInst[A <: Obj](_seed: (String, A), atype: Obj) extends VInst[Obj, A](g=(Tokens.fold, List(str(_seed._1), _seed._2, atype))) with ReduceInstruction[A] with TraceInstruction {
-    override val seed: (String, A) = _seed
-    override val reduction: Type[A] = atype.asInstanceOf[Type[A]]
-
-    override def exec(start: Obj): A = {
-      val end: Obj = start match {
-        case _: Type[Obj] => start //Traverser.stateSplit[Obj](this.arg0[StrValue]().value,this.arg1[A]())(trav)
-        case _ => start
-      }
-      end.fold(seed)(reduction)
+object FoldOp extends Func[Obj, Obj] {
+  def apply[A <: Obj](seed: A, atype: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.fold, List(seed, atype)), func = this) with TraceInstruction
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val seed: Obj = inst.arg0[Obj]
+    val folding: Obj = __.to("x").compute(inst.arg1[Obj])
+    start match {
+      case strm: Strm[_] => strm.values.foldLeft(seed)((x, y) => Inst.resolveArg((x `,` y), folding))
+      case avalue: Value[_] => Inst.resolveArg((avalue `,` seed), folding).via(start, inst)
+      case _: Type[_] => inst.arg1[Type[Obj]].via(start, inst)
     }
-
-    /*private def deduceSeed(defaultSeed:ZeroOp[Type[Obj]],model:Model):Option[Obj] = {
-       Option(Traverser.standard(int(1))(model.get(defaultSeed.zero()).get).obj())
-    }*/
   }
-
 }

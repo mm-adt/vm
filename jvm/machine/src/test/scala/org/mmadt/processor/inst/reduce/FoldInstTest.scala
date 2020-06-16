@@ -22,12 +22,23 @@
 
 package org.mmadt.processor.inst.reduce
 
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class FoldInstTest extends FunSuite {
+  test("[fold] w/ int") {
+    assertResult(int(2))(int(2).fold(int(0))(__.from("x").get(0).plus(__.from("x").get(1))))
+    assertResult(int(7))(int(5).fold(int(2))(__.from("x").get(0).plus(__.from("x").get(1))))
+    assertResult(int(10))(int(1, 2, 3, 4).fold(int(0))(__.from("x").get(0).plus(__.from("x").get(1))))
+  }
+  test("[fold] w/ str") {
+    assertResult(str("marko"))(str("m","a","r","k","o").fold(str(""))(__.from("x").get(0).plus(__.from("x").get(1))))
+  }
+
   /*test("[fold] w/ int"){
     assertResult("int[fold,'seed',0,int[plus,int<.seed>]]")(int.fold[Int](int(0))(int.plus(int.from[IntType]("seed"))).toString)
     assertResult(int(2))(int(2).fold[Int](int(1))(int.id()))

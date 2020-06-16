@@ -510,10 +510,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(real(-1.2, 0.0))(engine.eval("real{+}[0.0,1.2][plus,-1.2]"))
   }
 
-  /*test("str strm input parsing"){
-    assertResult(str("marko"))(engine.eval("""'m','a','r','k','o' str{*}[fold,'seed','',str[plus,str<.seed>]]"""))
-    assertResult(int(5))(engine.eval("""'m','a','r','k','o'[count]"""))
-  }*/
+  test("str strm input parsing"){
+    assertResult(str("marko"))(engine.eval("""['m','a','r','k','o'][fold,'',x.0[plus,x.1]]"""))
+    assertResult(str("marko"))(engine.eval("""['m','a','r','k','o'][fold,'',x.0+x.1]"""))
+  }
 
   test("rec strm input parsing") {
     assertResult(rec(rec(str("a") -> int(1), str("b") -> int(0)), rec(str("a") -> int(2), str("b") -> int(0))))(engine.eval("""[('a'->1),('a'->2)][plus,('b'->0)]"""))

@@ -38,8 +38,8 @@ trait Processor {
 }
 
 object Processor {
-  def compiler(): Processor = new CompilingProcessor()
-  def iterator(): Processor = new IteratorProcessor()
+  def compiler: Processor = new CompilingProcessor()
+  def iterator: Processor = new IteratorProcessor()
 
   def strmOrSingle[O <: Obj](itty: Iterator[O]): O = {
     if (itty.hasNext) {
