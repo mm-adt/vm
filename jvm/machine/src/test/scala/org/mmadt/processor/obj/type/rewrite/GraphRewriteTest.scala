@@ -20,9 +20,8 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.model.examples
+package org.mmadt.processor.obj.`type`.rewrite
 
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Obj, Rec, Str}
@@ -32,7 +31,7 @@ import org.scalatest.FunSuite
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class GraphModelTest extends FunSuite {
+class GraphRewriteTest extends FunSuite {
   private type Vertex = Rec[StrValue, Value[Obj]]
   private type Graph = Rec[StrValue, Value[Obj]]
 

@@ -20,18 +20,14 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.model.examples
+package org.mmadt.processor.obj.`type`.rewrite
 
-import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.{Obj, Rec, Str}
-import org.mmadt.processor.Processor
-import org.mmadt.storage.StorageFactory.{str, _}
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class SocialModelTest extends FunSuite {
+class SocialRewriteTest extends FunSuite {
 
   /*val mmsocial: Model = Model.simple()
   val socialmm: Model = Model.simple()
