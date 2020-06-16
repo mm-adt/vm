@@ -20,7 +20,7 @@
  *  commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.model
+package org.mmadt.processor.obj.`type`.rewrite
 
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
@@ -29,7 +29,7 @@ import org.scalatest.FunSuite
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class AlgebraTest extends FunSuite {
+class AlgebraRewriteTest extends FunSuite {
 
   test("int ring rewrites") {
     val intAlgebra = int

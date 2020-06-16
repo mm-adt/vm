@@ -78,10 +78,9 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
   test("compiler w/ model") {
     processor = Processor.compiler()
     val definitions = int
-      .define((int.mult(2)`;`)<=(int.plus(int)`;`))
-      .define((int.mult(4)`;`)<=(int.mult(2).mult(2)`;`))
-      .define(int<=(int.plus(1).plus(-1)`;`))
-
+      .define((int.mult(2) `;`) <= (int.plus(int) `;`))
+      .define((int.mult(4) `;`) <= (int.mult(2).mult(2) `;`))
+      .define(int <= (int.plus(1).plus(-1) `;`))
     /////
     assertResult(int.mult(2))(processor.apply(int, definitions `=>` int.plus(int)))
     assertResult(int.mult(4))(processor.apply(int, definitions `=>` int.plus(int).mult(int(2))))
@@ -92,9 +91,8 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
 
     val definitions = int
       //.define((int.mult(2)`;`)<=(int.plus(int)`;`))
-      .define(int<=(int.plus(0)`;`))
-      .define((int.zero()`;`)<=(int.plus(1).plus(-1)`;`))
-
+      .define(int <= (int.plus(0) `;`))
+      .define((int.zero() `;`) <= (int.plus(1).plus(-1) `;`))
     assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1))))
     assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1)).plus(0)))
     assertResult(int.plus(int.plus(2).plus(3).plus(4)))(processor.apply(definitions.plus(int.plus(2).plus(3).plus(4))))

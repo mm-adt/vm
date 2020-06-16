@@ -1,13 +1,12 @@
-package org.mmadt.language.model.rewrite
+package org.mmadt.processor.obj.`type`.rewrite
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
 
-object LeftRightCompiler {
-
-  def execute[O <: Obj](obj: O): O = {
+object LeftRightRewrite extends Rewrite {
+  def apply[O <: Obj](obj: O, writer: Writer): O = {
     if (!obj.trace.exists(x => x._2.op.equals(Tokens.define))) return obj
 
     val defines = obj.trace.map(x => x._2).filter(x => x.op.equals(Tokens.define)).map(x => x.arg0[Obj])
@@ -15,7 +14,7 @@ object LeftRightCompiler {
     var previous: O = obj
     while (!deflessEquals(previous, mutating)) {
       mutating = previous
-      previous = LeftRightCompiler.rewrite(defines, mutating, obj.domain, obj.domain).asInstanceOf[O]
+      previous = LeftRightRewrite.rewrite(defines, mutating, obj.domain, obj.domain).asInstanceOf[O]
     }
     mutating
   }
@@ -69,7 +68,7 @@ object LeftRightCompiler {
     temp
   }
 
-  def deflessEquals(aobj: Obj, bobj: Obj): Boolean = {
+  /*def deflessEquals(aobj: Obj, bobj: Obj): Boolean = {
 
     bobj match {
       case bobj: Obj if !bobj.alive => !aobj.alive
@@ -86,7 +85,7 @@ object LeftRightCompiler {
             }))
       case _ => false
     }
-  }
+  }*/
 
   private def nodefine(aobj: Obj): List[Inst[Obj, Obj]] = aobj.trace.filter(x => !x._2.op.equals(Tokens.define)).map(_._2)
 }

@@ -24,11 +24,11 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.model.Model
-import org.mmadt.language.model.rewrite.{LeftRightCompiler, LeftRightSweepRewrite}
+import org.mmadt.language.model.rewrite.LeftRightSweepRewrite
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.trace.DefineOp
 import org.mmadt.language.obj.{OType, Obj}
 import org.mmadt.processor.Processor
+import org.mmadt.processor.obj.`type`.rewrite.TraceScanRewrite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,8 +38,8 @@ class CompilingProcessor(val model: Model = Model.id) extends Processor {
     // ProcessorException.testRootedType(domainObj,this)
     LanguageException.testTypeCheck(domainObj, rangeType.domain)
     if (model == Model.id) {
-      DefineOp.traceScanCompiler(DefineOp.getDefines(rangeType), domainObj.compute(rangeType).asInstanceOf[E],DefineOp.replaceRewrite)
-      //LeftRightCompiler.execute(domainObj.compute(rangeType).asInstanceOf[E])
+      TraceScanRewrite.apply(domainObj.compute(rangeType).asInstanceOf[E], TraceScanRewrite.replaceRewrite)
+      //LeftRightRewrite.apply(domainObj.compute(rangeType).asInstanceOf[E], TraceScanRewrite.replaceRewrite)
     }
     else {
       val domainType: OType[E] = model(domainObj).asInstanceOf[OType[E]]
