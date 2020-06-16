@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.obj.value
 
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
@@ -33,9 +32,9 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class IteratorProcessor(model: Model = Model.id) extends Processor {
+class IteratorProcessor extends Processor {
   override def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E = {
-    var output: Iterator[E] = this.model(domainObj) match {
+    var output: Iterator[E] = domainObj match {
       case strm: Strm[_] => strm.values.map(x => x.asInstanceOf[E]).iterator
       case single: E => Iterator(single)
     }

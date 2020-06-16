@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
@@ -153,12 +152,12 @@ trait Obj
     case _ => rangeType
   }
 
-  def ==>[E <: Obj](rangeType: Type[E], model: Model = Model.id): E = {
+  def ==>[E <: Obj](rangeType: Type[E]): E = {
     if (!rangeType.alive) return zeroObj.asInstanceOf[E]
     LanguageException.testTypeCheck(range.range, rangeType.domain)
     this match {
-      case _: Value[_] => Processor.iterator(model).apply(this, rangeType)
-      case _: Type[_] => Processor.compiler(model).apply(this, rangeType)
+      case _: Value[_] => Processor.iterator().apply(this, rangeType)
+      case _: Type[_] => Processor.compiler().apply(this, rangeType)
     }
   }
   def ===>[E <: Obj](rangeType: E): E = {

@@ -1,7 +1,6 @@
 package org.mmadt.language.gremlin
 import org.mmadt.VmException
 import org.mmadt.language.LanguageException
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
@@ -39,7 +38,7 @@ class GremlinParser extends JavaTokenParsers {
   lazy val step: Parser[List[Inst[Obj, Obj]]] = "[a-zA-Z]+".r ~ ("(" ~> repsep(aobj, ",") <~ ")") ^^ (x => TraversalMonoid.resolve(x._1, x._2))
 }
 object GremlinParser {
-  def parse[O <: Obj](script: String, model: Model): O = try {
+  def parse[O <: Obj](script: String): O = try {
     new GremlinParser().parse[O](script)
   } catch {
     case e: VmException => throw e

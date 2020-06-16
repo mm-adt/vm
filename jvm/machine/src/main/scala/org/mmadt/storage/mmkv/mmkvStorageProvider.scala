@@ -25,7 +25,6 @@ package org.mmadt.storage.mmkv
 import java.util
 import java.util.Optional
 
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value._
@@ -43,13 +42,13 @@ import scala.collection.JavaConverters._
 class mmkvStorageProvider extends StorageProvider {
 
   override def name: String = "mmkv"
-  override lazy val model: Model = Model.from(
+  /*override lazy val model: Model = Model.from(
     // tobj(name) -> trec(K -> obj,V -> obj), // TODO: this needs to be dynamically determined by mmkvStore file access
     mmkv.put(K, obj) -> mmkv.error("keys are immutable"),
     mmkv.put(V, obj) -> mmkv.error("values are immutable"))
   //    (mmkv <= mmkv.via(obj.q(0), mmkvOp.strm(str.to("x"))).is(mmkv.get(K, int).eqs(int.to("y")))) -> (mmkv.q(qMark) <= obj.q(0).via(obj.q(0), mmkvOp.isGetKeyEq(str.from("x"), int.from("y")))),
   //    (trec(K -> int, V -> obj).q(*) <= mmkv.via(obj.q(0), mmkvOp.strm(str.to("x"))).add(trec(K -> int, V -> obj).to("y"))) -> mmkv.via(mmkv, mmkvOp.addKeyValue(str.from("x"), rec.from("y"))))
-
+*/
   val getByKeyEq: StrValue = str("getByKeyEq")
   val addKeyValue: StrValue = str("addKeyValue")
   override def resolveInstruction(op: String, args: util.List[Obj]): Optional[Inst[Obj, Obj]] = {

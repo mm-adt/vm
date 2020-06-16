@@ -8,22 +8,6 @@ import org.mmadt.storage.StorageFactory.qZero
 
 object TraceScanRewrite extends Rewrite {
 
-  //private type Rewrite = (Obj, List[Inst[Obj, Obj]], Obj) => Obj
-  private def rewriteInstArgs(defines: List[Obj], inst: Inst[Obj, Obj], rewrite: Writer): Inst[Obj, Obj] = inst match {
-    case _: TraceInstruction => inst
-    case _: BranchInstruction => inst
-    case _ => OpInstResolver.resolve(inst.op, inst.args.map {
-      case atype: Type[_] => TraceScanRewrite.apply(putDefines(defines, atype), rewrite)
-      case avalue: Value[_] => avalue
-    })
-  }
-  private def mapInstructions(lhs: Inst[Obj, Obj], rhs: Inst[Obj, Obj]): Inst[Obj, Obj] = {
-    if (lhs.equals(rhs)) return lhs
-    if (lhs.op != rhs.op || lhs.args.length != rhs.args.length) return lhs.q(qZero)
-    val args = lhs.args.zip(rhs.args).map(x => if (x._1.equals(x._2)) x._2 else if (x._1.test(x._2)) x._1.compute(x._2) else x._2.q(qZero))
-    if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
-  }
-
   override def apply[A <: Obj](obj: A, writer: Writer): A = {
     val defines = getDefines(obj)
     var a: Obj = removeDefines(obj)
@@ -54,6 +38,21 @@ object TraceScanRewrite extends Rewrite {
     })
     if (!deflessEquals(b,obj)) b = TraceScanRewrite(putDefines(defines,b), writer)
     removeDefines(b).asInstanceOf[A]
+  }
+
+  private def rewriteInstArgs(defines: List[Obj], inst: Inst[Obj, Obj], rewrite: Writer): Inst[Obj, Obj] = inst match {
+    case _: TraceInstruction => inst
+    case _: BranchInstruction => inst
+    case _ => OpInstResolver.resolve(inst.op, inst.args.map {
+      case atype: Type[_] => TraceScanRewrite(putDefines(defines, atype), rewrite)
+      case avalue: Value[_] => avalue
+    })
+  }
+  private def mapInstructions(lhs: Inst[Obj, Obj], rhs: Inst[Obj, Obj]): Inst[Obj, Obj] = {
+    if (lhs.equals(rhs)) return lhs
+    if (lhs.op != rhs.op || lhs.args.length != rhs.args.length) return lhs.q(qZero)
+    val args = lhs.args.zip(rhs.args).map(x => if (x._1.equals(x._2)) x._2 else if (x._1.test(x._2)) x._1.compute(x._2) else x._2.q(qZero))
+    if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
   }
 
   def chooseRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range.foldLeft(query.domainObj[Obj]())((x, y) => y.exec(x)) `|` trace.filter(x => x.op != Tokens.define).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge

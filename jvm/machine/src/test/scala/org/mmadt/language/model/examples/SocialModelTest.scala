@@ -22,7 +22,6 @@
 
 package org.mmadt.language.model.examples
 
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.{Obj, Rec, Str}
 import org.mmadt.processor.Processor
@@ -34,7 +33,7 @@ import org.scalatest.FunSuite
  */
 class SocialModelTest extends FunSuite {
 
-  val mmsocial: Model = Model.simple()
+  /*val mmsocial: Model = Model.simple()
   val socialmm: Model = Model.simple()
   val msCompiler: Processor = Processor.compiler(mmsocial)
   val smCompiler: Processor = Processor.compiler(socialmm)
@@ -130,5 +129,5 @@ class SocialModelTest extends FunSuite {
        assertResult("str")(x.get(str("name")).name)
        assertResult("nat")(x.get(str("age")).name)
      })
-   }*/
+   }*/*/
 }

@@ -22,7 +22,6 @@
 
 package org.mmadt.processor
 
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Obj, _}
@@ -39,8 +38,8 @@ trait Processor {
 }
 
 object Processor {
-  def compiler(model: Model = Model.id): Processor = new CompilingProcessor(model)
-  def iterator(model: Model = Model.id): Processor = new IteratorProcessor(model)
+  def compiler(): Processor = new CompilingProcessor()
+  def iterator(): Processor = new IteratorProcessor()
 
   def strmOrSingle[O <: Obj](itty: Iterator[O]): O = {
     if (itty.hasNext) {

@@ -22,31 +22,24 @@
 
 package org.mmadt.language.mmlang
 
-import java.util.{Optional, ServiceLoader}
+import java.util.Optional
 
 import javax.script.{Bindings, ScriptEngineManager, SimpleBindings}
+import org.mmadt.language.LanguageProvider
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.model.Model
-import org.mmadt.language.{LanguageProvider, Tokens}
-import org.mmadt.storage.StorageProvider
-
-import scala.collection.JavaConverters.asScalaIterator
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class mmlangLanguageProvider extends LanguageProvider {
   override val name: String = mmlangLanguageProvider._name
-  override val model: Model = Model.id
   override def getEngine: Optional[mmADTScriptEngine] = Optional.of(mmlangLanguageProvider.scriptEngine())
 }
 
 object mmlangLanguageProvider {
   private val _name: String = "mmlang"
   private lazy val scriptEngineManager: ScriptEngineManager = {
-    val model: Model = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toSeq.map(x => x.model()).headOption.getOrElse(Model.id)
     val manager: ScriptEngineManager = new ScriptEngineManager() // want to constrain the manager to only accessing mmADTScriptEngines
-   // manager.setBindings(model)
     manager
   }
   private def scriptEngine(): mmADTScriptEngine = scriptEngineManager.getEngineByName(_name).asInstanceOf[mmlangScriptEngine]

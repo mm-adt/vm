@@ -24,7 +24,6 @@ package org.mmadt.language;
 
 import org.mmadt.VmException;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
-import org.mmadt.language.model.Model;
 import org.mmadt.language.obj.Obj;
 
 import java.util.Optional;
@@ -35,9 +34,6 @@ import java.util.Optional;
 public interface LanguageProvider {
 
     String name();
-
-    Model model();
-
     Optional<mmADTScriptEngine> getEngine();
 
     default <O extends Obj> O parse(final String script) throws VmException {

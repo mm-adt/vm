@@ -24,7 +24,6 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.VmException
 import org.mmadt.language.Tokens.{bool => _, int => _, lst => _, real => _, rec => _, str => _, _}
-import org.mmadt.language.model.Model
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
@@ -42,7 +41,7 @@ import scala.util.parsing.combinator.JavaTokenParsers
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class mmlangParser(val model: Model) extends JavaTokenParsers {
+class mmlangParser extends JavaTokenParsers {
 
   override val whiteSpace: Regex = """[\s]+(?://.*[\s]*)?""".r // includes support for single line "//" comments
   override def decimalNumber: Parser[String] = """-?\d+\.\d+""".r
@@ -170,8 +169,8 @@ class mmlangParser(val model: Model) extends JavaTokenParsers {
 }
 
 object mmlangParser {
-  def parse[O <: Obj](script: String, model: Model): O = try {
-    new mmlangParser(model).parse[O](script)
+  def parse[O <: Obj](script: String): O = try {
+    new mmlangParser().parse[O](script)
   } catch {
     case e: VmException => throw e
     case e: Exception => {

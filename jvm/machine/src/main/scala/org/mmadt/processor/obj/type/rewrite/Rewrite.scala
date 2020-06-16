@@ -8,6 +8,8 @@ import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
 trait Rewrite {
   type Writer = (List[Inst[Obj, Obj]], List[Inst[Obj, Obj]], Obj) => Obj
   def apply[A <: Obj](obj: A, writer: Writer): A
+
+  // utility methods
   def getDefines(obj: Obj): List[Obj] = obj.trace.filter(x => x._2.op == Tokens.define).map(x => x._2.arg0[Obj]).sortBy(x => -x.domainObj[Obj]().trace.length)
   def putDefines(defines: List[Obj], obj: Obj): Obj = obj.trace.map(x => x._2).foldLeft(defines.foldLeft(obj.domainObj[Obj]())((x, y) => DefineOp(y).exec(x)))((x, y) => y.exec(x))
   def removeDefines(obj: Obj): Obj = obj.trace.map(x => x._2).filter(x => x.op != Tokens.define).foldLeft(obj.domainObj[Obj]())((x, y) => y.exec(x))
@@ -15,7 +17,6 @@ trait Rewrite {
     case alst: Lst[_] => alst.glist.head
     case _ => obj
   }
-
   def deflessEquals(aobj: Obj, bobj: Obj): Boolean = {
     bobj match {
       case bobj: Obj if !bobj.alive => !aobj.alive

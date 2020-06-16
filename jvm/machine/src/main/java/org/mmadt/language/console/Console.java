@@ -36,10 +36,7 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.mmadt.VmException;
 import org.mmadt.language.LanguageFactory;
-import org.mmadt.language.Tokens;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
-import org.mmadt.language.model.Model;
-import org.mmadt.language.obj.Rec;
 import scala.collection.JavaConverters;
 
 import javax.script.ScriptEngineManager;

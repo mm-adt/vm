@@ -22,7 +22,6 @@
 
 package org.mmadt.storage;
 
-import org.mmadt.language.model.Model;
 import org.mmadt.language.obj.Inst;
 import org.mmadt.language.obj.Obj;
 
@@ -35,9 +34,6 @@ import java.util.Optional;
 public interface StorageProvider {
 
     String name();
-
-    Model model();
-
     Optional<Inst<Obj, Obj>> resolveInstruction(final String opcode, final List<Obj> args);
 
 }
