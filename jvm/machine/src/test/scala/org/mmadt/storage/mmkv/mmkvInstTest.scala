@@ -22,9 +22,9 @@
 
 package org.mmadt.storage.mmkv
 
-import org.mmadt.language.LanguageFactory
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -37,10 +37,18 @@ class mmkvInstTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
   val file1: String = getClass.getResource("/mmkv/mmkv-1.txt").getPath
   val file2: String = getClass.getResource("/mmkv/mmkv-2.txt").getPath
+  val file3: String = getClass.getResource("/mmkv/mmkv-3.txt").getPath
   val mmkv: String = "=mmkv"
 
   test("mmkv parsing") {
-    assertResult("('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz'){4}")(engine.eval(s"[1][=mmkv,'${file1}']").toString)
+    assertResult("rec:('k'->int,'v'->str){*}")(engine.eval(s"[=mmkv,'${file1}']").toString)
+    assertResult("('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz'){4}")(engine.eval(s"1[=mmkv,'${file1}']").toString)
+    //
+    assertResult("rec:('k'->int,'v'->rec:('name'->str,'age'->int)){*}")(engine.eval(s"[=mmkv,'${file2}']").toString)
+    assertResult("('k'->1,'v'->('name'->'marko','age'->29)),('k'->2,'v'->('name'->'ryan','age'->25)),('k'->3,'v'->('name'->'stephen','age'->32)),('k'->4,'v'->('name'->'kuppitz','age'->23)){4}")(engine.eval(s"1[=mmkv,'${file2}']").toString)
+    //
+    assertResult("rec:('k'->int,'v'->bool){*}")(engine.eval(s"[=mmkv,'${file3}']").toString)
+    assertResult(zeroObj)(engine.eval(s"1[=mmkv,'${file3}']"))
   }
 
   test("mmkv branch parsing") {
@@ -64,14 +72,15 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("mmkv model") {
+    // mmkv.put(K, obj) -> mmkv.error("keys are immutable")
     assertResult("int")(engine.eval(s"[=mmkv,'${file2}'][get,'k']").name)
-    /*  assertThrows[LanguageException]{
-        engine.eval(s"obj[=mmkv,'${file2}'][put,'v',6]")
-      }
-      assertThrows[LanguageException]{
-        engine.eval(s"obj[=mmkv,'${file2}'][put,'k',346]")
-      }
-      assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
+    assertThrows[LanguageException] {
+      engine.eval(s"[=mmkv,'${file2}'][put,'v',6]")
+    }
+    assertThrows[LanguageException] {
+      engine.eval(s"[=mmkv,'${file2}'][put,'k',346]")
+    }
+    /*  assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
       assertResult(str("marko"))(engine.eval(s"'x'[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
 
       assertResult(vrec[StrValue,Value[Obj]](

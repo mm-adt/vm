@@ -35,5 +35,6 @@ public interface StorageProvider {
 
     String name();
     Optional<Inst<Obj, Obj>> resolveInstruction(final String opcode, final List<Obj> args);
+    List<Inst<Obj, Obj>> definitions();
 
 }

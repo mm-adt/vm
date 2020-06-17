@@ -64,7 +64,7 @@ object LeftRightRewrite extends Rewrite {
     if (!left.toString.contains("<.")) return left // TODO: super ghetto (search for the binding variable with recurssion
     val temp = nodefine(left).zip(nodefine(right))
       .map(x => OpInstResolver.resolve[Obj, Obj](x._1.op, x._1.args.zip(x._2.args).map(x => x._2)))
-      .foldLeft(right.domainObj().asInstanceOf[Obj])((a, b) => b.exec(a))
+      .foldLeft(right.domainObj.asInstanceOf[Obj])((a, b) => b.exec(a))
     temp
   }
 

@@ -22,10 +22,10 @@
 
 package org.mmadt.language.obj.op.sideeffect
 
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.{Inst, IntQ, Obj}
+import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -33,19 +33,12 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait ErrorOp {
   this: Obj =>
-  def error(message: String): this.type = this match {
-    case _: Type[_] => this.via(this, ErrorOp(message))
-    case _ => throw LanguageException.typeError(this, message)
-  }
+  def error(message: StrValue): this.type = ErrorOp(message).exec(this)
 }
-
-object ErrorOp {
-  def apply(message: String): Inst[Obj, Obj] = new ErrorInst(message)
-
-  class ErrorInst(message: String, q: IntQ = qOne) extends VInst[Obj, Obj](g = (Tokens.error, List(str(message))), q = q) {
-    override def q(quantifier: IntQ): this.type = new ErrorInst(message, quantifier).asInstanceOf[this.type]
-    override def exec(start: Obj): Obj = throw LanguageException.typeError(this, message)
-    //trav.split(trav.obj().error(message)) TODO make a distinction between compile-time and runtime errors (right now they are all compile time errors)
+object ErrorOp extends Func[Obj, Obj] {
+  def apply[A <: Obj](message: StrValue): Inst[A, A] = new VInst[A, A](g = (Tokens.error, List(message)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
+    case _: Value[Obj] => throw LanguageException.typeError(start, inst.arg0[StrValue].g)
+    case _ => start.via(start, inst)
   }
-
 }

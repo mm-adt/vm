@@ -27,7 +27,8 @@ import java.util.Optional
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.trace.DefineOp
 import org.mmadt.language.obj.value._
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.mmkv.mmkvStorageProvider._
@@ -54,14 +55,17 @@ class mmkvStorageProvider extends StorageProvider {
   val addKeyValue: StrValue = str("addKeyValue")
   override def resolveInstruction(op: String, args: util.List[Obj]): Optional[Inst[Obj, Obj]] = {
     if (op != opcode) Optional.empty()
-
     Optional.ofNullable(asScalaIterator(args.iterator()).toList match {
       case List(file: Str) => mmkvOp.strm(file)
-      //case List(file: Str, this.getByKeyEq, key: Obj) => mmkvOp.isGetKeyEq(file, key)
+      case List(file: Str, this.getByKeyEq, key: Obj) => mmkvOp.isGetKeyEq(file, key)
       //case List(file: Str, this.addKeyValue, key: Obj) => mmkvOp.addKeyValue(file, key.asInstanceOf[Rec[StrValue, Obj]])
       case _ => null
     })
   }
+  override def definitions(): util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
+    DefineOp((__.error("keys are immutable") `,`) <= (__.put("k", __) `,`)),
+    DefineOp((__.error("values are immutable") `,`) <= (__.put("v", __) `,`))
+  ))
 }
 
 object mmkvStorageProvider {
@@ -72,8 +76,8 @@ object mmkvStorageProvider {
 
   object mmkvOp {
     //def addKeyValue(file: Str, kv: Rec[StrValue, Obj]): Inst[Obj, Rec[StrValue, Obj]] = new mmkvAddKeyValueInst(file, kv)
-    //def isGetKeyEq(file: Str, key: Obj): Inst[Obj, Rec[StrValue, Obj]] = new mmkvIsGetKeyEqInst(file, key)
-    def strm(file: Str): Inst[Obj, Rec[StrValue, Obj]] = mmkvInst.apply(file)
+    def isGetKeyEq(file: Str, key: Obj): Inst[Obj, Rec[StrValue, Obj]] = mmkvIsGetKeyEqInst(file, key)
+    def strm(file: Str): Inst[Obj, Rec[StrValue, Obj]] = mmkvInst(file)
 
     object mmkvInst extends Func[Obj, Rec[StrValue, Obj]] {
       def apply(fileStr: Str): Inst[Obj, Rec[StrValue, Obj]] = new VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr)), func = this)
@@ -82,6 +86,18 @@ object mmkvStorageProvider {
         (start match {
           case _: Type[_] => connect(fileStr).schema.clone(via = (start, inst), q = StorageFactory.*)
           case _ => connect(fileStr).strm()
+        }).asInstanceOf[Rec[StrValue, Obj]]
+      }
+    }
+
+    object mmkvIsGetKeyEqInst extends Func[Obj, Rec[StrValue, Obj]] {
+      def apply(fileStr: Str, key: Obj): Inst[Obj, Rec[StrValue, Obj]] = new VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr, str("getByKeyEq"), key)), func = this)
+      override def apply(start: Obj, inst: Inst[Obj, Rec[StrValue, Obj]]): Rec[StrValue, Obj] = {
+        val fileStr: String = inst.arg0[StrValue].g
+        val key: Value[Obj] = inst.arg2[Value[Obj]]
+        (start match {
+          case _: Type[_] => connect(fileStr).schema.clone(via = (start, inst), q = StorageFactory.*)
+          case _ => rec(K -> key, V -> connect(fileStr).get(key))
         }).asInstanceOf[Rec[StrValue, Obj]]
       }
     }
@@ -125,7 +141,6 @@ object mmkvStorageProvider {
         case _ => throw new StorageException("A str value is required to connect to mmkv: " + file)
       }
     }
-
   }
 
 }

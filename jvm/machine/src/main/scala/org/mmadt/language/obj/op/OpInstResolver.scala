@@ -50,6 +50,13 @@ object OpInstResolver {
     .map(_.resolveInstruction(op, JavaConverters.seqAsJavaList(args)))
     .find(_.isPresent)
     .map(_.get())
+  def definitions(): List[Inst[Obj, Obj]] = providers.flatMap(x => asScalaIterator(x.definitions().iterator()))
+  def applyDefinitions[A <: Obj](obj: A): A = {
+    if (obj.trace.map(x => x._2).exists(x => providers.map(y => "=" + y.name()).contains(x.op)))
+      this.definitions().foldLeft(obj.domainObj[Obj])((x, y) => y.exec(x)) `=>` obj
+    else
+      obj
+  }
 
   def resolve[S <: Obj, E <: Obj](op: String, args: List[Obj]): Inst[S, E] = {
     (op match {
@@ -95,7 +102,7 @@ object OpInstResolver {
           case list: List[Obj] => FromOp(label, list.head)
           case _ => throw new IllegalStateException
         }
-      case Tokens.fold => FoldOp(args.head,args.tail.head)
+      case Tokens.fold => FoldOp(args.head, args.tail.head)
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].g)
       case Tokens.define => DefineOp(args.head)
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
