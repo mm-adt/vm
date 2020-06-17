@@ -41,9 +41,9 @@ trait FoldOp {
 }
 
 object FoldOp extends Func[Obj, Obj] {
-  def apply[A <: Obj](seed: A, reducer: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.fold, List(seed, reducer)), func = this) with ReduceInstruction[A] with TraceInstruction {
-    val seed: A = seed
-    val reducer: A = reducer
+  def apply[A <: Obj](_seed: A, _reducer: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.fold, List(_seed, _reducer)), func = this) with ReduceInstruction[A] with TraceInstruction {
+    val seed: A = _seed
+    val reducer: A = __.to("x").compute(_reducer)
   }
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val seed: Obj = inst.arg0[Obj]

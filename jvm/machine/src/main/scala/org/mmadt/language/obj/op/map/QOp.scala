@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Int, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -40,7 +41,8 @@ trait QOp {
 object QOp extends Func[Obj, Int] {
   def apply(): Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.q, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Int]): Int = (start match {
+    case astrm: Strm[_] => astrm
     case _: Value[_] => start.q._1.q(qOne)
     case _ => int
-  }).clone(via=(start, inst)).asInstanceOf[Int]
+  }).via(start, inst).asInstanceOf[Int]
 }

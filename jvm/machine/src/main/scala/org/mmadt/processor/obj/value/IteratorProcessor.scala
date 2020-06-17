@@ -41,7 +41,7 @@ class IteratorProcessor extends Processor {
     for (tt <- IteratorProcessor.createInstList(Nil, rangeType)) {
       output = tt._2 match {
         //////////////REDUCE//////////////
-        case reducer: ReduceInstruction[E] => Iterator(output.foldLeft(reducer.seed)((e, mutatingSeed) => Inst.resolveArg((mutatingSeed `,` e), reducer.reducer))).map(e => e.q(qOne))
+        case reducer: ReduceInstruction[E] => Iterator(output.foldLeft(reducer.seed)((mutating, e) => Inst.resolveArg((mutating `,` e), reducer.reducer))).map(e => e.q(qOne))
         //////////////FILTER//////////////
         case _: FilterInstruction => output.map(_.compute(tt._1.via(tt._1, tt._2)).asInstanceOf[E]).filter(_.alive)
         //////////////OTHER//////////////
