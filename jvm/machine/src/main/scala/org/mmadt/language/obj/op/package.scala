@@ -70,8 +70,8 @@ package object op {
   trait QuantifierInstruction
 
   trait ReduceInstruction[O <: Obj] {
-    val seed: (String, O)
-    val reduction: Type[O]
+    val seed: O
+    val reducer: O
   }
 
   trait SideEffectInstruction

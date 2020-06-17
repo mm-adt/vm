@@ -66,10 +66,3 @@ object GetOp extends Func[Obj, Obj] {
     }).via(start, inst)
   }
 }
-
-/*
-if(results.exists(x => x.isInstanceOf[Type[_]])) {
-  return asType(results.head).via(start,inst)
-} else
-  results
- */

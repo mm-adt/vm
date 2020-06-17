@@ -42,5 +42,5 @@ object QOp extends Func[Obj, Int] {
   override def apply(start: Obj, inst: Inst[Obj, Int]): Int = (start match {
     case _: Value[_] => start.q._1.q(qOne)
     case _ => int
-  }).via(start, inst).asInstanceOf[Int]
+  }).clone(via=(start, inst)).asInstanceOf[Int]
 }

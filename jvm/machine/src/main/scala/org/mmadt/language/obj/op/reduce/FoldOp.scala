@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.op.{ReduceInstruction, TraceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.obj.value.VInst
@@ -41,7 +41,10 @@ trait FoldOp {
 }
 
 object FoldOp extends Func[Obj, Obj] {
-  def apply[A <: Obj](seed: A, atype: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.fold, List(seed, atype)), func = this) with TraceInstruction
+  def apply[A <: Obj](seed: A, reducer: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.fold, List(seed, reducer)), func = this) with ReduceInstruction[A] with TraceInstruction {
+    val seed: A = seed
+    val reducer: A = reducer
+  }
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val seed: Obj = inst.arg0[Obj]
     val folding: Obj = __.to("x").compute(inst.arg1[Obj])

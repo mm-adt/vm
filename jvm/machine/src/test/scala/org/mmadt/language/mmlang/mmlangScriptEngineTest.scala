@@ -577,16 +577,13 @@ class mmlangScriptEngineTest extends FunSuite {
     }.getMessage.contains("int[[\n   ^ near here"))
   }
 
-  /*  test("reducing expressions"){
-      assertResult(int(7))(engine.eval("5{7} int{7}[plus,2][count]"))
-      assertResult(int(7))(engine.eval("5{7} [plus,2][count]"))
-      assertResult(int(5))(engine.eval("1,3,7,2,1 int{3,100}[plus,2][count]"))
-      assertResult(int(6))(engine.eval("1,3,7,2,1,10 [plus,2][count]"))
-      assertResult(int(2))(engine.eval("1,3,7,2,1,10 +2[is>5][count]"))
-      assertResult(int(3))(engine.eval("1.0,3.1,7.2,2.5,1.1,10.1 +2.0[is>5.0][count]"))
-      ///
-      assertResult(int(7))(engine.eval("1,2,3 int{1,7}[fold,'seed',1,[plus,int<.seed>]]"))
-    }*/
+    test("reducing expressions"){
+      assertResult(int(7))(engine.eval("[5{7}][plus,2][count]"))
+      assertResult(int(5))(engine.eval("[1,3,7,2,1][plus,2][count]"))
+      assertResult(int(6))(engine.eval("[1,3,7,2,1,10][plus,2][count]"))
+      assertResult(int(2))(engine.eval("[1,3,7,2,1,10][plus,2][is>5][count]"))
+      assertResult(int(3))(engine.eval("[1.0,3.1,7.2,2.5,1.1,10.1]+2.0[is>5.0][count]"))
+    }
 
   test("logical expressions") {
     assertResult(btrue)(engine.eval("true[and,true]"))
