@@ -24,6 +24,8 @@ package org.mmadt.storage.mmkv
 
 import javax.script.ScriptContext
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.obj.`type`.IntType
+import org.mmadt.language.obj.{Rec,Obj}
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -54,36 +56,36 @@ class mmkvStoreTest extends FunSuite {
     } finally store.close()
   }
 
-  /* test("mmkv store [count]") {
-     val store: mmkvStore[IntType, RecType[StrValue, Obj]] = mmkvStore.open[IntType, RecType[StrValue, Obj]](file2)
+  test("mmkv store [count]") {
+     val store: mmkvStore[IntType, Rec[StrValue, Obj]] = mmkvStore.open[IntType, Rec[StrValue, Obj]](file2)
      try {
-       assertResult(rec[StrValue, ObjType](name = "mmkv", gmap = Map(str("k") -> int, str("v") -> rec[StrValue, ObjType](gmap = Map(str("name") -> str, str("age") -> int)))))(store.schema)
+       assertResult(rec[StrValue, Obj](",",Map(str("k") -> int, str("v") -> rec[StrValue, Obj](",",Map(str("name") -> str, str("age") -> int)))))(store.schema)
        assertResult(4)(store.count())
      } finally store.close()
-   }*/
+   }
 
-  /*test("mmkv store [put]"){
+  test("mmkv store [put]"){
     val store = mmkvStore.open[IntValue,BoolValue](file3)
     try {
-      assertResult(trec(name = "mmkv",Map(str("k") -> int,str("v") -> bool)))(store.schema)
+      assertResult(rec(",",Map(str("k") -> int,str("v") -> bool)))(store.schema)
       store.clear()
       assertResult(0)(store.strm().values.count(_ => true))
       assertResult(bfalse)(store.put(bfalse))
       assertResult(1)(store.strm().values.count(_ => true))
-      assert(store.strm().values.map(x => x.values(str("k"))).exists(x => x.value == 0))
+      assert(store.strm().values.map(x => x.gmap(str("k"))).exists(x => x.g == 0))
       assertResult(btrue)(store.put(45,btrue))
       assertResult(2)(store.strm().values.count(_ => true))
-      assert(store.strm().values.map(x => x.value(str("k"))).exists(x => x.value == 0))
-      assert(store.strm().values.map(x => x.value(str("k"))).exists(x => x.value == 45))
+      assert(store.strm().values.map(x => x.gmap(str("k"))).exists(x => x.g == 0))
+      assert(store.strm().values.map(x => x.gmap(str("k"))).exists(x => x.g == 45))
       assertResult(btrue)(store.get(45))
       assertResult(bfalse)(store.get(0))
     } finally store.close()
-  }*/
+  }
 
   test("mmkv store [close]/[clear]/[count]") {
     var store = mmkvStore.open[IntValue, BoolValue](file3)
     try {
-      assertResult(rec(str("k") -> int, str("v") -> bool).named("mmkv"))(store.schema)
+      assertResult(rec(str("k") -> int, str("v") -> bool)/*.named("mmkv")*/)(store.schema)
       store.clear()
       assertResult(bfalse)(store.put(0, bfalse))
       assertResult(1L)(store.count())

@@ -24,9 +24,9 @@ package org.mmadt.storage.mmkv
 
 import java.util.concurrent.atomic.AtomicLong
 
-import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.{LanguageFactory, LanguageProvider}
 import org.mmadt.storage.StorageFactory._
 
@@ -45,7 +45,7 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
 
   val schema: Rec[StrValue, Obj] = {
     val source = Source.fromFile(file)
-    try source.getLines().take(1).map(line => mmlang.parse[Rec[StrValue, Obj]](line)).next().named(MMKV)
+    try source.getLines().take(1).map(line => mmlang.parse[Rec[StrValue, Obj]](line)).next() //.named(MMKV)
     finally source.close();
   }
 
