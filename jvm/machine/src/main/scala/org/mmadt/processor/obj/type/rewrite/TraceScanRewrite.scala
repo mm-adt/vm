@@ -9,7 +9,7 @@ import org.mmadt.storage.StorageFactory.qZero
 object TraceScanRewrite extends Rewrite {
 
   override def apply[A <: Obj](obj: A, writer: Writer): A = {
-    val defines = getDefines(obj)
+    val defines = getDefines(OpInstResolver.applyDefinitions(obj))
     var a: Obj = removeDefines(obj)
     var b: Obj = a
     defines.filter(x => !(x.isInstanceOf[Value[Obj]] && !x.isInstanceOf[Poly[_]])).filter(x => !__.isToken(x.range)).foreach(d => {
@@ -36,7 +36,7 @@ object TraceScanRewrite extends Rewrite {
         }
       }
     })
-    if (!deflessEquals(b,obj)) b = TraceScanRewrite(putDefines(defines,b), writer)
+    if (!deflessEquals(b, obj)) b = TraceScanRewrite(putDefines(defines, b), writer)
     removeDefines(b).asInstanceOf[A]
   }
 

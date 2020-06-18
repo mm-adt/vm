@@ -873,7 +873,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("play2") {
-    println(engine.eval("_[plus,1][plus,2]"))
+    println(engine.eval("1[define,([plus,3])<=([plus,1])][plus,1][plus,2]"))
   }
 
   test("play") {
