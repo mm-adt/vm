@@ -102,7 +102,7 @@ object OpInstResolver {
           case list: List[Obj] => FromOp(label, list.head)
           case _ => throw new IllegalStateException
         }
-      case Tokens.fold => FoldOp(args.head, args.tail.head)
+      case Tokens.fold => if (args.tail.isEmpty) FoldOp(args.head) else FoldOp(args.head, args.tail.head)
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].g)
       case Tokens.define => DefineOp(args.head)
       case Tokens.rewrite => RewriteOp(args.head)

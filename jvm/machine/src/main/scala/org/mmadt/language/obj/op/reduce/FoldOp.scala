@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.map.ZeroOp
 import org.mmadt.language.obj.op.{ReduceInstruction, TraceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
@@ -37,16 +38,18 @@ import org.mmadt.storage.obj.value.VInst
 trait FoldOp {
   this: Obj =>
   def fold[O <: Obj](seed: O)(foldType: Type[_]): O = FoldOp(seed, foldType).exec(this).asInstanceOf[O]
+  def fold[O <: Obj with ZeroOp[O]](foldType: Type[_]): O = FoldOp(this.asInstanceOf[ZeroOp[O]].zero().asInstanceOf[O], foldType).exec(this).asInstanceOf[O]
 
 }
 
 object FoldOp extends Func[Obj, Obj] {
+  def apply[A <: Obj](_reducer: A): Inst[Obj, A] = FoldOp[A](__.zero().asInstanceOf[A], _reducer)
   def apply[A <: Obj](_seed: A, _reducer: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.fold, List(_seed, _reducer)), func = this) with ReduceInstruction[A] with TraceInstruction {
     val seed: A = _seed
     val reducer: A = __.to("x").compute(_reducer)
   }
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val seed: Obj = inst.arg0[Obj]
+    val seed: Obj = Inst.resolveArg(start.toStrm.values.headOption.getOrElse(start), inst.arg0[Obj])
     val folding: Obj = __.to("x").compute(inst.arg1[Obj])
     start match {
       case strm: Strm[_] => strm.values.foldLeft(seed)((x, y) => Inst.resolveArg((x `,` y), folding))
