@@ -60,6 +60,7 @@ trait Obj
     with TraceOp
     with StartOp
     with SplitOp
+    with RewriteOp
     with RepeatOp[Obj] {
 
   //////////////////////////////////////////////////////////////
@@ -176,7 +177,8 @@ object Obj {
     start match {
       case x if x.root => false
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].trace == search.trace && x.via._2.arg0[Obj].equals(search) => true // TODO: trace search because poly values (bad?)
+      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].trace == search.trace => true
+      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].trace == search.trace && x.via._2.arg0[Obj].equals(search) => true // TODO: trace search because poly values (bad?)
       case x => fetch(x.via._1, search)
     }
   }
@@ -190,6 +192,7 @@ object Obj {
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
       case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].name == label => Some(Inst.resolveArg(obj, x.via._2.arg0[A].named(baseName(x.via._2.arg0[A]))))
+      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label => Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
       case x => fetchOption(x.via._1, label)
     }
   }
@@ -201,6 +204,7 @@ object Obj {
       case x if x.root => None
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some((Tokens.to, x.via._1.asInstanceOf[A]))
       case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].name == label => Some((Tokens.define, x.via._2.arg0[A]))
+      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label => Some((Tokens.rewrite, x.via._2.arg0[A]))
       case x => fetchWithInstOption(x.via._1, label)
     }
   }

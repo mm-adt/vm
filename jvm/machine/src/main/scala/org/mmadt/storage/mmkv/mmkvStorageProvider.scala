@@ -28,7 +28,7 @@ import java.util.Optional
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.trace.DefineOp
+import org.mmadt.language.obj.op.trace.{DefineOp, RewriteOp}
 import org.mmadt.language.obj.value._
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.mmkv.mmkvStorageProvider._
@@ -62,9 +62,9 @@ class mmkvStorageProvider extends StorageProvider {
       case _ => null
     })
   }
-  override def definitions(): util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
-    DefineOp((__.error("keys are immutable") `,`) <= (__.put("k", __) `,`)),
-    DefineOp((__.error("values are immutable") `,`) <= (__.put("v", __) `,`))
+  override def rewrites(): util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
+    RewriteOp((__.error("keys are immutable") `,`) <= (__.put("k", __) `,`)),
+    RewriteOp((__.error("values are immutable") `,`) <= (__.put("v", __) `,`))
   ))
 }
 

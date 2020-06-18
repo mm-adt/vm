@@ -33,11 +33,11 @@ class AlgebraRewriteTest extends FunSuite {
 
   test("int ring rewrites") {
     val intAlgebra = int
-      .define(int <= (int.mult(1) `,`))
-      .define(int <= (int.plus(0) `,`))
-      .define((int.zero() `,`) <= (int.mult(0) `,`))
-      .define(int <= (int.neg().neg() `,`))
-      .define((int.zero() `,`) <= (int.plus(int.neg()) `,`))
+      .rewrite(int <= (int.mult(1) `,`))
+      .rewrite(int <= (int.plus(0) `,`))
+      .rewrite((int.zero() `,`) <= (int.mult(0) `,`))
+      .rewrite(int <= (int.neg().neg() `,`))
+      .rewrite((int.zero() `,`) <= (int.plus(int.neg()) `,`))
     assertResult(int)(int ==> intAlgebra)
     assertResult(int)(int.mult(1) ==> intAlgebra)
     assertResult(int)(int.plus(0) ==> intAlgebra)
@@ -50,8 +50,8 @@ class AlgebraRewriteTest extends FunSuite {
   }
 
   test("variable matching") {
-    val defines = int.define((int.plus(__("x")) `,`) <= (int.mult(__.to("x")) `,`))
-    assertResult(int.plus(2))(int.mult(2) ==> defines)
+    val rewrites = int.rewrite((int.plus(__("x")) `,`) <= (int.mult(__.to("x")) `,`))
+    assertResult(int.plus(2))(int.mult(2) ==> rewrites)
   }
 
   /*test("int ring rewrites") {

@@ -510,7 +510,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(real(-1.2, 0.0))(engine.eval("real{+}[0.0,1.2][plus,-1.2]"))
   }
 
-  test("str strm input parsing"){
+  test("str strm input parsing") {
     assertResult(str("marko"))(engine.eval("""['m','a','r','k','o'][fold,'',x.0[plus,x.1]]"""))
     assertResult(str("marko"))(engine.eval("""['m','a','r','k','o'][fold,'',x.0+x.1]"""))
   }
@@ -577,13 +577,13 @@ class mmlangScriptEngineTest extends FunSuite {
     }.getMessage.contains("int[[\n   ^ near here"))
   }
 
-    test("reducing expressions"){
-      assertResult(int(7))(engine.eval("[5{7}][plus,2][count]"))
-      assertResult(int(5))(engine.eval("[1,3,7,2,1][plus,2][count]"))
-      assertResult(int(6))(engine.eval("[1,3,7,2,1,10][plus,2][count]"))
-      assertResult(int(2))(engine.eval("[1,3,7,2,1,10][plus,2][is>5][count]"))
-      assertResult(int(3))(engine.eval("[1.0,3.1,7.2,2.5,1.1,10.1]+2.0[is>5.0][count]"))
-    }
+  test("reducing expressions") {
+    assertResult(int(7))(engine.eval("[5{7}][plus,2][count]"))
+    assertResult(int(5))(engine.eval("[1,3,7,2,1][plus,2][count]"))
+    assertResult(int(6))(engine.eval("[1,3,7,2,1,10][plus,2][count]"))
+    assertResult(int(2))(engine.eval("[1,3,7,2,1,10][plus,2][is>5][count]"))
+    assertResult(int(3))(engine.eval("[1.0,3.1,7.2,2.5,1.1,10.1]+2.0[is>5.0][count]"))
+  }
 
   test("logical expressions") {
     assertResult(btrue)(engine.eval("true[and,true]"))
@@ -877,18 +877,18 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("play") {
-    val x:Obj = engine.eval(
+    val x: Obj = engine.eval(
       """int
-        |[define,_<=([plus,0])]               // a+0 = a
-        |[define,_<=([mult,1])]               // a*1 = a
-        |[define,_<=([neg][neg])]             // --a = a
-        |[define,(int[zero])<=([mult,0])]     // a*0 = 0
-        |[define,([plus,0])<=([plus,[neg]])]  // a-a = 0
+        |[rewrite,_<=([plus,0])]               // a+0 = a
+        |[rewrite,_<=([mult,1])]               // a*1 = a
+        |[rewrite,_<=([neg][neg])]             // --a = a
+        |[rewrite,(int[zero])<=([mult,0])]     // a*0 = 0
+        |[rewrite,([plus,0])<=([plus,[neg]])]  // a-a = 0
         |  *1*0+36+0[plus,*0][plus,int[neg][plus,0][neg][neg]]""".stripMargin)
-    println("!!" + x)
-   // assertResult(int.plus(int).mult(int).plus(1))(x)
+    assertResult(int(0))(x)
+    // assertResult(int.plus(int).mult(int).plus(1))(x)
 
-    println(engine.eval("int[define,int<=(int[mult,1])][mult,1]"))
+    assertResult(int)(engine.eval("int[rewrite,int<=(int[mult,1])][mult,1]"))
     println(engine.eval("10[define,big<=int[plus,100]]<.big>+10"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))

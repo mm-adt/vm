@@ -51,10 +51,10 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
 
   test("compiler w/ linear quantified type and model") {
     processor = Processor.compiler
-    val definitions = int
-      .define((int.plus(int) `,`) <= (int.mult(2) `,`))
-      .define(int <= (int.plus(0) `,`))
-      .define(int <= (int.plus(1).plus(-1) `,`))
+    val rewrites = int
+      .rewrite((int.plus(int) `,`) <= (int.mult(2) `,`))
+      .rewrite(int <= (int.plus(0) `,`))
+      .rewrite(int <= (int.plus(1).plus(-1) `,`))
     /////
     forAll(Table(
       "int reductions",
@@ -71,19 +71,19 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
       int.plus(0).plus(1).plus(-1).plus(0).plus(0).plus(1).plus(-1).plus(0).plus(0),
       int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(0),
       int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(1).plus(-1))) {
-      i => assertResult(int)(processor.apply(definitions `=>` i))
+      i => assertResult(int)(processor.apply(rewrites `=>` i))
     }
   }
 
   test("compiler w/ model") {
     processor = Processor.compiler
-    val definitions = int
-      .define((int.mult(2) `;`) <= (int.plus(int) `;`))
-      .define((int.mult(4) `;`) <= (int.mult(2).mult(2) `;`))
-      .define(int <= (int.plus(1).plus(-1) `;`))
+    val rewrites = int
+      .rewrite((int.mult(2) `;`) <= (int.plus(int) `;`))
+      .rewrite((int.mult(4) `;`) <= (int.mult(2).mult(2) `;`))
+      .rewrite(int <= (int.plus(1).plus(-1) `;`))
     /////
-    assertResult(int.mult(2))(processor.apply(int, definitions `=>` int.plus(int)))
-    assertResult(int.mult(4))(processor.apply(int, definitions `=>` int.plus(int).mult(int(2))))
+    assertResult(int.mult(2))(processor.apply(int, rewrites `=>` int.plus(int)))
+    assertResult(int.mult(4))(processor.apply(int, rewrites `=>` int.plus(int).mult(int(2))))
   }
 
   test("compiler w/ nested instructions") {
@@ -91,8 +91,8 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
 
     val definitions = int
       //.define((int.mult(2)`;`)<=(int.plus(int)`;`))
-      .define(int <= (int.plus(0) `;`))
-      .define((int.zero() `;`) <= (int.plus(1).plus(-1) `;`))
+      .rewrite(int <= (int.plus(0) `;`))
+      .rewrite((int.zero() `;`) <= (int.plus(1).plus(-1) `;`))
     assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1))))
     assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1)).plus(0)))
     assertResult(int.plus(int.plus(2).plus(3).plus(4)))(processor.apply(definitions.plus(int.plus(2).plus(3).plus(4))))

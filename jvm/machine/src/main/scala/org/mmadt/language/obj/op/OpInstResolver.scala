@@ -50,10 +50,10 @@ object OpInstResolver {
     .map(_.resolveInstruction(op, JavaConverters.seqAsJavaList(args)))
     .find(_.isPresent)
     .map(_.get())
-  def definitions(): List[Inst[Obj, Obj]] = providers.flatMap(x => asScalaIterator(x.definitions().iterator()))
-  def applyDefinitions[A <: Obj](obj: A): A = {
+  def rewrites: List[Inst[Obj, Obj]] = providers.flatMap(x => asScalaIterator(x.rewrites().iterator()))
+  def applyRewrites[A <: Obj](obj: A): A = {
     if (obj.trace.map(x => x._2).exists(x => providers.map(y => "=" + y.name()).contains(x.op)))
-      this.definitions().foldLeft(obj.domainObj[Obj])((x, y) => y.exec(x)) `=>` obj
+      this.rewrites.foldLeft(obj.domainObj[Obj])((x, y) => y.exec(x)) `=>` obj
     else
       obj
   }
@@ -105,6 +105,7 @@ object OpInstResolver {
       case Tokens.fold => FoldOp(args.head, args.tail.head)
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].g)
       case Tokens.define => DefineOp(args.head)
+      case Tokens.rewrite => RewriteOp(args.head)
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()
