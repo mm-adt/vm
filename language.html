@@ -2499,6 +2499,9 @@ The edge \$(a,i,b) \in E\$, notated as \$a\to_{i}b\$, has the corresponding <cod
 <p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
 </li>
 <li>
+<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively). When the current monoid operation requires historic state information, the co-Cayley graph is searched for previously encoded <code>inst</code> terms.</p>
+</li>
+<li>
 <p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place whereby the binary <code>*</code> operator no longer operates as a free algebra, but collapses two elements to one. The path&#8217;s tail element is the result of the computation.</p>
 </li>
 </ol>
@@ -2801,7 +2804,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-18 15:08:08 -0600
+Last updated 2020-06-18 17:13:05 -0600
 </div>
 </div>
 </body>
