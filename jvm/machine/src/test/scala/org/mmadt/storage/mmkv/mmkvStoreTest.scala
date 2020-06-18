@@ -59,7 +59,7 @@ class mmkvStoreTest extends FunSuite {
   test("mmkv store [count]") {
     val store: mmkvStore[IntType, Rec[StrValue, Obj]] = mmkvStore.open[IntType, Rec[StrValue, Obj]](file2)
     try {
-      assertResult(rec[StrValue, Obj](",", Map(str("k") -> int, str("v") -> rec[StrValue, Obj](",", Map(str("name") -> str, str("age") -> int)))).named("mmkv"))(store.schema)
+      assertResult(rec[StrValue, Obj](",", Map(str("k") -> int, str("v") -> rec[StrValue, Obj](",", Map(str("name") -> str, str("age") -> int)).named("person"))).named("mmkv"))(store.schema)
       assertResult(4)(store.count())
     } finally store.close()
   }

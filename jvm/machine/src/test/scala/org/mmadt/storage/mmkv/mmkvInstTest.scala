@@ -45,7 +45,7 @@ class mmkvInstTest extends FunSuite {
     assertResult("('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz'){4}")(engine.eval(s"1[=mmkv,'${file1}']").toString)
     //
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file2}']").range.toString)
-    assertResult("('k'->1,'v'->('name'->'marko','age'->29)),('k'->2,'v'->('name'->'ryan','age'->25)),('k'->3,'v'->('name'->'stephen','age'->32)),('k'->4,'v'->('name'->'kuppitz','age'->23)){4}")(engine.eval(s"1[=mmkv,'${file2}']").toString)
+    assertResult("('k'->1,'v'->person:('name'->'marko','age'->29)),('k'->2,'v'->person:('name'->'ryan','age'->25)),('k'->3,'v'->person:('name'->'stephen','age'->32)),('k'->4,'v'->person:('name'->'kuppitz','age'->23)){4}")(engine.eval(s"1[=mmkv,'${file2}']").toString)
     //
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file3}']").range.toString)
     assertResult(zeroObj)(engine.eval(s"1[=mmkv,'${file3}']"))
@@ -75,7 +75,7 @@ class mmkvInstTest extends FunSuite {
     assertResult("('k'->1,'v'->'marko')")((int(1) ==> int.=:[Rec[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
   }
 
-  test("mmkv model") {
+  test("mmkv rewrites") {
     assertResult("mmkv")(engine.eval(s"[=mmkv,'${file2}']").name)
     assertResult(int.q(*))(engine.eval(s"[=mmkv,'${file2}'][get,'k']").range)
     assertResult(int.q(*))(engine.eval(s"[=mmkv,'${file2}'][get,'v'][get,'age']").range)
