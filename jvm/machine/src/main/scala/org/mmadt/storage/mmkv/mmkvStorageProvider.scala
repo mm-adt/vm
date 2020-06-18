@@ -28,7 +28,7 @@ import java.util.Optional
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.trace.{DefineOp, RewriteOp}
+import org.mmadt.language.obj.op.trace.RewriteOp
 import org.mmadt.language.obj.value._
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.mmkv.mmkvStorageProvider._

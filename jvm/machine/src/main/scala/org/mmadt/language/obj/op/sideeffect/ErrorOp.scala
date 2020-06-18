@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, Poly}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
@@ -38,6 +38,7 @@ trait ErrorOp {
 object ErrorOp extends Func[Obj, Obj] {
   def apply[A <: Obj](message: StrValue): Inst[A, A] = new VInst[A, A](g = (Tokens.error, List(message)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
+    case apoly: Poly[_] if apoly.isType => start.via(start, inst)
     case _: Value[Obj] => throw LanguageException.typeError(start, inst.arg0[StrValue].g)
     case _ => start.via(start, inst)
   }

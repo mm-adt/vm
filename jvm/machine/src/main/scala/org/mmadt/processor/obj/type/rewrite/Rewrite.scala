@@ -1,9 +1,9 @@
 package org.mmadt.processor.obj.`type`.rewrite
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.trace.{DefineOp, RewriteOp}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.trace.RewriteOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
+import org.mmadt.language.obj.{Inst, Lst, Obj, _}
 
 trait Rewrite {
   type Writer = (List[Inst[Obj, Obj]], List[Inst[Obj, Obj]], Obj) => Obj
@@ -17,19 +17,16 @@ trait Rewrite {
     case alst: Lst[_] => alst.glist.head
     case _ => obj
   }
-  def deflessEquals(aobj: Obj, bobj: Obj): Boolean = {
+  def rewriteLessEquals(aobj: Obj, bobj: Obj): Boolean = {
     bobj match {
       case bobj: Obj if !bobj.alive => !aobj.alive
-      case _: Value[_] if aobj.isInstanceOf[Type[Obj]] &&
-        aobj.trace.exists(x => x._2.op.equals(Tokens.from)) &&
-        !bobj.trace.exists(x => x._2.op.equals(Tokens.from)) => true
-      case _: Value[_] => aobj.test(bobj)
+      case _: Value[_] => aobj.equals(bobj)
       case atype: Type[_] if aobj.isInstanceOf[Type[Obj]] =>
-        (aobj.name.equals(atype.name) || __.isAnon(aobj) || __.isAnon(atype)) && withinQ(aobj, atype) &&
+        aobj.name.equals(atype.name) && eqQ(aobj, atype) &&
           removeRewrites(aobj).trace.size == removeRewrites(atype).trace.size &&
           removeRewrites(aobj).trace.map(x => x._2).zip(removeRewrites(atype).trace.map(x => x._2)).
             forall(insts => insts._1.op.equals(insts._2.op) && insts._1.args.zip(insts._2.args).forall(a => {
-              deflessEquals(a._1, a._2)
+              rewriteLessEquals(a._1, a._2)
             }))
       case _ => false
     }

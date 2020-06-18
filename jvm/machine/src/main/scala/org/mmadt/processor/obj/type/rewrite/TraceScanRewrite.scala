@@ -36,7 +36,7 @@ object TraceScanRewrite extends Rewrite {
         }
       }
     })
-    if (!deflessEquals(b, obj)) b = TraceScanRewrite(putRewrites(rewrites, b), writer)
+    if (!rewriteLessEquals(b, obj)) b = TraceScanRewrite(putRewrites(rewrites, b), writer)
     removeRewrites(b).asInstanceOf[A]
   }
 

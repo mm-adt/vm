@@ -22,7 +22,6 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, _}
@@ -78,19 +77,5 @@ package object op {
 
   trait TerminalInstruction
 
-  trait TraceInstruction {
-
-  }
-  object TraceInstruction {
-    def isTrace(inst: Inst[_, _]): Boolean =
-      inst.op.equals(Tokens.to) ||
-        inst.op.equals(Tokens.from) ||
-        inst.op.equals(Tokens.trace) ||
-        inst.op.equals(Tokens.define) ||
-        inst.op.equals(Tokens.as) ||
-        inst.op.equals(Tokens.noop) ||
-        inst.op.equals(Tokens.a) ||
-        inst.op.equals(Tokens.start) ||
-    inst.op.equals(Tokens.fold)
-  }
+  trait TraceInstruction
 }

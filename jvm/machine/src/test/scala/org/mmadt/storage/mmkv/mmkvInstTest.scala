@@ -74,11 +74,13 @@ class mmkvInstTest extends FunSuite {
   test("mmkv model") {
     // mmkv.put(K, obj) -> mmkv.error("keys are immutable")
     assertResult("int")(engine.eval(s"[=mmkv,'${file2}'][get,'k']").name)
+    engine.eval(s"[=mmkv,'${file2}'][put,'v',6]")
     assertThrows[LanguageException] {
-      engine.eval(s"[=mmkv,'${file2}'][put,'v',6]")
+      engine.eval(s"1[=mmkv,'${file2}'][put,'v',6]")
     }
+    engine.eval(s"[=mmkv,'${file2}'][put,'k',346]")
     assertThrows[LanguageException] {
-      engine.eval(s"[=mmkv,'${file2}'][put,'k',346]")
+      engine.eval(s"1[=mmkv,'${file2}'][put,'k',346]")
     }
     /*  assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
       assertResult(str("marko"))(engine.eval(s"'x'[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
