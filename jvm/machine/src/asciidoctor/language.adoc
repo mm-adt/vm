@@ -1243,6 +1243,7 @@ Every aspect of an mm-ADT computation from composition to evaluation is realized
 . *Compilation*: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.
 . *Rewrite*: The vertices can be "merged" using `[rewrite]` instructions that specify a domain pattern that is equivalent to a range pattern.
 . *Optimization*: Every instruction in `inst` has an associated cost. Rewrites create a superposition of programs. A https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from domain to range is a simple technique for choosing an efficient execution plan.
+. *State*: Variable bindings, type definitions, and rewrite rule are encoded in instructions (`[to]`, `[define]`, `[rewrite]` respectively). When the current monoid operation requires historic state information, the co-Cayley graph is searched for previously encoded `inst` terms.
 . *Evaluation*: When a program path is prefixed with a value, a computation takes place whereby the binary `*` operator no longer operates as a free algebra, but collapses two elements to one. The path's tail element is the result of the computation.
 
 ===== Subgraph Algebras
