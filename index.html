@@ -509,7 +509,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_language_algebras">Language Algebras</a>
 <ul class="sectlevel3">
 <li><a href="#_obj_magma">Obj Magma</a></li>
-<li><a href="#_inst_monoid">Inst Monoid</a></li>
+<li><a href="#_inst_monoid">Inst Monoid</a>
+<ul class="sectlevel4">
+<li><a href="#_monoidal_cayley_graph">Monoidal Cayley Graph</a></li>
+<li><a href="#_subgraph_algebras">Subgraph Algebras</a></li>
+</ul>
+</li>
 <li><a href="#_type_ringoid">Type Ringoid</a>
 <ul class="sectlevel4">
 <li><a href="#_the_free_poly_monoid">The Free Poly Monoid</a></li>
@@ -2918,7 +2923,7 @@ be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objec
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT types serve numerous roles which are typically realized by many sorts of objects in traditional programmable systems. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generating set</a> of the <a href="https://en.wikipedia.org/wiki/Free_monoid">free</a> <strong>inst monoid</strong></p>
+<p>mm-ADT types serve numerous roles which are typically realized by many sorts of objects in other programming environments. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generating set</a> of the <a href="https://en.wikipedia.org/wiki/Free_monoid">free</a> <strong>inst monoid</strong></p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2926,7 +2931,57 @@ be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objec
 \]</p>
 </div>
 <div class="paragraph">
-<p>where <code>obj</code> is the carrier set, \$\ast: \tt{obj} \times \tt{i\nst} \to \tt{obj} \$ is the binary instruction application operator, \$\tt{i\nst} \subset \tt{obj}\$ are parameterized instructions, and \$\tt{[id]} \in \tt{i\nst}\$ is the identity element. While the richest algebra describing mm-ADT is a ring with unity, it is important to note that this "instruction-application" interpretation provides enough expressivity to faithfully capture all possible mm-ADT computations. For this reason, the <code>inst</code> monoid is a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid"><em>syntactic monoid</em></a> as any language capable of generating the its elements can general-purpose program the mm-ADT VM.</p>
+<p>where <code>obj</code> is the carrier set, \$\ast: \tt{obj} \times \tt{i\nst} \to \tt{obj} \$ is the binary instruction application operator, \$\tt{i\nst} \subset \tt{obj}\$ are parameterized instructions, and \$\tt{[id]} \in \tt{i\nst}\$ is the identity element. While the richest algebra describing mm-ADT is a ring with unity, it is important to note that this "instruction-application" interpretation provides enough expressivity to faithfully capture all possible mm-ADT computations. For this reason, the <code>inst</code> monoid is a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a> as any language capable of generating its elements can express any mm-ADT VM computation.</p>
+</div>
+<div class="sect4">
+<h5 id="_monoidal_cayley_graph">Monoidal Cayley Graph</h5>
+<div class="paragraph">
+<p>The generative <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> encoding of the <code>inst</code> monoid is the mm-ADT VM&#8217;s primary data structure. If <code>obj</code> is the set of all vertices and <code>inst</code> \$\subset\$ <code>obj</code> is the generating set, then the <code>inst</code> monoid <a href="https://en.wikipedia.org/wiki/Semigroup_action">acts</a> on the <code>obj</code> graph where
+\[
+V = \texttt{obj}, \;\;\; I = \texttt{inst}, \;\;\; E \subseteq V \times I \times V.
+\]
+The edge \$(a,i,b) \in E\$, notated as \$a\to_{i}b\$, has the corresponding <code>mmlang</code> denotation: <code>b&lt;=a[i]</code>.</p>
+</div>
+<div class="paragraph">
+<p>Every aspect of an mm-ADT computation from composition to evaluation is realized on this graph:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
+</li>
+<li>
+<p><strong>Compilation</strong>: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
+</li>
+<li>
+<p><strong>Rewrite</strong>: The vertices can be "merged" using <code>[rewrite]</code> instructions that specify a domain pattern that is equivalent to a range pattern.</p>
+</li>
+<li>
+<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
+</li>
+<li>
+<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place whereby the binary <code>*</code> operator no longer operates as a free algebra, but collapses two elements to one. The path&#8217;s tail element is the result of the computation.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_subgraph_algebras">Subgraph Algebras</h5>
+<div class="paragraph">
+<p>While the Cayley graph encoding respects the axioms of a monoid, certain subgraphs have richer structure. Examples include:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Filter instructions</strong> \$(\tt{fil\ter} \subset \tt{i\nst})\$: is an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> monoid.</p>
+</li>
+<li>
+<p><strong>Map instructions</strong> \$(\tt{map}^{-1} subset \tt{i\nst})\$: is the subset of <code>map</code> instructions that are invertible. This subgraph is generated by a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.</p>
+</li>
+<li>
+<p><strong>Poly instructions</strong> \$(\tt{poly} \subset \tt{i\nst})\$: lifts subgraphs into a higher-order vertex. This <a href="https://en.wikipedia.org/wiki/Hypergraph">directed hypergraph</a>, where many vertices link to many vertices, is how <code>[rewrite]</code> yields <a href="https://en.wikipedia.org/wiki/Functor">endofunctors</a> that link disparate areas of the graph not explicit in the <code>inst</code> monoid.</p>
+</li>
+</ol>
 </div>
 <div class="exampleblock">
 <div class="title">Deep Dive 3. An Instruction Only Free Monoid</div>
@@ -2968,6 +3023,7 @@ The instruction <code>[id]</code>, on the other hand, does.</p>
 ==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
 mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][<span style="color:#369;font-weight:bold">id</span>]
 ==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][<span style="color:#369;font-weight:bold">id</span>]</code></pre>
+</div>
 </div>
 </div>
 </div>
