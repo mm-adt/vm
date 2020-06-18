@@ -28,10 +28,13 @@ import java.util.Optional
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.filter.IsOp
+import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.trace.RewriteOp
 import org.mmadt.language.obj.value._
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.mmkv.mmkvStorageProvider._
+import org.mmadt.storage.mmkv.mmkvStorageProvider.mmkvOp.{mmkvGetRecords, mmkvGetRecordsByKey}
 import org.mmadt.storage.obj.ORec
 import org.mmadt.storage.obj.value.VInst
 import org.mmadt.storage.{StorageException, StorageFactory, StorageProvider}
@@ -56,16 +59,19 @@ class mmkvStorageProvider extends StorageProvider {
   override def resolveInstruction(op: String, args: util.List[Obj]): Optional[Inst[Obj, Obj]] = {
     if (op != opcode) Optional.empty()
     Optional.ofNullable(asScalaIterator(args.iterator()).toList match {
-      case List(file: Str) => mmkvOp.strm(file)
-      case List(file: Str, this.getByKeyEq, key: Obj) => mmkvOp.isGetKeyEq(file, key)
+      case List(file: Str) => mmkvOp.mmkvGetRecords(file)
+      case List(file: Str, this.getByKeyEq, key: Obj) => mmkvOp.mmkvGetRecordsByKey(file, key)
       //case List(file: Str, this.addKeyValue, key: Obj) => mmkvOp.addKeyValue(file, key.asInstanceOf[Rec[StrValue, Obj]])
       case _ => null
     })
   }
   override def rewrites(): util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
     RewriteOp((__.error("keys are immutable") `,`) <= (__.put("k", __) `,`)),
-    RewriteOp((__.error("values are immutable") `,`) <= (__.put("v", __) `,`))
-  ))
+    RewriteOp((__.error("values are immutable") `,`) <= (__.put("v", __) `,`))))
+    /*RewriteOp(
+      (List(mmkvGetRecordsByKey("/Users/marko/software/mmadt/vm/jvm/machine/target/test-classes/mmkv/mmkv-2.txt", 1)).foldLeft(__.asInstanceOf[Obj])((x,y)=>y.exec(x)) `,`)
+        <=
+        (List(mmkvGetRecords("/Users/marko/software/mmadt/vm/jvm/machine/target/test-classes/mmkv/mmkv-2.txt"),IsOp[Obj](__.get(str("k"),mmkv).eqs(1))).foldLeft(__.asInstanceOf[Obj])((x,y)=>y.exec(x))`,`))))*/
 }
 
 object mmkvStorageProvider {
@@ -75,28 +81,24 @@ object mmkvStorageProvider {
   private val mmkv: Rec[Obj, Obj] = new ORec[Obj, Obj]().q(*).named("mmkv")
 
   object mmkvOp {
-    //def addKeyValue(file: Str, kv: Rec[StrValue, Obj]): Inst[Obj, Rec[StrValue, Obj]] = new mmkvAddKeyValueInst(file, kv)
-    def isGetKeyEq(file: Str, key: Obj): Inst[Obj, Rec[StrValue, Obj]] = mmkvIsGetKeyEqInst(file, key)
-    def strm(file: Str): Inst[Obj, Rec[StrValue, Obj]] = mmkvInst(file)
-
-    object mmkvInst extends Func[Obj, Rec[StrValue, Obj]] {
+    object mmkvGetRecords extends Func[Obj, Rec[StrValue, Obj]] {
       def apply(fileStr: Str): Inst[Obj, Rec[StrValue, Obj]] = new VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr)), func = this)
       override def apply(start: Obj, inst: Inst[Obj, Rec[StrValue, Obj]]): Rec[StrValue, Obj] = {
         val fileStr: String = inst.arg0[StrValue].g
         (start match {
-          case _: Type[_] => connect(fileStr).schema.clone(via = (start, inst), q = StorageFactory.*)
+          case _: Type[_] => connect(fileStr).schema.via(start,inst).hardQ(*)
           case _ => connect(fileStr).strm()
         }).asInstanceOf[Rec[StrValue, Obj]]
       }
     }
 
-    object mmkvIsGetKeyEqInst extends Func[Obj, Rec[StrValue, Obj]] {
+    object mmkvGetRecordsByKey extends Func[Obj, Rec[StrValue, Obj]] {
       def apply(fileStr: Str, key: Obj): Inst[Obj, Rec[StrValue, Obj]] = new VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr, str("getByKeyEq"), key)), func = this)
       override def apply(start: Obj, inst: Inst[Obj, Rec[StrValue, Obj]]): Rec[StrValue, Obj] = {
         val fileStr: String = inst.arg0[StrValue].g
         val key: Value[Obj] = inst.arg2[Value[Obj]]
         (start match {
-          case _: Type[_] => connect(fileStr).schema.clone(via = (start, inst), q = StorageFactory.*)
+          case _: Type[_] => connect(fileStr).schema.via(start,inst).hardQ(*)
           case _ => rec(K -> key, V -> connect(fileStr).get(key))
         }).asInstanceOf[Rec[StrValue, Obj]]
       }

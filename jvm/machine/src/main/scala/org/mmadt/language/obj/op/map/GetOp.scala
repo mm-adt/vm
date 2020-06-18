@@ -53,7 +53,9 @@ object GetOp extends Func[Obj, Obj] {
           .values
           .flatMap(a => a.toStrm.values)
           .filter(a => a.alive)
+
         if (results.isEmpty) zeroObj //throw LanguageException.PolyException.noKeyValue(arec, key)
+        // else if(rec.isType) return asType[Obj](results.head).via(start,Inst.oldInst(inst))
         else if (results.size == 1) results.head
         else return strm(results.toSeq)
       case alst: Lst[_] => key match {

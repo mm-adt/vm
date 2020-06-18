@@ -157,8 +157,9 @@ trait Obj
     if (!rangeType.alive) return zeroObj.asInstanceOf[E]
     LanguageException.testTypeCheck(range.range, rangeType.domain)
     this match {
-      case _: Value[_] => Processor.iterator(this, rangeType)
+      case apoly: Poly[_] if apoly.isValue => Processor.iterator(this, rangeType)
       case _: Type[_] => Processor.compiler(this, rangeType)
+      case _: Value[_] => Processor.iterator(this, rangeType)
     }
   }
   def ===>[E <: Obj](rangeType: E): E = {

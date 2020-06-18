@@ -26,11 +26,10 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
-
-import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,6 +42,19 @@ trait IsOp {
 object IsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val check: Obj = inst.arg0[Obj]
+    if (check.isInstanceOf[Value[_]])
+      if (inst.arg0[Bool].g) start.via(start, inst) else start.via(start, inst).hardQ(qZero)
+    start match {
+      case astrm: Strm[_] => astrm.via(start, Inst.oldInst(inst))
+      case apoly: Poly[_] if (apoly.isType) => start.via(start, Inst.oldInst(inst)).hardQ(minZero(multQ(start, inst)))
+      case avalue: Value[_] if (check.isInstanceOf[Value[_]]) => if (inst.arg0[Bool].g) avalue.via(start, inst) else avalue.via(start, inst).hardQ(qZero)
+      case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
+    }
+  }
+}
+/*
+override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     Try[Obj](
       if (inst.arg0[Bool].g) start.via(start, inst)
       else
@@ -52,5 +64,5 @@ object IsOp extends Func[Obj, Obj] {
         case _ => start.clone(via = (start, inst), q = minZero(multQ(start, inst)))
       })
   }
-}
+ */
 

@@ -61,5 +61,7 @@ object TraceScanRewrite extends Rewrite {
       .zip(range)
       .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._1.args.zip(x._2.args).map(y => y._1.compute(y._2))))
       .foldLeft(query.domainObj[Obj])((x, y) => y.exec(x)))
+    //println(range + "####" + trace)
+    //range .foldLeft(query)((x, y) => y.exec(x))
   }
 }

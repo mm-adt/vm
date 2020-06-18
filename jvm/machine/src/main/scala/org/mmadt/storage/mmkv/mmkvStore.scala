@@ -45,7 +45,7 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
 
   val schema: Rec[StrValue, Obj] = {
     val source = Source.fromFile(file)
-    try source.getLines().take(1).map(line => mmlang.parse[Rec[StrValue, Obj]](line)).next() //.named(MMKV)
+    try source.getLines().take(1).map(line => mmlang.parse[Rec[StrValue, Obj]](line)).next().named(MMKV)
     finally source.close();
   }
 

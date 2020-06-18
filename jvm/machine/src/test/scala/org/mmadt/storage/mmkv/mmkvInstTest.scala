@@ -41,13 +41,13 @@ class mmkvInstTest extends FunSuite {
   val mmkv: String = "=mmkv"
 
   test("mmkv parsing") {
-    assertResult("rec:('k'->int,'v'->str){*}")(engine.eval(s"[=mmkv,'${file1}']").toString)
+    assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
     assertResult("('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz'){4}")(engine.eval(s"1[=mmkv,'${file1}']").toString)
     //
-    assertResult("rec:('k'->int,'v'->rec:('name'->str,'age'->int)){*}")(engine.eval(s"[=mmkv,'${file2}']").toString)
+    assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file2}']").range.toString)
     assertResult("('k'->1,'v'->('name'->'marko','age'->29)),('k'->2,'v'->('name'->'ryan','age'->25)),('k'->3,'v'->('name'->'stephen','age'->32)),('k'->4,'v'->('name'->'kuppitz','age'->23)){4}")(engine.eval(s"1[=mmkv,'${file2}']").toString)
     //
-    assertResult("rec:('k'->int,'v'->bool){*}")(engine.eval(s"[=mmkv,'${file3}']").toString)
+    assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file3}']").range.toString)
     assertResult(zeroObj)(engine.eval(s"1[=mmkv,'${file3}']"))
   }
 
@@ -55,17 +55,17 @@ class mmkvInstTest extends FunSuite {
     assertResult(int(2, 3, 4, 5))(engine.eval(s"[1][=mmkv,'${file1}'][get,'k'][plus,1]"))
     assertResult(int(100))(engine.eval(s"[10][is==1->[=mmkv,'${file1}'][get,'k'][plus,1] | int -> 100]"))
     assertResult(int(2, 3, 4, 5))(engine.eval(s"[1][is==1->[=mmkv,'${file1}'][get,'k'][plus,1] | int -> 100]"))
-    //assertResult(int(1,1,1,0))(engine.eval(s"[=mmkv,'${file1}'][[get,'k'][is>3]->0 | _ -> 1]"))
+    //assertResult(int(1,1,1,0))(engine.eval(s"1[=mmkv,'${file1}'][[get,'k'][is>3]->0 | _ -> 1]"))
   }
 
   test("mmkv file-2 parsing") {
-    //assertResult(s"mmkv{*}<=[=mmkv,'${file2}']")(engine.eval(s"[=mmkv,'${file2}'][trace]").toString)
-    //assertResult(str("marko!","stephen!"))(engine.eval(s"[1][=mmkv,'${file2}'][get,'v'][is,[get,'age'][gt,28]][get,'name'][plus,'!']"))
-    //assertResult(str("marko!","stephen!"))(engine.eval(s"1[=mmkv,'${file2}'].v[is.age>28].name+'!'"))
+    assertResult(s"mmkv{*}<=_[=mmkv,'${file2}']")(engine.eval(s"[=mmkv,'${file2}']").toString)
+    assertResult(str("marko!", "stephen!"))(engine.eval(s"[1][=mmkv,'${file2}'][get,'v'][is,[get,'age'][gt,28]][get,'name'][plus,'!']"))
+    assertResult(str("marko!", "stephen!"))(engine.eval(s"[1][=mmkv,'${file2}'].v[is.age>28].name+'!'"))
   }
 
-  test("[=mmkv] with mmkv-1.txt") { // TODO obj.=('mmkv',str(file1))
-    //assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
+  test("[=mmkv] with mmkv-1.txt") {
+    assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
     assertResult("('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz'){4}")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(int(1, 2, 3, 4))(Processor.iterator(int(4), int.=:[Rec[Obj, Obj]](mmkv)(str(file1)).get(str("k"), int)))
     assertResult("('k'->1,'v'->'marko')")((int(1) ==> int.=:[Rec[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
@@ -73,25 +73,26 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv model") {
     // mmkv.put(K, obj) -> mmkv.error("keys are immutable")
-    assertResult("int")(engine.eval(s"[=mmkv,'${file2}'][get,'k']").name)
+    assertResult("mmkv")(engine.eval(s"[=mmkv,'${file2}']").name)
+    assertResult(int.q(*))(engine.eval(s"[=mmkv,'${file2}'][get,'k']").range)
+    assertResult(int.q(*))(engine.eval(s"[=mmkv,'${file2}'][get,'v'][get,'age']").range)
+    assertResult(str.q(*))(engine.eval(s"[=mmkv,'${file2}'][get,'v'][get,'name']").range)
     engine.eval(s"[=mmkv,'${file2}'][put,'v',6]")
     assertThrows[LanguageException] {
       engine.eval(s"1[=mmkv,'${file2}'][put,'v',6]")
     }
-    engine.eval(s"[=mmkv,'${file2}'][put,'k',346]")
     assertThrows[LanguageException] {
       engine.eval(s"1[=mmkv,'${file2}'][put,'k',346]")
     }
-    /*  assertResult(s"mmkv{*}<=[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"obj{0}[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
-      assertResult(str("marko"))(engine.eval(s"'x'[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
+    //assertResult(s"mmkv{*}<=_[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
+    assertResult(str("marko"))(engine.eval(s"[1][=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
+    /*assertResult(vrec[StrValue,Value[Obj]](
+      str("k") -> int(200),
+      str("v") -> vrec[StrValue,Value[Obj]](
+        str("name") -> str("blah"),
+        str("age") -> int(22))))(engine.eval(s"'x'[=mmkv,'${file2}'][add['k':200,'v':['name':'blah','age':22]]]"))
 
-      assertResult(vrec[StrValue,Value[Obj]](
-        str("k") -> int(200),
-        str("v") -> vrec[StrValue,Value[Obj]](
-          str("name") -> str("blah"),
-          str("age") -> int(22))))(engine.eval(s"'x'[=mmkv,'${file2}'][add['k':200,'v':['name':'blah','age':22]]]"))
-
-      println(engine.eval(s"'x'[=mmkv,'${file2}'][add,['k':200,'v':['name':'blah','age':22]]][=mmkv,'${file2}'][is,[get,'k'][eq,200]][get,'v']"))*/
+    println(engine.eval(s"'x'[=mmkv,'${file2}'][add,['k':200,'v':['name':'blah','age':22]]][=mmkv,'${file2}'][is,[get,'k'][eq,200]][get,'v']"))*/
   }
 
 }
