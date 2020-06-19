@@ -512,7 +512,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_inst_monoid">Inst Monoid</a>
 <ul class="sectlevel4">
 <li><a href="#_monoidal_cayley_graph">Monoidal Cayley Graph</a></li>
-<li><a href="#_subgraph_algebras">Subgraph Algebras</a></li>
 </ul>
 </li>
 <li><a href="#_type_ringoid">Type Ringoid</a>
@@ -2942,55 +2941,52 @@ V = \texttt{obj}, \;\;\; I = \texttt{inst}, \;\;\; E \subseteq V \times I \times
 \]
 The edge \$(a,i,b) \in E\$, notated as \$a\to_{i}b\$, has the corresponding <code>mmlang</code> denotation: <code>b&lt;=a[i]</code>.</p>
 </div>
-<div class="paragraph">
-<p>Every aspect of an mm-ADT computation from composition to evaluation is realized on this graph:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
-</li>
-<li>
-<p><strong>Compilation</strong>: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
-</li>
-<li>
-<p><strong>Rewrite</strong>: The vertices can be "merged" using <code>[rewrite]</code> instructions that specify a domain pattern that is equivalent to a range pattern.</p>
-</li>
-<li>
-<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
-</li>
-<li>
-<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively). When the current monoid operation requires historic state information, the co-Cayley graph is searched for previously encoded <code>inst</code> terms.</p>
-</li>
-<li>
-<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place whereby the binary <code>*</code> operator no longer operates as a free algebra, but collapses two elements to one. The path&#8217;s tail element is the result of the computation.</p>
-</li>
-</ol>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>                                         <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;<span style="color:#369;font-weight:bold">int</span>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>]                                 <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][mult,[plus,<span style="color:#00D">10</span>]]                 <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][mult,<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>]]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][mult,[plus,<span style="color:#00D">10</span>]][explain]        <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span></span>
+<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][mult,<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>]]
+
+instruction            domain      <span style="color:#369;font-weight:bold">range</span> state
+-----------------------------------------------
+[plus,<span style="color:#00D">1</span>]               int    =&gt;   <span style="color:#369;font-weight:bold">int</span>
+[mult,<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>]]    int    =&gt;   <span style="color:#369;font-weight:bold">int</span>
+ [plus,<span style="color:#00D">10</span>]              int   =&gt;    <span style="color:#369;font-weight:bold">int</span>
+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span></span>
+mmlang&gt;</code></pre>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_subgraph_algebras">Subgraph Algebras</h5>
-<div class="paragraph">
-<p>While the Cayley graph encoding respects the axioms of a monoid, certain subgraphs have richer structure. Examples include:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Filter instructions</strong> \$(\tt{fil\ter} \subset \tt{i\nst})\$: is an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> monoid.</p>
-</li>
-<li>
-<p><strong>Map instructions</strong> \$(\tt{map}^{-1} subset \tt{i\nst})\$: is the subset of <code>map</code> instructions that are invertible. This subgraph is generated by a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.</p>
-</li>
-<li>
-<p><strong>Poly instructions</strong> \$(\tt{poly} \subset \tt{i\nst})\$: lifts subgraphs into a higher-order vertex. This <a href="https://en.wikipedia.org/wiki/Hypergraph">directed hypergraph</a>, where many vertices link to many vertices, is how <code>[rewrite]</code> yields <a href="https://en.wikipedia.org/wiki/Functor">endofunctors</a> that link disparate areas of the graph not explicit in the <code>inst</code> monoid.</p>
-</li>
-</ol>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>mm-ADT <code>obj</code> graph has an identity for each ctype (mult-rooted Cayley graph).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>\$\tt{i\nt} \to_{[\tt{plus,1}]} \tt{i\nt}'\$ (or <code>int&lt;=int[plus,1]</code>) is the Cayley source, label, and target.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An <code>inst</code> can be nested. Labels denoting trees of instructions.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The domain/range (source/target) of \$a \to_i b\$ edges in the Cayley graph via <code>[explain]</code>.</td>
+</tr>
+</table>
 </div>
 <div class="exampleblock">
 <div class="title">Deep Dive 3. An Instruction Only Free Monoid</div>
 <div class="content">
 <div class="paragraph">
-<p>The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
+<p>The mm-ADT <code>obj</code> graph has 5 roots serving as the <strong>1</strong> identity for each of the 5 ctypes. There is a single root for all of mm-ADT in <code>obj{0}</code>. The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -3028,6 +3024,53 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 ==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][<span style="color:#369;font-weight:bold">id</span>]</code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_the_foundational_obj_graph">The Foundational obj Graph</h6>
+<div class="paragraph">
+<p>Every aspect of an mm-ADT computation from composition to evaluation is realized on this graph:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
+</li>
+<li>
+<p><strong>Compilation</strong>: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
+</li>
+<li>
+<p><strong>Rewrite</strong>: The vertices can be "merged" using <code>[rewrite]</code> instructions that specify a domain pattern that is equivalent to a range pattern.</p>
+</li>
+<li>
+<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
+</li>
+<li>
+<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively). When the current monoid operation requires historic state information, the co-Cayley graph is searched for previously encoded <code>inst</code> terms.</p>
+</li>
+<li>
+<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place whereby the binary <code>*</code> operator no longer operates as a free algebra, but collapses two elements to one. The path&#8217;s tail element is the result of the computation.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_subgraph_algebras">Subgraph Algebras</h6>
+<div class="paragraph">
+<p>While the Cayley graph encoding respects the axioms of a monoid, certain subgraphs have richer structure. Examples include:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Filter instructions</strong> \$(\tt{fil\ter} \subset \tt{i\nst})\$: is an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> monoid.</p>
+</li>
+<li>
+<p><strong>Map instructions</strong> \$(\tt{map}^{-1} subset \tt{i\nst})\$: is the subset of <code>map</code> instructions that are invertible. This subgraph is generated by a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.</p>
+</li>
+<li>
+<p><strong>Poly instructions</strong> \$(\tt{poly} \subset \tt{i\nst})\$: lifts subgraphs into a higher-order vertex. This <a href="https://en.wikipedia.org/wiki/Hypergraph">directed hypergraph</a>, where many vertices link to many vertices, is how <code>[rewrite]</code> yields <a href="https://en.wikipedia.org/wiki/Functor">endofunctors</a> that link disparate areas of the graph not explicit in the <code>inst</code> monoid.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
