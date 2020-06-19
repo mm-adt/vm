@@ -3,21 +3,21 @@
  *
  * This file is part of mm-ADT.
  *
- *  mm-ADT is free software: you can redistribute it and/or modify it under
- *  the terms of the GNU Affero General Public License as published by the
- *  Free Software Foundation, either version 3 of the License, or (at your option)
- *  any later version.
+ * mm-ADT is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
  *
- *  mm-ADT is distributed in the hope that it will be useful, but WITHOUT ANY
- *  WARRANTY; without even the implied warranty of MERCHANTABILITY or
- *  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
- *  License for more details.
+ * mm-ADT is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
+ * License for more details.
  *
- *  You should have received a copy of the GNU Affero General Public License
- *  along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
  *
- *  You can be released from the requirements of the license by purchasing a
- *  commercial license from RReduX,Inc. at [info@rredux.com].
+ * You can be released from the requirements of the license by purchasing a
+ * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
 package org.mmadt.language.obj
@@ -35,7 +35,6 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.VLst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -133,7 +132,7 @@ trait Obj
   private final def polyMaker[A <: Obj](sep: String, obj: A): Lst[A] = {
     this match {
       case apoly: Lst[A] => obj match {
-        case bpoly: Lst[A] =>lst(sep, apoly.asInstanceOf[A], bpoly.asInstanceOf[A])
+        case bpoly: Lst[A] => lst(sep, apoly.asInstanceOf[A], bpoly.asInstanceOf[A])
         case _ => apoly.clone(apoly.glist :+ obj)
       }
       case _ => lst(sep, this.asInstanceOf[A], obj)
@@ -158,15 +157,13 @@ trait Obj
     if (!rangeType.alive) return zeroObj.asInstanceOf[E]
     LanguageException.testTypeCheck(range.range, rangeType.domain)
     this match {
-      case apoly: Poly[_] if apoly.isValue => Processor.iterator(this, rangeType)
-      case _: Type[_] => Processor.compiler(this, rangeType)
       case _: Value[_] => Processor.iterator(this, rangeType)
+      case _: Type[_] => Processor.compiler(this, rangeType)
     }
   }
   def ===>[E <: Obj](rangeType: E): E = {
     rangeType match {
       case _: Type[_] => this ==> rangeType.asInstanceOf[Type[E]]
-      case x: VLst[_] if x.isType =>  this.-<(x).asInstanceOf[E]
       case _ => rangeType
     }
   }
