@@ -1301,6 +1301,8 @@ mmlang> [start,int][plus,5][gt,10][id]
 
 ====== The Foundational obj Graph
 
+image::cayley-example.png[align=center]
+
 Every aspect of an mm-ADT computation from composition to evaluation is realized on this graph:
 
 . *Composition*: The point-free style of `mmlang` is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.
