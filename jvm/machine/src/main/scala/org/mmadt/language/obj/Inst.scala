@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
@@ -31,7 +32,8 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Inst[S <: Obj, +E <: Obj] extends Lst[Obj] {
+trait Inst[S <: Obj, +E <: Obj] extends Lst[S] with Type[Lst[S]] {
+  val func: Func[_ <: Obj, _ <: Obj]
   final def op: String = this.g._1
   final def args: List[Obj] = this.glist
   final def arg0[O <: Obj]: O = this.glist.head.asInstanceOf[O]
@@ -64,7 +66,7 @@ object Inst {
       case typeArg: OType[E] => obj match {
         case _: Strm[_] => arg
         case _: Value[_] => if (Type.ctypeCheck(obj, typeArg)) obj.compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
-        case obj: Type[_] => if (Type.ctypeCheck(obj, typeArg)) Obj.copyDefinitions(obj,obj.range).compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
+        case obj: Type[_] => if (Type.ctypeCheck(obj, typeArg)) Obj.copyDefinitions(obj, obj.range).compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
       }
     }
   }

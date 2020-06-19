@@ -39,7 +39,7 @@ trait SplitOp {
 }
 
 object SplitOp extends Func[Obj, Obj] {
-  def apply[A <: Obj](branches: Obj): Inst[A, Poly[A]] = new VInst[A, Poly[A]](g = (Tokens.split, List(branches)), func = this) with BranchInstruction
+  def apply[A <: Obj](branches: Obj): Inst[A, Poly[A]] = new VInst[A, Poly[A]](g = (Tokens.split, List(branches.asInstanceOf[A])), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val oldInst: Inst[Obj, Poly[Obj]] = Inst.oldInst(inst).asInstanceOf[Inst[Obj, Poly[Obj]]]
     val apoly: Poly[Obj] = oldInst.arg0[Obj] match {

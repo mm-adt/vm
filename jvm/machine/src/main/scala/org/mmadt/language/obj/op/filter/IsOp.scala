@@ -40,7 +40,7 @@ trait IsOp {
   def is(bool: Bool): this.type = IsOp(bool).exec(this)
 }
 object IsOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other)), func = this)
+  def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val check: Obj = inst.arg0[Obj]
     if (check.isInstanceOf[Value[_]])

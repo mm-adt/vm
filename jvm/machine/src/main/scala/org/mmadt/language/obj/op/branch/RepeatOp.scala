@@ -16,7 +16,7 @@ trait RepeatOp[A <: Obj] {
 }
 
 object RepeatOp extends Func[Obj, Obj] {
-  def apply[A <: Obj](branch: A, until: Obj): Inst[A, A] = new VInst[A, A](g = (Tokens.repeat, List(branch, until)), func = this)
+  def apply[A <: Obj](branch: A, until: Obj): Inst[A, A] = new VInst[A, A](g = (Tokens.repeat, List(branch, until.asInstanceOf[A])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val oldInst = Inst.oldInst(inst)
     val until: Obj = Inst.resolveArg(start, oldInst.arg1)

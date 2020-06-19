@@ -35,6 +35,7 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.VLst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -132,7 +133,7 @@ trait Obj
   private final def polyMaker[A <: Obj](sep: String, obj: A): Lst[A] = {
     this match {
       case apoly: Lst[A] => obj match {
-        case bpoly: Lst[A] => lst(sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A]): _*)
+        case bpoly: Lst[A] =>lst(sep, apoly.asInstanceOf[A], bpoly.asInstanceOf[A])
         case _ => apoly.clone(apoly.glist :+ obj)
       }
       case _ => lst(sep, this.asInstanceOf[A], obj)
@@ -165,6 +166,7 @@ trait Obj
   def ===>[E <: Obj](rangeType: E): E = {
     rangeType match {
       case _: Type[_] => this ==> rangeType.asInstanceOf[Type[E]]
+      case x: VLst[_] if x.isType =>  this.-<(x).asInstanceOf[E]
       case _ => rangeType
     }
   }

@@ -32,11 +32,11 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[Obj], val q: IntQ = qOne, val via: ViaTuple = base, val func: Func[_ <: Obj, _ <: Obj] = null) extends Inst[S, E] {
+class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[S], val q: IntQ = qOne, val via: ViaTuple = base, val func: Func[_ <: Obj, _ <: Obj] = null) extends Inst[S, E] {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new VInst[S, E](name, g.asInstanceOf[LstTuple[Obj]], q, via, this.func).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func).asInstanceOf[this.type]
   override def exec(start: S): E =
     this match {
       case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)

@@ -10,6 +10,6 @@ trait RewriteOp {
   def rewrite(obj: Obj): this.type = RewriteOp(obj).exec(this)
 }
 object RewriteOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.rewrite, List(obj)), func = this) with TraceInstruction
+  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.rewrite, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = if (!Obj.fetch(start, inst.arg0[Obj])) start.via(start, inst) else start
 }

@@ -46,7 +46,7 @@ trait MultOp[O <: Obj] {
   final def ⨂(arg: __): this.type = this.mult(arg)
 }
 object MultOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.mult, List(obj)), func = this)
+  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.mult, List(obj.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     Try[Obj] {
       start match {

@@ -30,11 +30,11 @@ import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{ViaTuple, _}
 import org.mmadt.storage.StorageFactory.{qOne, qZero}
+import org.mmadt.storage.obj.ORec
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 import org.mmadt.storage.obj.value.strm.{VObjStrm, _}
-import org.mmadt.storage.obj.{OLst, ORec}
 
 
 /**
@@ -51,10 +51,10 @@ trait StorageFactory {
   def rec[A <: Obj, B <: Obj]: Rec[A, B] = new ORec()
   def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): Rec[A, B] = new ORec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
   def rec[A <: Obj, B <: Obj](sep: String = Tokens.`,`, map: Map[A, B]): Rec[A, B] = new ORec(g = (sep, map))
-  def lst[A <: Obj](sep: String, values: A*): Lst[A] = new OLst[A](g = (sep, values.toList))
-  def |[A <: Obj]: Lst[A] = new OLst[A](g = (Tokens.|, List.empty))
-  def `;`[A <: Obj]: Lst[A] = new OLst[A](g = (Tokens.`;`, List.empty))
-  def `,`[A <: Obj]: Lst[A] = new OLst[A](g = (Tokens.`,`, List.empty))
+  def lst[A <: Obj](sep: String, values: A*): Lst[A] = new VLst[A](g = (sep, values.toList))
+  def |[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.|, List.empty))
+  def `;`[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.`;`, List.empty))
+  def `,`[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.`,`, List.empty))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base): BoolType
@@ -148,11 +148,13 @@ object StorageFactory {
     case _: __ => Tokens.anon
   }
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
-    case alst: LstStrm[Obj] if alst.isValue => lst(sep = Tokens.`,`).q(alst.q) // TODO:
-    //case alst: Lst[Obj] if alst.isValue => alst.clone(alst.glist.map(x => asType[Obj](x)))
     case arec: RecStrm[Obj, Obj] if arec.isValue => rec.q(arec.q) // TODO:
-    //case arec: Rec[Obj, Obj] if arec.isValue => arec.clone(g = (arec.gsep, arec.gmap.map(x => (asType[Obj](x._1), asType[Obj](x._2)))))
     case atype: Type[_] => atype
+    case alst: LstStrm[Obj] if alst.isValue => new TLst[Obj](g = (Tokens.`,`, List.empty[Obj])).q(alst.q) // TODO:
+    case alst: Lst[Obj] => new TLst[Obj](g = alst.g).hardQ(alst.q)
+
+    //case arec: Rec[Obj, Obj] if arec.isValue => arec.clone(g = (arec.gsep, arec.gmap.map(x => (asType[Obj](x._1), asType[Obj](x._2)))))
+
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
     case _: StrValue | _: StrStrm => tstr(name = obj.name, q = obj.q)
@@ -191,7 +193,8 @@ object StorageFactory {
       case _: Real => new VRealStrm(values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
       case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
       case _: Rec[_, _] => new VRecStrm[Value[Obj], Value[Obj]](values = MultiSet(values.asInstanceOf[Seq[Rec[Value[Obj], Value[Obj]]]]))
-      case _: Lst[_] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Lst[Obj]]]))
+      case _: VLst[_] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[Lst[Obj]]]))
+      case y: TLst[_] => new VLstStrm[Obj](values = MultiSet(values.map(x => new VLst(g = (y.gsep, x.asInstanceOf[TLst[Obj]].glist))).asInstanceOf[Seq[Lst[Obj]]]))
       case _ => new VObjStrm(values = List.empty)
     }.getOrElse(new VObjStrm(values = List.empty)).asInstanceOf[O]
   }

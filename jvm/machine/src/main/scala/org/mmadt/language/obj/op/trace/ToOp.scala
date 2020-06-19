@@ -37,7 +37,7 @@ trait ToOp {
   def to(label: StrValue): this.type = ToOp(label).exec(this)
 }
 object ToOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](label: StrValue): Inst[O, O] = new VInst[O, O](g = (Tokens.to, List(label)), func = this) with TraceInstruction
+  def apply[O <: Obj](label: StrValue): Inst[O, O] = new VInst[O, O](g = (Tokens.to, List(label.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.via(start, inst)
 }
 

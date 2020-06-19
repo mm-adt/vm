@@ -45,7 +45,7 @@ trait PlusOp[O <: Obj] {
 }
 
 object PlusOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj)), func = this)
+  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     try {
       (start match {

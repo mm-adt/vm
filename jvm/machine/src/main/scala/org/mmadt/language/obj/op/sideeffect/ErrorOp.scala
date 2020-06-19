@@ -33,10 +33,10 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait ErrorOp {
   this: Obj =>
-  def error(message: StrValue): this.type = ErrorOp(message).exec(this)
+  def error(message: StrValue): this.type = ErrorOp(message).exec(this).asInstanceOf[this.type]
 }
 object ErrorOp extends Func[Obj, Obj] {
-  def apply[A <: Obj](message: StrValue): Inst[A, A] = new VInst[A, A](g = (Tokens.error, List(message)), func = this)
+  def apply(message: StrValue): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.error, List(message)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
     case apoly: Poly[_] if apoly.isType => start.via(start, inst)
     case _: Value[Obj] => throw LanguageException.typeError(start, inst.arg0[StrValue].g)

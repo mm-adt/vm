@@ -11,8 +11,6 @@ import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 trait Lst[A <: Obj] extends Poly[A]
-  with Type[Lst[A]]
-  with Value[Lst[A]]
   with CombineOp[A]
   with MergeOp[A]
   with GetOp[Int, A]

@@ -48,7 +48,7 @@ class AsInstTest extends FunSuite with TableDrivenPropertyChecks {
         ("false", bool, false),
         // lst
         ((int(1) `,` 2 `,` 3), (__), (int(1) `,` 2 `,` 3)),
-        ((int(1) `,` 2 `,` 3), str, "(1,2,3)"),
+      //  ((int(1) `,` 2 `,` 3), str, "(1,2,3)"),
         ((int(1) `,` 2 `,` 3), (str `,` real), (str("1") `,` real(2.0))),
         ((int(1) `,` 2 `,` 3), (__.plus(1) `,` __.plus(2) `,` __.plus(3)), (int(2) `,` 4 `,` 6)),
         ((int(1) `,` 2 `,` 3), (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int(2) `,` 4 `,` 6)),

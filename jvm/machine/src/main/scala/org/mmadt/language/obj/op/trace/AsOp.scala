@@ -31,7 +31,7 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.storage.obj.value.{VInst, VLst}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,7 +43,7 @@ trait AsOp {
 }
 
 object AsOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj)), func = this) with TraceInstruction
+  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val asObj: Obj = inst.arg0[Obj]
     val toObj: Obj = if (!asObj.isInstanceOf[Poly[Obj]] && asObj.isInstanceOf[Value[Obj]]) {
@@ -108,7 +108,7 @@ object AsOp extends Func[Obj, Obj] {
     y.domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case alst: Lst[Obj] => lst[Obj](sep = alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2)): _*)
+      case alst: Lst[Obj] => new VLst[Obj](g=(alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))))
       case _ => throw LanguageException.typingError(x, asType(y))
     } //, y)
   }

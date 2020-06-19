@@ -30,6 +30,7 @@ import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
 import org.mmadt.storage.StorageFactory;
+import org.mmadt.storage.obj.type.TLst;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -90,6 +91,8 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
+        if(type instanceof TLst<?>)
+            return;
         if (!StorageFactory.asType(obj).range().test(((type instanceof __) ? obj.compute((Type<Obj>) type) : type).domain()))
             throw LanguageException.typingError(obj, type);
     }

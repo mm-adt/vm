@@ -59,8 +59,8 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
 
 
   test("parallel [tail][head][last] values") {
-    val starts: TableFor2[Lst[Obj], List[Value[Obj]]] =
-      new TableFor2[Lst[Obj], List[Value[Obj]]](("parallel", "projections"),
+    val starts: TableFor2[Lst[Obj], List[Obj]] =
+      new TableFor2[Lst[Obj], List[Obj]](("parallel", "projections"),
         (|, List.empty),
         ("a" |, List(str("a"))),
         ("a" | "b", List(str("a"), str("b"))),

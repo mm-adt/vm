@@ -29,6 +29,7 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.`type`.TLst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,7 +53,7 @@ object mmlangPrinter {
 
   def lstString(lst: Lst[_]): String = {
     if (lst.root) listString(lst)
-    if (!lst.isValue)
+    if (!lst.isValue && lst.isInstanceOf[Type[Obj]])
       typeString(lst.asInstanceOf[Type[Obj]])
     else
       listString(lst) + qString(lst.q)
@@ -75,7 +76,7 @@ object mmlangPrinter {
     if (lst.glist.isEmpty)
       LROUND + Tokens.space + RROUND
     else
-      lst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RROUND
+      lst.glist.foldLeft(if(lst.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + (if(lst.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
   }
 
   def typeString(atype: Type[Obj]): String = {
